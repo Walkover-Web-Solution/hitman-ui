@@ -5,10 +5,12 @@ import { isAdmin } from '../auth/authService'
 import './publicCollectionInfo.scss'
 import SettingIcon from '../../assets/icons/SettingIcon.png'
 import FileIcon from '../../assets/icons/file.svg'
-// import DocIcon from '../../assets/icons/twitch.svg'
+import DocIcon from '../../assets/icons/twitch.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
+import { ReactComponent as HelpIcon } from '../../assets/icons/helpcircle.svg'
 import PublishSidebar from '../publishSidebar/publishSidebar'
-import { openExternalLink } from '../common/utility'
+import { openExternalLink, msgText } from '../common/utility'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 const mapStateToProps = (state) => {
   return {
@@ -61,12 +63,14 @@ class PublishCollectionInfo extends Component {
   }
 
   managePublicDoc () {
+    const { totalEndpointCount } = this.state
     return (
-      <button onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
+      <button class='btn' disabled={!totalEndpointCount} onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
         <div className='d-flex align-items-center cursor-pointer'>
           <img className='mr-1' src={FileIcon} alt='' />
           <span>Manage Public Doc</span>
         </div>
+        {this.renderInfoText('Add an endpoint first')}
       </button>
     )
   }
@@ -78,16 +82,26 @@ class PublishCollectionInfo extends Component {
     }
   }
 
-  // apiDocFeedback () {
-  //   return (
-  //     <button onClick={() => { this.redirectToApiFeedback() }}>
-  //       <div className='d-flex align-items-center'>
-  //         <img className='mr-1' src={DocIcon} alt='' />
-  //         <span>API Doc Feedback</span>
-  //       </div>
-  //     </button>
-  //   )
-  // }
+  renderInOverlay (method, msg) {
+    return (
+      <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>{msg}</Tooltip>}>
+        <span className='d-inline-block'>
+          {method()}
+        </span>
+      </OverlayTrigger>
+    )
+  }
+
+  apiDocFeedback () {
+    return (
+      <button disabled={!isAdmin()} onClick={() => { this.redirectToApiFeedback() }}>
+        <div className='d-flex align-items-center'>
+          <img className='mr-1' src={DocIcon} alt='' />
+          <span>API Doc Feedback</span>
+        </div>
+      </button>
+    )
+  }
 
   getPublicEntityCount () {
     const collectionId = this.props.collectionId
@@ -145,29 +159,48 @@ class PublishCollectionInfo extends Component {
   //   )
   // }
 
-  renderPublicCollectionInfo () {
+  renderPublicCollectionInfo (isPublic) {
     const currentCollection = this.props.collections[this.props.collectionId]
     return (
       !currentCollection?.importedFromMarketPlace &&
         <div className='public-colection-info'>
           {this.managePublicDoc()}
-          {/* {this.apiDocFeedback()} */}
-          <div className='publicurl'>{this.renderPublicUrl()}</div>
+          {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))}
+          {isPublic && <div className='publicurl'>{this.renderPublicUrl()}</div>}
+        </div>
+    )
+  }
+
+  renderInfoText (info) {
+    const { totalEndpointCount } = this.state
+    return (
+      (totalEndpointCount < 1) &&
+        <div>
+          <OverlayTrigger
+            placement='right'
+            overlay={<Tooltip> {info} </Tooltip>}
+          >
+            <HelpIcon />
+          </OverlayTrigger>
         </div>
     )
   }
 
   renderPublishCollection () {
+    const { totalEndpointCount } = this.state
     return (
-      (this.state.totalEndpointCount > 2) &&
-        <button
-          className='btn btn-outline orange w-100 publishCollection'
-          id='publish_api_doc_navbar_btn'
-          onClick={() => { this.redirectUser() }}
-        >
-          <img className='ml-3' src={FileIcon} alt='' />
-          Publish API Documentation
-        </button>
+      <button
+        className='btn btn-outline orange w-100 publishCollection'
+        id='publish_api_doc_navbar_btn'
+        disabled={!totalEndpointCount}
+        onClick={() => { this.redirectUser() }}
+      >
+        <div className='d-flex align-items-left'>
+          <img className='ml-2 pl-1 mr-1' src={FileIcon} alt='' />
+          <span className='truncate'>Publish API Documentation</span>
+        </div>
+        {this.renderInfoText('Add an endpoint to publish')}
+      </button>
     )
   }
 
@@ -191,10 +224,6 @@ class PublishCollectionInfo extends Component {
   openPublishSettings () {
     const collectionId = this.props.collectionId
     if (collectionId) {
-      // this.props.history.push({
-      //   pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-      //   search: `?collectionId=${collectionId}`
-      // })
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
   }
@@ -219,7 +248,8 @@ class PublishCollectionInfo extends Component {
     const isPublic = this.props.collections[this.props.collectionId]?.isPublic || false
     return (
       <div>
-        {isPublic ? this.renderPublicCollectionInfo() : this.renderPublishCollection()}
+        {!isPublic && this.renderPublishCollection()}
+        {this.renderPublicCollectionInfo(isPublic)}
         {this.openPublishSidebar()}
       </div>
     )

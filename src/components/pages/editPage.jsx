@@ -41,13 +41,15 @@ class EditPage extends Component {
     const { pages } = this.props
     const page = pages[pageId]
     if (page) {
-      const { id, versionId, groupId, name, contents } = page
+      const { id, versionId, groupId, name, contents, isPublished, state } = page
       data = {
         id,
         versionId,
         groupId,
         name,
-        contents
+        contents,
+        isPublished,
+        state
       }
 
       this.setState({ data, originalData: data, draftDataSet: true })
@@ -159,17 +161,46 @@ class EditPage extends Component {
     )
   }
 
+  renderEditPageOperations () {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <div className='d-flex flex-row justify-content-end mb-2'>
+            <button
+              onSubmit={this.handleSubmit}
+              type='submit'
+              className='btn btn-primary btn-extra-lg mr-2 btn-width'
+            >
+              Save
+            </button>
+            <button
+              onClick={() => { this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel() }}
+              type='button'
+              className='btn btn-secondary outline btn-extra-lg btn-width'
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    )
+  }
+
   render () {
     return (
-      <div className='custom-edit-page'>
+      <div className='custom-edit-page page-display mt-3'>
         <WarningModal
           show={this.state.warningModalFlag}
           onHide={() => { this.setState({ warningModalFlag: false }) }}
           ignoreButtonCallback={() => { this.handleCancel() }}
           message='Your unsaved changes will be lost.'
         />
+
         <div className='form-group'>
-          <label htmlFor='name'>Page Name</label>
+          <div className='d-flex justify-content-between align-items-center'>
+            <label htmlFor='name'>Page Name</label>
+            {this.renderEditPageOperations()}
+          </div>
           <input
             name='name'
             id='name'
@@ -181,27 +212,8 @@ class EditPage extends Component {
           />
         </div>
 
-        <div style={{ marginBottom: '50px' }}>
-          {this.renderTinyEditor()}
-        </div>
-
         <div>
-          <form onSubmit={this.handleSubmit}>
-            <button
-              onClick={() => { this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel() }}
-              type='button'
-              className='btn btn-secondary outline btn-extra-lg mt-4'
-            >
-              Cancel
-            </button>
-            <button
-              onSubmit={this.handleSubmit}
-              type='submit'
-              className='btn btn-primary btn-extra-lg mt-4 ml-3'
-            >
-              Save
-            </button>
-          </form>
+          {this.renderTinyEditor()}
         </div>
       </div>
     )

@@ -293,7 +293,7 @@ class Environments extends Component {
             {isDashboardRoute(this.props) && (
               <div
                 onClick={() => env ? this.handleEnvironmentModal('Edit Environment', this.props.environment.environments[this.props.environment.currentEnvironmentId]) : null}
-                className='environment-buttons addEniButton'
+                className={`environment-buttons addEniButton ${env ? 'hover' : ''}`}
               >
                 {env ? <EyeIcon className='cursor-pointer' /> : <EyeDisabledIcon />}
               </div>

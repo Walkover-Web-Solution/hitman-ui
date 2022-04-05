@@ -184,19 +184,20 @@ class EndpointBreadCrumb extends Component {
               />
             </h3>
           </div>
-          <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
-            {this.collectionName && <span className=''>{`${this.collectionName}`}</span>}
-            {this.renderLeftAngle(this.collectionName)}
-            {this.versionName && <span>{`${this.versionName}`}</span>}
-            {this.renderLeftAngle(this.versionName)}
-            {this.groupName && <span>{`${this.groupName}`}</span>}
-            {this.renderLeftAngle(this.groupName)}
-            <span>
-              {this.state.endpointTitle}
-            </span>
-            {this.props?.endpoint?.publishedEndpoint?.isPublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
-            {this.state.isPagePublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
-          </div>
+          {this.props.location.pathname.split('/')[5] !== 'new' &&
+            <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
+              {this.collectionName && <span className=''>{`${this.collectionName}`}</span>}
+              {this.renderLeftAngle(this.collectionName)}
+              {this.versionName && <span>{`${this.versionName}`}</span>}
+              {this.renderLeftAngle(this.versionName)}
+              {this.groupName && <span>{`${this.groupName}`}</span>}
+              {this.renderLeftAngle(this.groupName)}
+              <span className='end-point-title'>
+                {this.state.endpointTitle}
+              </span>
+              {this.props?.endpoint?.publishedEndpoint?.isPublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
+              {this.state.isPagePublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
+            </div>}
 
         </div>
       </div>

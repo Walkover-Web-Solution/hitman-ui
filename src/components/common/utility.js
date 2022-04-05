@@ -37,6 +37,12 @@ export function getDomainName (hostname) {
 
   return parts[0] || ''
 }
+export const msgText = {
+  publishPage: 'You are about to make these changes live on your Public API doc.',
+  viewSwitch: 'Do you wish to set it as default view?',
+  publishEndpoint: 'You are about to make these changes live on your Public API doc.',
+  adminAccees: 'Admin access required'
+}
 
 export function isDashboardRoute (props, sidebar = false) {
   if (
@@ -363,6 +369,15 @@ export function sensitiveInfoFound (endpoint) {
   return result
 }
 
+export function getEntityState (entityId, entity) {
+  const isPublic = entity[entityId].isPublished
+  if (isStatePending(entityId, entity)) return 'Pending'
+  if (isStateReject(entityId, entity)) return 'Rejected'
+  if (isStateApproved(entityId, entity)) return 'Approved'
+  if (isStateDraft(entityId, entity) && isPublic) return 'Request Publish'
+  if (isStateDraft(entityId, entity) && !isPublic) return 'Make Public'
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -389,5 +404,7 @@ export default {
   isStateDraft,
   isStateReject,
   sensitiveInfoFound,
-  hexToRgb
+  hexToRgb,
+  msgText,
+  getEntityState
 }

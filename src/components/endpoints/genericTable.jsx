@@ -319,7 +319,7 @@ class GenericTable extends Component {
             onChange={(e) => this.handleChange(e, { name: key, value: e })}
             type='text'
             placeholder='Key'
-            className='form-control rounded-0'
+            className='form-control'
             options={{ '{{': _.keys(this.props.environment.variables) }}
           />
           {title === 'formData' &&
@@ -421,7 +421,7 @@ class GenericTable extends Component {
                     key={valueKey}
                     value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
                     onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
-                    className='form-control rounded-0'
+                    className='form-control'
                     placeholder={
                                   dataArray[index].checked === 'notApplicable'
                                     ? 'Value'
@@ -447,7 +447,7 @@ class GenericTable extends Component {
                     onChange={this.handleChange}
                     type='text'
                     placeholder='Description'
-                    className='form-control rounded-0'
+                    className='form-control'
                   />
                 </div>
                 )
@@ -567,7 +567,7 @@ class GenericTable extends Component {
       return (
       // "generic-table-container"
       // table-bordered
-        <div className='hm-public-table position-relative'>
+        <div className='hm-public-table position-relative mb-2'>
           {(title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView)) ? <div>{title}</div> : null}
           <div
             className={

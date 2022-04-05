@@ -12,6 +12,7 @@
     background-color: $secondary-color;
     .btn{
       border-radius: 0;
+      height: 42px;
     }
     &::after{
       content: '';
@@ -195,9 +196,6 @@
   overflow-y: auto;
 }
 
-.tabs-width {
-  width: 240px !important;
-}
 
 .scroll-button {
   color: #828282;
@@ -238,7 +236,6 @@
 }
 
 .hover-div {
-  margin-top: 5px;
   position: absolute;
   border: 0.5px solid #E6DBD4;
   align-items: center;
@@ -249,34 +246,29 @@
   min-height: 50px;
   background: #fff;
   z-index: 1200;
-  padding: 5px 15px;
-
+  padding: 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
   .group-name {
-    color: #828282;
-    font-weight: 600;
-    font-size: 12px;
+    font-size: $font-medium;
     line-height: 12px;
+    display: block;
   }
-
   .endpoint-name {
-    font-size: 10px;
+    font-size: $font-medium;
     margin-top: 4px;
-    color: #828282;
   }
-
   .page-name {
-    color: #828282;
-    font-weight: 600;
     font-size: 12px;
     line-height: 12px;
     text-align: left;
-    margin-top: 14px;
   }
-
   .arrow-top {
     position: relative;
   }
-
   .arrow-top:before {
     content: '';
     position: absolute;

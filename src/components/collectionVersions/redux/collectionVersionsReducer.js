@@ -40,6 +40,10 @@ function versionsReducer (state = initialState, action) {
     case versionActionTypes.ON_VERSIONS_FETCHED_ERROR:
       return state
 
+    case versionActionTypes.ON_VERSION_IMPORT_ERROR:
+      toast.error(action.error)
+      return state
+
     case versionActionTypes.UPDATE_VERSION_REQUEST:
       return {
         ...state,

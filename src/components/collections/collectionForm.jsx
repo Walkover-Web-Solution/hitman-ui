@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from 'react-bootstrap'
+import { Modal, Spinner } from 'react-bootstrap'
 import Joi from 'joi-browser'
 import Form from '../common/form'
 import { toTitleCase, onEnter, DEFAULT_URL } from '../common/utility'
@@ -44,7 +44,8 @@ class CollectionForm extends Form {
       viewLoader: {
         testing: false,
         doc: false
-      }
+      },
+      updating: false
     }
 
     this.schema = {
@@ -87,25 +88,16 @@ class CollectionForm extends Form {
       id: this.state.collectionId,
       defaultView
     }, null, this.redirectToCollection.bind(this))
-    this.setState({
-      data: {
-        name: '',
-        website: '',
-        description: '',
-        keyword: '',
-        keyword1: '',
-        keyword2: ''
-      }
-    })
   }
 
   redirectToCollection (collection) {
     const { viewLoader } = this.state
-    if (collection.success && viewLoader.doc) {
+    if (collection.success && viewLoader.doc && !this.props.setDropdownList) {
       const { orgId } = this.props.match.params
       const { id: collectionId } = collection.data
       this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
     }
+    if (this.props.setDropdownList) this.props.setDropdownList(collection.data)
     this.props.onHide()
   }
 
@@ -132,8 +124,11 @@ class CollectionForm extends Form {
   }
 
   setViewLoader (type, flag) {
-    const { viewLoader } = this.state
-    this.setState({ viewLoader: { ...viewLoader, [type]: flag } })
+    if (flag === 'edit') this.setState({ updating: true })
+    else {
+      const { viewLoader } = this.state
+      this.setState({ viewLoader: { ...viewLoader, [type]: flag } })
+    }
   }
 
   async doSubmit (defaultView) {
@@ -148,6 +143,7 @@ class CollectionForm extends Form {
     }
     if (this.props.title === 'Add new Collection') {
       this.onAddCollectionSubmit(defaultView)
+      if (this.props.setDropdownList) this.props.onHide()
     }
   }
 
@@ -190,13 +186,24 @@ class CollectionForm extends Form {
     const errors = this.validate()
     this.setState({ errors: errors || {} })
     if (errors) return
-    this.setState({ step: 2 })
+    if (this.props.title === 'Edit Collection') {
+      this.saveCollection(this.props.edited_collection?.defaultView, 'edit')
+    } else { this.setState({ step: 2 }) }
   }
 
   renderNextButton () {
+    if (!this.props.setDropdownList) {
+      return (
+        <button className='btn btn-primary' onClick={() => this.onNext()}>
+          Next
+        </button>
+      )
+    }
     return (
       <button className='btn btn-primary' onClick={() => this.onNext()}>
-        Next
+        {this.props.title === 'Edit Collection'
+          ? <>{this.state.updating && <Spinner className=' mr-2 ' animation='border' size='sm' />}Update</>
+          : 'Next'}
       </button>
     )
   }

@@ -109,7 +109,7 @@ export const onVersionUpdatedError = (error, originalVersion) => {
   }
 }
 
-export const addVersion = (newVersion, collectionId) => {
+export const addVersion = (newVersion, collectionId, customCallback) => {
   return (dispatch) => {
     dispatch(addVersionRequest({ ...newVersion, collectionId }))
     collectionVersionsApiService
@@ -121,6 +121,9 @@ export const addVersion = (newVersion, collectionId) => {
           collectionId: response.data.collectionId
         })
         dispatch(onVersionAdded(response.data))
+        if (customCallback) {
+          customCallback(response.data)
+        }
       })
       .catch((error) => {
         dispatch(
@@ -247,7 +250,7 @@ export const importVersion = (importLink, shareIdentifier, collectionId) => {
           })
           .catch((error) => {
             dispatch(
-              onVersionsFetchedError(
+              onVersionImportError(
                 error.response ? error.response.data : error
               )
             )
@@ -255,9 +258,18 @@ export const importVersion = (importLink, shareIdentifier, collectionId) => {
       })
       .catch((error) => {
         dispatch(
-          onVersionsFetchedError(error.response ? error.response.data : error)
+          onVersionImportError(
+            error.response ? error.response.data : error
+          )
         )
       })
+  }
+}
+
+export const onVersionImportError = (error) => {
+  return {
+    type: versionActionTypes.ON_VERSION_IMPORT_ERROR,
+    error
   }
 }
 

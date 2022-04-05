@@ -11,7 +11,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetch_feedbacks: (collectionId) => dispatch(fetchFeedbacks(collectionId))
+    fetch_feedbacks: (collectionId, orgId) => dispatch(fetchFeedbacks(collectionId, orgId))
   }
 }
 class PublishDocsReview extends Component {
@@ -24,103 +24,17 @@ class PublishDocsReview extends Component {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
-    const { collectionId } = this.props.match.params
-    if (prevProps.match.params.collectionId !== collectionId) {
-      collectionId && this.props.fetch_feedbacks(collectionId)
-    }
+  componentDidMount () {
+    const { collectionId, orgId } = this.props.match.params
+    collectionId && this.props.fetch_feedbacks(collectionId, orgId)
   }
 
-  dummyFeedback = [
-    {
-      id: 1,
-      parentId: 'KN7tgPpMG',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:40:03.119Z',
-      updatedAt: '2022-03-10T08:40:03.119Z'
-    },
-    {
-      id: 2,
-      parentId: 'KN7tgPpMG',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:40:28.152Z',
-      updatedAt: '2022-03-10T08:40:28.152Z'
-    },
-    {
-      id: 3,
-      parentId: 'AaNy4VYBg',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:40:46.128Z',
-      updatedAt: '2022-03-10T08:40:46.128Z'
-    },
-    {
-      id: 4,
-      parentId: 'AaNy4VYBg',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:42:22.144Z',
-      updatedAt: '2022-03-10T08:42:22.144Z'
-    },
-    {
-      id: 5,
-      parentId: 'AaNy4VYBg',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:42:52.319Z',
-      updatedAt: '2022-03-10T08:42:52.319Z'
-    },
-    {
-      id: 6,
-      parentId: 'AaNy4VYBg',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:43:09.375Z',
-      updatedAt: '2022-03-10T08:43:09.375Z'
-    },
-    {
-      id: 7,
-      parentId: 'QdyTtx16k',
-      parentType: 'endpoint',
-      vote: -1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:46:45.133Z',
-      updatedAt: '2022-03-10T08:46:45.133Z'
-    },
-    {
-      id: 8,
-      parentId: 'QdyTtx16k',
-      parentType: 'page',
-      vote: -1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:47:23.723Z',
-      updatedAt: '2022-03-10T08:47:23.723Z'
+  componentDidUpdate (prevProps, prevState) {
+    const { collectionId, orgId } = this.props.match.params
+    if (prevProps.match.params.collectionId !== collectionId) {
+      collectionId && this.props.fetch_feedbacks(collectionId, orgId)
     }
-  ]
+  }
 
   renderHostedApiHeading (heading) {
     return (
@@ -171,6 +85,12 @@ class PublishDocsReview extends Component {
 
     return (
       <>
+        <Dropdown.Item onClick={() => {
+          this.setState({ filter: false })
+        }}
+        >
+          All
+        </Dropdown.Item>
         {endpointsArray.length > 0 && endpointsArray.map(
           (id, index) => (
             <Dropdown.Item
@@ -202,9 +122,9 @@ class PublishDocsReview extends Component {
 
   renderPageSelectOption () {
     return (
-      <Dropdown className='mb-3 ml-3 cst'>
+      <Dropdown className='mb-3 align-right cst'>
         <Dropdown.Toggle variant='' id='dropdown-basic'>
-          {!this.state.filter ? 'Select Page' : (this.state.selectedItemType === 'endpoint') ? this.props.endpoints[this.state.selectedItemId]?.name : this.props.pages[this.state.selectedItemId]?.name}
+          <span className='truncate'> {!this.state.filter ? 'All' : (this.state.selectedItemType === 'endpoint') ? this.props.endpoints[this.state.selectedItemId]?.name : this.props.pages[this.state.selectedItemId]?.name}</span>
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {this.showEndpointsAndPages()}
@@ -213,11 +133,11 @@ class PublishDocsReview extends Component {
     )
   }
 
-  renderPageReview () {
+  renderPageReview (feedbacks) {
     const selectedItemId = this.state.selectedItemId
     const filteredFeedbacks = (!this.state.filter)
-      ? this.dummyFeedback
-      : this.dummyFeedback.filter((feedback) => feedback.parentId === selectedItemId)
+      ? feedbacks
+      : feedbacks.filter((feedback) => feedback.parentId === selectedItemId)
     return (
       <div className='hosted-doc-wrapper'>
         <table className='feedback-table'>
@@ -247,9 +167,9 @@ class PublishDocsReview extends Component {
     return (
       <tr>
         <td>{feedback.parentType === 'endpoint' ? this.props.endpoints[feedback.parentId]?.name : this.props.pages[feedback.parentId]?.name}</td>
-        <td>{feedback.user}</td>
+        <td>{feedback.user === '' ? '-' : feedback.user}</td>
         <td>{feedback.vote}</td>
-        <td>{feedback.comment}</td>
+        <td>{feedback.comment === '' ? '-' : feedback.comment}</td>
       </tr>
     )
   }
@@ -261,13 +181,14 @@ class PublishDocsReview extends Component {
   }
 
   render () {
+    const feedbacks = this.props.feedbacks[this.props.match.params.collectionId] || []
     return (
-      <div className='feedback-tab mid-part'>
-        <div className='d-flex justify-content-between'>
+      <div className='feedback-tab'>
+        <div className='d-flex flex-row'>
           {this.renderHostedApiHeading('API Doc Feedback')}
-          {this.dummyFeedback.length > 0 && this.renderPageSelectOption()}
+          {feedbacks.length > 0 && this.renderPageSelectOption()}
         </div>
-        {this.dummyFeedback.length > 0 ? this.renderPageReview() : this.renderNoFeedback()}
+        {feedbacks.length > 0 ? this.renderPageReview(feedbacks) : this.renderNoFeedback()}
       </div>
     )
   }

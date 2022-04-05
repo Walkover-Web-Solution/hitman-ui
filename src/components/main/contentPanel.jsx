@@ -243,18 +243,19 @@ class ContentPanel extends Component {
                       </svg>
                     </button>
                     <div className='btn-divider' />
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        bsPrefix='dropdown'
-                        variant='default'
-                        id='dropdown-basic'
-                      >
-                        <HistoryIcon />
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu className='history-drop-down'>
-                        <History {...this.props} />
-                      </Dropdown.Menu>
-                    </Dropdown>
+                    {getCurrentUser() &&
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          bsPrefix='dropdown'
+                          variant='default'
+                          id='dropdown-basic'
+                        >
+                          <HistoryIcon />
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className='history-drop-down'>
+                          <History {...this.props} />
+                        </Dropdown.Menu>
+                      </Dropdown>}
                   </div>
                 </div>
                 )

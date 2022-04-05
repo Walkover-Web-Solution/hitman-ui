@@ -19,7 +19,6 @@ import {
 } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
-import { isAdmin } from '../auth/authService'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
@@ -474,7 +473,7 @@ class CollectionsComponent extends Component {
                           </svg> Go to Docs
                         </div>
                       )}
-                      {
+                      {/* {
                   isAdmin()
                     ? (
                       <div
@@ -491,7 +490,7 @@ class CollectionsComponent extends Component {
                       </div>
                       )
                     : null
-                }
+                } */}
 
                       <div
                         className='dropdown-item'

@@ -241,7 +241,7 @@ class BodyContainer extends Component {
   }
 
   matchCurrentBodyType (bodyType) {
-    if (this.props.body && this.props.body.type + '-' + this.props.endpoint_id === bodyType) return true
+    if (this.props.Body && this.props.Body.type + '-' + this.props.endpoint_id === bodyType) return true
     return false
   }
 
@@ -380,7 +380,7 @@ class BodyContainer extends Component {
             (this.state.selectedBodyType === 'raw' ||
               this.state.selectedBodyType === 'JSON') && (
                 <div
-                  className='btn-group btn-group-toggle customBtnGroup'
+                  className='btn-group btn-group-toggle customBtnGroup mb-4'
                   data-toggle='buttons'
                   style={{ float: 'right' }}
                 >
@@ -399,7 +399,7 @@ class BodyContainer extends Component {
                     Raw
                   </label>
                   <label
-                    className='btn btn-secondary'
+                    className='btn btn-secondary body-desc'
                     id={`toggle-body-description-${this.props.endpoint_id}`}
                   >
                     <input

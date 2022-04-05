@@ -56,7 +56,7 @@ function endpointsReducer (state = initialState, action) {
     case endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR:
       toast.error(action.error)
       endpoints = { ...state }
-      delete endpoints[action.newEndpoint.requestId]
+      delete endpoints[action.requestId]
       return endpoints
 
     case endpointsActionTypes.UPDATE_ENDPOINT_REQUEST:

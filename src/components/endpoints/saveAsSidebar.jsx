@@ -160,6 +160,7 @@ class SaveAsSidebar extends Form {
           onHide={() => {
             this.setState({ showCollectionForm: false })
           }}
+          setDropdownList={(item) => this.setDropdownList(item)}
           show
           title='Add new Collection'
         />
@@ -172,10 +173,11 @@ class SaveAsSidebar extends Form {
       this.state.showCollectionVersionForm && (
         <CollectionVersionForm
           {...this.props}
-          collection_id={this.state.list.parentId}
+          collection_id={this.state.dropdownList.selectedCollectionId}
           onHide={() => {
             this.setState({ showCollectionVersionForm: false })
           }}
+          setDropdownList={(item) => this.setDropdownList(item)}
           show
           title={ADD_VERSION_MODAL_NAME}
         />
@@ -188,10 +190,11 @@ class SaveAsSidebar extends Form {
       this.state.showGroupForm && (
         <GroupForm
           {...this.props}
-          selectedVersion={{ id: this.state.list.parentId }}
+          selectedVersion={{ id: this.state.dropdownList.selectedVersionId }}
           onHide={() => {
             this.setState({ showGroupForm: false })
           }}
+          setDropdownList={(item) => this.setDropdownList(item)}
           show
           title={ADD_GROUP_MODAL_NAME}
         />
@@ -396,7 +399,7 @@ class SaveAsSidebar extends Form {
           {this.showGroupForm()}
           <div className='custom-collection-modal-container modal-header'>
             <div className='modal-title h4'>
-              Save As
+              {this.props.location.pathname.split('/')[5] !== 'new' ? 'Save As' : 'Save'}
             </div>
             <button
               className='close'
@@ -420,7 +423,7 @@ class SaveAsSidebar extends Form {
                     <span className='truncate'>{this.state.dropdownList.type === 'collections' ? 'Select Collection' : this.props.collections[this.state.dropdownList.selectedCollectionId].name}</span>
                   </Dropdown.Toggle>
                 </div>
-                <Dropdown.Menu>
+                <Dropdown.Menu className=''>
                   <DropdownItem>Select Collection</DropdownItem>
                   <DropdownItem onClick={() => { this.openAddModal() }}>+ Add New</DropdownItem>
                   {this.renderDropdownItems('collections').length
@@ -446,7 +449,7 @@ class SaveAsSidebar extends Form {
                         <span className='truncate'>{this.state.dropdownList.type === 'versions' ? 'Select Version' : this.props.versions[this.state.dropdownList.selectedVersionId].number}</span>
                       </Dropdown.Toggle>
                     </div>
-                    <Dropdown.Menu>
+                    <Dropdown.Menu className=''>
                       <DropdownItem>Select Version</DropdownItem>
                       <DropdownItem onClick={() => { this.openAddModal() }}>+ Add New</DropdownItem>
                       {this.renderDropdownItems('versions').length
@@ -473,7 +476,7 @@ class SaveAsSidebar extends Form {
                         <span className='truncate'>{this.state.dropdownList.type === 'groups' ? 'Select Group' : this.props.groups[this.state.dropdownList.selectedGroupId].name}</span>
                       </Dropdown.Toggle>
                     </div>
-                    <Dropdown.Menu>
+                    <Dropdown.Menu className=''>
                       <DropdownItem>Select Group</DropdownItem>
                       <DropdownItem onClick={() => { this.openAddModal() }}>+ Add New</DropdownItem>
                       {this.renderDropdownItems('groups').length

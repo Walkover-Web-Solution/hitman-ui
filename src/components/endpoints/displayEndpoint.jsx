@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { Dropdown, ButtonGroup, Button, DropdownButton } from 'react-bootstrap'
+import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import store from '../../store/store'
-import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, sensitiveInfoFound } from '../common/utility'
+import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, isStatePending, isStateApproved, sensitiveInfoFound, msgText, getEntityState } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -47,13 +47,16 @@ import { openModal } from '../modals/redux/modalsActions'
 import Axios from 'axios'
 import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
-import ConfirmationModal from './confirmationModal'
+import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import TinyEditor from '../tinyEditor/tinyEditor'
-import { pendingEndpoint, approveEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
+import { pendingEndpoint, approveEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
+import PlusIcon from '../../assets/icons/plus.svg'
+import ApiDocReview from '../apiDocReview/apiDocReview'
+import { ApproveRejectEntity, PublishEntityButton } from '../common/docViewOperations'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -81,11 +84,6 @@ const defaultDocViewData = [
   { type: 'headers' },
   { type: 'sampleResponse' }
 ]
-
-const confirmationMsg = {
-  viewSwitch: 'Do you wish to set it as default view?',
-  publishEndpoint: 'You are about the make these changes live on your Public API doc.'
-}
 
 const mapStateToProps = (state) => {
   return {
@@ -124,7 +122,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     open_modal: (modal, data) => dispatch(openModal(modal, data)),
     pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
     approve_endpoint: (endpoint, callback) => dispatch(approveEndpoint(endpoint, callback)),
-    set_response_view: (view) => dispatch(onToggle(view))
+    set_response_view: (view) => dispatch(onToggle(view)),
+    reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint))
   }
 }
 
@@ -189,7 +188,8 @@ class DisplayEndpoint extends Component {
       host: {},
       draftDataSet: false,
       runSendRequest: null,
-      requestKey: null
+      requestKey: null,
+      docOptions: false
     }
 
     this.uri = React.createRef()
@@ -1091,8 +1091,6 @@ class DisplayEndpoint extends Component {
 
   handleSave = async (groupId, endpointObject) => {
     const { endpointName, endpointDescription } = endpointObject || {}
-    const isPublished = this.props.endpoints[this.endpointId]?.isPublished
-    const state = this.props.endpoints[this.endpointId]?.state
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
@@ -1132,9 +1130,7 @@ class DisplayEndpoint extends Component {
         notes: this.state.endpoint.notes,
         preScript: this.state.preScriptText,
         postScript: this.state.postScriptText,
-        docViewData: this.state.docViewData,
-        isPublished,
-        state
+        docViewData: this.state.docViewData
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
@@ -1149,8 +1145,9 @@ class DisplayEndpoint extends Component {
         moveToNextStep(4)
       } else {
         if (this.state.saveAsFlag) {
-          endpoint.requestId = shortid.generate()
           endpoint.description = endpointDescription || ''
+          delete endpoint.state
+          delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
           this.props.add_endpoint(endpoint, groupId || this.state.groupId, ({ closeForm, stopLoader }) => {
             if (closeForm) this.closeEndpointFormModal()
@@ -1158,6 +1155,8 @@ class DisplayEndpoint extends Component {
           })
           moveToNextStep(4)
         } else if (this.state.title === 'update endpoint') {
+          endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
+          endpoint.state = this.props.endpoints[this.endpointId]?.state
           this.setState({ saveLoader: true })
           this.props.update_endpoint({
             ...endpoint,
@@ -2079,7 +2078,7 @@ class DisplayEndpoint extends Component {
         show={this.state.showViewConfirmationModal}
         onHide={() => this.setState({ showViewConfirmationModal: false })}
         proceed_button_callback={this.setDefaultView.bind(this)}
-        title={confirmationMsg.viewSwitch}
+        title={msgText.viewSwitch}
       />
   }
 
@@ -2106,7 +2105,7 @@ class DisplayEndpoint extends Component {
           <div>
             {this.state.docViewData.map((item, index) =>
               <SortableItem key={index} index={index}>
-                <div className='doc-secs-container'>
+                <div className='doc-secs-container mb-3'>
                   <div className='doc-secs'>
                     {this.renderPublicItem(item, index)}
                   </div>
@@ -2260,12 +2259,17 @@ class DisplayEndpoint extends Component {
   renderDocViewOptions () {
     if (isDashboardRoute(this.props) && this.state.currentView === 'doc') {
       return (
-        <ButtonGroup className='btn-group-custom bottom-text-editor'>
-          <DropdownButton as={ButtonGroup} title='Text' id='bg-nested-dropdown'>
-            <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
-            <Dropdown.Item onClick={() => this.addBlock('textBlock')}>Text Block</Dropdown.Item>
-          </DropdownButton>
-        </ButtonGroup>
+        <div>
+          <Dropdown>
+            <Dropdown.Toggle variant='' id='dropdown-basic' className='doc-plus'>
+              <img src={PlusIcon} className='mr-2 cursor-pointer' onClick={() => this.showDocOptions()} alt='' />
+            </Dropdown.Toggle>
+            <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>
+              <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
+              <Dropdown.Item onClick={() => this.addBlock('textBlock')}>Text Block</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       )
     }
   }
@@ -2274,7 +2278,7 @@ class DisplayEndpoint extends Component {
     const docViewData = [...this.state.docViewData]
     docViewData.push({
       type: blockType,
-      data: 'Your text goes here'
+      data: ''
     })
     this.setState({ docViewData })
   }
@@ -2491,38 +2495,59 @@ class DisplayEndpoint extends Component {
     const endpoints = { ...this.props.endpoints }
     const endpointId = this.endpointId
     if (isDashboardRoute(this.props) && this.state.currentView === 'doc' && endpoints[endpointId]) {
+      const approvedOrRejected = isStateApproved(endpointId, endpoints) || isStateReject(endpointId, endpoints)
       const isPublicEndpoint = endpoints[endpointId].isPublished
-      const draftOrRejected = isStateDraft(endpointId, endpoints) || isStateReject(endpointId, endpoints)
       return (
         <div>
+          {isStatePending(endpointId, endpoints) && isAdmin() &&
+            <ApproveRejectEntity
+              {...this.props}
+              entity={endpoints}
+              entityId={endpointId}
+              entityName='endpoint'
+            />}
           <button
             id='api_save_btn'
-            className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
+            className={this.state.saveLoader ? 'ml-2 btn btn-outline orange buttonLoader' : 'ml-2 btn btn-outline orange'}
             type='button'
             onClick={() => this.handleSave()}
           >
             {isPublicEndpoint ? 'Save Draft' : 'Save'}
           </button>
-          {isPublicEndpoint &&
+          {(isAdmin() && !isStatePending(endpointId, endpoints)) && <span> {approvedOrRejected ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId) : this.renderPublishEndpoint(endpointId, endpoints)}</span>}
+          {!isAdmin() &&
             <button
-              className={'ml-2 ' + (this.state.publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange')}
+              className={'ml-2 ' + (isStateDraft(endpointId, endpoints) ? 'btn btn-outline orange' : 'btn text-link')}
               type='button'
-              onClick={() => this.setState({ openPublishConfirmationModal: true })}
-              disabled={!isAdmin()}
+              onClick={() => isStateDraft(endpointId, endpoints) ? this.handlePublicEndpointState(endpoints[endpointId]) : null}
             >
-              Publish Endpoint
-            </button>}
-          {!isPublicEndpoint &&
-            <button
-              className={'ml-2 ' + (draftOrRejected ? 'btn btn-outline orange' : 'btn text-link')}
-              type='button'
-              onClick={() => draftOrRejected ? this.handlePublicEndpointState(endpoints[endpointId]) : null}
-            >
-              {draftOrRejected ? 'Make Public' : 'Pending'}
+              {getEntityState(endpointId, endpoints)}
             </button>}
         </div>
       )
     }
+  }
+
+  renderInOverlay (method, endpointId) {
+    const endpoints = { ...this.props.endpoints }
+    return (
+      <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
+        <span className='d-inline-block float-right'>
+          {method(endpointId, endpoints)}
+        </span>
+      </OverlayTrigger>
+    )
+  }
+
+  renderPublishEndpoint (endpointId, endpoints) {
+    return (
+      <PublishEntityButton
+        entity={endpoints}
+        entityId={endpointId}
+        open_publish_confirmation_modal={() => this.setState({ openPublishConfirmationModal: true })}
+        entityName='Endpoint'
+      />
+    )
   }
 
   renderPublishConfirmationModal () {
@@ -2531,7 +2556,7 @@ class DisplayEndpoint extends Component {
         show={this.state.openPublishConfirmationModal}
         onHide={() => this.setState({ openPublishConfirmationModal: false })}
         proceed_button_callback={this.handleApproveEndpointRequest.bind(this)}
-        title={confirmationMsg.publishEndpoint}
+        title={msgText.publishEndpoint}
         submitButton='Publish'
         rejectButton='Discard'
       />
@@ -2563,6 +2588,11 @@ class DisplayEndpoint extends Component {
         message='This Entity contains some sensitive information. Please remove them before making it public.'
       />
     )
+  }
+
+  showDocOptions () {
+    const { docOptions } = this.state
+    this.setState({ docOptions: !docOptions })
   }
 
   renderSaveButton () {
@@ -2676,7 +2706,7 @@ class DisplayEndpoint extends Component {
         >
           <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
             <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
-              <div className='hm-endpoint-container mid-part endpoint-container'>
+              <div className={`hm-endpoint-container mid-part endpoint-container ${this.state.currentView === 'doc' ? 'doc-fix-width' : ''}`}>
                 {this.renderCookiesModal()}
                 {this.renderDefaultViewConfirmationModal()}
                 {this.renderPublishConfirmationModal()}
@@ -2969,9 +2999,9 @@ class DisplayEndpoint extends Component {
                     }
                         {
                     !isDashboardRoute(this.props) && (
-                      <div className='text-left'>
+                      <div className='request-button'>
                         <button
-                          className={this.state.loader ? 'btn btn-primary btn-lg mt-4 buttonLoader' : 'mt-4 btn btn-lg btn-primary'}
+                          className={this.state.loader ? 'btn custom-theme-btn btn-lg buttonLoader' : 'btn btn-lg custom-theme-btn'}
                           style={{ background: theme }}
                           type='submit'
                           id='send-request-button'
@@ -2989,8 +3019,12 @@ class DisplayEndpoint extends Component {
                       </div>
                     </div>
                   </div>
+                  {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) &&
+                    <div className='doc-options d-flex align-items-center'>
+                      {this.renderDocViewOptions()}
+                    </div>}
                 </div>
-                {this.renderDocViewOptions()}
+                <ApiDocReview {...this.props} />
               </div>
               {
                 this.isDashboardAndTestingView()
@@ -2999,25 +3033,26 @@ class DisplayEndpoint extends Component {
                       : this.displayPublicResponse()
                   : null
                 }
+              {
+                this.isNotDashboardOrDocView() &&
+                this.state.harObject &&
+                this.props.location.pathname.split('/')[3] !== 'admin' && (
+                  <CodeTemplate
+                    show
+                    onHide={() => {
+                      this.setState({ showCodeTemplate: false })
+                    }}
+                    editorToggle={() => { this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility }) }}
+                    harObject={this.state.harObject}
+                    title='Generate Code Snippets'
+                    publicCollectionTheme={this.props.publicCollectionTheme}
+                  />
+                )
+              }
             </div>
-            {
-           this.isNotDashboardOrDocView() &&
-            this.state.harObject &&
-            this.props.location.pathname.split('/')[3] !== 'admin' && (
-              <CodeTemplate
-                show
-                onHide={() => {
-                  this.setState({ showCodeTemplate: false })
-                }}
-                editorToggle={() => { this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility }) }}
-                harObject={this.state.harObject}
-                title='Generate Code Snippets'
-                publicCollectionTheme={this.props.publicCollectionTheme}
-              />
-           )
-          }
 
           </div>
+
         </div>
         )
       : null

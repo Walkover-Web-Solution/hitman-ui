@@ -9,7 +9,7 @@ import { moveToNextStep } from '../../../services/widgetService'
 const entityENUM = {
   endpoint: {
     key: 'endpoint',
-    message: 'Add an endpoint name to begin.',
+    message: 'Add the API endpoint details from right section.',
     tooltip: ''
   },
   version: {
@@ -96,12 +96,13 @@ export class AddEntity extends Component {
     renderToolTip (type) {
       return (
         <>
-          <OverlayTrigger
-            placement='right'
-            overlay={<Tooltip> {entityENUM[this.props.type].tooltip} </Tooltip>}
-          >
-            <HelpIcon />
-          </OverlayTrigger>
+          {this.props.type !== 'endpoint' &&
+            <OverlayTrigger
+              placement='right'
+              overlay={<Tooltip> {entityENUM[this.props.type].tooltip} </Tooltip>}
+            >
+              <HelpIcon />
+            </OverlayTrigger>}
         </>
       )
     }

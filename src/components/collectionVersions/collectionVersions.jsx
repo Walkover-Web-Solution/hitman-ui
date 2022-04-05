@@ -379,7 +379,7 @@ class CollectionVersions extends Component {
                 ref={(newRef) => { this.scrollRef[versionId] = newRef }}
                 className={'pl-3 ' + [focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
               >
-                <div className='d-flex align-items-center flex-grow-1' onClick={() => { this.toggleVersionIds(versionId) }}>
+                <div className='d-flex align-items-center cl-name' onClick={() => { this.toggleVersionIds(versionId) }}>
                   <span className='versionChovron'>
                     <img src={ExpandArrow} alt='' />
                   </span>

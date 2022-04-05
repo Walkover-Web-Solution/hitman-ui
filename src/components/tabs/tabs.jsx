@@ -126,21 +126,17 @@ class CustomTabs extends Component {
           const page = this.props.pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='tabs-name'>
-                <label className=' truncate tab-width'>
-                  {this.props.pages[tabId].name}
-                </label>
-                <br />
-                <label className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.number}</label>
-              </div>
+              <>
+                {this.props.pages[tabId].name}
+                <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.number}</span>
+              </>
             )
           } else {
             return (
-              <div className='tabs-name'>
-                <label className='endpoint-name'>{page.name}</label>
-                <br />
-                <label className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.name}</label>
-              </div>
+              <>
+                {page.name}
+                <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.name}</span>
+              </>
             )
           }
         }

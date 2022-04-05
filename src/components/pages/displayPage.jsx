@@ -1,16 +1,24 @@
 import React, { Component } from 'react'
 import store from '../../store/store'
 import { connect } from 'react-redux'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, isStateDraft, isStateReject, msgText, isStatePending, isStateApproved, getEntityState } from '../common/utility'
 import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
+import ApiDocReview from '../apiDocReview/apiDocReview'
 import TinyEditor from '../tinyEditor/tinyEditor'
+import { isAdmin } from '../auth/authService'
+import { approvePage, pendingPage, rejectPage } from '../publicEndpoint/redux/publicEndpointsActions'
+import ConfirmationModal from '../common/confirmationModal'
+import { ApproveRejectEntity, PublishEntityButton } from '../common/docViewOperations'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    update_page: (editedPage, pageId) =>
-      dispatch(updatePage(ownProps.history, editedPage, pageId))
+    update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
+    approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
+    pending_page: (page) => dispatch(pendingPage(page)),
+    reject_page: (page) => dispatch(rejectPage(page))
   }
 }
 
@@ -24,7 +32,8 @@ class DisplayPage extends Component {
     super(props)
     this.state = {
       data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
-      page: null
+      page: null,
+      requestKey: null
     }
   }
 
@@ -84,13 +93,13 @@ class DisplayPage extends Component {
   checkPageRejected () {
     if (this.props.rejected) {
       return (
-        <div className='pageText'>
+        <div className='pageText doc-view'>
           {this.renderTinyEditor(this.props.pages[this.props.pageId].publishedPage.contents)}
         </div>
       )
     } else {
       return (
-        <div className='pageText'>
+        <div className='pageText doc-view'>
           {this.renderTinyEditor(this.state.data.contents)}
         </div>
       )
@@ -127,25 +136,96 @@ class DisplayPage extends Component {
     )
   }
 
+  renderPublishPageOperations () {
+    if (isDashboardRoute(this.props)) {
+      const pages = { ...this.props.pages }
+      const pageId = this.props.match.params?.pageId
+      const approvedOrRejected = isStateApproved(pageId, pages) || isStateReject(pageId, pages)
+      return (
+        <div>
+          {isStatePending(pageId, pages) && isAdmin() &&
+            <ApproveRejectEntity
+              {...this.props}
+              entity={pages}
+              entityId={pageId}
+              entityName='page'
+            />}
+          {(isAdmin() && !isStatePending(pageId, pages)) && <span> {approvedOrRejected ? this.renderInOverlay(this.renderPublishPage.bind(this), pageId) : this.renderPublishPage(pageId, pages)}</span>}
+          {!isAdmin() &&
+            <button
+              className={'ml-2 ' + (isStateDraft(pageId, pages) ? 'btn btn-outline orange' : 'btn text-link')}
+              type='button'
+              onClick={() => isStateDraft(pageId, pages) ? this.handlePublicPageState(pages[pageId]) : null}
+            >
+              {getEntityState(pageId, pages)}
+            </button>}
+          <button
+            className='ml-2 btn btn-outline orange'
+            onClick={() => {
+              this.handleEdit(this.state.data)
+            }}
+          >
+            Edit
+          </button>
+        </div>
+      )
+    }
+  }
+
+  renderInOverlay (method, pageId) {
+    const pages = { ...this.props.pages }
+    return (
+      <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
+        <span className='d-inline-block float-right'>
+          {method(pageId, pages)}
+        </span>
+      </OverlayTrigger>
+    )
+  }
+
+  renderPublishPage (pageId, pages) {
+    return (
+      <PublishEntityButton
+        entity={pages}
+        entityId={pageId}
+        open_publish_confirmation_modal={() => this.setState({ openPublishConfirmationModal: true })}
+        entityName='Page'
+      />
+    )
+  }
+
+  async handlePublicPageState (page) {
+    if (isStateDraft(page.id, this.props.pages) || isStateReject(page.id, this.props.pages)) this.props.pending_page(page)
+  }
+
+  renderPublishConfirmationModal () {
+    return this.state.openPublishConfirmationModal &&
+      <ConfirmationModal
+        show={this.state.openPublishConfirmationModal}
+        onHide={() => this.setState({ openPublishConfirmationModal: false })}
+        proceed_button_callback={this.handleApprovePageRequest.bind(this)}
+        title={msgText.publishPage}
+        submitButton='Publish'
+        rejectButton='Discard'
+      />
+  }
+
+  async handleApprovePageRequest () {
+    const pageId = this.props.match.params?.pageId
+    this.setState({ publishLoader: true })
+    this.props.approve_page(this.props.pages[pageId], () => { this.setState({ publishLoader: false }) })
+  }
+
   render () {
     return (
       <div className='custom-display-page'>
-        {
-          isDashboardRoute(this.props)
-            ? (
-              <button
-                className='btn btn-primary btn-extra-lg'
-                onClick={() => {
-                  this.handleEdit(this.state.data)
-                }}
-              >
-                Edit page
-              </button>
-              )
-            : null
-        }
+        {this.renderPublishConfirmationModal()}
+        {this.renderPublishPageOperations()}
         {this.renderPageName()}
         {this.checkPageRejected()}
+        <div>
+          <ApiDocReview {...this.props} />
+        </div>
       </div>
     )
   }

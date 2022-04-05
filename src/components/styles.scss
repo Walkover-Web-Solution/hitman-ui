@@ -272,7 +272,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 .api-label {
-  width: 37.55px;
+  width: 45px;
   height: 20px;
   font-size: 10px;
   line-height: 19px;
@@ -284,12 +284,6 @@ $border-color: rgba(227, 228, 230, 0.7);
   opacity: 1;
   display: inline-block;
 
-  .endpoint-request-div {
-    width: 45px;
-    height: 30px;
-    padding-right: 5px;
-  }
-
   &.api-label-lg {
     font-size: 12px;
     width: 60px;
@@ -298,13 +292,13 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 
   &.POST {
-    background: rgba(39, 174, 96, 0.04);
+    background-color: rgba(39, 174, 96, 0.1);
     color: #27AE60;
 
   }
 
   &.GET {
-    background-color: rgba(233, 138, 54, 0.04);
+    background-color: rgba(233, 138, 54, 0.1);
     color: #E98A36;
   }
 
@@ -476,6 +470,7 @@ button.btn {
 .custom-raw-editor {
   width: 100% !important;
   height: 250px !important;
+  border-radius: 4px;
 }
 
 .custom-radio-input {
@@ -501,8 +496,8 @@ button.btn.custom-body-type-button {
     background-image: none !important;
   }
   .search-box > input[type="text"]{
-    padding-left: 2rem;
-    background: url('../assets/icons/search.svg') no-repeat 4% center !important;
+    padding-left: 2.5rem;
+    background: url('../assets/icons/search.svg') no-repeat 0.75rem center !important;
   }
   .versionsAvailable.versionWrapper:not(.enableSearch) .search-box > input[type="text"]{
     background: url('../assets/icons/searchIcon.svg') no-repeat center !important;
@@ -537,7 +532,6 @@ button.btn.custom-body-type-button {
 
 
 .api-label.lg-label {
-  height: 30px;
   font-size: 10px;
   display: flex;
   justify-content: center;
@@ -614,6 +608,7 @@ button.btn.custom-body-type-button {
     .dropdown-menu {
       max-height: 15rem;
       overflow: auto;
+      transform: translate(0rem, 2.45rem) !important;
     }
   }
 }
