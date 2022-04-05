@@ -32,8 +32,6 @@ import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
 import SplitPane from 'react-split-pane'
-
-import LoadingScreen from 'react-loading-screen'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
 
 const mapStateToProps = (state) => {
@@ -236,45 +234,37 @@ class Main extends Component {
   render () {
     return (
       <>
-        <LoadingScreen
-          loading={this.state.loading}
-          bgColor='#f1f1f1'
-          spinnerColor='#9ee5f8'
-          textColor='#676767'
-        >
-
-          <div>{!isDesktop &&
-            <div className='mobile-warning'>
-              Looks like you have opened it on a mobile device. It looks better on a desktop device.
-            </div>}
-            {
-              <div className='custom-main-container'>
-                {/* <Header {...this.props} /> */}
-                <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
-                <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
-                <div className='main-panel-wrapper'>
-                  <SplitPane split='vertical' className='split-sidebar'>
-                    <SideBar
-                      {...this.props}
-                      tabs={[...this.state.tabs]}
-                      set_tabs={this.setTabs.bind(this)}
-                      default_tab_index={this.state.defaultTabIndex}
-                    />
-                    {this.showCollectionDashboard()
-                      ? this.renderLandingDashboard()
-                      : <ContentPanel
-                          {...this.props}
-                          set_environment={this.setEnvironment.bind(this)}
-                          set_tabs={this.setTabs.bind(this)}
-                          default_tab_index={this.state.defaultTabIndex}
-                        />}
-                  </SplitPane>
-                </div>
-                <UpdateStatus />
+        <div>{!isDesktop &&
+          <div className='mobile-warning'>
+            Looks like you have opened it on a mobile device. It looks better on a desktop device.
+          </div>}
+          {
+            <div className='custom-main-container'>
+              {/* <Header {...this.props} /> */}
+              <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
+              <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
+              <div className='main-panel-wrapper'>
+                <SplitPane split='vertical' className='split-sidebar'>
+                  <SideBar
+                    {...this.props}
+                    tabs={[...this.state.tabs]}
+                    set_tabs={this.setTabs.bind(this)}
+                    default_tab_index={this.state.defaultTabIndex}
+                  />
+                  {this.showCollectionDashboard()
+                    ? this.renderLandingDashboard()
+                    : <ContentPanel
+                        {...this.props}
+                        set_environment={this.setEnvironment.bind(this)}
+                        set_tabs={this.setTabs.bind(this)}
+                        default_tab_index={this.state.defaultTabIndex}
+                      />}
+                </SplitPane>
               </div>
+              <UpdateStatus />
+            </div>
 }
-          </div>
-        </LoadingScreen>
+        </div>
       </>
     )
   }
