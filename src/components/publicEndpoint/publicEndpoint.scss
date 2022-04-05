@@ -277,6 +277,7 @@ form.add-new-domain-form {
   height: 100%;
   .mid-part{
     max-width: 48rem;
+    width: 100%;
   }
   .main-table-wrapper{
     > div{
@@ -345,8 +346,12 @@ form.add-new-domain-form {
           text-transform: capitalize;
           font-weight: 700;
           font-size: 22px;
-          margin-bottom: 1rem;
+          margin-bottom: 0.5rem;
           max-width: 80%;
+          min-height: 2.25rem;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
         }
       }
 
@@ -636,6 +641,11 @@ h4.hm-sidebar-title span {
 }
 .hm-right-content  {
   &.hasPublicNavbar{
+    .hideCodeEditor{
+      button.toggleButton{
+        top: 4rem;
+      }
+    }
     .public-navbar{
       position: absolute;
       transition: all 500ms ease 0s;
@@ -656,25 +666,28 @@ h4.hm-sidebar-title span {
         box-shadow: 0px 10px 20px -13px #e1e1e1;
       }
     }
-    .hideCodeEditor{
-      transition: all 0.3s ease-in;
-      width: 100.5%;
-      .hm-endpoint-container{
-        margin: auto;
-        padding: 0;
-        max-width: 52rem;
-        padding: 0 1.5rem;
-      }
-      + .public-navbar {
-        margin: auto;
-        max-width: 52rem;
-      }
+    .display-component{
+      padding-top: 4rem;
+    }
+  }
+  .hideCodeEditor{
+    transition: all 0.3s ease-in;
+    width: 100.5%;
+    .hm-endpoint-container{
+      margin: auto;
+      padding: 0;
+      max-width: 52rem;
+      padding: 0 1.5rem;
+    }
+    + .public-navbar {
+      margin: auto;
+      max-width: 52rem;
     }
   }
   .display-component{
     height: 100%;
     overflow-x: hidden;
-    padding-top: 4rem;
+    padding-top: 1.25rem;
   }
 }
 .pubCodeWrapper {
@@ -702,17 +715,40 @@ h4.hm-sidebar-title span {
   }
 }
 
+.hideCodeEditor {
+  .mainContentWrapper {
+    justify-content: space-between;
+  }
+  .pubCodeWrapper.closeEditor {
+    transition: 450ms;
+    transform: translate3d(100%, 0, 0);
+  }
+  button.toggleButton {
+    font-size: $font-normal;
+    background-color: $text-color;
+    position: absolute;
+    left: -113px;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    top: 1.25rem;
+    height: 2.25rem;
+    img {
+      display: none;
+    }
+  }
+}
+
 
 @media (max-width: 1350px){
   .hm-right-content{
-    &.hasPublicNavbar{
       .hideCodeEditor{
         + .public-navbar,
         .hm-endpoint-container{
           max-width: 50rem;
         }
       }
-    }
   }
   .select-code-wrapper > button, .select-code-wrapper .dropdown button{
     font-size: $font-small !important;

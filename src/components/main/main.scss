@@ -1908,31 +1908,6 @@ button.toggleButton {
   transition: 450ms;
 }
 
-.hideCodeEditor {
-  .mainContentWrapper {
-    justify-content: space-between;
-  }
-  .pubCodeWrapper.closeEditor {
-    transition: 450ms;
-    transform: translate3d(100%, 0, 0);
-  }
-  button.toggleButton {
-    font-size: $font-normal;
-    background-color: $text-color;
-    position: absolute;
-    left: -113px;
-    color: #fff;
-    padding: 0.5rem 1rem;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-    top: 4rem;
-    height: 2.25rem;
-    img {
-      display: none;
-    }
-  }
-}
-
 
 .versionsAvailable {
   width: 100%;
