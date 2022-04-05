@@ -275,6 +275,7 @@ form.add-new-domain-form {
 .hm-right-content {
   margin: 0 auto;
   height: 100%;
+  overflow: auto;
   .mid-part{
     max-width: 48rem;
     width: 100%;
@@ -314,9 +315,8 @@ form.add-new-domain-form {
     padding: 0 1.5rem;
     max-width: 52rem;
     + .public-navbar{
-      margin: auto !important;
-      max-width: 52rem !important;
-      padding: 0.75rem 1.7rem !important;
+      padding: 0.75rem 1.5rem !important;
+      max-width: 100% !important;
     }
   }
   .hm-endpoint-container {
@@ -643,15 +643,15 @@ h4.hm-sidebar-title span {
   &.hasPublicNavbar{
     .hideCodeEditor{
       button.toggleButton{
-        top: 4rem;
+        top: 3.75rem;
       }
     }
     .public-navbar{
-      position: absolute;
+      position: relative;
       transition: all 500ms ease 0s;
       z-index: 99;
       width: 100%;
-      max-width: 72%;
+      max-width: 72.25%;
       margin-left: 0;
       justify-content: flex-end;
       top: 0;
@@ -667,7 +667,7 @@ h4.hm-sidebar-title span {
       }
     }
     .display-component{
-      padding-top: 4rem;
+      padding-top: 0;
     }
   }
   .hideCodeEditor{
@@ -680,13 +680,17 @@ h4.hm-sidebar-title span {
       padding: 0 1.5rem;
     }
     + .public-navbar {
-      margin: auto;
-      max-width: 52rem;
+      margin: 0 auto;
+      max-width: 100%;
     }
   }
   .display-component{
-    height: 100%;
+    height: auto;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    padding-bottom: 2rem;
     padding-top: 1.25rem;
   }
 }
@@ -744,7 +748,6 @@ h4.hm-sidebar-title span {
 @media (max-width: 1350px){
   .hm-right-content{
       .hideCodeEditor{
-        + .public-navbar,
         .hm-endpoint-container{
           max-width: 50rem;
         }
