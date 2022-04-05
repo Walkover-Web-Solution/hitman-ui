@@ -234,37 +234,49 @@ class Main extends Component {
   render () {
     return (
       <>
-        <div>{!isDesktop &&
-          <div className='mobile-warning'>
-            Looks like you have opened it on a mobile device. It looks better on a desktop device.
-          </div>}
-          {
-            <div className='custom-main-container'>
-              {/* <Header {...this.props} /> */}
-              <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
-              <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
-              <div className='main-panel-wrapper'>
-                <SplitPane split='vertical' className='split-sidebar'>
-                  <SideBar
-                    {...this.props}
-                    tabs={[...this.state.tabs]}
-                    set_tabs={this.setTabs.bind(this)}
-                    default_tab_index={this.state.defaultTabIndex}
-                  />
-                  {this.showCollectionDashboard()
-                    ? this.renderLandingDashboard()
-                    : <ContentPanel
+        {this.state.loading
+          ? (
+            <div className='custom-loading-container'>
+              <div className='loading-content'>
+                <button className='spinner-border' />
+                <p className='mt-3'>Loading</p>
+              </div>
+            </div>
+            )
+          : (
+            <div>
+              {!isDesktop &&
+                <div className='mobile-warning'>
+                  Looks like you have opened it on a mobile device. It looks better on a desktop device.
+                </div>}
+              {
+                <div className='custom-main-container'>
+                  {/* <Header {...this.props} /> */}
+                  <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
+                  <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
+                  <div className='main-panel-wrapper'>
+                    <SplitPane split='vertical' className='split-sidebar'>
+                      <SideBar
                         {...this.props}
-                        set_environment={this.setEnvironment.bind(this)}
+                        tabs={[...this.state.tabs]}
                         set_tabs={this.setTabs.bind(this)}
                         default_tab_index={this.state.defaultTabIndex}
-                      />}
-                </SplitPane>
-              </div>
-              <UpdateStatus />
-            </div>
-}
-        </div>
+                      />
+                      {this.showCollectionDashboard()
+                        ? this.renderLandingDashboard()
+                        : <ContentPanel
+                            {...this.props}
+                            set_environment={this.setEnvironment.bind(this)}
+                            set_tabs={this.setTabs.bind(this)}
+                            default_tab_index={this.state.defaultTabIndex}
+                          />}
+                    </SplitPane>
+                  </div>
+                  <UpdateStatus />
+                </div>
+            }
+            </div>)}
+
       </>
     )
   }
