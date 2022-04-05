@@ -329,13 +329,11 @@ class PublishDocForm extends Component {
     return collection
   }
 
-  isCollectionPublished () {
-    const selectedCollection = this.getSelectedCollection()
+  isCollectionPublished (selectedCollection) {
     return selectedCollection?.isPublic || false
   }
 
-  publishCollection () {
-    const selectedCollection = this.getSelectedCollection()
+  publishCollection (selectedCollection) {
     if (selectedCollection?.isPublic !== true) {
       const editedCollection = { ...selectedCollection }
       editedCollection.isPublic = true
@@ -345,12 +343,14 @@ class PublishDocForm extends Component {
   }
 
   renderPublishCollectionButton () {
-    if (!this.isCollectionPublished()) {
+    const selectedCollection = this.getSelectedCollection()
+    if (!this.isCollectionPublished(selectedCollection)) {
       return (
         <Button
           id='publish_collection_btn'
           variant='success publish-collection-button ml-4 mt-4'
-          onClick={() => this.publishCollection()}
+          onClick={() => this.publishCollection(selectedCollection)}
+          disabled={!selectedCollection?.docProperties?.defaultTitle}
         >
           Publish Collection
         </Button>
