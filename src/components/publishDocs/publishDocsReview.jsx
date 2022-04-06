@@ -78,7 +78,7 @@ class PublishDocsReview extends Component {
       const pageId = pageIds[i]
       const pages = this.props.pages[pageId]
 
-      if (groupsArray.includes(pages.groupId)) {
+      if (groupsArray.includes(pages.groupId) || versionIds.includes(pages.versionId)) {
         if (this.props.pages[pageId].isPublished) { pagesArray.push(pageId) }
       }
     }
