@@ -284,7 +284,7 @@ class Environments extends Component {
                 onClick={() => env ? this.handleEnvironmentModal('Edit Environment', this.props.environment.environments[this.props.environment.currentEnvironmentId]) : null}
                 className={`environment-buttons addEniButton ${env ? 'hover' : ''}`}
               >
-                {env ? <EyeIcon /> : <EyeDisabledIcon />}
+                {env ? <EyeIcon className='cursor-pointer' /> : <EyeDisabledIcon />}
               </div>
             )}
 
