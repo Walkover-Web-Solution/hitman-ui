@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import Login from './components/auth/login'
 import Logout from './components/auth/logout'
 import collectionsApiService from './components/collections/collectionsApiService'
@@ -7,7 +7,6 @@ import NotFound from './components/common/notFound'
 import Main from './components/main/Main.jsx'
 import PublicView from './components/main/publicView'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
-import Landing from './components/landing/landing'
 import { ToastContainer } from 'react-toastify'
 import ClientDoc from './components/publishDocs/clientDoc'
 import BrowserLogin from './components/broswerLogin/browserLogin'
@@ -140,7 +139,7 @@ class App extends Component {
             <Route path='/browser-login' component={BrowserLogin} />
 
             <Route path='/marketPlace' component={PublicView} />
-            <Route path='/' component={Landing} />
+            <Route path='/'><Redirect to='/dashboard' /></Route>
           </Switch>
         </>
       )
