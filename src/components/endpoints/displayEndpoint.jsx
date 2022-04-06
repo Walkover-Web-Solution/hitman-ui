@@ -1894,8 +1894,8 @@ class DisplayEndpoint extends Component {
 
   renderToggle (type) {
     return (
-      <div className={`tab-div hover d-flex align-items-center ${this.props.responseView === type ? 'active' : ''}`} onClick={() => this.handletoggle(type)}>
-        {type}
+      <div className={`icon-set ${this.props.responseView === type ? 'active' : ''}`} onClick={() => this.handletoggle(type)}>
+        <div className='icon-bx' />
       </div>
     )
   }
@@ -1904,7 +1904,7 @@ class DisplayEndpoint extends Component {
     return (
       <>
         <div className='custom-tabs clear-both response-container' ref={this.myRef}>
-          <div className='d-flex justify-content-between'>
+          <div className='d-flex justify-content-between align-items-center'>
             <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
               <li className='nav-item'>
                 <a
@@ -1951,10 +1951,6 @@ class DisplayEndpoint extends Component {
                 </li>
               )}
             </ul>
-            <div className='d-flex'>
-              {this.renderToggle('bottom')}
-              {this.renderToggle('right')}
-            </div>
           </div>
           <div className='tab-content responseTabWrapper' id='pills-tabContent'>
             <div
@@ -2027,6 +2023,7 @@ class DisplayEndpoint extends Component {
     return (
       <>
         <div className='response-container endpoint-public-response-container endPointRes'>
+          <h4>Response</h4>
           <DisplayResponse
             {...this.props}
             loader={this.state.loader}
@@ -3046,13 +3043,19 @@ class DisplayEndpoint extends Component {
                 </div>
                 <ApiDocReview {...this.props} />
               </div>
-              {
+              <div className='response-container-main position-relative'>
+                <div className='d-flex response-switcher'>
+                  {this.renderToggle('bottom')}
+                  {this.renderToggle('right')}
+                </div>
+                {
                 this.isDashboardAndTestingView()
                   ? isSavedEndpoint(this.props)
                       ? this.displayResponseAndSampleResponse()
                       : this.displayPublicResponse()
                   : null
                 }
+              </div>
               {
                 this.isNotDashboardOrDocView() &&
                 this.state.harObject &&
