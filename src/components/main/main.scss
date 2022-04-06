@@ -3262,7 +3262,26 @@ body .bottom-text-editor {
 .endpoint-public-response-container pre {
     max-width: 50rem;
 }
-
+.custom-loading-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fbf9f9;
+  text-align: center;
+  h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    &:empty{
+      display: none;
+    }
+  }
+  p {
+    margin: 0;
+    font-size: 1rem;
+  } 
+}
 
 
 @media (max-width: 1400px){
