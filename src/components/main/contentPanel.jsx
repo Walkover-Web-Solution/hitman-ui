@@ -229,33 +229,32 @@ class ContentPanel extends Component {
                         </Nav.Link>
                       </Nav.Item>
                     </Nav>
-                  </div>
+                    <div className='custom-btn-group d-flex'>
+                      <button
+                        className='btn'
+                        onClick={() => { this.openLoginSignupModal() }}
+                      >
 
-                  <div className='custom-btn-group d-flex'>
-                    <button
-                      className='btn'
-                      onClick={() => { this.openLoginSignupModal() }}
-                    >
-
-                      <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                        <path d='M9 3V15' stroke='#808080' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                        <path d='M3 9H15' stroke='#808080' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                      </svg>
-                    </button>
-                    <div className='btn-divider' />
-                    {getCurrentUser() &&
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          bsPrefix='dropdown'
-                          variant='default'
-                          id='dropdown-basic'
-                        >
-                          <HistoryIcon />
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className='history-drop-down'>
-                          <History {...this.props} />
-                        </Dropdown.Menu>
-                      </Dropdown>}
+                        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                          <path d='M9 3V15' stroke='#808080' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                          <path d='M3 9H15' stroke='#808080' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                        </svg>
+                      </button>
+                      <div className='btn-divider' />
+                      {getCurrentUser() &&
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            bsPrefix='dropdown'
+                            variant='default'
+                            id='dropdown-basic'
+                          >
+                            <HistoryIcon />
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu className='history-drop-down'>
+                            <History {...this.props} />
+                          </Dropdown.Menu>
+                        </Dropdown>}
+                    </div>
                   </div>
                 </div>
                 )

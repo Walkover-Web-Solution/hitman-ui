@@ -1086,6 +1086,9 @@ button.btn.btn-secondary {
         border: none;
         padding: 1.5rem;
         border-bottom: 1px solid #e5e5e5;
+        &.not-loggedin{
+          padding: 1rem 1rem 1.35rem 1rem;
+        }
         .modal-title {
           font-weight: 600;
           font-size: 18px;
