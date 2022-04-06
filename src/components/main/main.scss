@@ -2864,9 +2864,6 @@ li.nav-item.cookie-tab a {
     .response-viewer{
       .respTabsListing.nav-tabs {
         margin-top: 0;
-        li a{
-          padding-top: 0;
-        }
       }
     }
   }
@@ -3276,28 +3273,32 @@ body .bottom-text-editor {
       height: 3.25rem;
       margin: 0;
     }
+    .response-viewer {
+      margin: 0;
+      .custom-tabs {
+        position: relative;
+        top: -1.75rem;
+        max-width: 50%;
+        .nav-tabs{
+          margin-top: 0;
+          margin-bottom: 0;
+        }
+      }
+    }
   }
   .response-status{
     margin-bottom: 0;
-  }
-  .response-viewer {
-    .custom-tabs {
-      position: relative;
-      top: -1.75rem;
-      max-width: 50%;
-      .nav-tabs{
-        margin-top: 0;
-        margin-bottom: 0;
-      }
-    }
   }
   .endpoint-response-container{
     padding: 1rem;
     background-color: #fff;
     border-radius: $border-radius;
   }
+  .testing-view-sample-response{
+    padding: 0 1rem;
+  }
   .sample-response-item{
-    margin: 1rem;
+    margin-bottom: 1rem;
   }
 }
 .doc-options {

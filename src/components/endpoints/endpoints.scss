@@ -442,6 +442,11 @@ $border-color: rgba(227, 228, 230, 0.7);
       border-radius: 0;
       transition: all 0.3s ease-in;
       cursor: pointer;
+      line-height: 1;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       &:hover,  &.active {
         color: #fff !important;
         background-color: $theme-color;
@@ -489,8 +494,6 @@ $border-color: rgba(227, 228, 230, 0.7);
   .response-viewer {
     display: flex;
     flex-direction: column;
-    margin: 10px;
-
     .response-tabs {
       width: 100%;
       display: flex;

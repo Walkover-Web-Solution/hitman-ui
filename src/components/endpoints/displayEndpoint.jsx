@@ -3043,19 +3043,23 @@ class DisplayEndpoint extends Component {
                 </div>
                 <ApiDocReview {...this.props} />
               </div>
-              <div className='response-container-main position-relative'>
-                <div className='d-flex response-switcher'>
-                  {this.renderToggle('bottom')}
-                  {this.renderToggle('right')}
-                </div>
-                {
+              {
                 this.isDashboardAndTestingView()
-                  ? isSavedEndpoint(this.props)
-                      ? this.displayResponseAndSampleResponse()
-                      : this.displayPublicResponse()
+                  ? (
+                    <div className='response-container-main position-relative'>
+                      <div className='d-flex response-switcher'>
+                        {this.renderToggle('bottom')}
+                        {this.renderToggle('right')}
+                      </div>
+                      {
+                          isSavedEndpoint(this.props)
+                            ? this.displayResponseAndSampleResponse()
+                            : this.displayPublicResponse()
+                        }
+                    </div>
+                    )
                   : null
-                }
-              </div>
+              }
               {
                 this.isNotDashboardOrDocView() &&
                 this.state.harObject &&
