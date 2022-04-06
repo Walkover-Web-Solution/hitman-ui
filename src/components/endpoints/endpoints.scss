@@ -435,7 +435,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     margin-bottom: 0.75rem;
     .nav-item {
      .nav-link{
-      padding: 0.35rem 0.75rem;
+      padding: 0.35rem 0.75rem !important;
       border: none;
       color: $text-color;
       font-size: $font-medium;
