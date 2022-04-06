@@ -250,7 +250,7 @@ export const importVersion = (importLink, shareIdentifier, collectionId) => {
           })
           .catch((error) => {
             dispatch(
-              onVersionsFetchedError(
+              onVersionImportError(
                 error.response ? error.response.data : error
               )
             )
@@ -258,9 +258,18 @@ export const importVersion = (importLink, shareIdentifier, collectionId) => {
       })
       .catch((error) => {
         dispatch(
-          onVersionsFetchedError(error.response ? error.response.data : error)
+          onVersionImportError(
+            error.response ? error.response.data : error
+          )
         )
       })
+  }
+}
+
+export const onVersionImportError = (error) => {
+  return {
+    type: versionActionTypes.ON_VERSION_IMPORT_ERROR,
+    error
   }
 }
 

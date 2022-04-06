@@ -150,14 +150,14 @@ class PublicEndpoint extends Component {
     return (
       <>
         <div
-          className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}
+          className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'public-navbar d-flex'}
         >
-          <div className='entityTitle  p-3'>
+          <div className='entityTitle'>
             {this.state.currentEntityName}
           </div>
           {
             isCTAandLinksPresent &&
-              <div className='d-flex  p-3 pr-3'>
+              <div className='d-flex align-items-center'>
                 {links.map((link, index) => (
                   <div key={`link-${index}`}>
                     <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
@@ -288,7 +288,7 @@ class PublicEndpoint extends Component {
       <>
 
         <Style>{`
-          .public-navbar .link {
+          .link {
             &:hover {
               color: ${this.state.collectionTheme};
             }
@@ -336,7 +336,6 @@ class PublicEndpoint extends Component {
               <SideBar {...this.props} collectionName={this.state.collectionName} />
             </div>
             <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'} style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}>
-              {this.displayCTAandLink()}
               {
               this.state.collectionName !== ''
                 ? (
@@ -364,6 +363,7 @@ class PublicEndpoint extends Component {
                                            />}
                       />
                     </Switch>
+                    {this.displayCTAandLink()}
                     {/* <div className='d-flex flex-row justify-content-start'>
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>

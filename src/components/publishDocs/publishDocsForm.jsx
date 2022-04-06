@@ -8,6 +8,7 @@ import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
 import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
+import { moveToNextStep } from '../../services/widgetService'
 
 const MAPPING_DOMAIN = process.env.REACT_APP_HITMAN_MAPPING_DOMAIN
 
@@ -214,7 +215,7 @@ class PublishDocForm extends Component {
     return (
       <div className='d-flex align-items-center'>
         {this.props.isSidebar && <Button className='btn btn-secondary outline mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
-        <Button className={this.state.loader ? 'buttonLoader' : ''} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
+        <Button className={this.state.loader ? 'buttonLoader' : ''} disabled={!this.state.data.title.trim()} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
       </div>
     )
   }
@@ -316,10 +317,45 @@ class PublishDocForm extends Component {
           {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
         </label>
         <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
+        {name === 'domain' && <span className='domain-info f-10 mt-1 d-block'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>}
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
-        {name === 'domain' && <span className='domain-info f-10 mt-1'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>}
       </div>
     )
+  }
+
+  getSelectedCollection () {
+    const collectionId = this.props.selected_collection_id
+    const collection = { ...this.props.collections[collectionId] }
+    return collection
+  }
+
+  isCollectionPublished (selectedCollection) {
+    return selectedCollection?.isPublic || false
+  }
+
+  publishCollection (selectedCollection) {
+    if (selectedCollection?.isPublic !== true) {
+      const editedCollection = { ...selectedCollection }
+      editedCollection.isPublic = true
+      this.props.update_collection(editedCollection)
+      moveToNextStep(6)
+    }
+  }
+
+  renderPublishCollectionButton () {
+    const selectedCollection = this.getSelectedCollection()
+    if (!this.isCollectionPublished(selectedCollection)) {
+      return (
+        <Button
+          id='publish_collection_btn'
+          variant='success publish-collection-button ml-4 mt-4'
+          onClick={() => this.publishCollection(selectedCollection)}
+          disabled={!selectedCollection?.docProperties?.defaultTitle}
+        >
+          Publish Collection
+        </Button>
+      )
+    }
   }
 
   render () {
@@ -328,8 +364,8 @@ class PublishDocForm extends Component {
         <div className='d-flex mb-3 justify-content-between'>
           <h3 className='page-title mb-0'>Manage Public Doc</h3>
           <div className='publish-mo-btn'>
-            {
-              (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished() &&
+            {(this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished()
+              ? (
                 <Button
                   id='unpublish_doc_btn'
                   variant='btn btn-outline danger ml-2'
@@ -337,7 +373,8 @@ class PublishDocForm extends Component {
                 >
                   Unpublish Doc
                 </Button>
-            }
+                )
+              : this.renderPublishCollectionButton()}
           </div>
         </div>
         <div className='small-input'>
