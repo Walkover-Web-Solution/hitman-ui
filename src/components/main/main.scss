@@ -378,8 +378,6 @@ label.data-type {
 }
 
 .object-container>div {
-  // display: list-item;
-  // list-style: decimal;
   margin: 0 0 0 20px;
   display: block;
   position: relative;
@@ -403,13 +401,18 @@ label.data-type {
 
 .object-container {
   border: none;
-  margin: 0;
-  border-radius: 0;
+  &.object-error{
+    border: none !important;
+    &::before{
+      display: none;
+    }
+  }
 }
 
 .body-description-container {
-  padding: 0;
-  background: transparent;
+  padding: 1rem 1rem 1rem 0;
+  border-radius: $border-radius;
+  background: $secondary-color;
   border: none;
 }
 

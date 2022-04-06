@@ -179,7 +179,7 @@ class DisplayBodyDescription extends Component {
     return (
       <div className='object-container'>
         {(typeof (obj) === 'string')
-          ? <div className='object-container'>{obj}</div>
+          ? <div className='object-container object-error'>{obj}</div>
           : Object.keys(obj).map((key, index) => (
             <div
               key={key}
