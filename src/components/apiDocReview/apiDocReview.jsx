@@ -17,7 +17,8 @@ class ApiDocReview extends Component {
     user: '',
     comment: '',
     showFeedbackModal: false,
-    currentReviews: {}
+    currentReviews: {},
+    checkEmail: false
   }
 
   componentDidMount () {
@@ -93,6 +94,16 @@ class ApiDocReview extends Component {
     })
   }
 
+  emailValidation () {
+    const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+    if (!this.state.user || regex.test(this.state.user) === false) {
+      this.setState({ checkEmail: true })
+      return false
+    }
+    this.setState({ checkEmail: false })
+    return true
+  }
+
   getVoteValue (value) {
     return value === LIKE ? 1 : -1
   }
@@ -107,7 +118,11 @@ class ApiDocReview extends Component {
 
   handleOnSubmit (event) {
     event.preventDefault()
-    this.postApi()
+    const validUser = this.emailValidation()
+    if (validUser === true) {
+      this.postApi()
+      this.closeFeedbackModal()
+    }
   }
 
   handleInput (event) {
@@ -133,6 +148,7 @@ class ApiDocReview extends Component {
                 <label>Email</label>
                 <input className='form-control' onChange={this.handleInput.bind(this)} value={this.state.user} type='text' name='user' />
               </div>
+              {this.state.checkEmail && <span>enter a valid email address</span>}
               <div className='form-group'>
                 <label htmlFor=''>Comment</label>
                 <textarea className='form-control' onChange={this.handleInput.bind(this)} value={this.state.comment} type='text' name='comment' /><br />
