@@ -58,8 +58,8 @@ class CollectionVersionForm extends Form {
 
   focusSelectedVersion ({ versionId, collectionId }) {
     store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR })
-    sidebarActions.toggleItem('collections', collectionId)
-    sidebarActions.toggleItem('versions', versionId)
+    sidebarActions.toggleItem('collections', collectionId, true)
+    sidebarActions.toggleItem('versions', versionId, true)
   }
 
   redirectToForm (version) {

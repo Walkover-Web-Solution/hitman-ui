@@ -95,7 +95,7 @@ class CollectionForm extends Form {
 
   focusSelectedCollection (collectionId) {
     store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR })
-    sidebarActions.toggleItem('collections', collectionId)
+    sidebarActions.toggleItem('collections', collectionId, true)
   }
 
   redirectToCollection (collection) {
