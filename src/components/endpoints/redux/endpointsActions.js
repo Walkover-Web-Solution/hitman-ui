@@ -2,7 +2,7 @@ import { toast } from 'react-toastify'
 import store from '../../../store/store'
 import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
-import { getOrgId } from '../../common/utility'
+import { getOrgId, focusSelectedEntity } from '../../common/utility'
 import indexedDbService from '../../indexedDb/indexedDbService'
 import shortid from 'shortid'
 import { sendAmplitudeData } from '../../../services/amplitude'
@@ -21,7 +21,7 @@ export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
           groupId: response.data.groupId
         })
         dispatch(onEndpointAdded(response.data))
-
+        focusSelectedEntity('endpoints', response.data.id)
         // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
         // endpointsOrder.push(response.data.id);
         // dispatch(setEndpointIds(endpointsOrder, groupId));

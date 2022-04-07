@@ -2,7 +2,7 @@ import { toast } from 'react-toastify'
 import store from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import { getOrgId } from '../../common/utility'
+import { getOrgId, focusSelectedEntity } from '../../common/utility'
 import indexedDbService from '../../indexedDb/indexedDbService'
 
 export const fetchPages = (orgId) => {
@@ -140,6 +140,7 @@ export const addPage = (history, versionId, newPage) => {
       .saveVersionPage(versionId, newPage)
       .then((response) => {
         dispatch(onPageAdded(response.data))
+        focusSelectedEntity('pages', response.data.id)
         history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
       })
       .catch((error) => {
