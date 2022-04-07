@@ -561,13 +561,8 @@ h4.hm-sidebar-title span {
     border: none;
     height: 150px;
   }
-
-
   .response-viewer {
-    margin: 0;
-
     .response-tabs {
-
       button {
         border: none;
         background: transparent;
@@ -638,6 +633,20 @@ h4.hm-sidebar-title span {
 
 .icon-design{
   background-color: #f8f8f8;
+}
+button.toggleButton {
+  font-size: 0;
+  border: none;
+  outline: none !important;
+  position: relative;
+  z-index: 19;
+}
+.mainContentWrapperPublic{
+  &:not(.hideCodeEditor){
+    .toggleButton{
+      background-color: transparent !important;
+    }
+  }
 }
 .hm-right-content  {
   &.hasPublicNavbar{
@@ -729,7 +738,6 @@ h4.hm-sidebar-title span {
   }
   button.toggleButton {
     font-size: $font-normal;
-    background-color: $text-color;
     position: absolute;
     left: -113px;
     color: #fff;
@@ -743,7 +751,6 @@ h4.hm-sidebar-title span {
     }
   }
 }
-
 
 @media (max-width: 1350px){
   .hm-right-content{

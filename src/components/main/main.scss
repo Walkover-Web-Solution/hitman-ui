@@ -378,8 +378,6 @@ label.data-type {
 }
 
 .object-container>div {
-  // display: list-item;
-  // list-style: decimal;
   margin: 0 0 0 20px;
   display: block;
   position: relative;
@@ -403,13 +401,18 @@ label.data-type {
 
 .object-container {
   border: none;
-  margin: 0;
-  border-radius: 0;
+  &.object-error{
+    border: none !important;
+    &::before{
+      display: none;
+    }
+  }
 }
 
 .body-description-container {
-  padding: 0;
-  background: transparent;
+  padding: 1rem 1rem 1rem 0;
+  border-radius: $border-radius;
+  background: $secondary-color;
   border: none;
 }
 
@@ -1086,6 +1089,9 @@ button.btn.btn-secondary {
         border: none;
         padding: 1.5rem;
         border-bottom: 1px solid #e5e5e5;
+        &.not-loggedin{
+          padding: 1rem 1rem 1.35rem 1rem;
+        }
         .modal-title {
           font-weight: 600;
           font-size: 18px;
@@ -1893,16 +1899,6 @@ html body div#sokt-sso-modal {
     color: #fff;
   }
 }
-
-button.toggleButton {
-  background: none;
-  font-size: 0;
-  border: none;
-  outline: none !important;
-  position: relative;
-  z-index: 19;
-}
-
 
 .pubCodeWrapper.closeEditor {
   transition: 450ms;
@@ -2864,9 +2860,6 @@ li.nav-item.cookie-tab a {
     .response-viewer{
       .respTabsListing.nav-tabs {
         margin-top: 0;
-        li a{
-          padding-top: 0;
-        }
       }
     }
   }
@@ -3220,40 +3213,88 @@ body .bottom-text-editor {
   overflow: auto;
   padding: 1rem 1.25rem;
 }
+.response-switcher {
+  position: absolute;
+  right: 1.25rem;
+  top: 1.40rem;
+}
 .response-right{
   display: flex;
   justify-content: space-between;
+  h4{
+    height: 2rem;
+  }
   .mid-part{
     overflow: auto;
   }
-  .response-container {
+  .response-container-main {
     width: 30%;
     background-color: #fff;
-    padding: 1.25rem;
+    padding: 1rem;
     height: 100vh;
     overflow: auto;
     border-left: 1px solid $outline-color;
+    position: absolute !important;
+    right: 0;
+    top: 42px;
+    .response-switcher {
+      right: 1rem;
+      top: 1.5rem;
+    }
     .nav-tabs{
       margin-top: 0;
+      margin-bottom: 0;
     }
+  }
+  .response-headers-container{
+    margin-top: 0.5rem;
   }
 }
 .mid-part{
   width: 70%;
   padding: 1.25rem 1.25rem 0;
 }
+.response-container-main{
+  h4{
+    font-size: $font-large;
+    display: flex;
+    align-items: center;
+  }
+}
 .response-bottom{
-  .response-container{
+  .response-container-main{
     width: 70%;
-    padding: 1.25rem;
+    padding: 0.25rem 1.25rem 1.25rem 1.25rem;
+    h4{
+      height: 3.25rem;
+      margin: 0;
+    }
+    .response-viewer {
+      margin: 0;
+      .custom-tabs {
+        position: relative;
+        top: -1.75rem;
+        max-width: 50%;
+        .nav-tabs{
+          margin-top: 0;
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  .response-status{
+    margin-bottom: 0;
   }
   .endpoint-response-container{
     padding: 1rem;
     background-color: #fff;
     border-radius: $border-radius;
   }
+  .testing-view-sample-response{
+    padding: 0 1rem;
+  }
   .sample-response-item{
-    margin: 1rem;
+    margin-bottom: 1rem;
   }
 }
 .doc-options {
@@ -3288,7 +3329,7 @@ body .bottom-text-editor {
   .mid-part{
     max-width: 50rem;
   }
-  .response-right .response-container{
+  .response-right .response-container-main{
     max-width: 21rem;
   }
 }

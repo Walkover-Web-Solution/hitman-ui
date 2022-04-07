@@ -1886,56 +1886,72 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  handletoggle (type) {
+    const currentView = type
+    window.localStorage.setItem('response-view', currentView)
+    this.props.set_response_view(currentView)
+  }
+
+  renderToggle (type) {
+    return (
+      <div className={`icon-set ${this.props.responseView === type ? 'active' : ''}`} onClick={() => this.handletoggle(type)}>
+        <div className='icon-bx' />
+      </div>
+    )
+  }
+
   displayResponseAndSampleResponse () {
     return (
       <>
         <div className='custom-tabs clear-both response-container' ref={this.myRef}>
-          <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
-            <li className='nav-item'>
-              <a
-                className='nav-link active'
-                id='pills-response-tab'
-                data-toggle='pill'
-                href={
-                  this.isDashboardAndTestingView()
-                    ? `#response-${this.props.tab.id}`
-                    : '#response'
-                }
-                role='tab'
-                aria-controls={
-                  this.isDashboardAndTestingView()
-                    ? `response-${this.props.tab.id}`
-                    : 'response'
-                }
-                aria-selected='true'
-              >
-                Response
-              </a>
-            </li>
-            {getCurrentUser() && (
+          <div className='d-flex justify-content-between align-items-center'>
+            <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
               <li className='nav-item'>
                 <a
-                  className='nav-link'
-                  id='pills-sample-tab'
+                  className='nav-link active'
+                  id='pills-response-tab'
                   data-toggle='pill'
                   href={
                     this.isDashboardAndTestingView()
-                      ? `#sample-${this.props.tab.id}`
-                      : '#sample'
+                      ? `#response-${this.props.tab.id}`
+                      : '#response'
                   }
                   role='tab'
                   aria-controls={
                     this.isDashboardAndTestingView()
-                      ? `sample-${this.props.tab.id}`
-                      : 'sample'
+                      ? `response-${this.props.tab.id}`
+                      : 'response'
                   }
-                  aria-selected='false'
+                  aria-selected='true'
                 >
-                  Sample Response
+                  Response
                 </a>
               </li>
-            )}
-          </ul>
+              {getCurrentUser() && (
+                <li className='nav-item'>
+                  <a
+                    className='nav-link'
+                    id='pills-sample-tab'
+                    data-toggle='pill'
+                    href={
+                      this.isDashboardAndTestingView()
+                        ? `#sample-${this.props.tab.id}`
+                        : '#sample'
+                    }
+                    role='tab'
+                    aria-controls={
+                      this.isDashboardAndTestingView()
+                        ? `sample-${this.props.tab.id}`
+                        : 'sample'
+                    }
+                    aria-selected='false'
+                  >
+                    Sample Response
+                  </a>
+                </li>
+              )}
+            </ul>
+          </div>
           <div className='tab-content responseTabWrapper' id='pills-tabContent'>
             <div
               className='tab-pane fade show active'
@@ -2007,6 +2023,7 @@ class DisplayEndpoint extends Component {
     return (
       <>
         <div className='response-container endpoint-public-response-container endPointRes'>
+          <h4>Response</h4>
           <DisplayResponse
             {...this.props}
             loader={this.state.loader}
@@ -3028,11 +3045,21 @@ class DisplayEndpoint extends Component {
               </div>
               {
                 this.isDashboardAndTestingView()
-                  ? isSavedEndpoint(this.props)
-                      ? this.displayResponseAndSampleResponse()
-                      : this.displayPublicResponse()
+                  ? (
+                    <div className='response-container-main position-relative'>
+                      <div className='d-flex response-switcher'>
+                        {this.renderToggle('bottom')}
+                        {this.renderToggle('right')}
+                      </div>
+                      {
+                          isSavedEndpoint(this.props)
+                            ? this.displayResponseAndSampleResponse()
+                            : this.displayPublicResponse()
+                        }
+                    </div>
+                    )
                   : null
-                }
+              }
               {
                 this.isNotDashboardOrDocView() &&
                 this.state.harObject &&
