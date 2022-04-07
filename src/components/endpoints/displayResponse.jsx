@@ -243,7 +243,7 @@ class DisplayResponse extends Component {
     const { status, statusText } = this.props.response
     const color = ((status >= 400) || (status >= 500)) ? 'error' : ((status >= 200 && status < 300) ? 'success' : 'regular')
     return (
-      <div className={`response-status-value-${color}`} style={{ color: this.state.theme }}>
+      <div className={`response-status-value-${color}`}>
         {status + ' ' + statusText}
       </div>
     )
