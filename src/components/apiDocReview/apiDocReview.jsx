@@ -18,7 +18,7 @@ class ApiDocReview extends Component {
     comment: '',
     showFeedbackModal: false,
     currentReviews: {},
-    invalidEmailAddress: false
+    validEmailAddress: true
   }
 
   componentDidMount () {
@@ -108,12 +108,11 @@ class ApiDocReview extends Component {
 
   handleOnSubmit (event) {
     event.preventDefault()
-    if (!validateEmail(this.state.user)) this.setState({ invalidEmailAddress: true })
-    else {
-      this.setState({ invalidEmailAddress: false })
+    if (validateEmail(this.state.user)) {
       this.postApi()
       this.closeFeedbackModal()
-    }
+      this.setState({ validEmailAddress: true })
+    } else this.setState({ validEmailAddress: false })
   }
 
   handleInput (event) {
@@ -139,7 +138,7 @@ class ApiDocReview extends Component {
                 <label>Email</label>
                 <input className='form-control' onChange={this.handleInput.bind(this)} value={this.state.user} type='text' name='user' />
               </div>
-              {this.state.invalidEmailAddress && <span className='error-msg'>Enter a valid email address</span>}
+              {!this.state.validEmailAddress && <span className='error-msg'>Enter a valid email address</span>}
               <div className='form-group mt-3'>
                 <label htmlFor=''>Comment</label>
                 <textarea className='form-control' onChange={this.handleInput.bind(this)} value={this.state.comment} type='text' name='comment' /><br />

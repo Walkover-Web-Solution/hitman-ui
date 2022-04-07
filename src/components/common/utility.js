@@ -380,7 +380,7 @@ export function getEntityState (entityId, entity) {
 
 export function validateEmail (email) {
   const emailIdValidationRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
-  return (!!emailIdValidationRegex.test(email))
+  return (emailIdValidationRegex.test(email))
 }
 
 export default {
