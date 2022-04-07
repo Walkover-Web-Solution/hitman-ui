@@ -98,9 +98,10 @@ class DisplayPage extends Component {
         </div>
       )
     } else {
+      const { contents } = this.state.data
       return (
         <div className='pageText doc-view'>
-          {this.renderTinyEditor(this.state.data.contents)}
+          {this.renderTinyEditor(contents === null ? '' : contents)}
         </div>
       )
     }
