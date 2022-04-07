@@ -82,7 +82,7 @@ function compareByCreatedAt (a, b) {
 const LoginButton = () => {
   return (
     isElectron()
-      ? <div className='float-right d-flex btn btn-primary mr-3' onClick={() => openExternalLink(BROWSER_LOGIN_ROUTE)}>Login/SignUp</div>
+      ? <div className='btn btn-primary' onClick={() => openExternalLink(BROWSER_LOGIN_ROUTE)}>Login/SignUp</div>
       : <div
           id='sokt-sso'
           data-redirect-uri={LOGIN_ROUTE}
@@ -511,18 +511,18 @@ class SideBar extends Component {
 
   renderEmptyCollectionsIfNotLoggedIn () {
     return (
-      <div>
+      <div className='text-center'>
         <div className='m-3 ml-4'>
           {this.renderLoginButton()}
         </div>
-        <div className='empty-collections ml-4 mt-5'>
+        <div className='empty-collections mt-5'>
           <div>
             <NoCollectionsIcon />
           </div>
           <div className='content'>
             <h5>  Your collection is Empty.</h5>
           </div>
-          <Button className='btn-lg mt-2 ml-4' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>+ Add here</Button>{' '}
+          <Button className='btn-lg mt-2' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>+ Add here</Button>{' '}
         </div>
       </div>
     )
