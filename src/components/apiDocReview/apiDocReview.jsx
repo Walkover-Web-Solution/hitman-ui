@@ -144,12 +144,12 @@ class ApiDocReview extends Component {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleOnSubmit.bind(this)}>
-              <div className='form-group'>
+              <div className='form-group mb-0'>
                 <label>Email</label>
                 <input className='form-control' onChange={this.handleInput.bind(this)} value={this.state.user} type='text' name='user' />
               </div>
-              {this.state.checkEmail && <span>enter a valid email address</span>}
-              <div className='form-group'>
+              {this.state.checkEmail && <span className='error-msg'>Enter a valid email address</span>}
+              <div className='form-group mt-3'>
                 <label htmlFor=''>Comment</label>
                 <textarea className='form-control' onChange={this.handleInput.bind(this)} value={this.state.comment} type='text' name='comment' /><br />
               </div>
