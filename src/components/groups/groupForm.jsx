@@ -9,8 +9,6 @@ import { onEnter, toTitleCase, ADD_GROUP_MODAL_NAME } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 import { moveToNextStep } from '../../services/widgetService'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
-import sidebarActionTypes from '../main/sidebar/redux/sidebarActionTypes'
-import store from '../../store/store'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -47,7 +45,7 @@ class GroupForm extends Form {
   }
 
   focusSelectedGroup ({ groupId, versionId, collectionId }) {
-    store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR })
+    sidebarActions.focusSidebar()
     sidebarActions.toggleItem('collections', collectionId, true)
     sidebarActions.toggleItem('versions', versionId, true)
     sidebarActions.toggleItem('groups', groupId, true)

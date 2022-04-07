@@ -9,8 +9,6 @@ import { addCollection, updateCollection } from './redux/collectionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../common/constants'
 import DefaultViewModal, { defaultViewTypes } from './defaultViewModal/defaultViewModal'
-import sidebarActionTypes from '../main/sidebar/redux/sidebarActionTypes'
-import store from '../../store/store'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapStateToProps = (state) => {
@@ -94,7 +92,7 @@ class CollectionForm extends Form {
   }
 
   focusSelectedCollection (collectionId) {
-    store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR })
+    sidebarActions.focusSidebar()
     sidebarActions.toggleItem('collections', collectionId, true)
   }
 
