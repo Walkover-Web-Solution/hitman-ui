@@ -133,16 +133,24 @@ body .sidebar {
           }
         }
         .sidebar-item-action {
-          transition: all 0.3s ease-in;
-          opacity: 0;
-          visibility: hidden;
           position: absolute;
           right: 0rem;
-          background: $grey;
           padding: 0 0.7rem;
           top: 50%;
           transform: translateY(-50%);
           z-index: 19;
+          > div{
+            &:not(.dropdown-menu){
+              transition: all 0.3s ease-in;
+              opacity: 0;
+              visibility: hidden;
+            }
+          }
+          .sidebar-item-action-btn[aria-expanded="true"]{
+            opacity: 1;
+            visibility: visible;
+            background-color: $secondary-color;
+          }
           .dropdown-menu{
             box-shadow: 0px 18px 46px -14px #e5e5e5;
             .dropdown-item{
@@ -169,9 +177,15 @@ body .sidebar {
           box-shadow: none;
         }
         &:hover {
-          .sidebar-item-action {
+          .sidebar-item-action > div {
             visibility: visible;
             opacity: 1;
+          }
+          .counts{
+            opacity: 0;
+          }
+          .sidebar-item-action-btn[aria-expanded="true"]{
+            background-color: $grey;
           }
         }
         .sidebar-toggle{
