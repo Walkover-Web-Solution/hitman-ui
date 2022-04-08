@@ -358,10 +358,10 @@ class CollectionsComponent extends Component {
           key={collectionId}
           id='parent-accordion'
           className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}
+          ref={(newRef) => { this.scrollRef[collectionId] = newRef }}
         >
           <button
             tabIndex={-1}
-            ref={(newRef) => { this.scrollRef[collectionId] = newRef }}
             variant='default'
             className={[focused && sidebarFocused ? 'focused' : ''].join(' ')}
           >

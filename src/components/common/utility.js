@@ -3,6 +3,7 @@ import history from '../../history'
 import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
@@ -378,6 +379,11 @@ export function getEntityState (entityId, entity) {
   if (isStateDraft(entityId, entity) && !isPublic) return 'Make Public'
 }
 
+export function focusSelectedEntity (type, id) {
+  sidebarActions.focusSidebar()
+  sidebarActions.toggleItem(type, id, true)
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -406,5 +412,6 @@ export default {
   sensitiveInfoFound,
   hexToRgb,
   msgText,
-  getEntityState
+  getEntityState,
+  focusSelectedEntity
 }

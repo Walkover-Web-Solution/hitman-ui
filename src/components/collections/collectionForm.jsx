@@ -9,6 +9,7 @@ import { addCollection, updateCollection } from './redux/collectionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../common/constants'
 import DefaultViewModal, { defaultViewTypes } from './defaultViewModal/defaultViewModal'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -90,14 +91,20 @@ class CollectionForm extends Form {
     }, null, this.redirectToCollection.bind(this))
   }
 
+  focusSelectedCollection (collectionId) {
+    sidebarActions.focusSidebar()
+    sidebarActions.toggleItem('collections', collectionId, true)
+  }
+
   redirectToCollection (collection) {
     const { viewLoader } = this.state
+    const { id: collectionId } = collection.data
     if (collection.success && viewLoader.doc && !this.props.setDropdownList) {
       const { orgId } = this.props.match.params
-      const { id: collectionId } = collection.data
       this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
     }
     if (this.props.setDropdownList) this.props.setDropdownList(collection.data)
+    this.focusSelectedCollection(collectionId)
     this.props.onHide()
   }
 

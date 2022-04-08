@@ -8,6 +8,7 @@ import { addGroup, updateGroup } from '../groups/redux/groupsActions'
 import { onEnter, toTitleCase, ADD_GROUP_MODAL_NAME } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 import { moveToNextStep } from '../../services/widgetService'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -43,8 +44,18 @@ class GroupForm extends Form {
     this.setState({ data })
   }
 
+  focusSelectedGroup ({ groupId, versionId, collectionId }) {
+    sidebarActions.focusSidebar()
+    sidebarActions.toggleItem('collections', collectionId, true)
+    sidebarActions.toggleItem('versions', versionId, true)
+    sidebarActions.toggleItem('groups', groupId, true)
+  }
+
   redirectToForm (group) {
-    this.props.setDropdownList(group)
+    if (this.props.setDropdownList) this.props.setDropdownList(group)
+    const versionId = group.versionId
+    const collectionId = this.props.versions[versionId]?.collectionId
+    this.focusSelectedGroup({ groupId: group.id, versionId, collectionId })
   }
 
   async doSubmit () {
