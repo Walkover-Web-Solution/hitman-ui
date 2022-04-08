@@ -11,6 +11,7 @@ import {
 } from '../collectionVersions/redux/collectionVersionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import shortid from 'shortid'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -53,8 +54,15 @@ class CollectionVersionForm extends Form {
     this.setState({ data, versionId, collectionId })
   }
 
+  focusSelectedVersion ({ versionId, collectionId }) {
+    sidebarActions.focusSidebar()
+    sidebarActions.toggleItem('collections', collectionId, true)
+    sidebarActions.toggleItem('versions', versionId, true)
+  }
+
   redirectToForm (version) {
-    this.props.setDropdownList(version)
+    if (this.props.setDropdownList) this.props.setDropdownList(version)
+    this.focusSelectedVersion({ versionId: version.id, collectionId: version.collectionId })
   }
 
   async doSubmit () {

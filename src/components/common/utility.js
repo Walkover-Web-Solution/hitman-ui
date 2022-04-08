@@ -3,6 +3,7 @@ import history from '../../history'
 import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
@@ -383,6 +384,11 @@ export function validateEmail (email) {
   return (emailIdValidationRegex.test(email))
 }
 
+export function focusSelectedEntity (type, id) {
+  sidebarActions.focusSidebar()
+  sidebarActions.toggleItem(type, id, true)
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -412,5 +418,6 @@ export default {
   hexToRgb,
   msgText,
   getEntityState,
-  validateEmail
+  validateEmail,
+  focusSelectedEntity
 }
