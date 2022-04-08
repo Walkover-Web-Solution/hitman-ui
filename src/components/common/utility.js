@@ -379,6 +379,11 @@ export function getEntityState (entityId, entity) {
   if (isStateDraft(entityId, entity) && !isPublic) return 'Make Public'
 }
 
+export function validateEmail (email) {
+  const emailIdValidationRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+  return (emailIdValidationRegex.test(email))
+}
+
 export function focusSelectedEntity (type, id) {
   sidebarActions.focusSidebar()
   sidebarActions.toggleItem(type, id, true)
@@ -413,5 +418,6 @@ export default {
   hexToRgb,
   msgText,
   getEntityState,
+  validateEmail,
   focusSelectedEntity
 }

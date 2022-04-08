@@ -1895,7 +1895,7 @@ class DisplayEndpoint extends Component {
   renderToggle (type) {
     return (
       <div className={`icon-set ${this.props.responseView === type ? 'active' : ''}`} onClick={() => this.handletoggle(type)}>
-        <OverlayTrigger 
+        <OverlayTrigger
           overlay={<Tooltip id='tooltip-disabled'>Doc to {type}</Tooltip>}
         >
           <div className='icon-bx' />
