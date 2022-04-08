@@ -529,7 +529,7 @@ class CollectionsComponent extends Component {
                   </div>
                 </div>
               </div>
-              <div class='theme-color d-flex counts ml-1 f-12'>
+              <div class='theme-color d-flex transition counts ml-1 f-12'>
                 {this.props.collections[collectionId]?.importedFromMarketPlace
                   ? <div className='marketplace-icon mr-1'> M </div>
                   : null}
