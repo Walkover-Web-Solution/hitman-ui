@@ -80,7 +80,8 @@ $border-color: rgba(227, 228, 230, 0.7);
         background-color: inherit;
         border: none;
         span{
-          max-width: 7rem;
+          width: 6.65rem;
+          text-align: left;
         }
       }
       .dropdown-menu .dropdown-item {
