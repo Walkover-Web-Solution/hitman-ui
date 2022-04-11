@@ -577,11 +577,10 @@ class SideBar extends Component {
     const productLinks = { FEEDIO: process.env.REACT_APP_FEEDIO_UI_URL, CONTENTBASE: process.env.REACT_APP_CONTENTBASE_URL, EBL: process.env.REACT_APP_VIASOCKET_URL, HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL }
     const orgId = this.props.match.params.orgId
     let link = productLinks[product.toUpperCase()]
-
     if (product !== products.HTTPDUMP) {
       link += `/orgs/${orgId}`
     }
-    this.handleOpenLink(link)
+    openExternalLink(link)
   }
 
   handleOpenLink (link, current = false) {

@@ -10,10 +10,22 @@
   max-width: 330px !important;
   min-width: 250px !important;
 }
-span.Resizer.vertical {
+.Resizer {
   width: 1px;
   background: #e6dbd4;
   cursor: col-resize;
+  position: relative;
+  &::after{
+    content: '';
+    width: 0.5rem;
+    height: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: -0.25rem;
+    z-index: 1;
+    background-color: transparent;
+  }
 }
 body .sidebar {
   height: 100%;
@@ -178,6 +190,9 @@ body .sidebar {
         &:focus {
           outline: none;
           box-shadow: none;
+        }
+        &.focused{
+          background-color: $grey;
         }
         &:hover {
           .sidebar-item-action > div {
