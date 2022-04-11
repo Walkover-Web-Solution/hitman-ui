@@ -132,8 +132,8 @@ class Groups extends Component {
     tabService.newTab({ ...this.props })
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/new`,
-      groupId: groupId,
-      title: 'Add New Endpoint'
+      title: 'Add New Endpoint',
+      search: `?group=${groupId}`
     })
   }
 
