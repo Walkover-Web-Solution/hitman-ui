@@ -6,6 +6,7 @@ import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import indexedDbService from '../../indexedDb/indexedDbService'
 import { sendAmplitudeData } from '../../../services/amplitude'
+import sidebarActions from '../../main/sidebar/redux/sidebarActions'
 
 export const fetchCollections = (orgId) => {
   return (dispatch) => {
@@ -245,6 +246,8 @@ export const duplicateCollection = (collection) => {
       .duplicateCollection(collection.id)
       .then((response) => {
         dispatch(onCollectionDuplicated(response.data))
+        sidebarActions.focusSidebar()
+        sidebarActions.toggleItem('collections', response.data.collection.id, true)
       })
       .catch((error) => {
         dispatch(
