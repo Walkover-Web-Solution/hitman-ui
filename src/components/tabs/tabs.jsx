@@ -291,18 +291,19 @@ class CustomTabs extends Component {
     return (
 
       <>
-        {this.showScrollButton()
-          ? (
-            <div
-              className={`scroll-button scroll-button--left d-flex ${this.leftHideTabs() ? '' : 'disabled'}`}
-              onMouseEnter={() => this.handleMouseEnter('left')}
-              onMouseLeave={() => this.handleMouseLeave()}
-            >
-              <span className='mr-1'><i class='fa fa-angle-left' aria-hidden='true' /></span>
-              <span>{this.leftHideTabs() ? `${this.leftHideTabs()}+` : null}</span>
-            </div>)
-          : null}
-        <div className='d-flex'>
+
+        <div className='d-flex navs-container'>
+          {this.showScrollButton()
+            ? (
+              <div
+                className={`scroll-button scroll-button--left d-flex ${this.leftHideTabs() ? '' : 'disabled'}`}
+                onMouseEnter={() => this.handleMouseEnter('left')}
+                onMouseLeave={() => this.handleMouseLeave()}
+              >
+                <span className='mr-1'><i class='fa fa-angle-left' aria-hidden='true' /></span>
+                <span>{this.leftHideTabs() ? `${this.leftHideTabs()}+` : null}</span>
+              </div>)
+            : null}
           <Nav variant='pills' className='flex-row flex-nowrap item-wrp' onScroll={() => this.scrollLength()} ref={this.navRef} style={{ scrollBehavior: 'smooth' }}>
             <div>
               {this.state.showSavePromptFor.length > 0 && (
@@ -355,27 +356,27 @@ class CustomTabs extends Component {
               (this.renderHoverTab(tabId, this.tabRef))}
               </div>
             ))}
-            {this.showScrollButton()
-              ? (
-                <div
-                  className={`scroll-button scroll-button--right d-flex ${this.rightHideTabs() ? '' : 'disabled'}`}
-                  onMouseEnter={() => this.handleMouseEnter('right')}
-                  onMouseLeave={() => this.handleMouseLeave()}
-                >
-                  <span className='mr-1'>{this.rightHideTabs() ? `+${this.rightHideTabs()}` : null}</span>
-                  <span><i class='fa fa-angle-right' aria-hidden='true' /></span>
-                </div>)
-              : null}
-            <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
-              <button
-                className='btn'
-                onClick={() => this.handleAddTab()}
-              >
-                <img src={Plus} alt='' />
-
-              </button>
-            </Nav.Item>
           </Nav>
+          {this.showScrollButton()
+            ? (
+              <div
+                className={`scroll-button scroll-button--right d-flex ${this.rightHideTabs() ? '' : 'disabled'}`}
+                onMouseEnter={() => this.handleMouseEnter('right')}
+                onMouseLeave={() => this.handleMouseLeave()}
+              >
+                <span className='mr-1'>{this.rightHideTabs() ? `+${this.rightHideTabs()}` : null}</span>
+                <span><i class='fa fa-angle-right' aria-hidden='true' /></span>
+              </div>)
+            : null}
+          <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
+            <button
+              className='btn'
+              onClick={() => this.handleAddTab()}
+            >
+              <img src={Plus} alt='' />
+
+            </button>
+          </Nav.Item>
           <div className='d-flex'>
             <Nav.Item className='tab-buttons' id='options-tab-button'>
               <TabOptions history={this.props.history} match={this.props.match} handleCloseTabs={this.handleCloseTabs.bind(this)} />

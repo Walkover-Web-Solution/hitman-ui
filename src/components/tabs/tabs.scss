@@ -5,11 +5,17 @@
   width: 100%;
   display: flex;
   flex-direction: row;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
   .tabs-container {
     width: 100%;
     position: relative;
     background-color: $secondary-color;
+    .navs-container{
+      width: calc(100% - 190px);
+    }
     .btn{
       border-radius: 0;
       height: 42px;
@@ -24,6 +30,7 @@
     }
     .nav {
       height: 100%;
+      overflow-x: auto;
       .nav-item {
         height: 42px;
         position: relative;
@@ -177,9 +184,17 @@
 }
 
 .newTabs .btn {
-  width: 40px;
+  width: 2.5rem;
   text-align: center;
-  padding: 8px 0;
+  padding: 0;
+  height: 100%;
+  border-right: 1px solid $outline-color;
+}
+#options-tab-button{
+  .btn{
+    width: 2.5rem;
+    padding: 0;
+  }
 }
 
 #history-tab-button .dropdown :hover {
@@ -211,7 +226,9 @@
   justify-content: center;
   border-right: 1px solid #e6dbd4;
   position: relative;
-
+  &--left{
+    border-left: 0;
+  }
   &.disabled {
     cursor: not-allowed !important;
     color: grey;
@@ -282,11 +299,6 @@
     border-width: 0 0 1px 1px;
     top: -3px;
   }
-}
-
-.newTabs .btn {
-  padding: 0;
-  height: 100%;
 }
 
 .content-header .tabs-container .nav .custom-tabs:first-child .nav-item.active{
