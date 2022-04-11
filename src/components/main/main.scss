@@ -3223,6 +3223,10 @@ body .bottom-text-editor {
   justify-content: space-between;
   h4{
     height: 2rem;
+    margin-bottom: 0;
+  }
+  .response-status{
+    margin: 0.5rem 0;
   }
   .mid-part{
     overflow: auto;
@@ -3261,6 +3265,11 @@ body .bottom-text-editor {
     align-items: center;
   }
 }
+.innerContainer{
+  .sample-response-item{
+    margin-bottom: 1rem;
+  }
+}
 .response-bottom{
   .response-container-main{
     width: 70%;
@@ -3292,9 +3301,6 @@ body .bottom-text-editor {
   }
   .testing-view-sample-response{
     padding: 0 1rem;
-  }
-  .sample-response-item{
-    margin-bottom: 1rem;
   }
 }
 .doc-options {
