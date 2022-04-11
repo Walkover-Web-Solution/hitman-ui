@@ -78,7 +78,6 @@ class SaveAsSidebar extends Form {
     data.name = this.props.name
     this.setState({ data })
     this.saveAsSidebar.focus()
-    console.log("TEST77",this.state.dropdownList)
   }
 
   // setList (item) {
