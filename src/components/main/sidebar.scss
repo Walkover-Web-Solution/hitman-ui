@@ -121,6 +121,9 @@ body .sidebar {
         }
         &:hover {
           background: $grey;
+          .published-icon{
+            opacity: 0;
+          } 
         }
         .sidebar-item-action-btn {
           cursor: pointer;

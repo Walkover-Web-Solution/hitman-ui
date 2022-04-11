@@ -1086,6 +1086,7 @@ button.btn.btn-secondary {
       background-color: #fff;
       border: none;
       .modal-header{
+        position: relative;
         border: none;
         padding: 1.5rem;
         border-bottom: 1px solid #e5e5e5;
@@ -1104,9 +1105,14 @@ button.btn.btn-secondary {
           padding: 0;
           border: 0;
           position: absolute;
-          top: 2.25rem;
-          right: 2.55rem;
+          top: 50%;
+          transform: translateY(-50%);
+          right: 1rem;
+          margin: 0!important;
           z-index: 5;
+          &:focus{
+            outline: none;
+          }
         }
       }
       .modal-body{
@@ -3384,4 +3390,10 @@ body .bottom-text-editor {
 
 .error-msg{
   color: red;
+}
+
+.close{
+  &:focus{
+    outline: none !important;
+  }
 }
