@@ -104,7 +104,7 @@ class EndpointBreadCrumb extends Component {
 
   handleInputBlur () {
     this.setState({ nameEditable: false })
-    if (this.state.endpointTitle !== '') {
+    if (this.state.endpointTitle.trim()) {
       if (this.props.isEndpoint) {
         const data = this.props.endpoint
         data.name = toTitleCase(this.state.endpointTitle)
