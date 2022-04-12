@@ -394,9 +394,17 @@ export function getUserProfile () {
   try {
     user = JSON.parse(user)
     return user
-  } catch (e) {
-    console.log('unable to parse user data')
-  }
+  } catch (e) {}
+}
+
+export function getCurrentUserSSLMode () {
+  let sslModeData = window.localStorage.getItem('ssl-mode')
+  const user = getUserProfile() || {}
+  try {
+    sslModeData = JSON.parse(sslModeData)
+    const { identifier } = user
+    return sslModeData?.[identifier]
+  } catch (e) {}
 }
 
 export default {

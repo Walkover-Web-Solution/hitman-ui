@@ -2,6 +2,7 @@ const querystring = require('querystring')
 const FormData = require('form-data')
 const axios = require('axios')
 const https = require('https')
+const { getCurrentUserSSLMode } = require('../src/components/common/utility')
 const HITMAN_AGENT = 'Hitman/1.0.0'
 const cancelTokenMap = new Map()
 
@@ -85,7 +86,7 @@ function createCancelToken (key) {
 }
 
 function getAgent () {
-  const rejectUnauthorized = window.localStorage.getItem('ssl-mode')
+  const rejectUnauthorized = getCurrentUserSSLMode() || true
   const agent = new https.Agent({
     rejectUnauthorized
   })
