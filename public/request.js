@@ -1,10 +1,12 @@
 const querystring = require('querystring')
 const FormData = require('form-data')
 const axios = require('axios')
+const https = require('https')
 const HITMAN_AGENT = 'Hitman/1.0.0'
 const cancelTokenMap = new Map()
 
 async function makeHttpRequestThroughAxios ({ api: url, method, body: data, header: headers, keyForRequest }, FILE_UPLOAD_DIRECTORY) {
+  const httpsAgent = getAgent()
   headers = headers || {}
   headers['user-agent'] = HITMAN_AGENT
   const options = {
@@ -13,7 +15,8 @@ async function makeHttpRequestThroughAxios ({ api: url, method, body: data, head
     headers,
     data,
     proxy: false,
-    cancelToken: createCancelToken(keyForRequest)
+    cancelToken: createCancelToken(keyForRequest),
+    httpsAgent
   }
   if (headers['content-type'] === 'multipart/form-data') {
     const bodyFormData = new FormData()
@@ -79,6 +82,14 @@ async function makeHttpRequestThroughAxios ({ api: url, method, body: data, head
 function createCancelToken (key) {
   cancelTokenMap.set(key, axios.CancelToken.source())
   return cancelTokenMap.get(key).token
+}
+
+function getAgent () {
+  const rejectUnauthorized = window.localStorage.getItem('ssl-mode')
+  const agent = new https.Agent({
+    rejectUnauthorized
+  })
+  return agent
 }
 
 function prepareResponse (data) {
