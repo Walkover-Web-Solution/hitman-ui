@@ -389,6 +389,16 @@ export function focusSelectedEntity (type, id) {
   sidebarActions.toggleItem(type, id, true)
 }
 
+export function getUserProfile () {
+  let user = window.localStorage.getItem('profile')
+  try {
+    user = JSON.parse(user)
+    return user
+  } catch (e) {
+    console.log('unable to parse user data')
+  }
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -419,5 +429,6 @@ export default {
   msgText,
   getEntityState,
   validateEmail,
-  focusSelectedEntity
+  focusSelectedEntity,
+  getUserProfile
 }
