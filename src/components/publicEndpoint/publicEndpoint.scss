@@ -751,18 +751,3 @@ button.toggleButton {
     }
   }
 }
-
-@media (max-width: 1350px){
-  .hm-right-content{
-      .hideCodeEditor{
-        .hm-endpoint-container{
-          max-width: 50rem;
-        }
-      }
-  }
-  .select-code-wrapper > button, .select-code-wrapper .dropdown button{
-    font-size: $font-small !important;
-    height: 30px;
-    padding: 0 6px;
-  }
-}
