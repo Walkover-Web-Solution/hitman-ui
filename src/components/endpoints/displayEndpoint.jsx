@@ -287,7 +287,7 @@ class DisplayEndpoint extends Component {
 
   setSslMode () {
     setCurrentUserSSLMode()
-    this.setState({ sslMode: getCurrentUserSSLMode() })
+    this.setState({ sslMode: !this.state.sslMode })
   }
 
   setCurrentReponseView () {
@@ -755,7 +755,7 @@ class DisplayEndpoint extends Component {
       if (isElectron()) {
         // Handle API through Electron Channel
         const { ipcRenderer } = window.require('electron')
-        const sslMode = getCurrentUserSSLMode()
+        const { sslMode } = this.state
         responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest, sslMode })
       } else {
         // Handle API through Backend
