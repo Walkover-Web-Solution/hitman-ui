@@ -2,12 +2,11 @@ const querystring = require('querystring')
 const FormData = require('form-data')
 const axios = require('axios')
 const https = require('https')
-const { getCurrentUserSSLMode } = require('../src/components/common/utility')
 const HITMAN_AGENT = 'Hitman/1.0.0'
 const cancelTokenMap = new Map()
 
-async function makeHttpRequestThroughAxios ({ api: url, method, body: data, header: headers, keyForRequest }, FILE_UPLOAD_DIRECTORY) {
-  const httpsAgent = getAgent()
+async function makeHttpRequestThroughAxios ({ api: url, method, body: data, header: headers, keyForRequest, sslMode }, FILE_UPLOAD_DIRECTORY) {
+  const httpsAgent = getAgent(sslMode)
   headers = headers || {}
   headers['user-agent'] = HITMAN_AGENT
   const options = {
@@ -85,8 +84,8 @@ function createCancelToken (key) {
   return cancelTokenMap.get(key).token
 }
 
-function getAgent () {
-  const rejectUnauthorized = getCurrentUserSSLMode() || true
+function getAgent (sslMode = true) {
+  const rejectUnauthorized = sslMode
   const agent = new https.Agent({
     rejectUnauthorized
   })

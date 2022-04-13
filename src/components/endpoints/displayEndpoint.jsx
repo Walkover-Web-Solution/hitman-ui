@@ -755,7 +755,8 @@ class DisplayEndpoint extends Component {
       if (isElectron()) {
         // Handle API through Electron Channel
         const { ipcRenderer } = window.require('electron')
-        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest })
+        const sslMode = getCurrentUserSSLMode()
+        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest, sslMode })
       } else {
         // Handle API through Backend
         responseJson = await endpointApiService.apiTest(api, method, body, header, bodyType, cancelToken)
@@ -2816,7 +2817,7 @@ class DisplayEndpoint extends Component {
                       </div>
                     )
                 }
-                    {isElectron() && <div onClick={() => this.setSslMode()}>SSL mode{this.state.sslMode ? ' on' : ' off'}</div>}
+                    {isElectron() && <div onClick={() => this.setSslMode()}>Invalid SSL certificate blocking{this.state.sslMode ? ' on' : ' off'}</div>}
                     <div
                       className={
                     this.isDashboardAndTestingView()
