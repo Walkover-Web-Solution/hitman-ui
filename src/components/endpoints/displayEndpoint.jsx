@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import store from '../../store/store'
-import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, isStatePending, isStateApproved, sensitiveInfoFound, msgText, getEntityState } from '../common/utility'
+import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, isStatePending, isStateApproved, sensitiveInfoFound, msgText, getEntityState, getCurrentUserSSLMode, setCurrentUserSSLMode } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -20,6 +20,7 @@ import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
+
 import {
   addEndpoint,
   updateEndpoint,
@@ -189,7 +190,8 @@ class DisplayEndpoint extends Component {
       draftDataSet: false,
       runSendRequest: null,
       requestKey: null,
-      docOptions: false
+      docOptions: false,
+      sslMode: getCurrentUserSSLMode()
     }
 
     this.uri = React.createRef()
@@ -281,6 +283,11 @@ class DisplayEndpoint extends Component {
       this.setState({ flagResponse: false })
     }
     this.setEndpointData()
+  }
+
+  setSslMode () {
+    setCurrentUserSSLMode()
+    this.setState({ sslMode: getCurrentUserSSLMode() })
   }
 
   setCurrentReponseView () {
@@ -2809,6 +2816,7 @@ class DisplayEndpoint extends Component {
                       </div>
                     )
                 }
+                    {isElectron() && <div onClick={() => this.setSslMode()}>SSL mode{this.state.sslMode ? ' on' : ' off'}</div>}
                     <div
                       className={
                     this.isDashboardAndTestingView()

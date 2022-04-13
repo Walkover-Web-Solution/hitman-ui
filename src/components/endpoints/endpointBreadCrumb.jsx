@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
-import { getCurrentUserSSLMode, setCurrentUserSSLMode, isElectron, toTitleCase } from '../common/utility'
+import { isElectron, toTitleCase } from '../common/utility'
 
 const mapStateToProps = (state) => {
   return {
@@ -25,8 +25,7 @@ class EndpointBreadCrumb extends Component {
       groupName: null,
       versionName: null,
       collectionName: null,
-      isPagePublished: false,
-      sslMode: getCurrentUserSSLMode()
+      isPagePublished: false
     }
   }
 
@@ -89,11 +88,6 @@ class EndpointBreadCrumb extends Component {
       }
     }
     this.changeEndpointName()
-  }
-
-  setSslMode () {
-    setCurrentUserSSLMode()
-    this.setState({ sslMode: getCurrentUserSSLMode() })
   }
 
   changeEndpointName () {
@@ -205,10 +199,6 @@ class EndpointBreadCrumb extends Component {
               {this.props?.endpoint?.publishedEndpoint?.isPublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
               {this.state.isPagePublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
             </div>}
-          <div onClick={() => this.setSslMode()}>
-            SSL mode
-            {this.state.sslMode ? ' on' : ' off'}
-          </div>
         </div>
       </div>
     )
