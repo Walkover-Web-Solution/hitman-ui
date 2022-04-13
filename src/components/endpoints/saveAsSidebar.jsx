@@ -401,7 +401,7 @@ class SaveAsSidebar extends Form {
           {this.showCollectionForm()}
           {this.showCollectionVersionForm()}
           {this.showGroupForm()}
-          <div className='custom-collection-modal-container modal-header'>
+          <div className='custom-collection-modal-container modal-header align-items-center'>
             <div className='modal-title h4'>
               {this.props.location.pathname.split('/')[5] !== 'new' ? 'Save As' : 'Save'}
             </div>
@@ -500,13 +500,13 @@ class SaveAsSidebar extends Form {
             </div>
             <div className='mt-5'>
               <button
-                className='btn btn-secondary outline btn-lg mr-2'
+                className='btn btn-secondary outline mr-2 api-cancel-btn'
                 onClick={() => this.props.onHide()}
               >
                 Cancel
               </button>
               <button
-                className={this.props.saveAsLoader ? 'btn btn-primary btn-lg buttonLoader' : 'btn btn-primary btn-lg'}
+                className={this.props.saveAsLoader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
                 onClick={this.handleSubmit}
                 disabled={this.state.dropdownList.type !== 'endpoints' || title.trim() === '' || title === 'Untitled' ? 'disabled' : ''}
               >

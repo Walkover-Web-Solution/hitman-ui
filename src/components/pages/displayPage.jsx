@@ -93,14 +93,14 @@ class DisplayPage extends Component {
   checkPageRejected () {
     if (this.props.rejected) {
       return (
-        <div className='pageText doc-view'>
+        <div className='pageText doc-view mt-2'>
           {this.renderTinyEditor(this.props.pages[this.props.pageId].publishedPage.contents)}
         </div>
       )
     } else {
       const { contents } = this.state.data
       return (
-        <div className='pageText doc-view'>
+        <div className='pageText doc-view mt-2'>
           {this.renderTinyEditor(contents === null ? '' : contents)}
         </div>
       )
