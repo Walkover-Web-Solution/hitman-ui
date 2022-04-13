@@ -713,6 +713,10 @@ button.toggleButton {
   position: absolute;
   right: 0;
   top: 0;
+  .select-code-wrapper{
+    overflow: auto;
+    flex-direction: row;
+  }
   .inner-editor {
     height: 100%;
     .editor-body-wrapper {
