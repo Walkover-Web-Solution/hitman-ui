@@ -2817,7 +2817,7 @@ class DisplayEndpoint extends Component {
                       </div>
                     )
                 }
-                    {isElectron() && <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>SSL verification {this.state.sslMode ? <span className='enabled'>enabled</span> : <span>disabled</span>} </div>}
+                    {isElectron() && <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>SSL certificate verification {this.state.sslMode ? <span className='enabled'>enabled</span> : <span>disabled</span>} </div>}
                     <div
                       className={
                     this.isDashboardAndTestingView()
