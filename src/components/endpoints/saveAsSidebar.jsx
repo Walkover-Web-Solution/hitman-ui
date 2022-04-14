@@ -57,7 +57,7 @@ class SaveAsSidebar extends Form {
 
   componentDidMount () {
     const groupId = new URLSearchParams(this.props.history.location.search).get('group')
-    if(!_.isNull(groupId)) {
+    if (!_.isNull(groupId)) {
       const list = {
         type: 'endpoints',
         parentId: groupId
@@ -70,7 +70,7 @@ class SaveAsSidebar extends Form {
       }
       this.setState({ groupId, list, dropdownList }, () => {
         this.props.history.push({
-          ..._.pick(this.props.history.location, ['pathname','title'])
+          ..._.pick(this.props.history.location, ['pathname', 'title'])
         })
       })
     }
