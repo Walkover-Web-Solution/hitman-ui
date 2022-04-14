@@ -306,7 +306,7 @@ class DisplayEndpoint extends Component {
           this.setState({ ...tab.state, draftDataSet: true })
         } else if (endpointId !== 'new' && endpoint.id !== tab.id && endpoints[tab.id]) {
           this.fetchEndpoint(0, tab.id)
-        } else if (endpointId === 'new') this.setState({ draftDataSet: true })
+        } else if (tab.status === 'NEW') this.setState({ draftDataSet: true })
       }
     }
 
