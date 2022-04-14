@@ -49,7 +49,6 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
-import TinyEditor from '../tinyEditor/tinyEditor'
 import { pendingEndpoint, approveEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
@@ -57,6 +56,8 @@ import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
 import PlusIcon from '../../assets/icons/plus.svg'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 import { ApproveRejectEntity, PublishEntityButton } from '../common/docViewOperations'
+import Tiptap from '../tiptapEditor/tiptap'
+
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -2169,10 +2170,10 @@ class DisplayEndpoint extends Component {
     }
   };
 
-  renderTinyEditor (item, index) {
+  renderTiptapEditor (item, index) {
     return (
-      <TinyEditor
-        data={item.data}
+      <Tiptap
+        initial={item.data}
         onChange={(e) => {
           const docData = _.cloneDeep(this.state.docViewData)
           docData[index].data = e
@@ -2181,6 +2182,7 @@ class DisplayEndpoint extends Component {
         match={this.props.match}
         isInlineEditor
         disabled={!isDashboardRoute(this.props)}
+        key={index}
       />
     )
   }
@@ -2190,7 +2192,7 @@ class DisplayEndpoint extends Component {
       case 'textArea': {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
           return (
-            <div>{this.renderTinyEditor(item, index)}</div>
+            <div>{this.renderTiptapEditor(item, index)}</div>
           )
         }
         break
@@ -2199,7 +2201,7 @@ class DisplayEndpoint extends Component {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
           return (
             <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
-              {this.renderTinyEditor(item, index)}
+              {this.renderTiptapEditor(item, index)}
             </div>
           )
         }
