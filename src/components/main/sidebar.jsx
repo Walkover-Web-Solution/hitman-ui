@@ -490,9 +490,8 @@ class SideBar extends Component {
 
   renderSearchList () {
     if (this.state.data.filter !== '') {
-      return (<div>
-        {this.showAddCollectionModal()}
-        {(this.state.pages.length > 0 || this.state.endpoints.length > 0 || this.state.historySnapshot.length > 0)
+      return (
+        (this.state.pages.length > 0 || this.state.endpoints.length > 0 || this.state.historySnapshot.length > 0)
           ? (
             <div className='searchResult'>
               {this.state.pages.length > 0 ? this.renderPagesList() : null}
@@ -505,7 +504,7 @@ class SideBar extends Component {
               <img src={NoFound} alt='' />
               <span className='font-weight-700'>No Results</span>
             </div>
-            )}</div>
+            )
       )
     }
   }
@@ -777,13 +776,14 @@ class SideBar extends Component {
   }
 
   renderGlobalAddButton () {
+    const { filter } = this.state.data
     const isMarketplaceImported = this.props.collections[this.collectionId]?.importedFromMarketPlace
     const title = this.collectionId ? isMarketplaceImported ? 'Cannot add Entities to a Marketplace Collection.' : 'Add Entities to Collection' : 'Add/Import Collection'
     return (
       getCurrentUser() &&
         <div className='d-flex align-items-center justify-content-between mb-2'>
-          <span className='f-12 font-weight-700'>COLLECTION</span>
-          <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><Plus /></div>
+          <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span>
+          {filter === '' && <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><Plus /></div>}
         </div>
     )
   }
