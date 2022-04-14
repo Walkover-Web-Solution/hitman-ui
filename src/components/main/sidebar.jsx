@@ -490,8 +490,9 @@ class SideBar extends Component {
 
   renderSearchList () {
     if (this.state.data.filter !== '') {
-      return (
-        (this.state.pages.length > 0 || this.state.endpoints.length > 0 || this.state.historySnapshot.length > 0)
+      return (<div>
+        {this.showAddCollectionModal()}
+        {(this.state.pages.length > 0 || this.state.endpoints.length > 0 || this.state.historySnapshot.length > 0)
           ? (
             <div className='searchResult'>
               {this.state.pages.length > 0 ? this.renderPagesList() : null}
@@ -504,7 +505,7 @@ class SideBar extends Component {
               <img src={NoFound} alt='' />
               <span className='font-weight-700'>No Results</span>
             </div>
-            )
+            )}</div>
       )
     }
   }
