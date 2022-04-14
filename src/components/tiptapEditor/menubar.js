@@ -76,7 +76,7 @@ export default function MenuBar ({ editor }) {
           </button>
         </Modal.Footer>
       </Modal>
-)
+    )
   }
 
   function handleTextColor (color) {
