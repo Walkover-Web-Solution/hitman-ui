@@ -286,8 +286,9 @@ class DisplayEndpoint extends Component {
   }
 
   setSslMode () {
-    setCurrentUserSSLMode()
-    this.setState({ sslMode: !this.state.sslMode })
+    this.setState({ sslMode: !this.state.sslMode }, () => {
+      setCurrentUserSSLMode(this.state.sslMode)
+    })
   }
 
   setCurrentReponseView () {

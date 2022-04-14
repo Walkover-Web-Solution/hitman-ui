@@ -407,18 +407,15 @@ export function getCurrentUserSSLMode () {
   } catch (e) {}
 }
 
-export function setCurrentUserSSLMode () {
-  let sslModeData = window.localStorage.getItem('ssl-mode')
+export function setCurrentUserSSLMode (sslModeFlag) {
+  let sslModeData = window.localStorage.getItem('ssl-mode') || '{}'
   const user = getUserProfile() || {}
   const { identifier } = user
-  if (sslModeData !== null) {
-    sslModeData = JSON.parse(sslModeData)
-    const sslMode = { ...sslModeData, ...JSON.parse(`{"${identifier}":${sslModeData[identifier] === true ? 'false' : 'true'}}`) }
+  try {
+    sslModeData = JSON.parse(sslModeData || '{}')
+    const sslMode = { ...sslModeData, [identifier]: sslModeFlag }
     window.localStorage.setItem('ssl-mode', JSON.stringify(sslMode))
-  } else {
-    const sslMode = `{"${identifier}":true}`
-    window.localStorage.setItem('ssl-mode', sslMode)
-  }
+  } catch (e) {}
 }
 
 export default {
