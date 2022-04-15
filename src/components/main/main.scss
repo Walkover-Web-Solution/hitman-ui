@@ -457,6 +457,7 @@ label.data-type {
   }
   .public {
     overflow-wrap: anywhere;
+    padding: 0 1rem;
     strong {
       font-family: monospace;
     }
@@ -3401,5 +3402,45 @@ body .bottom-text-editor {
 .close{
   &:focus{
     outline: none !important;
+  }
+}
+body .tox{
+  .tox-dialog {
+    &.tox-dialog--width-lg{
+      max-height: 34rem;
+      max-width: 50rem;
+    }
+    border-radius: $border-radius;
+    .tox-dialog__header {
+      border-bottom: 1px solid $outline-color !important;
+      padding: 0.75rem !important;
+    }
+    .tox-dialog__footer {
+      padding: 0.75rem 1rem;
+    }
+    label {
+      margin-bottom: 0.25rem;
+      color: $text-color-dark;
+    }
+    .tox-form__group {
+      margin-bottom: 1rem;
+    }
+    select, textarea, input{
+      &:focus{
+        border-color: $theme-color !important;
+      }
+    }
+    *{
+      font-family: Roboto !important;
+    }
+    .tox-dialog__footer-end{
+      .tox-button:not(.tox-button--secondary){
+        background-color: $theme-color;
+        border-color: $theme-color;
+      }
+    }
+  }
+  .tox-dialog-wrap__backdrop {
+    background: rgba(0,0,0,0.2);
   }
 }

@@ -536,13 +536,19 @@ h4.hm-sidebar-title span {
 }
 
 .hm-panel.endpoint-public-response-container.public-doc {
-  // background: #fff;
   padding: 15px 0;
   margin: 30px 0 0;
-  border-radius: 4px;
-
+  .tab-content{
+    margin: 0;
+  }
   .endpoint-response-container {
-    background: #F3F3F3;
+    background: $secondary-color;
+    padding: 1rem;
+    border-radius: $border-radius;
+    pre{
+      padding: 1rem;
+      border-radius: $border-radius;
+    }
   }
 }
 .empty-response-container svg {

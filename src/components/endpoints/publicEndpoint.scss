@@ -1,4 +1,5 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
+@import '../main/variables.scss';
 
 $border-color: rgba(227, 228, 230, 0.7);
 .public-generic-table-container {
@@ -108,23 +109,20 @@ $border-color: rgba(227, 228, 230, 0.7);
   margin-bottom: 20px;
   display: flex;
   li {
-    border: 1px solid #e5e5e5;
+    border: 1px solid $outline-color;
     margin-right: -1px;
-    div {
-      display: block;
-      padding: 5px 20px;
-      color: #333;
-      text-decoration: none;
-    }
+    transition: all 0.3s ease-in;
+    color: $text-color;
+    font-size: $font-medium;
+    font-weight: normal;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
     &.active {
-      background: #eee;
-      background: #e6e6e6;
+      color: #fff;
     }
-
     &:first-child {
       border-radius: 3px 0 0 3px;
     }
-
     &:last-child {
       border-radius: 0 3px 3px 0;
     }
