@@ -34,7 +34,8 @@ steps:
       REACT_APP_SUPERFORM_JS_IMPORT_URL=$$SUPERFORM_JS_IMPORT_URL
       REACT_APP_TINYMCE_API_KEY=$$REACT_APP_TINYMCE_API_KEY
       REACT_APP_HITMAN_MAPPING_DOMAIN=$$REACT_APP_HITMAN_MAPPING_DOMAIN
-      " > .env &&
+      " > .env 
+      cat .env
       docker build -t asia.gcr.io/$PROJECT_ID/hitman-ui:$BUILD_ID .
       docker push asia.gcr.io/$PROJECT_ID/hitman-ui:$BUILD_ID
 
