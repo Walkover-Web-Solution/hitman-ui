@@ -719,6 +719,10 @@ button.toggleButton {
   position: absolute;
   right: 0;
   top: 0;
+  .select-code-wrapper{
+    overflow: auto;
+    flex-direction: row;
+  }
   .inner-editor {
     height: 100%;
     .editor-body-wrapper {
@@ -755,20 +759,5 @@ button.toggleButton {
     img {
       display: none;
     }
-  }
-}
-
-@media (max-width: 1350px){
-  .hm-right-content{
-      .hideCodeEditor{
-        .hm-endpoint-container{
-          max-width: 50rem;
-        }
-      }
-  }
-  .select-code-wrapper > button, .select-code-wrapper .dropdown button{
-    font-size: $font-small !important;
-    height: 30px;
-    padding: 0 6px;
   }
 }
