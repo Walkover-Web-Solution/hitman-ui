@@ -328,7 +328,7 @@ class Pages extends Component {
           {this.displayPageName(pageId)}
           <div className='d-flex align-items-center'>
             {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayPageOptions(pageId)}
-            <div className='ml-1 published-icon'>
+            <div className='ml-1 published-icon transition'>
               <span className='globe-img'>{this.props.pages[pageId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}</span>
             </div>
           </div>
