@@ -87,7 +87,7 @@ class CodeTemplate extends Component {
             <div className='code-heading mb-3 d-flex justify-content-center'>
               <span>Sample code</span>
             </div>
-            <div className='select-code-wrapper d-flex justify-content-end'>
+            <div className='select-code-wrapper d-flex'>
               {primaryLanguages.map(key => (
                 <button
                   key={key}

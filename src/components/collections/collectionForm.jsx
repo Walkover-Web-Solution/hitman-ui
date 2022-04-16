@@ -163,7 +163,7 @@ class CollectionForm extends Form {
     return (
       <>
         {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}
-        {this.renderInput('website', 'Website', 'https://yourwebsite.com', true, false, true)}
+        {this.renderInput('website', 'Website', 'https://yourwebsite.com', false, false, true)}
       </>
     )
   }

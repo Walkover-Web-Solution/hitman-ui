@@ -498,7 +498,7 @@ class Endpoints extends Component {
               <div className=' sidebar-item-action'>
                 {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
               </div>
-              <div className='ml-1 published-icon'>
+              <div className='ml-1 published-icon transition'>
                 {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
               </div>
             </div>
