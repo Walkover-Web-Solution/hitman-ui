@@ -109,11 +109,9 @@ class Endpoints extends Component {
     }
   }
 
-  handleDelete (endpoint) {
-    this.props.delete_endpoint(endpoint)
-    if (this.props.tabs.tabs[endpoint.id]) {
-      tabService.removeTab(endpoint.id, { ...this.props })
-    }
+  async handleDelete (endpoint) {
+    await this.props.delete_endpoint(endpoint)
+    tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
   }
 
   handleDuplicate (endpoint) {
