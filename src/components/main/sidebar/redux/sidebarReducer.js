@@ -8,6 +8,7 @@ import endpointsActionTypes from '../../../endpoints/redux/endpointsActionTypes'
 
 import * as _ from 'lodash'
 import publicEndpointsActionTypes from '../../../publicEndpoint/redux/publicEndpointsActionTypes'
+import { compareAlphabetically } from '../../../common/utility'
 
 class TreeNode {
   constructor ({ id, type, parentNode, prevSibling, nextSibling }) {
@@ -40,6 +41,7 @@ const initialState = {
 function sidebarReducer (state = initialState, action) {
   try {
     let newState = _.cloneDeep(state)
+    let sortedCollectionIds = []
     switch (action.type) {
       /** Handle Public Entities */
       case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
@@ -48,8 +50,9 @@ function sidebarReducer (state = initialState, action) {
 
       /** Handle Collection Actions */
       case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
-        Object.values(action.collections).forEach((collection, index) => {
-          newState = addNewNodeReq(newState, collection, 'collections')
+        sortedCollectionIds = Object.keys(action.collections).sort((a, b) => compareAlphabetically(a, b, action.collections))
+        sortedCollectionIds.forEach((collectionId, index) => {
+          newState = addNewNodeReq(newState, action.collections[collectionId], 'collections')
         })
         return newState
 

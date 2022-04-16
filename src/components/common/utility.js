@@ -389,6 +389,15 @@ export function focusSelectedEntity (type, id) {
   sidebarActions.toggleItem(type, id, true)
 }
 
+export function compareAlphabetically (a, b, data) {
+  let order = 0
+  const item1 = data[a].name.toLowerCase()
+  const item2 = data[b].name.toLowerCase()
+  if (item1 < item2) order = -1
+  else if (item1 > item2) order = 1
+  return order
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -419,5 +428,6 @@ export default {
   msgText,
   getEntityState,
   validateEmail,
-  focusSelectedEntity
+  focusSelectedEntity,
+  compareAlphabetically
 }
