@@ -59,7 +59,7 @@ function selectTab (props, tabId) {
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
     })
   } else if (tab.type === 'collection') {
-    (props.location.pathname.split('/')[6] === 'settings')
+    (tab.state.pageType === 'SETTINGS')
       ? props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
       : props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
   } else {
