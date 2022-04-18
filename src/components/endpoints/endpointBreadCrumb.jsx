@@ -199,7 +199,6 @@ class EndpointBreadCrumb extends Component {
               {this.props?.endpoint?.publishedEndpoint?.isPublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
               {this.state.isPagePublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
             </div>}
-
         </div>
       </div>
     )

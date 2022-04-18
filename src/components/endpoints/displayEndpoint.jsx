@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import store from '../../store/store'
-import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, isStatePending, isStateApproved, sensitiveInfoFound, msgText, getEntityState } from '../common/utility'
+import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, isStatePending, isStateApproved, sensitiveInfoFound, msgText, getEntityState, getCurrentUserSSLMode, setCurrentUserSSLMode } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -20,6 +20,7 @@ import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
+
 import {
   addEndpoint,
   updateEndpoint,
@@ -189,7 +190,8 @@ class DisplayEndpoint extends Component {
       draftDataSet: false,
       runSendRequest: null,
       requestKey: null,
-      docOptions: false
+      docOptions: false,
+      sslMode: getCurrentUserSSLMode()
     }
 
     this.uri = React.createRef()
@@ -281,6 +283,12 @@ class DisplayEndpoint extends Component {
       this.setState({ flagResponse: false })
     }
     this.setEndpointData()
+  }
+
+  setSslMode () {
+    this.setState({ sslMode: !this.state.sslMode }, () => {
+      setCurrentUserSSLMode(this.state.sslMode)
+    })
   }
 
   setCurrentReponseView () {
@@ -748,7 +756,8 @@ class DisplayEndpoint extends Component {
       if (isElectron()) {
         // Handle API through Electron Channel
         const { ipcRenderer } = window.require('electron')
-        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest })
+        const { sslMode } = this.state
+        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest, sslMode })
       } else {
         // Handle API through Backend
         responseJson = await endpointApiService.apiTest(api, method, body, header, bodyType, cancelToken)
@@ -2809,6 +2818,7 @@ class DisplayEndpoint extends Component {
                       </div>
                     )
                 }
+                    {isElectron() && <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>SSL certificate verification {this.state.sslMode ? <span className='enabled'>enabled</span> : <span>disabled</span>} </div>}
                     <div
                       className={
                     this.isDashboardAndTestingView()
