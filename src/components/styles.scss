@@ -1,4 +1,5 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
+@import './main/variables.scss';
 
 $border-color: rgba(227, 228, 230, 0.7);
 
@@ -618,10 +619,6 @@ button.btn.custom-body-type-button {
   border-left: 1px solid #1f1f1f;
   border-right: 1px solid #1f1f1f;
 }
-.textEditor {
-  border-radius: 5px;
-  border: 1px solid grey;
-}
 .menuBar {
   padding-bottom: 3px;
   display: flex;
@@ -653,22 +650,7 @@ button.is_active {
   padding: 1px 1px;
   border-radius: 2px;
 }
-.minHeight{
-  min-height: 650px;
-}
- .textEditor{
-  .ProseMirror{
-    padding: 10px 10px 10px 10px;
-    overflow: auto;
-  }
- .menuBar button{
-    font-size: medium;
- }
-}
 
-.textEditor .menuBar .custom-editor button{
-  font-size: medium;
-}
 .ProseMirror {
   mark{
     background-color: greenyellow;
@@ -728,4 +710,67 @@ button.is_active {
 .resize-cursor {
   cursor: ew-resize;
   cursor: col-resize;
+}
+.textEditorContainer{
+  .tippy-box {
+    max-width: 100% !important;
+    background-color: #fff;
+    border: 1px solid $outline-color;
+    border-bottom: 0;
+  }
+  &.editor{
+    border: 1px solid $outline-color;
+    background-color: #fff;
+    border-radius: $border-radius;
+    .ProseMirror{
+      padding: 1rem;
+      &.ProseMirror-focused{
+        outline: none;
+      }
+    }
+  }
+  .minHeight {
+    min-height: 25rem;
+  }
+  .menuBar{
+    border-bottom: 1px solid $outline-color;
+    padding: 0;
+    justify-content: flex-start;
+    > button, .dropdown > button{
+      padding: 0 5px;
+      border-right: 1px solid $outline-color !important;
+      height: 2.5rem;
+      min-width: 2rem !important;
+      text-align: center;
+      flex: auto;
+      margin: 0 !important;
+      transition: all 0.3s ease-in;
+      &:hover{
+        background-color: $secondary-color;
+      }
+      &:focus{
+        outline: none;
+      }
+    }
+    > button{
+      &:last-child{
+        border-right: 0 !important;
+      }
+    }
+    .dropdown {
+      height: 2.5rem;
+      .dropdown-toggle {
+        background: none !important;
+        border-radius: 0;
+        color: $text-color !important;
+        transition: all 0.3s ease-in;
+        &:after{
+          font-size: $font-medium;
+        }
+        &:hover{
+          background-color: $secondary-color !important;
+        }
+      }
+    }
+  }
 }

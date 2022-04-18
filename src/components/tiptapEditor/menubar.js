@@ -38,9 +38,15 @@ export default function MenuBar ({ editor }) {
         <Modal.Header closeButton>
           <Modal.Title>Set Image URL</Modal.Title>
         </Modal.Header>
-        <Modal.Body><label>URL</label><input type='text' value={ImageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+        <Modal.Body>
+          <div className='form-group'>
+            <label>URL</label>
+            <input type='text' className='form-control' value={ImageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+          </div>
         </Modal.Body>
-        <Modal.Footer><button variant='secondary' onClick={() => setShowImage(false)}> Close</button><button variant='primary' onClick={() => { if (linkUrl) { editor.chain().focus().extendMarkRange('link').setImage({ src: linkUrl }).run() }setShowImage(false) }}>Save</button></Modal.Footer>
+        <Modal.Footer>
+          <button className='btn btn-secondary outline mr-2' onClick={() => setShowImage(false)}> Close</button>
+          <button className='btn btn-primary' onClick={() => { if (linkUrl) { editor.chain().focus().extendMarkRange('link').setImage({ src: linkUrl }).run() }setShowImage(false) }}>Save</button></Modal.Footer>
       </Modal>
     )
   }
@@ -51,14 +57,19 @@ export default function MenuBar ({ editor }) {
         <Modal.Header closeButton>
           <Modal.Title>Set Link</Modal.Title>
         </Modal.Header>
-        <Modal.Body><label>URL</label><input type='text' value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} />
+        <Modal.Body>
+          <div className='form-group'>
+            <label>URL</label>
+            <input className='form-control' type='text' value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} />
+          </div>
         </Modal.Body>
         <Modal.Footer>
-          <button variant='secondary' onClick={() => setShowLink(false)}>
+          <button className='btn btn-secondary outline mr-2' onClick={() => setShowLink(false)}>
             Close
           </button>
           <button
-            variant='primary' onClick={() => {
+            className='btn btn-primary'
+            onClick={() => {
               if (linkUrl === null) {
                 setShowLink(false)
                 return
@@ -90,15 +101,29 @@ export default function MenuBar ({ editor }) {
         <Modal.Header closeButton>
           <Modal.Title>Add Number of rows and columns</Modal.Title>
         </Modal.Header>
-        <Modal.Body><label>row</label><input type='integer' value={row} onChange={(e) => setRow(e.target.value)} />
-          <label>columns</label><input type='integer' value={column} onChange={(e) => setColumn(e.target.value)} />
+        <Modal.Body>
+          <div className='row'>
+            <div className='col-md-6'>
+              <div className='form-group'>
+                <label>Rows</label>
+                <input className='form-control' type='integer' value={row} onChange={(e) => setRow(e.target.value)} />
+              </div>
+            </div>
+            <div className='col-md-6'>
+              <div className='form-group'>
+                <label>Columns</label>
+                <input className='form-control' type='integer' value={column} onChange={(e) => setColumn(e.target.value)} />
+              </div>
+            </div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
-          <button variant='secondary' onClick={() => setShowTable(false)}>
+          <button className='btn btn-secondary outline mr-2' onClick={() => setShowTable(false)}>
             Close
           </button>
           <button
-            variant='primary' onClick={() => {
+            className='btn btn-primary'
+            onClick={() => {
               editor.chain().focus().insertTable({ rows: row, cols: column, withHeaderRow: true }).run()
               setShowTable(false)
             }}

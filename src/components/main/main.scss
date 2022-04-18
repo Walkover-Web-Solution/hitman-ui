@@ -3175,11 +3175,20 @@ body .bottom-text-editor {
     }
   }
 }
-.doc-secs-container{
+body .doc-secs-container{
   position: relative;
   &:hover{
     .addons{
       opacity: 1;
+    }
+  }
+  .ProseMirror-focused{
+    outline: 1px solid $outline-color;
+    min-height:4rem;
+  }
+  .menuBar{
+    button{
+      min-width: 2.25rem !important;
     }
   }
 }
