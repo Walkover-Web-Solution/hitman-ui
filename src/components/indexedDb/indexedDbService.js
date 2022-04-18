@@ -53,7 +53,7 @@ const addData = async (storeName, val, key) => {
   }
   const tx = db.transaction(storeName, 'readwrite')
   const store = await tx.objectStore(storeName)
-  if(storeName === "tabs") await store.put(val)
+  if (storeName === 'tabs') await store.put(val)
   else await store.put(val, key)
   await tx.done
 }
