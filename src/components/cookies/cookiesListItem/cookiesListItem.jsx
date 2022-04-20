@@ -164,7 +164,7 @@ class CookiesListItem extends Component {
           value={this.state.updateCookie.value}
         />
         <div className='text-right mt-2'>
-          {this.showDisableButton() && <span className='cursor-pointer mr-3 btn default' onClick={() => this.setState({ updateCookie: {} })}>Discard</span>}
+          {this.showDisableButton() && <span className='cursor-pointer mr-3 btn default' onClick={() => this.setState({ updateCookie: {} })}>Update</span>}
           <button className='btn btn-primary' disabled={!this.showDisableButton()} onClick={() => this.saveCookie()}>save</button>
         </div>
       </>
