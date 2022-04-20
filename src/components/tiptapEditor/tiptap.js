@@ -12,6 +12,7 @@ import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
 import Text from '@tiptap/extension-text'
 import TextStyle from '@tiptap/extension-text-style'
+import Placeholder from '@tiptap/extension-placeholder'
 import { Color } from '@tiptap/extension-color'
 
 export default function Tiptap ({ initial, onChange, disabled, isInlineEditor, minHeight }) {
@@ -29,6 +30,9 @@ export default function Tiptap ({ initial, onChange, disabled, isInlineEditor, m
       TextStyle,
       Color,
       Text,
+      Placeholder.configure({
+        placeholder: 'Write your text here …'
+      }),
       Table.configure({
         resizable: true,
         HTMLAttributes: {

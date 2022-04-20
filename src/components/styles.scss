@@ -729,3 +729,10 @@ button.is_active {
   cursor: ew-resize;
   cursor: col-resize;
 }
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #635e5e;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
