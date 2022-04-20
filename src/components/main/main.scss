@@ -3,12 +3,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
 @import "./variables.scss";
 
-@media (min-width: 1401px){
-  body .split-sidebar > div:first-child{
-    min-width: 330px !important;
-  }
-}
-
 .mobile-warning{
   position: sticky;
   z-index: 1200;
@@ -457,6 +451,7 @@ label.data-type {
   }
   .public {
     overflow-wrap: anywhere;
+    padding: 0 1rem;
     strong {
       font-family: monospace;
     }
@@ -1552,36 +1547,6 @@ table#custom-generic-table tbody input[value="true"] + span.checkmark {
   position: fixed;
   right: 0;
 }
-
-@media(max-width:1699px) {
-  .colorChooser.d-flex {
-    justify-content: normal !important;
-    display: block !important;
-  }
-
-  .colorChooser.d-flex button {
-    margin-top: 10px;
-  }
-
-}
-
-// @media(max-width:1100px) {
-
-//   .hm-sidebar nav.public-endpoint-sidebar {
-//     width: 300px !important;
-//   }
-
-// }
-
-// @media(max-width:1900px) {
-
-//   body .hm-sidebar nav.public-endpoint-sidebar {
-//     width: 350px !important;
-//   }
-
-// }
-
-
 .addEniButton {
   h4 {
     color: #E98A36;
@@ -2162,20 +2127,6 @@ button[name="cta-1"] {
   color: #000;
   font-weight: 600;
   margin: 25px 25px 15px;
-}
-
-@media(max-width:1050px) {
-  .pub-inner {
-    width: 100%;
-  }
-
-  .publish-api-doc-container .dropdown .dropdown-toggle {
-    width: 50%;
-  }
-
-  .pub-illustrator {
-    display: none;
-  }
 }
 
 .pubSampleResponse h3.heading-2 {
@@ -3233,42 +3184,6 @@ body .doc-secs-container{
   right: 1.25rem;
   top: 1.40rem;
 }
-.response-right{
-  display: flex;
-  justify-content: space-between;
-  h4{
-    height: 2rem;
-    margin-bottom: 0;
-  }
-  .response-status{
-    margin: 0.5rem 0;
-  }
-  .mid-part{
-    overflow: auto;
-  }
-  .response-container-main {
-    width: 30%;
-    background-color: #fff;
-    padding: 1rem;
-    height: calc(100vh - 42px);
-    overflow: auto;
-    border-left: 1px solid $outline-color;
-    position: absolute !important;
-    right: 0;
-    top: 42px;
-    .response-switcher {
-      right: 1rem;
-      top: 1.5rem;
-    }
-    .nav-tabs{
-      margin-top: 0;
-      margin-bottom: 0;
-    }
-  }
-  .response-headers-container{
-    margin-top: 0.5rem;
-  }
-}
 .mid-part{
   width: 70%;
   padding: 1.25rem 1.25rem 0;
@@ -3345,15 +3260,6 @@ body .doc-secs-container{
   } 
 }
 
-
-@media (max-width: 1400px){
-  .mid-part{
-    max-width: 50rem;
-  }
-  .response-right .response-container-main{
-    max-width: 21rem;
-  }
-}
 .table{
   color: $text-color !important;
   th {
@@ -3395,14 +3301,6 @@ body .doc-secs-container{
 .btn-width{
   width: 10rem !important;
 }
-
-
-@media (max-width: 1350px){
-  .customRadio{
-    margin-right: 10px;
-  }
-}
-
 .error-msg{
   color: red;
 }
@@ -3410,5 +3308,45 @@ body .doc-secs-container{
 .close{
   &:focus{
     outline: none !important;
+  }
+}
+body .tox{
+  .tox-dialog {
+    &.tox-dialog--width-lg{
+      max-height: 34rem;
+      max-width: 50rem;
+    }
+    border-radius: $border-radius;
+    .tox-dialog__header {
+      border-bottom: 1px solid $outline-color !important;
+      padding: 0.75rem !important;
+    }
+    .tox-dialog__footer {
+      padding: 0.75rem 1rem;
+    }
+    label {
+      margin-bottom: 0.25rem;
+      color: $text-color-dark;
+    }
+    .tox-form__group {
+      margin-bottom: 1rem;
+    }
+    select, textarea, input{
+      &:focus{
+        border-color: $theme-color !important;
+      }
+    }
+    *{
+      font-family: Roboto !important;
+    }
+    .tox-dialog__footer-end{
+      .tox-button:not(.tox-button--secondary){
+        background-color: $theme-color;
+        border-color: $theme-color;
+      }
+    }
+  }
+  .tox-dialog-wrap__backdrop {
+    background: rgba(0,0,0,0.2);
   }
 }

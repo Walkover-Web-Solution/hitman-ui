@@ -11,6 +11,9 @@ import { ReactComponent as HelpIcon } from '../../assets/icons/helpcircle.svg'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { openExternalLink, msgText } from '../common/utility'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import store from '../../store/store'
+import { updateTab } from '../tabs/redux/tabsActions'
+import indexedDbService from '../indexedDb/indexedDbService'
 
 const mapStateToProps = (state) => {
   return {
@@ -75,11 +78,13 @@ class PublishCollectionInfo extends Component {
     )
   }
 
-  redirectToApiFeedback () {
+  async redirectToApiFeedback () {
     const collectionId = this.props.collectionId
     if (collectionId) {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
     }
+    const activeTab = await indexedDbService.getAllData('tabs_metadata')
+    store.dispatch(updateTab(activeTab.activeTabId, { state: { pageType: 'FEEDBACK' } }))
   }
 
   renderInOverlay (method, msg) {
@@ -221,11 +226,13 @@ class PublishCollectionInfo extends Component {
     this.setState({ openPublishSidebar: true })
   }
 
-  openPublishSettings () {
+  async openPublishSettings () {
     const collectionId = this.props.collectionId
     if (collectionId) {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
+    const activeTab = await indexedDbService.getAllData('tabs_metadata')
+    store.dispatch(updateTab(activeTab.activeTabId, { state: { pageType: 'SETTINGS' } }))
   }
 
   closePublishSidebar () {

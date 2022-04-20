@@ -157,7 +157,7 @@ class Form extends Component {
   renderButton (label, style) {
     return (
       <button
-        className='btn btn-primary btn-lg'
+        className='btn btn-primary'
         id='add_collection_create_new_btn'
       >
         {label}
