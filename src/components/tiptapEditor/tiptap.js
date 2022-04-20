@@ -56,7 +56,7 @@ export default function Tiptap ({ initial, onChange, disabled, isInlineEditor, m
   })
 
   return (
-    <div className='textEditor'>
+    <div className={`textEditorContainer ${!isInlineEditor ? 'editor' : ''}`}>
       {isInlineEditor && editor &&
         <BubbleMenu className='bubble-menu' tippyOptions={{ duration: 100 }} editor={editor}>
           <MenuBar editor={editor} key={editor} />
