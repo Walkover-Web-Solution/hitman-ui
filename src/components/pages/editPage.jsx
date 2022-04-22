@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 import * as _ from 'lodash'
 import { updateTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
-import TinyEditor from '../tinyEditor/tinyEditor'
+import Tiptap from '../tiptapEditor/tiptap'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -30,13 +30,14 @@ class EditPage extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      data: { id: null, versionId: null, groupId: null, name: '', contents: '' }
+      data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
+      showEditor: false
     }
     this.name = React.createRef()
     this.contents = React.createRef()
   }
 
-  fetchPage (pageId) {
+  async fetchPage (pageId) {
     let data = {}
     const { pages } = this.props
     const page = pages[pageId]
@@ -57,7 +58,8 @@ class EditPage extends Component {
   }
 
   async componentDidMount () {
-    this.setPageData()
+    await this.setPageData()
+    this.setState({ showEditor: true })
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -72,15 +74,15 @@ class EditPage extends Component {
     }
   }
 
-  setPageData () {
+  async setPageData () {
     const { tab, pages, match: { params: { pageId } } } = this.props
     const { draftDataSet } = this.state
 
     if (tab && pageId) {
       if (tab.isModified && !draftDataSet) {
-        this.setState({ ...tab.state, draftDataSet: true })
+        await this.setState({ ...tab.state, draftDataSet: true })
       } else if (pageId !== 'new' && pages[tab.id] && !this.state.originalData?.id) {
-        this.fetchPage(tab.id)
+        await this.fetchPage(tab.id)
       }
     }
   }
@@ -148,16 +150,17 @@ class EditPage extends Component {
     }
   }
 
-  renderTinyEditor (item, index) {
+  renderTiptapEditor (item, index) {
     return (
-      <TinyEditor
+      this.state.showEditor && <Tiptap
         onChange={this.handleChange}
-        data={this.state.data.contents}
+        initial={this.state.data.contents}
         match={this.props.match}
         isInlineEditor={false}
         disabled={false}
-        minHeight='650'
-      />
+        minHeight
+        key={index}
+                               />
     )
   }
 
@@ -213,7 +216,7 @@ class EditPage extends Component {
         </div>
 
         <div>
-          {this.renderTinyEditor()}
+          {this.renderTiptapEditor()}
         </div>
       </div>
     )
