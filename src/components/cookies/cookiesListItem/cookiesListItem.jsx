@@ -39,6 +39,12 @@ class CookiesListItem extends Component {
     this.setState({ updateCookie: { ...this.state.updateCookie, value: cookieValue } })
   }
 
+  showDisableButton () {
+    const currentDomain = { ...this.state.currentDomain }
+    const currentCookie = this.state.updateCookie
+    return (currentDomain.cookies[currentCookie.key] !== currentCookie.value)
+  }
+
   saveCookie () {
     const currentDomain = { ...this.state.currentDomain }
     const currentCookie = this.state.updateCookie
@@ -158,8 +164,8 @@ class CookiesListItem extends Component {
           value={this.state.updateCookie.value}
         />
         <div className='text-right mt-2'>
-          <span className='cursor-pointer mr-3 btn default' onClick={() => this.setState({ updateCookie: {} })}>cancel</span>
-          <button className='btn btn-primary' onClick={() => this.saveCookie()}>save</button>
+          {this.showDisableButton() && <span className='cursor-pointer mr-3 btn default' onClick={() => this.setState({ updateCookie: {} })}>Update</span>}
+          <button className='btn btn-primary' disabled={!this.showDisableButton()} onClick={() => this.saveCookie()}>save</button>
         </div>
       </>
     )
