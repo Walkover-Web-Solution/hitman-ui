@@ -105,7 +105,7 @@ function compareDefaultValue (updatedBodyDescription, originalBodyDescription) {
   const updatedKeys = Object.keys(updatedBodyDescription)
   for (let i = 0; i < updatedKeys.length; i++) {
     if (
-      originalBodyDescription[updatedKeys[i]] &&
+      originalBodyDescription?.[updatedKeys?.[i]] &&
       updatedBodyDescription[updatedKeys[i]].type ===
       originalBodyDescription[updatedKeys[i]].type
     ) {
