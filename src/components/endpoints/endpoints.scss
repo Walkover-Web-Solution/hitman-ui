@@ -374,7 +374,6 @@ $border-color: rgba(227, 228, 230, 0.7);
             }
           }
         }
-
         input {
           text-overflow: ellipsis;
           padding-right: 36px;
@@ -385,43 +384,49 @@ $border-color: rgba(227, 228, 230, 0.7);
         }
       }
     }
-
-    // .endpoint-url-input {
-    //   border-top-left-radius: 0px;
-    //   border-bottom-left-radius: 0px;
-    //   opacity: 0.8;
-    //   background-color: rgb(237, 237, 237);
-    // }
-    // .endpoint-url-input::placeholder {
-    //   font-weight: 250;
-    //   font-size: 17px;
-    // }
-
     #send-request-button {
-      // color: white;
-      // background-color: rgb(60, 60, 233);
       margin: 0 0 0 10px;
     }
-
     #save-endpoint-button {
-      // background-color: rgb(221, 221, 223);
-      // color: black;
       margin: 0 0 0 10px;
-      // opacity: 0.7;
     }
-
     #api_save_btn{
       margin: 0 0 0 10px;
     }
-
     #api-send-button{
       margin: 0 0 0 10px;
     }
-
     #show-code-snippets-button {
       background-color: rgb(221, 221, 223);
       color: black;
       opacity: 0.7;
+    }
+  }
+  .ssl-mode-toggle{
+    display: block;
+    font-size: 12px;
+    margin-top: -0.5rem;
+    color: $theme-color;
+    width: fit-content;
+    margin-bottom: 0.25rem;
+    &::after{
+      content: '';
+      width: 0;
+      display: block;
+      height: 1px;
+      background: $theme-color;
+      transition: all 0.3s ease-in;
+    }
+    &:hover{
+      &::after{
+        width: 100%;
+      }
+    }
+    span{
+      color: $alert-color;
+      &.enabled {
+        color: $success-color;
+      }
     }
   }
 }

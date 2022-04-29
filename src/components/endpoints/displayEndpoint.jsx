@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import store from '../../store/store'
-import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, isStatePending, isStateApproved, sensitiveInfoFound, msgText, getEntityState } from '../common/utility'
+import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, isStatePending, isStateApproved, sensitiveInfoFound, msgText, getEntityState, getCurrentUserSSLMode, setCurrentUserSSLMode } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -20,6 +20,7 @@ import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
+
 import {
   addEndpoint,
   updateEndpoint,
@@ -49,7 +50,6 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
-import TinyEditor from '../tinyEditor/tinyEditor'
 import { pendingEndpoint, approveEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
@@ -57,6 +57,8 @@ import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
 import PlusIcon from '../../assets/icons/plus.svg'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 import { ApproveRejectEntity, PublishEntityButton } from '../common/docViewOperations'
+import Tiptap from '../tiptapEditor/tiptap'
+
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -189,7 +191,8 @@ class DisplayEndpoint extends Component {
       draftDataSet: false,
       runSendRequest: null,
       requestKey: null,
-      docOptions: false
+      docOptions: false,
+      sslMode: getCurrentUserSSLMode()
     }
 
     this.uri = React.createRef()
@@ -281,6 +284,12 @@ class DisplayEndpoint extends Component {
       this.setState({ flagResponse: false })
     }
     this.setEndpointData()
+  }
+
+  setSslMode () {
+    this.setState({ sslMode: !this.state.sslMode }, () => {
+      setCurrentUserSSLMode(this.state.sslMode)
+    })
   }
 
   setCurrentReponseView () {
@@ -748,7 +757,8 @@ class DisplayEndpoint extends Component {
       if (isElectron()) {
         // Handle API through Electron Channel
         const { ipcRenderer } = window.require('electron')
-        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest })
+        const { sslMode } = this.state
+        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest, sslMode })
       } else {
         // Handle API through Backend
         responseJson = await endpointApiService.apiTest(api, method, body, header, bodyType, cancelToken)
@@ -1866,6 +1876,10 @@ class DisplayEndpoint extends Component {
             }
             add_sample_response={this.addSampleResponse.bind(this)}
             handleCancel={() => { this.handleCancel() }}
+            tests={this.state.tests}
+            sample_response_array={this.state.sampleResponseArray}
+            sample_response_flag_array={this.state.sampleResponseFlagArray}
+            props_from_parent={this.propsFromSampleResponse.bind(this)}
           />
         </div>
       )
@@ -2169,10 +2183,10 @@ class DisplayEndpoint extends Component {
     }
   };
 
-  renderTinyEditor (item, index) {
+  renderTiptapEditor (item, index) {
     return (
-      <TinyEditor
-        data={item.data}
+      <Tiptap
+        initial={item.data}
         onChange={(e) => {
           const docData = _.cloneDeep(this.state.docViewData)
           docData[index].data = e
@@ -2181,6 +2195,7 @@ class DisplayEndpoint extends Component {
         match={this.props.match}
         isInlineEditor
         disabled={!isDashboardRoute(this.props)}
+        key={index}
       />
     )
   }
@@ -2190,7 +2205,7 @@ class DisplayEndpoint extends Component {
       case 'textArea': {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
           return (
-            <div>{this.renderTinyEditor(item, index)}</div>
+            <div>{this.renderTiptapEditor(item, index)}</div>
           )
         }
         break
@@ -2199,7 +2214,7 @@ class DisplayEndpoint extends Component {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
           return (
             <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
-              {this.renderTinyEditor(item, index)}
+              {this.renderTiptapEditor(item, index)}
             </div>
           )
         }
@@ -2809,6 +2824,7 @@ class DisplayEndpoint extends Component {
                       </div>
                     )
                 }
+                    {isElectron() && <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>SSL certificate verification {this.state.sslMode ? <span className='enabled'>enabled</span> : <span>disabled</span>} </div>}
                     <div
                       className={
                     this.isDashboardAndTestingView()

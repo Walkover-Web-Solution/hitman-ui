@@ -389,6 +389,35 @@ export function focusSelectedEntity (type, id) {
   sidebarActions.toggleItem(type, id, true)
 }
 
+export function getUserProfile () {
+  let user = window.localStorage.getItem('profile')
+  try {
+    user = JSON.parse(user)
+    return user
+  } catch (e) {}
+}
+
+export function getCurrentUserSSLMode () {
+  let sslModeData = window.localStorage.getItem('ssl-mode')
+  const user = getUserProfile() || {}
+  try {
+    sslModeData = JSON.parse(sslModeData)
+    const { identifier } = user
+    return sslModeData?.[identifier]
+  } catch (e) {}
+}
+
+export function setCurrentUserSSLMode (sslModeFlag) {
+  let sslModeData = window.localStorage.getItem('ssl-mode') || '{}'
+  const user = getUserProfile() || {}
+  const { identifier } = user
+  try {
+    sslModeData = JSON.parse(sslModeData || '{}')
+    const sslMode = { ...sslModeData, [identifier]: sslModeFlag }
+    window.localStorage.setItem('ssl-mode', JSON.stringify(sslMode))
+  } catch (e) {}
+}
+
 export function compareAlphabetically (a, b, data) {
   let order = 0
   const item1 = data[a].name.toLowerCase()
@@ -429,5 +458,6 @@ export default {
   getEntityState,
   validateEmail,
   focusSelectedEntity,
+  getUserProfile,
   compareAlphabetically
 }

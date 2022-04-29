@@ -10,6 +10,7 @@ class CookiesList extends Component {
   }
 
   handleChange (e) {
+    if (e.target.value.trim() !== '') this.props.clearValidityMessage()
     this.setState({ currentDomain: { ...this.state.currentDomain, domain: e.target.value } })
   }
 
@@ -33,10 +34,14 @@ class CookiesList extends Component {
 
   renderAddDomain () {
     return (
-      <form className='form-group d-flex p-2' onSubmit={(e) => this.handleSubmit(e)}>
-        <input className='form-control' placeholder='Add Domain' value={this.state.currentDomain.domain} onChange={(e) => this.handleChange(e)} />
-        <button className='btn btn-primary ml-3' type='submit' disabled={this.state.currentDomain.domain === ''}>Add</button>
-      </form>
+      <div className='form-group'>
+        <form className='d-flex p-2' onSubmit={(e) => this.handleSubmit(e)}>
+          <input className='form-control' placeholder='Add Domain' value={this.state.currentDomain.domain} onChange={(e) => this.handleChange(e)} />
+          <button className='btn btn-primary ml-3' type='submit' disabled={this.state.currentDomain.domain === ''}>Add</button>
+        </form>
+        {(this.props.validityMessage) && <small className='muted-text'>*Please enter valid Domain</small>}
+      </div>
+
     )
   }
 
