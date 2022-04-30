@@ -1876,6 +1876,10 @@ class DisplayEndpoint extends Component {
             }
             add_sample_response={this.addSampleResponse.bind(this)}
             handleCancel={() => { this.handleCancel() }}
+            tests={this.state.tests}
+            sample_response_array={this.state.sampleResponseArray}
+            sample_response_flag_array={this.state.sampleResponseFlagArray}
+            props_from_parent={this.propsFromSampleResponse.bind(this)}
           />
         </div>
       )
