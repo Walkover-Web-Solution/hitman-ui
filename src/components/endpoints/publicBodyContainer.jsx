@@ -460,19 +460,19 @@ class PublicBodyContainer extends Component {
                   Body <small className='text-muted'>({this.props.body.type})</small> {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
                 </div>
                 <ul className='public-endpoint-tabs'>
-                  <li className={this.state.showBodyCodeEditor ? 'active' : ''}>
-                    <div
-                      onClick={() => this.setState({ showBodyCodeEditor: true })}
-                    >
-                      Raw
-                    </div>
+                  <li
+                    className={this.state.showBodyCodeEditor ? 'active' : ''}
+                    style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                    onClick={() => this.setState({ showBodyCodeEditor: true })}
+                  >
+                    Raw
                   </li>
-                  <li className={!this.state.showBodyCodeEditor ? 'active' : ''}>
-                    <div
-                      onClick={() => this.setState({ showBodyCodeEditor: false })}
-                    >
-                      Body description
-                    </div>
+                  <li
+                    className={!this.state.showBodyCodeEditor ? 'active' : ''}
+                    style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                    onClick={() => this.setState({ showBodyCodeEditor: false })}
+                  >
+                    Body description
                   </li>
                 </ul>
                 {this.state.showBodyCodeEditor

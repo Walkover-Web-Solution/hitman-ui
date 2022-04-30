@@ -7,7 +7,7 @@ import { deletePage, duplicatePage } from '../../../pages/redux/pagesActions'
 import sidebarActionTypes from './sidebarActionTypes'
 import * as _ from 'lodash'
 
-const toggleItem = (type, id) => {
+const toggleItem = (type, id, isOpen = false) => {
   const itemNode = store.getState().sidebar.navList[`${type}_${id}`]
   if (!_.isEmpty(itemNode)) {
     const { expanded, isExpandable, focused } = store.getState().sidebar.navList[`${type}_${id}`]
@@ -15,7 +15,7 @@ const toggleItem = (type, id) => {
     if (!focused) store.dispatch({ type: sidebarActionTypes.FOCUS_ITEM, payload: `${type}_${id}` })
 
     if (isExpandable) {
-      if (!expanded) { store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM }) } else { store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM }) }
+      if (!expanded || isOpen) { store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM }) } else { store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM }) }
     }
   }
 }

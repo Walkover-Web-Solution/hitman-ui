@@ -10,10 +10,22 @@
   max-width: 330px !important;
   min-width: 250px !important;
 }
-span.Resizer.vertical {
+.Resizer {
   width: 1px;
   background: #e6dbd4;
   cursor: col-resize;
+  position: relative;
+  &::after{
+    content: '';
+    width: 0.5rem;
+    height: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: -0.25rem;
+    z-index: 1;
+    background-color: transparent;
+  }
 }
 body .sidebar {
   height: 100%;
@@ -121,6 +133,9 @@ body .sidebar {
         }
         &:hover {
           background: $grey;
+          .published-icon{
+            opacity: 0;
+          } 
         }
         .sidebar-item-action-btn {
           cursor: pointer;
@@ -133,16 +148,24 @@ body .sidebar {
           }
         }
         .sidebar-item-action {
-          transition: all 0.3s ease-in;
-          opacity: 0;
-          visibility: hidden;
           position: absolute;
           right: 0rem;
-          background: $grey;
           padding: 0 0.7rem;
           top: 50%;
           transform: translateY(-50%);
           z-index: 19;
+          > div{
+            &:not(.dropdown-menu){
+              transition: all 0.3s ease-in;
+              opacity: 0;
+              visibility: hidden;
+            }
+          }
+          .sidebar-item-action-btn[aria-expanded="true"]{
+            opacity: 1;
+            visibility: visible;
+            background-color: $secondary-color;
+          }
           .dropdown-menu{
             box-shadow: 0px 18px 46px -14px #e5e5e5;
             .dropdown-item{
@@ -168,10 +191,19 @@ body .sidebar {
           outline: none;
           box-shadow: none;
         }
+        &.focused{
+          background-color: $grey;
+        }
         &:hover {
-          .sidebar-item-action {
+          .sidebar-item-action > div {
             visibility: visible;
             opacity: 1;
+          }
+          .counts{
+            opacity: 0;
+          }
+          .sidebar-item-action-btn[aria-expanded="true"]{
+            background-color: $grey;
           }
         }
         .sidebar-toggle{

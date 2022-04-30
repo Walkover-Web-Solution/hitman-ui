@@ -577,11 +577,10 @@ class SideBar extends Component {
     const productLinks = { FEEDIO: process.env.REACT_APP_FEEDIO_UI_URL, CONTENTBASE: process.env.REACT_APP_CONTENTBASE_URL, EBL: process.env.REACT_APP_VIASOCKET_URL, HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL }
     const orgId = this.props.match.params.orgId
     let link = productLinks[product.toUpperCase()]
-
     if (product !== products.HTTPDUMP) {
       link += `/orgs/${orgId}`
     }
-    this.handleOpenLink(link)
+    openExternalLink(link)
   }
 
   handleOpenLink (link, current = false) {
@@ -777,13 +776,14 @@ class SideBar extends Component {
   }
 
   renderGlobalAddButton () {
+    const { filter } = this.state.data
     const isMarketplaceImported = this.props.collections[this.collectionId]?.importedFromMarketPlace
     const title = this.collectionId ? isMarketplaceImported ? 'Cannot add Entities to a Marketplace Collection.' : 'Add Entities to Collection' : 'Add/Import Collection'
     return (
       getCurrentUser() &&
         <div className='d-flex align-items-center justify-content-between mb-2'>
-          <span className='f-12 font-weight-700'>COLLECTION</span>
-          <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><Plus /></div>
+          <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span>
+          {filter === '' && <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><Plus /></div>}
         </div>
     )
   }

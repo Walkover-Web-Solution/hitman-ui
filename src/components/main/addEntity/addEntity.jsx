@@ -87,7 +87,7 @@ export class AddEntity extends Component {
     renderEmptyMessage () {
       return (
         <div className='d-flex empty-box justify-content-between'>
-          <p className='mb-0'>{entityENUM[this.props.type].message}  </p>
+          <p className='mb-0 f-12 pl-3'>{entityENUM[this.props.type].message}  </p>
           {this.renderToolTip(this.props.type)}
         </div>
       )

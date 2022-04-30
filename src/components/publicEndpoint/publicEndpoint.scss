@@ -536,13 +536,19 @@ h4.hm-sidebar-title span {
 }
 
 .hm-panel.endpoint-public-response-container.public-doc {
-  // background: #fff;
   padding: 15px 0;
   margin: 30px 0 0;
-  border-radius: 4px;
-
+  .tab-content{
+    margin: 0;
+  }
   .endpoint-response-container {
-    background: #F3F3F3;
+    background: $secondary-color;
+    padding: 1rem;
+    border-radius: $border-radius;
+    pre{
+      padding: 1rem;
+      border-radius: $border-radius;
+    }
   }
 }
 .empty-response-container svg {
@@ -561,13 +567,8 @@ h4.hm-sidebar-title span {
     border: none;
     height: 150px;
   }
-
-
   .response-viewer {
-    margin: 0;
-
     .response-tabs {
-
       button {
         border: none;
         background: transparent;
@@ -639,6 +640,20 @@ h4.hm-sidebar-title span {
 .icon-design{
   background-color: #f8f8f8;
 }
+button.toggleButton {
+  font-size: 0;
+  border: none;
+  outline: none !important;
+  position: relative;
+  z-index: 19;
+}
+.mainContentWrapperPublic{
+  &:not(.hideCodeEditor){
+    .toggleButton{
+      background-color: transparent !important;
+    }
+  }
+}
 .hm-right-content  {
   &.hasPublicNavbar{
     .hideCodeEditor{
@@ -704,6 +719,9 @@ h4.hm-sidebar-title span {
   position: absolute;
   right: 0;
   top: 0;
+  .select-code-wrapper{
+    flex-direction: row;
+  }
   .inner-editor {
     height: 100%;
     .editor-body-wrapper {
@@ -729,7 +747,6 @@ h4.hm-sidebar-title span {
   }
   button.toggleButton {
     font-size: $font-normal;
-    background-color: $text-color;
     position: absolute;
     left: -113px;
     color: #fff;
@@ -741,21 +758,5 @@ h4.hm-sidebar-title span {
     img {
       display: none;
     }
-  }
-}
-
-
-@media (max-width: 1350px){
-  .hm-right-content{
-      .hideCodeEditor{
-        .hm-endpoint-container{
-          max-width: 50rem;
-        }
-      }
-  }
-  .select-code-wrapper > button, .select-code-wrapper .dropdown button{
-    font-size: $font-small !important;
-    height: 30px;
-    padding: 0 6px;
   }
 }

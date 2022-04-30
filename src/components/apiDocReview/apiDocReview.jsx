@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, validateEmail } from '../common/utility'
 import Axios from 'axios'
 import _ from 'lodash'
 import { Modal } from 'react-bootstrap'
@@ -17,7 +17,8 @@ class ApiDocReview extends Component {
     user: '',
     comment: '',
     showFeedbackModal: false,
-    currentReviews: {}
+    currentReviews: {},
+    validEmailAddress: true
   }
 
   componentDidMount () {
@@ -107,7 +108,11 @@ class ApiDocReview extends Component {
 
   handleOnSubmit (event) {
     event.preventDefault()
-    this.postApi()
+    if (validateEmail(this.state.user)) {
+      this.postApi()
+      this.closeFeedbackModal()
+      this.setState({ validEmailAddress: true })
+    } else this.setState({ validEmailAddress: false })
   }
 
   handleInput (event) {
@@ -129,11 +134,12 @@ class ApiDocReview extends Component {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleOnSubmit.bind(this)}>
-              <div className='form-group'>
+              <div className='form-group mb-0'>
                 <label>Email</label>
                 <input className='form-control' onChange={this.handleInput.bind(this)} value={this.state.user} type='text' name='user' />
               </div>
-              <div className='form-group'>
+              {!this.state.validEmailAddress && <span className='error-msg'>Enter a valid email address</span>}
+              <div className='form-group mt-3'>
                 <label htmlFor=''>Comment</label>
                 <textarea className='form-control' onChange={this.handleInput.bind(this)} value={this.state.comment} type='text' name='comment' /><br />
               </div>

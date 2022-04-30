@@ -9,6 +9,7 @@ import GroupForm from '../groups/groupForm'
 import { ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import { Dropdown } from 'react-bootstrap'
 import DropdownItem from 'react-bootstrap/esm/DropdownItem'
+import _ from 'lodash'
 
 const mapStateToProps = state => {
   return {
@@ -42,21 +43,6 @@ class SaveAsSidebar extends Form {
       showEditor: false
     }
 
-    // if (this.props.history.location.groupId) {
-    //   this.state.list.type = 'endpoints'
-    //   this.state.list.parentId = this.props.history.location.groupId
-    // }
-
-    if (this.props.history.location.groupId) {
-      this.state.list.type = 'endpoints'
-      this.state.list.parentId = this.props.history.location.groupId
-      this.state.dropdownList.type = 'endpoints'
-      this.state.dropdownList.parentId = this.props.history.location.groupId
-      this.state.dropdownList.selectedCollectionId = this.props.versions[this.props.groups[this.state.dropdownList.parentId].versionId].collectionId
-      this.state.dropdownList.selectedVersionId = this.props.groups[this.state.dropdownList.parentId].versionId
-      this.state.dropdownList.selectedGroupId = this.props.history.location.groupId
-    }
-
     this.saveAsSidebar = createRef()
 
     this.schema = {
@@ -70,6 +56,24 @@ class SaveAsSidebar extends Form {
   }
 
   componentDidMount () {
+    const groupId = new URLSearchParams(this.props.history.location.search).get('group')
+    if (!_.isNull(groupId)) {
+      const list = {
+        type: 'endpoints',
+        parentId: groupId
+      }
+      const dropdownList = {
+        ...list,
+        selectedCollectionId: this.props.versions[this.props.groups[groupId].versionId].collectionId,
+        selectedGroupId: groupId,
+        selectedVersionId: this.props.groups[groupId].versionId
+      }
+      this.setState({ groupId, list, dropdownList }, () => {
+        this.props.history.push({
+          ..._.pick(this.props.history.location, ['pathname', 'title'])
+        })
+      })
+    }
     const data = { ...this.state.data }
     data.name = this.props.name
     this.setState({ data })
@@ -397,7 +401,7 @@ class SaveAsSidebar extends Form {
           {this.showCollectionForm()}
           {this.showCollectionVersionForm()}
           {this.showGroupForm()}
-          <div className='custom-collection-modal-container modal-header'>
+          <div className='custom-collection-modal-container modal-header align-items-center'>
             <div className='modal-title h4'>
               {this.props.location.pathname.split('/')[5] !== 'new' ? 'Save As' : 'Save'}
             </div>
@@ -496,13 +500,13 @@ class SaveAsSidebar extends Form {
             </div>
             <div className='mt-5'>
               <button
-                className='btn btn-secondary outline btn-lg mr-2'
+                className='btn btn-secondary outline mr-2 api-cancel-btn'
                 onClick={() => this.props.onHide()}
               >
                 Cancel
               </button>
               <button
-                className={this.props.saveAsLoader ? 'btn btn-primary btn-lg buttonLoader' : 'btn btn-primary btn-lg'}
+                className={this.props.saveAsLoader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
                 onClick={this.handleSubmit}
                 disabled={this.state.dropdownList.type !== 'endpoints' || title.trim() === '' || title === 'Untitled' ? 'disabled' : ''}
               >

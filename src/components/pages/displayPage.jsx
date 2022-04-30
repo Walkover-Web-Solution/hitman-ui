@@ -6,12 +6,12 @@ import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
 import ApiDocReview from '../apiDocReview/apiDocReview'
-import TinyEditor from '../tinyEditor/tinyEditor'
 import { isAdmin } from '../auth/authService'
 import { approvePage, pendingPage, rejectPage } from '../publicEndpoint/redux/publicEndpointsActions'
 import ConfirmationModal from '../common/confirmationModal'
 import { ApproveRejectEntity, PublishEntityButton } from '../common/docViewOperations'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import Tiptap from '../tiptapEditor/tiptap'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -93,14 +93,15 @@ class DisplayPage extends Component {
   checkPageRejected () {
     if (this.props.rejected) {
       return (
-        <div className='pageText doc-view'>
-          {this.renderTinyEditor(this.props.pages[this.props.pageId].publishedPage.contents)}
+        <div className='pageText doc-view mt-2'>
+          {this.renderTiptapEditor(this.props.pages[this.props.pageId].publishedPage.contents)}
         </div>
       )
     } else {
+      const { contents } = this.state.data
       return (
         <div className='pageText doc-view'>
-          {this.renderTinyEditor(this.state.data.contents)}
+          {this.renderTiptapEditor(contents === null ? '' : contents)}
         </div>
       )
     }
@@ -124,14 +125,15 @@ class DisplayPage extends Component {
     )
   }
 
-  renderTinyEditor (contents) {
+  renderTiptapEditor (contents) {
     return (
-      <TinyEditor
+      <Tiptap
         onChange={() => {}}
-        data={contents}
+        initial={contents}
         match={this.props.match}
         isInlineEditor
         disabled
+        key={Math.random()}
       />
     )
   }
@@ -160,7 +162,7 @@ class DisplayPage extends Component {
               {getEntityState(pageId, pages)}
             </button>}
           <button
-            className='ml-2 btn btn-outline orange'
+            className='btn btn-secondary outline ml-2 orange'
             onClick={() => {
               this.handleEdit(this.state.data)
             }}

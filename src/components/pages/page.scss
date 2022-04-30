@@ -13,6 +13,9 @@
   button { 
     margin-bottom: 15px;
     float: right;
+    &.btn-outline.orange:disabled{
+      pointer-events: none;
+    }
   }
   p{
     margin-bottom: 0;

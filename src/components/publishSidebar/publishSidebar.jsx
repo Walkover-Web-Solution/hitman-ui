@@ -440,8 +440,8 @@ export class PublishSidebar extends Component {
   renderFooter () {
     return (
       <div className='d-flex mt-3'>
-        <button className='btn btn-primary justify-content-center' id='api-next-btn' onClick={() => this.sendPublishRequest()}>Next</button>
-        <button className='ml-2 btn btn-secondary justify-content-center' id='api-cancel-btn' onClick={() => { this.props.closePublishSidebar() }}>Cancel</button>
+        <button className='btn btn-primary justify-content-center api-save-btn' onClick={() => this.sendPublishRequest()}>Next</button>
+        <button className='ml-2 btn btn-secondary justify-content-center api-cancel-btn' onClick={() => { this.props.closePublishSidebar() }}>Cancel</button>
       </div>
     )
   }

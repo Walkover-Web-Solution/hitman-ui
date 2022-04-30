@@ -35,6 +35,10 @@ class OpenApiForm extends Component {
         file: null
       },
       step: 1,
+      viewLoader: {
+        testing: false,
+        doc: false
+      },
     }
   }
 
@@ -84,7 +88,8 @@ class OpenApiForm extends Component {
     this.setState({ step: 2 })
   }
 
-  saveCollection(defaultView){
+  saveCollection(defaultView,flag){
+    this.setViewLoader(defaultView, flag)
     this.importApi(defaultView)
   }
 
@@ -186,9 +191,17 @@ class OpenApiForm extends Component {
     )
   }
 
+  setViewLoader (type, flag) {
+    if (flag === 'edit') this.setState({ updating: true })
+    else {
+      const { viewLoader } = this.state
+      this.setState({ viewLoader: { ...viewLoader, [type]: flag } })
+    }
+  }
+
   renderDefaultViewForm () {
     return (
-      <DefaultViewModal saveCollection={this.saveCollection.bind(this)}/>
+      <DefaultViewModal viewLoader={this.state.viewLoader} saveCollection={this.saveCollection.bind(this)}/>
     )
   }
 

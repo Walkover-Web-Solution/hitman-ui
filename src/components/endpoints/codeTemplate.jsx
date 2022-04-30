@@ -59,6 +59,9 @@ class CodeTemplate extends Component {
     if (this.props.harObject) {
       this.makeCodeTemplate(this.selectedLanguage)
     }
+    if (!this.state.theme) {
+      this.setState({ theme: this.props.publicCollectionTheme })
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -72,11 +75,10 @@ class CodeTemplate extends Component {
   }
 
   render () {
-    const { codeEditorVisibility } = this.state
-
+    const { codeEditorVisibility, theme } = this.state
     return (
       <div className={codeEditorVisibility ? 'pubCodeWrapper' : 'pubCodeWrapper closeEditor'}>
-        <button className='toggleButton justify-content-start' onClick={() => { this.toggleCodeEditor() }}>
+        <button className='toggleButton justify-content-start' style={{ background: theme }} onClick={() => { this.toggleCodeEditor() }}>
           Sample Code
           <img src={CloseIcon} alt='' />
         </button>
@@ -85,7 +87,7 @@ class CodeTemplate extends Component {
             <div className='code-heading mb-3 d-flex justify-content-center'>
               <span>Sample code</span>
             </div>
-            <div className='select-code-wrapper d-flex justify-content-end'>
+            <div className='select-code-wrapper d-flex'>
               {primaryLanguages.map(key => (
                 <button
                   key={key}

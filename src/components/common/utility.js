@@ -3,6 +3,7 @@ import history from '../../history'
 import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
@@ -378,6 +379,54 @@ export function getEntityState (entityId, entity) {
   if (isStateDraft(entityId, entity) && !isPublic) return 'Make Public'
 }
 
+export function validateEmail (email) {
+  const emailIdValidationRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+  return (emailIdValidationRegex.test(email))
+}
+
+export function focusSelectedEntity (type, id) {
+  sidebarActions.focusSidebar()
+  sidebarActions.toggleItem(type, id, true)
+}
+
+export function getUserProfile () {
+  let user = window.localStorage.getItem('profile')
+  try {
+    user = JSON.parse(user)
+    return user
+  } catch (e) {}
+}
+
+export function getCurrentUserSSLMode () {
+  let sslModeData = window.localStorage.getItem('ssl-mode')
+  const user = getUserProfile() || {}
+  try {
+    sslModeData = JSON.parse(sslModeData)
+    const { identifier } = user
+    return sslModeData?.[identifier]
+  } catch (e) {}
+}
+
+export function setCurrentUserSSLMode (sslModeFlag) {
+  let sslModeData = window.localStorage.getItem('ssl-mode') || '{}'
+  const user = getUserProfile() || {}
+  const { identifier } = user
+  try {
+    sslModeData = JSON.parse(sslModeData || '{}')
+    const sslMode = { ...sslModeData, [identifier]: sslModeFlag }
+    window.localStorage.setItem('ssl-mode', JSON.stringify(sslMode))
+  } catch (e) {}
+}
+
+export function compareAlphabetically (a, b, data) {
+  let order = 0
+  const item1 = data[a].name.toLowerCase()
+  const item2 = data[b].name.toLowerCase()
+  if (item1 < item2) order = -1
+  else if (item1 > item2) order = 1
+  return order
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -406,5 +455,9 @@ export default {
   sensitiveInfoFound,
   hexToRgb,
   msgText,
-  getEntityState
+  getEntityState,
+  validateEmail,
+  focusSelectedEntity,
+  getUserProfile,
+  compareAlphabetically
 }

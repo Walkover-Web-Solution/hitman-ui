@@ -178,36 +178,38 @@ class DisplayBodyDescription extends Component {
     }
     return (
       <div className='object-container'>
-        {Object.keys(obj).map((key, index) => (
-          <div
-            key={key}
-            className={
+        {(typeof (obj) === 'string')
+          ? <div className='object-container object-error'>{obj}</div>
+          : Object.keys(obj).map((key, index) => (
+            <div
+              key={key}
+              className={
               obj[key].type === 'array'
                 ? 'array-container'
                 : 'object-row-wrapper'
             }
-            style={
+              style={
               obj[key].type === 'object'
                 ? { flexDirection: 'column' }
                 : { flexDirection: 'row' }
             }
-          >
-            <div className='key-title'>
-              <label>{key}</label>
-              <label className='data-type'>{obj[key].type}</label>
+            >
+              <div className='key-title'>
+                <label>{key}</label>
+                <label className='data-type'>{obj[key].type}</label>
+              </div>
+              {this.displayInput(obj[key], name + '.' + key)}
+              {obj[key].type === 'object'
+                ? this.displayObject(obj[key].value, name + '.' + key)
+                : obj[key].type === 'array'
+                  ? this.displayArray(
+                      obj[key].value,
+                      name + '.' + key,
+                      obj[key].default
+                    )
+                  : null}
             </div>
-            {this.displayInput(obj[key], name + '.' + key)}
-            {obj[key].type === 'object'
-              ? this.displayObject(obj[key].value, name + '.' + key)
-              : obj[key].type === 'array'
-                ? this.displayArray(
-                    obj[key].value,
-                    name + '.' + key,
-                    obj[key].default
-                  )
-                : null}
-          </div>
-        ))}
+          ))}
       </div>
     )
   }

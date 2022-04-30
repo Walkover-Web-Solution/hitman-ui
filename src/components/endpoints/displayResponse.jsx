@@ -144,6 +144,7 @@ class DisplayResponse extends Component {
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'body' }) }}>
               <a
                 className={this.state.selectedResponseTab === 'body' ? 'nav-link active' : 'nav-link'}
+                style={this.state.selectedResponseTab === 'body' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
                 id='pills-response-tab'
                 data-toggle='pill'
                 role='tab'
@@ -160,6 +161,7 @@ class DisplayResponse extends Component {
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'header' }) }}>
               <a
                 className={this.state.selectedResponseTab === 'header' ? 'nav-link active' : 'nav-link'}
+                style={this.state.selectedResponseTab === 'header' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
                 id='pills-header-tab'
                 data-toggle='pill'
                 aria-selected='false'
@@ -243,7 +245,7 @@ class DisplayResponse extends Component {
     const { status, statusText } = this.props.response
     const color = ((status >= 400) || (status >= 500)) ? 'error' : ((status >= 200 && status < 300) ? 'success' : 'regular')
     return (
-      <div className={`response-status-value-${color}`} style={{ color: this.state.theme }}>
+      <div className={`response-status-value-${color}`}>
         {status + ' ' + statusText}
       </div>
     )
@@ -260,10 +262,7 @@ class DisplayResponse extends Component {
               ? this.props.response.status
                   ? (
                     <div>
-                      <div className='response-status'>
-                        <div className='respHeading mr-2'>
-                          {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
-                        </div>
+                      <div className='response-status justify-content-end'>
                         <div className='statusWrapper'>
                           {this.props.response.status &&
                             <div id='status'>
