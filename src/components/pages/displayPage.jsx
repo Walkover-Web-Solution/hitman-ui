@@ -162,7 +162,7 @@ class DisplayPage extends Component {
               {getEntityState(pageId, pages)}
             </button>}
           <button
-            className='ml-2 btn btn-outline orange'
+            className='btn btn-secondary outline ml-2 orange'
             onClick={() => {
               this.handleEdit(this.state.data)
             }}
