@@ -27,6 +27,7 @@ export class CookiesModal extends Component {
     tab: 1,
     selectedDomain: null,
     domains: {},
+    validityMessage: false,
     deleteModal: false,
     deleteModalData: {
       title: '',
@@ -50,7 +51,11 @@ export class CookiesModal extends Component {
 
   addDomain (domain) {
     domain.requestId = shortid.generate()
-    this.props.add_cookies_domain(domain)
+    if (domain.domain.trim() !== '') { this.props.add_cookies_domain(domain) } else this.setState({ validityMessage: true })
+  }
+
+  clearValidityMessage () {
+    this.setState({ validityMessage: false })
   }
 
   addCookies (domain) {
@@ -91,6 +96,8 @@ export class CookiesModal extends Component {
         domains={this.state.domains}
         changeModalTab={this.changeModalTab.bind(this)}
         toggleDelete={this.toggleDelete.bind(this)}
+        validityMessage={this.state.validityMessage}
+        clearValidityMessage={this.clearValidityMessage.bind(this)}
       />
     )
   }
