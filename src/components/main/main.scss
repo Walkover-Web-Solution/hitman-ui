@@ -1070,6 +1070,14 @@ button.btn.btn-secondary {
   border: none;
   font-size: 14px;
   font-weight: 600;
+  &.orange{
+    border-color: $theme-color;
+    background-color: transparent;
+  }
+  &:hover{
+    background-color: $theme-color;
+    color: #fff;
+  }
 }
 .modal{
   .modal-dialog{
@@ -2287,7 +2295,7 @@ span.endpointNameWrapper {
     width: 100%
   }
   .host-data {
-    position: absolute;
+    position: relative;
     margin-top: 5px;
     background-color: white;
     box-shadow: 0 3px 5px 0px rgba(0, 0, 0, 0.03);
