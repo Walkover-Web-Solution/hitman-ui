@@ -28,7 +28,7 @@ export function PublishEntityButton (props) {
   const approvedOrRejected = isStateApproved(entityId, entity) || isStateReject(entityId, entity)
   return (
     <button
-      className={'ml-2 ' + (publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange')}
+      className={'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange ' : 'btn btn-secondary outline ml-2 orange')}
       type='button'
       onClick={() => props.open_publish_confirmation_modal()}
       disabled={approvedOrRejected}
