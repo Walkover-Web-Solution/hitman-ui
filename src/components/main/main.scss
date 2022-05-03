@@ -1073,6 +1073,7 @@ button.btn.btn-secondary {
   &.orange{
     border-color: $theme-color;
     background-color: transparent;
+    color: $theme-color;
   }
   &:hover{
     background-color: $theme-color;
