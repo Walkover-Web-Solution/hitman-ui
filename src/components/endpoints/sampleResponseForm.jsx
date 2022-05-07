@@ -42,7 +42,7 @@ class SampleResponseForm extends Form {
   editSampleResponse () {
     let { status, description, body: data, title } = this.state.data
     try {
-      data = JSON.stringify(data)
+      data = JSON.parse(data)
     } catch (error) {
       data = null
     }
@@ -57,7 +57,7 @@ class SampleResponseForm extends Form {
   addSampleResponse () {
     let { title, status, description, body: data } = this.state.data
     try {
-      data = JSON.stringify(data)
+      data = JSON.parse(data)
     } catch (error) {
       data = null
     }
