@@ -14,6 +14,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import store from '../../store/store'
 import { updateTab } from '../tabs/redux/tabsActions'
 import indexedDbService from '../indexedDb/indexedDbService'
+import _ from 'lodash'
 
 const mapStateToProps = (state) => {
   return {
@@ -55,13 +56,22 @@ class PublishCollectionInfo extends Component {
 
   renderPublicUrl () {
     const url = defaultDomain + '/p/' + this.props.collectionId
+    const { versions, groups, endpoints, collectionId } = this.props
+    const targetVersionIds = _.values(versions).filter((version) => version.collectionId === collectionId).map((version) => version.id)
+    const targetGroupIds = _.values(groups).filter((group) => targetVersionIds.includes(group.versionId)).map((group) => group.id)
+    const publishedEndpoints = _.values(endpoints).filter((endpoint) => targetGroupIds.includes(endpoint.groupId) && endpoint.isPublished)
+    const isDisabled = _.isEmpty(publishedEndpoints)
     return (
-      <button onClick={() => { openExternalLink(url) }}>
-        <div className='sidebar-public-url text-link text-center d-flex align-items-center'>
-          <span className='icon d-flex mr-1'> <ExternalLinks /></span>
-          <div className='text-truncate'>{url}</div>
-        </div>
-      </button>
+      <OverlayTrigger
+        overlay={<Tooltip id='tooltip-unpublished-endpoint' className={!isDisabled && 'd-none'}>Atleast one endpoint/page is to be published to enable this link.</Tooltip>}
+      >
+        <button onClick={() => !isDisabled && openExternalLink(url)}>
+          <div className={`sidebar-public-url text-center d-flex align-items-center${!isDisabled && ' text-link'}`}>
+            <span className='icon d-flex mr-1'> <ExternalLinks /></span>
+            <div className='text-truncate'>{url}</div>
+          </div>
+        </button>
+      </OverlayTrigger>
     )
   }
 
