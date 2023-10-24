@@ -20,6 +20,64 @@ jobs:
         env:
           CI: false
           REACT_APP_ANALYSIS_KEY: ${{ vars.REACT_APP_ANALYSIS_KEY }}
+          REACT_APP_API_URL : ${{vars.REACT_APP_API_URL}}
+          REACT_APP_UI_URL : ${{vars.REACT_APP_UI_URL}}
+          REACT_APP_UI_IP: ${{vars.REACT_APP_UI_IP}}
+          REACT_APP_DOMAINS_LIST: ${{vars.REACT_APP_DOMAINS_LIST}}
+          REACT_APP_CUSTOM_DOMAINS_LIST: ${{vars.REACT_APP_CUSTOM_DOMAINS_LIST}}
+          REACT_APP_CIRCLECI_TOKEN: ${{vars.REACT_APP_CIRCLECI_TOKEN}}
+          REACT_APP_CIRCLECI_CONTEXT_ID: ${{vars.REACT_APP_CIRCLECI_CONTEXT_ID}}
+          REACT_APP_ANALYTICS: ${{vars.REACT_APP_ANALYTICS}}
+          REACT_APP_EBL_API_BASE_URL: ${{vars.REACT_APP_EBL_API_BASE_URL}}
+          REACT_APP_ENV: ${{vars.REACT_APP_ENV}}
+          
+          # URL for which only non logged in user dashboard route and all public routes will be opened.
+          REACT_APP_PUBLIC_UI_URL: ${{vars.REACT_APP_PUBLIC_UI_URL}}
+          
+          #steve_onboarding_widget
+          REACT_APP_STEVE_WIDGET_URL: ${{vars.REACT_APP_STEVE_WIDGET_URL}}
+          REACT_APP_STEVE_PROJECT_ID: ${{vars.YOUR_STEVE_PROJECT_ID}}
+          REACT_APP_STEVE_AUTHKEY: ${{vars.YOUR_STEVE_AUTHKEY}}
+          REACT_APP_STEVE_WIDGET_ID: ${{vars.YOUR_STEVE_WIDGET_ID}}
+          
+          # Feedio Widget
+          REACT_APP_FEEDIO_WGT_URL: ${{vars.REACT_APP_FEEDIO_WGT_URL}}
+          REACT_APP_FEEDIO_WGT_BOARD_TOKEN: ${{vars.REACT_APP_FEEDIO_WGT_BOARD_TOKEN}}
+          
+          # Base URL of all Products logo.
+          REACT_APP_SHEETASDB_LOGO : ${{vars.REACT_APP_SHEETASDB_LOGO}}
+          REACT_APP_FEEDIO_LOGO : ${{vars.REACT_APP_FEEDIO_LOGO}}
+          REACT_APP_EBL_LOGO : ${{vars.REACT_APP_EBL_LOGO}}
+          
+          # Other Products UI Base Urls
+          REACT_APP_FEEDIO_UI_URL : ${{vars.REACT_APP_FEEDIO_UI_URL}}
+          REACT_APP_HTTPDUMP_URL : ${{vars.REACT_APP_HTTPDUMP_URL}}
+          REACT_APP_CONTENTBASE_URL : ${{vars.REACT_APP_CONTENTBASE_URL}}
+          REACT_APP_SHEETASDB_UI_URL : ${{vars.REACT_APP_SHEETASDB_UI_URL}}
+          REACT_APP_SOCKET_SSO_URL : ${{vars.REACT_APP_SOCKET_SSO_URL}}
+          REACT_APP_VIASOCKET_URL : ${{vars.REACT_APP_VIASOCKET_URL}}
+          REACT_APP_COMMUNITY_URL : ${{vars.REACT_APP_COMMUNITY_URL}}
+          
+          #ViasocketHitman Url
+          REACT_APP_HITMAN_WEBSITE_URL : ${{vars.REACT_APP_HITMAN_WEBSITE_URL}}
+          
+          #HELLO_WIDGET
+          REACT_APP_HELLO_WIDGET_TOKEN : ${{vars.REACT_APP_HELLO_WIDGET_TOKEN}}
+          
+          # Desktop App Urls
+          REACT_APP_DESKTOP_APP_DOWNLOAD_LINK : ${{vars.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK}}
+          
+          # Notarize credentials
+          NOTARIZE_EMAIL: ${{vars.NOTARIZE_EMAIL}}
+          NOTARIZE_PASS: ${{vars.NOTARIZE_PASS}}
+          
+          #AMPLITUDE
+          REACT_APP_AMPLITUDE_KEY : ${{vars.REACT_APP_AMPLITUDE_KEY}}
+          
+          REACT_APP_SUPERFORM_CSS_IMPORT_URL : ${{vars.REACT_APP_SUPERFORM_CSS_IMPORT_URL}}
+          REACT_APP_SUPERFORM_JS_IMPORT_URL : ${{vars.REACT_APP_SUPERFORM_JS_IMPORT_URL}}
+          REACT_APP_TINYMCE_API_KEY : ${{vars.REACT_APP_TINYMCE_API_KEY}}
+          REACT_APP_HITMAN_MAPPING_DOMAIN : ${{vars.REACT_APP_HITMAN_MAPPING_DOMAIN}}
 
         run: npm run build
       - name: Archive Production Artifact
