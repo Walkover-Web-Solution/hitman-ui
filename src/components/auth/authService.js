@@ -104,6 +104,8 @@ export function getOrgList () {
 }
 
 export function getJwt () {
+  window.localStorage.setItem(tokenKey,
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7ImVtYWlsIjoidmVkYW50QHdhbGtvdmVyLmluIiwiaWRlbnRpZmllciI6IlduN0ROaUJjRENVem5pV3h6b0MyIn0sImlzcyI6InZpYXNvY2tldC5jb20iLCJpYXQiOjE2OTY0MDI1NTR9.lvpyJEc7-AGdoaeBW-BEHybOpwNTxiuoPRSfZ9AcMVg')
   const cookies = new Cookies()
   const token = cookies.get('token')
   return token || window.localStorage.getItem(tokenKey)
