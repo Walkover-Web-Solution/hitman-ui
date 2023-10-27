@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useLocation, useHistory } from 'react-router-dom'
 import http from '../../services/httpService'
 import Cookies from 'universal-cookie'
-import fetch from 'node-fetch'
+// import fetch from 'node-fetch'
 const tokenKey = 'token'
 const profileKey = 'profile'
 export const orgKey = 'organisation'
@@ -90,6 +90,7 @@ function AuthServiceV2 () {
     const orgId = query.get('company_ref_id')
 
     if (proxyAuthToken) {
+      /* eslint-disable-next-line */
       fetch('https://routes.msg91.com/api/c/getDetails', {
         headers: {
           proxy_auth_token: proxyAuthToken

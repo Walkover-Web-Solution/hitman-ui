@@ -12,7 +12,7 @@ import { products } from '../common/constants'
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
 import { isElectron } from '../common/utility'
 import { getCurrentUser, getJwt } from '../auth//authServiceV2'
-import fetch from 'node-fetch'
+// import fetch from 'node-fetch'
 export class UserProfileV2 extends React.Component {
     state = {
       name: '',
@@ -382,6 +382,7 @@ export class UserProfileV2 extends React.Component {
 
     async switchOrg (orgId) {
       try {
+      /* eslint-disable-next-line */
         const response = await fetch('https://routes.msg91.com/api/c/switchCompany', {
           method: 'POST',
           headers: {
