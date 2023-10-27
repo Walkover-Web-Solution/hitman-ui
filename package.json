@@ -93,8 +93,8 @@
     "wait-on": "^5.3.0"
   },
   "engines": {
-    "node": "18.18.2",
-    "npm": "7.7.6"
+    "node": "18.14.0",
+    "npm": "9.3.1"
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
