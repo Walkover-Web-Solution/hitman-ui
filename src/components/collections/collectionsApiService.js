@@ -32,12 +32,14 @@ export function getCollectionsByCustomDomain (domain) {
 }
 
 export function getCollection (collectionId) {
+  console.log('collectionUrl(collectionId) == ', collectionUrl(collectionId))
   return http.get(collectionUrl(collectionId))
 }
 
 export function saveCollection (collection) {
   const orgId = getOrgId()
   const apiEndpoint = getApiEndpoint(orgId)
+  console.log(orgId, apiEndpoint, 'qwertyu')
   return http.post(apiEndpoint, collection)
 }
 

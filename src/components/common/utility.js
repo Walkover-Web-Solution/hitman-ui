@@ -1,5 +1,5 @@
 import Joi from 'joi-browser'
-import history from '../../history'
+// import history from '../../history'
 import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
@@ -117,11 +117,8 @@ export function comparePositions (a, b) {
 
 export function getProfileName (currentUser) {
   let name = ''
-  if (typeof currentUser.first_name === 'string') {
+  if (typeof currentUser.name === 'string') {
     name = currentUser.first_name.trim()
-  }
-  if (typeof currentUser.last_name === 'string') {
-    name = name + ' ' + currentUser.last_name.trim()
   }
   name = name.trim()
   if (name) {
@@ -145,12 +142,14 @@ export function toTitleCase (str) {
 }
 
 export function getOrgId () {
-  const path = history.location.pathname.split('/')?.[2]
-  if (path) { return path } else {
-    let orgList = window.localStorage.getItem('organisationList')
-    orgList = JSON.parse(orgList)
-    return orgList?.[0]?.identifier
-  }
+  // const path = history.location.pathname
+  // console.log(path,"path")
+  // if (path) { return path } else {
+  let orgList = window.localStorage.getItem('organisationList')
+  orgList = JSON.parse(orgList)
+  console.log('orglist first id == ', orgList?.[0]?.id, 'orgList')
+  return orgList?.[0]?.id
+  // }
 }
 
 export function getParentIds (id, type, data) {
