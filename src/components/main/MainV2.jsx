@@ -33,7 +33,7 @@ import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
 import SplitPane from 'react-split-pane'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
-import { getCurrentUser, getCurrentOrg, getOrgList, getJwt } from '../auth/authServiceV2'
+import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 
 const mapStateToProps = (state) => {
   return {
@@ -89,9 +89,9 @@ class MainV2 extends Component {
     // const currentUser = getCurrentUser();
     // const currentOrg = getCurrentOrg();
     // const orgList = getOrgList();
-    // const jwt = getJwt();
+    // const jwt = getProxyToken();
 
-    const token = getJwt()
+    const token = getProxyToken()
     if (!token) {
       this.setState({ loading: false })
       return

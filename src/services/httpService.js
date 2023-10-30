@@ -2,8 +2,9 @@ import axios from 'axios'
 import logger from './logService'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import auth from '../components/auth/authService'
+// import auth from '../components/auth/authService'
 import history from '../history'
+import { logout } from '../components/auth/authServiceV2'
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
@@ -34,13 +35,13 @@ instance.interceptors.response.use(null, (error) => {
   }
   if (error?.response?.status === 401) {
     toast.error('Session Expired')
-    auth.logout(window.location.pathname)
+    logout(window.location.pathname)
   }
   return Promise.reject(error)
 })
 
-function setJwt (jwt) {
-  instance.defaults.headers.common.Authorization = jwt
+function setProxyToken (jwt) {
+  instance.defaults.headers.common.proxy_auth_token = jwt
 }
 
 export default {
@@ -50,5 +51,5 @@ export default {
   delete: instance.delete,
   request: instance.request,
   patch: instance.patch,
-  setJwt
+  setProxyToken
 }

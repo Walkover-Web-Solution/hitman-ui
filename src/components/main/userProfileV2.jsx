@@ -11,7 +11,7 @@ import { products } from '../common/constants'
 // import authService from '../auth/authService'
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
 import { isElectron } from '../common/utility'
-import { getCurrentUser, getJwt } from '../auth//authServiceV2'
+import { getCurrentUser, getProxyToken } from '../auth//authServiceV2'
 // import fetch from 'node-fetch'
 export class UserProfileV2 extends React.Component {
     state = {
@@ -387,7 +387,7 @@ export class UserProfileV2 extends React.Component {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            proxy_auth_token: getJwt() // Use your actual token here
+            proxy_auth_token: getProxyToken() // Use your actual token here
           },
           body: JSON.stringify({
             company_ref_id: orgId

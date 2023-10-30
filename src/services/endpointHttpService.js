@@ -16,11 +16,16 @@ endpointInstance.interceptors.response.use(null, (error) => {
   return Promise.reject(error)
 })
 
+function setProxyToken (jwt) {
+  endpointInstance.defaults.headers.common.proxy_auth_token = jwt
+}
+
 export default {
   get: endpointInstance.get,
   post: endpointInstance.post,
   put: endpointInstance.put,
   delete: endpointInstance.delete,
   request: endpointInstance.request,
-  patch: endpointInstance.patch
+  patch: endpointInstance.patch,
+  setProxyToken
 }

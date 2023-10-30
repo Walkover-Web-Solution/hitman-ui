@@ -85,7 +85,7 @@ class Main extends Component {
   }
 
   async componentDidMount () {
-    const token = auth.getJwt()
+    const token = auth.getProxyToken()
     if (!token) {
       this.setState({ loading: false })
       return

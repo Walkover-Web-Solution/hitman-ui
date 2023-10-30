@@ -12,7 +12,7 @@ export const orgListKey = 'organisationList'
 const ssoURL = process.env.REACT_APP_SOCKET_SSO_URL
 const uiURL = process.env.REACT_APP_UI_URL
 
-http.setJwt(`Bearer ${getJwt()}`)
+// http.setProxyToken(`Bearer ${getProxyToken()}`)
 
 export function isAdmin () {
   let organisation = window.localStorage.getItem(orgKey)
@@ -43,7 +43,7 @@ export async function login (socketJwt) {
   window.localStorage.setItem(profileKey, JSON.stringify(userInfo.profile))
   window.localStorage.setItem(orgKey, JSON.stringify(userInfo.orgs[0]))
   window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.orgs))
-  http.setJwt(`Bearer ${socketJwt}`)
+  http.setProxyToken(`Bearer ${socketJwt}`)
   return userInfo
 }
 export function loginWithJwt (jwt) {
@@ -103,7 +103,7 @@ export function getOrgList () {
   }
 }
 
-export function getJwt () {
+export function getProxyToken () {
   // window.localStorage.setItem(tokenKey,
   //   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7ImVtYWlsIjoidmVkYW50QHdhbGtvdmVyLmluIiwiaWRlbnRpZmllciI6IlduN0ROaUJjRENVem5pV3h6b0MyIn0sImlzcyI6InZpYXNvY2tldC5jb20iLCJpYXQiOjE2OTY0MDI1NTR9.lvpyJEc7-AGdoaeBW-BEHybOpwNTxiuoPRSfZ9AcMVg')
   const cookies = new Cookies()
@@ -129,7 +129,7 @@ export default {
   logout,
   getCurrentUser,
   getCurrentOrg,
-  getJwt,
+  getProxyToken,
   isAdmin,
   notifySignup,
   orgKey,
