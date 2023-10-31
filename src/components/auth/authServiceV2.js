@@ -18,11 +18,9 @@ function logout (redirectUrl1 = '/login') {
   const redirectUrl = '/login'
   // const isDesktop = process.env.REACT_APP_IS_DESKTOP
   http.get(apiUrl + '/logout').then(() => {
-    console.log('get', redirectUrl)
     localStorageCleanUp()
     logoutRedirection(redirectUrl)
   }).catch(() => {
-    console.log('in catch')
     localStorageCleanUp()
     logoutRedirection(redirectUrl)
   })
@@ -160,17 +158,21 @@ function AuthServiceV2 () {
       })
         .then(response => response.json())
         .then(data => {
-          getData(data, proxyAuthToken)
+          const userInfo = data.data[0]
+          window.localStorage.setItem(tokenKey, proxyAuthToken)
+          window.localStorage.setItem(profileKey, JSON.stringify(userInfo))
+          window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
+          window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
+          http.setProxyToken(proxyAuthToken)
+          const reloadRoute = `/orgs/${orgId}/dashboard`
+          history.push({
+            pathname: reloadRoute
+          })
         })
         .catch(error => console.error('Error:', error))
     } else {
       getData('', proxyAuthToken)
     }
-
-    const reloadRoute = `/orgs/${orgId}/dashboard`
-    history.push({
-      pathname: reloadRoute
-    })
   }, [history, query])
 
   return (
