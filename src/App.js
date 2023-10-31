@@ -59,7 +59,7 @@ class App extends Component {
   }
 
   changeSelectedOrg (orgId) {
-    let orgList = window.localStorage.getItem('organisationList')
+        let orgList = window.localStorage.getItem('organisationList')
     orgList = JSON.parse(orgList)
     let flag = 0
     let organisation

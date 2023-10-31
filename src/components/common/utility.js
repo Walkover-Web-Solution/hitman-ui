@@ -143,11 +143,9 @@ export function toTitleCase (str) {
 
 export function getOrgId () {
   // const path = history.location.pathname
-  // console.log(path,"path")
   // if (path) { return path } else {
   let orgList = window.localStorage.getItem('organisationList')
   orgList = JSON.parse(orgList)
-  console.log('orglist first id == ', orgList?.[0]?.id, 'orgList')
   return orgList?.[0]?.id
   // }
 }

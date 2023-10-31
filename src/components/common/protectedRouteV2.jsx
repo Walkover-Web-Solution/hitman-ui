@@ -8,7 +8,6 @@ const ProtectedRouteV2 = ({ path, component: Component, render, ...rest }) => {
       {...rest}
       render={(props) => {
         if (!getProxyToken()) {
-          console.log('inside protected route if  ')
           return (
 
             <Redirect
@@ -21,8 +20,6 @@ const ProtectedRouteV2 = ({ path, component: Component, render, ...rest }) => {
         } else if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
           return Component ? <Component {...props} /> : render(props)
         } else {
-          console.log('inside protected route elsse')
-
           return (
             <Redirect
               to={{

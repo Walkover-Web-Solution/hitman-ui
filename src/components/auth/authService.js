@@ -2,6 +2,7 @@ import http from '../../services/httpService'
 import history from '../../history'
 import Cookies from 'universal-cookie'
 import { isElectron } from '../common/utility'
+
 const apiEndpoint = process.env.REACT_APP_API_URL + '/profile'
 const apiUrl = process.env.REACT_APP_API_URL
 const signUpNotifierUrl = process.env.REACT_APP_SIGN_UP_NOTIFIER_URL
@@ -12,7 +13,6 @@ export const orgListKey = 'organisationList'
 const ssoURL = process.env.REACT_APP_SOCKET_SSO_URL
 const uiURL = process.env.REACT_APP_UI_URL
 
-// http.setProxyToken(`Bearer ${getProxyToken()}`)
 
 export function isAdmin () {
   let organisation = window.localStorage.getItem(orgKey)

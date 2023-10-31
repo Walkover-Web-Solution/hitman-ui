@@ -163,7 +163,6 @@ class MainV2 extends Component {
 
   fetchFromIdb () {
     const orgId = this.props.match.params.orgId
-    console.log('org Id ==', orgId)
     this.props.fetch_collections_from_idb(orgId)
     this.props.fetch_all_versions_from_idb(orgId)
     this.props.fetch_groups_from_idb(orgId)
@@ -182,8 +181,7 @@ class MainV2 extends Component {
   }
 
   setVisitedOrgs () {
-    const orgId = this.props.match.params.orgId
-    console.log(orgId)
+        const orgId = this.props.match.params.orgId
     const org = {}
     org[orgId] = true
     window.localStorage.setItem('visitedOrgs', JSON.stringify(org))
