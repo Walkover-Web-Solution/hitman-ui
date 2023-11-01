@@ -2,12 +2,12 @@ import axios from 'axios'
 import logger from './logService'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import auth from '../components/auth/authService'
 import history from '../history'
+import { logout,getProxyToken } from '../components/auth/authServiceV2'
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
-const instance = axios.create()
+var instance = axios.create()
 instance.interceptors.response.use(null, (error) => {
   const expectedError =
     error.response &&
@@ -34,21 +34,58 @@ instance.interceptors.response.use(null, (error) => {
   }
   if (error?.response?.status === 401) {
     toast.error('Session Expired')
-    auth.logout(window.location.pathname)
+    logout(window.location.pathname)
   }
   return Promise.reject(error)
 })
 
-function setJwt (jwt) {
-  instance.defaults.headers.common.Authorization = jwt
+function setProxyToken (jwt) {
+  instance.defaults.headers.common.proxy_auth_token = jwt
+}
+
+function addProxyToken(){
+  let proxyToken = getProxyToken();
+  if (proxyToken) {
+    instance.defaults.headers.common.proxy_auth_token = proxyToken;
+  }
+  return instance;
+}
+
+function getMethod() {
+  instance = addProxyToken();
+  return instance.get
+}
+function postMethod() {
+  instance = addProxyToken();
+  return instance.post
+}
+
+function putMethod() {
+  instance = addProxyToken();
+  return instance.put
+}
+
+function deleteMethod() {
+  instance = addProxyToken();
+  return instance.delete
+}
+
+function requestMethod(){
+  instance = addProxyToken();
+  return instance.request
+}
+
+function patchMethod(){
+  instance = addProxyToken();
+  return instance.patch
 }
 
 export default {
-  get: instance.get,
-  post: instance.post,
-  put: instance.put,
-  delete: instance.delete,
-  request: instance.request,
-  patch: instance.patch,
-  setJwt
+  get:getMethod(),
+  post:postMethod(),
+  put:putMethod(),
+  delete: deleteMethod(),
+  request:requestMethod(),
+  patch:patchMethod(),
+  setProxyToken
 }

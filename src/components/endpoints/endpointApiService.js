@@ -4,8 +4,14 @@ import indexedDbService from '../indexedDb/indexedDbService'
 import qs from 'qs'
 import { getOrgId } from '../common/utility'
 import { makeHttpRequestThroughAxios } from '../../services/coreRequestService'
+import { getProxyToken } from '../auth/authServiceV2'
 
 const apiUrlEndpoint = process.env.REACT_APP_API_URL
+
+setInterval(function () {
+  http.setProxyToken(getProxyToken())
+  httpService.setProxyToken(getProxyToken())
+}, 5000)
 
 function getApiUrl () {
   const orgId = getOrgId()

@@ -20,7 +20,7 @@ import TabContent from '../tabs/tabContent'
 import CustomTabs from '../tabs/tabs'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './main.scss'
-import { getCurrentUser } from '../auth/authService'
+import { getCurrentUser } from '../auth/authServiceV2'
 import LoginSignupModal from './loginSignupModal'
 import Environments from '../environments/environments'
 const mapStateToProps = (state) => {

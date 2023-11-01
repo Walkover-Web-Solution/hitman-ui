@@ -1,14 +1,15 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import auth from '../auth/authService'
+import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 
-const ProtectedRoute = ({ path, component: Component, render, ...rest }) => {
+const ProtectedRouteV2 = ({ path, component: Component, render, ...rest }) => {
   return (
     <Route
       {...rest}
       render={(props) => {
-        if (!auth.getProxyToken()) {
+        if (!getProxyToken()) {
           return (
+
             <Redirect
               to={{
                 pathname: '/logout',
@@ -16,7 +17,7 @@ const ProtectedRoute = ({ path, component: Component, render, ...rest }) => {
               }}
             />
           )
-        } else if (auth.getCurrentUser() && auth.getOrgList() && auth.getCurrentOrg()) {
+        } else if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
           return Component ? <Component {...props} /> : render(props)
         } else {
           return (
@@ -33,4 +34,4 @@ const ProtectedRoute = ({ path, component: Component, render, ...rest }) => {
   )
 }
 
-export default ProtectedRoute
+export default ProtectedRouteV2

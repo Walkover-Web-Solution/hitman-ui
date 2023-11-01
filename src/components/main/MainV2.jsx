@@ -15,7 +15,7 @@ import { fetchPage, fetchPages, fetchPagesFromIdb } from '../pages/redux/pagesAc
 import { fetchHistoryFromIdb } from '../history/redux/historyAction'
 import ContentPanel from './contentPanel'
 import './main.scss'
-import SideBar from './sidebar'
+import SideBarV2 from './sideBarV2'
 import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
 import { isDesktop } from 'react-device-detect'
@@ -25,7 +25,6 @@ import moment from 'moment'
 // import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
 // import { loadHelloWidget } from '../../services/helloWidgetService'
-import auth from '../auth/authService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import { sendAmplitudeData } from '../../services/amplitude'
 import UpdateStatus from './updateStatus'
@@ -33,6 +32,7 @@ import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
 import SplitPane from 'react-split-pane'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
+import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 
 const mapStateToProps = (state) => {
   return {
@@ -65,7 +65,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-class Main extends Component {
+class MainV2 extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -85,22 +85,27 @@ class Main extends Component {
   }
 
   async componentDidMount () {
-    const token = auth.getProxyToken()
+    // const currentUser = getCurrentUser();
+    // const currentOrg = getCurrentOrg();
+    // const orgList = getOrgList();
+    // const jwt = getProxyToken();
+
+    const token = getProxyToken()
     if (!token) {
       this.setState({ loading: false })
       return
     }
     /** Token Exists */
-    if (auth.getCurrentUser() && auth.getOrgList() && auth.getCurrentOrg()) {
+    if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
       /** For Logged in User */
       let orgId = this.props.match.params.orgId
       if (!orgId) {
-        orgId = auth.getOrgList()[0]?.identifier
+        orgId = getOrgList()[0]?.id
         this.props.history.push({
           pathname: `/orgs/${orgId}/dashboard`
         })
       } else {
-        const orgName = auth.getOrgList()[0]?.name
+        const orgName = getOrgList()[0]?.name
         if (isValidDomain()) {
           loadWidget()
           loadfeedioWidget()
@@ -175,14 +180,14 @@ class Main extends Component {
   }
 
   setVisitedOrgs () {
-    const orgId = this.props.match.params.orgId
+        const orgId = this.props.match.params.orgId
     const org = {}
     org[orgId] = true
     window.localStorage.setItem('visitedOrgs', JSON.stringify(org))
   }
 
   showCollectionDashboard () {
-    if (!auth.getCurrentUser()) {
+    if (!getCurrentUser()) {
       return false
     }
     const collectionLength = Object.keys(this.props.collections).length
@@ -255,7 +260,7 @@ class Main extends Component {
                   <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
                   <div className='main-panel-wrapper'>
                     <SplitPane split='vertical' className='split-sidebar'>
-                      <SideBar
+                      <SideBarV2
                         {...this.props}
                         tabs={[...this.state.tabs]}
                         set_tabs={this.setTabs.bind(this)}
@@ -280,4 +285,4 @@ class Main extends Component {
     )
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Main)
+export default connect(mapStateToProps, mapDispatchToProps)(MainV2)

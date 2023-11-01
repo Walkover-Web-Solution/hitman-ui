@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Dropdown } from 'react-bootstrap'
-import authService from '../auth/authService'
+import  { getCurrentUser,isAdmin } from '../auth/authServiceV2'
 import vectorIcon from '../../assets/icons/Vector.svg'
 import OpenApiForm from '../openApi/openApiForm'
 import { getProfileName } from '../common/utility'
@@ -13,9 +13,9 @@ class UserInfo extends Component {
   }
 
   componentDidMount () {
-    if (authService.getCurrentUser()) {
+    if (getCurrentUser()) {
       const user = {}
-      const currentUser = authService.getCurrentUser()
+      const currentUser = getCurrentUser()
       user.name = getProfileName(currentUser)
       user.email = currentUser.email
       this.setState({ user })
@@ -85,7 +85,7 @@ class UserInfo extends Component {
           <div className='user-details'>
             <div className='user-heading'>
               <div className='user-name'>{this.state.user?.name || this.state.user?.email || ''}</div>
-              {authService.isAdmin() && (
+              {isAdmin() && (
                 <Dropdown>
                   <Dropdown.Toggle variant='' id='dropdown-basic'>
                     <div class=' user-name notification'>
@@ -177,7 +177,7 @@ class UserInfo extends Component {
                   </Dropdown.Menu>
                 </Dropdown>
               )}
-              {!authService.isAdmin() && <Link to='/logout'>Sign out</Link>}
+              {!isAdmin() && <Link to='/logout'>Sign out</Link>}
             </div>
           </div>
         </div>
