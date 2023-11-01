@@ -94,11 +94,11 @@
     "wait-on": "^5.3.0"
   },
   "engines": {
-    "node": "18.14.0",
-    "npm": "9.3.1"
+    "node": "16.20.0",
+    "npm": "8.19.4"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
