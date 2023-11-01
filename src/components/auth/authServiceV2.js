@@ -20,7 +20,7 @@ function isAdmin () {
 
 function logout(redirectUrl = '/login') {
   // const isDesktop = process.env.REACT_APP_IS_DESKTOP
-  http.get(proxyUrl + '/logout').then(() => {
+  http.delete(proxyUrl + '/logout').then(() => {
     localStorageCleanUp()
     logoutRedirection(redirectUrl)
   }).catch(() => {
@@ -94,8 +94,8 @@ function AuthServiceV2() {
   useEffect(() => {
     const proxyAuthToken = query.get('proxy_auth_token')
     // const userRefId = query.get('user_ref_id')
-    const orgId = query.get('company_ref_id')
-
+    const orgId = query.get('company_ref_id') || getCurrentOrg()?.id || ''
+    const reloadRoute = `/orgs/${orgId}/dashboard`
     if (proxyAuthToken) {
       /* eslint-disable-next-line */
       fetch(proxyUrl + '/getDetails', {
@@ -111,18 +111,15 @@ function AuthServiceV2() {
           window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
           window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
           http.setProxyToken(getProxyToken())
-          const reloadRoute = `/orgs/${orgId}/dashboard`
           history.push({
             pathname: reloadRoute
           })
         })
         .catch(error => console.error('Error:', error))
     }else if(getOrgList()){
-      const redirectUrl = `/orgs/${orgId}/dashboard`
-      history.push(redirectUrl)
+      history.push(reloadRoute)
     }else{
-      const redirectUrl = '/login'
-      history.push(redirectUrl)
+      history.push('/login')
     }
   }, [history, query])
 
