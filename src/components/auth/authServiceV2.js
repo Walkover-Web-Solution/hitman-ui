@@ -15,7 +15,7 @@ function useQuery() {
 }
 
 function isAdmin () {
- return true
+ return {is_admin : true}
   }
 
 function logout(redirectUrl = '/login') {
@@ -110,20 +110,19 @@ function AuthServiceV2() {
           window.localStorage.setItem(profileKey, JSON.stringify(userInfo))
           window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
           window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
-          console.log('came in if condition ...............................')
+          http.setProxyToken(getProxyToken())
           const reloadRoute = `/orgs/${orgId}/dashboard`
           history.push({
             pathname: reloadRoute
           })
         })
         .catch(error => console.error('Error:', error))
-    // }else if(getOrgList()){
-    //   const redirectUrl = `/orgs/${orgId}/dashboard`
-    //   console.log('came here .................................')
-    //   history.push({pathname:redirectUrl})
-    // }else{
-    //   const redirectUrl = '/login'
-    //   history.push({pathname:redirectUrl})
+    }else if(getOrgList()){
+      const redirectUrl = `/orgs/${orgId}/dashboard`
+      history.push(redirectUrl)
+    }else{
+      const redirectUrl = '/login'
+      history.push(redirectUrl)
     }
   }, [history, query])
 

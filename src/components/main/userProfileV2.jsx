@@ -4,11 +4,11 @@ import Avatar from 'react-avatar'
 import { FixedSizeList as List } from 'react-window'
 import lightArrow from '../../assets/icons/new-arrow.svg'
 import User from '../../assets/icons/user.svg'
-import RightArrow from '../../assets/icons/right-arrow.svg'
+import SwitchRight from '../../assets/icons/switchRight.svg'
+// import RightArrow from '../../assets/icons/right-arrow.svg'
 import Power from '../../assets/icons/power.svg'
 import File from '../../assets/icons/file.svg'
 import { products } from '../common/constants'
-// import authService from '../auth/authService'
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
 import { isElectron } from '../common/utility'
 import { getCurrentUser, getProxyToken } from '../auth//authServiceV2'
@@ -303,65 +303,81 @@ export class UserProfileV2 extends React.Component {
 
   renderOrgList() {
     const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
-    // const productName = 'hitman'
-    const orgsLength = Object.keys(organizations || {})?.length
-    // const filteredOrgsArray = this.getAllOrgs(organizations)
-    const orgItem = ({ index, style }) => {
-      const item = organizations[index]
-      return (
-        <Dropdown.Item style={style}>
-          <div
-            key={item?.id}
-            className='org-listing d-flex justify-content-between'
-            onClick={() => {
-              const currentId = item?.id
-              console.log(currentId, 7896325412)
-              this.switchOrg(currentId)
-            }}
-          >
-            <span className='org-listing-name'>{item?.name}</span>
-            <img src={RightArrow} />
-          </div>
-        </Dropdown.Item>
-      )
-    }
+    // // const productName = 'hitman'
+    // const orgsLength = Object.keys(organizations || {})?.length
+    // // const filteredOrgsArray = this.getAllOrgs(organizations)
+    // const orgItem = ({ index, style }) => {
+    //   const item = organizations[index]
+    //   return (
+    //     <Dropdown.Item style={style}>
+    //       <div
+    //         key={item?.id}
+    //         className='org-listing d-flex justify-content-between'
+    //         onClick={() => {
+    //           const currentId = item?.id
+    //           this.switchOrg(currentId)
+    //         }}
+    //       >
+    //         <span className='org-listing-name'>{item?.name}</span>
+    //         <img src={RightArrow} />
+    //       </div>
+    //     </Dropdown.Item>
+    //   )
+    // }
 
     return (
-      (orgsLength > 1 &&
-        <div className='OrgsBlock'>
-          <Dropdown.Divider />
-
-          <Dropdown className='nested-org-dropdown'>
-            <Dropdown.Toggle className='text-uppercase text-sm-bold plr-3'>
-              SWITCH ORGS
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <div className='orgs-listing-container'>
-                {this.state.moreFlag &&
-                  <div className='p-2 search-profile'>
-                    <input
-                      className='form-control'
-                      onChange={(e) => this.setOrgFilter(e.target.value, organizations?.length || 0)}
-                      value={this.state.orgFilter}
-                      placeholder='Search'
-                    />
-                  </div>}
-                {organizations.length === 0
-                  ? <div className='pb-2 text-center w-100'><small className='body-6'>No Organizations Found</small></div>
-                  : (
-                    <List height={organizations.length < 5 ? 36 * organizations.length : 180} itemCount={this.getItemCount(organizations.length)} itemSize={35}>
-                      {orgItem}
-                    </List>
-                  )}
+        <>
+          <div className='OrgsBlock'>
+            <div class="btn-group dropright org-listing" >
+            <img src={SwitchRight} />
+              <span type="button"  className='' class=" dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Switch Orgs
+              {/* <img src={RightArrow} /> */}
+              </span>
+              <div class="dropdown-menu">
+                {organizations.map((org) => (
+                  <button className="dropdown-item" onClick={() => {
+                    const currentId = org?.id
+                    this.switchOrg(currentId)
+                  }}>
+                    {org.name}
+                  </button>
+                ))}
               </div>
-              {orgsLength > 5 &&
-                <div className='ShowMore text-center' onClick={() => this.setShowFlag()}>
-                  {!this.state.moreFlag ? 'Show more' : 'Show less'}
-                </div>}
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-      )
+            </div>
+
+            {/* <Dropdown className='nested-org-dropdown' drop='right'>
+              <Dropdown.Toggle className='text-uppercase text-sm-bold plr-3'>
+                SWITCH ORGS
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <div className='orgs-listing-container'>
+                  {this.state.moreFlag &&
+                    <div className='p-2 search-profile'>
+                      <input
+                        className='form-control'
+                        onChange={(e) => this.setOrgFilter(e.target.value, organizations?.length || 0)}
+                        value={this.state.orgFilter}
+                        placeholder='Search'
+                      />
+                    </div>}
+                  {organizations.length === 0
+                    ? <div className='pb-2 text-center w-100'><small className='body-6'>No Organizations Found</small></div>
+                    : (
+                      <List height={organizations.length < 5 ? 36 * organizations.length : 180} itemCount={this.getItemCount(organizations.length)} itemSize={35}>
+                        {orgItem}
+                      </List>
+                    )}
+                </div>
+                {orgsLength > 5 &&
+                  <div className='ShowMore text-center' onClick={() => this.setShowFlag()}>
+                    {!this.state.moreFlag ? 'Show more' : 'Show less'}
+                  </div>}
+              </Dropdown.Menu>
+            </Dropdown> */}
+          </div>
+        </>
+      
     )
   }
 
@@ -388,7 +404,7 @@ export class UserProfileV2 extends React.Component {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          proxy_auth_token: getProxyToken() // Use your actual token here
+          proxy_auth_token: getProxyToken()
         },
         body: JSON.stringify({
           company_ref_id: orgId
@@ -454,8 +470,10 @@ export class UserProfileV2 extends React.Component {
               <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item>
               <Dropdown.Item>{this.renderBilling()} </Dropdown.Item>
               <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
+            <Dropdown.Divider />
+              <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item>
             </div>
-            {this.renderOrgList()}
+           
           </Dropdown.Menu>
         </Dropdown>
       </div>

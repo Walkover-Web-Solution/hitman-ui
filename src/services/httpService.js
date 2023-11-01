@@ -2,10 +2,8 @@ import axios from 'axios'
 import logger from './logService'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-// import auth from '../components/auth/authService'
 import history from '../history'
 import { logout,getProxyToken } from '../components/auth/authServiceV2'
-// import { getProxyToken } from '../components/auth/authService'
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
@@ -48,14 +46,12 @@ function setProxyToken (jwt) {
 function addProxyToken(){
   let proxyToken = getProxyToken();
   if (proxyToken) {
-    console.log('proxyToken  == ',proxyToken)
     instance.defaults.headers.common.proxy_auth_token = proxyToken;
   }
   return instance;
 }
 
 function getMethod() {
-  console.log('method get called')
   instance = addProxyToken();
   return instance.get
 }

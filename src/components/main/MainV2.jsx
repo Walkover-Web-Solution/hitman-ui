@@ -25,7 +25,6 @@ import moment from 'moment'
 // import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
 // import { loadHelloWidget } from '../../services/helloWidgetService'
-import auth from '../auth/authService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import { sendAmplitudeData } from '../../services/amplitude'
 import UpdateStatus from './updateStatus'
@@ -188,7 +187,7 @@ class MainV2 extends Component {
   }
 
   showCollectionDashboard () {
-    if (!auth.getCurrentUser()) {
+    if (!getCurrentUser()) {
       return false
     }
     const collectionLength = Object.keys(this.props.collections).length

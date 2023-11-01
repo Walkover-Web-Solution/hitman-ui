@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import auth from '../auth/authService'
+import {getCurrentUser} from '../auth/authServiceV2'
 import { Link } from 'react-router-dom'
 
 class UserInfo extends Component {
@@ -9,8 +9,8 @@ class UserInfo extends Component {
   }
 
   componentDidMount () {
-    if (auth.getCurrentUser()) {
-      const user = auth.getCurrentUser()
+    if (getCurrentUser()) {
+      const user = getCurrentUser()
       user.name = user.first_name + user.last_name
       this.setState({ user })
     }
@@ -61,7 +61,7 @@ class UserInfo extends Component {
             <li>
               <Link to='/logout'>Sign out</Link>
             </li>
-            {auth.getCurrentUser() === null
+            {getCurrentUser() === null
               ? null
               : (
                 <li>

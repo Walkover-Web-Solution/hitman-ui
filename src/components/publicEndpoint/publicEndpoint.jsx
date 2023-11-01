@@ -8,7 +8,7 @@ import SideBarV2 from '../main/sideBarV2'
 import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
 import store from '../../store/store'
-import auth from '../auth/authService'
+import {getCurrentUser} from '../auth/authServiceV2'
 import UserInfo from '../common/userInfo'
 import Footer from '../main/Footer'
 // import ThumbUp from '../../assets/icons/thumb_up.svg'
@@ -300,7 +300,7 @@ class PublicEndpoint extends Component {
           {
             process.env.REACT_APP_UI_URL === window.location.origin + '/'
               ? (
-                  auth.getCurrentUser() === null
+                  getCurrentUser() === null
                     ? (
                       <div className='dropdown user-dropdown'>
                         <div className='user-info'>

@@ -176,7 +176,6 @@ class Main extends Component {
 
   setVisitedOrgs () {
     const orgId = this.props.match.params.orgId
-    console.log(orgId)
     const org = {}
     org[orgId] = true
     window.localStorage.setItem('visitedOrgs', JSON.stringify(org))

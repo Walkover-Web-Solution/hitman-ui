@@ -45,8 +45,8 @@ class LoginV2 extends Component {
               <li>Create-Collabarate-Review-Secure-Publish-Maintain</li>
               <li>Create a source of truth</li>
               <li>Your content,your way</li>
-              <li>Seamless API Integration</li>
-              <li>A workflow for everyone, intuitive and automated.</li>
+              <li>Create/Manage Environment</li>
+              <li>Create/Share internal API documentation</li>
               <li>Scalability and Performance</li>
             </ul>
           </div>

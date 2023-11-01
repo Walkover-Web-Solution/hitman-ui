@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
-import { isAdmin } from '../auth/authService'
+import { isAdmin } from '../auth/authServiceV2'
 import './publicCollectionInfo.scss'
 import SettingIcon from '../../assets/icons/SettingIcon.png'
 import FileIcon from '../../assets/icons/file.svg'

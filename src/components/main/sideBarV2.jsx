@@ -7,7 +7,7 @@ import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
 import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME, isElectron, openExternalLink } from '../common/utility'
 
-import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authService'
+import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import LoginSignupModal from './loginSignupModal'
 import PublishColelctionInfo from './publishCollectionInfo'
 import { ReactComponent as ArrowIcon } from '../../assets/icons/Vector.svg'
@@ -726,7 +726,7 @@ class SideBarV2 extends Component {
       <>
         <div className='plr-3'>
           {this.renderSearch()}
-          {getCurrentUser() && this.renderInviteTeam()}
+          {/* {getCurrentUser() && this.renderInviteTeam()} */}
           {/* {this.renderDownloadDesktopApp()} */}
           {this.renderGlobalAddButton()}
         </div>
