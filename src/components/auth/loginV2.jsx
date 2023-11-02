@@ -6,17 +6,19 @@ class LoginV2 extends Component {
     this.loadScript()
   }
 
-  loadScript () {
+  loadScript() {
     this.configuration = {
-      referenceId: process.env.REACT_APP_PROXY_REFERENCE_ID_LOCAL,
+      referenceId: process.env.REACT_APP_ENV === 'local' ? process.env.REACT_APP_PROXY_REFERENCE_ID_LOCAL :
+        process.env.REACT_APP_ENV === 'test' ? process.env.REACT_APP_PROXY_REFERENCE_ID_TEST :
+        process.env.REACT_APP_ENV === 'prod' ? process.env.REACT_APP_PROXY_REFERENCE_ID_PROD :
+        '',
       success: (data) => {
-        console.log('success response', data)
+        console.log('success response', data);
       },
       failure: (error) => {
-        console.log('failure reason', error)
+        console.log('failure reason', error);
       }
     }
-
     this.script = document.createElement('script')
     this.script.src = 'https://proxy.msg91.com/assets/proxy-auth/proxy-auth.js?time=34093049'
     this.script.async = true
