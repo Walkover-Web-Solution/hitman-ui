@@ -31,8 +31,11 @@ jobs:
           REACT_APP_EBL_API_BASE_URL: ${{vars.REACT_APP_EBL_API_BASE_URL}}
           REACT_APP_ENV: ${{vars.REACT_APP_ENV}}
 
+          #Proxy URLs
           REACT_APP_PROXY_URL : ${{vars.REACT_APP_PROXY_URL}}
           REACT_APP_PROXY_REFERENCE_ID_LOCAL : ${{vars.REACT_APP_PROXY_REFERENCE_ID_LOCAL}}
+          REACT_APP_PROXY_REFERENCE_ID_TEST : ${{vars.REACT_APP_PROXY_REFERENCE_ID_TEST}}
+          REACT_APP_PROXY_REFERENCE_ID_PROD : ${{vars.REACT_APP_PROXY_REFERENCE_ID_PROD}}
           
           # URL for which only non logged in user dashboard route and all public routes will be opened.
           REACT_APP_PUBLIC_UI_URL: ${{vars.REACT_APP_PUBLIC_UI_URL}}
