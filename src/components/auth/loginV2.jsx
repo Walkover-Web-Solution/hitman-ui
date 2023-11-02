@@ -2,16 +2,19 @@ import React, { Component } from 'react'
 import './auth.scss'
 import './login.scss'
 class LoginV2 extends Component {
+  proxyGooglereferenceMapping = {
+    local  : process.env.REACT_APP_PROXY_REFERENCE_ID_LOCAL,
+    test : process.env.REACT_APP_PROXY_REFERENCE_ID_TEST,
+    prod : process.env.REACT_APP_PROXY_REFERENCE_ID_PROD
+  }
+
   handleButtonClick = () => {
     this.loadScript()
   }
-
+  
   loadScript() {
     this.configuration = {
-      referenceId: process.env.REACT_APP_ENV === 'local' ? process.env.REACT_APP_PROXY_REFERENCE_ID_LOCAL :
-        process.env.REACT_APP_ENV === 'test' ? process.env.REACT_APP_PROXY_REFERENCE_ID_TEST :
-        process.env.REACT_APP_ENV === 'prod' ? process.env.REACT_APP_PROXY_REFERENCE_ID_PROD :
-        '',
+      referenceId: this.proxyGooglereferenceMapping[process.env.REACT_APP_ENV] || '',
       success: (data) => {
         console.log('success response', data);
       },
