@@ -1,11 +1,11 @@
 <svg width='138' height='134' viewBox='0 0 138 134' fill='none' xmlns='http://www.w3.org/2000/svg'>
 <path opacity='0.12' fill-rule='evenodd' clip-rule='evenodd' d='M94.8781 34.8829C106.111 43.6454 122.407 48.5835 124.47 62.7188C126.651 77.6721 116.385 91.6133 104.529 101.033C93.5821 109.729 79.4589 111.232 65.6436 109.452C51.0118 107.567 35.8753 103.496 27.8141 91.1478C19.1234 77.8355 18.7414 60.8859 24.1279 45.8586C29.8741 29.8283 40.1101 12.6124 56.8989 10.0079C72.6718 7.56103 82.3242 25.0898 94.8781 34.8829Z' fill='#E98A36' />
-<path d='M8.09912 58.2139V63.8933' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
-<path d='M10.9385 61.0537L5.25905 61.0537' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
-<path d='M106.069 19.8779V25.5574' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
-<path d='M108.909 22.7178L103.229 22.7178' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
-<path d='M108.84 110V115.679' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
-<path d='M111.679 112.84L106 112.84' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
+<path d='M8.09912 58.2139V63.8933' stroke='#E98A36' strokeLinecap='round' strokeLinejoin='round' />
+<path d='M10.9385 61.0537L5.25905 61.0537' stroke='#E98A36' strokeLinecap='round' strokeLinejoin='round' />
+<path d='M106.069 19.8779V25.5574' stroke='#E98A36' strokeLinecap='round' strokeLinejoin='round' />
+<path d='M108.909 22.7178L103.229 22.7178' stroke='#E98A36' strokeLinecap='round' strokeLinejoin='round' />
+<path d='M108.84 110V115.679' stroke='#E98A36' strokeLinecap='round' strokeLinejoin='round' />
+<path d='M111.679 112.84L106 112.84' stroke='#E98A36' strokeLinecap='round' strokeLinejoin='round' />
 <path d='M73.0787 47L94 56.377L66.9913 64L46 53.746L73.0787 47Z' fill='#E0CFB5' />
 <path d='M73 47V75.7628L93.8595 84L94 56.385L73 47Z' fill='#CFB594' />
 <path d='M73.0787 47L94 56.377L67.0612 64L46 53.746L73.0787 47Z' fill='url(#paint0_linear)' />

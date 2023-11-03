@@ -300,7 +300,7 @@ class CustomTabs extends Component {
                 onMouseEnter={() => this.handleMouseEnter('left')}
                 onMouseLeave={() => this.handleMouseLeave()}
               >
-                <span className='mr-1'><i class='fa fa-angle-left' aria-hidden='true' /></span>
+                <span className='mr-1'><i className='fa fa-angle-left' aria-hidden='true' /></span>
                 <span>{this.leftHideTabs() ? `${this.leftHideTabs()}+` : null}</span>
               </div>)
             : null}
@@ -317,7 +317,7 @@ class CustomTabs extends Component {
               )}
             </div>
             {this.props.tabs.tabsOrder.map((tabId, index) => (
-              <div class='' key={tabId} ref={(newRef) => { this.scrollRef[tabId] = newRef }}>
+              <div className='' key={tabId} ref={(newRef) => { this.scrollRef[tabId] = newRef }}>
                 <Nav.Item
                   key={tabId}
                   draggable
@@ -365,7 +365,7 @@ class CustomTabs extends Component {
                 onMouseLeave={() => this.handleMouseLeave()}
               >
                 <span className='mr-1'>{this.rightHideTabs() ? `+${this.rightHideTabs()}` : null}</span>
-                <span><i class='fa fa-angle-right' aria-hidden='true' /></span>
+                <span><i className='fa fa-angle-right' aria-hidden='true' /></span>
               </div>)
             : null}
           <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>

@@ -72,7 +72,7 @@ export class UserProfileV2 extends React.Component {
         <div className='org-name'>
           {this.getCurrentOrg()?.name || null}
         </div>
-        <span class='profile-details-label-light'>{name}</span>
+        <span className='profile-details-label-light'>{name}</span>
         {/* {
                 this.getNotificationCount() > 0 &&
                   <div className='user-notification-badge'>{this.getNotificationCount()}</div>
@@ -94,12 +94,12 @@ export class UserProfileV2 extends React.Component {
         className='profile-details plr-3 d-flex align-items-center'
         onClick={() => { }}
       >
-        <div class='user-icon mr-2'>
+        <div className='user-icon mr-2'>
           <img src={User} />
         </div>
         <div className='profile-details-user-name'>
-          <span class='org-name'>{name}</span>
-          <span class='profile-details-label-light'>{email}</span>
+          <span className='org-name'>{name}</span>
+          <span className='profile-details-label-light'>{email}</span>
         </div>
       </div>
     )
@@ -258,7 +258,7 @@ export class UserProfileV2 extends React.Component {
   renderBilling() {
     return (
       <div
-        class='profile-listing' onClick={() => {
+        className='profile-listing' onClick={() => {
           this.openOptions('/billing/subscription')
         }}
       >
@@ -296,7 +296,7 @@ export class UserProfileV2 extends React.Component {
         }}
       >
         <img src={Power} />
-        <span class='label'>Logout</span>
+        <span className='label'>Logout</span>
       </div>
     )
   }
@@ -328,13 +328,13 @@ export class UserProfileV2 extends React.Component {
     return (
         <>
           <div className='OrgsBlock'>
-            <div class="btn-group dropright org-listing" >
+            <div className="btn-group dropright org-listing" >
             <img src={SwitchRight} />
-              <span type="button"  className='' class=" dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span type="button"  className=" dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Switch Orgs
               {/* <img src={RightArrow} /> */}
               </span>
-              <div class="dropdown-menu">
+              <div className="dropdown-menu">
                 {organizations.map((org) => (
                   <button className="dropdown-item" onClick={() => {
                     const currentId = org?.id

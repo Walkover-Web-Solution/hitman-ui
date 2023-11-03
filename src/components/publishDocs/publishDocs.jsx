@@ -326,9 +326,9 @@ class PublishDocs extends Component {
 
   displayState (endpoint) {
     if (endpoint.state === publishDocsEnum.PENDING_STATE) {
-      return <span class='status-new'> New</span>
+      return <span className='status-new'> New</span>
     } else if (endpoint.state === publishDocsEnum.DRAFT_STATE) {
-      return <span class='status-edit'> Edit</span>
+      return <span className='status-edit'> Edit</span>
     }
   }
 
@@ -575,7 +575,7 @@ class PublishDocs extends Component {
             !this.props.collections[id]?.importedFromMarketPlace &&
               <Dropdown.Item key={index} onClick={() => this.setSelectedCollection(this.props.collections[id])}>
                 {this.props.collections[id]?.name}
-                {this.collectionHasChanges(id) && <i class='fas fa-circle' />}
+                {this.collectionHasChanges(id) && <i className='fas fa-circle' />}
               </Dropdown.Item>
           ))
       )
@@ -742,7 +742,7 @@ class PublishDocs extends Component {
       this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE) {
       return (
         <>
-          {!this.state.publishLoader && <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>}
+          {!this.state.publishLoader && <button className='btn btn-outline danger mr-3' onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>}
           {this.publishButtonEndpoint()}
         </>
       )
@@ -769,7 +769,7 @@ class PublishDocs extends Component {
     ) {
       return (
         <>
-          {!this.state.publishPageLoader && <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>}
+          {!this.state.publishPageLoader && <button className='btn btn-outline danger mr-3' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>}
           {this.pagePublishButton()}
         </>
       )
@@ -1195,7 +1195,7 @@ class PublishDocs extends Component {
         {this.renderWarningModal()}
         {this.showPublishDocConfirmationModal()}
         <div className='publish-docs-wrapper'>
-          <div class='content-panel'>
+          <div className='content-panel'>
             <div className='hosted-APIs'>
               {this.state.selectedCollectionId && this.props.collections[this.state.selectedCollectionId] && (
                 !this.checkDocProperties(collectionId)

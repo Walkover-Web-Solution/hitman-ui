@@ -103,7 +103,7 @@ class AccessTokenManager extends Component {
                             className='btn delete-button'
                             onClick={() => this.deleteToken(index)}
                           >
-                            <i class='fas fa-trash' />
+                            <i className='fas fa-trash' />
                           </button>
                         </ListGroup.Item>
                       </div>
