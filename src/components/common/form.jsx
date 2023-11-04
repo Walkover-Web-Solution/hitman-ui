@@ -41,6 +41,7 @@ class Form extends Component {
   }
 
   validate () {
+    return null
     const options = { abortEarly: false }
     const { error } = Joi.validate(this.trimmedData(), this.schema, options)
     if (!error) return null
