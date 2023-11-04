@@ -15,11 +15,11 @@ function Footer ({ theme }) {
       <footer>
 
         <div className='footerWrapper'>
-          <p class='public-hide'>
+          <p className='public-hide'>
             <span>Powered By</span> <a rel='noopener noreferrer' target='_blank' href={process.env.REACT_APP_HITMAN_WEBSITE_URL}>Hitman</a>
           </p>
-          <p class='d-none for-public-view'>
-            <a rel='noopener noreferrer' class='cta-type' target='_blank' href={domainSrc} style={{ backgroundColor: hexToRgb(theme, '1') }}>Built On Hitman</a>
+          <p className='d-none for-public-view'>
+            <a rel='noopener noreferrer' className='cta-type' target='_blank' href={domainSrc} style={{ backgroundColor: hexToRgb(theme, '1') }}>Built On Hitman</a>
           </p>
         </div>
       </footer>

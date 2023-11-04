@@ -78,7 +78,7 @@ class PublishCollectionInfo extends Component {
   managePublicDoc () {
     const { totalEndpointCount } = this.state
     return (
-      <button class='btn' disabled={!totalEndpointCount} onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
+      <button className='btn' disabled={!totalEndpointCount} onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
         <div className='d-flex align-items-center cursor-pointer'>
           <img className='mr-1' src={FileIcon} alt='' />
           <span>Manage Public Doc</span>

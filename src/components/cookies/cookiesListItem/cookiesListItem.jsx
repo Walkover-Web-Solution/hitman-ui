@@ -131,7 +131,7 @@ class CookiesListItem extends Component {
               <div className='cursor-pointer' onClick={() => this.setState({ updateCookie: { key: name, value: this.state.currentDomain.cookies[name] } })}>{name}</div>
               {name === this.state.updateCookie.key && this.renderCookieArea()}
             </div>
-            <div class='delete-abs' onClick={() => this.deleteCookie(name)}>
+            <div className='delete-abs' onClick={() => this.deleteCookie(name)}>
               <DeleteIcon className='cursor-pointer' />
             </div>
           </div>
