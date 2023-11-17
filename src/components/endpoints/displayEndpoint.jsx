@@ -14,13 +14,15 @@ import BodyContainer from './displayBody'
 import DisplayDescription from './displayDescription'
 import DisplayResponse from './displayResponse'
 import SampleResponse from './sampleResponse'
-import { getCurrentUser,isAdmin } from '../auth/authServiceV2'
+import { getCurrentUser, isAdmin } from '../auth/authServiceV2'
 
 import endpointApiService from './endpointApiService'
 import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
+import { ReactComponent as Chaticon } from '../../assets/icons/chatggl.svg'
+
 
 import {
   addEndpoint,
@@ -59,6 +61,7 @@ import PlusIcon from '../../assets/icons/plus.svg'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 import { ApproveRejectEntity, PublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
+import ChatbotsideBar from './chatbotsideBar'
 
 const shortid = require('shortid')
 
@@ -131,7 +134,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 class DisplayEndpoint extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.myRef = React.createRef()
     this.sideRef = React.createRef()
@@ -193,7 +196,8 @@ class DisplayEndpoint extends Component {
       runSendRequest: null,
       requestKey: null,
       docOptions: false,
-      sslMode: getCurrentUserSSLMode()
+      sslMode: getCurrentUserSSLMode(),
+      showAskAiSlider: false
     }
 
     this.uri = React.createRef()
@@ -210,7 +214,7 @@ class DisplayEndpoint extends Component {
     this.setCurrentReponseView()
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     this.extractEndpointName()
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -249,19 +253,21 @@ class DisplayEndpoint extends Component {
           break
         case 'SAVE': this.handleSave()
           break
+        case 'ASK AI': this.handleSave()
+          break
         default:
       }
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.location.pathname !== prevProps.location.pathname && this.scrollDiv.current) {
       this.scrollDiv.current.scrollIntoView({ block: 'center' })
       this.extractEndpointName()
@@ -287,18 +293,18 @@ class DisplayEndpoint extends Component {
     this.setEndpointData()
   }
 
-  setSslMode () {
+  setSslMode() {
     this.setState({ sslMode: !this.state.sslMode }, () => {
       setCurrentUserSSLMode(this.state.sslMode)
     })
   }
 
-  setCurrentReponseView () {
+  setCurrentReponseView() {
     const currentView = window.localStorage.getItem('response-view')
     this.props.set_response_view(currentView || 'bottom')
   }
 
-  setEndpointData () {
+  setEndpointData() {
     const { tab, historySnapshots, endpoints, match: { params: { endpointId, historyId } } } = this.props
     const { historySnapshotId, endpoint, draftDataSet } = this.state
 
@@ -323,7 +329,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  extractEndpointName () {
+  extractEndpointName() {
     if (!isDashboardRoute(this.props, true) && this.props.endpoints) {
       const endpointName = this.props.endpoints[this.props.match.params.endpointId]?.name
       if (endpointName) this.props.fetch_entity_name(endpointName)
@@ -331,7 +337,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async fetchPublicCollection (collectionId) {
+  async fetchPublicCollection(collectionId) {
     const collection = await collectionsApiService.getCollection(collectionId)
     if (collection.data.environment != null) {
       this.setState({
@@ -347,7 +353,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  fetchEndpoint (flag, endpointId) {
+  fetchEndpoint(flag, endpointId) {
     let endpoint = {}
     let originalParams = []
     let originalHeaders = []
@@ -463,7 +469,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  fetchHistorySnapshot () {
+  fetchHistorySnapshot() {
     let originalParams = []
     let originalHeaders = []
     let originalBody = {}
@@ -522,7 +528,7 @@ class DisplayEndpoint extends Component {
     })
   }
 
-  getFieldDescription (bodyDescription) {
+  getFieldDescription(bodyDescription) {
     const keys = Object.keys(bodyDescription)
     const fieldDescription = {}
     for (let i = 0; i < keys.length; i++) {
@@ -575,7 +581,7 @@ class DisplayEndpoint extends Component {
     this.setState({ data })
   };
 
-  setUnsavedTabDataInIDB () {
+  setUnsavedTabDataInIDB() {
     if (this.props.tab.id === this.props.tabs.activeTabId) {
       clearTimeout(this.saveTimeOut)
       this.saveTimeOut = setTimeout(() => {
@@ -589,7 +595,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setPathVariables (pathVariableKeys, pathVariableKeysObject) {
+  setPathVariables(pathVariableKeys, pathVariableKeysObject) {
     const pathVariables = []
     for (let i = 1; i < pathVariableKeys.length; i++) {
       if (
@@ -603,13 +609,13 @@ class DisplayEndpoint extends Component {
             key: pathVariableKeys[i].slice(1),
             value: this.state.pathVariables[i - 1]
               ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
-                  ? this.state.pathVariables[i - 1].value
-                  : ''
+                ? this.state.pathVariables[i - 1].value
+                : ''
               : '',
             description: this.state.pathVariables[i - 1]
               ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
-                  ? this.state.pathVariables[i - 1].description
-                  : ''
+                ? this.state.pathVariables[i - 1].description
+                : ''
               : ''
           })
         }
@@ -619,7 +625,7 @@ class DisplayEndpoint extends Component {
     this.setState({ pathVariables })
   }
 
-  getSampleResponseFlagArray (sampleResponse) {
+  getSampleResponseFlagArray(sampleResponse) {
     const sampleResponseFlagArray = []
     if (sampleResponse) {
       let index = 0
@@ -631,7 +637,7 @@ class DisplayEndpoint extends Component {
     return sampleResponseFlagArray
   }
 
-  makeOriginalParams (keys, values, description) {
+  makeOriginalParams(keys, values, description) {
     const originalParams = []
     for (let i = 0; i < this.state.originalParams.length; i++) {
       if (this.state.originalParams[i].checked === 'false') {
@@ -660,7 +666,7 @@ class DisplayEndpoint extends Component {
     return originalParams
   }
 
-  replaceVariables (str, customEnv) {
+  replaceVariables(str, customEnv) {
     let envVars = this.props.environment.variables
     if (customEnv) {
       envVars = customEnv
@@ -693,7 +699,7 @@ class DisplayEndpoint extends Component {
     return str
   }
 
-  replaceVariablesInJson (json, customEnv) {
+  replaceVariablesInJson(json, customEnv) {
     const keys = Object.keys(json)
     for (let i = 0; i < keys.length; i++) {
       json[keys[i]] = this.replaceVariables(json[keys[i]], customEnv)
@@ -706,7 +712,7 @@ class DisplayEndpoint extends Component {
     return json
   }
 
-  replaceVariablesInBody (body, bodyType, customEnv) {
+  replaceVariablesInBody(body, bodyType, customEnv) {
     switch (bodyType) {
       case 'multipart/form-data':
       case 'application/x-www-form-urlencoded':
@@ -724,7 +730,7 @@ class DisplayEndpoint extends Component {
     return body
   }
 
-  parseBody (rawBody) {
+  parseBody(rawBody) {
     let body = {}
     try {
       body = JSON.parse(rawBody)
@@ -735,7 +741,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  handleErrorResponse (error) {
+  handleErrorResponse(error) {
     if (error.response) {
       const response = {
         status: error.response.status,
@@ -752,7 +758,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApiCall ({ url: api, body, headers: header, bodyType, method, cancelToken, keyForRequest }) {
+  async handleApiCall({ url: api, body, headers: header, bodyType, method, cancelToken, keyForRequest }) {
     let responseJson = {}
     try {
       if (isElectron()) {
@@ -786,7 +792,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  processResponse (responseJson) {
+  processResponse(responseJson) {
     let response
     if (responseJson?.data?.status) {
       const {
@@ -805,7 +811,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setPathVariableValues () {
+  setPathVariableValues() {
     let uri = new URI(this.state.data.updatedUri)
     uri = uri.pathname()
     const pathParameters = uri.split('/')
@@ -866,7 +872,7 @@ class DisplayEndpoint extends Component {
     this.props.add_history(obj)
   };
 
-  checkValue (param, originalParams) {
+  checkValue(param, originalParams) {
     let valueFlag = false
     const originalParam = originalParams.find((o) => o.key === param.key)
     if ((originalParam.value === null || originalParam.value === '')) {
@@ -875,7 +881,7 @@ class DisplayEndpoint extends Component {
     return valueFlag
   }
 
-  checkEmptyParams () {
+  checkEmptyParams() {
     const params = this.state.params
     const originalParams = this.state.originalParams
     let isEmpty = false
@@ -891,7 +897,7 @@ class DisplayEndpoint extends Component {
     return isEmpty
   }
 
-  addhttps (url) {
+  addhttps(url) {
     if (url) {
       if (this.state.data.updatedUri.includes('localhost') && !(url.includes('localhost'))) { url = 'localhost:' + url }
       if (!/^(?:f|ht)tps?:\/\//.test(url)) {
@@ -905,7 +911,7 @@ class DisplayEndpoint extends Component {
     return url
   }
 
-  prepareHeaderCookies (url) {
+  prepareHeaderCookies(url) {
     if (!url) return null
     const domainUrl = url.split('/')[2]
     let cookies
@@ -1016,7 +1022,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  runScript (code, environment, request, responseJson) {
+  runScript(code, environment, request, responseJson) {
     let response
     if (responseJson) {
       const {
@@ -1060,7 +1066,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  extractPosition (groupId) {
+  extractPosition(groupId) {
     let count = -1
     for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
       if (
@@ -1073,14 +1079,14 @@ class DisplayEndpoint extends Component {
     return count + 1
   }
 
-  extractCollectionId (groupId) {
+  extractCollectionId(groupId) {
     const group = this.props.groups[groupId]
     const versionId = group.versionId
     const version = this.props.versions[versionId]
     return version?.collectionId
   }
 
-  prepareBodyForSaving (body) {
+  prepareBodyForSaving(body) {
     const data = _.cloneDeep(body)
     if (data.type === 'multipart/form-data') {
       data.value.forEach((item) => {
@@ -1090,7 +1096,7 @@ class DisplayEndpoint extends Component {
     return data
   }
 
-  prepareBodyForSending (body) {
+  prepareBodyForSending(body) {
     const data = _.cloneDeep(body)
     if (data.type === 'multipart/form-data') {
       data.value.forEach((item) => {
@@ -1180,7 +1186,7 @@ class DisplayEndpoint extends Component {
     }
   };
 
-  doSubmitPathVariables () {
+  doSubmitPathVariables() {
     const updatedPathVariables = {}
     if (this.state.pathVariables) {
       const pathVariables = [...this.state.pathVariables]
@@ -1205,7 +1211,7 @@ class DisplayEndpoint extends Component {
     return updatedPathVariables
   }
 
-  doSubmitHeader (title) {
+  doSubmitHeader(title) {
     const originalHeaders = [...this.state.originalHeaders]
     const updatedHeaders = {}
     for (let i = 0; i < originalHeaders.length; i++) {
@@ -1228,21 +1234,21 @@ class DisplayEndpoint extends Component {
     return updatedHeaders
   }
 
-  setMethod (method) {
+  setMethod(method) {
     const response = {}
     const data = { ...this.state.data }
     data.method = method
     this.setState({ response, data }, () => this.setModifiedTabData())
   }
 
-  setModifiedTabData () {
+  setModifiedTabData() {
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id)
       this.setUnsavedTabDataInIDB()
     }
   }
 
-  propsFromChild (name, value) {
+  propsFromChild(name, value) {
     if (name === 'Params') {
       this.handleUpdateUri(value)
       this.setState({ originalParams: value }, () => this.setModifiedTabData())
@@ -1259,7 +1265,7 @@ class DisplayEndpoint extends Component {
     if (name === 'HostAndUri') this.setModifiedTabData()
   }
 
-  setPublicBody (body) {
+  setPublicBody(body) {
     const json = body
     const data = { ...this.state.data }
     data.body = { type: 'JSON', value: json }
@@ -1267,7 +1273,7 @@ class DisplayEndpoint extends Component {
     this.setState({ data, publicBodyFlag: false })
   }
 
-  handleUpdateUri (originalParams) {
+  handleUpdateUri(originalParams) {
     if (originalParams.length === 0) {
       const updatedUri = this.state.data.updatedUri.split('?')[0]
       const data = { ...this.state.data }
@@ -1297,7 +1303,7 @@ class DisplayEndpoint extends Component {
     this.setState({ data })
   }
 
-  doSubmitParam () {
+  doSubmitParam() {
     const originalParams = [...this.state.originalParams]
     const updatedParams = {}
     for (let i = 0; i < originalParams.length; i++) {
@@ -1320,7 +1326,7 @@ class DisplayEndpoint extends Component {
     return updatedParams
   }
 
-  fetchoriginalParams (params) {
+  fetchoriginalParams(params) {
     const originalParams = []
     let i = 0
     for (i = 0; i < Object.keys(params).length; i++) {
@@ -1341,7 +1347,7 @@ class DisplayEndpoint extends Component {
     return originalParams
   }
 
-  fetchoriginalHeaders (headers) {
+  fetchoriginalHeaders(headers) {
     const originalHeaders = []
     let i = 0
     for (i = 0; i < Object.keys(headers).length; i++) {
@@ -1361,7 +1367,7 @@ class DisplayEndpoint extends Component {
     return originalHeaders
   }
 
-  fetchPathVariables (pathVariables) {
+  fetchPathVariables(pathVariables) {
     const originalPathVariables = []
     let i = 0
     for (i = 0; i < Object.keys(pathVariables).length; i++) {
@@ -1375,23 +1381,25 @@ class DisplayEndpoint extends Component {
     return originalPathVariables
   }
 
-  openEndpointFormModal () {
+  openEndpointFormModal() {
     this.setState({ showEndpointFormModal: true })
   }
 
-  closeEndpointFormModal () {
+  closeEndpointFormModal() {
     this.setState({ showEndpointFormModal: false, saveAsFlag: false })
   }
-
-  setGroupId (groupId, { endpointName, endpointDescription }) {
+  closeChatBotModal() {
+    this.setState({ showAskAiSlider: false })
+  }
+  setGroupId(groupId, { endpointName, endpointDescription }) {
     this.setState({ groupId }, () => { this.handleSave(groupId, { endpointName, endpointDescription }) })
   }
 
-  updateArray (updatedArray) {
+  updateArray(updatedArray) {
     this.setState({ updatedArray })
   }
 
-  makeHeaders (headers) {
+  makeHeaders(headers) {
     const processedHeaders = []
     for (let i = 0; i < Object.keys(headers).length; i++) {
       if (headers[Object.keys(headers)[i]].checked === 'true') {
@@ -1408,7 +1416,7 @@ class DisplayEndpoint extends Component {
     return processedHeaders
   }
 
-  makeParams (params) {
+  makeParams(params) {
     const processedParams = []
     for (let i = 0; i < Object.keys(params).length; i++) {
       if (params[Object.keys(params)[i]].checked === 'true') {
@@ -1422,7 +1430,7 @@ class DisplayEndpoint extends Component {
     return processedParams
   }
 
-  async makePostData (body) {
+  async makePostData(body) {
     const params = []
     let paramsFlag = false
     let postData = {}
@@ -1458,7 +1466,7 @@ class DisplayEndpoint extends Component {
     return postData
   }
 
-  async prepareHarObject () {
+  async prepareHarObject() {
     try {
       const BASE_URL = this.state.host.BASE_URL
       const uri = new URI(this.state.data.updatedUri)
@@ -1486,14 +1494,14 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  openCodeTemplate (harObject) {
+  openCodeTemplate(harObject) {
     this.setState({
       showCodeTemplate: true,
       harObject
     })
   }
 
-  showCodeTemplate () {
+  showCodeTemplate() {
     return (
       <CodeTemplate
         show
@@ -1506,18 +1514,18 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  setBaseUrl (BASE_URL, selectedHost) {
+  setBaseUrl(BASE_URL, selectedHost) {
     this.setState({ host: { BASE_URL, selectedHost } })
   }
 
-  setBody (bodyType, body) {
+  setBody(bodyType, body) {
     const data = { ...this.state.data }
     data.body = { type: bodyType, value: body }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
     this.setState({ data }, () => this.setModifiedTabData())
   }
 
-  setBodyDescription (type, value) {
+  setBodyDescription(type, value) {
     const data = {}
     try {
       if (value.trim() === '') {
@@ -1589,15 +1597,15 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setDescription (bodyDescription) {
+  setDescription(bodyDescription) {
     this.setState({ bodyDescription })
   }
 
-  setFieldDescription (fieldDescription, bodyDescription) {
+  setFieldDescription(fieldDescription, bodyDescription) {
     this.setState({ fieldDescription, bodyDescription })
   }
 
-  setParams (value, title, authorizationFlag) {
+  setParams(value, title, authorizationFlag) {
     const originalParams = this.state.originalParams
     const updatedParams = []
     const emptyParam = {
@@ -1625,7 +1633,7 @@ class DisplayEndpoint extends Component {
     this.setState({ originalParams: updatedParams })
   }
 
-  setHeaders (value, title, authorizationFlag = undefined) {
+  setHeaders(value, title, authorizationFlag = undefined) {
     const originalHeaders = this.state.originalHeaders
     const updatedHeaders = []
     const emptyHeader = {
@@ -1657,8 +1665,8 @@ class DisplayEndpoint extends Component {
         value:
           title.split('.')[0] === 'Authorization'
             ? title.split('.')[1] === 'oauth_2'
-                ? 'Bearer ' + value
-                : 'Basic ' + value
+              ? 'Bearer ' + value
+              : 'Basic ' + value
             : '',
         description: ''
       })
@@ -1673,7 +1681,7 @@ class DisplayEndpoint extends Component {
     this.setState({ originalHeaders: updatedHeaders })
   }
 
-  identifyBodyType (bodyType) {
+  identifyBodyType(bodyType) {
     switch (bodyType) {
       case 'application/x-www-form-urlencoded':
         return 'application/x-www-form-urlencoded'
@@ -1694,7 +1702,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  propsFromDescription (title, data) {
+  propsFromDescription(title, data) {
     if (title === 'data') {
       this.setState({ data: data }, () => this.setModifiedTabData())
     }
@@ -1702,7 +1710,7 @@ class DisplayEndpoint extends Component {
     if (title === 'oldDescription') this.setState({ oldDescription: data })
   }
 
-  propsFromSampleResponse (sampleResponseArray, sampleResponseFlagArray) {
+  propsFromSampleResponse(sampleResponseArray, sampleResponseFlagArray) {
     this.setState({ sampleResponseArray, sampleResponseFlagArray })
     this.props.update_endpoint({
       id: this.state.endpoint.id,
@@ -1710,7 +1718,7 @@ class DisplayEndpoint extends Component {
     })
   }
 
-  makeFormData (body) {
+  makeFormData(body) {
     const formData = {}
     for (let i = 0; i < body.value.length; i++) {
       if (
@@ -1726,7 +1734,7 @@ class DisplayEndpoint extends Component {
     return formData
   }
 
-  formatBody (body, headers) {
+  formatBody(body, headers) {
     let finalBodyValue = null
     switch (body.type) {
       case 'raw':
@@ -1754,7 +1762,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async setAccessToken () {
+  async setAccessToken() {
     const url = window.location.href
     const hashVariables = isElectron() ? url.split('#')[2] : url.split('#')[1]
     const response = URI.parseQuery('?' + hashVariables)
@@ -1799,7 +1807,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setAuthType (type, value) {
+  setAuthType(type, value) {
     let authType = {}
     if (type === '') {
       authType = null
@@ -1812,7 +1820,7 @@ class DisplayEndpoint extends Component {
     this.setState({ authType })
   }
 
-  addSampleResponse (response) {
+  addSampleResponse(response) {
     const { data, status } = response
     const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
     const description = ''
@@ -1830,25 +1838,25 @@ class DisplayEndpoint extends Component {
     })
   }
 
-  openBody (index) {
+  openBody(index) {
     const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
     sampleResponseFlagArray[index] = true
     this.setState({ sampleResponseFlagArray })
   }
 
-  closeBody (index) {
+  closeBody(index) {
     const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
     sampleResponseFlagArray[index] = false
     this.setState({ sampleResponseFlagArray })
   }
 
-  closeLoginSignupModal () {
+  closeLoginSignupModal() {
     this.setState({
       showLoginSignupModal: false
     })
   }
 
-  handleCancel () {
+  handleCancel() {
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.invoke('request-cancel', this.state.requestKey)
@@ -1863,7 +1871,7 @@ class DisplayEndpoint extends Component {
     })
   }
 
-  displayResponse () {
+  displayResponse() {
     if (this.isNotDashboardOrDocView() && this.state.flagResponse) {
       return (
         <div ref={this.myRef} className='hm-panel endpoint-public-response-container public-doc'>
@@ -1887,7 +1895,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  displayPublicSampleResponse () {
+  displayPublicSampleResponse() {
     if (this.state.sampleResponseArray.length) {
       return (
         <div className='mt-3'>
@@ -1901,13 +1909,13 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  handletoggle (type) {
+  handletoggle(type) {
     const currentView = type
     window.localStorage.setItem('response-view', currentView)
     this.props.set_response_view(currentView)
   }
 
-  renderToggle (type) {
+  renderToggle(type) {
     return (
       <div className={`icon-set ${this.props.responseView === type ? 'active' : ''}`} onClick={() => this.handletoggle(type)}>
         <OverlayTrigger
@@ -1919,7 +1927,13 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  displayResponseAndSampleResponse () {
+  toggleChatbotModal = () => {
+    this.setState(prevState => ({
+      showAskAiSlider: !prevState.showAskAiSlider
+    }));
+  };
+
+  displayResponseAndSampleResponse() {
     return (
       <>
         <div className='custom-tabs clear-both response-container' ref={this.myRef}>
@@ -2001,19 +2015,19 @@ class DisplayEndpoint extends Component {
               </div>
             </div>
             {
-               getCurrentUser() &&
-                 <div
-                   className='tab-pane fade'
-                   id={
-                      this.isDashboardAndTestingView()
-                        ? `sample-${this.props.tab.id}`
-                        : 'sample'
-                    }
-                   role='tabpanel'
-                   aria-labelledby='pills-sample-tab'
-                 >
-                   {this.renderSampleResponse()}
-                 </div>
+              getCurrentUser() &&
+              <div
+                className='tab-pane fade'
+                id={
+                  this.isDashboardAndTestingView()
+                    ? `sample-${this.props.tab.id}`
+                    : 'sample'
+                }
+                role='tabpanel'
+                aria-labelledby='pills-sample-tab'
+              >
+                {this.renderSampleResponse()}
+              </div>
             }
           </div>
         </div>
@@ -2021,7 +2035,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderSampleResponse () {
+  renderSampleResponse() {
     return (
       <SampleResponse
         {...this.props}
@@ -2038,7 +2052,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  displayPublicResponse () {
+  displayPublicResponse() {
     return (
       <>
         <div className='response-container endpoint-public-response-container endPointRes'>
@@ -2057,12 +2071,12 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  setHostUri (host, uri, selectedHost) {
+  setHostUri(host, uri, selectedHost) {
     if (uri !== this.state.data.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
     this.setBaseUrl(host, selectedHost)
   }
 
-  alterEndpointName (name) {
+  alterEndpointName(name) {
     if (name) {
       const obj = this.state.data
       obj.name = name
@@ -2070,17 +2084,17 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  renderCookiesModal () {
+  renderCookiesModal() {
     return (
       this.state.showCookiesModal &&
-        <CookiesModal
-          show={this.state.showCookiesModal}
-          onHide={() => this.setState({ showCookiesModal: false })}
-        />
+      <CookiesModal
+        show={this.state.showCookiesModal}
+        onHide={() => this.setState({ showCookiesModal: false })}
+      />
     )
   }
 
-  handleScriptChange (text, type) {
+  handleScriptChange(text, type) {
     let preScriptText = this.state.preScriptText || ''
     let postScriptText = this.state.postScriptText || ''
     if (type === 'Pre-Script') {
@@ -2092,7 +2106,7 @@ class DisplayEndpoint extends Component {
     this.setState({ preScriptText, postScriptText }, () => this.setModifiedTabData())
   }
 
-  renderScriptError () {
+  renderScriptError() {
     return (
       <>
         {this.state.postReqScriptError ? <div className='script-error'>{`There was an error in evaluating the Post-request Script: ${this.state.postReqScriptError}`}</div> : null}
@@ -2108,7 +2122,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  renderDefaultViewConfirmationModal () {
+  renderDefaultViewConfirmationModal() {
     return this.state.showViewConfirmationModal &&
       <ConfirmationModal
         show={this.state.showViewConfirmationModal}
@@ -2118,12 +2132,12 @@ class DisplayEndpoint extends Component {
       />
   }
 
-  setDefaultView () {
+  setDefaultView() {
     const endpointView = { [getCurrentUser().identifier]: this.state.currentView }
     window.localStorage.setItem('endpointView', JSON.stringify(endpointView))
   }
 
-  removePublicItem (item, index) {
+  removePublicItem(item, index) {
     const showRemoveButton = !['body', 'host', 'params', 'pathVariables', 'headers', 'sampleResponse'].includes(item.type)
     const handleOnClick = () => {
       const docData = _.cloneDeep(this.state.docViewData)
@@ -2164,7 +2178,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  renderDragHandle (item) {
+  renderDragHandle(item) {
     if (item.type === 'pathVariables') {
       if (this.state.pathVariables && this.state.pathVariables.length) return <DragHandle />
       return
@@ -2184,7 +2198,7 @@ class DisplayEndpoint extends Component {
     }
   };
 
-  renderTiptapEditor (item, index) {
+  renderTiptapEditor(item, index) {
     return (
       <Tiptap
         initial={item.data}
@@ -2211,7 +2225,7 @@ class DisplayEndpoint extends Component {
         }
         break
       }
-      case 'textBlock' : {
+      case 'textBlock': {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
           return (
             <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
@@ -2221,42 +2235,42 @@ class DisplayEndpoint extends Component {
         }
         break
       }
-      case 'host' : {
+      case 'host': {
         if (!isDashboardRoute(this.props)) return this.renderPublicHost()
         else return <div className='endpoint-url-container'> {this.renderHost()} </div>
       }
-      case 'body' : {
+      case 'body': {
         if (!isDashboardRoute(this.props)) return this.renderPublicBodyContainer()
         else return this.renderBodyContainer()
       }
-      case 'headers' : {
+      case 'headers': {
         if (!isDashboardRoute(this.props)) return this.renderPublicHeaders()
         else return <div className='mb-3'>{this.renderHeaders()}</div>
       }
-      case 'params' : {
+      case 'params': {
         if (!isDashboardRoute(this.props)) return this.renderPublicParams()
         else return <div className='mb-3'>{this.renderParams()}</div>
       }
-      case 'pathVariables' : {
+      case 'pathVariables': {
         if (!isDashboardRoute(this.props)) return this.renderPublicPathVariables()
         else return this.renderPathVariables()
       }
-      case 'sampleResponse' : {
+      case 'sampleResponse': {
         if (!isDashboardRoute(this.props)) return this.displayPublicSampleResponse()
         else return this.renderSampleResponse()
       }
     }
   }
 
-  isNotDashboardOrDocView () {
+  isNotDashboardOrDocView() {
     return !isDashboardRoute(this.props) || this.state.currentView === 'doc'
   }
 
-  isDashboardAndTestingView () {
+  isDashboardAndTestingView() {
     return isDashboardRoute(this.props) && (this.state.currentView === 'testing' || !isSavedEndpoint(this.props))
   }
 
-  getCurrentView () {
+  getCurrentView() {
     const { endpoints, collections } = this.props
     const endpoint = endpoints[this.endpointId]
     const collectionId = this.extractCollectionId(endpoint.groupId)
@@ -2270,7 +2284,7 @@ class DisplayEndpoint extends Component {
     return collectionView
   }
 
-  getDocViewData (endpoint) {
+  getDocViewData(endpoint) {
     if (endpoint) {
       if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
         const docViewData = [...defaultDocViewData]
@@ -2282,7 +2296,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  renderToggleView () {
+  renderToggleView() {
     if (isSavedEndpoint(this.props)) {
       return (
         <ButtonGroup className='btn-group-custom mb-3' aria-label='Basic example'>
@@ -2293,7 +2307,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  renderDocViewOptions () {
+  renderDocViewOptions() {
     if (isDashboardRoute(this.props) && this.state.currentView === 'doc') {
       return (
         <div>
@@ -2311,7 +2325,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  addBlock (blockType) {
+  addBlock(blockType) {
     const docViewData = [...this.state.docViewData]
     docViewData.push({
       type: blockType,
@@ -2320,15 +2334,15 @@ class DisplayEndpoint extends Component {
     this.setState({ docViewData })
   }
 
-  renderBodyContainer () {
+  renderBodyContainer() {
     return (
       <BodyContainer
         {...this.props}
         set_body={this.setBody.bind(this)}
         set_body_description={this.setDescription.bind(this)}
         body={
-            this.state.bodyFlag === true ? this.state.data.body : ''
-          }
+          this.state.bodyFlag === true ? this.state.data.body : ''
+        }
         Body={this.state.data.body}
         endpoint_id={this.props.tab.id}
         body_description={this.state.bodyDescription}
@@ -2340,23 +2354,23 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderPublicBodyContainer () {
+  renderPublicBodyContainer() {
     return this.state.data.body && this.state.originalBody &&
-          this.state.data.body.value !== null && (
-            <PublicBodyContainer
-              {...this.props}
-              set_body={this.setBody.bind(this)}
-              set_body_description={this.setDescription.bind(this)}
-              body={this.state.data.body}
-              original_body={this.state.originalBody}
-              public_body_flag={this.state.publicBodyFlag}
-              set_public_body={this.setPublicBody.bind(this)}
-              body_description={this.state.bodyDescription}
-            />
-    )
+      this.state.data.body.value !== null && (
+        <PublicBodyContainer
+          {...this.props}
+          set_body={this.setBody.bind(this)}
+          set_body_description={this.setDescription.bind(this)}
+          body={this.state.data.body}
+          original_body={this.state.originalBody}
+          public_body_flag={this.state.publicBodyFlag}
+          set_public_body={this.setPublicBody.bind(this)}
+          body_description={this.state.bodyDescription}
+        />
+      )
   }
 
-  renderHeaders () {
+  renderHeaders() {
     return (
       <GenericTable
         {...this.props}
@@ -2369,7 +2383,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderPublicHeaders () {
+  renderPublicHeaders() {
     return this.state.headers.length > 1 && (
       <GenericTable
         {...this.props}
@@ -2382,7 +2396,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderParams () {
+  renderParams() {
     return (
       <GenericTable
         {...this.props}
@@ -2396,7 +2410,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderPublicParams () {
+  renderPublicParams() {
     return this.state.params.length > 1 && (
       <div>
         <GenericTable
@@ -2411,7 +2425,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderPathVariables () {
+  renderPathVariables() {
     return this.state.pathVariables &&
       this.state.pathVariables.length !== 0 && (
         <GenericTable
@@ -2422,26 +2436,26 @@ class DisplayEndpoint extends Component {
           original_data={[...this.state.pathVariables]}
           currentView={this.state.currentView}
         />
-    )
+      )
   }
 
-  renderPublicPathVariables () {
+  renderPublicPathVariables() {
     return this.state.pathVariables &&
-        this.state.pathVariables.length !== 0 && (
-          <div>
-            <GenericTable
-              {...this.props}
-              title='Path Variables'
-              dataArray={this.state.pathVariables}
-              props_from_parent={this.propsFromChild.bind(this)}
-              original_data={[...this.state.pathVariables]}
-              currentView={this.state.currentView}
-            />
-          </div>
-    )
+      this.state.pathVariables.length !== 0 && (
+        <div>
+          <GenericTable
+            {...this.props}
+            title='Path Variables'
+            dataArray={this.state.pathVariables}
+            props_from_parent={this.propsFromChild.bind(this)}
+            original_data={[...this.state.pathVariables]}
+            currentView={this.state.currentView}
+          />
+        </div>
+      )
   }
 
-  renderPublicHost () {
+  renderPublicHost() {
     return (
       <div>
         {/* do not remove this code */}
@@ -2480,7 +2494,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderHost () {
+  renderHost() {
     return (
       <div className='input-group-prepend'>
         <div className='dropdown'>
@@ -2528,7 +2542,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderDocViewOperations () {
+  renderDocViewOperations() {
     const endpoints = { ...this.props.endpoints }
     const endpointId = this.endpointId
     if (isDashboardRoute(this.props) && this.state.currentView === 'doc' && endpoints[endpointId]) {
@@ -2565,7 +2579,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  renderInOverlay (method, endpointId) {
+  renderInOverlay(method, endpointId) {
     const endpoints = { ...this.props.endpoints }
     return (
       <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
@@ -2576,7 +2590,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderPublishEndpoint (endpointId, endpoints) {
+  renderPublishEndpoint(endpointId, endpoints) {
     return (
       <PublishEntityButton
         entity={endpoints}
@@ -2587,7 +2601,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderPublishConfirmationModal () {
+  renderPublishConfirmationModal() {
     return this.state.openPublishConfirmationModal &&
       <ConfirmationModal
         show={this.state.openPublishConfirmationModal}
@@ -2599,7 +2613,7 @@ class DisplayEndpoint extends Component {
       />
   }
 
-  async handleApproveEndpointRequest () {
+  async handleApproveEndpointRequest() {
     const endpointId = this.endpointId
     this.setState({ publishLoader: true })
     if (sensitiveInfoFound(this.props.endpoints[endpointId])) {
@@ -2609,13 +2623,13 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handlePublicEndpointState (endpoint) {
+  async handlePublicEndpointState(endpoint) {
     if (isStateDraft(endpoint.id, this.props.endpoints) || isStateReject(endpoint.id, this.props.endpoints)) {
       this.props.pending_endpoint(endpoint)
     }
   }
 
-  renderWarningModal () {
+  renderWarningModal() {
     return (
       <WarningModal
         show={this.state.warningModal}
@@ -2627,71 +2641,71 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  showDocOptions () {
+  showDocOptions() {
     const { docOptions } = this.state
     this.setState({ docOptions: !docOptions })
   }
 
-  renderSaveButton () {
+  renderSaveButton() {
     return (
       <div className='save-endpoint position-absolute top-right'>
         {
           this.isDashboardAndTestingView()
             ? (
-                this.props.location.pathname.split('/')[5] !== 'new'
-                  ? (
-                    <Dropdown as={ButtonGroup}>
-                      <button
-                        id='api_save_btn'
-                        className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
-                        type='button'
-                        onClick={() => this.handleSave()}
-                      >
-                        Save
-                      </button>
-                      {
-                  getCurrentUser()
-                    ? (
-                      <>
-                        <Dropdown.Toggle className='btn-outline' split variant='' />
-                        <Dropdown.Menu className=''>
-                          <Dropdown.Item
-                            onClick={() =>
-                              this.setState({ saveAsFlag: true }, () => {
-                                this.openEndpointFormModal()
-                              })}
-                          >
-                            Save As
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </>
-                      )
-                    : null
-                }
-                    </Dropdown>
-                    )
-                  : (
+              this.props.location.pathname.split('/')[5] !== 'new'
+                ? (
+                  <Dropdown as={ButtonGroup}>
                     <button
+                      id='api_save_btn'
                       className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
                       type='button'
-                      id='save-endpoint-button'
                       onClick={() => this.handleSave()}
                     >
                       Save
                     </button>
-                    )
-              )
+                    {
+                      getCurrentUser()
+                        ? (
+                          <>
+                            <Dropdown.Toggle className='btn-outline' split variant='' />
+                            <Dropdown.Menu className=''>
+                              <Dropdown.Item
+                                onClick={() =>
+                                  this.setState({ saveAsFlag: true }, () => {
+                                    this.openEndpointFormModal()
+                                  })}
+                              >
+                                Save As
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </>
+                        )
+                        : null
+                    }
+                  </Dropdown>
+                )
+                : (
+                  <button
+                    className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
+                    type='button'
+                    id='save-endpoint-button'
+                    onClick={() => this.handleSave()}
+                  >
+                    Save
+                  </button>
+                )
+            )
             : null
         }
       </div>
     )
   }
 
-  responseToggle () {
+  responseToggle() {
     return JSON.parse(window.localStorage.getItem('right'))
   }
 
-  render () {
+  render() {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -2756,45 +2770,45 @@ class DisplayEndpoint extends Component {
                   />
                 )}
                 {
-                getCurrentUser()
-                  ? (
-                    <div
-                      className={this.isDashboardAndTestingView() ? 'hm-panel' : null}
-                    >
+                  getCurrentUser()
+                    ? (
+                      <div
+                        className={this.isDashboardAndTestingView() ? 'hm-panel' : null}
+                      >
 
-                      <div className='d-flex justify-content-between'>
-                        {this.renderToggleView()}
-                        {this.renderDocViewOperations()}
+                        <div className='d-flex justify-content-between'>
+                          {this.renderToggleView()}
+                          {this.renderDocViewOperations()}
+                        </div>
+                        <div className='position-relative top-part'>
+                          {this.state.showEndpointFormModal && (
+                            <SaveAsSidebar
+                              {...this.props}
+                              onHide={() => this.closeEndpointFormModal()}
+                              set_group_id={this.setGroupId.bind(this)}
+                              name={this.state.data.name}
+                              description={this.state.data.description}
+                              save_endpoint={this.handleSave.bind(this)}
+                              saveAsLoader={this.state.saveAsLoader}
+                            />
+                          )}
+                          {this.isDashboardAndTestingView() && (
+                            <DisplayDescription
+                              {...this.props}
+                              endpoint={this.state.endpoint}
+                              data={this.state.data}
+                              old_description={this.state.oldDescription}
+                              groupId={this.state.groupId ? this.state.groupId : null}
+                              props_from_parent={this.propsFromDescription.bind(this)}
+                              alterEndpointName={(name) => this.alterEndpointName(name)}
+                            />
+                          )}
+                          {this.renderSaveButton()}
+                        </div>
                       </div>
-                      <div className='position-relative top-part'>
-                        {this.state.showEndpointFormModal && (
-                          <SaveAsSidebar
-                            {...this.props}
-                            onHide={() => this.closeEndpointFormModal()}
-                            set_group_id={this.setGroupId.bind(this)}
-                            name={this.state.data.name}
-                            description={this.state.data.description}
-                            save_endpoint={this.handleSave.bind(this)}
-                            saveAsLoader={this.state.saveAsLoader}
-                          />
-                        )}
-                        {this.isDashboardAndTestingView() && (
-                          <DisplayDescription
-                            {...this.props}
-                            endpoint={this.state.endpoint}
-                            data={this.state.data}
-                            old_description={this.state.oldDescription}
-                            groupId={this.state.groupId ? this.state.groupId : null}
-                            props_from_parent={this.propsFromDescription.bind(this)}
-                            alterEndpointName={(name) => this.alterEndpointName(name)}
-                          />
-                        )}
-                        {this.renderSaveButton()}
-                      </div>
-                    </div>
                     )
-                  : null
-              }
+                    : null
+                }
                 <div className={'clear-both ' + (this.state.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
                   <div className='endpoint-header' ref={this.scrollDiv}>
                     {this.isNotDashboardOrDocView() && (
@@ -2807,253 +2821,253 @@ class DisplayEndpoint extends Component {
                     className={this.isNotDashboardOrDocView() ? 'hm-panel' : 'hm-panel'}
                   >
                     {
-                  this.isDashboardAndTestingView() &&
-                    (
-                      <div className='endpoint-url-container'>
-                        {this.renderHost()}
-                        <div className='d-flex uriContainerWrapper'>
-                          <button
-                            className={this.state.loader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
-                            type='submit'
-                            id='api-send-button'
-                            onClick={() => this.handleSend()}
-                            disabled={this.state.loader}
-                          >
-                            {this.isDashboardAndTestingView() ? 'Send' : 'Try'}
-                          </button>
+                      this.isDashboardAndTestingView() &&
+                      (
+                        <div className='endpoint-url-container'>
+                          {this.renderHost()}
+                          <div className='d-flex uriContainerWrapper'>
+                            <button
+                              className={this.state.loader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
+                              type='submit'
+                              id='api-send-button'
+                              onClick={() => this.handleSend()}
+                              disabled={this.state.loader}
+                            >
+                              {this.isDashboardAndTestingView() ? 'Send' : 'Try'}
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    )
-                }
+                      )
+                    }
                     {isElectron() && <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>SSL certificate verification {this.state.sslMode ? <span className='enabled'>enabled</span> : <span>disabled</span>} </div>}
                     <div
                       className={
-                    this.isDashboardAndTestingView()
-                      ? 'endpoint-headers-container d-flex'
-                      : 'hm-public-endpoint-headers'
-                  }
+                        this.isDashboardAndTestingView()
+                          ? 'endpoint-headers-container d-flex'
+                          : 'hm-public-endpoint-headers'
+                      }
                     >
                       <div className='main-table-wrapper'>
                         {
-                      this.isDashboardAndTestingView()
-                        ? (
-                          <div className='d-flex justify-content-between align-items-center'>
-                            <div className='headers-params-wrapper custom-tabs'>
-                              <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
-                                <li className='nav-item'>
-                                  <a
-                                    className={
-                                      this.setAuthorizationTab
-                                        ? 'nav-link '
-                                        : 'nav-link active'
-                                    }
-                                    id='pills-params-tab'
-                                    data-toggle='pill'
-                                    href={`#params-${this.props.tab.id}`}
-                                    role='tab'
-                                    aria-controls={`params-${this.props.tab.id}`}
-                                    aria-selected={
-                                      this.setAuthorizationTab ? 'false' : 'true'
-                                    }
-                                  >
-                                    Params
-                                  </a>
-                                </li>
-                                <li className='nav-item'>
-                                  <a
-                                    className={
-                                      this.setAuthorizationTab
-                                        ? 'nav-link active'
-                                        : 'nav-link '
-                                    }
-                                    id='pills-authorization-tab'
-                                    data-toggle='pill'
-                                    href={`#authorization-${this.props.tab.id}`}
-                                    role='tab'
-                                    aria-controls={`authorization-${this.props.tab.id}`}
-                                    aria-selected={
-                                      this.setAuthorizationTab ? 'true' : 'false'
-                                    }
-                                  >
-                                    Authorization
-                                  </a>
-                                </li>
-                                <li className='nav-item'>
-                                  <a
-                                    className='nav-link'
-                                    id='pills-headers-tab'
-                                    data-toggle='pill'
-                                    href={`#headers-${this.props.tab.id}`}
-                                    role='tab'
-                                    aria-controls={`headers-${this.props.tab.id}`}
-                                    aria-selected='false'
-                                  >
-                                    Headers
-                                  </a>
-                                </li>
-                                <li className='nav-item'>
-                                  <a
-                                    className='nav-link'
-                                    id='pills-body-tab'
-                                    data-toggle='pill'
-                                    href={`#body-${this.props.tab.id}`}
-                                    role='tab'
-                                    aria-controls={`body-${this.props.tab.id}`}
-                                    aria-selected='false'
-                                  >
-                                    Body
-                                  </a>
-                                </li>
-                                <li className='nav-item'>
-                                  <a
-                                    className='nav-link'
-                                    id='pills-pre-script-tab'
-                                    data-toggle='pill'
-                                    href={`#pre-script-${this.props.tab.id}`}
-                                    role='tab'
-                                    aria-controls={`pre-script-${this.props.tab.id}`}
-                                    aria-selected='false'
-                                  >
-                                    Pre-Script
-                                  </a>
-                                </li>
-                                <li className='nav-item'>
-                                  <a
-                                    className='nav-link'
-                                    id='pills-post-script-tab'
-                                    data-toggle='pill'
-                                    href={`#post-script-${this.props.tab.id}`}
-                                    role='tab'
-                                    aria-controls={`post-script-${this.props.tab.id}`}
-                                    aria-selected='false'
-                                  >
-                                    Post-Script
-                                  </a>
-                                </li>
-                                <li className='nav-item cookie-tab'>
-                                  {getCurrentUser() &&
-                                    <a className='nav-link' onClick={() => this.setState({ showCookiesModal: true })}>
-                                      Cookies
-                                    </a>}
-                                </li>
-                              </ul>
-                            </div>
+                          this.isDashboardAndTestingView()
+                            ? (
+                              <div className='d-flex justify-content-between align-items-center'>
+                                <div className='headers-params-wrapper custom-tabs'>
+                                  <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
+                                    <li className='nav-item'>
+                                      <a
+                                        className={
+                                          this.setAuthorizationTab
+                                            ? 'nav-link '
+                                            : 'nav-link active'
+                                        }
+                                        id='pills-params-tab'
+                                        data-toggle='pill'
+                                        href={`#params-${this.props.tab.id}`}
+                                        role='tab'
+                                        aria-controls={`params-${this.props.tab.id}`}
+                                        aria-selected={
+                                          this.setAuthorizationTab ? 'false' : 'true'
+                                        }
+                                      >
+                                        Params
+                                      </a>
+                                    </li>
+                                    <li className='nav-item'>
+                                      <a
+                                        className={
+                                          this.setAuthorizationTab
+                                            ? 'nav-link active'
+                                            : 'nav-link '
+                                        }
+                                        id='pills-authorization-tab'
+                                        data-toggle='pill'
+                                        href={`#authorization-${this.props.tab.id}`}
+                                        role='tab'
+                                        aria-controls={`authorization-${this.props.tab.id}`}
+                                        aria-selected={
+                                          this.setAuthorizationTab ? 'true' : 'false'
+                                        }
+                                      >
+                                        Authorization
+                                      </a>
+                                    </li>
+                                    <li className='nav-item'>
+                                      <a
+                                        className='nav-link'
+                                        id='pills-headers-tab'
+                                        data-toggle='pill'
+                                        href={`#headers-${this.props.tab.id}`}
+                                        role='tab'
+                                        aria-controls={`headers-${this.props.tab.id}`}
+                                        aria-selected='false'
+                                      >
+                                        Headers
+                                      </a>
+                                    </li>
+                                    <li className='nav-item'>
+                                      <a
+                                        className='nav-link'
+                                        id='pills-body-tab'
+                                        data-toggle='pill'
+                                        href={`#body-${this.props.tab.id}`}
+                                        role='tab'
+                                        aria-controls={`body-${this.props.tab.id}`}
+                                        aria-selected='false'
+                                      >
+                                        Body
+                                      </a>
+                                    </li>
+                                    <li className='nav-item'>
+                                      <a
+                                        className='nav-link'
+                                        id='pills-pre-script-tab'
+                                        data-toggle='pill'
+                                        href={`#pre-script-${this.props.tab.id}`}
+                                        role='tab'
+                                        aria-controls={`pre-script-${this.props.tab.id}`}
+                                        aria-selected='false'
+                                      >
+                                        Pre-Script
+                                      </a>
+                                    </li>
+                                    <li className='nav-item'>
+                                      <a
+                                        className='nav-link'
+                                        id='pills-post-script-tab'
+                                        data-toggle='pill'
+                                        href={`#post-script-${this.props.tab.id}`}
+                                        role='tab'
+                                        aria-controls={`post-script-${this.props.tab.id}`}
+                                        aria-selected='false'
+                                      >
+                                        Post-Script
+                                      </a>
+                                    </li>
+                                    <li className='nav-item cookie-tab'>
+                                      {getCurrentUser() &&
+                                        <a className='nav-link' onClick={() => this.setState({ showCookiesModal: true })}>
+                                          Cookies
+                                        </a>}
+                                    </li>
+                                  </ul>
+                                </div>
 
-                          </div>
-                          )
-                        : null
-                    }
+                              </div>
+                            )
+                            : null
+                        }
                         {
-                      this.isDashboardAndTestingView()
-                        ? (
-                          <div className='tab-content' id='pills-tabContent'>
-                            <div
-                              className={
-                                this.setAuthorizationTab
-                                  ? 'tab-pane fade'
-                                  : 'tab-pane fade show active'
-                              }
-                              id={`params-${this.props.tab.id}`}
-                              role='tabpanel'
-                              aria-labelledby='pills-params-tab'
-                            >
-                              {this.renderParams()}
-                              <div>
-                                {this.renderPathVariables()}
+                          this.isDashboardAndTestingView()
+                            ? (
+                              <div className='tab-content' id='pills-tabContent'>
+                                <div
+                                  className={
+                                    this.setAuthorizationTab
+                                      ? 'tab-pane fade'
+                                      : 'tab-pane fade show active'
+                                  }
+                                  id={`params-${this.props.tab.id}`}
+                                  role='tabpanel'
+                                  aria-labelledby='pills-params-tab'
+                                >
+                                  {this.renderParams()}
+                                  <div>
+                                    {this.renderPathVariables()}
+                                  </div>
+                                </div>
+                                <div
+                                  className={
+                                    this.setAuthorizationTab
+                                      ? 'tab-pane fade show active'
+                                      : 'tab-pane fade '
+                                  }
+                                  id={`authorization-${this.props.tab.id}`}
+                                  role='tabpanel'
+                                  aria-labelledby='pills-authorization-tab'
+                                >
+                                  <div>
+                                    <Authorization
+                                      {...this.props}
+                                      title='Authorization'
+                                      groupId={this.state.groupId}
+                                      set_authorization_headers={this.setHeaders.bind(this)}
+                                      set_authoriztaion_params={this.setParams.bind(this)}
+                                      set_authoriztaion_type={this.setAuthType.bind(this)}
+                                      accessToken={this.accessToken}
+                                      authorizationType={this.state.authType}
+                                    />
+                                  </div>
+                                </div>
+                                <div
+                                  className='tab-pane fade'
+                                  id={`headers-${this.props.tab.id}`}
+                                  role='tabpanel'
+                                  aria-labelledby='pills-headers-tab'
+                                >
+                                  <div>
+                                    {this.renderHeaders()}
+                                  </div>
+                                </div>
+                                <div
+                                  className='tab-pane fade'
+                                  id={`body-${this.props.tab.id}`}
+                                  role='tabpanel'
+                                  aria-labelledby='pills-body-tab'
+                                >
+                                  {this.renderBodyContainer()}
+                                </div>
+                                <div
+                                  className='tab-pane fade'
+                                  id={`pre-script-${this.props.tab.id}`}
+                                  role='tabpanel'
+                                  aria-labelledby='pills-pre-script-tab'
+                                >
+                                  <div>
+                                    <Script
+                                      type='Pre-Script'
+                                      handleScriptChange={this.handleScriptChange.bind(this)}
+                                      scriptText={this.state.preScriptText}
+                                    />
+                                  </div>
+                                </div>
+                                <div
+                                  className='tab-pane fade'
+                                  id={`post-script-${this.props.tab.id}`}
+                                  role='tabpanel'
+                                  aria-labelledby='pills-post-script-tab'
+                                >
+                                  <div>
+                                    <Script
+                                      type='Post-Script'
+                                      handleScriptChange={this.handleScriptChange.bind(this)}
+                                      scriptText={this.state.postScriptText}
+                                    />
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                            <div
-                              className={
-                                this.setAuthorizationTab
-                                  ? 'tab-pane fade show active'
-                                  : 'tab-pane fade '
-                              }
-                              id={`authorization-${this.props.tab.id}`}
-                              role='tabpanel'
-                              aria-labelledby='pills-authorization-tab'
-                            >
-                              <div>
-                                <Authorization
-                                  {...this.props}
-                                  title='Authorization'
-                                  groupId={this.state.groupId}
-                                  set_authorization_headers={this.setHeaders.bind(this)}
-                                  set_authoriztaion_params={this.setParams.bind(this)}
-                                  set_authoriztaion_type={this.setAuthType.bind(this)}
-                                  accessToken={this.accessToken}
-                                  authorizationType={this.state.authType}
-                                />
-                              </div>
-                            </div>
-                            <div
-                              className='tab-pane fade'
-                              id={`headers-${this.props.tab.id}`}
-                              role='tabpanel'
-                              aria-labelledby='pills-headers-tab'
-                            >
-                              <div>
-                                {this.renderHeaders()}
-                              </div>
-                            </div>
-                            <div
-                              className='tab-pane fade'
-                              id={`body-${this.props.tab.id}`}
-                              role='tabpanel'
-                              aria-labelledby='pills-body-tab'
-                            >
-                              {this.renderBodyContainer()}
-                            </div>
-                            <div
-                              className='tab-pane fade'
-                              id={`pre-script-${this.props.tab.id}`}
-                              role='tabpanel'
-                              aria-labelledby='pills-pre-script-tab'
-                            >
-                              <div>
-                                <Script
-                                  type='Pre-Script'
-                                  handleScriptChange={this.handleScriptChange.bind(this)}
-                                  scriptText={this.state.preScriptText}
-                                />
-                              </div>
-                            </div>
-                            <div
-                              className='tab-pane fade'
-                              id={`post-script-${this.props.tab.id}`}
-                              role='tabpanel'
-                              aria-labelledby='pills-post-script-tab'
-                            >
-                              <div>
-                                <Script
-                                  type='Post-Script'
-                                  handleScriptChange={this.handleScriptChange.bind(this)}
-                                  scriptText={this.state.postScriptText}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          )
-                        : this.renderDocView()
-                    }
+                            )
+                            : this.renderDocView()
+                        }
                         {
-                    !isDashboardRoute(this.props) && (
-                      <div className='request-button'>
-                        <button
-                          className={this.state.loader ? 'btn custom-theme-btn btn-lg buttonLoader' : 'btn btn-lg custom-theme-btn'}
-                          style={{ background: theme }}
-                          type='submit'
-                          id='send-request-button'
-                          onClick={() => this.handleSend()}
-                        >
-                          Try
-                        </button>
-                      </div>
-                    )
-                  }
+                          !isDashboardRoute(this.props) && (
+                            <div className='request-button'>
+                              <button
+                                className={this.state.loader ? 'btn custom-theme-btn btn-lg buttonLoader' : 'btn btn-lg custom-theme-btn'}
+                                style={{ background: theme }}
+                                type='submit'
+                                id='send-request-button'
+                                onClick={() => this.handleSend()}
+                              >
+                                Try
+                              </button>
+                            </div>
+                          )
+                        }
                         {this.isDashboardAndTestingView() && this.renderScriptError()}
                         {
-                      this.displayResponse()
-                    }
+                          this.displayResponse()
+                        }
                       </div>
                     </div>
                   </div>
@@ -3073,12 +3087,12 @@ class DisplayEndpoint extends Component {
                         {this.renderToggle('right')}
                       </div>
                       {
-                          isSavedEndpoint(this.props)
-                            ? this.displayResponseAndSampleResponse()
-                            : this.displayPublicResponse()
-                        }
+                        isSavedEndpoint(this.props)
+                          ? this.displayResponseAndSampleResponse()
+                          : this.displayPublicResponse()
+                      }
                     </div>
-                    )
+                  )
                   : null
               }
               {
@@ -3098,11 +3112,22 @@ class DisplayEndpoint extends Component {
                 )
               }
             </div>
+          </div>
+          <div>
+                
+            <div className='ask-ai-btn' onClick={this.toggleChatbotModal} >
+             <Chaticon/>
+            </div>
 
+            {this.state.showAskAiSlider &&
+              <ChatbotsideBar
+                {...this.props}
+                onHide={() => this.closeChatBotModal()}
+              />}
           </div>
 
         </div>
-        )
+      )
       : null
   }
 }
