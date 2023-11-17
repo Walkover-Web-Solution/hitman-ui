@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import Login from './components/auth/login'
+import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import collectionsApiService from './components/collections/collectionsApiService'
 import NotFound from './components/common/notFound'
-import Main from './components/main/Main.jsx'
+import MainV2 from './components/main/MainV2'
 import PublicView from './components/main/publicView'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import { ToastContainer } from 'react-toastify'
@@ -12,8 +12,9 @@ import ClientDoc from './components/publishDocs/clientDoc'
 import BrowserLogin from './components/broswerLogin/browserLogin'
 import { getOrgId, isElectron } from './components/common/utility'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
-import ProtectedRoute from './components/common/protectedRoute'
+import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import Cookies from 'universal-cookie'
+import AuthServiceV2 from './components/auth/authServiceV2'
 
 class App extends Component {
   async redirectToClientDomain () {
@@ -58,13 +59,13 @@ class App extends Component {
   }
 
   changeSelectedOrg (orgId) {
-    let orgList = window.localStorage.getItem('organisationList')
+        let orgList = window.localStorage.getItem('organisationList')
     orgList = JSON.parse(orgList)
     let flag = 0
     let organisation
     if (orgList) {
       orgList.forEach((org, index) => {
-        if (orgId === org.identifier) {
+        if (orgId === org.id) {
           flag = 1
           organisation = org
         }
@@ -115,24 +116,25 @@ class App extends Component {
             <Route path='/403_PAGE' component={ERROR_403_PAGE} />
 
             {/* Logged in Dashboard Routes */}
-            <ProtectedRoute exact path='/orgs/:orgId/dashboard/' component={Main} />
-            {/* <ProtectedRoute path='/orgs/:orgId/admin/publish' component={Main} /> */}
-            <ProtectedRoute path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={Main} />
-            <ProtectedRoute path='/orgs/:orgId/dashboard/collection/:collectionId/settings' component={Main} />
-            <ProtectedRoute path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' component={Main} />
-            <ProtectedRoute path='/orgs/:orgId/dashboard/page/:pageId' component={Main} />
-            <ProtectedRoute path='/orgs/:orgId/dashboard/history/:historyId' component={Main} />
+            <ProtectedRouteV2 exact path='/orgs/:orgId/dashboard/' component={MainV2} />
+            {/* <ProtectedRouteV2 path='/orgs/:orgId/admin/publish' component={MainV2} /> */}
+            <ProtectedRouteV2 path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={MainV2} />
+            <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/settings' component={MainV2} />
+            <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' component={MainV2} />
+            <ProtectedRouteV2 path='/orgs/:orgId/dashboard/page/:pageId' component={MainV2} />
+            <ProtectedRouteV2 path='/orgs/:orgId/dashboard/history/:historyId' component={MainV2} />
 
             {/* Not Logged in Dashboard Route */}
-            <Route path='/dashboard/' component={Main} />
+            <Route path='/dashboard/' component={MainV2} />
 
             {/*  Public Page Routes */}
             <Route path='/p/error' component={NotFound} />
             <Route path='/p/:collectionIdentifier' component={Public} />
 
             {/* React App Auth Routes */}
-            <Route path='/login' component={Login} />
+            <Route path='/login' component={LoginV2} />
             <Route path='/logout' component={Logout} />
+            <Route path='/' component={AuthServiceV2} />
 
             {/* Electron App Auth Routes */}
             <Route path='/browser-login-success' component={BrowserLogin} />

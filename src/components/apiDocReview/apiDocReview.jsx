@@ -112,7 +112,7 @@ class ApiDocReview extends Component {
       this.postApi()
       this.closeFeedbackModal()
       this.setState({ validEmailAddress: true })
-    } else this.setState({ validEmailAddress: false })
+    } else { this.setState({ user: '', validEmailAddress: false }) }
   }
 
   handleInput (event) {

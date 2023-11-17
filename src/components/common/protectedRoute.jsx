@@ -7,7 +7,7 @@ const ProtectedRoute = ({ path, component: Component, render, ...rest }) => {
     <Route
       {...rest}
       render={(props) => {
-        if (!auth.getJwt()) {
+        if (!auth.getProxyToken()) {
           return (
             <Redirect
               to={{

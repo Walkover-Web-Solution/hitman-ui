@@ -7,7 +7,7 @@ import {
   updateTab
 } from '../tabs/redux/tabsActions'
 import tabStatusTypes from './tabStatusTypes'
-import { getCurrentUser } from '../auth/authService'
+import { getCurrentUser } from '../auth/authServiceV2'
 
 function newTab () {
   store.dispatch(addNewTab())

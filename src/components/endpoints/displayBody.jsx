@@ -296,7 +296,7 @@ class BodyContainer extends Component {
                 className='custom-radio-input'
               />
               <span>none</span>
-              <span class='checkmark' />
+              <span className='checkmark' />
 
             </label>
 
@@ -310,7 +310,7 @@ class BodyContainer extends Component {
                 checked={this.matchCurrentBodyType(`${this.state.selectedRawBodyType}-${this.props.endpoint_id}`)}
               />
               <span>raw</span>
-              <span class='checkmark' />
+              <span className='checkmark' />
             </label>
             <label className='customRadio'>
               <input
@@ -322,7 +322,7 @@ class BodyContainer extends Component {
                 checked={this.matchCurrentBodyType(`multipart/form-data-${this.props.endpoint_id}`)}
               />
               <span>form-data</span>
-              <span class='checkmark' />
+              <span className='checkmark' />
 
             </label>
             <label className='customRadio'>
@@ -336,7 +336,7 @@ class BodyContainer extends Component {
                 checked={this.matchCurrentBodyType(`application/x-www-form-urlencoded-${this.props.endpoint_id}`)}
               />
               <span>x-www-form-urlencoded</span>
-              <span class='checkmark' />
+              <span className='checkmark' />
 
             </label>
             {!(this.showRawBodyType && this.flag) && (

@@ -20,7 +20,7 @@ import TabContent from '../tabs/tabContent'
 import CustomTabs from '../tabs/tabs'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './main.scss'
-import { getCurrentUser } from '../auth/authService'
+import { getCurrentUser } from '../auth/authServiceV2'
 import LoginSignupModal from './loginSignupModal'
 import Environments from '../environments/environments'
 const mapStateToProps = (state) => {
@@ -238,8 +238,8 @@ class ContentPanel extends Component {
                       >
 
                         <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                          <path d='M9 3V15' stroke='#808080' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                          <path d='M3 9H15' stroke='#808080' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                          <path d='M9 3V15' stroke='#808080' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                          <path d='M3 9H15' stroke='#808080' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                         </svg>
                       </button>
                       <div className='btn-divider' />

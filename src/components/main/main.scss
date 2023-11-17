@@ -39,7 +39,6 @@
     float: left;
   }
   .dropdown{
-    height: 36px;
     font-size: $font-normal !important;
     font-weight: 400;
     color: #d6d6d6;
@@ -63,7 +62,7 @@
       box-shadow: 0 3px 5px 0px rgba(0, 0, 0, 0.03),
         0 0 20px 0px rgba(0, 0, 0, 0.08);
       color: #252d30;
-      max-height: 20rem;
+     
       overflow: auto;
       .dropdown-item{
         cursor: pointer;
@@ -2956,7 +2955,7 @@ div#steve-parent-accordion{
   color: 'gray';
    opacity: 0.5;
 }
-ul.react-autocomplete-input {
+ul.react-autoComplete-input {
   top: 100% !important;
   z-index: 1999;
   border: none;
@@ -3358,4 +3357,12 @@ body .tox{
   .tox-dialog-wrap__backdrop {
     background: rgba(0,0,0,0.2);
   }
+}
+
+.org-listing{
+  .dropdown-menu{
+    position: absolute;
+    bottom: 1px;
+  }
+  
 }

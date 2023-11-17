@@ -73,7 +73,7 @@ export class UserProfile extends React.Component {
           <div className='org-name'>
             {this.getCurrentOrg()?.name || null}
           </div>
-          <span class='profile-details-label-light'>{name}</span>
+          <span className='profile-details-label-light'>{name}</span>
           {/* {
                 this.getNotificationCount() > 0 &&
                   <div className='user-notification-badge'>{this.getNotificationCount()}</div>
@@ -96,12 +96,12 @@ export class UserProfile extends React.Component {
           className='profile-details plr-3 d-flex align-items-center'
           onClick={() => { }}
         >
-          <div class='user-icon mr-2'>
+          <div className='user-icon mr-2'>
             <img src={User} />
           </div>
           <div className='profile-details-user-name'>
-            <span class='org-name'>{name}</span>
-            <span class='profile-details-label-light'>{email}</span>
+            <span className='org-name'>{name}</span>
+            <span className='profile-details-label-light'>{email}</span>
           </div>
         </div>
       )
@@ -262,7 +262,7 @@ export class UserProfile extends React.Component {
     renderBilling () {
       return (
         <div
-          class='profile-listing' onClick={() => {
+          className='profile-listing' onClick={() => {
             this.openOptions('/billing/subscription')
           }}
         >
@@ -293,7 +293,7 @@ export class UserProfile extends React.Component {
     renderOtherProducts () {
       return (
         <div
-          class='profile-listing' onClick={() => {
+          className='profile-listing' onClick={() => {
             this.openOptions('/products')
           }}
         >
@@ -313,7 +313,7 @@ export class UserProfile extends React.Component {
           }}
         >
           <img src={Power} />
-          <span class='label'>Logout</span>
+          <span className='label'>Logout</span>
         </div>
       )
     }

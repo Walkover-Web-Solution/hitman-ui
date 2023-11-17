@@ -1,0 +1,100 @@
+name: Deployment
+on:
+  push:
+    branches: [master, prod]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    environment: ${{github.ref_name}}
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.20.0"
+      - name: Checkout Repo
+        uses: actions/checkout@v2.3.2
+      - name: Install Dependencies
+        run: npm i --legacy-peer-deps
+      - name: Build
+        env:
+          CI: false
+          REACT_APP_ANALYSIS_KEY: ${{ vars.REACT_APP_ANALYSIS_KEY }}
+          REACT_APP_API_URL : ${{vars.REACT_APP_API_URL}}
+          REACT_APP_UI_URL : ${{vars.REACT_APP_UI_URL}}
+          REACT_APP_UI_IP: ${{vars.REACT_APP_UI_IP}}
+          REACT_APP_DOMAINS_LIST: ${{vars.REACT_APP_DOMAINS_LIST}}
+          REACT_APP_CUSTOM_DOMAINS_LIST: ${{vars.REACT_APP_CUSTOM_DOMAINS_LIST}}
+          REACT_APP_CIRCLECI_TOKEN: ${{vars.REACT_APP_CIRCLECI_TOKEN}}
+          REACT_APP_CIRCLECI_CONTEXT_ID: ${{vars.REACT_APP_CIRCLECI_CONTEXT_ID}}
+          REACT_APP_ANALYTICS: ${{vars.REACT_APP_ANALYTICS}}
+          REACT_APP_EBL_API_BASE_URL: ${{vars.REACT_APP_EBL_API_BASE_URL}}
+          REACT_APP_ENV: ${{vars.REACT_APP_ENV}}
+
+          #Proxy URLs
+          REACT_APP_PROXY_URL : ${{vars.REACT_APP_PROXY_URL}}
+          REACT_APP_PROXY_REFERENCE_ID_LOCAL : ${{vars.REACT_APP_PROXY_REFERENCE_ID_LOCAL}}
+          REACT_APP_PROXY_REFERENCE_ID_TEST : ${{vars.REACT_APP_PROXY_REFERENCE_ID_TEST}}
+          REACT_APP_PROXY_REFERENCE_ID_PROD : ${{vars.REACT_APP_PROXY_REFERENCE_ID_PROD}}
+          
+          # URL for which only non logged in user dashboard route and all public routes will be opened.
+          REACT_APP_PUBLIC_UI_URL: ${{vars.REACT_APP_PUBLIC_UI_URL}}
+          
+          #steve_onboarding_widget
+          REACT_APP_STEVE_WIDGET_URL: ${{vars.REACT_APP_STEVE_WIDGET_URL}}
+          REACT_APP_STEVE_PROJECT_ID: ${{vars.YOUR_STEVE_PROJECT_ID}}
+          REACT_APP_STEVE_AUTHKEY: ${{vars.YOUR_STEVE_AUTHKEY}}
+          REACT_APP_STEVE_WIDGET_ID: ${{vars.YOUR_STEVE_WIDGET_ID}}
+          
+          REACT_APP_SOCKET_SSO_URL : ${{vars.REACT_APP_SOCKET_SSO_URL}}
+
+          #ViasocketHitman Url
+          REACT_APP_HITMAN_WEBSITE_URL : ${{vars.REACT_APP_HITMAN_WEBSITE_URL}}
+          
+          #HELLO_WIDGET
+          REACT_APP_HELLO_WIDGET_TOKEN : ${{vars.REACT_APP_HELLO_WIDGET_TOKEN}}
+          
+          # Desktop App Urls
+          REACT_APP_DESKTOP_APP_DOWNLOAD_LINK : ${{vars.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK}}
+          
+          # Notarize credentials
+          NOTARIZE_EMAIL: ${{vars.NOTARIZE_EMAIL}}
+          NOTARIZE_PASS: ${{vars.NOTARIZE_PASS}}
+          
+          #AMPLITUDE
+          REACT_APP_AMPLITUDE_KEY : ${{vars.REACT_APP_AMPLITUDE_KEY}}
+          
+          REACT_APP_SUPERFORM_CSS_IMPORT_URL : ${{vars.REACT_APP_SUPERFORM_CSS_IMPORT_URL}}
+          REACT_APP_SUPERFORM_JS_IMPORT_URL : ${{vars.REACT_APP_SUPERFORM_JS_IMPORT_URL}}
+          REACT_APP_TINYMCE_API_KEY : ${{vars.REACT_APP_TINYMCE_API_KEY}}
+          REACT_APP_HITMAN_MAPPING_DOMAIN : ${{vars.REACT_APP_HITMAN_MAPPING_DOMAIN}}
+
+        run: npm run build
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: build
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment: ${{github.ref_name}}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2.3.2
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: build
+      - name: Authenticate GCS
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{secrets.DEV_KEY_FILE}}"
+      - name: Deploy to Google Cloud Storage
+        uses: "google-github-actions/upload-cloud-storage@v1"
+        with:
+          path: "build"
+          destination: "${{vars.BUCKET_NAME}}"
+          parent: false

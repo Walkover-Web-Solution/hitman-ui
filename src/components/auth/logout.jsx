@@ -1,11 +1,11 @@
 import { Component } from 'react'
-import auth from './authService'
 import indexedDbService from '../indexedDb/indexedDbService'
+import { logout } from './authServiceV2'
 class Logout extends Component {
   componentDidMount () {
     indexedDbService.deleteDataBase('hitman')
-    const resiredtURI = new URLSearchParams(this.props.location.search).get('redirect_uri') || '/login'
-    auth.logout(resiredtURI)
+    const redirectURI = '/login'
+    logout(redirectURI)
   }
 
   render () {

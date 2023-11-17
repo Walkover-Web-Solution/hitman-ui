@@ -359,7 +359,7 @@ class SideBar extends Component {
       <div className='mt-3'>
         {this.state.historySnapshot && this.state.historySnapshot.length > 0
           ? (this.state.historySnapshot.sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
-          : (<div class='empty-collections'><div><EmptyHistory /></div><div class='content'><h5>  No History available.</h5><p /></div></div>)}
+          : (<div className='empty-collections'><div><EmptyHistory /></div><div className='content'><h5>  No History available.</h5><p /></div></div>)}
       </div>
     )
   }
@@ -473,11 +473,11 @@ class SideBar extends Component {
           this.state.historySnapshot && this.state.historySnapshot.filter(o => o.endpoint.status === 'NEW').length > 0
             ? (this.state.historySnapshot.filter(o => o.endpoint.status === 'NEW').sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
             : (
-              <div class='empty-collections'>
+              <div className='empty-collections'>
                 <div>
                   <NoInvocationsIcon />
                 </div>
-                <div class='content'>
+                <div className='content'>
                   <h5>  No invocation made</h5>
                   {/* <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 1</p> */}
                 </div>
