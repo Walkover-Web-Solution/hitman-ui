@@ -15,6 +15,7 @@ import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import Cookies from 'universal-cookie'
 import AuthServiceV2 from './components/auth/authServiceV2'
+import InviteTeam from './components/main/inviteTeam/inviteTeam'
 
 class App extends Component {
   async redirectToClientDomain () {
@@ -123,6 +124,7 @@ class App extends Component {
             <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' component={MainV2} />
             <ProtectedRouteV2 path='/orgs/:orgId/dashboard/page/:pageId' component={MainV2} />
             <ProtectedRouteV2 path='/orgs/:orgId/dashboard/history/:historyId' component={MainV2} />
+            <Route path='/orgs/:orgId/invite' component={InviteTeam} />
 
             {/* Not Logged in Dashboard Route */}
             <Route path='/dashboard/' component={MainV2} />

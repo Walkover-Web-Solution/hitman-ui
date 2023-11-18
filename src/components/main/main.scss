@@ -2925,6 +2925,17 @@ div#steve-parent-accordion{
 .download-btn {
   height: 2.25rem;
 }
+.ask-ai-btn{
+  padding: 12px;
+  border-radius: 3000px;
+  background-color: #E98A36;
+  // z-index: 9999;
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  box-shadow: 0px 4px 8px  #57575770;
+  cursor: pointer;
+}
 .chat-button{
   width: 1rem !important;
 }

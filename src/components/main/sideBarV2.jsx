@@ -37,9 +37,9 @@ import DeleteSidebarEntityModal from './sidebar/deleteEntityModal'
 import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 
-import { products } from '../common/constants'
 // import { sendAmplitudeData } from '../../services/amplitude'
 import { UserProfileV2 } from './userProfileV2'
+import InviteTeam from './inviteTeam/inviteTeam'
 
 const mapStateToProps = (state) => {
   return {
@@ -108,6 +108,7 @@ class SideBarV2 extends Component {
       secondarySidebarToggle: false,
       primarySidebar: null,
       totalEndpointsCount: 0,
+      showInviteTeam: false,
       search: false
     }
     this.inputRef = createRef()
@@ -596,23 +597,19 @@ class SideBarV2 extends Component {
     )
   }
 
-  renderInviteTeam () {
+  renderInviteTeam() {
     return (
       <div className='mb-2 cursor-pointer' onClick={() => { this.openAccountAndSettings() }}>
         <Users className='mr-2' />
         <span>Invite Team</span>
       </div>
-    )
+    );
   }
 
-  openAccountAndSettings () {
-    const { productName, history, organizationId, location } = this.props
-    if (productName !== products.EBL) { this.openOptions('/manage/users') } else {
-      history.push({
-        pathname: `/orgs/${organizationId}/manage`,
-        search: location.search
-      })
-    }
+  openAccountAndSettings = () => {
+    const { history } = this.props;
+    const orgId = getCurrentOrg()?.id;
+    history.push({ pathname: `/orgs/${orgId}/invite` });
   }
 
   openOptions (path) {
@@ -726,7 +723,7 @@ class SideBarV2 extends Component {
       <>
         <div className='plr-3'>
           {this.renderSearch()}
-          {/* {getCurrentUser() && this.renderInviteTeam()} */}
+          {getCurrentUser() && this.renderInviteTeam()}
           {/* {this.renderDownloadDesktopApp()} */}
           {this.renderGlobalAddButton()}
         </div>
