@@ -9,6 +9,7 @@ class LoginV2 extends Component {
   }
 
   handleButtonClick = () => {
+    console.log("chk");
     this.loadScript()
   }
   
