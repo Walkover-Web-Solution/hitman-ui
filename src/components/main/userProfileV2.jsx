@@ -327,25 +327,21 @@ export class UserProfileV2 extends React.Component {
 
     return (
         <>
-          <div className='OrgsBlock'>
-            <div className="btn-group dropright org-listing" >
-            <img src={SwitchRight} />
-              <span type="button"  className=" dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Switch Orgs
-              {/* <img src={RightArrow} /> */}
-              </span>
-              <div className="dropdown-menu">
-                {organizations.map((org) => (
-                  <button className="dropdown-item" onClick={() => {
-                    const currentId = org?.id
-                    this.switchOrg(currentId)
-                  }}>
-                    {org.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
+           <div className='OrgsBlock'>
+      <div className="btn-group dropdown org-listing">
+        <img src={SwitchRight} alt="Switch" />
+        <span type="button" id="dropdown-custom-components" className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Switch Orgs
+        </span>
+        <div className="dropdown-menu">
+          {organizations.map((org) => (
+            <button key={org.id} className="dropdown-item" onClick={() => this.switchOrg(org.id)}>
+              {org.name}
+            </button>
+          ))}
+        </div>
+      </div>
+    {/* </div> */}
             {/* <Dropdown className='nested-org-dropdown' drop='right'>
               <Dropdown.Toggle className='text-uppercase text-sm-bold plr-3'>
                 SWITCH ORGS
@@ -467,8 +463,8 @@ export class UserProfileV2 extends React.Component {
           <Dropdown.Menu>
             {this.renderUserDetails()}
             <div className='profile-listing-container'>
-              <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item>
-              <Dropdown.Item>{this.renderBilling()} </Dropdown.Item>
+              {/* <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item> */}
+              {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
               <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
             <Dropdown.Divider />
               <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item>

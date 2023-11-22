@@ -12,15 +12,15 @@ import CloseIcon from '../../assets/icons/x.svg'
 const HTTPSnippet = require('httpsnippet')
 
 class CodeTemplate extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       theme: ''
     }
-    this.selectedLanguage = 'node'
+    this.selectedLanguage = 'shell'
   }
 
-  makeCodeSnippet () {
+  makeCodeSnippet() {
     const harObject = this.props.harObject
     let {
       method,
@@ -42,7 +42,7 @@ class CodeTemplate extends Component {
     return snippet
   }
 
-  makeCodeTemplate (selectedLanguage) {
+  makeCodeTemplate(selectedLanguage) {
     this.selectedLanguage = selectedLanguage
     this.selectedLanguageName = languages[selectedLanguage].name
     let codeSnippet = ''
@@ -55,7 +55,7 @@ class CodeTemplate extends Component {
     this.setState({ codeSnippet, copied: false })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.harObject) {
       this.makeCodeTemplate(this.selectedLanguage)
     }
@@ -64,24 +64,22 @@ class CodeTemplate extends Component {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.harObject !== prevProps.harObject) {
       this.makeCodeTemplate(this.selectedLanguage)
     }
   }
 
-  toggleCodeEditor () {
-    this.props.editorToggle()
-  }
+  // toggleCodeEditor() {
+  //   this.props.editorToggle()
+  // }
 
-  render () {
-    const { codeEditorVisibility, theme } = this.state
+  render() {
+    const {theme } = this.state
     return (
-      <div className={codeEditorVisibility ? 'pubCodeWrapper' : 'pubCodeWrapper closeEditor'}>
-        <button className='toggleButton justify-content-start' style={{ background: theme }} onClick={() => { this.toggleCodeEditor() }}>
-          Sample Code
+      <div className={'pubCodeWrapper'}>
           <img src={CloseIcon} alt='' />
-        </button>
+       
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
             <div className='code-heading mb-3 d-flex justify-content-center'>
@@ -96,6 +94,7 @@ class CodeTemplate extends Component {
                     this.makeCodeTemplate(key)
                   }}
                 >
+                  <img src={languages[key].imagePath} alt={languages[key].name} />
                   {languages[key].name}
                 </button>
               ))}
@@ -112,10 +111,12 @@ class CodeTemplate extends Component {
                         this.makeCodeTemplate(key)
                       }}
                     >
+                      <img src={languages[key].imagePath} alt={languages[key].name} />
                       {languages[key].name}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
+
               </Dropdown>
             </div>
           </Col>
@@ -138,7 +139,7 @@ class CodeTemplate extends Component {
                   {this.state.copied
                     ? (
                       <span className='text-success'>Copied! </span>
-                      )
+                    )
                     : <CopyIcon />}
                 </button>
               </CopyToClipboard>

@@ -1,69 +1,103 @@
-const primaryLanguages = ['java', 'node', 'php', 'javascript']
-const secondaryLanguages = ['c', 'csharp', 'http', 'python', 'r', 'ruby', 'shell', 'swift', 'clojure', 'go', 'objc', 'ocaml']
+import clojure from '../../assets/icons/clojure.svg';
+import c from '../../assets/icons/c.svg';
+import http from '../../assets/icons/http.svg';
+import js from '../../assets/icons/js.svg';
+import java from '../../assets/icons/java.svg';
+import json from '../../assets/icons/json.svg';
+import shell from '../../assets/icons/shell.svg';
+import node from '../../assets/icons/node.svg';
+import php from '../../assets/icons/php.svg';
+import csharp from '../../assets/icons/csharp.svg';
+import python from '../../assets/icons/python.svg';
+import ruby from '../../assets/icons/ruby.svg';
+import swift from '../../assets/icons/swift.svg';
+import go from '../../assets/icons/go.svg';
+import ocaml from '../../assets/icons/ocaml.svg';
+import objectivec from '../../assets/icons/objectivec.svg';
+import r from '../../assets/icons/r.svg';
+
+const primaryLanguages = ['shell', 'node', 'php', 'python']
+const secondaryLanguages = ['c', 'csharp','clojure', 'go', 'http', 'java', 'javascript','objc', 'ocaml', 'r', 'ruby', 'swift']
 const languages = {
   node: {
     name: 'Node',
-    mode: 'javascript'
+    mode: 'javascript',
+    imagePath: node
   },
   c: {
     name: 'C',
-    mode: 'c_cpp'
+    mode: 'c_cpp',
+    imagePath: c
   },
   python: {
     name: 'Python',
-    mode: 'python'
+    mode: 'python',
+    imagePath: python
   },
   javascript: {
     name: 'Javascript',
-    mode: 'javascript'
+    mode: 'javascript',
+    imagePath: js
   },
   php: {
     name: 'PHP',
-    mode: 'php'
+    mode: 'php',
+    imagePath: php
   },
   java: {
     name: 'JAVA',
-    mode: 'java'
+    mode: 'java',
+    imagePath: java
   },
   shell: {
     name: 'Shell',
-    mode: 'sh'
+    mode: 'sh',
+    imagePath: shell
   },
   csharp: {
     name: 'C#',
-    mode: 'csharp'
+    mode: 'csharp',
+    imagePath: csharp
   },
   r: {
     name: 'R',
-    mode: 'r'
+    mode: 'r',
+    imagePath: r
   },
   ruby: {
     name: 'Ruby',
-    mode: 'ruby'
+    mode: 'ruby',
+    imagePath: ruby
   },
   swift: {
     name: 'Swift',
-    mode: 'swift'
+    mode: 'swift',
+    imagePath: swift
   },
   http: {
     name: 'HTTP',
-    mode: 'sh'
+    mode: 'sh',
+    imagePath: http
   },
   clojure: {
     name: 'Clojure',
-    mode: 'clojure'
+    mode: 'clojure',
+    imagePath: clojure
   },
   go: {
     name: 'go',
-    mode: 'golang'
+    mode: 'golang',
+    imagePath: go
   },
   objc: {
     name: 'Objective C',
-    mode: 'objectivec'
+    mode: 'objectivec',
+    imagePath: objectivec
   },
   ocaml: {
     name: 'ocaml',
-    mode: 'ocaml'
+    mode: 'ocaml',
+    imagePath: ocaml
   }
 }
 

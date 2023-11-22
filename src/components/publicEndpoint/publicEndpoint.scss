@@ -258,7 +258,7 @@ form.add-new-domain-form {
   top: 0;
   flex: 20%;
   z-index: 999;
-  border-right: 1px solid rgba(9, 30, 66,0.02);
+  border-right: 1px solid rgba(66, 9, 9, 0.02);
   min-width: 230px;
   max-width: 330px;
 
@@ -689,7 +689,6 @@ button.toggleButton {
     transition: all 0.3s ease-in;
     width: 100.5%;
     .hm-endpoint-container{
-      margin: auto;
       padding: 0;
       max-width: 52rem;
       padding: 0 1.5rem;
@@ -713,7 +712,7 @@ button.toggleButton {
   z-index: 199;
   padding: 15px;
   width: 28%;
-  background: #222222;;
+  background: #333333;;
   transition: 300ms;
   height: 100vh;
   position: absolute;
@@ -725,7 +724,7 @@ button.toggleButton {
   .inner-editor {
     height: 100%;
     .editor-body-wrapper {
-      height: calc(100% - 8rem);
+      height: calc(100% - 6rem);
       .ace-editor-wrapper {
         height: calc(100% - 2rem);
         min-width: 0;
