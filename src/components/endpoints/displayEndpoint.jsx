@@ -229,6 +229,7 @@ class DisplayEndpoint extends Component {
     }
 
     const { endpointId } = this.props.match.params
+    console.log(endpointId, "endpointId: ");
     if (endpointId === 'new') {
       this.setUnsavedTabDataInIDB()
     }
@@ -539,6 +540,7 @@ class DisplayEndpoint extends Component {
 
   handleChange = (e) => {
     const data = { ...this.state.data }
+    console.log(data, "data in handle change");
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
     if (e.currentTarget.name === 'updatedUri') {
@@ -2073,7 +2075,14 @@ class DisplayEndpoint extends Component {
   }
 
   setHostUri(host, uri, selectedHost) {
-    if (uri !== this.state.data.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+    console.log(host, "setHostUri in display endpoint");
+    if (uri !== this.state.data.updatedUri){
+      console.log("inside if set host uri");
+      this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+    }
+    else{
+      this.handleChange({ currentTarget: { name: 'updatedUri', value: host } })
+    }
     this.setBaseUrl(host, selectedHost)
   }
 
@@ -2379,6 +2388,7 @@ class DisplayEndpoint extends Component {
         dataArray={this.state.originalHeaders}
         props_from_parent={this.propsFromChild.bind(this)}
         original_data={[...this.state.headers]}
+        // open_modal={this.props.open_modal}
         currentView={this.state.currentView}
       />
     )
@@ -2392,6 +2402,7 @@ class DisplayEndpoint extends Component {
         dataArray={this.state.originalHeaders}
         props_from_parent={this.propsFromChild.bind(this)}
         original_data={[...this.state.headers]}
+        // open_modal={this.props.open_modal}
         currentView={this.state.currentView}
       />
     )
