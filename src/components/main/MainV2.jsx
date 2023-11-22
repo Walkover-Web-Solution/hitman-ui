@@ -277,6 +277,7 @@ class MainV2 extends Component {
                     </SplitPane>
                   </div>
                   <UpdateStatus />
+                  
                 </div>
             }
             </div>)}

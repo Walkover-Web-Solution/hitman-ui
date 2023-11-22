@@ -124,7 +124,7 @@ function AuthServiceV2() {
   }, [history, query])
 
   return (
-    <div>Redirecting...</div>
+    <div>You are being redirected to Hitman</div>
   )
 }
 
