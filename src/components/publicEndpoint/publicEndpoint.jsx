@@ -332,7 +332,7 @@ class PublicEndpoint extends Component {
         </nav>
         <main role='main' className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}>
           <SplitPane split='vertical' className='split-sidebar'>
-            <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.02') }}>
+            <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.03') }}>
               <SideBarV2 {...this.props} collectionName={this.state.collectionName} />
             </div>
             <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'} style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}>

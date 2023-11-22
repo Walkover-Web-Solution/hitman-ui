@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
 import './auth.scss'
 import './login.scss'
+import { ReactComponent as Hitman } from '../../assets/icons/hitman.svg'
+
 class LoginV2 extends Component {
   proxyGooglereferenceMapping = {
-    local  : process.env.REACT_APP_PROXY_REFERENCE_ID_LOCAL,
-    test : process.env.REACT_APP_PROXY_REFERENCE_ID_TEST,
-    prod : process.env.REACT_APP_PROXY_REFERENCE_ID_PROD
+    local: process.env.REACT_APP_PROXY_REFERENCE_ID_LOCAL,
+    test: process.env.REACT_APP_PROXY_REFERENCE_ID_TEST,
+    prod: process.env.REACT_APP_PROXY_REFERENCE_ID_PROD
   }
-
-  handleButtonClick = () => {
+  componentDidMount() {
     this.loadScript()
   }
-  
+
   loadScript() {
     this.configuration = {
       referenceId: this.proxyGooglereferenceMapping[process.env.REACT_APP_ENV] || '',
@@ -33,18 +34,20 @@ class LoginV2 extends Component {
     document.body.appendChild(this.script)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.script) {
       document.body.removeChild(this.script)
     }
   }
 
-  render () {
+  render() {
+    const env = process.env.REACT_APP_ENV || ''
+    const divId = this.proxyGooglereferenceMapping[env]
     return (
       <>
         <div className='login d-flex gap-sm-0 gap-4 flex-column-reverse flex-sm-row'>
           <div className='login__details deatil-sec col-xl-3 col-lg-4 col-md-5 col-sm-6 col-12 p-2 p-sm-4 p-xl-5'>
-            {/* <img src='techdoclogo.svg' alt='Via-Socket-logo' className='d-none d-sm-block' /> */}
+            <Hitman/>
             <h4 className='mt-4'>Your company’s technical knowledge deserves a beautiful home</h4>
             <ul className='feature-list mt-3'>
               <li>Create-Collabarate-Review-Secure-Publish-Maintain</li>
@@ -59,16 +62,10 @@ class LoginV2 extends Component {
           <div className='login__main  col-12 col-sm-6 col-md-7 col-lg-8 col-xl9 p-2 p-sm-4 p-xl-5 '>
             <div className='login__main__loginbtn pt-4 pt-sm-0'>
               <h2 className='t-dark'>Welcome Back!</h2>
-              <button
-                className='google-auth-btn   px-3 py-2  d-flex align-items-center gap-3'
-                onClick={this.handleButtonClick}
-              >
-                <img src='google.svg' />
-                Login With Google
-              </button>
+              <div id={divId}>
+              </div>
             </div>
           </div>
-
         </div>
       </>
     )

@@ -3113,7 +3113,7 @@ class DisplayEndpoint extends Component {
               }
             </div>
           </div>
-          <div>
+          {this.isDashboardAndTestingView() && <div>
                 
             <div className='ask-ai-btn' onClick={this.toggleChatbotModal} >
              <Chaticon/>
@@ -3124,7 +3124,7 @@ class DisplayEndpoint extends Component {
                 {...this.props}
                 onHide={() => this.closeChatBotModal()}
               />}
-          </div>
+          </div>}
 
         </div>
       )

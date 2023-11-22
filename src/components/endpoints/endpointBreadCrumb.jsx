@@ -168,7 +168,7 @@ class EndpointBreadCrumb extends Component {
               onChange={this.handleInputChange.bind(this)}
               value={this.state.endpointTitle}
               onBlur={() => { this.handleInputBlur() }}
-              maxLength='30'
+              maxLength='50'
             />
             <h3
               className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}

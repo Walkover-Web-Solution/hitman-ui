@@ -135,7 +135,8 @@
   "standard": {
     "ignore": [
       "registerServiceWorker.js",
-      "openApiForm.jsx"
+      "openApiForm.jsx",
+      "serviceWorker.js"
     ],
     "parser": "babel-eslint"
   }
