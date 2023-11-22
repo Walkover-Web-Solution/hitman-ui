@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
+import parseCurl from 'parse-curl';
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { updateTab } from '../tabs/redux/tabsActions';
 
 const hostContainerEnum = {
   hosts: {
@@ -10,12 +14,29 @@ const hostContainerEnum = {
     versionHost: { key: 'versionHost', label: 'Version Host' }
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    endpoints: state.endpoints,
+    environment: state.environment.environments[
+      state.environment.currentEnvironmentId
+    ] || { id: null, name: 'No Environment' },
+    currentEnvironmentId: state.environment.currentEnvironmentId,
+  
+  }
+}
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    update_tab: (id, data) => dispatch(updateTab(id, data))
+  }
+}
 class HostContainer extends Component {
-  constructor (props) {
+  constructor(props) {
+    // console.log(props,props.tab.state,"props")
     super(props)
     this.state = {
       datalistHost: '',
-      datalistUri: '',
+      datalistUri: '', 
       customHost: '',
       environmentHost: '',
       versionHost: '',
@@ -76,29 +97,49 @@ class HostContainer extends Component {
     return null
   }
 
-  handleInputHostChange (e) {
-    const data = this.splitUrlHelper(e)
-    this.setState({
-      ...data,
-      showDatalist: e.target.value === ''
-    },
-    () => {
-      this.props.props_from_parent('HostAndUri')
-      this.setParentHostAndUri()
-    })
+  handleInputHostChange(e) {
+    const inputValue = e.target.value;
+    // Check if the input is a cURL command
+    if (inputValue.trim().startsWith('curl ')) {
+      try {
+        const parsedData = parseCurl(inputValue);
+        this.setState({
+          datalistHost: parsedData.url,
+        },
+        () => {
+          // this.props.tab.state
+          this.props.props_from_parent('HostAndUri', 'Headers', 'Params')
+          this.setParentHostAndUri()
+        });
+
+      } catch (error) {
+        console.error('Error parsing cURL command:', error)
+      }
+    } else {
+      const data = this.splitUrlHelper(e)
+      this.setState({
+        ...data,
+        showDatalist: inputValue === '',
+      },
+        () => {
+          this.props.props_from_parent('HostAndUri')
+          this.setParentHostAndUri()
+        })
+    }
   }
 
-  handleClickHostOptions (host, type) {
+
+  handleClickHostOptions(host, type) {
     this.setState({
       datalistHost: host,
       showDatalist: false,
       selectedHost: type,
       Flag: true
     },
-    () => this.setParentHostAndUri())
+      () => this.setParentHostAndUri())
   }
 
-  checkExistingHosts (value) {
+  checkExistingHosts(value) {
     const regex = /^((http[s]?|ftp):\/\/[\w.\-@:]*)/i
     const variableRegex = /^{{[\w|-]+}}/i
     const { environmentHost, versionHost } = this.state
@@ -118,7 +159,7 @@ class HostContainer extends Component {
     return null
   }
 
-  splitUrlHelper (e) {
+  splitUrlHelper(e) {
     const value = e.target.value
     const hostName = this.checkExistingHosts(value)
     let uri = ''
@@ -142,19 +183,19 @@ class HostContainer extends Component {
     return data
   }
 
-  selectCurrentHost (hostname) {
+  selectCurrentHost(hostname) {
     if (hostname === this.state.customHost) return 'customHost'
     if (hostname === this.state.environmentHost) return 'environmentHost'
     if (hostname === this.state.versionHost) return 'versionHost'
     return 'customHost'
   }
 
-  setHosts () {
+  setHosts() {
     const { versionHost, environmentHost, customHost } = this.props
     this.setState({ versionHost, environmentHost, customHost }, () => { this.setHostAndUri() })
   }
 
-  renderHostDatalist () {
+  renderHostDatalist() {
     const endpointId = this.props.endpointId
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
@@ -162,28 +203,29 @@ class HostContainer extends Component {
           id='host-container-input'
           className='form-control'
           value={this.state.datalistHost + this.state.datalistUri}
-          name={`${endpointId}_hosts`}
+          name={`${this.props.endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={((e) => this.handleInputHostChange(e))}
           autoComplete='off'
           onFocus={() => this.setState({ showDatalist: true }, () => {
-            document.addEventListener('mousedown', this.handleClickOutside)
+            document.addEventListener('mousedown', this.handleClickOutside);
           })}
         />
+
         <div className={['host-data', this.state.showDatalist ? 'd-block' : 'd-none'].join(' ')}>
           {Object.values(hostContainerEnum.hosts).map((host, index) => (
             this.state[host.key] &&
-              <div key={index} className='host-data-item' onClick={(e) => this.handleClickHostOptions(this.state[host.key], host.key)}>
-                <div>{this.state[host.key]}</div>
-                <small className='text-muted font-italic'>{host.label}</small>
-              </div>
+            <div key={index} className='host-data-item' onClick={(e) => this.handleClickHostOptions(this.state[host.key], host.key)}>
+              <div>{this.state[host.key]}</div>
+              <small className='text-muted font-italic'>{host.label}</small>
+            </div>
           ))}
         </div>
       </div>
     )
   }
 
-  renderPublicHost () {
+  renderPublicHost() {
     return (
       <input
         disabled className='form-control'
@@ -192,7 +234,7 @@ class HostContainer extends Component {
     )
   }
 
-  render () {
+  render() {
     if (
       isDashboardRoute(this.props) &&
       this.state.groupId &&
@@ -212,4 +254,7 @@ class HostContainer extends Component {
   }
 }
 
-export default HostContainer
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(HostContainer)
+)
+// export default HostContainer
