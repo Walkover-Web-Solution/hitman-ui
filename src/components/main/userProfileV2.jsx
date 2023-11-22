@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dropdown } from 'react-bootstrap'
+import { Dropdown,Modal, Button } from 'react-bootstrap'
 import Avatar from 'react-avatar'
 import { FixedSizeList as List } from 'react-window'
 import lightArrow from '../../assets/icons/new-arrow.svg'
@@ -18,7 +18,8 @@ export class UserProfileV2 extends React.Component {
     name: '',
     email: '',
     orgFilter: '',
-    moreFlag: false
+    moreFlag: false,
+    showModal: false,
   };
 
   componentDidMount() {
@@ -33,6 +34,10 @@ export class UserProfileV2 extends React.Component {
     this.setState({ name: currentUser.name })
     this.setState({ email: currentUser.email })
   }
+
+  toggleModal = () => {
+    this.setState({ showModal: !this.state.showModal });
+  };
 
   renderAvatarWithOrg(onClick, ref1) {
     // const { getNotificationCount } = this.getNotificationCount()
@@ -326,25 +331,26 @@ export class UserProfileV2 extends React.Component {
     // }
 
     return (
-        <>
-          <div className='OrgsBlock'>
-            <div className="btn-group dropright org-listing" >
-            <img src={SwitchRight} />
-              <span type="button"  className=" dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Switch Orgs
-              {/* <img src={RightArrow} /> */}
-              </span>
-              <div className="dropdown-menu">
-                {organizations.map((org) => (
-                  <button className="dropdown-item" onClick={() => {
-                    const currentId = org?.id
-                    this.switchOrg(currentId)
-                  }}>
-                    {org.name}
-                  </button>
-                ))}
-              </div>
-            </div>
+      <>
+      <div className='OrgsBlock'>
+        {/* <div className="btn-group dropright  p-2" >
+          <button type="button"  className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <img src={SwitchRight} />
+            Switch Orgs
+          <img src={RightArrow} />
+          </button> */}
+          <div >
+            {organizations?.map((org, key) => (
+              <button className="btn btn-secondary" type='button' onClick={() => {
+                const currentId = org?.id
+                this.switchOrg(currentId)
+                // e.preventDefault()
+              }}>
+                {org.name}
+              </button>
+            ))}
+          {/* </div> */}
+        </div>
 
             {/* <Dropdown className='nested-org-dropdown' drop='right'>
               <Dropdown.Toggle className='text-uppercase text-sm-bold plr-3'>
@@ -471,7 +477,24 @@ export class UserProfileV2 extends React.Component {
               <Dropdown.Item>{this.renderBilling()} </Dropdown.Item>
               <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
             <Dropdown.Divider />
-              <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item>
+              {/* <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item> */}
+              <div className='profile-menu'>
+              <Button variant="secondary" onClick={this.toggleModal}>
+                <img src={SwitchRight} />
+                Switch Orgs
+              </Button>
+              <Modal show={this.state.showModal} onHide={this.toggleModal} centered backdrop="static"
+              keyboard={false}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Switch Organizations</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                {this.renderOrgList()}
+                </Modal.Body>
+                <Modal.Footer>
+                </Modal.Footer>
+              </Modal>
+            </div>
             </div>
            
           </Dropdown.Menu>

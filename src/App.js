@@ -16,6 +16,7 @@ import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import Cookies from 'universal-cookie'
 import AuthServiceV2 from './components/auth/authServiceV2'
 import InviteTeam from './components/main/inviteTeam/inviteTeam'
+import OrgModal from './components/auth/orgModal'
 
 class App extends Component {
   async redirectToClientDomain () {
@@ -115,6 +116,8 @@ class App extends Component {
             {/* Error Page Routes */}
             <Route path='/404_PAGE' component={ERROR_404_PAGE} />
             <Route path='/403_PAGE' component={ERROR_403_PAGE} />
+
+            <Route path='/select-org' component={OrgModal} />
 
             {/* Logged in Dashboard Routes */}
             <ProtectedRouteV2 exact path='/orgs/:orgId/dashboard/' component={MainV2} />
