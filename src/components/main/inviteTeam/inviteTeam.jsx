@@ -49,7 +49,6 @@ function InviteTeam() {
       toast.error('Invalid email format');
       return;
     }
-    console.log("handle send invite clicked", email);
     const name = getCurrentUser()?.name
     try{
       inviteMember(name, email)
@@ -61,6 +60,8 @@ function InviteTeam() {
       toast.error('Cannot proceed at the moment please try again later')
     }
     setEmail('');
+    setUsers(prevUsers => [...prevUsers, { name: name, email: email }]);
+    console.log(users);
   }
   return (
     <>

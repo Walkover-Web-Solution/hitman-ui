@@ -53,7 +53,7 @@ class OrgModal extends React.Component {
     this.state.data = getOrgList();
   }
 
-  x = () => {
+  SelectOrg = () => {
     const data = getOrgList();
     return (
       <Modal
@@ -97,7 +97,7 @@ class OrgModal extends React.Component {
   };
 
   render() {
-    return <>{this.x()}</>;
+    return <>{this.SelectOrg()}</>;
   }
 }
 
