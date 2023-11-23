@@ -1389,7 +1389,7 @@ class DisplayEndpoint extends Component {
   closeEndpointFormModal() {
     this.setState({ showEndpointFormModal: false, saveAsFlag: false })
   }
-  closeChatBotModal() {
+  closeChatBotModal = () =>  {
     this.setState({ showAskAiSlider: false })
   }
   setGroupId(groupId, { endpointName, endpointDescription }) {
@@ -2756,7 +2756,7 @@ class DisplayEndpoint extends Component {
           ref={this.myRef}
           className={!this.isNotDashboardOrDocView() ? '' : codeEditorVisibility ? 'mainContentWrapperPublic hideCodeEditor' : 'mainContentWrapperPublic '}
         >
-          <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
+          <div onClick={this.closeChatBotModal} className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : this.state.showAskAiSlider ? 'mainContentWrapper width-75' : 'mainContentWrapper'} >
             <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
               <div className={`hm-endpoint-container mid-part endpoint-container ${this.state.currentView === 'doc' ? 'doc-fix-width' : ''}`}>
                 {this.renderCookiesModal()}
@@ -3114,19 +3114,17 @@ class DisplayEndpoint extends Component {
               }
             </div>
           </div>
-          {this.isDashboardAndTestingView() && <div>
-                
-            <div className='ask-ai-btn' onClick={this.toggleChatbotModal} >
-             <Chaticon/>
-            </div>
-
-            {this.state.showAskAiSlider &&
+          
+          {this.state.showAskAiSlider &&
               <ChatbotsideBar
                 {...this.props}
                 onHide={() => this.closeChatBotModal()}
               />}
-          </div>}
-
+          <div>
+          </div>   
+            <div className='ask-ai-btn' onClick={this.toggleChatbotModal} >
+              <p>Ask AI</p>
+            </div>
         </div>
       )
       : null

@@ -1518,6 +1518,10 @@ table#custom-generic-table tbody input[value="true"] + span.checkmark {
   margin-top: 0px;
 }
 
+.width-75 {
+  width: 75%;
+}
+
 .btn.btn-secondary.outline {
   background: #fff;
   border: 1px solid #BDBDBD;
@@ -2935,14 +2939,13 @@ div#steve-parent-accordion{
   height: 2.25rem;
 }
 .ask-ai-btn{
-  padding: 12px;
-  border-radius: 3000px;
-  background-color: #E98A36;
-  // z-index: 9999;
+  font-size:14px;
+  padding: 5px;
+  z-index: 9999;
   position: absolute;
-  bottom: 30px;
-  right: 30px;
-  box-shadow: 0px 4px 8px  #57575770;
+  top: 7px;
+  right: 190px;
+  // box-shadow: 0px 0px 1px  #57575770;
   cursor: pointer;
 }
 .chat-button{
