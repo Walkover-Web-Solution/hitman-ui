@@ -483,8 +483,10 @@ export class UserProfileV2 extends React.Component {
                 <img src={SwitchRight} />
                 Switch Orgs
               </Button>
-              <Modal show={this.state.showModal} onHide={this.toggleModal} centered backdrop="static"
-              keyboard={false}>
+              <Modal show={this.state.showModal} 
+                onHide={this.toggleModal} 
+                centered 
+                keyboard={false}>
                 <Modal.Header closeButton>
                   <Modal.Title>Switch Organizations</Modal.Title>
                 </Modal.Header>
