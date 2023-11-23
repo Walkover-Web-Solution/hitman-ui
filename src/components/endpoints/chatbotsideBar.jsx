@@ -20,6 +20,12 @@ class chatbotsideBar extends Component {
     this.setState({ inputValue: e.target.value });
   }
 
+  handleOnkeyDown = (e) => {
+    if (e.keyCode === 13) {
+      this.handleSubmit();
+    }
+  }
+
   handleSubmit = () => {
     const query = this.state.inputValue
     const name = getCurrentUser()?.name
@@ -31,24 +37,14 @@ class chatbotsideBar extends Component {
     const saveAsSidebarStyle = {
       position: 'fixed',
       background: 'white',
-      zIndex: '1050 ',
-      top: '0px',
+      top: '50px',
       right: '0px',
-      height: '100vh',
-      width: '35vw',
+      height: '95vh',
+      width: '22vw',
       boxShadow: '-25px 25px 43px rgba(0, 0, 0, 0.07)',
-      overflow: 'hidden'
+      float: 'right'
     }
-    const darkBackgroundStyle = {
-      position: 'fixed',
-      background: 'rgba(0, 0, 0, 0.4)',
-      opacity: 1,
-      zIndex: '1040',
-      top: '0px',
-      right: '0px',
-      height: '100vh',
-      width: '100vw'
-    }
+    
     const inputContainerStyle = {
       display: 'flex',
       position: 'absolute',
@@ -77,11 +73,6 @@ class chatbotsideBar extends Component {
 
     return (
       <div>
-        <div
-          onClick={() => { this.setState({ showCollectionForm1: false }) }}
-          style={darkBackgroundStyle}
-        >
-        </div>
         <div style={saveAsSidebarStyle} className='save-as-sidebar-container'>
         <div style={headerStyle}>
             <h3>Chat with AI</h3>
@@ -98,6 +89,7 @@ class chatbotsideBar extends Component {
               type='text'
               value={this.state.inputValue}
               onChange={this.handleInputChange}
+              onKeyDown = {this.handleOnkeyDown}
               className='form-control'
               placeholder='Enter your chat here'
             />
