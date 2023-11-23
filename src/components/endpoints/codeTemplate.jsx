@@ -78,14 +78,12 @@ class CodeTemplate extends Component {
     const {theme } = this.state
     return (
       <div className={'pubCodeWrapper'}>
-          <img src={CloseIcon} alt='' />
-       
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
             <div className='code-heading mb-3 d-flex justify-content-center'>
               <span>Sample code</span>
             </div>
-            <div className='select-code-wrapper d-flex'>
+            <div className='select-code-wrapper d-flex mb-3 img'>
               {primaryLanguages.map(key => (
                 <button
                   key={key}
@@ -121,7 +119,7 @@ class CodeTemplate extends Component {
             </div>
           </Col>
           <Col className='editor-body-wrapper' xs={12}>
-            <div id='code-window-body'>
+            <div id='code-window-body' className='copy-button'>
               <CopyToClipboard
                 text={
                   this.state.codeSnippet
@@ -145,7 +143,6 @@ class CodeTemplate extends Component {
               </CopyToClipboard>
             </div>{' '}
             <div className='ace-editor-wrapper'>
-              {' '}
               <AceEditor
                 mode={languages[this.selectedLanguage].mode}
                 theme='tomorrow_night'
