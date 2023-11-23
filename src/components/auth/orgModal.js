@@ -1,6 +1,6 @@
 import React from "react";
 import Cookies from "universal-cookie";
-import { Modal } from "react-bootstrap";
+import { Modal,Dropdown} from "react-bootstrap";
 import { getOrgList } from "./authService";
 import "./login.scss";
 
@@ -61,26 +61,37 @@ class OrgModal extends React.Component {
         onHide={() => this.setState({ showOrgModal: false })}
         centered
         aria-labelledby="contained-modal-title-vcenter"
-        size="lg"
+        size="sm"
         backdrop="static"
         keyboard={false}
       >
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>Select Organization</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ height: "20vh", overflowY: "auto" }}>
-          {data.map((org) => (
-            <button
-              className="btn btn-secondary"
-              key={org.id}
-              onClick={() => {
-                this.switchOrg(org.id);
-              }}
-            >
-              {org.name}
-            </button>
-          ))}
+        <Modal.Body >
+          <Dropdown>
+            <Dropdown.Toggle   id="dropdown-basic">
+              Organizations
+            </Dropdown.Toggle>  
+            <Dropdown.Menu>
+            <Dropdown.Item>
+            {data.map((org) => (
+              <div 
+              key={org.id} 
+              onClick={() => 
+              { this.switchOrg(org.id); }}>
+                {org.name}
+              </div>
+            ))}
+          </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </Modal.Body>
+        <Modal.Body>
+        <p>
+          Select an organization to proceed further
+        </p>
+      </Modal.Body>
       </Modal>
     );
   };

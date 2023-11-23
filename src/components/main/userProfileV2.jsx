@@ -386,6 +386,24 @@ export class UserProfileV2 extends React.Component {
       
     )
   }
+  renderOrgListDropdown() {
+    const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || [];
+    return (
+      <Dropdown>
+        <Dropdown.Toggle  id="dropdown-basic">
+          <Button className = 'btn btn-secondary' type='button'>Select Organization</Button>
+          
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          {organizations.map((org, key) => (
+            <Dropdown.Item key={key} onClick={() => this.switchOrg(org.id)}>
+              {org.name}
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
+    );
+  }
 
   getAllOrgs(organizations) {
     const orgsArray = Object.values({ ...organizations } || {})
@@ -479,19 +497,20 @@ export class UserProfileV2 extends React.Component {
             <Dropdown.Divider />
               {/* <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item> */}
               <div className='profile-menu'>
-              <Button variant="secondary" onClick={this.toggleModal}>
+              <span className='p-2' 
+              onClick={this.toggleModal} 
+              type="button">
                 <img src={SwitchRight} />
                 Switch Orgs
-              </Button>
+              </span>
               <Modal show={this.state.showModal} 
-                onHide={this.toggleModal} 
-                centered 
-                keyboard={false}>
+              onHide={this.toggleModal} 
+              centered keyboard={false}>
                 <Modal.Header closeButton>
                   <Modal.Title>Switch Organizations</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                {this.renderOrgList()}
+                  {this.renderOrgListDropdown()}
                 </Modal.Body>
                 <Modal.Footer>
                 </Modal.Footer>
