@@ -699,11 +699,11 @@ button.toggleButton {
     }
   }
   .display-component{
-    height: auto;
+    height: 100%;
     overflow-x: hidden;
     display: flex;
-    flex-direction: column-reverse;
-    justify-content: flex-end;
+    flex-direction: column;
+    // justify-content: flex-end;
     padding-bottom: 2rem;
     padding-top: 1.25rem;
   }

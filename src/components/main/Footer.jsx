@@ -9,7 +9,7 @@ function Footer({ theme }) {
   return (
     <footer>
       <div className='footerWrapper'>
-        <p className='for-public-view' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <p className='for-public-view' style={{ display: 'flex',justifyContent:'center' ,alignItems: 'center' }}>
           <span className="poweredByText">Powered By </span>
           <a className="hitmanLink" rel='noopener noreferrer' target='_blank' href={domainSrc} style={{ backgroundColor: hexToRgb(theme, '1') }}>
             <Hitman />

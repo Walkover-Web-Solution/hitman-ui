@@ -152,9 +152,9 @@ class PublicEndpoint extends Component {
         <div
           className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'public-navbar d-flex'}
         >
-          <div className='entityTitle'>
+          {/* <div className='entityTitle'>
             {this.state.currentEntityName}
-          </div>
+          </div> */}
           {
             isCTAandLinksPresent &&
               <div className='d-flex align-items-center'>
@@ -369,12 +369,11 @@ class PublicEndpoint extends Component {
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
                     </div> */}
                     {this.state.openReviewModal && this.reviewModal()}
+                    <Footer theme={this.state.collectionTheme} />
                   </div>
                   )
                 : null
             }
-              <Footer theme={this.state.collectionTheme} />
-
             </div>
           </SplitPane>
 

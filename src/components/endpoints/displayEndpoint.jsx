@@ -3078,7 +3078,6 @@ class DisplayEndpoint extends Component {
                     </div>}
                 </div>
                 <ApiDocReview {...this.props} />
-                <Footer theme={this.props.publicCollectionTheme}/>
               </div>
               {
                 this.isDashboardAndTestingView()
