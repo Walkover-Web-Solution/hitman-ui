@@ -711,6 +711,7 @@ button.toggleButton {
 .pubCodeWrapper {
   z-index: 199;
   padding: 15px;
+  padding-top: 35px;
   width: 28%;
   background: #333333;;
   transition: 300ms;
@@ -720,18 +721,23 @@ button.toggleButton {
   top: 0;
   .select-code-wrapper{
     flex-direction: row;
+    height: 30px;
+    button{
+      height: 38px;
+    }
   }
   .inner-editor {
     height: 100%;
     .editor-body-wrapper {
       height: calc(100% - 6rem);
       .ace-editor-wrapper {
-        height: calc(100% - 2rem);
+        height: 100%;
         min-width: 0;
         div#ace-editor {
           height: 100% !important;
         }
       }
+      padding: 0px;
     }
   }
 }
@@ -758,4 +764,10 @@ button.toggleButton {
       display: none;
     }
   }
+}
+.copy-button{
+  position: absolute;
+  top:0%;
+  right:1%;
+  z-index: 100;
 }
