@@ -14,21 +14,19 @@ function InviteTeam() {
   const [email, setEmail] = useState('');
   const [showModal, setShowModal] = useState(false);
   const history = useHistory()
-
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('https://routes.msg91.com/api/c/getUsers', {
+        headers: { 'proxy_auth_token': getProxyToken() }
+      });
+      setUsers(response?.data?.data?.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get('https://routes.msg91.com/api/c/getUsers', {
-          headers: { 'proxy_auth_token': getProxyToken() }
-        });
-        setUsers(response?.data?.data?.data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
-
     fetchUsers();
-  }, []);
+  }, [users]);
 
   const handleBack = () => {
     const orgId = getCurrentOrg()?.id
@@ -54,14 +52,14 @@ function InviteTeam() {
       inviteMember(name, email)
       toast.success('Invite send Successfully')
       handleCloseModal();
+      setEmail('');
+      // history.replace(history.location.pathname);
     }
     catch(error){
       console.log("Error in send Invite", error);
       toast.error('Cannot proceed at the moment please try again later')
     }
-    setEmail('');
-    setUsers(prevUsers => [...prevUsers, { name: name, email: email }]);
-    console.log(users);
+    e.preventDefault();
   }
   return (
     <>

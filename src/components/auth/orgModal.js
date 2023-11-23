@@ -68,30 +68,25 @@ class OrgModal extends React.Component {
         <Modal.Header>
           <Modal.Title>Select Organization</Modal.Title>
         </Modal.Header>
-        <Modal.Body >
+        <Modal.Body>
           <Dropdown>
-            <Dropdown.Toggle   id="dropdown-basic">
+            <Dropdown.Toggle id="dropdown-basic">
               Organizations
-            </Dropdown.Toggle>  
+            </Dropdown.Toggle>
             <Dropdown.Menu>
-            <Dropdown.Item>
-            {data.map((org) => (
-              <div 
-              key={org.id} 
-              onClick={() => 
-              { this.switchOrg(org.id); }}>
-                {org.name}
-              </div>
-            ))}
-          </Dropdown.Item>
+              {data.map((org) => (
+                <React.Fragment key={org.id}>
+                  <Dropdown.Item onClick={() => this.switchOrg(org.id)}>
+                    {org.name}
+                  </Dropdown.Item>
+                </React.Fragment>
+              ))}
             </Dropdown.Menu>
           </Dropdown>
         </Modal.Body>
         <Modal.Body>
-        <p>
-          Select an organization to proceed further
-        </p>
-      </Modal.Body>
+          <p>Select an organization to proceed further</p>
+        </Modal.Body>
       </Modal>
     );
   };
