@@ -62,6 +62,7 @@ import ApiDocReview from '../apiDocReview/apiDocReview'
 import { ApproveRejectEntity, PublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import ChatbotsideBar from './chatbotsideBar'
+import Footer from '../main/Footer'
 
 const shortid = require('shortid')
 
@@ -3077,6 +3078,7 @@ class DisplayEndpoint extends Component {
                     </div>}
                 </div>
                 <ApiDocReview {...this.props} />
+                <Footer theme={this.props.publicCollectionTheme}/>
               </div>
               {
                 this.isDashboardAndTestingView()
