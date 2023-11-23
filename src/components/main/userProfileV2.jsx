@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dropdown } from 'react-bootstrap'
+import { Dropdown,Modal, Button } from 'react-bootstrap'
 import Avatar from 'react-avatar'
 import { FixedSizeList as List } from 'react-window'
 import lightArrow from '../../assets/icons/new-arrow.svg'
@@ -18,7 +18,8 @@ export class UserProfileV2 extends React.Component {
     name: '',
     email: '',
     orgFilter: '',
-    moreFlag: false
+    moreFlag: false,
+    showModal: false,
   };
 
   componentDidMount() {
@@ -33,6 +34,10 @@ export class UserProfileV2 extends React.Component {
     this.setState({ name: currentUser.name })
     this.setState({ email: currentUser.email })
   }
+
+  toggleModal = () => {
+    this.setState({ showModal: !this.state.showModal });
+  };
 
   renderAvatarWithOrg(onClick, ref1) {
     // const { getNotificationCount } = this.getNotificationCount()
@@ -376,6 +381,24 @@ export class UserProfileV2 extends React.Component {
       
     )
   }
+  renderOrgListDropdown() {
+    const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || [];
+    return (
+      <Dropdown>
+        <Dropdown.Toggle  id="dropdown-basic">
+          <Button className = 'btn btn-secondary' type='button'>Select Organization</Button>
+          
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          {organizations.map((org, key) => (
+            <Dropdown.Item key={key} onClick={() => this.switchOrg(org.id)}>
+              {org.name}
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
+    );
+  }
 
   getAllOrgs(organizations) {
     const orgsArray = Object.values({ ...organizations } || {})
@@ -467,7 +490,27 @@ export class UserProfileV2 extends React.Component {
               {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
               <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
             <Dropdown.Divider />
-              <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item>
+              {/* <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item> */}
+              <div className='profile-menu'>
+              <span className='p-2' 
+              onClick={this.toggleModal} 
+              type="button">
+                <img src={SwitchRight} />
+                Switch Orgs
+              </span>
+              <Modal show={this.state.showModal} 
+              onHide={this.toggleModal} 
+              centered keyboard={false}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Switch Organizations</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {this.renderOrgListDropdown()}
+                </Modal.Body>
+                <Modal.Footer>
+                </Modal.Footer>
+              </Modal>
+            </div>
             </div>
            
           </Dropdown.Menu>
