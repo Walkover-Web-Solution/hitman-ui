@@ -40,7 +40,7 @@ class chatbotsideBar extends Component {
       top: '50px',
       right: '0px',
       height: '95vh',
-      width: '22vw',
+      width: '22%',
       boxShadow: '-25px 25px 43px rgba(0, 0, 0, 0.07)',
       float: 'right'
     }

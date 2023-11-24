@@ -2755,7 +2755,7 @@ class DisplayEndpoint extends Component {
           ref={this.myRef}
           className={!this.isNotDashboardOrDocView() ? '' : codeEditorVisibility ? 'mainContentWrapperPublic hideCodeEditor' : 'mainContentWrapperPublic '}
         >
-          <div onClick={this.closeChatBotModal} className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : this.state.showAskAiSlider ? 'mainContentWrapper width-75' : 'mainContentWrapper'} >
+          <div onClick={this.closeChatBotModal} className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'} >
             <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
               <div className={`hm-endpoint-container mid-part endpoint-container ${this.state.currentView === 'doc' ? 'doc-fix-width' : ''}`}>
                 {this.renderCookiesModal()}
