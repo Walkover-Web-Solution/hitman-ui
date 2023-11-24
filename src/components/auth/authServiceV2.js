@@ -111,8 +111,9 @@ function AuthServiceV2() {
           window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
           window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
           http.setProxyToken(getProxyToken())
+          const reloadOrgRoute = `/select-org`
           history.push({
-            pathname: reloadRoute
+            pathname: reloadOrgRoute
           })
         })
         .catch(error => console.error('Error:', error))

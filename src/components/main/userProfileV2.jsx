@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dropdown } from 'react-bootstrap'
+import { Dropdown,Modal, Button } from 'react-bootstrap'
 import Avatar from 'react-avatar'
 import { FixedSizeList as List } from 'react-window'
 import lightArrow from '../../assets/icons/new-arrow.svg'
@@ -18,7 +18,8 @@ export class UserProfileV2 extends React.Component {
     name: '',
     email: '',
     orgFilter: '',
-    moreFlag: false
+    moreFlag: false,
+    showModal: false,
   };
 
   componentDidMount() {
@@ -33,6 +34,10 @@ export class UserProfileV2 extends React.Component {
     this.setState({ name: currentUser.name })
     this.setState({ email: currentUser.email })
   }
+
+  toggleModal = () => {
+    this.setState({ showModal: !this.state.showModal });
+  };
 
   renderAvatarWithOrg(onClick, ref1) {
     // const { getNotificationCount } = this.getNotificationCount()
@@ -326,22 +331,27 @@ export class UserProfileV2 extends React.Component {
     // }
 
     return (
-        <>
-           <div className='OrgsBlock'>
-      <div className="btn-group dropdown org-listing">
-        <img src={SwitchRight} alt="Switch" />
-        <span type="button" id="dropdown-custom-components" className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Switch Orgs
-        </span>
-        <div className="dropdown-menu">
-          {organizations.map((org) => (
-            <button key={org.id} className="dropdown-item" onClick={() => this.switchOrg(org.id)}>
-              {org.name}
-            </button>
-          ))}
+      <>
+      <div className='OrgsBlock'>
+        {/* <div className="btn-group dropright  p-2" >
+          <button type="button"  className="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <img src={SwitchRight} />
+            Switch Orgs
+          <img src={RightArrow} />
+          </button> */}
+          <div >
+            {organizations?.map((org, key) => (
+              <button className="btn btn-secondary" type='button' onClick={() => {
+                const currentId = org?.id
+                this.switchOrg(currentId)
+                // e.preventDefault()
+              }}>
+                {org.name}
+              </button>
+            ))}
+          {/* </div> */}
         </div>
-      </div>
-    {/* </div> */}
+
             {/* <Dropdown className='nested-org-dropdown' drop='right'>
               <Dropdown.Toggle className='text-uppercase text-sm-bold plr-3'>
                 SWITCH ORGS
@@ -375,6 +385,24 @@ export class UserProfileV2 extends React.Component {
         </>
       
     )
+  }
+  renderOrgListDropdown() {
+    const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || [];
+    return (
+      <Dropdown>
+        <Dropdown.Toggle  id="dropdown-basic">
+          <Button className = 'btn btn-secondary' type='button'>Select Organization</Button>
+          
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          {organizations.map((org, key) => (
+            <Dropdown.Item key={key} onClick={() => this.switchOrg(org.id)}>
+              {org.name}
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
+    );
   }
 
   getAllOrgs(organizations) {
@@ -467,7 +495,27 @@ export class UserProfileV2 extends React.Component {
               {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
               <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
             <Dropdown.Divider />
-              <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item>
+              {/* <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item> */}
+              <div className='profile-menu'>
+              <span className='p-2' 
+              onClick={this.toggleModal} 
+              type="button">
+                <img src={SwitchRight} />
+                Switch Orgs
+              </span>
+              <Modal show={this.state.showModal} 
+              onHide={this.toggleModal} 
+              centered keyboard={false}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Switch Organizations</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {this.renderOrgListDropdown()}
+                </Modal.Body>
+                <Modal.Footer>
+                </Modal.Footer>
+              </Modal>
+            </div>
             </div>
            
           </Dropdown.Menu>
