@@ -5,6 +5,7 @@ import _ from 'lodash'
 import { Modal } from 'react-bootstrap'
 import Like from '../../assets/icons/like.svg'
 import DisLike from '../../assets/icons/dislike.svg'
+import Footer from '../main/Footer'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -178,6 +179,8 @@ class ApiDocReview extends Component {
                 <span>Thank you for reviewing</span>
               </div>
             )}
+                    <Footer theme={this.state.collectionTheme} />
+
         </>
       )
   }
