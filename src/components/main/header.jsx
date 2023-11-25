@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Environments from '../environments/environments'
-import { isElectron, openExternalLink, getProfileName, getOrgId } from '../common/utility'
+import { isElectron, openExternalLink, getProfileName, getOrgId, redirectToDashboard } from '../common/utility'
 import authService, { getCurrentUser } from '../auth/authService'
 import { Header as GenericHeader } from 'viasocket-shared-plugins'
 import { connect } from 'react-redux'
@@ -237,7 +237,7 @@ class Header extends Component {
     )
   }
 
-  switchOrg (orgId) {
+  redirectToDashboard (orgId) {
     if (isElectron()) {
       window.location.hash = `/orgs/${orgId}/dashboard`
       window.location.reload()
@@ -258,7 +258,7 @@ class Header extends Component {
     const productLinks = { FEEDIO: process.env.REACT_APP_FEEDIO_UI_URL, HITMAN: process.env.REACT_APP_UI_URL, CONTENTBASE: process.env.REACT_APP_CONTENTBASE_URL, EBL: process.env.REACT_APP_VIASOCKET_URL, HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL }
     return (
       <>
-        <GenericHeader {...this.props} {...this.state} productLinks={productLinks} switchOrg={(id) => this.switchOrg(id)} showCommunityButton={false} getNotificationCount={() => this.getNotificationCount()} project_name='' organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []} organizationId={getOrgId()} productName='hitman' renderNavTitle={() => this.renderNavTitle()} renderProfileOption={() => this.renderProfileOption()} handleOpenLink={(link) => openExternalLink(link)} renderLoginButton={() => this.renderLoginButton()} updateProfile={() => this.updateProfile()} />
+        <GenericHeader {...this.props} {...this.state} productLinks={productLinks} redirectToDashboard={(id) => redirectToDashboard(id)} showCommunityButton={false} getNotificationCount={() => this.getNotificationCount()} project_name='' organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []} organizationId={getOrgId()} productName='hitman' renderNavTitle={() => this.renderNavTitle()} renderProfileOption={() => this.renderProfileOption()} handleOpenLink={(link) => openExternalLink(link)} renderLoginButton={() => this.renderLoginButton()} updateProfile={() => this.updateProfile()} />
       </>
     )
   }

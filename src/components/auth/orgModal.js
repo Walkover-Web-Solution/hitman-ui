@@ -1,7 +1,7 @@
 import React from "react";
-import Cookies from "universal-cookie";
+import {switchOrg} from '../../services/orgApiService'
 import { Modal,Dropdown} from "react-bootstrap";
-import { getOrgList } from "./authService";
+import { getOrgList } from "./authServiceV2";
 import "./login.scss";
 
 class OrgModal extends React.Component {
@@ -19,35 +19,7 @@ class OrgModal extends React.Component {
     this.props.history.push(reloadRoute);
   };
 
-  async switchOrg(orgId) {
-    try {
-      const proxyUrl = process.env.REACT_APP_PROXY_URL;
-      const response = await fetch(proxyUrl + "/switchCompany", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          proxy_auth_token: this.getProxyToken(),
-        },
-        body: JSON.stringify({
-          company_ref_id: orgId,
-        }),
-      });
-
-      if (response.ok && response.status === 200) {
-        this.handleOrgSelection(orgId)
-      } else {
-        console.error("Error switching organization:", response.message);
-      }
-    } catch (error) {
-      console.error("Error while calling switchCompany API:", error);
-    }
-  }
-
-  getProxyToken() {
-    const cookies = new Cookies();
-    const token = cookies.get("token");
-    return token || window.localStorage.getItem("token");
-  }
+  
 
   componentDidMount() {
     this.state.data = getOrgList();
@@ -76,7 +48,7 @@ class OrgModal extends React.Component {
             <Dropdown.Menu>
               {data.map((org) => (
                 <React.Fragment key={org.id}>
-                  <Dropdown.Item onClick={() => this.switchOrg(org.id)}>
+                  <Dropdown.Item onClick={() => switchOrg(org.id)}>
                     {org.name}
                   </Dropdown.Item>
                 </React.Fragment>
