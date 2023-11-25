@@ -51,7 +51,7 @@ export class UserProfileV2 extends React.Component {
       >
         <div className='d-flex align-items-center position-relative'>
           <Avatar className='mr-2' color='#343a40' name={this.getCurrentOrg()?.name} size={30} round='4px' />
-          {this.getUserDetails()?.email}
+          {renderOrgName()}
           {/* {getNotificationCount && getNotificationCount() > 0 &&
             <span className='user-notification-badge'>{getNotificationCount()}</span>} */}
         </div>
