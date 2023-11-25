@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './auth.scss'
 import './login.scss'
-import { ReactComponent as Hitman } from '../../assets/icons/hitman.svg'
+import { ReactComponent as TECHDOC } from '../../assets/icons/TECHDOC100.svg'
 
 class LoginV2 extends Component {
   proxyGooglereferenceMapping = {
@@ -47,7 +47,7 @@ class LoginV2 extends Component {
       <>
         <div className='login d-flex gap-sm-0 gap-4 flex-column-reverse flex-sm-row'>
           <div className='login__details deatil-sec col-xl-3 col-lg-4 col-md-5 col-sm-6 col-12 p-2 p-sm-4 p-xl-5'>
-            <Hitman/>
+            <TECHDOC/>
             <h4 className='mt-4'>Your company’s technical knowledge deserves a beautiful home</h4>
             <ul className='feature-list mt-3'>
               <li>Create-Collabarate-Review-Secure-Publish-Maintain</li>

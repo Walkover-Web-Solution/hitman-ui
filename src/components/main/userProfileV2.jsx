@@ -30,6 +30,7 @@ export class UserProfileV2 extends React.Component {
 
   setProfile() {
     const currentUser = getCurrentUser()
+    console.log(currentUser,"current")
     // const name = getProfileName(currentUser)
     this.setState({ name: currentUser.name })
     this.setState({ email: currentUser.email })
@@ -50,7 +51,7 @@ export class UserProfileV2 extends React.Component {
       >
         <div className='d-flex align-items-center position-relative'>
           <Avatar className='mr-2' color='#343a40' name={this.getCurrentOrg()?.name} size={30} round='4px' />
-          {this.renderOrgName()}
+          {this.getUserDetails()?.email}
           {/* {getNotificationCount && getNotificationCount() > 0 &&
             <span className='user-notification-badge'>{getNotificationCount()}</span>} */}
         </div>
@@ -62,12 +63,6 @@ export class UserProfileV2 extends React.Component {
         />
       </div>
     )
-  }
-
-  returnName() {
-    const name = this.state.name
-    const email = this.state.email || ''
-    return name === ' ' ? email : name
   }
 
   renderOrgName() {
