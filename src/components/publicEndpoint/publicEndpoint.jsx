@@ -372,7 +372,7 @@ class PublicEndpoint extends Component {
                   )
                 : null
             }
-            </div>
+            </div> 
           </SplitPane>
 
         </main>
