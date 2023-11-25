@@ -54,6 +54,15 @@ export function isDashboardRoute (props, sidebar = false) {
   ) { return true } else return false
 }
 
+export function redirectToDashboard(orgId) {
+  if (isElectron()) {
+    window.location.hash = `/orgs/${orgId}/dashboard`
+    window.location.reload()
+  } else {
+    window.location = `/orgs/${orgId}/dashboard`
+  }
+}
+
 export function isElectron () {
   const userAgent = navigator.userAgent.toLowerCase()
   return userAgent.indexOf(' electron/') !== -1
