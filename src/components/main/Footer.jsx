@@ -1,6 +1,6 @@
 import React from 'react'
 import { hexToRgb } from '../common/utility'
-import { ReactComponent as Hitman } from '../../assets/icons/hitman.svg'
+import { ReactComponent as TECHDOCPUBLISH } from '../../assets/icons/TECHDOC.svg'
 
 function Footer({ theme }) {
   const domainName = window.location.hostname
@@ -10,9 +10,9 @@ function Footer({ theme }) {
     <footer>
       <div className='footerWrapper'>
         <p className='for-public-view' style={{ display: 'flex',justifyContent:'center' ,alignItems: 'center' }}>
-          <span className="poweredByText">Powered By </span>
+          {/* <span className="poweredByText">Powered By </span> */}
           <a className="hitmanLink" rel='noopener noreferrer' target='_blank' href={domainSrc} style={{ backgroundColor: hexToRgb(theme, '1') }}>
-            <Hitman />
+            <TECHDOCPUBLISH />
           </a>
         </p>
       </div>

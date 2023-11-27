@@ -10,8 +10,8 @@ import Power from '../../assets/icons/power.svg'
 import File from '../../assets/icons/file.svg'
 import { products } from '../common/constants'
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
-import { isElectron } from '../common/utility'
-import { getCurrentUser, getProxyToken } from '../auth//authServiceV2'
+import { getCurrentUser } from '../auth/authServiceV2'
+import {switchOrg} from '../../services/orgApiService'
 // import fetch from 'node-fetch'
 export class UserProfileV2 extends React.Component {
   state = {
@@ -30,6 +30,7 @@ export class UserProfileV2 extends React.Component {
 
   setProfile() {
     const currentUser = getCurrentUser()
+    console.log(currentUser,"current")
     // const name = getProfileName(currentUser)
     this.setState({ name: currentUser.name })
     this.setState({ email: currentUser.email })
@@ -62,12 +63,6 @@ export class UserProfileV2 extends React.Component {
         />
       </div>
     )
-  }
-
-  returnName() {
-    const name = this.state.name
-    const email = this.state.email || ''
-    return name === ' ' ? email : name
   }
 
   renderOrgName() {
@@ -340,7 +335,7 @@ export class UserProfileV2 extends React.Component {
         </span>
         <div className="dropdown-menu">
           {organizations.map((org) => (
-            <button key={org.id} className="dropdown-item" onClick={() => this.switchOrg(org.id)}>
+            <button key={org.id} className="dropdown-item" onClick={() => switchOrg(org.id)}>
               {org.name}
             </button>
           ))}
@@ -391,7 +386,7 @@ export class UserProfileV2 extends React.Component {
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {organizations.map((org, key) => (
-            <Dropdown.Item key={key} onClick={() => this.switchOrg(org.id)}>
+            <Dropdown.Item key={key} onClick={() => switchOrg(org.id)}>
               {org.name}
             </Dropdown.Item>
           ))}
@@ -413,42 +408,6 @@ export class UserProfileV2 extends React.Component {
       })
 
     return filteredOrgsArray
-  }
-
-  async switchOrg(orgId) {
-    try {
-      const proxyUrl = process.env.REACT_APP_PROXY_URL
-      /* eslint-disable-next-line */
-      const response = await fetch(proxyUrl + '/switchCompany', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          proxy_auth_token: getProxyToken()
-        },
-        body: JSON.stringify({
-          company_ref_id: orgId
-        })
-      })
-
-      if (response.ok && response.status === 200) {
-        this.redirectToDashboard(orgId)
-        // const org=window.localStorage.getItem('organisation')
-        // window.localStorage.setItem('organisation', JSON.stringify(org.id))
-      } else {
-        console.error('Error switching organization:', response.message)
-      }
-    } catch (error) {
-      console.error('Error while calling switchCompany API:', error)
-    }
-  }
-
-  redirectToDashboard(orgId) {
-    if (isElectron()) {
-      window.location.hash = `/orgs/${orgId}/dashboard`
-      window.location.reload()
-    } else {
-      window.location = `/orgs/${orgId}/dashboard`
-    }
   }
 
   setOrgFilter(orgFilter) {

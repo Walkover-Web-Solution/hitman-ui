@@ -10,7 +10,6 @@ import './publicEndpoint.scss'
 import store from '../../store/store'
 import {getCurrentUser} from '../auth/authServiceV2'
 import UserInfo from '../common/userInfo'
-import Footer from '../main/Footer'
 // import ThumbUp from '../../assets/icons/thumb_up.svg'
 // import ThumbDown from '../../assets/icons/thumb_down.svg'
 import { setTitle, setFavicon, comparePositions, hexToRgb } from '../common/utility'
@@ -369,12 +368,11 @@ class PublicEndpoint extends Component {
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
                     </div> */}
                     {this.state.openReviewModal && this.reviewModal()}
-                    <Footer theme={this.state.collectionTheme} />
                   </div>
                   )
                 : null
             }
-            </div>
+            </div> 
           </SplitPane>
 
         </main>

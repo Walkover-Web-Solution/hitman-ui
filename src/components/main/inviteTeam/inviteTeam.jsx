@@ -1,36 +1,33 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { getCurrentOrg, getProxyToken } from "../../auth/authServiceV2";
-import "./inviteTeam.scss";
-import { useHistory } from "react-router-dom";
-import { Modal } from "react-bootstrap";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
+import { getCurrentOrg, getProxyToken, getCurrentUser } from "../../auth/authServiceV2";
 import { inviteMember } from "../../../services/chatbotService";
-import { getCurrentUser } from "../../auth/authServiceV2";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
+import { Modal, InputGroup, Form } from "react-bootstrap";
+import "./inviteTeam.scss";
+
 function InviteTeam() {
   const [users, setUsers] = useState([]);
   const [email, setEmail] = useState("");
   const [showModal, setShowModal] = useState(false);
   const history = useHistory();
   const inputRef = useRef(null);
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(
-          "https://routes.msg91.com/api/c/getUsers",
-          {
-            headers: { proxy_auth_token: getProxyToken() },
-          }
-        );
-        setUsers(response?.data?.data?.data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
     fetchUsers();
   }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("https://routes.msg91.com/api/c/getUsers", {
+        headers: { proxy_auth_token: getProxyToken() },
+      });
+      setUsers(response?.data?.data?.data);
+    } catch (error) {
+      toast.error("Error fetching users: " + error.message);
+    }
+  };
 
   useEffect(() => {
     if (showModal) {
@@ -42,39 +39,31 @@ function InviteTeam() {
     const orgId = getCurrentOrg()?.id;
     history.push(`/orgs/${orgId}/dashboard/endpoint/new`);
   };
-  const handleInviteClick = () => {
-    setShowModal(true);
-  };
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSendInvite(e);
-    }
-  };
-  const handleSendInvite = (e) => {
+
+  const handleInviteClick = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const handleSendInvite = async (e) => {
+    e.preventDefault();
     if (!validateEmail(email)) {
       toast.error("Invalid email format");
       return;
     }
-    const name = getCurrentUser()?.name;
+
     try {
-      inviteMember(name, email);
-      setUsers((prevUsers) => [{ name: name, email: email }, ...prevUsers]);
-      toast.success("Invite send Successfully");
-      handleCloseModal();
+      const name = getCurrentUser()?.name;
+      await inviteMember(name, email);
+      setUsers(prevUsers => [{ name, email }, ...prevUsers]);
+      toast.success("Invite sent successfully");
       setEmail("");
+      handleCloseModal();
     } catch (error) {
-      console.log("Error in send Invite", error);
-      toast.error("Cannot proceed at the moment please try again later");
+      toast.error("Cannot proceed at the moment. Please try again later");
     }
-    e.preventDefault();
   };
+
   return (
     <>
       <nav className={"navbar"}>
@@ -92,12 +81,12 @@ function InviteTeam() {
             <tr>
               <th>Name</th>
               <th>Email</th>
-              <th>Access</th>
-              <th>Actions</th>
+              <th>Role</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {users.map(user => (
               <tr key={user.email}>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
@@ -135,7 +124,7 @@ function InviteTeam() {
               aria-describedby="basic-addon2"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendInvite(e)}
               isInvalid={email && !validateEmail(email)}
             />
           </InputGroup>
