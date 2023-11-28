@@ -22,6 +22,19 @@ export const bulkPublish = (collectionId, data) => {
   }
 }
 
+export const bulkPublishSelectedData = (data) =>  {
+  return (dispatch) => {
+    bulkPublishApiService
+      .bulkPublishSelectedData( data)
+      .then((response) => {
+        // will add data changes without reloading data again later
+      })
+      .catch((error) => {
+        console.log("error  ")
+      })
+  }
+}
+
 export const onBulkPublishUpdation = (data) => {
   return {
     type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION,

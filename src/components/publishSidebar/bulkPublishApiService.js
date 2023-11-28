@@ -11,6 +11,12 @@ export function bulkPublish (collectionId, requestData) {
   return http.patch(`${apiUrl}/collection/${collectionId}/bulkPendingRequest`, requestData)
 }
 
+export function bulkPublishSelectedData (publishData) {
+  const apiUrl = getApiUrl()
+  return http.patch(`${apiUrl}/bulkPublish`, publishData)
+}
+
 export default {
-  bulkPublish
+  bulkPublish,
+  bulkPublishSelectedData
 }
