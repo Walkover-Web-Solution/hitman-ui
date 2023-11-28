@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Dropdown, Accordion } from 'react-bootstrap'
-import { bulkPublish } from './redux/bulkPublishAction'
+import { bulkPublish, bulkPublishSelectedData} from './redux/bulkPublishAction'
 
 import './publishSidebar.scss'
 import { ReactComponent as DownChevron } from '../../assets/icons/downChevron.svg'
 import { ReactComponent as GlobeIcon } from '../../assets/icons/globe-icon.svg'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
+import { redirectToDashboard, getOrgId} from '../../components/common/utility'
 
 const mapStateToProps = (state) => {
   return {
@@ -19,7 +20,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    bulk_publish: (collectionId, data) => dispatch(bulkPublish(collectionId, data))
+    bulk_publish: (collectionId, data) => dispatch(bulkPublish(collectionId, data)),
+    bulk_publishSelectedData : (publishData) => dispatch(bulkPublishSelectedData(publishData))
   }
 }
 
@@ -92,19 +94,67 @@ export class PublishSidebar extends Component {
       pages: [],
       endpoints: []
     }
-
+     
+    const dataToPublish = {}
+    dataToPublish.endpointsData = {}
+    dataToPublish.pagesData = {}
+    let collId = this.state.selectedCollectionId;
+    
+    dataToPublish.collectionName =
+    this.props.collections[collId]?.docProperties?.defaultTitle?.length &&
+    this.props.collections[collId]?.docProperties?.defaultTitle?.length !== 0
+    ? this.props.collections[collId]?.docProperties.defaultTitle
+    : this.props.collections[collId]?.name;
+ 
     Object.entries(checkedData).forEach((data) => {
       const item = data[0].split('.')
       if (item[1] === 'endpoint' && data[1]) {
-        requestData.endpoints.push(item[2])
+        let endpointId = item[2];
+        requestData.endpoints.push(endpointId)
+
+        // multiple endpoints publish make data
+        let groupId = this.state.endpoints[endpointId]?.groupId;
+        let groupName = this.state.groups[groupId]?.name;
+
+        if(!dataToPublish.endpointsData[groupId]){
+          dataToPublish.endpointsData[groupId] = {};
+          dataToPublish.endpointsData[groupId].groupName = groupName
+          dataToPublish.endpointsData[groupId].endpointsId = []
+        }
+        dataToPublish.endpointsData[groupId].endpointsId.push(endpointId)
       }
 
       if ((item[1] === 'groupPage' || item[1] === 'versionPage') && data[1]) {
-        requestData.pages.push(item[2])
+        let pageId = item[2]
+        requestData.pages.push(pageId)
+
+        // multiple pages publish make data
+        let groupId = this.state.pages[pageId]?.groupId
+        let versionId = this.state.pages[pageId]?.versionId
+        if(!dataToPublish.pagesData[versionId]){
+          dataToPublish.pagesData[versionId] = {};
+          dataToPublish.pagesData[versionId].withoutGroups = []
+          dataToPublish.pagesData[versionId].withGroups = {}
+        }
+
+        if(!groupId){
+          dataToPublish.pagesData[versionId].withoutGroups.push(pageId)
+        }
+        else{
+          if(!dataToPublish.pagesData[versionId].withGroups[groupId]){
+            dataToPublish.pagesData[versionId].withGroups[groupId] = [];
+            
+          }
+          dataToPublish.pagesData[versionId].withGroups[groupId].push(pageId)
+        }
       }
     })
-
-    if (requestData.pages.length || requestData.endpoints.length) {
+   let isAdmin = true;
+    if (isAdmin) {
+      this.props.bulk_publishSelectedData({ publishData: dataToPublish });
+      redirectToDashboard(getOrgId())
+    }
+    else if (requestData.pages.length || requestData.endpoints.length) {
       this.props.bulk_publish(this.state.selectedCollectionId, requestData)
     }
     this.props.closePublishSidebar()
