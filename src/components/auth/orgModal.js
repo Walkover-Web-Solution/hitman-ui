@@ -1,6 +1,6 @@
 import React from "react";
-import {switchOrg} from '../../services/orgApiService'
-import { Modal,Dropdown} from "react-bootstrap";
+import { switchOrg } from "../../services/orgApiService";
+import { Modal} from "react-bootstrap";
 import { getOrgList } from "./authServiceV2";
 import "./login.scss";
 
@@ -18,8 +18,6 @@ class OrgModal extends React.Component {
     const reloadRoute = `/orgs/${orgId}/dashboard`;
     this.props.history.push(reloadRoute);
   };
-
-  
 
   componentDidMount() {
     this.state.data = getOrgList();
@@ -41,23 +39,25 @@ class OrgModal extends React.Component {
           <Modal.Title>Select Organization</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Dropdown>
-            <Dropdown.Toggle id="dropdown-basic">
-              Organizations
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              {data.map((org) => (
-                <React.Fragment key={org.id}>
-                  <Dropdown.Item onClick={() => switchOrg(org.id)}>
-                    {org.name}
-                  </Dropdown.Item>
-                </React.Fragment>
+          {/* dropdown removed */}
+          <div className="org-listing-container ">
+            <div className="org-listing-column d-flex flex-column">
+              {data.map((org, key) => (
+                <button
+                  className='btn btn-primary mb-2 p-2'
+                  key={key}
+                  onClick={() => switchOrg(org.id)}
+                >
+                  {org.name}
+                </button>
               ))}
-            </Dropdown.Menu>
-          </Dropdown>
+            </div>
+          </div>
         </Modal.Body>
         <Modal.Body>
-          <p>Select an organization to proceed further</p>
+          <p className="font-italic" style={{ fontSize: "18px" }}>
+            Select any organization to proceed further
+          </p>
         </Modal.Body>
       </Modal>
     );

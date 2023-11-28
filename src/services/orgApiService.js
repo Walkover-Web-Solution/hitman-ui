@@ -3,11 +3,11 @@ import { redirectToDashboard } from '../components/common/utility'
 import { getOrgList, orgListKey, orgKey, getProxyToken } from "../components/auth/authServiceV2";
 const apiBaseUrl = process.env.REACT_APP_API_URL
 
-function getOrgUpdatedAt(orgId) {
+export function getOrgUpdatedAt(orgId) {
   return http.get(`${apiBaseUrl}/orgs/${orgId}/lastSync`)
 }
 
-function updateOrgDataByOrgId(OrgId) {
+export function updateOrgDataByOrgId(OrgId) {
   let data = getOrgList();
   const targetIndex = data.findIndex(obj => obj.id === OrgId);
   if (targetIndex > 0) {
@@ -17,7 +17,7 @@ function updateOrgDataByOrgId(OrgId) {
   window.localStorage.setItem(orgKey, JSON.stringify(data[0]))
 }
 
-async function switchOrg(orgId) {
+export async function switchOrg(orgId) {
   try {
     const proxyUrl = process.env.REACT_APP_PROXY_URL
     http.post(proxyUrl + '/switchCompany', { company_ref_id: orgId })
@@ -29,7 +29,3 @@ async function switchOrg(orgId) {
   }
 }
 
-export {
-  getOrgUpdatedAt,
-  switchOrg
-}
