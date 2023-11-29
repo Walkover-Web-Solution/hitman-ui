@@ -256,6 +256,7 @@ class PublishCollectionInfo extends Component {
           <PublishSidebar
             {...this.props}
             closePublishSidebar={this.closePublishSidebar.bind(this)}
+            openPublishSettings = {this.openPublishSettings.bind(this)}
           />}
       </>
     )
@@ -265,7 +266,7 @@ class PublishCollectionInfo extends Component {
     const isPublic = this.props.collections[this.props.collectionId]?.isPublic || false
     return (
       <div>
-        {!isPublic && this.renderPublishCollection()}
+        {this.renderPublishCollection()}
         {this.renderPublicCollectionInfo(isPublic)}
         {this.openPublishSidebar()}
       </div>

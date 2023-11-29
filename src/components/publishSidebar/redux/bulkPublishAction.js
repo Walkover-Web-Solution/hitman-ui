@@ -22,15 +22,16 @@ export const bulkPublish = (collectionId, data) => {
   }
 }
 
-export const bulkPublishSelectedData = (data) =>  {
+export const  bulkPublishSelectedData = (data) =>  {
   return (dispatch) => {
     bulkPublishApiService
       .bulkPublishSelectedData( data)
       .then((response) => {
-        // will add data changes without reloading data again later
+         toast.success('Successfully Published')
       })
       .catch((error) => {
-        console.log("error  ")
+        const e = error.response ? error.response.data : error
+        toast.error(e)
       })
   }
 }
