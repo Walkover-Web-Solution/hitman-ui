@@ -6,8 +6,9 @@
     overflow-y: auto; 
     justify-content: center;
     .org-listing-column {
-        flex: 0 0 50%;
+        flex: 0 0 40%;
           button{
+            width: 170px !important;
             &.active{
             background-color: gray !important;
             color: white !important;

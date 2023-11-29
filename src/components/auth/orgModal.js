@@ -54,11 +54,6 @@ class OrgModal extends React.Component {
             </div>
           </div>
         </Modal.Body>
-        <Modal.Body>
-          <p className="font-italic" style={{ fontSize: "18px" }}>
-            Select any organization to proceed further
-          </p>
-        </Modal.Body>
       </Modal>
     );
   };
