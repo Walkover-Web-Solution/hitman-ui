@@ -151,8 +151,9 @@ export class PublishSidebar extends Component {
     })
    let isAdmin = true;
     if (isAdmin) {
-      this.props.bulk_publishSelectedData({ publishData: dataToPublish });
-      redirectToDashboard(getOrgId())
+      this.props.bulk_publishSelectedData({ publishData: dataToPublish, requestData :requestData });
+      const isPublic = this.props.collections[collId]?.isPublic || false
+      isPublic ? redirectToDashboard(getOrgId()) : this.props.openPublishSettings()
     }
     else if (requestData.pages.length || requestData.endpoints.length) {
       this.props.bulk_publish(this.state.selectedCollectionId, requestData)
@@ -490,7 +491,7 @@ export class PublishSidebar extends Component {
   renderFooter () {
     return (
       <div className='d-flex mt-3'>
-        <button className='btn btn-primary justify-content-center api-save-btn' onClick={() => this.sendPublishRequest()}>Next</button>
+        <button className='btn btn-primary justify-content-center api-save-btn' onClick={() => this.sendPublishRequest()}>Publish</button>
         <button className='ml-2 btn btn-secondary justify-content-center api-cancel-btn' onClick={() => { this.props.closePublishSidebar() }}>Cancel</button>
       </div>
     )
