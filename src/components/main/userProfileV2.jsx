@@ -15,6 +15,7 @@ import GenericModal from "./GenericModal";
 import { switchOrg } from "../../services/orgApiService";
 import "./userProfile.scss";
 import { toast } from "react-toastify";
+import { createOrg } from "../../services/orgApiService";
 // import fetch from 'node-fetch'
 export class UserProfileV2 extends React.Component {
   state = {
@@ -24,6 +25,7 @@ export class UserProfileV2 extends React.Component {
     moreFlag: false,
     showModal: false,
     loading: false,
+    orgName: "",
   };
 
   componentDidMount() {
@@ -480,6 +482,32 @@ export class UserProfileV2 extends React.Component {
     }
     this.setState({ orgFilter, moreFlag });
   }
+  setName = (orgName) => {
+    this.setState({ orgName });
+  };
+
+
+  validateName = (orgName) => {
+    const regex = /^[A-Za-z\s]+$/;
+    if (orgName && regex.test(this.orgName)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  handleAddOrg = async (e) => {
+    console.log("inside add org");
+    const name = this.state.orgName; 
+    console.log(name, "nmae in hanle org");
+    // if (!this.validateName(orgName)) {
+    //   toast.error("Enter Valid Name");
+    //   return;
+    // }
+    await createOrg(name, "5;30");
+
+
+  }
 
   render() {
     return (
@@ -505,12 +533,18 @@ export class UserProfileV2 extends React.Component {
                   Switch Orgs
                 </span>
                 <GenericModal
+                  orgName={this.state.orgName}
+                  validateName={this.validateName}
+                  handleKeyPress={this.handleKeyPress}
+                  inputRef={this.inputRef}
+                  setName={this.setName}
                   handleCloseModal={this.toggleModal}
                   showModal={this.state.showModal}
                   title="Switch Organizations"
                   modalBody={this.renderOrgListDropdown()}
-                  // centered
                   keyboard={false}
+                  showInput={true}
+                  handleAddOrg = {this.handleAddOrg}
                 />
               </div>
             </div>

@@ -4,6 +4,7 @@ import http from '../../services/httpService'
 import Cookies from 'universal-cookie'
 import { Modal } from 'react-bootstrap'
 import { switchOrg } from '../../services/orgApiService'
+import { SetDataToLocalStorage } from '../common/utility'
 
 const tokenKey = 'token'
 const profileKey = 'profile'
@@ -108,22 +109,7 @@ function AuthServiceV2() {
     const reloadRoute = `/orgs/${orgId}/dashboard`
     if (proxyAuthToken) {
       /* eslint-disable-next-line */
-      fetch(proxyUrl + '/getDetails', {
-        headers: {
-          proxy_auth_token: proxyAuthToken
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          const userInfo = data.data[0]
-          window.localStorage.setItem(tokenKey, proxyAuthToken)
-          window.localStorage.setItem(profileKey, JSON.stringify(userInfo))
-          window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
-          window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
-          http.setProxyToken(getProxyToken())
-          setOrgList(userInfo.c_companies)
-        })
-        .catch(error => console.error('Error:', error))
+      SetDataToLocalStorage(proxyAuthToken)
     }
     else if(getOrgList()){
       history.push(reloadRoute)
