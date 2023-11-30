@@ -1,7 +1,7 @@
 import axios from 'axios';
 import http from './httpService'
-import { redirectToDashboard } from '../components/common/utility'
-import { getOrgList, orgListKey, orgKey, getProxyToken } from "../components/auth/authServiceV2";
+import { redirectToDashboard , SetDataToLocalStorage} from '../components/common/utility'
+import { getOrgList, orgListKey, orgKey, getProxyToken, getCurrentOrg } from "../components/auth/authServiceV2";
 const apiBaseUrl = process.env.REACT_APP_API_URL
 const proxyUrl = process.env.REACT_APP_PROXY_URL
 
@@ -43,6 +43,7 @@ export async function switchOrg(orgId) {
 }
 
 export async function createOrg(name, timezone) {
+  try{
   timezone = "+5:30"
   let data = {
     company: {
@@ -50,9 +51,15 @@ export async function createOrg(name, timezone) {
       timezone: timezone
     }
   }
-   await http.post(`${proxyUrl}/createCompany`, data);
-  //  updateOrgDataByOrgId(orgId)
-  //  redirectToDashboard(orgId)
+   await http.post(proxyUrl + '/createCompany' , data);
+   let org = getCurrentOrg()
+   console.log("org ",org)
+   updateOrgDataByOrgId(org.id)
+   await SetDataToLocalStorage()
+   redirectToDashboard(org.id)
+   }catch(e){
+    console.log(e);
+   }
 }
 
 

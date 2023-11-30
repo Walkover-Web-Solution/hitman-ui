@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie'
 import { Modal } from 'react-bootstrap'
 import { switchOrg } from '../../services/orgApiService'
 import { SetDataToLocalStorage } from '../common/utility'
+import httpService from '../../services/httpService'
 
 const tokenKey = 'token'
 const profileKey = 'profile'
@@ -84,9 +85,8 @@ function getOrgList() {
 }
 
 function getProxyToken() {
-  const cookies = new Cookies()
-  const token = cookies.get('token')
-  return token || window.localStorage.getItem(tokenKey)
+  const tokenKey = 'token'
+  return  window.localStorage.getItem(tokenKey) || ''
 }
 
 
@@ -95,21 +95,17 @@ function AuthServiceV2() {
   const history = useHistory()
   const [show, setShow] = useState(true);
   const [orgList, setOrgList] = useState(null);
-  useEffect(() => {
-    const fetchOrgList = async () => {
-      await getOrgList();
-    };
-  
-    fetchOrgList();
-  }, [])
-  useEffect(() => {
+ 
+  useEffect(async () => {
     const proxyAuthToken = query.get('proxy_auth_token')
     // const userRefId = query.get('user_ref_id')
     const orgId = query.get('company_ref_id') || getCurrentOrg()?.id || ''
     const reloadRoute = `/orgs/${orgId}/dashboard`
     if (proxyAuthToken) {
       /* eslint-disable-next-line */
-      SetDataToLocalStorage(proxyAuthToken)
+     await SetDataToLocalStorage(proxyAuthToken)
+     httpService.setProxyToken(proxyAuthToken)
+     setOrgList(getOrgList())
     }
     else if(getOrgList()){
       history.push(reloadRoute)

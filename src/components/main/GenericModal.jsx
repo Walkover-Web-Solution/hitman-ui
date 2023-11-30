@@ -128,19 +128,6 @@ function GenericModal({
             <>
             <Button onClick={handleClick}>Create Organization</Button>
             {createOrg && <>
-              {/* <InputGroup className="mb-3">
-                <Form.Control
-                  ref={inputRef}
-                  placeholder="Enter Organization Name"
-                  type="text"
-                  aria-label="Organization name"
-                  aria-describedby="basic-addon2"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  isInvalid={email && !validateEmail(email)}
-                />
-              </InputGroup> */}
 
               <InputGroup className="mb-3">
         <Form.Control
@@ -152,7 +139,6 @@ function GenericModal({
           value={orgName}
           onChange={(e) => setName(e.target.value)}
           onKeyPress={handleKeyPress}
-          isInvalidName={orgName && !validateName(orgName)}
         />
         <Button onClick={handleAddOrg} variant="outline-secondary" id="button-addon2">
           Create

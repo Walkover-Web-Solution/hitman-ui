@@ -67,3 +67,5 @@ electron-builder.env
 build/
 hitman-bundles/
 embedded.provisionprofile
+
+.swp

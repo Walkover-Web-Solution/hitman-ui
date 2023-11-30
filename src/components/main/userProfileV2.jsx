@@ -504,7 +504,7 @@ export class UserProfileV2 extends React.Component {
     //   toast.error("Enter Valid Name");
     //   return;
     // }
-    await createOrg(name, "5;30");
+    await createOrg(name, "5:30");
 
 
   }
