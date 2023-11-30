@@ -79,7 +79,7 @@ function InviteTeam() {
         <table className={"table"}>
           <thead>
             <tr>
-              <th>Name</th>
+              {/* <th>Name</th> */}
               <th>Email</th>
               <th>Role</th>
               <th>Action</th>
@@ -88,7 +88,7 @@ function InviteTeam() {
           <tbody>
             {users.map(user => (
               <tr key={user.email}>
-                <td>{user.name}</td>
+                {/* <td>{user.name}</td> */}
                 <td>{user.email}</td>
                 <td>{"Admin"}</td>
                 <td>

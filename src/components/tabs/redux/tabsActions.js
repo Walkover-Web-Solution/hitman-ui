@@ -99,8 +99,8 @@ export const fetchTabsFromIdb = (props) => {
 export const addNewTab = () => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
-
-  if (!isElectron() && tabsOrder.length >= 5) {
+ const showDesktopModal = !window.matchMedia('(display-mode: standalone)').matches
+  if (!isElectron() && tabsOrder.length >= 5 && showDesktopModal) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
 
