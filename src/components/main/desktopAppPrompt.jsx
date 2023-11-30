@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import { openExternalLink } from '../common/utility'
 import { closeModal } from '../modals/redux/modalsActions'
 import { connect } from 'react-redux'
 import { DESKTOP_APP_DOWNLOAD } from '../modals/modalTypes'
 import { sendAmplitudeData } from '../../services/amplitude'
+import { toast } from 'react-toastify'
 
 const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
 
@@ -22,13 +23,26 @@ const mapStateToProps = (state) => {
 }
 
 function DesktopAppDownloadModal (props) {
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
+  const shouldShowModal = !window.matchMedia('(display-mode: standalone)').matches
   const handleDownloadClick = () => {
     sendAmplitudeData('Download popup')
-    const link = `${DESKTOP_APP_DOWNLOAD_LINK}?source=popup`
-    openExternalLink(link)
+    if (props.modals.installPrompt) {
+      props.modals.installPrompt.prompt();
+      props.modals.installPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the install prompt');
+        } else {
+          console.log('User dismissed the install prompt');
+        }
+      });
+    } else {
+      toast.success('App is installed already')
+      setIsAppInstalled(true);
+    }
   }
 
-  const show = props.modals.activeModal === DESKTOP_APP_DOWNLOAD
+  const show = props.modals.activeModal === DESKTOP_APP_DOWNLOAD && shouldShowModal
 
   const onHide = () => {
     const { orgId } = props.match.params
@@ -54,7 +68,7 @@ function DesktopAppDownloadModal (props) {
           </ol>
         </Modal.Body>
         <Modal.Footer className='text-center justify-content-center'>
-          <button onClick={handleDownloadClick} className='btn btn-primary'>Download Desktop App</button>
+          <button onClick={handleDownloadClick} disabled={isAppInstalled} className='btn btn-primary'>Download Desktop App</button>
         </Modal.Footer>
       </Modal>
   )

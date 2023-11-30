@@ -17,8 +17,17 @@ export const closeModal = () => {
     })
   }
 }
+export const installModal = (event) => {
+  return (dispatch) => {
+    dispatch({
+      type: modalsActionTypes.ON_INSTALL_MODAL,
+      payload: event
+    })
+  }
+}
 
 export default {
   openModal,
-  closeModal
+  closeModal,
+  installModal
 }
