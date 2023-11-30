@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useHistory } from 'react-router-dom'
 import http from '../../services/httpService'
 import Cookies from 'universal-cookie'
+import { Modal } from 'react-bootstrap'
+import { switchOrg } from '../../services/orgApiService'
 
 const tokenKey = 'token'
 const profileKey = 'profile'
@@ -90,7 +92,15 @@ function getProxyToken() {
 function AuthServiceV2() {
   const query = useQuery()
   const history = useHistory()
-
+  const [show, setShow] = useState(true);
+  const [orgList, setOrgList] = useState(null);
+  useEffect(() => {
+    const fetchOrgList = async () => {
+      await getOrgList();
+    };
+  
+    fetchOrgList();
+  }, [])
   useEffect(() => {
     const proxyAuthToken = query.get('proxy_auth_token')
     // const userRefId = query.get('user_ref_id')
@@ -111,22 +121,49 @@ function AuthServiceV2() {
           window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
           window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
           http.setProxyToken(getProxyToken())
-          const reloadOrgRoute = `/select-org`
-          history.push({
-            pathname: reloadOrgRoute
-          })
+          setOrgList(userInfo.c_companies)
         })
         .catch(error => console.error('Error:', error))
-    }else if(getOrgList()){
+    }
+    else if(getOrgList()){
       history.push(reloadRoute)
     }else{
       history.push('/login')
     }
-  }, [history, query])
+  }, [])
 
+  const orgNames = () => {
+   return ( <Modal show={show}>
+    <Modal.Header>
+      <Modal.Title>Select Organization</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      {/* dropdown removed */}
+      <div className="org-listing-container ">
+        <div className="org-listing-column d-flex flex-column">
+          {orgList?.map((org, key) => (
+            <button
+              className='btn btn-primary mb-2 p-2'
+              key={key}
+              onClick={() => switchOrg(org.id)}
+            >
+              {org.name}
+            </button>
+          ))}
+        </div>
+      </div>
+    </Modal.Body>
+    <Modal.Footer>
+    </Modal.Footer>
+  </Modal>
+   )
+  }
+  
   return (
-    <div>You are being redirected to Hitman</div>
-  )
+    <>
+     {orgList?.length ? orgNames():null}
+    </>
+  );
 }
 
 export default AuthServiceV2

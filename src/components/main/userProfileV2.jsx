@@ -509,7 +509,7 @@ export class UserProfileV2 extends React.Component {
                   showModal={this.state.showModal}
                   title="Switch Organizations"
                   modalBody={this.renderOrgListDropdown()}
-                  centered
+                  // centered
                   keyboard={false}
                 />
               </div>
