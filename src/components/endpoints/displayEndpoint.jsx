@@ -2119,7 +2119,7 @@ class DisplayEndpoint extends Component {
   switchView = (currentView) => {
     if (this.state.currentView !== currentView) {
       this.setState({ currentView })
-      this.setState({ showViewConfirmationModal: true })
+      // this.setState({ showViewConfirmationModal: true })
     }
   }
 

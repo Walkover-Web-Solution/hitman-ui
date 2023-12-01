@@ -80,7 +80,7 @@ class PublishCollectionInfo extends Component {
     return (
       <button className='btn' disabled={!totalEndpointCount} onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
         <div className='d-flex align-items-center cursor-pointer'>
-          <img className='mr-1' src={FileIcon} alt='' />
+          <img className='mr-1' src={SettingIcon} alt='' />
           <span>Manage Public Doc</span>
         </div>
         {this.renderInfoText('Add an endpoint first')}
