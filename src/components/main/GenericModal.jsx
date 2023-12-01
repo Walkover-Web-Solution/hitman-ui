@@ -27,7 +27,6 @@ function GenericModal({
 }) {
   const [createOrg, setcreateOrg] = useState(false);
   const handleClick = () => {
-    console.log("handleClick ");
     setcreateOrg(!createOrg);
   };
   const handleClose = () => {
