@@ -17,7 +17,20 @@ import Cookies from 'universal-cookie'
 import AuthServiceV2 from './components/auth/authServiceV2'
 import InviteTeam from './components/main/inviteTeam/inviteTeam'
 import OrgModal from './components/auth/orgModal'
+import { connect } from 'react-redux'
+import { installModal } from './components/modals/redux/modalsActions'
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    install_modal: (event) => dispatch(installModal(event))
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    modals: state.modals,
+  }
+}
 class App extends Component {
   async redirectToClientDomain () {
     const isDesktop = process.env.REACT_APP_IS_DESKTOP
@@ -33,8 +46,12 @@ class App extends Component {
       }
     }
   }
-
+ 
   componentDidMount () {
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  this.props.install_modal(e);
+});
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
@@ -152,5 +169,6 @@ class App extends Component {
       )
     }
 }
+export default connect(mapStateToProps, mapDispatchToProps)(App)
 
-export default App
+// export default App

@@ -30,7 +30,6 @@ export class UserProfileV2 extends React.Component {
 
   setProfile() {
     const currentUser = getCurrentUser()
-    console.log(currentUser,"current")
     // const name = getProfileName(currentUser)
     this.setState({ name: currentUser.name })
     this.setState({ email: currentUser.email })
