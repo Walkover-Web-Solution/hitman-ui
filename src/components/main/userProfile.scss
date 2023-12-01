@@ -5,8 +5,9 @@
     max-height: 200px; 
     overflow-y: auto; 
     justify-content: center;
+    // width: fit-content;
     .org-listing-column {
-        flex: 0 0 40%;
+        flex: 0 0 46%;
           button{
             width: 170px !important;
             &.active{

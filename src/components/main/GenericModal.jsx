@@ -3,8 +3,8 @@ import React from "react";
 import { Modal, Button } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import "./main.scss";
-import { useState, useEffect, useRef } from "react";
-import Form from 'react-bootstrap/Form';
+import { useState } from "react";
+import Form from "react-bootstrap/Form";
 function GenericModal({
   email,
   validateEmail,
@@ -23,23 +23,23 @@ function GenericModal({
   showInput,
   handleAddOrg,
   setName,
-  orgName
-}) 
-{
-  const [createOrg, setcreateOrg] = useState(false)
-  const handleClick = ()=>{
+  orgName,
+}) {
+  const [createOrg, setcreateOrg] = useState(false);
+  const handleClick = () => {
     console.log("handleClick ");
     setcreateOrg(!createOrg);
-  }
-  const handleCreate = ()=>{
-    console.log("clicked", orgName);
-  }
-  const validateName = (orgName) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(orgName);
+  };
+  const handleClose = () => {
+    handleCloseModal();
+    setcreateOrg(false);
+  };
+  // const validateName = (orgName) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(orgName);
   return (
     <div>
       <Modal
         show={showModal}
-        onHide={handleCloseModal}
+        onHide={handleClose}
         aria-labelledby="contained-modal-title-vcenter"
         centered={centered}
         keyboard={keyboard}
@@ -84,33 +84,43 @@ function GenericModal({
           )}
           {modalBody}
         </Modal.Body>
-          {/* for create organization */}
+        {/* for create organization */}
         <Modal.Footer>
-        {showInput && (
+          {showInput && (
             <>
-            <Button onClick={handleClick}>Create Organization</Button>
-            {createOrg && <>
-
-              <InputGroup className="mb-3">
-        <Form.Control
-          placeholder="Enter Organization Name"
-          type="text"
-          aria-label="Organization name"
-          aria-describedby="basic-addon2"
-          value={orgName}
-          onChange={(e) => setName(e.target.value)}
-          onKeyPress={handleKeyPress}
-        />
-        <Button onClick={handleAddOrg} variant="outline-secondary" id="button-addon2">
-          Create
-        </Button>
-      </InputGroup>
-
-              </>
-              }
+              <div className="d-grid gap-2 col-6 mx-auto">
+                {!createOrg && (
+                  <button className="btn btn-primary" onClick={handleClick}>
+                    {" "}
+                    + Create Organization
+                  </button>
+                )}
+              </div>
+              {createOrg && (
+                <>
+                  <InputGroup className="mb-3">
+                    <Form.Control
+                      placeholder="Enter Organization Name"
+                      type="text"
+                      aria-label="Organization name"
+                      aria-describedby="basic-addon2"
+                      value={orgName}
+                      onChange={(e) => setName(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                    />
+                    <Button
+                      onClick={handleAddOrg}
+                      variant="outline-secondary"
+                      id="button-addon2"
+                    >
+                      Create
+                    </Button>
+                  </InputGroup>
+                </>
+              )}
             </>
           )}
-       </Modal.Footer>
+        </Modal.Footer>
       </Modal>
     </div>
   );

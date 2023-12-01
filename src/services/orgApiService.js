@@ -2,6 +2,7 @@ import axios from 'axios';
 import http from './httpService'
 import { redirectToDashboard , getDataFromProxyAndSetDataToLocalStorage} from '../components/common/utility'
 import { getOrgList, orgListKey, orgKey, getProxyToken, getCurrentOrg } from "../components/auth/authServiceV2";
+import { toast } from 'react-toastify';
 const apiBaseUrl = process.env.REACT_APP_API_URL
 const proxyUrl = process.env.REACT_APP_PROXY_URL
 
@@ -29,6 +30,10 @@ export async function switchOrg(orgId) {
   }
 }
 
+async function createOrganizationAndRunCode() {
+  toast.success("Organization Successfully Created");
+}
+
 export async function createOrg(name) {
   try {
     let data = { company: { name: name } }
@@ -36,6 +41,7 @@ export async function createOrg(name) {
     let org = getCurrentOrg()
     updateOrgDataByOrgId(org.id)
     await getDataFromProxyAndSetDataToLocalStorage()
+    await createOrganizationAndRunCode()
     redirectToDashboard(org.id)
   } catch (e) {
     console.log(e);
