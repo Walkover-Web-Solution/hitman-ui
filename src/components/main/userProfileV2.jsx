@@ -488,7 +488,7 @@ export class UserProfileV2 extends React.Component {
 
 
   validateName = (orgName) => {
-    const regex = /^[A-Za-z\s]+$/;
+    const regex = /^[a-zA-Z0-9_]+$/;
     if (orgName && regex.test(this.orgName)) {
       return true;
     } else {
@@ -496,17 +496,16 @@ export class UserProfileV2 extends React.Component {
     }
   };
 
-  handleAddOrg = async (e) => {
-    console.log("inside add org");
-    const name = this.state.orgName; 
-    console.log(name, "nmae in hanle org");
-    // if (!this.validateName(orgName)) {
-    //   toast.error("Enter Valid Name");
-    //   return;
-    // }
-    await createOrg(name, "5:30");
-
-
+  handleAddOrg = async () => {
+    try{
+    if (!this.validateName(this.state.orgName)) {
+      toast.error("Only alphanumeric and underscores are allowed");
+      return;
+    }
+    await createOrg(this.state.orgName);
+    }catch(e){
+      toast.error("Something went wrong");
+    }
   }
 
   render() {

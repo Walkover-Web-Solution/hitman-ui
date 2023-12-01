@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useHistory } from 'react-router-dom'
 import http from '../../services/httpService'
-import Cookies from 'universal-cookie'
 import { Modal } from 'react-bootstrap'
 import { switchOrg } from '../../services/orgApiService'
-import { SetDataToLocalStorage } from '../common/utility'
-import httpService from '../../services/httpService'
+import { getDataFromProxyAndSetDataToLocalStorage } from '../common/utility'
 
 const tokenKey = 'token'
 const profileKey = 'profile'
@@ -97,20 +95,20 @@ function AuthServiceV2() {
   const [orgList, setOrgList] = useState(null);
  
   useEffect(async () => {
-    const proxyAuthToken = query.get('proxy_auth_token')
-    // const userRefId = query.get('user_ref_id')
-    const orgId = query.get('company_ref_id') || getCurrentOrg()?.id || ''
-    const reloadRoute = `/orgs/${orgId}/dashboard`
-    if (proxyAuthToken) {
-      /* eslint-disable-next-line */
-     await SetDataToLocalStorage(proxyAuthToken)
-     httpService.setProxyToken(proxyAuthToken)
-     setOrgList(getOrgList())
-    }
-    else if(getOrgList()){
-      history.push(reloadRoute)
-    }else{
-      history.push('/login')
+    try {
+      const proxyAuthToken = query.get('proxy_auth_token')
+      const orgId = query.get('company_ref_id') || getCurrentOrg()?.id || ''
+      if (proxyAuthToken) {
+        await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken)
+        setOrgList(getOrgList())
+      }
+      else if (getOrgList()) {
+        history.push(`/orgs/${orgId}/dashboard`)
+      } else {
+        history.push('/logout')
+      }
+    } catch (err) {
+      history.push('/logout')
     }
   }, [])
 

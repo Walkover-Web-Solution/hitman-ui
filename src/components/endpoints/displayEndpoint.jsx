@@ -3116,15 +3116,15 @@ class DisplayEndpoint extends Component {
           </div>
           {this.isDashboardAndTestingView() && <div>
                 
-            <div className='ask-ai-btn' onClick={this.toggleChatbotModal} >
-             <Chaticon/>
-            </div>
-
-            {this.state.showAskAiSlider &&
-              <ChatbotsideBar
-                {...this.props}
-                onHide={() => this.closeChatBotModal()}
-              />}
+                <div className='ask-ai-btn' onClick={this.toggleChatbotModal} >
+                 <Chaticon/>
+                </div>
+    
+                {this.state.showAskAiSlider &&
+                  <ChatbotsideBar
+                    {...this.props}
+                    onHide={() => this.closeChatBotModal()}
+                  />}
           </div>}
 
         </div>

@@ -1,23 +1,12 @@
 import axios from 'axios';
 import http from './httpService'
-import { redirectToDashboard , SetDataToLocalStorage} from '../components/common/utility'
+import { redirectToDashboard , getDataFromProxyAndSetDataToLocalStorage} from '../components/common/utility'
 import { getOrgList, orgListKey, orgKey, getProxyToken, getCurrentOrg } from "../components/auth/authServiceV2";
 const apiBaseUrl = process.env.REACT_APP_API_URL
 const proxyUrl = process.env.REACT_APP_PROXY_URL
 
-
-
-var orgInstance = axios.create()
-console.log(orgInstance, "orgInstance");
 export function getOrgUpdatedAt(orgId) {
   return http.get(`${apiBaseUrl}/orgs/${orgId}/lastSync`)
-}
-function addProxyToken() {
-  let proxyToken = getProxyToken();
-  if (proxyToken) {
-    orgInstance.defaults.headers.common.proxy_auth_token = proxyToken;
-  }
-  return orgInstance;
 }
 
 export function updateOrgDataByOrgId(OrgId) {
@@ -32,34 +21,25 @@ export function updateOrgDataByOrgId(OrgId) {
 
 export async function switchOrg(orgId) {
   try {
-    
     await http.post(proxyUrl + '/switchCompany', { company_ref_id: orgId })
     updateOrgDataByOrgId(orgId)
     redirectToDashboard(orgId)
-
   } catch (error) {
     console.error('Error while calling switchCompany API:', error)
   }
 }
 
-export async function createOrg(name, timezone) {
-  try{
-  timezone = "+5:30"
-  let data = {
-    company: {
-      name: name,
-      timezone: timezone
-    }
-  }
-   await http.post(proxyUrl + '/createCompany' , data);
-   let org = getCurrentOrg()
-   console.log("org ",org)
-   updateOrgDataByOrgId(org.id)
-   await SetDataToLocalStorage()
-   redirectToDashboard(org.id)
-   }catch(e){
+export async function createOrg(name) {
+  try {
+    let data = { company: { name: name } }
+    await http.post(proxyUrl + '/createCompany', data);
+    let org = getCurrentOrg()
+    updateOrgDataByOrgId(org.id)
+    await getDataFromProxyAndSetDataToLocalStorage()
+    redirectToDashboard(org.id)
+  } catch (e) {
     console.log(e);
-   }
+  }
 }
 
 

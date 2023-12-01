@@ -441,8 +441,8 @@ export function compareAlphabetically (a, b, data) {
   return order
 }
 
-export async function SetDataToLocalStorage(proxyAuthToken = null){
-  if(!proxyAuthToken){
+export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
+  if (!proxyAuthToken) {
     proxyAuthToken = getProxyToken()
   }
   try {
@@ -456,17 +456,14 @@ export async function SetDataToLocalStorage(proxyAuthToken = null){
     }
 
     let data = await response.json();
-    console.log("data ",data)
     const userInfo = data.data[0]
     window.localStorage.setItem(tokenKey, proxyAuthToken)
     window.localStorage.setItem(profileKey, JSON.stringify(userInfo))
     window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
     window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
-    httpService.setProxyToken(proxyAuthToken)
-    return true;
-  } catch (error) {
-    console.log("error ", error)
-    return false
+  } catch (e) {
+    console.log("error ", e)
+    throw new Error(e?.message ? e.message : 'Something went wrong')
   }
 }
 export default {

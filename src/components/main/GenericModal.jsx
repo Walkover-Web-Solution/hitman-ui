@@ -21,50 +21,12 @@ function GenericModal({
   showModal,
   title,
   showInput,
-  isInvalidName,
   handleAddOrg,
   setName,
   orgName
 }) 
 {
   const [createOrg, setcreateOrg] = useState(false)
-  // const [name, setName] = useState("");
-  // const inputReff = useRef(null);
-  // useEffect(() => {
-  //   if (showModal) {
-  //     inputReff.current.focus();
-  //   }
-  // }, [showModal]);
-  // useEffect(() => {
-  //   const proxyAuthToken = query.get('proxy_auth_token')
-  //   // const userRefId = query.get('user_ref_id')
-  //   const orgId = query.post('company_ref_id') || getCurrentOrg()?.id || ''
-  //   const reloadRoute = `/orgs/${orgId}/dashboard`
-  //   if (proxyAuthToken) {
-  //     /* eslint-disable-next-line */
-  //     fetch(proxyUrl + '/create', {
-  //       headers: {
-  //         proxy_auth_token: proxyAuthToken
-  //       }
-  //     })
-  //       .then(response => response.json())
-  //       .then(data => {
-  //         const userInfo = data.data[0]
-  //         window.localStorage.setItem(tokenKey, proxyAuthToken)
-  //         window.localStorage.setItem(profileKey, JSON.stringify(userInfo))
-  //         window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
-  //         window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
-  //         http.setProxyToken(getProxyToken())
-  //         setOrgList(userInfo.c_companies)
-  //       })
-  //       .catch(error => console.error('Error:', error))
-  //   }
-  //   else if(getOrgList()){
-  //     history.push(reloadRoute)
-  //   }else{
-  //     history.push('/login')
-  //   }
-  // }, [])
   const handleClick = ()=>{
     console.log("handleClick ");
     setcreateOrg(!createOrg);
@@ -131,7 +93,6 @@ function GenericModal({
 
               <InputGroup className="mb-3">
         <Form.Control
-          // ref={inputReff}
           placeholder="Enter Organization Name"
           type="text"
           aria-label="Organization name"
