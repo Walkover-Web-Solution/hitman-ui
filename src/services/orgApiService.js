@@ -22,6 +22,7 @@ export function updateOrgDataByOrgId(OrgId) {
 
 export async function switchOrg(orgId) {
   try {
+    http.setProxyToken(getProxyToken())
     await http.post(proxyUrl + '/switchCompany', { company_ref_id: orgId })
     updateOrgDataByOrgId(orgId)
     redirectToDashboard(orgId)
