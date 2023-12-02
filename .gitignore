@@ -68,3 +68,6 @@ build/
 hitman-bundles/
 embedded.provisionprofile
 .vscode
+
+*.swp
+*.swo

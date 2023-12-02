@@ -17,7 +17,7 @@ class LoginV2 extends Component {
     this.configuration = {
       referenceId: this.proxyGooglereferenceMapping[process.env.REACT_APP_ENV] || '',
       success: (data) => {
-        console.log('success response', data);
+        console.log('response', data);
       },
       failure: (error) => {
         console.log('failure reason', error);
