@@ -29,23 +29,23 @@ function addProxyToken(){
   return endpointInstance;
 }
 
-function getMethod() {
+function getMethod(url) {
   endpointInstance = addProxyToken();
-  return endpointInstance.get
+  return endpointInstance.get(url)
 }
-function postMethod() {
+function postMethod(url, data = null) {
   endpointInstance = addProxyToken();
-  return endpointInstance.post
-}
-
-function putMethod() {
-  endpointInstance = addProxyToken();
-  return endpointInstance.put
+  return endpointInstance.post(url, data)
 }
 
-function deleteMethod() {
+function putMethod(url, data) {
   endpointInstance = addProxyToken();
-  return endpointInstance.delete
+  return endpointInstance.put(url, data)
+}
+
+function deleteMethod(url) {
+  endpointInstance = addProxyToken();
+  return endpointInstance.delete(url)
 }
 
 function requestMethod(){
@@ -53,17 +53,17 @@ function requestMethod(){
   return endpointInstance.request
 }
 
-function patchMethod(){
+function patchMethod(url, data){
   endpointInstance = addProxyToken();
-  return endpointInstance.patch
+  return endpointInstance.patch(url, data)
 }
 
 export default {
-  get: getMethod(),
-  post: postMethod(),
-  put: putMethod(),
-  delete: deleteMethod(),
+  get: getMethod,
+  post: postMethod,
+  put: putMethod,
+  delete: deleteMethod,
   request: requestMethod(),
-  patch: patchMethod(),
+  patch: patchMethod,
   setProxyToken
 }
