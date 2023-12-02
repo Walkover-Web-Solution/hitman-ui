@@ -197,7 +197,8 @@ class DisplayEndpoint extends Component {
       requestKey: null,
       docOptions: false,
       sslMode: getCurrentUserSSLMode(),
-      showAskAiSlider: false
+      showAskAiSlider: false,
+      parseHeaders: ''
     }
 
     this.uri = React.createRef()
@@ -240,6 +241,13 @@ class DisplayEndpoint extends Component {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
+  }
+
+  handleInputValue = (value) => {
+    // Do something with the value
+    this.setState({ parseHeaders: value.header }) 
+    console.log(this.state.parseHeaders, "parse headerssssss");
+    console.log(value.header, "valueeeeeeeeee");
   }
 
   handleShortcuts = (event, data) => {
@@ -540,25 +548,38 @@ class DisplayEndpoint extends Component {
 
   handleChange = (e) => {
     const data = { ...this.state.data }
+    console.log(e.currentTarget.name,"nameee");
     console.log(data, "data in handle change");
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
     if (e.currentTarget.name === 'updatedUri') {
+      console.log("inside if condition", e.currentTarget.name);
       const keys = []
       const values = []
       const description = []
+      const headerKeys = []
+      const headerVlaues = []
+      const headerDescription = []
       let originalParams = this.state.originalParams
+      let originalHeaders = this.state.parseHeaders
+      console.log(originalParams, "original params");
+      console.log(originalHeaders, "original Headers");
       const updatedUri = e.currentTarget.value.split('?')[1]
+      console.log(e.currentTarget.value, "current value");
       let path = new URI(e.currentTarget.value)
       path = path.pathname()
+      console.log(path, "pathhhhhhhhhhh");
       const pathVariableKeys = path.split('/')
+      console.log(pathVariableKeys,"path variable keys");
       const pathVariableKeysObject = {}
       for (let i = 0; i < pathVariableKeys.length; i++) {
         pathVariableKeysObject[pathVariableKeys[i]] = false
       }
       this.setPathVariables(pathVariableKeys, pathVariableKeysObject)
       const result = URI.parseQuery(updatedUri)
+      console.log(result, "result actual");
       for (let i = 0; i < Object.keys(result).length; i++) {
+        console.log(Object.keys(result),"result of objectss");
         keys.push(Object.keys(result)[i])
       }
       for (let i = 0; i < keys.length; i++) {
@@ -578,7 +599,33 @@ class DisplayEndpoint extends Component {
         }
       }
       originalParams = this.makeOriginalParams(keys, values, description)
+      console.log(originalParams, "params in make original params");
+
+      for (let i = 0; i < Object.keys(originalHeaders).length; i++) {
+        headerKeys.push(Object.keys(originalHeaders)[i]);
+      }
+
+      for (let i = 0; i < headerKeys.length; i++) {
+        console.log(headerKeys, "keyss in for loop headers");
+        headerVlaues.push(originalHeaders[headerKeys[i]])
+        if (originalHeaders[i]) {
+          for (let k = 0; k < originalHeaders.length; k++) {
+            if (
+              originalHeaders[k].key === headerKeys[i] &&
+              originalHeaders[k].checked === 'true'
+            ) {
+              description[i] = originalHeaders[k].description
+              break
+            } else if (k === originalHeaders.length - 1) {
+              description[i] = ''
+            }
+          }
+        }
+      }
+      originalHeaders = this.makeOriginalHeaders(headerKeys, headerVlaues, headerDescription)
+      console.log(originalHeaders, "Headers in make original Headers");
       this.setState({ originalParams })
+      this.setState({ originalHeaders })
     }
     this.setState({ data })
   };
@@ -652,6 +699,7 @@ class DisplayEndpoint extends Component {
       }
     }
     for (let i = 0; i < keys.length; i++) {
+      console.log("inside for loop");
       originalParams.push({
         checked: 'true',
         key: keys[i],
@@ -666,6 +714,36 @@ class DisplayEndpoint extends Component {
       description: ''
     })
     return originalParams
+  }
+
+  makeOriginalHeaders(keys, values, description) {
+    const originalHeaders = []
+    for (let i = 0; i < this.state.originalHeaders.length; i++) {
+      if (this.state.originalHeaders[i].checked === 'false') {
+        originalHeaders.push({
+          checked: this.state.originalHeaders[i].checked,
+          key: this.state.originalHeaders[i].key,
+          value: this.state.originalHeaders[i].value,
+          description: this.state.originalHeaders[i].description
+        })
+      }
+    }
+    for (let i = 0; i < keys.length; i++) {
+      console.log("inside for loop");
+      originalHeaders.push({
+        checked: 'true',
+        key: keys[i],
+        value: values[i],
+        description: description[i]
+      })
+    }
+    originalHeaders.push({
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    })
+    return originalHeaders
   }
 
   replaceVariables(str, customEnv) {
@@ -1469,6 +1547,7 @@ class DisplayEndpoint extends Component {
   }
 
   async prepareHarObject() {
+    console.log("inside prepareHarObject");
     try {
       const BASE_URL = this.state.host.BASE_URL
       const uri = new URI(this.state.data.updatedUri)
@@ -1517,6 +1596,7 @@ class DisplayEndpoint extends Component {
   }
 
   setBaseUrl(BASE_URL, selectedHost) {
+    console.log(BASE_URL);
     this.setState({ host: { BASE_URL, selectedHost } })
   }
 
@@ -2074,16 +2154,25 @@ class DisplayEndpoint extends Component {
   }
 
   setHostUri(host, uri, selectedHost) {
-    console.log(host, "setHostUri in display endpoint");
+    console.log(host,"host",uri, "uri", selectedHost, "setHostUri in display endpoint");
     if (uri !== this.state.data.updatedUri){
       console.log("inside if set host uri");
       this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+      // this.setBaseUrl(host, selectedHost)
     }
     else{
+      console.log("inside else condition");
+      console.log(this.state.data.updatedUri,"inside else condition ....");
       this.handleChange({ currentTarget: { name: 'updatedUri', value: host } })
+      // this.setBaseUrl(host, selectedHost)
     }
-    this.setBaseUrl(host, selectedHost)
+    this.setBaseUrl(host,selectedHost)
   }
+
+  // setHostUri(host, uri, selectedHost) {
+  //   if (uri !== this.state.data.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+  //   this.setBaseUrl(host, selectedHost)
+  // }
 
   alterEndpointName(name) {
     if (name) {
@@ -2401,7 +2490,7 @@ class DisplayEndpoint extends Component {
         dataArray={this.state.originalHeaders}
         props_from_parent={this.propsFromChild.bind(this)}
         original_data={[...this.state.headers]}
-        // open_modal={this.props.open_modal}
+        open_modal={this.props.open_modal}
         currentView={this.state.currentView}
       />
     )
@@ -2482,6 +2571,7 @@ class DisplayEndpoint extends Component {
             </div>
             <HostContainer
               {...this.props}
+              handleInputValue={this.handleInputValue}
               groupId={this.state.groupId}
               versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
               environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
@@ -2538,6 +2628,7 @@ class DisplayEndpoint extends Component {
         <div className='d-flex w-100 dashboard-url'>
           <HostContainer
             {...this.props}
+            handleInputValue={this.handleInputValue}
             groupId={this.state.groupId}
             endpointId={this.state.endpoint.id}
             customHost={this.state.endpoint.BASE_URL || ''}

@@ -99,10 +99,14 @@ class HostContainer extends Component {
 
   handleInputHostChange(e) {
     const inputValue = e.target.value;
+    console.log(inputValue, "input value");
     // Check if the input is a cURL command
     if (inputValue.trim().startsWith('curl ')) {
       try {
         const parsedData = parseCurl(inputValue);
+        console.log(parsedData, "parsed data");
+        this.props.handleInputValue(parsedData);
+
         this.setState({
           datalistHost: parsedData.url,
         },
