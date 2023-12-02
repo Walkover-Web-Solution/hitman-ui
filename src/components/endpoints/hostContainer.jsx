@@ -6,6 +6,8 @@ import parseCurl from 'parse-curl';
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { updateTab } from '../tabs/redux/tabsActions';
+import { toJsonString } from 'curlconverter';
+import { unescape } from 'lodash';
 
 const hostContainerEnum = {
   hosts: {
@@ -98,12 +100,16 @@ class HostContainer extends Component {
   }
 
   handleInputHostChange(e) {
-    const inputValue = e.target.value;
-    console.log(inputValue, "input value");
-    // Check if the input is a cURL command
-    if (inputValue.trim().startsWith('curl ')) {
+    let inputValue = e.target.value;
+    console.log("typeof ", typeof inputValue)
+    if (inputValue.trim().startsWith('curl')) {
       try {
-        const parsedData = parseCurl(inputValue);
+ console.log(inputValue.trim())
+// const x1 = decodeURIComponent(inputValue)
+let v = `curl --location 'https://routes.msg91.com/api/c/createCompany' \ --header 'access_token_expire: "M3RsT0k0dlQ5bWZObDdkbVRtQjFscndnc0xvU1p0VHQ1NjFvNHNiZHMwYkFRZytyaE1Fa0ZQOHpMZFdCcnp4dXl5Tms0YThMamd0dlltOVJ5Q2IweEFicDdFMS9RZ0JhTGZiREpiNXQ2eU4xY21UVmJLRm94Zm02NHpkYng5TGk="' \ --header 'proxy_auth_token: WHIzelRGZlJxVnZCd0x1WEtDY1hudUV1RWdlNktKbTZETmRqOTJab0lzZExSRzkvUE1sZ3ZqUE1uWWgwdUhmdHdEbHFNVERDbDVPZXRvNE1qTlA4SzBJY2tzdFoxdWRrWnEvSkNJRklWV1N1eC84MnhncUhNREV3OTRjdWRZNGZiWVpwcW1XY2tHTUxnZmZRZFRUbWZvWWxtOHdrV2h5dUN0VnRXZlpBbmpJPQ==' \ --header 'Content-Type: application/json' \ --data '{     "company": {         "name": "rashhhiii",         "timezone": "+5:30"     } }'`
+console.log(typeof v)
+v = unescape(inputValue.trim())
+        const parsedData = parseCurl(v.trim());
         console.log(parsedData, "parsed data");
         this.props.handleInputValue(parsedData);
 
