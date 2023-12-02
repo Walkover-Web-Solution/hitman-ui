@@ -2154,26 +2154,26 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  setHostUri(host, uri, selectedHost) {
-    console.log(host,"host",uri, "uri", selectedHost, "setHostUri in display endpoint");
-    if (uri !== this.state.data.updatedUri){
-      console.log("inside if set host uri");
-      this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
-      // this.setBaseUrl(host, selectedHost)
-    }
-    else{
-      console.log("inside else condition");
-      console.log(this.state.data.updatedUri,"inside else condition ....");
-      this.handleChange({ currentTarget: { name: 'updatedUri', value: host } })
-      // this.setBaseUrl(host, selectedHost)
-    }
-    this.setBaseUrl(host,selectedHost)
-  }
-
   // setHostUri(host, uri, selectedHost) {
-  //   if (uri !== this.state.data.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
-  //   this.setBaseUrl(host, selectedHost)
+  //   console.log(host,"host",uri, "uri", selectedHost, "setHostUri in display endpoint");
+  //   if (uri !== this.state.data.updatedUri){
+  //     console.log("inside if set host uri");
+  //     this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+  //     // this.setBaseUrl(host, selectedHost)
+  //   }
+  //   else{
+  //     console.log("inside else condition");
+  //     console.log(this.state.data.updatedUri,"inside else condition ....");
+  //     this.handleChange({ currentTarget: { name: 'updatedUri', value: host } })
+  //     // this.setBaseUrl(host, selectedHost)
+  //   }
+  //   this.setBaseUrl(host,selectedHost)
   // }
+
+  setHostUri(host, uri, selectedHost) {
+    if (uri !== this.state.data.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+    this.setBaseUrl(host, selectedHost)
+  }
 
   alterEndpointName(name) {
     if (name) {
