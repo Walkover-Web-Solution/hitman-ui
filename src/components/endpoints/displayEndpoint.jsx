@@ -3114,8 +3114,9 @@ class DisplayEndpoint extends Component {
               }
             </div>
           </div>
-          
-          {this.state.showAskAiSlider &&
+
+          {this.isDashboardAndTestingView() && <div>
+            {this.state.showAskAiSlider &&
               <ChatbotsideBar
                 {...this.props}
                 onHide={() => this.closeChatBotModal()}
@@ -3125,6 +3126,7 @@ class DisplayEndpoint extends Component {
             <div className='ask-ai-btn' onClick={this.toggleChatbotModal} >
               <p>Ask AI</p>
             </div>
+          </div>}
         </div>
       )
       : null

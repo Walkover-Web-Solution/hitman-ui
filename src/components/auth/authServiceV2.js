@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useHistory } from 'react-router-dom'
 import http from '../../services/httpService'
-import Cookies from 'universal-cookie'
+import { Modal } from 'react-bootstrap'
+import { switchOrg } from '../../services/orgApiService'
+import { getDataFromProxyAndSetDataToLocalStorage } from '../common/utility'
 
 const tokenKey = 'token'
 const profileKey = 'profile'
@@ -81,52 +83,67 @@ function getOrgList() {
 }
 
 function getProxyToken() {
-  const cookies = new Cookies()
-  const token = cookies.get('token')
-  return token || window.localStorage.getItem(tokenKey)
+  const tokenKey = 'token'
+  return  window.localStorage.getItem(tokenKey) || ''
 }
 
 
 function AuthServiceV2() {
   const query = useQuery()
   const history = useHistory()
-
-  useEffect(() => {
-    const proxyAuthToken = query.get('proxy_auth_token')
-    // const userRefId = query.get('user_ref_id')
-    const orgId = query.get('company_ref_id') || getCurrentOrg()?.id || ''
-    const reloadRoute = `/orgs/${orgId}/dashboard`
-    if (proxyAuthToken) {
-      /* eslint-disable-next-line */
-      fetch(proxyUrl + '/getDetails', {
-        headers: {
-          proxy_auth_token: proxyAuthToken
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          const userInfo = data.data[0]
-          window.localStorage.setItem(tokenKey, proxyAuthToken)
-          window.localStorage.setItem(profileKey, JSON.stringify(userInfo))
-          window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
-          window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
-          http.setProxyToken(getProxyToken())
-          const reloadOrgRoute = `/select-org`
-          history.push({
-            pathname: reloadOrgRoute
-          })
-        })
-        .catch(error => console.error('Error:', error))
-    }else if(getOrgList()){
-      history.push(reloadRoute)
-    }else{
-      history.push('/login')
+  const [show, setShow] = useState(true);
+  const [orgList, setOrgList] = useState(null);
+ 
+  useEffect(async () => {
+    try {
+      const proxyAuthToken = query.get('proxy_auth_token')
+      const orgId = query.get('company_ref_id') || getCurrentOrg()?.id || ''
+      if (proxyAuthToken) {
+        await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken)
+        setOrgList(getOrgList())
+      }
+      else if (getOrgList()) {
+        history.push(`/orgs/${orgId}/dashboard`)
+      } else {
+        history.push('/logout')
+      }
+    } catch (err) {
+      history.push('/logout')
     }
-  }, [history, query])
+  }, [])
 
+  const orgNames = () => {
+   return ( <Modal show={show}>
+    <Modal.Header>
+      <Modal.Title>Select Organization</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      {/* dropdown removed */}
+      <div className="org-listing-container ">
+        <div className="org-listing-column d-flex flex-column">
+          {orgList?.map((org, key) => (
+            <button
+              className='btn btn-primary mb-2 p-2'
+              key={key}
+              onClick={() => switchOrg(org.id)}
+            >
+              {org.name}
+            </button>
+          ))}
+        </div>
+      </div>
+    </Modal.Body>
+    <Modal.Footer>
+    </Modal.Footer>
+  </Modal>
+   )
+  }
+  
   return (
-    <div>You are being redirected to Hitman</div>
-  )
+    <>
+     {orgList?.length ? orgNames():null}
+    </>
+  );
 }
 
 export default AuthServiceV2

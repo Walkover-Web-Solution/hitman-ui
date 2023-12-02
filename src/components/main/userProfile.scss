@@ -1,0 +1,22 @@
+.org-listing-container {
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 200px; 
+    overflow-y: auto; 
+    justify-content: center;
+    // width: fit-content;
+    .org-listing-column {
+        flex: 0 0 46%;
+          button{
+            width: 170px !important;
+            &.active{
+            background-color: gray !important;
+            color: white !important;
+            font-weight: bold !important;
+            border: 1px solid gray !important;
+            }
+        }
+      }
+}
+  

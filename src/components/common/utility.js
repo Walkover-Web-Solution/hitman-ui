@@ -1,10 +1,11 @@
 import Joi from 'joi-browser'
+import { getProxyToken } from '../auth/authServiceV2'
+import httpService from '../../services/httpService'
 // import history from '../../history'
 import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
-
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const DEFAULT_URL = 'https://'
@@ -15,6 +16,13 @@ const statesEnum = {
   APPROVED_STATE: 'Approved',
   DRAFT_STATE: 'Draft'
 }
+
+
+const tokenKey = 'token'
+const profileKey = 'profile'
+const orgKey = 'organisation'
+const orgListKey = 'organisationList'
+const proxyUrl = process.env.REACT_APP_PROXY_URL
 
 export function getDomainName (hostname) {
   const firstTLDs = 'ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|be|bf|bg|bh|bi|bj|bm|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|cl|cm|cn|co|cr|cu|cv|cw|cx|cz|de|dj|dk|dm|do|dz|ec|ee|eg|es|et|eu|fi|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jo|jp|kg|ki|km|kn|kp|kr|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|na|nc|ne|nf|ng|nl|no|nr|nu|nz|om|pa|pe|pf|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|yt'.split('|')
@@ -433,6 +441,31 @@ export function compareAlphabetically (a, b, data) {
   return order
 }
 
+export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
+  if (!proxyAuthToken) {
+    proxyAuthToken = getProxyToken()
+  }
+  try {
+    let response = await fetch(proxyUrl + '/getDetails', {
+      headers: {
+        proxy_auth_token: proxyAuthToken
+      }
+    })
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    let data = await response.json();
+    const userInfo = data.data[0]
+    window.localStorage.setItem(tokenKey, proxyAuthToken)
+    window.localStorage.setItem(profileKey, JSON.stringify(userInfo))
+    window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
+    window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
+  } catch (e) {
+    console.log("error ", e)
+    throw new Error(e?.message ? e.message : 'Something went wrong')
+  }
+}
 export default {
   isDashboardRoute,
   isElectron,
