@@ -9,7 +9,7 @@ import ApiDocReview from '../apiDocReview/apiDocReview'
 import { isAdmin } from '../auth/authServiceV2'
 import { approvePage, pendingPage, rejectPage } from '../publicEndpoint/redux/publicEndpointsActions'
 import ConfirmationModal from '../common/confirmationModal'
-import { ApproveRejectEntity, PublishEntityButton } from '../common/docViewOperations'
+import { ApproveRejectEntity, PublishEntityButton,UnPublishEntityButton } from '../common/docViewOperations'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
 
@@ -138,6 +138,50 @@ class DisplayPage extends Component {
     )
   }
 
+  handleRemovePublicPage (pageId) {
+    const page = { ...this.props.pages[pageId] }
+    page.isPublished = false
+    page.publishedEndpoint = {}
+    page.state = 'Draft'
+    page.position = null
+    this.props.update_page(page)
+    const items = this.getInitialItems(this.state.selectedVersionId,
+      this.state.groups,
+      this.state.endpoints,
+      this.state.pages
+    )
+    this.setState({
+      selectedGroupId: items?.selectedGroupId || null,
+      selectedEndpointId: items?.selectedEndpointId || null,
+      selectedPageId: items?.selectedPageId || null
+    })
+  }
+
+  renderPublishPage(pageId) {
+    const pages = { ...this.props.pages }
+    const approvedOrRejected = isStateApproved(pageId, pages) 
+    const isPublicPage = pages[pageId].isPublished
+    return (
+      <div>
+      {isPublicPage && approvedOrRejected ? 
+        <UnPublishEntityButton
+            {...this.props}
+            entity={pages}
+            entityId={pageId}
+            entityName='Page'
+            onUnpublish={() => this.handleRemovePublicPage(pageId)}
+        /> :
+        <PublishEntityButton
+        entity={pages}
+        entityId={pageId}
+        open_publish_confirmation_modal={() => this.setState({ openPublishConfirmationModal: true })}
+        entityName='Page'
+      />
+    }
+     </div> 
+    )
+  }
+
   renderPublishPageOperations () {
     if (isDashboardRoute(this.props)) {
       const pages = { ...this.props.pages }
@@ -182,17 +226,6 @@ class DisplayPage extends Component {
           {method(pageId, pages)}
         </span>
       </OverlayTrigger>
-    )
-  }
-
-  renderPublishPage (pageId, pages) {
-    return (
-      <PublishEntityButton
-        entity={pages}
-        entityId={pageId}
-        open_publish_confirmation_modal={() => this.setState({ openPublishConfirmationModal: true })}
-        entityName='Page'
-      />
     )
   }
 

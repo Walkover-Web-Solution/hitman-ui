@@ -59,7 +59,7 @@ import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
 import PlusIcon from '../../assets/icons/plus.svg'
 import ApiDocReview from '../apiDocReview/apiDocReview'
-import { ApproveRejectEntity, PublishEntityButton } from '../common/docViewOperations'
+import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import ChatbotsideBar from './chatbotsideBar'
 import Footer from '../main/Footer'
@@ -137,6 +137,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class DisplayEndpoint extends Component {
   constructor(props) {
     super(props)
+    this.handleRemovePublicEndpoint = this.handleRemovePublicEndpoint.bind(this);
     this.myRef = React.createRef()
     this.sideRef = React.createRef()
     this.scrollDiv = React.createRef()
@@ -1486,6 +1487,7 @@ class DisplayEndpoint extends Component {
         postData: body.type === 'none' ? null : await this.makePostData(body),
         queryString: this.makeParams(originalParams)
       }
+      console.log(harObject,"harobject")
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
@@ -2591,14 +2593,50 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  handleRemovePublicEndpoint (endpointId) {
+    console.log()
+    const endpoints = {...this.props.endpoints}
+    this.props.update_endpoint({
+      ...endpoints[endpointId],
+      groupId: this.state.selectedGroupId,
+      isPublished: false,
+      publishedEndpoint: {},
+      state: 'Draft',
+      position: null
+    })
+    const items = this.getInitialItems(this.state.selectedVersionId,
+      this.state.groups,
+      this.state.endpoints,
+      this.state.pages,
+      endpointId
+    )
+    this.setState({
+      selectedGroupId: items?.selectedGroupId || null,
+      selectedEndpointId: items?.selectedEndpointId || null,
+      selectedPageId: items?.selectedPageId || null
+    })
+  }
+
   renderPublishEndpoint(endpointId, endpoints) {
+    const approvedOrRejected = isStateApproved(endpointId, endpoints) 
+    const isPublicEndpoint = endpoints[endpointId].isPublished
     return (
-      <PublishEntityButton
+      <div>
+      {isPublicEndpoint && approvedOrRejected ? 
+        <UnPublishEntityButton
+        entity={endpoints}
+        entityId={endpointId}
+        onUnpublish={() => this.handleRemovePublicEndpoint (endpointId)}
+        entityName='Endpoint'
+      />:
+        <PublishEntityButton
         entity={endpoints}
         entityId={endpointId}
         open_publish_confirmation_modal={() => this.setState({ openPublishConfirmationModal: true })}
         entityName='Endpoint'
       />
+    }
+     </div> 
     )
   }
 
