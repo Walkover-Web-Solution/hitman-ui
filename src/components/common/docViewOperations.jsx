@@ -37,7 +37,29 @@ export function PublishEntityButton (props) {
     </button>
   )
 }
+
+export function UnPublishEntityButton (props) {
+  const { publishLoader, entityName,onUnpublish  } = props
+  const handleClick = () => {
+    if (onUnpublish) {
+        onUnpublish();
+    } else {
+        props.open_publish_confirmation_modal();
+    }
+} 
+  return (
+    <button
+      className={'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange ' : 'btn btn-secondary outline ml-2 orange')}
+      type='button'
+      onClick={handleClick}
+    >
+      UnPublish {entityName}
+    </button>
+  )
+}
+
 export default {
   ApproveRejectEntity,
-  PublishEntityButton
+  PublishEntityButton,
+  UnPublishEntityButton
 }
