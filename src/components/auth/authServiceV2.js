@@ -22,13 +22,21 @@ function isAdmin () {
 
 function logout(redirectUrl = '/login') {
   // const isDesktop = process.env.REACT_APP_IS_DESKTOP
-  http.delete(proxyUrl + '/logout').then(() => {
+  try {
+    if (getProxyToken()) {
+      http.delete(proxyUrl + '/logout').then(() => {
+        logoutRedirection(redirectUrl)
+      }).catch(() => {
+        logoutRedirection(redirectUrl)
+      })
+    } else {
+      logoutRedirection('/login')
+    }
     localStorageCleanUp()
-    logoutRedirection(redirectUrl)
-  }).catch(() => {
+  } catch (e) {
     localStorageCleanUp()
-    logoutRedirection(redirectUrl)
-  })
+    logoutRedirection('/login')
+  }
 }
 
 function localStorageCleanUp() {
