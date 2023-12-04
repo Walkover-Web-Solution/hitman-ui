@@ -59,7 +59,7 @@ import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
 import PlusIcon from '../../assets/icons/plus.svg'
 import ApiDocReview from '../apiDocReview/apiDocReview'
-import { ApproveRejectEntity, PublishEntityButton } from '../common/docViewOperations'
+import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import ChatbotsideBar from './chatbotsideBar'
 import Footer from '../main/Footer'
@@ -137,6 +137,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class DisplayEndpoint extends Component {
   constructor(props) {
     super(props)
+    this.handleRemovePublicEndpoint = this.handleRemovePublicEndpoint.bind(this);
     this.myRef = React.createRef()
     this.sideRef = React.createRef()
     this.scrollDiv = React.createRef()
@@ -1486,6 +1487,7 @@ class DisplayEndpoint extends Component {
         postData: body.type === 'none' ? null : await this.makePostData(body),
         queryString: this.makeParams(originalParams)
       }
+      console.log(harObject,"harobject")
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
@@ -2567,6 +2569,7 @@ class DisplayEndpoint extends Component {
             {isPublicEndpoint ? 'Save Draft' : 'Save'}
           </button>
           {(isAdmin() && !isStatePending(endpointId, endpoints)) && <span> {approvedOrRejected ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId) : this.renderPublishEndpoint(endpointId, endpoints)}</span>}
+          {(isAdmin() && isPublicEndpoint) && <span> {isStateApproved(endpointId, endpoints) ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId) : this.renderUnPublishEndpoint(endpointId, endpoints)}</span>}
           {!isAdmin() &&
             <button
               className={'ml-2 ' + (isStateDraft(endpointId, endpoints) ? 'btn btn-outline orange' : 'btn text-link')}
@@ -2591,9 +2594,32 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  handleRemovePublicEndpoint (endpointId) {
+    const endpoints = {...this.props.endpoints}
+    this.props.update_endpoint({
+      ...endpoints[endpointId],
+      groupId: this.state.selectedGroupId,
+      isPublished: false,
+      publishedEndpoint: {},
+      state: 'Draft',
+      position: null
+    })
+  }
+
+  renderUnPublishEndpoint(endpointId, endpoints) {
+    return (
+        <UnPublishEntityButton
+        entity={endpoints}
+        entityId={endpointId}
+        onUnpublish={() => this.handleRemovePublicEndpoint (endpointId)}
+        entityName='Endpoint'
+      />
+    )
+  }
+
   renderPublishEndpoint(endpointId, endpoints) {
     return (
-      <PublishEntityButton
+        <PublishEntityButton
         entity={endpoints}
         entityId={endpointId}
         open_publish_confirmation_modal={() => this.setState({ openPublishConfirmationModal: true })}
@@ -3115,18 +3141,17 @@ class DisplayEndpoint extends Component {
             </div>
           </div>
           {this.isDashboardAndTestingView() && <div>
-                
-                <div className='ask-ai-btn' onClick={this.toggleChatbotModal} >
-                 <Chaticon/>
-                </div>
-    
-                {this.state.showAskAiSlider &&
-                  <ChatbotsideBar
-                    {...this.props}
-                    onHide={() => this.closeChatBotModal()}
-                  />}
+            {this.state.showAskAiSlider &&
+              <ChatbotsideBar
+                {...this.props}
+                onHide={() => this.closeChatBotModal()}
+              />}
+          <div>
+          </div>   
+            <div className='ask-ai-btn' onClick={this.toggleChatbotModal} >
+              <p>Ask AI</p>
+            </div>
           </div>}
-
         </div>
       )
       : null
