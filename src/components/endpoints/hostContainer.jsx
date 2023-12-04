@@ -6,8 +6,6 @@ import parseCurl from 'parse-curl';
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { updateTab } from '../tabs/redux/tabsActions';
-import { toJsonString } from 'curlconverter';
-import { unescape } from 'lodash';
 
 const hostContainerEnum = {
   hosts: {
@@ -34,7 +32,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 class HostContainer extends Component {
   constructor(props) {
-    // console.log(props,props.tab.state,"props")
     super(props)
     this.state = {
       datalistHost: '',
@@ -44,7 +41,8 @@ class HostContainer extends Component {
       versionHost: '',
       selectedHost: '',
       groupId: null,
-      versionId: null
+      versionId: null,
+      isCurl:false,
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -101,23 +99,24 @@ class HostContainer extends Component {
 
   handleInputHostChange(e) {
     let inputValue = e.target.value;
-    console.log("typeof ", typeof inputValue)
     if (inputValue.trim().startsWith('curl')) {
+      //maintaining curl state for showing input value
+      this.setState({ isCurl: true })
       try {
- console.log(inputValue.trim())
-// const x1 = decodeURIComponent(inputValue)
-let v = `curl --location 'https://routes.msg91.com/api/c/createCompany' \ --header 'access_token_expire: "M3RsT0k0dlQ5bWZObDdkbVRtQjFscndnc0xvU1p0VHQ1NjFvNHNiZHMwYkFRZytyaE1Fa0ZQOHpMZFdCcnp4dXl5Tms0YThMamd0dlltOVJ5Q2IweEFicDdFMS9RZ0JhTGZiREpiNXQ2eU4xY21UVmJLRm94Zm02NHpkYng5TGk="' \ --header 'proxy_auth_token: WHIzelRGZlJxVnZCd0x1WEtDY1hudUV1RWdlNktKbTZETmRqOTJab0lzZExSRzkvUE1sZ3ZqUE1uWWgwdUhmdHdEbHFNVERDbDVPZXRvNE1qTlA4SzBJY2tzdFoxdWRrWnEvSkNJRklWV1N1eC84MnhncUhNREV3OTRjdWRZNGZiWVpwcW1XY2tHTUxnZmZRZFRUbWZvWWxtOHdrV2h5dUN0VnRXZlpBbmpJPQ==' \ --header 'Content-Type: application/json' \ --data '{     "company": {         "name": "rashhhiii",         "timezone": "+5:30"     } }'`
-console.log(typeof v)
-v = unescape(inputValue.trim())
-        const parsedData = parseCurl(v.trim());
-        console.log(parsedData, "parsed data");
-        this.props.handleInputValue(parsedData);
+        const parsedData = parseCurl(`curl --location 'https://control.msg91.com/api/v5/otp/verify?otp=7944&mobile=918269611659' \
+        --header 'accept: application/json' \
+        --header 'authkey: 398487AQ85qSLS86482f1feP1' \
+        --header 'Cookie: PHPSESSID=3ud7qej425v3b3doeua35rssl5; PHPSESSID=3ud7qej425v3b3doeua35rssl5' \
+        --header 'Authorization: Basic cHJpbmNlOmt1bWFy'`);
+
+        // passing method and headers value to displayEndpoint file
+        this.props.handleHeadersValue(parsedData);
+        this.props.handleMethodChange(parsedData);
 
         this.setState({
           datalistHost: parsedData.url,
         },
         () => {
-          // this.props.tab.state
           this.props.props_from_parent('HostAndUri', 'Headers', 'Params')
           this.setParentHostAndUri()
         });
@@ -126,6 +125,8 @@ v = unescape(inputValue.trim())
         console.error('Error parsing cURL command:', error)
       }
     } else {
+      //if not curl then setstate to false
+      this.setState({ isCurl: false })
       const data = this.splitUrlHelper(e)
       this.setState({
         ...data,
@@ -212,7 +213,8 @@ v = unescape(inputValue.trim())
         <input
           id='host-container-input'
           className='form-control'
-          value={this.state.datalistHost + this.state.datalistUri}
+          // changing value for curl and normal api call
+          value={this.state.isCurl ? this.state.datalistHost : this.state.datalistHost + this.state.datalistUri}
           name={`${this.props.endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={((e) => this.handleInputHostChange(e))}
