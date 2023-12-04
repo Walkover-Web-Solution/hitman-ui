@@ -275,19 +275,33 @@ export function isDashboardAndTestingView (props, view) {
   return isDashboardRoute(props) && (view === 'testing' || !isSavedEndpoint(props))
 }
 
-export function isStateApproved (id, entity) {
+function checkVariableExist(id, entity) {
+  if (entity && entity[id] && entity[id].state !== undefined && entity[id].state !== null)
+    return true;
+  return false;
+}
+
+export function isStateApproved(id, entity) {
+  if (!checkVariableExist(id, entity))
+    return false;
   return entity[id].state === statesEnum.APPROVED_STATE
 }
 
 export function isStatePending (id, entity) {
+  if (!checkVariableExist(id, entity))
+    return false;
   return entity[id].state === statesEnum.PENDING_STATE
 }
 
 export function isStateDraft (id, entity) {
+  if (!checkVariableExist(id, entity))
+    return false;
   return entity[id].state === statesEnum.DRAFT_STATE
 }
 
 export function isStateReject (id, entity) {
+  if (!checkVariableExist(id, entity))
+    return false;
   return entity[id].state === statesEnum.REJECT_STATE
 }
 
