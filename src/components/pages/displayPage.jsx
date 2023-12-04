@@ -159,6 +159,17 @@ class DisplayPage extends Component {
     )
   }
 
+  renderPublishPage(pageId,pages) {
+    return(
+        <PublishEntityButton
+        entity={pages}
+        entityId={pageId}
+        open_publish_confirmation_modal={() => this.setState({ openPublishConfirmationModal: true })}
+        entityName='Page'
+      />
+    )
+  }
+
   renderPublishPageOperations () {
     if (isDashboardRoute(this.props)) {
       const pages = { ...this.props.pages }
