@@ -2569,6 +2569,7 @@ class DisplayEndpoint extends Component {
             {isPublicEndpoint ? 'Save Draft' : 'Save'}
           </button>
           {(isAdmin() && !isStatePending(endpointId, endpoints)) && <span> {approvedOrRejected ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId) : this.renderPublishEndpoint(endpointId, endpoints)}</span>}
+          {(isAdmin() && isPublicEndpoint) && <span> {isStateApproved(endpointId, endpoints) ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId) : this.renderUnPublishEndpoint(endpointId, endpoints)}</span>}
           {!isAdmin() &&
             <button
               className={'ml-2 ' + (isStateDraft(endpointId, endpoints) ? 'btn btn-outline orange' : 'btn text-link')}
@@ -2594,7 +2595,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleRemovePublicEndpoint (endpointId) {
-    console.log()
     const endpoints = {...this.props.endpoints}
     this.props.update_endpoint({
       ...endpoints[endpointId],
@@ -2604,39 +2604,27 @@ class DisplayEndpoint extends Component {
       state: 'Draft',
       position: null
     })
-    const items = this.getInitialItems(this.state.selectedVersionId,
-      this.state.groups,
-      this.state.endpoints,
-      this.state.pages,
-      endpointId
-    )
-    this.setState({
-      selectedGroupId: items?.selectedGroupId || null,
-      selectedEndpointId: items?.selectedEndpointId || null,
-      selectedPageId: items?.selectedPageId || null
-    })
   }
 
-  renderPublishEndpoint(endpointId, endpoints) {
-    const approvedOrRejected = isStateApproved(endpointId, endpoints) 
-    const isPublicEndpoint = endpoints[endpointId].isPublished
+  renderUnPublishEndpoint(endpointId, endpoints) {
     return (
-      <div>
-      {isPublicEndpoint && approvedOrRejected ? 
         <UnPublishEntityButton
         entity={endpoints}
         entityId={endpointId}
         onUnpublish={() => this.handleRemovePublicEndpoint (endpointId)}
         entityName='Endpoint'
-      />:
+      />
+    )
+  }
+
+  renderPublishEndpoint(endpointId, endpoints) {
+    return (
         <PublishEntityButton
         entity={endpoints}
         entityId={endpointId}
         open_publish_confirmation_modal={() => this.setState({ openPublishConfirmationModal: true })}
         entityName='Endpoint'
       />
-    }
-     </div> 
     )
   }
 
