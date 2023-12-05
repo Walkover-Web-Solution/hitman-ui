@@ -1756,6 +1756,7 @@ class DisplayEndpoint extends Component {
   setHeaders(value, title, authorizationFlag = undefined) {
     const originalHeaders = this.state.originalHeaders
     console.log(originalHeaders, "original headers in set headersss");
+    console.log(title, "title in set headers");
     const updatedHeaders = []
     const emptyHeader = {
       checked: 'notApplicable',
@@ -1766,23 +1767,28 @@ class DisplayEndpoint extends Component {
     for (let i = 0; i < originalHeaders.length; i++) {
       console.log("inside for loop for setHeaders: " + originalHeaders[i].key);
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
-        console.log("inside if condition",title.split('.')[0]);
+        console.log("inside if condition for set headersss",originalHeaders[i].key === title.split('.')[0]);
         continue
-      } else if (originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
-        console.log("inside else if");
+      } else if (originalHeaders[i].key === '' || originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
+        console.log("inside else if",originalHeaders[i].key.toLowerCase() === title.split('.')[0]);
         originalHeaders[i].value = this.identifyBodyType(value)
         this.setState({ originalHeaders })
         return
       } else {
+        console.log("inside else condition for set headers");
+        console.log(updatedHeaders, originalHeaders[i], "updated headers and originial headers for set headers");
         updatedHeaders.push(originalHeaders[i])
+
       }
     }
     if (value === 'none') {
+      console.log("value none check", value);
       updatedHeaders.push(emptyHeader)
       this.setState({ originalHeaders: updatedHeaders })
       return
     }
     if (value !== 'noAuth' && !authorizationFlag) {
+      console.log("inside no auth if ", value);
       updatedHeaders.push({
         checked: 'true',
         key: title === 'content-type' ? 'content-type' : 'Authorization',
