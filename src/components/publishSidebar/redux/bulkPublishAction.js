@@ -24,10 +24,14 @@ export const bulkPublish = (collectionId, data) => {
 
 export const  bulkPublishSelectedData = (data) =>  {
   return (dispatch) => {
+    const originalEndpoints = JSON.parse(JSON.stringify(store.getState().endpoints))
+    const originalPages = JSON.parse(JSON.stringify(store.getState().pages))
     bulkPublishApiService
       .bulkPublishSelectedData( data)
       .then((response) => {
-         toast.success('Successfully Published')
+          const modifiedData = updatePagesAndEndPointsData(originalEndpoints, originalPages, data.requestData)
+          dispatch(onBulkPublishUpdation(modifiedData))
+          toast.success('Successfully Published')
       })
       .catch((error) => {
         const e = error.response ? error.response.data : error
@@ -61,6 +65,23 @@ function updateEndpointsData (originalEndpoints, originalPages, data) {
 
   pages.forEach((pageId) => {
     updatedPages[pageId].state = 'Pending'
+  })
+
+  return { updatedEndpoints, updatedPages }
+}
+
+function updatePagesAndEndPointsData (originalEndpoints, originalPages, data) {
+  const updatedEndpoints = JSON.parse(JSON.stringify(originalEndpoints))
+  const updatedPages = JSON.parse(JSON.stringify(originalPages))
+  const { pages, endpoints } = data
+  endpoints.forEach((endpointId) => {
+    updatedEndpoints[endpointId].isPublished = true;
+    updatedEndpoints[endpointId].state = 'Approved'
+  })
+
+  pages.forEach((pageId) => {
+    updatedPages[pageId].isPublished = true
+    updatedPages[pageId].state = 'Approved'
   })
 
   return { updatedEndpoints, updatedPages }
