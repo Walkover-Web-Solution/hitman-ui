@@ -51,31 +51,31 @@ function addProxyToken(){
   return instance;
 }
 
-function getMethod(url, config = null) {
+async function getMethod(url, config = null) {
   instance = addProxyToken();
-  return instance.get(url, config)
+  return await instance.get(url, config)
 }
-function postMethod(url, data = null, config = null) {
+async function postMethod(url, data = null, config = null) {
   instance = addProxyToken();
-  return  instance.post(url, data, config)
-}
-
-function putMethod(url, data = null, config = null) {
-  instance = addProxyToken();
-  return instance.put(url, data, config)
+  return await  instance.post(url, data, config)
 }
 
-function deleteMethod(url, config = null) {
+async function putMethod(url, data = null, config = null) {
   instance = addProxyToken();
-  return instance.delete(url, config)
+  return await instance.put(url, data, config)
 }
 
-function requestMethod(){
+async function deleteMethod(url, config = null) {
+  instance = addProxyToken();
+  return await instance.delete(url, config)
+}
+
+async function requestMethod(){
   instance = addProxyToken();
   return instance.request
 }
 
-function patchMethod(url, data = null, config = null){
+async function patchMethod(url, data = null, config = null){
   instance = addProxyToken();
   return instance.patch(url, data, config)
 }
