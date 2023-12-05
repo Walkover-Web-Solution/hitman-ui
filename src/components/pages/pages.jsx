@@ -287,6 +287,43 @@ class Pages extends Component {
     )
   }
 
+  onDragStart(pageId){
+    console.log(pageId,"pageId")
+    this.draggedItem = pageId
+    // this.props.set_endpoint_drag(pageId)
+  };
+
+  onDragOver(e){
+    e.preventDefault()
+  };
+
+  onDrop =(e, destinationEndpointId)=> {
+    e.preventDefault()
+
+    if (!this.draggedItem) {
+      //
+    } else {
+      if (this.draggedItem === destinationEndpointId) {
+        this.draggedItem = null
+        return
+      }
+      const endpoints = this.extractEndpoints()
+      const positionWiseEndpoints = this.makePositionWiseEndpoints({
+        ...endpoints
+      })
+      const index = positionWiseEndpoints.findIndex(
+        (pageId) => pageId === destinationEndpointId
+      )
+      const endpointIds = positionWiseEndpoints.filter(
+        (item) => item !== this.draggedItem
+      )
+      endpointIds.splice(index, 0, this.draggedItem)
+
+      this.props.update_endpoints_order(endpointIds, this.props.group_id)
+      this.draggedItem = null
+    }
+  }
+
   displayUserPages (pageId) {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'page' ? this.props.location.pathname.split('/')[5] : null
 
@@ -303,12 +340,12 @@ class Pages extends Component {
         key={this.props.index}
       >
         <button
-          // draggable
-          // onDragStart={(e) => this.props.onDragStart(e, pageId)}
-          // onDragOver={(e) => {
-          //   e.preventDefault()
-          // }}
-          // onDrop={(e) => this.props.onDrop(e, pageId)}
+          draggable
+          onDragStart={(e) => this.onDragStart(e, pageId)}
+          onDragOver={(e) => {
+            e.preventDefault()
+          }}
+          onDrop={(e) => this.onDrop(e, pageId)}
           tabIndex={-1}
           className={[focused && sidebarFocused ? 'focused' : ''].join(' ')}
           data-toggle='collapse'

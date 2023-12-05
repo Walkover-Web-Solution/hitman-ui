@@ -239,21 +239,21 @@ class Endpoints extends Component {
     }
   }
 
-  onDragStart = (e, eId) => {
+  onDragStart(eId){
     this.draggedItem = eId
     this.props.set_endpoint_drag(eId)
   };
 
-  onDragOver = (e, eId) => {
+  onDragOver(e){
     e.preventDefault()
   };
 
-  onDrop (e, destinationEndpointId) {
+  onDrop =(e, destinationEndpointId)=> {
     e.preventDefault()
 
-    if (!this.draggedItem) {
-      //
-    } else {
+    // if (!this.draggedItem) {
+    //   //
+    // } else {
       if (this.draggedItem === destinationEndpointId) {
         this.draggedItem = null
         return
@@ -272,7 +272,7 @@ class Endpoints extends Component {
 
       this.props.update_endpoints_order(endpointIds, this.props.group_id)
       this.draggedItem = null
-    }
+    // }
   }
 
   extractEndpoints () {
@@ -288,7 +288,7 @@ class Endpoints extends Component {
         ]
       }
     }
-
+console.log(endpoints,"endpppoints======extract")
     return endpoints
   }
 
@@ -299,6 +299,7 @@ class Endpoints extends Component {
         endpoints[Object.keys(endpoints)[i]].position
       ] = Object.keys(endpoints)[i]
     }
+    console.log(positionWiseEndpoints,"returning the make positionwise endpt=====")
     return positionWiseEndpoints
   }
 
@@ -472,6 +473,10 @@ class Endpoints extends Component {
         <div className={this.props.endpoints[endpointId].state} />
         <div className='sidebar-toggle d-flex justify-content-between'>
           <button
+           draggable
+           onDragStart={() => this.onDragStart(endpointId)}
+           onDragOver={this.onDragOver}
+           onDrop={(e) => this.onDrop(e, endpointId)}
             tabIndex={-1}
             className={[focused && sidebarFocused ? 'focused' : '']}
             onClick={() => {
