@@ -16,6 +16,7 @@ import { isSavedEndpoint } from '../common/utility'
 import _ from 'lodash'
 
 class BodyContainer extends Component {
+  _isMounted = false; // Add a flag to track if the component is mounted
   constructor (props) {
     super(props)
     this.state = {
@@ -55,6 +56,14 @@ class BodyContainer extends Component {
     this.loadEnvVarsSuggestions()
   }
 
+  componentDidMount() {
+    this._isMounted = true; // Set the flag to true when the component is mounted
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false; // Set the flag to false when the component is unmounted
+  }
+
   componentDidUpdate (prevProps, prevState) {
     if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
   }
@@ -76,9 +85,11 @@ class BodyContainer extends Component {
     if (bodyType === 'raw' && bodyDescription) {
       this.flag = true
       this.showRawBodyType = true
-      this.setState({
-        selectedBodyType: this.state.selectedRawBodyType
-      })
+      if (this._isMounted) {
+        this.setState((prevState) => ({
+          selectedBodyType: prevState.selectedRawBodyType
+        }));
+      }
       this.props.set_body(
         this.state.selectedRawBodyType,
         this.state.data[bodyType]
@@ -95,18 +106,22 @@ class BodyContainer extends Component {
       }
       if (bodyType === 'raw') {
         this.showRawBodyType = true
+        if (this._isMounted) {
         this.setState({
           selectedBodyType: this.state.selectedRawBodyType
         })
+      }
         this.props.set_body(
           this.state.selectedRawBodyType,
           this.state.data[bodyType]
         )
       } else {
         this.showRawBodyType = false
+        if (this._isMounted) {
         this.setState({
           selectedBodyType: bodyType
         })
+      }
       }
     }
   }
@@ -120,14 +135,18 @@ class BodyContainer extends Component {
         meta: 'Environment variable'
       })
     })
+    if (this._isMounted) {
     this.setState({ suggestions })
+    }
   }
 
   handleChange (value) {
     this.alteredBody = true
     const data = { ...this.state.data }
     data.raw = value
+    if (this._isMounted) {
     this.setState({ data })
+    }
     this.props.set_body(this.state.selectedRawBodyType, value)
   }
 
@@ -136,12 +155,16 @@ class BodyContainer extends Component {
     switch (title) {
       case 'formData':
         data.data = dataArray
+        if (this._isMounted) {
         this.setState({ data })
+        }
         this.props.set_body(this.state.selectedBodyType, dataArray)
         break
       case 'x-www-form-urlencoded':
         data.urlencoded = dataArray
+        if (this._isMounted) {
         this.setState({ data })
+        }
         this.props.set_body(this.state.selectedBodyType, dataArray)
         break
       default:
@@ -163,10 +186,12 @@ class BodyContainer extends Component {
   }
 
   setRawBodyType (rawBodyType) {
+    if (this._isMounted) {
     this.setState({
       selectedRawBodyType: rawBodyType,
       selectedBodyType: rawBodyType
     })
+  }
     this.props.set_body(rawBodyType, this.state.data.raw)
   }
 
@@ -273,11 +298,13 @@ class BodyContainer extends Component {
         document.getElementById(
           selectedBodyType + '-' + this.props.endpoint_id
         ).checked = true
+        if (this._isMounted) {
         this.setState({
           selectedRawBodyType: this.rawBodyType ? this.rawBodyType : 'TEXT',
           selectedBodyType,
           data
         })
+      }
       }
     }
 
@@ -307,6 +334,7 @@ class BodyContainer extends Component {
                 id={`raw-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('raw')}
                 className='custom-radio-input'
+                onChange={()=>{}}
                 checked={this.matchCurrentBodyType(`${this.state.selectedRawBodyType}-${this.props.endpoint_id}`)}
               />
               <span>raw</span>
@@ -319,6 +347,7 @@ class BodyContainer extends Component {
                 id={`multipart/form-data-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('multipart/form-data')}
                 className='custom-radio-input'
+                onChange={()=>{}}
                 checked={this.matchCurrentBodyType(`multipart/form-data-${this.props.endpoint_id}`)}
               />
               <span>form-data</span>
@@ -333,6 +362,7 @@ class BodyContainer extends Component {
                 onClick={() =>
                   this.handleSelectBodyType('application/x-www-form-urlencoded')}
                 className='custom-radio-input'
+                onChange={()=>{}}
                 checked={this.matchCurrentBodyType(`application/x-www-form-urlencoded-${this.props.endpoint_id}`)}
               />
               <span>x-www-form-urlencoded</span>

@@ -28,6 +28,7 @@ const mapStateToProps = (state) => {
   }
 }
 class DisplayPage extends Component {
+  _isMounted = false;
   constructor (props) {
     super(props)
     this.state = {
@@ -44,11 +45,14 @@ class DisplayPage extends Component {
     if (page) {
       const { id, versionId, groupId, name, contents } = page
       data = { id, versionId, groupId, name, contents }
+      if (this._isMounted) {
       this.setState({ data, page })
+      }
     }
   }
 
   async componentDidMount () {
+    this._isMounted = true;
     this.extractPageName()
     if (!this.props.location.page) {
       let pageId = ''
@@ -59,7 +63,9 @@ class DisplayPage extends Component {
       })
     }
     if (this.props.pageId) {
+      if (this._isMounted) {
       this.setState({ data: this.props.pages[this.props.pageId] })
+      }
     }
   }
 
@@ -68,7 +74,9 @@ class DisplayPage extends Component {
       this.extractPageName()
     }
     if (this.props.pageId && prevProps !== this.props) {
+      if (this._isMounted) {
       this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
+      }
     }
     if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
       this.fetchPage(this.props.match.params.pageId)
@@ -158,13 +166,16 @@ class DisplayPage extends Component {
         /> 
     )
   }
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
 
   renderPublishPage(pageId,pages) {
     return(
         <PublishEntityButton
         entity={pages}
         entityId={pageId}
-        open_publish_confirmation_modal={() => this.setState({ openPublishConfirmationModal: true })}
+        open_publish_confirmation_modal={() => {if (this._isMounted) this.setState({ openPublishConfirmationModal: true })}}
         entityName='Page'
       />
     )
@@ -174,7 +185,7 @@ class DisplayPage extends Component {
     if (isDashboardRoute(this.props)) {
       const pages = { ...this.props.pages }
       const pageId = this.props.match.params?.pageId
-      const isPublicPage = pages[pageId].isPublished
+      const isPublicPage = pages[pageId]?.isPublished
       const approvedOrRejected = isStateApproved(pageId, pages) || isStateReject(pageId, pages)
       return (
         <div>
@@ -227,7 +238,7 @@ class DisplayPage extends Component {
     return this.state.openPublishConfirmationModal &&
       <ConfirmationModal
         show={this.state.openPublishConfirmationModal}
-        onHide={() => this.setState({ openPublishConfirmationModal: false })}
+        onHide={() => {if (this._isMounted) this.setState({ openPublishConfirmationModal: false })}}
         proceed_button_callback={this.handleApprovePageRequest.bind(this)}
         title={msgText.publishPage}
         submitButton='Publish'
@@ -235,10 +246,26 @@ class DisplayPage extends Component {
       />
   }
 
-  async handleApprovePageRequest () {
-    const pageId = this.props.match.params?.pageId
-    this.setState({ publishLoader: true })
-    this.props.approve_page(this.props.pages[pageId], () => { this.setState({ publishLoader: false }) })
+  async handleApprovePageRequest() {
+    const pageId = this.props.match.params?.pageId;
+
+    // Check if the component is still mounted before updating the state
+    if (this._isMounted) {
+      this.setState({ publishLoader: true });
+    }
+
+    try {
+      await this.props.approve_page(this.props.pages[pageId], () => {
+        // Callback after approval
+        // Check if the component is still mounted before updating the state
+        if (this._isMounted) {
+          this.setState({ publishLoader: false });
+        }
+      });
+    } catch (error) {
+      // Handle errors if necessary
+      console.error('Error during approve_page:', error);
+    }
   }
 
   render () {
