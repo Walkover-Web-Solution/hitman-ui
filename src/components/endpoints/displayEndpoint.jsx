@@ -199,7 +199,9 @@ class DisplayEndpoint extends Component {
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
       parseHeaders: '',
-      method: ''
+      method: '', 
+      decodedKey:'',
+      decodedValue:''
     }
 
     this.uri = React.createRef()
@@ -576,10 +578,13 @@ class DisplayEndpoint extends Component {
       const headerKeys = []
       const headerValues = []
       const headerDescription = []
+
       let originalParams = this.state.originalParams
       let originalHeaders = this.state.parseHeaders
+
       console.log(originalParams, "original params");
       console.log(originalHeaders, "original Headers");
+
       const updatedUri = e.currentTarget.value.split('?')[1]
       console.log(e.currentTarget.value, "current value");
       let path = new URI(e.currentTarget.value)
@@ -617,6 +622,7 @@ class DisplayEndpoint extends Component {
       originalParams = this.makeOriginalParams(keys, values, description)
       console.log(originalParams, "params in make original params");
 
+      // for headers
       for (let i = 0; i < Object.keys(originalHeaders).length; i++) {
         headerKeys.push(Object.keys(originalHeaders)[i]);
       }
@@ -624,6 +630,20 @@ class DisplayEndpoint extends Component {
       for (let i = 0; i < headerKeys.length; i++) {
         console.log(headerKeys, "keyss in for loop headers");
         headerValues.push(originalHeaders[headerKeys[i]])
+        if (headerKeys[i] === 'Authorization' ) {
+          if( headerValues[i].startsWith('Basic ')){
+            let splitHeaderValue = headerValues[i].split(' ')[1]; 
+            console.log(headerValues[i], "header valuesssss");
+            console.log("inside if for headers && headerValues[i].startsWith('Basic ')", splitHeaderValue[1]);
+            splitHeaderValue = atob(splitHeaderValue);
+            splitHeaderValue = splitHeaderValue.split(":")
+            this.setState({decodedKey : splitHeaderValue[0]})
+            this.setState({decodedValue: splitHeaderValue[1]})
+            console.log(splitHeaderValue[1], "splitHeaderValue[1]");
+            // console.log(decodedKey, "key," ,decodedValue, "decodedValue");
+            console.log(splitHeaderValue, "after decode");
+          }
+        }
         if (originalHeaders[i]) {
           for (let k = 0; k < originalHeaders.length; k++) {
             if (
@@ -1735,6 +1755,7 @@ class DisplayEndpoint extends Component {
 
   setHeaders(value, title, authorizationFlag = undefined) {
     const originalHeaders = this.state.originalHeaders
+    console.log(originalHeaders, "original headers in set headersss");
     const updatedHeaders = []
     const emptyHeader = {
       checked: 'notApplicable',
@@ -1743,9 +1764,12 @@ class DisplayEndpoint extends Component {
       description: ''
     }
     for (let i = 0; i < originalHeaders.length; i++) {
+      console.log("inside for loop for setHeaders: " + originalHeaders[i].key);
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
+        console.log("inside if condition",title.split('.')[0]);
         continue
       } else if (originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
+        console.log("inside else if");
         originalHeaders[i].value = this.identifyBodyType(value)
         this.setState({ originalHeaders })
         return
@@ -3145,6 +3169,8 @@ class DisplayEndpoint extends Component {
                                     <Authorization
                                       {...this.props}
                                       title='Authorization'
+                                      decodedKey = {this.state.decodedKey}
+                                      decodedValue = {this.state.decodedValue}
                                       groupId={this.state.groupId}
                                       set_authorization_headers={this.setHeaders.bind(this)}
                                       set_authoriztaion_params={this.setParams.bind(this)}
