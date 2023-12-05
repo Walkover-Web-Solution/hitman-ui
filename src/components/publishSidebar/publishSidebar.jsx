@@ -8,6 +8,7 @@ import { ReactComponent as DownChevron } from '../../assets/icons/downChevron.sv
 import { ReactComponent as GlobeIcon } from '../../assets/icons/globe-icon.svg'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 import { redirectToDashboard, getOrgId} from '../../components/common/utility'
+import { toast } from 'react-toastify'
 
 const mapStateToProps = (state) => {
   return {
@@ -108,8 +109,9 @@ export class PublishSidebar extends Component {
  
     Object.entries(checkedData).forEach((data) => {
       const item = data[0].split('.')
-      if (item[1] === 'endpoint' && data[1]) {
-        let endpointId = item[2];
+      var pageId = item[2];
+      var endpointId = item[2];
+      if (item[1] === 'endpoint' && data[1] && !this.state.endpoints[endpointId]?.isPublished) {
         requestData.endpoints.push(endpointId)
 
         // multiple endpoints publish make data
@@ -124,8 +126,7 @@ export class PublishSidebar extends Component {
         dataToPublish.endpointsData[groupId].endpointsId.push(endpointId)
       }
 
-      if ((item[1] === 'groupPage' || item[1] === 'versionPage') && data[1]) {
-        let pageId = item[2]
+      if ((item[1] === 'groupPage' || item[1] === 'versionPage') && data[1] && this.state.pages[pageId]?.isPublished) {
         requestData.pages.push(pageId)
 
         // multiple pages publish make data
@@ -151,9 +152,15 @@ export class PublishSidebar extends Component {
     })
    let isAdmin = true;
     if (isAdmin) {
+      if(!requestData?.endpoints?.length && !requestData?.pages?.length){
+        toast.success('Already Published')
+      }else{
       this.props.bulk_publishSelectedData({ publishData: dataToPublish, requestData :requestData });
       const isPublic = this.props.collections[collId]?.isPublic || false
-      isPublic ? redirectToDashboard(getOrgId()) : this.props.openPublishSettings()
+      if (!isPublic) {
+        this.props.openPublishSettings();
+        }
+      }
     }
     else if (requestData.pages.length || requestData.endpoints.length) {
       this.props.bulk_publish(this.state.selectedCollectionId, requestData)
@@ -332,10 +339,15 @@ export class PublishSidebar extends Component {
     }
   }
 
-  renderCheckBox (itemtype, itemId) {
+  renderCheckBox(itemtype, itemId) {
+    let isCheckboxDisabled = false;
+    if ((itemtype == 'endpoint' && this.state.endpoints[itemId]?.isPublished) ||
+      ((itemtype == 'groupPage' || itemtype == 'versionPage') && this.state.pages[itemId]?.isPublished)) {
+      isCheckboxDisabled = true;
+    }
     return (
       <div>
-        <input name={`${itemtype}.${itemId}`} type='checkbox' checked={this.state.checkedData[`check.${itemtype}.${itemId}`]} onChange={(e) => this.handleSidebarCheckbox(e, itemtype, itemId)} />
+        <input disabled={isCheckboxDisabled} name={`${itemtype}.${itemId}`} type='checkbox' checked={isCheckboxDisabled ? true : this.state.checkedData[`check.${itemtype}.${itemId}`]} onChange={(e) => this.handleSidebarCheckbox(e, itemtype, itemId)} />
       </div>
     )
   }
