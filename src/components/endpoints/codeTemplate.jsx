@@ -8,7 +8,6 @@ import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ReactComponent as CopyIcon } from '../../assets/icons/copyIcon.svg'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
-import CloseIcon from '../../assets/icons/x.svg'
 const HTTPSnippet = require('httpsnippet')
 
 class CodeTemplate extends Component {

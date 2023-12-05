@@ -1,6 +1,5 @@
 import Joi from 'joi-browser'
 import { getProxyToken } from '../auth/authServiceV2'
-import httpService from '../../services/httpService'
 // import history from '../../history'
 import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
