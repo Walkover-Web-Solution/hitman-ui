@@ -21,7 +21,6 @@ import CustomTabs from '../tabs/tabs'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './main.scss'
 import { getCurrentUser } from '../auth/authServiceV2'
-import LoginSignupModal from './loginSignupModal'
 import Environments from '../environments/environments'
 const mapStateToProps = (state) => {
   return {
@@ -179,25 +178,10 @@ class ContentPanel extends Component {
     this.setState({ savePageFlag: flag, selectedTabId: tabId })
   }
 
-  openLoginSignupModal () {
-    this.setState({ showLoginSignupModal: true })
-  }
-
-  closeLoginSignupModal () {
-    this.setState({ showLoginSignupModal: false })
-  }
-
   render () {
     const { activeTabId } = this.props.tabs
     return (
       <main role='main' className='main'>
-        {this.state.showLoginSignupModal && (
-          <LoginSignupModal
-            show
-            onHide={() => this.closeLoginSignupModal()}
-            title='Save Endpoint'
-          />
-        )}
         {/* <main role="main" className="main ml-sm-auto custom-main"> */}
         <Tab.Container
           id='left-tabs-example'
@@ -232,16 +216,7 @@ class ContentPanel extends Component {
                       </Nav.Item>
                     </Nav>
                     <div className='custom-btn-group d-flex'>
-                      <button
-                        className='btn'
-                        onClick={() => { this.openLoginSignupModal() }}
-                      >
-
-                        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                          <path d='M9 3V15' stroke='#808080' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          <path d='M3 9H15' stroke='#808080' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                        </svg>
-                      </button>
+                   
                       <div className='btn-divider' />
                       {getCurrentUser() &&
                         <Dropdown>

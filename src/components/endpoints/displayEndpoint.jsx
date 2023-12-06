@@ -37,7 +37,6 @@ import { addHistory } from '../history/redux/historyAction'
 import collectionsApiService from '../collections/collectionsApiService'
 import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
-import LoginSignupModal from '../main/loginSignupModal'
 import PublicSampleResponse from './publicSampleResponse'
 import bodyDescriptionService from './bodyDescriptionService'
 import { moveToNextStep } from '../../services/widgetService'
@@ -584,6 +583,7 @@ class DisplayEndpoint extends Component {
   };
 
   setUnsavedTabDataInIDB() {
+    // return true;
     if (this.props.tab.id === this.props.tabs.activeTabId) {
       clearTimeout(this.saveTimeOut)
       this.saveTimeOut = setTimeout(() => {
@@ -1110,11 +1110,6 @@ class DisplayEndpoint extends Component {
 
   handleSave = async (groupId, endpointObject) => {
     const { endpointName, endpointDescription } = endpointObject || {}
-    if (!getCurrentUser()) {
-      this.setState({
-        showLoginSignupModal: true
-      })
-    }
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal()
     } else {
@@ -1851,12 +1846,6 @@ class DisplayEndpoint extends Component {
     const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
     sampleResponseFlagArray[index] = false
     this.setState({ sampleResponseFlagArray })
-  }
-
-  closeLoginSignupModal() {
-    this.setState({
-      showLoginSignupModal: false
-    })
   }
 
   handleCancel() {
@@ -2789,13 +2778,6 @@ class DisplayEndpoint extends Component {
                 {this.renderDefaultViewConfirmationModal()}
                 {this.renderPublishConfirmationModal()}
                 {this.renderWarningModal()}
-                {this.state.showLoginSignupModal && (
-                  <LoginSignupModal
-                    show
-                    onHide={() => this.closeLoginSignupModal()}
-                    title='Save Endpoint'
-                  />
-                )}
                 {
                   getCurrentUser()
                     ? (

@@ -8,7 +8,6 @@ import SwitchRight from "../../assets/icons/switchRight.svg";
 // import RightArrow from '../../assets/icons/right-arrow.svg'
 import Power from "../../assets/icons/power.svg";
 import File from "../../assets/icons/file.svg";
-import { products } from "../common/constants";
 import HostedApiIcon from "../../assets/icons/hostedApiIcon.svg";
 import { getCurrentUser } from "../auth/authServiceV2";
 import GenericModal from "./GenericModal";
@@ -266,18 +265,6 @@ export class UserProfileV2 extends React.Component {
     return collections?.length || 0;
   }
 
-  openAccountAndSettings() {
-    const { productName, history, organizationId, location } = this.props;
-    if (productName !== products.EBL) {
-      this.openOptions("/manage/users");
-    } else {
-      history.push({
-        pathname: `/orgs/${organizationId}/manage`,
-        search: location.search,
-      });
-    }
-  }
-
   renderBilling() {
     return (
       <div
@@ -294,17 +281,10 @@ export class UserProfileV2 extends React.Component {
 
   openOptions(path) {
     const { match, handleOpenLink } = this.props;
-    const viasocketUrl = process.env.REACT_APP_VIASOCKET_URL;
-    const currProductUrl =
-      process.env.REACT_APP_UI_BASE_URL || process.env.REACT_APP_UI_URL;
+    const techdocUrl = process.env.REACT_APP_HITMAN_WEBSITE_URL;
     const { orgId } = match.params;
     if (orgId) {
-      let url = `${viasocketUrl}/orgs/${orgId}${path}?product=hitman`;
-      if (path === "/products") {
-        url += "";
-      } else {
-        url += `&redirect_uri=${currProductUrl}`;
-      }
+      let url = `${techdocUrl}/orgs/${orgId}${path}`;
       if (!handleOpenLink) {
         window.open(url, "_blank");
       } else {
