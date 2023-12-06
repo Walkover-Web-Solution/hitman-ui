@@ -55,7 +55,8 @@ export class PublishSidebar extends Component {
       versions: {},
       groups: {},
       pages: {},
-      endpoints: {}
+      endpoints: {},
+      checkedData: {}
     }
   }
 
@@ -332,10 +333,11 @@ export class PublishSidebar extends Component {
     }
   }
 
-  renderCheckBox (itemtype, itemId) {
+  renderCheckBox(itemtype, itemId) {
+    const checked = this.state.checkedData[`check.${itemtype}.${itemId}`] || false;
     return (
       <div>
-        <input name={`${itemtype}.${itemId}`} type='checkbox' checked={this.state.checkedData[`check.${itemtype}.${itemId}`]} onChange={(e) => this.handleSidebarCheckbox(e, itemtype, itemId)} />
+        <input name={`${itemtype}.${itemId}`} type='checkbox' checked={checked} onChange={(e) => this.handleSidebarCheckbox(e, itemtype, itemId)} />
       </div>
     )
   }
