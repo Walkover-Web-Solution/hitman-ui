@@ -342,13 +342,14 @@ export class PublishSidebar extends Component {
 
   renderCheckBox(itemtype, itemId) {
     let isCheckboxDisabled = false;
+    const checkedData = this.state.checkedData[`check.${itemtype}.${itemId}`] || false;
     if ((itemtype == 'endpoint' && this.state.endpoints[itemId]?.isPublished) ||
       ((itemtype == 'groupPage' || itemtype == 'versionPage') && this.state.pages[itemId]?.isPublished)) {
       isCheckboxDisabled = true;
     }
     return (
       <div>
-        <input disabled={isCheckboxDisabled} name={`${itemtype}.${itemId}`} type='checkbox' checked={isCheckboxDisabled ? true : this.state.checkedData[`check.${itemtype}.${itemId}`]} onChange={(e) => this.handleSidebarCheckbox(e, itemtype, itemId)} />
+        <input disabled={isCheckboxDisabled} name={`${itemtype}.${itemId}`} type='checkbox' checked={isCheckboxDisabled ? true : checkedData} onChange={(e) => this.handleSidebarCheckbox(e, itemtype, itemId)} />
       </div>
     )
   }
