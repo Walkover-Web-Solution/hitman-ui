@@ -126,7 +126,7 @@ export class PublishSidebar extends Component {
         dataToPublish.endpointsData[groupId].endpointsId.push(endpointId)
       }
 
-      if ((item[1] === 'groupPage' || item[1] === 'versionPage') && data[1] && this.state.pages[pageId]?.isPublished) {
+      if ((item[1] === 'groupPage' || item[1] === 'versionPage') && data[1] && !this.state.pages[pageId]?.isPublished) {
         requestData.pages.push(pageId)
 
         // multiple pages publish make data
