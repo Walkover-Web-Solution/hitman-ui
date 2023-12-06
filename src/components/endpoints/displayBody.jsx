@@ -56,7 +56,11 @@ class BodyContainer extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
+  const environmentChanged = !_.isEqual(prevProps.environment, this.props.environment);
+
+    if (environmentChanged){ 
+      this.loadEnvVarsSuggestions();
+    }
   }
 
   handleSelectBodyType (bodyType, bodyDescription) {
