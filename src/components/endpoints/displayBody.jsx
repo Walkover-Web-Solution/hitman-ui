@@ -64,8 +64,48 @@ class BodyContainer extends Component {
     this._isMounted = false; // Set the flag to false when the component is unmounted
   }
 
-  componentDidUpdate (prevProps, prevState) {
-    if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
+  componentDidUpdate(prevProps,prevState) {
+    const environmentChanged = !_.isEqual(prevProps.environment, this.props.environment);
+
+    if (environmentChanged) {
+      this.loadEnvVarsSuggestions();
+    }
+    if (prevState.selectedBodyType !== this.state.selectedBodyType) {
+      let selectedBodyType = this.state.selectedBodyType;
+      let data = this.state.data;
+      if (
+        selectedBodyType === 'JSON' ||
+        selectedBodyType === 'HTML' ||
+        selectedBodyType === 'JavaScript' ||
+        selectedBodyType === 'XML' ||
+        selectedBodyType === 'TEXT'
+      ) {
+        this.showRawBodyType = true
+        this.rawBodyType = selectedBodyType
+        selectedBodyType = 'raw'
+      }
+      const type = selectedBodyType.split('-')
+      data[type[type.length - 1]] = this.props.body.value
+      if (
+        document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)
+      ) {
+        document.getElementById(
+          selectedBodyType + '-' + this.props.endpoint_id
+        ).checked = true;
+
+        this.renderData(data, selectedBodyType);
+      }
+    }
+  }
+
+  renderData(data, selectedBodyType) {
+    if (this._isMounted) {
+      this.setState({
+        selectedRawBodyType: this.rawBodyType ? this.rawBodyType : 'TEXT',
+        selectedBodyType,
+        data
+      });
+    }
   }
 
   handleSelectBodyType (bodyType, bodyDescription) {
@@ -274,38 +314,6 @@ class BodyContainer extends Component {
     if (this.props.location.pathname.split('/')[5] !== this.endpointId) {
       this.endpointId = this.props.location.pathname.split('/')[5]
       this.alteredBody = false
-    }
-
-    if (this.props.body !== '' && !this.state.selectedBodyType) {
-      let selectedBodyType = this.props.body.type
-      if (
-        selectedBodyType === 'JSON' ||
-        selectedBodyType === 'HTML' ||
-        selectedBodyType === 'JavaScript' ||
-        selectedBodyType === 'XML' ||
-        selectedBodyType === 'TEXT'
-      ) {
-        this.showRawBodyType = true
-        this.rawBodyType = selectedBodyType
-        selectedBodyType = 'raw'
-      }
-      const data = this.state.data
-      const type = selectedBodyType.split('-')
-      data[type[type.length - 1]] = this.props.body.value
-      if (
-        document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)
-      ) {
-        document.getElementById(
-          selectedBodyType + '-' + this.props.endpoint_id
-        ).checked = true
-        if (this._isMounted) {
-        this.setState({
-          selectedRawBodyType: this.rawBodyType ? this.rawBodyType : 'TEXT',
-          selectedBodyType,
-          data
-        })
-      }
-      }
     }
 
     return (
