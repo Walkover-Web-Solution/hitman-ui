@@ -307,6 +307,7 @@ class BodyContainer extends Component {
                 id={`raw-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('raw')}
                 className='custom-radio-input'
+                onChange={()=>{}}
                 checked={this.matchCurrentBodyType(`${this.state.selectedRawBodyType}-${this.props.endpoint_id}`)}
               />
               <span>raw</span>
@@ -319,6 +320,7 @@ class BodyContainer extends Component {
                 id={`multipart/form-data-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('multipart/form-data')}
                 className='custom-radio-input'
+                onChange={()=>{}}
                 checked={this.matchCurrentBodyType(`multipart/form-data-${this.props.endpoint_id}`)}
               />
               <span>form-data</span>
@@ -333,6 +335,7 @@ class BodyContainer extends Component {
                 onClick={() =>
                   this.handleSelectBodyType('application/x-www-form-urlencoded')}
                 className='custom-radio-input'
+                onChange={()=>{}}
                 checked={this.matchCurrentBodyType(`application/x-www-form-urlencoded-${this.props.endpoint_id}`)}
               />
               <span>x-www-form-urlencoded</span>
