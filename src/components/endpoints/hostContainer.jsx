@@ -103,11 +103,10 @@ class HostContainer extends Component {
       //maintaining curl state for showing input value
       this.setState({ isCurl: true })
       try {
-        const parsedData = parseCurl(`curl --location 'https://control.msg91.com/api/v5/otp/verify?otp=7944&mobile=918269611659' \
-        --header 'accept: application/json' \
-        --header 'authkey: 398487AQ85qSLS86482f1feP1' \
-        --header 'Cookie: PHPSESSID=3ud7qej425v3b3doeua35rssl5; PHPSESSID=3ud7qej425v3b3doeua35rssl5' \
-        --header 'Authorization: Basic cHJpbmNlOmt1bWFy'`);
+        const modifiedCurlCommand = inputValue.replace(/\n/g, ' ');
+        console.log();
+        const parsedData = parseCurl(modifiedCurlCommand);
+
 
         // passing method and headers value to displayEndpoint file
         this.props.handleHeadersValue(parsedData);
