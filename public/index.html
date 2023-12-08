@@ -68,7 +68,7 @@
  <!-- End of code for feedio widget -->
  <script>
       if('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
+        window.addEventListener('serviceWorker.js', () => {
           navigator.serviceWorker.register('./serviceWorker.js').then((reg) => {
             console.log('Worker Registered')
           }).catch((err) => {
