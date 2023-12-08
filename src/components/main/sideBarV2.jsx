@@ -38,7 +38,6 @@ import { openModal } from '../modals/redux/modalsActions'
 
 // import { sendAmplitudeData } from '../../services/amplitude'
 import { UserProfileV2 } from './userProfileV2'
-import InviteTeam from './inviteTeam/inviteTeam'
 
 const mapStateToProps = (state) => {
   return {
@@ -587,6 +586,7 @@ class SideBarV2 extends Component {
           value={this.state.data.filter}
           className='search-input'
           placeholder='Search'
+          autoComplete='off'
           type='text'
           name='filter'
           id='search'

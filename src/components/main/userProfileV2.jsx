@@ -1,11 +1,9 @@
 import React from "react";
-import { Dropdown, Modal, Button } from "react-bootstrap";
+import { Dropdown} from "react-bootstrap";
 import Avatar from "react-avatar";
-import { FixedSizeList as List } from "react-window";
 import lightArrow from "../../assets/icons/new-arrow.svg";
 import User from "../../assets/icons/user.svg";
 import SwitchRight from "../../assets/icons/switchRight.svg";
-// import RightArrow from '../../assets/icons/right-arrow.svg'
 import Power from "../../assets/icons/power.svg";
 import File from "../../assets/icons/file.svg";
 import { products } from "../common/constants";
@@ -16,7 +14,6 @@ import { switchOrg } from "../../services/orgApiService";
 import "./userProfile.scss";
 import { toast } from "react-toastify";
 import { createOrg } from "../../services/orgApiService";
-// import fetch from 'node-fetch'
 export class UserProfileV2 extends React.Component {
   state = {
     name: "",
@@ -106,7 +103,7 @@ export class UserProfileV2 extends React.Component {
         onClick={() => {}}
       >
         <div className="user-icon mr-2">
-          <img src={User} />
+          <img src={User} alt="user" />
         </div>
         <div className="profile-details-user-name">
           <span className="org-name">{name}</span>
@@ -135,7 +132,7 @@ export class UserProfileV2 extends React.Component {
           this.navigateToPublishDocs();
         }}
       >
-        <img src={HostedApiIcon} alt="" />
+        <img src={HostedApiIcon} alt="apiIcon" />
         <span className="label">Hosted API</span>
         {this.getNotificationCount() > 0 && (
           <div className="user-notification-badge">
@@ -286,7 +283,7 @@ export class UserProfileV2 extends React.Component {
           this.openOptions("/billing/subscription");
         }}
       >
-        <img src={File} />
+        <img src={File} alt="file-icon" />
         <span className="label">Billing</span>
       </div>
     );
@@ -325,7 +322,7 @@ export class UserProfileV2 extends React.Component {
           });
         }}
       >
-        <img src={Power} />
+        <img src={Power} alt="power-icon"/>
         <span className="label">Logout</span>
       </div>
     );
@@ -528,7 +525,7 @@ export class UserProfileV2 extends React.Component {
               {/* <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item> */}
               <div className="profile-menu">
                 <span className="p-2" onClick={this.toggleModal} type="button">
-                  <img src={SwitchRight} />
+                  <img src={SwitchRight} alt="icon"/>
                   Switch Orgs
                 </span>
                 <GenericModal
