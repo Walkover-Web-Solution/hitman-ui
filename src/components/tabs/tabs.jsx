@@ -18,7 +18,8 @@ class CustomTabs extends Component {
       showSavePromptFor: [],
       leftScroll: 0,
       clientScroll: this.navRef.current?.clientWidth,
-      windowScroll: this.navRef.current?.scrollWidth
+      windowScroll: this.navRef.current?.scrollWidth,
+      showHistoryContainer: false,
     }
   }
 
@@ -268,26 +269,15 @@ class CustomTabs extends Component {
     }
   }
 
-  // handleCloseTabs (tabIds) {
-  //   console.log("inside handle close all tabs ");
-  //   const showSavePromptFor = []
-  //   const tabsData = this.props.tabs.tabs
-  //   for (let i = 0; i < tabIds.length; i++) {
-  //     const tabData = tabsData[tabIds[i]]
-  //     if (tabData.isModified) {
-  //       console.log("inside handle close tabs if condition");
-  //       showSavePromptFor.push(tabIds[i])
-  //     } else {
-  //       console.log("inside else condition for handle close all tabs");
-  //       tabService.removeTab(tabIds[i], { ...this.props })
-  //     }
-  //   }
-  //   this.setState({ showSavePromptFor })
-  // }
-  handleCloseTabs(tabIds) {
-    const showSavePromptFor = [];
-    const tabsData = this.props.tabs.tabs;
-  
+  handleHistoryClick = () => {
+    this.setState((prevState) => ({
+      showHistoryContainer: !prevState.showHistoryContainer,
+    }));
+  };
+
+  handleCloseTabs (tabIds) {
+    const showSavePromptFor = []
+    const tabsData = this.props.tabs.tabs
     for (let i = 0; i < tabIds.length; i++) {
       const tabData = tabsData[tabIds[i]];
       
@@ -312,6 +302,29 @@ class CustomTabs extends Component {
   }
 
   render () {
+    const sideBar = {
+      position: 'fixed',
+      background: 'white',
+      top: '40px',
+      right: '0px',
+      height: '95vh',
+      width: '22%',
+      float: 'right'
+    }
+    const Heading = {
+      display: 'flex',
+      justifyContent: 'space-between', 
+      alignItems: 'center', 
+      padding: '10px', 
+      borderBottom: '0.5px solid #ddd', 
+    };
+    const closeButton = {
+      background: 'none',
+      border: 'none',
+      fontSize: '1.5em', 
+      cursor: 'pointer',
+      
+    }
     return (
 
       <>
@@ -405,21 +418,22 @@ class CustomTabs extends Component {
             <Nav.Item className='tab-buttons' id='options-tab-button'>
               <TabOptions history={this.props.history} match={this.props.match} handleCloseTabs={this.handleCloseTabs.bind(this)} />
             </Nav.Item>
-            <Nav.Item className='' id='history-tab-button'>
-              <Dropdown>
-                <Dropdown.Toggle
-                  bsPrefix='dropdown'
-                  variant='default'
-                  id='dropdown-basic'
-                >
-                  <HistoryIcon />
-                </Dropdown.Toggle>
-                <Dropdown.Menu className='history-drop-down'>
-                  <div className='history-heading'>History</div>
+                <Nav.Item className='' id='history-tab-button'>
+                  <button onClick={this.handleHistoryClick} className='px-2' style={{ outline: 'none' }}><HistoryIcon /> </button>
+                  </Nav.Item>
+                 {this.state.showHistoryContainer &&
+                  <div style={sideBar}>
+                  <div style={Heading} >History
+                  <button
+                    style={closeButton}
+                    onClick={this.handleHistoryClick}
+                    aria-label='Close'
+                  >
+                    <span aria-hidden='true'>×</span>
+                  </button>
+                  </div>
                   <History {...this.props} />
-                </Dropdown.Menu>
-              </Dropdown>
-            </Nav.Item>
+                  </div>}
           </div>
         </div>
 

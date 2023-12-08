@@ -1,1 +1,13 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
+.dropdown-menu-center {
+    height: calc(100vh - 112px);
+    overflow-y: auto;
+    ul{
+        list-style-type: none;
+        padding-left: 0;
+        li{
+            padding-left: 0;
+        }
+    }
+
+}

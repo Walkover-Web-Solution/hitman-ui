@@ -97,25 +97,106 @@ class History extends Component {
                     {this.renderPath(history.endpoint.id)}
                   </p>
                 </div>
-                <small className='text-muted'>
+                {/* <small className='text-muted'>
                   {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
-                </small>
+                </small> */}
               </div>
             </div>
           </Dropdown.Item>
         )
       )
     }
+  //updated with today and yesterday
+  renderHistoryList() {
+    const { historySnapshot } = this.state;
+    console.log(historySnapshot, "history snap shottt");
 
-    renderHistoryList () {
+    if (!historySnapshot || historySnapshot.length === 0) {
+      // Handle the case where historySnapshot is null or empty
       return (
-        <div className='mt-3'>
-          {this.state.historySnapshot && this.state.historySnapshot.length > 0
-            ? (this.state.historySnapshot.sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
-            : (<div className='empty-collections text-center'><div><EmptyHistory /></div><div className='content'><h5>  No History available.</h5><p /></div></div>)}
+        <div className="empty-collections text-center">
+          <div>
+            <EmptyHistory />
+          </div>
+          <div className="content">
+            <h5>No History available.</h5>
+          </div>
         </div>
-      )
+      );
     }
+
+    const groupedHistory = {};
+    console.log(groupedHistory, "grouped historyyy");
+
+    // Group history items by date
+    historySnapshot.forEach((history) => {
+      const today = moment().startOf('day');
+      const createdAtMoment = moment(history.createdAt);
+      let dateGroup;
+
+      if (today.isSame(createdAtMoment, 'day')) {
+        dateGroup = 'Today';
+      } else if (createdAtMoment.isSame(today.clone().subtract(1, 'days'), 'day')) {
+        dateGroup = 'Yesterday';
+      } else {
+        dateGroup = createdAtMoment.format('MMMM D, YYYY');
+      }
+
+      if (!groupedHistory[dateGroup]) {
+        groupedHistory[dateGroup] = [];
+      }
+
+      groupedHistory[dateGroup].push(history);
+      console.log(groupedHistory, "grouped history log");
+    });
+
+    // Group history items by date
+// Group history items by date 2nd for trying to show the today at top
+      // historySnapshot.forEach((history) => {
+      //   const today = moment().startOf('day');
+      //   console.log(today, "todayyyy");
+      //   const createdAtMoment = moment(history.createdAt);
+      //   console.log(createdAtMoment, "created atttt");
+      //   let dateGroup;
+
+      //   if (createdAtMoment.isSame(today, 'day')) {
+      //     dateGroup = 'Today';
+      //   } else if (createdAtMoment.isSame(today.clone().subtract(1, 'days'), 'day')) {
+      //     dateGroup = 'Yesterday';
+      //   } else {
+      //     dateGroup = createdAtMoment.format('MMMM D, YYYY');
+      //   }
+
+      //   if (!groupedHistory[dateGroup]) {
+      //     groupedHistory[dateGroup] = [];
+      //   }
+
+      //   groupedHistory[dateGroup].unshift(history);
+      //   console.log(groupedHistory, "grouped history", history, "historyy");
+      // });
+
+
+    const dropdowns = Object.entries(groupedHistory).map(([dateGroup, histories]) => (
+      <ul key={dateGroup}>
+        <li >
+        <h6 className='pb-4 ml-3'>{dateGroup}</h6>
+        <ul>
+           {histories.sort(compareByCreatedAt).map((history) => (
+            <li
+              key={history.id}
+              onClick={() => {
+                this.openHistorySnapshot(history.id);
+              }}
+            >
+              {this.renderHistoryItem(history)}
+            </li>
+          ))}
+        </ul>
+        </li>
+      </ul>
+    ));
+    return <div className="mt-3 dropdown-menu-center">{dropdowns}</div>;
+  }
 
     render () {
       return (
