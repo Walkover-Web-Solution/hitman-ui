@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Input from './input'
-import Joi from 'joi-browser'
+// import Joi from 'joi-browser'
 import AceEditor from 'react-ace'
 import 'ace-builds'
 import 'ace-builds/src-noconflict/mode-json'
@@ -42,14 +42,14 @@ class Form extends Component {
 
   validate () {
     return null
-    const options = { abortEarly: false }
-    const { error } = Joi.validate(this.trimmedData(), this.schema, options)
-    if (!error) return null
-    const errors = {}
-    for (const item of error.details) {
-      if (!errors[item.path[0]]) { errors[item.path[0]] = item.message }
-    }
-    return errors
+    // const options = { abortEarly: false }
+    // const { error } = Joi.validate(this.trimmedData(), this.schema, options)
+    // if (!error) return null
+    // const errors = {}
+    // for (const item of error.details) {
+    //   if (!errors[item.path[0]]) { errors[item.path[0]] = item.message }
+    // }
+    // return errors
   };
 
   trimmedData () {

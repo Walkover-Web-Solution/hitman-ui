@@ -283,7 +283,7 @@ class PublishDocForm extends Component {
               <div className='d-flex align-items-center'>
                 {this.renderUploadModule(this.state.data.logoUrl)}
               </div>}
-            {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
+            {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' alt='data' />}
           </div>
           <div className='uplod-info'>
             {

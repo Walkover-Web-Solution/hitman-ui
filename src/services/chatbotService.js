@@ -33,6 +33,18 @@ export async function inviteMember(name, query) {
     return false;
   }
 
+  // try {
+  //   const res = await axios.post(`${apiBaseUrl}/chatbot`, data);
+  //   if (res.status !== 200) {
+  //     throw new Error(res?.message ? res.message : 'Please enter message correctly');
+  //   }
+  //   toast.success('Added successfully');
+  //   return true;
+  // } catch (e) {
+  //   toast.error(e?.message ? e.message : 'Something went wrong');
+  //   return false;
+  // }
+  
 }
 
 export default {

@@ -622,6 +622,7 @@ class SideBar extends Component {
           value={this.state.data.filter}
           className='search-input'
           placeholder='Search'
+          autoComplete='off'
           type='text'
           name='filter'
           id='search'

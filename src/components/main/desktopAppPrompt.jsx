@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
-import { openExternalLink } from '../common/utility'
 import { closeModal } from '../modals/redux/modalsActions'
 import { connect } from 'react-redux'
 import { DESKTOP_APP_DOWNLOAD } from '../modals/modalTypes'
 import { sendAmplitudeData } from '../../services/amplitude'
 import { toast } from 'react-toastify'
 
-const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
 
 const mapDispatchToProps = (dispatch) => {
   return {

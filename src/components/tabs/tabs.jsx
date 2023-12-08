@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Nav, Dropdown } from 'react-bootstrap'
 import SavePromptModal from './savePromptModal'
 import './tabs.scss'
-
 import tabService from './tabService'
 import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
 import History from '../history/history.jsx'
@@ -269,15 +268,40 @@ class CustomTabs extends Component {
     }
   }
 
-  handleCloseTabs (tabIds) {
-    const showSavePromptFor = []
-    const tabsData = this.props.tabs.tabs
+  // handleCloseTabs (tabIds) {
+  //   console.log("inside handle close all tabs ");
+  //   const showSavePromptFor = []
+  //   const tabsData = this.props.tabs.tabs
+  //   for (let i = 0; i < tabIds.length; i++) {
+  //     const tabData = tabsData[tabIds[i]]
+  //     if (tabData.isModified) {
+  //       console.log("inside handle close tabs if condition");
+  //       showSavePromptFor.push(tabIds[i])
+  //     } else {
+  //       console.log("inside else condition for handle close all tabs");
+  //       tabService.removeTab(tabIds[i], { ...this.props })
+  //     }
+  //   }
+  //   this.setState({ showSavePromptFor })
+  // }
+  handleCloseTabs(tabIds) {
+    const showSavePromptFor = [];
+    const tabsData = this.props.tabs.tabs;
+  
     for (let i = 0; i < tabIds.length; i++) {
-      const tabData = tabsData[tabIds[i]]
-      if (tabData?.isModified) {
-        showSavePromptFor.push(tabIds[i])
+      const tabData = tabsData[tabIds[i]];
+      
+      if (tabData.isModified) {
+        showSavePromptFor.push(tabIds[i]);
       } else {
-        tabService.removeTab(tabIds[i], { ...this.props })
+  
+        // Check if there's only one tab left before removing
+        if (Object.keys(tabsData).length > 1) {
+          tabService.removeTab(tabIds[i], { ...this.props });
+        }
+        //  else {
+        //   toast.info("This Tab is by Default")
+        // }
       }
     }
     this.setState({ showSavePromptFor })

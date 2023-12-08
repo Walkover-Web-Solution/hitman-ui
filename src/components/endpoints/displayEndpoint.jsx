@@ -21,7 +21,6 @@ import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
-import { ReactComponent as Chaticon } from '../../assets/icons/chatggl.svg'
 
 
 import {
@@ -62,7 +61,6 @@ import ApiDocReview from '../apiDocReview/apiDocReview'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import ChatbotsideBar from './chatbotsideBar'
-import Footer from '../main/Footer'
 
 const shortid = require('shortid')
 
