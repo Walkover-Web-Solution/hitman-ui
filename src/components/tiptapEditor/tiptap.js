@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react'
 import Underline from '@tiptap/extension-underline'
 import StarterKit from '@tiptap/starter-kit'
@@ -54,6 +54,15 @@ export default function Tiptap ({ initial, onChange, disabled, isInlineEditor, m
     },
     editable: !disabled
   })
+
+  useEffect(() => {
+    // Cleanup function
+    return () => {
+      if (editor && editor.destroy) {
+        editor.destroy();
+      }
+    };
+  }, [editor]);
 
   return (
     <div className={`textEditorContainer ${!isInlineEditor ? 'editor' : ''}`}>

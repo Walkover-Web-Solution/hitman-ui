@@ -274,7 +274,7 @@ class CustomTabs extends Component {
     const tabsData = this.props.tabs.tabs
     for (let i = 0; i < tabIds.length; i++) {
       const tabData = tabsData[tabIds[i]]
-      if (tabData.isModified) {
+      if (tabData?.isModified) {
         showSavePromptFor.push(tabIds[i])
       } else {
         tabService.removeTab(tabIds[i], { ...this.props })
@@ -329,7 +329,7 @@ class CustomTabs extends Component {
                   onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
                 >
                   {
-                this.props.tabs.tabs[tabId].isModified
+                this.props.tabs.tabs[tabId]?.isModified
                   ? (
                     <i className='fas fa-circle modified-dot-icon' />
                     )

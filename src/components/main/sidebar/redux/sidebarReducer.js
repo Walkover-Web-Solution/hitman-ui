@@ -772,15 +772,18 @@ function expandItem (nodeAddress, newState) {
 }
 
 function onlyChildExpand (nodeAddress, newState) {
-  let { firstChild, lastChild } = newState.navList[newState.focusedNode]
-
-  while (firstChild === lastChild && firstChild != null) {
-    newState.navList[firstChild].expanded = true
-    firstChild = newState.navList[firstChild].firstChild
-    lastChild = newState.navList[lastChild].lastChild
+  const currentNode = newState.navList[newState.focusedNode];
+  if (!currentNode) {
+    return newState;
+  }
+  let { firstChild, lastChild } = currentNode;
+  while (firstChild === lastChild && firstChild != null && newState.navList[firstChild]) {
+    newState.navList[firstChild].expanded = true;
+    firstChild = newState.navList[firstChild].firstChild;
+    lastChild = newState.navList[lastChild].lastChild;
   }
 
-  return newState
+  return newState;
 }
 
 export default sidebarReducer

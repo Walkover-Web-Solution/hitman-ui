@@ -11,7 +11,7 @@ function extractVersionsFromCollectionId (collectionId, props) {
 }
 
 function extractGroupsFromVersions (versions, props) {
-  if (versions === {}) return {}
+  if (!versions || Object.keys(versions).length === 0) return {}
   const groups = {}
   for (let i = 0; i < Object.keys(versions).length; i++) {
     const versionId = Object.keys(versions)[i]
@@ -39,7 +39,7 @@ function extractGroupsFromVersionId (versionId, props) {
 }
 
 function extractPagesFromVersions (versions, props) {
-  if (versions === {}) return {}
+  if (!versions || Object.keys(versions).length === 0) return {}
   const pages = {}
   for (let i = 0; i < Object.keys(versions).length; i++) {
     const versionId = Object.keys(versions)[i]
@@ -54,7 +54,7 @@ function extractPagesFromVersions (versions, props) {
 }
 
 function extractEndpointsFromGroups (groups, props) {
-  if (groups === {}) return {}
+  if (!groups || Object.keys(groups).length === 0) return {}
   const endpoints = {}
   for (let i = 0; i < Object.keys(groups).length; i++) {
     const groupId = Object.keys(groups)[i]

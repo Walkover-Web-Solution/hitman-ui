@@ -718,6 +718,12 @@ button.is_active {
   height: 0;
   pointer-events: none;}
 .textEditorContainer{
+  .ProseMirror{
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
   .tippy-box {
     max-width: 100% !important;
     background-color: #fff;

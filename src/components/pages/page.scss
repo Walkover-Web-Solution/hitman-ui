@@ -13,7 +13,7 @@
   button { 
     margin-bottom: 15px;
     float: right;
-    &.btn-outline.orange:disabled{
+    &.btn-outline.orange{
       pointer-events: none;
     }
   }
@@ -47,7 +47,7 @@
     background: rgba(243, 243, 243, 0.38);
     border-top: none;
     border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-bottom-right-radius: 5px;  
   }
 }
 
@@ -72,6 +72,7 @@
   *{
     font-size: revert;
     margin-bottom: 0;
+    word-break: break-word;
   }
 }
 

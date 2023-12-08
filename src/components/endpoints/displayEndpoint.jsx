@@ -3140,7 +3140,6 @@ class DisplayEndpoint extends Component {
               }
             </div>
           </div>
-
           {this.isDashboardAndTestingView() && <div>
             {this.state.showAskAiSlider &&
               <ChatbotsideBar

@@ -133,6 +133,8 @@ window.addEventListener('beforeinstallprompt', (e) => {
             <Route path='/404_PAGE' component={ERROR_404_PAGE} />
             <Route path='/403_PAGE' component={ERROR_403_PAGE} />
 
+            <Route path='/select-org' component={OrgModal} />
+
             {/* Logged in Dashboard Routes */}
             <ProtectedRouteV2 exact path='/orgs/:orgId/dashboard/' component={MainV2} />
             {/* <ProtectedRouteV2 path='/orgs/:orgId/admin/publish' component={MainV2} /> */}

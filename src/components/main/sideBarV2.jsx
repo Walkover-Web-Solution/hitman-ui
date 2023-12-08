@@ -18,7 +18,6 @@ import NoFound, { ReactComponent as NoCollectionsIcon } from '../../assets/icons
 // import { ReactComponent as PlusIcon } from '../../assets/icons/plus_orange.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
 // import { ReactComponent as DownloadIcon } from '../../assets/icons/download.svg'
-// import HitmanLogo from '../../assets/icons/hitman-logo.svg'
 import { ReactComponent as Users } from '../../assets/icons/users.svg'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'

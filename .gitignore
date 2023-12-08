@@ -70,3 +70,8 @@ embedded.provisionprofile
 .vscode
 
 .swp
+
+.vscode
+
+*.swp
+*.swo
