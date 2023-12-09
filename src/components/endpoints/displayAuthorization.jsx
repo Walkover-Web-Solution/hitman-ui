@@ -52,7 +52,6 @@ class Authorization extends Component {
   }
 
   setAuthorizationType (type) {
-    console.log("inside set auth type", type);
     let value = {}
     switch (type) {
       case 'basicAuth':
@@ -103,7 +102,6 @@ class Authorization extends Component {
   }
 
   handleChange (e) {
-    console.log("inside handle change");
     const basicAuth = { ...this.state.basicAuth }
     if (e.currentTarget.name === 'username') {
       basicAuth.username = e.currentTarget.value

@@ -235,7 +235,6 @@ class DisplayEndpoint extends Component {
     }
 
     const { endpointId } = this.props.match.params
-    console.log(endpointId, "endpointId: ");
     if (endpointId === 'new') {
       this.setUnsavedTabDataInIDB()
     }
@@ -249,17 +248,11 @@ class DisplayEndpoint extends Component {
   }
 
   handleHeadersValue = (value) => {
-    console.log(value, "value in handle input value");
     this.setState({ parseHeaders: value.header }) 
     this.setState({method: value.method})
-
-    console.log(value.method, "parse method");
-    console.log(this.state.parseHeaders, "parse headerssssss");
-    console.log(value.header, "valueeeeeeeeee");
   }
 
   handleMethodChange = (newMethod) => {
-    console.log(newMethod.method, "newMethoddddd");
     this.setState(prevState => ({
       data: {
         ...prevState.data,
@@ -566,14 +559,9 @@ class DisplayEndpoint extends Component {
 
   handleChange = (e) => {
     const data = { ...this.state.data }
-    console.log(data, "dataaa in handle change");
-    console.log(e.currentTarget.name,"nameee");
-    console.log(e.currentTarget.value, "e.currentTarget.value");
-    console.log(data, "data in handle change");
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
     if (e.currentTarget.name === 'updatedUri') {
-      console.log("inside if condition", e.currentTarget.name);
       const keys = []
       const values = []
       const description = []
@@ -584,25 +572,22 @@ class DisplayEndpoint extends Component {
       let originalParams = this.state.originalParams
       let originalHeaders = this.state.parseHeaders
 
-      console.log(originalParams, "original params");
-      console.log(originalHeaders, "original Headers");
 
       const updatedUri = e.currentTarget.value.split('?')[1]
-      console.log(e.currentTarget.value, "current value");
+
       let path = new URI(e.currentTarget.value)
       path = path.pathname()
-      console.log(path, "pathhhhhhhhhhh");
+
       const pathVariableKeys = path.split('/')
-      console.log(pathVariableKeys,"path variable keys");
+
       const pathVariableKeysObject = {}
       for (let i = 0; i < pathVariableKeys.length; i++) {
         pathVariableKeysObject[pathVariableKeys[i]] = false
       }
       this.setPathVariables(pathVariableKeys, pathVariableKeysObject)
       const result = URI.parseQuery(updatedUri)
-      console.log(result, "result actual");
+
       for (let i = 0; i < Object.keys(result).length; i++) {
-        console.log(Object.keys(result),"result of objectss");
         keys.push(Object.keys(result)[i])
       }
       for (let i = 0; i < keys.length; i++) {
@@ -622,7 +607,6 @@ class DisplayEndpoint extends Component {
         }
       }
       originalParams = this.makeOriginalParams(keys, values, description)
-      console.log(originalParams, "params in make original params");
 
       // for headers
       for (let i = 0; i < Object.keys(originalHeaders).length; i++) {
@@ -630,28 +614,18 @@ class DisplayEndpoint extends Component {
       }
 
       for (let i = 0; i < headerKeys.length; i++) {
-        console.log(headerKeys, "keyss in for loop headers");
         headerValues.push(originalHeaders[headerKeys[i]])
         if (headerKeys[i] === 'Authorization' ) {
           if( headerValues[i].startsWith('Basic ')){
-            console.log("inside iffffffffff", headerValues[i]);
             let splitHeaderValue = headerValues[i].split(' ')[1]; 
-            console.log(headerValues[i], "header valuesssss");
-            console.log("inside if for headers && headerValues[i].startsWith('Basic ')", splitHeaderValue[1]);
             splitHeaderValue = atob(splitHeaderValue);
             splitHeaderValue = splitHeaderValue.split(":")
             this.setState({decodedKey : splitHeaderValue[0]})
             this.setState({decodedValue: splitHeaderValue[1]})
-            console.log(splitHeaderValue[1], "splitHeaderValue[1]");
-            // console.log(decodedKey, "key," ,decodedValue, "decodedValue");
-            console.log(splitHeaderValue, "after decode"); 
           }
           else {
           if( headerValues[i].startsWith('Bearer')){
-            console.log("90 inside else if ", headerValues[i]);
             let splitHeaderValue = headerValues[i].split(' '); 
-            console.log(splitHeaderValue[0], "header valuesssss inside else if");
-            console.log("inside if for headers && headerValues[i].startsWith('Bearer ')", splitHeaderValue[1]);
             this.setState({auth2Key: splitHeaderValue[0]})
             this.setState({auth2Value: splitHeaderValue[1]})
           }
@@ -672,7 +646,6 @@ class DisplayEndpoint extends Component {
         }
       }
       originalHeaders = this.makeOriginalHeaders(headerKeys, headerValues, headerDescription)
-      console.log(originalHeaders, "Headers in make original Headers");
       this.setState({ originalParams })
       this.setState({ originalHeaders })
       // this.setState({method})
@@ -749,7 +722,6 @@ class DisplayEndpoint extends Component {
       }
     }
     for (let i = 0; i < keys.length; i++) {
-      console.log("inside for loop");
       originalParams.push({
         checked: 'true',
         key: keys[i],
@@ -779,7 +751,6 @@ class DisplayEndpoint extends Component {
       }
     }
     for (let i = 0; i < keys.length; i++) {
-      console.log("inside for loop");
       originalHeaders.push({
         checked: 'true',
         key: keys[i],
@@ -1597,7 +1568,6 @@ class DisplayEndpoint extends Component {
   }
 
   async prepareHarObject() {
-    console.log("inside prepareHarObject");
     try {
       const BASE_URL = this.state.host.BASE_URL
       const uri = new URI(this.state.data.updatedUri)
@@ -1647,7 +1617,6 @@ class DisplayEndpoint extends Component {
   }
 
   setBaseUrl(BASE_URL, selectedHost) {
-    console.log(BASE_URL, selectedHost, "inside setBaseURL");
     this.setState({ host: { BASE_URL, selectedHost } })
   }
 
@@ -1768,8 +1737,6 @@ class DisplayEndpoint extends Component {
 
   setHeaders(value, title, authorizationFlag = undefined) {
     const originalHeaders = this.state.originalHeaders
-    console.log(originalHeaders, "original headers in set headersss");
-    console.log(title, "title in set headers");
     const updatedHeaders = []
     const emptyHeader = {
       checked: 'notApplicable',
@@ -1778,30 +1745,23 @@ class DisplayEndpoint extends Component {
       description: ''
     }
     for (let i = 0; i < originalHeaders.length; i++) {
-      console.log("inside for loop for setHeaders: " + originalHeaders[i].key);
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
-        console.log("inside if condition for set headersss",originalHeaders[i].key === title.split('.')[0]);
         continue
       } else if (originalHeaders[i].key === '' || originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
-        console.log("inside else if",originalHeaders[i].key.toLowerCase() === title.split('.')[0]);
         originalHeaders[i].value = this.identifyBodyType(value)
         this.setState({ originalHeaders })
         return
       } else {
-        console.log("inside else condition for set headers");
-        console.log(updatedHeaders, originalHeaders[i], "updated headers and originial headers for set headers");
         updatedHeaders.push(originalHeaders[i])
 
       }
     }
     if (value === 'none') {
-      console.log("value none check", value);
       updatedHeaders.push(emptyHeader)
       this.setState({ originalHeaders: updatedHeaders })
       return
     }
     if (value !== 'noAuth' && !authorizationFlag) {
-      console.log("inside no auth if ", value);
       updatedHeaders.push({
         checked: 'true',
         key: title === 'content-type' ? 'content-type' : 'Authorization',
@@ -2215,34 +2175,14 @@ class DisplayEndpoint extends Component {
   }
 
   setHostUri(host, uri, selectedHost) {
-    console.log(host,"host",uri, "uri", selectedHost, "setHostUri in display endpoint");
     if (uri !== this.state.data.updatedUri){
-      console.log("inside if set host uri");
       this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
       this.setBaseUrl(host, selectedHost)
     }
     else{
       this.handleChange({currentTarget: { name: 'updatedUri', value: host}})
     }
-    // else{
-    //   console.log("inside else condition");
-    //   console.log(this.state.data.updatedUri,"inside else condition ....");
-    //   // this.handleChange({ currentTarget: { name: 'updatedUri', value: host } })
-    //   // this.setBaseUrl(host, selectedHost)
-    //   if (!this.state.data.updatedUri.includes(host)) {
-    //     console.log("inside if condition for else condition", this.state.data.updatedUri );
-    //     console.log(this.state.data.updatedUri + host, "value for concatttt");
-    //     this.handleChange({ currentTarget: { name: 'updatedUri', value: this.state.data.updatedUri + host } })
-
-    //     console.log(selectedHost, "selected host in if condition");
-    //     this.setBaseUrl(host, selectedHost)
-    //   }
-    // }
   }
-  // setHostUri(host, uri, selectedHost) {
-  //   if (uri !== this.state.data.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
-  //   this.setBaseUrl(host, selectedHost)
-  // }
 
   alterEndpointName(name) {
     if (name) {
