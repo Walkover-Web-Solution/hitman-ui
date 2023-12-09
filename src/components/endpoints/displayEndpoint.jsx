@@ -201,7 +201,9 @@ class DisplayEndpoint extends Component {
       parseHeaders: '',
       method: '', 
       decodedKey:'',
-      decodedValue:''
+      decodedValue:'',
+      auth2Key:'',
+      auth2Value:''
     }
 
     this.uri = React.createRef()
@@ -632,6 +634,7 @@ class DisplayEndpoint extends Component {
         headerValues.push(originalHeaders[headerKeys[i]])
         if (headerKeys[i] === 'Authorization' ) {
           if( headerValues[i].startsWith('Basic ')){
+            console.log("inside iffffffffff", headerValues[i]);
             let splitHeaderValue = headerValues[i].split(' ')[1]; 
             console.log(headerValues[i], "header valuesssss");
             console.log("inside if for headers && headerValues[i].startsWith('Basic ')", splitHeaderValue[1]);
@@ -641,8 +644,18 @@ class DisplayEndpoint extends Component {
             this.setState({decodedValue: splitHeaderValue[1]})
             console.log(splitHeaderValue[1], "splitHeaderValue[1]");
             // console.log(decodedKey, "key," ,decodedValue, "decodedValue");
-            console.log(splitHeaderValue, "after decode");
+            console.log(splitHeaderValue, "after decode"); 
           }
+          else {
+          if( headerValues[i].startsWith('Bearer')){
+            console.log("90 inside else if ", headerValues[i]);
+            let splitHeaderValue = headerValues[i].split(' '); 
+            console.log(splitHeaderValue[0], "header valuesssss inside else if");
+            console.log("inside if for headers && headerValues[i].startsWith('Bearer ')", splitHeaderValue[1]);
+            this.setState({auth2Key: splitHeaderValue[0]})
+            this.setState({auth2Value: splitHeaderValue[1]})
+          }
+        }
         }
         if (originalHeaders[i]) {
           for (let k = 0; k < originalHeaders.length; k++) {
@@ -3177,6 +3190,8 @@ class DisplayEndpoint extends Component {
                                       title='Authorization'
                                       decodedKey = {this.state.decodedKey}
                                       decodedValue = {this.state.decodedValue}
+                                      auth2Key = {this.state.auth2Key}
+                                      auth2Value = {this.state.auth2Value}
                                       groupId={this.state.groupId}
                                       set_authorization_headers={this.setHeaders.bind(this)}
                                       set_authoriztaion_params={this.setParams.bind(this)}
