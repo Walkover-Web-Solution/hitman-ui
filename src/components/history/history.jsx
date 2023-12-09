@@ -27,10 +27,16 @@ const mapStateToProps = (state) => {
 }
 
 class History extends Component {
-    state = {
+  constructor(props){
+    super(props)
+    this.state = {
       show: false,
       historySnapshot: null
     }
+    // this.wrapperRef = React.createRef()
+    // this.handleClickOutside = this.handleClickOutside.bind(this)
+  }
+
 
     componentDidMount () {
       if (this.props.historySnapshots) {
@@ -48,6 +54,14 @@ class History extends Component {
       }
     }
 
+    // handleClickOutside(event) {
+    //   console.log("inside handle click outside");
+    //   if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+    //     console.log("inside if condition");
+    //     // Call the handleHistoryClick prop to close the slider
+    //     this.props.handleHistoryClick();
+    //   }
+    // }
     openHistorySnapshot (id) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/history/${id}`,
@@ -109,7 +123,6 @@ class History extends Component {
   //updated with today and yesterday
   renderHistoryList() {
     const { historySnapshot } = this.state;
-    console.log(historySnapshot, "history snap shottt");
 
     if (!historySnapshot || historySnapshot.length === 0) {
       // Handle the case where historySnapshot is null or empty
@@ -126,7 +139,6 @@ class History extends Component {
     }
 
     const groupedHistory = {};
-    console.log(groupedHistory, "grouped historyyy");
 
     // Group history items by date
     historySnapshot.forEach((history) => {
@@ -147,7 +159,6 @@ class History extends Component {
       }
 
       groupedHistory[dateGroup].push(history);
-      console.log(groupedHistory, "grouped history log");
     });
 
     // Group history items by date
@@ -198,6 +209,11 @@ class History extends Component {
     return <div className="mt-3 dropdown-menu-center">{dropdowns}</div>;
   }
 
+//   return <div className="mt-3 dropdown-menu-center"           
+//   onClick={() => this.setState({ showDatalist: true }, () => {
+//     document.addEventListener('mousedown', this.handleClickOutside)
+//   })}>{dropdowns}</div>;
+// }
     render () {
       return (
         <div>

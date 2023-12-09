@@ -51,7 +51,11 @@ const mapDispatchToProps = (dispatch) => {
 class ContentPanel extends Component {
   constructor (props) {
     super(props)
-    this.state = { saveEndpointFlag: false }
+    this.state = { saveEndpointFlag: false,
+    showHistoryContainer: true
+   }
+    this.wrapperRef = React.createRef()
+    this.handleClickOutside = this.handleClickOutside.bind(this)
   }
 
   async componentDidMount () {
@@ -59,6 +63,20 @@ class ContentPanel extends Component {
     // this.props.history.push({
     //   dashboardEnvironment: true,
     // });
+  }
+
+  handleClickOutside(event) {
+    if (
+      this.wrapperRef.current &&
+      !this.wrapperRef.current.contains(event.target)
+    ) {
+      // Clicked outside the main component, handle the event here
+  
+      // Close the history container
+      if (this.state.showHistoryContainer) {
+        this.setState({ showHistoryContainer: false });
+      }
+    }
   }
 
   componentDidUpdate () {
@@ -261,7 +279,7 @@ class ContentPanel extends Component {
                 </div>
                 )
           }
-          <div className='main-content'>
+          <div className='main-content' onClick={this.handleClickOutside} ref={this.wrapperRef}>
             <TabContent
               {...this.props}
               handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
@@ -269,6 +287,8 @@ class ContentPanel extends Component {
               save_endpoint_flag={this.state.saveEndpointFlag}
               save_page_flag={this.state.savePageFlag}
               selected_tab_id={this.state.selectedTabId}
+              handleClickOutside={this.handleClickOutside}
+              showHistoryContainer={this.state.showHistory}
             />
           </div>
         </Tab.Container>

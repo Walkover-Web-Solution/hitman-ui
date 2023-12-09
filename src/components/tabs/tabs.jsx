@@ -308,7 +308,7 @@ class CustomTabs extends Component {
       top: '40px',
       right: '0px',
       height: '95vh',
-      width: '22%',
+      width: '24%',
       float: 'right'
     }
     const Heading = {
@@ -421,6 +421,7 @@ class CustomTabs extends Component {
                 <Nav.Item className='' id='history-tab-button'>
                   <button onClick={this.handleHistoryClick} className='px-2' style={{ outline: 'none' }}><HistoryIcon /> </button>
                   </Nav.Item>
+                 {/* {this.state.showHistoryContainer || !this.props.showHistoryContainer && */}
                  {this.state.showHistoryContainer &&
                   <div style={sideBar}>
                   <div style={Heading} >History
@@ -432,7 +433,7 @@ class CustomTabs extends Component {
                     <span aria-hidden='true'>×</span>
                   </button>
                   </div>
-                  <History {...this.props} />
+                  <History {...this.props} handleHistoryClick = {this.handleHistoryClick} />
                   </div>}
           </div>
         </div>

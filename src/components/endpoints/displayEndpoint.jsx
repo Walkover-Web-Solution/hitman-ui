@@ -239,6 +239,7 @@ class DisplayEndpoint extends Component {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
+      document.addEventListener('mousedown', this.props.handleClickOutside);
   }
 
   handleShortcuts = (event, data) => {
@@ -265,6 +266,7 @@ class DisplayEndpoint extends Component {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
+     document.removeEventListener('mousedown', this.props.handleClickOutside);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -1485,7 +1487,6 @@ class DisplayEndpoint extends Component {
         postData: body.type === 'none' ? null : await this.makePostData(body),
         queryString: this.makeParams(originalParams)
       }
-      console.log(harObject,"harobject")
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
@@ -3147,7 +3148,7 @@ class DisplayEndpoint extends Component {
           <div>
           </div>   
             <div className='ask-ai-btn' onClick={this.toggleChatbotModal} >
-              <p>Ask AI</p>
+              <span className=''>Ask AI</span>
             </div>
           </div>}
         </div>
