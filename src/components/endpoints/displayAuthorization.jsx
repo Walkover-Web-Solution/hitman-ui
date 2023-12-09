@@ -5,6 +5,7 @@ import AccessTokenManager from './displayTokenManager'
 
 class Authorization extends Component {
   constructor (props) {
+    
     super(props)
     this.state = {
       basicAuth: {
@@ -51,6 +52,7 @@ class Authorization extends Component {
   }
 
   setAuthorizationType (type) {
+    console.log("inside set auth type", type);
     let value = {}
     switch (type) {
       case 'basicAuth':
@@ -101,6 +103,7 @@ class Authorization extends Component {
   }
 
   handleChange (e) {
+    console.log("inside handle change");
     const basicAuth = { ...this.state.basicAuth }
     if (e.currentTarget.name === 'username') {
       basicAuth.username = e.currentTarget.value
@@ -445,7 +448,7 @@ class Authorization extends Component {
                 </div>
                 <div className='basic-auth-input'>
                   <input
-                    value={this.state.oauth_2.accessToken}
+                    value={this.props.auth2Value || this.state.oauth_2.accessToken}
                     onChange={this.updateAccessToken.bind(this)}
                     name='accessToken'
                     className='form-control'

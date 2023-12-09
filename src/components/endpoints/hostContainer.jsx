@@ -105,7 +105,7 @@ class HostContainer extends Component {
       try {
         const modifiedCurlCommand = inputValue.replace(/\n/g, ' ');
         console.log();
-        const parsedData = parseCurl(modifiedCurlCommand);
+        const parsedData = parseCurl(`curl --location --request DELETE 'https://jsonplaceholder.typicode.com/posts/1'`);
 
 
         // passing method and headers value to displayEndpoint file
