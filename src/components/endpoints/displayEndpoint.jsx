@@ -1045,7 +1045,6 @@ class DisplayEndpoint extends Component {
     const startTime = new Date().getTime()
     const response = {}
     this.setState({ startTime, response, preReqScriptError: '', postReqScriptError: '', tests: null, loader: true, requestKey: keyForRequest, runSendRequest })
-
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
       this.setState({ loader: false })
       return
@@ -2175,13 +2174,8 @@ class DisplayEndpoint extends Component {
   }
 
   setHostUri(host, uri, selectedHost) {
-    if (uri !== this.state.data.updatedUri){
       this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
       this.setBaseUrl(host, selectedHost)
-    }
-    else{
-      this.handleChange({currentTarget: { name: 'updatedUri', value: host}})
-    }
   }
 
   alterEndpointName(name) {

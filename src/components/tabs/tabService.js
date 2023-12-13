@@ -54,12 +54,12 @@ function selectTab (props, tabId) {
   const { tabs } = store.getState().tabs
 
   const tab = tabs[tabId]
-  if (tab.status === 'NEW') {
+  if (tab?.status === 'NEW') {
     props.history.push({
-      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
+      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab?.type}/new`
     })
-  } else if (tab.type === 'collection') {
-    (tab.state.pageType === 'SETTINGS')
+  } else if (tab?.type === 'collection') {
+    (tab?.state.pageType === 'SETTINGS')
       ? props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
       : props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
   } else {

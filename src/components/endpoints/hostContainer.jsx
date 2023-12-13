@@ -100,29 +100,32 @@ class HostContainer extends Component {
   handleInputHostChange(e) {
     let inputValue = e.target.value;
     if (inputValue.trim().startsWith('curl')) {
-      //maintaining curl state for showing input value
-      this.setState({ isCurl: true })
-      try {
-        const modifiedCurlCommand = inputValue.replace(/\n/g, ' ');
-        const parsedData = parseCurl(modifiedCurlCommand);
-
-
-        // passing method and headers value to displayEndpoint file
-        this.props.handleHeadersValue(parsedData);
-        this.props.handleMethodChange(parsedData);
-
-        this.setState({
-          datalistHost: parsedData.url,
-        },
-        () => {
-          this.props.props_from_parent('HostAndUri', 'Headers', 'Params')
-          this.setParentHostAndUri()
-        });
-
-      } catch (error) {
-        console.error('Error parsing cURL command:', error)
-      }
-    } else {
+      // maintaining curl state for showing input value
+      this.setState({ isCurl: true }, () => {
+        try {
+          // const modifiedCurlCommand = inputValue.replace(/\\\s+/g, '');
+          const modifiedCurlCommand = decodeURIComponent(inputValue.replace(/\\/g, ''));
+          const parsedData = parseCurl(modifiedCurlCommand);
+          console.log(parsedData, "parse data ");
+          // passing method and headers value to displayEndpoint file
+          const data = this.splitUrlHelper(parsedData.url)
+          this.props.handleHeadersValue(parsedData);
+          this.props.handleMethodChange(parsedData);
+          this.setState({
+            ...data,
+            showDatalist: inputValue === '',
+          }, 
+          () => {
+            this.props.props_from_parent('HostAndUri')
+            this.setParentHostAndUri()
+          });
+  
+        } catch (error) {
+          console.error('Error parsing cURL command:', error)
+        }
+      });
+    } 
+    else {
       //if not curl then setstate to false
       this.setState({ isCurl: false })
       const data = this.splitUrlHelper(e)
@@ -169,7 +172,13 @@ class HostContainer extends Component {
   }
 
   splitUrlHelper(e) {
-    const value = e.target.value
+    let value = ''
+    if(this.state.isCurl){
+      value = e
+    }
+    else{
+      value = e.target.value
+    }
     const hostName = this.checkExistingHosts(value)
     let uri = ''
     const data = {
@@ -212,7 +221,7 @@ class HostContainer extends Component {
           id='host-container-input'
           className='form-control'
           // changing value for curl and normal api call
-          value={this.state.isCurl ? this.state.datalistHost : this.state.datalistHost + this.state.datalistUri}
+          value={ this.state.datalistHost + this.state.datalistUri}
           name={`${this.props.endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={((e) => this.handleInputHostChange(e))}
