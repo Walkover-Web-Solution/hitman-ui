@@ -11,9 +11,10 @@ import '../src/components/main/responsive.scss'
 import { Provider } from 'react-redux'
 import store from './store/store'
 import history from './history.js'
-import { addAnalyticsScripts } from './components/common/utility'
+import { addAnalyticsScripts, sentryIntegration } from './components/common/utility'
 
 addAnalyticsScripts()
+sentryIntegration()
 
 ReactDOM.render(
   <Provider store={store}>

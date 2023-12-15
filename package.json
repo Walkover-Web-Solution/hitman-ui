@@ -6,6 +6,7 @@
   "private": true,
   "main": "public/electron.js",
   "dependencies": {
+    "@sentry/react": "^7.88.0",
     "@tinymce/tinymce-react": "^3.13.1",
     "@tiptap/extension-color": "^2.0.0-beta.9",
     "@tiptap/extension-highlight": "^2.0.0-beta.33",
