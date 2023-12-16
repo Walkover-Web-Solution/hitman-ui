@@ -30,7 +30,7 @@ export function sentryIntegration()  {
         integrations: [
             new Sentry.BrowserTracing({
                 // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-                tracePropagationTargets: ["localhost", "localhost:3000", /^https:\/\/yourserver\.io\/api/],
+                tracePropagationTargets: ["localhost", "localhost:3000", "https://dev-techdoc.walkover.in/", "https://techdoc.walkover.in/", /^https:\/\/yourserver\.io\/api/],
             }),
             new Sentry.Replay(),
         ],
