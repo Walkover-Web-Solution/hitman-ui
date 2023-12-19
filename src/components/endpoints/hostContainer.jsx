@@ -106,20 +106,20 @@ class HostContainer extends Component {
           // const modifiedCurlCommand = inputValue.replace(/\\\s+/g, '');
           const modifiedCurlCommand = decodeURIComponent(inputValue.replace(/\\/g, ''));
           const parsedData = parseCurl(modifiedCurlCommand);
-          console.log(parsedData, "parse data ");
           // passing method and headers value to displayEndpoint file
           const data = this.splitUrlHelper(parsedData.url)
+          //function for headers and method 
           this.props.handleHeadersValue(parsedData);
           this.props.handleMethodChange(parsedData);
           this.setState({
             ...data,
             showDatalist: inputValue === '',
           }, 
-          () => {
-            this.props.props_from_parent('HostAndUri')
-            this.setParentHostAndUri()
-          });
-  
+            () => {
+              this.props.props_from_parent('HostAndUri')
+              this.setParentHostAndUri()
+            });
+
         } catch (error) {
           console.error('Error parsing cURL command:', error)
         }
@@ -172,6 +172,7 @@ class HostContainer extends Component {
   }
 
   splitUrlHelper(e) {
+    //change value for curl and api-url
     let value = ''
     if(this.state.isCurl){
       value = e
@@ -220,7 +221,6 @@ class HostContainer extends Component {
         <input
           id='host-container-input'
           className='form-control'
-          // changing value for curl and normal api call
           value={ this.state.datalistHost + this.state.datalistUri}
           name={`${this.props.endpointId}_hosts`}
           placeholder='Enter Request URL'

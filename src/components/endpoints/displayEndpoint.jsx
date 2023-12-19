@@ -199,11 +199,11 @@ class DisplayEndpoint extends Component {
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
       parseHeaders: '',
-      method: '', 
-      decodedKey:'',
-      decodedValue:'',
-      auth2Key:'',
-      auth2Value:''
+      method: '',
+      decodedKey: '',
+      decodedValue: '',
+      auth2Key: '',
+      auth2Value: ''
     }
 
     this.uri = React.createRef()
@@ -247,11 +247,13 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  //function for handle header value 
   handleHeadersValue = (value) => {
-    this.setState({ parseHeaders: value.header }) 
-    this.setState({method: value.method})
+    this.setState({ parseHeaders: value.header })
+    this.setState({ method: value.method })
   }
 
+  //function for handle method change
   handleMethodChange = (newMethod) => {
     this.setState(prevState => ({
       data: {
@@ -570,6 +572,7 @@ class DisplayEndpoint extends Component {
       const headerDescription = []
 
       let originalParams = this.state.originalParams
+      //for headers
       let originalHeaders = this.state.parseHeaders
 
 
@@ -587,6 +590,7 @@ class DisplayEndpoint extends Component {
       this.setPathVariables(pathVariableKeys, pathVariableKeysObject)
       const result = URI.parseQuery(updatedUri)
 
+      // for params
       for (let i = 0; i < Object.keys(result).length; i++) {
         keys.push(Object.keys(result)[i])
       }
@@ -615,21 +619,21 @@ class DisplayEndpoint extends Component {
 
       for (let i = 0; i < headerKeys.length; i++) {
         headerValues.push(originalHeaders[headerKeys[i]])
-        if (headerKeys[i] === 'Authorization' ) {
-          if( headerValues[i].startsWith('Basic ')){
-            let splitHeaderValue = headerValues[i].split(' ')[1]; 
+        if (headerKeys[i] === 'Authorization') {
+          if (headerValues[i].startsWith('Basic ')) {
+            let splitHeaderValue = headerValues[i].split(' ')[1];
             splitHeaderValue = atob(splitHeaderValue);
             splitHeaderValue = splitHeaderValue.split(":")
-            this.setState({decodedKey : splitHeaderValue[0]})
-            this.setState({decodedValue: splitHeaderValue[1]})
+            this.setState({ decodedKey: splitHeaderValue[0] })
+            this.setState({ decodedValue: splitHeaderValue[1] })
           }
           else {
-          if( headerValues[i].startsWith('Bearer')){
-            let splitHeaderValue = headerValues[i].split(' '); 
-            this.setState({auth2Key: splitHeaderValue[0]})
-            this.setState({auth2Value: splitHeaderValue[1]})
+            if (headerValues[i].startsWith('Bearer')) {
+              let splitHeaderValue = headerValues[i].split(' ');
+              this.setState({ auth2Key: splitHeaderValue[0] })
+              this.setState({ auth2Value: splitHeaderValue[1] })
+            }
           }
-        }
         }
         if (originalHeaders[i]) {
           for (let k = 0; k < originalHeaders.length; k++) {
@@ -645,6 +649,7 @@ class DisplayEndpoint extends Component {
           }
         }
       }
+      //for headers
       originalHeaders = this.makeOriginalHeaders(headerKeys, headerValues, headerDescription)
       this.setState({ originalParams })
       this.setState({ originalHeaders })
@@ -738,6 +743,7 @@ class DisplayEndpoint extends Component {
     return originalParams
   }
 
+  //function for make original headers
   makeOriginalHeaders(keys, values, description) {
     const originalHeaders = []
     for (let i = 0; i < this.state.originalHeaders.length; i++) {
@@ -1585,7 +1591,6 @@ class DisplayEndpoint extends Component {
         postData: body.type === 'none' ? null : await this.makePostData(body),
         queryString: this.makeParams(originalParams)
       }
-      console.log(harObject,"harobject")
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
@@ -2174,8 +2179,8 @@ class DisplayEndpoint extends Component {
   }
 
   setHostUri(host, uri, selectedHost) {
-      this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
-      this.setBaseUrl(host, selectedHost)
+    this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+    this.setBaseUrl(host, selectedHost)
   }
 
   alterEndpointName(name) {
@@ -2699,8 +2704,8 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  handleRemovePublicEndpoint (endpointId) {
-    const endpoints = {...this.props.endpoints}
+  handleRemovePublicEndpoint(endpointId) {
+    const endpoints = { ...this.props.endpoints }
     this.props.update_endpoint({
       ...endpoints[endpointId],
       groupId: this.state.selectedGroupId,
@@ -2713,10 +2718,10 @@ class DisplayEndpoint extends Component {
 
   renderUnPublishEndpoint(endpointId, endpoints) {
     return (
-        <UnPublishEntityButton
+      <UnPublishEntityButton
         entity={endpoints}
         entityId={endpointId}
-        onUnpublish={() => this.handleRemovePublicEndpoint (endpointId)}
+        onUnpublish={() => this.handleRemovePublicEndpoint(endpointId)}
         entityName='Endpoint'
       />
     )
@@ -2724,7 +2729,7 @@ class DisplayEndpoint extends Component {
 
   renderPublishEndpoint(endpointId, endpoints) {
     return (
-        <PublishEntityButton
+      <PublishEntityButton
         entity={endpoints}
         entityId={endpointId}
         open_publish_confirmation_modal={() => this.setState({ openPublishConfirmationModal: true })}
@@ -3122,10 +3127,10 @@ class DisplayEndpoint extends Component {
                                     <Authorization
                                       {...this.props}
                                       title='Authorization'
-                                      decodedKey = {this.state.decodedKey}
-                                      decodedValue = {this.state.decodedValue}
-                                      auth2Key = {this.state.auth2Key}
-                                      auth2Value = {this.state.auth2Value}
+                                      decodedKey={this.state.decodedKey}
+                                      decodedValue={this.state.decodedValue}
+                                      auth2Key={this.state.auth2Key}
+                                      auth2Value={this.state.auth2Value}
                                       groupId={this.state.groupId}
                                       set_authorization_headers={this.setHeaders.bind(this)}
                                       set_authoriztaion_params={this.setParams.bind(this)}
