@@ -13,10 +13,12 @@ const mapStateToProps = state => {
 
 class chatbotsideBar extends Component {
   state = {
-    inputValue: ''
+    inputValue: '',
+    messages: [],
   }
 
   handleInputChange = (e) => {
+    console.log(e.target.value, "input value");
     this.setState({ inputValue: e.target.value });
   }
 
@@ -26,12 +28,37 @@ class chatbotsideBar extends Component {
     }
   }
 
-  handleSubmit = () => {
-    const query = this.state.inputValue
-    const name = getCurrentUser()?.name
-    inviteMember(name, query)
+  // handleSubmit = async () => {
+  //   const query = this.state.inputValue
+  //   const name = getCurrentUser()?.name
+  //   const newMessage = { text: query, sender: name };
+  //   const aiMessage = "getBack to you soon"
+  //   this.setState((prevState) => ({
+  //     messages: [...prevState.messages, newMessage, aiMessage],
+  //     inputValue: '' // Clear the input after submitting
+  //   }), () => {
+  //     console.log(this.state.messages, "messages in array");
+  //   });
+  //   const reply = await inviteMember(name, query)
+  //   console.log(reply, "replyyyyyyy");
+  // }
+  handleSubmit = async () => {
+    const query = this.state.inputValue;
+    const name = getCurrentUser()?.name;
+    const userMessage = { text: query, sender: name };
+    const aiMessage = { text: "getBack to you soon", sender: "AI" }; // Modify the sender as needed
+  
+    this.setState((prevState) => ({
+      messages: [...prevState.messages, userMessage, aiMessage],
+      inputValue: '' // Clear the input after submitting
+    }), () => {
+      console.log(this.state.messages, "messages in array");
+    });
+  
+    const reply = await inviteMember(name, query);
+    console.log(reply, "replyyyyyyy");
   }
-
+  
   render() {
     
     const saveAsSidebarStyle = {
@@ -83,6 +110,13 @@ class chatbotsideBar extends Component {
               <span aria-hidden='true'>×</span>
             </button>
           </div>
+          <div className="messages-container mb-2">
+              {this.state.messages.map((message, index) => (
+                <div key={index} className={message.sender === getCurrentUser()?.name ? 'user-message' : 'ai-message'}>
+                  {message.text}
+                </div>
+              ))}
+            </div>
           <div style={inputContainerStyle}>
             <input
               type='text'
