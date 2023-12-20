@@ -317,6 +317,8 @@ class CustomTabs extends Component {
       alignItems: 'center', 
       padding: '10px', 
       borderBottom: '0.5px solid #ddd', 
+      fontSize: '20px',
+      fontWeight: 'bold',
     };
     const closeButton = {
       background: 'none',

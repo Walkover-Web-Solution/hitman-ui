@@ -111,6 +111,7 @@ class History extends Component {
                     {this.renderPath(history.endpoint.id)}
                   </p>
                 </div>
+                {/* hide date and time */}
                 {/* <small className='text-muted'>
                   {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
                 </small> */}
@@ -161,32 +162,6 @@ class History extends Component {
       groupedHistory[dateGroup].push(history);
     });
 
-    // Group history items by date
-// Group history items by date 2nd for trying to show the today at top
-      // historySnapshot.forEach((history) => {
-      //   const today = moment().startOf('day');
-      //   console.log(today, "todayyyy");
-      //   const createdAtMoment = moment(history.createdAt);
-      //   console.log(createdAtMoment, "created atttt");
-      //   let dateGroup;
-
-      //   if (createdAtMoment.isSame(today, 'day')) {
-      //     dateGroup = 'Today';
-      //   } else if (createdAtMoment.isSame(today.clone().subtract(1, 'days'), 'day')) {
-      //     dateGroup = 'Yesterday';
-      //   } else {
-      //     dateGroup = createdAtMoment.format('MMMM D, YYYY');
-      //   }
-
-      //   if (!groupedHistory[dateGroup]) {
-      //     groupedHistory[dateGroup] = [];
-      //   }
-
-      //   groupedHistory[dateGroup].unshift(history);
-      //   console.log(groupedHistory, "grouped history", history, "historyy");
-      // });
-
-
     const dropdowns = Object.entries(groupedHistory).map(([dateGroup, histories]) => (
       <ul key={dateGroup}>
         <li >
@@ -209,11 +184,6 @@ class History extends Component {
     return <div className="mt-3 dropdown-menu-center">{dropdowns}</div>;
   }
 
-//   return <div className="mt-3 dropdown-menu-center"           
-//   onClick={() => this.setState({ showDatalist: true }, () => {
-//     document.addEventListener('mousedown', this.handleClickOutside)
-//   })}>{dropdowns}</div>;
-// }
     render () {
       return (
         <div>
