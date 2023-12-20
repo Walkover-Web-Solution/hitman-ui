@@ -324,7 +324,7 @@ class GenericTable extends Component {
           />
           {title === 'formData' &&
           (
-            <select className='transition cursor-pointer' name={index + '.type'} defaultValue='text' value={dataArray[index].type} onChange={(e) => { this.handleChange(e) }}>
+            <select className='transition cursor-pointer' name={index + '.type'} defaultValue='text'  onChange={(e) => { this.handleChange(e) }}>
               <option value='text'>Text</option>
               <option value='file'>File</option>
             </select>
