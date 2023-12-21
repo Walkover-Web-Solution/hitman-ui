@@ -52,7 +52,7 @@ const mapDispatchToProps = (dispatch) => {
     fetch_pages_from_idb: (orgId) => dispatch(fetchPagesFromIdb(orgId)),
     fetch_collections: (orgId) => dispatch(fetchCollections(orgId)),
     fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
-    fetch_groups: (orgId) => dispatch(fetchGroups(orgId)),
+    // fetch_groups: (orgId) => dispatch(fetchGroups(orgId)),
     fetch_endpoints: (orgId) => dispatch(fetchEndpoints(orgId)),
     fetch_pages: (orgId) => dispatch(fetchPages(orgId)),
     fetch_history: () => dispatch(fetchHistoryFromIdb()),
@@ -173,7 +173,7 @@ class MainV2 extends Component {
     const orgId = this.props.match.params.orgId
     this.props.fetch_collections(orgId)
     this.props.fetch_all_versions(orgId)
-    this.props.fetch_groups(orgId)
+    // this.props.fetch_groups(orgId)
     this.props.fetch_endpoints(orgId)
     this.props.fetch_pages(orgId)
     indexedDbService.addData('meta_data', timestampBackend, 'updated_at')

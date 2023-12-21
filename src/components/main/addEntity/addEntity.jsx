@@ -14,7 +14,7 @@ const entityENUM = {
   },
   version: {
     key: 'version',
-    message: 'Add your API version.',
+    message: 'Add your Page.',
     tooltip: 'Versioning helps in maintaining API changes without breaking existing implementations. This gives consumers more choices without having to upgrade to the latest version'
   },
   group: {

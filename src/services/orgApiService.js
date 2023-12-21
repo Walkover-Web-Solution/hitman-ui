@@ -47,4 +47,25 @@ export async function createOrg(name) {
   }
 }
 
+export async function inviteMembers(name, email) {
+  try {
+    let data = {
+      "user":{
+          "name":name,
+          "email":email
+      }
+  }
+    const res = await http.post(proxyUrl + `/addUser`, data);
+    if(res.status !== 200){
+      throw new(res?.message ? res.message : 'Please enter message correctly')
+    }
+    toast.success('User added successfully')
+    return true;
+  } catch (e) {
+    toast.error(e?.message ? e.message : 'Something went wrong');
+    return false;
+  }
+
+  
+}
 

@@ -321,7 +321,7 @@ class Endpoints extends Component {
   displayEndpointName (endpointId) {
     return (
       <div className='sidebar-accordion-item pl-3'>
-        <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
+        <div className={`api-label ${this.props?.endpoints[endpointId]?.requestType} request-type-bgcolor`}>
           {this.props.endpoints[endpointId].requestType}
         </div>
         <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
@@ -469,7 +469,7 @@ class Endpoints extends Component {
     if (sidebarFocused && focused && this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     return (
       <div ref={(newRef) => { this.scrollRef[endpointId] = newRef }} className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
-        <div className={this.props.endpoints[endpointId].state} />
+        <div className={this.props?.endpoints[endpointId]?.state} />
         <div className='sidebar-toggle d-flex justify-content-between'>
           <button
             tabIndex={-1}

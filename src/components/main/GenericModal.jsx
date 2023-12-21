@@ -7,6 +7,7 @@ import { useState } from "react";
 import Form from "react-bootstrap/Form";
 function GenericModal({
   email,
+  name,
   validateEmail,
   keyboard,
   loading,
@@ -49,9 +50,20 @@ function GenericModal({
         <Modal.Body>
           {showInputGroup && (
             <>
-              <InputGroup className="mb-3">
+            <InputGroup className="mb-3">
                 <Form.Control
                   ref={inputRef}
+                  placeholder="Enter User Name"
+                  type="name"
+                  aria-label="Recipient's name"
+                  aria-describedby="basic-addon2"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                />
+              </InputGroup>
+              <InputGroup className="mb-3">
+                <Form.Control
                   placeholder="Enter User Email"
                   type="email"
                   aria-label="Recipient's email"
@@ -62,6 +74,7 @@ function GenericModal({
                   isInvalid={email && !validateEmail(email)}
                 />
               </InputGroup>
+              
               {/* show loading in invite org */}
               {loading ? (
                 <div

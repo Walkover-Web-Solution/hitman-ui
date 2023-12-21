@@ -1,10 +1,10 @@
 import React from 'react'
-import CollectionVersionForm from '../collectionVersions/collectionVersionForm'
 import DeleteModal from '../common/deleteModal'
+import ParentPageForm from './parentPageForm'
 
-function showVersionForm (props, onHide, collectionId, title) {
+function showParentPageForm (props, onHide, collectionId, title) {
   return (
-    <CollectionVersionForm
+    <ParentPageForm
       {...props}
       show
       onHide={onHide}
@@ -27,4 +27,4 @@ function showDeleteVersionModal (props, onHide, title, message, selectedVersion)
   )
 }
 
-export default { showVersionForm, showDeleteVersionModal }
+export default { showParentPageForm, showDeleteVersionModal }

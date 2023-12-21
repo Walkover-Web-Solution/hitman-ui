@@ -5,14 +5,15 @@ import "./inviteTeam.scss";
 import {
   getCurrentOrg,
   getProxyToken,
-  getCurrentUser,
 } from "../../auth/authServiceV2";
-import { inviteMember } from "../../../services/chatbotService";
 import { toast } from "react-toastify";
 import GenericModal from "../GenericModal";
+import { inviteMembers } from "../../../services/orgApiService";
+
 function InviteTeam() {
   const [users, setUsers] = useState([]);
   const [email, setEmail] = useState("");
+  const [name,setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const history = useHistory();
@@ -67,10 +68,9 @@ function InviteTeam() {
 
     try {
       setLoading(true);
-      const name = getCurrentUser()?.name;
-      await inviteMember(name, email);
+      await inviteMembers(name, email);
       setUsers((prevUsers) => [{ name, email }, ...prevUsers]);
-      toast.success("Invite sent successfully");
+      setName("");
       setEmail("");
       handleCloseModal();
     } catch (error) {
@@ -93,11 +93,13 @@ function InviteTeam() {
           + Invite Members
         </button>
         <GenericModal
+          name ={name}
           email={email}
           validateEmail={validateEmail}
           handleKeyPress={handleKeyPress}
           inputRef={inputRef}
           setEmail={setEmail}
+          setName={setName}
           handleSendInvite={handleSendInvite}
           handleCloseModal={handleCloseModal}
           showModal={showModal}
@@ -109,7 +111,7 @@ function InviteTeam() {
         <table className={"table"}>
           <thead>
             <tr>
-              {/* <th>Name</th> */}
+              <th>Name</th>
               <th>Email</th>
               <th>Role</th>
               <th>Action</th>
@@ -118,7 +120,7 @@ function InviteTeam() {
           <tbody>
             {users.map((user) => (
               <tr key={user.email}>
-                {/* <td>{user.name}</td> */}
+                <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{"Admin"}</td>
                 <td>
