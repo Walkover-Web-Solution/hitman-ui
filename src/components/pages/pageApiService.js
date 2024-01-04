@@ -12,6 +12,10 @@ function versionPagesUrl (versionId) {
   const apiUrl = getApiUrl()
   return `${apiUrl}/versions/${versionId}/pages`
 }
+function collectionPagesUrl (pageId) {
+  const apiUrl = getApiUrl()
+  return `${apiUrl}/pages/${pageId}`
+}
 
 function groupPagesUrl (groupId) {
   const apiUrl = getApiUrl()
@@ -44,6 +48,9 @@ export function getPage (pageId) {
 
 export function saveVersionPage (versionId, page) {
   return http.post(versionPagesUrl(versionId), page)
+}
+export function saveCollectionPage (rootParentId,page) {
+  return http.post(collectionPagesUrl(rootParentId), page)
 }
 
 export function saveGroupPage (groupId, page) {
@@ -82,5 +89,6 @@ export default {
   deletePage,
   duplicatePage,
   getAllPages,
-  updatePageOrder
+  updatePageOrder,
+  saveCollectionPage
 }

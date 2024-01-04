@@ -98,6 +98,10 @@ class CollectionForm extends Form {
 
   redirectToCollection (collection) {
     const { viewLoader } = this.state
+    if (!collection.data) {
+      console.error('collection.data is undefined');
+      return; // or handle this case appropriately
+  }
     const { id: collectionId } = collection.data
     if (collection.success && viewLoader.doc && !this.props.setDropdownList) {
       const { orgId } = this.props.match.params

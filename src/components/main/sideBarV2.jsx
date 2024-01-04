@@ -8,7 +8,6 @@ import CollectionVersions from '../collectionVersions/collectionVersions'
 import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME, isElectron, openExternalLink } from '../common/utility'
 
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
-import LoginSignupModal from './loginSignupModal'
 import PublishColelctionInfo from './publishCollectionInfo'
 import { ReactComponent as ArrowIcon } from '../../assets/icons/Vector.svg'
 import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
@@ -38,6 +37,7 @@ import { openModal } from '../modals/redux/modalsActions'
 
 // import { sendAmplitudeData } from '../../services/amplitude'
 import { UserProfileV2 } from './userProfileV2'
+import CollectionParentPages from '../collectionVersions/collectionParentPages'
 
 const mapStateToProps = (state) => {
   return {
@@ -55,9 +55,6 @@ const mapStateToProps = (state) => {
 
 /** Desktop App Download URL */
 // const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
-/* Internal Login Routes */
-const LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/login'
-const BROWSER_LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/browser-login'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -77,21 +74,7 @@ function compareByCreatedAt (a, b) {
   return comparison
 }
 
-const LoginButton = () => {
-  return (
-    isElectron()
-      ? <div className='btn btn-primary' onClick={() => openExternalLink(BROWSER_LOGIN_ROUTE)}>Login/SignUp</div>
-      : <div
-          id='sokt-sso'
-          data-redirect-uri={LOGIN_ROUTE}
-          data-source='hitman'
-          data-token-key='sokt-auth-token'
-          data-view='button'
-          data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-          signup_uri={LOGIN_ROUTE + '?signup=true'}
-        />
-  )
-}
+
 class SideBarV2 extends Component {
   constructor (props) {
     super(props)
@@ -294,12 +277,6 @@ class SideBarV2 extends Component {
 
   closeOpenApiFormModal () {
     this.setState({ showOpenApiForm: false })
-  }
-
-  closeLoginSignupModal () {
-    this.setState({
-      showLoginSignupModal: false
-    })
   }
 
   openHistorySnapshot (id) {
@@ -511,9 +488,6 @@ class SideBarV2 extends Component {
   renderEmptyCollectionsIfNotLoggedIn () {
     return (
       <div className='text-center'>
-        <div className='m-3 ml-4'>
-          {this.renderLoginButton()}
-        </div>
         <div className='empty-collections mt-5'>
           <div>
             <NoCollectionsIcon />
@@ -611,24 +585,6 @@ class SideBarV2 extends Component {
     history.push({ pathname: `/orgs/${orgId}/invite` });
   }
 
-  openOptions (path) {
-    const { match, productName, handleOpenLink } = this.props
-    const viasocketUrl = process.env.REACT_APP_VIASOCKET_URL
-    const currProductUrl = process.env.REACT_APP_UI_BASE_URL || process.env.REACT_APP_UI_URL
-    const { orgId } = match.params
-    if (orgId) {
-      let url = `${viasocketUrl}/orgs/${orgId}${path}?product=${productName}`
-      if (path === '/products') {
-        url += ''
-      } else {
-        url += `&redirect_uri=${currProductUrl}`
-      }
-      if (!handleOpenLink) { window.open(url, '_blank') } else { handleOpenLink(url) }
-    } else {
-      console.log('Organization ID not found')
-    }
-  }
-
   // renderDownloadDesktopApp () {
   //   const handleDownloadClick = () => {
   //     sendAmplitudeData('Download clicked')
@@ -681,7 +637,7 @@ class SideBarV2 extends Component {
                   </div>
                   <div className='secondary-sidebar sidebar-content-scroll'>
                     <div className='collectionVersionWrp'>
-                      <CollectionVersions
+                      <CollectionParentPages
                         {...this.props}
                         collection_id={this.state.selectedCollectionId}
                         open_collection={this.openCollection.bind(this)}
@@ -711,10 +667,6 @@ class SideBarV2 extends Component {
         </div>
       </div>
     )
-  }
-
-  renderLoginButton () {
-    return getCurrentUser() ? '' : <LoginButton />
   }
 
   renderDashboardSidebar () {
@@ -866,13 +818,6 @@ class SideBarV2 extends Component {
         {this.showAddEntitySelectionModal()}
         {this.showAddEntityModal()}
         {this.showDeleteEntityModal()}
-        {this.state.showLoginSignupModal && (
-          <LoginSignupModal
-            show
-            onHide={() => this.closeLoginSignupModal()}
-            title='Add Collection'
-          />
-        )}
         {this.state.showVersionForm &&
           collectionVersionsService.showVersionForm(
             this.props,

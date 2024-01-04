@@ -41,6 +41,40 @@ export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   }
 }
 
+export const addEndpointInCollection = (history, newEndpoint, rootParentId, customCallback) => {
+  const orgId = getOrgId()
+  const requestId = shortid.generate()
+  return (dispatch) => {
+    dispatch(addEndpointRequest({ ...newEndpoint, requestId, rootParentId }))
+    endpointApiService
+      .saveEndpointInCollection(rootParentId, { ...newEndpoint, requestId })
+      .then((response) => {
+        sendAmplitudeData('Endpoint created', {
+          endpointId: response.data.id,
+          endpointName: response.data.name,
+          rootParentId: response.data.rootParentId
+        })
+        dispatch(onEndpointAdded(response.data))
+        focusSelectedEntity('endpoints', response.data.id)
+        // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
+        // endpointsOrder.push(response.data.id);
+        // dispatch(setEndpointIds(endpointsOrder, groupId));
+        history.push(`/orgs/${orgId}/dashboard/endpoint/${response.data.id}`)
+        if (customCallback) {
+          customCallback({ closeForm: true, stopLoader: true })
+        }
+      })
+      .catch((error) => {
+        dispatch(
+          onEndpointAddedError(error.response ? error.response.data : error, newEndpoint, requestId)
+        )
+        if (customCallback) {
+          customCallback({ closeForm: false, stopLoader: true })
+        }
+      })
+  }
+}
+
 export const fetchEndpoints = (orgId) => {
   return (dispatch) => {
     endpointApiService

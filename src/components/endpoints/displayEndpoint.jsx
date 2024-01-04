@@ -26,7 +26,8 @@ import PublicBodyContainer from './publicBodyContainer'
 import {
   addEndpoint,
   updateEndpoint,
-  setAuthorizationType
+  setAuthorizationType,
+  addEndpointInCollection
 } from './redux/endpointsActions'
 import {
   setAuthorizationResponses,
@@ -111,6 +112,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_endpoint: (newEndpoint, groupId, callback) =>
       dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
+      add_endpointInCollection: (newEndpoint, rootParentID, callback) =>
+      dispatch(addEndpointInCollection(ownProps.history, newEndpoint, rootParentID, callback)),
     update_endpoint: (editedEndpoint, stopSave) =>
       dispatch(updateEndpoint(editedEndpoint, stopSave)),
     set_authorization_responses: (versionId, authResponses) =>
@@ -1106,16 +1109,20 @@ class DisplayEndpoint extends Component {
     return data
   }
 
-  handleSave = async (groupId, endpointObject) => {
-    const { endpointName, endpointDescription } = endpointObject || {}
+  handleSave = async (id, endpointObject, isGroupId = true) => {
+    console.log(id, isGroupId ? "groupId" : "rootParentId");
+  const { endpointName, endpointDescription } = endpointObject || {};
+  const effectiveGroupId = isGroupId ? id : this.state.groupId;
+  const effectiveRootParentId = isGroupId ? this.state.rootParentId : id;
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
       })
     }
-    if (!(this.state.groupId || groupId)) {
+    if (!(this.state.effectiveGroupId || effectiveRootParentId)) {
       this.openEndpointFormModal()
     } else {
+      debugger
       const body = this.prepareBodyForSaving(this.state.data.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: this.state.bodyDescription,
@@ -1154,7 +1161,7 @@ class DisplayEndpoint extends Component {
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
-        this.props.add_endpoint(endpoint, groupId || this.state.groupId, ({ closeForm, stopLoader }) => {
+        this.props.add_endpointInCollection(endpoint, effectiveRootParentId || this.state.effectiveRootParentId, ({ closeForm, stopLoader }) => {
           if (closeForm) this.closeEndpointFormModal()
           if (stopLoader) this.setState({ saveAsLoader: false })
         })
@@ -1166,7 +1173,7 @@ class DisplayEndpoint extends Component {
           delete endpoint.state
           delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
-          this.props.add_endpoint(endpoint, groupId || this.state.groupId, ({ closeForm, stopLoader }) => {
+          this.props.add_endpointInCollection(endpoint, effectiveGroupId || this.state.effectiveGroupId, ({ closeForm, stopLoader }) => {
             if (closeForm) this.closeEndpointFormModal()
             if (stopLoader) this.setState({ saveAsLoader: false })
           })
@@ -1178,7 +1185,7 @@ class DisplayEndpoint extends Component {
           this.props.update_endpoint({
             ...endpoint,
             id: this.state.endpoint.id,
-            groupId: groupId || this.state.groupId
+            effectiveGroupId: effectiveGroupId || this.state.effectiveGroupId
           }, () => { this.setState({ saveLoader: false }) })
           tabService.markTabAsSaved(this.props.tab.id)
         }
@@ -1391,8 +1398,17 @@ class DisplayEndpoint extends Component {
   closeChatBotModal = () =>  {
     this.setState({ showAskAiSlider: false })
   }
-  setGroupId(groupId, { endpointName, endpointDescription }) {
-    this.setState({ groupId }, () => { this.handleSave(groupId, { endpointName, endpointDescription }) })
+  setGroupId(groupId, endpointDetails) {
+    this.setState({ groupId }, () => { 
+      this.handleSave(groupId, endpointDetails, true);
+    });
+  }
+  
+  setRootParentID(rootParentId, endpointDetails) {
+    console.log(rootParentId, "root");
+    this.setState({ rootParentId }, () => { 
+      this.handleSave(rootParentId, endpointDetails, false);
+    });
   }
 
   updateArray(updatedArray) {
@@ -2810,6 +2826,7 @@ class DisplayEndpoint extends Component {
                             <SaveAsSidebar
                               {...this.props}
                               onHide={() => this.closeEndpointFormModal()}
+                              set_rootParent_id= {this.setRootParentID.bind(this)}
                               set_group_id={this.setGroupId.bind(this)}
                               name={this.state.data.name}
                               description={this.state.data.description}

@@ -85,10 +85,6 @@ class MainV2 extends Component {
   }
 
   async componentDidMount () {
-    // const currentUser = getCurrentUser();
-    // const currentOrg = getCurrentOrg();
-    // const orgList = getOrgList();
-    // const jwt = getProxyToken();
 
     const token = getProxyToken()
     if (!token) {
@@ -180,7 +176,7 @@ class MainV2 extends Component {
   }
 
   setVisitedOrgs () {
-        const orgId = this.props.match.params.orgId
+    const orgId = this.props.match.params.orgId
     const org = {}
     org[orgId] = true
     window.localStorage.setItem('visitedOrgs', JSON.stringify(org))
@@ -197,12 +193,9 @@ class MainV2 extends Component {
   }
 
   setTabs (tabs, defaultTabIndex) {
-    if (defaultTabIndex >= 0) {
-      this.setState({ defaultTabIndex })
-    }
-    if (tabs) {
-      this.setState({ tabs })
-    }
+    if (defaultTabIndex >= 0) this.setState({ defaultTabIndex })
+    
+    if (tabs) this.setState({ tabs })
   }
 
   setEnvironment (environment) {

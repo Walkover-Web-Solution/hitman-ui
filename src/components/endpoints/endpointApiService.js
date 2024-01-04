@@ -23,6 +23,11 @@ function endpointUrl (groupId) {
   return `${apiUrl}/groups/${groupId}/endpoints`
 }
 
+function endpointUrlForCollection (pageId) {
+  const apiUrl = getApiUrl()
+  return `${apiUrl}/pages/${pageId}/endpoints`
+}
+
 export function apiTest (api, method, body, headers, bodyType, cancelToken) {
   if (api.indexOf('localhost') > 0 || api.indexOf('127.0.0.1') > 0) {
     return makeHttpRequestThroughAxios({ api, method, body, headers, bodyType, cancelToken })
@@ -37,21 +42,24 @@ export function apiTest (api, method, body, headers, bodyType, cancelToken) {
   }
 }
 
-export function getAllEndpoints (id) {
+export function getAllEndpoints (id) {  
   return http.get(`${apiUrlEndpoint}/orgs/${id}/endpoints`)
 }
 
-export function getEndpoints (groupId) {
-  return http.get(endpointUrl(groupId))
+export function getEndpoints (parentId) { //author : Goutam Mehta
+  return http.get(endpointUrlForCollection(parentId))
 }
 
-export function getEndpoint (endpointId) {
+export function getEndpoint (endpointId) { //author : Goutam Mehta
   const apiUrl = getApiUrl()
   return http.get(`${apiUrl}/endpoints/${endpointId}`)
 }
-
 export function saveEndpoint (groupId, endpoint) {
   return http.post(endpointUrl(groupId), endpoint)
+}
+
+export function saveEndpointInCollection (rootParentId, endpoint) { //author : Goutam Mehta
+  return http.post(endpointUrlForCollection(rootParentId), endpoint)
 }
 
 export function updateEndpoint (endpointId, endpoint) {
@@ -236,5 +244,6 @@ export default {
   moveEndpoint,
   authorize,
   setAuthorizationType,
-  updateEndpointOrder
+  updateEndpointOrder,
+  saveEndpointInCollection
 }

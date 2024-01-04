@@ -154,6 +154,44 @@ export const addPage = (history, versionId, newPage) => {
   }
 }
 
+export const addPage1 = (history,rootParentId, newPage) => {
+  console.log(rootParentId,"addpage1")
+  const orgId = getOrgId()
+  return (dispatch) => {
+    dispatch(addPageRequestInCollection(rootParentId,newPage))
+    pageApiService
+      .saveCollectionPage(rootParentId,newPage)
+      .then((response) => {
+        dispatch(onPageAdded(response.data))
+        focusSelectedEntity('pages', response.data.id)
+        history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
+      })
+      .catch((error) => {
+        dispatch(
+          onPageAddedError(
+            error.response ? error.response.data : error,
+            newPage
+          )
+        )
+      })
+  }
+}
+
+export const addPageRequestInCollection = (rootParentId,newPage) => {
+  return {
+    type: pagesActionTypes.ADD_PARENT_PAGE_REQUEST,
+    rootParentId,
+    newPage
+  }
+}
+
+export const onParentPageAdded = (response) => {
+  return {
+    type: pagesActionTypes.ON_PARENT_PAGE_ADDED,
+    response
+  }
+}
+
 export const addPageRequest = (versionId, newPage) => {
   return {
     type: pagesActionTypes.ADD_PAGE_REQUEST,

@@ -5,14 +5,14 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import shortid from 'shortid'
 import Form from '../common/form'
-import { addGroupPage, addPage } from '../pages/redux/pagesActions'
+import { addGroupPage, addPage1 } from '../pages/redux/pagesActions'
 import { onEnter, toTitleCase } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_page: (versionId, newPage) =>
-      dispatch(addPage(ownProps.history, versionId, newPage)),
+    add_page: (rootParentId, newPage) =>
+      dispatch(addPage1(ownProps.history,rootParentId,newPage)),
     add_group_page: (versionId, groupId, newPage) =>
       dispatch(addGroupPage(ownProps.history, versionId, groupId, newPage))
   }
@@ -40,10 +40,11 @@ class PageForm extends Form {
   }
 
   async doSubmit (props) {
-    if (!this.state.selectedVersionId && this.props.addEntity) {
+    if (!this.state.selectedCollection && this.props.addEntity) {
       this.setState({ versionRequired: true })
       return
     }
+    const collections = this.props.selectedCollection
     const version = this.props.addEntity ? this.state.selectedVersionId : this.props.selectedVersion
     this.props.onHide()
     let { name } = { ...this.state.data }
@@ -58,11 +59,11 @@ class PageForm extends Form {
         newPage
       )
     }
-    if (this.props.title === 'Add New Version Page' || (this.props.addEntity && !this.state.selectedGroupId)) {
-      const versionId = this.props.addEntity ? version : version.id
+    if (this.props.title === 'Add New Parent Page' || (this.props.addEntity)){
+      const rootParentId = this.props.addEntity ?  collections : collections.rootParentId
       const data = { ...this.state.data, name }
       const newPage = { ...data, requestId: shortid.generate() }
-      this.props.add_page(versionId, newPage)
+      this.props.add_page(rootParentId ,newPage)
     }
   }
 

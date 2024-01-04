@@ -5,9 +5,8 @@ import { withRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 import shortId from 'shortid'
 import CollectionVersions from '../collectionVersions/collectionVersions'
-import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
-import { isDashboardRoute, ADD_VERSION_MODAL_NAME, openExternalLink, getParentIds } from '../common/utility'
+import { isDashboardRoute, openExternalLink, getParentIds } from '../common/utility'
 import collectionsService from './collectionsService'
 import {
   addCollection,
@@ -23,12 +22,13 @@ import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
-import PublishColelctionInfo from '../main/publishCollectionInfo'
+import PublishCollectionInfo from '../main/publishCollectionInfo'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandIcon from '../../assets/icons/expand-arrow.svg'
 import { addNewTab } from '../tabs/redux/tabsActions'
 import PageForm from '../pages/pageForm'
+import CollectionParentPages from '../collectionVersions/collectionParentPages'
 
 const EMPTY_STRING = ''
 
@@ -44,7 +44,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_collection: (newCollection) => dispatch(addCollection(newCollection)),
+    add_collection: (newCollection) => 
+      dispatch(addCollection(newCollection)),
     update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
     delete_collection: (collection, props) =>
@@ -90,29 +91,22 @@ class CollectionsComponent extends Component {
   componentDidMount () {
     const { pageId, endpointId } = this.props.match.params
 
-    if (pageId) {
-      this.setColelctionForEntity(pageId, 'page')
-    }
-
-    if (endpointId) {
-      this.setColelctionForEntity(endpointId, 'endpoint')
-    }
+    if (pageId) this.setCollectionForEntity(pageId, 'page')
+    
+    if (endpointId) this.setCollectionForEntity(endpointId, 'endpoint')
   }
 
   componentDidUpdate (prevProps, prevState) {
     const { pageId, endpointId } = this.props.match.params
     const { pageId: prevPageId, endpointId: prevEndpointId } = prevProps.match.params
 
-    if (pageId && prevPageId !== pageId) {
-      this.setColelctionForEntity(pageId, 'page')
-    }
-
-    if (endpointId && prevEndpointId !== endpointId) {
-      this.setColelctionForEntity(endpointId, 'endpoint')
-    }
+    if (pageId && prevPageId !== pageId) this.setCollectionForEntity(pageId, 'page')
+    
+    if (endpointId && prevEndpointId !== endpointId) this.setCollectionForEntity(endpointId, 'endpoint')
+  
   }
 
-  setColelctionForEntity (id, type) {
+  setCollectionForEntity (id, type) {
     const { collectionId } = getParentIds(id, type, this.props)
     sidebarActions.expandItem('collections', collectionId)
   }
@@ -157,11 +151,6 @@ class CollectionsComponent extends Component {
     this.props.delete_group(deletedGroupId)
   }
 
-  async handleAddVersionPage (versionId, newPage) {
-    newPage.requestId = shortId.generate()
-    this.props.add_page(versionId, newPage)
-  }
-
   async handleDuplicateCollection (collectionCopy) {
     this.props.duplicate_collection(collectionCopy)
   }
@@ -175,15 +164,6 @@ class CollectionsComponent extends Component {
     this.setState({
       showCollectionForm: true,
       collectionFormName: 'Edit Collection',
-      selectedCollection: {
-        ...this.props.collections[collectionId]
-      }
-    })
-  }
-
-  openAddVersionForm (collectionId) {
-    this.setState({
-      showVersionForm: true,
       selectedCollection: {
         ...this.props.collections[collectionId]
       }
@@ -233,7 +213,7 @@ class CollectionsComponent extends Component {
     })
   }
 
-  closeVersionForm () {
+  closeParentPageForm () {
     this.setState({ showPageForm: false })
   }
 
@@ -335,6 +315,7 @@ class CollectionsComponent extends Component {
   }
 
   scrollToCollection (collectionId) {
+    debugger
     const ref = this.scrollRef[collectionId] || null
     if (ref) {
       setTimeout(() => {
@@ -342,14 +323,28 @@ class CollectionsComponent extends Component {
       }, 100)
     }
   }
-  openAddCollectionPageForm (selectedCollection) {
-    console.log("inside the collection page",selectedCollection)
+
+  openAddCollectionPageForm (collection) {
     const showPageForm = { addPage: true }
     this.setState({
       showPageForm,
-      versionFormName: 'Add New Version Page',
-      selectedCollection
+      parentPageFormName: 'Add New Parent Page',
+      selectedCollection : collection
     })
+  }
+
+  showAddPageForm () {
+    return (
+      this.state.showPageForm.addPage && (
+        <PageForm
+          {...this.props}
+          show={this.state.showPageForm.addPage}
+          onHide={() => this.closeParentPageForm()}
+          title={this.state.parentPageFormName}
+          selectedCollection={this.state.selectedCollection}
+        />
+      )
+    )
   }
 
   renderBody (collectionId, collectionState) {
@@ -359,12 +354,19 @@ class CollectionsComponent extends Component {
     if (sidebarFocused && focused && this.scrollRef[collectionId]) {
       this.scrollToCollection(collectionId)
     }
-    const versionsToRender = []
+    // const versionsToRender = []
+    // if (firstChild) {
+    //   let childVersion = this.props.sidebar.navList[firstChild]
+    //   while (childVersion) {
+    //     versionsToRender.push(childVersion.id)
+    //     childVersion = this.props.sidebar.navList[childVersion.nextSibling]
+    //   }
+    const pagesToRender = []
     if (firstChild) {
-      let childVersion = this.props.sidebar.navList[firstChild]
-      while (childVersion) {
-        versionsToRender.push(childVersion.id)
-        childVersion = this.props.sidebar.navList[childVersion.nextSibling]
+      let childPage = this.props.sidebar.navList[firstChild]
+      while (childPage) {
+        pagesToRender.push(childPage.id)
+        childPage = this.props.sidebar.navList[childPage.nextSibling]
       }
     }
 
@@ -405,7 +407,7 @@ class CollectionsComponent extends Component {
             </div>
             <div className='d-flex align-items-center'>
               <div className='sidebar-item-action d-flex align-items-center'>
-                <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddCollectionPageForm(collectionId)}>
+                <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddCollectionPageForm(this.props.collections[collectionId])}>
                   <Plus />
                 </div>
                 <div
@@ -563,18 +565,25 @@ class CollectionsComponent extends Component {
               ? (
                 <div id='collection-collapse'>
                   <Card.Body>
-                    <PublishColelctionInfo
+                    <PublishCollectionInfo
                       {...this.props}
                       collectionId={collectionId}
                       // getTotalEndpointsCount={this.props.getTotalEndpointsCount.bind(this)}
                     />
-                    <CollectionVersions
+                    {/* <CollectionVersions
                       {...this.props}
                       versionsToRender={versionsToRender}
                       collection_id={collectionId}
                       addVersion={this.openAddVersionForm.bind(this)}
                       selectedCollection
-                    />
+                    /> */}
+                    { <CollectionParentPages
+                      {...this.props}
+                      pagesToRender={pagesToRender}
+                      collection_id={collectionId}
+                      addPage={this.openAddCollectionPageForm.bind(this)}
+                      selectedCollection
+                    /> }
                   </Card.Body>
                 </div>
                 )
@@ -674,13 +683,7 @@ class CollectionsComponent extends Component {
             )}
           <div className='App-Nav'>
             <div className='tabs'>
-              {this.state.showPageForm &&
-                collectionVersionsService.showParentPageForm(
-                  this.props,
-                  this.closeVersionForm.bind(this),
-                  this.state.selectedCollection.id,
-                  ADD_VERSION_MODAL_NAME
-                )}
+              {this.showAddPageForm()}
               {this.state.showCollectionForm &&
                 collectionsService.showCollectionForm(
                   this.props,
@@ -741,10 +744,16 @@ class CollectionsComponent extends Component {
                 )}
               </div>
               <div id='parent-accordion' key={index}>
-                <CollectionVersions
+                {/* <CollectionVersions
                   {...this.props}
                   collection_id={collectionId}
                   addVersion={this.openCollectionPageForm.bind(
+                    this.collection_id)}
+                /> */}
+                <CollectionParentPages
+                  {...this.props}
+                  collection_id={collectionId}
+                  addPage={this.openAddCollectionPageForm.bind(
                     this.collection_id)}
                 />
               </div>

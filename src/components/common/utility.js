@@ -187,7 +187,7 @@ export function getOrgId () {
 
 export function getParentIds (id, type, data) {
   let entities = {}
-  const parentIds = { collectionId: '', versionId: '', groupId: '' }
+  const parentIds = { collectionId: '', versionId: '', groupId: '',pageId: '' }
   const { pages, endpoints, groups, versions } = data
 
   switch (type) {
@@ -218,6 +218,11 @@ export function getParentIds (id, type, data) {
   if (versionId) {
     parentIds.versionId = versionId
     collectionId = versions[versionId]?.collectionId
+  }
+  let pageId =''
+  if (pageId) {
+    parentIds.pageId = pageId
+    collectionId = pages[pageId]?.collectionId
   }
 
   if (collectionId) {

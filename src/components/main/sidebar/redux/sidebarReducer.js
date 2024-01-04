@@ -19,12 +19,11 @@ class TreeNode {
 
     this.focused = false
     this.expanded = false
-    this.isExpandable = !!((type === 'collections' || type === 'versions' || type === 'groups'))
-
+    this.isExpandable = !!((type === 'collections' || type === 'pages' || type === 'versions'))
     this.nextSibling = nextSibling
     this.prevSibling = prevSibling
     this.parentNode = parentNode
-
+    
     this.firstChild = null
     this.lastChild = null
   }
@@ -190,6 +189,16 @@ function sidebarReducer (state = initialState, action) {
         return newState
 
       case pagesActionTypes.ADD_PAGE_REQUEST:
+        case pagesActionTypes.ADD_PARENT_PAGE_REQUEST:
+        newState = addNewNodeReq(newState, { ...action.newPage, id: action.newPage.requestId }, 'parentpages')
+        return newState
+
+      case pagesActionTypes.ON_PAGE_ADDED:
+      case pagesActionTypes.ON_PARENT_PAGE_ADDED:
+        newState = addNewNodeSuccess(newState, action.response.requestId, action.response.id, 'parentpages')
+        return newState
+
+
       case pagesActionTypes.ADD_GROUP_PAGE_REQUEST:
         newState = addNewNodeReq(newState, { ...action.newPage, id: action.newPage.requestId }, 'pages')
         return newState
@@ -320,19 +329,20 @@ function focusNode (newState, nodeAddress) {
  * @returns Modified State
  */
 function addChildNodes (newState, payload) {
+  console.log(newState,"newstate",payload,"payload")
   if (!_.isEmpty(payload.collections)) {
     _.values(payload.collections).forEach(collection => {
       newState = addNewNodeReq(newState, collection, 'collections')
     })
   }
+  if (!_.isEmpty(payload.rootPage)) {
+    _.values(payload.rootPage).forEach(page => {
+      newState = addNewNodeReq(newState, page, 'rootPage')
+    })
+  }
   if (!_.isEmpty(payload.versions)) {
     _.values(payload.versions).forEach(version => {
       newState = addNewNodeReq(newState, version, 'versions')
-    })
-  }
-  if (!_.isEmpty(payload.groups)) {
-    _.values(payload.groups).forEach(group => {
-      newState = addNewNodeReq(newState, group, 'groups')
     })
   }
   if (!_.isEmpty(payload.pages)) {
@@ -360,14 +370,14 @@ function removeChildNodes (newState, payload) {
       newState = removeNodeSuccess(newState, collectionId, 'collections')
     })
   }
+  if (!_.isEmpty(payload.rootParentId)) {
+    payload.rootParentIds.forEach(rootParentId => {
+      newState = removeNodeSuccess(newState, rootParentId, 'rootPage')
+    })
+  }
   if (!_.isEmpty(payload.versionIds)) {
     payload.versionIds.forEach(versionId => {
       newState = removeNodeSuccess(newState, versionId, 'versions')
-    })
-  }
-  if (!_.isEmpty(payload.groupIds)) {
-    payload.groupIds.forEach(groupId => {
-      newState = removeNodeSuccess(newState, groupId, 'groups')
     })
   }
   if (!_.isEmpty(payload.endpointIds)) {
@@ -403,7 +413,7 @@ function addNewNodeReq (newState, newEntity, type) {
 
   switch (type) {
     case 'collections':
-      if (newState.lastChild) {
+      if (newState.child) {
         newState.navList[newNodeAddress].prevSibling = newState.lastChild
         newState.navList[newState.lastChild].nextSibling = newNodeAddress
       } else {
@@ -412,7 +422,7 @@ function addNewNodeReq (newState, newEntity, type) {
       newState.lastChild = newNodeAddress
       break
 
-    case 'versions':
+    case 'rootPage':
       parentNode = `collections_${newEntity.collectionId}`
       if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.collectionId, 'collections')
 
@@ -428,10 +438,10 @@ function addNewNodeReq (newState, newEntity, type) {
       newState.navList[parentNode].lastChild = newNodeAddress
       break
 
-    case 'groups':
+    case 'pages':
 
-      parentNode = `versions_${newEntity.versionId}`
-      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.versionId, 'versions')
+      parentNode = `rootPage_${newEntity.pageId}`
+      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.pageId, 'rootPage')
 
       newState.navList[newNodeAddress].parentNode = parentNode
 
@@ -445,10 +455,10 @@ function addNewNodeReq (newState, newEntity, type) {
       newState.navList[parentNode].lastChild = newNodeAddress
       break
 
-    case 'pages':
+    case 'versions':
 
-      parentNode = newEntity.groupId ? `groups_${newEntity.groupId}` : `versions_${newEntity.versionId}`
-      if (_.isEmpty(newState.navList[parentNode])) { newState = addTempNode(newState, newEntity.groupId ? newEntity.groupId : newEntity.versionId, newEntity.groupId ? 'groups' : 'versions') }
+      parentNode =  `pages_${newEntity.pageId}`
+      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.pageId, 'pages')
 
       newState.navList[newNodeAddress].parentNode = parentNode
 
@@ -463,8 +473,8 @@ function addNewNodeReq (newState, newEntity, type) {
       break
 
     case 'endpoints':
-      parentNode = `groups_${newEntity.groupId}`
-      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.groupId, 'groups')
+      parentNode = newEntity.rootParentId ? `rootPage_${newEntity.rootParentId}` : `versions_${newEntity.versionId}`
+      if (_.isEmpty(newState.navList[parentNode])) { newState = addTempNode(newState, newEntity.rootParentId ? newEntity.rootParentId : newEntity.versionId, newEntity.rootParentId ? 'rootPage' : 'versions') }
       newState.navList[newNodeAddress].parentNode = parentNode
 
       if (newState.navList[parentNode].lastChild) {
@@ -507,7 +517,7 @@ function addTempNode (newState, id, type) {
 function addNewNodeSuccess (newState, requestId, id, type) {
   const reqNodeAddress = `${type}_${requestId}`
   const nodeAddress = `${type}_${id}`
-
+ 
   const { prevSibling: prevSiblingAdress, nextSibling: nextSiblingAddress, parentNode: parentNodeAddress } = newState.navList[reqNodeAddress]
   const parentNode = parentNodeAddress ? newState.navList[parentNodeAddress] : newState
   const prevSiblingNode = prevSiblingAdress ? newState.navList[prevSiblingAdress] : null
@@ -522,11 +532,11 @@ function addNewNodeSuccess (newState, requestId, id, type) {
   }
 
   if (prevSiblingNode && prevSiblingNode.nextSibling === reqNodeAddress) {
-    prevSiblingNode.nextSibling = nodeAddress
+  prevSiblingNode.nextSibling = nodeAddress
   }
 
   if (nextSiblingNode && nextSiblingNode.prevSibling === reqNodeAddress) {
-    nextSiblingNode.prevSibling = nodeAddress
+  nextSiblingNode.prevSibling = nodeAddress
   }
 
   newState.navList[nodeAddress] = newState.navList[reqNodeAddress]

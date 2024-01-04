@@ -55,7 +55,7 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const groupId = new URLSearchParams(this.props.history.location.search).get('group')
     if (!_.isNull(groupId)) {
       const list = {
@@ -102,18 +102,20 @@ class SaveAsSidebar extends Form {
   //   }
   // }
 
-  setDropdownList (item) {
+  setDropdownList(item) {
+    console.log(item,"item")
     const list = {}
     const dropdownList = { ...this.state.dropdownList }
     switch (this.state.dropdownList.type) {
       case 'collections':
         list.type = 'versions'
-        list.parentId = item.id
+        list.parentId = item.rootParentId
         this.setState({ list })
         dropdownList.type = 'versions'
-        dropdownList.parentId = item.id
+        dropdownList.parentId = item.rootParentId
         dropdownList.selectedCollectionId = item.id
         this.setState({ dropdownList })
+        console.log(dropdownList,"dropdowmlist")
         return
       case 'versions':
         list.type = 'groups'
@@ -137,7 +139,7 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  openAddModal () {
+  openAddModal() {
     // switch (this.state.list.type) {
     switch (this.state.dropdownList.type) {
       case 'collections':
@@ -156,7 +158,7 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  showCollectionForm () {
+  showCollectionForm() {
     return (
       this.state.showCollectionForm && (
         <CollectionForm
@@ -172,7 +174,7 @@ class SaveAsSidebar extends Form {
     )
   }
 
-  showCollectionVersionForm () {
+  showCollectionVersionForm() {
     return (
       this.state.showCollectionVersionForm && (
         <CollectionVersionForm
@@ -189,7 +191,7 @@ class SaveAsSidebar extends Form {
     )
   }
 
-  showGroupForm () {
+  showGroupForm() {
     return (
       this.state.showGroupForm && (
         <GroupForm
@@ -206,7 +208,7 @@ class SaveAsSidebar extends Form {
     )
   }
 
-  renderDropdownItems (type) {
+  renderDropdownItems(type) {
     let dropdownItems = []
     switch (type) {
       case 'collections':
@@ -253,54 +255,7 @@ class SaveAsSidebar extends Form {
     return dropdownItems
   }
 
-  // renderList () {
-  //   let listItems = []
-  //   switch (this.state.list.type) {
-  //     case 'collections':
-  //       listItems = Object.values(this.props.collections).filter(collection => !collection?.importedFromMarketPlace).map(collection => ({
-  //         name: collection.name,
-  //         id: collection.id
-  //       }))
-  //       break
-  //     case 'versions':
-  //       listItems = Object.keys(this.props.versions)
-  //         .filter(
-  //           vId =>
-  //             this.props.versions[vId].collectionId === this.state.list.parentId
-  //         )
-  //         .map(versionId => ({
-  //           name: this.props.versions[versionId].number,
-  //           id: this.props.versions[versionId].id
-  //         }))
-  //       break
-  //     case 'groups':
-  //       listItems = Object.keys(this.props.groups)
-  //         .filter(
-  //           gId => this.props.groups[gId].versionId === this.state.list.parentId
-  //         )
-  //         .map(groupId => ({
-  //           name: this.props.groups[groupId].name,
-  //           id: this.props.groups[groupId].id
-  //         }))
-  //       break
-  //     case 'endpoints':
-  //       listItems = Object.keys(this.props.endpoints)
-  //         .filter(
-  //           eId =>
-  //             this.props.endpoints[eId].groupId === this.state.list.parentId
-  //         )
-  //         .map(endpointId => ({
-  //           name: this.props.endpoints[endpointId].name,
-  //           id: this.props.endpoints[endpointId].id
-  //         }))
-  //       break
-  //     default:
-  //       break
-  //   }
-  //   return listItems
-  // }
-
-  renderListTitle () {
+  renderListTitle() {
     switch (this.state.list.type) {
       case 'collections':
         return 'All Collections'
@@ -339,7 +294,7 @@ class SaveAsSidebar extends Form {
   //   }
   // }
 
-  goDropdownBack (type) {
+  goDropdownBack(type) {
     const dropdownList = { ...this.state.dropdownList }
     switch (type) {
       case 'collections':
@@ -362,11 +317,14 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  async doSubmit () {
-    this.props.set_group_id(this.state.list.parentId, { endpointName: this.state.data.name, endpointDescription: this.state.data.description })
+  async doSubmit() {
+    const selectedCollection = this.props.collections[this.state.dropdownList.selectedCollectionId];
+    const rootParentId = selectedCollection.rootParentId;
+    this.props.set_group_id(this.state.list.parentId, { endpointName: this.state.data.name, endpointDescription: this.state.data.description });
+    this.props.set_rootParent_id(rootParentId, { endpointName: this.state.data.name, endpointDescription: this.state.data.description });
   }
 
-  render () {
+  render() {
     const title = this.state.data.name
     const saveAsSidebarStyle = {
       position: 'fixed',
@@ -379,21 +337,11 @@ class SaveAsSidebar extends Form {
       boxShadow: '-25px 25px 43px rgba(0, 0, 0, 0.07)',
       overflow: 'hidden'
     }
-    const darkBackgroundStyle = {
-      position: 'fixed',
-      background: 'rgba(0, 0, 0, 0.4)',
-      opacity: 1,
-      zIndex: '1040',
-      top: '0px',
-      right: '0px',
-      height: '100vh',
-      width: '100vw'
-    }
+    
     return (
       <div>
         <div
           onClick={() => { this.props.onHide() }}
-          style={darkBackgroundStyle}
         >
           {' '}
         </div>
@@ -435,16 +383,16 @@ class SaveAsSidebar extends Form {
                       <DropdownItem value={item.id} key={item.id} onClick={() => { this.setDropdownList(item) }}>
                         {item.name}
                       </DropdownItem>
-                      )))
+                    )))
                     : (
                       <DropdownItem className='disabled'>
                         No Collection Found
                       </DropdownItem>
-                      )}
+                    )}
                 </Dropdown.Menu>
               </Dropdown>
 
-              {this.state.dropdownList.parentId != null &&
+              {this.state.dropdownList.parentId != null && this.renderDropdownItems('versions').length > 0 && this.renderDropdownItems('groups').length > 0 &&
                 <>
                   <div className='mb-2 mt-3'>Version</div>
                   <Dropdown className='cst'>
@@ -461,12 +409,12 @@ class SaveAsSidebar extends Form {
                           <DropdownItem value={item.id} key={item.id} onClick={() => { this.setDropdownList(item) }}>
                             {item.name}
                           </DropdownItem>
-                          )))
+                        )))
                         : (
                           <DropdownItem className='disabled'>
                             No Version Found
                           </DropdownItem>
-                          )}
+                        )}
                     </Dropdown.Menu>
                   </Dropdown>
                 </>}
@@ -488,12 +436,12 @@ class SaveAsSidebar extends Form {
                           <DropdownItem value={item.id} key={item.id} onClick={() => { this.setDropdownList(item) }}>
                             {item.name}
                           </DropdownItem>
-                          )))
+                        )))
                         : (
                           <DropdownItem className='disabled'>
                             No Group Found
                           </DropdownItem>
-                          )}
+                        )}
                     </Dropdown.Menu>
                   </Dropdown>
                 </>}
@@ -508,17 +456,17 @@ class SaveAsSidebar extends Form {
               <button
                 className={this.props.saveAsLoader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
                 onClick={this.handleSubmit}
-                disabled={this.state.dropdownList.type !== 'endpoints' || title.trim() === '' || title === 'Untitled' ? 'disabled' : ''}
+                disabled={this.state.dropdownList.selectedCollectionId === null || title.trim() === '' || title === 'Untitled' ? 'disabled' : ''}
               >
                 Save{' '}
-                {this.state.dropdownList.type === 'endpoints' &&
-                    `to ${this.props.groups[this.state.dropdownList.selectedGroupId].name}`}
+                {this.state.dropdownList.selectedCollectionId !== null &&
+                  `to ${this.props.collections[this.state.dropdownList.selectedCollectionId].name}`}
               </button>
             </div>
           </div>
         </div>
       </div>
-    // </Modal>
+      // </Modal>
     )
   }
 }

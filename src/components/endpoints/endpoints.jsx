@@ -270,7 +270,7 @@ class Endpoints extends Component {
       )
       endpointIds.splice(index, 0, this.draggedItem)
 
-      this.props.update_endpoints_order(endpointIds, this.props.group_id)
+      this.props.update_endpoints_order(endpointIds, this.props.parent_id)
       this.draggedItem = null
     }
   }
@@ -279,9 +279,9 @@ class Endpoints extends Component {
     const endpoints = {}
     for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
       if (
-        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId &&
-        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId ===
-        this.props.group_id
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].parentId &&
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].parentId ===
+        this.props.parent_id
       ) {
         endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[
           Object.keys(this.props.endpoints)[i]
@@ -478,7 +478,7 @@ class Endpoints extends Component {
               sidebarActions.toggleItem('endpoints', endpointId)
               this.handleDisplay(
                 this.props.endpoints[endpointId],
-                this.props.group_id,
+                this.props.parent_id,
                 this.props.collection_id,
                 true
               )
@@ -486,7 +486,7 @@ class Endpoints extends Component {
             onDoubleClick={() =>
               this.handleDisplay(
                 this.props.endpoints[endpointId],
-                this.props.group_id,
+                this.props.parent_id,
                 this.props.collection_id,
                 false
               )}
@@ -507,7 +507,9 @@ class Endpoints extends Component {
   }
 
   addEndpoint (endpoint) {
-    this.props.add_endpoint(endpoint, this.props.group_id, null)
+    debugger
+    console.log("add in endpoints")
+    this.props.add_endpoint(endpoint, this.props.parent_id, null)
   }
 
   renderForm () {
@@ -556,14 +558,14 @@ class Endpoints extends Component {
         onClick={() =>
           this.handleDisplay(
             this.props.endpoints[endpointId],
-            this.props.group_id,
+            this.props.parent_id,
             this.props.collection_id,
             true
           )}
         onDoubleClick={() =>
           this.handleDisplay(
             this.props.endpoints[endpointId],
-            this.props.group_id,
+            this.props.parent_id,
             this.props.collection_id,
             false
           )}
@@ -618,9 +620,10 @@ class Endpoints extends Component {
   filterEndpointIdsByGroup () {
     const endpointIds = Object.keys(this.props.endpoints).filter(
       (eId) =>
-        this.props.endpoints[eId].groupId &&
-        this.props.endpoints[eId].groupId === this.props.group_id
+        this.props.endpoints[eId].parentId &&
+        this.props.endpoints[eId].parentId === this.props.parent_id
     )
+    console.log(endpointIds,"endpointiDs")
     return endpointIds
   }
 
@@ -651,6 +654,7 @@ class Endpoints extends Component {
   render () {
     this.setFilterFlag()
     const endpointIds = this.filterEndpointIdsByGroup()
+    console.log(endpointIds,"endpointIds")
     let endpointsArray = []
     endpointsArray = this.extractEndpointsFromIds(endpointIds)
     let endpoints = {}
