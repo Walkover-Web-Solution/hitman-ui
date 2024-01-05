@@ -87,9 +87,9 @@ class CollectionPages extends Component {
       versionIds = versionIdsAndFilteredPages[1]
       this.setState({ filter: this.props.filter })
       if (versionIds.length !== 0) {
-        this.props.show_filter_version(versionIds, 'collectionPages')
+        this.props.show_filter_pages(versionIds, 'collectionPages')
       } else {
-        this.props.show_filter_version(null, 'collectionPages')
+        this.props.show_filter_pages(null, 'collectionPages')
       }
     }
   }

@@ -20,7 +20,6 @@ import { deletePage, duplicatePage } from '../pages/redux/pagesActions'
 import CollectionPages from '../pages/collectionPages'
 
 const mapStateToProps = (state) => {
-  console.log(state,"state")
   return {
     endpoints: state.endpoints,
     versions: state.versions,
@@ -38,6 +37,7 @@ const mapDispatchToProps = (dispatch) => {
 
 class CollectionParentPages extends Component {
   constructor (props) {
+    console.log(props,"props")
     super(props)
     this.state = {
       selectedParentPageIds: {},
@@ -242,17 +242,17 @@ class CollectionParentPages extends Component {
     this.filteredPages = {}
     this.filterFlag = false
     this.filterVersions()
-    if (title === 'groups') {
-      this.filteredGroups = {}
-      if (pageIds !== null) {
-        for (let i = 0; i < pageIds.length; i++) {
-          this.filteredGroups[pageIds[i]] = this.props.versions[
-            pageIds[i]
-          ]
-          this.eventkey[pageIds[i]] = '0'
-        }
-      }
-    }
+    // if (title === 'groups') {
+    //   this.filteredGroups = {}
+    //   if (pageIds !== null) {
+    //     for (let i = 0; i < pageIds.length; i++) {
+    //       this.filteredGroups[pageIds[i]] = this.props.versions[
+    //         pageIds[i]
+    //       ]
+    //       this.eventkey[pageIds[i]] = '0'
+    //     }
+    //   }
+    // }
     if (title === 'endpointsAndPages') {
       this.filteredEndpointsAndPages = {}
       if (pageIds !== null) {
@@ -351,12 +351,12 @@ class CollectionParentPages extends Component {
     const { expanded, focused, firstChild } = this.props.sidebar.navList[`pages_${pageId}`]
     const { focused: sidebarFocused } = this.props.sidebar
     if (sidebarFocused && focused && this.scrollRef[pageId]) this.scrolltoPage(pageId)
-    const pagesToRender = []; const groupsToRender = []; const endpointToRender = []
+    const pagesToRender = []; const endpointToRender = []
     if (firstChild) {
       let childEntity = this.props.sidebar.navList[firstChild]
       while (childEntity) {
         if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
-        if (childEntity.type === 'groups') groupsToRender.push(childEntity.id)
+        // if (childEntity.type === 'groups') groupsToRender.push(childEntity.id)
         if (childEntity.type === '4') endpointToRender.push(childEntity.id)
         childEntity = this.props.sidebar.navList[childEntity.nextSibling]
       }
@@ -477,16 +477,16 @@ class CollectionParentPages extends Component {
                           {...this.props}
                           pagesToRender={pagesToRender}
                           page_id={pageId}
-                          show_filter_version={this.propsFromParentPage.bind(this)}
+                          show_filter_pages={this.propsFromParentPage.bind(this)}
                         />
                       </div>
                       <div className='linkWrapper versionsgroups'>
                         <Groups
                           {...this.props}
-                          groupsToRender={groupsToRender}
+                          // groupsToRender={groupsToRender}
                           version_id={pageId}
                           addGroup={this.openAddGroupForm.bind(this)}
-                          show_filter_version={this.propsFromParentPage.bind(this)}
+                          show_filter_pages={this.propsFromParentPage.bind(this)}
                         />
                       </div>
                     </Card.Body>
@@ -507,14 +507,14 @@ class CollectionParentPages extends Component {
                           <CollectionPages
                             {...this.props}
                             page_id={pageId}
-                            show_filter_version={this.propsFromParentPage.bind(this)}
+                            show_filter_pages={this.propsFromParentPage.bind(this)}
                             theme={this.props.collections[this.props.collection_id].theme}
                           />
                           <Groups
                             {...this.props}
                             version_id={pageId}
                             addGroup={this.openAddGroupForm.bind(this)}
-                            show_filter_version={this.propsFromParentPage.bind(this)}
+                            show_filter_pages={this.propsFromParentPage.bind(this)}
                           />
                         </div>
                       </>
@@ -675,7 +675,7 @@ class CollectionParentPages extends Component {
       this.props.filter === '' ||
       this.state.filter !== this.props.filter
     ) {
-      this.filteredPages = { ...this.props.versions }
+      this.filteredPages = { ...this.props.pages }
       this.eventkey = {}
     }
 

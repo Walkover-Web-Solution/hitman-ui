@@ -32,7 +32,7 @@ function collectionsReducer (state = initialState, action) {
       collections = { ...state }
       delete collections[action.response.requestId]
       debugger
-      const { version, page, ...newCollection } = action.response
+      const { page, ...newCollection } = action.response
       collections[action.response.id] = newCollection
       return collections
     }

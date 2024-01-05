@@ -502,15 +502,16 @@ class SideBarV2 extends Component {
   }
 
   renderCollections () {
-    const collectionsToRender = []
-    const { firstChild } = this.props.sidebar
-    if (firstChild) {
-      let childEntity = this.props.sidebar.navList[firstChild]
-      while (childEntity) {
-        collectionsToRender.push(childEntity.id)
-        childEntity = this.props.sidebar.navList[childEntity.nextSibling]
-      }
-    }
+    // const collectionsToRender = []
+    // const { firstChild } = this.props.sidebar
+    // if (firstChild) {
+    //   let childEntity = this.props.sidebar.navList[firstChild]
+    //   while (childEntity) {
+    //     collectionsToRender.push(childEntity.id)
+    //     childEntity = this.props.sidebar.navList[childEntity.nextSibling]
+    //   }
+    // }
+    const collectionsToRender = Object.keys(this.props.collections)
     return (
       <Collections
         {...this.props}

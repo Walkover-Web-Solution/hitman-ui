@@ -315,7 +315,6 @@ class CollectionsComponent extends Component {
   }
 
   scrollToCollection (collectionId) {
-    debugger
     const ref = this.scrollRef[collectionId] || null
     if (ref) {
       setTimeout(() => {
@@ -354,21 +353,26 @@ class CollectionsComponent extends Component {
     if (sidebarFocused && focused && this.scrollRef[collectionId]) {
       this.scrollToCollection(collectionId)
     }
-    // const versionsToRender = []
+    // const pagesToRender = []
     // if (firstChild) {
-    //   let childVersion = this.props.sidebar.navList[firstChild]
-    //   while (childVersion) {
-    //     versionsToRender.push(childVersion.id)
-    //     childVersion = this.props.sidebar.navList[childVersion.nextSibling]
+    //   let childPage = this.props.sidebar.navList[firstChild]
+    //   while (childPage) {
+    //     pagesToRender.push(childPage.id)
+    //     childPage = this.props.sidebar.navList[childPage.nextSibling]
     //   }
+    // }
     const pagesToRender = []
-    if (firstChild) {
-      let childPage = this.props.sidebar.navList[firstChild]
-      while (childPage) {
-        pagesToRender.push(childPage.id)
-        childPage = this.props.sidebar.navList[childPage.nextSibling]
+if (collectionId) {
+  const collectionNode = this.props.sidebar.navList[`collections_${collectionId}`]
+  if (collectionNode && collectionNode.Children) {
+    collectionNode.Children.forEach(childId => {
+      const childNode = this.props.sidebar.navList[childId]
+      if (childNode && childNode.type === 'pages') {
+        pagesToRender.push(childNode.id)
       }
-    }
+    })
+  }
+}
 
     return (
       <React.Fragment key={collectionId}>

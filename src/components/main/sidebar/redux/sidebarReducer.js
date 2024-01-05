@@ -11,7 +11,7 @@ import publicEndpointsActionTypes from '../../../publicEndpoint/redux/publicEndp
 import { compareAlphabetically } from '../../../common/utility'
 
 class TreeNode {
-  constructor ({ id, type, parentNode, prevSibling, nextSibling }) {
+  constructor ({ id, type, parentNode }) {
     this.id = id
     this.type = type
     this.isLoaded = false
@@ -20,12 +20,10 @@ class TreeNode {
     this.focused = false
     this.expanded = false
     this.isExpandable = !!((type === 'collections' || type === 'pages' || type === 'versions'))
-    this.nextSibling = nextSibling
-    this.prevSibling = prevSibling
+   
     this.parentNode = parentNode
+    this.Children = []
     
-    this.firstChild = null
-    this.lastChild = null
   }
 }
 
@@ -190,12 +188,12 @@ function sidebarReducer (state = initialState, action) {
 
       case pagesActionTypes.ADD_PAGE_REQUEST:
         case pagesActionTypes.ADD_PARENT_PAGE_REQUEST:
-        newState = addNewNodeReq(newState, { ...action.newPage, id: action.newPage.requestId }, 'parentpages')
+        newState = addNewNodeReq(newState, { ...action.newPage, id: action.newPage.requestId }, 'pages')
         return newState
 
       case pagesActionTypes.ON_PAGE_ADDED:
       case pagesActionTypes.ON_PARENT_PAGE_ADDED:
-        newState = addNewNodeSuccess(newState, action.response.requestId, action.response.id, 'parentpages')
+        newState = addNewNodeSuccess(newState, action.response.requestId, action.response.id, 'pages')
         return newState
 
 
@@ -335,11 +333,11 @@ function addChildNodes (newState, payload) {
       newState = addNewNodeReq(newState, collection, 'collections')
     })
   }
-  if (!_.isEmpty(payload.rootPage)) {
-    _.values(payload.rootPage).forEach(page => {
-      newState = addNewNodeReq(newState, page, 'rootPage')
-    })
-  }
+  // if (!_.isEmpty(payload.rootPage)) {
+  //   _.values(payload.rootPage).forEach(page => {
+  //     newState = addNewNodeReq(newState, page, 'rootPage')
+  //   })
+  // }
   if (!_.isEmpty(payload.versions)) {
     _.values(payload.versions).forEach(version => {
       newState = addNewNodeReq(newState, version, 'versions')
@@ -370,11 +368,11 @@ function removeChildNodes (newState, payload) {
       newState = removeNodeSuccess(newState, collectionId, 'collections')
     })
   }
-  if (!_.isEmpty(payload.rootParentId)) {
-    payload.rootParentIds.forEach(rootParentId => {
-      newState = removeNodeSuccess(newState, rootParentId, 'rootPage')
-    })
-  }
+  // if (!_.isEmpty(payload.rootParentId)) {
+  //   payload.rootParentIds.forEach(rootParentId => {
+  //     newState = removeNodeSuccess(newState, rootParentId, 'rootPage')
+  //   })
+  // }
   if (!_.isEmpty(payload.versionIds)) {
     payload.versionIds.forEach(versionId => {
       newState = removeNodeSuccess(newState, versionId, 'versions')
@@ -401,8 +399,9 @@ function removeChildNodes (newState, payload) {
  * @returns Modified state
  */
 function addNewNodeReq (newState, newEntity, type) {
+  console.log(newEntity)
   const newNodeAddress = `${type}_${newEntity.id}`
-  let parentNode = null; let prevSibling = null; let nextSibling = null
+  let parentNode = null; 
   if (_.isEmpty(newState.navList[newNodeAddress])) {
     newState = addTempNode(newState, newEntity.id, type)
   }
@@ -422,70 +421,53 @@ function addNewNodeReq (newState, newEntity, type) {
       newState.lastChild = newNodeAddress
       break
 
-    case 'rootPage':
-      parentNode = `collections_${newEntity.collectionId}`
-      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.collectionId, 'collections')
+      case 'pages':
+        parentNode = `collections_${newEntity.collectionId}`
+        if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.collectionId, 'collections')
+  
+        newState.navList[newNodeAddress].parentNode = parentNode
+        newState.navList[parentNode].Children.push(newNodeAddress)
+        break
 
-      newState.navList[newNodeAddress].parentNode = parentNode
+    // case 'pages':
 
-      if (newState.navList[parentNode].lastChild) {
-        prevSibling = newState.navList[parentNode].lastChild
-        newState.navList[newNodeAddress].prevSibling = prevSibling
-        newState.navList[prevSibling].nextSibling = newNodeAddress
-      } else {
-        newState.navList[parentNode].firstChild = newNodeAddress
-      }
-      newState.navList[parentNode].lastChild = newNodeAddress
-      break
+    //   parentNode = `rootPage_${newEntity.pageId}`
+    //   if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.pageId, 'rootPage')
 
-    case 'pages':
+    //   newState.navList[newNodeAddress].parentNode = parentNode
 
-      parentNode = `rootPage_${newEntity.pageId}`
-      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.pageId, 'rootPage')
-
-      newState.navList[newNodeAddress].parentNode = parentNode
-
-      if (newState.navList[parentNode].lastChild) {
-        prevSibling = newState.navList[parentNode].lastChild
-        newState.navList[newNodeAddress].prevSibling = prevSibling
-        newState.navList[prevSibling].nextSibling = newNodeAddress
-      } else {
-        newState.navList[parentNode].firstChild = newNodeAddress
-      }
-      newState.navList[parentNode].lastChild = newNodeAddress
-      break
+    //   if (newState.navList[parentNode].lastChild) {
+    //     prevSibling = newState.navList[parentNode].lastChild
+    //     newState.navList[newNodeAddress].prevSibling = prevSibling
+    //     newState.navList[prevSibling].nextSibling = newNodeAddress
+    //   } else {
+    //     newState.navList[parentNode].firstChild = newNodeAddress
+    //   }
+    //   newState.navList[parentNode].lastChild = newNodeAddress
+    //   break
 
     case 'versions':
-
       parentNode =  `pages_${newEntity.pageId}`
       if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.pageId, 'pages')
 
       newState.navList[newNodeAddress].parentNode = parentNode
-
-      if (newState.navList[parentNode].firstChild) {
-        nextSibling = newState.navList[parentNode].firstChild
-        newState.navList[newNodeAddress].nextSibling = nextSibling
-        newState.navList[nextSibling].prevSibling = newNodeAddress
-      } else {
-        newState.navList[parentNode].lastChild = newNodeAddress
-      }
-      newState.navList[parentNode].firstChild = newNodeAddress
+      newState.navList[parentNode].children.push(newNodeAddress)
       break
 
-    case 'endpoints':
-      parentNode = newEntity.rootParentId ? `rootPage_${newEntity.rootParentId}` : `versions_${newEntity.versionId}`
-      if (_.isEmpty(newState.navList[parentNode])) { newState = addTempNode(newState, newEntity.rootParentId ? newEntity.rootParentId : newEntity.versionId, newEntity.rootParentId ? 'rootPage' : 'versions') }
-      newState.navList[newNodeAddress].parentNode = parentNode
+    // case 'endpoints':
+    //   parentNode = newEntity.rootParentId ? `pages_${newEntity.rootParentId}` : `versions_${newEntity.versionId}`
+    //   if (_.isEmpty(newState.navList[parentNode])) { newState = addTempNode(newState, newEntity.rootParentId ? newEntity.rootParentId : newEntity.versionId, newEntity.rootParentId ? 'pages' : 'versions') }
+    //   newState.navList[newNodeAddress].parentNode = parentNode
 
-      if (newState.navList[parentNode].lastChild) {
-        prevSibling = newState.navList[parentNode].lastChild
-        newState.navList[newNodeAddress].prevSibling = prevSibling
-        newState.navList[prevSibling].nextSibling = newNodeAddress
-      } else {
-        newState.navList[parentNode].firstChild = newNodeAddress
-      }
-      newState.navList[parentNode].lastChild = newNodeAddress
-      break
+    //   if (newState.navList[parentNode].lastChild) {
+    //     prevSibling = newState.navList[parentNode].lastChild
+    //     newState.navList[newNodeAddress].prevSibling = prevSibling
+    //     newState.navList[prevSibling].nextSibling = newNodeAddress
+    //   } else {
+    //     newState.navList[parentNode].firstChild = newNodeAddress
+    //   }
+    //   newState.navList[parentNode].lastChild = newNodeAddress
+    //   break
 
     default: break
   }
@@ -501,8 +483,9 @@ function addNewNodeReq (newState, newEntity, type) {
  * @returns Modified state
  */
 function addTempNode (newState, id, type) {
+  console.log(id)
   const nodeAddress = `${type}_${id}`
-  newState.navList[nodeAddress] = new TreeNode({ id: id, type, parentNode: null, prevSibling: null, nextSibling: null })
+  newState.navList[nodeAddress] = new TreeNode({ id: id, type, parentNode: null })
   return newState
 }
 
@@ -514,38 +497,59 @@ function addTempNode (newState, id, type) {
  * @param {*} type Type of Entity, can be any of 'collections','versions','groups','pages','endpoints'.
  * @returns Modified state
  */
+// function addNewNodeSuccess (newState, requestId, id, type) {
+//   const reqNodeAddress = `${type}_${requestId}`
+//   const nodeAddress = `${type}_${id}`
+ 
+//   const { prevSibling: prevSiblingAdress, nextSibling: nextSiblingAddress, parentNode: parentNodeAddress } = newState.navList[reqNodeAddress]
+//   const parentNode = parentNodeAddress ? newState.navList[parentNodeAddress] : newState
+//   const prevSiblingNode = prevSiblingAdress ? newState.navList[prevSiblingAdress] : null
+//   const nextSiblingNode = nextSiblingAddress ? newState.navList[nextSiblingAddress] : null
+
+//   if (parentNode.firstChild === reqNodeAddress) {
+//     parentNode.firstChild = nodeAddress
+//   }
+
+//   if (parentNode.lastChild === reqNodeAddress) {
+//     parentNode.lastChild = nodeAddress
+//   }
+
+//   if (prevSiblingNode && prevSiblingNode.nextSibling === reqNodeAddress) {
+//   prevSiblingNode.nextSibling = nodeAddress
+//   }
+
+//   if (nextSiblingNode && nextSiblingNode.prevSibling === reqNodeAddress) {
+//   nextSiblingNode.prevSibling = nodeAddress
+//   }
+
+//   newState.navList[nodeAddress] = newState.navList[reqNodeAddress]
+//   newState.navList[nodeAddress].id = id
+
+//   delete newState.navList[reqNodeAddress]
+//   return newState
+// }
 function addNewNodeSuccess (newState, requestId, id, type) {
   const reqNodeAddress = `${type}_${requestId}`
   const nodeAddress = `${type}_${id}`
  
-  const { prevSibling: prevSiblingAdress, nextSibling: nextSiblingAddress, parentNode: parentNodeAddress } = newState.navList[reqNodeAddress]
-  const parentNode = parentNodeAddress ? newState.navList[parentNodeAddress] : newState
-  const prevSiblingNode = prevSiblingAdress ? newState.navList[prevSiblingAdress] : null
-  const nextSiblingNode = nextSiblingAddress ? newState.navList[nextSiblingAddress] : null
-
-  if (parentNode.firstChild === reqNodeAddress) {
-    parentNode.firstChild = nodeAddress
+  const parentNode = newState.navList[reqNodeAddress].parentNode
+  if (parentNode) {
+    const parent = newState.navList[parentNode]
+    if (!parent.Children) {
+      parent.Children = []
+    }
+    const index = parent.Children.indexOf(reqNodeAddress)
+    if (index !== -1) {
+      parent.Children.splice(index, 1, nodeAddress)
+    } else {
+      parent.Children.push(nodeAddress)
+    }
   }
 
-  if (parentNode.lastChild === reqNodeAddress) {
-    parentNode.lastChild = nodeAddress
-  }
-
-  if (prevSiblingNode && prevSiblingNode.nextSibling === reqNodeAddress) {
-  prevSiblingNode.nextSibling = nodeAddress
-  }
-
-  if (nextSiblingNode && nextSiblingNode.prevSibling === reqNodeAddress) {
-  nextSiblingNode.prevSibling = nodeAddress
-  }
-
-  newState.navList[nodeAddress] = newState.navList[reqNodeAddress]
-  newState.navList[nodeAddress].id = id
-
+  newState.navList[nodeAddress] = { ...newState.navList[reqNodeAddress], id }
   delete newState.navList[reqNodeAddress]
   return newState
 }
-
 /**
  *
  * @param {any} newState Deep copied state of sidebar store.
@@ -643,37 +647,58 @@ function removeNodeError (newState, id, type) {
  * @param {any} newState Deep copied state of sidebar.
  * @returns Modified state
  */
+// function focusPrevItem (newState) {
+//   if (!newState.focusedNode) {
+//     if (newState.lastChild) {
+//       newState.focusedNode = newState.lastChild
+//       newState.navList[newState.lastChild].focused = true
+//     }
+//   } else {
+//     const { parentNode, prevSibling } = newState.navList[newState.focusedNode]
+//     newState.navList[newState.focusedNode].focused = false
+//     const prevSiblingNode = newState.navList[prevSibling]
+//     if (prevSiblingNode) {
+//       if (prevSiblingNode.isExpandable && prevSiblingNode.expanded) {
+//         const siblingsLastChild = findPrevSiblingsLastChild(newState)
+//         if (siblingsLastChild) {
+//           newState.navList[siblingsLastChild].focused = true
+//           newState.focusedNode = siblingsLastChild
+//         } else {
+//           newState.navList[prevSibling].focused = true
+//           newState.focusedNode = prevSibling
+//         }
+//       } else {
+//         newState.navList[prevSibling].focused = true
+//         newState.focusedNode = prevSibling
+//       }
+//     } else {
+//       if (parentNode) {
+//         newState.navList[parentNode].focused = true
+//         newState.focusedNode = parentNode
+//       } else {
+//         newState.navList[newState.focusedNode].focused = true
+//       }
+//     }
+//   }
+//   return newState
+// }
 function focusPrevItem (newState) {
   if (!newState.focusedNode) {
-    if (newState.lastChild) {
-      newState.focusedNode = newState.lastChild
-      newState.navList[newState.lastChild].focused = true
+    if (newState.children && newState.children.length > 0) {
+      newState.focusedNode = newState.children[newState.children.length - 1]
+      newState.navList[newState.children[newState.children.length - 1]].focused = true
     }
   } else {
     const { parentNode, prevSibling } = newState.navList[newState.focusedNode]
     newState.navList[newState.focusedNode].focused = false
-    const prevSiblingNode = newState.navList[prevSibling]
-    if (prevSiblingNode) {
-      if (prevSiblingNode.isExpandable && prevSiblingNode.expanded) {
-        const siblingsLastChild = findPrevSiblingsLastChild(newState)
-        if (siblingsLastChild) {
-          newState.navList[siblingsLastChild].focused = true
-          newState.focusedNode = siblingsLastChild
-        } else {
-          newState.navList[prevSibling].focused = true
-          newState.focusedNode = prevSibling
-        }
-      } else {
-        newState.navList[prevSibling].focused = true
-        newState.focusedNode = prevSibling
-      }
+    if (prevSibling) {
+      newState.navList[prevSibling].focused = true
+      newState.focusedNode = prevSibling
+    } else if (parentNode) {
+      newState.navList[parentNode].focused = true
+      newState.focusedNode = parentNode
     } else {
-      if (parentNode) {
-        newState.navList[parentNode].focused = true
-        newState.focusedNode = parentNode
-      } else {
-        newState.navList[newState.focusedNode].focused = true
-      }
+      newState.navList[newState.focusedNode].focused = true
     }
   }
   return newState
@@ -699,51 +724,71 @@ function findPrevSiblingsLastChild (newState) {
  * @param {any} newState Deep copied state of sidebar.
  * @returns modified state
  */
+// function focusNextItem (newState) {
+//   if (!newState.focusedNode) {
+//     if (newState.firstChild) {
+//       newState.focusedNode = newState.firstChild
+//       newState.navList[newState.firstChild].focused = true
+//     }
+//   } else {
+//     const { firstChild, expanded, isExpandable, nextSibling } = newState.navList[newState.focusedNode]
+//     newState.navList[newState.focusedNode].focused = false
+//     if (isExpandable && expanded) {
+//       if (firstChild) {
+//         newState.navList[firstChild].focused = true
+//         newState.focusedNode = firstChild
+//       } else {
+//         if (nextSibling) {
+//           newState.navList[nextSibling].focused = true
+//           newState.focusedNode = nextSibling
+//         } else {
+//           const parentsNextSibling = findParentWithNextSibling(newState)
+//           if (parentsNextSibling) {
+//             newState.navList[parentsNextSibling].focused = true
+//             newState.focusedNode = parentsNextSibling
+//           } else {
+//             newState.navList[newState.focusedNode].focused = true
+//           }
+//         }
+//       }
+//     } else {
+//       if (nextSibling) {
+//         newState.navList[nextSibling].focused = true
+//         newState.focusedNode = nextSibling
+//       } else {
+//         const parentsNextSibling = findParentWithNextSibling(newState)
+//         if (parentsNextSibling) {
+//           newState.navList[parentsNextSibling].focused = true
+//           newState.focusedNode = parentsNextSibling
+//         } else {
+//           newState.navList[newState.focusedNode].focused = true
+//         }
+//       }
+//     }
+//   }
+//   return newState
+// }
 function focusNextItem (newState) {
   if (!newState.focusedNode) {
-    if (newState.firstChild) {
-      newState.focusedNode = newState.firstChild
-      newState.navList[newState.firstChild].focused = true
+    if (newState.children && newState.children.length > 0) {
+      newState.focusedNode = newState.children[0]
+      newState.navList[newState.children[0]].focused = true
     }
   } else {
-    const { firstChild, expanded, isExpandable, nextSibling } = newState.navList[newState.focusedNode]
+    const { firstChild, isExpandable, expanded, parentNode } = newState.navList[newState.focusedNode]
     newState.navList[newState.focusedNode].focused = false
-    if (isExpandable && expanded) {
-      if (firstChild) {
-        newState.navList[firstChild].focused = true
-        newState.focusedNode = firstChild
-      } else {
-        if (nextSibling) {
-          newState.navList[nextSibling].focused = true
-          newState.focusedNode = nextSibling
-        } else {
-          const parentsNextSibling = findParentWithNextSibling(newState)
-          if (parentsNextSibling) {
-            newState.navList[parentsNextSibling].focused = true
-            newState.focusedNode = parentsNextSibling
-          } else {
-            newState.navList[newState.focusedNode].focused = true
-          }
-        }
-      }
+    if (isExpandable && expanded && firstChild) {
+      newState.navList[firstChild].focused = true
+      newState.focusedNode = firstChild
+    } else if (parentNode) {
+      newState.navList[parentNode].focused = true
+      newState.focusedNode = parentNode
     } else {
-      if (nextSibling) {
-        newState.navList[nextSibling].focused = true
-        newState.focusedNode = nextSibling
-      } else {
-        const parentsNextSibling = findParentWithNextSibling(newState)
-        if (parentsNextSibling) {
-          newState.navList[parentsNextSibling].focused = true
-          newState.focusedNode = parentsNextSibling
-        } else {
-          newState.navList[newState.focusedNode].focused = true
-        }
-      }
+      newState.navList[newState.focusedNode].focused = true
     }
   }
   return newState
 }
-
 function findParentWithNextSibling (newState) {
   let temp = newState.navList[newState.focusedNode]
   while (temp.nextSibling === null) {

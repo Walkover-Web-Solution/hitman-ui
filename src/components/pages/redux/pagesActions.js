@@ -155,14 +155,13 @@ export const addPage = (history, versionId, newPage) => {
 }
 
 export const addPage1 = (history,rootParentId, newPage) => {
-  console.log(rootParentId,"addpage1")
   const orgId = getOrgId()
   return (dispatch) => {
     dispatch(addPageRequestInCollection(rootParentId,newPage))
     pageApiService
       .saveCollectionPage(rootParentId,newPage)
       .then((response) => {
-        dispatch(onPageAdded(response.data))
+        dispatch(onParentPageAdded(response.data))
         focusSelectedEntity('pages', response.data.id)
         history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
       })
