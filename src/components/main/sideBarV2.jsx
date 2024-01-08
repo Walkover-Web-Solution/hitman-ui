@@ -502,15 +502,6 @@ class SideBarV2 extends Component {
   }
 
   renderCollections () {
-    // const collectionsToRender = []
-    // const { firstChild } = this.props.sidebar
-    // if (firstChild) {
-    //   let childEntity = this.props.sidebar.navList[firstChild]
-    //   while (childEntity) {
-    //     collectionsToRender.push(childEntity.id)
-    //     childEntity = this.props.sidebar.navList[childEntity.nextSibling]
-    //   }
-    // }
     const collectionsToRender = Object.keys(this.props.collections)
     return (
       <Collections
@@ -758,10 +749,10 @@ class SideBarV2 extends Component {
 
   showAddEntityModal () {
     if (this.state.entity === 'version') {
-      return collectionVersionsService.showVersionForm(
+      return collectionVersionsService.showParentPageForm(
         this.props,
         this.closeAddEntityModal.bind(this),
-        this.collectionId,
+        this.pageId,
         ADD_VERSION_MODAL_NAME
       )
     }

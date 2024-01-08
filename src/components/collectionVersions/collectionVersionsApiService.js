@@ -12,6 +12,10 @@ function collectionVersionsUrl (collectionId) {
   const apiUrl = getApiUrl()
   return `${apiUrl}/collections/${collectionId}/versions`
 }
+function collectionParentPagesUrl (pageId) {
+  const apiUrl = getApiUrl()
+  return `${apiUrl}/pages/${pageId}/versions`
+}
 
 export function getCollectionVersions (collectionId) {
   return http.get(collectionVersionsUrl(collectionId))
@@ -28,6 +32,9 @@ export function getCollectionVersion (versionId) {
 
 export function saveCollectionVersion (collectionId, collectionVersion) {
   return http.post(collectionVersionsUrl(collectionId), collectionVersion)
+}
+export function saveParentPageVersion (pageId, collectionParentPage) {
+  return http.post(collectionParentPagesUrl(pageId), collectionParentPage)
 }
 
 export function updateCollectionVersion (versionId, collectionVersion) {
@@ -77,5 +84,6 @@ export default {
   exportCollectionVersion,
   getAllCollectionVersions,
   setAuthorizationResponse,
-  setAuthorizationData
+  setAuthorizationData,
+  saveParentPageVersion
 }

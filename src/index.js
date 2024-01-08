@@ -14,7 +14,7 @@ import history from './history.js'
 import { addAnalyticsScripts, sentryIntegration } from './components/common/utility'
 
 addAnalyticsScripts()
-sentryIntegration()
+// sentryIntegration()
 
 ReactDOM.render(
   <Provider store={store}>

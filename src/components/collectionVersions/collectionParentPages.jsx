@@ -4,9 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import CollectionVersionForm from './collectionVersionForm'
 import ShareVersionForm from './shareVersionForm'
-import { isDashboardRoute, ADD_GROUP_MODAL_NAME, getParentIds, ADD_VERSION_MODAL_NAME } from '../common/utility'
-import GroupForm from '../groups/groupForm'
-import Groups from '../groups/groups'
+import { isDashboardRoute, getParentIds, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import PageForm from '../pages/pageForm'
 import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
@@ -165,11 +163,11 @@ class CollectionParentPages extends Component {
     )
   }
 
-  openShareVersionForm (version) {
+  openShareParentPageForm (version) {
     const showPageForm = { share: true }
     this.setState({
       showPageForm,
-      pageFormName: 'Share Version',
+      pageFormName: 'Share Parent Page',
       selectedPage: version
     })
   }
@@ -183,15 +181,6 @@ class CollectionParentPages extends Component {
     })
   }
 
-  openAddGroupForm (version) {
-    console.log("click of the versuon")
-    const showPageForm = { addGroup: true }
-    this.setState({
-      showPageForm,
-      pageFormName: ADD_GROUP_MODAL_NAME,
-      selectedPage: version
-    })
-  }
 
   openEditVersionForm (version) {
     this.setState({
@@ -214,20 +203,6 @@ class CollectionParentPages extends Component {
       this.state.showPageForm.share && (
         <ShareVersionForm
           show={this.state.showPageForm.share}
-          onHide={() => this.closePageForm()}
-          title={this.state.pageFormName}
-          selectedPage={this.state.selectedPage}
-        />
-      )
-    )
-  }
-
-  showAddGroupForm () {
-    return (
-      this.state.showPageForm.addGroup && (
-        <GroupForm
-          {...this.props}
-          show={this.state.showPageForm.addGroup}
           onHide={() => this.closePageForm()}
           title={this.state.pageFormName}
           selectedPage={this.state.selectedPage}
@@ -474,7 +449,7 @@ class CollectionParentPages extends Component {
                               <div
                                 className='dropdown-item'
                                 onClick={() =>
-                                  this.openShareVersionForm(
+                                  this.openShareParentPageForm(
                                     this.props.pages[pageId]
                                   )}
                               >
@@ -505,15 +480,6 @@ class CollectionParentPages extends Component {
                           show_filter_pages={this.propsFromParentPage.bind(this)}
                         />
                       </div>
-                      <div className='linkWrapper versionsgroups'>
-                        <Groups
-                          {...this.props}
-                          // groupsToRender={groupsToRender}
-                          version_id={pageId}
-                          addGroup={this.openAddGroupForm.bind(this)}
-                          show_filter_pages={this.propsFromParentPage.bind(this)}
-                        />
-                      </div>
                     </Card.Body>
                   </div>
                   )
@@ -535,18 +501,11 @@ class CollectionParentPages extends Component {
                             show_filter_pages={this.propsFromParentPage.bind(this)}
                             theme={this.props.collections[this.props.collection_id].theme}
                           />
-                          <Groups
-                            {...this.props}
-                            version_id={pageId}
-                            addGroup={this.openAddGroupForm.bind(this)}
-                            show_filter_pages={this.propsFromParentPage.bind(this)}
-                          />
                         </div>
                       </>
             )}
           </>
           )
-
     )
   }
 
@@ -708,7 +667,6 @@ class CollectionParentPages extends Component {
     return (
       <>
         {this.showShareVersionForm()}
-        {this.showAddGroupForm()}
         {this.showEditVersionForm()}
         {this.showAddVersionForm()}
         {this.state.showVersionForm &&

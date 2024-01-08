@@ -2747,6 +2747,7 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    debugger
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -2840,7 +2841,7 @@ class DisplayEndpoint extends Component {
                               endpoint={this.state.endpoint}
                               data={this.state.data}
                               old_description={this.state.oldDescription}
-                              groupId={this.state.groupId ? this.state.groupId : null}
+                              // groupId={this.state.groupId ? this.state.groupId : null}
                               props_from_parent={this.propsFromDescription.bind(this)}
                               alterEndpointName={(name) => this.alterEndpointName(name)}
                             />

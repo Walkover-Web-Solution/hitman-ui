@@ -109,6 +109,32 @@ export const onVersionUpdatedError = (error, originalVersion) => {
   }
 }
 
+export const addParentPageVersion = (newVersion, pageId, customCallback) => {
+  return (dispatch) => {
+    dispatch(addVersionRequest({ ...newVersion, pageId }))
+    collectionVersionsApiService
+      .saveParentPageVersion(pageId, newVersion)
+      .then((response) => {
+        sendAmplitudeData('Version created', {
+          versionId: response.data.id,
+          versionNumber: response.data.number,
+          pageId: response.data.pageId
+        })
+        dispatch(onParentPageVersionAdded(response.data))
+        if (customCallback) {
+          customCallback(response.data)
+        }
+      })
+      .catch((error) => {
+        dispatch(
+          onVersionAddedError(
+            error.response ? error.response.data : error,
+            newVersion
+          )
+        )
+      })
+  }
+}
 export const addVersion = (newVersion, collectionId, customCallback) => {
   return (dispatch) => {
     dispatch(addVersionRequest({ ...newVersion, collectionId }))
@@ -143,6 +169,12 @@ export const addVersionRequest = (newVersion) => {
   }
 }
 
+export const onParentPageVersionAdded = (response) => {
+  return {
+    type: versionActionTypes.ON_PARENTPAGE_VERSION_ADDED,
+    response
+  }
+}
 export const onVersionAdded = (response) => {
   return {
     type: versionActionTypes.ON_VERSION_ADDED,
