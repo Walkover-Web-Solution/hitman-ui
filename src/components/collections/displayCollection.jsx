@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import store from '../../store/store'
+import {store} from '../../store/store'
 import ReactHtmlParser from 'react-html-parser'
 
 class DisplayCollection extends Component {

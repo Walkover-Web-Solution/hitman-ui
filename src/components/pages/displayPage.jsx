@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import store from '../../store/store'
+import {store} from '../../store/store'
 import { connect } from 'react-redux'
 import { isDashboardRoute, isStateDraft, isStateReject, msgText, isStatePending, isStateApproved, getEntityState } from '../common/utility'
 import './page.scss'

@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify'
-import store from '../../../store/store'
+import {store} from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
 import { getOrgId, focusSelectedEntity } from '../../common/utility'

@@ -9,7 +9,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.js'
 import '../src/components/main/responsive.scss'
 import { Provider } from 'react-redux'
-import store from './store/store'
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistor, store } from './store/store'
 import history from './history.js'
 import { addAnalyticsScripts, sentryIntegration } from './components/common/utility'
 
@@ -18,11 +19,13 @@ sentryIntegration()
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router history={history}>
-      <Switch>
-        <Route path='/' component={App} />
-      </Switch>
-    </Router>
+    <PersistGate loading={null} persistor={persistor}>
+      <Router history={history}>
+        <Switch>
+          <Route path='/' component={App} />
+        </Switch>
+      </Router>
+    </PersistGate>
   </Provider>,
   document.getElementById('root')
 )

@@ -1,4 +1,4 @@
-import store from '../../../store/store'
+import { store } from '../../../store/store'
 import collectionsApiService from '../collectionsApiService'
 import collectionsActionTypes from './collectionsActionTypes'
 import tabService from '../../tabs/tabService'
@@ -419,7 +419,7 @@ export const removePublicCollection = (collection, props) => {
   }
 }
 
-function prepareCollectionData (collection, props) {
+function prepareCollectionData(collection, props) {
   const storeData = { ...store.getState() }
   const versionIds = Object.keys(storeData.versions).filter(
     (vId) => storeData.versions[vId].collectionId === collection.id
@@ -444,12 +444,12 @@ function prepareCollectionData (collection, props) {
 
   groupIds.forEach(
     (gId) =>
-      (endpointIds = [
-        ...Object.keys(storeData.endpoints).filter(
-          (eId) => storeData.endpoints[eId].groupId === gId
-        ),
-        ...endpointIds
-      ])
+    (endpointIds = [
+      ...Object.keys(storeData.endpoints).filter(
+        (eId) => storeData.endpoints[eId].groupId === gId
+      ),
+      ...endpointIds
+    ])
   )
 
   endpointIds.map((eId) => tabService.removeTab(eId, props))

@@ -1,6 +1,6 @@
 import cookiesApiService from '../cookiesApiService'
 import cookiesActionTypes from './cookiesActionTypes'
-import store from '../../../store/store'
+import {store} from '../../../store/store'
 
 export const fetchAllCookies = () => {
   return (dispatch) => {
