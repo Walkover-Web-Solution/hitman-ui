@@ -19,6 +19,7 @@ import {
   updateCollection,
   addCustomDomain,
   removePublicCollection,
+  updateIsExpandForCollectionAction,
 } from "./redux/collectionsActions";
 import "./collections.scss";
 import PublishDocsModal from "../publicEndpoint/publishDocsModal";
@@ -33,6 +34,7 @@ import ExpandIcon from "../../assets/icons/expand-arrow.svg";
 import { addNewTab } from "../tabs/redux/tabsActions";
 import PageForm from "../pages/pageForm";
 import CollectionParentPages from "../collectionVersions/collectionParentPages";
+import collectionsActionTypes from "./redux/collectionsActionTypes";
 
 const EMPTY_STRING = "";
 
@@ -60,6 +62,8 @@ const mapDispatchToProps = (dispatch) => {
     remove_public_collection: (collection, props) =>
       dispatch(removePublicCollection(collection, props)),
     add_new_tab: () => dispatch(addNewTab()),
+    update_isExpand_for_collection: (payload) =>
+      dispatch(updateIsExpandForCollectionAction(payload)),
   };
 };
 
@@ -320,6 +324,10 @@ class CollectionsComponent extends Component {
 
   toggleSelectedColelctionIds(id) {
     sidebarActions.toggleItem("collections", id);
+    this.props.update_isExpand_for_collection({
+      value: true,
+      collectionId: id,
+    });
   }
 
   scrollToCollection(collectionId) {
@@ -359,8 +367,9 @@ class CollectionsComponent extends Component {
   }
 
   renderBody(collectionId, collectionState) {
-    const { expanded, focused, firstChild } =
-      this.props.sidebar.navList[`collections_${collectionId}`];
+    console.log(this.props,"propsssssss")
+    const { expanded, focused } =
+      this.props?.sidebar?.navList[`collections_${collectionId}`];
     const { focused: sidebarFocused } = this.props.sidebar;
 
     if (sidebarFocused && focused && this.scrollRef[collectionId]) {
@@ -377,10 +386,10 @@ class CollectionsComponent extends Component {
     const pagesToRender = [];
     if (collectionId) {
       const collectionNode =
-        this.props.sidebar.navList[`collections_${collectionId}`];
+        this.props?.sidebar?.navList[`collections_${collectionId}`];
       if (collectionNode && collectionNode.child) {
         collectionNode.child.forEach((childId) => {
-          const childNode = this.props.sidebar.navList[childId];
+          const childNode = this.props?.sidebar?.navList[childId];
           if (childNode && childNode.type === "pages") {
             pagesToRender.push(childNode.id);
           }

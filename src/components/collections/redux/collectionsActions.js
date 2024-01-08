@@ -12,10 +12,10 @@ export const fetchCollections = (orgId) => {
   return (dispatch) => {
     collectionsApiService
       .getCollections(orgId)
-      .then((response) => {
-        dispatch(onCollectionsFetched(response.data))
-        indexedDbService.clearStore('collections')
-        indexedDbService.addMultipleData('collections', Object.values(response.data))
+      .then( (response) => {
+         dispatch(onCollectionsFetched(response.data))
+        // indexedDbService.clearStore('collections')
+        // indexedDbService.addMultipleData('collections', Object.values(response.data))
       })
       .catch((error) => {
         dispatch(
@@ -392,6 +392,13 @@ export const onCollectionImportedError = (error, collection) => {
     type: collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR,
     collection,
     error
+  }
+}
+
+export const updateIsExpandForCollectionAction = (payload) => {
+  return {
+    type: collectionsActionTypes.UPDATE_CLIENT_DATA_ISEXPANDED,
+    payload,
   }
 }
 

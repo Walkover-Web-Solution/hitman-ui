@@ -5,7 +5,7 @@ import versionActionTypes from '../../collectionVersions/redux/collectionVersion
 
 const initialState = {}
 
-function collectionsReducer (state = initialState, action) {
+function collectionsReducer(state = initialState, action) {
   let collections = {}
   switch (action.type) {
     case versionActionTypes.IMPORT_VERSION:
@@ -17,7 +17,24 @@ function collectionsReducer (state = initialState, action) {
       }
       return { ...state }
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
-      return { ...action.collections }
+      debugger
+      console.log('I am running')
+      // return { ...action.collections }
+      const collectionState = state;
+      let obj = action.collections || {}
+      let data = {}
+      try {
+        let keyArray = Object.keys(obj) || [];
+        keyArray.forEach(key => {
+          console.log('keys', key)
+          if (collectionState?.[key]) data[key] = { ...collectionState[key], ...obj[key] }
+          else data[key] = { ...obj[key] }
+        });
+      }
+      catch (error) {
+        console.error(error)
+      }
+      return { ...data }
 
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED_ERROR:
       return state
@@ -31,7 +48,6 @@ function collectionsReducer (state = initialState, action) {
     case collectionsActionTypes.ON_COLLECTION_ADDED: {
       collections = { ...state }
       delete collections[action.response.requestId]
-      debugger
       const { page, ...newCollection } = action.response
       collections[action.response.id] = newCollection
       return collections
@@ -117,7 +133,10 @@ function collectionsReducer (state = initialState, action) {
       collections = { ...state }
       delete collections[action.collection.id]
       return collections
-
+    case collectionsActionTypes.UPDATE_CLIENT_DATA_ISEXPANDED:
+      const dummyState = state;
+      dummyState[action.payload.collectionId].clientData = { ...dummyState[action.payload.collectionId].clientData, isExpanded: action.payload.value }
+      return dummyState;
     default:
       return state
   }

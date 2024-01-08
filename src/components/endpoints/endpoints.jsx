@@ -507,7 +507,6 @@ class Endpoints extends Component {
   }
 
   addEndpoint (endpoint) {
-    debugger
     console.log("add in endpoints")
     this.props.add_endpoint(endpoint, this.props.parent_id, null)
   }
