@@ -22,7 +22,7 @@ class TreeNode {
     this.isExpandable = !!((type === 'collections' || type === 'pages' || type === 'versions'))
    
     this.parentNode = parentNode
-    this.Children = []
+    this.child = []
     
   }
 }
@@ -327,7 +327,6 @@ function focusNode (newState, nodeAddress) {
  * @returns Modified State
  */
 function addChildNodes (newState, payload) {
-  console.log(newState,"newstate",payload,"payload")
   if (!_.isEmpty(payload.collections)) {
     _.values(payload.collections).forEach(collection => {
       newState = addNewNodeReq(newState, collection, 'collections')
@@ -400,6 +399,10 @@ function removeChildNodes (newState, payload) {
  */
 function addNewNodeReq (newState, newEntity, type) {
   console.log(newEntity)
+  if (!newEntity.id) {
+    // Handle the case where the entity ID is undefined
+    return newState;
+  }
   const newNodeAddress = `${type}_${newEntity.id}`
   let parentNode = null; 
   if (_.isEmpty(newState.navList[newNodeAddress])) {
@@ -410,23 +413,22 @@ function addNewNodeReq (newState, newEntity, type) {
     return newState
   }
 
-  switch (type) {
+  switch (type) {                 
     case 'collections':
-      if (newState.child) {
-        newState.navList[newNodeAddress].prevSibling = newState.lastChild
-        newState.navList[newState.lastChild].nextSibling = newNodeAddress
-      } else {
-        newState.firstChild = newNodeAddress
-      }
-      newState.lastChild = newNodeAddress
+      // if (newEntity.rootParentId) {
+        // if (!newState.navList[newNodeAddress].child) {
+        //   newState.navList[newNodeAddress].child = [];
+        // }
+        newState.navList[newNodeAddress].child.push(`pages_${newEntity.rootParentId}`);
+      // }
       break
 
       case 'pages':
-        parentNode = `collections_${newEntity.collectionId}`
-        if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.collectionId, 'collections')
+        parentNode = `collections_${newEntity.id}`
+        if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.id, 'collections')
   
         newState.navList[newNodeAddress].parentNode = parentNode
-        newState.navList[parentNode].Children.push(newNodeAddress)
+        newState.navList[parentNode].child.push(newNodeAddress)
         break
 
     // case 'pages':
@@ -447,11 +449,11 @@ function addNewNodeReq (newState, newEntity, type) {
     //   break
 
     case 'versions':
-      parentNode =  `pages_${newEntity.pageId}`
-      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.pageId, 'pages')
+      parentNode =  `pages_${newEntity.id}`
+      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.id, 'pages')
 
       newState.navList[newNodeAddress].parentNode = parentNode
-      newState.navList[parentNode].children.push(newNodeAddress)
+      newState.navList[parentNode].child.push(newNodeAddress)
       break
 
     // case 'endpoints':
@@ -483,7 +485,6 @@ function addNewNodeReq (newState, newEntity, type) {
  * @returns Modified state
  */
 function addTempNode (newState, id, type) {
-  console.log(id)
   const nodeAddress = `${type}_${id}`
   newState.navList[nodeAddress] = new TreeNode({ id: id, type, parentNode: null })
   return newState
@@ -535,14 +536,14 @@ function addNewNodeSuccess (newState, requestId, id, type) {
   const parentNode = newState.navList[reqNodeAddress].parentNode
   if (parentNode) {
     const parent = newState.navList[parentNode]
-    if (!parent.Children) {
-      parent.Children = []
+    if (!parent.child) {
+      parent.child = []
     }
-    const index = parent.Children.indexOf(reqNodeAddress)
+    const index = parent.child.indexOf(reqNodeAddress)
     if (index !== -1) {
-      parent.Children.splice(index, 1, nodeAddress)
+      parent.child.splice(index, 1, nodeAddress)
     } else {
-      parent.Children.push(nodeAddress)
+      parent.child.push(nodeAddress)
     }
   }
 
@@ -684,9 +685,9 @@ function removeNodeError (newState, id, type) {
 // }
 function focusPrevItem (newState) {
   if (!newState.focusedNode) {
-    if (newState.children && newState.children.length > 0) {
-      newState.focusedNode = newState.children[newState.children.length - 1]
-      newState.navList[newState.children[newState.children.length - 1]].focused = true
+    if (newState.child && newState.child.length > 0) {
+      newState.focusedNode = newState.child[newState.child.length - 1]
+      newState.navList[newState.child[newState.child.length - 1]].focused = true
     }
   } else {
     const { parentNode, prevSibling } = newState.navList[newState.focusedNode]
@@ -770,9 +771,9 @@ function findPrevSiblingsLastChild (newState) {
 // }
 function focusNextItem (newState) {
   if (!newState.focusedNode) {
-    if (newState.children && newState.children.length > 0) {
-      newState.focusedNode = newState.children[0]
-      newState.navList[newState.children[0]].focused = true
+    if (newState.child && newState.child.length > 0) {
+      newState.focusedNode = newState.child[0]
+      newState.navList[newState.child[0]].focused = true
     }
   } else {
     const { firstChild, isExpandable, expanded, parentNode } = newState.navList[newState.focusedNode]

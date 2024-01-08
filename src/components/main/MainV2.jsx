@@ -46,12 +46,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetch_collections_from_idb: (orgId) => dispatch(fetchCollectionsFromIdb(orgId)),
-    fetch_all_versions_from_idb: (orgId) => dispatch(fetchAllVersionsFromIdb(orgId)),
+    // fetch_all_versions_from_idb: (orgId) => dispatch(fetchAllVersionsFromIdb(orgId)),
     fetch_groups_from_idb: (orgId) => dispatch(fetchGroupsFromIdb(orgId)),
     fetch_endpoints_from_idb: (orgId) => dispatch(fetchEndpointsFromIdb(orgId)),
     fetch_pages_from_idb: (orgId) => dispatch(fetchPagesFromIdb(orgId)),
     fetch_collections: (orgId) => dispatch(fetchCollections(orgId)),
-    fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
+    // fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
     // fetch_groups: (orgId) => dispatch(fetchGroups(orgId)),
     fetch_endpoints: (orgId) => dispatch(fetchEndpoints(orgId)),
     fetch_pages: (orgId) => dispatch(fetchPages(orgId)),
@@ -168,7 +168,7 @@ class MainV2 extends Component {
   fetchFromBackend (timestampBackend) {
     const orgId = this.props.match.params.orgId
     this.props.fetch_collections(orgId)
-    this.props.fetch_all_versions(orgId)
+    // this.props.fetch_all_versions(orgId)
     // this.props.fetch_groups(orgId)
     this.props.fetch_endpoints(orgId)
     this.props.fetch_pages(orgId)

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import CollectionVersionForm from './collectionVersionForm'
 import ShareVersionForm from './shareVersionForm'
-import { isDashboardRoute, ADD_GROUP_MODAL_NAME, getParentIds } from '../common/utility'
+import { isDashboardRoute, ADD_GROUP_MODAL_NAME, getParentIds, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import GroupForm from '../groups/groupForm'
 import Groups from '../groups/groups'
 import PageForm from '../pages/pageForm'
@@ -127,6 +127,29 @@ class CollectionParentPages extends Component {
   handleDuplicate (page) {
     this.props.duplicate_page(page)
   }
+ 
+  openAddVersionForm (page) {
+    const showVersionForm = { addVersion: true }
+    this.setState({
+      showVersionForm,
+      parentPageFormName: 'Add New Version',
+      selectedCollection : page
+    })
+  }
+
+  showAddVersionForm () {
+    return (
+      this.state.showPageForm.addPage && (
+        <PageForm
+          {...this.props}
+          show={this.state.showPageForm.addPage}
+          onHide={() => this.closeParentPageForm()}
+          title={this.state.parentPageFormName}
+          selectedCollection={this.state.selectedCollection}
+        />
+      )
+    )
+  }
 
   showAddVersionPageForm () {
     return (
@@ -161,6 +184,7 @@ class CollectionParentPages extends Component {
   }
 
   openAddGroupForm (version) {
+    console.log("click of the versuon")
     const showPageForm = { addGroup: true }
     this.setState({
       showPageForm,
@@ -241,7 +265,7 @@ class CollectionParentPages extends Component {
     console.log(pageIds,"pageids", title)
     this.filteredPages = {}
     this.filterFlag = false
-    this.filterVersions()
+    this.filterPages()
     // if (title === 'groups') {
     //   this.filteredGroups = {}
     //   if (pageIds !== null) {
@@ -257,14 +281,14 @@ class CollectionParentPages extends Component {
       this.filteredEndpointsAndPages = {}
       if (pageIds !== null) {
         for (let i = 0; i < pageIds.length; i++) {
-          this.filteredEndpointsAndPages[pageIds[i]] = this.props.versions[
+          this.filteredEndpointsAndPages[pageIds[i]] = this.props.pages[
             pageIds[i]
           ]
           this.eventkey[pageIds[i]] = '0'
         }
       }
     }
-    if (title === 'collectionPages') {
+    if (title === 'pages') {
       this.filteredCollectionPages = {}
       if (pageIds !== null) {
         for (let i = 0; i < pageIds.length; i++) {
@@ -295,7 +319,7 @@ class CollectionParentPages extends Component {
     this.setState({ filter: this.props.filter })
   }
 
-  filterVersions () {
+  filterPages () {
     if (
       this.props.selectedCollection === true &&
       this.props.filter !== '' &&
@@ -348,16 +372,17 @@ class CollectionParentPages extends Component {
   }
 
   renderBody (pageId, index) {
-    const { expanded, focused, firstChild } = this.props.sidebar.navList[`pages_${pageId}`]
+    const { expanded, focused, child } = this.props.sidebar.navList[`pages_${pageId}`]
     const { focused: sidebarFocused } = this.props.sidebar
     if (sidebarFocused && focused && this.scrollRef[pageId]) this.scrolltoPage(pageId)
     const pagesToRender = []; const endpointToRender = []
-    if (firstChild) {
-      let childEntity = this.props.sidebar.navList[firstChild]
+    if (child) {
+      let childEntity = this.props.sidebar.navList.child
+      console.log(childEntity,"childentity")
       while (childEntity) {
         if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
         // if (childEntity.type === 'groups') groupsToRender.push(childEntity.id)
-        if (childEntity.type === '4') endpointToRender.push(childEntity.id)
+        // if (childEntity.type === '4') endpointToRender.push(childEntity.id)
         childEntity = this.props.sidebar.navList[childEntity.nextSibling]
       }
     }
@@ -380,14 +405,14 @@ class CollectionParentPages extends Component {
                     <img src={ExpandArrow} alt='' />
                   </span>
                   <div className='sidebar-accordion-item text-truncate d-inline'>
-                    {this.props.versions[pageId].number}
+                    {this.props.pages[pageId].name}
                   </div>
                 </div>
                 {
                       isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                         ? (
                           <div className='sidebar-item-action d-flex align-items-center'>
-                            <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddGroupForm(this.props.pages[pageId])}>
+                            <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddVersionForm(this.props.pages[pageId])}>
                               <Plus />
                             </div>
                             <div
@@ -424,7 +449,7 @@ class CollectionParentPages extends Component {
                               <div
                                 className='dropdown-item'
                                 onClick={() => {
-                                  this.handleDuplicate(this.props.versions[pageId])
+                                  this.handleDuplicate(this.props.pages[pageId])
                                 }}
                               >
                                 <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -435,8 +460,8 @@ class CollectionParentPages extends Component {
                               <div
                                 className='dropdown-item'
                                 onClick={() =>
-                                  this.openAddVersionPageForm(
-                                    this.props.versions[pageId]
+                                  this.openAddVersionForm(
+                                    this.props.pages[pageId]
                                   )}
                               >
                                 <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -450,7 +475,7 @@ class CollectionParentPages extends Component {
                                 className='dropdown-item'
                                 onClick={() =>
                                   this.openShareVersionForm(
-                                    this.props.versions[pageId]
+                                    this.props.pages[pageId]
                                   )}
                               >
                                 <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -685,14 +710,21 @@ class CollectionParentPages extends Component {
         {this.showShareVersionForm()}
         {this.showAddGroupForm()}
         {this.showEditVersionForm()}
-        {this.showAddVersionPageForm()}
+        {this.showAddVersionForm()}
+        {this.state.showVersionForm &&
+          collectionVersionsService.showParentPageForm(
+            this.props,
+            this.closeVersionForm.bind(this),
+            this.state.selectedCollection.id,
+            ADD_VERSION_MODAL_NAME
+          )}
         {this.state.showDeleteModal &&
           collectionVersionsService.showDeleteVersionModal(
             this.props,
             this.closeDeleteVersionModal.bind(this),
-            'Delete Version',
-            `Are you sure you want to delete this versions?
-        All your groups, pages and endpoints present in this version will be deleted.`,
+            'Delete Page',
+            `Are you sure you want to delete this pages?
+        All your versions,subpages and endpoints present in this page will be deleted.`,
             this.state.selectedPage
           )}
         {
@@ -706,9 +738,9 @@ class CollectionParentPages extends Component {
                         className='selected-version form-control light-orange-bg'
                         onChange={(e) => this.setSelectedParentPage(e)}
                       >
-                        {Object.keys(this.filteredPages).map((id, index) => (
+                        {Object.keys(this.filteredPages)?.map((id, index) => (
                           <option key={index} value={index}>
-                            {this.props.pages[id]?.number}
+                            {this.props.pages[id]?.name}
                           </option>
                         ))}
                       </select>
@@ -721,7 +753,7 @@ class CollectionParentPages extends Component {
             : null
         }
         {isDashboardRoute(this.props, true)
-          ? this.props.parentPagesRender.map((pageId, index) => (
+          ? this.props.pagesToRender.map((pageId, index) => (
               this.renderBody(pageId, index)
             ))
           : this.state.value

@@ -17,6 +17,11 @@ const entityENUM = {
     message: 'Add your Page.',
     tooltip: 'Versioning helps in maintaining API changes without breaking existing implementations. This gives consumers more choices without having to upgrade to the latest version'
   },
+  page: {
+    key: 'page', //rootpage
+    message: 'No page added.',
+    tooltip: 'Page help categorize APIs'
+  },
   group: {
     key: 'group',
     message: 'No group added.',

@@ -31,11 +31,7 @@ class CollectionForm extends Form {
     this.state = {
       data: {
         name: '',
-        website: DEFAULT_URL,
         description: '',
-        keyword: '',
-        keyword1: '',
-        keyword2: '',
         defaultView: defaultViewTypes.TESTING
       },
       collectionId: '',
@@ -51,10 +47,6 @@ class CollectionForm extends Form {
 
     this.schema = {
       name: Joi.string().min(3).max(20).trim().required().label('Collection Name'),
-      website: Joi.string().min(3).regex(URL_VALIDATION_REGEX, { name: 'URL' }).trim().required().label('Website').error(() => { return { message: 'Website must be a valid URL' } }),
-      keyword: Joi.string().trim().allow(null, '').label('Keywords'),
-      keyword1: Joi.string().trim().allow(null, '').label('Keywords'),
-      keyword2: Joi.string().trim().allow(null, '').label('Keywords'),
       description: Joi.string().allow(null, '').label('Description'),
       defaultView: Joi.string().allow(null, '').label('Default View')
     }
@@ -67,17 +59,11 @@ class CollectionForm extends Form {
     if (this.props.edited_collection) {
       const {
         name,
-        website,
-        description,
-        keyword
+        description
       } = this.props.edited_collection
       data = {
         name,
-        website,
-        description,
-        keyword: keyword.split(',')[0],
-        keyword1: keyword.split(',')[1],
-        keyword2: keyword.split(',')[2]
+        description
       }
     }
     this.setState({ data, collectionId })
@@ -97,6 +83,7 @@ class CollectionForm extends Form {
   }
 
   redirectToCollection (collection) {
+    console.log(collection,"collectiuon")
     const { viewLoader } = this.state
     if (!collection.data) {
       console.error('collection.data is undefined');
@@ -123,11 +110,7 @@ class CollectionForm extends Form {
     this.setState({
       data: {
         name: '',
-        website: '',
         description: '',
-        keyword: '',
-        keyword1: '',
-        keyword2: '',
         defaultView: defaultViewTypes.TESTING
       }
     })
@@ -145,10 +128,6 @@ class CollectionForm extends Form {
   async doSubmit (defaultView) {
     const body = this.state.data
     body.name = toTitleCase(body.name.trim())
-    body.website = body.website.trim()
-    body.keyword = body.name + ',' + body.keyword1.trim() + ',' + body.keyword2.trim()
-    delete body.keyword1
-    delete body.keyword2
     if (this.props.title === 'Edit Collection') {
       this.onEditCollectionSubmit(defaultView)
     }
@@ -167,7 +146,6 @@ class CollectionForm extends Form {
     return (
       <>
         {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}
-        {this.renderInput('website', 'Website', 'https://yourwebsite.com', false, false, true)}
       </>
     )
   }

@@ -35,7 +35,7 @@ const EMPTY_STRING = ''
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
-    versions: state.versions,
+    // versions: state.versions,
     pages: state.pages,
     groups: state.groups,
     endpoints: state.endpoints
@@ -78,8 +78,6 @@ class CollectionsComponent extends Component {
         share: false
       },
     }
-
-    this.keywords = {}
     this.names = {}
     this.scrollRef = {}
   }
@@ -260,43 +258,43 @@ class CollectionsComponent extends Component {
   dataFetched () {
     return (
       this.props.collections &&
-      this.props.versions &&
+      // this.props.versions &&
       this.props.groups &&
       this.props.endpoints &&
       this.props.pages
     )
   }
 
-  findEndpointCount (collectionId) {
-    if (this.dataFetched()) {
-      const versionIds = Object.keys(this.props.versions).filter(
-        (vId) => this.props.versions[vId].collectionId === collectionId
-      )
-      const groupIds = Object.keys(this.props.groups)
-      const groupsArray = []
-      for (let i = 0; i < groupIds.length; i++) {
-        const groupId = groupIds[i]
-        const group = this.props.groups[groupId]
+  // findEndpointCount (collectionId) {
+  //   if (this.dataFetched()) {
+  //     const pageIds = Object.keys(this.props.pages).filter(
+  //       (pId) => this.props.pageIds[pId].collectionId === collectionId
+  //     )
+  //     const groupIds = Object.keys(this.props.groups)
+  //     const groupsArray = []
+  //     for (let i = 0; i < groupIds.length; i++) {
+  //       const groupId = groupIds[i]
+  //       const group = this.props.groups[groupId]
 
-        if (versionIds.includes(group.versionId)) {
-          groupsArray.push(groupId)
-        }
-      }
+  //       if (pageIds.includes(group.versionId)) {
+  //         groupsArray.push(groupId)
+  //       }
+  //     }
 
-      const endpointIds = Object.keys(this.props.endpoints)
-      const endpointsArray = []
+  //     const endpointIds = Object.keys(this.props.endpoints)
+  //     const endpointsArray = []
 
-      for (let i = 0; i < endpointIds.length; i++) {
-        const endpointId = endpointIds[i]
-        const endpoint = this.props.endpoints[endpointId]
+  //     for (let i = 0; i < endpointIds.length; i++) {
+  //       const endpointId = endpointIds[i]
+  //       const endpoint = this.props.endpoints[endpointId]
 
-        if (groupsArray.includes(endpoint.groupId)) {
-          endpointsArray.push(endpointId)
-        }
-      }
-      return endpointsArray.length
-    }
-  }
+  //       if (groupsArray.includes(endpoint.groupId)) {
+  //         endpointsArray.push(endpointId)
+  //       }
+  //     }
+  //     return endpointsArray.length
+  //   }
+  // }
 
   removeImporedPublicCollection (collectionId) {
     if (this.state.openSelectedCollection === true) {
@@ -364,12 +362,13 @@ class CollectionsComponent extends Component {
     const pagesToRender = []
 if (collectionId) {
   const collectionNode = this.props.sidebar.navList[`collections_${collectionId}`]
-  if (collectionNode && collectionNode.Children) {
-    collectionNode.Children.forEach(childId => {
+  if (collectionNode && collectionNode.child) {
+    collectionNode.child.forEach(childId => {
       const childNode = this.props.sidebar.navList[childId]
       if (childNode && childNode.type === 'pages') {
         pagesToRender.push(childNode.id)
       }
+      console.log(pagesToRender,"pagestorender")
     })
   }
 }
@@ -557,7 +556,7 @@ if (collectionId) {
                   ? <div className='marketplace-icon mr-1'> M </div>
                   : null}
                 <span className={this.props.collections[collectionId].isPublic ? 'published' : ''}>
-                  {this.findEndpointCount(collectionId) === 0 ? '' : this.findEndpointCount(collectionId)}
+                  {/* {this.findEndpointCount(collectionId) === 0 ? '' : this.findEndpointCount(collectionId)} */}
                 </span>
               </div>
               {/* <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span> */}
@@ -641,7 +640,7 @@ if (collectionId) {
           <img src={emptyCollections} alt='' />
         </div>
         <div className='content'>
-          <h5>  Your collection is Empty.</h5>
+          <h5>Your collection is Empty.</h5>
         </div>
       </div>
     )
