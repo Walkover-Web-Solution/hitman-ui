@@ -1,5 +1,5 @@
 import shortid from 'shortid'
-import store from '../../../store/store'
+import {store} from '../../../store/store'
 import indexedDbService from '../../indexedDb/indexedDbService'
 import tabStatusTypes from '../tabStatusTypes'
 import tabsActionTypes from './tabsActionTypes'

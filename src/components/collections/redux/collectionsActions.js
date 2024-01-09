@@ -1,4 +1,4 @@
-import store from '../../../store/store'
+import {store} from '../../../store/store'
 import collectionsApiService from '../collectionsApiService'
 import collectionsActionTypes from './collectionsActionTypes'
 import tabService from '../../tabs/tabService'
@@ -14,8 +14,8 @@ export const fetchCollections = (orgId) => {
       .getCollections(orgId)
       .then((response) => {
         dispatch(onCollectionsFetched(response.data))
-        indexedDbService.clearStore('collections')
-        indexedDbService.addMultipleData('collections', Object.values(response.data))
+        // indexedDbService.clearStore('collections')
+        // indexedDbService.addMultipleData('collections', Object.values(response.data))
       })
       .catch((error) => {
         dispatch(
@@ -41,6 +41,13 @@ export const fetchCollectionsFromIdb = (orgId) => {
           )
         )
       })
+  }
+}
+
+export const updateIsExpandForCollectionAction = (payload) => {
+  return {
+    type: collectionsActionTypes.UPDATE_CLIENT_DATA_ISEXPANDED,
+    payload,
   }
 }
 

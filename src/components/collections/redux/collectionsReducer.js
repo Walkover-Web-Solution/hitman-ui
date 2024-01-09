@@ -5,9 +5,21 @@ import versionActionTypes from '../../collectionVersions/redux/collectionVersion
 
 const initialState = {}
 
-function collectionsReducer (state = initialState, action) {
+function collectionsReducer(state = initialState, action) {
   let collections = {}
   switch (action.type) {
+    case collectionsActionTypes.UPDATE_CLIENT_DATA_ISEXPANDED:
+      return {
+        ...state,
+        [action.payload.collectionId]: {
+          ...state[action.payload.collectionId],
+          clientData: {
+            ...state[action.payload.collectionId].clientData,
+            isExpanded: action.payload.value
+          }
+        }
+      }
+
     case versionActionTypes.IMPORT_VERSION:
       if (action.response.collection) {
         return {
@@ -16,8 +28,23 @@ function collectionsReducer (state = initialState, action) {
         }
       }
       return { ...state }
+
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
-      return { ...action.collections }
+      // return { ...state, ...action.collections }
+      const collectionState = state;
+      let obj = action.collections || {}
+      let data = {}
+      try {
+        let keyArray = Object.keys(obj) || [];
+        keyArray.forEach(key => {
+          if (collectionState?.[key]) data[key] = { ...collectionState[key], ...obj[key] }
+          else data[key] = { ...obj[key] }
+        });
+      }
+      catch (error) {
+        console.error(error)
+      }
+      return { ...data }
 
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED_ERROR:
       return state

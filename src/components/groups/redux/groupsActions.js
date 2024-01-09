@@ -1,4 +1,4 @@
-import store from '../../../store/store'
+import {store} from '../../../store/store'
 import groupsApiService from '../groupsApiService'
 import groupsActionTypes from './groupsActionTypes'
 import { toast } from 'react-toastify'

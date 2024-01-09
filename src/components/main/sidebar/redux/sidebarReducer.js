@@ -456,20 +456,13 @@ function addNewNodeReq (newState, newEntity, type) {
       newState.navList[parentNode].child.push(newNodeAddress)
       break
 
-    // case 'endpoints':
-    //   parentNode = newEntity.rootParentId ? `pages_${newEntity.rootParentId}` : `versions_${newEntity.versionId}`
-    //   if (_.isEmpty(newState.navList[parentNode])) { newState = addTempNode(newState, newEntity.rootParentId ? newEntity.rootParentId : newEntity.versionId, newEntity.rootParentId ? 'pages' : 'versions') }
-    //   newState.navList[newNodeAddress].parentNode = parentNode
-
-    //   if (newState.navList[parentNode].lastChild) {
-    //     prevSibling = newState.navList[parentNode].lastChild
-    //     newState.navList[newNodeAddress].prevSibling = prevSibling
-    //     newState.navList[prevSibling].nextSibling = newNodeAddress
-    //   } else {
-    //     newState.navList[parentNode].firstChild = newNodeAddress
-    //   }
-    //   newState.navList[parentNode].lastChild = newNodeAddress
-    //   break
+      case 'endpoints':
+        const parentType = newEntity.rootParentId ? 'pages' : 'versions';
+        parentNode = `${parentType}_${newEntity.rootParentId ? newEntity.rootParentId : newEntity.versionId}`;
+        if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.rootParentId ? newEntity.rootParentId : newEntity.versionId, parentType);
+        newState.navList[newNodeAddress].parentNode = parentNode;
+        newState.navList[parentNode].child.push(newNodeAddress);
+        break;
 
     default: break
   }

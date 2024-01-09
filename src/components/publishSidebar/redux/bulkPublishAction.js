@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify'
-import store from '../../../store/store'
+import {store} from '../../../store/store'
 import bulkPublishApiService from '../bulkPublishApiService'
 import bulkPublishActionTypes from './bulkPublishActionTypes'
 
