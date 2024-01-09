@@ -8,6 +8,7 @@ const initialState = {}
 function collectionsReducer(state = initialState, action) {
   let collections = {}
   switch (action.type) {
+    
     case collectionsActionTypes.UPDATE_CLIENT_DATA_ISEXPANDED:
       return {
         ...state,

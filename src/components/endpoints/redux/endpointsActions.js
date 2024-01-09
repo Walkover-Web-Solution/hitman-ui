@@ -3,7 +3,6 @@ import {store} from '../../../store/store'
 import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
 import { getOrgId, focusSelectedEntity } from '../../common/utility'
-import indexedDbService from '../../indexedDb/indexedDbService'
 import shortid from 'shortid'
 import { sendAmplitudeData } from '../../../services/amplitude'
 
@@ -81,8 +80,6 @@ export const fetchEndpoints = (orgId) => {
       .getAllEndpoints(orgId)
       .then((response) => {
         dispatch(onEndpointsFetched(response.data))
-        indexedDbService.clearStore('endpoints')
-        indexedDbService.addMultipleData('endpoints', Object.values(response.data))
       })
       .catch((error) => {
         dispatch(
@@ -98,7 +95,6 @@ export const fetchEndpoint = (endpointId) => {
       .getEndpoint(endpointId)
       .then((response) => {
         dispatch(onEndpointFetched(response.data))
-        indexedDbService.addData('endpoints', response.data, response.data.id)
       })
       .catch((error) => {
         dispatch(
@@ -119,23 +115,6 @@ export const onEndpointFetchedError = (error) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_FETCHED_ERROR,
     error
-  }
-}
-
-export const fetchEndpointsFromIdb = (orgId) => {
-  return (dispatch) => {
-    indexedDbService
-      .getAllData('endpoints')
-      .then((response) => {
-        dispatch(onEndpointsFetched(response))
-      })
-      .catch((error) => {
-        dispatch(
-          onEndpointsFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
-      })
   }
 }
 

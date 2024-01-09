@@ -312,7 +312,7 @@ class CollectionsComponent extends Component {
   }
 
   toggleSelectedColelctionIds (id) {
-        sidebarActions.toggleItem('collections', id)
+        // sidebarActions.toggleItem('collections', id)
         this.props.update_isExpand_for_collection({
           value: true,
           collectionId: id,
@@ -352,10 +352,12 @@ class CollectionsComponent extends Component {
   }
 
   renderBody (collectionId, collectionState) {
-        const { expanded, focused, firstChild } = this.props.sidebar.navList[`collections_${collectionId}`]
-    const { focused: sidebarFocused } = this.props.sidebar
+    const expanded = this.props.collections[collectionId]?.clientData?.isExpanded
+    console.log(expanded,"expanded")
+        // const {  focused } = this.props.sidebar.navList[`collections_${collectionId}`]
+    // const { focused: sidebarFocused } = this.props.sidebar
 
-    if (sidebarFocused && focused && this.scrollRef[collectionId]) {
+    if (expanded && this.scrollRef[collectionId]) {
       this.scrollToCollection(collectionId)
     }
     // const pagesToRender = []
@@ -392,7 +394,7 @@ if (collectionId) {
           <button
             tabIndex={-1}
             variant='default'
-            className={[focused && sidebarFocused ? 'focused' : ''].join(' ')}
+            // className={[focused && sidebarFocused ? 'focused' : ''].join(' ')}
           >
             <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='d-flex justify-content-between'>

@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
-import { fetchCollections, fetchCollectionsFromIdb } from '../collections/redux/collectionsActions'
-import { fetchAllVersions, fetchAllVersionsFromIdb } from '../collectionVersions/redux/collectionVersionsActions'
+import { fetchCollections } from '../collections/redux/collectionsActions'
+import { fetchAllVersions } from '../collectionVersions/redux/collectionVersionsActions'
 import {
   fetchEndpoint,
   fetchEndpoints,
-  moveEndpoint,
-  fetchEndpointsFromIdb
+  moveEndpoint
 } from '../endpoints/redux/endpointsActions'
-import { fetchGroups, fetchGroupsFromIdb } from '../groups/redux/groupsActions'
-import indexedDbService from '../indexedDb/indexedDbService'
-import { fetchPage, fetchPages, fetchPagesFromIdb } from '../pages/redux/pagesActions'
+import { fetchGroups } from '../groups/redux/groupsActions'
+import { fetchPage, fetchPages } from '../pages/redux/pagesActions'
 import { fetchHistoryFromIdb } from '../history/redux/historyAction'
 import ContentPanel from './contentPanel'
 import './main.scss'
@@ -45,11 +43,6 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    // fetch_collections_from_idb: (orgId) => dispatch(fetchCollectionsFromIdb(orgId)),
-    // fetch_all_versions_from_idb: (orgId) => dispatch(fetchAllVersionsFromIdb(orgId)),
-    fetch_groups_from_idb: (orgId) => dispatch(fetchGroupsFromIdb(orgId)),
-    fetch_endpoints_from_idb: (orgId) => dispatch(fetchEndpointsFromIdb(orgId)),
-    fetch_pages_from_idb: (orgId) => dispatch(fetchPagesFromIdb(orgId)),
     fetch_collections: (orgId) => dispatch(fetchCollections(orgId)),
     // fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
     // fetch_groups: (orgId) => dispatch(fetchGroups(orgId)),
@@ -123,56 +116,18 @@ class MainV2 extends Component {
   }
 
   async fetchAll () {
-    indexedDbService.getDataBase()
-    if (!navigator.onLine) {
-      this.fetchFromIdb()
-      this.props.fetch_all_cookies_from_local()
-    } else {
-      const { fetchFromIdb, timestampBackend } = await this.isIdbUpdated()
-      if (fetchFromIdb) {
-        this.fetchFromIdb()
-      } else {
-        this.fetchFromBackend(timestampBackend)
-      }
-      this.props.fetch_all_cookies()
-    }
+    this.fetchFromBackend()
+    this.props.fetch_all_cookies()
     this.props.fetch_history()
   }
 
-  async isIdbUpdated () {
-    const orgId = this.props.match.params.orgId
-    let timestampBackend, timestampIdb
-    try {
-      timestampBackend = await getOrgUpdatedAt(orgId)
-      timestampBackend = timestampBackend.data?.updatedAt
-      timestampIdb = await indexedDbService.getValue('meta_data', 'updated_at')
-    } catch (err) {}
-    let fetchFromIdb
-    if ((timestampIdb && moment(timestampIdb).isValid() && moment(timestampIdb).diff(moment(timestampBackend)) >= 0)) {
-      fetchFromIdb = true
-    } else {
-      fetchFromIdb = false
-    }
-    return { fetchFromIdb, timestampBackend }
-  }
-
-  fetchFromIdb () {
-    const orgId = this.props.match.params.orgId
-    // this.props.fetch_collections_from_idb(orgId)
-    this.props.fetch_all_versions_from_idb(orgId)
-    this.props.fetch_groups_from_idb(orgId)
-    this.props.fetch_endpoints_from_idb(orgId)
-    this.props.fetch_pages_from_idb(orgId)
-  }
-
-  fetchFromBackend (timestampBackend) {
+  fetchFromBackend () {
     const orgId = this.props.match.params.orgId
     this.props.fetch_collections(orgId)
     // this.props.fetch_all_versions(orgId)
     // this.props.fetch_groups(orgId)
     this.props.fetch_endpoints(orgId)
     this.props.fetch_pages(orgId)
-    indexedDbService.addData('meta_data', timestampBackend, 'updated_at')
   }
 
   setVisitedOrgs () {
@@ -250,7 +205,7 @@ class MainV2 extends Component {
                 <div className='custom-main-container'>
                   {/* <Header {...this.props} /> */}
                   <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
-                  <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
+                  <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)}/>
                   <div className='main-panel-wrapper'>
                     <SplitPane split='vertical' className='split-sidebar'>
                       <SideBarV2

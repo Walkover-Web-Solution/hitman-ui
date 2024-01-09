@@ -139,8 +139,8 @@ class SideBarV2 extends Component {
   }
 
   preventDefaultBehavior (e) {
-    const { focused: sidebarFocused } = this.props.sidebar
-    if (sidebarFocused && ['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.code) > -1) {
+    // const { focused: sidebarFocused } = this.props.sidebar
+    if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.code) > -1) {
       e.preventDefault()
     }
   }
@@ -177,34 +177,34 @@ class SideBarV2 extends Component {
     if (pathname) this.props.history.push({ pathname })
   }
 
-  handleShortcuts = (event, data) => {
-    const { focused: sidebarFocused, navList, focusedNode } = this.props.sidebar
-    switch (data) {
-      case 'FOCUS_SEARCH': this.inputRef.focus()
-        break
-      case 'UP_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_PREVIOUS_ITEM })
-        break
-      case 'DOWN_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_NEXT_ITEM })
-        break
-      case 'OPEN_ENTITY':
-        if (sidebarFocused && focusedNode) {
-          const { id, type, isExpandable } = navList[focusedNode]
-          if (isExpandable) {
-            store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM })
-          } else {
-            this.openEntity(id, type)
-          }
-        }
-        break
-      case 'CLOSE_ENTITY': if (sidebarFocused && focusedNode) store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM })
-        break
-      case 'DUPLICATE_ENTITY': if (sidebarFocused && focusedNode) sidebarActions.duplicateEntity(focusedNode)
-        break
-      case 'DELETE_ENTITY': if (sidebarFocused && focusedNode) this.handleDeleteEntity(focusedNode)
-        break
-      default: break
-    }
-  }
+  // handleShortcuts = (event, data) => {
+  //   // const { focused: sidebarFocused, navList, focusedNode } = this.props.sidebar
+  //   switch (data) {
+  //     // case 'FOCUS_SEARCH': this.inputRef.focus()
+  //       // break
+  //     case 'UP_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_PREVIOUS_ITEM })
+  //       break
+  //     case 'DOWN_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_NEXT_ITEM })
+  //       break
+  //     case 'OPEN_ENTITY':
+  //       if (sidebarFocused && focusedNode) {
+  //         const { id, type, isExpandable } = navList[focusedNode]
+  //         // if (isExpandable) {
+  //         //   store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM })
+  //         // } else {
+  //         //   this.openEntity(id, type)
+  //         // }
+  //       }
+  //       break
+  //     case 'CLOSE_ENTITY': if (sidebarFocused && focusedNode) store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM })
+  //       break
+  //     case 'DUPLICATE_ENTITY': if (sidebarFocused && focusedNode) sidebarActions.duplicateEntity(focusedNode)
+  //       break
+  //     case 'DELETE_ENTITY': if (sidebarFocused && focusedNode) this.handleDeleteEntity(focusedNode)
+  //       break
+  //     default: break
+  //   }
+  // }
 
   handleDeleteEntity (focusedNode) {
     this.props.open_modal(DELETE_CONFIRMATION, { nodeAddress: focusedNode })

@@ -3,7 +3,6 @@ import groupsApiService from '../groupsApiService'
 import groupsActionTypes from './groupsActionTypes'
 import { toast } from 'react-toastify'
 import tabService from '../../tabs/tabService'
-import indexedDbService from '../../indexedDb/indexedDbService'
 import { sendAmplitudeData } from '../../../services/amplitude'
 
 export const setEndpointIds = (endpointsOrder, groupId) => {
@@ -58,29 +57,10 @@ export const fetchGroups = (orgId) => {
       .getAllGroups(orgId)
       .then((response) => {
         dispatch(onGroupsFetched(response.data))
-        indexedDbService.clearStore('groups')
-        indexedDbService.addMultipleData('groups', Object.values(response.data))
       })
       .catch((error) => {
         dispatch(
           onGroupsFetchedError(error.response ? error.response.data : error)
-        )
-      })
-  }
-}
-
-export const fetchGroupsFromIdb = (orgId) => {
-  return (dispatch) => {
-    indexedDbService
-      .getAllData('groups')
-      .then((response) => {
-        dispatch(onGroupsFetched(response))
-      })
-      .catch((error) => {
-        dispatch(
-          onGroupsFetchedError(
-            error.response ? error.response.data : error
-          )
         )
       })
   }
