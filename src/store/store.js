@@ -13,6 +13,8 @@ import historyReducer from '../components/history/redux/historyReducer'
 import sidebarReducer from '../components/main/sidebar/redux/sidebarReducer'
 import toggleResponseReducer from '../components/common/redux/toggleResponse/toggleResponseReducer'
 import publishDocsReducer from '../components/publishDocs/redux/publishDocsReducer'
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -31,6 +33,13 @@ const rootReducer = combineReducers({
   responseView: toggleResponseReducer,
   feedbacks: publishDocsReducer
 })
-const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)))
+const persistConfig = {
+  key: 'root',
+  storage,
+}
 
-export default store
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+const store = createStore(persistedReducer, storeEnhancers(applyMiddleware(thunk)))
+const persistor = persistStore(store)
+
+export { store, persistor }

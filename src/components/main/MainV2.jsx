@@ -45,7 +45,7 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetch_collections_from_idb: (orgId) => dispatch(fetchCollectionsFromIdb(orgId)),
+    // fetch_collections_from_idb: (orgId) => dispatch(fetchCollectionsFromIdb(orgId)),
     // fetch_all_versions_from_idb: (orgId) => dispatch(fetchAllVersionsFromIdb(orgId)),
     fetch_groups_from_idb: (orgId) => dispatch(fetchGroupsFromIdb(orgId)),
     fetch_endpoints_from_idb: (orgId) => dispatch(fetchEndpointsFromIdb(orgId)),
@@ -158,7 +158,7 @@ class MainV2 extends Component {
 
   fetchFromIdb () {
     const orgId = this.props.match.params.orgId
-    this.props.fetch_collections_from_idb(orgId)
+    // this.props.fetch_collections_from_idb(orgId)
     this.props.fetch_all_versions_from_idb(orgId)
     this.props.fetch_groups_from_idb(orgId)
     this.props.fetch_endpoints_from_idb(orgId)

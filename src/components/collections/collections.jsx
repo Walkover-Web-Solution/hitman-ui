@@ -14,7 +14,8 @@ import {
   duplicateCollection,
   updateCollection,
   addCustomDomain,
-  removePublicCollection
+  removePublicCollection,
+  updateIsExpandForCollectionAction
 } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
@@ -57,6 +58,8 @@ const mapDispatchToProps = (dispatch) => {
     remove_public_collection: (collection, props) =>
       dispatch(removePublicCollection(collection, props)),
     add_new_tab: () => dispatch(addNewTab()),
+      update_isExpand_for_collection: (payload) =>
+      dispatch(updateIsExpandForCollectionAction(payload))
   }
 }
 
@@ -107,12 +110,12 @@ class CollectionsComponent extends Component {
   setCollectionForEntity (id, type) {
     const { collectionId } = getParentIds(id, type, this.props)
     sidebarActions.expandItem('collections', collectionId)
-  }
+      }
 
   setSelectedCollectionId (id, value) {
     if (id && this.state.selectedCollectionIds[id] !== value) {
       this.setState({ selectedCollectionIds: { ...this.state.selectedCollectionIds, [id]: value } })
-    }
+        }
   }
 
   // async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
@@ -309,8 +312,12 @@ class CollectionsComponent extends Component {
   }
 
   toggleSelectedColelctionIds (id) {
-    sidebarActions.toggleItem('collections', id)
-  }
+        sidebarActions.toggleItem('collections', id)
+        this.props.update_isExpand_for_collection({
+          value: true,
+          collectionId: id,
+        });
+      }
 
   scrollToCollection (collectionId) {
     const ref = this.scrollRef[collectionId] || null
@@ -345,7 +352,7 @@ class CollectionsComponent extends Component {
   }
 
   renderBody (collectionId, collectionState) {
-    const { expanded, focused, firstChild } = this.props.sidebar.navList[`collections_${collectionId}`]
+        const { expanded, focused, firstChild } = this.props.sidebar.navList[`collections_${collectionId}`]
     const { focused: sidebarFocused } = this.props.sidebar
 
     if (sidebarFocused && focused && this.scrollRef[collectionId]) {

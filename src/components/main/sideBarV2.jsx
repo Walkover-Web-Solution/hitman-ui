@@ -27,7 +27,7 @@ import GroupForm from '../groups/groupForm'
 import PageForm from '../pages/pageForm'
 import EndpointForm from '../endpoints/endpointForm'
 import CollectionModal from '../collections/collectionsModal'
-import store from '../../store/store'
+import {store} from '../../store/store'
 import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
 
 import sidebarActions from './sidebar/redux/sidebarActions'

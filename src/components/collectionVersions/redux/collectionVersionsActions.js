@@ -1,6 +1,6 @@
 import collectionVersionsApiService from '../collectionVersionsApiService'
 import versionActionTypes from './collectionVersionsActionTypes'
-import store from '../../../store/store'
+import {store} from '../../../store/store'
 import { toast } from 'react-toastify'
 import tabService from '../../tabs/tabService'
 import indexedDbService from '../../indexedDb/indexedDbService'

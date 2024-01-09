@@ -1,4 +1,4 @@
-import store from '../../../../store/store'
+import {store} from '../../../../store/store'
 import { removePublicCollection, deleteCollection, duplicateCollection } from '../../../collections/redux/collectionsActions'
 import { deleteVersion, duplicateVersion } from '../../../collectionVersions/redux/collectionVersionsActions'
 import { deleteEndpoint, duplicateEndpoint } from '../../../endpoints/redux/endpointsActions'

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import store from '../../store/store'
+import {store} from '../../store/store'
 import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, isStatePending, isStateApproved, sensitiveInfoFound, msgText, getEntityState, getCurrentUserSSLMode, setCurrentUserSSLMode } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab, updateTab } from '../tabs/redux/tabsActions'
@@ -2747,7 +2747,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    debugger
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
