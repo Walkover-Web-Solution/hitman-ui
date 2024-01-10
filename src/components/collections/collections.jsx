@@ -19,21 +19,22 @@ import {
   updateCollection,
   addCustomDomain,
   removePublicCollection,
-  updateIsExpandForCollectionAction
-} from './redux/collectionsActions'
-import './collections.scss'
-import PublishDocsModal from '../publicEndpoint/publishDocsModal'
-import TagManager from 'react-gtm-module'
-import TagManagerModal from './tagModal'
-import emptyCollections from '../../assets/icons/emptyCollections.svg'
-import hitmanLogo from '../../assets/icons/hitman.svg'
-import PublishCollectionInfo from '../main/publishCollectionInfo'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
-import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
-import ExpandIcon from '../../assets/icons/expand-arrow.svg'
-import { addNewTab } from '../tabs/redux/tabsActions'
-import PageForm from '../pages/pageForm'
-import CollectionParentPages from '../collectionVersions/collectionParentPages'
+  updateIsExpandForCollectionAction,
+} from "./redux/collectionsActions";
+import "./collections.scss";
+import PublishDocsModal from "../publicEndpoint/publishDocsModal";
+import TagManager from "react-gtm-module";
+import TagManagerModal from "./tagModal";
+import emptyCollections from "../../assets/icons/emptyCollections.svg";
+import hitmanLogo from "../../assets/icons/hitman.svg";
+import PublishCollectionInfo from "../main/publishCollectionInfo";
+import sidebarActions from "../main/sidebar/redux/sidebarActions";
+import { ReactComponent as Plus } from "../../assets/icons/plus-square.svg";
+import ExpandIcon from "../../assets/icons/expand-arrow.svg";
+import { addNewTab } from "../tabs/redux/tabsActions";
+import PageForm from "../pages/pageForm";
+import CollectionParentPages from "../collectionVersions/collectionParentPages";
+import CombinedCollections from "../combinedCollections/combinedCollections";
 
 const EMPTY_STRING = "";
 
@@ -44,6 +45,7 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     groups: state.groups,
     endpoints: state.endpoints,
+    sideBarCollections: state?.sidebarV2Reducer?.sideBarCollections,
   };
 };
 
@@ -61,10 +63,10 @@ const mapDispatchToProps = (dispatch) => {
     remove_public_collection: (collection, props) =>
       dispatch(removePublicCollection(collection, props)),
     add_new_tab: () => dispatch(addNewTab()),
-      update_isExpand_for_collection: (payload) =>
-      dispatch(updateIsExpandForCollectionAction(payload))
-  }
-}
+    update_isExpand_for_collection: (payload) =>
+      dispatch(updateIsExpandForCollectionAction(payload)),
+  };
+};
 
 class CollectionsComponent extends Component {
   constructor(props) {
@@ -112,15 +114,20 @@ class CollectionsComponent extends Component {
       this.setCollectionForEntity(endpointId, "endpoint");
   }
 
-  setCollectionForEntity (id, type) {
-    const { collectionId } = getParentIds(id, type, this.props)
-    sidebarActions.expandItem('collections', collectionId)
-      }
+  setCollectionForEntity(id, type) {
+    const { collectionId } = getParentIds(id, type, this.props);
+    sidebarActions.expandItem("collections", collectionId);
+  }
 
   setSelectedCollectionId(id, value) {
     if (id && this.state.selectedCollectionIds[id] !== value) {
-      this.setState({ selectedCollectionIds: { ...this.state.selectedCollectionIds, [id]: value } })
-        }
+      this.setState({
+        selectedCollectionIds: {
+          ...this.state.selectedCollectionIds,
+          [id]: value,
+        },
+      });
+    }
   }
 
   // async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
@@ -316,13 +323,13 @@ class CollectionsComponent extends Component {
     });
   }
 
-  toggleSelectedColelctionIds (id) {
-        sidebarActions.toggleItem('collections', id)
-        this.props.update_isExpand_for_collection({
-          value: true,
-          collectionId: id,
-        });
-      }
+  toggleSelectedColelctionIds(id) {
+    sidebarActions.toggleItem("collections", id);
+    this.props.update_isExpand_for_collection({
+      value: true,
+      collectionId: id,
+    });
+  }
 
   scrollToCollection(collectionId) {
     const ref = this.scrollRef[collectionId] || null;
@@ -360,9 +367,10 @@ class CollectionsComponent extends Component {
     );
   }
 
-  renderBody (collectionId, collectionState) {
-        const { expanded, focused, firstChild } = this.props.sidebar.navList[`collections_${collectionId}`]
-    const { focused: sidebarFocused } = this.props.sidebar
+  renderBody(collectionId, collectionState) {
+    const { expanded, focused, firstChild } =
+      this.props.sidebar.navList[`collections_${collectionId}`];
+    const { focused: sidebarFocused } = this.props.sidebar;
 
     if (sidebarFocused && focused && this.scrollRef[collectionId]) {
       this.scrollToCollection(collectionId);
@@ -838,12 +846,22 @@ class CollectionsComponent extends Component {
                       selectedCollection
                     /> */}
                 {
-                  <CollectionParentPages
+                  // <CollectionParentPages
+                  //   {...this.props}
+                  //   pagesToRender={pagesToRender}
+                  //   collection_id={collectionId}
+                  //   addPage={this.openAddCollectionPageForm.bind(this)}
+                  //   selectedCollection
+                  // />
+                  <CombinedCollections
                     {...this.props}
                     pagesToRender={pagesToRender}
                     collection_id={collectionId}
                     addPage={this.openAddCollectionPageForm.bind(this)}
                     selectedCollection
+                    rootParentId={
+                      this.props.sideBarCollections[collectionId].rootParentId
+                    }
                   />
                 }
               </Card.Body>

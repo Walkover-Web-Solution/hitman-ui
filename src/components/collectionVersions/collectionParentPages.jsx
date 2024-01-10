@@ -399,7 +399,7 @@ class CollectionParentPages extends Component {
                 <img src={ExpandArrow} alt="" />
               </span>
               <div className="sidebar-accordion-item text-truncate d-inline">
-                {this.props.pages[pageId].name}
+                {this.props.pages[this.props.rootParentId].name}
               </div>
             </div>
             {isDashboardRoute(this.props, true) &&
