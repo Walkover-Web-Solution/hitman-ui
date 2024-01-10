@@ -20,6 +20,15 @@ import NoFound from "../../assets/icons/noCollectionsIcon.svg";
 import ExpandArrow from "../../assets/icons/expand-arrow.svg";
 import { deletePage, duplicatePage } from "../pages/redux/pagesActions";
 import CollectionPages from "../pages/collectionPages";
+import {
+  approvePage,
+  draftPage,
+  pendingPage,
+  rejectPage,
+} from "../publicEndpoint/publicPageService";
+import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
+import tabStatusTypes from "../tabs/tabStatusTypes";
+import tabService from "../tabs/tabService";
 
 const mapStateToProps = (state) => {
   return {
@@ -34,12 +43,18 @@ const mapDispatchToProps = (dispatch) => {
   return {
     delete_page: (page) => dispatch(deletePage(page)),
     duplicate_page: (page) => dispatch(duplicatePage(page)),
+    pending_page: (page) => dispatch(pendingPage(page)),
+    approve_page: (page) => dispatch(approvePage(page)),
+    draft_page: (page) => dispatch(draftPage(page)),
+    reject_page: (page) => dispatch(rejectPage(page)),
+    close_tab: (tabId) => dispatch(closeTab(tabId)),
+    open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
   };
 };
 
 class CollectionParentPages extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       selectedParentPageIds: {},
       showShareVersionForm: false,
@@ -337,6 +352,7 @@ class CollectionParentPages extends Component {
 
   toggleParentPageIds(id) {
     sidebarActions.toggleItem("pages", id);
+    this.handleDisplay(this.props?.pages?.[id], this.props.collection_id, true);
   }
 
   scrolltoPage(pageId) {
@@ -361,7 +377,7 @@ class CollectionParentPages extends Component {
     const pagesToRender = [];
     const endpointToRender = [];
     if (child) {
-      let childEntity = this.props.sidebar.navList.child
+      let childEntity = this.props.sidebar.navList.child;
       while (childEntity) {
         if (childEntity.type === "pages") pagesToRender.push(childEntity.id);
         // if (childEntity.type === 'groups') groupsToRender.push(childEntity.id)
@@ -835,6 +851,41 @@ class CollectionParentPages extends Component {
         )}
       </>
     );
+  }
+
+  handleDisplay(page, collectionId, previewMode) {
+    debugger;
+    console.log(page, this.props.tabs);
+    if (isDashboardRoute(this.props, true)) {
+      if (!this.props.tabs) {
+        const previewTabId = Object.keys(this.props.tabs.tabs).filter(
+          (tabId) => this.props.tabs.tabs[tabId].previewMode === true
+        )[0];
+        if (previewTabId) this.props.close_tab(previewTabId);
+        this.props.open_in_new_tab({
+          id: page.id,
+          type: "page",
+          status: tabStatusTypes.SAVED,
+          previewMode,
+          isModified: false,
+        });
+      } else if (
+        this.props.tabs.tabs[page.id].previewMode === true &&
+        previewMode === false
+      ) {
+        tabService.disablePreviewMode(page.id);
+      }
+
+      this.props.history.push({
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${page.id}`,
+        page: page,
+      });
+    } else {
+      this.props.history.push({
+        pathname: `/p/${collectionId}/pages/${page.id}/${this.props.collections[collectionId].name}`,
+        page: page,
+      });
+    }
   }
 
   render() {
