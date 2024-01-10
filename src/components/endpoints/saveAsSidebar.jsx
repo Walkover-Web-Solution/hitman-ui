@@ -103,7 +103,6 @@ class SaveAsSidebar extends Form {
   // }
 
   setDropdownList(item) {
-    console.log(item,"item")
     const list = {}
     const dropdownList = { ...this.state.dropdownList }
     switch (this.state.dropdownList.type) {
@@ -115,7 +114,6 @@ class SaveAsSidebar extends Form {
         dropdownList.parentId = item.id
         dropdownList.selectedCollectionId = item.id
         this.setState({ dropdownList })
-        console.log(dropdownList,"dropdowmlist")
         return
       case 'versions':
         list.type = 'groups'

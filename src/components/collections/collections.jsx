@@ -39,7 +39,7 @@ const EMPTY_STRING = "";
 
 const mapStateToProps = (state) => {
   return {
-    collections: state.collections,
+    collections: state.sidebarV2Reducer.sideBarCollections,
     // versions: state.versions,
     pages: state.pages,
     groups: state.groups,
@@ -385,7 +385,6 @@ class CollectionsComponent extends Component {
           if (childNode && childNode.type === "pages") {
             pagesToRender.push(childNode.id);
           }
-          console.log(pagesToRender, "pagestorender");
         });
       }
     }

@@ -14,13 +14,18 @@ function sidebarV2Reducer(state = initialState, action) {
             const updatedCollections = { ...state.sideBarCollections };
             const updatedPages = { ...state.sideBarPages };
 
-            Object.keys(collections).forEach((key) => {
-                updatedCollections[key] = { ...(state.sideBarCollections[key] || {}), ...collections[key] };
-            });
+            try {
+                Object.keys(collections).forEach((key) => {
+                    updatedCollections[key] = { ...(state.sideBarCollections[key] || {}), ...collections[key] };
+                });
 
-            Object.keys(pages).forEach((key) => {
-                updatedPages[key] = { ...(state.sideBarPages[key] || {}), ...pages[key] };
-            });
+                Object.keys(pages).forEach((key) => {
+                    updatedPages[key] = { ...(state.sideBarPages[key] || {}), ...pages[key] };
+                });
+            }
+            catch (error) {
+                return { ...state, sideBarCollections: {}, sideBarPages: {} };
+            }
 
             return { ...state, sideBarCollections: updatedCollections, sideBarPages: updatedPages };
 

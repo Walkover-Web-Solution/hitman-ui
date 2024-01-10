@@ -83,7 +83,6 @@ class CollectionForm extends Form {
   }
 
   redirectToCollection (collection) {
-    console.log(collection,"collectiuon")
     const { viewLoader } = this.state
     if (!collection.data) {
       console.error('collection.data is undefined');

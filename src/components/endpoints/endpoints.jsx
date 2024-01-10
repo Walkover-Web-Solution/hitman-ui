@@ -507,8 +507,6 @@ class Endpoints extends Component {
   }
 
   addEndpoint (endpoint) {
-    debugger
-    console.log("add in endpoints")
     this.props.add_endpoint(endpoint, this.props.parent_id, null)
   }
 
@@ -623,7 +621,6 @@ class Endpoints extends Component {
         this.props.endpoints[eId].parentId &&
         this.props.endpoints[eId].parentId === this.props.parent_id
     )
-    console.log(endpointIds,"endpointiDs")
     return endpointIds
   }
 
@@ -654,7 +651,6 @@ class Endpoints extends Component {
   render () {
     this.setFilterFlag()
     const endpointIds = this.filterEndpointIdsByGroup()
-    console.log(endpointIds,"endpointIds")
     let endpointsArray = []
     endpointsArray = this.extractEndpointsFromIds(endpointIds)
     let endpoints = {}
