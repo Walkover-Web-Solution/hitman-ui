@@ -35,7 +35,6 @@ const mapDispatchToProps = (dispatch) => {
 
 class CollectionParentPages extends Component {
   constructor (props) {
-    console.log(props,"props")
     super(props)
     this.state = {
       selectedParentPageIds: {},
@@ -353,7 +352,6 @@ class CollectionParentPages extends Component {
     const pagesToRender = []; const endpointToRender = []
     if (child) {
       let childEntity = this.props.sidebar.navList.child
-      console.log(childEntity,"childentity")
       while (childEntity) {
         if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
         // if (childEntity.type === 'groups') groupsToRender.push(childEntity.id)

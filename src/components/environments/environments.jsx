@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Dropdown } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import shortId from 'shortid'
-import indexedDbService from '../indexedDb/indexedDbService'
 import EnvironmentModal from './environmentModal'
 import './environments.scss'
 import environmentsService from './environmentsService.js'
@@ -57,11 +56,7 @@ class Environments extends Component {
 
   async componentDidMount () {
     if (!navigator.onLine) { this.props.fetch_environments_from_local() } else { this.props.fetch_environments() }
-    await indexedDbService.getDataBase()
-    const currentEnvironmentId = await indexedDbService.getValue(
-      'environment',
-      'currentEnvironmentId'
-    )
+    const currentEnvironmentId = localStorage.getItem('currentEnvironmentId')
     this.handleEnv(currentEnvironmentId)
     if (!isDashboardRoute(this.props, true)) {
       const collectionIdentifier = this.props.location.pathname.split('/')[2]
@@ -79,11 +74,7 @@ class Environments extends Component {
   async handleEnv (environmentId) {
     this.props.set_environment_id(environmentId)
     this.setState({ currentEnvironmentId: environmentId })
-    await indexedDbService.updateData(
-      'environment',
-      environmentId,
-      'currentEnvironmentId'
-    )
+    localStorage.setItem('currentEnvironmentId', environmentId)
   }
 
   async handlePublicEnv (environmentId) {

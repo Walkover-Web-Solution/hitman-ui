@@ -108,14 +108,63 @@ class History extends Component {
     }
 
     renderHistoryList () {
+      const { historySnapshot } = this.state;
+      if (!historySnapshot || historySnapshot.length === 0) {
       return (
-        <div className='mt-3'>
-          {this.state.historySnapshot && this.state.historySnapshot.length > 0
-            ? (this.state.historySnapshot.sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
-            : (<div className='empty-collections text-center'><div><EmptyHistory /></div><div className='content'><h5>  No History available.</h5><p /></div></div>)}
+        <div className="empty-collections text-center">
+          <div>
+            <EmptyHistory />
+          </div>
+          <div className="content">
+            <h5>No History available.</h5>
+          </div>
         </div>
       )
     }
+    const groupedHistory = {};
+
+    // Group history items by date
+    historySnapshot.forEach((history) => {
+      const today = moment().startOf('day');
+      const createdAtMoment = moment(history.createdAt);
+      let dateGroup;
+
+      if (today.isSame(createdAtMoment, 'day')) {
+        dateGroup = 'Today';
+      } else if (createdAtMoment.isSame(today.clone().subtract(1, 'days'), 'day')) {
+        dateGroup = 'Yesterday';
+      } else {
+        dateGroup = createdAtMoment.format('MMMM D, YYYY');
+      }
+
+      if (!groupedHistory[dateGroup]) {
+        groupedHistory[dateGroup] = [];
+      }
+
+      groupedHistory[dateGroup].push(history);
+    });
+
+    const dropdowns = Object.entries(groupedHistory).map(([dateGroup, histories]) => (
+      <ul key={dateGroup}>
+        <li >
+        <h6 className='pb-4 ml-3'>{dateGroup}</h6>
+        <ul>
+           {histories.sort(compareByCreatedAt).map((history) => (
+            <li
+              key={history.id}
+              onClick={() => {
+                this.openHistorySnapshot(history.id);
+              }}
+            >
+              {this.renderHistoryItem(history)}
+            </li>
+          ))}
+        </ul>
+        </li>
+      </ul>
+    ));
+    return <div className="mt-3 dropdown-menu-center">{dropdowns}</div>;
+  }
 
     render () {
       return (

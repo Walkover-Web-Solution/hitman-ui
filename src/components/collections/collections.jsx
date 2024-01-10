@@ -311,13 +311,13 @@ class CollectionsComponent extends Component {
     })
   }
 
-  toggleSelectedColelctionIds (id) {
-        // sidebarActions.toggleItem('collections', id)
-        this.props.update_isExpand_for_collection({
-          value: true,
-          collectionId: id,
-        });
-      }
+  toggleSelectedColelctionIds(id) {
+    const isExpanded = this.props.collections[id]?.clientData?.isExpanded;
+    this.props.update_isExpand_for_collection({
+      value: !isExpanded,
+      collectionId: id,
+    });
+  }
 
   scrollToCollection (collectionId) {
     const ref = this.scrollRef[collectionId] || null
@@ -353,21 +353,12 @@ class CollectionsComponent extends Component {
 
   renderBody (collectionId, collectionState) {
     const expanded = this.props.collections[collectionId]?.clientData?.isExpanded
-    console.log(expanded,"expanded")
         // const {  focused } = this.props.sidebar.navList[`collections_${collectionId}`]
     // const { focused: sidebarFocused } = this.props.sidebar
 
     if (expanded && this.scrollRef[collectionId]) {
       this.scrollToCollection(collectionId)
     }
-    // const pagesToRender = []
-    // if (firstChild) {
-    //   let childPage = this.props.sidebar.navList[firstChild]
-    //   while (childPage) {
-    //     pagesToRender.push(childPage.id)
-    //     childPage = this.props.sidebar.navList[childPage.nextSibling]
-    //   }
-    // }
     const pagesToRender = []
 if (collectionId) {
   const collectionNode = this.props.sidebar.navList[`collections_${collectionId}`]
@@ -377,7 +368,6 @@ if (collectionId) {
       if (childNode && childNode.type === 'pages') {
         pagesToRender.push(childNode.id)
       }
-      console.log(pagesToRender,"pagestorender")
     })
   }
 }

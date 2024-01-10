@@ -398,7 +398,6 @@ function removeChildNodes (newState, payload) {
  * @returns Modified state
  */
 function addNewNodeReq (newState, newEntity, type) {
-  console.log(newEntity)
   if (!newEntity.id) {
     // Handle the case where the entity ID is undefined
     return newState;

@@ -1122,7 +1122,6 @@ class DisplayEndpoint extends Component {
     if (!(this.state.effectiveGroupId || effectiveRootParentId)) {
       this.openEndpointFormModal()
     } else {
-      debugger
       const body = this.prepareBodyForSaving(this.state.data.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: this.state.bodyDescription,

@@ -25,7 +25,6 @@ function pagesReducer (state = initialState, action) {
       return state
 
     // case pagesActionTypes.ADD_PAGE_REQUEST:
-    //   debugger
     //   action.newPage.groupId = null
     //   action.newPage.versionId = action.versionId
     //   return {
