@@ -1110,7 +1110,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleSave = async (id, endpointObject, isGroupId = true) => {
-    console.log(id, isGroupId ? "groupId" : "rootParentId");
   const { endpointName, endpointDescription } = endpointObject || {};
   const effectiveGroupId = isGroupId ? id : this.state.groupId;
   const effectiveRootParentId = isGroupId ? this.state.rootParentId : id;
@@ -1404,7 +1403,6 @@ class DisplayEndpoint extends Component {
   }
   
   setRootParentID(rootParentId, endpointDetails) {
-    console.log(rootParentId, "root");
     this.setState({ rootParentId }, () => { 
       this.handleSave(rootParentId, endpointDetails, false);
     });
@@ -1500,7 +1498,6 @@ class DisplayEndpoint extends Component {
         postData: body.type === 'none' ? null : await this.makePostData(body),
         queryString: this.makeParams(originalParams)
       }
-      console.log(harObject,"harobject")
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }

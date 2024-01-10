@@ -11,7 +11,6 @@ import { isDashboardRoute } from '../common/utility'
 import filterService from '../../services/filterService'
 
 const mapStateToProps = (state) => {
-  console.log("collectionpages",state)
   return {
     pages: state.pages
   }
@@ -100,7 +99,6 @@ class CollectionPages extends Component {
         this.props.pages[pId].parentId === '-1' &&
         this.props.pages[pId].parentId === this.props.parent_id
     )
-console.log(collectionPageIds,"colellell")
     let collectionPagesArray = []
     for (let index = 0; index < collectionPageIds.length; index++) {
       const id = collectionPageIds[index]
