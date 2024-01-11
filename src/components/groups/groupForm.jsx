@@ -59,23 +59,23 @@ class GroupForm extends Form {
   }
 
   async doSubmit () {
-    if (!this.state.selectedVersionId && this.props.addEntity) {
-      this.setState({ versionRequired: true })
-      return
-    }
+    // if (!this.state.selectedVersionId && this.props.addEntity) {
+    //   this.setState({ versionRequired: true })
+    //   return
+    // }
     this.props.onHide()
     let { name } = { ...this.state.data }
     name = toTitleCase(name)
-    if (this.props.title === ADD_GROUP_MODAL_NAME) {
-      const data = { ...this.state.data, name }
-      const versionId = this.props.addEntity ? this.state.selectedVersionId : this.props.selectedVersion.id
-      const newGroup = {
-        ...data,
-        requestId: shortid.generate()
-      }
-      this.props.add_group(versionId, newGroup, this.redirectToForm.bind(this))
-      moveToNextStep(3)
-    }
+    // if (this.props.title === ADD_GROUP_MODAL_NAME) {
+    //   const data = { ...this.state.data, name }
+    //   // const versionId = this.props.addEntity ? this.state.selectedVersionId : this.props.selectedVersion.id
+    //   const newGroup = {
+    //     ...data,
+    //     requestId: shortid.generate()
+    //   }
+    //   this.props.add_group(versionId, newGroup, this.redirectToForm.bind(this))
+    //   moveToNextStep(3)
+    // }
 
     if (this.props.title === 'Edit Group') {
       const editedGroup = {
@@ -125,7 +125,7 @@ class GroupForm extends Form {
                       <label>   Select Version</label>
                       <Dropdown>
                         <Dropdown.Toggle variant='' id='dropdown-basic'>
-                          {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
+                          {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'} 
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                           {this.renderVersionList()}

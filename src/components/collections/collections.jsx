@@ -362,6 +362,7 @@ class CollectionsComponent extends Component {
           onHide={() => this.closeParentPageForm()}
           title={this.state.parentPageFormName}
           selectedCollection={this.state.selectedCollection}
+          pageType={1}
         />
       )
     );

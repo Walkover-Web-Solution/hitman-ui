@@ -1,11 +1,15 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import CollectionParentPages from "../collectionVersions/collectionParentPages";
+import CollectionVersions from "../collectionVersions/collectionVersions";
+import Groups from "../groups/groups";
 
 function CombinedCollections(props) {
   const { childIds, sidebarPages } = useSelector((state) => {
     return {
-      childIds: state?.sidebarV2Reducer?.sideBarPages?.[props?.rootParentId]?.child ||  [],
+      childIds:
+        state?.sidebarV2Reducer?.sideBarPages?.[props?.rootParentId]?.child ||
+        [],
       sidebarPages: state.sidebarV2Reducer.sideBarPages,
     };
   });
@@ -16,11 +20,11 @@ function CombinedCollections(props) {
         const type = sidebarPages?.[singleId]?.type || null;
         switch (type) {
           case 1:
-            return <CollectionParentPages {...props} rootParentId={singleId} />;
+            return <CollectionParentPages key={singleId} {...props} rootParentId={singleId} />;
           case 2:
-            return null;
+            return <CollectionVersions key={singleId} {...props} rootParentId={singleId} />;
           case 3:
-            return null;
+            return <Groups key={singleId} {...props} rootParentId={singleId} />;
           case 4:
             return null;
           default:

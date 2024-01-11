@@ -22,13 +22,15 @@ import AddEntity from '../main/addEntity/addEntity'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
+import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 
 const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     pages: state.pages,
     endpoints: state.endpoints,
-    versions: state.versions
+    versions: state.versions,
+    sideBarPages: state.sidebarV2Reducer.sideBarPages,
   }
 }
 
@@ -182,6 +184,7 @@ class Groups extends Component {
           selectedVersion={this.state.selectedVersion}
           selectedGroup={this.state.selectedGroup}
           selectedCollection={this.state.selectedCollection}
+          rootParentId={this.props.rootParentId}
         />
       )
     )
@@ -200,11 +203,12 @@ class Groups extends Component {
     )
   }
 
-  openGroupPageForm (selectedVersion, selectedGroup, selectedCollection) {
+  openGroupPageForm (selectedVersion='', selectedGroup = '', selectedCollection = '') {
+    debugger
     const showGroupForm = { addPage: true }
     this.setState({
       showGroupForm,
-      groupFormName: 'Add new Group Page',
+      groupFormName: 'Add Sub Page',
       selectedVersion,
       selectedGroup,
       selectedCollection
@@ -453,18 +457,19 @@ class Groups extends Component {
   }
 
   renderBody (groupId) {
-    const { focused, expanded, firstChild } = this.props.sidebar.navList[`groups_${groupId}`]
-    const { focused: sidebarFocused } = this.props.sidebar
-    if (sidebarFocused && focused && this.scrollRef[groupId]) this.scrollToGroup(groupId)
-    const pagesToRender = []; const endpointsToRender = []
-    if (firstChild) {
-      let childEntity = this.props.sidebar.navList[firstChild]
-      while (childEntity) {
-        if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
-        if (childEntity.type === 'endpoints') endpointsToRender.push(childEntity.id)
-        childEntity = this.props.sidebar.navList[childEntity.nextSibling]
-      }
-    }
+    const expanded = this.props.pages?.[this.props.rootParentId]?.clientData?.isExpanded || false;
+    // const { focused, expanded, firstChild } = this.props.sidebar.navList[`groups_${groupId}`]
+    // const { focused: sidebarFocused } = this.props.sidebar
+    // if (sidebarFocused && focused && this.scrollRef[groupId]) this.scrollToGroup(groupId)
+    // const pagesToRender = []; const endpointsToRender = []
+    // if (firstChild) {
+    //   let childEntity = this.props.sidebar.navList[firstChild]
+    //   while (childEntity) {
+    //     if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
+    //     if (childEntity.type === 'endpoints') endpointsToRender.push(childEntity.id)
+    //     childEntity = this.props.sidebar.navList[childEntity.nextSibling]
+    //   }
+    // }
     return (
       isDashboardRoute(this.props, true)
         ? (
@@ -475,14 +480,14 @@ class Groups extends Component {
             <button
               tabIndex={-1}
               ref={(newRef) => { this.scrollRef[groupId] = newRef }}
-              className={[focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
+              // className={[focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
             >
               <div className='d-flex align-items-center cl-name' onClick={() => this.toggleGroupIds(groupId)}>
                 <span className='versionChovron'>
                   <img src={ExpandedIcon} alt='' />
                 </span>
                 <div className='sidebar-accordion-item d-inline text-truncate'>
-                  {this.props.groups[groupId].name}
+                  {this.props.sideBarPages[this.props.rootParentId].name}
                 </div>
               </div>
               {
@@ -491,10 +496,10 @@ class Groups extends Component {
                         <div className='sidebar-item-action d-flex align-items-center'>
                           <div
                             onClick={() =>
-                              this.handleAddEndpoint(
-                                groupId,
-                                this.props.versions,
-                                this.props.groups
+                              this.openGroupPageForm(
+                                // this.props.groups[groupId].versionId,
+                                // this.props.groups[groupId],
+                                // this.props.collection_id
                               )}
                             className='mr-1 d-flex align-items-center'
                           >
@@ -579,23 +584,15 @@ class Groups extends Component {
             {expanded
               ? (
                 <div
-                  className='group-collapse collapse show'
+                  className='linkWrapper versionPages'
                 >
                   <Card.Body>
-                    <GroupPages
+                    <CombinedCollections
                       {...this.props}
-                      pagesToRender={pagesToRender}
+                      // pagesToRender={pagesToRender}
                       version_id={this.props.groups[groupId].versionId}
                       set_page_drag={this.setPagedrag.bind(this)}
                       group_id={groupId}
-                      show_filter_groups={this.propsFromGroups.bind(this)}
-                    />
-                    <Endpoints
-                      {...this.props}
-                      endpointsToRender={endpointsToRender}
-                      group_id={groupId}
-                      set_endpoint_drag={this.setEndpointdrag.bind(this)}
-                      endpoints_order={this.props.groups[groupId].endpointsOrder || []}
                       show_filter_groups={this.propsFromGroups.bind(this)}
                     />
                   </Card.Body>
@@ -684,10 +681,11 @@ class Groups extends Component {
               this.state.selectedGroup
             )}
 
-        {isDashboardRoute(this.props, true) && this.props.groupsToRender
-          .map((groupId) =>
-            groupId ? <div key={groupId} className='linkWith'>{this.renderBody(groupId)}</div> : null
-          )}
+        {isDashboardRoute(this.props, true) && 
+            // groupId ? 
+            <div className='linkWith'>{this.renderBody(this.props.rootParentId)}</div> 
+            // : null
+        }
 
         {!isDashboardRoute(this.props, true) && this.sortedGroups && this.sortedGroups
           .filter((group) => group.versionId === this.props.version_id)

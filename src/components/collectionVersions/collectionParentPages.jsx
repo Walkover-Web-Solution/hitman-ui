@@ -29,6 +29,7 @@ import {
 import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import tabService from "../tabs/tabService";
+import CombinedCollections from "../combinedCollections/combinedCollections";
 
 const mapStateToProps = (state) => {
   return {
@@ -352,7 +353,6 @@ class CollectionParentPages extends Component {
 
   toggleParentPageIds(id) {
     sidebarActions.toggleItem("pages", id);
-    this.handleDisplay(this.props?.pages?.[id], this.props.collection_id, true);
   }
 
   scrolltoPage(pageId) {
@@ -640,11 +640,12 @@ class CollectionParentPages extends Component {
             <div className="version-collapse">
               <Card.Body>
                 <div className="linkWrapper versionPages pl-4">
-                  <CollectionPages
+                  <CombinedCollections
                     {...this.props}
                     pagesToRender={pagesToRender}
                     page_id={pageId}
                     show_filter_pages={this.propsFromParentPage.bind(this)}
+                    rootParentId={this.props.rootParentId}
                   />
                 </div>
               </Card.Body>
@@ -853,41 +854,6 @@ class CollectionParentPages extends Component {
     );
   }
 
-  handleDisplay(page, collectionId, previewMode) {
-    debugger;
-    console.log(page, this.props.tabs);
-    if (isDashboardRoute(this.props, true)) {
-      if (!this.props.tabs) {
-        const previewTabId = Object.keys(this.props.tabs.tabs).filter(
-          (tabId) => this.props.tabs.tabs[tabId].previewMode === true
-        )[0];
-        if (previewTabId) this.props.close_tab(previewTabId);
-        this.props.open_in_new_tab({
-          id: page.id,
-          type: "page",
-          status: tabStatusTypes.SAVED,
-          previewMode,
-          isModified: false,
-        });
-      } else if (
-        this.props.tabs.tabs[page.id].previewMode === true &&
-        previewMode === false
-      ) {
-        tabService.disablePreviewMode(page.id);
-      }
-
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${page.id}`,
-        page: page,
-      });
-    } else {
-      this.props.history.push({
-        pathname: `/p/${collectionId}/pages/${page.id}/${this.props.collections[collectionId].name}`,
-        page: page,
-      });
-    }
-  }
-
   render() {
     if (
       this.filterFlag === false ||
@@ -951,10 +917,10 @@ class CollectionParentPages extends Component {
           </>
         ) : null}
         {isDashboardRoute(this.props, true)
-          ? this.props.pagesToRender.map((pageId, index) => {
-              return this.renderBody(pageId, index);
-            })
-          : this.state.value
+          ? // this.props.pagesToRender.map((pageId, index) => {
+            this.renderBody(this.props.rootParentId)
+          : // })
+          this.state.value
           ? this.renderResponses()
           : this.filteredPages &&
             Object.keys(this.filteredPages) &&

@@ -40,6 +40,7 @@ class PageForm extends Form {
   }
 
   async doSubmit (props) {
+    debugger
     if (!this.state.selectedCollection && this.props.addEntity) {
       this.setState({ versionRequired: true })
       return
@@ -62,8 +63,14 @@ class PageForm extends Form {
     if (this.props.title === 'Add New Parent Page' || (this.props.addEntity)){
       const rootParentId = this.props.addEntity ?  collections : collections.rootParentId
       const data = { ...this.state.data, name }
-      const newPage = { ...data, requestId: shortid.generate() }
+      const newPage = { ...data, requestId: shortid.generate(), versionId : this.props.pageType === 1 ? shortid.generate() : null, pageType: this.props.pageType }
       this.props.add_page(rootParentId ,newPage)
+    }
+    if (this.props.title === 'Add Sub Page' || (this.props.addEntity)){
+      const rootParentId = this.props.addEntity ?  collections : collections.rootParentId
+      const data = { ...this.state.data, name }
+      const newPage = { ...data, requestId: shortid.generate(), versionId : this.props.pageType === 1 ? shortid.generate() : null, pageType: this.props.pageType }
+      this.props.add_page(this.props.rootParentId ,newPage)
     }
   }
 

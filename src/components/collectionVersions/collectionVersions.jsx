@@ -9,7 +9,6 @@ import {
 } from '../collectionVersions/redux/collectionVersionsActions'
 import ShareVersionForm from '../collectionVersions/shareVersionForm'
 import { isDashboardRoute, ADD_GROUP_MODAL_NAME, getParentIds } from '../common/utility'
-import GroupForm from '../groups/groupForm'
 import Groups from '../groups/groups'
 import PageForm from '../pages/pageForm'
 import VersionPages from '../pages/versionPages'
@@ -21,13 +20,15 @@ import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
+import CombinedCollections from '../combinedCollections/combinedCollections'
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
     groups: state.groups,
-    pages: state.pages
+    pages: state.pages,
+    sideBarPages: state.sidebarV2Reducer.sideBarPages,
   }
 }
 
@@ -167,7 +168,7 @@ class CollectionVersions extends Component {
   }
 
   openAddGroupForm (version) {
-    const showVersionForm = { addGroup: true }
+    const showVersionForm = { addPage: true }
     this.setState({
       showVersionForm,
       versionFormName: ADD_GROUP_MODAL_NAME,
@@ -207,7 +208,7 @@ class CollectionVersions extends Component {
   showAddGroupForm () {
     return (
       this.state.showVersionForm.addGroup && (
-        <GroupForm
+        <PageForm
           {...this.props}
           show={this.state.showVersionForm.addGroup}
           onHide={() => this.closeVersionForm()}
@@ -353,18 +354,19 @@ class CollectionVersions extends Component {
   }
 
   renderBody (versionId, index) {
-    const { expanded, focused, firstChild } = this.props.sidebar.navList[`versions_${versionId}`]
-    const { focused: sidebarFocused } = this.props.sidebar
-    if (sidebarFocused && focused && this.scrollRef[versionId]) this.scrollToVersion(versionId)
-    const pagesToRender = []; const groupsToRender = []
-    if (firstChild) {
-      let childEntity = this.props.sidebar.navList[firstChild]
-      while (childEntity) {
-        if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
-        if (childEntity.type === 'groups') groupsToRender.push(childEntity.id)
-        childEntity = this.props.sidebar.navList[childEntity.nextSibling]
-      }
-    }
+    const expanded = this.props.pages?.[this.props.rootParentId]?.clientData?.isExpanded || false;
+    // const { expanded, focused, firstChild } = this.props.sidebar.navList[`versions_${versionId}`]
+    // const { focused: sidebarFocused } = this.props.sidebar
+    // if (sidebarFocused && focused && this.scrollRef[versionId]) this.scrollToVersion(versionId)
+    // const pagesToRender = []; const groupsToRender = []
+    // if (firstChild) {
+    //   let childEntity = this.props.sidebar.navList[firstChild]
+    //   while (childEntity) {
+    //     if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
+    //     if (childEntity.type === 'groups') groupsToRender.push(childEntity.id)
+    //     childEntity = this.props.sidebar.navList[childEntity.nextSibling]
+    //   }
+    // }
 
     return (
       isDashboardRoute(this.props, true)
@@ -377,14 +379,15 @@ class CollectionVersions extends Component {
               <button
                 tabIndex={-1}
                 ref={(newRef) => { this.scrollRef[versionId] = newRef }}
-                className={'pl-3 ' + [focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
+                // className={'pl-3 ' + [focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
+                className='pl-3'
               >
                 <div className='d-flex align-items-center cl-name' onClick={() => { this.toggleVersionIds(versionId) }}>
                   <span className='versionChovron'>
                     <img src={ExpandArrow} alt='' />
                   </span>
                   <div className='sidebar-accordion-item text-truncate d-inline'>
-                    {this.props.versions[versionId].number}
+                    {this.props.sideBarPages[this.props.rootParentId].name}
                   </div>
                 </div>
                 {
@@ -472,27 +475,19 @@ class CollectionVersions extends Component {
                         : null
                     }
               </button>
-              {expanded
+              {true
                 ? (
                   <div className='version-collapse'>
                     <Card.Body>
-                      <div className='linkWrapper versionPages pl-4'>
-                        <VersionPages
+                      <div className='versionPages pl-3'>
+                        <CombinedCollections
                           {...this.props}
-                          pagesToRender={pagesToRender}
+                          // pagesToRender={pagesToRender}
                           version_id={versionId}
                           show_filter_version={this.propsFromVersion.bind(this)}
                         />
                       </div>
-                      <div className='linkWrapper versionsgroups'>
-                        <Groups
-                          {...this.props}
-                          groupsToRender={groupsToRender}
-                          version_id={versionId}
-                          addGroup={this.openAddGroupForm.bind(this)}
-                          show_filter_version={this.propsFromVersion.bind(this)}
-                        />
-                      </div>
+
                     </Card.Body>
                   </div>
                   )
@@ -703,8 +698,10 @@ class CollectionVersions extends Component {
           !isDashboardRoute(this.props, true)
             ? (
               <>
-                <div className={this.filteredVersions && Object.keys(this.filteredVersions).length > 1 ? this.state.enableSearch ? 'versionWrapper versionsAvailable d-flex enableSearch' : 'versionWrapper versionsAvailable d-flex' : 'versionWrapper'}>
-                  {this.filteredVersions && Object.keys(this.filteredVersions).length > 1
+                <div 
+                // className={this.filteredVersions && Object.keys(this.filteredVersions).length > 1 ? this.state.enableSearch ? 'versionWrapper versionsAvailable d-flex enableSearch' : 'versionWrapper versionsAvailable d-flex' : 'versionWrapper'}
+                >
+                  {/* {this.filteredVersions && Object.keys(this.filteredVersions).length > 1
                     ? (
                       <select
                         className='selected-version form-control light-orange-bg'
@@ -717,7 +714,7 @@ class CollectionVersions extends Component {
                         ))}
                       </select>
                       )
-                    : null}
+                    : null} */}
                   {this.renderPublicSearchBar()}
                 </div>
               </>
@@ -725,9 +722,10 @@ class CollectionVersions extends Component {
             : null
         }
         {isDashboardRoute(this.props, true)
-          ? this.props.versionsToRender.map((versionId, index) => (
-              this.renderBody(versionId, index)
-            ))
+          ? 
+          // this.props.versionsToRender.map((versionId, index) => (
+              this.renderBody(this.props.rootParentId)  
+            // ))
           : this.state.value
             ? this.renderResponses()
             : this.filteredVersions &&
