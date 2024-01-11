@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import CollectionParentPages from "../collectionVersions/collectionParentPages";
 import CollectionVersions from "../collectionVersions/collectionVersions";
 import Groups from "../groups/groups";
+import Endpoints from "../endpoints/endpoints";
 
 function CombinedCollections(props) {
   const { childIds, sidebarPages } = useSelector((state) => {
@@ -26,9 +27,9 @@ function CombinedCollections(props) {
           case 3:
             return <Groups key={singleId} {...props} rootParentId={singleId} />;
           case 4:
-            return null;
+            return <Endpoints {...props} endpointId = {singleId} />;
           default:
-            break;
+            break; 
         }
       })}
     </div>
