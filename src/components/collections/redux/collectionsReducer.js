@@ -8,19 +8,6 @@ const initialState = {}
 function collectionsReducer(state = initialState, action) {
   let collections = {}
   switch (action.type) {
-    
-    case collectionsActionTypes.UPDATE_CLIENT_DATA_ISEXPANDED:
-      return {
-        ...state,
-        [action.payload.collectionId]: {
-          ...state[action.payload.collectionId],
-          clientData: {
-            ...state[action.payload.collectionId].clientData,
-            isExpanded: action.payload.value
-          }
-        }
-      }
-
     case versionActionTypes.IMPORT_VERSION:
       if (action.response.collection) {
         return {

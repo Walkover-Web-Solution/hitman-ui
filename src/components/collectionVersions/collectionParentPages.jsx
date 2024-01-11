@@ -20,6 +20,7 @@ import NoFound from "../../assets/icons/noCollectionsIcon.svg";
 import ExpandArrow from "../../assets/icons/expand-arrow.svg";
 import { deletePage, duplicatePage } from "../pages/redux/pagesActions";
 import CollectionPages from "../pages/collectionPages";
+import { updateIsExpandInSidebar } from "../main/sidebar/redux/sidebarV2Actions";
 
 const mapStateToProps = (state) => {
   return {
@@ -34,12 +35,15 @@ const mapDispatchToProps = (dispatch) => {
   return {
     delete_page: (page) => dispatch(deletePage(page)),
     duplicate_page: (page) => dispatch(duplicatePage(page)),
+    update_isExpand_for_collection: (payload) =>
+      dispatch(updateIsExpandInSidebar(payload))
   };
 };
 
 class CollectionParentPages extends Component {
   constructor (props) {
     super(props)
+    console.log(this.props.pages,"pages")
     this.state = {
       selectedParentPageIds: {},
       showShareVersionForm: false,
@@ -51,6 +55,8 @@ class CollectionParentPages extends Component {
         share: false,
         edit: false,
       },
+      showVersionForm: false,
+      versionFormName: "",
       theme: "",
       filter: "",
       selectedParentPageIndex: "",
@@ -137,57 +143,35 @@ class CollectionParentPages extends Component {
   }
 
   openAddVersionForm(page) {
-    const showVersionForm = { addVersion: true };
+    console.log(page,"openaddversionform")
+    // const showVersionForm = { addVersion: true };
     this.setState({
-      showVersionForm,
-      parentPageFormName: "Add New Version",
-      selectedCollection: page,
+      showVersionForm : true,
+      versionFormName: "Add New Version",
+      selectedParentPage: page,
     });
   }
 
-  showAddVersionForm() {
-    return (
-      this.state.showPageForm.addPage && (
-        <PageForm
-          {...this.props}
-          show={this.state.showPageForm.addPage}
-          onHide={() => this.closeParentPageForm()}
-          title={this.state.parentPageFormName}
-          selectedCollection={this.state.selectedCollection}
-        />
-      )
-    );
-  }
+  // showAddVersionForm() {
+  //   return (
+  //     this.state.showVersionForm && (
+  //       <PageForm
+  //         {...this.props}
+  //         show={this.state.showVersionForm.addVersion}
+  //         onHide={() => this.closeParentPageForm()}
+  //         title={this.state.versionFormName}
+  //         selectedCollection={this.state.selectedCollection}
+  //       />
+  //     )
+  //   );
+  // }
 
-  showAddVersionPageForm() {
-    return (
-      this.state.showPageForm.addPage && (
-        <PageForm
-          {...this.props}
-          show={this.state.showPageForm.addPage}
-          onHide={() => this.closePageForm()}
-          title={this.state.pageFormName}
-          selectedPage={this.state.selectedPage}
-        />
-      )
-    );
-  }
-
-  openShareParentPageForm(version) {
+  openShareParentPageForm(page) {
     const showPageForm = { share: true };
     this.setState({
       showPageForm,
       pageFormName: "Share Parent Page",
-      selectedPage: version,
-    });
-  }
-
-  openAddVersionPageForm(version) {
-    const showPageForm = { addPage: true };
-    this.setState({
-      showPageForm,
-      pageFormName: "Add New Version Page",
-      selectedPage: version,
+      selectedPage: page,
     });
   }
 
@@ -202,7 +186,7 @@ class CollectionParentPages extends Component {
     this.setState({
       showDeleteModal: true,
       selectedPage: {
-        ...this.props.versions[pageId],
+        ...this.props.pages[pageId],
       },
     });
   }
@@ -330,13 +314,19 @@ class CollectionParentPages extends Component {
   }
 
   setSelectedParentPage(e) {
+    debugger
     this.setState({
       selectedParentPageIndex: e.currentTarget.value,
     });
   }
 
   toggleParentPageIds(id) {
-    sidebarActions.toggleItem("pages", id);
+    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded;
+    this.props.update_isExpand_for_collection({
+    target: 'sideBarPages',
+    value: !isExpanded,
+    id: id,
+  });
   }
 
   scrolltoPage(pageId) {
@@ -353,22 +343,13 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    const { expanded, focused, child } =
+    const expanded = this.props.pages?.[pageId]?.clientData?.isExpanded;
+    
+    const { focused, child } =
       this.props.sidebar.navList[`pages_${pageId}`];
     const { focused: sidebarFocused } = this.props.sidebar;
     if (sidebarFocused && focused && this.scrollRef[pageId])
       this.scrolltoPage(pageId);
-    const pagesToRender = [];
-    const endpointToRender = [];
-    if (child) {
-      let childEntity = this.props.sidebar.navList.child
-      while (childEntity) {
-        if (childEntity.type === "pages") pagesToRender.push(childEntity.id);
-        // if (childEntity.type === 'groups') groupsToRender.push(childEntity.id)
-        // if (childEntity.type === '4') endpointToRender.push(childEntity.id)
-        childEntity = this.props.sidebar.navList[childEntity.nextSibling];
-      }
-    }
 
     return isDashboardRoute(this.props, true) ? (
       <div className={["hm-sidebar-outer-block"].join(" ")} key={pageId}>
@@ -392,7 +373,7 @@ class CollectionParentPages extends Component {
             <div
               className="d-flex align-items-center cl-name"
               onClick={() => {
-                this.toggleParentPageIds(pageId);
+                this.toggleParentPageIds(this.props.rootParentId);
               }}
             >
               <span className="versionChovron">
@@ -408,8 +389,8 @@ class CollectionParentPages extends Component {
               <div className="sidebar-item-action d-flex align-items-center">
                 <div
                   className="mr-1 d-flex align-items-center"
-                  onClick={() =>
-                    this.openAddVersionForm(this.props.pages[pageId])
+                  onClick={() => 
+                    this.openAddVersionForm(this.props.rootParentId)
                   }
                 >
                   <Plus />
@@ -493,7 +474,7 @@ class CollectionParentPages extends Component {
                   <div
                     className="dropdown-item"
                     onClick={() => {
-                      this.handleDuplicate(this.props.pages[pageId]);
+                      this.handleDuplicate(this.props.rootParentId);
                     }}
                   >
                     <svg
@@ -519,51 +500,6 @@ class CollectionParentPages extends Component {
                       />
                     </svg>{" "}
                     Duplicate
-                  </div>
-                  <div
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.openAddVersionForm(this.props.pages[pageId])
-                    }
-                  >
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 18 18"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M15.75 3H2.25C1.42157 3 0.75 3.67157 0.75 4.5V13.5C0.75 14.3284 1.42157 15 2.25 15H15.75C16.5784 15 17.25 14.3284 17.25 13.5V4.5C17.25 3.67157 16.5784 3 15.75 3Z"
-                        stroke="#E98A36"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <line
-                        x1="5.25"
-                        y1="15"
-                        x2="5.25"
-                        y2="3"
-                        stroke="#E98A36"
-                        strokeWidth="1.5"
-                      />
-                      <path
-                        d="M14 9L8 9"
-                        stroke="#E98A36"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M11 12L11 6"
-                        stroke="#E98A36"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>{" "}
-                    Add Page
                   </div>
                   <div
                     className="dropdown-item"
@@ -626,7 +562,6 @@ class CollectionParentPages extends Component {
                 <div className="linkWrapper versionPages pl-4">
                   <CollectionPages
                     {...this.props}
-                    pagesToRender={pagesToRender}
                     page_id={pageId}
                     show_filter_pages={this.propsFromParentPage.bind(this)}
                   />
@@ -852,12 +787,11 @@ class CollectionParentPages extends Component {
       <>
         {this.showShareVersionForm()}
         {this.showEditVersionForm()}
-        {this.showAddVersionForm()}
         {this.state.showVersionForm &&
-          collectionVersionsService.showParentPageForm(
+          collectionVersionsService.showVersionForm(
             this.props,
             this.closeVersionForm.bind(this),
-            this.state.selectedCollection.id,
+            this.props.rootParentId,
             ADD_VERSION_MODAL_NAME
           )}
         {this.state.showDeleteModal &&
@@ -900,9 +834,10 @@ class CollectionParentPages extends Component {
           </>
         ) : null}
         {isDashboardRoute(this.props, true)
-          ? this.props.pagesToRender.map((pageId, index) => {
-              return this.renderBody(pageId, index);
-            })
+          ? 
+          // this.props.pagesToRender.map((pageId, index) => {
+              this.renderBody(this.props.rootParentId)
+            // })
           : this.state.value
           ? this.renderResponses()
           : this.filteredPages &&

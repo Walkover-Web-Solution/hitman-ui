@@ -59,7 +59,7 @@ class PageForm extends Form {
         newPage
       )
     }
-    if (this.props.title === 'Add New Parent Page' || (this.props.addEntity)){
+    if (this.props.title === 'Add Parent Page' || (this.props.addEntity)){
       const rootParentId = this.props.addEntity ?  collections : collections.rootParentId
       const data = { ...this.state.data, name }
       const newPage = { ...data, requestId: shortid.generate() }

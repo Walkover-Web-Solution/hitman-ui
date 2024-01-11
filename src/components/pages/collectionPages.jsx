@@ -138,25 +138,25 @@ class CollectionPages extends Component {
   }
 
   renderDashboardPages () {
-    return (
-      this.props.pagesToRender
-        .map((pageId, index) => (
-          <div key={index} className='linkWith'>
-            <div key={index} className={isDashboardRoute(this.props) ? this.props.pages[pageId].state : null}>
-              <Pages
-                {...this.props}
-                page_id={pageId}
-                index={index}
-                open_delete_page_modal={this.openDeletePageModal.bind(   
-                  this
-                )}
-                close_delete_page_modal={this.closeDeletePageModal.bind(
-                  this
-                )}
-              />
-            </div>
-          </div>
-        )))
+    // return (
+      // this.props.pagesToRender
+      //   .map((pageId, index) => (
+      //     <div key={index} className='linkWith'>
+      //       <div key={index} className={isDashboardRoute(this.props) ? this.props.pages[pageId].state : null}>
+      //         <Pages
+      //           {...this.props}
+      //           page_id={pageId}
+      //           index={index}
+      //           open_delete_page_modal={this.openDeletePageModal.bind(   
+      //             this
+      //           )}
+      //           close_delete_page_modal={this.closeDeletePageModal.bind(
+      //             this
+      //           )}
+      //         />
+      //       </div>
+      //     </div>
+      //   )))
   }
 
   render () {
