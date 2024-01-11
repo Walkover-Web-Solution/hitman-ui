@@ -32,7 +32,7 @@ const endpointsEnum = {
 
 const mapStateToProps = (state) => {
   return {
-    endpoints: state.endpoints,
+    endpoints: state.sidebarV2Reducer?.sideBarPages,
     groups: state.groups,
     tabs: state.tabs
   }
@@ -320,9 +320,11 @@ class Endpoints extends Component {
 
   displayEndpointName (endpointId) {
     return (
-      <div className='sidebar-accordion-item pl-3'>
-        <div className={`api-label ${this.props?.endpoints[endpointId]?.requestType} request-type-bgcolor`}>
-          {this.props.endpoints[endpointId].requestType}
+      <div className='sidebar-accordion-item'>
+        {/* <div className={`api-label ${this.props?.endpoints[endpointId]?.requestType} request-type-bgcolor`}> */}
+          {/* {this.props.endpoints[endpointId].requestType} */}
+          <div className={`api-label GET request-type-bgcolor`}>
+          GET
         </div>
         <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
       </div>
@@ -478,7 +480,7 @@ class Endpoints extends Component {
               sidebarActions.toggleItem('endpoints', endpointId)
               this.handleDisplay(
                 this.props.endpoints[endpointId],
-                this.props.parent_id,
+                this.props.rootParentId,
                 this.props.collection_id,
                 true
               )
@@ -486,7 +488,7 @@ class Endpoints extends Component {
             onDoubleClick={() =>
               this.handleDisplay(
                 this.props.endpoints[endpointId],
-                this.props.parent_id,
+                this.props.rootParentId,    
                 this.props.collection_id,
                 false
               )}
@@ -536,13 +538,16 @@ class Endpoints extends Component {
     )
   }
 
-  displayUserEndpoints (endpoints) {
+  displayUserEndpoints (endpointId) {
+
     return (
       <>
-        {endpoints.map((endpointId) => (
+        
+          {this.displaySingleEndpoint(endpointId)}
+        {/* {endpoints?.map((endpointId) => (
           this.displaySingleEndpoint(endpointId)
-        ))}
-        {endpoints.length === 0 && this.renderForm()}
+        ))}*/}
+        {endpointId?.length === 0 && this.renderForm()} 
       </>
     )
   }
@@ -657,7 +662,7 @@ class Endpoints extends Component {
     endpoints = this.getEndpointsEntity(endpointsArray)
 
     if (isDashboardRoute(this.props, true)) {
-      return this.displayUserEndpoints(this.props.endpointsToRender)
+      return this.displayUserEndpoints(this?.props?.endpointId)
     } else {
       return this.displayPublicEndpoints(endpoints)
     }

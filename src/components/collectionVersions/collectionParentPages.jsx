@@ -854,7 +854,7 @@ class CollectionParentPages extends Component {
   }
 
   handleDisplay(page, collectionId, previewMode) {
-    debugger;
+    // debugger;
     console.log(page, this.props.tabs);
     if (isDashboardRoute(this.props, true)) {
       if (!this.props.tabs) {
