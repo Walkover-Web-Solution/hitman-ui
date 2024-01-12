@@ -2,7 +2,7 @@ import clientDataActionTypes from './clientDataActionTypes'
 
 const initialState = {}
 
-const clientDataReducer = (state, action) => {
+const clientDataReducer = (state = initialState, action) => {
   switch (action.type) {
     case clientDataActionTypes.ADD_IS_EXPANDED:
       if (state?.[action?.payload?.id]) {
