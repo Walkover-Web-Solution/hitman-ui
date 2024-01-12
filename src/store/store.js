@@ -31,7 +31,7 @@ const rootReducer = combineReducers({
   modals: modalsReducer,
   sidebar: sidebarReducer,
   responseView: toggleResponseReducer,
-  feedbacks: publishDocsReducer,
+  feedbacks: publishDocsReducer
 })
 
 const persistConfig = {

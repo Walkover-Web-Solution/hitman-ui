@@ -1,44 +1,35 @@
-import React, { Component } from "react";
-import { Card } from "react-bootstrap";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import CollectionVersionForm from "./collectionVersionForm";
-import ShareVersionForm from "./shareVersionForm";
-import {
-  isDashboardRoute,
-  getParentIds,
-  ADD_VERSION_MODAL_NAME,
-} from "../common/utility";
-import PageForm from "../pages/pageForm";
-import "./collectionVersions.scss";
-import collectionVersionsService from "./collectionVersionsService";
-import filterService from "../../services/filterService";
-import AddEntity from "../main/addEntity/addEntity";
-import sidebarActions from "../main/sidebar/redux/sidebarActions";
-import { ReactComponent as Plus } from "../../assets/icons/plus-square.svg";
-import NoFound from "../../assets/icons/noCollectionsIcon.svg";
-import ExpandArrow from "../../assets/icons/expand-arrow.svg";
-import { deletePage, duplicatePage, updateIsExpandForPages } from "../pages/redux/pagesActions";
-import CollectionPages from "../pages/collectionPages";
-import {
-  approvePage,
-  draftPage,
-  pendingPage,
-  rejectPage,
-} from "../publicEndpoint/publicPageService";
-import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
-import tabStatusTypes from "../tabs/tabStatusTypes";
-import tabService from "../tabs/tabService";
-import CombinedCollections from "../combinedCollections/combinedCollections";
+import React, { Component } from 'react'
+import { Card } from 'react-bootstrap'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import CollectionVersionForm from './collectionVersionForm'
+import ShareVersionForm from './shareVersionForm'
+import { isDashboardRoute, getParentIds, ADD_VERSION_MODAL_NAME } from '../common/utility'
+import PageForm from '../pages/pageForm'
+import './collectionVersions.scss'
+import collectionVersionsService from './collectionVersionsService'
+import filterService from '../../services/filterService'
+import AddEntity from '../main/addEntity/addEntity'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
+import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
+import NoFound from '../../assets/icons/noCollectionsIcon.svg'
+import ExpandArrow from '../../assets/icons/expand-arrow.svg'
+import { deletePage, duplicatePage, updateIsExpandForPages } from '../pages/redux/pagesActions'
+import CollectionPages from '../pages/collectionPages'
+import { approvePage, draftPage, pendingPage, rejectPage } from '../publicEndpoint/publicPageService'
+import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
+import tabStatusTypes from '../tabs/tabStatusTypes'
+import tabService from '../tabs/tabService'
+import CombinedCollections from '../combinedCollections/combinedCollections'
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
     groups: state.groups,
-    pages: state.pages,
-  };
-};
+    pages: state.pages
+  }
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -50,10 +41,9 @@ const mapDispatchToProps = (dispatch) => {
     reject_page: (page) => dispatch(rejectPage(page)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    update_isExpand_for_pages: (payload) =>
-      dispatch(updateIsExpandForPages(payload))
-  };
-};
+    update_isExpand_for_pages: (payload) => dispatch(updateIsExpandForPages(payload))
+  }
+}
 
 class CollectionParentPages extends Component {
   constructor(props) {
@@ -296,11 +286,11 @@ class CollectionParentPages extends Component {
   }
 
   toggleParentPageIds(id) {
-    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false;
+    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
     this.props.update_isExpand_for_pages({
-    value: !isExpanded,
-    id: id,
-  });
+      value: !isExpanded,
+      id: id
+    })
   }
 
   scrolltoPage(pageId) {
@@ -317,10 +307,9 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    const expanded = this.props.pages?.[pageId]?.clientData?.isExpanded;
-  
-    if (this.scrollRef[pageId])
-      this.scrolltoPage(pageId);
+    const expanded = this.props.pages?.[pageId]?.clientData?.isExpanded
+
+    if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
 
     return isDashboardRoute(this.props, true) ? (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
@@ -330,8 +319,7 @@ class CollectionParentPages extends Component {
             ref={(newRef) => {
               this.scrollRef[pageId] = newRef
             }}
-            className={
-              "pl-3 " + (expanded ? "expanded" : "")}
+            className={'pl-3 ' + (expanded ? 'expanded' : '')}
           >
             <div
               className='d-flex align-items-center cl-name'
@@ -342,9 +330,7 @@ class CollectionParentPages extends Component {
               <span className='versionChovron'>
                 <img src={ExpandArrow} alt='' />
               </span>
-              <div className="sidebar-accordion-item text-truncate d-inline">
-                {this.props.pages[pageId].name}
-              </div>
+              <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
             </div>
             {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action d-flex align-items-center'>

@@ -26,7 +26,7 @@ const mapStateToProps = (state) => {
     groups: state.groups,
     pages: state.pages,
     endpoints: state.endpoints,
-    versions: state.versions,
+    versions: state.versions
   }
 }
 
@@ -37,8 +37,7 @@ const mapDispatchToProps = (dispatch) => {
     update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId)),
     delete_group: (group, props) => dispatch(deleteGroup(group, props)),
     duplicate_group: (group) => dispatch(duplicateGroup(group)),
-    update_isExpand_for_subPages: (payload) =>
-      dispatch(updateIsExpandForPages(payload))
+    update_isExpand_for_subPages: (payload) => dispatch(updateIsExpandForPages(payload))
   }
 }
 
@@ -186,7 +185,7 @@ class Groups extends Component {
     )
   }
 
-  openGroupPageForm (selectedVersion='', selectedGroup = '', selectedCollection = '') {
+  openGroupPageForm(selectedVersion = '', selectedGroup = '', selectedCollection = '') {
     const showGroupForm = { addPage: true }
     this.setState({
       showGroupForm,
@@ -406,7 +405,7 @@ class Groups extends Component {
           ref={(newRef) => {
             this.scrollRef[groupId] = newRef
           }}
-          className={(expanded ? 'expanded' : '')}
+          className={expanded ? 'expanded' : ''}
         >
           <div className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(groupId)}>
             <span className='versionChovron'>
@@ -601,13 +600,13 @@ class Groups extends Component {
     )
   }
 
-  toggleSubPageIds (id) {
-    console.log(id,"idddd")
-    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false;
+  toggleSubPageIds(id) {
+    console.log(id, 'idddd')
+    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
     this.props.update_isExpand_for_subPages({
-    value: !isExpanded,
-    id: id,
-  });
+      value: !isExpanded,
+      id: id
+    })
   }
 
   render() {

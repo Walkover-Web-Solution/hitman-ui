@@ -24,17 +24,17 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.ON_PAGE_FETCHED_ERROR:
       return state
 
-      case pagesActionTypes.ON_EXPAND_PAGES:
-        return {
-          ...state,
-          [action.payload.id]: {
-            ...state[action.payload.id],
-            clientData: {
-              ...state[action.payload.id].clientData,
-              isExpanded: action.payload.value
-            }
+    case pagesActionTypes.ON_EXPAND_PAGES:
+      return {
+        ...state,
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          clientData: {
+            ...state[action.payload.id].clientData,
+            isExpanded: action.payload.value
           }
         }
+      }
 
     // case pagesActionTypes.ADD_PAGE_REQUEST:
     //   action.newPage.groupId = null

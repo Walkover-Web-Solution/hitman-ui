@@ -25,7 +25,7 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     versions: state.versions,
     groups: state.groups,
-    pages: state.pages,
+    pages: state.pages
   }
 }
 
@@ -33,8 +33,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     delete_version: (version, props) => dispatch(deleteVersion(version, props)),
     duplicate_version: (version) => dispatch(duplicateVersion(version)),
-    update_isExpand_for_versions: (payload) =>
-      dispatch(updateIsExpandForPages(payload))
+    update_isExpand_for_versions: (payload) => dispatch(updateIsExpandForPages(payload))
   }
 }
 
@@ -308,12 +307,12 @@ class CollectionVersions extends Component {
     })
   }
 
-  toggleVersionIds (id) {
-    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false;
+  toggleVersionIds(id) {
+    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
     this.props.update_isExpand_for_versions({
-    value: !isExpanded,
-    id: id,
-  });
+      value: !isExpanded,
+      id: id
+    })
   }
 
   scrollToVersion(versionId) {
@@ -325,8 +324,8 @@ class CollectionVersions extends Component {
     }
   }
 
-  renderBody (versionId, index) {
-    const expanded = this.props.pages?.[this.props.rootParentId]?.clientData?.isExpanded || false;
+  renderBody(versionId, index) {
+    const expanded = this.props.pages?.[this.props.rootParentId]?.clientData?.isExpanded || false
 
     return isDashboardRoute(this.props, true) ? (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={versionId}>

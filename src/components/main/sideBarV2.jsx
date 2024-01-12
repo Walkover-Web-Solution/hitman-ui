@@ -48,7 +48,7 @@ const mapStateToProps = (state) => {
     historySnapshot: state.history,
     sidebar: state.sidebar,
     filter: '',
-    modals: state.modals,
+    modals: state.modals
   }
 }
 
@@ -528,7 +528,7 @@ class SideBarV2 extends Component {
     )
   }
 
-  renderCollections () {
+  renderCollections() {
     const collectionsToRender = Object.keys(this.props.collections)
     return (
       <Collections
