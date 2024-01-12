@@ -17,6 +17,18 @@ function collectionsReducer(state = initialState, action) {
       }
       return { ...state }
 
+      case collectionsActionTypes.ON_COLLECTION_EXPANDED:
+        return {
+          ...state,
+          [action.payload.collectionId]: {
+            ...state[action.payload.collectionId],
+            clientData: {
+              ...state[action.payload.collectionId].clientData,
+              isExpanded: action.payload.value
+            }
+          }
+        }
+
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
       // return { ...state, ...action.collections }
       const collectionState = state

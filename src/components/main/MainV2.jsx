@@ -19,15 +19,19 @@ import moment from 'moment'
 // import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
 // import { loadHelloWidget } from '../../services/helloWidgetService'
-import DesktopAppDownloadModal from './desktopAppPrompt'
-import { sendAmplitudeData } from '../../services/amplitude'
-import UpdateStatus from './updateStatus'
-import { isValidDomain } from '../common/utility'
-import CollectionModal from '../collections/collectionsModal'
-import SplitPane from 'react-split-pane'
-import NoCollectionIcon from '../../assets/icons/collection.svg'
-import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
-import { addCollectionAndPagesInSideBar } from './sidebar/redux/sidebarV2Actions'
+import DesktopAppDownloadModal from "./desktopAppPrompt";
+import { sendAmplitudeData } from "../../services/amplitude";
+import UpdateStatus from "./updateStatus";
+import { isValidDomain } from "../common/utility";
+import CollectionModal from "../collections/collectionsModal";
+import SplitPane from "react-split-pane";
+import NoCollectionIcon from "../../assets/icons/collection.svg";
+import {
+  getCurrentUser,
+  getCurrentOrg,
+  getOrgList,
+  getProxyToken,
+} from "../auth/authServiceV2";
 
 const mapStateToProps = (state) => {
   return {
@@ -50,10 +54,9 @@ const mapDispatchToProps = (dispatch) => {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
     fetch_endpoint: (endpointId) => dispatch(fetchEndpoint(endpointId)),
-    fetch_page: (pageId) => dispatch(fetchPage(pageId)),
-    udpate_collection_and_pages_in_sidebar: (orgId) => dispatch(addCollectionAndPagesInSideBar(orgId))
-  }
-}
+    fetch_page: (pageId) => dispatch(fetchPage(pageId))
+  };
+};
 
 class MainV2 extends Component {
   constructor(props) {
@@ -100,10 +103,12 @@ class MainV2 extends Component {
         }
         sendAmplitudeData('Dashboard Landing', {
           orgId: orgId,
-          orgName: orgName
-        })
-        await this.fetchAll()
-        this.props.udpate_collection_and_pages_in_sidebar(orgId)
+          orgName: orgName,
+        });
+        await this.fetchAll();
+        // this.props.udpate_collection_and_pages_in_sidebar(
+        //   orgId
+        // );
       }
     } else {
       /** Perform Login Procedure for Token */

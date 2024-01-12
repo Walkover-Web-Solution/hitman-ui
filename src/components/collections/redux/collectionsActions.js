@@ -6,8 +6,6 @@ import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import { sendAmplitudeData } from '../../../services/amplitude'
 import sidebarActions from '../../main/sidebar/redux/sidebarActions'
-import sidebarV2ActionTypes from '../../main/sidebar/redux/sidebarV2ActionTypes'
-import { updateCollectionInSidebar } from '../../main/sidebar/redux/sidebarV2Actions'
 
 export const fetchCollections = (orgId) => {
   return (dispatch) => {
@@ -61,8 +59,6 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           orgId: response.data.orgId
         })
         dispatch(onCollectionAdded(response.data))
-        const { id, name, rootParentId } = response.data
-        dispatch(updateCollectionInSidebar('sideBarCollections', id, { id, name, rootParentId }))
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
         }
@@ -79,6 +75,12 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
   }
 }
 
+export const updateIsExpandForCollection = (payload) => {
+  return {
+    type: collectionsActionTypes.ON_COLLECTION_EXPANDED,
+    payload
+  }
+}
 export const addCollectionRequest = (newCollection) => {
   return {
     type: collectionsActionTypes.ADD_COLLECTION_REQUEST,

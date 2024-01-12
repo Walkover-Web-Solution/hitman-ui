@@ -37,8 +37,7 @@ class PageForm extends Form {
     this.setState({ versions, groups })
   }
 
-  async doSubmit(props) {
-    debugger
+  async doSubmit (props) {
     if (!this.state.selectedCollection && this.props.addEntity) {
       this.setState({ versionRequired: true })
       return
