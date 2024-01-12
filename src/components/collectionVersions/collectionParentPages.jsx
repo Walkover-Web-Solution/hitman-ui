@@ -147,7 +147,6 @@ class CollectionParentPages extends Component {
   }
 
   openAddVersionForm(page) {
-    console.log(page, 'openaddversionform')
     // const showVersionForm = { addVersion: true };
     this.setState({
       showVersionForm: true,
@@ -295,7 +294,6 @@ class CollectionParentPages extends Component {
   }
 
   setSelectedParentPage(e) {
-    debugger
     this.setState({
       selectedParentPageIndex: e.currentTarget.value
     })

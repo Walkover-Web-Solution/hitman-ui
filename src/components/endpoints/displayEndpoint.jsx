@@ -1419,12 +1419,13 @@ class DisplayEndpoint extends Component {
   closeChatBotModal = () => {
     this.setState({ showAskAiSlider: false })
   }
-
-  setGroupId(groupId, endpointDetails) {
-    this.setState({ groupId }, () => {
-      this.handleSave(groupId, endpointDetails, true)
-    })
-  }
+  // setGroupId(groupId, endpointDetails) {
+  //   return
+  //   debugger
+  //   this.setState({ groupId }, () => {
+  //     this.handleSave(groupId, endpointDetails, true);
+  //   });
+  // }
 
   setRootParentID(rootParentId, endpointDetails) {
     this.setState({ rootParentId }, () => {
@@ -2708,6 +2709,7 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    // debugger
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -2772,7 +2774,7 @@ class DisplayEndpoint extends Component {
                         {...this.props}
                         onHide={() => this.closeEndpointFormModal()}
                         set_rootParent_id={this.setRootParentID.bind(this)}
-                        set_group_id={this.setGroupId.bind(this)}
+                        // set_group_id={this.setGroupId.bind(this)}
                         name={this.state.data.name}
                         description={this.state.data.description}
                         save_endpoint={this.handleSave.bind(this)}

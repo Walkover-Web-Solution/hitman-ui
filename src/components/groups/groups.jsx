@@ -185,7 +185,6 @@ class Groups extends Component {
   }
 
   openGroupPageForm(selectedVersion = '', selectedGroup = '', selectedCollection = '') {
-    debugger
     const showGroupForm = { addPage: true }
     this.setState({
       showGroupForm,
