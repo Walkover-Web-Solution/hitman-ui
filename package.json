@@ -112,7 +112,8 @@
     "electron:dev": "wait-on http://localhost:3000 && electron .",
     "package:mac": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json  --macos --x64 --publish always",
     "package:linux": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json --linux --x64 --publish always",
-    "package:windows": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json --win --ia32 --x64 --publish always"
+    "package:windows": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json --win --ia32 --x64 --publish always",
+    "format": "prettier --write ."
   },
   "browserslist": {
     "production": [
