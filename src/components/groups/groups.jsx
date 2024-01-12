@@ -581,7 +581,7 @@ class Groups extends Component {
                       : null
                   }
             </button>
-            {expanded
+            {true
               ? (
                 <div
                   className='linkWrapper versionPages'
@@ -590,10 +590,10 @@ class Groups extends Component {
                     <CombinedCollections
                       {...this.props}
                       // pagesToRender={pagesToRender}
-                      version_id={this.props.groups[groupId].versionId}
-                      set_page_drag={this.setPagedrag.bind(this)}
-                      group_id={groupId}
-                      show_filter_groups={this.propsFromGroups.bind(this)}
+                      // version_id={this.props.groups[groupId].versionId}
+                      // set_page_drag={this.setPagedrag.bind(this)}
+                      // group_id={groupId}
+                      // show_filter_groups={this.propsFromGroups.bind(this)}
                     />
                   </Card.Body>
                 </div>
