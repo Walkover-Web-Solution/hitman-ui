@@ -18,21 +18,22 @@ import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections'
+import { updateIsExpandForPages } from '../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
     groups: state.groups,
-    pages: state.pages,
-    sideBarPages: state.sidebarV2Reducer.sideBarPages
+    pages: state.pages
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     delete_version: (version, props) => dispatch(deleteVersion(version, props)),
-    duplicate_version: (version) => dispatch(duplicateVersion(version))
+    duplicate_version: (version) => dispatch(duplicateVersion(version)),
+    update_isExpand_for_versions: (payload) => dispatch(updateIsExpandForPages(payload))
   }
 }
 
@@ -307,7 +308,11 @@ class CollectionVersions extends Component {
   }
 
   toggleVersionIds(id) {
-    sidebarActions.toggleItem('versions', id)
+    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
+    this.props.update_isExpand_for_versions({
+      value: !isExpanded,
+      id: id
+    })
   }
 
   scrollToVersion(versionId) {
@@ -321,18 +326,6 @@ class CollectionVersions extends Component {
 
   renderBody(versionId, index) {
     const expanded = this.props.pages?.[this.props.rootParentId]?.clientData?.isExpanded || false
-    // const { expanded, focused, firstChild } = this.props.sidebar.navList[`versions_${versionId}`]
-    // const { focused: sidebarFocused } = this.props.sidebar
-    // if (sidebarFocused && focused && this.scrollRef[versionId]) this.scrollToVersion(versionId)
-    // const pagesToRender = []; const groupsToRender = []
-    // if (firstChild) {
-    //   let childEntity = this.props.sidebar.navList[firstChild]
-    //   while (childEntity) {
-    //     if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
-    //     if (childEntity.type === 'groups') groupsToRender.push(childEntity.id)
-    //     childEntity = this.props.sidebar.navList[childEntity.nextSibling]
-    //   }
-    // }
 
     return isDashboardRoute(this.props, true) ? (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={versionId}>
@@ -354,7 +347,7 @@ class CollectionVersions extends Component {
               <span className='versionChovron'>
                 <img src={ExpandArrow} alt='' />
               </span>
-              <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.sideBarPages[this.props.rootParentId].name}</div>
+              <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.rootParentId].name}</div>
             </div>
             {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action d-flex align-items-center'>
@@ -480,7 +473,7 @@ class CollectionVersions extends Component {
               </div>
             ) : null}
           </button>
-          {true ? (
+          {expanded ? (
             <div className='version-collapse'>
               <Card.Body>
                 <div className='versionPages pl-3'>

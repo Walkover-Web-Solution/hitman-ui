@@ -14,7 +14,8 @@ import {
   duplicateCollection,
   updateCollection,
   addCustomDomain,
-  removePublicCollection
+  removePublicCollection,
+  updateIsExpandForCollection
 } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
@@ -30,17 +31,15 @@ import { addNewTab } from '../tabs/redux/tabsActions'
 import PageForm from '../pages/pageForm'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
-import { updateIsExpandInSidebar } from '../main/sidebar/redux/sidebarV2Actions'
 
 const EMPTY_STRING = ''
 
 const mapStateToProps = (state) => {
   return {
-    collections: state.sidebarV2Reducer.sideBarCollections,
+    collections: state.collections,
     // versions: state.versions,
     pages: state.pages,
-    endpoints: state.endpoints,
-    sideBarCollections: state?.sidebarV2Reducer?.sideBarCollections
+    endpoints: state.endpoints
   }
 }
 
@@ -53,7 +52,7 @@ const mapDispatchToProps = (dispatch) => {
     add_custom_domain: (collectionId, domain) => dispatch(addCustomDomain(collectionId, domain)),
     remove_public_collection: (collection, props) => dispatch(removePublicCollection(collection, props)),
     add_new_tab: () => dispatch(addNewTab()),
-    update_isExpand_for_collection: (payload) => dispatch(updateIsExpandInSidebar(payload))
+    update_isExpand_for_collection: (payload) => dispatch(updateIsExpandForCollection(payload))
   }
 }
 
@@ -309,11 +308,10 @@ class CollectionsComponent extends Component {
   }
 
   toggleSelectedColelctionIds(id) {
-    const isExpanded = this.props.sideBarCollections?.[id]?.clientData?.isExpanded
+    const isExpanded = this.props.collections[id]?.clientData?.isExpanded
     this.props.update_isExpand_for_collection({
-      target: 'sideBarCollections',
       value: !isExpanded,
-      id: id
+      collectionId: id
     })
   }
 
@@ -355,7 +353,7 @@ class CollectionsComponent extends Component {
   }
 
   renderBody(collectionId, collectionState) {
-    const expanded = this.props.sideBarCollections?.[collectionId]?.clientData?.isExpanded
+    const expanded = this.props.collections[collectionId]?.clientData?.isExpanded
 
     const { focused } = this.props.sidebar.navList[`collections_${collectionId}`]
     const { focused: sidebarFocused } = this.props.sidebar
@@ -636,13 +634,15 @@ class CollectionsComponent extends Component {
                   collectionId={collectionId}
                   // getTotalEndpointsCount={this.props.getTotalEndpointsCount.bind(this)}
                 />
-                <CombinedCollections
-                  {...this.props}
-                  collection_id={collectionId}
-                  addPage={this.openAddCollectionPageForm.bind(this)}
-                  selectedCollection
-                  rootParentId={this.props.sideBarCollections[collectionId].rootParentId}
-                />
+                {
+                  <CombinedCollections
+                    {...this.props}
+                    collection_id={collectionId}
+                    addPage={this.openAddCollectionPageForm.bind(this)}
+                    selectedCollection
+                    rootParentId={this.props.collections[collectionId].rootParentId}
+                  />
+                }
               </Card.Body>
             </div>
           ) : null}

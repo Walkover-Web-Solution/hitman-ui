@@ -11,7 +11,6 @@ import cookiesReducer from '../components/cookies/redux/cookiesReducer'
 import modalsReducer from '../components/modals/redux/modalsReducer'
 import historyReducer from '../components/history/redux/historyReducer'
 import sidebarReducer from '../components/main/sidebar/redux/sidebarReducer'
-import sidebarV2Reducer from '../components/main/sidebar/redux/sidebarV2Reducer'
 import toggleResponseReducer from '../components/common/redux/toggleResponse/toggleResponseReducer'
 import publishDocsReducer from '../components/publishDocs/redux/publishDocsReducer'
 import { persistStore, persistReducer } from 'redux-persist'
@@ -32,8 +31,7 @@ const rootReducer = combineReducers({
   modals: modalsReducer,
   sidebar: sidebarReducer,
   responseView: toggleResponseReducer,
-  feedbacks: publishDocsReducer,
-  sidebarV2Reducer
+  feedbacks: publishDocsReducer
 })
 
 const persistConfig = {

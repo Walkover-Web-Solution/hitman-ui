@@ -19,14 +19,14 @@ import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
+import { updateIsExpandForPages } from '../pages/redux/pagesActions.js'
 
 const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     pages: state.pages,
     endpoints: state.endpoints,
-    versions: state.versions,
-    sideBarPages: state.sidebarV2Reducer.sideBarPages
+    versions: state.versions
   }
 }
 
@@ -36,7 +36,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(reorderEndpoint(sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, endpointId)),
     update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId)),
     delete_group: (group, props) => dispatch(deleteGroup(group, props)),
-    duplicate_group: (group) => dispatch(duplicateGroup(group))
+    duplicate_group: (group) => dispatch(duplicateGroup(group)),
+    update_isExpand_for_subPages: (payload) => dispatch(updateIsExpandForPages(payload))
   }
 }
 
@@ -404,13 +405,13 @@ class Groups extends Component {
           ref={(newRef) => {
             this.scrollRef[groupId] = newRef
           }}
-          // className={[focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
+          className={expanded ? 'expanded' : ''}
         >
-          <div className='d-flex align-items-center cl-name' onClick={() => this.toggleGroupIds(groupId)}>
+          <div className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(groupId)}>
             <span className='versionChovron'>
               <img src={ExpandedIcon} alt='' />
             </span>
-            <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.sideBarPages[this.props.rootParentId].name}</div>
+            <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[this.props.rootParentId].name}</div>
           </div>
           {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
             <div className='sidebar-item-action d-flex align-items-center'>
@@ -546,7 +547,7 @@ class Groups extends Component {
             </div>
           ) : null}
         </button>
-        {true ? (
+        {expanded ? (
           <div className='linkWrapper versionPages'>
             <Card.Body>
               <CombinedCollections
@@ -599,8 +600,12 @@ class Groups extends Component {
     )
   }
 
-  toggleGroupIds(id) {
-    sidebarActions.toggleItem('groups', id)
+  toggleSubPageIds(id) {
+    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
+    this.props.update_isExpand_for_subPages({
+      value: !isExpanded,
+      id: id
+    })
   }
 
   render() {
