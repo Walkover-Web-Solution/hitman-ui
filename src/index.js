@@ -17,7 +17,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 addAnalyticsScripts()
 // sentryIntegration()
 
-ReactDOM.render(
+      ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <Router history={history}>
