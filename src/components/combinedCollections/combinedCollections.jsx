@@ -14,7 +14,7 @@ function CombinedCollections(props) {
   })
 
   return (
-    <div>
+<div>
       {childIds.map((singleId) => {
         const type = sidebarPages?.[singleId]?.type || null
         switch (type) {
