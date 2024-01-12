@@ -609,7 +609,7 @@ class CollectionVersions extends Component {
         break
       default: break
     }
-  if (link.length) {
+    if (link.length) {
       this.props.history.push({
         pathname: link
       })
