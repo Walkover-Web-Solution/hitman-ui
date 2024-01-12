@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { Editor } from '@tinymce/tinymce-react'
 
-export default function TinyEditor (props) {
+export default function TinyEditor(props) {
   const editorRef = useRef(null)
   const handleOnChange = (value) => {
     props.onChange(value)
@@ -11,7 +11,9 @@ export default function TinyEditor (props) {
       <Editor
         apiKey={process.env.REACT_APP_TINYMCE_API_KEY}
         onEditorChange={handleOnChange.bind(this)}
-        onInit={(evt, editor) => { editorRef.current = editor }}
+        onInit={(evt, editor) => {
+          editorRef.current = editor
+        }}
         value={props.data}
         inline={props.isInlineEditor}
         disabled={props.disabled}
@@ -24,8 +26,10 @@ export default function TinyEditor (props) {
           height: props.minHeight || 250,
           menubar: false,
           table_appearence_option: true,
-          table_toolbar: 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
-          toolbar: 'formatselect | bold italic underline forecolor backcolor | fontsizeselect | blockquote | numlist bullist | indent outdent | codesample | table | image | link',
+          table_toolbar:
+            'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
+          toolbar:
+            'formatselect | bold italic underline forecolor backcolor | fontsizeselect | blockquote | numlist bullist | indent outdent | codesample | table | image | link',
           placeholder: 'Your text goes here',
           content_style: 'body { font-family:Roboto; font-size:12px }',
           target_list: false

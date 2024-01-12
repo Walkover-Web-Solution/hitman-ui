@@ -5,23 +5,19 @@ import Form from '../common/form'
 import { URL_VALIDATION_REGEX } from '../common/constants'
 import { connect } from 'react-redux'
 import { onEnter, toTitleCase, ADD_VERSION_MODAL_NAME, DEFAULT_URL } from '../common/utility'
-import {
-  addVersion,
-  updateVersion
-} from './redux/collectionVersionsActions'
+import { addVersion, updateVersion } from './redux/collectionVersionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import shortid from 'shortid'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_version: (newCollectionVersion, collectionId, callback) =>
-      dispatch(addVersion(newCollectionVersion, collectionId, callback)),
+    add_version: (newCollectionVersion, collectionId, callback) => dispatch(addVersion(newCollectionVersion, collectionId, callback)),
     update_version: (editedVersion) => dispatch(updateVersion(editedVersion))
   }
 }
 class ParentPageForm extends Form {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -33,12 +29,16 @@ class ParentPageForm extends Form {
 
     this.schema = {
       number: Joi.string().required().label('Version Name').max(20),
-      host: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).label('Version Endpoint')
-        .error(() => { return { message: 'Version Endpoint Must be Valid URL' } })
+      host: Joi.string()
+        .regex(URL_VALIDATION_REGEX, { name: 'URL' })
+        .label('Version Endpoint')
+        .error(() => {
+          return { message: 'Version Endpoint Must be Valid URL' }
+        })
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     let data = {}
     const collectionId = ''
     let versionId = ''
@@ -54,18 +54,18 @@ class ParentPageForm extends Form {
     this.setState({ data, versionId, collectionId })
   }
 
-  focusSelectedVersion ({ versionId, collectionId }) {
+  focusSelectedVersion({ versionId, collectionId }) {
     sidebarActions.focusSidebar()
     sidebarActions.toggleItem('collections', collectionId, true)
     sidebarActions.toggleItem('versions', versionId, true)
   }
 
-  redirectToForm (version) {
+  redirectToForm(version) {
     if (this.props.setDropdownList) this.props.setDropdownList(version)
     this.focusSelectedVersion({ versionId: version.id, collectionId: version.collectionId })
   }
 
-  async doSubmit () {
+  async doSubmit() {
     this.props.onHide()
     let { number } = { ...this.state.data }
     number = toTitleCase(number)
@@ -82,9 +82,13 @@ class ParentPageForm extends Form {
     }
   }
 
-  render () {
+  render() {
     return (
-      <div onKeyPress={(e) => { onEnter(e, this.handleKeyPress.bind(this)) }}>
+      <div
+        onKeyPress={(e) => {
+          onEnter(e, this.handleKeyPress.bind(this))
+        }}
+      >
         <Modal
           show={this.props.show}
           onHide={this.props.onHide}
@@ -93,27 +97,27 @@ class ParentPageForm extends Form {
           aria-labelledby='contained-modal-title-vcenter'
         >
           <Modal.Header className='custom-collection-modal-container' closeButton>
-            <Modal.Title id='contained-modal-title-vcenter'>
-              {this.props.title}
-            </Modal.Title>
+            <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {this.renderInput('number', 'Version Name', 'Version Name', true, true, false, '*version name accepts min 1 & max 20 characters')}
+                  {this.renderInput(
+                    'number',
+                    'Version Name',
+                    'Version Name',
+                    true,
+                    true,
+                    false,
+                    '*version name accepts min 1 & max 20 characters'
+                  )}
                 </div>
-                <div className='col-6'>
-                  {this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', false, false, true)}
-                </div>
+                <div className='col-6'>{this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', false, false, true)}</div>
               </div>
               <div className='text-left mt-4 mb-2'>
-
                 {this.renderButton('Submit')}
-                <button
-                  className='btn btn-secondary outline btn-lg ml-2'
-                  onClick={this.props.onHide}
-                >
+                <button className='btn btn-secondary outline btn-lg ml-2' onClick={this.props.onHide}>
                   Cancel
                 </button>
               </div>

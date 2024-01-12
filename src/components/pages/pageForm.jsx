@@ -11,15 +11,13 @@ import extractCollectionInfoService from '../publishDocs/extractCollectionInfoSe
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_page: (rootParentId, newPage) =>
-      dispatch(addPage1(ownProps.history,rootParentId,newPage)),
-    add_group_page: (versionId, groupId, newPage) =>
-      dispatch(addGroupPage(ownProps.history, versionId, groupId, newPage))
+    add_page: (rootParentId, newPage) => dispatch(addPage1(ownProps.history, rootParentId, newPage)),
+    add_group_page: (versionId, groupId, newPage) => dispatch(addGroupPage(ownProps.history, versionId, groupId, newPage))
   }
 }
 
 class PageForm extends Form {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: {
@@ -33,13 +31,13 @@ class PageForm extends Form {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const versions = extractCollectionInfoService.extractVersionsFromCollectionId(this.props.selectedCollection, this.props)
     const groups = extractCollectionInfoService.extractGroupsFromVersions(versions, this.props)
     this.setState({ versions, groups })
   }
 
-  async doSubmit (props) {
+  async doSubmit(props) {
     debugger
     if (!this.state.selectedCollection && this.props.addEntity) {
       this.setState({ versionRequired: true })
@@ -54,54 +52,56 @@ class PageForm extends Form {
       const groupId = this.props.addEntity ? this.state.selectedGroupId : this.props.selectedGroup.id
       const data = { ...this.state.data, name }
       const newPage = { ...data, requestId: shortid.generate() }
-      this.props.add_group_page(
-        version,
-        groupId,
-        newPage
-      )
+      this.props.add_group_page(version, groupId, newPage)
     }
-    if (this.props.title === 'Add Parent Page' || (this.props.addEntity)){
-      const rootParentId = this.props.addEntity ?  collections : collections.rootParentId
+    if (this.props.title === 'Add Parent Page' || this.props.addEntity) {
+      const rootParentId = this.props.addEntity ? collections : collections.rootParentId
       const data = { ...this.state.data, name }
-      const newPage = { ...data, requestId: shortid.generate(), versionId : this.props.pageType === 1 ? shortid.generate() : null, pageType: this.props.pageType }
-      this.props.add_page(rootParentId ,newPage)
+      const newPage = {
+        ...data,
+        requestId: shortid.generate(),
+        versionId: this.props.pageType === 1 ? shortid.generate() : null,
+        pageType: this.props.pageType
+      }
+      this.props.add_page(rootParentId, newPage)
     }
-    if (this.props.title === 'Add Sub Page' || (this.props.addEntity)){
-      const rootParentId = this.props.addEntity ?  collections : collections.rootParentId
+    if (this.props.title === 'Add Sub Page' || this.props.addEntity) {
+      const rootParentId = this.props.addEntity ? collections : collections.rootParentId
       const data = { ...this.state.data, name }
-      const newPage = { ...data, requestId: shortid.generate(), versionId : this.props.pageType === 1 ? shortid.generate() : null, pageType: this.props.pageType }
-      this.props.add_page(this.props.rootParentId ,newPage)
+      const newPage = {
+        ...data,
+        requestId: shortid.generate(),
+        versionId: this.props.pageType === 1 ? shortid.generate() : null,
+        pageType: this.props.pageType
+      }
+      this.props.add_page(this.props.rootParentId, newPage)
     }
   }
 
-  renderGroupList () {
+  renderGroupList() {
     if (this.state.groups) {
-      return (
-        Object.keys(this.state.groups).map(
-          (id, index) => (
-            this.state.groups[id].versionId?.toString() === this.state.selectedVersionId?.toString() &&
-              <Dropdown.Item key={index} onClick={() => this.setState({ selectedGroupId: id })}>
-                {this.state.groups[id]?.name}
-              </Dropdown.Item>
-          ))
-      )
-    }
-  }
-
-  renderVersionList () {
-    if (this.state.versions) {
-      return (
-        Object.keys(this.state.versions).map(
-          (id, index) => (
-            <Dropdown.Item key={index} onClick={() => this.setState({ selectedVersionId: id, selectedGroupId: null, versionRequired: false })}>
-              {this.state.versions[id]?.number}
+      return Object.keys(this.state.groups).map(
+        (id, index) =>
+          this.state.groups[id].versionId?.toString() === this.state.selectedVersionId?.toString() && (
+            <Dropdown.Item key={index} onClick={() => this.setState({ selectedGroupId: id })}>
+              {this.state.groups[id]?.name}
             </Dropdown.Item>
-          ))
+          )
       )
     }
   }
 
-  render () {
+  renderVersionList() {
+    if (this.state.versions) {
+      return Object.keys(this.state.versions).map((id, index) => (
+        <Dropdown.Item key={index} onClick={() => this.setState({ selectedVersionId: id, selectedGroupId: null, versionRequired: false })}>
+          {this.state.versions[id]?.number}
+        </Dropdown.Item>
+      ))
+    }
+  }
+
+  render() {
     return (
       <div onKeyPress={(e) => onEnter(e, this.handleKeyPress.bind(this))}>
         <Modal
@@ -112,55 +112,43 @@ class PageForm extends Form {
           aria-labelledby='contained-modal-title-vcenter'
         >
           <Modal.Header className='custom-collection-modal-container' closeButton>
-            <Modal.Title id='contained-modal-title-vcenter'>
-              {this.props.title}
-            </Modal.Title>
+            <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {
-                    this.props.addEntity &&
-                      <div className='dropdown-label dropDownversion'>
-                        <label>  Select Version</label>
-                        <Dropdown>
-                          <Dropdown.Toggle variant='' id='dropdown-basic'>
-                            {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            {this.renderVersionList()}
-                          </Dropdown.Menu>
-                        </Dropdown>
-                        {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
-
-                      </div>
-                  }
+                  {this.props.addEntity && (
+                    <div className='dropdown-label dropDownversion'>
+                      <label> Select Version</label>
+                      <Dropdown>
+                        <Dropdown.Toggle variant='' id='dropdown-basic'>
+                          {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>{this.renderVersionList()}</Dropdown.Menu>
+                      </Dropdown>
+                      {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
+                    </div>
+                  )}
                 </div>
                 <div className='col-6'>
-                  {this.state.selectedVersionId &&
+                  {this.state.selectedVersionId && (
                     <div className='dropdown-label dropDownversion'>
                       <label>Select Group</label>
                       <Dropdown>
                         <Dropdown.Toggle variant='' id='dropdown-basic'>
                           {this.state.groups?.[this.state.selectedGroupId]?.name || 'Select'}
                         </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                          {this.renderGroupList()}
-                        </Dropdown.Menu>
+                        <Dropdown.Menu>{this.renderGroupList()}</Dropdown.Menu>
                       </Dropdown>
-                    </div>}
+                    </div>
+                  )}
                 </div>
-                <div className='col-6'>
-                  {this.renderInput('name', 'Page name', 'page name', true, true)}
-                </div>
+                <div className='col-6'>{this.renderInput('name', 'Page name', 'page name', true, true)}</div>
               </div>
               <div className='text-left mt-2 mb-1'>
                 {this.renderButton('Submit')}
-                <button
-                  className='btn btn-secondary ml-2'
-                  onClick={this.props.onHide}
-                >
+                <button className='btn btn-secondary ml-2' onClick={this.props.onHide}>
                   Cancel
                 </button>
               </div>

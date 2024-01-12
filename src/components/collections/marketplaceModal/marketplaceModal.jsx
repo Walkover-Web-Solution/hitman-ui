@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export class MarketplaceModal extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       searchText: '',
@@ -28,44 +28,50 @@ export class MarketplaceModal extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.getPublicCollections()
   }
 
-  getPublicCollections () {
+  getPublicCollections() {
     getAllPublicCollections().then((response) => {
       this.setState({ responseResults: response.data })
     })
   }
 
-  searchResponse () {
+  searchResponse() {
     const searchResults = {}
     const responseResults = this.state.responseResults
-    responseResults && Object.values(responseResults).forEach((result) => {
-      if (result.name.toLowerCase().includes(this.state.searchText.toLowerCase())) {
-        searchResults[result.id] = result
-      }
-    })
+    responseResults &&
+      Object.values(responseResults).forEach((result) => {
+        if (result.name.toLowerCase().includes(this.state.searchText.toLowerCase())) {
+          searchResults[result.id] = result
+        }
+      })
     return searchResults
   }
 
-  handleSearchChange (e) {
+  handleSearchChange(e) {
     this.setState({ searchText: e.target.value })
   }
 
-  renderSearchBar () {
+  renderSearchBar() {
     return (
-      <input placeholder='Search' value={this.state.searchText} onChange={(e) => this.handleSearchChange(e)} className='collection-search-input' />
+      <input
+        placeholder='Search'
+        value={this.state.searchText}
+        onChange={(e) => this.handleSearchChange(e)}
+        className='collection-search-input'
+      />
     )
   }
 
-  import () {
+  import() {
     this.props.import_collection(this.state.selectedCollection)
     moveToNextStep(1)
     this.props.onHide()
   }
 
-  selectOption (selectedCollection) {
+  selectOption(selectedCollection) {
     let currentCollection = selectedCollection
     if (this.state.selectedCollection?.id === selectedCollection?.id) {
       currentCollection = null
@@ -73,7 +79,7 @@ export class MarketplaceModal extends Component {
     this.setState({ selectedCollection: currentCollection })
   }
 
-  checkImportStatus () {
+  checkImportStatus() {
     const currentCollection = this.state.selectedCollection
     let status = false
     if (currentCollection) {
@@ -82,20 +88,23 @@ export class MarketplaceModal extends Component {
     return status
   }
 
-  renderCollectionIcon (collection) {
-    return (
-      collection.favicon || collection.docProperties.defaultLogoUrl
-        ? <img
-            src={collection.docProperties.defaultLogoUrl
-              ? collection.docProperties.defaultLogoUrl
-              : `data:image/png;base64,${collection.favicon}`}
-            height='60' width='60'
-          />
-        : <div className='collection-avatar'><div className='name'>{collection?.name.charAt(0)}</div></div>
+  renderCollectionIcon(collection) {
+    return collection.favicon || collection.docProperties.defaultLogoUrl ? (
+      <img
+        src={
+          collection.docProperties.defaultLogoUrl ? collection.docProperties.defaultLogoUrl : `data:image/png;base64,${collection.favicon}`
+        }
+        height='60'
+        width='60'
+      />
+    ) : (
+      <div className='collection-avatar'>
+        <div className='name'>{collection?.name.charAt(0)}</div>
+      </div>
     )
   }
 
-  renderSearchResults () {
+  renderSearchResults() {
     const searchResults = this.searchResponse()
     return (
       <div className='d-flex align-items-center collection-search-results'>
@@ -106,37 +115,42 @@ export class MarketplaceModal extends Component {
             className={['search-item', this.state.selectedCollection?.id === result.id ? 'selected-item' : ''].join(' ')}
           >
             {this.renderCollectionIcon(result)}
-            <div className=''>
-              {result.name}
-            </div>
+            <div className=''>{result.name}</div>
           </div>
         ))}
         {this.state.responseResults && Object.keys(searchResults).length === 0 && <div> No Results Found </div>}
-        {this.state.responseResults === null &&
+        {this.state.responseResults === null && (
           <div>
             <i className='fas fa-spinner fa-spin mr-2' />
             Getting Results
-          </div>}
+          </div>
+        )}
       </div>
     )
   }
 
-  renderFooterButtons () {
+  renderFooterButtons() {
     const status = this.checkImportStatus()
     return (
       <div className='marketplace-footer-btns'>
         <button className='btn btn-secondary outline' onClick={() => this.props.onCancel()}>
           Cancel
         </button>
-        {this.state.selectedCollection &&
-          <button className={['btn btn-primary', 'ml-2', status ? 'disabled' : ''].join(' ')} id='add_collection_marketplace_import_btn' disabled={!!status} onClick={() => this.import()}>
+        {this.state.selectedCollection && (
+          <button
+            className={['btn btn-primary', 'ml-2', status ? 'disabled' : ''].join(' ')}
+            id='add_collection_marketplace_import_btn'
+            disabled={!!status}
+            onClick={() => this.import()}
+          >
             {status ? 'Already Imported' : 'Import'}
-          </button>}
+          </button>
+        )}
       </div>
     )
   }
 
-  renderContent () {
+  renderContent() {
     return (
       <>
         {this.renderSearchBar()}
@@ -146,30 +160,21 @@ export class MarketplaceModal extends Component {
     )
   }
 
-  renderInModal () {
+  renderInModal() {
     return (
-      <Modal
-        size='xl'
-        centered
-        onHide={this.props.onHide}
-        show
-      >
+      <Modal size='xl' centered onHide={this.props.onHide} show>
         <div>
           <Modal.Header className='custom-collection-modal-container' closeButton>
-            <Modal.Title id='contained-modal-title-vcenter'>
-              Import Collection From Marketplace
-            </Modal.Title>
+            <Modal.Title id='contained-modal-title-vcenter'>Import Collection From Marketplace</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            {this.renderContent()}
-          </Modal.Body>
+          <Modal.Body>{this.renderContent()}</Modal.Body>
         </div>
       </Modal>
     )
   }
 
-  render () {
-    return (this.props.showOnlyContent ? this.renderContent() : this.renderInModal())
+  render() {
+    return this.props.showOnlyContent ? this.renderContent() : this.renderInModal()
   }
 }
 

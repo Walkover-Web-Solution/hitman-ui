@@ -22,18 +22,18 @@ class ApiDocReview extends Component {
     validEmailAddress: true
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setParent()
     this.setLocalStorageReviews()
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.match.params !== this.props.match.params) {
       this.setParent()
     }
   }
 
-  setLocalStorageReviews () {
+  setLocalStorageReviews() {
     try {
       this.setState({ currentReviews: JSON.parse(window.localStorage.getItem('review')) || {} })
     } catch {
@@ -41,7 +41,7 @@ class ApiDocReview extends Component {
     }
   }
 
-  setParent () {
+  setParent() {
     const { pageId, endpointId } = this.props.match.params
 
     const parentId = endpointId || pageId
@@ -50,9 +50,9 @@ class ApiDocReview extends Component {
     this.setState({ parentId, parentType })
   }
 
-  toggleReviewModal = () => this.setState({ showFeedbackModal: !this.state.showFeedbackModal });
+  toggleReviewModal = () => this.setState({ showFeedbackModal: !this.state.showFeedbackModal })
 
-  handleOnClick (value, callback) {
+  handleOnClick(value, callback) {
     const { pageId, endpointId } = this.props.match.params
 
     const entityId = endpointId || pageId
@@ -64,7 +64,7 @@ class ApiDocReview extends Component {
     }
   }
 
-  savelocalstorage (key, value) {
+  savelocalstorage(key, value) {
     let objList = {}
     try {
       objList = JSON.parse(window.localStorage.getItem('review')) || {}
@@ -77,16 +77,16 @@ class ApiDocReview extends Component {
     })
   }
 
-  postApi () {
+  postApi() {
     const feedback = _.pick(_.cloneDeep(this.state), 'parentId', 'parentType', 'user', 'vote', 'comment')
 
     const apiUrl = process.env.REACT_APP_API_URL
     const collectionId = this.props.match.params.collectionId
     Axios.post(apiUrl + `/collections/${collectionId}/feedbacks`, feedback)
-      .then(response => {
+      .then((response) => {
         console.log(response)
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error)
       })
     this.savelocalstorage(this.state.parentId, this.getVoteKey(this.state.vote))
@@ -95,40 +95,40 @@ class ApiDocReview extends Component {
     })
   }
 
-  getVoteValue (value) {
+  getVoteValue(value) {
     return value === LIKE ? 1 : -1
   }
 
-  getVoteKey (value) {
+  getVoteKey(value) {
     return value === 1 ? LIKE : DISLIKE
   }
 
-  closeFeedbackModal () {
+  closeFeedbackModal() {
     this.state.showFeedbackModal && this.setState({ showFeedbackModal: false })
   }
 
-  handleOnSubmit (event) {
+  handleOnSubmit(event) {
     event.preventDefault()
     if (validateEmail(this.state.user)) {
       this.postApi()
       this.closeFeedbackModal()
       this.setState({ validEmailAddress: true })
-    } else { this.setState({ user: '', validEmailAddress: false }) }
+    } else {
+      this.setState({ user: '', validEmailAddress: false })
+    }
   }
 
-  handleInput (event) {
+  handleInput(event) {
     event.preventDefault()
-    const { target: { name, value } } = event
+    const {
+      target: { name, value }
+    } = event
     this.setState({ [name]: value })
   }
 
-  renderUserFeedbackModal () {
+  renderUserFeedbackModal() {
     return (
-      <Modal
-        backdrop='static'
-        show
-        onHide={this.closeFeedbackModal.bind(this)}
-      >
+      <Modal backdrop='static' show onHide={this.closeFeedbackModal.bind(this)}>
         <div className=''>
           <Modal.Header closeButton>
             <Modal.Title>Would you like to leave a comment?</Modal.Title>
@@ -142,7 +142,14 @@ class ApiDocReview extends Component {
               {!this.state.validEmailAddress && <span className='error-msg'>Enter a valid email address</span>}
               <div className='form-group mt-3'>
                 <label htmlFor=''>Comment</label>
-                <textarea className='form-control' onChange={this.handleInput.bind(this)} value={this.state.comment} type='text' name='comment' /><br />
+                <textarea
+                  className='form-control'
+                  onChange={this.handleInput.bind(this)}
+                  value={this.state.comment}
+                  type='text'
+                  name='comment'
+                />
+                <br />
               </div>
               <input type='submit' className='btn btn-primary' value='Submit' />
             </form>
@@ -153,37 +160,45 @@ class ApiDocReview extends Component {
     )
   }
 
-  render () {
+  render() {
     const isAlreadyReviewd = this.state.currentReviews[this.state.parentId]
-    return !isDashboardRoute(this.props) &&
-      (
+    return (
+      !isDashboardRoute(this.props) && (
         <>
           {this.state.showFeedbackModal && this.renderUserFeedbackModal()}
-          {!isAlreadyReviewd &&
-            (
-              <div>
-                <p className='d-flex justify-content-center'>Did this page help you?</p>
-                <div className='d-flex justify-content-center'>
-                  <div className='cursor-pointer' onClick={() => { this.handleOnClick(LIKE, this.postApi.bind(this)) }}>
-                    <img src={Like} alt='' />
-                  </div>
-                  <div className='cursor-pointer' onClick={() => { this.handleOnClick(DISLIKE, this.toggleReviewModal.bind(this)) }}>
-                    <img src={DisLike} alt='' />
-                  </div>
+          {!isAlreadyReviewd && (
+            <div>
+              <p className='d-flex justify-content-center'>Did this page help you?</p>
+              <div className='d-flex justify-content-center'>
+                <div
+                  className='cursor-pointer'
+                  onClick={() => {
+                    this.handleOnClick(LIKE, this.postApi.bind(this))
+                  }}
+                >
+                  <img src={Like} alt='' />
+                </div>
+                <div
+                  className='cursor-pointer'
+                  onClick={() => {
+                    this.handleOnClick(DISLIKE, this.toggleReviewModal.bind(this))
+                  }}
+                >
+                  <img src={DisLike} alt='' />
                 </div>
               </div>
-            )}
-          {isAlreadyReviewd &&
-            (
-              <div>
-                <span>Thank you for reviewing</span>
-              </div>
-            )}
-                    <Footer theme={this.state.collectionTheme} />
-
+            </div>
+          )}
+          {isAlreadyReviewd && (
+            <div>
+              <span>Thank you for reviewing</span>
+            </div>
+          )}
+          <Footer theme={this.state.collectionTheme} />
         </>
       )
+    )
   }
 }
 
-export default (ApiDocReview)
+export default ApiDocReview

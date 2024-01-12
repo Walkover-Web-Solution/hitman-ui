@@ -11,7 +11,7 @@ import publicEndpointsActionTypes from '../../../publicEndpoint/redux/publicEndp
 import { compareAlphabetically } from '../../../common/utility'
 
 class TreeNode {
-  constructor ({ id, type, parentNode }) {
+  constructor({ id, type, parentNode }) {
     this.id = id
     this.type = type
     this.isLoaded = false
@@ -19,11 +19,10 @@ class TreeNode {
 
     this.focused = false
     this.expanded = false
-    this.isExpandable = !!((type === 'collections' || type === 'pages' || type === 'versions'))
-   
+    this.isExpandable = !!(type === 'collections' || type === 'pages' || type === 'versions')
+
     this.parentNode = parentNode
     this.child = []
-    
   }
 }
 
@@ -35,7 +34,7 @@ const initialState = {
   focusedNode: null
 }
 
-function sidebarReducer (state = initialState, action) {
+function sidebarReducer(state = initialState, action) {
   try {
     let newState = _.cloneDeep(state)
     let sortedCollectionIds = []
@@ -101,7 +100,7 @@ function sidebarReducer (state = initialState, action) {
 
       /** Handle Version Actions */
       case collectionVersionsActionTypes.ON_VERSIONS_FETCHED:
-        Object.values(action.versions).forEach(version => {
+        Object.values(action.versions).forEach((version) => {
           newState = addNewNodeReq(newState, version, 'versions')
         })
         return newState
@@ -141,15 +140,19 @@ function sidebarReducer (state = initialState, action) {
 
       /** Handle Group Actions */
       case groupsActionTypes.ON_GROUPS_FETCHED:
-        Object.values(action.groups).forEach(group => {
+        Object.values(action.groups).forEach((group) => {
           newState = addNewNodeReq(newState, group, 'groups')
         })
         return newState
       case groupsActionTypes.ADD_GROUP_REQUEST:
-        newState = addNewNodeReq(newState, {
-          ...action.newGroup,
-          id: action.newGroup.requestId
-        }, 'groups')
+        newState = addNewNodeReq(
+          newState,
+          {
+            ...action.newGroup,
+            id: action.newGroup.requestId
+          },
+          'groups'
+        )
         return newState
 
       case groupsActionTypes.ON_GROUP_ADDED:
@@ -181,13 +184,13 @@ function sidebarReducer (state = initialState, action) {
 
       /** Handle Page Actions */
       case pagesActionTypes.ON_PAGES_FETCHED:
-        Object.values(action.pages).forEach(page => {
+        Object.values(action.pages).forEach((page) => {
           newState = addNewNodeReq(newState, page, 'pages')
         })
         return newState
 
       case pagesActionTypes.ADD_PAGE_REQUEST:
-        case pagesActionTypes.ADD_PARENT_PAGE_REQUEST:
+      case pagesActionTypes.ADD_PARENT_PAGE_REQUEST:
         newState = addNewNodeReq(newState, { ...action.newPage, id: action.newPage.requestId }, 'pages')
         return newState
 
@@ -195,7 +198,6 @@ function sidebarReducer (state = initialState, action) {
       case pagesActionTypes.ON_PARENT_PAGE_ADDED:
         newState = addNewNodeSuccess(newState, action.response.requestId, action.response.id, 'pages')
         return newState
-
 
       case pagesActionTypes.ADD_GROUP_PAGE_REQUEST:
         newState = addNewNodeReq(newState, { ...action.newPage, id: action.newPage.requestId }, 'pages')
@@ -230,7 +232,7 @@ function sidebarReducer (state = initialState, action) {
 
       /** Handle Endpoint Actions */
       case endpointsActionTypes.ON_ENDPOINTS_FETCHED:
-        Object.values(action.endpoints).forEach(endpoint => {
+        Object.values(action.endpoints).forEach((endpoint) => {
           newState = addNewNodeReq(newState, endpoint, 'endpoints')
         })
         return newState
@@ -293,7 +295,8 @@ function sidebarReducer (state = initialState, action) {
         newState = collapseItem(action.payload ? action.payload : newState.focusedNode, newState)
         return newState
 
-      default: return state
+      default:
+        return state
     }
   } catch (err) {
     console.log(err)
@@ -307,7 +310,7 @@ function sidebarReducer (state = initialState, action) {
  * @param {string} nodeAddress Address of node in the map to focus.
  * @returns Modified State
  */
-function focusNode (newState, nodeAddress) {
+function focusNode(newState, nodeAddress) {
   if (!_.isEmpty(newState.navList[newState.focusedNode])) newState.navList[newState.focusedNode].focused = false
 
   if (!_.isEmpty(newState.navList[nodeAddress])) {
@@ -326,9 +329,9 @@ function focusNode (newState, nodeAddress) {
  * @param {any} payload Object containing map of child Entity objects with any of keys: collections, versions, groups, endpoints, pages,.
  * @returns Modified State
  */
-function addChildNodes (newState, payload) {
+function addChildNodes(newState, payload) {
   if (!_.isEmpty(payload.collections)) {
-    _.values(payload.collections).forEach(collection => {
+    _.values(payload.collections).forEach((collection) => {
       newState = addNewNodeReq(newState, collection, 'collections')
     })
   }
@@ -338,17 +341,17 @@ function addChildNodes (newState, payload) {
   //   })
   // }
   if (!_.isEmpty(payload.versions)) {
-    _.values(payload.versions).forEach(version => {
+    _.values(payload.versions).forEach((version) => {
       newState = addNewNodeReq(newState, version, 'versions')
     })
   }
   if (!_.isEmpty(payload.pages)) {
-    _.values(payload.pages).forEach(page => {
+    _.values(payload.pages).forEach((page) => {
       newState = addNewNodeReq(newState, page, 'pages')
     })
   }
   if (!_.isEmpty(payload.endpoints)) {
-    _.values(payload.endpoints).forEach(endpoint => {
+    _.values(payload.endpoints).forEach((endpoint) => {
       newState = addNewNodeReq(newState, endpoint, 'endpoints')
     })
   }
@@ -361,9 +364,9 @@ function addChildNodes (newState, payload) {
  * @param {any} payload Object containing child Ids with any of keys: collectionIds, versionIds, groupIds, endpointIds, pageIds,.
  * @returns Modified State
  */
-function removeChildNodes (newState, payload) {
+function removeChildNodes(newState, payload) {
   if (!_.isEmpty(payload.collectionIds)) {
-    payload.collectionIds.forEach(collectionId => {
+    payload.collectionIds.forEach((collectionId) => {
       newState = removeNodeSuccess(newState, collectionId, 'collections')
     })
   }
@@ -373,17 +376,17 @@ function removeChildNodes (newState, payload) {
   //   })
   // }
   if (!_.isEmpty(payload.versionIds)) {
-    payload.versionIds.forEach(versionId => {
+    payload.versionIds.forEach((versionId) => {
       newState = removeNodeSuccess(newState, versionId, 'versions')
     })
   }
   if (!_.isEmpty(payload.endpointIds)) {
-    payload.endpointIds.forEach(endpointId => {
+    payload.endpointIds.forEach((endpointId) => {
       newState = removeNodeSuccess(newState, endpointId, 'endpoints')
     })
   }
   if (!_.isEmpty(payload.pageIds)) {
-    payload.pageIds.forEach(pageId => {
+    payload.pageIds.forEach((pageId) => {
       newState = removeNodeSuccess(newState, pageId, 'pages')
     })
   }
@@ -397,13 +400,13 @@ function removeChildNodes (newState, payload) {
  * @param {string} type can be any of 'collections','versions','groups','pages','endpoints'.
  * @returns Modified state
  */
-function addNewNodeReq (newState, newEntity, type) {
+function addNewNodeReq(newState, newEntity, type) {
   if (!newEntity.id) {
     // Handle the case where the entity ID is undefined
-    return newState;
+    return newState
   }
   const newNodeAddress = `${type}_${newEntity.id}`
-  let parentNode = null; 
+  let parentNode = null
   if (_.isEmpty(newState.navList[newNodeAddress])) {
     newState = addTempNode(newState, newEntity.id, type)
   }
@@ -412,23 +415,23 @@ function addNewNodeReq (newState, newEntity, type) {
     return newState
   }
 
-  switch (type) {                 
+  switch (type) {
     case 'collections':
       // if (newEntity.rootParentId) {
-        // if (!newState.navList[newNodeAddress].child) {
-        //   newState.navList[newNodeAddress].child = [];
-        // }
-        newState.navList[newNodeAddress].child.push(`pages_${newEntity.rootParentId}`);
+      // if (!newState.navList[newNodeAddress].child) {
+      //   newState.navList[newNodeAddress].child = [];
+      // }
+      newState.navList[newNodeAddress].child.push(`pages_${newEntity.rootParentId}`)
       // }
       break
 
-      case 'pages':
-        parentNode = `collections_${newEntity.id}`
-        if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.id, 'collections')
-  
-        newState.navList[newNodeAddress].parentNode = parentNode
-        newState.navList[parentNode].child.push(newNodeAddress)
-        break
+    case 'pages':
+      parentNode = `collections_${newEntity.id}`
+      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.id, 'collections')
+
+      newState.navList[newNodeAddress].parentNode = parentNode
+      newState.navList[parentNode].child.push(newNodeAddress)
+      break
 
     // case 'pages':
 
@@ -448,22 +451,25 @@ function addNewNodeReq (newState, newEntity, type) {
     //   break
 
     case 'versions':
-      parentNode =  `pages_${newEntity.id}`
+      parentNode = `pages_${newEntity.id}`
       if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.id, 'pages')
 
       newState.navList[newNodeAddress].parentNode = parentNode
       newState.navList[parentNode].child.push(newNodeAddress)
       break
 
-      case 'endpoints':
-        const parentType = newEntity.rootParentId ? 'pages' : 'versions';
-        parentNode = `${parentType}_${newEntity.rootParentId ? newEntity.rootParentId : newEntity.versionId}`;
-        if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.rootParentId ? newEntity.rootParentId : newEntity.versionId, parentType);
-        newState.navList[newNodeAddress].parentNode = parentNode;
-        newState.navList[parentNode].child.push(newNodeAddress);
-        break;
+    case 'endpoints':
+      const parentType = newEntity.rootParentId ? 'pages' : 'versions'
+      parentNode = `${parentType}_${newEntity.rootParentId ? newEntity.rootParentId : newEntity.versionId}`
+      if (_.isEmpty(newState.navList[parentNode])) {
+        newState = addTempNode(newState, newEntity.rootParentId ? newEntity.rootParentId : newEntity.versionId, parentType)
+      }
+      newState.navList[newNodeAddress].parentNode = parentNode
+      newState.navList[parentNode].child.push(newNodeAddress)
+      break
 
-    default: break
+    default:
+      break
   }
   newState.navList[newNodeAddress].isTemp = false
   return newState
@@ -476,7 +482,7 @@ function addNewNodeReq (newState, newEntity, type) {
  * @param {string} type Type of Entity, can be any of 'collections','versions','groups','pages','endpoints'.
  * @returns Modified state
  */
-function addTempNode (newState, id, type) {
+function addTempNode(newState, id, type) {
   const nodeAddress = `${type}_${id}`
   newState.navList[nodeAddress] = new TreeNode({ id: id, type, parentNode: null })
   return newState
@@ -493,7 +499,7 @@ function addTempNode (newState, id, type) {
 // function addNewNodeSuccess (newState, requestId, id, type) {
 //   const reqNodeAddress = `${type}_${requestId}`
 //   const nodeAddress = `${type}_${id}`
- 
+
 //   const { prevSibling: prevSiblingAdress, nextSibling: nextSiblingAddress, parentNode: parentNodeAddress } = newState.navList[reqNodeAddress]
 //   const parentNode = parentNodeAddress ? newState.navList[parentNodeAddress] : newState
 //   const prevSiblingNode = prevSiblingAdress ? newState.navList[prevSiblingAdress] : null
@@ -521,10 +527,10 @@ function addTempNode (newState, id, type) {
 //   delete newState.navList[reqNodeAddress]
 //   return newState
 // }
-function addNewNodeSuccess (newState, requestId, id, type) {
+function addNewNodeSuccess(newState, requestId, id, type) {
   const reqNodeAddress = `${type}_${requestId}`
   const nodeAddress = `${type}_${id}`
- 
+
   const parentNode = newState.navList[reqNodeAddress].parentNode
   if (parentNode) {
     const parent = newState.navList[parentNode]
@@ -550,7 +556,7 @@ function addNewNodeSuccess (newState, requestId, id, type) {
  * @param {string} type Type of Entity, can be any of 'collections','versions','groups','pages','endpoints'.
  * @returns Modified state
  */
-function addNewNodeError (newState, requestId, type) {
+function addNewNodeError(newState, requestId, type) {
   const reqNodeAddress = `${type}_${requestId}`
   newState = removeNodeReq(newState, requestId, type)
   delete newState.navList[reqNodeAddress]
@@ -564,7 +570,7 @@ function addNewNodeError (newState, requestId, type) {
  * @param {string} type can be any of ['collections','versions','groups','pages','endpoints']
  * @returns Modified state
  */
-function removeNodeReq (newState, requestId, type) {
+function removeNodeReq(newState, requestId, type) {
   const nodeAddress = `${type}_${requestId}`
   const nodeToRemove = newState.navList[nodeAddress]
   const parentNode = nodeToRemove.parentNode ? newState.navList[nodeToRemove.parentNode] : newState
@@ -597,7 +603,7 @@ function removeNodeReq (newState, requestId, type) {
  * @param {string} type can be any of ['collections','versions','groups','pages','endpoints']
  * @returns Modified state
  */
-function removeNodeSuccess (newState, id, type) {
+function removeNodeSuccess(newState, id, type) {
   const nodeAddress = `${type}_${id}`
   delete newState.navList[nodeAddress]
   return newState
@@ -610,7 +616,7 @@ function removeNodeSuccess (newState, id, type) {
  * @param {string} type can be any of ['collections','versions','groups','pages','endpoints']
  * @returns Modified state
  */
-function removeNodeError (newState, id, type) {
+function removeNodeError(newState, id, type) {
   const nodeAddress = `${type}_${id}`
   const nodeRemoved = newState.navList[nodeAddress]
   const parentNode = nodeRemoved.parentNode ? newState.navList[nodeRemoved.parentNode] : newState
@@ -675,7 +681,7 @@ function removeNodeError (newState, id, type) {
 //   }
 //   return newState
 // }
-function focusPrevItem (newState) {
+function focusPrevItem(newState) {
   if (!newState.focusedNode) {
     if (newState.child && newState.child.length > 0) {
       newState.focusedNode = newState.child[newState.child.length - 1]
@@ -697,7 +703,7 @@ function focusPrevItem (newState) {
   return newState
 }
 
-function findPrevSiblingsLastChild (newState) {
+function findPrevSiblingsLastChild(newState) {
   let temp = newState.navList[newState.navList[newState.focusedNode].prevSibling]
   while (temp.isExpandable && temp.expanded) {
     if (temp.lastChild) {
@@ -761,7 +767,7 @@ function findPrevSiblingsLastChild (newState) {
 //   }
 //   return newState
 // }
-function focusNextItem (newState) {
+function focusNextItem(newState) {
   if (!newState.focusedNode) {
     if (newState.child && newState.child.length > 0) {
       newState.focusedNode = newState.child[0]
@@ -782,7 +788,7 @@ function focusNextItem (newState) {
   }
   return newState
 }
-function findParentWithNextSibling (newState) {
+function findParentWithNextSibling(newState) {
   let temp = newState.navList[newState.focusedNode]
   while (temp.nextSibling === null) {
     if (!temp.parentNode) break
@@ -797,7 +803,7 @@ function findParentWithNextSibling (newState) {
  * @param {any} newState Deep copied state of sidebar
  * @returns
  */
-function collapseItem (nodeAddress, newState) {
+function collapseItem(nodeAddress, newState) {
   newState.navList[nodeAddress].expanded = false
   return newState
 }
@@ -808,7 +814,7 @@ function collapseItem (nodeAddress, newState) {
  * @param {any} newState Deep copied state of sidebar
  * @returns
  */
-function expandItem (nodeAddress, newState) {
+function expandItem(nodeAddress, newState) {
   const { isExpandable } = newState.navList[nodeAddress]
 
   if (isExpandable) {
@@ -819,19 +825,19 @@ function expandItem (nodeAddress, newState) {
   return newState
 }
 
-function onlyChildExpand (nodeAddress, newState) {
-  const currentNode = newState.navList[newState.focusedNode];
+function onlyChildExpand(nodeAddress, newState) {
+  const currentNode = newState.navList[newState.focusedNode]
   if (!currentNode) {
-    return newState;
+    return newState
   }
-  let { firstChild, lastChild } = currentNode;
+  let { firstChild, lastChild } = currentNode
   while (firstChild === lastChild && firstChild != null && newState.navList[firstChild]) {
-    newState.navList[firstChild].expanded = true;
-    firstChild = newState.navList[firstChild].firstChild;
-    lastChild = newState.navList[lastChild].lastChild;
+    newState.navList[firstChild].expanded = true
+    firstChild = newState.navList[firstChild].firstChild
+    lastChild = newState.navList[lastChild].lastChild
   }
 
-  return newState;
+  return newState
 }
 
 export default sidebarReducer

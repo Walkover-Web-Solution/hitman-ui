@@ -10,24 +10,22 @@ $border-color: rgba(227, 228, 230, 0.7);
     background: transparent;
     width: 100%;
     padding: 10px 35px 10px;
-    color: #E98A36;
+    color: #e98a36;
     font-size: 12px;
     text-align: center;
-    border: 1px solid #E98A36!important;
+    border: 1px solid #e98a36 !important;
     border-radius: 4px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
     margin-top: 15px;
 
-   
-
     &:active,
     &:focus {
       outline: none;
       border: none;
       box-shadow: none;
-    } 
+    }
   }
 }
 
@@ -150,7 +148,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 .show-endpoint-count {
-  color: #E98A36;
+  color: #e98a36;
   font-weight: 400;
   font-size: 12px;
 }
@@ -175,7 +173,6 @@ div.fixed {
     justify-content: space-between;
     font-size: 18px;
   }
- 
 
   .notification {
     text-decoration: none;
@@ -191,12 +188,11 @@ div.fixed {
     padding: 3px;
     border-radius: 29px;
     font-size: 9px;
-    background-color: #E98A36;
+    background-color: #e98a36;
     color: #fff;
     height: 14px;
     width: 18px;
     text-align: center;
- 
   }
 
   .notification-icon {
@@ -225,7 +221,6 @@ div.fixed {
     border-radius: 50%;
     font-size: 20px;
     border: 1px solid rgba(255, 255, 255, 0.15);
-
   }
 }
 
@@ -235,14 +230,14 @@ div.fixed {
   left: 0;
   right: 0;
   width: 100%;
-  border-top: 1px solid #D3CCC5;
+  border-top: 1px solid #d3ccc5;
   padding-top: 12px;
   padding-right: 15px;
   padding-left: 15px;
 }
 
-.marketplace-icon{
-  border: 0.5px solid #F2994A;
+.marketplace-icon {
+  border: 0.5px solid #f2994a;
   border-radius: 15px;
   color: white;
   height: 15px;
@@ -251,6 +246,6 @@ div.fixed {
   display: flex;
   justify-content: center;
   line-height: 20;
-  background: #F2994A;
+  background: #f2994a;
   font-size: 7px;
 }

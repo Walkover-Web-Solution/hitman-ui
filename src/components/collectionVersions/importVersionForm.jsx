@@ -10,12 +10,11 @@ const apiUrl = process.env.REACT_APP_API_URL
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_version: (importLink, shareIdentifier, collectionId) =>
-      dispatch(importVersion(importLink, shareIdentifier, collectionId))
+    import_version: (importLink, shareIdentifier, collectionId) => dispatch(importVersion(importLink, shareIdentifier, collectionId))
   }
 }
 class ShareVersionForm extends Form {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: {
@@ -25,27 +24,31 @@ class ShareVersionForm extends Form {
     }
     this.pattern = new RegExp(`^${apiUrl}/share/[\\w|-]+$`, 'g')
     this.schema = {
-      shareVersionLink: Joi.string().regex(this.pattern).required().error(errors => {
-        errors.forEach(err => {
-          switch (err.type) {
-            case 'string.regex.base':
-              err.message = `Link should be valid version shareable link for example ${apiUrl}/share/id`
-              break
-            default:
-              break
-          }
+      shareVersionLink: Joi.string()
+        .regex(this.pattern)
+        .required()
+        .error((errors) => {
+          errors.forEach((err) => {
+            switch (err.type) {
+              case 'string.regex.base':
+                err.message = `Link should be valid version shareable link for example ${apiUrl}/share/id`
+                break
+              default:
+                break
+            }
+          })
+          return errors
         })
-        return errors
-      }).label('Public Link')
+        .label('Public Link')
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     // if (this.props.location.shareIdentifier) {
     // }
   }
 
-  async doSubmit (props) {
+  async doSubmit(props) {
     if (this.props.title === 'Import Version') {
       this.props.onHide()
       const collectionId = this.props.selected_collection.id
@@ -55,7 +58,7 @@ class ShareVersionForm extends Form {
     }
   }
 
-  render () {
+  render() {
     return (
       <div onKeyPress={(e) => onEnter(e, this.handleKeyPress.bind(this))}>
         <Modal
@@ -67,26 +70,16 @@ class ShareVersionForm extends Form {
           centered
         >
           <Modal.Header className='custom-collection-modal-container' closeButton>
-            <Modal.Title id='contained-modal-title-vcenter'>
-              {this.props.title}
-            </Modal.Title>
+            <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput(
-                'shareVersionLink',
-                'Public Link',
-                'Enter a public link',
-                false, false, true
-              )}
+              {this.renderInput('shareVersionLink', 'Public Link', 'Enter a public link', false, false, true)}
               <div name='shareVersionLink' label='Public Link' />
               <div className='text-left mt-4 mb-2'>
                 {this.renderButton('Submit', 'right')}
 
-                <button
-                  className='btn btn-secondary outline ml-2 btn-lg'
-                  onClick={this.props.onHide}
-                >
+                <button className='btn btn-secondary outline ml-2 btn-lg' onClick={this.props.onHide}>
                   Cancel
                 </button>
               </div>

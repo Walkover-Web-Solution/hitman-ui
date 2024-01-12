@@ -1,10 +1,10 @@
 {
-	"folders": [
-		{
-			"path": "../../.."
-		},
-		{
-			"path": "../../../../../../../hitman-api/hitman-api"
-		}
-	]
+  "folders": [
+    {
+      "path": "../../.."
+    },
+    {
+      "path": "../../../../../../../hitman-api/hitman-api"
+    }
+  ]
 }

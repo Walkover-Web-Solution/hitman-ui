@@ -1,4 +1,4 @@
-function extractVersionsFromCollectionId (collectionId, props) {
+function extractVersionsFromCollectionId(collectionId, props) {
   if (!collectionId) return {}
   const versions = {}
   for (let i = 0; i < Object.keys(props.versions).length; i++) {
@@ -10,7 +10,7 @@ function extractVersionsFromCollectionId (collectionId, props) {
   return versions
 }
 
-function extractGroupsFromVersions (versions, props) {
+function extractGroupsFromVersions(versions, props) {
   if (!versions || Object.keys(versions).length === 0) return {}
   const groups = {}
   for (let i = 0; i < Object.keys(versions).length; i++) {
@@ -25,7 +25,7 @@ function extractGroupsFromVersions (versions, props) {
   return groups
 }
 
-function extractGroupsFromVersionId (versionId, props) {
+function extractGroupsFromVersionId(versionId, props) {
   const groups = {}
   if (versionId) {
     for (let j = 0; j < Object.keys(props.groups).length; j++) {
@@ -38,7 +38,7 @@ function extractGroupsFromVersionId (versionId, props) {
   return groups
 }
 
-function extractPagesFromVersions (versions, props) {
+function extractPagesFromVersions(versions, props) {
   if (!versions || Object.keys(versions).length === 0) return {}
   const pages = {}
   for (let i = 0; i < Object.keys(versions).length; i++) {
@@ -53,7 +53,7 @@ function extractPagesFromVersions (versions, props) {
   return pages
 }
 
-function extractEndpointsFromGroups (groups, props) {
+function extractEndpointsFromGroups(groups, props) {
   if (!groups || Object.keys(groups).length === 0) return {}
   const endpoints = {}
   for (let i = 0; i < Object.keys(groups).length; i++) {

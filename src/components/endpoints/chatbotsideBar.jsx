@@ -4,8 +4,7 @@ import './endpoints.scss'
 import { inviteMember } from '../../services/chatbotService'
 import { getCurrentUser } from '../auth/authServiceV2'
 
-
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     // Include only the Redux state props you need
   }
@@ -17,12 +16,12 @@ class chatbotsideBar extends Component {
   }
 
   handleInputChange = (e) => {
-    this.setState({ inputValue: e.target.value });
+    this.setState({ inputValue: e.target.value })
   }
 
   handleOnkeyDown = (e) => {
     if (e.keyCode === 13) {
-      this.handleSubmit();
+      this.handleSubmit()
     }
   }
 
@@ -33,7 +32,6 @@ class chatbotsideBar extends Component {
   }
 
   render() {
-    
     const saveAsSidebarStyle = {
       position: 'fixed',
       background: 'white',
@@ -43,7 +41,7 @@ class chatbotsideBar extends Component {
       width: '22%',
       float: 'right'
     }
-    
+
     const inputContainerStyle = {
       display: 'flex',
       position: 'absolute',
@@ -51,33 +49,34 @@ class chatbotsideBar extends Component {
       width: '100%',
       padding: '10px',
       borderTop: '1px ',
-      backgroundColor: 'white',
+      backgroundColor: 'white'
     }
 
     const headerStyle = {
       display: 'flex',
-      justifyContent: 'space-between', 
-      alignItems: 'center', 
-      padding: '10px', 
-      borderBottom: '0.5px solid #ddd', 
-    };
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '10px',
+      borderBottom: '0.5px solid #ddd'
+    }
 
     const closeButtonStyle = {
       background: 'none',
       border: 'none',
-      fontSize: '1.5em', 
-      cursor: 'pointer',
-      
-    };
+      fontSize: '1.5em',
+      cursor: 'pointer'
+    }
 
     return (
       <div>
         <div style={saveAsSidebarStyle} className='save-as-sidebar-container'>
-        <div style={headerStyle}>
+          <div style={headerStyle}>
             <h3>Chat with AI</h3>
             <button
               style={closeButtonStyle}
-              onClick={() => { this.props.onHide() }}
+              onClick={() => {
+                this.props.onHide()
+              }}
               aria-label='Close' // Accessibility label for screen readers
             >
               <span aria-hidden='true'>×</span>
@@ -88,12 +87,12 @@ class chatbotsideBar extends Component {
               type='text'
               value={this.state.inputValue}
               onChange={this.handleInputChange}
-              onKeyDown = {this.handleOnkeyDown}
+              onKeyDown={this.handleOnkeyDown}
               className='form-control'
               placeholder='Enter your chat here'
             />
             <button onClick={this.handleSubmit} className='send-icon'>
-              <i className='fa fa-paper-plane' aria-hidden='true'></i>
+              <i className='fa fa-paper-plane' aria-hidden='true' />
             </button>
           </div>
         </div>
@@ -102,4 +101,4 @@ class chatbotsideBar extends Component {
   }
 }
 
-export default connect(mapStateToProps)(chatbotsideBar);
+export default connect(mapStateToProps)(chatbotsideBar)

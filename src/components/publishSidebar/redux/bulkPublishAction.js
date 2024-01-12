@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify'
-import {store} from '../../../store/store'
+import { store } from '../../../store/store'
 import bulkPublishApiService from '../bulkPublishApiService'
 import bulkPublishActionTypes from './bulkPublishActionTypes'
 
@@ -22,16 +22,16 @@ export const bulkPublish = (collectionId, data) => {
   }
 }
 
-export const  bulkPublishSelectedData = (data) =>  {
+export const bulkPublishSelectedData = (data) => {
   return (dispatch) => {
     const originalEndpoints = JSON.parse(JSON.stringify(store.getState().endpoints))
     const originalPages = JSON.parse(JSON.stringify(store.getState().pages))
     bulkPublishApiService
-      .bulkPublishSelectedData( data)
+      .bulkPublishSelectedData(data)
       .then((response) => {
-          const modifiedData = updatePagesAndEndPointsData(originalEndpoints, originalPages, data.requestData)
-          dispatch(onBulkPublishUpdation(modifiedData))
-          toast.success('Successfully Published')
+        const modifiedData = updatePagesAndEndPointsData(originalEndpoints, originalPages, data.requestData)
+        dispatch(onBulkPublishUpdation(modifiedData))
+        toast.success('Successfully Published')
       })
       .catch((error) => {
         const e = error.response ? error.response.data : error
@@ -55,7 +55,7 @@ export const onBulkPublishUpdationError = (error, originalData) => {
   }
 }
 
-function updateEndpointsData (originalEndpoints, originalPages, data) {
+function updateEndpointsData(originalEndpoints, originalPages, data) {
   const updatedEndpoints = JSON.parse(JSON.stringify(originalEndpoints))
   const updatedPages = JSON.parse(JSON.stringify(originalPages))
   const { pages, endpoints } = data
@@ -70,12 +70,12 @@ function updateEndpointsData (originalEndpoints, originalPages, data) {
   return { updatedEndpoints, updatedPages }
 }
 
-function updatePagesAndEndPointsData (originalEndpoints, originalPages, data) {
+function updatePagesAndEndPointsData(originalEndpoints, originalPages, data) {
   const updatedEndpoints = JSON.parse(JSON.stringify(originalEndpoints))
   const updatedPages = JSON.parse(JSON.stringify(originalPages))
   const { pages, endpoints } = data
   endpoints.forEach((endpointId) => {
-    updatedEndpoints[endpointId].isPublished = true;
+    updatedEndpoints[endpointId].isPublished = true
     updatedEndpoints[endpointId].state = 'Approved'
   })
 

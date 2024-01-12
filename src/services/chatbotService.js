@@ -1,39 +1,39 @@
-import axios from 'axios';
-import { getProxyToken } from '../components/auth/authServiceV2';
+import axios from 'axios'
+import { getProxyToken } from '../components/auth/authServiceV2'
 import { toast } from 'react-toastify'
 
-var chatbotInstance = axios.create()
-const apiBaseUrl = process.env.REACT_APP_API_URL;
+let chatbotInstance = axios.create()
+const apiBaseUrl = process.env.REACT_APP_API_URL
 
 function addProxyToken() {
-  let proxyToken = getProxyToken();
+  const proxyToken = getProxyToken()
   if (proxyToken) {
-    chatbotInstance.defaults.headers.common.proxy_auth_token = proxyToken;
+    chatbotInstance.defaults.headers.common.proxy_auth_token = proxyToken
   }
-  return chatbotInstance;
+  return chatbotInstance
 }
 export async function inviteMember(name, query) {
-  chatbotInstance = addProxyToken();
-  const proxyToken = getProxyToken();
+  chatbotInstance = addProxyToken()
+  const proxyToken = getProxyToken()
   const data = {
     query: query,
     proxy: proxyToken,
     name: name
-  };
+  }
 
   try {
-    const res = await axios.post(`${apiBaseUrl}/chatbot`, data);
-    if(res.status !== 200){
-      throw new(res?.message ? res.message : 'Please enter message correctly')
+    const res = await axios.post(`${apiBaseUrl}/chatbot`, data)
+    if (res.status !== 200) {
+      throw new (res?.message ? res.message : 'Please enter message correctly')()
     }
     toast.success('User added successfully')
-    return true;
+    return true
   } catch (e) {
-    toast.error(e?.message ? e.message : 'Something went wrong');
-    return false;
+    toast.error(e?.message ? e.message : 'Something went wrong')
+    return false
   }
 }
 
 export default {
   inviteMember
-};
+}

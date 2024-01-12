@@ -1,74 +1,73 @@
 {
-    "appId": "com.hitman.app",
-    "electronVersion": "11.2.3",
-    "directories": {
-        "output": "dist/hitman-bundles/",
-        "buildResources": "assets"
-    },
-    "files": [
-        "../build/**/*"
+  "appId": "com.hitman.app",
+  "electronVersion": "11.2.3",
+  "directories": {
+    "output": "dist/hitman-bundles/",
+    "buildResources": "assets"
+  },
+  "files": ["../build/**/*"],
+  "afterSign": "./electron/notarize.js",
+  "mac": {
+    "target": ["dmg", "zip"],
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "${env.AUTO_UPDATE_BASE_URL}/mac",
+        "publishAutoUpdate": true
+      }
     ],
-    "afterSign": "./electron/notarize.js",
-    "mac": {
-        "target": [
-            "dmg",
-            "zip"
-        ],
-        "publish": [{
-            "provider": "generic",
-            "url": "${env.AUTO_UPDATE_BASE_URL}/mac",
-            "publishAutoUpdate": true 
-        }],
-        "artifactName": "${name}_installer.${ext}",
-        "identity": "Walkover Web Solutions Private Limited (F3U6Z5L2EJ)",
-        "type": "distribution",
-        "entitlements": "./electron/default.entitlements.mas.plist",
-        "entitlementsInherit": "./electron/default.entitlements.mas.inherit.plist",
-        "provisioningProfile": "./electron/embedded.provisionprofile",
-        "icon": "./assets/icon.icns",
-        "hardenedRuntime": true,
-        "gatekeeperAssess": false
-    },
-    "dmg": {
-        "sign": false
-    },
-    "linux": {
-        "maintainer": "Walkover Technologies Pvt Ltd",
-        "target": ["deb", "tar.gz"],
-        "artifactName": "${name}_installer.${ext}",
-        "publish": [{
-            "provider": "generic",
-            "url": "${env.AUTO_UPDATE_BASE_URL}/linux",
-            "publishAutoUpdate": true 
-        }]
-    },   
-    "win": {
-        "target": [
-            "nsis"
-        ],
-        "icon": "./assets/icon.ico",
-        "publish": [{
-            "provider": "generic",
-            "url": "${env.AUTO_UPDATE_BASE_URL}/win",
-            "publishAutoUpdate": true 
-        }],
-        "artifactName": "${name}_installer_${arch}.${ext}",
-        "publisherName": "Walkover Technologies Pvt Ltd",
-        "certificateSubjectName": "Walkover Technologies Pvt Ltd",
-        "legalTrademarks": "Walkover Technologies Pvt Ltd"
-    },
-    "nsis": {
-        "oneClick": true,
-        "createDesktopShortcut": true,
-        "createStartMenuShortcut": true,
-        "shortcutName": "Hitman",
-        "perMachine": false
-    },
-    "protocols": [{
-        "name": "hitman-app",
-        "schemes": [
-          "hitman-app"
-        ]
-    }],
-    "asar": true
+    "artifactName": "${name}_installer.${ext}",
+    "identity": "Walkover Web Solutions Private Limited (F3U6Z5L2EJ)",
+    "type": "distribution",
+    "entitlements": "./electron/default.entitlements.mas.plist",
+    "entitlementsInherit": "./electron/default.entitlements.mas.inherit.plist",
+    "provisioningProfile": "./electron/embedded.provisionprofile",
+    "icon": "./assets/icon.icns",
+    "hardenedRuntime": true,
+    "gatekeeperAssess": false
+  },
+  "dmg": {
+    "sign": false
+  },
+  "linux": {
+    "maintainer": "Walkover Technologies Pvt Ltd",
+    "target": ["deb", "tar.gz"],
+    "artifactName": "${name}_installer.${ext}",
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "${env.AUTO_UPDATE_BASE_URL}/linux",
+        "publishAutoUpdate": true
+      }
+    ]
+  },
+  "win": {
+    "target": ["nsis"],
+    "icon": "./assets/icon.ico",
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "${env.AUTO_UPDATE_BASE_URL}/win",
+        "publishAutoUpdate": true
+      }
+    ],
+    "artifactName": "${name}_installer_${arch}.${ext}",
+    "publisherName": "Walkover Technologies Pvt Ltd",
+    "certificateSubjectName": "Walkover Technologies Pvt Ltd",
+    "legalTrademarks": "Walkover Technologies Pvt Ltd"
+  },
+  "nsis": {
+    "oneClick": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Hitman",
+    "perMachine": false
+  },
+  "protocols": [
+    {
+      "name": "hitman-app",
+      "schemes": ["hitman-app"]
+    }
+  ],
+  "asar": true
 }

@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import jQuery from 'jquery'
 class DisplayBodyDescription extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {}
   }
 
-  performChange (pkeys, bodyDescription, newValue, body) {
+  performChange(pkeys, bodyDescription, newValue, body) {
     if (pkeys.length === 1) {
       const type = bodyDescription[pkeys[0]].type
 
@@ -17,8 +17,7 @@ class DisplayBodyDescription extends Component {
         bodyDescription[pkeys[0]].value = newValue
         body[pkeys[0]] = newValue
       } else if (type === 'boolean') {
-        const value =
-          newValue === 'true' ? true : newValue === 'false' ? false : null
+        const value = newValue === 'true' ? true : newValue === 'false' ? false : null
         bodyDescription[pkeys[0]].value = value
         body[pkeys[0]] = value
       }
@@ -49,18 +48,14 @@ class DisplayBodyDescription extends Component {
       jQuery.extend(true, {}, body)
     )
     this.props.set_body_description(bodyDescription)
-  };
+  }
 
-  performDescriptionChange (pkeys, bodyDescription, value) {
+  performDescriptionChange(pkeys, bodyDescription, value) {
     if (pkeys.length === 1) {
       bodyDescription[pkeys[0]].description = value
     } else {
       const data = bodyDescription[pkeys[0]].value
-      bodyDescription[pkeys[0]].value = this.performDescriptionChange(
-        pkeys.slice(1, pkeys.length),
-        data,
-        value
-      )
+      bodyDescription[pkeys[0]].value = this.performDescriptionChange(pkeys.slice(1, pkeys.length), data, value)
     }
     return bodyDescription
   }
@@ -71,29 +66,21 @@ class DisplayBodyDescription extends Component {
     const parentKeyArray = name.split('.')
     parentKeyArray.splice(0, 1)
     parentKeyArray.splice(-1, 1)
-    const bodyDescription = this.performDescriptionChange(
-      parentKeyArray,
-      jQuery.extend(true, {}, this.props.body_description),
-      value
-    )
+    const bodyDescription = this.performDescriptionChange(parentKeyArray, jQuery.extend(true, {}, this.props.body_description), value)
     this.props.set_body_description(bodyDescription)
-  };
+  }
 
-  displayAddButton (name) {
+  displayAddButton(name) {
     return (
       <div className='array-row-add-wrapper'>
-        <span
-          className='badge badge-success'
-          style={{ cursor: 'pointer' }}
-          onClick={() => this.handleAdd(name)}
-        >
+        <span className='badge badge-success' style={{ cursor: 'pointer' }} onClick={() => this.handleAdd(name)}>
           Add+
         </span>
       </div>
     )
   }
 
-  displayBoolean (obj, name, className) {
+  displayBoolean(obj, name, className) {
     return (
       <div className='value-description-input-wrapper'>
         <input
@@ -108,7 +95,7 @@ class DisplayBodyDescription extends Component {
     )
   }
 
-  displayInput (obj, name) {
+  displayInput(obj, name) {
     return (
       <div className='value-description-input-wrapper'>
         <input
@@ -123,7 +110,7 @@ class DisplayBodyDescription extends Component {
     )
   }
 
-  displayArray (array, name, defaultValue) {
+  displayArray(array, name, defaultValue) {
     const renderTitle = (value, index) => {
       if (value.type === 'array' || value.type === 'object') {
         return (
@@ -138,10 +125,7 @@ class DisplayBodyDescription extends Component {
     return (
       <div
         className={
-          defaultValue &&
-            (defaultValue.type === 'object' || defaultValue.type === 'array')
-            ? 'array-wrapper'
-            : 'array-without-key'
+          defaultValue && (defaultValue.type === 'object' || defaultValue.type === 'array') ? 'array-wrapper' : 'array-without-key'
         }
       >
         {array.map((value, index) => (
@@ -152,11 +136,7 @@ class DisplayBodyDescription extends Component {
               : value.type === 'object'
                 ? this.displayObject(value.value, name + '.' + index)
                 : value.type === 'array'
-                  ? this.displayArray(
-                      value.value,
-                      name + '.' + index,
-                      value.default
-                    )
+                  ? this.displayArray(value.value, name + '.' + index, value.default)
                   : null}
             {/* <button
               type="button"
@@ -172,27 +152,20 @@ class DisplayBodyDescription extends Component {
     )
   }
 
-  displayObject (obj, name) {
+  displayObject(obj, name) {
     if (!obj) {
       return null
     }
     return (
       <div className='object-container'>
-        {(typeof (obj) === 'string')
-          ? <div className='object-container object-error'>{obj}</div>
-          : Object.keys(obj).map((key, index) => (
+        {typeof obj === 'string' ? (
+          <div className='object-container object-error'>{obj}</div>
+        ) : (
+          Object.keys(obj).map((key, index) => (
             <div
               key={key}
-              className={
-              obj[key].type === 'array'
-                ? 'array-container'
-                : 'object-row-wrapper'
-            }
-              style={
-              obj[key].type === 'object'
-                ? { flexDirection: 'column' }
-                : { flexDirection: 'row' }
-            }
+              className={obj[key].type === 'array' ? 'array-container' : 'object-row-wrapper'}
+              style={obj[key].type === 'object' ? { flexDirection: 'column' } : { flexDirection: 'row' }}
             >
               <div className='key-title'>
                 <label>{key}</label>
@@ -202,19 +175,16 @@ class DisplayBodyDescription extends Component {
               {obj[key].type === 'object'
                 ? this.displayObject(obj[key].value, name + '.' + key)
                 : obj[key].type === 'array'
-                  ? this.displayArray(
-                      obj[key].value,
-                      name + '.' + key,
-                      obj[key].default
-                    )
+                  ? this.displayArray(obj[key].value, name + '.' + key, obj[key].default)
                   : null}
             </div>
-          ))}
+          ))
+        )}
       </div>
     )
   }
 
-  generateBodyFromDescription (bodyDescription, body) {
+  generateBodyFromDescription(bodyDescription, body) {
     if (!body) {
       body = {}
     }
@@ -227,16 +197,10 @@ class DisplayBodyDescription extends Component {
           body[keys[i]] = bodyDescription[keys[i]].value
           break
         case 'array':
-          body[keys[i]] = this.generateBodyFromDescription(
-            bodyDescription[keys[i]].value,
-            []
-          )
+          body[keys[i]] = this.generateBodyFromDescription(bodyDescription[keys[i]].value, [])
           break
         case 'object':
-          body[keys[i]] = this.generateBodyFromDescription(
-            bodyDescription[keys[i]].value,
-            {}
-          )
+          body[keys[i]] = this.generateBodyFromDescription(bodyDescription[keys[i]].value, {})
           break
         default:
           break
@@ -245,23 +209,19 @@ class DisplayBodyDescription extends Component {
     return body
   }
 
-  makeParentKeysArray (name) {
+  makeParentKeysArray(name) {
     const parentKeyArray = name.split('.')
     parentKeyArray.splice(0, 1)
     return parentKeyArray
   }
 
-  handleAddDelete (pkeys, bodyDescription, body, title) {
+  handleAddDelete(pkeys, bodyDescription, body, title) {
     if (pkeys.length === 1) {
       if (title === 'delete') {
         body.splice(pkeys[0], 1)
         bodyDescription.splice(pkeys[0], 1)
       } else if (title === 'add') {
-        const defaultValue = jQuery.extend(
-          true,
-          {},
-          bodyDescription[pkeys[0]].default
-        )
+        const defaultValue = jQuery.extend(true, {}, bodyDescription[pkeys[0]].default)
 
         bodyDescription[pkeys[0]].value.push(defaultValue)
 
@@ -284,12 +244,8 @@ class DisplayBodyDescription extends Component {
     return { body, bodyDescription }
   }
 
-  render () {
-    return (
-      <div className='body-description-container'>
-        {this.displayObject(this.props.body_description, 'body_description')}
-      </div>
-    )
+  render() {
+    return <div className='body-description-container'>{this.displayObject(this.props.body_description, 'body_description')}</div>
   }
 }
 

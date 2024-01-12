@@ -1,18 +1,6 @@
 import React from 'react'
 
-const Input = ({
-  name,
-  label,
-  value,
-  onChange,
-  onBlur,
-  error,
-  placeholder,
-  disabled,
-  mandatory,
-  firstLetterCapitalize,
-  note
-}) => {
+const Input = ({ name, label, value, onChange, onBlur, error, placeholder, disabled, mandatory, firstLetterCapitalize, note }) => {
   const inputStyle = firstLetterCapitalize ? { textTransform: 'capitalize' } : {}
 
   return (
@@ -33,7 +21,9 @@ const Input = ({
         disabled={disabled}
         style={inputStyle}
       />
-      <div><small className='muted-text'>{note}</small></div>
+      <div>
+        <small className='muted-text'>{note}</small>
+      </div>
       {error && <div className='alert alert-danger'>{error}</div>}
     </div>
   )

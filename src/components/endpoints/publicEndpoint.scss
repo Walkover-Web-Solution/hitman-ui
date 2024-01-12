@@ -42,7 +42,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       padding: 12px 30px;
       .user-details-heading {
         &:after {
-          content: "\f0d8"; // UP caret
+          content: '\f0d8'; // UP caret
         }
       }
     }
@@ -57,9 +57,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     }
   }
 }
- 
 
- 
 .primitive-datatype-wrapper {
   display: flex;
   flex-direction: row;

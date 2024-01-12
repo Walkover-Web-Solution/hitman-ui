@@ -33,12 +33,12 @@ const rootReducer = combineReducers({
   sidebar: sidebarReducer,
   responseView: toggleResponseReducer,
   feedbacks: publishDocsReducer,
-  sidebarV2Reducer,
+  sidebarV2Reducer
 })
 
 const persistConfig = {
   key: 'root',
-  storage,
+  storage
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

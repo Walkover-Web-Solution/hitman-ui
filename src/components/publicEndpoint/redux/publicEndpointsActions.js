@@ -10,11 +10,7 @@ export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) =
         dispatch(onPublicEndpointsFetched(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onPublicEndpointsFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
+        dispatch(onPublicEndpointsFetchedError(error.response ? error.response.data : error))
         history.push({ pathname: '/p/error', collection: true })
       })
   }
@@ -42,9 +38,7 @@ export const pendingPage = (page) => {
         dispatch(onPageStateSuccess(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onPageStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onPageStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -58,9 +52,7 @@ export const approvePage = (page, publishPageLoaderHandler) => {
         publishPageLoaderHandler()
       })
       .catch((error) => {
-        dispatch(
-          onPageStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onPageStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -73,9 +65,7 @@ export const draftPage = (page) => {
         dispatch(onPageStateSuccess(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onPageStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onPageStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -88,9 +78,7 @@ export const rejectPage = (page) => {
         dispatch(onPageStateSuccess(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onPageStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onPageStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -117,9 +105,7 @@ export const pendingEndpoint = (endpoint) => {
         dispatch(onEndpointStateSuccess(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onEndpointStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onEndpointStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -133,9 +119,7 @@ export const approveEndpoint = (endpoint, publishLoaderHandler) => {
         publishLoaderHandler()
       })
       .catch((error) => {
-        dispatch(
-          onEndpointStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onEndpointStateError(error.response ? error.response.data : error))
         publishLoaderHandler()
       })
   }
@@ -149,9 +133,7 @@ export const draftEndpoint = (endpoint) => {
         dispatch(onEndpointStateSuccess(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onEndpointStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onEndpointStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -164,9 +146,7 @@ export const rejectEndpoint = (endpoint) => {
         dispatch(onEndpointStateSuccess(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onEndpointStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onEndpointStateError(error.response ? error.response.data : error))
       })
   }
 }

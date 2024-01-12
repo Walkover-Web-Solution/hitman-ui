@@ -27,18 +27,20 @@ const BROWSER_LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/browser-login'
 const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
 
 const LoginButton = () => {
-  return (
-    isElectron()
-      ? <div className='float-right d-flex btn btn-primary mr-3' onClick={() => openExternalLink(BROWSER_LOGIN_ROUTE)}>Login/SignUp</div>
-      : <div
-          id='sokt-sso'
-          data-redirect-uri={LOGIN_ROUTE}
-          data-source='hitman'
-          data-token-key='sokt-auth-token'
-          data-view='button'
-          data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-          signup_uri={LOGIN_ROUTE + '?signup=true'}
-        />
+  return isElectron() ? (
+    <div className='float-right d-flex btn btn-primary mr-3' onClick={() => openExternalLink(BROWSER_LOGIN_ROUTE)}>
+      Login/SignUp
+    </div>
+  ) : (
+    <div
+      id='sokt-sso'
+      data-redirect-uri={LOGIN_ROUTE}
+      data-source='hitman'
+      data-token-key='sokt-auth-token'
+      data-view='button'
+      data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
+      signup_uri={LOGIN_ROUTE + '?signup=true'}
+    />
   )
 }
 
@@ -50,21 +52,23 @@ const DownloadDesktopAppButton = () => {
   }
   return (
     <div className='d-flex align-items-center'>
-      <button onClick={handleDownloadClick} className='btn btn-primary download-btn'>Download Desktop App</button>
+      <button onClick={handleDownloadClick} className='btn btn-primary download-btn'>
+        Download Desktop App
+      </button>
     </div>
   )
 }
 
 class Header extends Component {
-  state = { }
+  state = {}
 
-  componentDidMount () {
+  componentDidMount() {
     if (authService.getCurrentUser()) {
       this.setProfile()
     }
   }
 
-  setProfile () {
+  setProfile() {
     const profile = {}
     const currentUser = authService.getCurrentUser()
     const name = getProfileName(currentUser)?.split(' ')
@@ -77,16 +81,14 @@ class Header extends Component {
     setAmplitudeUserId(profile.email)
   }
 
-  openPublishDocs (collection) {
+  openPublishDocs(collection) {
     if (collection?.id) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
       })
     } else {
-      const collection = this.props.collections[
-        Object.keys(this.props.collections)[0]
-      ]
+      const collection = this.props.collections[Object.keys(this.props.collections)[0]]
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
@@ -94,41 +96,33 @@ class Header extends Component {
     }
   }
 
-  dataFetched () {
-    return (
-      this.props.collections &&
-      this.props.versions &&
-      this.props.groups &&
-      this.props.endpoints &&
-      this.props.pages
-    )
+  dataFetched() {
+    return this.props.collections && this.props.versions && this.props.groups && this.props.endpoints && this.props.pages
   }
 
-  getPublicCollections () {
+  getPublicCollections() {
     if (this.dataFetched()) {
       const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
-        (eId) => this.props.endpoints[eId].state === 'Pending' || (this.props.endpoints[eId].state === 'Draft' && this.props.endpoints[eId].isPublished)
+        (eId) =>
+          this.props.endpoints[eId].state === 'Pending' ||
+          (this.props.endpoints[eId].state === 'Draft' && this.props.endpoints[eId].isPublished)
       )
       const pendingPageIds = Object.keys(this.props.pages).filter(
         (pId) => this.props.pages[pId].state === 'Pending' || (this.props.pages[pId].state === 'Draft' && this.props.pages[pId].isPublished)
       )
-      const endpointCollections = this.findPendingEndpointsCollections(
-        pendingEndpointIds
-      )
+      const endpointCollections = this.findPendingEndpointsCollections(pendingEndpointIds)
       const pageCollections = this.findPendingPagesCollections(pendingPageIds)
-      const allCollections = [
-        ...new Set([...endpointCollections, ...pageCollections])
-      ]
+      const allCollections = [...new Set([...endpointCollections, ...pageCollections])]
       return allCollections
     }
   }
 
-  getNotificationCount () {
+  getNotificationCount() {
     const collections = this.getPublicCollections()
     return collections?.length || 0
   }
 
-  findPendingEndpointsCollections (pendingEndpointIds) {
+  findPendingEndpointsCollections(pendingEndpointIds) {
     const groupsArray = []
     for (let i = 0; i < pendingEndpointIds.length; i++) {
       const endpointId = pendingEndpointIds[i]
@@ -157,7 +151,7 @@ class Header extends Component {
     return collectionsArray
   }
 
-  findPendingPagesCollections (pendingPageIds) {
+  findPendingPagesCollections(pendingPageIds) {
     const versionsArray = []
     for (let i = 0; i < pendingPageIds.length; i++) {
       const pageId = pendingPageIds[i]
@@ -177,12 +171,12 @@ class Header extends Component {
     return collectionsArray
   }
 
-  openCollection (collectionId) {
+  openCollection(collectionId) {
     this.collectionId = collectionId
     this.setState({ selectedCollectionId: collectionId, primarySidebar: false, secondarySidebarToggle: false })
   }
 
-  getFirstPublicCollection () {
+  getFirstPublicCollection() {
     const allCollections = this.getPublicCollections()
     let firstCollection = {}
     const collectionId = allCollections[0]
@@ -191,26 +185,27 @@ class Header extends Component {
     return firstCollection
   }
 
-  navigateToPublishDocs () {
+  navigateToPublishDocs() {
     const collection = this.getFirstPublicCollection()
     this.openPublishDocs(collection)
   }
 
-  handleGoBack () {
+  handleGoBack() {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard`
     })
   }
 
-  renderNavTitle () {
+  renderNavTitle() {
     return (
       <>
-        {this.props.location.pathname.split('/')?.[4] === 'publish' &&
+        {this.props.location.pathname.split('/')?.[4] === 'publish' && (
           <div className='back-btn'>
             <div className='d-flex align-items-center black-hover h-100 p-3 transition' onClick={() => this.handleGoBack()}>
               <img className='mr-1' src={BackIcon} alt='' /> <span>API Dashboard</span>
             </div>
-          </div>}
+          </div>
+        )}
         <div className='float-right d-flex'>
           {!isElectron() && <DownloadDesktopAppButton />}
           {getCurrentUser() ? <Environments {...this.props} /> : null}
@@ -219,25 +214,28 @@ class Header extends Component {
     )
   }
 
-  renderLoginButton () {
+  renderLoginButton() {
     return getCurrentUser() ? '' : <LoginButton />
   }
 
-  renderProfileOption () {
+  renderProfileOption() {
     return (
-      authService.isAdmin() &&
-        <div className='profile-listing' onClick={() => { this.navigateToPublishDocs() }}>
+      authService.isAdmin() && (
+        <div
+          className='profile-listing'
+          onClick={() => {
+            this.navigateToPublishDocs()
+          }}
+        >
           <img src={HostedApiIcon} alt='' />
           <span className='label'>Hosted API</span>
-          {
-              this.getNotificationCount() > 0 &&
-                <div className='user-notification-badge'>{this.getNotificationCount()}</div>
-            }
+          {this.getNotificationCount() > 0 && <div className='user-notification-badge'>{this.getNotificationCount()}</div>}
         </div>
+      )
     )
   }
 
-  redirectToDashboard (orgId) {
+  redirectToDashboard(orgId) {
     if (isElectron()) {
       window.location.hash = `/orgs/${orgId}/dashboard`
       window.location.reload()
@@ -246,7 +244,7 @@ class Header extends Component {
     }
   }
 
-  updateProfile () {
+  updateProfile() {
     // Setting demo form false for local storage
     const { profile } = this.state
     const profileKey = 'profile'
@@ -254,11 +252,33 @@ class Header extends Component {
     window.localStorage.setItem(profileKey, JSON.stringify(this.state.profile))
   }
 
-  render () {
-    const productLinks = { FEEDIO: process.env.REACT_APP_FEEDIO_UI_URL, HITMAN: process.env.REACT_APP_UI_URL, CONTENTBASE: process.env.REACT_APP_CONTENTBASE_URL, EBL: process.env.REACT_APP_VIASOCKET_URL, HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL }
+  render() {
+    const productLinks = {
+      FEEDIO: process.env.REACT_APP_FEEDIO_UI_URL,
+      HITMAN: process.env.REACT_APP_UI_URL,
+      CONTENTBASE: process.env.REACT_APP_CONTENTBASE_URL,
+      EBL: process.env.REACT_APP_VIASOCKET_URL,
+      HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL
+    }
     return (
       <>
-        <GenericHeader {...this.props} {...this.state} productLinks={productLinks} redirectToDashboard={(id) => redirectToDashboard(id)} showCommunityButton={false} getNotificationCount={() => this.getNotificationCount()} project_name='' organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []} organizationId={getOrgId()} productName='hitman' renderNavTitle={() => this.renderNavTitle()} renderProfileOption={() => this.renderProfileOption()} handleOpenLink={(link) => openExternalLink(link)} renderLoginButton={() => this.renderLoginButton()} updateProfile={() => this.updateProfile()} />
+        <GenericHeader
+          {...this.props}
+          {...this.state}
+          productLinks={productLinks}
+          redirectToDashboard={(id) => redirectToDashboard(id)}
+          showCommunityButton={false}
+          getNotificationCount={() => this.getNotificationCount()}
+          project_name=''
+          organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []}
+          organizationId={getOrgId()}
+          productName='hitman'
+          renderNavTitle={() => this.renderNavTitle()}
+          renderProfileOption={() => this.renderProfileOption()}
+          handleOpenLink={(link) => openExternalLink(link)}
+          renderLoginButton={() => this.renderLoginButton()}
+          updateProfile={() => this.updateProfile()}
+        />
       </>
     )
   }

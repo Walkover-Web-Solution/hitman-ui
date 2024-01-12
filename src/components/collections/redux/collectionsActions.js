@@ -1,4 +1,4 @@
-import {store} from '../../../store/store'
+import { store } from '../../../store/store'
 import collectionsApiService from '../collectionsApiService'
 import collectionsActionTypes from './collectionsActionTypes'
 import tabService from '../../tabs/tabService'
@@ -17,11 +17,7 @@ export const fetchCollections = (orgId) => {
         dispatch(onCollectionsFetched(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onCollectionsFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
+        dispatch(onCollectionsFetchedError(error.response ? error.response.data : error))
       })
   }
 }
@@ -48,11 +44,7 @@ export const fetchCollection = (collectionId) => {
         dispatch(onCollectionsFetched(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onCollectionsFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
+        dispatch(onCollectionsFetchedError(error.response ? error.response.data : error))
       })
   }
 }
@@ -69,8 +61,8 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           orgId: response.data.orgId
         })
         dispatch(onCollectionAdded(response.data))
-        const { id, name, rootParentId } = response.data;
-        dispatch(updateCollectionInSidebar('sideBarCollections', id, { id, name, rootParentId }));
+        const { id, name, rootParentId } = response.data
+        dispatch(updateCollectionInSidebar('sideBarCollections', id, { id, name, rootParentId }))
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
         }
@@ -79,12 +71,7 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
         }
       })
       .catch((error) => {
-        dispatch(
-          onCollectionAddedError(
-            error.response ? error.response.data : error,
-            newCollection
-          )
-        )
+        dispatch(onCollectionAddedError(error.response ? error.response.data : error, newCollection))
         if (customCallback) {
           customCallback({ success: false })
         }
@@ -116,9 +103,7 @@ export const onCollectionAddedError = (error, newCollection) => {
 
 export const updateCollection = (editedCollection, stopLoader, customCallback) => {
   return (dispatch) => {
-    const originalCollection = store.getState().collections[
-      editedCollection.id
-    ]
+    const originalCollection = store.getState().collections[editedCollection.id]
     dispatch(updateCollectionRequest({ ...originalCollection, ...editedCollection }))
     const id = editedCollection.id
     delete editedCollection.id
@@ -142,12 +127,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
         if (customCallback) customCallback({ success: true, data: response.data })
       })
       .catch((error) => {
-        dispatch(
-          onCollectionUpdatedError(
-            error.response ? error.response.data : error,
-            originalCollection
-          )
-        )
+        dispatch(onCollectionUpdatedError(error.response ? error.response.data : error, originalCollection))
         if (stopLoader) {
           stopLoader()
         }
@@ -234,11 +214,7 @@ export const duplicateCollection = (collection) => {
         sidebarActions.toggleItem('collections', response.data.collection.id, true)
       })
       .catch((error) => {
-        dispatch(
-          onCollectionDuplicatedError(
-            error.response ? error.response.data : error
-          )
-        )
+        dispatch(onCollectionDuplicatedError(error.response ? error.response.data : error))
       })
   }
 }
@@ -257,10 +233,7 @@ export const onCollectionDuplicatedError = (error) => {
   }
 }
 
-export const addCustomDomain = (
-  collectionId,
-  domain
-) => {
+export const addCustomDomain = (collectionId, domain) => {
   return (dispatch) => {
     const collection = { ...store.getState().collections[collectionId] }
     if (!collection.docProperties.domainsList) {
@@ -279,12 +252,7 @@ export const addCustomDomain = (
         dispatch(onCollectionUpdated(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onCollectionUpdatedError(
-            error.response ? error.response.data : error,
-            collection
-          )
-        )
+        dispatch(onCollectionUpdatedError(error.response ? error.response.data : error, collection))
       })
   }
 }
@@ -300,9 +268,7 @@ export const importApi = (collection, importType, website, customCallback, defau
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          dispatch(
-            onVersionsFetchedError(error.response ? error.response.data : error)
-          )
+          dispatch(onVersionsFetchedError(error.response ? error.response.data : error))
           if (customCallback) customCallback({ success: false })
         })
     } else {
@@ -313,9 +279,7 @@ export const importApi = (collection, importType, website, customCallback, defau
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          dispatch(
-            onVersionsFetchedError(error.response ? error.response.data : error)
-          )
+          dispatch(onVersionsFetchedError(error.response ? error.response.data : error))
           if (customCallback) customCallback({ success: false })
         })
     }
@@ -346,12 +310,7 @@ export const importCollection = (collection, customCallback) => {
         if (customCallback) customCallback({ success: true })
       })
       .catch((error) => {
-        dispatch(
-          onCollectionImportedError(
-            error.response ? error.response.data : error,
-            collection
-          )
-        )
+        dispatch(onCollectionImportedError(error.response ? error.response.data : error, collection))
         if (customCallback) customCallback({ success: false })
       })
   }
@@ -403,37 +362,19 @@ export const removePublicCollection = (collection, props) => {
   }
 }
 
-function prepareCollectionData (collection, props) {
+function prepareCollectionData(collection, props) {
   const storeData = { ...store.getState() }
-  const versionIds = Object.keys(storeData.versions).filter(
-    (vId) => storeData.versions[vId].collectionId === collection.id
-  )
+  const versionIds = Object.keys(storeData.versions).filter((vId) => storeData.versions[vId].collectionId === collection.id)
   let groupIds = []
   let endpointIds = []
   let pageIds = []
   versionIds.forEach((vId) => {
-    groupIds = [
-      ...Object.keys(storeData.groups).filter(
-        (gId) => storeData.groups[gId].versionId === vId
-      ),
-      ...groupIds
-    ]
-    pageIds = [
-      ...Object.keys(storeData.pages).filter(
-        (pId) => storeData.pages[pId].versionId === vId
-      ),
-      ...pageIds
-    ]
+    groupIds = [...Object.keys(storeData.groups).filter((gId) => storeData.groups[gId].versionId === vId), ...groupIds]
+    pageIds = [...Object.keys(storeData.pages).filter((pId) => storeData.pages[pId].versionId === vId), ...pageIds]
   })
 
   groupIds.forEach(
-    (gId) =>
-      (endpointIds = [
-        ...Object.keys(storeData.endpoints).filter(
-          (eId) => storeData.endpoints[eId].groupId === gId
-        ),
-        ...endpointIds
-      ])
+    (gId) => (endpointIds = [...Object.keys(storeData.endpoints).filter((eId) => storeData.endpoints[eId].groupId === gId), ...endpointIds])
   )
 
   endpointIds.map((eId) => tabService.removeTab(eId, props))

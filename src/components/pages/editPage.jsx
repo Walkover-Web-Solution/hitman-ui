@@ -13,8 +13,7 @@ import Tiptap from '../tiptapEditor/tiptap'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    update_page: (editedPage, pageId) =>
-      dispatch(updatePage(ownProps.history, editedPage, pageId)),
+    update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
     update_tab: (id, data) => dispatch(updateTab(id, data))
   }
 }
@@ -27,7 +26,7 @@ const mapStateToProps = (state) => {
 }
 
 class EditPage extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
@@ -37,7 +36,7 @@ class EditPage extends Component {
     this.contents = React.createRef()
   }
 
-  async fetchPage (pageId) {
+  async fetchPage(pageId) {
     let data = {}
     const { pages } = this.props
     const page = pages[pageId]
@@ -57,12 +56,12 @@ class EditPage extends Component {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     await this.setPageData()
     this.setState({ showEditor: true })
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     this.setPageData()
     const { save_page_flag: prevSavePageFlag } = prevProps
     const { save_page_flag: savePageFlag, tab, handle_save_page: handleSavePage } = this.props
@@ -74,8 +73,14 @@ class EditPage extends Component {
     }
   }
 
-  async setPageData () {
-    const { tab, pages, match: { params: { pageId } } } = this.props
+  async setPageData() {
+    const {
+      tab,
+      pages,
+      match: {
+        params: { pageId }
+      }
+    } = this.props
     const { draftDataSet } = this.state
 
     if (tab && pageId) {
@@ -98,9 +103,9 @@ class EditPage extends Component {
         this.setUnsavedTabDataInIDB()
       }
     })
-  };
+  }
 
-  setUnsavedTabDataInIDB () {
+  setUnsavedTabDataInIDB() {
     if (this.props.tab.id === this.props.tabs.activeTabId) {
       clearTimeout(this.saveTimeOut)
       this.saveTimeOut = setTimeout(() => {
@@ -113,7 +118,7 @@ class EditPage extends Component {
     const data = { ...this.state.data }
     data.name = e.currentTarget.value
     this.setState({ data })
-  };
+  }
 
   handleSubmit = (e) => {
     if (e) e.preventDefault()
@@ -127,9 +132,9 @@ class EditPage extends Component {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${editedPage.id}`
     })
-  };
+  }
 
-  handleCancel () {
+  handleCancel() {
     const pageId = this.props.match.params.pageId
     if (pageId) {
       // Redirect to displayPage Route Component
@@ -140,44 +145,48 @@ class EditPage extends Component {
     }
   }
 
-  isModified () {
+  isModified() {
     const contents = this.state.data?.contents
     const originalContents = this.state.originalData?.contents
-    if (typeof contents !== 'undefined' && typeof originalContents !== 'undefined' && this.state.data.contents !== this.state.originalData.contents) {
+    if (
+      typeof contents !== 'undefined' &&
+      typeof originalContents !== 'undefined' &&
+      this.state.data.contents !== this.state.originalData.contents
+    ) {
       return true
     } else {
       return false
     }
   }
 
-  renderTiptapEditor (item, index) {
+  renderTiptapEditor(item, index) {
     return (
-      this.state.showEditor && <Tiptap
-        onChange={this.handleChange}
-        initial={this.state.data.contents}
-        match={this.props.match}
-        isInlineEditor={false}
-        disabled={false}
-        minHeight
-        key={index}
-                               />
+      this.state.showEditor && (
+        <Tiptap
+          onChange={this.handleChange}
+          initial={this.state.data.contents}
+          match={this.props.match}
+          isInlineEditor={false}
+          disabled={false}
+          minHeight
+          key={index}
+        />
+      )
     )
   }
 
-  renderEditPageOperations () {
+  renderEditPageOperations() {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
           <div className='d-flex flex-row justify-content-end mb-2'>
-            <button
-              onSubmit={this.handleSubmit}
-              type='submit'
-              className='btn btn-primary btn-extra-lg mr-2 btn-width'
-            >
+            <button onSubmit={this.handleSubmit} type='submit' className='btn btn-primary btn-extra-lg mr-2 btn-width'>
               Save
             </button>
             <button
-              onClick={() => { this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel() }}
+              onClick={() => {
+                this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel()
+              }}
               type='button'
               className='btn btn-secondary outline btn-extra-lg btn-width'
             >
@@ -189,13 +198,17 @@ class EditPage extends Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <div className='custom-edit-page page-display mt-3'>
         <WarningModal
           show={this.state.warningModalFlag}
-          onHide={() => { this.setState({ warningModalFlag: false }) }}
-          ignoreButtonCallback={() => { this.handleCancel() }}
+          onHide={() => {
+            this.setState({ warningModalFlag: false })
+          }}
+          ignoreButtonCallback={() => {
+            this.handleCancel()
+          }}
           message='Your unsaved changes will be lost.'
         />
 
@@ -215,9 +228,7 @@ class EditPage extends Component {
           />
         </div>
 
-        <div>
-          {this.renderTiptapEditor()}
-        </div>
+        <div>{this.renderTiptapEditor()}</div>
       </div>
     )
   }

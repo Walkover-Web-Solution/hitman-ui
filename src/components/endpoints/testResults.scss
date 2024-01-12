@@ -1,5 +1,5 @@
 .test-result-item {
-  display:flex;
+  display: flex;
 
   .name {
     font-size: 14px;
@@ -30,7 +30,7 @@
   }
 
   &.Fail {
-    color:#df5444;
+    color: #df5444;
   }
 }
 
@@ -38,5 +38,3 @@
   max-height: 500px;
   overflow: auto;
 }
-
-

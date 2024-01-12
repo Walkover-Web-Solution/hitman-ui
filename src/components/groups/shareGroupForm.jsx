@@ -10,15 +10,12 @@ class ShareGroupForm extends Form {
       shareGroupLink: ''
     },
     errors: {}
-  };
+  }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.selectedGroup) {
       let data = {}
-      const shareGroupLink =
-        process.env.REACT_APP_API_URL +
-        '/shareGroup/' +
-        this.props.selectedGroup.shareIdentifier
+      const shareGroupLink = process.env.REACT_APP_API_URL + '/shareGroup/' + this.props.selectedGroup.shareIdentifier
       data = { shareGroupLink }
       data.disabled = true
       this.setState({ data })
@@ -27,11 +24,11 @@ class ShareGroupForm extends Form {
 
   schema = {
     shareVersionLink: Joi.string().required().label('Public Link')
-  };
+  }
 
-  async doSubmit (props) { }
+  async doSubmit(props) {}
 
-  render () {
+  render() {
     return (
       <Modal
         show={this.props.show}
@@ -42,9 +39,7 @@ class ShareGroupForm extends Form {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title id='contained-modal-title-vcenter'>
-            {this.props.title}
-          </Modal.Title>
+          <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
@@ -52,10 +47,7 @@ class ShareGroupForm extends Form {
             {<div name='shareGroupLink' label='Public Link' />}
             {
               <CopyToClipboard
-                text={JSON.stringify(this.state.data.shareGroupLink).replace(
-                  /['"]+/g,
-                  ''
-                )}
+                text={JSON.stringify(this.state.data.shareGroupLink).replace(/['"]+/g, '')}
                 onCopy={() => this.props.onHide()}
                 className='btn btn-primary btn-lg'
               >

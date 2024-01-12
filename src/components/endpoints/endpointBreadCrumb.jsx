@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
 }
 
 class EndpointBreadCrumb extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.nameInputRef = React.createRef()
     this.state = {
@@ -29,7 +29,7 @@ class EndpointBreadCrumb extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const pageId = this.props?.match?.params.pageId
     if (!this.props.isEndpoint && pageId && this.props.pages[pageId]) {
       this.setState({
@@ -45,7 +45,7 @@ class EndpointBreadCrumb extends Component {
     }
 
     const endpoint = this.props.endpoint
-    if (endpoint && (!endpoint.id) && this.props.data.name === '') {
+    if (endpoint && !endpoint.id && this.props.data.name === '') {
       this.setState({ endpointTitle: 'Untitled', previousTitle: 'Untitled' })
     }
 
@@ -55,7 +55,7 @@ class EndpointBreadCrumb extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
@@ -70,7 +70,7 @@ class EndpointBreadCrumb extends Component {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const pageId = this.props?.match?.params.pageId
     if (this.props.isEndpoint && this.props?.data?.name !== prevProps?.data?.name) {
       this.setState({
@@ -90,19 +90,19 @@ class EndpointBreadCrumb extends Component {
     this.changeEndpointName()
   }
 
-  changeEndpointName () {
+  changeEndpointName() {
     const endpoint = this.props.endpoint
-    if (endpoint && (!endpoint.id) && this.props.data.name === '') {
+    if (endpoint && !endpoint.id && this.props.data.name === '') {
       this.props.alterEndpointName('Untitled')
       this.setState({ endpointTitle: 'Untitled', previousTitle: 'Untitled' })
     }
   }
 
-  handleInputChange (e) {
+  handleInputChange(e) {
     this.setState({ endpointTitle: e.currentTarget.value })
   }
 
-  handleInputBlur () {
+  handleInputBlur() {
     this.setState({ nameEditable: false })
     if (this.state.endpointTitle.trim()) {
       if (this.props.isEndpoint) {
@@ -126,7 +126,7 @@ class EndpointBreadCrumb extends Component {
     }
   }
 
-  setEndpointData () {
+  setEndpointData() {
     this.groupId = this.props.groupId
     this.groupName = this.groupId ? this.props.groups[this.groupId]?.name : null
     this.versionId = this.groupId ? this.props.groups[this.groupId]?.versionId : null
@@ -135,7 +135,7 @@ class EndpointBreadCrumb extends Component {
     this.collectionName = this.collectionId ? this.props.collections[this.collectionId]?.name : null
   }
 
-  setPageData () {
+  setPageData() {
     const { pages, groups, versions, collections } = this.props
     const pageId = this.props?.match?.params.pageId
     const page = pages[pageId]
@@ -148,17 +148,15 @@ class EndpointBreadCrumb extends Component {
     }
   }
 
-  renderLeftAngle (title) {
-    return (title && <span className='ml-1 mr-1'>/</span>)
+  renderLeftAngle(title) {
+    return title && <span className='ml-1 mr-1'>/</span>
   }
 
-  render () {
+  render() {
     this.props.isEndpoint ? this.setEndpointData() : this.setPageData()
     return (
       <div className='endpoint-header'>
-        <div
-          className='panel-endpoint-name-container'
-        >
+        <div className='panel-endpoint-name-container'>
           <div className='page-title-name'>
             <input
               ref={this.nameInputRef}
@@ -167,14 +165,14 @@ class EndpointBreadCrumb extends Component {
               style={{ width: 'auto', textTransform: 'capitalize' }}
               onChange={this.handleInputChange.bind(this)}
               value={this.state.endpointTitle}
-              onBlur={() => { this.handleInputBlur() }}
+              onBlur={() => {
+                this.handleInputBlur()
+              }}
               maxLength='50'
             />
-            <h3
-              className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
-            >
-              {(this.state.endpointTitle && this.state.endpointTitle !== '') ? this.state.endpointTitle : null}
-              {(this.state.endpointTitle === '' && this.props.groupId) ? 'Untitled' : null}
+            <h3 className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}>
+              {this.state.endpointTitle && this.state.endpointTitle !== '' ? this.state.endpointTitle : null}
+              {this.state.endpointTitle === '' && this.props.groupId ? 'Untitled' : null}
               <EditIcon
                 className='fa fa-pencil-square-o ml-2 cursor-pointer '
                 onClick={() => {
@@ -185,7 +183,7 @@ class EndpointBreadCrumb extends Component {
               />
             </h3>
           </div>
-          {this.props.location.pathname.split('/')[5] !== 'new' &&
+          {this.props.location.pathname.split('/')[5] !== 'new' && (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
               {this.collectionName && <span className=''>{`${this.collectionName}`}</span>}
               {this.renderLeftAngle(this.collectionName)}
@@ -193,12 +191,13 @@ class EndpointBreadCrumb extends Component {
               {this.renderLeftAngle(this.versionName)}
               {this.groupName && <span>{`${this.groupName}`}</span>}
               {this.renderLeftAngle(this.groupName)}
-              <span className='end-point-title'>
-                {this.state.endpointTitle}
-              </span>
-              {this.props?.endpoint?.publishedEndpoint?.isPublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
+              <span className='end-point-title'>{this.state.endpointTitle}</span>
+              {this.props?.endpoint?.publishedEndpoint?.isPublished && (
+                <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
+              )}
               {this.state.isPagePublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
-            </div>}
+            </div>
+          )}
         </div>
       </div>
     )

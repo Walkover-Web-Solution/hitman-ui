@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify'
-import {store} from '../../../store/store'
+import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
 import { getOrgId, focusSelectedEntity } from '../../common/utility'
@@ -77,12 +77,7 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
         }
       })
       .catch((error) => {
-        dispatch(
-          onPageUpdatedError(
-            error.response ? error.response.data : error,
-            originalPage
-          )
-        )
+        dispatch(onPageUpdatedError(error.response ? error.response.data : error, originalPage))
       })
   }
 }
@@ -123,39 +118,29 @@ export const addPage = (history, versionId, newPage) => {
         history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
       })
       .catch((error) => {
-        dispatch(
-          onPageAddedError(
-            error.response ? error.response.data : error,
-            newPage
-          )
-        )
+        dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))
       })
   }
 }
 
-export const addPage1 = (history,rootParentId, newPage) => {
+export const addPage1 = (history, rootParentId, newPage) => {
   const orgId = getOrgId()
   return (dispatch) => {
-    dispatch(addPageRequestInCollection(rootParentId,newPage))
+    dispatch(addPageRequestInCollection(rootParentId, newPage))
     pageApiService
-      .saveCollectionPage(rootParentId,newPage)
+      .saveCollectionPage(rootParentId, newPage)
       .then((response) => {
         dispatch(onParentPageAdded(response.data))
         focusSelectedEntity('pages', response.data.id)
         history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
       })
       .catch((error) => {
-        dispatch(
-          onPageAddedError(
-            error.response ? error.response.data : error,
-            newPage
-          )
-        )
+        dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))
       })
   }
 }
 
-export const addPageRequestInCollection = (rootParentId,newPage) => {
+export const addPageRequestInCollection = (rootParentId, newPage) => {
   return {
     type: pagesActionTypes.ADD_PARENT_PAGE_REQUEST,
     rootParentId,
@@ -206,12 +191,7 @@ export const addGroupPage = (history, versionId, groupId, newPage) => {
         history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
       })
       .catch((error) => {
-        dispatch(
-          onGroupPageAddedError(
-            error.response ? error.response.data : error,
-            newPage
-          )
-        )
+        dispatch(onGroupPageAddedError(error.response ? error.response.data : error, newPage))
       })
   }
 }
@@ -306,12 +286,7 @@ export const updatePageOrder = (pagesOrder) => {
         toast.success(response.data)
       })
       .catch((error) => {
-        dispatch(
-          onPageOrderUpdatedError(
-            error.response ? error.response.data : error,
-            originalPages
-          )
-        )
+        dispatch(onPageOrderUpdatedError(error.response ? error.response.data : error, originalPages))
       })
   }
 }

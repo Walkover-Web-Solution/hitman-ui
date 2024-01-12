@@ -19,17 +19,16 @@ function collectionsReducer(state = initialState, action) {
 
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
       // return { ...state, ...action.collections }
-      const collectionState = state;
-      let obj = action.collections || {}
-      let data = {}
+      const collectionState = state
+      const obj = action.collections || {}
+      const data = {}
       try {
-        let keyArray = Object.keys(obj) || [];
-        keyArray.forEach(key => {
+        const keyArray = Object.keys(obj) || []
+        keyArray.forEach((key) => {
           if (collectionState?.[key]) data[key] = { ...collectionState[key], ...obj[key] }
           else data[key] = { ...obj[key] }
-        });
-      }
-      catch (error) {
+        })
+      } catch (error) {
         console.error(error)
       }
       return { ...data }

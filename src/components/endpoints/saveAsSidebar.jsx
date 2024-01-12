@@ -11,7 +11,7 @@ import { Dropdown } from 'react-bootstrap'
 import DropdownItem from 'react-bootstrap/esm/DropdownItem'
 import _ from 'lodash'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     collections: state.collections,
     versions: state.versions,
@@ -20,7 +20,7 @@ const mapStateToProps = state => {
 }
 
 class SaveAsSidebar extends Form {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: {
@@ -46,12 +46,8 @@ class SaveAsSidebar extends Form {
     this.saveAsSidebar = createRef()
 
     this.schema = {
-      name: Joi.string()
-        .required()
-        .label('Endpoint Name'),
-      description: Joi.string()
-        .allow(null, '')
-        .label('Description')
+      name: Joi.string().required().label('Endpoint Name'),
+      description: Joi.string().allow(null, '').label('Description')
     }
   }
 
@@ -210,39 +206,33 @@ class SaveAsSidebar extends Form {
     let dropdownItems = []
     switch (type) {
       case 'collections':
-        dropdownItems = Object.values(this.props.collections).filter(collection => !collection?.importedFromMarketPlace).map(collection => ({
-          name: collection.name,
-          id: collection.id
-        }))
+        dropdownItems = Object.values(this.props.collections)
+          .filter((collection) => !collection?.importedFromMarketPlace)
+          .map((collection) => ({
+            name: collection.name,
+            id: collection.id
+          }))
         break
       case 'versions':
         dropdownItems = Object.keys(this.props.versions)
-          .filter(
-            vId =>
-              this.props.versions[vId].collectionId === this.state.dropdownList.selectedCollectionId
-          )
-          .map(versionId => ({
+          .filter((vId) => this.props.versions[vId].collectionId === this.state.dropdownList.selectedCollectionId)
+          .map((versionId) => ({
             name: this.props.versions[versionId].number,
             id: this.props.versions[versionId].id
           }))
         break
       case 'groups':
         dropdownItems = Object.keys(this.props.groups)
-          .filter(
-            gId => this.props.groups[gId].versionId === this.state.dropdownList.selectedVersionId
-          )
-          .map(groupId => ({
+          .filter((gId) => this.props.groups[gId].versionId === this.state.dropdownList.selectedVersionId)
+          .map((groupId) => ({
             name: this.props.groups[groupId].name,
             id: this.props.groups[groupId].id
           }))
         break
       case 'endpoints':
         dropdownItems = Object.keys(this.props.endpoints)
-          .filter(
-            eId =>
-              this.props.endpoints[eId].groupId === this.state.dropdownList.selectedGroupId
-          )
-          .map(endpointId => ({
+          .filter((eId) => this.props.endpoints[eId].groupId === this.state.dropdownList.selectedGroupId)
+          .map((endpointId) => ({
             name: this.props.endpoints[endpointId].name,
             id: this.props.endpoints[endpointId].id
           }))
@@ -316,10 +306,13 @@ class SaveAsSidebar extends Form {
   }
 
   async doSubmit() {
-    const selectedCollection = this.props.collections[this.state.dropdownList.selectedCollectionId];
-    const rootParentId = selectedCollection.rootParentId;
-    this.props.set_group_id(this.state.list.parentId, { endpointName: this.state.data.name, endpointDescription: this.state.data.description });
-    this.props.set_rootParent_id(rootParentId, { endpointName: this.state.data.name, endpointDescription: this.state.data.description });
+    const selectedCollection = this.props.collections[this.state.dropdownList.selectedCollectionId]
+    const rootParentId = selectedCollection.rootParentId
+    this.props.set_group_id(this.state.list.parentId, {
+      endpointName: this.state.data.name,
+      endpointDescription: this.state.data.description
+    })
+    this.props.set_rootParent_id(rootParentId, { endpointName: this.state.data.name, endpointDescription: this.state.data.description })
   }
 
   render() {
@@ -335,25 +328,34 @@ class SaveAsSidebar extends Form {
       boxShadow: '-25px 25px 43px rgba(0, 0, 0, 0.07)',
       overflow: 'hidden'
     }
-    
+
     return (
       <div>
         <div
-          onClick={() => { this.props.onHide() }}
+          onClick={() => {
+            this.props.onHide()
+          }}
         >
           {' '}
         </div>
-        <div tabIndex={-1} ref={(e) => { this.saveAsSidebar = e }} style={saveAsSidebarStyle} className='save-as-sidebar-container'>
+        <div
+          tabIndex={-1}
+          ref={(e) => {
+            this.saveAsSidebar = e
+          }}
+          style={saveAsSidebarStyle}
+          className='save-as-sidebar-container'
+        >
           {this.showCollectionForm()}
           {this.showCollectionVersionForm()}
           {this.showGroupForm()}
           <div className='custom-collection-modal-container modal-header align-items-center'>
-            <div className='modal-title h4'>
-              {this.props.location.pathname.split('/')[5] !== 'new' ? 'Save As' : 'Save'}
-            </div>
+            <div className='modal-title h4'>{this.props.location.pathname.split('/')[5] !== 'new' ? 'Save As' : 'Save'}</div>
             <button
               className='close'
-              onClick={() => { this.props.onHide() }}
+              onClick={() => {
+                this.props.onHide()
+              }}
             >
               <span aria-hidden='true'>×</span>
             </button>
@@ -368,93 +370,150 @@ class SaveAsSidebar extends Form {
             <div>
               <div className='mb-2'>Collection to which you wish to save this to</div>
               <Dropdown className='cst'>
-                <div onClick={() => { this.goDropdownBack('collections') }}>
+                <div
+                  onClick={() => {
+                    this.goDropdownBack('collections')
+                  }}
+                >
                   <Dropdown.Toggle variant='default' id='dropdown-basic'>
-                    <span className='truncate'>{this.state.dropdownList.type === 'collections' ? 'Select Collection' : this.props.collections[this.state.dropdownList.selectedCollectionId].name}</span>
+                    <span className='truncate'>
+                      {this.state.dropdownList.type === 'collections'
+                        ? 'Select Collection'
+                        : this.props.collections[this.state.dropdownList.selectedCollectionId].name}
+                    </span>
                   </Dropdown.Toggle>
                 </div>
                 <Dropdown.Menu className=''>
                   <DropdownItem>Select Collection</DropdownItem>
-                  <DropdownItem onClick={() => { this.openAddModal() }}>+ Add New</DropdownItem>
-                  {this.renderDropdownItems('collections').length
-                    ? (this.renderDropdownItems('collections').map(item => (
-                      <DropdownItem value={item.id} key={item.id} onClick={() => { this.setDropdownList(item) }}>
+                  <DropdownItem
+                    onClick={() => {
+                      this.openAddModal()
+                    }}
+                  >
+                    + Add New
+                  </DropdownItem>
+                  {this.renderDropdownItems('collections').length ? (
+                    this.renderDropdownItems('collections').map((item) => (
+                      <DropdownItem
+                        value={item.id}
+                        key={item.id}
+                        onClick={() => {
+                          this.setDropdownList(item)
+                        }}
+                      >
                         {item.name}
                       </DropdownItem>
-                    )))
-                    : (
-                      <DropdownItem className='disabled'>
-                        No Collection Found
-                      </DropdownItem>
-                    )}
+                    ))
+                  ) : (
+                    <DropdownItem className='disabled'>No Collection Found</DropdownItem>
+                  )}
                 </Dropdown.Menu>
               </Dropdown>
 
-              {this.state.dropdownList.parentId != null && this.renderDropdownItems('versions').length > 0 && this.renderDropdownItems('groups').length > 0 &&
-                <>
-                  <div className='mb-2 mt-3'>Version</div>
-                  <Dropdown className='cst'>
-                    <div onClick={() => { this.goDropdownBack('versions') }}>
-                      <Dropdown.Toggle variant='default' id='dropdown-basic'>
-                        <span className='truncate'>{this.state.dropdownList.type === 'versions' ? 'Select Version' : this.props.versions[this.state.dropdownList.selectedVersionId].number}</span>
-                      </Dropdown.Toggle>
-                    </div>
-                    <Dropdown.Menu className=''>
-                      <DropdownItem>Select Version</DropdownItem>
-                      <DropdownItem onClick={() => { this.openAddModal() }}>+ Add New</DropdownItem>
-                      {this.renderDropdownItems('versions').length
-                        ? (this.renderDropdownItems('versions').map(item => (
-                          <DropdownItem value={item.id} key={item.id} onClick={() => { this.setDropdownList(item) }}>
-                            {item.name}
-                          </DropdownItem>
-                        )))
-                        : (
-                          <DropdownItem className='disabled'>
-                            No Version Found
-                          </DropdownItem>
+              {this.state.dropdownList.parentId != null &&
+                this.renderDropdownItems('versions').length > 0 &&
+                this.renderDropdownItems('groups').length > 0 && (
+                  <>
+                    <div className='mb-2 mt-3'>Version</div>
+                    <Dropdown className='cst'>
+                      <div
+                        onClick={() => {
+                          this.goDropdownBack('versions')
+                        }}
+                      >
+                        <Dropdown.Toggle variant='default' id='dropdown-basic'>
+                          <span className='truncate'>
+                            {this.state.dropdownList.type === 'versions'
+                              ? 'Select Version'
+                              : this.props.versions[this.state.dropdownList.selectedVersionId].number}
+                          </span>
+                        </Dropdown.Toggle>
+                      </div>
+                      <Dropdown.Menu className=''>
+                        <DropdownItem>Select Version</DropdownItem>
+                        <DropdownItem
+                          onClick={() => {
+                            this.openAddModal()
+                          }}
+                        >
+                          + Add New
+                        </DropdownItem>
+                        {this.renderDropdownItems('versions').length ? (
+                          this.renderDropdownItems('versions').map((item) => (
+                            <DropdownItem
+                              value={item.id}
+                              key={item.id}
+                              onClick={() => {
+                                this.setDropdownList(item)
+                              }}
+                            >
+                              {item.name}
+                            </DropdownItem>
+                          ))
+                        ) : (
+                          <DropdownItem className='disabled'>No Version Found</DropdownItem>
                         )}
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </>}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </>
+                )}
 
-              {(this.state.dropdownList.type === 'groups' || this.state.dropdownList.type === 'endpoints') &&
+              {(this.state.dropdownList.type === 'groups' || this.state.dropdownList.type === 'endpoints') && (
                 <>
                   <div className='mb-2 mt-3'>Groups</div>
                   <Dropdown className='cst'>
-                    <div onClick={() => { this.goDropdownBack('groups') }}>
+                    <div
+                      onClick={() => {
+                        this.goDropdownBack('groups')
+                      }}
+                    >
                       <Dropdown.Toggle variant='default' id='dropdown-basic'>
-                        <span className='truncate'>{this.state.dropdownList.type === 'groups' ? 'Select Group' : this.props.groups[this.state.dropdownList.selectedGroupId].name}</span>
+                        <span className='truncate'>
+                          {this.state.dropdownList.type === 'groups'
+                            ? 'Select Group'
+                            : this.props.groups[this.state.dropdownList.selectedGroupId].name}
+                        </span>
                       </Dropdown.Toggle>
                     </div>
                     <Dropdown.Menu className=''>
                       <DropdownItem>Select Group</DropdownItem>
-                      <DropdownItem onClick={() => { this.openAddModal() }}>+ Add New</DropdownItem>
-                      {this.renderDropdownItems('groups').length
-                        ? (this.renderDropdownItems('groups').map(item => (
-                          <DropdownItem value={item.id} key={item.id} onClick={() => { this.setDropdownList(item) }}>
+                      <DropdownItem
+                        onClick={() => {
+                          this.openAddModal()
+                        }}
+                      >
+                        + Add New
+                      </DropdownItem>
+                      {this.renderDropdownItems('groups').length ? (
+                        this.renderDropdownItems('groups').map((item) => (
+                          <DropdownItem
+                            value={item.id}
+                            key={item.id}
+                            onClick={() => {
+                              this.setDropdownList(item)
+                            }}
+                          >
                             {item.name}
                           </DropdownItem>
-                        )))
-                        : (
-                          <DropdownItem className='disabled'>
-                            No Group Found
-                          </DropdownItem>
-                        )}
+                        ))
+                      ) : (
+                        <DropdownItem className='disabled'>No Group Found</DropdownItem>
+                      )}
                     </Dropdown.Menu>
                   </Dropdown>
-                </>}
+                </>
+              )}
             </div>
             <div className='mt-5'>
-              <button
-                className='btn btn-secondary outline mr-2 api-cancel-btn'
-                onClick={() => this.props.onHide()}
-              >
+              <button className='btn btn-secondary outline mr-2 api-cancel-btn' onClick={() => this.props.onHide()}>
                 Cancel
               </button>
               <button
                 className={this.props.saveAsLoader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
                 onClick={this.handleSubmit}
-                disabled={this.state.dropdownList.selectedCollectionId === null || title.trim() === '' || title === 'Untitled' ? 'disabled' : ''}
+                disabled={
+                  this.state.dropdownList.selectedCollectionId === null || title.trim() === '' || title === 'Untitled' ? 'disabled' : ''
+                }
               >
                 Save{' '}
                 {this.state.dropdownList.selectedCollectionId !== null &&

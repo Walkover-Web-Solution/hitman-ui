@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
-import {store} from '../../store/store'
+import { store } from '../../store/store'
 import ReactHtmlParser from 'react-html-parser'
 
 class DisplayCollection extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       description: ''
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     if (!this.props.location.collection) {
       const collectionId = this.props.location.pathname.split('/')[2]
       this.fetchCollection(collectionId)
@@ -20,16 +20,16 @@ class DisplayCollection extends Component {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.collections !== prevProps.collections) {
       const collectionId = this.props.match.params.collectionIdentifier
-      if (this.props.collections[collectionId] && (this.props.collections[collectionId] !== prevProps.collections[collectionId])) {
+      if (this.props.collections[collectionId] && this.props.collections[collectionId] !== prevProps.collections[collectionId]) {
         this.setState({ description: this.props.collections[collectionId].description })
       }
     }
   }
 
-  fetchCollection (collectionId) {
+  fetchCollection(collectionId) {
     const { collections } = store.getState()
     const collection = collections[collectionId]
     if (collection) {
@@ -38,12 +38,8 @@ class DisplayCollection extends Component {
     }
   }
 
-  render () {
-    return (
-      <div className='collection-description'>
-        {ReactHtmlParser(this.state.description)}
-      </div>
-    )
+  render() {
+    return <div className='collection-description'>{ReactHtmlParser(this.state.description)}</div>
   }
 }
 

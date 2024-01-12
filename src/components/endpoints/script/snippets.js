@@ -85,7 +85,8 @@ export const Snippets = {
   },
   TEST_RESPONSE_HEADERS_CONTAINS_HEADER: {
     key: 'Response Headers: Content-Type header check',
-    value: 'hm.test("Content-Type is present", function () {\r\n\texpect(hm.response.headers.getHeaders()).to.have.property(\'Content-Type\');\r\n});'
+    value:
+      'hm.test("Content-Type is present", function () {\r\n\texpect(hm.response.headers.getHeaders()).to.have.property(\'Content-Type\');\r\n});'
   }
 }
 

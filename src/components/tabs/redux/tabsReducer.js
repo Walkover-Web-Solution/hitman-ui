@@ -7,7 +7,7 @@ const initialState = {
   tabsOrder: []
 }
 
-function tabsReducer (state = initialState, action) {
+function tabsReducer(state = initialState, action) {
   let tabs = {}
   switch (action.type) {
     case tabsActionTypes.ADD_NEW_TAB:
@@ -55,7 +55,7 @@ function tabsReducer (state = initialState, action) {
         tabsOrder: [...state.tabsOrder],
         activeTabId: action.tabsMetadata.activeTabId ? action.tabsMetadata.activeTabId : state.activeTabId
       }
-      action.tabsMetadata.tabsOrder.forEach(t => {
+      action.tabsMetadata.tabsOrder.forEach((t) => {
         if (!tabs.tabsOrder.includes(t)) {
           tabs.tabsOrder.push(t)
         }

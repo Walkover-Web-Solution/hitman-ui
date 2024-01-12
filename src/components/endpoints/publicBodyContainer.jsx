@@ -10,9 +10,9 @@ import { Badge, OverlayTrigger, Tooltip } from 'react-bootstrap'
 class PublicBodyContainer extends Component {
   state = {
     showBodyCodeEditor: true
-  };
+  }
 
-  handleChangeBody (title, dataArray) {
+  handleChangeBody(title, dataArray) {
     switch (title) {
       case 'formData':
         this.props.set_body('multipart/form-data', dataArray)
@@ -25,7 +25,7 @@ class PublicBodyContainer extends Component {
     }
   }
 
-  generateBodyFromDescription (bodyDescription, body) {
+  generateBodyFromDescription(bodyDescription, body) {
     if (!body) {
       body = {}
     }
@@ -38,16 +38,10 @@ class PublicBodyContainer extends Component {
           body[keys[i]] = bodyDescription[keys[i]].value
           break
         case 'array':
-          body[keys[i]] = this.generateBodyFromDescription(
-            bodyDescription[keys[i]].value,
-            []
-          )
+          body[keys[i]] = this.generateBodyFromDescription(bodyDescription[keys[i]].value, [])
           break
         case 'object':
-          body[keys[i]] = this.generateBodyFromDescription(
-            bodyDescription[keys[i]].value,
-            {}
-          )
+          body[keys[i]] = this.generateBodyFromDescription(bodyDescription[keys[i]].value, {})
           break
         default:
           break
@@ -56,28 +50,24 @@ class PublicBodyContainer extends Component {
     return body
   }
 
-  makeParentKeysArray (name) {
+  makeParentKeysArray(name) {
     const parentKeyArray = name.split('.')
     parentKeyArray.splice(0, 1)
     return parentKeyArray
   }
 
-  setBody (data) {
+  setBody(data) {
     this.props.set_body_description(data.bodyDescription)
     this.props.set_public_body(data.body)
   }
 
-  handleAddDelete (pkeys, bodyDescription, body, title) {
+  handleAddDelete(pkeys, bodyDescription, body, title) {
     if (pkeys.length === 1) {
       if (title === 'delete') {
         body.splice(pkeys[0], 1)
         bodyDescription.splice(pkeys[0], 1)
       } else if (title === 'add') {
-        const defaultValue = jQuery.extend(
-          true,
-          {},
-          bodyDescription[pkeys[0]].default
-        )
+        const defaultValue = jQuery.extend(true, {}, bodyDescription[pkeys[0]].default)
 
         bodyDescription[pkeys[0]].value.push(defaultValue)
 
@@ -100,7 +90,7 @@ class PublicBodyContainer extends Component {
     return { body, bodyDescription }
   }
 
-  handleDelete (name) {
+  handleDelete(name) {
     const body = JSON.parse(this.props.body.value)
 
     const data = this.handleAddDelete(
@@ -113,7 +103,7 @@ class PublicBodyContainer extends Component {
     this.setBody(data)
   }
 
-  handleAdd (name) {
+  handleAdd(name) {
     const body = JSON.parse(this.props.body.value)
 
     const data = this.handleAddDelete(
@@ -126,7 +116,7 @@ class PublicBodyContainer extends Component {
     this.setBody(data)
   }
 
-  performChange (pkeys, bodyDescription, body, newValue) {
+  performChange(pkeys, bodyDescription, body, newValue) {
     if (pkeys.length === 1) {
       const type = bodyDescription[pkeys[0]].type
 
@@ -137,8 +127,7 @@ class PublicBodyContainer extends Component {
         bodyDescription[pkeys[0]].value = newValue
         body[pkeys[0]] = newValue
       } else if (type === 'boolean') {
-        const value =
-          newValue === 'true' ? true : newValue === 'false' ? false : null
+        const value = newValue === 'true' ? true : newValue === 'false' ? false : null
         bodyDescription[pkeys[0]].value = value
         body[pkeys[0]] = value
       }
@@ -146,12 +135,7 @@ class PublicBodyContainer extends Component {
       const data = bodyDescription[pkeys[0]].value
       const bodyData = body[pkeys[0]]
 
-      this.performChange(
-        pkeys.slice(1, pkeys.length),
-        data,
-        bodyData,
-        newValue
-      )
+      this.performChange(pkeys.slice(1, pkeys.length), data, bodyData, newValue)
     }
     return { body, bodyDescription }
   }
@@ -168,7 +152,7 @@ class PublicBodyContainer extends Component {
     )
 
     this.setBody(data)
-  };
+  }
 
   handleChangeBodyDescription = (data) => {
     try {
@@ -178,32 +162,23 @@ class PublicBodyContainer extends Component {
         body: body
       }
       this.setBody(bodyData)
-    } catch (e) { }
-  };
+    } catch (e) {}
+  }
 
-  displayAddButton (name) {
+  displayAddButton(name) {
     return (
       <div className='array-row-add-wrapper'>
-        <span
-          className='badge badge-success'
-          style={{ cursor: 'pointer' }}
-          onClick={() => this.handleAdd(name)}
-        >
+        <span className='badge badge-success' style={{ cursor: 'pointer' }} onClick={() => this.handleAdd(name)}>
           Add+
         </span>
       </div>
     )
   }
 
-  displayBoolean (obj, name, className) {
+  displayBoolean(obj, name, className) {
     return (
       <div className='value-description-input-wrapper'>
-        <select
-          className={className || 'custom-boolean'}
-          value={obj.value}
-          onChange={this.handleChange}
-          name={name}
-        >
+        <select className={className || 'custom-boolean'} value={obj.value} onChange={this.handleChange} name={name}>
           <option value={null} />
           <option value>true</option>
           <option value={false}>false</option>
@@ -221,7 +196,7 @@ class PublicBodyContainer extends Component {
     )
   }
 
-  displayInput (obj, name) {
+  displayInput(obj, name) {
     return (
       <div className='value-description-input-wrapper'>
         <input
@@ -234,12 +209,12 @@ class PublicBodyContainer extends Component {
         />
         <label
           className='description-input-field'
-        // value={obj.description}
-        // name={name + ".description"}
-        // type="text"
-        // placeholder="Description"
-        // onChange={this.handleDescriptionChange}
-        // disabled
+          // value={obj.description}
+          // name={name + ".description"}
+          // type="text"
+          // placeholder="Description"
+          // onChange={this.handleDescriptionChange}
+          // disabled
         >
           {obj.description}
         </label>
@@ -247,14 +222,11 @@ class PublicBodyContainer extends Component {
     )
   }
 
-  displayArray (array, name, defaultValue) {
+  displayArray(array, name, defaultValue) {
     return (
       <div
         className={
-          defaultValue &&
-            (defaultValue.type === 'object' || defaultValue.type === 'array')
-            ? 'array-wrapper'
-            : 'array-without-key'
+          defaultValue && (defaultValue.type === 'object' || defaultValue.type === 'array') ? 'array-wrapper' : 'array-without-key'
         }
       >
         {array.map((value, index) => (
@@ -264,17 +236,9 @@ class PublicBodyContainer extends Component {
               : value.type === 'object'
                 ? this.displayObject(value.value, name + '.' + index)
                 : value.type === 'array'
-                  ? this.displayArray(
-                      value.value,
-                      name + '.' + index,
-                      value.default
-                    )
+                  ? this.displayArray(value.value, name + '.' + index, value.default)
                   : this.displayInput(value, name + '.' + index)}
-            <button
-              type='button'
-              className='btn cross-button'
-              onClick={() => this.handleDelete(name + '.' + index)}
-            >
+            <button type='button' className='btn cross-button' onClick={() => this.handleDelete(name + '.' + index)}>
               <i className='fas fa-times' />
             </button>
           </div>
@@ -284,22 +248,14 @@ class PublicBodyContainer extends Component {
     )
   }
 
-  displayObject (obj, name) {
+  displayObject(obj, name) {
     return (
       <div className='object-container'>
         {Object.keys(obj).map((key, index) => (
           <div
             key={key}
-            className={
-              obj[key].type === 'array'
-                ? 'array-container'
-                : 'object-row-wrapper'
-            }
-            style={
-              obj[key].type === 'object'
-                ? { flexDirection: 'column' }
-                : { flexDirection: 'row' }
-            }
+            className={obj[key].type === 'array' ? 'array-container' : 'object-row-wrapper'}
+            style={obj[key].type === 'object' ? { flexDirection: 'column' } : { flexDirection: 'row' }}
           >
             <div className='key-title'>
               <label>{key}</label>
@@ -308,11 +264,7 @@ class PublicBodyContainer extends Component {
             {obj[key].type === 'object'
               ? this.displayObject(obj[key].value, name + '.' + key)
               : obj[key].type === 'array'
-                ? this.displayArray(
-                    obj[key].value,
-                    name + '.' + key,
-                    obj[key].default
-                  )
+                ? this.displayArray(obj[key].value, name + '.' + key, obj[key].default)
                 : obj[key].type === 'boolean'
                   ? this.displayBoolean(obj[key], name + '.' + key)
                   : this.displayInput(obj[key], name + '.' + key)}
@@ -322,7 +274,7 @@ class PublicBodyContainer extends Component {
     )
   }
 
-  makeJson (body) {
+  makeJson(body) {
     try {
       const parsedBody = JSON.stringify(JSON.parse(body), null, 2)
       return parsedBody
@@ -331,7 +283,7 @@ class PublicBodyContainer extends Component {
     }
   }
 
-  displayBodyDecription (parentPath = '', object) {
+  displayBodyDecription(parentPath = '', object) {
     if (!object) {
       return null
     }
@@ -339,27 +291,35 @@ class PublicBodyContainer extends Component {
       const types = ['string', 'number', 'boolean', 'array', 'object']
       return (
         <div className='d-flex flex-row-reverse'>
-          {
-          types.map((type, index) => (
-            <small key={index} className='ml-3 text-small'><Badge className={`body-desc-type ${type}`}>{type.charAt(0)}</Badge> <span className='text-capitalize'>{type}</span></small>
-          ))
-        }
+          {types.map((type, index) => (
+            <small key={index} className='ml-3 text-small'>
+              <Badge className={`body-desc-type ${type}`}>{type.charAt(0)}</Badge> <span className='text-capitalize'>{type}</span>
+            </small>
+          ))}
         </div>
       )
     }
 
     const renderType = (type) => {
-      return <Badge className={`body-desc-type ${type}`} style={{ cursor: 'default' }}>{type.charAt(0)}</Badge>
+      return (
+        <Badge className={`body-desc-type ${type}`} style={{ cursor: 'default' }}>
+          {type.charAt(0)}
+        </Badge>
+      )
     }
 
     const renderObject = (parentPath, object) => {
       if (!object) return null
       if (parentPath) parentPath = parentPath + '.'
-      return Object.entries(object).map((res, index) => (
-        (parentPath === '')
-          ? <div key={index}>{renderItem(parentPath, res)}</div>
-          : <div key={index} className='ml-2 pl-2' style={{ borderLeft: '1px solid rgb(0,0,0,0.1)' }}>{renderItem(parentPath, res)}</div>
-      ))
+      return Object.entries(object).map((res, index) =>
+        parentPath === '' ? (
+          <div key={index}>{renderItem(parentPath, res)}</div>
+        ) : (
+          <div key={index} className='ml-2 pl-2' style={{ borderLeft: '1px solid rgb(0,0,0,0.1)' }}>
+            {renderItem(parentPath, res)}
+          </div>
+        )
+      )
     }
 
     const renderArray = (parentPath, Array) => {
@@ -390,31 +350,37 @@ class PublicBodyContainer extends Component {
           <div className='py-1'>
             {renderType(value.type)}
             <CustomTooltip message={path}>
-              <strong className='pl-1' style={{ cursor: 'default' }}>{keyTitle}</strong>
+              <strong className='pl-1' style={{ cursor: 'default' }}>
+                {keyTitle}
+              </strong>
             </CustomTooltip>
             <span>{value.description ? ` : ${value.description}` : ''}</span>
           </div>
         )
       }
       switch (value.type) {
-        case 'string' : return defaultItem(parentPath, [key, value])
-        case 'number' : return defaultItem(parentPath, [key, value])
-        case 'boolean' : return defaultItem(parentPath, [key, value])
-        case 'array' :
+        case 'string':
+          return defaultItem(parentPath, [key, value])
+        case 'number':
+          return defaultItem(parentPath, [key, value])
+        case 'boolean':
+          return defaultItem(parentPath, [key, value])
+        case 'array':
           return (
             <>
               {defaultItem(parentPath, [key, value])}
               {renderArray(parentPath + key, value.default)}
             </>
           )
-        case 'object' :
+        case 'object':
           return (
             <>
               {defaultItem(parentPath, [key, value])}
               {renderObject(parentPath + key, value.value)}
             </>
           )
-        default: return null
+        default:
+          return null
       }
     }
 
@@ -427,7 +393,7 @@ class PublicBodyContainer extends Component {
     )
   }
 
-  render () {
+  render() {
     this.bodyDescription = this.props.body_description
     return (
       <>
@@ -441,81 +407,48 @@ class PublicBodyContainer extends Component {
           />
         )}
 
-        {this.props.body &&
-          this.props.body.type === 'application/x-www-form-urlencoded' && (
-            <GenericTable
-              {...this.props}
-              title='x-www-form-urlencoded'
-              dataArray={this.props.body.value}
-              handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.props.original_body.value]}
-            />
+        {this.props.body && this.props.body.type === 'application/x-www-form-urlencoded' && (
+          <GenericTable
+            {...this.props}
+            title='x-www-form-urlencoded'
+            dataArray={this.props.body.value}
+            handle_change_body_data={this.handleChangeBody.bind(this)}
+            original_data={[...this.props.original_body.value]}
+          />
         )}
 
-        {this.props.body && this.props.body.type !== 'multipart/form-data' && this.props.body.type !== 'application/x-www-form-urlencoded' && (
-          (this.props.body.type === 'JSON')
-            ? (
-              <div className='hm-public-table'>
-                <div className='public-generic-table-title-container'>
-                  Body <small className='text-muted'>({this.props.body.type})</small> {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
-                </div>
-                <ul className='public-endpoint-tabs'>
-                  <li
-                    className={this.state.showBodyCodeEditor ? 'active' : ''}
-                    style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
-                    onClick={() => this.setState({ showBodyCodeEditor: true })}
-                  >
-                    Raw
-                  </li>
-                  <li
-                    className={!this.state.showBodyCodeEditor ? 'active' : ''}
-                    style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
-                    onClick={() => this.setState({ showBodyCodeEditor: false })}
-                  >
-                    Body description
-                  </li>
-                </ul>
-                {this.state.showBodyCodeEditor
-                  ? (
-                    <AceEditor
-                      className='custom-raw-editor'
-                      mode='json'
-                      theme='github'
-                      value={this.props.body.value}
-                      onChange={this.handleChangeBodyDescription.bind(this)}
-                      setOptions={{
-                        showLineNumbers: true
-                      }}
-                      editorProps={{
-                        $blockScrolling: false
-                      }}
-                      onLoad={(editor) => {
-                        editor.focus()
-                        editor.getSession().setUseWrapMode(true)
-                        editor.setShowPrintMargin(false)
-                      }}
-                    />
-                    )
-                  : (
-                    <div className='body-description-container'>
-                      {/* Previous Body Description Layout */}
-                      {/* {this.displayObject(this.bodyDescription, 'body_description')} */}
-                      {this.displayBodyDecription(undefined, this.bodyDescription)}
-                    </div>
-                    )}
+        {this.props.body &&
+          this.props.body.type !== 'multipart/form-data' &&
+          this.props.body.type !== 'application/x-www-form-urlencoded' &&
+          (this.props.body.type === 'JSON' ? (
+            <div className='hm-public-table'>
+              <div className='public-generic-table-title-container'>
+                Body <small className='text-muted'>({this.props.body.type})</small>{' '}
+                {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
               </div>
-              )
-            : (
-              <div className='hm-public-table'>
-                <div className='public-generic-table-title-container'>
-                  Body <small className='text-muted'>({this.props.body.type})</small> {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
-                </div>
+              <ul className='public-endpoint-tabs'>
+                <li
+                  className={this.state.showBodyCodeEditor ? 'active' : ''}
+                  style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                  onClick={() => this.setState({ showBodyCodeEditor: true })}
+                >
+                  Raw
+                </li>
+                <li
+                  className={!this.state.showBodyCodeEditor ? 'active' : ''}
+                  style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                  onClick={() => this.setState({ showBodyCodeEditor: false })}
+                >
+                  Body description
+                </li>
+              </ul>
+              {this.state.showBodyCodeEditor ? (
                 <AceEditor
                   className='custom-raw-editor'
-                  mode={this.props.body.type.toLowerCase()}
+                  mode='json'
                   theme='github'
-                  value={this.makeJson(this.props.body.value)}
-                  onChange={(value) => this.props.set_body(this.props.body.type, value)}
+                  value={this.props.body.value}
+                  onChange={this.handleChangeBodyDescription.bind(this)}
                   setOptions={{
                     showLineNumbers: true
                   }}
@@ -528,9 +461,40 @@ class PublicBodyContainer extends Component {
                     editor.setShowPrintMargin(false)
                   }}
                 />
+              ) : (
+                <div className='body-description-container'>
+                  {/* Previous Body Description Layout */}
+                  {/* {this.displayObject(this.bodyDescription, 'body_description')} */}
+                  {this.displayBodyDecription(undefined, this.bodyDescription)}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className='hm-public-table'>
+              <div className='public-generic-table-title-container'>
+                Body <small className='text-muted'>({this.props.body.type})</small>{' '}
+                {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
               </div>
-              )
-        )}
+              <AceEditor
+                className='custom-raw-editor'
+                mode={this.props.body.type.toLowerCase()}
+                theme='github'
+                value={this.makeJson(this.props.body.value)}
+                onChange={(value) => this.props.set_body(this.props.body.type, value)}
+                setOptions={{
+                  showLineNumbers: true
+                }}
+                editorProps={{
+                  $blockScrolling: false
+                }}
+                onLoad={(editor) => {
+                  editor.focus()
+                  editor.getSession().setUseWrapMode(true)
+                  editor.setShowPrintMargin(false)
+                }}
+              />
+            </div>
+          ))}
       </>
     )
   }

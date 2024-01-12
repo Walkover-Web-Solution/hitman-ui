@@ -4,19 +4,23 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import './browserLogin.scss'
 let token
 class BrowserLogin extends Component {
-  state = { }
-  render () {
+  state = {}
+  render() {
     return (
       <div className='main-browser-login'>
         <Switch>
           <Route
-            exact path='/browser-login-success' render={(props) => {
+            exact
+            path='/browser-login-success'
+            render={(props) => {
               this.handleLoginSuccess(props)
               return this.renderSuccessPage()
             }}
           />
           <Route
-            exact path='/browser-login' render={(props) => {
+            exact
+            path='/browser-login'
+            render={(props) => {
               this.handleRedirectToSso()
               return <div>You are being redirected to Socket SSO</div>
             }}
@@ -26,13 +30,20 @@ class BrowserLogin extends Component {
     )
   }
 
-  renderSuccessPage () {
-    return token
-      ? <div>You are Signed In, redirecting to your Hitman App <br /><span className='text-underline' onClick={() => this.redirectToHitmanApp()}>If you weren't redirected click here</span></div>
-      : <Redirect to='/' />
+  renderSuccessPage() {
+    return token ? (
+      <div>
+        You are Signed In, redirecting to your Hitman App <br />
+        <span className='text-underline' onClick={() => this.redirectToHitmanApp()}>
+          If you weren't redirected click here
+        </span>
+      </div>
+    ) : (
+      <Redirect to='/' />
+    )
   }
 
-  handleRedirectToSso () {
+  handleRedirectToSso() {
     const url = new URL(process.env.REACT_APP_SOCKET_SSO_URL)
     url.searchParams.set('redirect_uri', `${process.env.REACT_APP_UI_URL}/browser-login-success`)
     url.searchParams.set('src', 'hitman')
@@ -42,13 +53,13 @@ class BrowserLogin extends Component {
     if (window.popupWindow) window.popupWindow(url, 'ViaSocket SSO', window.options)
   }
 
-  handleLoginSuccess (props) {
+  handleLoginSuccess(props) {
     const searchParams = new URLSearchParams(props.location.search)
     if (searchParams.get('sokt-auth-token')) token = searchParams.get('sokt-auth-token')
     this.redirectToHitmanApp()
   }
 
-  redirectToHitmanApp () {
+  redirectToHitmanApp() {
     if (token) {
       window.open(`hitman-app://hitman?sokt-auth-token=${token}`, '_self')
     }

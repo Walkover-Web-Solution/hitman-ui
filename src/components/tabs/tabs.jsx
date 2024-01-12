@@ -10,7 +10,7 @@ import { isElectron } from '../common/utility'
 import Plus from '../../assets/icons/plus.svg'
 
 class CustomTabs extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.navRef = React.createRef()
     this.scrollRef = {}
@@ -23,14 +23,14 @@ class CustomTabs extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('TAB_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('TAB_SHORTCUTS_CHANNEL', this.handleShortcuts)
@@ -56,25 +56,25 @@ class CustomTabs extends Component {
     }
   }
 
-  openTabAtIndex (index) {
+  openTabAtIndex(index) {
     const { tabsOrder } = this.props.tabs
     if (tabsOrder[index]) tabService.selectTab({ ...this.props }, tabsOrder[index])
   }
 
-  handleOpenNextTab () {
+  handleOpenNextTab() {
     const { activeTabId, tabsOrder } = this.props.tabs
     const index = (tabsOrder.indexOf(activeTabId) + 1) % tabsOrder.length
     this.openTabAtIndex(index)
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.tabs.activeTabId !== prevProps.tabs.activeTabId) {
       const newRef = this.scrollRef[this.props.tabs.activeTabId] || null
       newRef && newRef.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
     }
   }
 
-  renderTabName (tabId) {
+  renderTabName(tabId) {
     const tab = this.props.tabs.tabs[tabId]
     if (!tab) return
     switch (tab.type) {
@@ -90,7 +90,9 @@ class CustomTabs extends Component {
           } else {
             return (
               <>
-                {this.props.historySnapshots[tabId].endpoint.name || this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri || 'Random Trigger'}
+                {this.props.historySnapshots[tabId].endpoint.name ||
+                  this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri ||
+                  'Random Trigger'}
                 <span className='sub-label'>History</span>
               </>
             )
@@ -107,7 +109,6 @@ class CustomTabs extends Component {
                 {this.props.endpoints[tabId]?.name}
                 <span className='sub-label'>{this.props.groups[endpoint.groupId]?.name}</span>
               </>
-
             )
           } else {
             return (
@@ -163,15 +164,15 @@ class CustomTabs extends Component {
     }
   }
 
-  closeSavePrompt () {
+  closeSavePrompt() {
     this.setState({ showSavePromptFor: [] })
   }
 
-  onDragStart (tId) {
+  onDragStart(tId) {
     this.draggedItem = tId
   }
 
-  handleOnDragOver (e) {
+  handleOnDragOver(e) {
     e.preventDefault()
   }
 
@@ -181,25 +182,21 @@ class CustomTabs extends Component {
       this.draggedItem = null
       return
     }
-    const tabsOrder = this.props.tabs.tabsOrder.filter(
-      (item) => item !== this.draggedItem
-    )
-    const index = this.props.tabs.tabsOrder.findIndex(
-      (tId) => tId === droppedOnItem
-    )
+    const tabsOrder = this.props.tabs.tabsOrder.filter((item) => item !== this.draggedItem)
+    const index = this.props.tabs.tabsOrder.findIndex((tId) => tId === droppedOnItem)
     tabsOrder.splice(index, 0, this.draggedItem)
     this.props.set_tabs_order(tabsOrder)
-  };
+  }
 
-  handleMouseEnter (dir) {
+  handleMouseEnter(dir) {
     this.interval = setInterval(this.handleNav.bind(this, dir), 500)
   }
 
-  handleMouseLeave () {
+  handleMouseLeave() {
     clearInterval(this.interval)
   }
 
-  handleNav (dir) {
+  handleNav(dir) {
     if (dir === 'left') {
       if (this.navRef) this.navRef.current.scrollLeft -= 200
     } else {
@@ -207,28 +204,32 @@ class CustomTabs extends Component {
     }
   }
 
-  scrollLength () {
-    this.setState({ leftScroll: this.navRef.current?.scrollLeft, windowScroll: this.navRef.current?.scrollWidth, clientScroll: this.navRef.current?.clientWidth })
+  scrollLength() {
+    this.setState({
+      leftScroll: this.navRef.current?.scrollLeft,
+      windowScroll: this.navRef.current?.scrollWidth,
+      clientScroll: this.navRef.current?.clientWidth
+    })
   }
 
-  leftHideTabs () {
+  leftHideTabs() {
     return Number.parseInt(this.state.leftScroll / 200)
   }
 
-  rightHideTabs () {
+  rightHideTabs() {
     return Number.parseInt((this.navRef.current?.scrollWidth - this.navRef.current?.clientWidth - this.state.leftScroll) / 200)
   }
 
-  handleAddTab () {
+  handleAddTab() {
     this.scrollLength()
     tabService.newTab({ ...this.props })
   }
 
-  showScrollButton () {
+  showScrollButton() {
     return this.navRef.current?.scrollWidth > this.navRef.current?.clientWidth + 10
   }
 
-  renderHoverTab (tabId) {
+  renderHoverTab(tabId) {
     let x = 1
     const y = 1
     x -= this.navRef.current.scrollLeft
@@ -271,24 +272,23 @@ class CustomTabs extends Component {
 
   handleHistoryClick = () => {
     this.setState((prevState) => ({
-      showHistoryContainer: !prevState.showHistoryContainer,
-    }));
-  };
-  
+      showHistoryContainer: !prevState.showHistoryContainer
+    }))
+  }
+
   handleCloseTabs(tabIds) {
-    const showSavePromptFor = [];
-    const tabsData = this.props.tabs.tabs;
-  
+    const showSavePromptFor = []
+    const tabsData = this.props.tabs.tabs
+
     for (let i = 0; i < tabIds.length; i++) {
-      const tabData = tabsData[tabIds[i]];
-      
+      const tabData = tabsData[tabIds[i]]
+
       if (tabData.isModified) {
-        showSavePromptFor.push(tabIds[i]);
+        showSavePromptFor.push(tabIds[i])
       } else {
-  
         // Check if there's only one tab left before removing
         if (Object.keys(tabsData).length > 1) {
-          tabService.removeTab(tabIds[i], { ...this.props });
+          tabService.removeTab(tabIds[i], { ...this.props })
         }
         //  else {
         //   toast.info("This Tab is by Default")
@@ -298,11 +298,11 @@ class CustomTabs extends Component {
     this.setState({ showSavePromptFor })
   }
 
-  handleOnConfirm (tabId) {
+  handleOnConfirm(tabId) {
     this.setState({ showSavePromptFor: this.state.showSavePromptFor.filter((tab) => tab !== tabId) })
   }
 
-  render () {
+  render() {
     const sideBar = {
       position: 'fixed',
       background: 'white',
@@ -314,35 +314,39 @@ class CustomTabs extends Component {
     }
     const Heading = {
       display: 'flex',
-      justifyContent: 'space-between', 
-      alignItems: 'center', 
-      padding: '10px', 
-      borderBottom: '0.5px solid #ddd', 
-    };
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '10px',
+      borderBottom: '0.5px solid #ddd'
+    }
     const closeButton = {
       background: 'none',
       border: 'none',
-      fontSize: '1.5em', 
-      cursor: 'pointer',
-
+      fontSize: '1.5em',
+      cursor: 'pointer'
     }
     return (
-
       <>
-
         <div className='d-flex navs-container'>
-          {this.showScrollButton()
-            ? (
-              <div
-                className={`scroll-button scroll-button--left d-flex ${this.leftHideTabs() ? '' : 'disabled'}`}
-                onMouseEnter={() => this.handleMouseEnter('left')}
-                onMouseLeave={() => this.handleMouseLeave()}
-              >
-                <span className='mr-1'><i className='fa fa-angle-left' aria-hidden='true' /></span>
-                <span>{this.leftHideTabs() ? `${this.leftHideTabs()}+` : null}</span>
-              </div>)
-            : null}
-          <Nav variant='pills' className='flex-row flex-nowrap item-wrp' onScroll={() => this.scrollLength()} ref={this.navRef} style={{ scrollBehavior: 'smooth' }}>
+          {this.showScrollButton() ? (
+            <div
+              className={`scroll-button scroll-button--left d-flex ${this.leftHideTabs() ? '' : 'disabled'}`}
+              onMouseEnter={() => this.handleMouseEnter('left')}
+              onMouseLeave={() => this.handleMouseLeave()}
+            >
+              <span className='mr-1'>
+                <i className='fa fa-angle-left' aria-hidden='true' />
+              </span>
+              <span>{this.leftHideTabs() ? `${this.leftHideTabs()}+` : null}</span>
+            </div>
+          ) : null}
+          <Nav
+            variant='pills'
+            className='flex-row flex-nowrap item-wrp'
+            onScroll={() => this.scrollLength()}
+            ref={this.navRef}
+            style={{ scrollBehavior: 'smooth' }}
+          >
             <div>
               {this.state.showSavePromptFor.length > 0 && (
                 <SavePromptModal
@@ -355,7 +359,13 @@ class CustomTabs extends Component {
               )}
             </div>
             {this.props.tabs.tabsOrder.map((tabId, index) => (
-              <div className='' key={tabId} ref={(newRef) => { this.scrollRef[tabId] = newRef }}>
+              <div
+                className=''
+                key={tabId}
+                ref={(newRef) => {
+                  this.scrollRef[tabId] = newRef
+                }}
+              >
                 <Nav.Item
                   key={tabId}
                   draggable
@@ -366,15 +376,7 @@ class CustomTabs extends Component {
                   onMouseEnter={() => this.setState({ showPreview: true, previewId: tabId })}
                   onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
                 >
-                  {
-                this.props.tabs.tabs[tabId]?.isModified
-                  ? (
-                    <i className='fas fa-circle modified-dot-icon' />
-                    )
-                  : (
-                      ''
-                    )
-              }
+                  {this.props.tabs.tabs[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
                   <Nav.Link eventKey={tabId}>
                     <button
                       className='btn truncate'
@@ -390,29 +392,25 @@ class CustomTabs extends Component {
                     <i className='uil uil-multiply' />
                   </button>
                 </Nav.Item>
-                {this.state.showPreview && tabId === this.state.previewId &&
-              (this.renderHoverTab(tabId, this.tabRef))}
+                {this.state.showPreview && tabId === this.state.previewId && this.renderHoverTab(tabId, this.tabRef)}
               </div>
             ))}
           </Nav>
-          {this.showScrollButton()
-            ? (
-              <div
-                className={`scroll-button scroll-button--right d-flex ${this.rightHideTabs() ? '' : 'disabled'}`}
-                onMouseEnter={() => this.handleMouseEnter('right')}
-                onMouseLeave={() => this.handleMouseLeave()}
-              >
-                <span className='mr-1'>{this.rightHideTabs() ? `+${this.rightHideTabs()}` : null}</span>
-                <span><i className='fa fa-angle-right' aria-hidden='true' /></span>
-              </div>)
-            : null}
-          <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
-            <button
-              className='btn'
-              onClick={() => this.handleAddTab()}
+          {this.showScrollButton() ? (
+            <div
+              className={`scroll-button scroll-button--right d-flex ${this.rightHideTabs() ? '' : 'disabled'}`}
+              onMouseEnter={() => this.handleMouseEnter('right')}
+              onMouseLeave={() => this.handleMouseLeave()}
             >
+              <span className='mr-1'>{this.rightHideTabs() ? `+${this.rightHideTabs()}` : null}</span>
+              <span>
+                <i className='fa fa-angle-right' aria-hidden='true' />
+              </span>
+            </div>
+          ) : null}
+          <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
+            <button className='btn' onClick={() => this.handleAddTab()}>
               <img src={Plus} alt='' />
-
             </button>
           </Nav.Item>
           <div className='d-flex'>
@@ -420,24 +418,23 @@ class CustomTabs extends Component {
               <TabOptions history={this.props.history} match={this.props.match} handleCloseTabs={this.handleCloseTabs.bind(this)} />
             </Nav.Item>
             <Nav.Item className='' id='history-tab-button'>
-                  <button onClick={this.handleHistoryClick} className='px-2' style={{ outline: 'none' }}><HistoryIcon /> </button>
-                  </Nav.Item>
-                 {this.state.showHistoryContainer &&
-                  <div style={sideBar}>
-                  <div style={Heading} >History
-                  <button
-                    style={closeButton}
-                    onClick={this.handleHistoryClick}
-                    aria-label='Close'
-                  >
+              <button onClick={this.handleHistoryClick} className='px-2' style={{ outline: 'none' }}>
+                <HistoryIcon />{' '}
+              </button>
+            </Nav.Item>
+            {this.state.showHistoryContainer && (
+              <div style={sideBar}>
+                <div style={Heading}>
+                  History
+                  <button style={closeButton} onClick={this.handleHistoryClick} aria-label='Close'>
                     <span aria-hidden='true'>×</span>
                   </button>
-                  </div>
-                  <History {...this.props} />
-                  </div>}
+                </div>
+                <History {...this.props} />
+              </div>
+            )}
           </div>
         </div>
-
       </>
     )
   }

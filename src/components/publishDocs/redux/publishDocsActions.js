@@ -4,16 +4,13 @@ import publishDocsActionTypes from './publishDocsActionTypes'
 
 export const fetchFeedbacks = (collectionId, orgId) => {
   return (dispatch) => {
-    publishDocsApiService.getFeedbacks(collectionId, orgId)
+    publishDocsApiService
+      .getFeedbacks(collectionId, orgId)
       .then((response) => {
         dispatch(onFeedbacksFetched(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onFeedbacksFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
+        dispatch(onFeedbacksFetchedError(error.response ? error.response.data : error))
       })
   }
 }

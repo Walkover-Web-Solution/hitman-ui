@@ -19,7 +19,7 @@ import {
   FaHighlighter
 } from 'react-icons/fa'
 
-export default function MenuBar ({ editor }) {
+export default function MenuBar({ editor }) {
   const [linkUrl, setLinkUrl] = useState('')
   const [ImageUrl, setImageUrl] = useState('')
   const [row, setRow] = useState('3')
@@ -31,23 +31,34 @@ export default function MenuBar ({ editor }) {
   if (!editor) {
     return null
   }
-  function onHide () {
+  function onHide() {
     if (showImage) setShowImage(false)
     else if (showLink) setShowLink(false)
     else setShowTable(false)
   }
-  function showModal () {
+  function showModal() {
     return (
       <Modal show={showImage || showLink || showTable} onHide={onHide}>
         <Modal.Header closeButton>
-          <Modal.Title>{(showImage) && 'Set Image URL'}{(showLink) && 'Set Link'}{(showTable) && 'Add Number of rows and columns'}</Modal.Title>
+          <Modal.Title>
+            {showImage && 'Set Image URL'}
+            {showLink && 'Set Link'}
+            {showTable && 'Add Number of rows and columns'}
+          </Modal.Title>
         </Modal.Header>
-        <Modal.Body>{(showImage || showLink) &&
-          <div className='form-group'>
-            <label>URL</label>
-            <input type='text' className='form-control' value={showImage ? ImageUrl : linkUrl} onChange={(e) => showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value)} />
-          </div>}
-          {(showTable) &&
+        <Modal.Body>
+          {(showImage || showLink) && (
+            <div className='form-group'>
+              <label>URL</label>
+              <input
+                type='text'
+                className='form-control'
+                value={showImage ? ImageUrl : linkUrl}
+                onChange={(e) => (showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value))}
+              />
+            </div>
+          )}
+          {showTable && (
             <div className='row'>
               <div className='col-md-6'>
                 <div className='form-group'>
@@ -61,12 +72,17 @@ export default function MenuBar ({ editor }) {
                   <input className='form-control' type='integer' value={column} onChange={(e) => setColumn(e.target.value)} />
                 </div>
               </div>
-            </div>}
+            </div>
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <button className='btn btn-secondary outline mr-2' onClick={onHide}> Close</button>
+          <button className='btn btn-secondary outline mr-2' onClick={onHide}>
+            {' '}
+            Close
+          </button>
           <button
-            className='btn btn-primary' onClick={() => {
+            className='btn btn-primary'
+            onClick={() => {
               if (showTable) {
                 editor.chain().focus().insertTable({ rows: row, cols: column, withHeaderRow: true }).run()
                 setShowTable(false)
@@ -80,42 +96,31 @@ export default function MenuBar ({ editor }) {
                 setShowImage(false)
               }
             }}
-          >Save
+          >
+            Save
           </button>
         </Modal.Footer>
       </Modal>
     )
   }
 
-  function handleTextColor (color) {
+  function handleTextColor(color) {
     editor.chain().focus().setColor(color.hex).run()
   }
 
   return (
     <div className='menuBar custom-editor'>
       {showModal()}
-      <button
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        className={editor.isActive('bold') ? 'is-active' : ''}
-      >
+      <button onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'is-active' : ''}>
         <FaBold />
       </button>
-      <button
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={editor.isActive('italic') ? 'is-active' : ''}
-      >
+      <button onClick={() => editor.chain().focus().toggleItalic().run()} className={editor.isActive('italic') ? 'is-active' : ''}>
         <FaItalic />
       </button>
-      <button
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        className={editor.isActive('strike') ? 'is-active' : ''}
-      >
+      <button onClick={() => editor.chain().focus().toggleStrike().run()} className={editor.isActive('strike') ? 'is-active' : ''}>
         <FaStrikethrough />
       </button>
-      <button
-        onClick={() => editor.chain().focus().toggleCode().run()}
-        className={editor.isActive('code') ? 'is-active' : ''}
-      >
+      <button onClick={() => editor.chain().focus().toggleCode().run()} className={editor.isActive('code') ? 'is-active' : ''}>
         <FaCode />
       </button>
 
@@ -135,29 +140,63 @@ export default function MenuBar ({ editor }) {
         <FaHighlighter />
       </button>
       <Dropdown style={{ display: 'inline' }}>
-        <Dropdown.Toggle style={{ display: 'inline' }}>
-          Paragraph
-        </Dropdown.Toggle>
+        <Dropdown.Toggle style={{ display: 'inline' }}>Paragraph</Dropdown.Toggle>
 
         <Dropdown.Menu>
-          <Dropdown.Item><button onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}> H1</button>
+          <Dropdown.Item>
+            <button
+              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+              className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
+            >
+              {' '}
+              H1
+            </button>
           </Dropdown.Item>
-          <Dropdown.Item><button onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}>H2</button>
+          <Dropdown.Item>
+            <button
+              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+              className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
+            >
+              H2
+            </button>
           </Dropdown.Item>
-          <Dropdown.Item><button onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}>H3</button>
+          <Dropdown.Item>
+            <button
+              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+              className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
+            >
+              H3
+            </button>
           </Dropdown.Item>
-          <Dropdown.Item> <button onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()} className={editor.isActive('heading', { level: 4 }) ? 'is-active' : ''}> H4</button>
+          <Dropdown.Item>
+            {' '}
+            <button
+              onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
+              className={editor.isActive('heading', { level: 4 }) ? 'is-active' : ''}
+            >
+              {' '}
+              H4
+            </button>
           </Dropdown.Item>
-          <Dropdown.Item><button onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()} className={editor.isActive('heading', { level: 5 }) ? 'is-active' : ''}>H5 </button>
+          <Dropdown.Item>
+            <button
+              onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
+              className={editor.isActive('heading', { level: 5 }) ? 'is-active' : ''}
+            >
+              H5{' '}
+            </button>
           </Dropdown.Item>
-          <Dropdown.Item><button onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()} className={editor.isActive('heading', { level: 6 }) ? 'is-active' : ''}>H6</button>
+          <Dropdown.Item>
+            <button
+              onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
+              className={editor.isActive('heading', { level: 6 }) ? 'is-active' : ''}
+            >
+              H6
+            </button>
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
-      <button
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={editor.isActive('bulletList') ? 'is-active' : ''}
-      >
+      <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={editor.isActive('bulletList') ? 'is-active' : ''}>
         <FaListUl />
       </button>
       <button
@@ -166,17 +205,15 @@ export default function MenuBar ({ editor }) {
       >
         <FaListOl />
       </button>
-      <button
-        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-        className={editor.isActive('codeBlock') ? 'is-active' : ''}
-      >
+      <button onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive('codeBlock') ? 'is-active' : ''}>
         <BiCodeBlock />
       </button>
       <Dropdown>
-        <Dropdown.Toggle><BiFontColor /></Dropdown.Toggle>
-        <Dropdown.Menu><SketchPicker
-          onChangeComplete={handleTextColor}
-                       />
+        <Dropdown.Toggle>
+          <BiFontColor />
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <SketchPicker onChangeComplete={handleTextColor} />
         </Dropdown.Menu>
       </Dropdown>
       <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
@@ -198,15 +235,33 @@ export default function MenuBar ({ editor }) {
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item onClick={() => setShowTable(true)}>Create Table</Dropdown.Item>
-          <Dropdown.Item onClick={() => editor.chain().focus().addRowBefore().run()} disabled={!editor.can().addRowBefore()}>Add Row Before</Dropdown.Item>
-          <Dropdown.Item onClick={() => editor.chain().focus().addRowAfter().run()} disabled={!editor.can().addRowAfter()}>Add Row After</Dropdown.Item>
-          <Dropdown.Item onClick={() => editor.chain().focus().deleteRow().run()} disabled={!editor.can().deleteRow()}>Delete Row</Dropdown.Item>
-          <Dropdown.Item onClick={() => editor.chain().focus().deleteColumn().run()} disabled={!editor.can().deleteColumn()}>Delete Column</Dropdown.Item>
-          <Dropdown.Item onClick={() => editor.chain().focus().addColumnBefore().run()} disabled={!editor.can().addColumnBefore()}>Add Column Before</Dropdown.Item>
-          <Dropdown.Item onClick={() => editor.chain().focus().addColumnAfter().run()} disabled={!editor.can().addColumnAfter()}>Add Column After</Dropdown.Item>
-          <Dropdown.Item onClick={() => editor.chain().focus().mergeCells().run()} disabled={!editor.can().mergeCells()}>Merge Cell</Dropdown.Item>
-          <Dropdown.Item onClick={() => editor.chain().focus().splitCell().run()} disabled={!editor.can().splitCell()}>Split Cell</Dropdown.Item>
-          <Dropdown.Item onClick={() => editor.chain().focus().deleteTable().run()} disabled={!editor.can().deleteTable()}>Delete Table</Dropdown.Item>
+          <Dropdown.Item onClick={() => editor.chain().focus().addRowBefore().run()} disabled={!editor.can().addRowBefore()}>
+            Add Row Before
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => editor.chain().focus().addRowAfter().run()} disabled={!editor.can().addRowAfter()}>
+            Add Row After
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => editor.chain().focus().deleteRow().run()} disabled={!editor.can().deleteRow()}>
+            Delete Row
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => editor.chain().focus().deleteColumn().run()} disabled={!editor.can().deleteColumn()}>
+            Delete Column
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => editor.chain().focus().addColumnBefore().run()} disabled={!editor.can().addColumnBefore()}>
+            Add Column Before
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => editor.chain().focus().addColumnAfter().run()} disabled={!editor.can().addColumnAfter()}>
+            Add Column After
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => editor.chain().focus().mergeCells().run()} disabled={!editor.can().mergeCells()}>
+            Merge Cell
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => editor.chain().focus().splitCell().run()} disabled={!editor.can().splitCell()}>
+            Split Cell
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => editor.chain().focus().deleteTable().run()} disabled={!editor.can().deleteTable()}>
+            Delete Table
+          </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
       <button onClick={() => setShowImage(true)}>

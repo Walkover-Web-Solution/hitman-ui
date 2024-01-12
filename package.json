@@ -46,6 +46,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "popper.js": "^1.16.1",
+    "pretty-quick": "^3.1.3",
     "query-string": "^6.9.0",
     "querystring": "^0.2.1",
     "react": "^17.0.2",
@@ -106,14 +107,13 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "postinstall": "husky install",
-    "fix": "standard --fix",
     "build:electron": "react-app-rewired build",
     "serve:electron": "concurrently \"BROWSER=none npm start\" \"npm:electron:dev\"",
     "electron:dev": "wait-on http://localhost:3000 && electron .",
     "package:mac": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json  --macos --x64 --publish always",
     "package:linux": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json --linux --x64 --publish always",
     "package:windows": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json --win --ia32 --x64 --publish always",
-    "format": "prettier --write ."
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\""
   },
   "browserslist": {
     "production": [
@@ -143,12 +143,21 @@
       "registerServiceWorker.js",
       "openApiForm.jsx",
       "serviceWorker.js"
-    ],
-    "parser": "babel-eslint"
+    ]
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run format"
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.+(js|jsx)": [
+      "standard --fix",
+      "git add"
+    ],
+    "*.+(json|css|md)": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }

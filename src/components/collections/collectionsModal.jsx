@@ -27,7 +27,7 @@ const choices = {
     modalSize: 'sm',
     id: 'add_collection_create_new_btn'
   }
-/*   ,
+  /*   ,
   [collectionsModalEnum.MARKETPLACE]: {
     key: collectionsModalEnum.MARKETPLACE,
     label: 'Marketplace',
@@ -42,21 +42,22 @@ class CollectionsModal extends Component {
     choiceSelected: null
   }
 
-  selectChoice (choice) {
+  selectChoice(choice) {
     this.setState({ choiceSelected: choice })
   }
 
-  renderChoices () {
+  renderChoices() {
     return (
       <div className='d-flex justify-content-center'>
         {Object.values(choices).map((choice) => (
           <div
             key={choice.key}
             className={['add-collection-item', choice.disabled ? 'disabled' : ''].join(' ')}
-            onClick={() => choice.disabled ? {} : this.selectChoice(choice.key)}
+            onClick={() => (choice.disabled ? {} : this.selectChoice(choice.key))}
           >
             <div>
-              <span>{choice.label}</span><br />
+              <span>{choice.label}</span>
+              <br />
               <small>{choice.sublabel}</small>
             </div>
           </div>
@@ -65,50 +66,67 @@ class CollectionsModal extends Component {
     )
   }
 
-  renderSelectedForm () {
+  renderSelectedForm() {
     switch (this.state.choiceSelected) {
-      case collectionsModalEnum.IMPORT: return this.renderImportForm()
-      case collectionsModalEnum.NEW: return this.renderAddCollectionForm()
+      case collectionsModalEnum.IMPORT:
+        return this.renderImportForm()
+      case collectionsModalEnum.NEW:
+        return this.renderAddCollectionForm()
       // case collectionsModalEnum.MARKETPLACE: return this.renderMarketplace()
-      default: return null
+      default:
+        return null
     }
   }
 
-  removeSelection () { this.setState({ choiceSelected: null }) }
+  removeSelection() {
+    this.setState({ choiceSelected: null })
+  }
 
-  renderAddCollectionForm () {
+  renderAddCollectionForm() {
     return (
       <CollectionForm
         {...this.props}
         title='Add new Collection'
         showOnlyForm
-        onCancel={() => { this.removeSelection() }}
-        onHide={() => { this.props.onHide() }}
+        onCancel={() => {
+          this.removeSelection()
+        }}
+        onHide={() => {
+          this.props.onHide()
+        }}
       />
     )
   }
 
-  renderImportForm () {
+  renderImportForm() {
     return (
       <OpenApiForm
         showOnlyForm
-        onCancel={() => { this.removeSelection() }}
-        onHide={() => { this.props.onHide() }}
+        onCancel={() => {
+          this.removeSelection()
+        }}
+        onHide={() => {
+          this.props.onHide()
+        }}
       />
     )
   }
 
-  renderMarketplace () {
+  renderMarketplace() {
     return (
       <MarketplaceModal
         showOnlyContent
-        onCancel={() => { this.removeSelection() }}
-        onHide={() => { this.props.onHide() }}
+        onCancel={() => {
+          this.removeSelection()
+        }}
+        onHide={() => {
+          this.props.onHide()
+        }}
       />
     )
   }
 
-  render () {
+  render() {
     /** Get Current Choice Selection */
     const selectedChoice = choices[this.state.choiceSelected]
 
@@ -129,13 +147,9 @@ class CollectionsModal extends Component {
       <Modal size={modalSize} onHide={this.props.onHide} show={this.props.show} dialogClassName={dialogClassName}>
         <div>
           <Modal.Header className='custom-collection-modal-container' closeButton>
-            <Modal.Title id='contained-modal-title-vcenter'>
-              {modalTitle}
-            </Modal.Title>
+            <Modal.Title id='contained-modal-title-vcenter'>{modalTitle}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            {modalBody}
-          </Modal.Body>
+          <Modal.Body>{modalBody}</Modal.Body>
         </div>
       </Modal>
     )

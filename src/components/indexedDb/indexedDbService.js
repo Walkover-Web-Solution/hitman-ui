@@ -17,7 +17,7 @@ const createDataBase = async (dbName) => {
   const version = 1
 
   db = await openDB(dbName, version, {
-    upgrade (db, oldVersion, newVersion, transaction) {
+    upgrade(db, oldVersion, newVersion, transaction) {
       // const environmentStore = db.createObjectStore('environment')
       db.createObjectStore('tabs', {
         keyPath: 'id',
@@ -82,10 +82,7 @@ const getAllKeys = async (storeName) => {
   if (!db) {
     await getDataBase()
   }
-  const keys = await db
-    .transaction(storeName)
-    .objectStore(storeName)
-    .getAllKeys()
+  const keys = await db.transaction(storeName).objectStore(storeName).getAllKeys()
   return keys
 }
 
@@ -93,10 +90,7 @@ const getAllValues = async (storeName) => {
   if (!db) {
     await getDataBase()
   }
-  const values = await db
-    .transaction(storeName)
-    .objectStore(storeName)
-    .getAll()
+  const values = await db.transaction(storeName).objectStore(storeName).getAll()
   return values
 }
 

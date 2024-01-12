@@ -3,9 +3,9 @@ import { Modal } from 'react-bootstrap'
 import './publishDocsConfirmModal.scss'
 
 class PublishDocsConfirmModal extends Component {
-  state = { }
+  state = {}
 
-  handleOkay (collectionId) {
+  handleOkay(collectionId) {
     if (collectionId) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
@@ -15,23 +15,18 @@ class PublishDocsConfirmModal extends Component {
     this.props.onHide()
   }
 
-  render () {
+  render() {
     return (
       <Modal
         size='lg'
-      // dialogClassName={"publish-doc-confirm-modal"}
+        // dialogClassName={"publish-doc-confirm-modal"}
         centered
         onHide={this.props.onHide}
         show={this.props.show}
       >
         <div>
-          <Modal.Header
-            className='custom-collection-modal-container'
-            closeButton
-          >
-            <Modal.Title id='contained-modal-title-vcenter'>
-              All set to publish your API doc, just a few more steps to go
-            </Modal.Title>
+          <Modal.Header className='custom-collection-modal-container' closeButton>
+            <Modal.Title id='contained-modal-title-vcenter'>All set to publish your API doc, just a few more steps to go</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <ul>
@@ -41,7 +36,9 @@ class PublishDocsConfirmModal extends Component {
 
             <button
               className='btn btn-primary'
-              onClick={(e) => { this.handleOkay(this.props.collection_id) }}
+              onClick={(e) => {
+                this.handleOkay(this.props.collection_id)
+              }}
             >
               Okay
             </button>

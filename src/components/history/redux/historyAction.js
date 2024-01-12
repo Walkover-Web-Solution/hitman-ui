@@ -3,9 +3,9 @@ import historyActionTypes from './historyActionTypes'
 export const fetchHistoryFromIdb = () => {
   return async (dispatch) => {
     try {
-      const response = localStorage.getItem('history');
-      const parsedResponse = JSON.parse(response);
-      dispatch(onHistoryDataFetched(parsedResponse));
+      const response = localStorage.getItem('history')
+      const parsedResponse = JSON.parse(response)
+      dispatch(onHistoryDataFetched(parsedResponse))
     } catch (error) {
       console.error(error)
       // dispatch(onHistoryDataFetchError(

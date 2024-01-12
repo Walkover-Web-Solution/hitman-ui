@@ -2,19 +2,19 @@ import http from '../../services/httpService'
 
 const apiUrl = process.env.REACT_APP_API_URL
 
-function addDomain (data) {
+function addDomain(data) {
   return http.post(`${apiUrl}/cookies`, data)
 }
 
-function getAllCookies () {
+function getAllCookies() {
   return http.get(`${apiUrl}/cookies`)
 }
 
-function deleteDomain (id) {
+function deleteDomain(id) {
   return http.delete(`${apiUrl}/cookies/${id}`)
 }
 
-function updateDomain (id, data) {
+function updateDomain(id, data) {
   return http.put(`${apiUrl}/cookies/${id}`, data)
 }
 

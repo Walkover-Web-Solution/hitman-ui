@@ -1,17 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {
-  approvePage,
-  draftPage,
-  pendingPage,
-  rejectPage
-} from '../publicEndpoint/redux/publicEndpointsActions'
+import { approvePage, draftPage, pendingPage, rejectPage } from '../publicEndpoint/redux/publicEndpointsActions'
 import Pages from './pages'
-import {
-  deletePage,
-  duplicatePage,
-  updatePageOrder
-} from './redux/pagesActions'
+import { deletePage, duplicatePage, updatePageOrder } from './redux/pagesActions'
 import pageService from './pageService'
 import { isDashboardRoute } from '../common/utility'
 import filterService from '../../services/filterService'
@@ -35,19 +26,19 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class GroupPages extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {}
   }
 
-  handleUpdate (page) {
+  handleUpdate(page) {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${this.props.collection_id}/versions/${this.props.versionId}/pages/${page.id}/edit`,
       editPage: page
     })
   }
 
-  openDeletePageModal (pageId) {
+  openDeletePageModal(pageId) {
     this.setState({
       showDeleteModal: true,
       selectedPage: {
@@ -56,24 +47,16 @@ class GroupPages extends Component {
     })
   }
 
-  closeDeletePageModal () {
+  closeDeletePageModal() {
     this.setState({ showDeleteModal: false })
   }
 
-  filterGroupPages () {
-    if (
-      this.props.selectedCollection === true &&
-      this.props.filter !== '' &&
-      this.filterFlag === false
-    ) {
+  filterGroupPages() {
+    if (this.props.selectedCollection === true && this.props.filter !== '' && this.filterFlag === false) {
       this.filterFlag = true
       let groupIds = []
       let groupIdsAndFilteredPages = []
-      groupIdsAndFilteredPages = filterService.filter(
-        this.props.pages,
-        this.props.filter,
-        'groupPages'
-      )
+      groupIdsAndFilteredPages = filterService.filter(this.props.pages, this.props.filter, 'groupPages')
       this.filteredGroupPages = groupIdsAndFilteredPages[0]
       groupIds = groupIdsAndFilteredPages[1]
       this.setState({ filter: this.props.filter })
@@ -85,34 +68,29 @@ class GroupPages extends Component {
     }
   }
 
-  extractPages () {
+  extractPages() {
     const pages = {}
     for (let i = 0; i < Object.keys(this.props.pages).length; i++) {
       if (
         this.props.pages[Object.keys(this.props.pages)[i]].groupId &&
-        this.props.pages[Object.keys(this.props.pages)[i]].groupId ===
-        this.props.group_id
+        this.props.pages[Object.keys(this.props.pages)[i]].groupId === this.props.group_id
       ) {
-        pages[Object.keys(this.props.pages)[i]] = this.props.pages[
-          Object.keys(this.props.pages)[i]
-        ]
+        pages[Object.keys(this.props.pages)[i]] = this.props.pages[Object.keys(this.props.pages)[i]]
       }
     }
 
     return pages
   }
 
-  makePositionWisePages (pages) {
+  makePositionWisePages(pages) {
     const positionWisePages = []
     for (let i = 0; i < Object.keys(pages).length; i++) {
-      positionWisePages[pages[Object.keys(pages)[i]].position] = Object.keys(
-        pages
-      )[i]
+      positionWisePages[pages[Object.keys(pages)[i]].position] = Object.keys(pages)[i]
     }
     return positionWisePages
   }
 
-  render () {
+  render() {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false
     }
@@ -120,9 +98,7 @@ class GroupPages extends Component {
       this.filteredGroupPages = { ...this.props.pages }
     }
     const groupPageIds = Object.keys(this.props.pages).filter(
-      (pId) =>
-        this.props.pages[pId].groupId &&
-        this.props.pages[pId].groupId === this.props.group_id
+      (pId) => this.props.pages[pId].groupId && this.props.pages[pId].groupId === this.props.group_id
     )
 
     let groupPagesArray = []
@@ -133,8 +109,12 @@ class GroupPages extends Component {
     }
 
     groupPagesArray.sort(function (a, b) {
-      if (a.name < b.name) { return -1 }
-      if (a.name > b.name) { return 1 }
+      if (a.name < b.name) {
+        return -1
+      }
+      if (a.name > b.name) {
+        return 1
+      }
       return 0
     })
 
@@ -149,25 +129,17 @@ class GroupPages extends Component {
         {this.filterGroupPages()}
 
         {this.state.showDeleteModal &&
-            pageService.showDeletePageModal(
-              this.props,
-              this.closeDeletePageModal.bind(this),
-              'Delete Page',
-              ' Are you sure you wish to delete this page? ',
-              this.state.selectedPage
-            )}
+          pageService.showDeletePageModal(
+            this.props,
+            this.closeDeletePageModal.bind(this),
+            'Delete Page',
+            ' Are you sure you wish to delete this page? ',
+            this.state.selectedPage
+          )}
 
         {isDashboardRoute(this.props, true) &&
-        this.props.pagesToRender
-          .map((pageId, index) => (
-            <div
-              key={index}
-              className={
-                  isDashboardRoute(this.props)
-                    ? this.props.pages[pageId].state
-                    : null
-                }
-            >
+          this.props.pagesToRender.map((pageId, index) => (
+            <div key={index} className={isDashboardRoute(this.props) ? this.props.pages[pageId].state : null}>
               <Pages
                 {...this.props}
                 page_id={pageId}
@@ -177,21 +149,15 @@ class GroupPages extends Component {
               />
             </div>
           ))}
-        {!isDashboardRoute(this.props, true) && groupPages &&
+        {!isDashboardRoute(this.props, true) &&
+          groupPages &&
           Object.keys(groupPages)
             .filter(
               (pageId) =>
-                this.props.pages[pageId].versionId === this.props.version_id &&
-                this.props.pages[pageId].groupId === this.props.group_id)
+                this.props.pages[pageId].versionId === this.props.version_id && this.props.pages[pageId].groupId === this.props.group_id
+            )
             .map((pageId, index) => (
-              <div
-                key={index}
-                className={
-                        isDashboardRoute(this.props)
-                          ? this.props.pages[pageId].state
-                          : null
-                      }
-              >
+              <div key={index} className={isDashboardRoute(this.props) ? this.props.pages[pageId].state : null}>
                 <Pages
                   {...this.props}
                   page_id={pageId}

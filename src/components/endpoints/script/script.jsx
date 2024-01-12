@@ -7,7 +7,7 @@ import AceEditor from 'react-ace'
 import { Snippets, preReqSnippets, postReqSnippets } from './snippets'
 
 export class Script extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -18,29 +18,29 @@ export class Script extends Component {
     this.scriptFetched = false
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.scriptText) {
       this.setState({ scriptEditorText: this.props.scriptText })
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.scriptText && !this.scriptFetched) {
       this.setState({ scriptEditorText: this.props.scriptText })
       this.scriptFetched = true
     }
   }
 
-  handleChange (value) {
+  handleChange(value) {
     this.setState({ scriptEditorText: value })
     this.props.handleScriptChange(value, this.props.type)
   }
 
-  selectScript (selectedScriptType) {
+  selectScript(selectedScriptType) {
     this.setState({ selectedScriptType })
   }
 
-  insertSnippet (snippet) {
+  insertSnippet(snippet) {
     const position = { ...this.scriptEditor.editor.getCursorPosition() }
     const newPosition = {
       row: position.row + 1,
@@ -50,7 +50,7 @@ export class Script extends Component {
     this.scriptEditor.editor.scrollToLine(newPosition.row)
   }
 
-  renderScriptEditor () {
+  renderScriptEditor() {
     return (
       <div className='col-8'>
         {' '}
@@ -58,9 +58,7 @@ export class Script extends Component {
           className='custom-raw-editor'
           mode={this.state.selectedRawBodyType.toLowerCase()}
           theme='github'
-          value={
-          this.state.scriptEditorText
-        }
+          value={this.state.scriptEditorText}
           onChange={this.handleChange.bind(this)}
           setOptions={{
             showLineNumbers: true
@@ -73,18 +71,26 @@ export class Script extends Component {
             editor.getSession().setUseWrapMode(true)
             editor.setShowPrintMargin(false)
           }}
-          ref={e => { this.scriptEditor = e }}
+          ref={(e) => {
+            this.scriptEditor = e
+          }}
         />
       </div>
     )
   }
 
-  snippetsList () {
+  snippetsList() {
     let snippets
     switch (this.props.type) {
-      case 'Pre-Script': snippets = preReqSnippets; break
-      case 'Post-Script': snippets = postReqSnippets; break
-      default: snippets = []; break
+      case 'Pre-Script':
+        snippets = preReqSnippets
+        break
+      case 'Post-Script':
+        snippets = postReqSnippets
+        break
+      default:
+        snippets = []
+        break
     }
     return (
       <div className='snippets col-4'>
@@ -98,7 +104,7 @@ export class Script extends Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <div className='row'>
         {this.renderScriptEditor()}

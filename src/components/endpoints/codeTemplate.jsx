@@ -21,14 +21,7 @@ class CodeTemplate extends Component {
 
   makeCodeSnippet() {
     const harObject = this.props.harObject
-    let {
-      method,
-      url,
-      httpVersion,
-      cookies,
-      headers,
-      postData
-    } = harObject
+    let { method, url, httpVersion, cookies, headers, postData } = harObject
     url = encodeURI(url)
     const snippet = new HTTPSnippet({
       method,
@@ -74,16 +67,16 @@ class CodeTemplate extends Component {
   // }
 
   render() {
-    const {theme } = this.state
+    const { theme } = this.state
     return (
-      <div className={'pubCodeWrapper'}>
+      <div className='pubCodeWrapper'>
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
             <div className='code-heading mb-3 d-flex justify-content-center'>
               <span>Sample code</span>
             </div>
             <div className='select-code-wrapper d-flex mb-3 img'>
-              {primaryLanguages.map(key => (
+              {primaryLanguages.map((key) => (
                 <button
                   key={key}
                   className={key === this.selectedLanguage ? 'active' : ''}
@@ -97,7 +90,11 @@ class CodeTemplate extends Component {
               ))}
               <Dropdown>
                 <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active' : ''}>
-                  {primaryLanguages.includes(this.selectedLanguage) ? <span>More</span> : <span>{languages[this.selectedLanguage].name}</span>}
+                  {primaryLanguages.includes(this.selectedLanguage) ? (
+                    <span>More</span>
+                  ) : (
+                    <span>{languages[this.selectedLanguage].name}</span>
+                  )}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   {secondaryLanguages.map((key) => (
@@ -113,32 +110,23 @@ class CodeTemplate extends Component {
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
-
               </Dropdown>
             </div>
           </Col>
           <Col className='editor-body-wrapper' xs={12}>
             <div id='code-window-body' className='copy-button'>
               <CopyToClipboard
-                text={
-                  this.state.codeSnippet
-                    ? this.state.codeSnippet
-                    : this.codeSnippet
+                text={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
+                onCopy={() =>
+                  this.setState({ copied: true }, () => {
+                    setTimeout(() => {
+                      this.setState({ copied: false })
+                    }, 2000)
+                  })
                 }
-                onCopy={() => this.setState({ copied: true }, () => {
-                  setTimeout(() => {
-                    this.setState({ copied: false })
-                  }, 2000)
-                })}
                 className='copy-to-clipboard'
               >
-                <button>
-                  {this.state.copied
-                    ? (
-                      <span className='text-success'>Copied! </span>
-                    )
-                    : <CopyIcon />}
-                </button>
+                <button>{this.state.copied ? <span className='text-success'>Copied! </span> : <CopyIcon />}</button>
               </CopyToClipboard>
             </div>{' '}
             <div className='ace-editor-wrapper'>
@@ -147,11 +135,7 @@ class CodeTemplate extends Component {
                 theme='tomorrow_night'
                 highlightActiveLine={false}
                 focus={false}
-                value={
-                  this.state.codeSnippet
-                    ? this.state.codeSnippet
-                    : this.codeSnippet
-                }
+                value={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
                 readOnly
                 editorProps={{
                   $blockScrolling: false
@@ -164,7 +148,6 @@ class CodeTemplate extends Component {
               />
             </div>
           </Col>
-
         </div>
       </div>
     )

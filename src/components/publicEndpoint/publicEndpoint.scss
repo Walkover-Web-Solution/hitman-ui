@@ -8,7 +8,6 @@ main.main.ml-sm-auto.col-lg-10 {
 }
 
 .main-panel-wrapper {
-
   nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
     margin-top: 10px;
     flex: 1;
@@ -276,27 +275,26 @@ form.add-new-domain-form {
   margin: 0 auto;
   height: 100%;
   overflow: auto;
-  .mid-part{
+  .mid-part {
     max-width: 48rem;
     width: 100%;
   }
-  .main-table-wrapper{
-    > div{
+  .main-table-wrapper {
+    > div {
       margin-bottom: 1rem;
-      &:empty{
+      &:empty {
         display: none;
       }
     }
-
   }
   .request-button {
     position: absolute;
     top: 0rem;
     right: 1.5rem;
-    .custom-theme-btn{
+    .custom-theme-btn {
       color: white;
       background-color: $theme-color;
-      &:hover{
+      &:hover {
         opacity: 0.7;
       }
     }
@@ -306,15 +304,15 @@ form.add-new-domain-form {
     flex-wrap: wrap;
     justify-content: space-between;
   }
-  .doc-view{
+  .doc-view {
     box-shadow: none;
     background-color: inherit;
     padding: 0;
   }
-  .custom-display-page{
+  .custom-display-page {
     padding: 0 1.5rem;
     max-width: 52rem;
-    + .public-navbar{
+    + .public-navbar {
       padding: 0.75rem 1.5rem !important;
       max-width: 100% !important;
     }
@@ -335,9 +333,8 @@ form.add-new-domain-form {
       width: 0px;
       background: transparent;
     }
-  
+
     scrollbar-width: none;
-  
 
     .endpoint-header {
       .endpoint-name-container {
@@ -359,7 +356,7 @@ form.add-new-domain-form {
         .endpoint-description-text {
           font-size: 12px;
           color: #828282;
-          margin-bottom: 15px
+          margin-bottom: 15px;
         }
       }
     }
@@ -368,13 +365,11 @@ form.add-new-domain-form {
 
 // Panel
 .hm-panel {
-
   // background-color: #f7f7f7;
   // border: 1px solid #e5e5e5;
   // padding: 20px;
   // margin-bottom: 40px;
   // border-radius: 3px;
-
 }
 
 // Sidebar Header
@@ -383,7 +378,6 @@ form.add-new-domain-form {
   display: flex;
   color: #fff;
   align-items: center;
-  
 }
 
 // .hm-sidebar-logo {
@@ -412,7 +406,7 @@ h4.hm-sidebar-title {
   flex-grow: 1;
   font-size: 20px !important;
   font-weight: 700 !important;
-  color: #4B4B4D !important;
+  color: #4b4b4d !important;
 }
 
 h4.hm-sidebar-title span {
@@ -425,8 +419,8 @@ h4.hm-sidebar-title span {
 // Endpoint section
 .hm-endpoint-wrap {
   padding: 15px 25px 10px;
-  background: #F3F3F3;
-  border: 0.5px solid #E6DBD4;
+  background: #f3f3f3;
+  border: 0.5px solid #e6dbd4;
   border-bottom: 0px;
 
   .hm-endpoint-header {
@@ -441,7 +435,7 @@ h4.hm-sidebar-title span {
     }
 
     .fa-circle {
-      color: #E98A36;
+      color: #e98a36;
       margin-left: 5px;
       font-size: 12px;
     }
@@ -476,7 +470,7 @@ h4.hm-sidebar-title span {
     margin-bottom: 10px;
     display: inline-block;
     .fa-circle {
-      color: #E98A36;
+      color: #e98a36;
       margin-left: 5px;
       font-size: 12px;
     }
@@ -489,9 +483,9 @@ h4.hm-sidebar-title span {
       padding-top: 0;
       padding-bottom: 0;
     }
-    thead{
+    thead {
       tr {
-        th{
+        th {
           padding-left: 5px;
           padding-bottom: 5px;
           height: 26px;
@@ -538,14 +532,14 @@ h4.hm-sidebar-title span {
 .hm-panel.endpoint-public-response-container.public-doc {
   padding: 15px 0;
   margin: 30px 0 0;
-  .tab-content{
+  .tab-content {
     margin: 0;
   }
   .endpoint-response-container {
     background: $secondary-color;
     padding: 1rem;
     border-radius: $border-radius;
-    pre{
+    pre {
       padding: 1rem;
       border-radius: $border-radius;
     }
@@ -559,7 +553,7 @@ h4.hm-sidebar-title span {
   .empty-response {
     display: none;
   }
-  pre{
+  pre {
     font-size: $font-small;
   }
   .empty-response-container {
@@ -581,7 +575,6 @@ h4.hm-sidebar-title span {
         }
       }
     }
-
   }
 }
 
@@ -637,7 +630,7 @@ h4.hm-sidebar-title span {
   color: #d13755 !important;
 }
 
-.icon-design{
+.icon-design {
   background-color: #f8f8f8;
 }
 button.toggleButton {
@@ -647,21 +640,21 @@ button.toggleButton {
   position: relative;
   z-index: 19;
 }
-.mainContentWrapperPublic{
-  &:not(.hideCodeEditor){
-    .toggleButton{
+.mainContentWrapperPublic {
+  &:not(.hideCodeEditor) {
+    .toggleButton {
       background-color: transparent !important;
     }
   }
 }
-.hm-right-content  {
-  &.hasPublicNavbar{
-    .hideCodeEditor{
-      button.toggleButton{
+.hm-right-content {
+  &.hasPublicNavbar {
+    .hideCodeEditor {
+      button.toggleButton {
         top: 3.75rem;
       }
     }
-    .public-navbar{
+    .public-navbar {
       position: relative;
       transition: all 500ms ease 0s;
       z-index: 99;
@@ -681,14 +674,14 @@ button.toggleButton {
         box-shadow: 0px 10px 20px -13px #e1e1e1;
       }
     }
-    .display-component{
+    .display-component {
       padding-top: 0;
     }
   }
-  .hideCodeEditor{
+  .hideCodeEditor {
     transition: all 0.3s ease-in;
     width: 100.5%;
-    .hm-endpoint-container{
+    .hm-endpoint-container {
       padding: 0;
       max-width: 52rem;
       padding: 0 1.5rem;
@@ -698,7 +691,7 @@ button.toggleButton {
       max-width: 100%;
     }
   }
-  .display-component{
+  .display-component {
     height: 100%;
     // overflow-x: hidden;
     display: flex;
@@ -713,16 +706,16 @@ button.toggleButton {
   padding: 15px;
   padding-top: 35px;
   width: 28%;
-  background: #333333;;
+  background: #333333;
   transition: 300ms;
   height: 100vh;
   position: absolute;
   right: 0;
   top: 0;
-  .select-code-wrapper{
+  .select-code-wrapper {
     flex-direction: row;
     height: 30px;
-    button{
+    button {
       height: 38px;
     }
   }
@@ -765,9 +758,9 @@ button.toggleButton {
     }
   }
 }
-.copy-button{
+.copy-button {
   position: absolute;
-  top:0%;
-  right:1%;
+  top: 0%;
+  right: 1%;
   z-index: 100;
 }

@@ -7,7 +7,7 @@ import 'ace-builds/src-noconflict/mode-json'
 import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
 
 class Form extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: {},
@@ -26,21 +26,10 @@ class Form extends Component {
       ]
     }
 
-    this.formats = [
-      'header',
-      'bold',
-      'italic',
-      'underline',
-      'strike',
-      'color',
-      'background',
-      'list',
-      'bullet',
-      'link'
-    ]
+    this.formats = ['header', 'bold', 'italic', 'underline', 'strike', 'color', 'background', 'list', 'bullet', 'link']
   }
 
-  validate () {
+  validate() {
     return null
     // const options = { abortEarly: false }
     // const { error } = Joi.validate(this.trimmedData(), this.schema, options)
@@ -50,12 +39,16 @@ class Form extends Component {
     //   if (!errors[item.path[0]]) { errors[item.path[0]] = item.message }
     // }
     // return errors
-  };
+  }
 
-  trimmedData () {
+  trimmedData() {
     const trimmedData = {}
-    Object.keys(this.state.data).forEach(key => {
-      if (typeof (this.state.data[key]) === 'string') { trimmedData[key] = this.state.data[key]?.trim() } else { trimmedData[key] = this.state.data[key] }
+    Object.keys(this.state.data).forEach((key) => {
+      if (typeof this.state.data[key] === 'string') {
+        trimmedData[key] = this.state.data[key]?.trim()
+      } else {
+        trimmedData[key] = this.state.data[key]
+      }
     })
     this.setState({ data: trimmedData })
     return trimmedData
@@ -64,9 +57,9 @@ class Form extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
     this.handleKeyPress()
-  };
+  }
 
-  handleKeyPress () {
+  handleKeyPress() {
     const errors = this.validate()
     this.setState({ errors: errors || {} })
     if (errors) return
@@ -90,7 +83,7 @@ class Form extends Component {
     this.setState({ errors: {}, data })
   }
 
-  getSaveDisableStatus (notdefined, active) {
+  getSaveDisableStatus(notdefined, active) {
     let isSaveDisabled = this.state.isSaveDisabled
     if (isSaveDisabled === notdefined || isSaveDisabled === active) {
       isSaveDisabled = true
@@ -107,15 +100,15 @@ class Form extends Component {
     const length = editor.getText().trim().length
     data.description = description
     this.setState({ data, length, isSaveDisabled })
-  };
+  }
 
   handleAceEditorChange = (value) => {
     const data = { ...this.state.data }
     data.body = value
     this.setState({ data })
-  };
+  }
 
-  renderInput (name, label, placeholder, mandatory = false, firstLetterCapitalize = false, isURLInput = false, note = '') {
+  renderInput(name, label, placeholder, mandatory = false, firstLetterCapitalize = false, isURLInput = false, note = '') {
     const { data, errors } = this.state
     return (
       <Input
@@ -134,7 +127,7 @@ class Form extends Component {
     )
   }
 
-  renderTextArea (name, label, placeholder) {
+  renderTextArea(name, label, placeholder) {
     const { data, errors } = this.state
     return (
       <div className='form-group '>
@@ -155,18 +148,15 @@ class Form extends Component {
     )
   }
 
-  renderButton (label, style) {
+  renderButton(label, style) {
     return (
-      <button
-        className='btn btn-primary'
-        id='add_collection_create_new_btn'
-      >
+      <button className='btn btn-primary' id='add_collection_create_new_btn'>
         {label}
       </button>
     )
   }
 
-  renderAceEditor (name, label) {
+  renderAceEditor(name, label) {
     const { data, errors } = this.state
 
     return (
@@ -194,9 +184,7 @@ class Form extends Component {
           }}
         />
         <small className='muted-text'>*Body should not exceed more than 2000 characters.</small>
-        {errors[name] && (
-          <div className='alert alert-danger'>{errors[name]}</div>
-        )}
+        {errors[name] && <div className='alert alert-danger'>{errors[name]}</div>}
       </div>
     )
   }

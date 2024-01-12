@@ -7,22 +7,14 @@ import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpoin
 
 const initialState = {}
 
-function groupsReducer (state = initialState, action) {
+function groupsReducer(state = initialState, action) {
   let groups = {}
   switch (action.type) {
     case endpointsActionTypes.MOVE_ENDPOINT_REQUEST:
       groups = { ...state }
-      groups[action.sourceGroupId].endpointsOrder = groups[
-        action.sourceGroupId
-      ].endpointsOrder.filter((eId) => eId !== action.endpointId)
-      if (
-        !groups[action.destinationGroupId].endpointsOrder.includes(
-          action.endpointId
-        )
-      ) {
-        groups[action.destinationGroupId].endpointsOrder.push(
-          action.endpointId
-        )
+      groups[action.sourceGroupId].endpointsOrder = groups[action.sourceGroupId].endpointsOrder.filter((eId) => eId !== action.endpointId)
+      if (!groups[action.destinationGroupId].endpointsOrder.includes(action.endpointId)) {
+        groups[action.destinationGroupId].endpointsOrder.push(action.endpointId)
       }
       return groups
 

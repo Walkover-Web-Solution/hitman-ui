@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Pages from './pages'
-import {
-  deletePage,
-  duplicatePage,
-  updatePageOrder
-} from './redux/pagesActions'
+import { deletePage, duplicatePage, updatePageOrder } from './redux/pagesActions'
 import pageService from './pageService'
 import { isDashboardRoute } from '../common/utility'
 import filterService from '../../services/filterService'
@@ -24,12 +20,12 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 class CollectionPages extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {}
   }
 
-  openDeletePageModal (pageId) {
+  openDeletePageModal(pageId) {
     this.setState({
       showDeleteModal: true,
       selectedPage: {
@@ -38,50 +34,37 @@ class CollectionPages extends Component {
     })
   }
 
-  closeDeletePageModal () {
+  closeDeletePageModal() {
     this.setState({ showDeleteModal: false })
   }
 
-  extractPages () {
+  extractPages() {
     const pages = {}
     for (let i = 0; i < Object.keys(this.props.pages).length; i++) {
       if (
-        this.props.pages[Object.keys(this.props.pages)[i]].versionId ===
-        this.props.version_id &&
+        this.props.pages[Object.keys(this.props.pages)[i]].versionId === this.props.version_id &&
         this.props.pages[Object.keys(this.props.pages)[i]].groupId === null
       ) {
-        pages[Object.keys(this.props.pages)[i]] = this.props.pages[
-          Object.keys(this.props.pages)[i]
-        ]
+        pages[Object.keys(this.props.pages)[i]] = this.props.pages[Object.keys(this.props.pages)[i]]
       }
     }
     return pages
   }
 
-  makePositionWisePages (pages) {
+  makePositionWisePages(pages) {
     const positionWisePages = []
     for (let i = 0; i < Object.keys(pages).length; i++) {
-      positionWisePages[pages[Object.keys(pages)[i]].position] = Object.keys(
-        pages
-      )[i]
+      positionWisePages[pages[Object.keys(pages)[i]].position] = Object.keys(pages)[i]
     }
     return positionWisePages
   }
 
-  filterVersionPages () {
-    if (
-      this.props.selectedCollection === true &&
-      this.props.filter !== '' &&
-      this.filterFlag === false
-    ) {
+  filterVersionPages() {
+    if (this.props.selectedCollection === true && this.props.filter !== '' && this.filterFlag === false) {
       this.filterFlag = true
       let versionIds = []
       let versionIdsAndFilteredPages = []
-      versionIdsAndFilteredPages = filterService.filter(
-        this.props.pages,
-        this.props.filter,
-        'collectionPages'
-      )
+      versionIdsAndFilteredPages = filterService.filter(this.props.pages, this.props.filter, 'collectionPages')
       this.filteredVersionPages = versionIdsAndFilteredPages[0]
       versionIds = versionIdsAndFilteredPages[1]
       this.setState({ filter: this.props.filter })
@@ -93,11 +76,9 @@ class CollectionPages extends Component {
     }
   }
 
-  renderPublicPages () {
+  renderPublicPages() {
     const collectionPageIds = Object.keys(this.props.pages).filter(
-      (pId) =>
-        this.props.pages[pId].parentId === '-1' &&
-        this.props.pages[pId].parentId === this.props.parent_id
+      (pId) => this.props.pages[pId].parentId === '-1' && this.props.pages[pId].parentId === this.props.parent_id
     )
     let collectionPagesArray = []
     for (let index = 0; index < collectionPageIds.length; index++) {
@@ -107,8 +88,12 @@ class CollectionPages extends Component {
     }
 
     collectionPagesArray.sort(function (a, b) {
-      if (a.position < b.position) { return -1 }
-      if (a.position > b.position) { return 1 }
+      if (a.position < b.position) {
+        return -1
+      }
+      if (a.position > b.position) {
+        return 1
+      }
       return 0
     })
 
@@ -119,59 +104,54 @@ class CollectionPages extends Component {
     }
     return (
       collectionPages &&
-        Object.keys(collectionPages)
-          .map((pageId, index) => (
-            <div key={index} className='linkWith'>
-              <Pages
-                {...this.props}
-                page_id={pageId}
-                index={index}
-                open_delete_page_modal={this.openDeletePageModal.bind(this)}
-                close_delete_page_modal={this.closeDeletePageModal.bind(
-                  this
-                )}
-              />
-            </div>
-          )
-          )
+      Object.keys(collectionPages).map((pageId, index) => (
+        <div key={index} className='linkWith'>
+          <Pages
+            {...this.props}
+            page_id={pageId}
+            index={index}
+            open_delete_page_modal={this.openDeletePageModal.bind(this)}
+            close_delete_page_modal={this.closeDeletePageModal.bind(this)}
+          />
+        </div>
+      ))
     )
   }
 
-  renderDashboardPages () {
+  renderDashboardPages() {
     // return (
-      // this.props.pagesToRender
-      //   .map((pageId, index) => (
-      //     <div key={index} className='linkWith'>
-      //       <div key={index} className={isDashboardRoute(this.props) ? this.props.pages[pageId].state : null}>
-      //         <Pages
-      //           {...this.props}
-      //           page_id={pageId}
-      //           index={index}
-      //           open_delete_page_modal={this.openDeletePageModal.bind(   
-      //             this
-      //           )}
-      //           close_delete_page_modal={this.closeDeletePageModal.bind(
-      //             this
-      //           )}
-      //         />
-      //       </div>
-      //     </div>
-      //   )))
+    // this.props.pagesToRender
+    //   .map((pageId, index) => (
+    //     <div key={index} className='linkWith'>
+    //       <div key={index} className={isDashboardRoute(this.props) ? this.props.pages[pageId].state : null}>
+    //         <Pages
+    //           {...this.props}
+    //           page_id={pageId}
+    //           index={index}
+    //           open_delete_page_modal={this.openDeletePageModal.bind(
+    //             this
+    //           )}
+    //           close_delete_page_modal={this.closeDeletePageModal.bind(
+    //             this
+    //           )}
+    //         />
+    //       </div>
+    //     </div>
+    //   )))
   }
 
-  render () {
+  render() {
     return (
       <>
         {this.state.showDeleteModal &&
-            pageService.showDeletePageModal(
-              this.props,
-              this.closeDeletePageModal.bind(this),
-              'Delete Page',
-              ' Are you sure you wish to delete this page? ',
-              this.state.selectedPage
-            )}
+          pageService.showDeletePageModal(
+            this.props,
+            this.closeDeletePageModal.bind(this),
+            'Delete Page',
+            ' Are you sure you wish to delete this page? ',
+            this.state.selectedPage
+          )}
         {isDashboardRoute(this.props, true) ? this.renderDashboardPages() : this.renderPublicPages()}
-
       </>
     )
   }

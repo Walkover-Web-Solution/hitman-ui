@@ -9,11 +9,11 @@ export const defaultViewTypes = {
   DOC: 'doc'
 }
 export class DefaultViewModal extends Component {
-  createCollection (defaultView) {
+  createCollection(defaultView) {
     this.props.saveCollection(defaultView, true)
   }
 
-  renderTestingButton () {
+  renderTestingButton() {
     return (
       <button className='block-view-btn mr-3' onClick={() => this.createCollection(defaultViewTypes.TESTING)}>
         <img src={ApiIcon} alt='' />
@@ -22,7 +22,7 @@ export class DefaultViewModal extends Component {
     )
   }
 
-  renderDocButton () {
+  renderDocButton() {
     return (
       <button className='block-view-btn' onClick={() => this.createCollection(defaultViewTypes.DOC)}>
         <img src={DocIcon} alt='' />
@@ -31,7 +31,7 @@ export class DefaultViewModal extends Component {
     )
   }
 
-  renderSpinner () {
+  renderSpinner() {
     return (
       <div className='d-flex justify-content-center align-items-center'>
         <Spinner as='div' animation='border' size='md' role='status' />
@@ -39,7 +39,7 @@ export class DefaultViewModal extends Component {
     )
   }
 
-  renderButtons () {
+  renderButtons() {
     return (
       <>
         <div className='d-flex justify-content-center'>
@@ -54,7 +54,7 @@ export class DefaultViewModal extends Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <div>
         <h6 className='text-center mb-4'>Choose what you'll do with your collection</h6>

@@ -13,14 +13,14 @@
     width: 100%;
     position: relative;
     background-color: $secondary-color;
-    .navs-container{
+    .navs-container {
       width: calc(100% - 190px);
     }
-    .btn{
+    .btn {
       border-radius: 0;
       height: 42px;
     }
-    &::after{
+    &::after {
       content: '';
       width: 100%;
       height: 1px;
@@ -35,29 +35,29 @@
         height: 42px;
         position: relative;
         color: $text-color;
-        &:hover{
+        &:hover {
           color: $theme-color;
-          .close{
+          .close {
             opacity: 1;
           }
         }
-        .nav-link{
+        .nav-link {
           padding: 0 1rem 0 0;
           height: 100%;
           overflow: hidden;
-          border-right: 1px solid #E6DBD4;
+          border-right: 1px solid #e6dbd4;
           border-radius: 0;
-          border-bottom: 1px solid #E6DBD4;
+          border-bottom: 1px solid #e6dbd4;
           background-color: $secondary-color;
           color: inherit;
           min-width: 5.625rem;
           max-width: 9.25rem;
-          &.active{
+          &.active {
             background-color: $light-grey;
             border-bottom: 0;
             color: $theme-color;
             position: relative;
-            &::after{
+            &::after {
               content: '';
               width: 100%;
               height: 1px;
@@ -67,8 +67,8 @@
               bottom: 0;
               z-index: 1;
             }
-            .btn{
-              .sub-label{
+            .btn {
+              .sub-label {
                 display: block;
               }
             }
@@ -100,7 +100,7 @@
           opacity: 0;
           transition: all 0.3s ease-in;
           background-color: $secondary-color;
-          i{
+          i {
             font-size: $font-small;
           }
         }
@@ -108,7 +108,7 @@
           position: absolute;
           right: 0.5rem;
           font-size: 6px;
-          color: #E98A36;
+          color: #e98a36;
           top: 60%;
           margin: auto;
           bottom: 0;
@@ -125,7 +125,7 @@
           border-bottom: 1px solid #e6dbd4;
           border-right: 1px solid #e6dbd4;
           width: 42px;
-          height: 42px;   
+          height: 42px;
           .fa-plus {
             font-size: 15px;
           }
@@ -133,9 +133,8 @@
             font-size: 18px;
           }
         }
-        .show.dropdown{
-          .dropdown-menu{
-
+        .show.dropdown {
+          .dropdown-menu {
           }
         }
         .btn:hover {
@@ -164,7 +163,7 @@
       }
     }
 
-    div#history-tab-button{
+    div#history-tab-button {
       button {
         height: 42px;
         border: 1px solid $outline-color;
@@ -190,8 +189,8 @@
   height: 100%;
   border-right: 1px solid $outline-color;
 }
-#options-tab-button{
-  .btn{
+#options-tab-button {
+  .btn {
     width: 2.5rem;
     padding: 0;
   }
@@ -211,7 +210,6 @@
   overflow-y: auto;
 }
 
-
 .scroll-button {
   color: #828282;
   font-weight: 600;
@@ -226,7 +224,7 @@
   justify-content: center;
   border-right: 1px solid #e6dbd4;
   position: relative;
-  &--left{
+  &--left {
     border-left: 0;
   }
   &.disabled {
@@ -236,7 +234,7 @@
 }
 
 .tabs-name label.endpoint-name {
-  color: #E98A36;
+  color: #e98a36;
   font-size: $font-small;
   width: 115px;
   overflow: hidden;
@@ -254,7 +252,7 @@
 
 .hover-div {
   position: absolute;
-  border: 0.5px solid #E6DBD4;
+  border: 0.5px solid #e6dbd4;
   align-items: center;
   max-width: 300px;
   min-width: 220px;
@@ -292,7 +290,7 @@
     left: -18px;
     width: 12px;
     height: calc(50% + 6px);
-    border-color: #E98A36;
+    border-color: #e98a36;
     border-style: solid;
     box-sizing: border-box;
     z-index: 99;
@@ -301,28 +299,28 @@
   }
 }
 
-.content-header .tabs-container .nav .custom-tabs:first-child .nav-item.active{
-  border-left: 0px !important
+.content-header .tabs-container .nav .custom-tabs:first-child .nav-item.active {
+  border-left: 0px !important;
 }
 
-.dashboard-wrp  .nav .nav-item:after{
+.dashboard-wrp .nav .nav-item:after {
   width: 0px !important;
 }
 
-.dashboard-wrp  .tab-buttons{
+.dashboard-wrp .tab-buttons {
   background-color: #f8f8f8 !important;
 }
-#left-tabs-example-tab-null{
-  button{
-    color: #E98A36;
+#left-tabs-example-tab-null {
+  button {
+    color: #e98a36;
   }
 }
 
-.custom-btn-group{
+.custom-btn-group {
   position: relative;
-  .btn-divider{
+  .btn-divider {
     width: 0.5px;
-    background-color: #E6DBD4;
+    background-color: #e6dbd4;
     height: 100%;
   }
 }
@@ -332,7 +330,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.tab-width{
+.tab-width {
   width: 115px;
 }
 .history-heading {

@@ -5,7 +5,7 @@ import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpoin
 
 const initialState = {}
 
-function versionsReducer (state = initialState, action) {
+function versionsReducer(state = initialState, action) {
   let versions = {}
 
   switch (action.type) {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './onlineStatus.scss'
 
-export default function OnlineSatus (props) {
+export default function OnlineSatus(props) {
   const [online, isOnline] = useState(navigator.onLine)
   const [needToUpdate, changeStatus] = useState(false)
   const [timestamp, setTime] = useState(null)
@@ -44,10 +44,21 @@ export default function OnlineSatus (props) {
   return (
     <div className={['online-status', showStatus ? 'show' : 'hide'].join(' ')}>
       <div>
-        <span className={`online-status-${online}`}>{online ? 'You are online now.' : 'You are offline.'}</span><br />
-        {needToUpdate && <small className='text-muted'> While you were gone, there was change in the databse. <br />please sync to see changes.</small>}
+        <span className={`online-status-${online}`}>{online ? 'You are online now.' : 'You are offline.'}</span>
+        <br />
+        {needToUpdate && (
+          <small className='text-muted'>
+            {' '}
+            While you were gone, there was change in the databse. <br />
+            please sync to see changes.
+          </small>
+        )}
       </div>
-      {needToUpdate && <button className='btn btn-primary' onClick={() => fetchDataFromBackend()}>sync now</button>}
+      {needToUpdate && (
+        <button className='btn btn-primary' onClick={() => fetchDataFromBackend()}>
+          sync now
+        </button>
+      )}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import shortid from 'shortid'
-import {store} from '../../../store/store'
+import { store } from '../../../store/store'
 import indexedDbService from '../../indexedDb/indexedDbService'
 import tabStatusTypes from '../tabStatusTypes'
 import tabsActionTypes from './tabsActionTypes'
@@ -44,16 +44,8 @@ export const fetchTabsFromIdb = (props) => {
             }
             tabsMetadata.activeTabId = newTab.id
             indexedDbService.addData('tabs', newTab)
-            indexedDbService.updateData(
-              'tabs_metadata',
-              tabsMetadata.activeTabId,
-              'activeTabId'
-            )
-            indexedDbService.updateData(
-              'tabs_metadata',
-              tabsMetadata.tabsOrder,
-              'tabsOrder'
-            )
+            indexedDbService.updateData('tabs_metadata', tabsMetadata.activeTabId, 'activeTabId')
+            indexedDbService.updateData('tabs_metadata', tabsMetadata.tabsOrder, 'tabsOrder')
           }
         } else if (
           props.location.pathname.split('/')[4] === 'endpoint' &&
@@ -74,16 +66,8 @@ export const fetchTabsFromIdb = (props) => {
           tabsMetadata.tabsOrder.push(newTab.id)
           tabsMetadata.activeTabId = newTab.id
           indexedDbService.addData('tabs', newTab)
-          indexedDbService.updateData(
-            'tabs_metadata',
-            tabsMetadata.activeTabId,
-            'activeTabId'
-          )
-          indexedDbService.updateData(
-            'tabs_metadata',
-            tabsMetadata.tabsOrder,
-            'tabsOrder'
-          )
+          indexedDbService.updateData('tabs_metadata', tabsMetadata.activeTabId, 'activeTabId')
+          indexedDbService.updateData('tabs_metadata', tabsMetadata.tabsOrder, 'tabsOrder')
         }
 
         dispatch({
@@ -99,7 +83,7 @@ export const fetchTabsFromIdb = (props) => {
 export const addNewTab = () => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
- const showDesktopModal = !window.matchMedia('(display-mode: standalone)').matches
+  const showDesktopModal = !window.matchMedia('(display-mode: standalone)').matches
   if (!isElectron() && tabsOrder.length >= 5 && showDesktopModal) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
@@ -134,9 +118,7 @@ export const addNewTab = () => {
 }
 
 export const closeTab = (tabId, history) => {
-  const tabsOrder = store
-    .getState()
-    .tabs.tabsOrder.filter((tId) => tId !== tabId)
+  const tabsOrder = store.getState().tabs.tabsOrder.filter((tId) => tId !== tabId)
   return async (dispatch) => {
     dispatch({ type: tabsActionTypes.CLOSE_TAB, tabId })
     await indexedDbService.deleteData('tabs', tabId)
@@ -152,13 +134,11 @@ export const openInNewTab = (tab) => {
   return async (dispatch) => {
     dispatch({ type: tabsActionTypes.OPEN_IN_NEW_TAB, tab })
     await indexedDbService.addData('tabs', tab)
-    indexedDbService
-      .getValue('tabs_metadata', 'tabsOrder')
-      .then((tabsOrder) => {
-        if (!tabsOrder.includes(tab.id)) tabsOrder.push(tab.id)
+    indexedDbService.getValue('tabs_metadata', 'tabsOrder').then((tabsOrder) => {
+      if (!tabsOrder.includes(tab.id)) tabsOrder.push(tab.id)
 
-        indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
-      })
+      indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
+    })
     dispatch(setActiveTabId(tab.id))
   }
 }
@@ -193,9 +173,7 @@ export const setTabsOrder = (tabsOrder) => {
 }
 
 export const replaceTab = (oldTabId, newTab) => {
-  const tabsOrder = store
-    .getState()
-    .tabs.tabsOrder.filter((tId) => tId !== oldTabId)
+  const tabsOrder = store.getState().tabs.tabsOrder.filter((tId) => tId !== oldTabId)
   if (!isElectron() && tabsOrder.length >= 5) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }

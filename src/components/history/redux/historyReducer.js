@@ -2,7 +2,7 @@ import historyActionTyes from './historyActionTypes'
 
 const initialState = {}
 
-function historyReducer (state = initialState, action) {
+function historyReducer(state = initialState, action) {
   let newState = {}
   switch (action.type) {
     case historyActionTyes.FETCH_HISTORY_FROM_IDB:

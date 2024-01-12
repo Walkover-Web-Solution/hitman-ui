@@ -27,15 +27,15 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    modals: state.modals,
+    modals: state.modals
   }
 }
 class App extends Component {
-  async redirectToClientDomain () {
+  async redirectToClientDomain() {
     const isDesktop = process.env.REACT_APP_IS_DESKTOP
     const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
     const currentDomain = window.location.href.split('/')[2]
-    if ((!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p') && !isDesktop) {
+    if (!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p' && !isDesktop) {
       const { data: clientCollection } = await collectionsApiService.getCollectionsByCustomDomain(currentDomain)
       if (Object.keys(clientCollection) && Object.keys(clientCollection)[0]) {
         const clientCollectionId = Object.keys(clientCollection)[0]
@@ -45,12 +45,12 @@ class App extends Component {
       }
     }
   }
- 
-  componentDidMount () {
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  this.props.install_modal(e);
-});
+
+  componentDidMount() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault()
+      this.props.install_modal(e)
+    })
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
@@ -68,7 +68,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const prevOrgId = getOrgId()
     const currentOrgId = this.props.location.pathname.split('/')?.[2]
     if (currentOrgId && prevOrgId !== currentOrgId) {
@@ -76,8 +76,8 @@ window.addEventListener('beforeinstallprompt', (e) => {
     }
   }
 
-  changeSelectedOrg (orgId) {
-        let orgList = window.localStorage.getItem('organisationList')
+  changeSelectedOrg(orgId) {
+    let orgList = window.localStorage.getItem('organisationList')
     orgList = JSON.parse(orgList)
     let flag = 0
     let organisation
@@ -94,78 +94,79 @@ window.addEventListener('beforeinstallprompt', (e) => {
     }
   }
 
-    render = () => {
-      return this.renderApp()
-    }
+  render = () => {
+    return this.renderApp()
+  }
 
-    renderApp = () => {
-      const PUBLIC_URL = process.env.REACT_APP_PUBLIC_UI_URL || ''
-      const PUBLIC_DOMAIN = PUBLIC_URL.split('/')[2]
-      const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
-      const currentDomain = window.location.href.split('/')[2]
-      const path = window.location.href.split('/')[3]
+  renderApp = () => {
+    const PUBLIC_URL = process.env.REACT_APP_PUBLIC_UI_URL || ''
+    const PUBLIC_DOMAIN = PUBLIC_URL.split('/')[2]
+    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+    const currentDomain = window.location.href.split('/')[2]
+    const path = window.location.href.split('/')[3]
 
-      if (!isElectron() && !domainsList.includes(currentDomain)) {
-        if (currentDomain === PUBLIC_DOMAIN) {
-          if (path !== 'p' && path !== 'dashboard') {
-            window.localStorage.clear()
-            const cookies = new Cookies()
-            cookies.remove('token')
-            this.props.history.push({ pathname: '/dashboard/' })
-            return null
-          }
-        } else {
-          if (path !== 'p') {
-            return (
-              <Switch>
-                <Route path='/' component={ClientDoc} />
-              </Switch>
-            )
-          }
+    if (!isElectron() && !domainsList.includes(currentDomain)) {
+      if (currentDomain === PUBLIC_DOMAIN) {
+        if (path !== 'p' && path !== 'dashboard') {
+          window.localStorage.clear()
+          const cookies = new Cookies()
+          cookies.remove('token')
+          this.props.history.push({ pathname: '/dashboard/' })
+          return null
+        }
+      } else {
+        if (path !== 'p') {
+          return (
+            <Switch>
+              <Route path='/' component={ClientDoc} />
+            </Switch>
+          )
         }
       }
-
-      return (
-        <>
-          <ToastContainer />
-          <Switch>
-            {/* Error Page Routes */}
-            <Route path='/404_PAGE' component={ERROR_404_PAGE} />
-            <Route path='/403_PAGE' component={ERROR_403_PAGE} />
-
-
-            {/* Logged in Dashboard Routes */}
-            <ProtectedRouteV2 exact path='/orgs/:orgId/dashboard/' component={MainV2} />
-            {/* <ProtectedRouteV2 path='/orgs/:orgId/admin/publish' component={MainV2} /> */}
-            <ProtectedRouteV2 path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={MainV2} />
-            <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/settings' component={MainV2} />
-            <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' component={MainV2} />
-            <ProtectedRouteV2 path='/orgs/:orgId/dashboard/page/:pageId' component={MainV2} />
-            <ProtectedRouteV2 path='/orgs/:orgId/dashboard/history/:historyId' component={MainV2} />
-            <Route path='/orgs/:orgId/invite' component={InviteTeam} />
-
-            {/* Not Logged in Dashboard Route */}
-            <Route path='/dashboard/' component={MainV2} />
-
-            {/*  Public Page Routes */}
-            <Route path='/p/error' component={NotFound} />
-            <Route path='/p/:collectionIdentifier' component={Public} />
-
-            {/* React App Auth Routes */}
-            <Route path='/login' component={LoginV2} />
-            <Route path='/logout' component={Logout} />
-            <Route path='/' component={AuthServiceV2} />
-
-            {/* Electron App Auth Routes */}
-            <Route path='/browser-login-success' component={BrowserLogin} />
-            <Route path='/browser-login' component={BrowserLogin} />
-
-            <Route path='/marketPlace' component={PublicView} />
-            <Route path='/'><Redirect to='/dashboard' /></Route>
-          </Switch>
-        </>
-      )
     }
+
+    return (
+      <>
+        <ToastContainer />
+        <Switch>
+          {/* Error Page Routes */}
+          <Route path='/404_PAGE' component={ERROR_404_PAGE} />
+          <Route path='/403_PAGE' component={ERROR_403_PAGE} />
+
+          {/* Logged in Dashboard Routes */}
+          <ProtectedRouteV2 exact path='/orgs/:orgId/dashboard/' component={MainV2} />
+          {/* <ProtectedRouteV2 path='/orgs/:orgId/admin/publish' component={MainV2} /> */}
+          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={MainV2} />
+          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/settings' component={MainV2} />
+          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' component={MainV2} />
+          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/page/:pageId' component={MainV2} />
+          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/history/:historyId' component={MainV2} />
+          <Route path='/orgs/:orgId/invite' component={InviteTeam} />
+
+          {/* Not Logged in Dashboard Route */}
+          <Route path='/dashboard/' component={MainV2} />
+
+          {/*  Public Page Routes */}
+          <Route path='/p/error' component={NotFound} />
+          <Route path='/p/:collectionIdentifier' component={Public} />
+
+          {/* React App Auth Routes */}
+          <Route path='/login' component={LoginV2} />
+          <Route path='/logout' component={Logout} />
+          <Route path='/' component={AuthServiceV2} />
+
+          {/* Electron App Auth Routes */}
+          <Route path='/browser-login-success' component={BrowserLogin} />
+          <Route path='/browser-login' component={BrowserLogin} />
+
+          <Route path='/marketPlace' component={PublicView} />
+          <Route path='/'>
+            <Redirect to='/dashboard' />
+          </Route>
+        </Switch>
+      </>
+    )
+  }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(App)
 

@@ -49,19 +49,19 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class ContentPanel extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = { saveEndpointFlag: false }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     this.props.fetch_tabs_from_idb({ ...this.props })
     // this.props.history.push({
     //   dashboardEnvironment: true,
     // });
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     const { endpointId, pageId, historyId, collectionId } = this.props.match.params
     if (this.props.tabs.loaded && endpointId && endpointId !== 'new') {
       if (this.props.tabs.tabs[endpointId]) {
@@ -69,10 +69,7 @@ class ContentPanel extends Component {
           this.props.set_active_tab_id(endpointId)
         }
       } else {
-        if (
-          this.props.endpoints &&
-          this.props.endpoints[endpointId]
-        ) {
+        if (this.props.endpoints && this.props.endpoints[endpointId]) {
           const requestId = this.props.endpoints[endpointId].requestId
           const newTabObj = {
             id: endpointId,
@@ -93,7 +90,9 @@ class ContentPanel extends Component {
 
     if (this.props.tabs.loaded && pageId) {
       if (this.props.tabs.tabs[pageId]) {
-        if (this.props.tabs.activeTabId !== pageId) { this.props.set_active_tab_id(pageId) }
+        if (this.props.tabs.activeTabId !== pageId) {
+          this.props.set_active_tab_id(pageId)
+        }
       } else {
         if (this.props.pages && this.props.pages[pageId]) {
           this.props.open_in_new_tab({
@@ -110,7 +109,9 @@ class ContentPanel extends Component {
 
     if (this.props.tabs.loaded && historyId) {
       if (this.props.tabs.tabs[historyId]) {
-        if (this.props.tabs.activeTabId !== historyId) { this.props.set_active_tab_id(historyId) }
+        if (this.props.tabs.activeTabId !== historyId) {
+          this.props.set_active_tab_id(historyId)
+        }
       } else if (this.props.historySnapshots && this.props.historySnapshots[historyId]) {
         this.props.open_in_new_tab({
           id: historyId,
@@ -125,10 +126,16 @@ class ContentPanel extends Component {
 
     if (this.props.tabs.loaded && collectionId) {
       if (this.props.tabs.tabs[collectionId]) {
-        if (this.props.tabs.activeTabId !== collectionId) { this.props.set_active_tab_id(collectionId) }
+        if (this.props.tabs.activeTabId !== collectionId) {
+          this.props.set_active_tab_id(collectionId)
+        }
       } else if (this.props.collections && this.props.collections[collectionId]) {
         let pageType
-        if (this.props.location.pathname.split('/')[6] === 'settings') { pageType = 'SETTINGS' } else { pageType = 'FEEDBACK' }
+        if (this.props.location.pathname.split('/')[6] === 'settings') {
+          pageType = 'SETTINGS'
+        } else {
+          pageType = 'FEEDBACK'
+        }
         this.props.open_in_new_tab({
           id: collectionId,
           type: 'collection',
@@ -157,9 +164,7 @@ class ContentPanel extends Component {
           this.props.history.push({
             pathname:
               tab.type !== 'collection'
-                ? `/orgs/${orgId}/dashboard/${tab.type}/${
-                    tab.status === 'NEW' ? 'new' : tabId
-                  }`
+                ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
                 : this.props.location.pathname.split('/')[6] === 'settings'
                   ? `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
                   : `/orgs/${orgId}/dashboard/collection/${tabId}/feedback`
@@ -171,96 +176,80 @@ class ContentPanel extends Component {
     }
   }
 
-  handleSaveEndpoint (flag, tabId) {
+  handleSaveEndpoint(flag, tabId) {
     this.setState({ saveEndpointFlag: flag, selectedTabId: tabId })
   }
 
-  handleSavePage (flag, tabId) {
+  handleSavePage(flag, tabId) {
     this.setState({ savePageFlag: flag, selectedTabId: tabId })
   }
 
-  openLoginSignupModal () {
+  openLoginSignupModal() {
     this.setState({ showLoginSignupModal: true })
   }
 
-  closeLoginSignupModal () {
+  closeLoginSignupModal() {
     this.setState({ showLoginSignupModal: false })
   }
 
-  render () {
+  render() {
     const { activeTabId } = this.props.tabs
     return (
       <main role='main' className='main'>
-        {this.state.showLoginSignupModal && (
-          <LoginSignupModal
-            show
-            onHide={() => this.closeLoginSignupModal()}
-            title='Save Endpoint'
-          />
-        )}
+        {this.state.showLoginSignupModal && <LoginSignupModal show onHide={() => this.closeLoginSignupModal()} title='Save Endpoint' />}
         {/* <main role="main" className="main ml-sm-auto custom-main"> */}
-        <Tab.Container
-          id='left-tabs-example'
-          defaultActiveKey={activeTabId}
-          activeKey={activeTabId}
-        >
-          {
-            getCurrentUser()
-              ? (
-                <>
-                  <div className='content-header'>
-                    <div className='tabs-container d-flex justify-content-between'>
-                      <CustomTabs
-                        {...this.props}
-                        handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
-                        handle_save_page={this.handleSavePage.bind(this)}
-                      />
-                      <Environments {...this.props} />
-                    </div>
-                  </div>
-                </>
-                )
-              : (
-                // rendered a static single tab mimicking the original, instead of tabs component if user is not signed
-                <div className='content-header'>
-                  <div className='tabs-container tabs-width d-flex dashboard-wrp'>
-                    <Nav variant='pills' className=''>
-                      <Nav.Item className='px-0'>
-                        <Nav.Link className='active'>
-                          <button className='btn font-weight-bold'>Untitled</button>
-                        </Nav.Link>
-                      </Nav.Item>
-                    </Nav>
-                    <div className='custom-btn-group d-flex'>
-                      <button
-                        className='btn'
-                        onClick={() => { this.openLoginSignupModal() }}
-                      >
-
-                        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                          <path d='M9 3V15' stroke='#808080' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          <path d='M3 9H15' stroke='#808080' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                        </svg>
-                      </button>
-                      <div className='btn-divider' />
-                      {getCurrentUser() &&
-                        <Dropdown>
-                          <Dropdown.Toggle
-                            bsPrefix='dropdown'
-                            variant='default'
-                            id='dropdown-basic'
-                          >
-                            <HistoryIcon />
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu className='history-drop-down'>
-                            <History {...this.props} />
-                          </Dropdown.Menu>
-                        </Dropdown>}
-                    </div>
-                  </div>
+        <Tab.Container id='left-tabs-example' defaultActiveKey={activeTabId} activeKey={activeTabId}>
+          {getCurrentUser() ? (
+            <>
+              <div className='content-header'>
+                <div className='tabs-container d-flex justify-content-between'>
+                  <CustomTabs
+                    {...this.props}
+                    handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
+                    handle_save_page={this.handleSavePage.bind(this)}
+                  />
+                  <Environments {...this.props} />
                 </div>
-                )
-          }
+              </div>
+            </>
+          ) : (
+            // rendered a static single tab mimicking the original, instead of tabs component if user is not signed
+            <div className='content-header'>
+              <div className='tabs-container tabs-width d-flex dashboard-wrp'>
+                <Nav variant='pills' className=''>
+                  <Nav.Item className='px-0'>
+                    <Nav.Link className='active'>
+                      <button className='btn font-weight-bold'>Untitled</button>
+                    </Nav.Link>
+                  </Nav.Item>
+                </Nav>
+                <div className='custom-btn-group d-flex'>
+                  <button
+                    className='btn'
+                    onClick={() => {
+                      this.openLoginSignupModal()
+                    }}
+                  >
+                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M9 3V15' stroke='#808080' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                      <path d='M3 9H15' stroke='#808080' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                    </svg>
+                  </button>
+                  <div className='btn-divider' />
+                  {getCurrentUser() && (
+                    <Dropdown>
+                      <Dropdown.Toggle bsPrefix='dropdown' variant='default' id='dropdown-basic'>
+                        <HistoryIcon />
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu className='history-drop-down'>
+                        <History {...this.props} />
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
           <div className='main-content'>
             <TabContent
               {...this.props}

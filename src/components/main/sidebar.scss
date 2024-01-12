@@ -15,7 +15,7 @@
   background: #e6dbd4;
   cursor: col-resize;
   position: relative;
-  &::after{
+  &::after {
     content: '';
     width: 0.5rem;
     height: 100%;
@@ -31,20 +31,20 @@ body .sidebar {
   height: 100%;
   background-color: $secondary-color;
   padding: 0.75rem 0 0.45rem;
-  .switch-products{
-    .dropdown-toggle{
+  .switch-products {
+    .dropdown-toggle {
       color: $text-color-dark !important;
       background: none !important;
     }
-    .dropdown-menu{
-      .dropdown-item{
+    .dropdown-menu {
+      .dropdown-item {
         padding: 0.25rem 1rem;
         &.dropHeader {
           font-weight: 500;
           pointer-events: none !important;
         }
       }
-    } 
+    }
   }
   .collect-length {
     line-height: 1.5rem;
@@ -58,7 +58,7 @@ body .sidebar {
       padding-bottom: 0.5rem;
     }
     border-bottom: 1px solid #ebe9e8;
-    > button{
+    > button {
       height: 2rem;
     }
     .inner-container {
@@ -66,7 +66,7 @@ body .sidebar {
       width: 100%;
     }
   }
-  .versionChovron{
+  .versionChovron {
     transform: rotate(-90deg);
     width: 1.5rem;
     height: 1.5rem;
@@ -76,7 +76,7 @@ body .sidebar {
     transition: all 0.3s ease-in;
   }
   .fade {
-    transition: opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1)!important;
+    transition: opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1) !important;
   }
   .primary-sidebar {
     width: 100%;
@@ -86,7 +86,7 @@ body .sidebar {
     flex: 0 0 auto;
     margin-top: auto;
     flex-direction: column;
-    > .plr-3{
+    > .plr-3 {
       flex-shrink: 0;
       flex-grow: 0;
     }
@@ -95,16 +95,16 @@ body .sidebar {
       background: none;
       padding: 0;
       border-bottom: 1px solid transparent;
-      &:focus{
+      &:focus {
         border-color: $outline-color;
       }
-      &::placeholder{
+      &::placeholder {
         color: $text-color;
       }
     }
     .sidebar-accordion {
-      &.expanded > button{
-        .versionChovron{
+      &.expanded > button {
+        .versionChovron {
           transform: rotate(0);
         }
       }
@@ -122,25 +122,25 @@ body .sidebar {
         margin-right: 10px;
         justify-content: center;
       }
-      button{
-        > div.cl-name{
+      button {
+        > div.cl-name {
           width: 100%;
         }
-        &.expanded{
-          .versionChovron{
+        &.expanded {
+          .versionChovron {
             transform: rotate(0);
           }
         }
         &:hover {
           background: $grey;
-          .published-icon{
+          .published-icon {
             opacity: 0;
-          } 
+          }
         }
         .sidebar-item-action-btn {
           cursor: pointer;
           transition: all 0.3s ease-in;
-          i{
+          i {
             display: flex;
             height: 12px;
             width: 0.5rem;
@@ -154,21 +154,21 @@ body .sidebar {
           top: 50%;
           transform: translateY(-50%);
           z-index: 19;
-          > div{
-            &:not(.dropdown-menu){
+          > div {
+            &:not(.dropdown-menu) {
               transition: all 0.3s ease-in;
               opacity: 0;
               visibility: hidden;
             }
           }
-          .sidebar-item-action-btn[aria-expanded="true"]{
+          .sidebar-item-action-btn[aria-expanded='true'] {
             opacity: 1;
             visibility: visible;
             background-color: $secondary-color;
           }
-          .dropdown-menu{
+          .dropdown-menu {
             box-shadow: 0px 18px 46px -14px #e5e5e5;
-            .dropdown-item{
+            .dropdown-item {
               font-size: 14px;
               padding: 0.25rem 1rem;
             }
@@ -191,7 +191,7 @@ body .sidebar {
           outline: none;
           box-shadow: none;
         }
-        &.focused{
+        &.focused {
           background-color: $grey;
         }
         &:hover {
@@ -199,30 +199,30 @@ body .sidebar {
             visibility: visible;
             opacity: 1;
           }
-          .counts{
+          .counts {
             opacity: 0;
           }
-          .sidebar-item-action-btn[aria-expanded="true"]{
+          .sidebar-item-action-btn[aria-expanded='true'] {
             background-color: $grey;
           }
         }
-        .sidebar-toggle{
+        .sidebar-toggle {
           transition: all 0.3s ease-in;
           &:hover {
             background: #ebebeb;
-            border-color: #F1EEE5;
+            border-color: #f1eee5;
             .sidebar-item-action-btn {
               visibility: visible;
               opacity: 1;
             }
           }
-          i{
+          i {
             color: #000;
           }
         }
       }
     }
-    .sidebar-content{
+    .sidebar-content {
       overflow: hidden auto;
       flex: auto;
       .card-body {
@@ -234,10 +234,10 @@ body .sidebar {
         align-items: center;
       }
     }
-    .dropdown-menu{
+    .dropdown-menu {
       border: none;
     }
-    .profile-menu{
+    .profile-menu {
       display: block;
       flex: 0 0 auto;
       border-top: 1px solid #dcdcdc;
@@ -248,8 +248,8 @@ body .sidebar {
       }
       .profile-listing-container .dropdown-item {
         padding: 0.25rem 1rem;
-        img{
-          margin-right: 0.65rem; 
+        img {
+          margin-right: 0.65rem;
         }
       }
       .org-name {
@@ -259,7 +259,7 @@ body .sidebar {
         font-size: $font-normal;
         display: block;
       }
-      .profile-details-label-light{
+      .profile-details-label-light {
         font-size: $font-medium;
         color: $text-color;
       }
@@ -283,7 +283,7 @@ body .sidebar {
 }
 
 .heading-collection {
-  color: #F2994A;
+  color: #f2994a;
   font-weight: 600;
   font-size: 14px;
   line-height: 14px;
@@ -308,7 +308,7 @@ body .sidebar {
 .user-info .user-avatar {
   width: 32px;
   height: 32px;
-  background: #F7F5F4;
+  background: #f7f5f4;
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -347,7 +347,7 @@ body .sidebar {
   flex-grow: 1;
 }
 
-.search-box>label {
+.search-box > label {
   position: absolute;
   left: 10px;
   top: 0;
@@ -360,25 +360,25 @@ body .sidebar {
   z-index: 9;
 }
 
-.search-box>input[type="text"] {
+.search-box > input[type='text'] {
   width: 100%;
   border-radius: 4px;
-  border-color: rgba(9, 30, 66,0.1) !important;
-  &:focus{
+  border-color: rgba(9, 30, 66, 0.1) !important;
+  &:focus {
     border-color: #212121 !important;
   }
 }
 
-input[type="text"]:focus {
+input[type='text']:focus {
   // border: solid rgba(255, 255, 255, 0.1);
   outline: none;
   box-shadow: none;
 }
-.primary-sidebar .sidebar-accordion.active>{
+.primary-sidebar .sidebar-accordion.active > {
   button {
     background: #ebebeb;
-    border-color: #F1EEE5;
-    &:before{
+    border-color: #f1eee5;
+    &:before {
       transform: rotate(360deg) !important;
     }
   }
@@ -407,7 +407,7 @@ input[type="text"]:focus {
     margin-right: 5px;
   }
 }
-.sidebar-accordion .sidebar-accordion-item>i {
+.sidebar-accordion .sidebar-accordion-item > i {
   display: inline-block;
   width: 30px;
 }
@@ -417,7 +417,7 @@ input[type="text"]:focus {
 }
 
 .secondary-sidebar .card-body {
-  background: #F3F3F3;
+  background: #f3f3f3;
   border-radius: 4px;
   padding: 0px 0px !important;
 }
@@ -432,7 +432,13 @@ input[type="text"]:focus {
   color: #999;
   padding: 0px 0 10px;
   background-color: transparent;
-  transition: box-shadow .3s .15s, transform .3s, margin-left .3s, margin-right .3s, width .3s, z-index 0s ease .3s;
+  transition:
+    box-shadow 0.3s 0.15s,
+    transform 0.3s,
+    margin-left 0.3s,
+    margin-right 0.3s,
+    width 0.3s,
+    z-index 0s ease 0.3s;
 
   button.btn.close {
     position: absolute;
@@ -453,7 +459,7 @@ input[type="text"]:focus {
 
   .hm-sidebar-outer-block {
     padding: 0;
-    border: 0.5px solid #E6DBD4;
+    border: 0.5px solid #e6dbd4;
     border-radius: 4px;
     margin-bottom: 10px;
   }
@@ -461,7 +467,7 @@ input[type="text"]:focus {
   button {
     font-size: 14px;
     font-weight: 400;
-    background: #F3F3F3;
+    background: #f3f3f3;
     margin-bottom: 0;
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
@@ -501,8 +507,6 @@ input[type="text"]:focus {
   overflow: auto;
   transition: 200ms;
 }
-
-
 
 .sidebar-content .collection-name .btn-primary {
   font-weight: 600;

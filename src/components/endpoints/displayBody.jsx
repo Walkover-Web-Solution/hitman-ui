@@ -16,7 +16,7 @@ import { isSavedEndpoint } from '../common/utility'
 import _ from 'lodash'
 
 class BodyContainer extends Component {
-  _isMounted = false; // Add a flag to track if the component is mounted
+  _isMounted = false // Add a flag to track if the component is mounted
   constructor(props) {
     super(props)
     this.state = {
@@ -57,11 +57,11 @@ class BodyContainer extends Component {
   }
 
   componentDidMount() {
-    this._isMounted = true;
+    this._isMounted = true
   }
 
   componentWillUnmount() {
-    this._isMounted = false; 
+    this._isMounted = false
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -82,12 +82,8 @@ class BodyContainer extends Component {
       const data = this.state.data
       const type = selectedBodyType.split('-')
       data[type[type.length - 1]] = this.props.body.value
-      if (
-        document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)
-      ) {
-        document.getElementById(
-          selectedBodyType + '-' + this.props.endpoint_id
-        ).checked = true
+      if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
+        document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
         this.setState({
           selectedRawBodyType: this.rawBodyType ? this.rawBodyType : 'TEXT',
           selectedBodyType,
@@ -117,34 +113,24 @@ class BodyContainer extends Component {
       if (this._isMounted) {
         this.setState((prevState) => ({
           selectedBodyType: prevState.selectedRawBodyType
-        }));
+        }))
       }
-      this.props.set_body(
-        this.state.selectedRawBodyType,
-        this.state.data[bodyType]
-      )
+      this.props.set_body(this.state.selectedRawBodyType, this.state.data[bodyType])
     } else {
       this.flag = false
       if (document.getElementById(`toggle-raw-${this.props.endpoint_id}`)) {
-        document.getElementById(
-          `toggle-raw-${this.props.endpoint_id}`
-        ).className = 'btn btn-secondary active'
-        document.getElementById(
-          `toggle-body-description-${this.props.endpoint_id}`
-        ).className = 'btn btn-secondary '
+        document.getElementById(`toggle-raw-${this.props.endpoint_id}`).className = 'btn btn-secondary active'
+        document.getElementById(`toggle-body-description-${this.props.endpoint_id}`).className = 'btn btn-secondary '
       }
       if (bodyType === 'raw') {
         this.showRawBodyType = true
         if (this._isMounted) {
           this.setState({
-           selectedBodyType: 'raw', // Set selectedBodyType to 'raw'
-        selectedRawBodyType: this.state.selectedRawBodyType
+            selectedBodyType: 'raw', // Set selectedBodyType to 'raw'
+            selectedRawBodyType: this.state.selectedRawBodyType
           })
         }
-        this.props.set_body(
-          this.state.selectedRawBodyType,
-          this.state.data[bodyType]
-        )
+        this.props.set_body(this.state.selectedRawBodyType, this.state.data[bodyType])
       } else {
         this.showRawBodyType = false
         if (this._isMounted) {
@@ -219,7 +205,7 @@ class BodyContainer extends Component {
     if (this._isMounted) {
       this.setState({
         selectedRawBodyType: rawBodyType,
-        selectedBodyType: this.state.selectedBodyType === 'raw' ? 'raw' : rawBodyType 
+        selectedBodyType: this.state.selectedBodyType === 'raw' ? 'raw' : rawBodyType
       })
     }
     this.props.set_body(rawBodyType, this.state.data.raw)
@@ -227,13 +213,7 @@ class BodyContainer extends Component {
 
   renderBody() {
     if (this.state.selectedBodyType && this.flag) {
-      return (
-        <BodyDescription
-          {...this.props}
-          body={this.state.data.raw}
-          body_type={this.state.selectedRawBodyType}
-        />
-      )
+      return <BodyDescription {...this.props} body={this.state.data.raw} body_type={this.state.selectedRawBodyType} />
     } else if (this.state.selectedBodyType) {
       switch (this.state.selectedBodyType) {
         case 'multipart/form-data':
@@ -269,11 +249,7 @@ class BodyContainer extends Component {
                 className='custom-raw-editor'
                 mode={this.state.selectedRawBodyType.toLowerCase()}
                 theme='github'
-                value={
-                  this.state.selectedRawBodyType === 'JSON'
-                    ? this.makeJson(this.state.data.raw)
-                    : this.state.data.raw
-                }
+                value={this.state.selectedRawBodyType === 'JSON' ? this.makeJson(this.state.data.raw) : this.state.data.raw}
                 onChange={this.handleChange.bind(this)}
                 setOptions={{
                   showLineNumbers: true
@@ -306,8 +282,6 @@ class BodyContainer extends Component {
       this.alteredBody = false
     }
 
-    
-
     return (
       <div className='body-wrapper'>
         <span style={{ fontWeight: 600 }}>Body</span>
@@ -324,7 +298,6 @@ class BodyContainer extends Component {
               />
               <span>none</span>
               <span className='checkmark' />
-
             </label>
 
             <label className='customRadio'>
@@ -333,7 +306,7 @@ class BodyContainer extends Component {
                 name={`body-select-${this.props.endpoint_id}`}
                 id={`raw-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('raw')}
-                onChange={() => { }}
+                onChange={() => {}}
                 className='custom-radio-input'
                 checked={this.state.selectedBodyType === 'raw'}
               />
@@ -346,28 +319,25 @@ class BodyContainer extends Component {
                 name={`body-select-${this.props.endpoint_id}`}
                 id={`multipart/form-data-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('multipart/form-data')}
-                onChange={() => { }}
+                onChange={() => {}}
                 className='custom-radio-input'
                 checked={this.matchCurrentBodyType(`multipart/form-data-${this.props.endpoint_id}`)}
               />
               <span>form-data</span>
               <span className='checkmark' />
-
             </label>
             <label className='customRadio'>
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
                 id={`application/x-www-form-urlencoded-${this.props.endpoint_id}`}
-                onClick={() =>
-                  this.handleSelectBodyType('application/x-www-form-urlencoded')}
+                onClick={() => this.handleSelectBodyType('application/x-www-form-urlencoded')}
                 className='custom-radio-input'
-                onChange={() => { }}
+                onChange={() => {}}
                 checked={this.matchCurrentBodyType(`application/x-www-form-urlencoded-${this.props.endpoint_id}`)}
               />
               <span>x-www-form-urlencoded</span>
               <span className='checkmark' />
-
             </label>
             {!(this.showRawBodyType && this.flag) && (
               <div className='body'>
@@ -384,10 +354,7 @@ class BodyContainer extends Component {
                       >
                         {this.state.selectedRawBodyType}
                       </button>
-                      <div
-                        className='dropdown-menu'
-                        aria-labelledby='dropdownMenuButton'
-                      >
+                      <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
                         {this.rawBodyTypes.map((rawBodyType) => (
                           <button
                             className='dropdown-item'
@@ -407,17 +374,9 @@ class BodyContainer extends Component {
           </form>
           {isSavedEndpoint(this.props) &&
             this.state.selectedRawBodyType === 'JSON' &&
-            (this.state.selectedBodyType === 'raw' ||
-              this.state.selectedBodyType === 'JSON') && (
-              <div
-                className='btn-group btn-group-toggle customBtnGroup mb-4'
-                data-toggle='buttons'
-                style={{ float: 'right' }}
-              >
-                <label
-                  className='btn btn-secondary active'
-                  id={`toggle-raw-${this.props.endpoint_id}`}
-                >
+            (this.state.selectedBodyType === 'raw' || this.state.selectedBodyType === 'JSON') && (
+              <div className='btn-group btn-group-toggle customBtnGroup mb-4' data-toggle='buttons' style={{ float: 'right' }}>
+                <label className='btn btn-secondary active' id={`toggle-raw-${this.props.endpoint_id}`}>
                   <input
                     type='radio'
                     name='options'
@@ -428,17 +387,13 @@ class BodyContainer extends Component {
                   />
                   Raw
                 </label>
-                <label
-                  className='btn btn-secondary body-desc'
-                  id={`toggle-body-description-${this.props.endpoint_id}`}
-                >
+                <label className='btn btn-secondary body-desc' id={`toggle-body-description-${this.props.endpoint_id}`}>
                   <input
                     type='radio'
                     name='options'
                     id='option2'
                     autoComplete='off'
-                    onClick={() =>
-                      this.handleSelectBodyType('raw', 'bodyDescription')}
+                    onClick={() => this.handleSelectBodyType('raw', 'bodyDescription')}
                   />
                   Body Description
                 </label>

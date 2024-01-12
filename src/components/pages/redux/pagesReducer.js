@@ -8,7 +8,7 @@ import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishAction
 
 const initialState = {}
 
-function pagesReducer (state = initialState, action) {
+function pagesReducer(state = initialState, action) {
   let pages = {}
 
   switch (action.type) {
@@ -57,7 +57,7 @@ function pagesReducer (state = initialState, action) {
       pages[action.response.id] = pageData
       return pages
     }
-    
+
     case pagesActionTypes.ON_PAGE_ADDED_ERROR:
       toast.error(action.error)
       pages = { ...state }
