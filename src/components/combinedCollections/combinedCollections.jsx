@@ -13,7 +13,6 @@ function CombinedCollections(props) {
     }
   })
 
-  console.log(`1234567`, childIds, pages)
   return (
     <div>
       {childIds.map((singleId) => {

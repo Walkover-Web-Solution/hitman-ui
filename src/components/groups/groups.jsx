@@ -601,7 +601,6 @@ class Groups extends Component {
   }
 
   toggleSubPageIds(id) {
-    console.log(id, 'idddd')
     const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
