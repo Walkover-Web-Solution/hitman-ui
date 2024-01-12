@@ -27,6 +27,7 @@ import CollectionModal from '../collections/collectionsModal'
 import SplitPane from 'react-split-pane'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
 import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
+import { addCollectionAndPages } from '../redux/generalActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -49,7 +50,8 @@ const mapDispatchToProps = (dispatch) => {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
     fetch_endpoint: (endpointId) => dispatch(fetchEndpoint(endpointId)),
-    fetch_page: (pageId) => dispatch(fetchPage(pageId))
+    fetch_page: (pageId) => dispatch(fetchPage(pageId)),
+    add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId))
   }
 }
 
@@ -101,9 +103,7 @@ class MainV2 extends Component {
           orgName: orgName
         })
         await this.fetchAll()
-        // this.props.udpate_collection_and_pages_in_sidebar(
-        //   orgId
-        // );
+        this.props.add_collection_and_pages(orgId)
       }
     } else {
       /** Perform Login Procedure for Token */
