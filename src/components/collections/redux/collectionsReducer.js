@@ -2,6 +2,7 @@ import collectionsActionTypes from './collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
 import { toast } from 'react-toastify'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
+import generalActionsTypes from '../../redux/generalActionTypes'
 
 const initialState = {}
 
@@ -142,6 +143,9 @@ function collectionsReducer(state = initialState, action) {
       collections = { ...state }
       delete collections[action.collection.id]
       return collections
+
+    case generalActionsTypes.ADD_COLLECTIONS:
+      return { ...state, ...action.data }
 
     default:
       return state

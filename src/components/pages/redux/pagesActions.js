@@ -105,7 +105,6 @@ export const onPageUpdatedError = (error, originalPage) => {
 }
 
 export const updateIsExpandForPages = (payload) => {
-  console.log(payload)
   return {
     type: pagesActionTypes.ON_EXPAND_PAGES,
     payload
