@@ -31,6 +31,7 @@ import { addNewTab } from '../tabs/redux/tabsActions'
 import PageForm from '../pages/pageForm'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 
 const EMPTY_STRING = ''
 
@@ -39,7 +40,8 @@ const mapStateToProps = (state) => {
     collections: state.collections,
     // versions: state.versions,
     pages: state.pages,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
+    clientData: state.clientData
   }
 }
 
@@ -52,7 +54,7 @@ const mapDispatchToProps = (dispatch) => {
     add_custom_domain: (collectionId, domain) => dispatch(addCustomDomain(collectionId, domain)),
     remove_public_collection: (collection, props) => dispatch(removePublicCollection(collection, props)),
     add_new_tab: () => dispatch(addNewTab()),
-    update_isExpand_for_collection: (payload) => dispatch(updateIsExpandForCollection(payload))
+    update_isExpand_for_collection: (payload) => dispatch(addIsExpandedAction(payload))
   }
 }
 
@@ -308,10 +310,10 @@ class CollectionsComponent extends Component {
   }
 
   toggleSelectedColelctionIds(id) {
-    const isExpanded = this.props.collections[id]?.clientData?.isExpanded
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_collection({
       value: !isExpanded,
-      collectionId: id
+      id
     })
   }
 
