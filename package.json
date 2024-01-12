@@ -139,7 +139,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged  --staged"
+      "pre-commit": "npm run format --staged"
     }
   },
   "lint-staged": {
