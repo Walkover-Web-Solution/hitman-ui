@@ -104,6 +104,14 @@ export const onPageUpdatedError = (error, originalPage) => {
   }
 }
 
+export const updateIsExpandForPages = (payload) => {
+  console.log(payload)
+  return {
+    type: pagesActionTypes.ON_EXPAND_PAGES,
+    payload
+  }
+}
+
 export const addPage = (history, versionId, newPage) => {
   const orgId = getOrgId()
   return (dispatch) => {
@@ -130,9 +138,10 @@ export const addPage1 = (history, rootParentId, newPage) => {
     pageApiService
       .saveCollectionPage(rootParentId, newPage)
       .then((response) => {
-        dispatch(onParentPageAdded(response.data))
-        focusSelectedEntity('pages', response.data.id)
-        history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
+        const data = response.data.page
+        dispatch(onParentPageAdded(data))
+        focusSelectedEntity('pages', data.id)
+        history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
       .catch((error) => {
         dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))

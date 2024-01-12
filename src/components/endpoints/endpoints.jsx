@@ -22,7 +22,7 @@ const endpointsEnum = {
 
 const mapStateToProps = (state) => {
   return {
-    endpoints: state.sidebarV2Reducer?.sideBarPages,
+    endpoints: state.endpoints,
     groups: state.groups,
     tabs: state.tabs
   }

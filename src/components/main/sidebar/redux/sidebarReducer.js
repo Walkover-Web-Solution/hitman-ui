@@ -189,15 +189,15 @@ function sidebarReducer(state = initialState, action) {
         })
         return newState
 
-      case pagesActionTypes.ADD_PAGE_REQUEST:
-      case pagesActionTypes.ADD_PARENT_PAGE_REQUEST:
-        newState = addNewNodeReq(newState, { ...action.newPage, id: action.newPage.requestId }, 'pages')
-        return newState
+      // case pagesActionTypes.ADD_PAGE_REQUEST:
+      //   case pagesActionTypes.ADD_PARENT_PAGE_REQUEST:
+      //   newState = addNewNodeReq(newState, { ...action.newPage, id: action.newPage.requestId }, 'pages')
+      //   return newState
 
-      case pagesActionTypes.ON_PAGE_ADDED:
-      case pagesActionTypes.ON_PARENT_PAGE_ADDED:
-        newState = addNewNodeSuccess(newState, action.response.requestId, action.response.id, 'pages')
-        return newState
+      // case pagesActionTypes.ON_PAGE_ADDED:
+      // case pagesActionTypes.ON_PARENT_PAGE_ADDED:
+      //   newState = addNewNodeSuccess(newState, action.response.requestId, action.response.id, 'pages')
+      //   return newState
 
       case pagesActionTypes.ADD_GROUP_PAGE_REQUEST:
         newState = addNewNodeReq(newState, { ...action.newPage, id: action.newPage.requestId }, 'pages')

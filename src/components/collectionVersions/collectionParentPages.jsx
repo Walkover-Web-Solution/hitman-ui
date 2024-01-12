@@ -14,21 +14,20 @@ import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
-import { deletePage, duplicatePage } from '../pages/redux/pagesActions'
+import { deletePage, duplicatePage, updateIsExpandForPages } from '../pages/redux/pagesActions'
 import CollectionPages from '../pages/collectionPages'
 import { approvePage, draftPage, pendingPage, rejectPage } from '../publicEndpoint/publicPageService'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import tabService from '../tabs/tabService'
 import CombinedCollections from '../combinedCollections/combinedCollections'
-import { updateIsExpandInSidebar } from '../main/sidebar/redux/sidebarV2Actions'
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
     groups: state.groups,
-    pages: state.sidebarV2Reducer.sideBarPages
+    pages: state.pages
   }
 }
 
@@ -42,7 +41,7 @@ const mapDispatchToProps = (dispatch) => {
     reject_page: (page) => dispatch(rejectPage(page)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    update_isExpand_for_collection: (payload) => dispatch(updateIsExpandInSidebar(payload))
+    update_isExpand_for_pages: (payload) => dispatch(updateIsExpandForPages(payload))
   }
 }
 
@@ -155,20 +154,6 @@ class CollectionParentPages extends Component {
       selectedParentPage: page
     })
   }
-
-  // showAddVersionForm() {
-  //   return (
-  //     this.state.showVersionForm && (
-  //       <PageForm
-  //         {...this.props}
-  //         show={this.state.showVersionForm.addVersion}
-  //         onHide={() => this.closeParentPageForm()}
-  //         title={this.state.versionFormName}
-  //         selectedCollection={this.state.selectedCollection}
-  //       />
-  //     )
-  //   );
-  // }
 
   openShareParentPageForm(page) {
     const showPageForm = { share: true }
@@ -295,16 +280,14 @@ class CollectionParentPages extends Component {
   }
 
   setSelectedParentPage(e) {
-    debugger
     this.setState({
       selectedParentPageIndex: e.currentTarget.value
     })
   }
 
   toggleParentPageIds(id) {
-    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded
-    this.props.update_isExpand_for_collection({
-      target: 'sideBarPages',
+    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
+    this.props.update_isExpand_for_pages({
       value: !isExpanded,
       id: id
     })
@@ -326,9 +309,7 @@ class CollectionParentPages extends Component {
   renderBody(pageId, index) {
     const expanded = this.props.pages?.[pageId]?.clientData?.isExpanded
 
-    const { focused, child } = this.props.sidebar.navList[`pages_${pageId}`]
-    const { focused: sidebarFocused } = this.props.sidebar
-    if (sidebarFocused && focused && this.scrollRef[pageId]) this.scrolltoPage(pageId)
+    if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
 
     return isDashboardRoute(this.props, true) ? (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
@@ -338,7 +319,7 @@ class CollectionParentPages extends Component {
             ref={(newRef) => {
               this.scrollRef[pageId] = newRef
             }}
-            className={'pl-3 ' + [focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
+            className={'pl-3 ' + (expanded ? 'expanded' : '')}
           >
             <div
               className='d-flex align-items-center cl-name'
@@ -349,7 +330,7 @@ class CollectionParentPages extends Component {
               <span className='versionChovron'>
                 <img src={ExpandArrow} alt='' />
               </span>
-              <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.rootParentId].name}</div>
+              <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
             </div>
             {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action d-flex align-items-center'>

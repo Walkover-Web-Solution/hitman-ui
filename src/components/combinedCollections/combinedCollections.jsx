@@ -6,17 +6,18 @@ import Groups from '../groups/groups'
 import Endpoints from '../endpoints/endpoints'
 
 function CombinedCollections(props) {
-  const { childIds, sidebarPages } = useSelector((state) => {
+  const { childIds, pages } = useSelector((state) => {
     return {
-      childIds: state?.sidebarV2Reducer?.sideBarPages?.[props?.rootParentId]?.child || [],
-      sidebarPages: state.sidebarV2Reducer.sideBarPages
+      childIds: state?.pages?.[props?.rootParentId]?.child || [],
+      pages: state.pages
     }
   })
 
+  console.log(`1234567`, childIds, pages)
   return (
     <div>
       {childIds.map((singleId) => {
-        const type = sidebarPages?.[singleId]?.type || null
+        const type = pages?.[singleId]?.type || null
         switch (type) {
           case 1:
             return <CollectionParentPages key={singleId} {...props} rootParentId={singleId} />

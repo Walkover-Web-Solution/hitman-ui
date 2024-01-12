@@ -30,7 +30,6 @@ import CollectionModal from '../collections/collectionsModal'
 import { store } from '../../store/store'
 import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
 
-import sidebarActions from './sidebar/redux/sidebarActions'
 import DeleteSidebarEntityModal from './sidebar/deleteEntityModal'
 import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
@@ -49,8 +48,7 @@ const mapStateToProps = (state) => {
     historySnapshot: state.history,
     sidebar: state.sidebar,
     filter: '',
-    modals: state.modals,
-    collectionsFromSidebar: state.sidebarV2Reducer?.sideBarCollections
+    modals: state.modals
   }
 }
 
@@ -531,7 +529,7 @@ class SideBarV2 extends Component {
   }
 
   renderCollections() {
-    const collectionsToRender = Object.keys(this.props.collectionsFromSidebar)
+    const collectionsToRender = Object.keys(this.props.collections)
     return (
       <Collections
         {...this.props}
