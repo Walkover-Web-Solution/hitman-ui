@@ -335,8 +335,7 @@ class CollectionVersions extends Component {
             ref={(newRef) => {
               this.scrollRef[versionId] = newRef
             }}
-            // className={'pl-3 ' + [focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
-            className='pl-3'
+            className={'pl-3 ' + (expanded ? 'expanded' : '')}
           >
             <div
               className='d-flex align-items-center cl-name'

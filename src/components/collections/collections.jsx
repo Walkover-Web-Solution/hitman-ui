@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 import shortId from 'shortid'
-import CollectionVersions from '../collectionVersions/collectionVersions'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
 import { isDashboardRoute, openExternalLink, getParentIds } from '../common/utility'
 import collectionsService from './collectionsService'
@@ -31,13 +30,13 @@ import { addNewTab } from '../tabs/redux/tabsActions'
 import PageForm from '../pages/pageForm'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
+import PageEndpointModal from '../main/sidebar/pageEndpointModal'
 
 const EMPTY_STRING = ''
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
-    // versions: state.versions,
     pages: state.pages,
     endpoints: state.endpoints
   }
@@ -352,13 +351,26 @@ class CollectionsComponent extends Component {
     )
   }
 
+  showAddPageEndpointModal() {
+    return (
+      this.state.showAddCollectionModal && (
+        <PageEndpointModal
+          {...this.props}
+          title='Add Collection'
+          onHide={() => {
+            this.setState({ showAddCollectionModal: false })
+          }}
+          show={this.state.showAddCollectionModal}
+          // open_selected_collection={this.openSelectedCollection.bind(this)}
+        />
+      )
+    )
+  }
+
   renderBody(collectionId, collectionState) {
     const expanded = this.props.collections[collectionId]?.clientData?.isExpanded
 
-    const { focused } = this.props.sidebar.navList[`collections_${collectionId}`]
-    const { focused: sidebarFocused } = this.props.sidebar
-
-    if (sidebarFocused && focused && this.scrollRef[collectionId]) {
+    if (this.scrollRef[collectionId]) {
       this.scrollToCollection(collectionId)
     }
 
@@ -372,7 +384,7 @@ class CollectionsComponent extends Component {
             this.scrollRef[collectionId] = newRef
           }}
         >
-          <button tabIndex={-1} variant='default' className={[focused && sidebarFocused ? 'focused' : ''].join(' ')}>
+          <button tabIndex={-1} variant='default' className={expanded ? 'expanded' : ''}>
             <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
@@ -393,7 +405,7 @@ class CollectionsComponent extends Component {
               <div className='sidebar-item-action d-flex align-items-center'>
                 <div
                   className='mr-1 d-flex align-items-center'
-                  onClick={() => this.openAddCollectionPageForm(this.props.collections[collectionId])}
+                  onClick={() => this.showAddPageEndpointModal(this.props.collections[collectionId])}
                 >
                   <Plus />
                 </div>

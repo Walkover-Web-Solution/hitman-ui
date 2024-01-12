@@ -480,7 +480,6 @@ class SideBarV2 extends Component {
             </div>
             <div className='content'>
               <h5> No invocation made</h5>
-              {/* <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 1</p> */}
             </div>
           </div>
         )}
@@ -529,7 +528,7 @@ class SideBarV2 extends Component {
   }
 
   renderCollections() {
-    const collectionsToRender = Object.keys(this.props.collections)
+    const collectionsToRender = Object.keys(this.props?.collections)
     return (
       <Collections
         {...this.props}
