@@ -11,8 +11,9 @@ import { redirectToDashboard, getOrgId } from '../../components/common/utility'
 import { toast } from 'react-toastify'
 
 const mapStateToProps = (state) => {
+  console.log(state.pages, "state.pagessss");
   return {
-    versions: state.versions,
+    versions: state.pages,
     groups: state.groups,
     pages: state.pages,
     endpoints: state.endpoints
@@ -45,8 +46,10 @@ const defaultData = {
 export class PublishSidebar extends Component {
   constructor(props) {
     super(props)
+    console.log("inside publish sidebar", this.props);
     this.state = {
       selectedCollectionId: '',
+      selectedPageId: '',
       selectedPages: [],
       selectedEndpoints: [],
       groupData: {},
@@ -57,7 +60,9 @@ export class PublishSidebar extends Component {
       groups: {},
       pages: {},
       endpoints: {},
-      checkedData: {}
+      checkedData: {},
+      ParentPagesToRender:{},
+      VersionToRender: {}
     }
   }
 
@@ -66,6 +71,13 @@ export class PublishSidebar extends Component {
     if (selectedCollectionId) {
       this.setState({ selectedCollectionId })
     }
+    const rootParentId = this.props.collections[selectedCollectionId].rootParentId;
+    console.log(rootParentId, "root parent id");
+    const pages = this.props.pages
+    // const matchingObject = Object.values(pages).find(obj => obj.parentId === rootParentId);
+    const matchingObjects = Object.values(pages).filter(obj => obj.parentId === rootParentId);
+    this.setState({ParentPagesToRender: matchingObjects})
+    console.log(matchingObjects, "parent pages for iddd");
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -337,6 +349,33 @@ export class PublishSidebar extends Component {
     }
   }
 
+  // handleParentPageClicked(pages) {
+  //   console.log("inside handleParentPageClicked", pages.child);
+
+  //   const childId = pages.child;
+  //   const version = this.props.pages[childId].name;
+  //   console.log(this.props.pages[childId].name, "pagess");
+  //   console.log(childId, "child id");
+  // }
+
+  // handleParentPageClicked(pages) {
+  //   console.log("inside handleParentPageClicked", pages.child);
+  
+  //   const childId = pages.child;
+  
+  //   // Assuming this.props.pages is an object with page ids as keys
+  //   const childPage = this.props.pages[childId];
+  
+  //   if (childPage) {
+  //     const version = childPage;
+  //     this.setState({VersionToRender: version})
+  //     console.log(childPage.name, "pagess");
+  //     console.log(childId, "child id");
+  //   } else {
+  //     console.error("Child page not found");
+  //   }
+  // }
+
   renderCheckBox(itemtype, itemId) {
     let isCheckboxDisabled = false
     const checkedData = this.state.checkedData[`check.${itemtype}.${itemId}`] || false
@@ -459,6 +498,40 @@ export class PublishSidebar extends Component {
       </div>
     )
   }
+  showVersionList(pages) {
+    if (!pages) {
+      return null;
+    }
+
+    const childId = pages.child;
+    const childPage = this.props.pages[childId];
+
+    return (
+      <div>
+        <div>{childPage?.name}</div>
+        {this.showVersionList(childPage)}
+      </div>
+    );
+  }
+  renderParentPagesList() {
+    return (
+      <div className='collection-api-doc-dropdown'>
+      <div className='collection-api-doc-heading mt-4 '>Pages</div>
+      <div className='collection-dropdown-menu'>
+        {Object.values(this.state.ParentPagesToRender || {})
+          .filter((pages) => !pages.isPublic)
+          .map((pages, index) => (
+            <div key={pages?.id} className='parent-page'>
+              <button onClick={() => this.handleParentPageClicked(pages)}>
+                {pages?.name}
+              </button>
+              {this.showVersionList(pages)}
+            </div>
+          ))}
+      </div>
+    </div>
+    )
+  }
 
   toggleVersion(versionId) {
     const versionsToggle = {}
@@ -467,12 +540,13 @@ export class PublishSidebar extends Component {
   }
 
   renderVersionList() {
+    console.log(this.state.VersionToRender, "version to render");
     return (
       <div>
-        <div className='mt-3 collection-api-doc-heading'>Select API Enpoints and Pages to publish</div>
-        <div className='publish-versions-list'>
+        {/* <div className='mt-3 collection-api-doc-heading'>Select API Enpoints and Pages to publish</div> */}
+        {/* <div className='publish-versions-list'> */}
           <div className='items'>
-            {Object.values(this.state.versions).map((version, index) => (
+            {Object.values(this.state.VersionToRender).map((version, index) => (
               <div className='d-flex mx-3 mt-3' key={version?.id}>
                 <div className=' d-flex align-items-start w-100'>
                   <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
@@ -501,7 +575,7 @@ export class PublishSidebar extends Component {
               </div>
             ))}
           </div>
-        </div>
+        {/* </div> */}
       </div>
     )
   }
@@ -558,7 +632,7 @@ export class PublishSidebar extends Component {
         <div style={saveAsSidebarStyle} className='publish-sidebar-container'>
           <div className='publish-api-doc-heading'>Publish API Documentation</div>
           {this.renderCollectionDropDown()}
-          {this.renderVersionList()}
+          {this.renderParentPagesList()}
           {this.renderFooter()}
         </div>
       </div>

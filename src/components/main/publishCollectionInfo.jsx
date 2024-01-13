@@ -30,6 +30,7 @@ const defaultDomain = process.env.REACT_APP_PUBLIC_UI_URL
 class PublishCollectionInfo extends Component {
   constructor(props) {
     super(props)
+    console.log(this.props, "this.props inside publishCollectionInfo");
     this.state = {
       openPublishSidebar: false,
       totalPageCount: 0,
@@ -226,7 +227,7 @@ class PublishCollectionInfo extends Component {
       <button
         className='btn btn-outline orange w-100 publishCollection'
         id='publish_api_doc_navbar_btn'
-        disabled={!totalEndpointCount}
+        // disabled={!totalEndpointCount}
         onClick={() => {
           this.redirectUser()
         }}
