@@ -33,6 +33,7 @@ export function getCollectionVersion(versionId) {
 export function saveCollectionVersion(collectionId, collectionVersion) {
   return http.post(collectionVersionsUrl(collectionId), collectionVersion)
 }
+
 export function saveParentPageVersion(pageId, collectionParentPage) {
   return http.post(collectionParentPagesUrl(pageId), collectionParentPage)
 }

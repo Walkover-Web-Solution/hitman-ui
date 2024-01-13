@@ -1,15 +1,16 @@
 import React from 'react'
 import { Modal, Spinner } from 'react-bootstrap'
 import Joi from 'joi-browser'
-import Form from '../common/form'
-import { toTitleCase, onEnter, DEFAULT_URL } from '../common/utility'
+import Form from '../../common/form'
+import { toTitleCase, onEnter, DEFAULT_URL } from '../../common/utility'
 import shortid from 'shortid'
 import { connect } from 'react-redux'
-import { addCollection, updateCollection } from './redux/collectionsActions'
-import { moveToNextStep } from '../../services/widgetService'
-import { URL_VALIDATION_REGEX } from '../common/constants'
-import DefaultViewModal, { defaultViewTypes } from './defaultViewModal/defaultViewModal'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
+import { addCollection, updateCollection } from '../../collections/redux/collectionsActions'
+import { moveToNextStep } from '../../../services/widgetService'
+import { URL_VALIDATION_REGEX } from '../../common/constants'
+import sidebarActions from './redux/sidebarActions'
+import DefaultViewModal from '../../collections/defaultViewModal/defaultViewModal'
+import { addNewTab } from '../../tabs/redux/tabsActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -19,20 +20,20 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    add_new_tab: () => dispatch(addNewTab()),
     add_collection: (newCollection, openSelectedCollection, callback) =>
       dispatch(addCollection(newCollection, openSelectedCollection, callback)),
     update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback))
   }
 }
 
-class CollectionForm extends Form {
+class PageEndpointForm extends Form {
   constructor(props) {
     super(props)
     this.state = {
       data: {
         name: '',
-        description: '',
-        defaultView: defaultViewTypes.TESTING
+        description: ''
       },
       collectionId: '',
       errors: {},
@@ -114,8 +115,7 @@ class CollectionForm extends Form {
     this.setState({
       data: {
         name: '',
-        description: '',
-        defaultView: defaultViewTypes.TESTING
+        description: ''
       }
     })
     moveToNextStep(1)
@@ -143,31 +143,23 @@ class CollectionForm extends Form {
 
   saveCollection(defaultView, flag) {
     this.setViewLoader(defaultView, flag)
-    this.doSubmit(defaultViewTypes.TESTING)
+    this.doSubmit(defaultView)
+  }
+  addEndpoint(defaultView, flag) {
+    this.add_new_tab()
   }
 
   renderCollectionDetailsForm() {
     return (
-      <>
-        {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}
-        {this.renderSaveButton()}
-      </>
+      <>{this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}</>
     )
   }
-
-  renderSaveButton() {
-    return (
-      <button className='btn btn-primary' onClick={() => this.saveCollection(defaultViewTypes.TESTING, 'edit')}>
-        Save
-      </button>
-    )
-  }
-
   renderDefaultViewForm() {
     return (
       <DefaultViewModal
         viewLoader={this.state.viewLoader}
         saveCollection={this.saveCollection.bind(this)}
+        saveEndpoint={this.addEndpoint.bind(this)}
         onHide={() => this.props.onHide()}
       />
     )
@@ -175,7 +167,55 @@ class CollectionForm extends Form {
 
   renderForm() {
     const { step } = this.state
-    return <>{step === 1 && this.renderCollectionDetailsForm()}</>
+    return (
+      <>
+        {step === 2 && this.renderCollectionDetailsForm()}
+        {step === 1 && this.renderDefaultViewForm()}
+        {step === 1 ? this.renderNextButton() : this.renderBackButton()}
+      </>
+    )
+  }
+
+  onBack() {
+    this.setState({ step: 1 })
+  }
+
+  onNext() {
+    const errors = this.validate()
+    this.setState({ errors: errors || {} })
+    if (errors) return
+    if (this.props.title === 'Edit Collection') {
+      this.saveCollection(this.props.edited_collection?.defaultView, 'edit')
+    } else {
+      this.setState({ step: 2 })
+    }
+  }
+
+  renderNextButton() {
+    if (!this.props.setDropdownList) {
+      return (
+        <button className='btn btn-primary' onClick={() => this.onNext()}>
+          Next
+        </button>
+      )
+    }
+    return (
+      <button className='btn btn-primary' onClick={() => this.onNext()}>
+        {this.props.title === 'Edit Collection' ? (
+          <>{this.state.updating && <Spinner className=' mr-2 ' animation='border' size='sm' />}Update</>
+        ) : (
+          'Next'
+        )}
+      </button>
+    )
+  }
+
+  renderBackButton() {
+    return (
+      <button className='btn btn-primary mt-2' onClick={() => this.onBack()}>
+        Back
+      </button>
+    )
   }
 
   handleCancel(e) {
@@ -214,4 +254,4 @@ class CollectionForm extends Form {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionForm)
+export default connect(mapStateToProps, mapDispatchToProps)(PageEndpointForm)
