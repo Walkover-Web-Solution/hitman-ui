@@ -129,7 +129,7 @@
   "devDependencies": {
     "electron": "^13.1.1",
     "electron-builder": "^22.10.5",
-    "husky": "^5.2.0",
+    "husky": "^8.0.3",
     "lint-staged": "^15.2.0",
     "prettier": "^3.1.1",
     "pretty-quick": "^3.1.3",
