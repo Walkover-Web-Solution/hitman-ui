@@ -62,7 +62,10 @@ export class PublishSidebar extends Component {
       endpoints: {},
       checkedData: {},
       ParentPagesToRender:{},
-      VersionToRender: {}
+      VersionToRender: {},
+      showChildVersions: false,
+      expandedVersions: {},
+      expandedParentPages: {},
     }
   }
 
@@ -499,46 +502,149 @@ export class PublishSidebar extends Component {
     )
   }
   showVersionList(pages) {
+    // debugger
     if (!pages) {
       return null;
     }
 
     const childId = pages.child;
+    console.log(childId, "child idddd");
     const childPage = this.props.pages[childId];
+    console.log(childPage, "child pageeeee");
 
     return (
       <div>
-        <div>{childPage?.name}</div>
+       <div>
+        {childPage?.name}
+        {/* {childPage?.id} */}
+      </div>
+        {/* {childPage?.type === 2 && (
+          <Dropdown>
+            <Dropdown.Toggle>
+
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {childPage?.name}
+            </Dropdown.Menu>
+          </Dropdown>
+        )} */}
         {this.showVersionList(childPage)}
       </div>
     );
   }
+  renderPage(childPage){
+console.log("inside childPage", childPage);
+const childId = childPage.child;
+    console.log(childId, "child idddd");
+    const children = this.props.pages[childId];
+    console.log(children.name, "childddddddrennnnnn");
+    return(
+      <div>
+        {children.name}
+        {this.renderPage(children)}
+      </div>
+    )
+
+  }
+  // onVersionClicked(pages){
+  //   // console.log(pages.child, "pages.child inside onVersionClicked");
+  //   if (!pages) {
+  //     return null;
+  //   }
+
+  //   const childId = pages.child;
+  //   console.log(childId, "child idddd");
+  //   const childPage = this.props.pages[childId];
+  //   return(
+  //     <div>
+  //       {this.renderPage(childPage)}
+  //      <div>
+  //       {/* {childPage?.name} */}
+  //     </div>
+  //         {/* <Dropdown>
+  //           <Dropdown.Toggle>
+
+  //           </Dropdown.Toggle>
+  //           <Dropdown.Menu> */}
+  //             {/* {childPage?.name} */}
+  //           {/* </Dropdown.Menu>
+  //         </Dropdown> */}
+  //       {/* {this.onVersionClicked(childPage)} */}
+  //     </div>
+  //   )
+  // }
+  onVersionClicked(pages) {
+    if (!pages) {
+      return null;
+    }
+  
+    const { expandedVersions } = this.state;
+    const childId = pages.child;
+    const childPage = this.props.pages[childId];
+  
+    return (
+      <div>
+        {childPage?.name}
+        {expandedVersions[pages.id] && this.renderPage(childPage)}
+      </div>
+    );
+  }
+  
   renderParentPagesList() {
+    // debugger
     return (
       <div className='collection-api-doc-dropdown'>
-      <div className='collection-api-doc-heading mt-4 '>Pages</div>
-      <div className='collection-dropdown-menu'>
-        {Object.values(this.state.ParentPagesToRender || {})
-          .filter((pages) => !pages.isPublic)
-          .map((pages, index) => (
-            <div key={pages?.id} className='parent-page'>
-              <button onClick={() => this.handleParentPageClicked(pages)}>
-                {pages?.name}
-              </button>
-              {this.showVersionList(pages)}
-            </div>
-          ))}
+        <div className='collection-api-doc-heading mt-4 '>Pages</div>
+        <div className='collection-dropdown-menu'>
+          {Object.values(this.state.ParentPagesToRender || {})
+            .filter((pages) => !pages.isPublic)
+            .map((pages, index) => (
+              <div key={pages?.id} className='parent-page'>
+                {pages.type === 4 ? (
+                  <div className='d-flex'>
+                    <p className='api-label GET request-type-bgcolor' style={{ display: 'inline' }}>GET</p>
+                    <button className={pages?.type === 4 ? 'end-point-name truncate' : 'default-class'} onClick={() => this.handleParentPageClicked(pages)}>
+                      {pages?.name}
+                    </button>
+                  </div>
+                ) : (
+                  <div className='d-flex'>
+                  <button onClick={() => this.handleParentPageClicked(pages)}>
+                    {pages?.name}
+                  </button>
+                  <Accordion className='version-accordian w-100' defaultActiveKey={pages?.id}>
+                    <Accordion.Toggle
+                      eventKey={pages?.id}
+                      className='version-accordian-toggle w-100 version-outline-border'
+                      onClick={() => this.onVersionClicked(pages)}
+                    >
+                      <div className='d-flex align-items-center justify-content-between w-100'>
+                        <div className=''>{this.showVersionList(pages)}</div>
+                        <div className={['down-arrow', this.state.versionsToggle[pages.id] ? 'rotate-toggle' : ' '].join(' ')}>
+                          {' '}
+                          <DownChevron />{' '}
+                        </div>
+                      </div>
+                    </Accordion.Toggle>
+                  </Accordion>
+                  </div>
+                )}
+              </div>
+            ))}
+        </div>
       </div>
-    </div>
-    )
+    );
   }
 
   toggleVersion(versionId) {
-    const versionsToggle = {}
-    versionsToggle[versionId] = !this.state.versionsToggle[versionId]
-    this.setState({ versionsToggle })
+    const { expandedVersions } = this.state;
+    this.setState({
+      expandedVersions: {
+        ...expandedVersions,
+        [versionId]: !expandedVersions[versionId],
+      },
+    });
   }
-
   renderVersionList() {
     console.log(this.state.VersionToRender, "version to render");
     return (
