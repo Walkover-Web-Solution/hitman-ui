@@ -14,20 +14,22 @@ import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
-import { deletePage, duplicatePage, updateIsExpandForPages } from '../pages/redux/pagesActions'
+import { deletePage, duplicatePage } from '../pages/redux/pagesActions'
 import CollectionPages from '../pages/collectionPages'
 import { approvePage, draftPage, pendingPage, rejectPage } from '../publicEndpoint/publicPageService'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import tabService from '../tabs/tabService'
 import CombinedCollections from '../combinedCollections/combinedCollections'
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
     groups: state.groups,
-    pages: state.pages
+    pages: state.pages,
+    clientData: state.clientData
   }
 }
 
@@ -41,7 +43,7 @@ const mapDispatchToProps = (dispatch) => {
     reject_page: (page) => dispatch(rejectPage(page)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    update_isExpand_for_pages: (payload) => dispatch(updateIsExpandForPages(payload))
+    update_isExpand_for_pages: (payload) => dispatch(addIsExpandedAction(payload))
   }
 }
 
@@ -144,9 +146,10 @@ class CollectionParentPages extends Component {
   handleDuplicate(page) {
     this.props.duplicate_page(page)
   }
-
+  closeCollectionForm() {
+    this.setState({ showCollectionForm: false, showImportVersionForm: false })
+  }
   openAddVersionForm(page) {
-    // const showVersionForm = { addVersion: true };
     this.setState({
       showVersionForm: true,
       versionFormName: 'Add New Version',
@@ -213,6 +216,10 @@ class CollectionParentPages extends Component {
     this.setState({ showPageForm })
   }
 
+  closeVersionForm() {
+    const showVersionForm = false
+    this.setState({ showVersionForm })
+  }
   closeDeletePageModal() {
     this.setState({ showDeleteModal: false })
   }
@@ -285,7 +292,7 @@ class CollectionParentPages extends Component {
   }
 
   toggleParentPageIds(id) {
-    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
       id: id
@@ -306,7 +313,7 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    const expanded = this.props.pages?.[pageId]?.clientData?.isExpanded
+    const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
 
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
 

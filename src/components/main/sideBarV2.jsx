@@ -92,16 +92,16 @@ class SideBarV2 extends Component {
     }
     this.inputRef = createRef()
     this.sidebarRef = createRef()
-    this.handleClickOutside = this.handleClickOutside.bind(this)
+    // this.handleClickOutside = this.handleClickOutside.bind(this)
   }
 
-  handleClickOutside(event) {
-    const { focused: sidebarFocused } = this.props.sidebar
-    if (sidebarFocused && this.sidebarRef && !this.sidebarRef.current.contains(event.target)) {
-      store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
-      document.removeEventListener('click', this.handleClickOutside)
-    }
-  }
+  // handleClickOutside(event) {
+  //   const { focused: sidebarFocused } = this.props.sidebar
+  //   if (sidebarFocused && this.sidebarRef && !this.sidebarRef.current.contains(event.target)) {
+  //     store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
+  //     document.removeEventListener('click', this.handleClickOutside)
+  //   }
+  // }
 
   componentDidMount() {
     if (getCurrentUser()) {

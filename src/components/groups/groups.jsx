@@ -19,14 +19,15 @@ import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
-import { updateIsExpandForPages } from '../pages/redux/pagesActions.js'
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
 
 const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     pages: state.pages,
     endpoints: state.endpoints,
-    versions: state.versions
+    versions: state.versions,
+    clientData: state.clientData
   }
 }
 
@@ -37,7 +38,7 @@ const mapDispatchToProps = (dispatch) => {
     update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId)),
     delete_group: (group, props) => dispatch(deleteGroup(group, props)),
     duplicate_group: (group) => dispatch(duplicateGroup(group)),
-    update_isExpand_for_subPages: (payload) => dispatch(updateIsExpandForPages(payload))
+    update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload))
   }
 }
 
@@ -385,7 +386,7 @@ class Groups extends Component {
   }
 
   renderBody(groupId) {
-    const expanded = this.props.pages?.[this.props.rootParentId]?.clientData?.isExpanded || false
+    const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded || false
 
     return isDashboardRoute(this.props, true) ? (
       <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
@@ -578,7 +579,7 @@ class Groups extends Component {
   }
 
   toggleSubPageIds(id) {
-    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
+    const isExpanded = this.props.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
       id: id

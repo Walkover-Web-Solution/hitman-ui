@@ -143,12 +143,23 @@ class CollectionForm extends Form {
 
   saveCollection(defaultView, flag) {
     this.setViewLoader(defaultView, flag)
-    this.doSubmit(defaultView)
+    this.doSubmit(defaultViewTypes.TESTING)
   }
 
   renderCollectionDetailsForm() {
     return (
-      <>{this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}</>
+      <>
+        {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}
+        {this.renderSaveButton()}
+      </>
+    )
+  }
+
+  renderSaveButton() {
+    return (
+      <button className='btn btn-primary' onClick={() => this.saveCollection(defaultViewTypes.TESTING, 'edit')}>
+        Save
+      </button>
     )
   }
 
@@ -164,55 +175,7 @@ class CollectionForm extends Form {
 
   renderForm() {
     const { step } = this.state
-    return (
-      <>
-        {step === 1 && this.renderCollectionDetailsForm()}
-        {step === 2 && this.renderDefaultViewForm()}
-        {step === 1 ? this.renderNextButton() : this.renderBackButton()}
-      </>
-    )
-  }
-
-  onBack() {
-    this.setState({ step: 1 })
-  }
-
-  onNext() {
-    const errors = this.validate()
-    this.setState({ errors: errors || {} })
-    if (errors) return
-    if (this.props.title === 'Edit Collection') {
-      this.saveCollection(this.props.edited_collection?.defaultView, 'edit')
-    } else {
-      this.setState({ step: 2 })
-    }
-  }
-
-  renderNextButton() {
-    if (!this.props.setDropdownList) {
-      return (
-        <button className='btn btn-primary' onClick={() => this.onNext()}>
-          Next
-        </button>
-      )
-    }
-    return (
-      <button className='btn btn-primary' onClick={() => this.onNext()}>
-        {this.props.title === 'Edit Collection' ? (
-          <>{this.state.updating && <Spinner className=' mr-2 ' animation='border' size='sm' />}Update</>
-        ) : (
-          'Next'
-        )}
-      </button>
-    )
-  }
-
-  renderBackButton() {
-    return (
-      <button className='btn btn-primary mt-2' onClick={() => this.onBack()}>
-        Back
-      </button>
-    )
+    return <>{step === 1 && this.renderCollectionDetailsForm()}</>
   }
 
   handleCancel(e) {
