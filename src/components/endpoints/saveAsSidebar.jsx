@@ -308,7 +308,10 @@ class SaveAsSidebar extends Form {
   async doSubmit() {
     const selectedCollection = this.props.collections[this.state.dropdownList.selectedCollectionId]
     const rootParentId = selectedCollection.rootParentId
-    // this.props.set_group_id(this.state.list.parentId, { endpointName: this.state.data.name, endpointDescription: this.state.data.description });
+    // this.props.set_group_id(this.state.list.parentId, {
+    //   endpointName: this.state.data.name,
+    //   endpointDescription: this.state.data.description
+    // })
     this.props.set_rootParent_id(rootParentId, { endpointName: this.state.data.name, endpointDescription: this.state.data.description })
   }
 

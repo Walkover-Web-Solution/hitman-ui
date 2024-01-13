@@ -77,7 +77,7 @@ class GroupForm extends Form {
     //   moveToNextStep(3)
     // }
 
-    if (this.props.title === 'Edit Group') {
+    if (this.props.title === 'Edit Sub Page') {
       const editedGroup = {
         ...this.state.data,
         name,
@@ -133,7 +133,15 @@ class GroupForm extends Form {
                   </div>
                 )}
                 <div className='col-12'>
-                  {this.renderInput('name', 'Group Name', 'group name', true, true, false, '*group name accepts min 1 & max 20 characters')}
+                  {this.renderInput(
+                    'name',
+                    'Sub Page Name',
+                    'sub page name',
+                    true,
+                    true,
+                    false,
+                    '*sub page name accepts min 1 & max 20 characters'
+                  )}
                 </div>
               </div>
 

@@ -2,6 +2,7 @@ import collectionsActionTypes from './collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
 import { toast } from 'react-toastify'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
+import generalActionsTypes from '../../redux/generalActionTypes'
 
 const initialState = {}
 
@@ -16,18 +17,6 @@ function collectionsReducer(state = initialState, action) {
         }
       }
       return { ...state }
-
-    case collectionsActionTypes.ON_COLLECTION_EXPANDED:
-      return {
-        ...state,
-        [action.payload.collectionId]: {
-          ...state[action.payload.collectionId],
-          clientData: {
-            ...state[action.payload.collectionId].clientData,
-            isExpanded: action.payload.value
-          }
-        }
-      }
 
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
       // return { ...state, ...action.collections }
@@ -142,6 +131,9 @@ function collectionsReducer(state = initialState, action) {
       collections = { ...state }
       delete collections[action.collection.id]
       return collections
+
+    case generalActionsTypes.ADD_COLLECTIONS:
+      return { ...state, ...action.data }
 
     default:
       return state

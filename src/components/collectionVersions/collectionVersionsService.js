@@ -8,7 +8,7 @@ function showParentPageForm(props, onHide, collectionId, title) {
 }
 
 function showVersionForm(props, onHide, parentPageId, title) {
-  return <CollectionVersionForm {...props} show onHide={onHide} collection_id={parentPageId} title={title} />
+  return <CollectionVersionForm {...props} show onHide={onHide} parentPage_id={parentPageId} title={title} />
 }
 
 function showDeleteVersionModal(props, onHide, title, message, selectedVersion) {

@@ -19,14 +19,15 @@ import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
-import { updateIsExpandForPages } from '../pages/redux/pagesActions.js'
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
 
 const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     pages: state.pages,
     endpoints: state.endpoints,
-    versions: state.versions
+    versions: state.versions,
+    clientData: state.clientData
   }
 }
 
@@ -37,7 +38,7 @@ const mapDispatchToProps = (dispatch) => {
     update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId)),
     delete_group: (group, props) => dispatch(deleteGroup(group, props)),
     duplicate_group: (group) => dispatch(duplicateGroup(group)),
-    update_isExpand_for_subPages: (payload) => dispatch(updateIsExpandForPages(payload))
+    update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload))
   }
 }
 
@@ -149,7 +150,7 @@ class Groups extends Component {
           show={this.state.showGroupForm.edit}
           onHide={() => this.closeGroupForm()}
           selected_group={this.state.selectedGroup}
-          title='Edit Group'
+          title='Edit Sub Page'
         />
       )
     )
@@ -385,19 +386,8 @@ class Groups extends Component {
   }
 
   renderBody(groupId) {
-    const expanded = this.props.pages?.[this.props.rootParentId]?.clientData?.isExpanded || false
-    // const { focused, expanded, firstChild } = this.props.sidebar.navList[`groups_${groupId}`]
-    // const { focused: sidebarFocused } = this.props.sidebar
-    // if (sidebarFocused && focused && this.scrollRef[groupId]) this.scrollToGroup(groupId)
-    // const pagesToRender = []; const endpointsToRender = []
-    // if (firstChild) {
-    //   let childEntity = this.props.sidebar.navList[firstChild]
-    //   while (childEntity) {
-    //     if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
-    //     if (childEntity.type === 'endpoints') endpointsToRender.push(childEntity.id)
-    //     childEntity = this.props.sidebar.navList[childEntity.nextSibling]
-    //   }
-    // }
+    const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded || false
+
     return isDashboardRoute(this.props, true) ? (
       <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
         <button
@@ -416,14 +406,7 @@ class Groups extends Component {
           {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
             <div className='sidebar-item-action d-flex align-items-center'>
               <div
-                onClick={() =>
-                  this
-                    .openGroupPageForm
-                    // this.props.groups[groupId].versionId,
-                    // this.props.groups[groupId],
-                    // this.props.collection_id
-                    ()
-                }
+                onClick={() => this.handleAddEndpoint(groupId, this.props.versions, this.props.groups)}
                 className='mr-1 d-flex align-items-center'
               >
                 <Plus />
@@ -483,12 +466,7 @@ class Groups extends Component {
                   </svg>{' '}
                   Duplicate
                 </div>
-                <div
-                  className='dropdown-item'
-                  onClick={() =>
-                    this.openGroupPageForm(this.props.groups[groupId].versionId, this.props.groups[groupId], this.props.collection_id)
-                  }
-                >
+                <div className='dropdown-item' onClick={() => this.openGroupPageForm()}>
                   <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                     <path
                       d='M15.75 3H2.25C1.42157 3 0.75 3.67157 0.75 4.5V13.5C0.75 14.3284 1.42157 15 2.25 15H15.75C16.5784 15 17.25 14.3284 17.25 13.5V4.5C17.25 3.67157 16.5784 3 15.75 3Z'
@@ -501,7 +479,7 @@ class Groups extends Component {
                     <path d='M14 9L8 9' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                     <path d='M11 12L11 6' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                   </svg>{' '}
-                  Add Page
+                  Add Sub Page
                 </div>
                 <div className='dropdown-item' onClick={() => this.openShareGroupForm(this.props.groups[groupId])}>
                   <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -601,7 +579,7 @@ class Groups extends Component {
   }
 
   toggleSubPageIds(id) {
-    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
+    const isExpanded = this.props.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
       id: id

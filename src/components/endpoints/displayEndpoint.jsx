@@ -1419,12 +1419,11 @@ class DisplayEndpoint extends Component {
   closeChatBotModal = () => {
     this.setState({ showAskAiSlider: false })
   }
+
   // setGroupId(groupId, endpointDetails) {
-  //   return
-  //   debugger
   //   this.setState({ groupId }, () => {
-  //     this.handleSave(groupId, endpointDetails, true);
-  //   });
+  //     this.handleSave(groupId, endpointDetails, true)
+  //   })
   // }
 
   setRootParentID(rootParentId, endpointDetails) {

@@ -104,13 +104,6 @@ export const onPageUpdatedError = (error, originalPage) => {
   }
 }
 
-export const updateIsExpandForPages = (payload) => {
-  return {
-    type: pagesActionTypes.ON_EXPAND_PAGES,
-    payload
-  }
-}
-
 export const addPage = (history, versionId, newPage) => {
   const orgId = getOrgId()
   return (dispatch) => {

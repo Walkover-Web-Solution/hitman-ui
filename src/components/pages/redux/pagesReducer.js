@@ -5,6 +5,7 @@ import versionActionTypes from '../../collectionVersions/redux/collectionVersion
 import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import generalActionsTypes from '../../redux/generalActionTypes'
 
 const initialState = {}
 
@@ -23,18 +24,6 @@ function pagesReducer(state = initialState, action) {
 
     case pagesActionTypes.ON_PAGE_FETCHED_ERROR:
       return state
-
-    case pagesActionTypes.ON_EXPAND_PAGES:
-      return {
-        ...state,
-        [action.payload.id]: {
-          ...state[action.payload.id],
-          clientData: {
-            ...state[action.payload.id].clientData,
-            isExpanded: action.payload.value
-          }
-        }
-      }
 
     // case pagesActionTypes.ADD_PAGE_REQUEST:
     //   action.newPage.groupId = null
@@ -185,6 +174,9 @@ function pagesReducer(state = initialState, action) {
     case collectionActionTypes.ON_COLLECTION_IMPORTED:
       pages = { ...state, ...action.response.pages }
       return pages
+
+    case generalActionsTypes.ADD_PAGES:
+      return { ...state, ...action.data }
 
     default:
       return state
