@@ -22,7 +22,7 @@ const endpointsEnum = {
 
 const mapStateToProps = (state) => {
   return {
-    endpoints: state.endpoints,
+    endpoints: state.pages,
     groups: state.groups,
     tabs: state.tabs
   }
@@ -497,7 +497,7 @@ class Endpoints extends Component {
         onDoubleClick={() => this.handleDisplay(this.props.endpoints[endpointId], this.props.parent_id, this.props.collection_id, false)}
       >
         <div className={`api-label ${this.props.endpoints[endpointId].requestType}`}>
-          <div className='endpoint-request-div pr-3'>{this.props.endpoints[endpointId].requestType}</div>
+          <div className='endpoint-request-div pr-3'>{this.props.endpoints?.[endpointId]?.requestType}</div>
         </div>
         <div className='endpoint-name-div ml-2'>{this.props.endpoints[endpointId].name}</div>
       </div>

@@ -8,10 +8,10 @@ const clientDataReducer = (state = initialState, action) => {
       if (state?.[action?.payload?.id]) {
         state[action?.payload?.id] = { ...state[action?.payload?.id], ...{ isExpanded: action?.payload?.value } }
       } else state[action?.payload?.id] = { isExpanded: action?.payload?.value }
-      return state
+      return { ...state }
 
     default:
-      return { ...state }
+      return state
   }
 }
 
