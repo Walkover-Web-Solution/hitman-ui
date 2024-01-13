@@ -18,7 +18,6 @@ import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections'
-import { updateIsExpandForPages } from '../pages/redux/pagesActions'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 
 const mapStateToProps = (state) => {
