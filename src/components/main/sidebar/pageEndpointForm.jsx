@@ -9,6 +9,8 @@ import { addCollection, updateCollection } from '../../collections/redux/collect
 import { moveToNextStep } from '../../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../../common/constants'
 import sidebarActions from './redux/sidebarActions'
+import DefaultViewModal from '../../collections/defaultViewModal/defaultViewModal'
+import { addNewTab } from '../../tabs/redux/tabsActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -18,6 +20,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    add_new_tab: () => dispatch(addNewTab()),
     add_collection: (newCollection, openSelectedCollection, callback) =>
       dispatch(addCollection(newCollection, openSelectedCollection, callback)),
     update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback))
@@ -142,10 +145,23 @@ class PageEndpointForm extends Form {
     this.setViewLoader(defaultView, flag)
     this.doSubmit(defaultView)
   }
+  addEndpoint(defaultView, flag) {
+    this.add_new_tab()
+  }
 
   renderCollectionDetailsForm() {
     return (
       <>{this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}</>
+    )
+  }
+  renderDefaultViewForm() {
+    return (
+      <DefaultViewModal
+        viewLoader={this.state.viewLoader}
+        saveCollection={this.saveCollection.bind(this)}
+        saveEndpoint={this.addEndpoint.bind(this)}
+        onHide={() => this.props.onHide()}
+      />
     )
   }
 
@@ -153,8 +169,8 @@ class PageEndpointForm extends Form {
     const { step } = this.state
     return (
       <>
-        {step === 1 && this.renderCollectionDetailsForm()}
-        {step === 2 && this.renderDefaultViewForm()}
+        {step === 2 && this.renderCollectionDetailsForm()}
+        {step === 1 && this.renderDefaultViewForm()}
         {step === 1 ? this.renderNextButton() : this.renderBackButton()}
       </>
     )

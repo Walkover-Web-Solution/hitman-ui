@@ -12,12 +12,15 @@ export class DefaultViewModal extends Component {
   createCollection(defaultView) {
     this.props.saveCollection(defaultView, true)
   }
+  createEndpoint() {
+    this.props.saveEndpoint()
+  }
 
   renderTestingButton() {
     return (
-      <button className='block-view-btn mr-3' onClick={() => this.createCollection(defaultViewTypes.TESTING)}>
+      <button className='block-view-btn mr-3' onClick={() => this.createEndpoint()}>
         <img src={ApiIcon} alt='' />
-        {this.props.viewLoader.testing ? this.renderSpinner() : 'API Testing'}
+        {this.props.viewLoader.testing ? this.renderSpinner() : 'Create Endpoint'}
       </button>
     )
   }
@@ -26,7 +29,7 @@ export class DefaultViewModal extends Component {
     return (
       <button className='block-view-btn' onClick={() => this.createCollection(defaultViewTypes.DOC)}>
         <img src={DocIcon} alt='' />
-        {this.props.viewLoader.doc ? this.renderSpinner() : 'Host API Doc'}
+        {this.props.viewLoader.doc ? this.renderSpinner() : 'Create Page'}
       </button>
     )
   }
@@ -48,7 +51,7 @@ export class DefaultViewModal extends Component {
         </div>
         <div className='info mt-5 d-flex align-items-center'>
           <img src={InfoIcon} className='mr-2' alt='' />
-          <span>You can always choose to Test the API's or make the Testing collection public at any point</span>
+          <span>You can always choose to Test the API's or make the Testing API description</span>
         </div>
       </>
     )

@@ -144,7 +144,9 @@ class CollectionParentPages extends Component {
   handleDuplicate(page) {
     this.props.duplicate_page(page)
   }
-
+  closeCollectionForm() {
+    this.setState({ showCollectionForm: false, showImportVersionForm: false })
+  }
   openAddVersionForm(page) {
     // const showVersionForm = { addVersion: true };
     this.setState({
@@ -652,10 +654,11 @@ class CollectionParentPages extends Component {
       <>
         {this.showShareVersionForm()}
         {this.showEditVersionForm()}
+        {/* {this.openAddVersionForm()} */}
         {this.state.showVersionForm &&
           collectionVersionsService.showVersionForm(
             this.props,
-            this.closeVersionForm.bind(this),
+            // this.closeVersionForm.bind(this),
             this.props.rootParentId,
             ADD_VERSION_MODAL_NAME
           )}
