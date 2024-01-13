@@ -139,13 +139,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run format --staged"
+      "pre-commit": "pretty-quick --staged"
     }
-  },
-  "lint-staged": {
-    "**/*.+(js|jsx|json|css|md)": [
-      "prettier --write",
-      "git add"
-    ]
   }
 }
