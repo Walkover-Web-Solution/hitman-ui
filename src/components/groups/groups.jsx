@@ -28,7 +28,7 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     endpoints: state.endpoints,
     versions: state.versions,
-    clientData: state.clientData,
+    clientData: state.clientData
   }
 }
 
@@ -554,11 +554,11 @@ class Groups extends Component {
             <Card.Body>
               <CombinedCollections
                 {...this.props}
-              // pagesToRender={pagesToRender}
-              // version_id={this.props.groups[groupId].versionId}
-              // set_page_drag={this.setPagedrag.bind(this)}
-              // group_id={groupId}
-              // show_filter_groups={this.propsFromGroups.bind(this)}
+                // pagesToRender={pagesToRender}
+                // version_id={this.props.groups[groupId].versionId}
+                // set_page_drag={this.setPagedrag.bind(this)}
+                // group_id={groupId}
+                // show_filter_groups={this.propsFromGroups.bind(this)}
               />
             </Card.Body>
           </div>
