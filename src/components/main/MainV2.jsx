@@ -40,17 +40,17 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetch_collections: (orgId) => dispatch(fetchCollections(orgId)),
+    // fetch_collections: (orgId) => dispatch(fetchCollections(orgId)),
     // fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
     // fetch_groups: (orgId) => dispatch(fetchGroups(orgId)),
-    fetch_endpoints: (orgId) => dispatch(fetchEndpoints(orgId)),
-    fetch_pages: (orgId) => dispatch(fetchPages(orgId)),
+    // fetch_endpoints: (orgId) => dispatch(fetchEndpoints(orgId)),
+    // fetch_pages: (orgId) => dispatch(fetchPages(orgId)),
     fetch_history: () => dispatch(fetchHistoryFromIdb()),
     move_endpoint: (endpointId, sourceGroupId, destinationGroupId) => dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
-    fetch_endpoint: (endpointId) => dispatch(fetchEndpoint(endpointId)),
-    fetch_page: (pageId) => dispatch(fetchPage(pageId)),
+    // fetch_endpoint: (endpointId) => dispatch(fetchEndpoint(endpointId)),
+    // fetch_page: (pageId) => dispatch(fetchPage(pageId)),
     add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId))
   }
 }
@@ -66,12 +66,12 @@ class MainV2 extends Component {
       showAddCollectionPage: true
     }
     const { endpointId, pageId } = this.props.match.params
-    if (endpointId && endpointId !== 'new') {
-      this.props.fetch_endpoint(endpointId)
-    }
-    if (pageId) {
-      this.props.fetch_page(pageId)
-    }
+    // if (endpointId && endpointId !== 'new') {
+    //   this.props.fetch_endpoint(endpointId)
+    // }
+    // if (pageId) {
+    //   this.props.fetch_page(pageId)
+    // }
   }
 
   async componentDidMount() {
@@ -115,19 +115,19 @@ class MainV2 extends Component {
   }
 
   async fetchAll() {
-    this.fetchFromBackend()
+    // this.fetchFromBackend()
     this.props.fetch_all_cookies()
     this.props.fetch_history()
   }
 
-  fetchFromBackend() {
-    const orgId = this.props.match.params.orgId
-    this.props.fetch_collections(orgId)
-    // this.props.fetch_all_versions(orgId)
-    // this.props.fetch_groups(orgId)
-    this.props.fetch_endpoints(orgId)
-    this.props.fetch_pages(orgId)
-  }
+  // fetchFromBackend() {
+  // const orgId = this.props.match.params.orgId
+  // this.props.fetch_collections(orgId)
+  // this.props.fetch_all_versions(orgId)
+  // this.props.fetch_groups(orgId)
+  // this.props.fetch_endpoints(orgId)
+  // this.props.fetch_pages(orgId)
+  // }
 
   setVisitedOrgs() {
     const orgId = this.props.match.params.orgId
@@ -218,7 +218,9 @@ class MainV2 extends Component {
               <div className='custom-main-container'>
                 {/* <Header {...this.props} /> */}
                 <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
-                <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} />
+                <OnlineSatus
+                // fetchFromBackend={this.fetchFromBackend.bind(this)}
+                />
                 <div className='main-panel-wrapper'>
                   <SplitPane split='vertical' className='split-sidebar'>
                     <SideBarV2

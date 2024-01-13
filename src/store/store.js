@@ -15,6 +15,7 @@ import toggleResponseReducer from '../components/common/redux/toggleResponse/tog
 import publishDocsReducer from '../components/publishDocs/redux/publishDocsReducer'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
+import clientDataReducer from './clientData/clientDataReducer'
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -31,7 +32,8 @@ const rootReducer = combineReducers({
   modals: modalsReducer,
   sidebar: sidebarReducer,
   responseView: toggleResponseReducer,
-  feedbacks: publishDocsReducer
+  feedbacks: publishDocsReducer,
+  clientData: clientDataReducer
 })
 
 const persistConfig = {

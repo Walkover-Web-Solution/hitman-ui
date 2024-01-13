@@ -31,6 +31,7 @@ import { addNewTab } from '../tabs/redux/tabsActions'
 import PageForm from '../pages/pageForm'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 
 const EMPTY_STRING = ''
 
@@ -39,7 +40,8 @@ const mapStateToProps = (state) => {
     collections: state.collections,
     // versions: state.versions,
     pages: state.pages,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
+    clientData: state.clientData
   }
 }
 
@@ -52,7 +54,7 @@ const mapDispatchToProps = (dispatch) => {
     add_custom_domain: (collectionId, domain) => dispatch(addCustomDomain(collectionId, domain)),
     remove_public_collection: (collection, props) => dispatch(removePublicCollection(collection, props)),
     add_new_tab: () => dispatch(addNewTab()),
-    update_isExpand_for_collection: (payload) => dispatch(updateIsExpandForCollection(payload))
+    update_isExpand_for_collection: (payload) => dispatch(addIsExpandedAction(payload))
   }
 }
 
@@ -308,10 +310,10 @@ class CollectionsComponent extends Component {
   }
 
   toggleSelectedColelctionIds(id) {
-    const isExpanded = this.props.collections[id]?.clientData?.isExpanded
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_collection({
       value: !isExpanded,
-      collectionId: id
+      id
     })
   }
 
@@ -353,14 +355,14 @@ class CollectionsComponent extends Component {
   }
 
   renderBody(collectionId, collectionState) {
-    const expanded = this.props.collections[collectionId]?.clientData?.isExpanded
+    const expanded = this.props.clientData?.[collectionId]?.isExpanded || false
 
-    const { focused } = this.props.sidebar.navList[`collections_${collectionId}`]
-    const { focused: sidebarFocused } = this.props.sidebar
+    // const { focused } = this.props.sidebar.navList[`collections_${collectionId}`]
+    // const { focused: sidebarFocused } = this.props.sidebar
 
-    if (sidebarFocused && focused && this.scrollRef[collectionId]) {
-      this.scrollToCollection(collectionId)
-    }
+    // if (sidebarFocused && focused && this.scrollRef[collectionId]) {
+    //   this.scrollToCollection(collectionId)
+    // }
 
     return (
       <React.Fragment key={collectionId}>
@@ -372,7 +374,7 @@ class CollectionsComponent extends Component {
             this.scrollRef[collectionId] = newRef
           }}
         >
-          <button tabIndex={-1} variant='default' className={[focused && sidebarFocused ? 'focused' : ''].join(' ')}>
+          <button tabIndex={-1} variant='default'>
             <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
@@ -626,7 +628,7 @@ class CollectionsComponent extends Component {
               {/* <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span> */}
             </div>
           </button>
-          {collectionState === 'singleCollection' ? null : expanded ? (
+          {expanded ? (
             <div id='collection-collapse'>
               <Card.Body>
                 <PublishCollectionInfo

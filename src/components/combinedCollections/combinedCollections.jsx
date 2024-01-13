@@ -25,7 +25,7 @@ function CombinedCollections(props) {
           case 3:
             return <Groups key={singleId} {...props} rootParentId={singleId} />
           case 4:
-            return <Endpoints {...props} endpointId={singleId} />
+            return <Endpoints key={singleId} {...props} endpointId={singleId} />
           default:
             break
         }

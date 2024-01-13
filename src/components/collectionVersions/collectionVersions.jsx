@@ -19,13 +19,15 @@ import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { updateIsExpandForPages } from '../pages/redux/pagesActions'
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
     groups: state.groups,
-    pages: state.pages
+    pages: state.pages,
+    clientData: state.clientData
   }
 }
 
@@ -33,7 +35,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     delete_version: (version, props) => dispatch(deleteVersion(version, props)),
     duplicate_version: (version) => dispatch(duplicateVersion(version)),
-    update_isExpand_for_versions: (payload) => dispatch(updateIsExpandForPages(payload))
+    update_isExpand_for_versions: (payload) => dispatch(addIsExpandedAction(payload))
   }
 }
 
@@ -308,7 +310,7 @@ class CollectionVersions extends Component {
   }
 
   toggleVersionIds(id) {
-    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_versions({
       value: !isExpanded,
       id: id
@@ -325,7 +327,7 @@ class CollectionVersions extends Component {
   }
 
   renderBody(versionId, index) {
-    const expanded = this.props.pages?.[this.props.rootParentId]?.clientData?.isExpanded || false
+    const expanded = this.props?.clientData?.[this?.props?.rootParentId]?.isExpanded || false
 
     return isDashboardRoute(this.props, true) ? (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={versionId}>
@@ -335,8 +337,7 @@ class CollectionVersions extends Component {
             ref={(newRef) => {
               this.scrollRef[versionId] = newRef
             }}
-            // className={'pl-3 ' + [focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
-            className='pl-3'
+            className={'pl-3 ' + [expanded ? 'expanded' : ''].join(' ')}
           >
             <div
               className='d-flex align-items-center cl-name'
