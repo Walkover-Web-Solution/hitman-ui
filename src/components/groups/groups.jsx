@@ -19,7 +19,6 @@ import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
-import { updateIsExpandForPages } from '../pages/redux/pagesActions.js'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
 
 const mapStateToProps = (state) => {

@@ -14,8 +14,7 @@ import {
   duplicateCollection,
   updateCollection,
   addCustomDomain,
-  removePublicCollection,
-  updateIsExpandForCollection
+  removePublicCollection
 } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'

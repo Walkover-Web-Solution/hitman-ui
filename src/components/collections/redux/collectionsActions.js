@@ -75,12 +75,6 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
   }
 }
 
-export const updateIsExpandForCollection = (payload) => {
-  return {
-    type: collectionsActionTypes.ON_COLLECTION_EXPANDED,
-    payload
-  }
-}
 export const addCollectionRequest = (newCollection) => {
   return {
     type: collectionsActionTypes.ADD_COLLECTION_REQUEST,
