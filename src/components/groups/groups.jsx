@@ -20,13 +20,15 @@ import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { updateIsExpandForPages } from '../pages/redux/pagesActions.js'
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
 
 const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     pages: state.pages,
     endpoints: state.endpoints,
-    versions: state.versions
+    versions: state.versions,
+    clientData: state.clientData,
   }
 }
 
@@ -37,7 +39,7 @@ const mapDispatchToProps = (dispatch) => {
     update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId)),
     delete_group: (group, props) => dispatch(deleteGroup(group, props)),
     duplicate_group: (group) => dispatch(duplicateGroup(group)),
-    update_isExpand_for_subPages: (payload) => dispatch(updateIsExpandForPages(payload))
+    update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload))
   }
 }
 
@@ -385,7 +387,7 @@ class Groups extends Component {
   }
 
   renderBody(groupId) {
-    const expanded = this.props.pages?.[this.props.rootParentId]?.clientData?.isExpanded || false
+    const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded || false
     // const { focused, expanded, firstChild } = this.props.sidebar.navList[`groups_${groupId}`]
     // const { focused: sidebarFocused } = this.props.sidebar
     // if (sidebarFocused && focused && this.scrollRef[groupId]) this.scrollToGroup(groupId)
@@ -552,11 +554,11 @@ class Groups extends Component {
             <Card.Body>
               <CombinedCollections
                 {...this.props}
-                // pagesToRender={pagesToRender}
-                // version_id={this.props.groups[groupId].versionId}
-                // set_page_drag={this.setPagedrag.bind(this)}
-                // group_id={groupId}
-                // show_filter_groups={this.propsFromGroups.bind(this)}
+              // pagesToRender={pagesToRender}
+              // version_id={this.props.groups[groupId].versionId}
+              // set_page_drag={this.setPagedrag.bind(this)}
+              // group_id={groupId}
+              // show_filter_groups={this.propsFromGroups.bind(this)}
               />
             </Card.Body>
           </div>
@@ -601,7 +603,7 @@ class Groups extends Component {
   }
 
   toggleSubPageIds(id) {
-    const isExpanded = this.props.pages?.[id]?.clientData?.isExpanded || false
+    const isExpanded = this.props.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
       id: id
