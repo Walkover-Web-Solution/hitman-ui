@@ -10,7 +10,7 @@ import { moveToNextStep } from '../../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../../common/constants'
 import sidebarActions from './redux/sidebarActions'
 import DefaultViewModal from '../../collections/defaultViewModal/defaultViewModal'
-import { addNewTab } from '../../tabs/redux/tabsActions'
+import { addPage1 } from '../../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -18,9 +18,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch,ownProps) => {
   return {
-    add_new_tab: () => dispatch(addNewTab()),
+    add_page: (rootParentId, newPage) => dispatch(addPage1(ownProps.history, rootParentId, newPage)),
     add_collection: (newCollection, openSelectedCollection, callback) =>
       dispatch(addCollection(newCollection, openSelectedCollection, callback)),
     update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback))
@@ -33,7 +33,6 @@ class PageEndpointForm extends Form {
     this.state = {
       data: {
         name: '',
-        description: ''
       },
       collectionId: '',
       errors: {},
@@ -45,11 +44,8 @@ class PageEndpointForm extends Form {
       },
       updating: false
     }
-
     this.schema = {
-      name: Joi.string().min(3).max(20).trim().required().label('Collection Name'),
-      description: Joi.string().allow(null, '').label('Description'),
-      defaultView: Joi.string().allow(null, '').label('Default View')
+      name: Joi.string().required().label('Page name')
     }
   }
 
@@ -86,11 +82,11 @@ class PageEndpointForm extends Form {
 
   redirectToCollection(collection) {
     const { viewLoader } = this.state
-    if (!collection.data) {
+    if (!collection?.data) {
       console.error('collection.data is undefined')
       return // or handle this case appropriately
     }
-    const { id: collectionId } = collection.data
+    const { id: collectionId } = collection?.data
     if (collection.success && viewLoader.doc && !this.props.setDropdownList) {
       const { orgId } = this.props.match.params
       this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
@@ -100,24 +96,37 @@ class PageEndpointForm extends Form {
     this.props.onHide()
   }
 
-  async onAddCollectionSubmit(defaultView) {
-    const requestId = shortid.generate()
-    const defaultDocProperties = {
-      defaultLogoUrl: '',
-      defaultTitle: '',
-      versionHosts: {}
-    }
-    this.props.add_collection(
-      { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
-      null,
-      this.redirectToCollection.bind(this)
-    )
-    this.setState({
-      data: {
-        name: '',
-        description: ''
+  async onAddPageSubmit() {
+    // const requestId = shortid.generate()
+    // const defaultDocProperties = {
+    //   defaultLogoUrl: '',
+    //   defaultTitle: '',
+    //   versionHosts: {}
+    // }
+    // this.props.add_collection(
+    //   { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
+    //   null,
+    //   this.redirectToCollection.bind(this)
+    // )
+    // this.setState({
+    //   data: {
+    //     name: '',
+    //     description: ''
+    //   }
+    // })
+    let { name } = { ...this.state.data }
+    name = toTitleCase(name)
+    const collections = this.props.selectedCollection
+
+    const rootParentId = this.props.addEntity ? collections : this.props.collections.rootParentId
+      const data = { ...this.state.data, name }
+      const newPage = {
+        ...data,
+        requestId: shortid.generate(),
+        versionId: this.props.pageType === 1 ? shortid.generate() : null,
+        pageType: this.props.pageType
       }
-    })
+    this.props.add_page(rootParentId, newPage)
     moveToNextStep(1)
   }
 
@@ -136,17 +145,15 @@ class PageEndpointForm extends Form {
       this.onEditCollectionSubmit(defaultView)
     }
     if (this.props.title === 'Add new Collection') {
-      this.onAddCollectionSubmit(defaultView)
+      this.onAddPageSubmit(defaultView)
       if (this.props.setDropdownList) this.props.onHide()
+      
     }
   }
 
   saveCollection(defaultView, flag) {
     this.setViewLoader(defaultView, flag)
     this.doSubmit(defaultView)
-  }
-  addEndpoint(defaultView, flag) {
-    this.add_new_tab()
   }
 
   renderCollectionDetailsForm() {
@@ -159,14 +166,14 @@ class PageEndpointForm extends Form {
       <DefaultViewModal
         viewLoader={this.state.viewLoader}
         saveCollection={this.saveCollection.bind(this)}
-        saveEndpoint={this.addEndpoint.bind(this)}
         onHide={() => this.props.onHide()}
+        runFunctionality={this.renderCollectionDetailsForm.bind(this)}
       />
     )
   }
 
   renderForm() {
-    const { step } = this.state
+    const { step } = this.statecp
     return (
       <>
         {step === 2 && this.renderCollectionDetailsForm()}

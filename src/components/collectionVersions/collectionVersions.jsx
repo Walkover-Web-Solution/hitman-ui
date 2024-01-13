@@ -19,6 +19,7 @@ import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
+import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 
 const mapStateToProps = (state) => {
   return {
@@ -103,6 +104,23 @@ class CollectionVersions extends Component {
     if (endpointId && prevEndpointId !== endpointId) {
       this.setVersionForEntity(endpointId, 'endpoint')
     }
+  }
+  showAddPageEndpointModal() {
+    return (
+      this.state.showAddCollectionModal && (
+        <DefaultViewModal
+          {...this.props}
+          title='Add new Collection'
+          show={this.state.showAddCollectionModal}
+          onCancel={() => {
+            this.setState({ showAddCollectionModal: false })
+          }}
+          onHide={() => {
+            this.setState({ showAddCollectionModal: false })
+          }}
+        />
+      )
+    )
   }
 
   setVersionForEntity(id, type) {
@@ -351,7 +369,7 @@ class CollectionVersions extends Component {
             </div>
             {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action d-flex align-items-center'>
-                <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddGroupForm(this.props.versions[versionId])}>
+                <div className='mr-1 d-flex align-items-center' onClick={() => this.showAddPageEndpointModal(this.setState({ showAddCollectionModal: true }))}>
                   <Plus />
                 </div>
                 <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
@@ -413,21 +431,6 @@ class CollectionVersions extends Component {
                       />
                     </svg>{' '}
                     Duplicate
-                  </div>
-                  <div className='dropdown-item' onClick={() => this.openAddVersionPageForm(this.props.versions[versionId])}>
-                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path
-                        d='M15.75 3H2.25C1.42157 3 0.75 3.67157 0.75 4.5V13.5C0.75 14.3284 1.42157 15 2.25 15H15.75C16.5784 15 17.25 14.3284 17.25 13.5V4.5C17.25 3.67157 16.5784 3 15.75 3Z'
-                        stroke='#E98A36'
-                        strokeWidth='1.5'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                      <line x1='5.25' y1='15' x2='5.25' y2='3' stroke='#E98A36' strokeWidth='1.5' />
-                      <path d='M14 9L8 9' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                      <path d='M11 12L11 6' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                    </svg>{' '}
-                    Add Page
                   </div>
                   <div className='dropdown-item' onClick={() => this.openShareVersionForm(this.props.versions[versionId])}>
                     <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -684,6 +687,7 @@ class CollectionVersions extends Component {
         {this.showAddGroupForm()}
         {this.showEditVersionForm()}
         {this.showAddVersionPageForm()}
+        {this.showAddPageEndpointModal()}
         {this.state.showDeleteModal &&
           collectionVersionsService.showDeleteVersionModal(
             this.props,

@@ -8,7 +8,7 @@ function modalsReducer(state = initialState, action) {
       return { ...state, activeModal: action.payload, modalData: action.data }
 
     case modalsActionTypes.ON_CLOSE_MODAL:
-      return { ...state, activeModal: null, modalData: null }
+      return { ...state, activeModal: null, modalData: action.payload }
 
     case modalsActionTypes.ON_INSTALL_MODAL:
       return { ...state, installPrompt: action.payload }

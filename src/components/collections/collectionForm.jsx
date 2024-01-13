@@ -138,7 +138,7 @@ class CollectionForm extends Form {
     if (this.props.title === 'Add new Collection') {
       this.onAddCollectionSubmit(defaultView)
       if (this.props.setDropdownList) this.props.onHide()
-    }
+          }
   }
 
   saveCollection(defaultView, flag) {
