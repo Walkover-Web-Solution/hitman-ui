@@ -17,36 +17,34 @@ export const defaultViewTypes = {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_new_tab: () => dispatch(addNewTab()),
+    add_new_tab: () => dispatch(addNewTab())
   }
 }
 export class DefaultViewModal extends Form {
-
   constructor(props) {
     super(props)
     this.state = {
       showPageForm: {
-        addPage: false,
+        addPage: false
       }
     }
-    this.renderCollectionDetailsForm = this.renderCollectionDetailsForm.bind(this);
+    this.renderCollectionDetailsForm = this.renderCollectionDetailsForm.bind(this)
   }
 
-  
-    renderCollectionDetailsForm() {
-      return (
-        this.state.showPageForm.addPage && (
-          <PageForm
-            {...this.props}
-            show={this.state.showPageForm.addPage}
-            onHide={() => this.props.onHide()}
-            title={this.props.title}
-            pageType={this.props.pageType}
-          />
-        )
+  renderCollectionDetailsForm() {
+    return (
+      this.state.showPageForm.addPage && (
+        <PageForm
+          {...this.props}
+          show={this.state.showPageForm.addPage}
+          onHide={() => this.props.onHide()}
+          title={this.props.title}
+          pageType={this.props.pageType}
+        />
       )
-    }
-    
+    )
+  }
+
   renderTestingButton() {
     return (
       <button className='block-view-btn mr-3' onClick={() => this.props.add_new_tab()}>
@@ -58,8 +56,7 @@ export class DefaultViewModal extends Form {
 
   renderDocButton() {
     return (
-      <button className='block-view-btn' onClick={() => 
-        this.setState({ showPageForm: { addPage: true } })}>
+      <button className='block-view-btn' onClick={() => this.setState({ showPageForm: { addPage: true } })}>
         <img src={DocIcon} alt='' />
         {'Create Page'}
       </button>
@@ -112,6 +109,5 @@ export class DefaultViewModal extends Form {
     return this.props.showOnlyForm ? this.renderButtons() : this.renderInModal()
   }
 }
-
 
 export default withRouter(connect(null, mapDispatchToProps)(DefaultViewModal))

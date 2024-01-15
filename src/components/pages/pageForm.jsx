@@ -11,7 +11,7 @@ import extractCollectionInfoService from '../publishDocs/extractCollectionInfoSe
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_page: (rootParentId, newPage) => dispatch(addPage1(ownProps.history, rootParentId, newPage)),
+    add_page: (rootParentId, newPage) => dispatch(addPage1(ownProps.history, rootParentId, newPage))
   }
 }
 
@@ -27,7 +27,7 @@ class PageForm extends Form {
 
     this.schema = {
       name: Joi.string().required().label('Page name'),
-      contents: Joi.string().allow(null, ""),
+      contents: Joi.string().allow(null, ''),
       state: Joi.valid(0, 1, 2, 3)
     }
   }
@@ -58,18 +58,18 @@ class PageForm extends Form {
       }
       this.props.add_page(rootParentId, newPage)
     }
-    if ((this.props?.title === 'Add Page' || this.props?.title === 'Add Sub Page') || this.props?.addEntity) {
-      const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage;
-      const ParentId = selectedId;
-      const data = { ...this.state.data, name };
+    if (this.props?.title === 'Add Page' || this.props?.title === 'Add Sub Page' || this.props?.addEntity) {
+      const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
+      const ParentId = selectedId
+      const data = { ...this.state.data, name }
       const newPage = {
         ...data,
         requestId: shortid.generate(),
         versionId: this.props?.pageType === 1 ? shortid.generate() : null,
         pageType: this.props?.pageType,
         state: 0
-      };
-      this.props.add_page(ParentId, newPage);
+      }
+      this.props.add_page(ParentId, newPage)
     }
   }
 

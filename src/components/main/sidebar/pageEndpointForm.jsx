@@ -18,7 +18,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch,ownProps) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_page: (rootParentId, newPage) => dispatch(addPage1(ownProps.history, rootParentId, newPage)),
     add_collection: (newCollection, openSelectedCollection, callback) =>
@@ -32,7 +32,7 @@ class PageEndpointForm extends Form {
     super(props)
     this.state = {
       data: {
-        name: '',
+        name: ''
       },
       collectionId: '',
       errors: {},
@@ -119,13 +119,13 @@ class PageEndpointForm extends Form {
     const collections = this.props.selectedCollection
 
     const rootParentId = this.props.addEntity ? collections : this.props.collections.rootParentId
-      const data = { ...this.state.data, name }
-      const newPage = {
-        ...data,
-        requestId: shortid.generate(),
-        versionId: this.props.pageType === 1 ? shortid.generate() : null,
-        pageType: this.props.pageType
-      }
+    const data = { ...this.state.data, name }
+    const newPage = {
+      ...data,
+      requestId: shortid.generate(),
+      versionId: this.props.pageType === 1 ? shortid.generate() : null,
+      pageType: this.props.pageType
+    }
     this.props.add_page(rootParentId, newPage)
     moveToNextStep(1)
   }
@@ -147,7 +147,6 @@ class PageEndpointForm extends Form {
     if (this.props.title === 'Add new Collection') {
       this.onAddPageSubmit(defaultView)
       if (this.props.setDropdownList) this.props.onHide()
-      
     }
   }
 

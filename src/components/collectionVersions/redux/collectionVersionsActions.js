@@ -106,7 +106,6 @@ export const addParentPageVersion = (newVersion, pageId, customCallback) => {
   }
 }
 
-
 export const addVersionRequest = (newVersion) => {
   return {
     type: versionActionTypes.ADD_VERSION_REQUEST,

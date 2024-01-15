@@ -105,7 +105,7 @@ class CollectionVersions extends Component {
       this.setVersionForEntity(endpointId, 'endpoint')
     }
   }
-  openAddPageEndpointModal(versionId){
+  openAddPageEndpointModal(versionId) {
     this.setState({
       showAddCollectionModal: true,
       selectedVersion: {
@@ -120,9 +120,13 @@ class CollectionVersions extends Component {
           {...this.props}
           title='Add Page'
           show={this.state.showAddCollectionModal}
-          onCancel={() => {this.setState({ showAddCollectionModal: false })}}
-          onHide={() => {this.setState({ showAddCollectionModal: false })}}
-          selectedVersion = {this.props?.rootParentId}
+          onCancel={() => {
+            this.setState({ showAddCollectionModal: false })
+          }}
+          onHide={() => {
+            this.setState({ showAddCollectionModal: false })
+          }}
+          selectedVersion={this.props?.rootParentId}
           pageType={3}
         />
       )
@@ -410,15 +414,8 @@ class CollectionVersions extends Component {
           (this.state.selectedVersionIndex && this.state.selectedVersionIndex === index.toString())) && (
           <>
             <div className='hm-sidebar-outer-block' key={versionId}>
-              <VersionPages
-                {...this.props}
-                version_id={versionId}
-                theme={this.props.collections[this.props.collection_id].theme}
-              />
-              <Groups
-                {...this.props}
-                version_id={versionId}
-              />
+              <VersionPages {...this.props} version_id={versionId} theme={this.props.collections[this.props.collection_id].theme} />
+              <Groups {...this.props} version_id={versionId} />
             </div>
           </>
         )}

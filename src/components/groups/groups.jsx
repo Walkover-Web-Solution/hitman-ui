@@ -48,7 +48,7 @@ class Groups extends Component {
     super(props)
     this.state = {
       GroupFormName: '',
-      selectedPage : {},
+      selectedPage: {},
       showGroupForm: {
         addPage: false,
         edit: false,
@@ -219,7 +219,7 @@ class Groups extends Component {
   closeDeleteGroupModal() {
     this.setState({ showDeleteModal: false })
   }
-  openAddPageEndpointModal(groupId){
+  openAddPageEndpointModal(groupId) {
     this.setState({
       showAddCollectionModal: true,
       selectedPage: {
@@ -241,7 +241,7 @@ class Groups extends Component {
           onHide={() => {
             this.setState({ showAddCollectionModal: false })
           }}
-          selectedPage = {this.props?.rootParentId}
+          selectedPage={this.props?.rootParentId}
           pageType={3}
         />
       )
@@ -434,10 +434,7 @@ class Groups extends Component {
           </div>
           {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
             <div className='sidebar-item-action d-flex align-items-center'>
-              <div
-                onClick={() => this.openAddPageEndpointModal(groupId)}
-                className='mr-1 d-flex align-items-center'
-              >
+              <div onClick={() => this.openAddPageEndpointModal(groupId)} className='mr-1 d-flex align-items-center'>
                 <Plus />
               </div>
               <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>

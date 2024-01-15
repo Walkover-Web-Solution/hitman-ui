@@ -191,10 +191,10 @@ class CollectionParentPages extends Component {
   }
 
   closeVersionForm() {
-    this.setState({ showVersionForm:false })
+    this.setState({ showVersionForm: false })
   }
-  closeDeleteVersionModal(){
-    this.setState({ showDeleteModal:false })
+  closeDeleteVersionModal() {
+    this.setState({ showDeleteModal: false })
   }
   closeDeletePageModal() {
     this.setState({ showDeleteModal: false })

@@ -66,7 +66,7 @@ class CollectionsComponent extends Component {
       defaultPublicLogo: hitmanLogo,
       publicLogoError: false,
       showRemoveModal: false,
-      selectedCollectionIds: [],
+      selectedCollectionIds: []
     }
     this.names = {}
     this.scrollRef = {}
@@ -246,11 +246,7 @@ class CollectionsComponent extends Component {
   }
 
   dataFetched() {
-    return (
-      this.props.collections &&
-      this.props.endpoints &&
-      this.props.pages
-    )
+    return this.props.collections && this.props.endpoints && this.props.pages
   }
 
   // findEndpointCount (collectionId) {
@@ -316,14 +312,14 @@ class CollectionsComponent extends Component {
       }, 100)
     }
   }
-openAddPageEndpointModal(collectionId){
-  this.setState({
-    showAddCollectionModal: true,
-    selectedCollection: {
-      ...this.props.collections[collectionId]
-    }
-  })
-}
+  openAddPageEndpointModal(collectionId) {
+    this.setState({
+      showAddCollectionModal: true,
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    })
+  }
   showAddPageEndpointModal() {
     return (
       this.state.showAddCollectionModal && (
@@ -380,10 +376,7 @@ openAddPageEndpointModal(collectionId){
             </div>
             <div className='d-flex align-items-center'>
               <div className='sidebar-item-action d-flex align-items-center'>
-                <div
-                  className='mr-1 d-flex align-items-center'
-                  onClick={() => this.openAddPageEndpointModal(collectionId)}
-                >
+                <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
                   <Plus />
                 </div>
                 <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
@@ -757,10 +750,7 @@ openAddPageEndpointModal(collectionId){
                 )}
               </div>
               <div id='parent-accordion' key={index}>
-                <CollectionParentPages
-                  {...this.props}
-                  collection_id={collectionId}
-                />
+                <CollectionParentPages {...this.props} collection_id={collectionId} />
               </div>
             </div>
           ))}
