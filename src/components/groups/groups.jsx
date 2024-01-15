@@ -48,6 +48,7 @@ class Groups extends Component {
     super(props)
     this.state = {
       GroupFormName: '',
+      selectedPage : {},
       showGroupForm: {
         addPage: false,
         edit: false,
@@ -218,13 +219,21 @@ class Groups extends Component {
   closeDeleteGroupModal() {
     this.setState({ showDeleteModal: false })
   }
+  openAddPageEndpointModal(groupId){
+    this.setState({
+      showAddCollectionModal: true,
+      selectedPage: {
+        ...this.props.pages[groupId]
+      }
+    })
+  }
 
   showAddPageEndpointModal() {
     return (
       this.state.showAddCollectionModal && (
         <DefaultViewModal
           {...this.props}
-          title='Add new Collection'
+          title='Add Sub Page'
           show={this.state.showAddCollectionModal}
           onCancel={() => {
             this.setState({ showAddCollectionModal: false })
@@ -232,6 +241,8 @@ class Groups extends Component {
           onHide={() => {
             this.setState({ showAddCollectionModal: false })
           }}
+          selectedPage = {this.props?.rootParentId}
+          pageType={3}
         />
       )
     )
@@ -424,7 +435,7 @@ class Groups extends Component {
           {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
             <div className='sidebar-item-action d-flex align-items-center'>
               <div
-                onClick={() => this.showAddPageEndpointModal(this.setState({ showAddCollectionModal: true }))}
+                onClick={() => this.openAddPageEndpointModal(groupId)}
                 className='mr-1 d-flex align-items-center'
               >
                 <Plus />

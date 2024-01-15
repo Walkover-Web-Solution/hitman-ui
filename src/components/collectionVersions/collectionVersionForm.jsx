@@ -20,7 +20,6 @@ const mapDispatchToProps = (dispatch) => {
 class CollectionVersionForm extends Form {
   constructor(props) {
     super(props)
-
     this.state = {
       data: { name: '', state: 0 },
       errors: {},
@@ -39,8 +38,8 @@ class CollectionVersionForm extends Form {
     const parentPageId = ''
     let versionId = ''
     if (this.props.title === ADD_VERSION_MODAL_NAME) return
-    if (this.props.selected_version) {
-      const { name, type, id } = this.props.selected_version
+    if (this.props.selectedVersion) {
+      const { name, type, id } = this.props.selectedVersion
       data = {
         name,
         type
@@ -66,7 +65,7 @@ class CollectionVersionForm extends Form {
     let { name } = { ...this.state.data }
     name = toTitleCase(name)
     if (this.props.title === 'Edit Collection Version') {
-      const { id, parentPageId } = this.props.selected_version
+      const { id, parentPageId } = this.props.selectedVersion
       const editedCollectionVersion = { ...this.state.data, parentPageId, id, name }
       this.props.update_version(editedCollectionVersion)
     }

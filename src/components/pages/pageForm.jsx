@@ -5,14 +5,13 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import shortid from 'shortid'
 import Form from '../common/form'
-import { addGroupPage, addPage1 } from '../pages/redux/pagesActions'
+import { addPage1 } from '../pages/redux/pagesActions'
 import { onEnter, toTitleCase } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_page: (rootParentId, newPage) => dispatch(addPage1(ownProps.history, rootParentId, newPage)),
-    add_group_page: (versionId, groupId, newPage) => dispatch(addGroupPage(ownProps.history, versionId, groupId, newPage))
   }
 }
 
@@ -27,7 +26,9 @@ class PageForm extends Form {
     }
 
     this.schema = {
-      name: Joi.string().required().label('Page name')
+      name: Joi.string().required().label('Page name'),
+      contents: Joi.string().allow(null, ""),
+      state: Joi.valid(0, 1, 2, 3)
     }
   }
 
@@ -37,24 +38,17 @@ class PageForm extends Form {
     this.setState({ versions, groups })
   }
 
-  async doSubmit(props) {
+  async doSubmit() {
     if (!this.state.selectedCollection && this.props.addEntity) {
       this.setState({ versionRequired: true })
       return
     }
-    const collections = this.props.selectedCollection
-    const version = this.props.addEntity ? this.state.selectedVersionId : this.props.selectedVersion
+    const collections = this.props?.selectedCollection
     this.props.onHide()
     let { name } = { ...this.state.data }
     name = toTitleCase(name)
-    if (this.props.title === 'Add new Group Page' || (this.props.addEntity && this.state.selectedGroupId)) {
-      const groupId = this.props.addEntity ? this.state.selectedGroupId : this.props.selectedGroup.id
-      const data = { ...this.state.data, name }
-      const newPage = { ...data, requestId: shortid.generate() }
-      this.props.add_group_page(version, groupId, newPage)
-    }
     if (this.props.title === 'Add Parent Page' || this.props.addEntity) {
-      const rootParentId = this.props.addEntity ? collections : collections.rootParentId
+      const rootParentId = collections?.rootParentId
       const data = { ...this.state.data, name }
       const newPage = {
         ...data,
@@ -64,16 +58,18 @@ class PageForm extends Form {
       }
       this.props.add_page(rootParentId, newPage)
     }
-    if (this.props.title === 'Add Sub Page' || this.props.addEntity) {
-      const rootParentId = this.props.addEntity ? collections : collections.rootParentId
-      const data = { ...this.state.data, name }
+    if ((this.props?.title === 'Add Page' || this.props?.title === 'Add Sub Page') || this.props?.addEntity) {
+      const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage;
+      const ParentId = selectedId;
+      const data = { ...this.state.data, name };
       const newPage = {
         ...data,
         requestId: shortid.generate(),
-        versionId: this.props.pageType === 1 ? shortid.generate() : null,
-        pageType: this.props.pageType
-      }
-      this.props.add_page(this.props.rootParentId, newPage)
+        versionId: this.props?.pageType === 1 ? shortid.generate() : null,
+        pageType: this.props?.pageType,
+        state: 0
+      };
+      this.props.add_page(ParentId, newPage);
     }
   }
 

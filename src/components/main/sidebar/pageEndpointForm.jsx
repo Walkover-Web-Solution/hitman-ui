@@ -96,7 +96,7 @@ class PageEndpointForm extends Form {
     this.props.onHide()
   }
 
-  async onAddPageSubmit() {
+  async onAddPageSubmit(props) {
     // const requestId = shortid.generate()
     // const defaultDocProperties = {
     //   defaultLogoUrl: '',

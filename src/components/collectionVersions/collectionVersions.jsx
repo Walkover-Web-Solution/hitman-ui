@@ -105,19 +105,25 @@ class CollectionVersions extends Component {
       this.setVersionForEntity(endpointId, 'endpoint')
     }
   }
+  openAddPageEndpointModal(versionId){
+    this.setState({
+      showAddCollectionModal: true,
+      selectedVersion: {
+        ...this.props.pages[versionId]
+      }
+    })
+  }
   showAddPageEndpointModal() {
     return (
       this.state.showAddCollectionModal && (
         <DefaultViewModal
           {...this.props}
-          title='Add new Collection'
+          title='Add Page'
           show={this.state.showAddCollectionModal}
-          onCancel={() => {
-            this.setState({ showAddCollectionModal: false })
-          }}
-          onHide={() => {
-            this.setState({ showAddCollectionModal: false })
-          }}
+          onCancel={() => {this.setState({ showAddCollectionModal: false })}}
+          onHide={() => {this.setState({ showAddCollectionModal: false })}}
+          selectedVersion = {this.props?.rootParentId}
+          pageType={3}
         />
       )
     )
@@ -152,20 +158,6 @@ class CollectionVersions extends Component {
     this.props.duplicate_version(version)
   }
 
-  showAddVersionPageForm() {
-    return (
-      this.state.showVersionForm.addPage && (
-        <PageForm
-          {...this.props}
-          show={this.state.showVersionForm.addPage}
-          onHide={() => this.closeVersionForm()}
-          title={this.state.versionFormName}
-          selectedVersion={this.state.selectedVersion}
-        />
-      )
-    )
-  }
-
   openShareVersionForm(version) {
     const showVersionForm = { share: true }
     this.setState({
@@ -184,19 +176,12 @@ class CollectionVersions extends Component {
     })
   }
 
-  openAddGroupForm(version) {
-    const showVersionForm = { addPage: true }
-    this.setState({
-      showVersionForm,
-      versionFormName: ADD_GROUP_MODAL_NAME,
-      selectedVersion: version
-    })
-  }
-
-  openEditVersionForm(version) {
+  openEditVersionForm(versionId) {
     this.setState({
       showCollectionForm: true,
-      selectedVersion: version
+      selectedVersion: {
+        ...this.props.pages[versionId]
+      }
     })
   }
 
@@ -222,20 +207,6 @@ class CollectionVersions extends Component {
     )
   }
 
-  showAddGroupForm() {
-    return (
-      this.state.showVersionForm.addGroup && (
-        <PageForm
-          {...this.props}
-          show={this.state.showVersionForm.addGroup}
-          onHide={() => this.closeVersionForm()}
-          title={this.state.versionFormName}
-          selectedVersion={this.state.selectedVersion}
-        />
-      )
-    )
-  }
-
   showEditVersionForm() {
     return (
       this.state.showCollectionForm && (
@@ -246,7 +217,7 @@ class CollectionVersions extends Component {
             this.setState({ showCollectionForm: false })
           }}
           title='Edit Collection Version'
-          selected_version={this.state.selectedVersion}
+          selectedVersion={this.state.selectedVersion}
         />
       )
     )
@@ -259,65 +230,6 @@ class CollectionVersions extends Component {
 
   closeDeleteVersionModal() {
     this.setState({ showDeleteModal: false })
-  }
-
-  propsFromVersion(versionIds, title) {
-    this.filteredVersions = {}
-    this.filterFlag = false
-    this.filterVersions()
-    if (title === 'groups') {
-      this.filteredGroups = {}
-      if (versionIds !== null) {
-        for (let i = 0; i < versionIds.length; i++) {
-          this.filteredGroups[versionIds[i]] = this.props.versions[versionIds[i]]
-          this.eventkey[versionIds[i]] = '0'
-        }
-      }
-    }
-    if (title === 'endpointsAndPages') {
-      this.filteredEndpointsAndPages = {}
-      if (versionIds !== null) {
-        for (let i = 0; i < versionIds.length; i++) {
-          this.filteredEndpointsAndPages[versionIds[i]] = this.props.versions[versionIds[i]]
-          this.eventkey[versionIds[i]] = '0'
-        }
-      }
-    }
-    if (title === 'versionPages') {
-      this.filteredVersionPages = {}
-      if (versionIds !== null) {
-        for (let i = 0; i < versionIds.length; i++) {
-          this.filteredVersionPages[versionIds[i]] = this.props.versions[versionIds[i]]
-          this.eventkey[versionIds[i]] = '0'
-        }
-      }
-    }
-    this.filteredVersions = filterService.jsonConcat(this.filteredVersions, this.filteredVersionPages)
-    this.filteredVersions = filterService.jsonConcat(this.filteredVersions, this.filteredEndpointsAndPages)
-    this.filteredVersions = filterService.jsonConcat(this.filteredVersions, this.filteredGroups)
-    this.filteredVersions = filterService.jsonConcat(this.filteredVersions, this.filteredOnlyVersions)
-
-    this.setState({ filter: this.props.filter })
-  }
-
-  filterVersions() {
-    if (this.props.selectedCollection === true && this.props.filter !== '' && this.filterFlag === false) {
-      this.filteredOnlyVersions = {}
-      this.filterFlag = true
-      let versionIds = []
-      versionIds = filterService.filter(this.props.versions, this.props.filter, 'versions')
-      this.setState({ filter: this.props.filter })
-      if (versionIds.length !== 0) {
-        for (let i = 0; i < versionIds.length; i++) {
-          this.filteredOnlyVersions[versionIds[i]] = this.props.versions[versionIds[i]]
-          if (!this.eventkey[versionIds[i]] || this.eventkey[versionIds[i]] !== '0') {
-            this.eventkey[versionIds[i]] = '1'
-          }
-        }
-      } else {
-        this.filteredOnlyVersions = {}
-      }
-    }
   }
 
   setSelectedVersion(e) {
@@ -369,14 +281,14 @@ class CollectionVersions extends Component {
             </div>
             {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action d-flex align-items-center'>
-                <div className='mr-1 d-flex align-items-center' onClick={() => this.showAddPageEndpointModal(this.setState({ showAddCollectionModal: true }))}>
+                <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(versionId)}>
                   <Plus />
                 </div>
                 <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                   <i className='uil uil-ellipsis-v' />
                 </div>
                 <div className='dropdown-menu dropdown-menu-right'>
-                  <div className='dropdown-item' onClick={() => this.openEditVersionForm(this.props.versions[versionId])}>
+                  <div className='dropdown-item' onClick={() => this.openEditVersionForm(versionId)}>
                     <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                       <path
                         d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
@@ -484,7 +396,7 @@ class CollectionVersions extends Component {
                     {...this.props}
                     // pagesToRender={pagesToRender}
                     version_id={versionId}
-                    show_filter_version={this.propsFromVersion.bind(this)}
+                    // show_filter_version={this.propsFromVersion.bind(this)}
                   />
                 </div>
               </Card.Body>
@@ -501,14 +413,11 @@ class CollectionVersions extends Component {
               <VersionPages
                 {...this.props}
                 version_id={versionId}
-                show_filter_version={this.propsFromVersion.bind(this)}
                 theme={this.props.collections[this.props.collection_id].theme}
               />
               <Groups
                 {...this.props}
                 version_id={versionId}
-                addGroup={this.openAddGroupForm.bind(this)}
-                show_filter_version={this.propsFromVersion.bind(this)}
               />
             </div>
           </>
@@ -684,9 +593,7 @@ class CollectionVersions extends Component {
     return (
       <>
         {this.showShareVersionForm()}
-        {this.showAddGroupForm()}
         {this.showEditVersionForm()}
-        {this.showAddVersionPageForm()}
         {this.showAddPageEndpointModal()}
         {this.state.showDeleteModal &&
           collectionVersionsService.showDeleteVersionModal(

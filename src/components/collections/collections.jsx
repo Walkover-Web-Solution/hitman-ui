@@ -248,7 +248,6 @@ class CollectionsComponent extends Component {
   dataFetched() {
     return (
       this.props.collections &&
-      // this.props.versions &&
       this.props.endpoints &&
       this.props.pages
     )
@@ -317,13 +316,20 @@ class CollectionsComponent extends Component {
       }, 100)
     }
   }
-
+openAddPageEndpointModal(collectionId){
+  this.setState({
+    showAddCollectionModal: true,
+    selectedCollection: {
+      ...this.props.collections[collectionId]
+    }
+  })
+}
   showAddPageEndpointModal() {
     return (
       this.state.showAddCollectionModal && (
         <DefaultViewModal
           {...this.props}
-          title='Add new Collection'
+          title='Add Parent Page'
           show={this.state.showAddCollectionModal}
           onCancel={() => {
             this.setState({ showAddCollectionModal: false })
@@ -331,6 +337,8 @@ class CollectionsComponent extends Component {
           onHide={() => {
             this.setState({ showAddCollectionModal: false })
           }}
+          selectedCollection={this.state.selectedCollection}
+          pageType={1}
         />
       )
     )
@@ -374,7 +382,7 @@ class CollectionsComponent extends Component {
               <div className='sidebar-item-action d-flex align-items-center'>
                 <div
                   className='mr-1 d-flex align-items-center'
-                  onClick={() => this.showAddPageEndpointModal(this.setState({ showAddCollectionModal: true }))}
+                  onClick={() => this.openAddPageEndpointModal(collectionId)}
                 >
                   <Plus />
                 </div>

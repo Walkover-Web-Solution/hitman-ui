@@ -98,6 +98,7 @@ export const onCollectionAddedError = (error, newCollection) => {
 }
 
 export const updateCollection = (editedCollection, stopLoader, customCallback) => {
+  debugger
   return (dispatch) => {
     const originalCollection = store.getState().collections[editedCollection.id]
     dispatch(updateCollectionRequest({ ...originalCollection, ...editedCollection }))
@@ -107,6 +108,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
     collectionsApiService
       .updateCollection(id, editedCollection)
       .then((response) => {
+        console.log(response.data,"collectionupdted")
         const { id, isPublic, name, orgId } = response.data
         if (isPublic === true) {
           sendAmplitudeData('Collection Published', {
@@ -133,6 +135,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
 }
 
 export const updateCollectionRequest = (editedCollection) => {
+  console.log(editedCollection,"collection actions")
   return {
     type: collectionsActionTypes.UPDATE_COLLECTION_REQUEST,
     editedCollection
@@ -362,7 +365,7 @@ function prepareCollectionData(collection, props) {
   const storeData = { ...store.getState() }
   const versionIds = Object.keys(storeData.versions).filter((vId) => storeData.versions[vId].collectionId === collection.id)
   let groupIds = []
-  let endpointIds = []
+  let endpointIds = [] 
   let pageIds = []
   versionIds.forEach((vId) => {
     groupIds = [...Object.keys(storeData.groups).filter((gId) => storeData.groups[gId].versionId === vId), ...groupIds]
