@@ -15,11 +15,11 @@ import './groups.scss'
 import groupsService from './groupsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
+import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
 
 const mapStateToProps = (state) => {
   return {
@@ -47,6 +47,7 @@ class Groups extends Component {
     super(props)
     this.state = {
       GroupFormName: '',
+      selectedPage: {},
       showGroupForm: {
         addPage: false,
         edit: false,
@@ -63,14 +64,6 @@ class Groups extends Component {
     this.filteredGroupPages = {}
     this.filteredEndpointsAndPages = {}
     this.scrollRef = {}
-  }
-
-  handleAddPage(groupId, versionId, collectionId) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
-      versionId: versionId,
-      groupId: groupId
-    })
   }
 
   componentDidMount() {
@@ -104,7 +97,6 @@ class Groups extends Component {
 
   setGroupIdforEntity(id, type) {
     const { groupId } = getParentIds(id, type, this.props)
-    sidebarActions.expandItem('groups', groupId)
   }
 
   setSelectedGroupId(id, value) {
@@ -113,21 +105,12 @@ class Groups extends Component {
     }
   }
 
-  handleAddEndpoint(groupId, versions, groups) {
-    tabService.newTab({ ...this.props })
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/new`,
-      title: 'Add New Endpoint',
-      search: `?group=${groupId}`
-    })
-  }
-
-  openShareGroupForm(group) {
+  openShareGroupForm(groupId) {
     const showGroupForm = { share: true, addPage: false }
     this.setState({
       showGroupForm,
-      groupFormName: 'Share Group',
-      selectedGroup: group
+      groupFormName: 'Share Subpage',
+      selectedGroup: { ...this.props.pages[groupId] }
     })
   }
 
@@ -156,23 +139,6 @@ class Groups extends Component {
     )
   }
 
-  showAddGroupPageForm() {
-    return (
-      this.state.showGroupForm.addPage && (
-        <PageForm
-          {...this.props}
-          show={this.state.showGroupForm.addPage}
-          onHide={() => this.closeGroupForm()}
-          title={this.state.groupFormName}
-          selectedVersion={this.state.selectedVersion}
-          selectedGroup={this.state.selectedGroup}
-          selectedCollection={this.state.selectedCollection}
-          rootParentId={this.props.rootParentId}
-        />
-      )
-    )
-  }
-
   showShareGroupForm() {
     return (
       this.state.showGroupForm.share && (
@@ -180,7 +146,7 @@ class Groups extends Component {
           show={this.state.showGroupForm.share}
           onHide={() => this.closeGroupForm()}
           title={this.state.groupFormName}
-          selectedGroup={this.state.selectedGroup}
+          selectedGroup={this.props.rootParentId}
         />
       )
     )
@@ -217,7 +183,34 @@ class Groups extends Component {
   closeDeleteGroupModal() {
     this.setState({ showDeleteModal: false })
   }
+  openAddPageEndpointModal(groupId) {
+    this.setState({
+      showAddCollectionModal: true,
+      selectedPage: {
+        ...this.props.pages[groupId]
+      }
+    })
+  }
 
+  showAddPageEndpointModal() {
+    return (
+      this.state.showAddCollectionModal && (
+        <DefaultViewModal
+          {...this.props}
+          title='Add Sub Page'
+          show={this.state.showAddCollectionModal}
+          onCancel={() => {
+            this.setState({ showAddCollectionModal: false })
+          }}
+          onHide={() => {
+            this.setState({ showAddCollectionModal: false })
+          }}
+          selectedPage={this.props?.rootParentId}
+          pageType={3}
+        />
+      )
+    )
+  }
   propsFromGroups(groupIds, title) {
     this.filteredEndpointsAndPages = {}
     this.filterGroups()
@@ -405,10 +398,7 @@ class Groups extends Component {
           </div>
           {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
             <div className='sidebar-item-action d-flex align-items-center'>
-              <div
-                onClick={() => this.handleAddEndpoint(groupId, this.props.versions, this.props.groups)}
-                className='mr-1 d-flex align-items-center'
-              >
+              <div onClick={() => this.openAddPageEndpointModal(groupId)} className='mr-1 d-flex align-items-center'>
                 <Plus />
               </div>
               <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
@@ -466,22 +456,7 @@ class Groups extends Component {
                   </svg>{' '}
                   Duplicate
                 </div>
-                <div className='dropdown-item' onClick={() => this.openGroupPageForm()}>
-                  <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                    <path
-                      d='M15.75 3H2.25C1.42157 3 0.75 3.67157 0.75 4.5V13.5C0.75 14.3284 1.42157 15 2.25 15H15.75C16.5784 15 17.25 14.3284 17.25 13.5V4.5C17.25 3.67157 16.5784 3 15.75 3Z'
-                      stroke='#E98A36'
-                      strokeWidth='1.5'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <line x1='5.25' y1='15' x2='5.25' y2='3' stroke='#E98A36' strokeWidth='1.5' />
-                    <path d='M14 9L8 9' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                    <path d='M11 12L11 6' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                  </svg>{' '}
-                  Add Sub Page
-                </div>
-                <div className='dropdown-item' onClick={() => this.openShareGroupForm(this.props.groups[groupId])}>
+                <div className='dropdown-item' onClick={() => this.openShareGroupForm(groupId)}>
                   <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                     <path
                       d='M13.5 6C14.7426 6 15.75 4.99264 15.75 3.75C15.75 2.50736 14.7426 1.5 13.5 1.5C12.2574 1.5 11.25 2.50736 11.25 3.75C11.25 4.99264 12.2574 6 13.5 6Z'
@@ -609,21 +584,21 @@ class Groups extends Component {
       <>
         {this.showShareGroupForm()}
         {this.showEditGroupForm()}
-        {this.showAddGroupPageForm()}
+        {this.showAddPageEndpointModal()}
         {this.state.showDeleteModal &&
           groupsService.showDeleteGroupModal(
             this.props,
             this.closeDeleteGroupModal.bind(this),
-            'Delete Group',
-            `Are you sure you wish to delete this group?
-              All your pages and endpoints present in this group will be deleted.`,
+            'Delete Page',
+            `Are you sure you wish to delete this page?
+              All your pages and endpoints present in this page will be deleted.`,
             this.state.selectedGroup
           )}
 
         {
           isDashboardRoute(this.props, true) && (
             // groupId ?
-            <div className='linkWith'>{this.renderBody(this.props.rootParentId)}</div>
+            <div className='linkWith'>{this.renderBody(this.props?.rootParentId)}</div>
           )
           // : null
         }

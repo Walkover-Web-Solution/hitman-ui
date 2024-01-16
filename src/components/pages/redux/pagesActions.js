@@ -104,25 +104,6 @@ export const onPageUpdatedError = (error, originalPage) => {
   }
 }
 
-export const addPage = (history, versionId, newPage) => {
-  const orgId = getOrgId()
-  return (dispatch) => {
-    dispatch(addPageRequest(versionId, newPage))
-    delete newPage.groupId
-    delete newPage.versionId
-    pageApiService
-      .saveVersionPage(versionId, newPage)
-      .then((response) => {
-        dispatch(onPageAdded(response.data))
-        focusSelectedEntity('pages', response.data.id)
-        history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
-      })
-      .catch((error) => {
-        dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))
-      })
-  }
-}
-
 export const addPage1 = (history, rootParentId, newPage) => {
   const orgId = getOrgId()
   return (dispatch) => {
@@ -132,7 +113,6 @@ export const addPage1 = (history, rootParentId, newPage) => {
       .then((response) => {
         const data = response.data.page
         dispatch(onParentPageAdded(data))
-        focusSelectedEntity('pages', data.id)
         history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
       .catch((error) => {
@@ -156,66 +136,9 @@ export const onParentPageAdded = (response) => {
   }
 }
 
-export const addPageRequest = (versionId, newPage) => {
-  return {
-    type: pagesActionTypes.ADD_PAGE_REQUEST,
-    versionId,
-    newPage
-  }
-}
-
-export const onPageAdded = (response) => {
-  return {
-    type: pagesActionTypes.ON_PAGE_ADDED,
-    response
-  }
-}
-
 export const onPageAddedError = (error, newPage) => {
   return {
     type: pagesActionTypes.ON_PAGE_ADDED_ERROR,
-    newPage,
-    error
-  }
-}
-
-export const addGroupPage = (history, versionId, groupId, newPage) => {
-  const orgId = getOrgId()
-  return (dispatch) => {
-    dispatch(addGroupPageRequest(versionId, groupId, newPage))
-    delete newPage.groupId
-    delete newPage.versionId
-    pageApiService
-      .saveGroupPage(groupId, newPage)
-      .then((response) => {
-        dispatch(onGroupPageAdded(response.data))
-        history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
-      })
-      .catch((error) => {
-        dispatch(onGroupPageAddedError(error.response ? error.response.data : error, newPage))
-      })
-  }
-}
-
-export const addGroupPageRequest = (versionId, groupId, newPage) => {
-  return {
-    type: pagesActionTypes.ADD_GROUP_PAGE_REQUEST,
-    versionId,
-    groupId,
-    newPage
-  }
-}
-
-export const onGroupPageAdded = (response) => {
-  return {
-    type: pagesActionTypes.ON_GROUP_PAGE_ADDED,
-    response
-  }
-}
-
-export const onGroupPageAddedError = (error, newPage) => {
-  return {
-    type: pagesActionTypes.ON_GROUP_PAGE_ADDED_ERROR,
     newPage,
     error
   }

@@ -28,7 +28,7 @@ import PageForm from '../pages/pageForm'
 import EndpointForm from '../endpoints/endpointForm'
 import CollectionModal from '../collections/collectionsModal'
 import { store } from '../../store/store'
-import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
+// import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
 
 import DeleteSidebarEntityModal from './sidebar/deleteEntityModal'
 import { DELETE_CONFIRMATION } from '../modals/modalTypes'
@@ -46,7 +46,6 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     groups: state.groups,
     historySnapshot: state.history,
-    sidebar: state.sidebar,
     filter: '',
     modals: state.modals
   }
@@ -137,7 +136,6 @@ class SideBarV2 extends Component {
   }
 
   preventDefaultBehavior(e) {
-    // const { focused: sidebarFocused } = this.props.sidebar
     if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.code) > -1) {
       e.preventDefault()
     }
@@ -635,19 +633,18 @@ class SideBarV2 extends Component {
 
   renderSidebarContent() {
     const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
-    const { focused: sidebarFocused } = this.props.sidebar
     return (
       <div
         ref={this.sidebarRef}
         onClick={(e) => {
-          if (!sidebarFocused && this.sidebarRef.current.contains(document.activeElement)) {
-            store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR })
-          }
+          // if (!sidebarFocused && this.sidebarRef.current.contains(document.activeElement)) {
+          //   store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR })
+          // }
         }}
         onBlur={(e) => {
-          if (sidebarFocused && !this.sidebarRef.current.contains(e.relatedTarget)) {
-            store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
-          }
+          // if (sidebarFocused && !this.sidebarRef.current.contains(e.relatedTarget)) {
+          //   store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
+          // }
         }}
         className={[''].join(' ')}
       >

@@ -105,27 +105,6 @@ export const addParentPageVersion = (newVersion, pageId, customCallback) => {
       })
   }
 }
-export const addVersion = (newVersion, collectionId, customCallback) => {
-  return (dispatch) => {
-    dispatch(addVersionRequest({ ...newVersion, collectionId }))
-    collectionVersionsApiService
-      .saveCollectionVersion(collectionId, newVersion)
-      .then((response) => {
-        sendAmplitudeData('Version created', {
-          versionId: response.data.id,
-          versionNumber: response.data.number,
-          collectionId: response.data.collectionId
-        })
-        dispatch(onVersionAdded(response.data))
-        if (customCallback) {
-          customCallback(response.data)
-        }
-      })
-      .catch((error) => {
-        dispatch(onVersionAddedError(error.response ? error.response.data : error, newVersion))
-      })
-  }
-}
 
 export const addVersionRequest = (newVersion) => {
   return {

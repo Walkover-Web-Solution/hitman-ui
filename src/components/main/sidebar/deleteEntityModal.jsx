@@ -1,7 +1,6 @@
 import React, { Component, createRef } from 'react'
 import { Modal } from 'react-bootstrap'
 
-import sidebarActions from './redux/sidebarActions'
 import { closeModal } from '../../modals/redux/modalsActions'
 import { DELETE_CONFIRMATION } from '../../modals/modalTypes'
 import { connect } from 'react-redux'
@@ -17,7 +16,6 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   return {
     modals: state.modals,
-    sidebar: state.sidebar,
     collections: state.collections,
     versions: state.versions,
     groups: state.groups,
@@ -35,8 +33,6 @@ class DeleteSidebarEntityModal extends Component {
 
   handleSubmit(e) {
     e.preventDefault()
-    const { focusedNode: nodeAddress } = this.props.sidebar
-    sidebarActions.deleteEntity(nodeAddress, this.props)
     this.props.close_modal()
   }
 
