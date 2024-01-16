@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
+import { publishData } from '../modals/redux/modalsActions'
 import './endpoints.scss'
 
 const hostContainerEnum = {
@@ -10,9 +12,21 @@ const hostContainerEnum = {
     versionHost: { key: 'versionHost', label: 'Version Host' }
   }
 }
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    ON_PUBLISH_DOC: (data)=> dispatch(publishData(data))
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    modals: state.modals
+  }
+}
 class HostContainer extends Component {
   constructor(props) {
     super(props)
+    console.log("inside host containerrrrr", this.props);
     this.state = {
       datalistHost: '',
       datalistUri: '',
@@ -32,6 +46,8 @@ class HostContainer extends Component {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ showDatalist: false, showInputHost: false })
     }
+    debugger
+    this.props.ON_PUBLISH_DOC(false);
   }
 
   componentDidMount() {
@@ -209,4 +225,4 @@ class HostContainer extends Component {
   }
 }
 
-export default HostContainer
+export default connect(mapStateToProps,mapDispatchToProps)(HostContainer)

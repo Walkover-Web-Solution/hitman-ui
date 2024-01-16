@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card } from 'react-bootstrap'
+import { Card, Dropdown, Accordion,DropdownButton } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import CollectionVersionForm from './collectionVersionForm'
@@ -50,6 +50,7 @@ const mapDispatchToProps = (dispatch) => {
 class CollectionParentPages extends Component {
   constructor(props) {
     super(props)
+    console.log("inside CollectionParentPages", this.props.ON_PUBLISH_DOC);
     this.state = {
       selectedParentPageIds: {},
       showShareVersionForm: false,
@@ -71,7 +72,8 @@ class CollectionParentPages extends Component {
         endpoints: []
       },
       value: '',
-      searchLoader: false
+      searchLoader: false,
+      selectedVersionId: ''
     }
 
     this.filterFlag = false
@@ -311,14 +313,79 @@ class CollectionParentPages extends Component {
       }, 100)
     }
   }
+  renderVersion(rootId) {
+    console.log("inside render version", rootId);
+    const versionToRender = this.props.pages[rootId].child;
+    console.log(versionToRender, "version to renderrrr", versionToRender);
+    return (
+      <div>
+        {versionToRender.map((childId, index) => {
+          const childPage = this.props.pages[childId];
+          console.log(childPage, "child page inside version to render");
+          return <p key={index}>{childPage.name}</p>;
+        })}
+      </div>
+    );
+  }
+  handleDropdownItemClick(childId) {
+    console.log("Before setting state - Current selectedVersionId:", this.state.selectedVersionId);
+    console.log("Selected ID:", childId);
+    this.setState({ selectedVersionId: childId }, () => {
+      console.log("After setting state - Updated selectedVersionId:", this.state.selectedVersionId);
+    });
+    // Add your logic here to handle the selected ID
+  }
 
   renderBody(pageId, index) {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
-
+    const publishData = this.props.ON_PUBLISH_DOC || false
+    const rootId = pageId
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
 
     return isDashboardRoute(this.props, true) ? (
-      <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
+      <>
+      {publishData ? (
+              <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
+              <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
+                <button
+                  tabIndex={-1}
+                  ref={(newRef) => {
+                    this.scrollRef[pageId] = newRef
+                  }}
+                >
+                  <div
+                    className='d-flex align-items-center cl-name'
+                    onClick={() => {
+                      this.toggleParentPageIds(this.props.rootParentId)
+                    }}
+                  >
+                    <input type='checkbox' />
+                    <div className='d-flex gap-5 ms-2'>
+                    <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
+                    </div>
+                  </div>
+                  {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                    <div className='sidebar-item-action d-flex align-items-center'>
+                    </div>
+                  ) : null}
+                </button>
+                  <div className='version-collapse'>
+                    <Card.Body>
+                      <div className='linkWrapper versionPages pl-4'>
+                        <CombinedCollections
+                          {...this.props}
+                          page_id={pageId}
+                          show_filter_pages={this.propsFromParentPage.bind(this)}
+                          rootParentId={this.props.rootParentId}
+                        />
+                      </div>
+                    </Card.Body>
+                  </div>
+                
+              </div>
+            </div>
+      ) : (
+        <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
           <button
             tabIndex={-1}
@@ -336,8 +403,23 @@ class CollectionParentPages extends Component {
               <span className='versionChovron'>
                 <img src={ExpandArrow} alt='' />
               </span>
+              <div className='d-flex gap-5 ms-2'>
               <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
+            {/* <div className='d-flex flex-row-reverse'> */}
+            {/* <DropdownButton id="dropdown-basic-button" title='V1'>
+                      <Dropdown.Item >{this.renderVersion(rootId)}</Dropdown.Item>
+              </DropdownButton> */}
+              <DropdownButton id="dropdown-basic-button" title='TY'>
+                {this.props.pages[rootId].child.map((childId, index) => (
+                  <Dropdown.Item key={index} onClick={() => this.handleDropdownItemClick(childId)}>
+                    {this.props.pages[childId].name}
+                  </Dropdown.Item>
+                ))}
+              </DropdownButton>
+                    {/* </div> */}
+              </div>
             </div>
+              
             {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action d-flex align-items-center'>
                 <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddVersionForm(this.props.rootParentId)}>
@@ -456,6 +538,8 @@ class CollectionParentPages extends Component {
                     page_id={pageId}
                     show_filter_pages={this.propsFromParentPage.bind(this)}
                     rootParentId={this.props.rootParentId}
+                    defaultVersionId = {this.state.selectedVersionId}
+                    defaultVersion = ""
                   />
                 </div>
               </Card.Body>
@@ -463,6 +547,8 @@ class CollectionParentPages extends Component {
           ) : null}
         </div>
       </div>
+      )}
+      </>
     ) : (
       <>
         {((this.state.selectedParentPageIndex === '' && index === 0) ||

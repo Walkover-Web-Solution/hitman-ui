@@ -15,13 +15,21 @@ import { store } from '../../store/store'
 import { updateTab } from '../tabs/redux/tabsActions'
 import indexedDbService from '../indexedDb/indexedDbService'
 import _ from 'lodash'
+import { publishData } from '../modals/redux/modalsActions'
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
+    modals: state.endpoints
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ON_PUBLISH_DOC: (data)=> dispatch(publishData(data))
   }
 }
 
@@ -260,7 +268,10 @@ class PublishCollectionInfo extends Component {
   }
 
   redirectUser() {
+    debugger
     this.setState({ openPublishSidebar: true })
+    // store.dispatch(ON_PUBLISH_DOC(true))
+    this.props.ON_PUBLISH_DOC(true)
   }
 
   async openPublishSettings() {
@@ -302,4 +313,4 @@ class PublishCollectionInfo extends Component {
   }
 }
 
-export default connect(mapStateToProps)(PublishCollectionInfo)
+export default connect(mapStateToProps,mapDispatchToProps)(PublishCollectionInfo)

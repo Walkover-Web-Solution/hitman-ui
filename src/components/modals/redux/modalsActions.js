@@ -17,6 +17,15 @@ export const closeModal = () => {
     })
   }
 }
+
+export const publishData = (payload) => {
+  console.log('Payload received:', payload); // Add console log here
+  return {
+    type: modalsActionTypes.ON_PUBLISH_DOC,
+    payload,
+  };
+};
+
 export const installModal = (event) => {
   return (dispatch) => {
     dispatch({

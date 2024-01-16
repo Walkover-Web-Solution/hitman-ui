@@ -41,6 +41,7 @@ const mapDispatchToProps = (dispatch) => {
 class CollectionVersions extends Component {
   constructor(props) {
     super(props)
+    console.log(this.props, "props inside collection versionnnn");
     this.state = {
       selectedVersionIds: {},
       showShareVersionForm: false,
@@ -309,7 +310,9 @@ class CollectionVersions extends Component {
   }
 
   toggleVersionIds(id) {
+    console.log(id , "id inside toggle version id");
     const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
+    console.log(isExpanded, "is expandeddd");
     this.props.update_isExpand_for_versions({
       value: !isExpanded,
       id: id
@@ -344,10 +347,22 @@ class CollectionVersions extends Component {
                 this.toggleVersionIds(versionId)
               }}
             >
-              <span className='versionChovron'>
+              {this.props?.defaultVersion === this.props?.defaultVersionId  ? (
+                <>
+                <span className='versionChovron'>
                 <img src={ExpandArrow} alt='' />
               </span>
-              <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.rootParentId].name}</div>
+              <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.defaultVersionId]?.name}</div>
+              </>)
+               :(
+                <>
+                <span className='versionChovron'>
+                <img src={ExpandArrow} alt='' />
+              </span>
+                <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.defaultVersionId]?.name}</div>
+                </>
+              )}
+              {/* <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.defaultVersionId].name}</div> */}
             </div>
             {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action d-flex align-items-center'>
