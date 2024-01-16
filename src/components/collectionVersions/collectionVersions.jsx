@@ -13,7 +13,6 @@ import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
@@ -135,7 +134,6 @@ class CollectionVersions extends Component {
 
   setVersionForEntity(id, type) {
     const { versionId } = getParentIds(id, type, this.props)
-    sidebarActions.expandItem('versions', versionId)
   }
 
   setSelectedVersionId(id, value) {

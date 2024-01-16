@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { addCollection, updateCollection } from '../../collections/redux/collectionsActions'
 import { moveToNextStep } from '../../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../../common/constants'
-import sidebarActions from './redux/sidebarActions'
 import DefaultViewModal from '../../collections/defaultViewModal/defaultViewModal'
 import { addPage1 } from '../../pages/redux/pagesActions'
 
@@ -75,11 +74,6 @@ class PageEndpointForm extends Form {
     )
   }
 
-  focusSelectedCollection(collectionId) {
-    sidebarActions.focusSidebar()
-    sidebarActions.toggleItem('collections', collectionId, true)
-  }
-
   redirectToCollection(collection) {
     const { viewLoader } = this.state
     if (!collection?.data) {
@@ -92,7 +86,6 @@ class PageEndpointForm extends Form {
       this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
     }
     if (this.props.setDropdownList) this.props.setDropdownList(collection.data)
-    this.focusSelectedCollection(collectionId)
     this.props.onHide()
   }
 

@@ -15,7 +15,6 @@ import './groups.scss'
 import groupsService from './groupsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
@@ -67,14 +66,6 @@ class Groups extends Component {
     this.scrollRef = {}
   }
 
-  handleAddPage(groupId, versionId, collectionId) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
-      versionId: versionId,
-      groupId: groupId
-    })
-  }
-
   componentDidMount() {
     if (!this.state.theme) {
       this.setState({ theme: this.props.collections[this.props.collection_id].theme })
@@ -106,7 +97,6 @@ class Groups extends Component {
 
   setGroupIdforEntity(id, type) {
     const { groupId } = getParentIds(id, type, this.props)
-    sidebarActions.expandItem('groups', groupId)
   }
 
   setSelectedGroupId(id, value) {
@@ -115,21 +105,12 @@ class Groups extends Component {
     }
   }
 
-  handleAddEndpoint(groupId, versions, groups) {
-    tabService.newTab({ ...this.props })
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/new`,
-      title: 'Add New Endpoint',
-      search: `?group=${groupId}`
-    })
-  }
-
-  openShareGroupForm(group) {
+  openShareGroupForm(groupId) {
     const showGroupForm = { share: true, addPage: false }
     this.setState({
       showGroupForm,
-      groupFormName: 'Share Group',
-      selectedGroup: group
+      groupFormName: 'Share Subpage',
+      selectedGroup: { ...this.props.pages[groupId] }
     })
   }
 
@@ -158,23 +139,6 @@ class Groups extends Component {
     )
   }
 
-  showAddGroupPageForm() {
-    return (
-      this.state.showGroupForm.addPage && (
-        <PageForm
-          {...this.props}
-          show={this.state.showGroupForm.addPage}
-          onHide={() => this.closeGroupForm()}
-          title={this.state.groupFormName}
-          selectedVersion={this.state.selectedVersion}
-          selectedGroup={this.state.selectedGroup}
-          selectedCollection={this.state.selectedCollection}
-          rootParentId={this.props.rootParentId}
-        />
-      )
-    )
-  }
-
   showShareGroupForm() {
     return (
       this.state.showGroupForm.share && (
@@ -182,7 +146,7 @@ class Groups extends Component {
           show={this.state.showGroupForm.share}
           onHide={() => this.closeGroupForm()}
           title={this.state.groupFormName}
-          selectedGroup={this.state.selectedGroup}
+          selectedGroup={this.props.rootParentId}
         />
       )
     )
@@ -492,7 +456,7 @@ class Groups extends Component {
                   </svg>{' '}
                   Duplicate
                 </div>
-                <div className='dropdown-item' onClick={() => this.openShareGroupForm(this.props.groups[groupId])}>
+                <div className='dropdown-item' onClick={() => this.openShareGroupForm(groupId)}>
                   <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                     <path
                       d='M13.5 6C14.7426 6 15.75 4.99264 15.75 3.75C15.75 2.50736 14.7426 1.5 13.5 1.5C12.2574 1.5 11.25 2.50736 11.25 3.75C11.25 4.99264 12.2574 6 13.5 6Z'
@@ -620,22 +584,21 @@ class Groups extends Component {
       <>
         {this.showShareGroupForm()}
         {this.showEditGroupForm()}
-        {this.showAddGroupPageForm()}
         {this.showAddPageEndpointModal()}
         {this.state.showDeleteModal &&
           groupsService.showDeleteGroupModal(
             this.props,
             this.closeDeleteGroupModal.bind(this),
-            'Delete Group',
-            `Are you sure you wish to delete this group?
-              All your pages and endpoints present in this group will be deleted.`,
+            'Delete Page',
+            `Are you sure you wish to delete this page?
+              All your pages and endpoints present in this page will be deleted.`,
             this.state.selectedGroup
           )}
 
         {
           isDashboardRoute(this.props, true) && (
             // groupId ?
-            <div className='linkWith'>{this.renderBody(this.props.rootParentId)}</div>
+            <div className='linkWith'>{this.renderBody(this.props?.rootParentId)}</div>
           )
           // : null
         }

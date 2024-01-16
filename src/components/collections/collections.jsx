@@ -22,7 +22,6 @@ import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
 import PublishCollectionInfo from '../main/publishCollectionInfo'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandIcon from '../../assets/icons/expand-arrow.svg'
 import { addNewTab } from '../tabs/redux/tabsActions'
@@ -95,7 +94,6 @@ class CollectionsComponent extends Component {
 
   setCollectionForEntity(id, type) {
     const { collectionId } = getParentIds(id, type, this.props)
-    sidebarActions.expandItem('collections', collectionId)
   }
 
   setSelectedCollectionId(id, value) {

@@ -8,7 +8,6 @@ import { onEnter, toTitleCase, ADD_VERSION_MODAL_NAME, DEFAULT_URL } from '../co
 import { addParentPageVersion, updateVersion } from '../collectionVersions/redux/collectionVersionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import shortid from 'shortid'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -49,15 +48,8 @@ class CollectionVersionForm extends Form {
     this.setState({ data, versionId, parentPageId })
   }
 
-  focusSelectedVersion({ versionId, parentPageId }) {
-    sidebarActions.focusSidebar()
-    sidebarActions.toggleItem('collections', parentPageId, true)
-    sidebarActions.toggleItem('versions', versionId, true)
-  }
-
   redirectToForm(version) {
     if (this.props.setDropdownList) this.props.setDropdownList(version)
-    this.focusSelectedVersion({ versionId: version.id, parentPageId: version.parentPageId })
   }
 
   async doSubmit() {

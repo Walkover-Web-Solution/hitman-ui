@@ -10,7 +10,6 @@ import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
@@ -22,6 +21,7 @@ import tabStatusTypes from '../tabs/tabStatusTypes'
 import tabService from '../tabs/tabService'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
+import pageService from '../pages/pageService'
 
 const mapStateToProps = (state) => {
   return {
@@ -112,7 +112,6 @@ class CollectionParentPages extends Component {
 
   setParentPageForEntity(id, type) {
     const { pageId } = getParentIds(id, type, this.props)
-    sidebarActions.expandItem('pages', pageId)
   }
 
   setSelectedVersionId(id, value) {
@@ -154,16 +153,16 @@ class CollectionParentPages extends Component {
     })
   }
 
-  openShareParentPageForm(page) {
+  openShareParentPageForm(pageId) {
     const showPageForm = { share: true }
     this.setState({
       showPageForm,
       pageFormName: 'Share Parent Page',
-      selectedPage: page
+      selectedPage: { ...this.props.pages[pageId] }
     })
   }
 
-  openDeleteVersionModal(pageId) {
+  openDeletePageModal(pageId) {
     this.setState({
       showDeleteModal: true,
       selectedPage: {
@@ -193,7 +192,7 @@ class CollectionParentPages extends Component {
   closeVersionForm() {
     this.setState({ showVersionForm: false })
   }
-  closeDeleteVersionModal() {
+  closeDeletePageModal() {
     this.setState({ showDeleteModal: false })
   }
   closeDeletePageModal() {
@@ -265,7 +264,7 @@ class CollectionParentPages extends Component {
                   <div
                     className='dropdown-item'
                     onClick={() => {
-                      this.openDeleteVersionModal(pageId)
+                      this.openDeletePageModal(pageId)
                     }}
                   >
                     <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -306,7 +305,7 @@ class CollectionParentPages extends Component {
                     </svg>{' '}
                     Duplicate
                   </div>
-                  <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
+                  <div className='dropdown-item' onClick={() => this.openShareParentPageForm(pageId)}>
                     <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                       <path
                         d='M13.5 6C14.7426 6 15.75 4.99264 15.75 3.75C15.75 2.50736 14.7426 1.5 13.5 1.5C12.2574 1.5 11.25 2.50736 11.25 3.75C11.25 4.99264 12.2574 6 13.5 6Z'
@@ -569,9 +568,9 @@ class CollectionParentPages extends Component {
             ADD_VERSION_MODAL_NAME
           )}
         {this.state.showDeleteModal &&
-          collectionVersionsService.showDeleteVersionModal(
+          pageService.showDeletePageModal(
             this.props,
-            this.closeDeleteVersionModal.bind(this),
+            this.closeDeletePageModal.bind(this),
             'Delete Page',
             `Are you sure you want to delete this pages?
         All your versions,subpages and endpoints present in this page will be deleted.`,
