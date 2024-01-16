@@ -12,17 +12,11 @@ import ConfirmationModal from '../common/confirmationModal'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
-import { getPageContent } from '../../services/pageServices'
-import { useQuery } from 'react-query'
+import { usePagesQuery } from '../../reactQueryServices/pages/pagesApi'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    useQuery(['pageContent', props.match.params.pageId], () => getPageContent(props.match.params.orgId, props.match.params.pageId), {
-      refetchOnWindowFocus: false,
-      cacheTime: 500000,
-      enabled: true,
-      staleTime: 60000
-    })
+    usePagesQuery(['pageContent', props.match.params.pageId], props.match.params.orgId, props.match.params.pageId)
     return <WrappedComponent {...props} />
   }
 }

@@ -415,7 +415,6 @@ class Endpoints extends Component {
         ref={(newRef) => {
           this.scrollRef[endpointId] = newRef
         }}
-        // className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'}
         key={endpointId}
       >
         <div className={this.props?.endpoints[endpointId]?.state} />
