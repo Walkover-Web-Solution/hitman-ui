@@ -409,23 +409,23 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
-    const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
-    const { focused } = this.props.sidebar.navList[`endpoints_${endpointId}`]
-    const { focused: sidebarFocused } = this.props.sidebar
-    if (sidebarFocused && focused && this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
+    // const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
+    // const { focused } = this.props.sidebar.navList[`endpoints_${endpointId}`]
+    // const { focused: sidebarFocused } = this.props.sidebar
+    // if (sidebarFocused && focused && this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     return (
       <div
         ref={(newRef) => {
           this.scrollRef[endpointId] = newRef
         }}
-        className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'}
+        // className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'}
         key={endpointId}
       >
         <div className={this.props?.endpoints[endpointId]?.state} />
         <div className='sidebar-toggle d-flex justify-content-between'>
           <button
             tabIndex={-1}
-            className={[focused && sidebarFocused ? 'focused' : '']}
+            // className={[focused && sidebarFocused ? 'focused' : '']}
             onClick={() => {
               sidebarActions.toggleItem('endpoints', endpointId)
               this.handleDisplay(this.props.endpoints[endpointId], this.props.rootParentId, this.props.collection_id, true)
