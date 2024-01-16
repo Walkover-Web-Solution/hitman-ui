@@ -637,6 +637,7 @@ class CollectionsComponent extends Component {
                     addPage={this.openAddCollectionPageForm.bind(this)}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
+                    // isPublishData={false}
                   />
                 }
               </Card.Body>

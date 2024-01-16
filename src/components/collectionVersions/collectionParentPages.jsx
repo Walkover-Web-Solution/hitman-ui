@@ -50,7 +50,6 @@ const mapDispatchToProps = (dispatch) => {
 class CollectionParentPages extends Component {
   constructor(props) {
     super(props)
-    console.log("inside CollectionParentPages", this.props.ON_PUBLISH_DOC);
     this.state = {
       selectedParentPageIds: {},
       showShareVersionForm: false,
@@ -73,7 +72,8 @@ class CollectionParentPages extends Component {
       },
       value: '',
       searchLoader: false,
-      selectedVersionId: ''
+      selectedVersionId: '',
+      selectedVersionName: ''
     }
 
     this.filterFlag = false
@@ -313,241 +313,347 @@ class CollectionParentPages extends Component {
       }, 100)
     }
   }
-  renderVersion(rootId) {
-    console.log("inside render version", rootId);
-    const versionToRender = this.props.pages[rootId].child;
-    console.log(versionToRender, "version to renderrrr", versionToRender);
-    return (
-      <div>
-        {versionToRender.map((childId, index) => {
-          const childPage = this.props.pages[childId];
-          console.log(childPage, "child page inside version to render");
-          return <p key={index}>{childPage.name}</p>;
-        })}
-      </div>
-    );
-  }
+  // renderVersion(rootId) {
+  //   const versionToRender = this.props.pages[rootId].child;
+  //   return (
+  //     <div>
+  //       {versionToRender.map((childId, index) => {
+  //         const childPage = this.props.pages[childId];
+  //         return <p key={index}>{childPage.name}</p>;
+  //       })}
+  //     </div>
+  //   );
+  // }
   handleDropdownItemClick(childId) {
-    console.log("Before setting state - Current selectedVersionId:", this.state.selectedVersionId);
-    console.log("Selected ID:", childId);
-    this.setState({ selectedVersionId: childId }, () => {
-      console.log("After setting state - Updated selectedVersionId:", this.state.selectedVersionId);
-    });
-    // Add your logic here to handle the selected ID
+    console.log(this.props.pages[childId].name, "name of child inside handle dropdown clickedd");
+    this.setState({ selectedVersionName: this.props.pages[childId].name})
+    this.setState({ selectedVersionId: childId })
   }
 
   renderBody(pageId, index) {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
-    const publishData = this.props.ON_PUBLISH_DOC || false
+    const publishData = this.props.modals.publishData
     const rootId = pageId
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
 
     return isDashboardRoute(this.props, true) ? (
       <>
-      {publishData ? (
-              <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
-              <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-                <button
-                  tabIndex={-1}
-                  ref={(newRef) => {
-                    this.scrollRef[pageId] = newRef
-                  }}
-                >
-                  <div
-                    className='d-flex align-items-center cl-name'
-                    onClick={() => {
-                      this.toggleParentPageIds(this.props.rootParentId)
-                    }}
-                  >
-                    <input type='checkbox' />
-                    <div className='d-flex gap-5 ms-2'>
-                    <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
-                    </div>
-                  </div>
-                  {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
-                    <div className='sidebar-item-action d-flex align-items-center'>
-                    </div>
-                  ) : null}
-                </button>
-                  <div className='version-collapse'>
-                    <Card.Body>
-                      <div className='linkWrapper versionPages pl-4'>
-                        <CombinedCollections
-                          {...this.props}
-                          page_id={pageId}
-                          show_filter_pages={this.propsFromParentPage.bind(this)}
-                          rootParentId={this.props.rootParentId}
-                        />
-                      </div>
-                    </Card.Body>
-                  </div>
-                
-              </div>
-            </div>
-      ) : (
-        <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
-        <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-          <button
-            tabIndex={-1}
-            ref={(newRef) => {
-              this.scrollRef[pageId] = newRef
-            }}
-            className={'pl-3 ' + (expanded ? 'expanded' : '')}
-          >
-            <div
-              className='d-flex align-items-center cl-name'
-              onClick={() => {
-                this.toggleParentPageIds(this.props.rootParentId)
-              }}
-            >
-              <span className='versionChovron'>
-                <img src={ExpandArrow} alt='' />
-              </span>
-              <div className='d-flex gap-5 ms-2'>
-              <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
-            {/* <div className='d-flex flex-row-reverse'> */}
-            {/* <DropdownButton id="dropdown-basic-button" title='V1'>
-                      <Dropdown.Item >{this.renderVersion(rootId)}</Dropdown.Item>
-              </DropdownButton> */}
-              <DropdownButton id="dropdown-basic-button" title='TY'>
-                {this.props.pages[rootId].child.map((childId, index) => (
-                  <Dropdown.Item key={index} onClick={() => this.handleDropdownItemClick(childId)}>
-                    {this.props.pages[childId].name}
-                  </Dropdown.Item>
-                ))}
-              </DropdownButton>
-                    {/* </div> */}
-              </div>
-            </div>
-              
-            {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
-              <div className='sidebar-item-action d-flex align-items-center'>
-                <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddVersionForm(this.props.rootParentId)}>
-                  <Plus />
-                </div>
-                <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                  <i className='uil uil-ellipsis-v' />
-                </div>
-                <div className='dropdown-menu dropdown-menu-right'>
-                  <div className='dropdown-item' onClick={() => this.openEditVersionForm(this.props.versions[pageId])}>
-                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path
-                        d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
-                        stroke='#E98A36'
-                        strokeWidth='1.5'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                    </svg>{' '}
-                    Edit
-                  </div>
-                  <div
-                    className='dropdown-item'
-                    onClick={() => {
-                      this.openDeleteVersionModal(pageId)
-                    }}
-                  >
-                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path d='M2.25 4.5H3.75H15.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                      <path
-                        d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
-                        stroke='#E98A36'
-                        strokeWidth='1.5'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                      <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                      <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                    </svg>{' '}
-                    Delete
-                  </div>
-                  <div
-                    className='dropdown-item'
-                    onClick={() => {
-                      this.handleDuplicate(this.props.rootParentId)
-                    }}
-                  >
-                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path
-                        d='M15 6.75H8.25C7.42157 6.75 6.75 7.42157 6.75 8.25V15C6.75 15.8284 7.42157 16.5 8.25 16.5H15C15.8284 16.5 16.5 15.8284 16.5 15V8.25C16.5 7.42157 15.8284 6.75 15 6.75Z'
-                        stroke='#E98A36'
-                        strokeWidth='1.5'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                      <path
-                        d='M3.75 11.25H3C2.60218 11.25 2.22064 11.092 1.93934 10.8107C1.65804 10.5294 1.5 10.1478 1.5 9.75V3C1.5 2.60218 1.65804 2.22064 1.93934 1.93934C2.22064 1.65804 2.60218 1.5 3 1.5H9.75C10.1478 1.5 10.5294 1.65804 10.8107 1.93934C11.092 2.22064 11.25 2.60218 11.25 3V3.75'
-                        stroke='#E98A36'
-                        strokeWidth='1.5'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                    </svg>{' '}
-                    Duplicate
-                  </div>
-                  <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
-                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path
-                        d='M13.5 6C14.7426 6 15.75 4.99264 15.75 3.75C15.75 2.50736 14.7426 1.5 13.5 1.5C12.2574 1.5 11.25 2.50736 11.25 3.75C11.25 4.99264 12.2574 6 13.5 6Z'
-                        stroke='#E98A36'
-                        strokeWidth='1.5'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                      <path
-                        d='M4.5 11.25C5.74264 11.25 6.75 10.2426 6.75 9C6.75 7.75736 5.74264 6.75 4.5 6.75C3.25736 6.75 2.25 7.75736 2.25 9C2.25 10.2426 3.25736 11.25 4.5 11.25Z'
-                        stroke='#E98A36'
-                        strokeWidth='1.5'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                      <path
-                        d='M13.5 16.5C14.7426 16.5 15.75 15.4926 15.75 14.25C15.75 13.0074 14.7426 12 13.5 12C12.2574 12 11.25 13.0074 11.25 14.25C11.25 15.4926 12.2574 16.5 13.5 16.5Z'
-                        stroke='#E98A36'
-                        strokeWidth='1.5'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                      <path
-                        d='M6.4425 10.1323L11.565 13.1173'
-                        stroke='#E98A36'
-                        strokeWidth='1.5'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                      <path
-                        d='M11.5575 4.88232L6.4425 7.86732'
-                        stroke='#E98A36'
-                        strokeWidth='1.5'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                    </svg>
-                    Share
-                  </div>
-                </div>
-              </div>
-            ) : null}
-          </button>
-          {expanded ? (
-            <div className='version-collapse'>
-              <Card.Body>
-                <div className='linkWrapper versionPages pl-4'>
-                  <CombinedCollections
-                    {...this.props}
-                    page_id={pageId}
-                    show_filter_pages={this.propsFromParentPage.bind(this)}
-                    rootParentId={this.props.rootParentId}
-                    defaultVersionId = {this.state.selectedVersionId}
-                    defaultVersion = ""
-                  />
-                </div>
-              </Card.Body>
-            </div>
-          ) : null}
-        </div>
-      </div>
-      )}
+      {this.props.isPublishData && publishData ? (
+                <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
+                <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
+                 <button
+                   tabIndex={-1}
+                  //  className={'pl-3 ' + (expanded ? 'expanded' : '')}
+                 >
+                   <div
+                     className='d-flex align-items-center cl-name'
+                     onClick={() => {
+                       this.toggleParentPageIds(this.props.rootParentId)
+                     }}
+                   >
+                    <input type="checkbox" />
+                     {/* <span className='versionChovron'>
+                       <img src={ExpandArrow} alt='' />
+                     </span> */}
+                     <div className='d-flex gap-5 ms-2'>
+                     <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
+                     {/* <DropdownButton id="dropdown-basic-button" title='TY'>
+                       {this.props.pages[rootId].child.map((childId, index) => (
+                         <Dropdown.Item key={index} onClick={() => this.handleDropdownItemClick(childId)}>
+                           {this.props.pages[childId].name}
+                         </Dropdown.Item>
+                       ))}
+                     </DropdownButton> */}
+                           {/* </div> */}
+                     </div>
+                   </div>
+                     
+                   {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                     <div className='sidebar-item-action d-flex align-items-center'>
+                       <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddVersionForm(this.props.rootParentId)}>
+                         <Plus />
+                       </div>
+                       <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                         <i className='uil uil-ellipsis-v' />
+                       </div>
+                       <div className='dropdown-menu dropdown-menu-right'>
+                         <div className='dropdown-item' onClick={() => this.openEditVersionForm(this.props.versions[pageId])}>
+                           <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                             <path
+                               d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
+                               stroke='#E98A36'
+                               strokeWidth='1.5'
+                               strokeLinecap='round'
+                               strokeLinejoin='round'
+                             />
+                           </svg>{' '}
+                           Edit
+                         </div>
+                         <div
+                           className='dropdown-item'
+                           onClick={() => {
+                             this.openDeleteVersionModal(pageId)
+                           }}
+                         >
+                           <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                             <path d='M2.25 4.5H3.75H15.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                             <path
+                               d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
+                               stroke='#E98A36'
+                               strokeWidth='1.5'
+                               strokeLinecap='round'
+                               strokeLinejoin='round'
+                             />
+                             <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                             <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                           </svg>{' '}
+                           Delete
+                         </div>
+                         <div
+                           className='dropdown-item'
+                           onClick={() => {
+                             this.handleDuplicate(this.props.rootParentId)
+                           }}
+                         >
+                           <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                             <path
+                               d='M15 6.75H8.25C7.42157 6.75 6.75 7.42157 6.75 8.25V15C6.75 15.8284 7.42157 16.5 8.25 16.5H15C15.8284 16.5 16.5 15.8284 16.5 15V8.25C16.5 7.42157 15.8284 6.75 15 6.75Z'
+                               stroke='#E98A36'
+                               strokeWidth='1.5'
+                               strokeLinecap='round'
+                               strokeLinejoin='round'
+                             />
+                             <path
+                               d='M3.75 11.25H3C2.60218 11.25 2.22064 11.092 1.93934 10.8107C1.65804 10.5294 1.5 10.1478 1.5 9.75V3C1.5 2.60218 1.65804 2.22064 1.93934 1.93934C2.22064 1.65804 2.60218 1.5 3 1.5H9.75C10.1478 1.5 10.5294 1.65804 10.8107 1.93934C11.092 2.22064 11.25 2.60218 11.25 3V3.75'
+                               stroke='#E98A36'
+                               strokeWidth='1.5'
+                               strokeLinecap='round'
+                               strokeLinejoin='round'
+                             />
+                           </svg>{' '}
+                           Duplicate
+                         </div>
+                         <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
+                           <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                             <path
+                               d='M13.5 6C14.7426 6 15.75 4.99264 15.75 3.75C15.75 2.50736 14.7426 1.5 13.5 1.5C12.2574 1.5 11.25 2.50736 11.25 3.75C11.25 4.99264 12.2574 6 13.5 6Z'
+                               stroke='#E98A36'
+                               strokeWidth='1.5'
+                               strokeLinecap='round'
+                               strokeLinejoin='round'
+                             />
+                             <path
+                               d='M4.5 11.25C5.74264 11.25 6.75 10.2426 6.75 9C6.75 7.75736 5.74264 6.75 4.5 6.75C3.25736 6.75 2.25 7.75736 2.25 9C2.25 10.2426 3.25736 11.25 4.5 11.25Z'
+                               stroke='#E98A36'
+                               strokeWidth='1.5'
+                               strokeLinecap='round'
+                               strokeLinejoin='round'
+                             />
+                             <path
+                               d='M13.5 16.5C14.7426 16.5 15.75 15.4926 15.75 14.25C15.75 13.0074 14.7426 12 13.5 12C12.2574 12 11.25 13.0074 11.25 14.25C11.25 15.4926 12.2574 16.5 13.5 16.5Z'
+                               stroke='#E98A36'
+                               strokeWidth='1.5'
+                               strokeLinecap='round'
+                               strokeLinejoin='round'
+                             />
+                             <path
+                               d='M6.4425 10.1323L11.565 13.1173'
+                               stroke='#E98A36'
+                               strokeWidth='1.5'
+                               strokeLinecap='round'
+                               strokeLinejoin='round'
+                             />
+                             <path
+                               d='M11.5575 4.88232L6.4425 7.86732'
+                               stroke='#E98A36'
+                               strokeWidth='1.5'
+                               strokeLinecap='round'
+                               strokeLinejoin='round'
+                             />
+                           </svg>
+                           Share
+                         </div>
+                       </div>
+                     </div>
+                   ) : null}
+                 </button>
+                 {expanded ? (
+                   <div className='version-collapse'>
+                     <Card.Body>
+                       <div className='linkWrapper versionPages pl-4'>
+                         <CombinedCollections
+                           {...this.props}
+                           page_id={pageId}
+                           show_filter_pages={this.propsFromParentPage.bind(this)}
+                           rootParentId={this.state.selectedVersionId}
+                          //  defaultVersionId = {this.state.selectedVersionId}
+                          //  defaultVersion = ""
+                         />
+                       </div>
+                     </Card.Body>
+                   </div>
+                 ) : null}
+               </div>
+             </div>
+      ):         
+      <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
+      <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
+       <button
+         tabIndex={-1}
+         ref={(newRef) => {
+           this.scrollRef[pageId] = newRef
+         }}
+         className={'pl-3 ' + (expanded ? 'expanded' : '')}
+       >
+         <div
+           className='d-flex align-items-center cl-name'
+           onClick={() => {
+             this.toggleParentPageIds(this.props.rootParentId)
+           }}
+         >
+           <span className='versionChovron'>
+             <img src={ExpandArrow} alt='' />
+           </span>
+           <div className='d-flex gap-5 ms-2'>
+           <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
+           <DropdownButton id="dropdown-basic-button" title={this.state.selectedVersionName || 'V1'}>
+             {this.props.pages[rootId].child.map((childId, index) => (
+               <Dropdown.Item key={index} onClick={() => this.handleDropdownItemClick(childId)}>
+                 {this.props.pages[childId].name}
+               </Dropdown.Item>
+             ))}
+           </DropdownButton>
+                 {/* </div> */}
+           </div>
+         </div>
+           
+         {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+           <div className='sidebar-item-action d-flex align-items-center'>
+             <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddVersionForm(this.props.rootParentId)}>
+               <Plus />
+             </div>
+             <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+               <i className='uil uil-ellipsis-v' />
+             </div>
+             <div className='dropdown-menu dropdown-menu-right'>
+               <div className='dropdown-item' onClick={() => this.openEditVersionForm(this.props.versions[pageId])}>
+                 <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                   <path
+                     d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
+                     stroke='#E98A36'
+                     strokeWidth='1.5'
+                     strokeLinecap='round'
+                     strokeLinejoin='round'
+                   />
+                 </svg>{' '}
+                 Edit
+               </div>
+               <div
+                 className='dropdown-item'
+                 onClick={() => {
+                   this.openDeleteVersionModal(pageId)
+                 }}
+               >
+                 <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                   <path d='M2.25 4.5H3.75H15.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                   <path
+                     d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
+                     stroke='#E98A36'
+                     strokeWidth='1.5'
+                     strokeLinecap='round'
+                     strokeLinejoin='round'
+                   />
+                   <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                   <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                 </svg>{' '}
+                 Delete
+               </div>
+               <div
+                 className='dropdown-item'
+                 onClick={() => {
+                   this.handleDuplicate(this.props.rootParentId)
+                 }}
+               >
+                 <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                   <path
+                     d='M15 6.75H8.25C7.42157 6.75 6.75 7.42157 6.75 8.25V15C6.75 15.8284 7.42157 16.5 8.25 16.5H15C15.8284 16.5 16.5 15.8284 16.5 15V8.25C16.5 7.42157 15.8284 6.75 15 6.75Z'
+                     stroke='#E98A36'
+                     strokeWidth='1.5'
+                     strokeLinecap='round'
+                     strokeLinejoin='round'
+                   />
+                   <path
+                     d='M3.75 11.25H3C2.60218 11.25 2.22064 11.092 1.93934 10.8107C1.65804 10.5294 1.5 10.1478 1.5 9.75V3C1.5 2.60218 1.65804 2.22064 1.93934 1.93934C2.22064 1.65804 2.60218 1.5 3 1.5H9.75C10.1478 1.5 10.5294 1.65804 10.8107 1.93934C11.092 2.22064 11.25 2.60218 11.25 3V3.75'
+                     stroke='#E98A36'
+                     strokeWidth='1.5'
+                     strokeLinecap='round'
+                     strokeLinejoin='round'
+                   />
+                 </svg>{' '}
+                 Duplicate
+               </div>
+               <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
+                 <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                   <path
+                     d='M13.5 6C14.7426 6 15.75 4.99264 15.75 3.75C15.75 2.50736 14.7426 1.5 13.5 1.5C12.2574 1.5 11.25 2.50736 11.25 3.75C11.25 4.99264 12.2574 6 13.5 6Z'
+                     stroke='#E98A36'
+                     strokeWidth='1.5'
+                     strokeLinecap='round'
+                     strokeLinejoin='round'
+                   />
+                   <path
+                     d='M4.5 11.25C5.74264 11.25 6.75 10.2426 6.75 9C6.75 7.75736 5.74264 6.75 4.5 6.75C3.25736 6.75 2.25 7.75736 2.25 9C2.25 10.2426 3.25736 11.25 4.5 11.25Z'
+                     stroke='#E98A36'
+                     strokeWidth='1.5'
+                     strokeLinecap='round'
+                     strokeLinejoin='round'
+                   />
+                   <path
+                     d='M13.5 16.5C14.7426 16.5 15.75 15.4926 15.75 14.25C15.75 13.0074 14.7426 12 13.5 12C12.2574 12 11.25 13.0074 11.25 14.25C11.25 15.4926 12.2574 16.5 13.5 16.5Z'
+                     stroke='#E98A36'
+                     strokeWidth='1.5'
+                     strokeLinecap='round'
+                     strokeLinejoin='round'
+                   />
+                   <path
+                     d='M6.4425 10.1323L11.565 13.1173'
+                     stroke='#E98A36'
+                     strokeWidth='1.5'
+                     strokeLinecap='round'
+                     strokeLinejoin='round'
+                   />
+                   <path
+                     d='M11.5575 4.88232L6.4425 7.86732'
+                     stroke='#E98A36'
+                     strokeWidth='1.5'
+                     strokeLinecap='round'
+                     strokeLinejoin='round'
+                   />
+                 </svg>
+                 Share
+               </div>
+             </div>
+           </div>
+         ) : null}
+       </button>
+       {expanded ? (
+         <div className='version-collapse'>
+           <Card.Body>
+             <div className='linkWrapper versionPages pl-4'>
+               <CombinedCollections
+                 {...this.props}
+                 page_id={pageId}
+                 show_filter_pages={this.propsFromParentPage.bind(this)}
+                 rootParentId={this.state.selectedVersionId}
+               />
+             </div>
+           </Card.Body>
+         </div>
+       ) : null}
+     </div>
+   </div>}
+
+
       </>
     ) : (
       <>

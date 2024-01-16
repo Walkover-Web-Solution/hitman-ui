@@ -12,7 +12,6 @@ import { toast } from 'react-toastify'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 
 const mapStateToProps = (state) => {
-  console.log(state.pages, "state.pagessss");
   return {
     versions: state.pages,
     groups: state.groups,
@@ -49,7 +48,6 @@ const defaultData = {
 export class PublishSidebar extends Component {
   constructor(props) {
     super(props)
-    console.log("inside publish sidebar", this.props);
     this.state = {
       selectedCollectionId: '',
       selectedPageId: '',
@@ -78,13 +76,10 @@ export class PublishSidebar extends Component {
       this.setState({ selectedCollectionId })
     }
     const rootParentId = this.props.collections[selectedCollectionId].rootParentId;
-    console.log(rootParentId, "root parent id");
     const pages = this.props.pages
     // const matchingObject = Object.values(pages).find(obj => obj.parentId === rootParentId);
     const matchingObjects = Object.values(pages).filter(obj => obj.parentId === rootParentId);
-    console.log(matchingObjects, "matching objects");
     this.setState({ParentPagesToRender: matchingObjects})
-    console.log(matchingObjects, "parent pages for iddd");
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -502,9 +497,9 @@ export class PublishSidebar extends Component {
               ))}
           </Dropdown.Menu> */}
         </Dropdown>
-        {console.log(this.props, "atttach")}
         <CombinedCollections 
         {...this.props}
+        isPublishData={true}
         collection_id={this.state.selectedCollectionId} 
         rootParentId={this.props.collections[this.state?.selectedCollectionId]?.rootParentId}
         selectedCollection
@@ -682,7 +677,6 @@ export class PublishSidebar extends Component {
     });
   }
   renderVersionList() {
-    console.log(this.state.VersionToRender, "version to render");
     return (
       <div>
         {/* <div className='mt-3 collection-api-doc-heading'>Select API Enpoints and Pages to publish</div> */}

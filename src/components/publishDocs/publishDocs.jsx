@@ -75,7 +75,6 @@ const mapStateToProps = (state) => {
 class PublishDocs extends Component {
   constructor(props) {
     super(props)
-    console.log(this.props, "inside publish docsss componentssss");
     this.state = {
       selectedCollectionId: null,
       warningModal: false,
@@ -109,12 +108,12 @@ class PublishDocs extends Component {
   }
 
   handleClickOutside(event) {
-    debugger
+    // debugger
     if (this.state.openPageSettingsSidebar && this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ openPageSettingsSidebar: false })
     }
-    debugger
+    // debugger
     this.props.ON_PUBLISH_DOC(false)
   }
 

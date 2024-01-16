@@ -41,7 +41,6 @@ const mapDispatchToProps = (dispatch) => {
 class CollectionVersions extends Component {
   constructor(props) {
     super(props)
-    console.log(this.props, "props inside collection versionnnn");
     this.state = {
       selectedVersionIds: {},
       showShareVersionForm: false,
@@ -310,9 +309,7 @@ class CollectionVersions extends Component {
   }
 
   toggleVersionIds(id) {
-    console.log(id , "id inside toggle version id");
     const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
-    console.log(isExpanded, "is expandeddd");
     this.props.update_isExpand_for_versions({
       value: !isExpanded,
       id: id
@@ -330,7 +327,6 @@ class CollectionVersions extends Component {
 
   renderBody(versionId, index) {
     const expanded = this.props?.clientData?.[this?.props?.rootParentId]?.isExpanded || false
-
     return isDashboardRoute(this.props, true) ? (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={versionId}>
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
@@ -495,8 +491,9 @@ class CollectionVersions extends Component {
                   <CombinedCollections
                     {...this.props}
                     // pagesToRender={pagesToRender}
-                    version_id={versionId}
+                    version_id={this.props.defaultVersionId}
                     show_filter_version={this.propsFromVersion.bind(this)}
+                    // isPublishData={false}
                   />
                 </div>
               </Card.Body>

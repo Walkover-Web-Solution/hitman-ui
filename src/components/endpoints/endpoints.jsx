@@ -47,7 +47,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class Endpoints extends Component {
   constructor(props) {
     super(props)
-    console.log("inside endpointsssss", this.props);
     this.state = {
       endpointState: 'Make Public',
       theme: ''
@@ -277,7 +276,7 @@ class Endpoints extends Component {
   displayEndpointName(endpointId) {
     return (
       <>
-        {this.props.modals.publishData ? (
+        {this.props.isPublishData && this.props.modals.publishData  ? (
           <div className='sidebar-accordion-item'>
              <input type='checkbox' className='mr-2'/>
             <div className='api-label GET request-type-bgcolor'>GET</div>

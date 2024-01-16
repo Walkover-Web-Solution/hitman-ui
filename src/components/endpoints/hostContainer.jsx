@@ -26,7 +26,6 @@ const mapStateToProps = (state) => {
 class HostContainer extends Component {
   constructor(props) {
     super(props)
-    console.log("inside host containerrrrr", this.props);
     this.state = {
       datalistHost: '',
       datalistUri: '',
@@ -46,7 +45,7 @@ class HostContainer extends Component {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ showDatalist: false, showInputHost: false })
     }
-    debugger
+    // debugger
     this.props.ON_PUBLISH_DOC(false);
   }
 

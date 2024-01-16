@@ -23,7 +23,8 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     endpoints: state.endpoints,
-    modals: state.endpoints
+    modals: state.endpoints,
+    isPublishSliderOpen : state.modals.publishData
   }
 }
 
@@ -38,7 +39,6 @@ const defaultDomain = process.env.REACT_APP_PUBLIC_UI_URL
 class PublishCollectionInfo extends Component {
   constructor(props) {
     super(props)
-    console.log(this.props, "this.props inside publishCollectionInfo");
     this.state = {
       openPublishSidebar: false,
       totalPageCount: 0,
@@ -268,7 +268,7 @@ class PublishCollectionInfo extends Component {
   }
 
   redirectUser() {
-    debugger
+    // debugger
     this.setState({ openPublishSidebar: true })
     // store.dispatch(ON_PUBLISH_DOC(true))
     this.props.ON_PUBLISH_DOC(true)
@@ -285,12 +285,13 @@ class PublishCollectionInfo extends Component {
 
   closePublishSidebar() {
     this.setState({ openPublishSidebar: false })
+    this.props.ON_PUBLISH_DOC(false)
   }
 
   openPublishSidebar() {
     return (
       <>
-        {this.state.openPublishSidebar && (
+        {this.props.isPublishSliderOpen && (
           <PublishSidebar
             {...this.props}
             closePublishSidebar={this.closePublishSidebar.bind(this)}

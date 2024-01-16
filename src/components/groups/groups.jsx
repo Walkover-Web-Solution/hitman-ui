@@ -45,7 +45,7 @@ const mapDispatchToProps = (dispatch) => {
 class Groups extends Component {
   constructor(props) {
     super(props)
-    console.log("props inside groups", this.props);
+    console.log(this.props, "insidegroupsss ");
     this.state = {
       GroupFormName: '',
       showGroupForm: {
@@ -402,7 +402,7 @@ class Groups extends Component {
             <span className='versionChovron'>
               <img src={ExpandedIcon} alt='' />
             </span>
-            <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[this.props.defaultVersionId].name}</div>
+            <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[groupId]?.name}</div>
           </div>
           {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
             <div className='sidebar-item-action d-flex align-items-center'>
@@ -531,6 +531,7 @@ class Groups extends Component {
             <Card.Body>
               <CombinedCollections
                 {...this.props}
+                // isPublishData={false}
                 // pagesToRender={pagesToRender}
                 // version_id={this.props.groups[groupId].versionId}
                 // set_page_drag={this.setPagedrag.bind(this)}

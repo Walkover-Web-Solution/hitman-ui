@@ -14,7 +14,7 @@ function modalsReducer(state = initialState, action) {
       return { ...state, installPrompt: action.payload }
     
     case modalsActionTypes.ON_PUBLISH_DOC:
-      debugger
+      // debugger
       return { ...state, publishData: action.payload }
     
     default:
