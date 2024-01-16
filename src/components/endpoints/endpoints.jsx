@@ -11,7 +11,6 @@ import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpoint } f
 import filterService from '../../services/filterService'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const endpointsEnum = {
   PENDING_STATE: 'Pending',
@@ -409,10 +408,8 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
-    // const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
-    // const { focused } = this.props.sidebar.navList[`endpoints_${endpointId}`]
-    // const { focused: sidebarFocused } = this.props.sidebar
-    // if (sidebarFocused && focused && this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
+    const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
+    if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     return (
       <div
         ref={(newRef) => {
@@ -425,9 +422,7 @@ class Endpoints extends Component {
         <div className='sidebar-toggle d-flex justify-content-between'>
           <button
             tabIndex={-1}
-            // className={[focused && sidebarFocused ? 'focused' : '']}
             onClick={() => {
-              sidebarActions.toggleItem('endpoints', endpointId)
               this.handleDisplay(this.props.endpoints[endpointId], this.props.rootParentId, this.props.collection_id, true)
             }}
             onDoubleClick={() =>

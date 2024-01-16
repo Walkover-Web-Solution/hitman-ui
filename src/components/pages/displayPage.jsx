@@ -17,21 +17,15 @@ import { useQuery } from 'react-query'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    const { data } = useQuery(['pageContent', props.match.params.pageId], () =>
-      getPageContent(props.match.params.orgId, props.match.params.pageId),
-      {
-        refetchOnWindowFocus: false,
-        cacheTime: 500000,
-        enabled: true,
-        staleTime: 60000,
-      }
-    );
-
-    console.log(data, 123456);
-    return <WrappedComponent {...props} />;
-  };
-};
-
+    useQuery(['pageContent', props.match.params.pageId], () => getPageContent(props.match.params.orgId, props.match.params.pageId), {
+      refetchOnWindowFocus: false,
+      cacheTime: 500000,
+      enabled: true,
+      staleTime: 60000
+    })
+    return <WrappedComponent {...props} />
+  }
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {

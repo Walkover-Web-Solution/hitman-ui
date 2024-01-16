@@ -224,7 +224,6 @@ class MainV2 extends Component {
                 <div className='main-panel-wrapper'>
                   <SplitPane split='vertical' className='split-sidebar'>
                     <SideBarV2
-                      {...this.props}
                       tabs={[...this.state.tabs]}
                       set_tabs={this.setTabs.bind(this)}
                       default_tab_index={this.state.defaultTabIndex}

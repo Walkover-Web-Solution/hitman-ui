@@ -10,7 +10,6 @@ import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
@@ -22,6 +21,7 @@ import tabStatusTypes from '../tabs/tabStatusTypes'
 import tabService from '../tabs/tabService'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
+import pageService from '../pages/pageService'
 
 const mapStateToProps = (state) => {
   return {
@@ -53,6 +53,7 @@ class CollectionParentPages extends Component {
     this.state = {
       selectedParentPageIds: {},
       showShareVersionForm: false,
+      showDeleteModal: false,
       pageFormName: '',
       selectedPage: {},
       showPageForm: {
@@ -76,10 +77,6 @@ class CollectionParentPages extends Component {
 
     this.filterFlag = false
     this.eventkey = {}
-    this.filteredSubPages = {}
-    this.filteredEndpointsAndPages = {}
-    this.filteredVersionPages = {}
-    this.filteredOnlyParentPages = {}
     this.scrollRef = {}
   }
 
@@ -115,7 +112,6 @@ class CollectionParentPages extends Component {
 
   setParentPageForEntity(id, type) {
     const { pageId } = getParentIds(id, type, this.props)
-    sidebarActions.expandItem('pages', pageId)
   }
 
   setSelectedVersionId(id, value) {
@@ -157,23 +153,16 @@ class CollectionParentPages extends Component {
     })
   }
 
-  openShareParentPageForm(page) {
+  openShareParentPageForm(pageId) {
     const showPageForm = { share: true }
     this.setState({
       showPageForm,
       pageFormName: 'Share Parent Page',
-      selectedPage: page
+      selectedPage: { ...this.props.pages[pageId] }
     })
   }
 
-  openEditVersionForm(version) {
-    this.setState({
-      showCollectionForm: true,
-      selectedPage: version
-    })
-  }
-
-  openDeleteVersionModal(pageId) {
+  openDeletePageModal(pageId) {
     this.setState({
       showDeleteModal: true,
       selectedPage: {
@@ -195,94 +184,19 @@ class CollectionParentPages extends Component {
     )
   }
 
-  showEditVersionForm() {
-    return (
-      this.state.showCollectionForm && (
-        <CollectionVersionForm
-          {...this.props}
-          show
-          onHide={() => {
-            this.setState({ showCollectionForm: false })
-          }}
-          title='Edit Collection Version'
-          selected_version={this.state.selectedPage}
-        />
-      )
-    )
-  }
-
   closePageForm() {
     const showPageForm = { share: false, addGroup: false, addPage: false }
     this.setState({ showPageForm })
   }
 
   closeVersionForm() {
-    const showVersionForm = false
-    this.setState({ showVersionForm })
+    this.setState({ showVersionForm: false })
   }
   closeDeletePageModal() {
     this.setState({ showDeleteModal: false })
   }
-
-  propsFromParentPage(pageIds, title) {
-    this.filteredPages = {}
-    this.filterFlag = false
-    this.filterPages()
-    // if (title === 'groups') {
-    //   this.filteredGroups = {}
-    //   if (pageIds !== null) {
-    //     for (let i = 0; i < pageIds.length; i++) {
-    //       this.filteredGroups[pageIds[i]] = this.props.versions[
-    //         pageIds[i]
-    //       ]
-    //       this.eventkey[pageIds[i]] = '0'
-    //     }
-    //   }
-    // }
-    if (title === 'endpointsAndPages') {
-      this.filteredEndpointsAndPages = {}
-      if (pageIds !== null) {
-        for (let i = 0; i < pageIds.length; i++) {
-          this.filteredEndpointsAndPages[pageIds[i]] = this.props.pages[pageIds[i]]
-          this.eventkey[pageIds[i]] = '0'
-        }
-      }
-    }
-    if (title === 'pages') {
-      this.filteredCollectionPages = {}
-      if (pageIds !== null) {
-        for (let i = 0; i < pageIds.length; i++) {
-          this.filteredCollectionPages[pageIds[i]] = this.props.pages[pageIds[i]]
-          this.eventkey[pageIds[i]] = '0'
-        }
-      }
-    }
-    this.filteredPages = filterService.jsonConcat(this.filteredPages, this.filteredVersionPages)
-    this.filteredPages = filterService.jsonConcat(this.filteredPages, this.filteredEndpointsAndPages)
-    this.filteredPages = filterService.jsonConcat(this.filteredPages, this.filteredGroups)
-    this.filteredPages = filterService.jsonConcat(this.filteredPages, this.filteredOnlyParentPages)
-
-    this.setState({ filter: this.props.filter })
-  }
-
-  filterPages() {
-    if (this.props.selectedCollection === true && this.props.filter !== '' && this.filterFlag === false) {
-      this.filteredOnlyParentPages = {}
-      this.filterFlag = true
-      let pageIds = []
-      pageIds = filterService.filter(this.props.pages, this.props.filter, 'pages')
-      this.setState({ filter: this.props.filter })
-      if (pageIds.length !== 0) {
-        for (let i = 0; i < pageIds.length; i++) {
-          this.filteredOnlyParentPages[pageIds[i]] = this.props.pages[pageIds[i]]
-          if (!this.eventkey[pageIds[i]] || this.eventkey[pageIds[i]] !== '0') {
-            this.eventkey[pageIds[i]] = '1'
-          }
-        }
-      } else {
-        this.filteredOnlyParentPages = {}
-      }
-    }
+  closeDeletePageModal() {
+    this.setState({ showDeleteModal: false })
   }
 
   setSelectedParentPage(e) {
@@ -350,22 +264,10 @@ class CollectionParentPages extends Component {
                   <i className='uil uil-ellipsis-v' />
                 </div>
                 <div className='dropdown-menu dropdown-menu-right'>
-                  <div className='dropdown-item' onClick={() => this.openEditVersionForm(this.props.versions[pageId])}>
-                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path
-                        d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
-                        stroke='#E98A36'
-                        strokeWidth='1.5'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                    </svg>{' '}
-                    Edit
-                  </div>
                   <div
                     className='dropdown-item'
                     onClick={() => {
-                      this.openDeleteVersionModal(pageId)
+                      this.openDeletePageModal(pageId)
                     }}
                   >
                     <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -406,7 +308,7 @@ class CollectionParentPages extends Component {
                     </svg>{' '}
                     Duplicate
                   </div>
-                  <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
+                  <div className='dropdown-item' onClick={() => this.openShareParentPageForm(pageId)}>
                     <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                       <path
                         d='M13.5 6C14.7426 6 15.75 4.99264 15.75 3.75C15.75 2.50736 14.7426 1.5 13.5 1.5C12.2574 1.5 11.25 2.50736 11.25 3.75C11.25 4.99264 12.2574 6 13.5 6Z'
@@ -457,7 +359,7 @@ class CollectionParentPages extends Component {
                   <CombinedCollections
                     {...this.props}
                     page_id={pageId}
-                    show_filter_pages={this.propsFromParentPage.bind(this)}
+                    // show_filter_pages={this.propsFromParentPage.bind(this)}
                     rootParentId={this.props.rootParentId}
                   />
                 </div>
@@ -471,14 +373,14 @@ class CollectionParentPages extends Component {
         {((this.state.selectedParentPageIndex === '' && index === 0) ||
           (this.state.selectedParentPageIndex && this.state.selectedParentPageIndex === index.toString())) && (
           <>
-            <div className='hm-sidebar-outer-block' key={pageId}>
+            {/* <div className='hm-sidebar-outer-block' key={pageId}>
               <CollectionPages
                 {...this.props}
                 page_id={pageId}
                 show_filter_pages={this.propsFromParentPage.bind(this)}
                 theme={this.props.collections[this.props.collection_id].theme}
               />
-            </div>
+            </div> */}
           </>
         )}
       </>
@@ -661,8 +563,6 @@ class CollectionParentPages extends Component {
     return (
       <>
         {this.showShareVersionForm()}
-        {this.showEditVersionForm()}
-        {/* {this.openAddVersionForm()} */}
         {this.state.showVersionForm &&
           collectionVersionsService.showVersionForm(
             this.props,
@@ -671,9 +571,9 @@ class CollectionParentPages extends Component {
             ADD_VERSION_MODAL_NAME
           )}
         {this.state.showDeleteModal &&
-          collectionVersionsService.showDeleteVersionModal(
+          pageService.showDeletePageModal(
             this.props,
-            this.closeDeleteVersionModal.bind(this),
+            this.closeDeletePageModal.bind(this),
             'Delete Page',
             `Are you sure you want to delete this pages?
         All your versions,subpages and endpoints present in this page will be deleted.`,

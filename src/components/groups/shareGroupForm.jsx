@@ -15,7 +15,7 @@ class ShareGroupForm extends Form {
   componentDidMount() {
     if (this.props.selectedGroup) {
       let data = {}
-      const shareGroupLink = process.env.REACT_APP_API_URL + '/shareGroup/' + this.props.selectedGroup.shareIdentifier
+      const shareGroupLink = process.env.REACT_APP_API_URL + '/shareSubPage/' + this.props.selectedGroup
       data = { shareGroupLink }
       data.disabled = true
       this.setState({ data })

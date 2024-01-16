@@ -20,9 +20,9 @@ class ShareVersionForm extends Form {
   }
 
   componentDidMount() {
-    if (this.props.selectedVersion) {
+    if (this.props.selectedPage) {
       let data = {}
-      const shareVersionLink = process.env.REACT_APP_API_URL + '/share/' + this.props.selectedVersion.shareIdentifier
+      const shareVersionLink = process.env.REACT_APP_API_URL + '/share/' + this.props.selectedPage.id
       data = { shareVersionLink }
       data.disabled = true
       this.setState({ data })

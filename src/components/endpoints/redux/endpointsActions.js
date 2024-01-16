@@ -20,7 +20,6 @@ export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
           groupId: response.data.groupId
         })
         dispatch(onEndpointAdded(response.data))
-        focusSelectedEntity('endpoints', response.data.id)
         // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
         // endpointsOrder.push(response.data.id);
         // dispatch(setEndpointIds(endpointsOrder, groupId));
@@ -52,7 +51,6 @@ export const addEndpointInCollection = (history, newEndpoint, rootParentId, cust
           rootParentId: response.data.rootParentId
         })
         dispatch(onEndpointAdded(response.data))
-        focusSelectedEntity('endpoints', response.data.id)
         // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
         // endpointsOrder.push(response.data.id);
         // dispatch(setEndpointIds(endpointsOrder, groupId));
