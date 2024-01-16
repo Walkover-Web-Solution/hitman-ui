@@ -550,7 +550,6 @@ export default {
   msgText,
   getEntityState,
   validateEmail,
-  // focusSelectedEntity,
   getUserProfile,
   compareAlphabetically,
   sentryIntegration

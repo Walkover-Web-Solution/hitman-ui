@@ -113,7 +113,6 @@ export const addPage1 = (history, rootParentId, newPage) => {
       .then((response) => {
         const data = response.data.page
         dispatch(onParentPageAdded(data))
-        // focusSelectedEntity('pages', data.id)
         history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
       .catch((error) => {
@@ -131,7 +130,6 @@ export const addPageRequestInCollection = (rootParentId, newPage) => {
 }
 
 export const onParentPageAdded = (response) => {
-  console.log(response)
   return {
     type: pagesActionTypes.ON_PARENT_PAGE_ADDED,
     response

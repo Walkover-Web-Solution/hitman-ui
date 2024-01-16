@@ -89,7 +89,6 @@ class CollectionForm extends Form {
       this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
     }
     if (this.props.setDropdownList) this.props.setDropdownList(collection.data)
-    // this.focusSelectedCollection(collectionId)
     this.props.onHide()
   }
 

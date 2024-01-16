@@ -422,7 +422,6 @@ class Endpoints extends Component {
         <div className='sidebar-toggle d-flex justify-content-between'>
           <button
             tabIndex={-1}
-            // className={[focused && sidebarFocused ? 'focused' : '']}
             onClick={() => {
               this.handleDisplay(this.props.endpoints[endpointId], this.props.rootParentId, this.props.collection_id, true)
             }}

@@ -294,7 +294,6 @@ class Pages extends Component {
           // }}
           // onDrop={(e) => this.props.onDrop(e, pageId)}
           tabIndex={-1}
-          // className={[focused && sidebarFocused ? 'focused' : ''].join(' ')}
           data-toggle='collapse'
           data-target={`#${pageId}`}
           aria-expanded='true'
