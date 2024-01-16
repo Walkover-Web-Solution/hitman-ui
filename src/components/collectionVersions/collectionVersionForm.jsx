@@ -5,14 +5,15 @@ import Form from '../common/form'
 import { URL_VALIDATION_REGEX } from '../common/constants'
 import { connect } from 'react-redux'
 import { onEnter, toTitleCase, ADD_VERSION_MODAL_NAME, DEFAULT_URL } from '../common/utility'
-import { addVersion, updateVersion } from '../collectionVersions/redux/collectionVersionsActions'
+import { addParentPageVersion, updateVersion } from '../collectionVersions/redux/collectionVersionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import shortid from 'shortid'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_version: (newCollectionVersion, collectionId, callback) => dispatch(addVersion(newCollectionVersion, collectionId, callback)),
+    add_parentpage_version: (newCollectionVersion, parentPageId, callback) =>
+      dispatch(addParentPageVersion(newCollectionVersion, parentPageId, callback)),
     update_version: (editedVersion) => dispatch(updateVersion(editedVersion))
   }
 }
@@ -21,63 +22,58 @@ class CollectionVersionForm extends Form {
     super(props)
 
     this.state = {
-      data: { number: '', host: DEFAULT_URL },
+      data: { name: '', state: 0 },
       errors: {},
       versionId: null,
-      collectionId: ''
+      parentPageId: ''
     }
 
     this.schema = {
-      number: Joi.string().required().label('Version Name').max(20),
-      host: Joi.string()
-        .regex(URL_VALIDATION_REGEX, { name: 'URL' })
-        .label('Version Endpoint')
-        .error(() => {
-          return { message: 'Version Endpoint Must be Valid URL' }
-        })
+      name: Joi.string().required().label('Version Name').max(20),
+      state: Joi.valid(0, 1).optional()
     }
   }
 
   async componentDidMount() {
     let data = {}
-    const collectionId = ''
+    const parentPageId = ''
     let versionId = ''
     if (this.props.title === ADD_VERSION_MODAL_NAME) return
     if (this.props.selected_version) {
-      const { number, host, id } = this.props.selected_version
+      const { name, type, id } = this.props.selected_version
       data = {
-        number,
-        host
+        name,
+        type
       }
       versionId = id
     }
-    this.setState({ data, versionId, collectionId })
+    this.setState({ data, versionId, parentPageId })
   }
 
-  focusSelectedVersion({ versionId, collectionId }) {
+  focusSelectedVersion({ versionId, parentPageId }) {
     sidebarActions.focusSidebar()
-    sidebarActions.toggleItem('collections', collectionId, true)
+    sidebarActions.toggleItem('collections', parentPageId, true)
     sidebarActions.toggleItem('versions', versionId, true)
   }
 
   redirectToForm(version) {
     if (this.props.setDropdownList) this.props.setDropdownList(version)
-    this.focusSelectedVersion({ versionId: version.id, collectionId: version.collectionId })
+    this.focusSelectedVersion({ versionId: version.id, parentPageId: version.parentPageId })
   }
 
   async doSubmit() {
     this.props.onHide()
-    let { number } = { ...this.state.data }
-    number = toTitleCase(number)
+    let { name } = { ...this.state.data }
+    name = toTitleCase(name)
     if (this.props.title === 'Edit Collection Version') {
-      const { id, collectionId } = this.props.selected_version
-      const editedCollectionVersion = { ...this.state.data, collectionId, id, number }
+      const { id, parentPageId } = this.props.selected_version
+      const editedCollectionVersion = { ...this.state.data, parentPageId, id, name }
       this.props.update_version(editedCollectionVersion)
     }
     if (this.props.title === ADD_VERSION_MODAL_NAME) {
-      const collectionId = this.props.collection_id
-      const newVersion = { ...this.state.data, requestId: shortid.generate(), number }
-      this.props.add_version(newVersion, collectionId, this.redirectToForm.bind(this))
+      const parentPageId = this.props.parentPage_id
+      const newVersion = { ...this.state.data, requestId: shortid.generate(), name }
+      this.props.add_parentpage_version(newVersion, parentPageId, this.redirectToForm.bind(this))
       moveToNextStep(2)
     }
   }
@@ -104,7 +100,7 @@ class CollectionVersionForm extends Form {
               <div className='row'>
                 <div className='col-6'>
                   {this.renderInput(
-                    'number',
+                    'name',
                     'Version Name',
                     'Version Name',
                     true,

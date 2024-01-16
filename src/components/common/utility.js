@@ -6,8 +6,9 @@ import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
-export const ADD_GROUP_MODAL_NAME = 'Add Sub Page'
-export const ADD_VERSION_MODAL_NAME = 'Add Parent Page'
+export const ADD_GROUP_MODAL_NAME = 'Add Page'
+export const ADD_VERSION_MODAL_NAME = 'Add Version'
+export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
 export const DEFAULT_URL = 'https://'
 
 const statesEnum = {
@@ -536,6 +537,7 @@ export default {
   getOrgId,
   ADD_GROUP_MODAL_NAME,
   ADD_VERSION_MODAL_NAME,
+  ADD_PAGE_MODAL_NAME,
   getParentIds,
   handleChangeInUrlField,
   handleBlurInUrlField,

@@ -30,13 +30,13 @@ import PageForm from '../pages/pageForm'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
+import PageEndpointForm from '../main/sidebar/pageEndpointForm'
 
 const EMPTY_STRING = ''
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
-    // versions: state.versions,
     pages: state.pages,
     endpoints: state.endpoints,
     clientData: state.clientData
@@ -352,15 +352,30 @@ class CollectionsComponent extends Component {
     )
   }
 
+  showAddPageEndpointModal() {
+    return (
+      this.state.showAddCollectionModal && (
+        <PageEndpointForm
+          {...this.props}
+          title='Add new Collection'
+          show={this.state.showAddCollectionModal}
+          onCancel={() => {
+            this.setState({ showAddCollectionModal: false })
+          }}
+          onHide={() => {
+            this.setState({ showAddCollectionModal: false })
+          }}
+        />
+      )
+    )
+  }
+
   renderBody(collectionId, collectionState) {
     const expanded = this.props.clientData?.[collectionId]?.isExpanded || false
 
-    // const { focused } = this.props.sidebar.navList[`collections_${collectionId}`]
-    // const { focused: sidebarFocused } = this.props.sidebar
-
-    // if (sidebarFocused && focused && this.scrollRef[collectionId]) {
-    //   this.scrollToCollection(collectionId)
-    // }
+    if (this.scrollRef[collectionId]) {
+      this.scrollToCollection(collectionId)
+    }
 
     return (
       <React.Fragment key={collectionId}>
@@ -372,7 +387,7 @@ class CollectionsComponent extends Component {
             this.scrollRef[collectionId] = newRef
           }}
         >
-          <button tabIndex={-1} variant='default'>
+          <button tabIndex={-1} variant='default' className={expanded ? 'expanded' : ''}>
             <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
@@ -393,7 +408,7 @@ class CollectionsComponent extends Component {
               <div className='sidebar-item-action d-flex align-items-center'>
                 <div
                   className='mr-1 d-flex align-items-center'
-                  onClick={() => this.openAddCollectionPageForm(this.props.collections[collectionId])}
+                  onClick={() => this.showAddPageEndpointModal(this.setState({ showAddCollectionModal: true }))}
                 >
                   <Plus />
                 </div>
@@ -434,25 +449,6 @@ class CollectionsComponent extends Component {
                           <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                         </svg>{' '}
                         Delete
-                      </div>
-                      <div // auhtor: Goutam Mehta
-                        className='dropdown-item'
-                        onClick={() => this.props.add_new_tab()}
-                      >
-                        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                          <path d='M2 2L2 16' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          <path d='M9 2L9 8' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          <path d='M12 5L6 5' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          <path
-                            d='M2 15.25C1.58579 15.25 1.25 15.5858 1.25 16C1.25 16.4142 1.58579 16.75 2 16.75V15.25ZM16 16.75C16.4142 16.75 16.75 16.4142 16.75 16C16.75 15.5858 16.4142 15.25 16 15.25V16.75ZM2 16.75H16V15.25H2V16.75Z'
-                            fill='#E98A36'
-                          />
-                          <path
-                            d='M2 10.25C1.58579 10.25 1.25 10.5858 1.25 11C1.25 11.4142 1.58579 11.75 2 11.75V10.25ZM16 11.75C16.4142 11.75 16.75 11.4142 16.75 11C16.75 10.5858 16.4142 10.25 16 10.25V11.75ZM2 11.75H16V10.25H2V11.75Z'
-                            fill='#E98A36'
-                          />
-                        </svg>{' '}
-                        Add Endpoint
                       </div>
                       <div className='dropdown-item' onClick={() => this.handleDuplicateCollection(this.props.collections[collectionId])}>
                         <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -740,6 +736,7 @@ class CollectionsComponent extends Component {
           <div className='App-Nav'>
             <div className='tabs'>
               {this.showAddPageForm()}
+              {this.showAddPageEndpointModal()}
               {this.state.showCollectionForm &&
                 collectionsService.showCollectionForm(
                   this.props,
