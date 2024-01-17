@@ -10,7 +10,7 @@ export const addCollectionAndPages = (orgId) => {
         dispatch({ type: generalActionsTypes.ADD_PAGES, data: response.data.pages })
       })
       .catch((error) => {
-        console.log(error)
+        console.error(error)
       })
   }
 }

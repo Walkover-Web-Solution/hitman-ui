@@ -559,6 +559,9 @@ class Groups extends Component {
       value: !isExpanded,
       id: id
     })
+    this.props.history.push({
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
+    })
   }
 
   render() {
