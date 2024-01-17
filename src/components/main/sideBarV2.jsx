@@ -23,7 +23,6 @@ import collectionVersionsService from '../collectionVersions/collectionVersionsS
 import './main.scss'
 import './sidebar.scss'
 import AddEntitySelectionModal from './addEntityModal'
-import GroupForm from '../groups/groupForm'
 import PageForm from '../pages/pageForm'
 import EndpointForm from '../endpoints/endpointForm'
 import CollectionModal from '../collections/collectionsModal'
@@ -808,18 +807,6 @@ class SideBarV2 extends Component {
         this.closeAddEntityModal.bind(this),
         this.pageId,
         ADD_VERSION_MODAL_NAME
-      )
-    }
-    if (this.state.entity === 'group') {
-      return (
-        <GroupForm
-          {...this.props}
-          show
-          onHide={() => this.closeAddEntityModal()}
-          title={ADD_GROUP_MODAL_NAME}
-          addEntity
-          collectionId={this.collectionId}
-        />
       )
     }
     if (this.state.entity === 'endpoint') {

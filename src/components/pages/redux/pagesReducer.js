@@ -39,13 +39,28 @@ function pagesReducer(state = initialState, action) {
         [action.newPage.requestId]: action.newPage
       }
 
-    case pagesActionTypes.ON_PAGE_ADDED:
     case pagesActionTypes.ON_PARENT_PAGE_ADDED: {
       pages = { ...state }
-      delete pages[action.response.requestId]
-      const pageData = { ...action.response }
+
+      delete pages[action.page.requestId]
+      const pageData = { ...action.page }
       delete pageData.requestId
-      pages[action.response.id] = pageData
+      pages[action.page.id] = pageData
+
+      if (action.page.type === 1) {
+        const versionData = { ...action.version }
+        delete versionData.requestId
+        pages[action.version.id] = versionData
+      }
+
+      if (action.page.parentId) {
+        const parentId = action.page.parentId
+        if (!pages[parentId].child) {
+          pages[parentId].child = []
+        }
+        pages[parentId].child.push(action.page.id)
+      }
+
       return pages
     }
 
@@ -63,6 +78,9 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.newPage.requestId]: action.newPage
       }
+
+    case versionActionTypes.IMPORT_VERSION:
+      return { ...state, ...action.response.pages }
 
     case pagesActionTypes.ON_GROUP_PAGE_ADDED_ERROR:
       toast.error(action.error)
