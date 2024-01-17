@@ -3,8 +3,6 @@ import React, { forwardRef } from 'react'
 const Input = forwardRef(
   ({ name, label, value, onChange, onBlur, error, placeholder, disabled, mandatory, firstLetterCapitalize, note }, ref) => {
     const inputStyle = firstLetterCapitalize ? { textTransform: 'capitalize' } : {}
-
-    console.log(ref, 'value of reffff')
     return (
       <div className='form-group'>
         <label htmlFor={name} className='custom-input-label'>
