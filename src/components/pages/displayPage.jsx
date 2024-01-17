@@ -12,12 +12,24 @@ import ConfirmationModal from '../common/confirmationModal'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
-import { usePagesQuery } from '../../reactQueryServices/pages/pagesApi'
+import { getPageContent } from '../../services/pageServices'
+import { useQuery } from 'react-query'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    usePagesQuery(['pageContent', props.match.params.pageId], props.match.params.orgId, props.match.params.pageId)
-    return <WrappedComponent {...props} />
+    const { data, error } = useQuery(
+      ['pageContent', props.match.params.pageId],
+      () => getPageContent(props.match.params.orgId, props.match.params.pageId),
+      {
+        refetchOnWindowFocus: false,
+        cacheTime: 500000,
+        enabled: true,
+        staleTime : 6000
+      }
+    )
+
+    console.log(data?.data?.contents, error, 123456)
+    return <WrappedComponent {...props} pageContent={data?.data?.contents} pageContentError={error} />
   }
 }
 
@@ -115,8 +127,7 @@ class DisplayPage extends Component {
         <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pages[this.props.pageId].publishedPage.contents)}</div>
       )
     } else {
-      const { contents } = this.state.data
-      return <div className='pageText doc-view'>{this.renderTiptapEditor(contents === null ? '' : contents)}</div>
+      return <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
     }
   }
 

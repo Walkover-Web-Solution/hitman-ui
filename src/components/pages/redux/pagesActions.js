@@ -232,3 +232,10 @@ export const onPageOrderUpdatedError = (error, pages) => {
     error
   }
 }
+
+export const updatePageContentData = (payload) => {
+  return {
+    type: pagesActionTypes.UPDATE_CONTENT_OF_PAGE,
+    payload
+  }
+}
