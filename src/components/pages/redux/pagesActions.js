@@ -252,7 +252,6 @@ export const updatePageContentData = (payload) => {
 }
 
 export const updatePageData = (payload) => {
-  debugger
   return {
     type: pagesActionTypes.UPDATE_PAGE_DATA,
     payload: {
