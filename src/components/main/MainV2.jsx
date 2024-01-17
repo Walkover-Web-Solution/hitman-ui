@@ -4,7 +4,6 @@ import 'react-toastify/dist/ReactToastify.css'
 import { fetchCollections } from '../collections/redux/collectionsActions'
 import { fetchAllVersions } from '../collectionVersions/redux/collectionVersionsActions'
 import { fetchEndpoint, fetchEndpoints, moveEndpoint } from '../endpoints/redux/endpointsActions'
-import { fetchGroups } from '../groups/redux/groupsActions'
 import { fetchPage, fetchPages } from '../pages/redux/pagesActions'
 import { fetchHistoryFromIdb } from '../history/redux/historyAction'
 import ContentPanel from './contentPanel'
@@ -34,7 +33,6 @@ const mapStateToProps = (state) => {
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    groups: state.groups,
     endpoints: state.endpoints
   }
 }
@@ -42,7 +40,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     // fetch_collections: (orgId) => dispatch(fetchCollections(orgId)),
     // fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
-    // fetch_groups: (orgId) => dispatch(fetchGroups(orgId)),
     // fetch_endpoints: (orgId) => dispatch(fetchEndpoints(orgId)),
     // fetch_pages: (orgId) => dispatch(fetchPages(orgId)),
     fetch_history: () => dispatch(fetchHistoryFromIdb()),

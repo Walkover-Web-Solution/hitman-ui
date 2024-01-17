@@ -123,7 +123,7 @@ export const addPage1 = (history, rootParentId, newPage) => {
       .saveCollectionPage(rootParentId, newPage)
       .then((response) => {
         const data = response.data.page
-        dispatch(onParentPageAdded(data))
+        dispatch(onParentPageAdded(response.data))
         history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
       .catch((error) => {
@@ -143,7 +143,8 @@ export const addPageRequestInCollection = (rootParentId, newPage) => {
 export const onParentPageAdded = (response) => {
   return {
     type: pagesActionTypes.ON_PARENT_PAGE_ADDED,
-    response
+    page: response.page,
+    version: response.version
   }
 }
 
