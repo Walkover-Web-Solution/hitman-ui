@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import { store } from '../../store/store'
 import { connect } from 'react-redux'
 import { isDashboardRoute, isStateDraft, isStateReject, msgText, isStatePending, isStateApproved, getEntityState } from '../common/utility'
@@ -12,6 +12,24 @@ import ConfirmationModal from '../common/confirmationModal'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
+import { getPageContent } from '../../services/pageServices'
+import { useQuery } from 'react-query'
+
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    const { data, error } = useQuery(
+      ['pageContent', props.match.params.pageId],
+      () => getPageContent(props.match.params.orgId, props.match.params.pageId),
+      {
+        refetchOnWindowFocus: false,
+        cacheTime: 500000,
+        enabled: true,
+        staleTime: 60000
+      }
+    )
+    return <WrappedComponent {...props} pageContent={data} pageContentError={error} />
+  }
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -27,6 +45,7 @@ const mapStateToProps = (state) => {
     pages: state.pages
   }
 }
+
 class DisplayPage extends Component {
   _isMounted = false
   constructor(props) {
@@ -80,9 +99,9 @@ class DisplayPage extends Component {
         this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
       }
     }
-    if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
-      this.fetchPage(this.props.match.params.pageId)
-    }
+    // if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
+    //   this.fetchPageContent(this.props.match.params.pageId)
+    // }
   }
 
   extractPageName() {
@@ -95,19 +114,18 @@ class DisplayPage extends Component {
 
   handleEdit(page) {
     this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${page.id}/edit`,
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${this.props.match.params.pageId}/edit`,
       page: page
     })
   }
 
   checkPageRejected() {
     if (this.props.rejected) {
-      return (
-        <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pages[this.props.pageId].publishedPage.contents)}</div>
-      )
+      return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
-      const { contents } = this.state.data
-      return <div className='pageText doc-view'>{this.renderTiptapEditor(contents === null ? '' : contents)}</div>
+      return (
+        <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
+      )
     }
   }
 
@@ -279,4 +297,4 @@ class DisplayPage extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DisplayPage)
+export default connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayPage))

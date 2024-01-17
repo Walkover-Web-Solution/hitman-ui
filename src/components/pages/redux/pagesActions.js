@@ -65,20 +65,31 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
   delete newPage.id
   delete newPage.versionId
   delete newPage.groupId
-  return (dispatch) => {
-    const originalPage = store.getState().pages[editedPage.id]
-    dispatch(updatePageRequest(editedPage))
-    pageApiService
-      .updatePage(editedPage.id, newPage)
-      .then((response) => {
-        dispatch(onPageUpdated(response.data))
-        if (!publishDocs) {
-          history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}`)
-        }
-      })
-      .catch((error) => {
-        dispatch(onPageUpdatedError(error.response ? error.response.data : error, originalPage))
-      })
+  const originalPage = store.getState().pages[editedPage.id]
+  store.dispatch(updatePageRequest(editedPage))
+  pageApiService
+    .updatePage(editedPage.id, newPage)
+    .then((response) => {
+      store.dispatch(onPageUpdated(response.data))
+      if (!publishDocs) {
+        history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}`)
+      }
+      return response.data
+    })
+    .catch((error) => {
+      store.dispatch(onPageUpdatedError(error.response ? error.response.data : error, originalPage))
+    })
+}
+
+export const updateContent = async ({ pageData, id }) => {
+  delete pageData.id
+  delete pageData.versionId
+  delete pageData.groupId
+  try {
+    const data = await pageApiService.updatePage(id, pageData)
+    return data.data
+  } catch (error) {
+    console.error(error)
   }
 }
 
@@ -230,5 +241,22 @@ export const onPageOrderUpdatedError = (error, pages) => {
     type: pagesActionTypes.ON_PAGES_ORDER_UPDATED_ERROR,
     pages,
     error
+  }
+}
+
+export const updatePageContentData = (payload) => {
+  return {
+    type: pagesActionTypes.UPDATE_CONTENT_OF_PAGE,
+    payload
+  }
+}
+
+export const updatePageData = (payload) => {
+  return {
+    type: pagesActionTypes.UPDATE_PAGE_DATA,
+    payload: {
+      pageId: payload.pageId,
+      data: payload.data
+    }
   }
 }

@@ -197,7 +197,8 @@ class DisplayEndpoint extends Component {
       requestKey: null,
       docOptions: false,
       sslMode: getCurrentUserSSLMode(),
-      showAskAiSlider: false
+      showAskAiSlider: false,
+      currentView: 'testing'
     }
 
     this.uri = React.createRef()

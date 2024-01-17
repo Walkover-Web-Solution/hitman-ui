@@ -1,15 +1,34 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
+import { useMutation, useQueryClient } from 'react-query'
 import { withRouter } from 'react-router-dom'
 // import { markTabAsModified } from '../tabs/tabService'
 import WarningModal from '../common/warningModal'
-import { updatePage } from '../pages/redux/pagesActions'
+import { updateContent, updatePage, updatePageData } from '../pages/redux/pagesActions'
 import './page.scss'
 import { toast } from 'react-toastify'
 import * as _ from 'lodash'
 import { updateTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
+
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    const queryClient = useQueryClient()
+    const dispatch = useDispatch()
+    const pageId = props.match.params.pageId
+    const orgId = props.match.params.orgId
+    const pageContentData = queryClient.getQueryData(['pageContent', pageId])
+    const mutation = useMutation(updateContent, {
+      onSuccess: (data) => {
+        dispatch(updatePageData({ data, pageId }))
+        queryClient.setQueryData(['pageContent', pageId], data?.contents || '')
+        props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
+      }
+    })
+    return <WrappedComponent {...props} pageContentData={pageContentData} mutationFn={mutation} />
+  }
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -127,11 +146,8 @@ class EditPage extends Component {
       toast.error('Page name cannot be empty.')
       return
     }
-    this.props.update_page(editedPage, editedPage.id)
+    this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
     tabService.markTabAsSaved(this.props.tab.id)
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${editedPage.id}`
-    })
   }
 
   handleCancel() {
@@ -164,7 +180,7 @@ class EditPage extends Component {
       this.state.showEditor && (
         <Tiptap
           onChange={this.handleChange}
-          initial={this.state.data.contents}
+          initial={this.props?.pageContentData}
           match={this.props.match}
           isInlineEditor={false}
           disabled={false}
@@ -234,4 +250,4 @@ class EditPage extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditPage))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(EditPage)))
