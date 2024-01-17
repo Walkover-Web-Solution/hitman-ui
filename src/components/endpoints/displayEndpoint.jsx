@@ -2737,7 +2737,6 @@ class DisplayEndpoint extends Component {
 
     const { theme, codeEditorVisibility } = this.state
     const { responseView } = this.props
-    console.log(1234323423, isDashboardRoute(this.props) && this.state.c)
     return (isDashboardRoute(this.props) && this.state.currentView) || !isDashboardRoute(this.props) || !isSavedEndpoint(this.props) ? (
       <div
         ref={this.myRef}
