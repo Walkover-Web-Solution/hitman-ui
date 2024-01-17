@@ -358,20 +358,13 @@ export const removePublicCollection = (collection, props) => {
 function prepareCollectionData(collection, props) {
   const storeData = { ...store.getState() }
   const versionIds = Object.keys(storeData.versions).filter((vId) => storeData.versions[vId].collectionId === collection.id)
-  let groupIds = []
   let endpointIds = []
   let pageIds = []
   versionIds.forEach((vId) => {
-    groupIds = [...Object.keys(storeData.groups).filter((gId) => storeData.groups[gId].versionId === vId), ...groupIds]
     pageIds = [...Object.keys(storeData.pages).filter((pId) => storeData.pages[pId].versionId === vId), ...pageIds]
   })
-
-  groupIds.forEach(
-    (gId) => (endpointIds = [...Object.keys(storeData.endpoints).filter((eId) => storeData.endpoints[eId].groupId === gId), ...endpointIds])
-  )
-
   endpointIds.map((eId) => tabService.removeTab(eId, props))
   pageIds.map((pId) => tabService.removeTab(pId, props))
 
-  return { versionIds, groupIds, endpointIds, pageIds }
+  return { versionIds, endpointIds, pageIds }
 }

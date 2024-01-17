@@ -4,13 +4,10 @@ import { connect } from 'react-redux'
 import { isDashboardRoute, getParentIds } from '../common/utility'
 // import Endpoints from "../endpoints/endpointsCopy";
 import Endpoints from '../endpoints/endpoints'
-import GroupForm from '../groups/groupForm'
+// import GroupForm from '../groups/groupForm'
 import { deleteGroup, duplicateGroup, updateGroupOrder } from '../groups/redux/groupsActions'
 import { reorderEndpoint } from '../endpoints/redux/endpointsActions'
 import ShareGroupForm from '../groups/shareGroupForm'
-import GroupPages from '../pages/groupPages'
-import PageForm from '../pages/pageForm'
-import tabService from '../tabs/tabService'
 import './groups.scss'
 import groupsService from './groupsService'
 import filterService from '../../services/filterService'
@@ -125,20 +122,6 @@ class Groups extends Component {
     this.setState({ showGroupForm })
   }
 
-  showEditGroupForm() {
-    return (
-      this.state.showGroupForm.edit && (
-        <GroupForm
-          {...this.props}
-          show={this.state.showGroupForm.edit}
-          onHide={() => this.closeGroupForm()}
-          selected_group={this.state.selectedGroup}
-          title='Edit Sub Page'
-        />
-      )
-    )
-  }
-
   showShareGroupForm() {
     return (
       this.state.showGroupForm.share && (
@@ -210,49 +193,6 @@ class Groups extends Component {
         />
       )
     )
-  }
-  propsFromGroups(groupIds, title) {
-    this.filteredEndpointsAndPages = {}
-    this.filterGroups()
-    if (title === 'endpoints') {
-      this.filteredGroupEndpoints = {}
-      if (groupIds !== null) {
-        for (let i = 0; i < groupIds.length; i++) {
-          this.filteredGroupEndpoints[groupIds[i]] = this.props.groups[groupIds[i]]
-          this.eventkey[groupIds[i]] = '0'
-        }
-      }
-    }
-    if (title === 'pages') {
-      this.filteredGroupPages = {}
-      if (groupIds !== null) {
-        for (let i = 0; i < groupIds.length; i++) {
-          this.filteredGroupPages[groupIds[i]] = this.props.groups[groupIds[i]]
-          this.eventkey[groupIds[i]] = '0'
-        }
-      }
-    }
-
-    this.filteredEndpointsAndPages = filterService.jsonConcat(this.filteredEndpointsAndPages, this.filteredGroupPages)
-
-    this.filteredEndpointsAndPages = filterService.jsonConcat(this.filteredEndpointsAndPages, this.filteredGroupEndpoints)
-    this.filteredEndpointsAndPages = filterService.jsonConcat(this.filteredEndpointsAndPages, this.filteredOnlyGroups)
-    const versionIds = []
-    if (Object.keys(this.filteredEndpointsAndPages).length !== 0) {
-      for (let i = 0; i < Object.keys(this.filteredEndpointsAndPages).length; i++) {
-        if (Object.keys(this.filteredEndpointsAndPages)[i] !== 'null') {
-          versionIds.push(this.filteredEndpointsAndPages[Object.keys(this.filteredEndpointsAndPages)[i]].versionId)
-        } else {
-          delete this.filteredEndpointsAndPages[Object.keys(this.filteredEndpointsAndPages)[i]]
-        }
-      }
-    }
-    if (Object.keys(this.filteredEndpointsAndPages).length === 0) {
-      this.props.show_filter_version(null, 'endpointsAndPages')
-    } else {
-      this.props.show_filter_version(versionIds, 'endpointsAndPages')
-    }
-    this.groups = this.filteredEndpointsAndPages
   }
 
   filterGroups() {
@@ -519,19 +459,12 @@ class Groups extends Component {
     ) : (
       <div className='hm-sidebar-block'>
         <div className='hm-sidebar-label mb-3'>{this.props.groups[groupId].name}</div>
-        <GroupPages
-          {...this.props}
-          version_id={this.props.groups[groupId].versionId}
-          group_id={groupId}
-          show_filter_groups={this.propsFromGroups.bind(this)}
-          theme={this.props.collections[this.props.collection_id].theme}
-        />
         <Endpoints
           {...this.props}
           group_id={groupId}
           endpoints_order={this.props.groups[groupId].endpointsOrder}
           theme={this.props.collections[this.props.collection_id].theme}
-          show_filter_groups={this.propsFromGroups.bind(this)}
+          // show_filter_groups={this.propsFromGroups.bind(this)}
         />
       </div>
     )
@@ -586,7 +519,6 @@ class Groups extends Component {
     return (
       <>
         {this.showShareGroupForm()}
-        {this.showEditGroupForm()}
         {this.showAddPageEndpointModal()}
         {this.state.showDeleteModal &&
           groupsService.showDeleteGroupModal(

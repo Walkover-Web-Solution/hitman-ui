@@ -6,12 +6,8 @@ import CollectionVersionForm from '../collectionVersions/collectionVersionForm'
 import { deleteVersion, duplicateVersion } from '../collectionVersions/redux/collectionVersionsActions'
 import ShareVersionForm from '../collectionVersions/shareVersionForm'
 import { isDashboardRoute, ADD_GROUP_MODAL_NAME, getParentIds } from '../common/utility'
-import Groups from '../groups/groups'
-import PageForm from '../pages/pageForm'
-import VersionPages from '../pages/versionPages'
 import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
-import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
@@ -24,7 +20,6 @@ const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
-    groups: state.groups,
     pages: state.pages,
     clientData: state.clientData
   }
@@ -65,9 +60,6 @@ class CollectionVersions extends Component {
 
     this.filterFlag = false
     this.eventkey = {}
-    this.filteredGroups = {}
-    this.filteredEndpointsAndPages = {}
-    this.filteredVersionPages = {}
     this.filteredOnlyVersions = {}
     this.scrollRef = {}
   }
@@ -259,8 +251,8 @@ class CollectionVersions extends Component {
 
   renderBody(versionId, index) {
     const expanded = this.props?.clientData?.[this?.props?.rootParentId]?.isExpanded || false
-
-    return isDashboardRoute(this.props, true) ? (
+    if (!isDashboardRoute(this.props, true)) return null
+    return (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={versionId}>
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
           <button
@@ -406,18 +398,6 @@ class CollectionVersions extends Component {
           ) : null}
         </div>
       </div>
-    ) : (
-      <>
-        {((this.state.selectedVersionIndex === '' && index === 0) ||
-          (this.state.selectedVersionIndex && this.state.selectedVersionIndex === index.toString())) && (
-          <>
-            <div className='hm-sidebar-outer-block' key={versionId}>
-              <VersionPages {...this.props} version_id={versionId} theme={this.props.collections[this.props.collection_id].theme} />
-              <Groups {...this.props} version_id={versionId} />
-            </div>
-          </>
-        )}
-      </>
     )
   }
 

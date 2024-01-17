@@ -5,12 +5,6 @@ import { toast } from 'react-toastify'
 import tabService from '../../tabs/tabService'
 import { sendAmplitudeData } from '../../../services/amplitude'
 
-export const setEndpointIds = (endpointsOrder, groupId) => {
-  const group = store.getState().groups[groupId]
-  group.endpointsOrder = endpointsOrder
-  return (dispatch) => dispatch(updateGroup(group))
-}
-
 export const updateGroupOrder = (groupsOrder, versionId) => {
   return (dispatch) => {
     const originalGroups = JSON.parse(JSON.stringify(store.getState().groups))

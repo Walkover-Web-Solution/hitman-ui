@@ -65,9 +65,13 @@ function collectionsReducer(state = initialState, action) {
 
     case collectionsActionTypes.ON_COLLECTION_UPDATED:
       toast.success('Updated successfully')
+      const updatedCollection = {
+        ...state[action.response.id],
+        ...action.response
+      }
       return {
         ...state,
-        [action.response.id]: action.response
+        [action.response.id]: updatedCollection
       }
 
     case collectionsActionTypes.ON_COLLECTION_UPDATED_ERROR:
@@ -134,6 +138,9 @@ function collectionsReducer(state = initialState, action) {
 
     case generalActionsTypes.ADD_COLLECTIONS:
       return { ...state, ...action.data }
+
+    case versionActionTypes.IMPORT_VERSION:
+      return { ...state, ...action.response.collection }
 
     default:
       return state

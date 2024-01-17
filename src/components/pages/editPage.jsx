@@ -48,7 +48,7 @@ class EditPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
+      data: { id: null, versionId: null, groupId: null, name: '', contents: '', state: '' },
       showEditor: false
     }
     this.name = React.createRef()
@@ -135,8 +135,16 @@ class EditPage extends Component {
 
   handleNameChange = (e) => {
     const data = { ...this.state.data }
-    data.name = e.currentTarget.value
-    this.setState({ data })
+    const newPageName = e.currentTarget.value
+    if (newPageName !== this.state.originalData.name) {
+      data.name = newPageName
+      this.setState({ data }, () => {
+        if (this.isModified()) {
+          tabService.markTabAsModified(this.props.tab.id)
+          this.setUnsavedTabDataInIDB()
+        }
+      })
+    }
   }
 
   handleSubmit = (e) => {

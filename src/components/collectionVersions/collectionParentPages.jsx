@@ -2,10 +2,8 @@ import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import CollectionVersionForm from './collectionVersionForm'
 import ShareVersionForm from './shareVersionForm'
 import { isDashboardRoute, getParentIds, ADD_VERSION_MODAL_NAME } from '../common/utility'
-import PageForm from '../pages/pageForm'
 import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
@@ -14,11 +12,8 @@ import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 import { deletePage, duplicatePage } from '../pages/redux/pagesActions'
-import CollectionPages from '../pages/collectionPages'
 import { approvePage, draftPage, pendingPage, rejectPage } from '../publicEndpoint/publicPageService'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
-import tabStatusTypes from '../tabs/tabStatusTypes'
-import tabService from '../tabs/tabService'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import pageService from '../pages/pageService'
@@ -27,7 +22,6 @@ const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
-    groups: state.groups,
     pages: state.pages,
     clientData: state.clientData
   }
@@ -233,8 +227,8 @@ class CollectionParentPages extends Component {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
 
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
-
-    return isDashboardRoute(this.props, true) ? (
+    if (!isDashboardRoute(this.props, true)) return null
+    return (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
           <button
@@ -368,22 +362,6 @@ class CollectionParentPages extends Component {
           ) : null}
         </div>
       </div>
-    ) : (
-      <>
-        {((this.state.selectedParentPageIndex === '' && index === 0) ||
-          (this.state.selectedParentPageIndex && this.state.selectedParentPageIndex === index.toString())) && (
-          <>
-            {/* <div className='hm-sidebar-outer-block' key={pageId}>
-              <CollectionPages
-                {...this.props}
-                page_id={pageId}
-                show_filter_pages={this.propsFromParentPage.bind(this)}
-                theme={this.props.collections[this.props.collection_id].theme}
-              />
-            </div> */}
-          </>
-        )}
-      </>
     )
   }
 

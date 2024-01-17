@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { isDashboardRoute } from '../common/utility'
-import { setEndpointIds } from '../groups/redux/groupsActions'
 import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
@@ -22,7 +21,6 @@ const endpointsEnum = {
 const mapStateToProps = (state) => {
   return {
     endpoints: state.pages,
-    groups: state.groups,
     tabs: state.tabs
   }
 }
@@ -31,7 +29,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     delete_endpoint: (endpoint) => dispatch(deleteEndpoint(endpoint)),
     duplicate_endpoint: (endpoint) => dispatch(duplicateEndpoint(endpoint)),
-    set_endpoint_ids: (endpointsOrder, groupId) => dispatch(setEndpointIds(endpointsOrder, groupId)),
     update_endpoints_order: (endpointIds, groupId) => dispatch(updateEndpointOrder(endpointIds, groupId)),
     pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
     approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
