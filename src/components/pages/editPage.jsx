@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { useMutation, useQueryClient } from 'react-query'
 import { withRouter } from 'react-router-dom'
 // import { markTabAsModified } from '../tabs/tabService'
 import WarningModal from '../common/warningModal'
-import { updateContent, updatePage } from '../pages/redux/pagesActions'
+import { updateContent, updatePage, updatePageData } from '../pages/redux/pagesActions'
 import './page.scss'
 import { toast } from 'react-toastify'
 import * as _ from 'lodash'
@@ -15,11 +15,15 @@ import Tiptap from '../tiptapEditor/tiptap'
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
-    const pageContentData = queryClient.getQueryData(['pageContent', props.match.params.pageId])
+    const dispatch = useDispatch()
+    const pageId = props.match.params.pageId
+    const orgId = props.match.params.orgId
+    const pageContentData = queryClient.getQueryData(['pageContent', pageId])
     const mutation = useMutation(updateContent, {
       onSuccess: (data) => {
-        queryClient.setQueryData(['pageContent', props.match.params.pageId], data)
-        props.history.push(`/orgs/${props.match.params.orgId}/dashboard/page/${props.match.params.pageId}`)
+        dispatch(updatePageData({ data, pageId }))
+        queryClient.setQueryData(['pageContent', pageId], data?.contents || '')
+        props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
       }
     })
     return <WrappedComponent {...props} pageContentData={pageContentData} mutationFn={mutation} />

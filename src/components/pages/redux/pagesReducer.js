@@ -174,6 +174,12 @@ function pagesReducer(state = initialState, action) {
       }
       return { ...state }
 
+    case pagesActionTypes.UPDATE_PAGE_DATA:
+      if (state[action.payload.pageId]) {
+        state[action.payload.pageId] = { ...state[action.payload.pageId], ...action.payload.data }
+      }
+      return { ...state }
+
     default:
       return state
   }
