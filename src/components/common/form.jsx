@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import Input from './input'
 // import Joi from 'joi-browser'
 import AceEditor from 'react-ace'
@@ -25,6 +25,7 @@ class Form extends Component {
         ['link']
       ]
     }
+    this.inputRef = createRef()
 
     this.formats = ['header', 'bold', 'italic', 'underline', 'strike', 'color', 'background', 'list', 'bullet', 'link']
   }
@@ -39,6 +40,12 @@ class Form extends Component {
     //   if (!errors[item.path[0]]) { errors[item.path[0]] = item.message }
     // }
     // return errors
+  }
+
+  componentDidMount() {
+    if (this.inputRef.current) {
+      this.inputRef.current.focus()
+    }
   }
 
   trimmedData() {
@@ -112,6 +119,7 @@ class Form extends Component {
     const { data, errors } = this.state
     return (
       <Input
+        ref={this.inputRef}
         name={name}
         label={label}
         value={data[name]}
