@@ -19,9 +19,9 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   return {
     isTabsLoaded: state?.tabs?.loaded,
-    tabsOrder : state?.tabs?.tabsOrder,
+    tabsOrder: state?.tabs?.tabsOrder,
     activeTabId: state.tabs.activeTabId,
-    tabData: state?.tabs?.tabs,
+    tabData: state?.tabs?.tabs
   }
 }
 class TabContent extends Component {
@@ -87,7 +87,6 @@ class TabContent extends Component {
   }
 
   render() {
-    console.log(this.props.tabs)
     return (
       <Tab.Content>
         {getCurrentUser() && this.props.isTabsLoaded

@@ -87,9 +87,8 @@ export const updateContent = async ({ pageData, id }) => {
   delete pageData.groupId
   try {
     const data = await pageApiService.updatePage(id, pageData)
-    return data.data.contents;
-  }
-  catch (error) {
+    return data.data.contents
+  } catch (error) {
     console.error(error)
   }
 }
