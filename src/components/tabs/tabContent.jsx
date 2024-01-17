@@ -15,6 +15,15 @@ const mapDispatchToProps = (dispatch) => {
     update_collection: (editedCollection) => dispatch(updateCollection(editedCollection))
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    isTabsLoaded: state?.tabs?.loaded,
+    tabsOrder : state?.tabs?.tabsOrder,
+    activeTabId: state.tabs.activeTabId,
+    tabData: state?.tabs?.tabs,
+  }
+}
 class TabContent extends Component {
   constructor(props) {
     super(props)
@@ -31,7 +40,7 @@ class TabContent extends Component {
   }
 
   renderContent(tabId) {
-    const tab = this.props.tabs.tabs[tabId]
+    const tab = this.props.tabData?.[tabId]
     switch (tab?.type) {
       case 'history':
         return (
@@ -78,10 +87,11 @@ class TabContent extends Component {
   }
 
   render() {
+    console.log(this.props.tabs)
     return (
       <Tab.Content>
-        {getCurrentUser() && this.props.tabs.loaded
-          ? Object.keys(this.props.tabs.tabs).map((tabId) => (
+        {getCurrentUser() && this.props.isTabsLoaded
+          ? Object.keys(this.props.tabData).map((tabId) => (
               <Tab.Pane eventKey={tabId} key={tabId}>
                 {this.renderContent(tabId)}
               </Tab.Pane>
@@ -92,4 +102,4 @@ class TabContent extends Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(TabContent)
+export default connect(mapStateToProps, mapDispatchToProps)(TabContent)

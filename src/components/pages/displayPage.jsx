@@ -24,12 +24,10 @@ const withQuery = (WrappedComponent) => {
         refetchOnWindowFocus: false,
         cacheTime: 500000,
         enabled: true,
-        staleTime : 6000
+        staleTime: 60000
       }
     )
-
-    console.log(data?.data?.contents, error, 123456)
-    return <WrappedComponent {...props} pageContent={data?.data?.contents} pageContentError={error} />
+    return <WrappedComponent {...props} pageContent={data} pageContentError={error} />
   }
 }
 
@@ -116,18 +114,18 @@ class DisplayPage extends Component {
 
   handleEdit(page) {
     this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${page.id}/edit`,
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${this.props.match.params.pageId}/edit`,
       page: page
     })
   }
 
   checkPageRejected() {
     if (this.props.rejected) {
-      return (
-        <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pages[this.props.pageId].publishedPage.contents)}</div>
-      )
+      return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
-      return <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
+      return (
+        <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
+      )
     }
   }
 

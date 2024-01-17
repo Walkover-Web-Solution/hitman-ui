@@ -212,7 +212,7 @@ class CollectionParentPages extends Component {
       id: id
     })
     this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`,
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
     })
   }
 
