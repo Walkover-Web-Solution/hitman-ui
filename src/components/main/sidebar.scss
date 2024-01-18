@@ -103,6 +103,21 @@ body .sidebar {
       }
     }
     .sidebar-accordion {
+      .dropdown-title {
+        width: 50px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-left: 10px;
+      }
+      
+      .dropdown-item-text {
+        -moz-white-space: pre-wrap;
+        -o-white-space: pre-wrap;
+        white-space: pre-wrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border-bottom: 1px solid #DDD;
+      }
       &.expanded > button {
         .versionChovron {
           transform: rotate(0);

@@ -601,6 +601,7 @@ class CollectionsComponent extends Component {
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
+                    // isPublishData={false}
                   />
                 }
               </Card.Body>

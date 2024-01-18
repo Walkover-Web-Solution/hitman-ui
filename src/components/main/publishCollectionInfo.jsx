@@ -15,13 +15,22 @@ import { store } from '../../store/store'
 import { updateTab } from '../tabs/redux/tabsActions'
 import indexedDbService from '../indexedDb/indexedDbService'
 import _ from 'lodash'
+import { publishData } from '../modals/redux/modalsActions'
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
+    modals: state.endpoints,
+    isPublishSliderOpen : state.modals.publishData
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ON_PUBLISH_DOC: (data)=> dispatch(publishData(data))
   }
 }
 
@@ -30,7 +39,6 @@ const defaultDomain = process.env.REACT_APP_PUBLIC_UI_URL
 class PublishCollectionInfo extends Component {
   constructor(props) {
     super(props)
-    console.log(this.props, "this.props inside publishCollectionInfo");
     this.state = {
       openPublishSidebar: false,
       totalPageCount: 0,
@@ -260,7 +268,10 @@ class PublishCollectionInfo extends Component {
   }
 
   redirectUser() {
+    // debugger
     this.setState({ openPublishSidebar: true })
+    // store.dispatch(ON_PUBLISH_DOC(true))
+    this.props.ON_PUBLISH_DOC(true)
   }
 
   async openPublishSettings() {
@@ -274,12 +285,13 @@ class PublishCollectionInfo extends Component {
 
   closePublishSidebar() {
     this.setState({ openPublishSidebar: false })
+    this.props.ON_PUBLISH_DOC(false)
   }
 
   openPublishSidebar() {
     return (
       <>
-        {this.state.openPublishSidebar && (
+        {this.props.isPublishSliderOpen && (
           <PublishSidebar
             {...this.props}
             closePublishSidebar={this.closePublishSidebar.bind(this)}
@@ -302,4 +314,4 @@ class PublishCollectionInfo extends Component {
   }
 }
 
-export default connect(mapStateToProps)(PublishCollectionInfo)
+export default connect(mapStateToProps,mapDispatchToProps)(PublishCollectionInfo)

@@ -271,14 +271,23 @@ class Endpoints extends Component {
 
   displayEndpointName(endpointId) {
     return (
-      <div className='sidebar-accordion-item'>
-        {/* <div className={`api-label ${this.props?.endpoints[endpointId]?.requestType} request-type-bgcolor`}> */}
-        {/* {this.props.endpoints[endpointId].requestType} */}
-        <div className='api-label GET request-type-bgcolor'>GET</div>
-        <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
-      </div>
-    )
+      <>
+        {this.props.isPublishData && this.props.modals.publishData  ? (
+          <div className='sidebar-accordion-item'>
+             <input type='checkbox' className='mr-2'/>
+            <div className='api-label GET request-type-bgcolor'>GET</div>
+            <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
+          </div>
+        ) : (
+          <div className='sidebar-accordion-item'>
+            <div className='api-label GET request-type-bgcolor'>GET</div>
+            <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
+          </div>
+        )}
+      </>
+    );
   }
+  
 
   displayDeleteOpt(endpointId) {
     return (
@@ -405,10 +414,30 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
+    const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     return (
-      <div
+      <>
+      {publishData ? (
+              <div
+              className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'}
+              key={endpointId}
+            >
+              <div className={this.props?.endpoints[endpointId]?.state} />
+              <div className='sidebar-toggle d-flex justify-content-between'>
+                <button
+                  tabIndex={-1}
+                  // className={[focused && sidebarFocused ? 'focused' : '']}
+                >
+                  {this.displayEndpointName(endpointId)}
+                  <div className='d-flex align-items-center'>
+                  </div>
+                </button>
+              </div>
+            </div>
+      ) : (
+        <div
         ref={(newRef) => {
           this.scrollRef[endpointId] = newRef
         }}
@@ -437,6 +466,8 @@ class Endpoints extends Component {
           </button>
         </div>
       </div>
+      ) }
+      </>
     )
   }
 
