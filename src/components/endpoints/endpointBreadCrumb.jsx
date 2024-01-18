@@ -10,7 +10,8 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     groups: state.groups,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
+    tabState: state.tabs.tabs
   }
 }
 
@@ -30,28 +31,113 @@ class EndpointBreadCrumb extends Component {
   }
 
   componentDidMount() {
-    const pageId = this.props?.match?.params.pageId
-    if (!this.props.isEndpoint && pageId && this.props.pages[pageId]) {
-      this.setState({
-        endpointTitle: this.props.pages[pageId].name,
-        isPagePublished: this.props.pages[pageId].isPublished,
-        previousTitle: this.props.pages[pageId].name
-      })
-    } else if (this.props?.data) {
-      this.setState({
-        endpointTitle: this.props.data.name,
-        previousTitle: this.props.data.name
-      })
+    if (this.props.isEndpoint) {
+      const endpointId = this.props?.match?.params.endpointId
+      if (this.props?.pages?.[endpointId]) {
+        this.setState({
+          endpointTitle: this.props.pages[endpointId]?.name || '',
+          isPagePublished: this.props.pages[endpointId]?.isPublished || false,
+          previousTitle: this.props.pages[endpointId]?.name || ''
+        })
+      } else {
+        this.setState({
+          endpointTitle: 'Untitled',
+          isPagePublished: false,
+          previousTitle: 'Untitled'
+        })
+      }
     }
+    else {
+      const pageId = this.props?.match?.params.pageId
+      if (this.props?.pages?.[pageId]) {
+        this.setState({
+          endpointTitle: this.props.pages[pageId]?.name || '',
+          isPagePublished: this.props.pages[pageId]?.isPublished || false,
+          previousTitle: this.props.pages[pageId]?.name || ''
+        })
+      } else {
+        this.setState({
+          endpointTitle: 'Untitled',
+          isPagePublished: false,
+          previousTitle: 'Untitled'
+        })
+      }
+    }
+    // if (!this.props.isEndpoint && endpointId && this.props.pages[endpointId] && endpointId !== 'new') {
+    //   this.setState({
+    //     endpointTitle: this.props.pages[endpointId].name,
+    //     isPagePublished: this.props.pages[endpointId].isPublished,
+    //     previousTitle: this.props.pages[endpointId].name
+    //   })
+    // } else if (this.props?.data) {
+    //   this.setState({
+    //     endpointTitle: this.props.data.name,
+    //     previousTitle: this.props.data.name
+    //   })
+    // }
 
-    const endpoint = this.props.endpoint
-    if (endpoint && !endpoint.id && this.props.data.name === '') {
-      this.setState({ endpointTitle: 'Untitled', previousTitle: 'Untitled' })
-    }
+    // const endpoint = this.props.endpoint
+    // if (endpoint && !endpoint.id && this.props.data.name === '') {
+    //   this.setState({ endpointTitle: 'Untitled', previousTitle: 'Untitled' })
+    // }
 
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // const endpointId = this.props?.match?.params.endpointId
+    // if (this.props.isEndpoint && this.props?.data?.name !== prevProps?.data?.name) {
+    //   this.setState({
+    //     endpointTitle: this.props.data.name,
+    //     previousTitle: this.props.data.name
+    //   })
+    // }
+    // if (!this.props.isEndpoint && endpointId && this.props.pages[endpointId]) {
+    //   if (this.props.pages[endpointId].name !== prevState.previousTitle) {
+    //     this.setState({
+    //       endpointTitle: this.props.pages[endpointId].name,
+    //       isPagePublished: this.props.pages[endpointId].isPublished,
+    //       previousTitle: this.props.pages[endpointId].name
+    //     })
+    //   }
+    // }
+    // this.changeEndpointName()
+    if (this.props.isEndpoint) {
+      if(prevProps.match?.params.endpointId === this.props?.match?.params.endpointId) return;
+      const endpointId = this.props?.match?.params.endpointId
+      if (this.props?.pages?.[endpointId]) {
+        this.setState({
+          endpointTitle: this.props.pages[endpointId]?.name || '',
+          isPagePublished: this.props.pages[endpointId]?.isPublished || false,
+          previousTitle: this.props.pages[endpointId]?.name || ''
+        })
+      } else {
+        this.setState({
+          endpointTitle: 'Untitled',
+          isPagePublished: false,
+          previousTitle: 'Untitled'
+        })
+      }
+    }
+    else {
+      if(prevProps.match?.params.pageId === this.props?.match?.params.pageId) return;
+      const pageId = this.props?.match?.params.pageId
+      if (this.props?.pages?.[pageId]) {
+        this.setState({
+          endpointTitle: this.props.pages[pageId]?.name || '',
+          isPagePublished: this.props.pages[pageId]?.isPublished || false,
+          previousTitle: this.props.pages[pageId]?.name || ''
+        })
+      } else {
+        this.setState({
+          endpointTitle: 'Untitled',
+          isPagePublished: false,
+          previousTitle: 'Untitled'
+        })
+      }
     }
   }
 
@@ -68,26 +154,6 @@ class EndpointBreadCrumb extends Component {
         this.nameInputRef.current.focus()
       })
     }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const pageId = this.props?.match?.params.pageId
-    if (this.props.isEndpoint && this.props?.data?.name !== prevProps?.data?.name) {
-      this.setState({
-        endpointTitle: this.props.data.name,
-        previousTitle: this.props.data.name
-      })
-    }
-    if (!this.props.isEndpoint && pageId && this.props.pages[pageId]) {
-      if (this.props.pages[pageId].name !== prevState.previousTitle) {
-        this.setState({
-          endpointTitle: this.props.pages[pageId].name,
-          isPagePublished: this.props.pages[pageId].isPublished,
-          previousTitle: this.props.pages[pageId].name
-        })
-      }
-    }
-    this.changeEndpointName()
   }
 
   changeEndpointName() {
