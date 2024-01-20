@@ -7,7 +7,8 @@ import Joi from 'joi-browser'
 import { URL_VALIDATION_REGEX } from '../common/constants'
 import './openApi.scss'
 import { moveToNextStep } from '../../services/widgetService'
-import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
+import { defaultViewTypes } from '../collections/defaultViewModal/defaultViewModal'
+
 
 const mapStateToProps = (state) => {
   return {
@@ -65,7 +66,7 @@ class OpenApiForm extends Component {
   importApi(defaultView) {
     const uploadedFile = this.state.uploadedFile
     this.props.import_api(uploadedFile, this.state.importType, this.state.website, null, defaultView)
-    moveToNextStep(1)
+    // moveToNextStep(1)
     this.props.onHide()
   }
 
@@ -93,7 +94,7 @@ class OpenApiForm extends Component {
     }
     this.setState({ errors: { ...errors, file: FileError } })
     if (errors || FileError) return
-    this.setState({ step: 2 })
+    this.setState({ step: 1 })
   }
 
   saveCollection(defaultView, flag) {
@@ -131,11 +132,18 @@ class OpenApiForm extends Component {
   renderButtonGroup() {
     return (
       <div className='text-left mt-4'>
-        <button id='add_collection_import_btn' className='btn btn-primary btn-lg mr-2' onClick={(e) => this.handleSubmit(e)}>
+        <button id='add_collection_import_btn' className='btn btn-primary btn-lg mr-2' onClick={(e) => {
+          e.preventDefault();
+          this.handleSubmit(e);
+          const { errors, importType, website, uploadedFile } = this.state;
+          if (!errors.type && !errors.website && !errors.file && importType && uploadedFile || website) {
+            this.saveCollection(defaultViewTypes.TESTING, 'edit');
+          }
+        }}>
           Import
         </button>
         <button className='btn btn-secondary outline btn-lg' onClick={(e) => this.handleCancel(e)}>
-          Cancel
+          Back
         </button>
       </div>
     )
@@ -201,43 +209,12 @@ class OpenApiForm extends Component {
     }
   }
 
-  renderDefaultViewForm() {
-    return <DefaultViewModal viewLoader={this.state.viewLoader} saveCollection={this.saveCollection.bind(this)} />
-  }
-
   renderForm() {
     const { step } = this.state
-    return (
-      <>
-        {step === 1 && this.renderImportForm()}
-        {step === 2 && this.renderDefaultViewForm()}
-        {step === 1 ? this.renderNextButton() : this.renderBackButton()}
-      </>
-    )
-  }
-
-  onBack() {
-    this.setState({ step: 1 })
-  }
-
-  onNext(e) {
-    this.handleSubmit(e)
-  }
-
-  renderNextButton() {
-    return (
-      <button className='btn btn-primary' onClick={(e) => this.onNext(e)}>
-        Next
-      </button>
-    )
-  }
-
-  renderBackButton() {
-    return (
-      <button className='btn btn-primary' onClick={() => this.onBack()}>
-        Back
-      </button>
-    )
+    return <>
+     {step === 1 && this.renderImportForm()}
+        {step === 1 ? this.renderButtonGroup() : this.handleCancel()}
+        </>
   }
 
   renderInModal() {

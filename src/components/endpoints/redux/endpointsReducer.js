@@ -154,6 +154,7 @@ function endpointsReducer(state = initialState, action) {
       return endpoints
 
     case collectionActionTypes.ON_COLLECTION_IMPORTED:
+      console.log(...action.response.endoints,"endoints")
       endpoints = { ...state, ...action.response.endpoints }
       return endpoints
 

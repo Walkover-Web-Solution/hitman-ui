@@ -85,7 +85,6 @@ class CustomTabs extends Component {
 
   renderTabName(tabId) {
     const tab = this.props.tabState[tabId]
-  console.log(this.props.tabState, tabId)
     if (!tab) return
     switch (tab.type) {
       case 'history':

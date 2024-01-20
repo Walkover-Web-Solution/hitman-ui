@@ -7,7 +7,7 @@ const initialState = {}
 
 function versionsReducer(state = initialState, action) {
   let versions = {}
-
+  
   switch (action.type) {
     case versionActionTypes.ON_AUTHORIZATION_DATA_REQUEST:
       state[action.versionId].authorizationData = action.data
@@ -121,10 +121,6 @@ function versionsReducer(state = initialState, action) {
       action.payload.versionIds.forEach((vId) => {
         delete versions[vId]
       })
-      return versions
-
-    case collectionsActionTypes.ON_COLLECTION_IMPORTED:
-      versions = { ...state, ...action.response.versions }
       return versions
 
     default:

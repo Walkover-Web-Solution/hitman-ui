@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { addCollection, updateCollection } from './redux/collectionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../common/constants'
-import DefaultViewModal, { defaultViewTypes } from './defaultViewModal/defaultViewModal'
+import { defaultViewTypes } from './defaultViewModal/defaultViewModal'
 
 const mapStateToProps = (state) => {
   return {
@@ -153,16 +153,6 @@ class CollectionForm extends Form {
       <button className='btn btn-primary' onClick={() => this.saveCollection(defaultViewTypes.TESTING, 'edit')}>
         Save
       </button>
-    )
-  }
-
-  renderDefaultViewForm() {
-    return (
-      <DefaultViewModal
-        viewLoader={this.state.viewLoader}
-        saveCollection={this.saveCollection.bind(this)}
-        onHide={() => this.props.onHide()}
-      />
     )
   }
 

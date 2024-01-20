@@ -110,10 +110,6 @@ function groupsReducer(state = initialState, action) {
       groups = { ...action.groups }
       return groups
 
-    case collectionActionTypes.ON_COLLECTION_IMPORTED:
-      groups = { ...state, ...action.response.groups }
-      return groups
-
     default:
       return state
   }
