@@ -152,7 +152,7 @@ class EditPage extends Component {
       toast.error('Page name cannot be empty.')
       return
     }
-    delete editedPage['isPublished'];
+    delete editedPage['isPublished']
     this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
     tabService.markTabAsSaved(this.props.tab.id)
   }

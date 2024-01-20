@@ -519,6 +519,28 @@ export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = 
     throw new Error(e?.message ? e.message : 'Something went wrong')
   }
 }
+
+const modifyEndpointContent = (endpointData, untitledData) => {
+  const endpoint = { ...endpointData }
+  const untitled = { ...untitledData }
+  untitled.data.name = endpoint.name
+  untitled.data.method = endpoint.requestType
+  untitled.data.body = endpoint.body
+  untitled.data.updatedUri = endpoint.uri
+  untitled.authType = endpoint.authorizationType
+  const headersData = Object.keys(endpoint.headers).map((key) => {
+    return { key, ...endpoint.headers[key] }
+  })
+  const paramsData = Object.keys(endpoint.params).map((key) => {
+    return { key, ...endpoint.headers[key] }
+  })
+  untitled.originalHeaders = headersData
+  untitled.originalParams = paramsData
+  untitled.postScriptText = endpoint.postScript
+  untitled.preScriptText = endpoint.preScript
+  return untitled
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -552,5 +574,6 @@ export default {
   validateEmail,
   getUserProfile,
   compareAlphabetically,
-  sentryIntegration
+  sentryIntegration,
+  modifyEndpointContent
 }

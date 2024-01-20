@@ -2,6 +2,22 @@ import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
+import { useQueryClient } from 'react-query'
+
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    let endpointId = props?.match?.params.endpointId
+    if (!(props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId)) {
+      endpointId = props?.activeTabId
+    }
+    const queryClient = useQueryClient()
+    const data = queryClient.getQueryData(['endpoint', endpointId])
+    const setEndpointData = (data) => {
+      queryClient.setQueryData(['endpoint', endpointId], data)
+    }
+    return <WrappedComponent {...props} endpointContent={data} setEndpointData={setEndpointData} />
+  }
+}
 
 const hostContainerEnum = {
   hosts: {
@@ -88,6 +104,9 @@ class HostContainer extends Component {
         this.setParentHostAndUri()
       }
     )
+    const dummyEndpointData = this.props.endpointContent
+    dummyEndpointData.data.updatedUri = e.target.value || ''
+    this.props.setEndpointData(dummyEndpointData)
   }
 
   handleClickHostOptions(host, type) {
@@ -167,7 +186,7 @@ class HostContainer extends Component {
         <input
           id='host-container-input'
           className='form-control'
-          value={this.state.datalistHost + this.state.datalistUri}
+          value={this.props?.endpointContent?.data?.updatedUri}
           name={`${endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={(e) => this.handleInputHostChange(e)}
@@ -209,4 +228,4 @@ class HostContainer extends Component {
   }
 }
 
-export default HostContainer
+export default withQuery(HostContainer)

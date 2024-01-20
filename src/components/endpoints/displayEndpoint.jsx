@@ -29,7 +29,7 @@ import DisplayResponse from './displayResponse'
 import SampleResponse from './sampleResponse'
 import { getCurrentUser, isAdmin } from '../auth/authServiceV2'
 
-import endpointApiService from './endpointApiService'
+import endpointApiService, { getEndpoint } from './endpointApiService'
 import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
@@ -66,6 +66,8 @@ import ApiDocReview from '../apiDocReview/apiDocReview'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import ChatbotsideBar from './chatbotsideBar'
+import { useQuery, useQueryClient } from 'react-query'
+import utilityFuncitons from '../common/utility.js'
 
 const shortid = require('shortid')
 
@@ -106,7 +108,8 @@ const mapStateToProps = (state) => {
     historySnapshots: state.history,
     collections: state.collections,
     cookies: state.cookies,
-    responseView: state.responseView
+    responseView: state.responseView,
+    activeTabId: state.tabs.activeTabId
   }
 }
 
@@ -129,6 +132,108 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_endpoint: (endpoint, callback) => dispatch(approveEndpoint(endpoint, callback)),
     set_response_view: (view) => dispatch(onToggle(view)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint))
+  }
+}
+
+const untitledEndpointData = {
+  data: {
+    name: '',
+    method: 'GET',
+    body: { type: 'none', value: '' },
+    uri: '',
+    updatedUri: ''
+  },
+  pathVariables: [],
+  methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  environment: {},
+  startTime: '',
+  timeElapsed: '',
+  response: {},
+  endpoint: {},
+  groupId: null,
+  title: '',
+  flagResponse: false,
+  originalHeaders: [
+    {
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    }
+  ],
+  originalParams: [
+    {
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    }
+  ],
+  authType: null,
+  oldDescription: '',
+  headers: [],
+  publicBodyFlag: true,
+  params: [],
+  bodyDescription: {},
+  fieldDescription: {},
+  sampleResponseArray: [],
+  sampleResponseFlagArray: [],
+  theme: '',
+  loader: false,
+  saveLoader: false,
+  codeEditorVisibility: true,
+  showCookiesModal: false,
+  preScriptText: '',
+  postScriptText: '',
+  preReqScriptError: '',
+  postReqScriptError: '',
+  host: {},
+  draftDataSet: false,
+  runSendRequest: null,
+  requestKey: null,
+  docOptions: false,
+  sslMode: getCurrentUserSSLMode(),
+  showAskAiSlider: false,
+  currentView: 'testing'
+}
+
+const getEndpointContent = async (endpointId) => {
+  const data = await getEndpoint(endpointId)
+  const modifiedData = utilityFuncitons.modifyEndpointContent(data, untitledEndpointData)
+  return modifiedData
+}
+
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    const queryClient = useQueryClient()
+    let endpointContentData = {}
+    let endpointId = props?.match?.params.endpointId
+    if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
+      const data = useQuery(['endpoint', endpointId], () => getEndpointContent(endpointId), {
+        refetchOnWindowFocus: false,
+        cacheTime: 5000000,
+        enabled: true,
+        staleTime: Infinity
+      })
+      endpointContentData = data
+    } else {
+      endpointId = props?.activeTabId
+      queryClient.setQueryData(['endpoint', endpointId], untitledEndpointData)
+      endpointContentData['data'] = untitledEndpointData
+    }
+
+    const setQueryUpdatedData = (data) => {
+      queryClient.setQueryData(['endpoint', endpointId], data)
+    }
+    return (
+      <WrappedComponent
+        {...props}
+        endpointContent={endpointContentData.data}
+        endpointContentLoading={endpointContentData.isLoading}
+        currentEndpointId={endpointId}
+        setQueryUpdatedData={setQueryUpdatedData}
+      />
+    )
   }
 }
 
@@ -1266,6 +1371,9 @@ class DisplayEndpoint extends Component {
   }
 
   setMethod(method) {
+    const dummyData = this.props.endpointContent
+    dummyData.data.method = method
+    this.props.setQueryUpdatedData(dummyData)
     const response = {}
     const data = { ...this.state.data }
     data.method = method
@@ -2456,7 +2564,7 @@ class DisplayEndpoint extends Component {
               environmentHost={
                 this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
               }
-              updatedUri={this.state.data.updatedUri}
+              updatedUri={this.props.endpointContent?.data?.updatedUri}
               set_base_url={this.setBaseUrl.bind(this)}
               customHost={this.state.endpoint.BASE_URL || ''}
               endpointId={this.state.endpoint.id}
@@ -2484,7 +2592,8 @@ class DisplayEndpoint extends Component {
             aria-expanded='false'
             disabled={isDashboardRoute(this.props) ? null : true}
           >
-            {this.state.data.method}
+            {/* {this.state.data.method} */}
+            {this.props?.endpointContent?.data?.method}
           </button>
           <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
             {this.state.methodList.map((methodName) => (
@@ -2504,7 +2613,7 @@ class DisplayEndpoint extends Component {
               this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
             }
             versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
-            updatedUri={this.state.data.updatedUri}
+            updatedUri={this.props.endpointContent?.data?.updatedUri}
             set_host_uri={this.setHostUri.bind(this)}
             set_base_url={this.setBaseUrl.bind(this)}
             props_from_parent={this.propsFromChild.bind(this)}
@@ -3056,4 +3165,4 @@ class DisplayEndpoint extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DisplayEndpoint))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayEndpoint)))

@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     tabState: state.tabs.tabs,
-    tabsOrder : state.tabs.tabsOrder
+    tabsOrder: state.tabs.tabsOrder
   }
 }
 
@@ -85,7 +85,6 @@ class CustomTabs extends Component {
 
   renderTabName(tabId) {
     const tab = this.props.tabState[tabId]
-  console.log(this.props.tabState, tabId)
     if (!tab) return
     switch (tab.type) {
       case 'history':
