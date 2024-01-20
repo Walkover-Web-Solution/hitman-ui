@@ -186,7 +186,7 @@ class HostContainer extends Component {
         <input
           id='host-container-input'
           className='form-control'
-          value={this.props?.endpointContent?.data?.updatedUri}
+          value={this.props?.endpointContent?.data?.updatedUri || ''}
           name={`${endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={(e) => this.handleInputHostChange(e)}

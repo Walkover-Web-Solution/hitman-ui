@@ -67,7 +67,7 @@ import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from 
 import Tiptap from '../tiptapEditor/tiptap'
 import ChatbotsideBar from './chatbotsideBar'
 import { useQuery, useQueryClient } from 'react-query'
-import utilityFuncitons from '../common/utility.js'
+import utilityFunctions from '../common/utility.js'
 
 const shortid = require('shortid')
 
@@ -199,7 +199,7 @@ const untitledEndpointData = {
 
 const getEndpointContent = async (endpointId) => {
   const data = await getEndpoint(endpointId)
-  const modifiedData = utilityFuncitons.modifyEndpointContent(data, untitledEndpointData)
+  const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
   return modifiedData
 }
 
@@ -218,13 +218,21 @@ const withQuery = (WrappedComponent) => {
       endpointContentData = data
     } else {
       endpointId = props?.activeTabId
-      queryClient.setQueryData(['endpoint', endpointId], untitledEndpointData)
-      endpointContentData['data'] = untitledEndpointData
+      queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(untitledEndpointData))
+      endpointContentData['data'] = _.cloneDeep(untitledEndpointData)
     }
 
     const setQueryUpdatedData = (data) => {
       queryClient.setQueryData(['endpoint', endpointId], data)
     }
+
+    const newData = useQuery(endpointId, () => `${endpointId}`, {
+      refetchOnWindowFocus: false,
+      cacheTime: 5000000,
+      enabled: true,
+      staleTime: Infinity
+    })
+
     return (
       <WrappedComponent
         {...props}

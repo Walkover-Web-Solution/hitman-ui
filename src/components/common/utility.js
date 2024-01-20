@@ -5,6 +5,7 @@ import { getProxyToken } from '../auth/authServiceV2'
 import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
+import { cloneDeep } from 'lodash'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
@@ -521,8 +522,8 @@ export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = 
 }
 
 const modifyEndpointContent = (endpointData, untitledData) => {
-  const endpoint = { ...endpointData }
-  const untitled = { ...untitledData }
+  const endpoint = cloneDeep(endpointData)
+  const untitled = cloneDeep(untitledData)
   untitled.data.name = endpoint.name
   untitled.data.method = endpoint.requestType
   untitled.data.body = endpoint.body
@@ -532,7 +533,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
     return { key, ...endpoint.headers[key] }
   })
   const paramsData = Object.keys(endpoint.params).map((key) => {
-    return { key, ...endpoint.headers[key] }
+    return { key, ...endpoint.params[key] }
   })
   untitled.originalHeaders = headersData
   untitled.originalParams = paramsData
