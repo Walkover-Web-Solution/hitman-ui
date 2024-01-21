@@ -1645,7 +1645,7 @@ class DisplayEndpoint extends Component {
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
-      this.setState({ harObject }, () => {})
+      this.setState({ harObject }, () => { })
     } catch (error) {
       toast.error(error)
     }
@@ -1676,10 +1676,13 @@ class DisplayEndpoint extends Component {
   }
 
   setBody(bodyType, body) {
-    const data = { ...this.state.data }
+    const data = { ...this.props?.endpointContent.data }
     data.body = { type: bodyType, value: body }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
     this.setState({ data }, () => this.setModifiedTabData())
+    const tempData = this.props.endpointContent;
+    tempData.data = data;
+    this.props.setQueryUpdatedData(tempData);
   }
 
   setBodyDescription(type, value) {
@@ -1743,10 +1746,17 @@ class DisplayEndpoint extends Component {
 
   setDescription(bodyDescription) {
     this.setState({ bodyDescription })
+    const tempData = this.props.endpointContent;
+    tempData.bodyDescription = bodyDescription;
+    this.props.setQueryUpdatedData(tempData)
   }
 
   setFieldDescription(fieldDescription, bodyDescription) {
     this.setState({ fieldDescription, bodyDescription })
+    const tempData = this.props.endpointContent;
+    tempData.fieldDescription = fieldDescription;
+    tempData.bodyDescription = bodyDescription;
+    this.props.setQueryUpdatedData(tempData);
   }
 
   setParams(value, title, authorizationFlag) {
@@ -1775,6 +1785,9 @@ class DisplayEndpoint extends Component {
     }
     updatedParams.push(emptyParam)
     this.setState({ originalParams: updatedParams })
+    const dummyData = this.props.endpointContent
+    dummyData.originalParams = updatedParams
+    this.props.setQueryUpdatedData(dummyData)
   }
 
   setHeaders(value, title, authorizationFlag = undefined) {
@@ -1792,6 +1805,9 @@ class DisplayEndpoint extends Component {
       } else if (originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
         originalHeaders[i].value = this.identifyBodyType(value)
         this.setState({ originalHeaders })
+        const dummyData = this.props.endpointContent
+        dummyData.originalHeaders = originalHeaders
+        this.props.setQueryUpdatedData(dummyData)
         return
       } else {
         updatedHeaders.push(originalHeaders[i])
@@ -1800,6 +1816,9 @@ class DisplayEndpoint extends Component {
     if (value === 'none') {
       updatedHeaders.push(emptyHeader)
       this.setState({ originalHeaders: updatedHeaders })
+      const dummyData = this.props.endpointContent
+      dummyData.originalHeaders = updatedHeaders
+      this.props.setQueryUpdatedData(dummyData)
       return
     }
     if (value !== 'noAuth' && !authorizationFlag) {
@@ -1816,6 +1835,9 @@ class DisplayEndpoint extends Component {
 
     updatedHeaders.push(emptyHeader)
     this.setState({ originalHeaders: updatedHeaders })
+    const dummyData = this.props.endpointContent
+    dummyData.originalHeaders = updatedHeaders
+    this.props.setQueryUpdatedData(dummyData)
   }
 
   identifyBodyType(bodyType) {
@@ -1933,7 +1955,11 @@ class DisplayEndpoint extends Component {
       }
     }
     this.setState({ authType })
+    const dummyData = this.props.endpointContent;
+    dummyData.authType = authType
+    this.props.setQueryUpdatedData(dummyData);
   }
+
 
   addSampleResponse(response) {
     const { data, status } = response
@@ -2189,6 +2215,10 @@ class DisplayEndpoint extends Component {
     }
 
     this.setState({ preScriptText, postScriptText }, () => this.setModifiedTabData())
+    const dummyData = this.props.endpointContent
+    dummyData.preScriptText = preScriptText
+    dummyData.postScriptText = postScriptText
+    this.props.setQueryUpdatedData(dummyData)
   }
 
   renderScriptError() {
@@ -2443,11 +2473,11 @@ class DisplayEndpoint extends Component {
         {...this.props}
         set_body={this.setBody.bind(this)}
         set_body_description={this.setDescription.bind(this)}
-        body={this.state.bodyFlag === true ? this.state.data.body : ''}
-        Body={this.state.data.body}
+        body={this.state.bodyFlag === true ? this.props.endpointContent.data.body : ''}
+        Body={this.props?.endpointContent?.data?.body || {}}
         endpoint_id={this.props.tab.id}
-        body_description={this.state.bodyDescription}
-        field_description={this.state.fieldDescription}
+        body_description={this.props?.endpointContent?.bodyDescription || ''}
+        field_description={this.props?.endpointContent?.fieldDescription || ''}
         set_field_description={this.setFieldDescription.bind(this)}
       />
     )

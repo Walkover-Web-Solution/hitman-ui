@@ -207,202 +207,202 @@ class Authorization extends Component {
   }
 
   render() {
-    // if (this.props.authorizationType) {
-    //   const authType = this.props.authorizationType.type
-    //   if (authType !== this.state.authorizationType) {
-    //     this.setState({
-    //       authorizationType: authType
-    //     })
-    //     if (authType === 'basicAuth') {
-    //       this.setState({ basicAuth: this.props.authorizationType.value })
-    //     }
-    //     if (authType === 'oauth_2') {
-    //       this.setState({ oauth_2: this.props.authorizationType.value })
-    //     }
-    //     this.setHeadersandParams(this.props.authorizationType.value.accessToken, this.props.authorizationType.value.authorizationAddedTo)
-    //   }
-    // }
+    if (this.props.authorizationType) {
+      const authType = this.props.authorizationType.type
+      if (authType !== this.state.authorizationType) {
+        this.setState({
+          authorizationType: authType
+        })
+        if (authType === 'basicAuth') {
+          this.setState({ basicAuth: this.props.authorizationType.value })
+        }
+        if (authType === 'oauth_2') {
+          this.setState({ oauth_2: this.props.authorizationType.value })
+        }
+        this.setHeadersandParams(this.props.authorizationType.value.accessToken, this.props.authorizationType.value.authorizationAddedTo)
+      }
+    }
 
-    // return (
-    //   <div className='authorization-panel'>
-    //     {this.state.getNewAccessToken === true && (
-    //       <TokenGenerator
-    //         {...this.props}
-    //         oauth_2={this.state.oauth_2}
-    //         groupId={this.props.groupId}
-    //         show
-    //         onHide={() => this.closeGetNewAccessTokenModal()}
-    //         set_access_token={this.setAccessToken.bind(this)}
-    //         title='Get new access token'
-    //       />
-    //     )}
-    //     {this.state.openManageTokenModel === true && (
-    //       <AccessTokenManager
-    //         {...this.props}
-    //         authResponses={this.authResponses}
-    //         show
-    //         onHide={() => this.closeManageTokenModel()}
-    //         title='MANAGE ACCESS TOKENS'
-    //         set_access_token={this.setAccessToken.bind(this)}
-    //         set_auth_responses={this.setAuthResponses.bind(this)}
-    //         accessToken={this.state.oauth_2.accessToken}
-    //       />
-    //     )}
-    //     <div className='authorization-selector-wrapper'>
-    //       <div className='auth-selector-container'>
-    //         <label>Type</label>
-    //         <div className='dropdown'>
-    //           <button
-    //             className='btn dropdown-toggle outline-border'
-    //             id='dropdownMenuButton'
-    //             data-toggle='dropdown'
-    //             aria-haspopup='true'
-    //             aria-expanded='false'
-    //           >
-    //             {this.state.authorizationType === 'noAuth'
-    //               ? this.authorizationTypes.noAuth
-    //               : this.authorizationTypes[this.state.authorizationType]}
-    //           </button>
-    //           <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-    //             {Object.keys(this.authorizationTypes).map((key) => (
-    //               <button className='dropdown-item' onClick={() => this.setAuthorizationType(key)} key={key}>
-    //                 {this.authorizationTypes[key]}
-    //               </button>
-    //             ))}
-    //           </div>
-    //         </div>
-    //         <br />
-    //         {this.state.authorizationType === 'oauth_2' && (
-    //           <div>
-    //             <label>Add authorization data to</label>
-    //             <div className='dropdown'>
-    //               <button
-    //                 className='btn dropdown-toggle outline-border'
-    //                 id='dropdownMenuButton'
-    //                 data-toggle='dropdown'
-    //                 aria-haspopup='true'
-    //                 aria-expanded='false'
-    //               >
-    //                 {this.state.oauth_2.authorizationAddedTo}
-    //               </button>
-    //               <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-    //                 <button className='dropdown-item' onClick={() => this.setAuthorizationAddedTo('Request Headers')}>
-    //                   Request Headers
-    //                 </button>
-    //                 <button className='dropdown-item' onClick={() => this.setAuthorizationAddedTo('Request URL')}>
-    //                   Request URL
-    //                 </button>
-    //               </div>
-    //             </div>
-    //           </div>
-    //         )}
-    //       </div>
-    //     </div>
+    return (
+      <div className='authorization-panel'>
+        {this.state.getNewAccessToken === true && (
+          <TokenGenerator
+            {...this.props}
+            oauth_2={this.state.oauth_2}
+            groupId={this.props.groupId}
+            show
+            onHide={() => this.closeGetNewAccessTokenModal()}
+            set_access_token={this.setAccessToken.bind(this)}
+            title='Get new access token'
+          />
+        )}
+        {this.state.openManageTokenModel === true && (
+          <AccessTokenManager
+            {...this.props}
+            authResponses={this.authResponses}
+            show
+            onHide={() => this.closeManageTokenModel()}
+            title='MANAGE ACCESS TOKENS'
+            set_access_token={this.setAccessToken.bind(this)}
+            set_auth_responses={this.setAuthResponses.bind(this)}
+            accessToken={this.state.oauth_2.accessToken}
+          />
+        )}
+        <div className='authorization-selector-wrapper'>
+          <div className='auth-selector-container'>
+            <label>Type</label>
+            <div className='dropdown'>
+              <button
+                className='btn dropdown-toggle outline-border'
+                id='dropdownMenuButton'
+                data-toggle='dropdown'
+                aria-haspopup='true'
+                aria-expanded='false'
+              >
+                {this.state.authorizationType === 'noAuth'
+                  ? this.authorizationTypes.noAuth
+                  : this.authorizationTypes[this.state.authorizationType]}
+              </button>
+              <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+                {Object.keys(this.authorizationTypes).map((key) => (
+                  <button className='dropdown-item' onClick={() => this.setAuthorizationType(key)} key={key}>
+                    {this.authorizationTypes[key]}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <br />
+            {this.state.authorizationType === 'oauth_2' && (
+              <div>
+                <label>Add authorization data to</label>
+                <div className='dropdown'>
+                  <button
+                    className='btn dropdown-toggle outline-border'
+                    id='dropdownMenuButton'
+                    data-toggle='dropdown'
+                    aria-haspopup='true'
+                    aria-expanded='false'
+                  >
+                    {this.state.oauth_2.authorizationAddedTo}
+                  </button>
+                  <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+                    <button className='dropdown-item' onClick={() => this.setAuthorizationAddedTo('Request Headers')}>
+                      Request Headers
+                    </button>
+                    <button className='dropdown-item' onClick={() => this.setAuthorizationAddedTo('Request URL')}>
+                      Request URL
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
-    //     {this.state.authorizationType === 'noAuth' && (
-    //       <div className='authorization-editor-wrapper'>
-    //         <p> This request does not use any authorization.</p>
-    //       </div>
-    //     )}
+        {this.state.authorizationType === 'noAuth' && (
+          <div className='authorization-editor-wrapper'>
+            <p> This request does not use any authorization.</p>
+          </div>
+        )}
 
-    //     {this.state.authorizationType === 'basicAuth' && (
-    //       <div className='authorization-editor-wrapper' id='authorization-form'>
-    //         <form className='form-group'>
-    //           <label className='mb-1'>Username</label>
-    //           <input
-    //             className='form-control'
-    //             name='username'
-    //             value={this.state.basicAuth.username}
-    //             onChange={this.handleChange.bind(this)}
-    //           />
-    //           <label htmlFor='password'>Password</label>
-    //           <div className='d-flex flex-row align-items-center'>
-    //             <input
-    //               className='form-control'
-    //               id='password'
-    //               type={this.state.showPassword ? (this.state.showPassword === true ? null : 'password') : 'password'}
-    //               name='password'
-    //               value={this.state.basicAuth.password}
-    //               onChange={this.handleChange.bind(this)}
-    //             />
-    //             <label className='mb-3 ml-3'>
-    //               <input className='mr-1' type='checkbox' onClick={() => this.showPassword()} />
-    //               Show Password
-    //             </label>
-    //           </div>
-    //           {/* <div className="input-field-wrapper">
-    //             <label>
-    //               <button
-    //                 type="checkbox"
-    //                 value={
-    //                   this.state.showPassword
-    //                     ? this.state.showPassword === true
-    //                       ? true
-    //                       : false
-    //                     : false
-    //                 }
-    //                 onClick={() => this.showPassword()}
-    //               ></button>
-    //               Show Password
-    //             </label>
-    //           </div> */}
-    //         </form>
-    //       </div>
-    //     )}
-    //     {this.state.authorizationType === 'oauth_2' && (
-    //       <div className='authorization-editor-wrapper'>
-    //         <form>
-    //           <div className='input-field-wrapper form-group d-block mb-1'>
-    //             <div>
-    //               <label className='basic-auth-label'>Access Token</label>
-    //             </div>
-    //             <div className='basic-auth-input'>
-    //               <input
-    //                 value={this.state.oauth_2.accessToken}
-    //                 onChange={this.updateAccessToken.bind(this)}
-    //                 name='accessToken'
-    //                 className='form-control'
-    //               />
-    //               <div className='dropdown available-token-dropdown ml-2'>
-    //                 <button
-    //                   className='btn dropdown-toggle'
-    //                   id='dropdownMenuButton'
-    //                   data-toggle='dropdown'
-    //                   aria-haspopup='true'
-    //                   aria-expanded='false'
-    //                 >
-    //                   Availabale Tokens
-    //                 </button>
-    //                 <div className='dropdown-menu available-token-dropdown-menu' aria-labelledby='dropdownMenuButton'>
-    //                   {this.authResponses.map((response, index) => (
-    //                     <button key={index} type='button' className='dropdown-item' onClick={() => this.selectAccessToken(index)}>
-    //                       {response.tokenName}
-    //                     </button>
-    //                   ))}
-    //                   <button
-    //                     type='button'
-    //                     className='dropdown-item'
-    //                     onClick={() => (this.authResponses.length !== 0 ? this.openManageTokenModel() : null)}
-    //                   >
-    //                     {this.authResponses.length !== 0 ? 'Manage Tokens' : 'No Tokens Available'}
-    //                   </button>
-    //                 </div>
-    //               </div>
-    //             </div>
-    //           </div>
-    //           <div className='input-field-wrapper d-block'>
-    //             <div className='basic-auth-label' />
-    //             <div className='basic-auth-input'>
-    //               <button className='btn btn-outline orange' type='button' onClick={() => this.getNewAccessTokenModal()}>
-    //                 Get New Access Token
-    //               </button>
-    //             </div>
-    //           </div>
-    //         </form>
-    //       </div>
-    //     )}
-    //   </div>
-    // )
+        {this.state.authorizationType === 'basicAuth' && (
+          <div className='authorization-editor-wrapper' id='authorization-form'>
+            <form className='form-group'>
+              <label className='mb-1'>Username</label>
+              <input
+                className='form-control'
+                name='username'
+                value={this.state.basicAuth.username}
+                onChange={this.handleChange.bind(this)}
+              />
+              <label htmlFor='password'>Password</label>
+              <div className='d-flex flex-row align-items-center'>
+                <input
+                  className='form-control'
+                  id='password'
+                  type={this.state.showPassword ? (this.state.showPassword === true ? null : 'password') : 'password'}
+                  name='password'
+                  value={this.state.basicAuth.password}
+                  onChange={this.handleChange.bind(this)}
+                />
+                <label className='mb-3 ml-3'>
+                  <input className='mr-1' type='checkbox' onClick={() => this.showPassword()} />
+                  Show Password
+                </label>
+              </div>
+              {/* <div className="input-field-wrapper">
+                <label>
+                  <button
+                    type="checkbox"
+                    value={
+                      this.state.showPassword
+                        ? this.state.showPassword === true
+                          ? true
+                          : false
+                        : false
+                    }
+                    onClick={() => this.showPassword()}
+                  ></button>
+                  Show Password
+                </label>
+              </div> */}
+            </form>
+          </div>
+        )}
+        {this.state.authorizationType === 'oauth_2' && (
+          <div className='authorization-editor-wrapper'>
+            <form>
+              <div className='input-field-wrapper form-group d-block mb-1'>
+                <div>
+                  <label className='basic-auth-label'>Access Token</label>
+                </div>
+                <div className='basic-auth-input'>
+                  <input
+                    value={this.state.oauth_2.accessToken}
+                    onChange={this.updateAccessToken.bind(this)}
+                    name='accessToken'
+                    className='form-control'
+                  />
+                  <div className='dropdown available-token-dropdown ml-2'>
+                    <button
+                      className='btn dropdown-toggle'
+                      id='dropdownMenuButton'
+                      data-toggle='dropdown'
+                      aria-haspopup='true'
+                      aria-expanded='false'
+                    >
+                      Availabale Tokens
+                    </button>
+                    <div className='dropdown-menu available-token-dropdown-menu' aria-labelledby='dropdownMenuButton'>
+                      {this.authResponses.map((response, index) => (
+                        <button key={index} type='button' className='dropdown-item' onClick={() => this.selectAccessToken(index)}>
+                          {response.tokenName}
+                        </button>
+                      ))}
+                      <button
+                        type='button'
+                        className='dropdown-item'
+                        onClick={() => (this.authResponses.length !== 0 ? this.openManageTokenModel() : null)}
+                      >
+                        {this.authResponses.length !== 0 ? 'Manage Tokens' : 'No Tokens Available'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='input-field-wrapper d-block'>
+                <div className='basic-auth-label' />
+                <div className='basic-auth-input'>
+                  <button className='btn btn-outline orange' type='button' onClick={() => this.getNewAccessTokenModal()}>
+                    Get New Access Token
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        )}
+      </div>
+    )
     return null
   }
 }
