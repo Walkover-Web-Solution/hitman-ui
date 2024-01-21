@@ -3,6 +3,14 @@ import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
 import { useQueryClient } from 'react-query'
+import { connect } from 'react-redux'
+import _ from 'lodash'
+
+const mapStateToProps = (state) => {
+  return {
+    tabs: state?.tabs?.tabs
+  }
+}
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -13,8 +21,14 @@ const withQuery = (WrappedComponent) => {
     const queryClient = useQueryClient()
     const data = queryClient.getQueryData(['endpoint', endpointId])
     const setEndpointData = (data) => {
+      if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
+        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)));
+        queryClient.setQueryData(['endpoint', endpointId], data);
+        return;
+      }
       queryClient.setQueryData(['endpoint', endpointId], data)
     }
+    // debugger
     return <WrappedComponent {...props} endpointContent={data} setEndpointData={setEndpointData} />
   }
 }
@@ -228,4 +242,4 @@ class HostContainer extends Component {
   }
 }
 
-export default withQuery(HostContainer)
+export default connect(mapStateToProps, null)(withQuery(HostContainer))

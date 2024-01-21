@@ -109,7 +109,9 @@ const mapStateToProps = (state) => {
     collections: state.collections,
     cookies: state.cookies,
     responseView: state.responseView,
-    activeTabId: state.tabs.activeTabId
+    activeTabId: state.tabs.activeTabId,
+    tabs: state?.tabs?.tabs,
+
   }
 }
 
@@ -218,14 +220,27 @@ const withQuery = (WrappedComponent) => {
       endpointContentData = data
     } else {
       endpointId = props?.activeTabId
-      queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(untitledEndpointData))
-      endpointContentData['data'] = _.cloneDeep(untitledEndpointData)
+      if (localStorage.getItem(endpointId)) {
+        console.log(localStorage.getItem(endpointId), 1234)
+        queryClient.setQueryData(['endpoint', endpointId], JSON.parse(localStorage.getItem(endpointId)) || {})
+        endpointContentData['data'] = JSON.parse(localStorage.getItem(endpointId) || {});
+      }
+      else {
+        console.log('inside else and', untitledEndpointData)
+        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)));
+        queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(untitledEndpointData));
+      }
     }
 
     const setQueryUpdatedData = (data) => {
+      if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
+        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)));
+        queryClient.setQueryData(['endpoint', endpointId], data);
+        return;
+      }
       queryClient.setQueryData(['endpoint', endpointId], data)
     }
-    
+
     return (
       <WrappedComponent
         {...props}
@@ -1628,7 +1643,7 @@ class DisplayEndpoint extends Component {
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
-      this.setState({ harObject }, () => {})
+      this.setState({ harObject }, () => { })
     } catch (error) {
       toast.error(error)
     }
@@ -2460,7 +2475,7 @@ class DisplayEndpoint extends Component {
       <GenericTable
         {...this.props}
         title='Headers'
-        dataArray={this.state.originalHeaders}
+        dataArray={this.props?.endpointContent?.originalHeaders || []}
         props_from_parent={this.propsFromChild.bind(this)}
         original_data={[...this.state.headers]}
         currentView={this.state.currentView}
@@ -2488,7 +2503,7 @@ class DisplayEndpoint extends Component {
       <GenericTable
         {...this.props}
         title='Params'
-        dataArray={this.state.originalParams}
+        dataArray={this.props?.endpointContent?.originalParams || []}
         props_from_parent={this.propsFromChild.bind(this)}
         original_data={[...this.state.params]}
         open_modal={this.props.open_modal}
@@ -2819,6 +2834,7 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    console.log(this.props.endpointContent, 1234)
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
