@@ -22,9 +22,9 @@ const withQuery = (WrappedComponent) => {
     const data = queryClient.getQueryData(['endpoint', endpointId])
     const setEndpointData = (data) => {
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
-        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)));
-        queryClient.setQueryData(['endpoint', endpointId], data);
-        return;
+        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
+        queryClient.setQueryData(['endpoint', endpointId], data)
+        return
       }
       queryClient.setQueryData(['endpoint', endpointId], data)
     }

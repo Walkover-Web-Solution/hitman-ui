@@ -110,8 +110,7 @@ const mapStateToProps = (state) => {
     cookies: state.cookies,
     responseView: state.responseView,
     activeTabId: state.tabs.activeTabId,
-    tabs: state?.tabs?.tabs,
-
+    tabs: state?.tabs?.tabs
   }
 }
 
@@ -221,22 +220,19 @@ const withQuery = (WrappedComponent) => {
     } else {
       endpointId = props?.activeTabId
       if (localStorage.getItem(endpointId)) {
-        console.log(localStorage.getItem(endpointId), 1234)
         queryClient.setQueryData(['endpoint', endpointId], JSON.parse(localStorage.getItem(endpointId)) || {})
-        endpointContentData['data'] = JSON.parse(localStorage.getItem(endpointId) || {});
-      }
-      else {
-        console.log('inside else and', untitledEndpointData)
-        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)));
-        queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(untitledEndpointData));
+        endpointContentData['data'] = JSON.parse(localStorage.getItem(endpointId) || {})
+      } else {
+        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)))
+        queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(untitledEndpointData))
       }
     }
 
     const setQueryUpdatedData = (data) => {
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
-        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)));
-        queryClient.setQueryData(['endpoint', endpointId], data);
-        return;
+        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
+        queryClient.setQueryData(['endpoint', endpointId], data)
+        return
       }
       queryClient.setQueryData(['endpoint', endpointId], data)
     }
@@ -1407,16 +1403,16 @@ class DisplayEndpoint extends Component {
     if (name === 'Params') {
       this.handleUpdateUri(value)
       this.setState({ originalParams: value }, () => this.setModifiedTabData())
-      const dummyData = this?.props?.endpointContent;
-      dummyData.originalParams = [...value];
-      this.props.setQueryUpdatedData(dummyData);
+      const dummyData = this?.props?.endpointContent
+      dummyData.originalParams = [...value]
+      this.props.setQueryUpdatedData(dummyData)
     }
 
     if (name === 'Headers') {
       this.setState({ originalHeaders: value }, () => this.setModifiedTabData())
-      const dummyData = this?.props?.endpointContent;
-      dummyData.originalHeaders = [...value];
-      this.props.setQueryUpdatedData(dummyData);
+      const dummyData = this?.props?.endpointContent
+      dummyData.originalHeaders = [...value]
+      this.props.setQueryUpdatedData(dummyData)
     }
 
     if (name === 'Path Variables') {
@@ -1649,7 +1645,7 @@ class DisplayEndpoint extends Component {
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
-      this.setState({ harObject }, () => { })
+      this.setState({ harObject }, () => {})
     } catch (error) {
       toast.error(error)
     }
@@ -2511,7 +2507,7 @@ class DisplayEndpoint extends Component {
         title='Params'
         dataArray={this.props?.endpointContent?.originalParams || []}
         props_from_parent={this.propsFromChild.bind(this)}
-        original_data={[...this.props?.endpointContent?.params || []]}
+        original_data={[...(this.props?.endpointContent?.params || [])]}
         open_modal={this.props.open_modal}
         currentView={this.state.currentView}
       />
@@ -2840,7 +2836,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    console.log(this.props.endpointContent, 1234)
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
