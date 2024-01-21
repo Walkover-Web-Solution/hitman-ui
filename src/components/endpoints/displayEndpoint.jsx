@@ -1645,7 +1645,7 @@ class DisplayEndpoint extends Component {
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
-      this.setState({ harObject }, () => { })
+      this.setState({ harObject }, () => {})
     } catch (error) {
       toast.error(error)
     }
@@ -1680,9 +1680,9 @@ class DisplayEndpoint extends Component {
     data.body = { type: bodyType, value: body }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
     this.setState({ data }, () => this.setModifiedTabData())
-    const tempData = this.props.endpointContent;
-    tempData.data = data;
-    this.props.setQueryUpdatedData(tempData);
+    const tempData = this.props.endpointContent
+    tempData.data = data
+    this.props.setQueryUpdatedData(tempData)
   }
 
   setBodyDescription(type, value) {
@@ -1746,17 +1746,17 @@ class DisplayEndpoint extends Component {
 
   setDescription(bodyDescription) {
     this.setState({ bodyDescription })
-    const tempData = this.props.endpointContent;
-    tempData.bodyDescription = bodyDescription;
+    const tempData = this.props.endpointContent
+    tempData.bodyDescription = bodyDescription
     this.props.setQueryUpdatedData(tempData)
   }
 
   setFieldDescription(fieldDescription, bodyDescription) {
     this.setState({ fieldDescription, bodyDescription })
-    const tempData = this.props.endpointContent;
-    tempData.fieldDescription = fieldDescription;
-    tempData.bodyDescription = bodyDescription;
-    this.props.setQueryUpdatedData(tempData);
+    const tempData = this.props.endpointContent
+    tempData.fieldDescription = fieldDescription
+    tempData.bodyDescription = bodyDescription
+    this.props.setQueryUpdatedData(tempData)
   }
 
   setParams(value, title, authorizationFlag) {
@@ -1955,11 +1955,10 @@ class DisplayEndpoint extends Component {
       }
     }
     this.setState({ authType })
-    const dummyData = this.props.endpointContent;
+    const dummyData = this.props.endpointContent
     dummyData.authType = authType
-    this.props.setQueryUpdatedData(dummyData);
+    this.props.setQueryUpdatedData(dummyData)
   }
-
 
   addSampleResponse(response) {
     const { data, status } = response
