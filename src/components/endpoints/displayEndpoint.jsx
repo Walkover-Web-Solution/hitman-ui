@@ -225,14 +225,7 @@ const withQuery = (WrappedComponent) => {
     const setQueryUpdatedData = (data) => {
       queryClient.setQueryData(['endpoint', endpointId], data)
     }
-
-    const newData = useQuery(endpointId, () => `${endpointId}`, {
-      refetchOnWindowFocus: false,
-      cacheTime: 5000000,
-      enabled: true,
-      staleTime: Infinity
-    })
-
+    
     return (
       <WrappedComponent
         {...props}
