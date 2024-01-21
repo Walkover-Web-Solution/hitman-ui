@@ -669,14 +669,14 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
-    const data = { ...this.state.data }
+    const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
     if (e.currentTarget.name === 'updatedUri') {
       const keys = []
       const values = []
       const description = []
-      let originalParams = this.state.originalParams
+      let originalParams = this.props?.endpointContent?.originalParams || {}
       const updatedUri = e.currentTarget.value.split('?')[1]
       let path = new URI(e.currentTarget.value)
       path = path.pathname()
@@ -705,8 +705,14 @@ class DisplayEndpoint extends Component {
       }
       originalParams = this.makeOriginalParams(keys, values, description)
       this.setState({ originalParams })
+      const tempData = this.props?.endpointContent || {}
+      tempData.originalParams = originalParams
+      this.props.setQueryUpdatedData(tempData)
     }
     this.setState({ data })
+    const tempData = this.props?.endpointContent || {}
+    tempData.data = data
+    this.props.setQueryUpdatedData(tempData)
   }
 
   setUnsavedTabDataInIDB() {
@@ -1431,14 +1437,17 @@ class DisplayEndpoint extends Component {
   }
 
   handleUpdateUri(originalParams) {
+    const tempdata = this.props.endpointContent
     if (originalParams.length === 0) {
-      const updatedUri = this.state.data.updatedUri.split('?')[0]
-      const data = { ...this.state.data }
+      const updatedUri = this.props.endpointContent.data.updatedUri.split('?')[0]
+      const data = { ...this.props?.endpointContent.data }
       data.updatedUri = updatedUri
       this.setState({ data })
+      tempdata.data = data
+      this.props.setQueryUpdatedData(tempdata)
       return
     }
-    const originalUri = this.state.data.uri.split('?')[0] + '?'
+    const originalUri = this.props?.endpointContent.data.updatedUri.split('?')[0] + '?'
     const parts = {}
     for (let i = 0; i < originalParams.length; i++) {
       if (originalParams[i].key.length !== 0 && originalParams[i].checked === 'true') {
@@ -1448,13 +1457,15 @@ class DisplayEndpoint extends Component {
     URI.escapeQuerySpace = false
     let updatedUri = URI.buildQuery(parts)
     updatedUri = originalUri + URI.decode(updatedUri)
-    const data = { ...this.state.data }
+    const data = { ...this.props?.endpointContent.data }
     if (Object.keys(parts).length === 0) {
       data.updatedUri = updatedUri.split('?')[0]
     } else {
       data.updatedUri = updatedUri
     }
     this.setState({ data })
+    tempdata.data = data
+    this.props.setQueryUpdatedData(tempdata)
   }
 
   doSubmitParam() {
@@ -1673,6 +1684,9 @@ class DisplayEndpoint extends Component {
 
   setBaseUrl(BASE_URL, selectedHost) {
     this.setState({ host: { BASE_URL, selectedHost } })
+    const tempData = this?.props?.endpointContent || {}
+    tempData.host = { BASE_URL, selectedHost }
+    this.props.setQueryUpdatedData(tempData)
   }
 
   setBody(bodyType, body) {
@@ -2184,7 +2198,7 @@ class DisplayEndpoint extends Component {
   }
 
   setHostUri(host, uri, selectedHost) {
-    if (uri !== this.state.data.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+    if (uri !== this.props?.endpointContent?.data?.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
     this.setBaseUrl(host, selectedHost)
   }
 

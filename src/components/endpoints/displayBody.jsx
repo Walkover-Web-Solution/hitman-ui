@@ -65,7 +65,6 @@ class BodyContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(12345)
     if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
     if (this.props.body !== '' && !this.state.selectedBodyType) {
       let selectedBodyType = this.props.body.type
@@ -213,7 +212,6 @@ class BodyContainer extends Component {
   }
 
   renderBody() {
-    console.log(this.state.selectedBodyType)
     if (this.state.selectedBodyType && this.flag) {
       return <BodyDescription {...this.props} body={this.state.data.raw} body_type={this.state.selectedRawBodyType} />
     } else if (this.state.selectedBodyType) {
