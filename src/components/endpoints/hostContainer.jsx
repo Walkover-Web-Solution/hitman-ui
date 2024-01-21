@@ -28,7 +28,6 @@ const withQuery = (WrappedComponent) => {
       }
       queryClient.setQueryData(['endpoint', endpointId], data)
     }
-    // debugger
     return <WrappedComponent {...props} endpointContent={data} setEndpointData={setEndpointData} />
   }
 }

@@ -1407,10 +1407,16 @@ class DisplayEndpoint extends Component {
     if (name === 'Params') {
       this.handleUpdateUri(value)
       this.setState({ originalParams: value }, () => this.setModifiedTabData())
+      const dummyData = this?.props?.endpointContent;
+      dummyData.originalParams = [...value];
+      this.props.setQueryUpdatedData(dummyData);
     }
 
     if (name === 'Headers') {
       this.setState({ originalHeaders: value }, () => this.setModifiedTabData())
+      const dummyData = this?.props?.endpointContent;
+      dummyData.originalHeaders = [...value];
+      this.props.setQueryUpdatedData(dummyData);
     }
 
     if (name === 'Path Variables') {
@@ -2477,7 +2483,7 @@ class DisplayEndpoint extends Component {
         title='Headers'
         dataArray={this.props?.endpointContent?.originalHeaders || []}
         props_from_parent={this.propsFromChild.bind(this)}
-        original_data={[...this.state.headers]}
+        original_data={[this.props?.endpointContent?.originalHeaders || []]}
         currentView={this.state.currentView}
       />
     )
@@ -2505,7 +2511,7 @@ class DisplayEndpoint extends Component {
         title='Params'
         dataArray={this.props?.endpointContent?.originalParams || []}
         props_from_parent={this.propsFromChild.bind(this)}
-        original_data={[...this.state.params]}
+        original_data={[...this.props?.endpointContent?.params || []]}
         open_modal={this.props.open_modal}
         currentView={this.state.currentView}
       />
