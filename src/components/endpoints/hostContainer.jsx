@@ -2,35 +2,8 @@ import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
-import { useQueryClient } from 'react-query'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-
-const mapStateToProps = (state) => {
-  return {
-    tabs: state?.tabs?.tabs
-  }
-}
-
-const withQuery = (WrappedComponent) => {
-  return (props) => {
-    let endpointId = props?.match?.params.endpointId
-    if (!(props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId)) {
-      endpointId = props?.activeTabId
-    }
-    const queryClient = useQueryClient()
-    const data = queryClient.getQueryData(['endpoint', endpointId])
-    const setEndpointData = (data) => {
-      if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
-        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
-        queryClient.setQueryData(['endpoint', endpointId], data)
-        return
-      }
-      queryClient.setQueryData(['endpoint', endpointId], data)
-    }
-    return <WrappedComponent {...props} endpointContent={data} setEndpointData={setEndpointData} />
-  }
-}
 
 const hostContainerEnum = {
   hosts: {
@@ -117,9 +90,6 @@ class HostContainer extends Component {
         this.setParentHostAndUri()
       }
     )
-    const dummyEndpointData = this.props.endpointContent
-    dummyEndpointData.data.updatedUri = e.target.value || ''
-    this.props.setEndpointData(dummyEndpointData)
   }
 
   handleClickHostOptions(host, type) {
@@ -175,6 +145,7 @@ class HostContainer extends Component {
       uri = value
     }
     data.datalistUri = uri
+    console.log('host nikal rahe h', data)
     return data
   }
 
@@ -241,4 +212,4 @@ class HostContainer extends Component {
   }
 }
 
-export default connect(mapStateToProps, null)(withQuery(HostContainer))
+export default HostContainer
