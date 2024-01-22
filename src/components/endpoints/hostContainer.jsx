@@ -165,12 +165,13 @@ class HostContainer extends Component {
 
   renderHostDatalist() {
     const endpointId = this.props.endpointId
+    console.log(this.state.datalistHost, this.state.datalistUri, 123456789)
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
         <input
           id='host-container-input'
           className='form-control'
-          value={this.props?.endpointContent?.data?.updatedUri || ''}
+          value={this.state.datalistHost + this.state.datalistUri}
           name={`${endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={(e) => this.handleInputHostChange(e)}
