@@ -24,6 +24,9 @@ function removeTab(tabId, props) {
       }
     }
     store.dispatch(closeTab(tabId))
+    if(localStorage.getItem(tabId)) {
+      localStorage.removeItem(tabId);
+    }
   }
 }
 
