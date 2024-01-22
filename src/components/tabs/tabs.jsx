@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     tabState: state.tabs.tabs,
-    tabsOrder : state.tabs.tabsOrder
+    tabsOrder: state.tabs.tabsOrder
   }
 }
 

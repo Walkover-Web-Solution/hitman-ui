@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
+import { connect } from 'react-redux'
+import _ from 'lodash'
 
 const hostContainerEnum = {
   hosts: {
@@ -167,7 +169,7 @@ class HostContainer extends Component {
         <input
           id='host-container-input'
           className='form-control'
-          value={this.state.datalistHost + this.state.datalistUri}
+          value={this.props?.endpointContent?.data?.updatedUri || ''}
           name={`${endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={(e) => this.handleInputHostChange(e)}

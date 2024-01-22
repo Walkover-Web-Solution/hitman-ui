@@ -261,11 +261,9 @@ export const addCustomDomain = (collectionId, domain) => {
 export const importApi = (collection, importType, website, customCallback, defaultView) => {
   return (dispatch) => {
     if (importType === 'postman') {
-      dispatch(importCollectionRequest(collection))
       openApiService
         .importPostmanCollection(collection, website, defaultView)
         .then((response) => {
-          // dispatch(saveImportedCollection(response.data));
           dispatch(onCollectionImported(response.data))
           toast.success('Collection imported successfully')
           if (customCallback) customCallback({ success: true })
@@ -309,7 +307,6 @@ export const importCollection = (collection, customCallback) => {
     collectionsApiService
       .importCollection(collection.id)
       .then((response) => {
-        console.log(response.data)
         dispatch(onCollectionImported(response.data))
         if (customCallback) customCallback({ success: true })
       })
@@ -328,12 +325,10 @@ export const importCollectionRequest = (collection) => {
 }
 
 export const onCollectionImported = (response) => {
-  console.log(response,"oncollectionimported")
   return {
     type: collectionsActionTypes.ON_COLLECTION_IMPORTED,
     collection: response.collection,
     pages : response.pages,
-    endpoints : response.endpoints
   }
 }
 

@@ -107,9 +107,6 @@ function endpointsReducer(state = initialState, action) {
     case collectionActionTypes.ON_COLLECTION_DUPLICATED:
       return { ...state, ...action.response.endpoints }
 
-    case versionActionTypes.IMPORT_VERSION:
-      return { ...state, ...action.response.endpoints }
-
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...action.data.endpoints }
 
@@ -151,11 +148,6 @@ function endpointsReducer(state = initialState, action) {
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_ERROR:
       endpoints = { ...action.originalData.originalEndpoints }
-      return endpoints
-
-    case collectionActionTypes.ON_COLLECTION_IMPORTED:
-      console.log(...action.response.endoints,"endoints")
-      endpoints = { ...state, ...action.response.endpoints }
       return endpoints
 
     default:

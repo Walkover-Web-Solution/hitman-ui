@@ -114,7 +114,6 @@ export const addVersionRequest = (newVersion) => {
 }
 
 export const onParentPageVersionAdded = (response) => {
-  console.log(response,"version response")
   return {
     type: versionActionTypes.ON_PARENTPAGE_VERSION_ADDED,
     response

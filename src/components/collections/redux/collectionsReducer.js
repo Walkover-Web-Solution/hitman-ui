@@ -20,7 +20,6 @@ function collectionsReducer(state = initialState, action) {
       return { ...state }
 
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
-      // return { ...state, ...action.collections }
       const collectionState = state
       const obj = action.collections || {}
       const data = {}
@@ -119,32 +118,34 @@ function collectionsReducer(state = initialState, action) {
       toast.error(action.error)
       return state
 
-    case collectionsActionTypes.IMPORT_COLLECTION_REQUEST:
-      return {
-        ...state,
-        [action.collection.id]: action.collection
-      }
+    // case collectionsActionTypes.IMPORT_COLLECTION_REQUEST:
+    //   return {
+    //     ...state,
+    //     [action.collection.id]: action.collection
+    //   }
 
-    case collectionsActionTypes.ON_COLLECTION_IMPORTED:
-      console.log(action); 
-      collections = { ...state }
-      console.log(action.response.collection,"collection")
-      // delete collections[action.collection.id]
-      collections[action.collection.id] = action.collection
-      toast.success(action.success)
-      return collections
-
-    case collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR:
-      toast.error(action.error)
-      collections = { ...state }
-      delete collections[action.collection.id]
-      return collections
+      case collectionsActionTypes.ON_COLLECTION_IMPORTED:
+        return {
+          ...state,
+          [action.collection.id]: {
+            ...state[action.collection.id],
+            ...action.collection
+          }
+        };
+      
+      case collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR:
+        if (action.collection && action.collection.id) {
+          const updatedCollections = { ...state }
+          delete updatedCollections[action.collection.id]
+          return updatedCollections
+        }
+        return state
 
     case generalActionsTypes.ADD_COLLECTIONS:
       return { ...state, ...action.data }
 
-    case versionActionTypes.IMPORT_VERSION:
-      return { ...state, ...action.response.collection }
+    // case versionActionTypes.IMPORT_VERSION:
+    //   return { ...state, ...action.response.collection }
 
     default:
       return state

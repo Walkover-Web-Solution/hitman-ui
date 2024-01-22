@@ -73,15 +73,11 @@ function pagesReducer(state = initialState, action) {
 
     case collectionVersionsActionTypes.ON_PARENTPAGE_VERSION_ADDED:
       pages = { ...state }
-      console.log(pages,"pagessssss")
       delete pages[action.response.requestId]
       const versionData = { ...action.response }
       delete versionData.requestId
       pages[action.response.id] = versionData
       return pages
-
-    case versionActionTypes.IMPORT_VERSION:
-      return { ...state, ...action.response.pages }
 
     case pagesActionTypes.ON_GROUP_PAGE_ADDED_ERROR:
       toast.error(action.error)
@@ -181,8 +177,7 @@ function pagesReducer(state = initialState, action) {
       return pages
 
     case collectionActionTypes.ON_COLLECTION_IMPORTED:
-      console.log(action.response.pages,"pages")
-      pages = { ...state, ...action.response.pages }
+      pages = { ...state, ...action.pages }
       return pages
 
     case generalActionsTypes.ADD_PAGES:

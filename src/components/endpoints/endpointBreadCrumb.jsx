@@ -46,8 +46,7 @@ class EndpointBreadCrumb extends Component {
           previousTitle: 'Untitled'
         })
       }
-    }
-    else {
+    } else {
       const pageId = this.props?.match?.params.pageId
       if (this.props?.pages?.[pageId]) {
         this.setState({
@@ -106,7 +105,7 @@ class EndpointBreadCrumb extends Component {
     // }
     // this.changeEndpointName()
     if (this.props.isEndpoint) {
-      if(prevProps.match?.params.endpointId === this.props?.match?.params.endpointId) return;
+      if (prevProps.match?.params.endpointId === this.props?.match?.params.endpointId) return
       const endpointId = this.props?.match?.params.endpointId
       if (this.props?.pages?.[endpointId]) {
         this.setState({
@@ -121,9 +120,8 @@ class EndpointBreadCrumb extends Component {
           previousTitle: 'Untitled'
         })
       }
-    }
-    else {
-      if(prevProps.match?.params.pageId === this.props?.match?.params.pageId) return;
+    } else {
+      if (prevProps.match?.params.pageId === this.props?.match?.params.pageId) return
       const pageId = this.props?.match?.params.pageId
       if (this.props?.pages?.[pageId]) {
         this.setState({

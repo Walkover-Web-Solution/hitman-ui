@@ -1,6 +1,6 @@
 import shortid from 'shortid'
 import { store } from '../../../store/store'
-import indexedDbService from '../../indexedDb/indexedDbService'
+// import indexedDbService from '../../indexedDb/indexedDbService'
 import tabStatusTypes from '../tabStatusTypes'
 import tabsActionTypes from './tabsActionTypes'
 import history from '../../../history'
@@ -10,18 +10,18 @@ import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
 
 export const fetchTabsFromIdb = () => {
   return async (dispatch) => {
-    const state = store.getState();
-    const tabsList = state.tabs.tabs;
+    const state = store.getState()
+    const tabsList = state.tabs.tabs
     const tabsMetadata = {
       activeTabId: state.tabs.activeTabId,
       tabsOrder: state.tabs.tabsOrder
-    };
+    }
 
     dispatch({
       type: tabsActionTypes.FETCH_TABS_FROM_IDB,
       tabsList,
       tabsMetadata
-    });
+    })
   }
 }
 
@@ -92,7 +92,7 @@ export const updateTab = (tabId, data) => {
   return (dispatch) => {
     if (!store.getState().tabs.tabs[tabId]) return
     dispatch({ type: tabsActionTypes.UPDATE_TAB, payload: { tabId, data } })
-    return{ ...store.getState().tabs.tabs[tabId], ...data }
+    return { ...store.getState().tabs.tabs[tabId], ...data }
     // indexedDbService.updateData('tabs', tab)
   }
 }
