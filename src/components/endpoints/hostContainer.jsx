@@ -145,7 +145,6 @@ class HostContainer extends Component {
       uri = value
     }
     data.datalistUri = uri
-    console.log('host nikal rahe h', data)
     return data
   }
 
@@ -165,7 +164,6 @@ class HostContainer extends Component {
 
   renderHostDatalist() {
     const endpointId = this.props.endpointId
-    console.log(this.state.datalistHost, this.state.datalistUri, 123456789)
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
         <input
