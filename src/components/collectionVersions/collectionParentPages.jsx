@@ -300,7 +300,6 @@ class CollectionParentPages extends Component {
   }
 
   handleButton(rootparentId) {
-    console.log('inside button clicked', rootparentId)
     const object = this.props.pages
     const list = object[rootparentId].child
     this.renderListButtons(list)
@@ -313,7 +312,6 @@ class CollectionParentPages extends Component {
   }
 
   handleListButton(name) {
-    console.log('List button clicked:', name)
     this.setState({ publishVersion: name })
     // You can perform other actions here
   }
@@ -345,14 +343,12 @@ class CollectionParentPages extends Component {
                 tabIndex={-1}
                 //  className={'pl-3 ' + (expanded ? 'expanded' : '')}
               >
-                {console.log(this.props.selectAll, 'select all in side divvv')}
                 <div className='d-flex align-items-center cl-name'>
                   <input
                     type='checkbox'
                     checked={this.state.checkboxChecked || this.props.selectAll}
                     onChange={this.handleCheckboxChange}
                   />
-                  {console.log(this.state.checkboxChecked, 'check box checkeddd')}
                   <div className='d-flex gap-5 ms-2'>
                     <div className='sidebar-accordion-item text-truncate ml-2 '>{this.props.pages[pageId].name}</div>
                     <DropdownButton
@@ -436,7 +432,6 @@ class CollectionParentPages extends Component {
                   </span>
                   <div className='d-flex'>
                     <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
-                    {console.log(this.state.selectedVersionName, 'version name')}
                     <DropdownButton
                       className=''
                       id='dropdown-basic-button'

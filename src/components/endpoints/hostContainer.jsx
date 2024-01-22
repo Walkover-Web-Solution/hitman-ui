@@ -159,7 +159,6 @@ class HostContainer extends Component {
       uri = value
     }
     data.datalistUri = uri
-    console.log('host nikal rahe h', data)
     return data
   }
 

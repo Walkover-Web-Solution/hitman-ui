@@ -11,7 +11,6 @@ const clientDataReducer = (state = initialState, action) => {
       return { ...state }
 
     case clientDataActionTypes.DEFAULT_VERSION_ID:
-      console.log(action, 'action', state, 'state', action.payload, 'payload')
       if (state?.[action?.payload?.rootId]) {
         state[action?.payload?.rootId] = {
           ...state[action?.payload?.rootId],
