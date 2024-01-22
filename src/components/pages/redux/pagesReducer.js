@@ -44,7 +44,9 @@ function pagesReducer(state = initialState, action) {
       pages = { ...state }
 
       let pageData = { ...action.page }
-      if (pageData.type === 0) {pages[action.page.id] = pageData}
+      if (pageData.type === 0) {
+        pages[action.page.id] = pageData
+      }
       delete pages[action.page.requestId]
       delete pageData.requestId
       pages[action.page.id] = pageData

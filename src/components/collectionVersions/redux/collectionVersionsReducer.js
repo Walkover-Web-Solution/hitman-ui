@@ -7,7 +7,7 @@ const initialState = {}
 
 function versionsReducer(state = initialState, action) {
   let versions = {}
-  
+
   switch (action.type) {
     case versionActionTypes.ON_AUTHORIZATION_DATA_REQUEST:
       state[action.versionId].authorizationData = action.data

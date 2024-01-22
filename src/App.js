@@ -79,11 +79,11 @@ class App extends Component {
   //   window.removeEventListener('beforeunload', this.handleBeforeUnload);
   // }
   // handleBeforeUnload = (e) => {
-  //   const unsavedChanges = true; 
+  //   const unsavedChanges = true;
 
   //   if (unsavedChanges) {
   //     const message = 'Changes that you made may not be saved.';
-  //     e.returnValue = message; 
+  //     e.returnValue = message;
   //     return message;
   //   }
   // }

@@ -124,22 +124,22 @@ function collectionsReducer(state = initialState, action) {
     //     [action.collection.id]: action.collection
     //   }
 
-      case collectionsActionTypes.ON_COLLECTION_IMPORTED:
-        return {
-          ...state,
-          [action.collection.id]: {
-            ...state[action.collection.id],
-            ...action.collection
-          }
-        };
-      
-      case collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR:
-        if (action.collection && action.collection.id) {
-          const updatedCollections = { ...state }
-          delete updatedCollections[action.collection.id]
-          return updatedCollections
+    case collectionsActionTypes.ON_COLLECTION_IMPORTED:
+      return {
+        ...state,
+        [action.collection.id]: {
+          ...state[action.collection.id],
+          ...action.collection
         }
-        return state
+      }
+
+    case collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR:
+      if (action.collection && action.collection.id) {
+        const updatedCollections = { ...state }
+        delete updatedCollections[action.collection.id]
+        return updatedCollections
+      }
+      return state
 
     case generalActionsTypes.ADD_COLLECTIONS:
       return { ...state, ...action.data }

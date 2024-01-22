@@ -9,7 +9,6 @@ import './openApi.scss'
 import { moveToNextStep } from '../../services/widgetService'
 import { defaultViewTypes } from '../collections/defaultViewModal/defaultViewModal'
 
-
 const mapStateToProps = (state) => {
   return {
     collections: state.collections
@@ -132,14 +131,18 @@ class OpenApiForm extends Component {
   renderButtonGroup() {
     return (
       <div className='text-left mt-4'>
-        <button id='add_collection_import_btn' className='btn btn-primary btn-lg mr-2' onClick={(e) => {
-          e.preventDefault();
-          this.handleSubmit(e);
-          const { errors, importType, website, uploadedFile } = this.state;
-          if (!errors.type && !errors.website && !errors.file && importType && uploadedFile || website) {
-            this.saveCollection(defaultViewTypes.TESTING, 'edit');
-          }
-        }}>
+        <button
+          id='add_collection_import_btn'
+          className='btn btn-primary btn-lg mr-2'
+          onClick={(e) => {
+            e.preventDefault()
+            this.handleSubmit(e)
+            const { errors, importType, website, uploadedFile } = this.state
+            if ((!errors.type && !errors.website && !errors.file && importType && uploadedFile) || website) {
+              this.saveCollection(defaultViewTypes.TESTING, 'edit')
+            }
+          }}
+        >
           Import
         </button>
         <button className='btn btn-secondary outline btn-lg' onClick={(e) => this.handleCancel(e)}>
@@ -211,10 +214,12 @@ class OpenApiForm extends Component {
 
   renderForm() {
     const { step } = this.state
-    return <>
-     {step === 1 && this.renderImportForm()}
+    return (
+      <>
+        {step === 1 && this.renderImportForm()}
         {step === 1 ? this.renderButtonGroup() : this.handleCancel()}
-        </>
+      </>
+    )
   }
 
   renderInModal() {

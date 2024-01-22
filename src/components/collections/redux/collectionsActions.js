@@ -60,11 +60,13 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           orgId: response.data.orgId
         })
         dispatch(onCollectionAdded(response.data))
-        const inivisiblePageData = { page : {
-          id: response.data.rootParentId,
-          type: 0,
-          child: []
-        }}
+        const inivisiblePageData = {
+          page: {
+            id: response.data.rootParentId,
+            type: 0,
+            child: []
+          }
+        }
         dispatch(onParentPageAdded(inivisiblePageData))
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
@@ -328,7 +330,7 @@ export const onCollectionImported = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_IMPORTED,
     collection: response.collection,
-    pages : response.pages,
+    pages: response.pages
   }
 }
 
