@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { connect, useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { useMutation, useQueryClient } from 'react-query'
 import { withRouter } from 'react-router-dom'
 // import { markTabAsModified } from '../tabs/tabService'
@@ -15,13 +15,11 @@ import Tiptap from '../tiptapEditor/tiptap'
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
-    const dispatch = useDispatch()
     const pageId = props.match.params.pageId
     const orgId = props.match.params.orgId
     const pageContentData = queryClient.getQueryData(['pageContent', pageId])
     const mutation = useMutation(updateContent, {
       onSuccess: (data) => {
-        dispatch(updatePageData({ data, pageId }))
         queryClient.setQueryData(['pageContent', pageId], data?.contents || '')
         props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
       }
@@ -154,6 +152,7 @@ class EditPage extends Component {
       toast.error('Page name cannot be empty.')
       return
     }
+    delete editedPage['isPublished']
     this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
     tabService.markTabAsSaved(this.props.tab.id)
   }

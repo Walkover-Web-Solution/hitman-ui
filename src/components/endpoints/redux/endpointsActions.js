@@ -86,7 +86,7 @@ export const fetchEndpoint = (endpointId) => {
     endpointApiService
       .getEndpoint(endpointId)
       .then((response) => {
-        dispatch(onEndpointFetched(response.data))
+        dispatch(onEndpointFetched(response))
       })
       .catch((error) => {
         dispatch(onEndpointFetchedError(error.response ? error.response.data : error))

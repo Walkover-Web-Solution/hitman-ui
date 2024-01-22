@@ -105,7 +105,7 @@ class CodeTemplate extends Component {
                         this.makeCodeTemplate(key)
                       }}
                     >
-                      <img src={languages[key].imagePath} alt={languages[key].name} />
+                      <img src={languages[key].imagePath} alt={languages[key].nawme} />
                       {languages[key].name}
                     </Dropdown.Item>
                   ))}
