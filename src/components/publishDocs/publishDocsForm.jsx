@@ -152,6 +152,7 @@ class PublishDocForm extends Component {
   }
 
   saveCollectionDetails() {
+    // debugger
     const collectionId = this.props.selected_collection_id
     const collection = { ...this.props.collections[collectionId] }
     const data = { ...this.state.data }
@@ -403,12 +404,13 @@ class PublishDocForm extends Component {
   renderPublishCollectionButton() {
     const selectedCollection = this.getSelectedCollection()
     if (!this.isCollectionPublished(selectedCollection)) {
+      // debugger
       return (
         <Button
           id='publish_collection_btn'
           variant='success publish-collection-button ml-4 mt-4'
           onClick={() => this.publishCollection(selectedCollection)}
-          disabled={!selectedCollection?.docProperties?.defaultTitle}
+          // disabled={!selectedCollection?.docProperties?.defaultTitle}
         >
           Publish Collection
         </Button>

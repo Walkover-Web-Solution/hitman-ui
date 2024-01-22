@@ -14,7 +14,7 @@ const hostContainerEnum = {
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    ON_PUBLISH_DOC: (data)=> dispatch(publishData(data))
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
   }
 }
 
@@ -46,7 +46,7 @@ class HostContainer extends Component {
       this.setState({ showDatalist: false, showInputHost: false })
     }
     // debugger
-    this.props.ON_PUBLISH_DOC(false);
+    this.props.ON_PUBLISH_DOC(false)
   }
 
   componentDidMount() {
@@ -224,4 +224,4 @@ class HostContainer extends Component {
   }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(HostContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(HostContainer)

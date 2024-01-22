@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     bulk_publish: (collectionId, data) => dispatch(bulkPublish(collectionId, data)),
-    bulk_publishSelectedData: (publishData) => dispatch(bulkPublishSelectedData(publishData)),
+    bulk_publishSelectedData: (publishData) => dispatch(bulkPublishSelectedData(publishData))
     // publishData: (modal, data) => dispatch(publishData(modal, data))
   }
 }
@@ -62,11 +62,12 @@ export class PublishSidebar extends Component {
       pages: {},
       endpoints: {},
       checkedData: {},
-      ParentPagesToRender:{},
+      ParentPagesToRender: {},
       VersionToRender: {},
       showChildVersions: false,
       expandedVersions: {},
-      publishPage : true
+      publishPage: true,
+      selectAll: false
     }
   }
 
@@ -75,11 +76,11 @@ export class PublishSidebar extends Component {
     if (selectedCollectionId) {
       this.setState({ selectedCollectionId })
     }
-    const rootParentId = this.props.collections[selectedCollectionId].rootParentId;
+    const rootParentId = this.props.collections[selectedCollectionId].rootParentId
     const pages = this.props.pages
     // const matchingObject = Object.values(pages).find(obj => obj.parentId === rootParentId);
-    const matchingObjects = Object.values(pages).filter(obj => obj.parentId === rootParentId);
-    this.setState({ParentPagesToRender: matchingObjects})
+    const matchingObjects = Object.values(pages).filter((obj) => obj.parentId === rootParentId)
+    this.setState({ ParentPagesToRender: matchingObjects })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -94,6 +95,12 @@ export class PublishSidebar extends Component {
         this.getAllData()
       })
     }
+  }
+  handleSelectAllCheckbox = (e) => {
+    const { checked } = e.target
+    this.setState({ selectAll: checked })
+    // Logic to select/deselect all checkboxes in CombinedCollections
+    // This will depend on how you're managing the state of those checkboxes
   }
 
   getAllData() {
@@ -351,33 +358,6 @@ export class PublishSidebar extends Component {
     }
   }
 
-  // handleParentPageClicked(pages) {
-  //   console.log("inside handleParentPageClicked", pages.child);
-
-  //   const childId = pages.child;
-  //   const version = this.props.pages[childId].name;
-  //   console.log(this.props.pages[childId].name, "pagess");
-  //   console.log(childId, "child id");
-  // }
-
-  // handleParentPageClicked(pages) {
-  //   console.log("inside handleParentPageClicked", pages.child);
-  
-  //   const childId = pages.child;
-  
-  //   // Assuming this.props.pages is an object with page ids as keys
-  //   const childPage = this.props.pages[childId];
-  
-  //   if (childPage) {
-  //     const version = childPage;
-  //     this.setState({VersionToRender: version})
-  //     console.log(childPage.name, "pagess");
-  //     console.log(childId, "child id");
-  //   } else {
-  //     console.error("Child page not found");
-  //   }
-  // }
-
   renderCheckBox(itemtype, itemId) {
     let isCheckboxDisabled = false
     const checkedData = this.state.checkedData[`check.${itemtype}.${itemId}`] || false
@@ -481,236 +461,76 @@ export class PublishSidebar extends Component {
   renderCollectionDropDown() {
     return (
       <div className='collection-api-doc-dropdown'>
-        <div className='collection-api-doc-heading'>Collection</div>
-        <Dropdown className=' w-100 d-flex '>
-          <Dropdown.Toggle variant='' className=' w-100 d-flex sidebar-dropdown outline-border publish-api-dropdown'>
-            <span className='collection-name'>{this.props.collections[this.state.selectedCollectionId]?.name}</span>
-          </Dropdown.Toggle>
-
-          {/* <Dropdown.Menu className='collection-dropdown-menu'>
-            {Object.values(this.props.collections || {})
-              .filter((collection) => !collection.isPublic)
-              .map((collection, index) => (
-                <Dropdown.Item key={collection?.id} onClick={() => this.setState({ selectedCollectionId: collection?.id })}>
-                  {collection?.name}
-                </Dropdown.Item>
-              ))}
-          </Dropdown.Menu> */}
-        </Dropdown>
-        <CombinedCollections 
-        {...this.props}
-        isPublishData={true}
-        collection_id={this.state.selectedCollectionId} 
-        rootParentId={this.props.collections[this.state?.selectedCollectionId]?.rootParentId}
-        selectedCollection
-        // ON_PUBLISH_DOC={this.props.ON_PUBLISH_DOC}
+        <div className='collection-api-doc-heading ml-2'>Collection</div>
+        <div className='d-flex align-items-center'>
+          <div>
+            <input type='checkbox' checked={this.state.selectAll} onChange={this.handleSelectAllCheckbox} />
+          </div>
+          <div>
+            <Dropdown className=' ml-2 sidebar-dropdown outline-border publish-api-dropdown'>
+              {/* <Dropdown.Toggle variant='' className=''> */}
+              <span className='collection-name ml-2'>{this.props.collections[this.state.selectedCollectionId]?.name}</span>
+              {/* </Dropdown.Toggle> */}
+            </Dropdown>
+          </div>
+        </div>
+        <CombinedCollections
+          {...this.props}
+          isPublishData={true}
+          collection_id={this.state.selectedCollectionId}
+          rootParentId={this.props.collections[this.state?.selectedCollectionId]?.rootParentId}
+          selectedCollection
+          selectAll={this.state.selectAll}
+          // selectedVersionName=''
         />
       </div>
     )
   }
 
-  // versionList(pageId) {
-  //    console.log("inside version list ", pageId);
-  //    const child  = this.props.pages[pageId].child
-  //    const pages = this.props.pages
-  //    console.log(child , "child valueee");
-  //   const values=  Object.keys(pages).map((key, index) => (
-  //     // Render each page here using key and pages[key]
-  //     <div key={index}>
-  //       {key}: {pages[key]} {/* Assuming each property is a simple value */}
-  //       {/* Add other page content as needed */}
-  //     </div>
-  //   ))}
-
-
-  // showVersionList(pages) {
-  //   // debugger
-  //   if (!pages) {
-  //     return null;
-  //   }
-
-  //   const childId = pages.child;
-  //   console.log(childId, "child idddd");
-  //   const childPage = this.props.pages[childId];
-  //   console.log(childPage, "child pageeeee");
-
-  //   return (
-  //     <div>
-  //      <div>
-  //       {childPage?.name}
-  //       {/* {childPage?.id} */}
-  //     </div>
-  //       {/* {childPage?.type === 2 && (
-  //         <Dropdown>
-  //           <Dropdown.Toggle>
-
-  //           </Dropdown.Toggle>
-  //           <Dropdown.Menu>
-  //             {childPage?.name}
-  //           </Dropdown.Menu>
-  //         </Dropdown>
-  //       )} */}
-  //       {/* {this.showVersionList(childPage)} */}
-  //     </div>
-  //   );
-  // }
-//   renderPage(childPage){
-// console.log("inside childPage", childPage);
-// const childId = childPage.child;
-//     console.log(childId, "child idddd");
-//     const children = this.props.pages[childId];
-//     console.log(children.name, "childddddddrennnnnn");
-//     return(
-//       <div>
-//         {children.name}
-//         {this.renderPage(children)}
-//       </div>
-//     )
-
-//   }
-  // onVersionClicked(pages){
-  //   // console.log(pages.child, "pages.child inside onVersionClicked");
-  //   if (!pages) {
-  //     return null;
-  //   }
-
-  //   const childId = pages.child;
-  //   console.log(childId, "child idddd");
-  //   const childPage = this.props.pages[childId];
-  //   return(
-  //     <div>
-  //       {this.renderPage(childPage)}
-  //      <div>
-  //       {/* {childPage?.name} */}
-  //     </div>
-  //         {/* <Dropdown>
-  //           <Dropdown.Toggle>
-
-  //           </Dropdown.Toggle>
-  //           <Dropdown.Menu> */}
-  //             {/* {childPage?.name} */}
-  //           {/* </Dropdown.Menu>
-  //         </Dropdown> */}
-  //       {/* {this.onVersionClicked(childPage)} */}
-  //     </div>
-  //   )
-  // }
-  // onVersionClicked(pages) {
-  //   if (!pages) {
-  //     return null;
-  //   }
-  
-  //   const { expandedVersions } = this.state;
-  //   const childId = pages.child;
-  //   const childPage = this.props.pages[childId];
-  
-  //   return (
-  //     <div>
-  //       {childPage?.name}
-  //       {expandedVersions[pages.id] && this.renderPage(childPage)}
-  //     </div>
-  //   );
-  // }
-  
-  // renderParentPagesList() {
-  //   // debugger
-  //   return (
-  //     <div className='collection-api-doc-dropdown'>
-  //       <div className='collection-api-doc-heading mt-4 '>Pages</div>
-  //       <div className='collection-dropdown-menu'>
-  //         {Object.values(this.state.ParentPagesToRender || {})
-  //           .filter((pages) => !pages.isPublic)
-  //           .map((pages, index) => (
-  //             <div key={pages?.id} className='parent-page'>
-  //               {pages.type === 4 ? (
-  //                 <div className='d-flex'>
-  //                   <p className='api-label GET request-type-bgcolor' style={{ display: 'inline' }}>GET</p>
-  //                   <button className={pages?.type === 4 ? 'end-point-name truncate' : 'default-class'} onClick={() => this.handleParentPageClicked(pages)}>
-  //                     {pages?.name}
-  //                   </button>
-  //                 </div>
-  //               ) : (
-  //                 <div className='d-flex'>
-  //                 <button onClick={() => this.handleParentPageClicked(pages)}>
-  //                   {pages?.name}
-  //                 </button>
-  //                 {/* <Accordion className='version-accordian w-100' defaultActiveKey={pages?.id}>
-  //                   <Accordion.Toggle
-  //                     eventKey={pages?.id}
-  //                     className='version-accordian-toggle w-100 version-outline-border'
-  //                     onClick={() => this.onVersionClicked(pages)}
-  //                   >
-  //                     <div className='d-flex align-items-center justify-content-between w-100'>
-  //                       <div className=''>{this.showVersionList(pages)}</div>
-  //                       <div className={['down-arrow', this.state.versionsToggle[pages.id] ? 'rotate-toggle' : ' '].join(' ')}>
-  //                         {' '}
-  //                         <DownChevron />{' '}
-  //                       </div>
-  //                     </div>
-  //                   </Accordion.Toggle>
-  //                 </Accordion> */}
-  //                 <Dropdown>
-  //                   <Dropdown.Toggle>
-  //                     type 1
-  //                   </Dropdown.Toggle>
-  //                   <Dropdown.Menu>
-  //                     {this.versionList(pages.id)}
-  //                   </Dropdown.Menu>
-  //                 </Dropdown>
-                 
-  //                 </div>
-  //               )}
-  //             </div>
-  //           ))}
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   toggleVersion(versionId) {
-    const { expandedVersions } = this.state;
+    const { expandedVersions } = this.state
     this.setState({
       expandedVersions: {
         ...expandedVersions,
-        [versionId]: !expandedVersions[versionId],
-      },
-    });
+        [versionId]: !expandedVersions[versionId]
+      }
+    })
   }
   renderVersionList() {
     return (
       <div>
         {/* <div className='mt-3 collection-api-doc-heading'>Select API Enpoints and Pages to publish</div> */}
         {/* <div className='publish-versions-list'> */}
-          <div className='items'>
-            {Object.values(this.state.VersionToRender).map((version, index) => (
-              <div className='d-flex mx-3 mt-3' key={version?.id}>
-                <div className=' d-flex align-items-start w-100'>
-                  <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
-                  <Accordion className='version-accordian w-100' defaultActiveKey={version?.id}>
-                    <Accordion.Toggle
-                      eventKey={version?.id}
-                      className='version-accordian-toggle w-100 version-outline-border'
-                      onClick={() => this.toggleVersion(version?.id)}
-                    >
-                      <div className='d-flex align-items-center justify-content-between w-100'>
-                        <div className=''>{version?.number}</div>
-                        <div className={['down-arrow', this.state.versionsToggle[version.id] ? 'rotate-toggle' : ' '].join(' ')}>
-                          {' '}
-                          <DownChevron />{' '}
-                        </div>
+        <div className='items'>
+          {Object.values(this.state.VersionToRender).map((version, index) => (
+            <div className='d-flex mx-3 mt-3' key={version?.id}>
+              <div className=' d-flex align-items-start w-100'>
+                <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
+                <Accordion className='version-accordian w-100' defaultActiveKey={version?.id}>
+                  <Accordion.Toggle
+                    eventKey={version?.id}
+                    className='version-accordian-toggle w-100 version-outline-border'
+                    onClick={() => this.toggleVersion(version?.id)}
+                  >
+                    <div className='d-flex align-items-center justify-content-between w-100'>
+                      <div className=''>{version?.number}</div>
+                      <div className={['down-arrow', this.state.versionsToggle[version.id] ? 'rotate-toggle' : ' '].join(' ')}>
+                        {' '}
+                        <DownChevron />{' '}
                       </div>
-                    </Accordion.Toggle>
-                    <Accordion.Collapse eventKey={version?.id} className='px-3 publish-sidebar-accordian-collapse'>
-                      <div className='my-2'>
-                        {this.renderVersionPages(version)}
-                        {this.renderGroups(version)}
-                      </div>
-                    </Accordion.Collapse>
-                  </Accordion>
-                </div>
+                    </div>
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey={version?.id} className='px-3 publish-sidebar-accordian-collapse'>
+                    <div className='my-2'>
+                      {this.renderVersionPages(version)}
+                      {this.renderGroups(version)}
+                    </div>
+                  </Accordion.Collapse>
+                </Accordion>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
         {/* </div> */}
       </div>
     )

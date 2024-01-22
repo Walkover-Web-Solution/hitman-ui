@@ -26,11 +26,12 @@ const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
 
+// 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const publishDocsEnum = {
-  PENDING_STATE: 'Pending',
-  REJECT_STATE: 'Reject',
-  APPROVED_STATE: 'Approved',
-  DRAFT_STATE: 'Draft',
+  PENDING_STATE: 0,
+  REJECT_STATE: 3,
+  APPROVED_STATE: 2,
+  DRAFT_STATE: 1,
   EMPTY_STRING: ''
 }
 const DragHandle = SortableHandle(() => (
@@ -58,7 +59,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     reject_page: (page) => dispatch(rejectPage(page)),
     update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId)),
-    ON_PUBLISH_DOC: (data)=> dispatch(publishData(data))
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
   }
 }
 
@@ -108,12 +109,10 @@ class PublishDocs extends Component {
   }
 
   handleClickOutside(event) {
-    // debugger
     if (this.state.openPageSettingsSidebar && this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ openPageSettingsSidebar: false })
     }
-    // debugger
     this.props.ON_PUBLISH_DOC(false)
   }
 
@@ -840,6 +839,7 @@ class PublishDocs extends Component {
           <div className='col-12'>
             <div className='d-flex justify-content-between mx-2 mb-3 mt-4'>
               <div>
+                <h1>hello</h1>
                 <div className='contacts mb-2'>{this.props.groups[this.state.selectedGroupId]?.name}</div>
                 <div className='list-contacts'>{pageName}</div>
               </div>

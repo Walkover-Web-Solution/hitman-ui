@@ -6,3 +6,11 @@ export const addIsExpandedAction = (payload) => {
     payload
   }
 }
+
+export const setDefaultversionId = (payload) => {
+  console.log('inside setDefaultversionId', payload)
+  return {
+    type: clientDataActionTypes.DEFAULT_VERSION_ID,
+    payload
+  }
+}

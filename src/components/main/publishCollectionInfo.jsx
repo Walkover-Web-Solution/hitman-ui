@@ -24,13 +24,13 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     endpoints: state.endpoints,
     modals: state.endpoints,
-    isPublishSliderOpen : state.modals.publishData
+    isPublishSliderOpen: state.modals.publishData
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    ON_PUBLISH_DOC: (data)=> dispatch(publishData(data))
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
   }
 }
 
@@ -82,7 +82,8 @@ class PublishCollectionInfo extends Component {
           </Tooltip>
         }
       >
-        <button onClick={() => !isDisabled && openExternalLink(url)}>
+        {/* <button onClick={() => !isDisabled && openExternalLink(url)}> */}
+        <button onClick={() => openExternalLink(url)}>
           <div className={`sidebar-public-url text-center d-flex align-items-center${!isDisabled && ' text-link'}`}>
             <span className='icon d-flex mr-1'>
               {' '}
@@ -100,14 +101,14 @@ class PublishCollectionInfo extends Component {
     return (
       <button
         className='btn'
-        disabled={!totalEndpointCount}
+        // disabled={!totalEndpointCount}
         onClick={() => {
           isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast()
         }}
       >
         <div className='d-flex align-items-center cursor-pointer'>
           <img className='mr-1' src={SettingIcon} alt='' />
-          <span>Manage Public Doc</span>
+          <span>Manage Public Doc..........</span>
         </div>
         {this.renderInfoText('Add an endpoint first')}
       </button>
@@ -270,7 +271,6 @@ class PublishCollectionInfo extends Component {
   redirectUser() {
     // debugger
     this.setState({ openPublishSidebar: true })
-    // store.dispatch(ON_PUBLISH_DOC(true))
     this.props.ON_PUBLISH_DOC(true)
   }
 
@@ -314,4 +314,4 @@ class PublishCollectionInfo extends Component {
   }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(PublishCollectionInfo)
+export default connect(mapStateToProps, mapDispatchToProps)(PublishCollectionInfo)

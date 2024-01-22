@@ -10,6 +10,18 @@ const clientDataReducer = (state = initialState, action) => {
       } else state[action?.payload?.id] = { isExpanded: action?.payload?.value }
       return { ...state }
 
+    case clientDataActionTypes.DEFAULT_VERSION_ID:
+      console.log(action, 'action', state, 'state', action.payload, 'payload')
+      if (state?.[action?.payload?.rootId]) {
+        state[action?.payload?.rootId] = {
+          ...state[action?.payload?.rootId],
+          selectedVersionId: action?.payload?.value || '',
+          defaultVersionId: action?.payload?.defaultVersionId || '',
+          defaultVersionName: action?.payload?.defaultVersionName || '',
+          selectedVersionName: action?.payload?.selectedVersionName || ''
+        }
+      } else state[action?.payload?.id] = { defaultVersion: action?.payload?.value }
+      return { ...state }
     default:
       return state
   }

@@ -224,35 +224,37 @@ class EditPage extends Component {
 
   render() {
     return (
-      <div className='custom-edit-page page-display mt-3'>
-        <WarningModal
-          show={this.state.warningModalFlag}
-          onHide={() => {
-            this.setState({ warningModalFlag: false })
-          }}
-          ignoreButtonCallback={() => {
-            this.handleCancel()
-          }}
-          message='Your unsaved changes will be lost.'
-        />
-
-        <div className='form-group'>
-          <div className='d-flex justify-content-between align-items-center'>
-            <label htmlFor='name'>Page Name</label>
-            {this.renderEditPageOperations()}
-          </div>
-          <input
-            name='name'
-            id='name'
-            value={this.state.data.name}
-            onChange={this.handleNameChange}
-            type='text'
-            className='form-control'
-            placeholder='Page Name'
+      <div className='parent-page-display'>
+        <div className='custom-edit-page page-display mt-3'>
+          <WarningModal
+            show={this.state.warningModalFlag}
+            onHide={() => {
+              this.setState({ warningModalFlag: false })
+            }}
+            ignoreButtonCallback={() => {
+              this.handleCancel()
+            }}
+            message='Your unsaved changes will be lost.'
           />
-        </div>
 
-        <div>{this.renderTiptapEditor()}</div>
+          <div className='form-group'>
+            <div className='d-flex justify-content-between align-items-center'>
+              <label htmlFor='name'>Page Name</label>
+              {this.renderEditPageOperations()}
+            </div>
+            <input
+              name='name'
+              id='name'
+              value={this.state.data.name}
+              onChange={this.handleNameChange}
+              type='text'
+              className='form-control'
+              placeholder='Page Name'
+            />
+          </div>
+
+          <div>{this.renderTiptapEditor()}</div>
+        </div>
       </div>
     )
   }

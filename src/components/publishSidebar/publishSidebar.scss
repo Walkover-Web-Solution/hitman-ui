@@ -86,7 +86,7 @@
     width: 205px;
     text-align: left;
     border-radius: 4px;
-    color: #333333;
+    // color: #333333;
     position: relative;
     font-size: 14px;
     font-weight: 600;
@@ -97,7 +97,8 @@
     .collection-name {
       font-size: 12px;
       font-weight: 350;
-      color: #828282 !important;
+      color: black !important;;
+      // color: #828282 !important;
     }
   }
 
@@ -117,7 +118,8 @@
 }
 
 .publish-api-dropdown {
-  height: 2rem !important;
+  height: 1.5rem !important;
+  // width: 100% !important;
 }
 .customise-btn {
   width: 5rem !important;

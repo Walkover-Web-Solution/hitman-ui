@@ -268,19 +268,19 @@ class CollectionVersions extends Component {
                 this.toggleVersionIds(versionId)
               }}
             >
-              {this.props?.defaultVersion === this.props?.defaultVersionId  ? (
+              {this.props?.defaultVersion === this.props?.defaultVersionId ? (
                 <>
-                <span className='versionChovron'>
-                <img src={ExpandArrow} alt='' />
-              </span>
-              <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.defaultVersionId]?.name}</div>
-              </>)
-               :(
+                  <span className='versionChovron'>
+                    <img src={ExpandArrow} alt='' />
+                  </span>
+                  <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.defaultVersionId]?.name}</div>
+                </>
+              ) : (
                 <>
-                <span className='versionChovron'>
-                <img src={ExpandArrow} alt='' />
-              </span>
-                <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.defaultVersionId]?.name}</div>
+                  <span className='versionChovron'>
+                    <img src={ExpandArrow} alt='' />
+                  </span>
+                  <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.defaultVersionId]?.name}</div>
                 </>
               )}
               {/* <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.defaultVersionId].name}</div> */}

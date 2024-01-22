@@ -103,8 +103,74 @@ body .sidebar {
       }
     }
     .sidebar-accordion {
+      .dropdown-custom{
+        .dropdown-toggle{
+          &::after{
+            display: none;
+           }
+        }
+
+      }
+      .additional-dropdown {
+        button {
+          margin: 5px;
+          // padding: 8px 16px;
+          color: white;
+          border: none;
+          cursor: pointer;
+          background-color: #000;
+        }
+        
+        button:hover {
+          background-color: #4fa3d1;
+        }
+        
+        .List-container {
+          border-bottom: 2px solid #ddd;
+          padding-bottom: 10px;
+        }
+        
+        ul {
+          list-style: none;
+          padding: 0;
+        }
+        
+        li {
+          margin: 5px;
+        }
+        
+        li button {
+          // padding: 8px 16px;
+          background-color: #f0f0f0;
+          color: #333;
+          border: none;
+          cursor: pointer;
+        }
+        
+        li button:hover {
+          background-color: #ddd;
+        }
+        // margin-left: 10px;
+        // position: relative; // Ensure the positioning context for the pseudo-element
+    
+        &:hover::after {
+          // content: 'select a default version to publish'; // Replace with your desired text
+          position: absolute;
+          left: 70%; // Position the text to the right of the element
+          top: 50%; // Center it vertically
+          transform: translateY(-50%); // Center it vertically
+          max-width: 150px;
+          // white-space: pre; // Keep the text on a single line
+          background-color: #f8f8f8; // Background color for the text, if needed
+          padding: 5px; // Padding around the text
+          border-radius: 3px; // Rounded corners for the background, if desired
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); // Optional shadow for the text
+          z-index: 10; // Ensure it's above other elements
+        }
+      }
+
       .dropdown-title {
-        width: 50px;
+        max-width: 50px;
         overflow: hidden;
         text-overflow: ellipsis;
         margin-left: 10px;

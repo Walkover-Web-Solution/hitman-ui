@@ -129,6 +129,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_endpoint: (endpoint, callback) => dispatch(approveEndpoint(endpoint, callback)),
     set_response_view: (view) => dispatch(onToggle(view)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint))
+    // set_chat_view : (view) => dispatch(onChatResponseToggle(view))
   }
 }
 
@@ -1912,9 +1913,14 @@ class DisplayEndpoint extends Component {
   }
 
   toggleChatbotModal = () => {
+    if (this.props.responseView === 'right' && this.state.showAskAiSlider === false) {
+      console.log('inside if condition')
+      this.props.set_response_view('bottom')
+    }
     this.setState((prevState) => ({
       showAskAiSlider: !prevState.showAskAiSlider
     }))
+    // this.props.set_chat_view(this.state.showAskAiSlider)
   }
 
   displayResponseAndSampleResponse() {

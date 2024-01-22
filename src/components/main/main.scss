@@ -3248,11 +3248,18 @@ body .doc-secs-container {
   margin-right: auto;
 }
 
-.page-display {
-  margin: auto;
-  max-width: 50rem;
-  float: unset !important;
-}
+//page display for edit
+
+  // position: relative;
+  // overflow: auto; /* Add this line to enable scrolling */
+  .page-display {
+    margin: 20rem;
+    max-width: 50rem;
+    float: unset !important;
+    position: relative;
+  }
+
+
 
 .doc-plus {
   padding: 0px !important;
@@ -3326,5 +3333,14 @@ body .tox {
   .dropdown-menu {
     position: absolute;
     bottom: 1px;
+  }
+}
+.textEditorContainer{
+  position: relative;
+  .menuBar{
+    position: sticky;
+    top: -2px;
+    z-index: 1;
+    background: white;
   }
 }

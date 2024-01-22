@@ -21,9 +21,9 @@ export const closeModal = () => {
 export const publishData = (payload) => {
   return {
     type: modalsActionTypes.ON_PUBLISH_DOC,
-    payload,
-  };
-};
+    payload
+  }
+}
 
 export const installModal = (event) => {
   return (dispatch) => {
