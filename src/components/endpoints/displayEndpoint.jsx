@@ -2645,7 +2645,7 @@ class DisplayEndpoint extends Component {
       <div className='input-group-prepend'>
         <div className='dropdown'>
           <button
-            className={`api-label ${this.state.data.method} dropdown-toggle`}
+            className={`api-label ${this.props?.endpointContent?.data?.method} dropdown-toggle`}
             type='button'
             id='dropdownMenuButton'
             data-toggle='dropdown'
