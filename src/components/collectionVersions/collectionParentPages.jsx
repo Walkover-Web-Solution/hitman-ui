@@ -16,7 +16,7 @@ import { deletePage, duplicatePage } from '../pages/redux/pagesActions'
 import { approvePage, draftPage, pendingPage, rejectPage } from '../publicEndpoint/publicPageService'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import CombinedCollections from '../combinedCollections/combinedCollections'
-import { addIsExpandedAction, setDefaultversionId } from '../../store/clientData/clientDataActions'
+import { addIsExpandedAction, setDefaultversionId, updataForIsPublished } from '../../store/clientData/clientDataActions'
 import pageService from '../pages/pageService'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 const mapStateToProps = (state) => {
@@ -39,7 +39,8 @@ const mapDispatchToProps = (dispatch) => {
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     update_isExpand_for_pages: (payload) => dispatch(addIsExpandedAction(payload)),
-    set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload))
+    set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload)),
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
 }
 
@@ -77,7 +78,6 @@ class CollectionParentPages extends Component {
       clickedList: [],
       isListVisible: false,
       publishVersion: '',
-      checkboxChecked: false
     }
 
     this.filterFlag = false
@@ -322,9 +322,7 @@ class CollectionParentPages extends Component {
     }))
   }
   handleCheckboxChange = () => {
-    this.setState((prevState) => ({
-      checkboxChecked: !prevState.checkboxChecked
-    }))
+    this.props.setIsCheckForParenPage({ id: this.props.rootParentId, isChecked : !this.props?.clientData?.[this.props.rootParentId]?.checkedForPublished})
   }
 
   renderBody(pageId, index) {
@@ -341,12 +339,12 @@ class CollectionParentPages extends Component {
             <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
               <button
                 tabIndex={-1}
-                //  className={'pl-3 ' + (expanded ? 'expanded' : '')}
+                 className={'pl-3 ' + (expanded ? 'expanded' : '')}
               >
                 <div className='d-flex align-items-center cl-name'>
                   <input
                     type='checkbox'
-                    checked={this.state.checkboxChecked || this.props.selectAll}
+                    checked={this.props?.clientData?.[this.props?.rootParentId]?.checkedForPublished || false}
                     onChange={this.handleCheckboxChange}
                   />
                   <div className='d-flex gap-5 ms-2'>
@@ -419,7 +417,7 @@ class CollectionParentPages extends Component {
                 ref={(newRef) => {
                   this.scrollRef[pageId] = newRef
                 }}
-                //  className={'pl-3 ' + (expanded ? 'expanded' : '')}
+                 className={'pl-3 ' + (expanded ? 'expanded' : '')}
               >
                 <div
                   className='d-flex align-items-center cl-name'

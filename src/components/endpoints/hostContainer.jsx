@@ -46,7 +46,6 @@ class HostContainer extends Component {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ showDatalist: false, showInputHost: false })
     }
-    // debugger
     this.props.ON_PUBLISH_DOC(false)
   }
 
@@ -183,7 +182,7 @@ class HostContainer extends Component {
         <input
           id='host-container-input'
           className='form-control'
-          value={this.state.datalistHost + this.state.datalistUri}
+          value={(this.state.datalistHost + this.state.datalistUri) || ''}
           name={`${endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={(e) => this.handleInputHostChange(e)}

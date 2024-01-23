@@ -15,7 +15,7 @@ import AddEntity from '../main/addEntity/addEntity'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
-import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
+import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
 
 const mapStateToProps = (state) => {
@@ -36,7 +36,8 @@ const mapDispatchToProps = (dispatch) => {
     update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId)),
     delete_group: (group, props) => dispatch(deleteGroup(group, props)),
     duplicate_group: (group) => dispatch(duplicateGroup(group)),
-    update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload))
+    update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload)),
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
 }
 
@@ -321,9 +322,10 @@ class Groups extends Component {
   }
 
   handleCheckboxChange = () => {
-    this.setState((prevState) => ({
-      checkboxChecked: !prevState.checkboxChecked
-    }))
+    this.props.setIsCheckForParenPage({
+      id: this.props?.rootParentId,
+      isChecked: !this.props?.clientData?.[this?.props?.rootParentId]?.checkedForPublished
+    })
   }
 
   renderBody(groupId) {
@@ -345,7 +347,11 @@ class Groups extends Component {
                 {/* <span className='versionChovron'>
                     <img src={ExpandedIcon} alt='' />
                   </span> */}
-                <input type='checkbox' checked={this.state.checkboxChecked || this.props.selectAll} onChange={this.handleCheckboxChange} />
+                <input
+                  type='checkbox'
+                  checked={this.props?.clientData?.[this.props?.rootParentId]?.checkedForPublished || false}
+                  onChange={this.handleCheckboxChange}
+                />
                 <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[groupId]?.name}</div>
               </div>
             </button>

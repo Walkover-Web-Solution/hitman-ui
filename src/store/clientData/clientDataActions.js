@@ -13,3 +13,17 @@ export const setDefaultversionId = (payload) => {
     payload
   }
 }
+
+export const updataForIsPublished = (payload) => {
+  return {
+    type: clientDataActionTypes.UPDATE_FOR_ISPUBLISH,
+    payload
+  }
+}
+
+export const updateCollectionIdForPublish = (payload) => {
+  return {
+    type: clientDataActionTypes.SET_COLLECTION_ID_FOR_PUBLISH,
+    payload
+  }
+}

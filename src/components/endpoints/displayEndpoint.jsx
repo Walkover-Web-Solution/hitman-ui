@@ -2884,7 +2884,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    // debugger
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)

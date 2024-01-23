@@ -16,6 +16,7 @@ import { updateTab } from '../tabs/redux/tabsActions'
 import indexedDbService from '../indexedDb/indexedDbService'
 import _ from 'lodash'
 import { publishData } from '../modals/redux/modalsActions'
+import { updateCollectionIdForPublish } from '../../store/clientData/clientDataActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -30,7 +31,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
+    setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data))
   }
 }
 
@@ -269,9 +271,9 @@ class PublishCollectionInfo extends Component {
   }
 
   redirectUser() {
-    // debugger
     this.setState({ openPublishSidebar: true })
     this.props.ON_PUBLISH_DOC(true)
+    this.props.setCollectionIdForPublish({ collectionId: this.props.collectionId })
   }
 
   async openPublishSettings() {

@@ -17,7 +17,8 @@ const mapStateToProps = (state) => {
     groups: state.groups,
     pages: state.pages,
     endpoints: state.endpoints,
-    modals: state.modals
+    modals: state.modals,
+    collectionIdForPublish: state.clientData.collectionToPublish,
   }
 }
 
@@ -459,6 +460,7 @@ export class PublishSidebar extends Component {
   }
 
   renderCollectionDropDown() {
+
     return (
       <div className='collection-api-doc-dropdown'>
         <div className='collection-api-doc-heading ml-2'>Collection</div>
@@ -469,7 +471,7 @@ export class PublishSidebar extends Component {
           <div>
             <Dropdown className=' ml-2 sidebar-dropdown outline-border publish-api-dropdown'>
               {/* <Dropdown.Toggle variant='' className=''> */}
-              <span className='collection-name ml-2'>{this.props.collections[this.state.selectedCollectionId]?.name}</span>
+              <span className='collection-name ml-2'>{this.props.collections[this.props?.collectionIdForPublish]?.name}</span>
               {/* </Dropdown.Toggle> */}
             </Dropdown>
           </div>
@@ -477,8 +479,8 @@ export class PublishSidebar extends Component {
         <CombinedCollections
           {...this.props}
           isPublishData={true}
-          collection_id={this.state.selectedCollectionId}
-          rootParentId={this.props.collections[this.state?.selectedCollectionId]?.rootParentId}
+          collection_id={this.props?.collectionIdForPublish}
+          rootParentId={this.props.collections[this.props?.collectionIdForPublish]?.rootParentId}
           selectedCollection
           selectAll={this.state.selectAll}
           // selectedVersionName=''
