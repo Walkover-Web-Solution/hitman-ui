@@ -29,7 +29,7 @@ import DisplayResponse from './displayResponse'
 import SampleResponse from './sampleResponse'
 import { getCurrentUser, isAdmin } from '../auth/authServiceV2'
 
-import endpointApiService from './endpointApiService'
+import endpointApiService, { getEndpoint } from './endpointApiService'
 import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
@@ -66,6 +66,8 @@ import ApiDocReview from '../apiDocReview/apiDocReview'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import ChatbotsideBar from './chatbotsideBar'
+import { useQuery, useQueryClient } from 'react-query'
+import utilityFunctions from '../common/utility.js'
 
 const shortid = require('shortid')
 
@@ -106,7 +108,9 @@ const mapStateToProps = (state) => {
     historySnapshots: state.history,
     collections: state.collections,
     cookies: state.cookies,
-    responseView: state.responseView
+    responseView: state.responseView,
+    activeTabId: state.tabs.activeTabId,
+    tabs: state?.tabs?.tabs
   }
 }
 
@@ -129,6 +133,119 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_endpoint: (endpoint, callback) => dispatch(approveEndpoint(endpoint, callback)),
     set_response_view: (view) => dispatch(onToggle(view)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint))
+  }
+}
+
+const untitledEndpointData = {
+  data: {
+    name: '',
+    method: 'GET',
+    body: { type: 'none', value: '' },
+    uri: '',
+    updatedUri: ''
+  },
+  pathVariables: [],
+  methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  environment: {},
+  startTime: '',
+  timeElapsed: '',
+  response: {},
+  endpoint: {},
+  groupId: null,
+  title: '',
+  flagResponse: false,
+  originalHeaders: [
+    {
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    }
+  ],
+  originalParams: [
+    {
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    }
+  ],
+  authType: null,
+  oldDescription: '',
+  headers: [],
+  publicBodyFlag: true,
+  params: [],
+  bodyDescription: {},
+  fieldDescription: {},
+  sampleResponseArray: [],
+  sampleResponseFlagArray: [],
+  theme: '',
+  loader: false,
+  saveLoader: false,
+  codeEditorVisibility: true,
+  showCookiesModal: false,
+  preScriptText: '',
+  postScriptText: '',
+  preReqScriptError: '',
+  postReqScriptError: '',
+  host: {},
+  draftDataSet: false,
+  runSendRequest: null,
+  requestKey: null,
+  docOptions: false,
+  sslMode: getCurrentUserSSLMode(),
+  showAskAiSlider: false,
+  currentView: 'testing'
+}
+
+const getEndpointContent = async (endpointId) => {
+  const data = await getEndpoint(endpointId)
+  const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
+  return modifiedData
+}
+
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    const queryClient = useQueryClient()
+    let endpointContentData = {}
+    let endpointId = props?.match?.params.endpointId
+    if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
+      const data = useQuery(['endpoint', endpointId], () => getEndpointContent(endpointId), {
+        refetchOnWindowFocus: false,
+        cacheTime: 5000000,
+        enabled: true,
+        staleTime: Infinity
+      })
+      endpointContentData = data
+    } else {
+      endpointId = props?.activeTabId
+      if (localStorage.getItem(endpointId)) {
+        queryClient.setQueryData(['endpoint', endpointId], JSON.parse(localStorage.getItem(endpointId)) || {})
+        endpointContentData['data'] = JSON.parse(localStorage.getItem(endpointId) || {})
+      } else {
+        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)))
+        queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(untitledEndpointData))
+      }
+    }
+
+    const setQueryUpdatedData = (data) => {
+      if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
+        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
+        queryClient.setQueryData(['endpoint', endpointId], data)
+        return
+      }
+      queryClient.setQueryData(['endpoint', endpointId], data)
+    }
+
+    return (
+      <WrappedComponent
+        {...props}
+        endpointContent={endpointContentData.data}
+        endpointContentLoading={endpointContentData.isLoading}
+        currentEndpointId={endpointId}
+        setQueryUpdatedData={setQueryUpdatedData}
+      />
+    )
   }
 }
 
@@ -552,14 +669,14 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
-    const data = { ...this.state.data }
+    const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
     if (e.currentTarget.name === 'updatedUri') {
       const keys = []
       const values = []
       const description = []
-      let originalParams = this.state.originalParams
+      let originalParams = this.props?.endpointContent?.originalParams || {}
       const updatedUri = e.currentTarget.value.split('?')[1]
       let path = new URI(e.currentTarget.value)
       path = path.pathname()
@@ -588,8 +705,14 @@ class DisplayEndpoint extends Component {
       }
       originalParams = this.makeOriginalParams(keys, values, description)
       this.setState({ originalParams })
+      const tempData = this.props?.endpointContent || {}
+      tempData.originalParams = originalParams
+      this.props.setQueryUpdatedData(tempData)
     }
     this.setState({ data })
+    const tempData = this.props?.endpointContent || {}
+    tempData.data = data
+    this.props.setQueryUpdatedData(tempData)
   }
 
   setUnsavedTabDataInIDB() {
@@ -1266,6 +1389,9 @@ class DisplayEndpoint extends Component {
   }
 
   setMethod(method) {
+    const dummyData = this.props.endpointContent
+    dummyData.data.method = method
+    this.props.setQueryUpdatedData(dummyData)
     const response = {}
     const data = { ...this.state.data }
     data.method = method
@@ -1283,10 +1409,16 @@ class DisplayEndpoint extends Component {
     if (name === 'Params') {
       this.handleUpdateUri(value)
       this.setState({ originalParams: value }, () => this.setModifiedTabData())
+      const dummyData = this?.props?.endpointContent
+      dummyData.originalParams = [...value]
+      this.props.setQueryUpdatedData(dummyData)
     }
 
     if (name === 'Headers') {
       this.setState({ originalHeaders: value }, () => this.setModifiedTabData())
+      const dummyData = this?.props?.endpointContent
+      dummyData.originalHeaders = [...value]
+      this.props.setQueryUpdatedData(dummyData)
     }
 
     if (name === 'Path Variables') {
@@ -1305,14 +1437,17 @@ class DisplayEndpoint extends Component {
   }
 
   handleUpdateUri(originalParams) {
+    const tempdata = this.props.endpointContent
     if (originalParams.length === 0) {
-      const updatedUri = this.state.data.updatedUri.split('?')[0]
-      const data = { ...this.state.data }
+      const updatedUri = this.props.endpointContent.data.updatedUri.split('?')[0]
+      const data = { ...this.props?.endpointContent.data }
       data.updatedUri = updatedUri
       this.setState({ data })
+      tempdata.data = data
+      this.props.setQueryUpdatedData(tempdata)
       return
     }
-    const originalUri = this.state.data.uri.split('?')[0] + '?'
+    const originalUri = this.props?.endpointContent.data.updatedUri.split('?')[0] + '?'
     const parts = {}
     for (let i = 0; i < originalParams.length; i++) {
       if (originalParams[i].key.length !== 0 && originalParams[i].checked === 'true') {
@@ -1322,13 +1457,15 @@ class DisplayEndpoint extends Component {
     URI.escapeQuerySpace = false
     let updatedUri = URI.buildQuery(parts)
     updatedUri = originalUri + URI.decode(updatedUri)
-    const data = { ...this.state.data }
+    const data = { ...this.props?.endpointContent.data }
     if (Object.keys(parts).length === 0) {
       data.updatedUri = updatedUri.split('?')[0]
     } else {
       data.updatedUri = updatedUri
     }
     this.setState({ data })
+    tempdata.data = data
+    this.props.setQueryUpdatedData(tempdata)
   }
 
   doSubmitParam() {
@@ -1547,13 +1684,19 @@ class DisplayEndpoint extends Component {
 
   setBaseUrl(BASE_URL, selectedHost) {
     this.setState({ host: { BASE_URL, selectedHost } })
+    const tempData = this?.props?.endpointContent || {}
+    tempData.host = { BASE_URL, selectedHost }
+    this.props.setQueryUpdatedData(tempData)
   }
 
   setBody(bodyType, body) {
-    const data = { ...this.state.data }
+    const data = { ...this.props?.endpointContent.data }
     data.body = { type: bodyType, value: body }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
     this.setState({ data }, () => this.setModifiedTabData())
+    const tempData = this.props.endpointContent
+    tempData.data = data
+    this.props.setQueryUpdatedData(tempData)
   }
 
   setBodyDescription(type, value) {
@@ -1617,10 +1760,17 @@ class DisplayEndpoint extends Component {
 
   setDescription(bodyDescription) {
     this.setState({ bodyDescription })
+    const tempData = this.props.endpointContent
+    tempData.bodyDescription = bodyDescription
+    this.props.setQueryUpdatedData(tempData)
   }
 
   setFieldDescription(fieldDescription, bodyDescription) {
     this.setState({ fieldDescription, bodyDescription })
+    const tempData = this.props.endpointContent
+    tempData.fieldDescription = fieldDescription
+    tempData.bodyDescription = bodyDescription
+    this.props.setQueryUpdatedData(tempData)
   }
 
   setParams(value, title, authorizationFlag) {
@@ -1649,6 +1799,9 @@ class DisplayEndpoint extends Component {
     }
     updatedParams.push(emptyParam)
     this.setState({ originalParams: updatedParams })
+    const dummyData = this.props.endpointContent
+    dummyData.originalParams = updatedParams
+    this.props.setQueryUpdatedData(dummyData)
   }
 
   setHeaders(value, title, authorizationFlag = undefined) {
@@ -1666,6 +1819,9 @@ class DisplayEndpoint extends Component {
       } else if (originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
         originalHeaders[i].value = this.identifyBodyType(value)
         this.setState({ originalHeaders })
+        const dummyData = this.props.endpointContent
+        dummyData.originalHeaders = originalHeaders
+        this.props.setQueryUpdatedData(dummyData)
         return
       } else {
         updatedHeaders.push(originalHeaders[i])
@@ -1674,6 +1830,9 @@ class DisplayEndpoint extends Component {
     if (value === 'none') {
       updatedHeaders.push(emptyHeader)
       this.setState({ originalHeaders: updatedHeaders })
+      const dummyData = this.props.endpointContent
+      dummyData.originalHeaders = updatedHeaders
+      this.props.setQueryUpdatedData(dummyData)
       return
     }
     if (value !== 'noAuth' && !authorizationFlag) {
@@ -1690,6 +1849,9 @@ class DisplayEndpoint extends Component {
 
     updatedHeaders.push(emptyHeader)
     this.setState({ originalHeaders: updatedHeaders })
+    const dummyData = this.props.endpointContent
+    dummyData.originalHeaders = updatedHeaders
+    this.props.setQueryUpdatedData(dummyData)
   }
 
   identifyBodyType(bodyType) {
@@ -1807,6 +1969,9 @@ class DisplayEndpoint extends Component {
       }
     }
     this.setState({ authType })
+    const dummyData = this.props.endpointContent
+    dummyData.authType = authType
+    this.props.setQueryUpdatedData(dummyData)
   }
 
   addSampleResponse(response) {
@@ -2033,7 +2198,7 @@ class DisplayEndpoint extends Component {
   }
 
   setHostUri(host, uri, selectedHost) {
-    if (uri !== this.state.data.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+    if (uri !== this.props?.endpointContent?.data?.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
     this.setBaseUrl(host, selectedHost)
   }
 
@@ -2063,6 +2228,10 @@ class DisplayEndpoint extends Component {
     }
 
     this.setState({ preScriptText, postScriptText }, () => this.setModifiedTabData())
+    const dummyData = this.props.endpointContent
+    dummyData.preScriptText = preScriptText
+    dummyData.postScriptText = postScriptText
+    this.props.setQueryUpdatedData(dummyData)
   }
 
   renderScriptError() {
@@ -2317,11 +2486,11 @@ class DisplayEndpoint extends Component {
         {...this.props}
         set_body={this.setBody.bind(this)}
         set_body_description={this.setDescription.bind(this)}
-        body={this.state.bodyFlag === true ? this.state.data.body : ''}
-        Body={this.state.data.body}
+        body={this.state.bodyFlag === true ? this.props.endpointContent.data.body : ''}
+        Body={this.props?.endpointContent?.data?.body || {}}
         endpoint_id={this.props.tab.id}
-        body_description={this.state.bodyDescription}
-        field_description={this.state.fieldDescription}
+        body_description={this.props?.endpointContent?.bodyDescription || ''}
+        field_description={this.props?.endpointContent?.fieldDescription || ''}
         set_field_description={this.setFieldDescription.bind(this)}
       />
     )
@@ -2351,9 +2520,9 @@ class DisplayEndpoint extends Component {
       <GenericTable
         {...this.props}
         title='Headers'
-        dataArray={this.state.originalHeaders}
+        dataArray={this.props?.endpointContent?.originalHeaders || []}
         props_from_parent={this.propsFromChild.bind(this)}
-        original_data={[...this.state.headers]}
+        original_data={[this.props?.endpointContent?.originalHeaders || []]}
         currentView={this.state.currentView}
       />
     )
@@ -2379,9 +2548,9 @@ class DisplayEndpoint extends Component {
       <GenericTable
         {...this.props}
         title='Params'
-        dataArray={this.state.originalParams}
+        dataArray={this.props?.endpointContent?.originalParams || []}
         props_from_parent={this.propsFromChild.bind(this)}
-        original_data={[...this.state.params]}
+        original_data={[...(this.props?.endpointContent?.params || [])]}
         open_modal={this.props.open_modal}
         currentView={this.state.currentView}
       />
@@ -2456,7 +2625,7 @@ class DisplayEndpoint extends Component {
               environmentHost={
                 this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
               }
-              updatedUri={this.state.data.updatedUri}
+              updatedUri={this.props.endpointContent?.data?.updatedUri}
               set_base_url={this.setBaseUrl.bind(this)}
               customHost={this.state.endpoint.BASE_URL || ''}
               endpointId={this.state.endpoint.id}
@@ -2476,7 +2645,7 @@ class DisplayEndpoint extends Component {
       <div className='input-group-prepend'>
         <div className='dropdown'>
           <button
-            className={`api-label ${this.state.data.method} dropdown-toggle`}
+            className={`api-label ${this.props?.endpointContent?.data?.method} dropdown-toggle`}
             type='button'
             id='dropdownMenuButton'
             data-toggle='dropdown'
@@ -2484,7 +2653,8 @@ class DisplayEndpoint extends Component {
             aria-expanded='false'
             disabled={isDashboardRoute(this.props) ? null : true}
           >
-            {this.state.data.method}
+            {/* {this.state.data.method} */}
+            {this.props?.endpointContent?.data?.method}
           </button>
           <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
             {this.state.methodList.map((methodName) => (
@@ -2504,7 +2674,7 @@ class DisplayEndpoint extends Component {
               this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
             }
             versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
-            updatedUri={this.state.data.updatedUri}
+            updatedUri={this.props.endpointContent?.data?.updatedUri}
             set_host_uri={this.setHostUri.bind(this)}
             set_base_url={this.setBaseUrl.bind(this)}
             props_from_parent={this.propsFromChild.bind(this)}
@@ -3056,4 +3226,4 @@ class DisplayEndpoint extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DisplayEndpoint))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayEndpoint)))

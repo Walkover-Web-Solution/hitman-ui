@@ -364,7 +364,7 @@ class SaveAsSidebar extends Form {
             <form className='desc-box form-parent' onSubmit={this.handleSubmit}>
               <div className='p-form-group mb-3'>
                 {this.renderInput('name', 'Name', 'Endpoint Name')}
-                {title.trim() === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
+                {title?.trim() === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
               </div>
             </form>
             <div>

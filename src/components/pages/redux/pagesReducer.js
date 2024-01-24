@@ -6,6 +6,7 @@ import collectionActionTypes from '../../collections/redux/collectionsActionType
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import generalActionsTypes from '../../redux/generalActionTypes'
+import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 
 const initialState = {}
 
@@ -42,8 +43,11 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.ON_PARENT_PAGE_ADDED: {
       pages = { ...state }
 
+      let pageData = { ...action.page }
+      if (pageData.type === 0) {
+        pages[action.page.id] = pageData
+      }
       delete pages[action.page.requestId]
-      const pageData = { ...action.page }
       delete pageData.requestId
       pages[action.page.id] = pageData
 
@@ -60,7 +64,6 @@ function pagesReducer(state = initialState, action) {
         }
         pages[parentId].child.push(action.page.id)
       }
-
       return pages
     }
 
@@ -70,17 +73,13 @@ function pagesReducer(state = initialState, action) {
       delete pages[action.newPage.requestId]
       return pages
 
-    case pagesActionTypes.ADD_GROUP_PAGE_REQUEST:
-      action.newPage.groupId = action.groupId
-      action.newPage.versionId = action.versionId
-
-      return {
-        ...state,
-        [action.newPage.requestId]: action.newPage
-      }
-
-    case versionActionTypes.IMPORT_VERSION:
-      return { ...state, ...action.response.pages }
+    case collectionVersionsActionTypes.ON_PARENTPAGE_VERSION_ADDED:
+      pages = { ...state }
+      delete pages[action.response.requestId]
+      const versionData = { ...action.response }
+      delete versionData.requestId
+      pages[action.response.id] = versionData
+      return pages
 
     case pagesActionTypes.ON_GROUP_PAGE_ADDED_ERROR:
       toast.error(action.error)
@@ -180,7 +179,7 @@ function pagesReducer(state = initialState, action) {
       return pages
 
     case collectionActionTypes.ON_COLLECTION_IMPORTED:
-      pages = { ...state, ...action.response.pages }
+      pages = { ...state, ...action.pages }
       return pages
 
     case generalActionsTypes.ADD_PAGES:

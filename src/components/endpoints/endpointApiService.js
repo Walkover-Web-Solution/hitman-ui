@@ -51,10 +51,10 @@ export function getEndpoints(parentId) {
   return http.get(endpointUrlForCollection(parentId))
 }
 
-export function getEndpoint(endpointId) {
+export async function getEndpoint(endpointId) {
   // author : Goutam Mehta
   const apiUrl = getApiUrl()
-  return http.get(`${apiUrl}/endpoints/${endpointId}`)
+  return (await http.get(`${apiUrl}/endpoints/${endpointId}`))?.data
 }
 export function saveEndpoint(groupId, endpoint) {
   return http.post(endpointUrl(groupId), endpoint)

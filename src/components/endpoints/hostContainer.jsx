@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
+import { connect } from 'react-redux'
+import _ from 'lodash'
 
 const hostContainerEnum = {
   hosts: {

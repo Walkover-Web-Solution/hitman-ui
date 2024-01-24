@@ -5,6 +5,8 @@ import tabService from '../../tabs/tabService'
 import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import { sendAmplitudeData } from '../../../services/amplitude'
+import { onParentPageAdded } from '../../pages/redux/pagesActions'
+import { toast } from 'react-toastify'
 
 export const fetchCollections = (orgId) => {
   return (dispatch) => {
@@ -58,6 +60,14 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           orgId: response.data.orgId
         })
         dispatch(onCollectionAdded(response.data))
+        const inivisiblePageData = {
+          page: {
+            id: response.data.rootParentId,
+            type: 0,
+            child: []
+          }
+        }
+        dispatch(onParentPageAdded(inivisiblePageData))
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
         }
@@ -256,12 +266,12 @@ export const importApi = (collection, importType, website, customCallback, defau
       openApiService
         .importPostmanCollection(collection, website, defaultView)
         .then((response) => {
-          // dispatch(saveImportedCollection(response.data));
-          dispatch(saveImportedVersion(response.data))
+          dispatch(onCollectionImported(response.data))
+          toast.success('Collection imported successfully')
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          dispatch(onVersionsFetchedError(error.response ? error.response.data : error))
+          dispatch(onCollectionImportedError(error.response ? error.response.data : error))
           if (customCallback) customCallback({ success: false })
         })
     } else {
@@ -319,7 +329,8 @@ export const importCollectionRequest = (collection) => {
 export const onCollectionImported = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_IMPORTED,
-    response
+    collection: response.collection,
+    pages: response.pages
   }
 }
 

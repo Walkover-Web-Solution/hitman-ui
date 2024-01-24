@@ -5,6 +5,7 @@ import { getProxyToken } from '../auth/authServiceV2'
 import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
+import { cloneDeep } from 'lodash'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
@@ -519,6 +520,30 @@ export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = 
     throw new Error(e?.message ? e.message : 'Something went wrong')
   }
 }
+
+const modifyEndpointContent = (endpointData, untitledData) => {
+  const endpoint = cloneDeep(endpointData)
+  const untitled = cloneDeep(untitledData)
+  untitled.data.name = endpoint.name
+  untitled.data.method = endpoint.requestType
+  untitled.data.body = endpoint.body
+  untitled.data.updatedUri = endpoint.uri
+  untitled.authType = endpoint.authorizationType
+  const headersData = Object.keys(endpoint.headers).map((key) => {
+    return { key, ...endpoint.headers[key] }
+  })
+  const paramsData = Object.keys(endpoint.params).map((key) => {
+    return { key, ...endpoint.params[key] }
+  })
+  headersData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
+  paramsData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
+  untitled.originalHeaders = headersData
+  untitled.originalParams = paramsData
+  untitled.postScriptText = endpoint.postScript
+  untitled.preScriptText = endpoint.preScript
+  return untitled
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -552,5 +577,6 @@ export default {
   validateEmail,
   getUserProfile,
   compareAlphabetically,
-  sentryIntegration
+  sentryIntegration,
+  modifyEndpointContent
 }

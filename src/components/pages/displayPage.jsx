@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react'
+import React, { Component } from 'react'
 import { store } from '../../store/store'
 import { connect } from 'react-redux'
 import { isDashboardRoute, isStateDraft, isStateReject, msgText, isStatePending, isStateApproved, getEntityState } from '../common/utility'
@@ -22,9 +22,9 @@ const withQuery = (WrappedComponent) => {
       () => getPageContent(props.match.params.orgId, props.match.params.pageId),
       {
         refetchOnWindowFocus: false,
-        cacheTime: 500000,
+        cacheTime: 5000000,
         enabled: true,
-        staleTime: 60000
+        staleTime: 600000
       }
     )
     return <WrappedComponent {...props} pageContent={data} pageContentError={error} />

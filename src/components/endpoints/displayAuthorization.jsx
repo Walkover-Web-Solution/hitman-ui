@@ -403,6 +403,7 @@ class Authorization extends Component {
         )}
       </div>
     )
+    return null
   }
 }
 

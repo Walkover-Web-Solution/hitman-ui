@@ -8,6 +8,15 @@ import History from '../history/history.jsx'
 import TabOptions from './tabOptions'
 import { isElectron } from '../common/utility'
 import Plus from '../../assets/icons/plus.svg'
+import { connect } from 'react-redux'
+
+const mapStateToProps = (state) => {
+  return {
+    pages: state.pages,
+    tabState: state.tabs.tabs,
+    tabsOrder: state.tabs.tabsOrder
+  }
+}
 
 class CustomTabs extends Component {
   constructor(props) {
@@ -75,7 +84,7 @@ class CustomTabs extends Component {
   }
 
   renderTabName(tabId) {
-    const tab = this.props.tabs.tabs[tabId]
+    const tab = this.props.tabState[tabId]
     if (!tab) return
     switch (tab.type) {
       case 'history':
@@ -100,20 +109,21 @@ class CustomTabs extends Component {
         } else {
           return <div className=''>{tab.state?.data?.name || 'Random Trigger'}</div>
         }
+
       case 'endpoint':
-        if (this.props.endpoints[tabId]) {
-          const endpoint = this.props.endpoints[tabId]
+        if (this.props.pages[tabId]) {
+          const endpoint = this.props.pages[tabId]
           if (tab.previewMode) {
             return (
               <>
-                {this.props.endpoints[tabId]?.name}
+                {this.props.pages[tabId]?.name}
                 <span className='sub-label'>{this.props.groups[endpoint.groupId]?.name}</span>
               </>
             )
           } else {
             return (
               <>
-                {this.props.endpoints[tabId]?.name}
+                {this.props.pages[tabId]?.name}
                 <span className='sub-label'>{this.props.groups[endpoint.groupId]?.name}</span>
               </>
             )
@@ -358,7 +368,7 @@ class CustomTabs extends Component {
                 />
               )}
             </div>
-            {this.props.tabs.tabsOrder.map((tabId, index) => (
+            {this.props.tabsOrder.map((tabId, index) => (
               <div
                 className=''
                 key={tabId}
@@ -376,7 +386,7 @@ class CustomTabs extends Component {
                   onMouseEnter={() => this.setState({ showPreview: true, previewId: tabId })}
                   onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
                 >
-                  {this.props.tabs.tabs[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
+                  {this.props.tabs[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
                   <Nav.Link eventKey={tabId}>
                     <button
                       className='btn truncate'
@@ -440,4 +450,4 @@ class CustomTabs extends Component {
   }
 }
 
-export default CustomTabs
+export default connect(mapStateToProps, null)(CustomTabs)

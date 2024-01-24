@@ -3,6 +3,7 @@ import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
 import { getOrgId, focusSelectedEntity } from '../../common/utility'
+import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 
 export const fetchPages = (orgId) => {
   return (dispatch) => {
@@ -145,6 +146,12 @@ export const onParentPageAdded = (response) => {
     type: pagesActionTypes.ON_PARENT_PAGE_ADDED,
     page: response.page,
     version: response.version
+  }
+}
+export const onParentPageVersionAdded = (response) => {
+  return {
+    type: collectionVersionsActionTypes.ON_PARENTPAGE_VERSION_ADDED,
+    response
   }
 }
 
