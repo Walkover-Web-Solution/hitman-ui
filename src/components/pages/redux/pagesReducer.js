@@ -73,12 +73,25 @@ function pagesReducer(state = initialState, action) {
       delete pages[action.newPage.requestId]
       return pages
 
-    case collectionVersionsActionTypes.ON_PARENTPAGE_VERSION_ADDED:
+      case pagesActionTypes.ADD_VERSION_REQUEST:
+      return {
+        ...state,
+        [action.newVersion.requestId]: action.newVersion
+      }
+
+    case pagesActionTypes.ON_PARENTPAGE_VERSION_ADDED:
       pages = { ...state }
       delete pages[action.response.requestId]
       const versionData = { ...action.response }
       delete versionData.requestId
       pages[action.response.id] = versionData
+      if (action.response.parentId) {
+        const parentId = action.response.parentId
+        if (!pages[parentId].child) {
+          pages[parentId].child = []
+        }
+        pages[parentId].child.push(action.response.id)
+      }
       return pages
 
     case pagesActionTypes.ON_GROUP_PAGE_ADDED_ERROR:

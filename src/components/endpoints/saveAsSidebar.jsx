@@ -103,11 +103,11 @@ class SaveAsSidebar extends Form {
     const dropdownList = { ...this.state.dropdownList }
     switch (this.state.dropdownList.type) {
       case 'collections':
-        list.type = 'versions'
-        list.parentId = item.id
+        // list.type = 'versions'
+        list.parentId = item.rootParentId
         this.setState({ list })
-        dropdownList.type = 'versions'
-        dropdownList.parentId = item.id
+        // dropdownList.type = 'versions'
+        dropdownList.parentId = item.rootParentId
         dropdownList.selectedCollectionId = item.id
         this.setState({ dropdownList })
         return
@@ -210,7 +210,8 @@ class SaveAsSidebar extends Form {
           .filter((collection) => !collection?.importedFromMarketPlace)
           .map((collection) => ({
             name: collection.name,
-            id: collection.id
+            id: collection.id,
+            rootParentId : collection.rootParentId
           }))
         break
       case 'versions':
@@ -287,7 +288,7 @@ class SaveAsSidebar extends Form {
     switch (type) {
       case 'collections':
         dropdownList.type = 'collections'
-        dropdownList.parentId = null
+        dropdownList.parentId = this.state.dropdownList.parentId
         this.setState({ dropdownList })
         break
       case 'versions':
@@ -347,8 +348,8 @@ class SaveAsSidebar extends Form {
           className='save-as-sidebar-container'
         >
           {this.showCollectionForm()}
-          {this.showCollectionVersionForm()}
-          {this.showGroupForm()}
+          {/* {this.showCollectionVersionForm()}
+          {this.showGroupForm()} */}
           <div className='custom-collection-modal-container modal-header align-items-center'>
             <div className='modal-title h4'>{this.props.location.pathname.split('/')[5] !== 'new' ? 'Save As' : 'Save'}</div>
             <button
@@ -410,7 +411,7 @@ class SaveAsSidebar extends Form {
                 </Dropdown.Menu>
               </Dropdown>
 
-              {this.state.dropdownList.parentId != null &&
+              {/* {this.state.dropdownList.parentId != null &&
                 this.renderDropdownItems('versions').length > 0 &&
                 this.renderDropdownItems('groups').length > 0 && (
                   <>
@@ -502,7 +503,7 @@ class SaveAsSidebar extends Form {
                     </Dropdown.Menu>
                   </Dropdown>
                 </>
-              )}
+              )} */}
             </div>
             <div className='mt-5'>
               <button className='btn btn-secondary outline mr-2 api-cancel-btn' onClick={() => this.props.onHide()}>
