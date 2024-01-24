@@ -9,7 +9,6 @@ import PublicView from './components/main/publicView'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import { ToastContainer } from 'react-toastify'
 import ClientDoc from './components/publishDocs/clientDoc'
-import BrowserLogin from './components/broswerLogin/browserLogin'
 import { getOrgId, isElectron } from './components/common/utility'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
@@ -51,6 +50,7 @@ class App extends Component {
       e.preventDefault()
       this.props.install_modal(e)
     })
+    // window.addEventListener('beforeunload', this.handleBeforeUnload);
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
@@ -75,6 +75,18 @@ class App extends Component {
       this.changeSelectedOrg(currentOrgId)
     }
   }
+  // componentWillUnmount() {
+  //   window.removeEventListener('beforeunload', this.handleBeforeUnload);
+  // }
+  // handleBeforeUnload = (e) => {
+  //   const unsavedChanges = true;
+
+  //   if (unsavedChanges) {
+  //     const message = 'Changes that you made may not be saved.';
+  //     e.returnValue = message;
+  //     return message;
+  //   }
+  // }
 
   changeSelectedOrg(orgId) {
     let orgList = window.localStorage.getItem('organisationList')
@@ -154,10 +166,6 @@ class App extends Component {
           <Route path='/login' component={LoginV2} />
           <Route path='/logout' component={Logout} />
           <Route path='/' component={AuthServiceV2} />
-
-          {/* Electron App Auth Routes */}
-          <Route path='/browser-login-success' component={BrowserLogin} />
-          <Route path='/browser-login' component={BrowserLogin} />
 
           <Route path='/marketPlace' component={PublicView} />
           <Route path='/'>

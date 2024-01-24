@@ -3,6 +3,7 @@ import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpoin
 import { toast } from 'react-toastify'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import generalActionsTypes from '../../redux/generalActionTypes'
+import { onParentPageAdded } from '../../pages/redux/pagesActions'
 
 const initialState = {}
 
@@ -19,7 +20,6 @@ function collectionsReducer(state = initialState, action) {
       return { ...state }
 
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
-      // return { ...state, ...action.collections }
       const collectionState = state
       const obj = action.collections || {}
       const data = {}
@@ -118,29 +118,34 @@ function collectionsReducer(state = initialState, action) {
       toast.error(action.error)
       return state
 
-    case collectionsActionTypes.IMPORT_COLLECTION_REQUEST:
-      return {
-        ...state,
-        [action.collection.id]: action.collection
-      }
+    // case collectionsActionTypes.IMPORT_COLLECTION_REQUEST:
+    //   return {
+    //     ...state,
+    //     [action.collection.id]: action.collection
+    //   }
 
     case collectionsActionTypes.ON_COLLECTION_IMPORTED:
-      collections = { ...state }
-      delete collections[action.response.collection.id]
-      collections[action.response.collection.id] = action.response.collection
-      return collections
+      return {
+        ...state,
+        [action.collection.id]: {
+          ...state[action.collection.id],
+          ...action.collection
+        }
+      }
 
     case collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR:
-      toast.error(action.error)
-      collections = { ...state }
-      delete collections[action.collection.id]
-      return collections
+      if (action.collection && action.collection.id) {
+        const updatedCollections = { ...state }
+        delete updatedCollections[action.collection.id]
+        return updatedCollections
+      }
+      return state
 
     case generalActionsTypes.ADD_COLLECTIONS:
       return { ...state, ...action.data }
 
-    case versionActionTypes.IMPORT_VERSION:
-      return { ...state, ...action.response.collection }
+    // case versionActionTypes.IMPORT_VERSION:
+    //   return { ...state, ...action.response.collection }
 
     default:
       return state

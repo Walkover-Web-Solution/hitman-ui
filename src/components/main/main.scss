@@ -71,7 +71,7 @@ html body {
       display: flex;
       -webkit-display: flex;
       align-items: center;
-      padding: 0.35rem 1rem;
+      // padding: 0.35rem 1rem;
       transition: all 0.3s ease-in;
       font-size: $font-normal;
     }
@@ -2878,7 +2878,7 @@ div#steve-parent-accordion {
 .ask-ai-btn {
   font-size: 14px;
   padding: 5px;
-  z-index: 9999;
+  z-index: 1000;
   position: absolute;
   top: 7px;
   right: 190px;

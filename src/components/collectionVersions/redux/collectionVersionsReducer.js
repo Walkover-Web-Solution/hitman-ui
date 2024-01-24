@@ -62,20 +62,24 @@ function versionsReducer(state = initialState, action) {
         ...state,
         [action.originalVersion.id]: action.originalVersion
       }
-    case versionActionTypes.ADD_VERSION_REQUEST:
-      return {
-        ...state,
-        [action.newVersion.requestId]: action.newVersion
-      }
 
-    case versionActionTypes.ON_VERSION_ADDED: {
-      versions = { ...state }
-      delete versions[action.response.requestId]
-      const versionData = { ...action.response }
-      delete versionData.requestId
-      versions[action.response.id] = versionData
-      return versions
-    }
+    // case versionActionTypes.ADD_VERSION_REQUEST:
+    //   return {
+    //     ...state,
+    //     [action.newVersion.requestId]: action.newVersion
+    //   }
+
+    // case versionActionTypes.ON_VERSION_ADDED: {
+    //   versions = { ...state }
+    //   delete versions[action.response.requestId]
+    //   const versionData = { ...action.response }
+    //   delete versionData.requestId
+    //   versions[action.response.id] = versionData
+    //   return versions
+    // }
+
+    
+
     case versionActionTypes.ON_VERSION_ADDED_ERROR:
       toast.error(action.error)
       versions = { ...state }
@@ -107,11 +111,11 @@ function versionsReducer(state = initialState, action) {
     case collectionsActionTypes.ON_COLLECTION_DUPLICATED:
       return { ...state, ...action.response.versions }
 
-    case versionActionTypes.IMPORT_VERSION:
-      return {
-        ...state,
-        [action.response.version.id]: action.response.version
-      }
+    // case versionActionTypes.IMPORT_VERSION:
+    //   return {
+    //     ...state,
+    //     [action.response.version.id]: action.response.version
+    //   }
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...state, ...action.data.versions }
@@ -121,10 +125,6 @@ function versionsReducer(state = initialState, action) {
       action.payload.versionIds.forEach((vId) => {
         delete versions[vId]
       })
-      return versions
-
-    case collectionsActionTypes.ON_COLLECTION_IMPORTED:
-      versions = { ...state, ...action.response.versions }
       return versions
 
     default:

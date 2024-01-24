@@ -87,9 +87,6 @@ function groupsReducer(state = initialState, action) {
     case collectionActionTypes.ON_COLLECTION_DUPLICATED:
       return { ...state, ...action.response.groups }
 
-    case versionActionTypes.IMPORT_VERSION:
-      return { ...state, ...action.response.groups }
-
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...state, ...action.data.groups }
 
@@ -108,10 +105,6 @@ function groupsReducer(state = initialState, action) {
     case groupsActionTypes.ON_GROUPS_ORDER_UPDATED_ERROR:
       toast.error(action.error)
       groups = { ...action.groups }
-      return groups
-
-    case collectionActionTypes.ON_COLLECTION_IMPORTED:
-      groups = { ...state, ...action.response.groups }
       return groups
 
     default:

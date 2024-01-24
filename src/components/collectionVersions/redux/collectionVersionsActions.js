@@ -4,6 +4,7 @@ import { store } from '../../../store/store'
 import { toast } from 'react-toastify'
 import tabService from '../../tabs/tabService'
 import { sendAmplitudeData } from '../../../services/amplitude'
+import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 export const fetchAllVersions = (orgId) => {
   return (dispatch) => {
     collectionVersionsApiService
@@ -108,23 +109,23 @@ export const addParentPageVersion = (newVersion, pageId, customCallback) => {
 
 export const addVersionRequest = (newVersion) => {
   return {
-    type: versionActionTypes.ADD_VERSION_REQUEST,
+    type: pagesActionTypes.ADD_VERSION_REQUEST,
     newVersion
   }
 }
 
 export const onParentPageVersionAdded = (response) => {
   return {
-    type: versionActionTypes.ON_PARENTPAGE_VERSION_ADDED,
+    type: pagesActionTypes.ON_PARENTPAGE_VERSION_ADDED,
     response
   }
 }
-export const onVersionAdded = (response) => {
-  return {
-    type: versionActionTypes.ON_VERSION_ADDED,
-    response
-  }
-}
+// export const onVersionAdded = (response) => {
+//   return {
+//     type: pagesActionTypes.ON_VERSION_ADDED,
+//     response
+//   }
+// }
 
 export const onVersionAddedError = (error, newVersion) => {
   return {
