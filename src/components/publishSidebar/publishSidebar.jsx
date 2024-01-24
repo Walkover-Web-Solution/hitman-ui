@@ -18,7 +18,7 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     endpoints: state.endpoints,
     modals: state.modals,
-    collectionIdForPublish: state.clientData.collectionToPublish,
+    collectionIdForPublish: state.clientData.collectionToPublish
   }
 }
 
@@ -460,7 +460,6 @@ export class PublishSidebar extends Component {
   }
 
   renderCollectionDropDown() {
-
     return (
       <div className='collection-api-doc-dropdown'>
         <div className='collection-api-doc-heading ml-2'>Collection</div>

@@ -80,7 +80,7 @@ class CollectionParentPages extends Component {
       clickedList: [],
       selectedCheckbox: null,
       isListVisible: false,
-      publishVersion: '',
+      publishVersion: ''
     }
 
     this.filterFlag = false
@@ -104,8 +104,8 @@ class CollectionParentPages extends Component {
       this.setState({
         defaultVersionName: defaultVersion.name,
         defaultVersionId: defaultVersion.id,
-        selectedCheckbox: defaultVersion.name || null,
-      });
+        selectedCheckbox: defaultVersion.name || null
+      })
     }
   }
 
@@ -315,7 +315,7 @@ class CollectionParentPages extends Component {
     const namesAndIds = list.map((itemId) => ({
       id: object[itemId].id,
       name: object[itemId].name
-    }));
+    }))
     this.setState({ clickedList: namesAndIds })
     this.toggleListVisibility()
   }
@@ -331,31 +331,33 @@ class CollectionParentPages extends Component {
     }))
   }
   handleCheckboxChange = () => {
-    this.props.setIsCheckForParenPage({ id: this.props.rootParentId, isChecked : !this.props?.clientData?.[this.props.rootParentId]?.checkedForPublished})
-  }
-  handleCheckboxClick = (name, id) => {
-
-  this.setState(
-    (prevState) => ({
-      selectedCheckbox: prevState.selectedCheckbox === name ? null : name,
-    }),
-    () => {
-      localStorage.setItem('selectedCheckbox', JSON.stringify({"id" : id , "name " : this.state.selectedCheckbox }));
-    }
-  );
-
-  const versionData = { oldVersionId: this.state.defaultVersionId, newVersionId: id };
-  if (this.state.defaultVersionId !== id) {
-    this.props.set_Default_Version(this.props.match.params.orgId, versionData);
-    this.props.set_Default_version_Id({
-      value: id,
-      defaultVersionId: id,
-      selectedVersionName: name,
-      defaultVersionName: name,
-      rootId: this.props.rootParentId
+    this.props.setIsCheckForParenPage({
+      id: this.props.rootParentId,
+      isChecked: !this.props?.clientData?.[this.props.rootParentId]?.checkedForPublished
     })
   }
-};
+  handleCheckboxClick = (name, id) => {
+    this.setState(
+      (prevState) => ({
+        selectedCheckbox: prevState.selectedCheckbox === name ? null : name
+      }),
+      () => {
+        localStorage.setItem('selectedCheckbox', JSON.stringify({ id: id, 'name ': this.state.selectedCheckbox }))
+      }
+    )
+
+    const versionData = { oldVersionId: this.state.defaultVersionId, newVersionId: id }
+    if (this.state.defaultVersionId !== id) {
+      this.props.set_Default_Version(this.props.match.params.orgId, versionData)
+      this.props.set_Default_version_Id({
+        value: id,
+        defaultVersionId: id,
+        selectedVersionName: name,
+        defaultVersionName: name,
+        rootId: this.props.rootParentId
+      })
+    }
+  }
 
   renderBody(pageId, index) {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
@@ -369,10 +371,7 @@ class CollectionParentPages extends Component {
         {this.props.isPublishData && publishData ? (
           <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
             <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-              <button
-                tabIndex={-1}
-                 className={'pl-3 ' + (expanded ? 'expanded' : '')}
-              >
+              <button tabIndex={-1} className={'pl-3 ' + (expanded ? 'expanded' : '')}>
                 <div className='d-flex align-items-center cl-name'>
                   <input
                     type='checkbox'
@@ -404,20 +403,22 @@ class CollectionParentPages extends Component {
                         onClick={() => {
                           this.handleButton(rootId)
                         }}
-                        title={"Select Default Version"}
+                        title={'Select Default Version'}
                       >
                         {this.state.clickedList.map((item, index) => (
                           <Dropdown.Item className='d-flex' key={index}>
-                            {console.log(this.state.selectedCheckbox, "selected check boxxxx")}
-                            <input 
-                            type='checkbox'
-                            checked= {this.state.selectedCheckbox === item.name}
-                            onChange={()=>{this.handleCheckboxClick(item.name, item.id)}}
+                            {console.log(this.state.selectedCheckbox, 'selected check boxxxx')}
+                            <input
+                              type='checkbox'
+                              checked={this.state.selectedCheckbox === item.name}
+                              onChange={() => {
+                                this.handleCheckboxClick(item.name, item.id)
+                              }}
                             />
                             <Dropdown.Item
                               key={index}
                               onClick={(event) => {
-                                event.stopPropagation();
+                                event.stopPropagation()
                               }}
                             >
                               {item.name}
@@ -433,15 +434,11 @@ class CollectionParentPages extends Component {
               <div className='version-collapse'>
                 <Card.Body>
                   <div className='linkWrapper versionPages pl-4'>
-                    <CombinedCollections
-                      {...this.props}
-                      page_id={pageId}
-                      rootParentId={this.state.selectedVersionId}
-                    />
+                    <CombinedCollections {...this.props} page_id={pageId} rootParentId={this.state.selectedVersionId} />
                   </div>
                 </Card.Body>
               </div>
-               {/* ) : null}  */}
+              {/* ) : null}  */}
             </div>
           </div>
         ) : (
@@ -452,7 +449,7 @@ class CollectionParentPages extends Component {
                 ref={(newRef) => {
                   this.scrollRef[pageId] = newRef
                 }}
-                 className={'pl-3 ' + (expanded ? 'expanded' : '')}
+                className={'pl-3 ' + (expanded ? 'expanded' : '')}
               >
                 <div
                   className='d-flex align-items-center cl-name'
@@ -468,14 +465,17 @@ class CollectionParentPages extends Component {
                     <DropdownButton
                       className=''
                       id='dropdown-basic-button'
+                      onClick={(event) => event.stopPropagation()}
                       title={
                         <span className='dropdown-title'>
-                          {this.props.pages[this.props.rootParentId].child.length === 1 ? this.state.defaultVersionName : this.props.clientData[rootId]?.selectedVersionName}
+                          {this.props.pages[this.props.rootParentId].child.length === 1
+                            ? this.state.defaultVersionName
+                            : this.props.clientData[rootId]?.selectedVersionName}
                         </span>
                       }
                     >
                       {this.props.pages[rootId].child.map((childId, index) => (
-                        <Dropdown.Item key={index} onClick={() => this.handleDropdownItemClick(childId, rootId)}>
+                        <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
                           <span className='dropdown-item-text'>{this.props.pages[childId].name}</span>
                         </Dropdown.Item>
                       ))}
@@ -623,7 +623,11 @@ class CollectionParentPages extends Component {
                       <CombinedCollections
                         {...this.props}
                         page_id={pageId}
-                        rootParentId={this.props.pages[this.props.rootParentId].child.length === 1 ? this.state.defaultVersionId : this.props.clientData[this.props.rootParentId]?.selectedVersionId}
+                        rootParentId={
+                          this.props.pages[this.props.rootParentId].child.length === 1
+                            ? this.state.defaultVersionId
+                            : this.props.clientData[this.props.rootParentId]?.selectedVersionId
+                        }
                       />
                     </div>
                   </Card.Body>

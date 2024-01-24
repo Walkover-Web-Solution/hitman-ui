@@ -33,7 +33,7 @@ function tabsReducer(state = initialState, action) {
       }
       delete tabs.tabs[action.tabId]
       tabs.tabsOrder = tabs.tabsOrder.filter((t) => t !== action.tabId)
-      return {...tabs}
+      return { ...tabs }
 
     case tabsActionTypes.UPDATE_TAB:
       tabs = {

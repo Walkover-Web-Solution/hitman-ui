@@ -86,4 +86,3 @@ function updatePagesAndEndPointsData(originalEndpoints, originalPages, data) {
 
   return { updatedEndpoints, updatedPages }
 }
-

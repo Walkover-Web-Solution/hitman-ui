@@ -249,7 +249,7 @@ class Endpoints extends Component {
 
     return endpoints
   }
-  
+
   handleCheckboxChange = () => {
     this.props.setIsCheckForParenPage({
       id: this.props?.endpointId,
