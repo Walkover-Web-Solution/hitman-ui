@@ -62,25 +62,25 @@ function versionsReducer(state = initialState, action) {
         ...state,
         [action.originalVersion.id]: action.originalVersion
       }
-    case versionActionTypes.ADD_VERSION_REQUEST:
-      return {
-        ...state,
-        [action.newVersion.requestId]: action.newVersion
-      }
+    // case versionActionTypes.ADD_VERSION_REQUEST:
+    //   return {
+    //     ...state,
+    //     [action.newVersion.requestId]: action.newVersion
+    //   }
 
-    case versionActionTypes.ON_VERSION_ADDED: {
-      versions = { ...state }
-      delete versions[action.response.requestId]
-      const versionData = { ...action.response }
-      delete versionData.requestId
-      versions[action.response.id] = versionData
-      return versions
-    }
-    case versionActionTypes.ON_VERSION_ADDED_ERROR:
-      toast.error(action.error)
-      versions = { ...state }
-      delete versions[action.newVersion.requestId]
-      return versions
+    // case versionActionTypes.ON_VERSION_ADDED: {
+    //   versions = { ...state }
+    //   delete versions[action.response.requestId]
+    //   const versionData = { ...action.response }
+    //   delete versionData.requestId
+    //   versions[action.response.id] = versionData
+    //   return versions
+    // }
+    // case versionActionTypes.ON_VERSION_ADDED_ERROR:
+    //   toast.error(action.error)
+    //   versions = { ...state }
+    //   delete versions[action.newVersion.requestId]
+    //   return versions
 
     case versionActionTypes.DELETE_VERSION_REQUEST:
       versions = { ...state }

@@ -19,7 +19,6 @@ function CombinedCollections(props) {
     <div>
       {childIds.map((singleId) => {
         const type = pages?.[singleId]?.type || null
-        // console.log('I want to check the ispublishdata', props?.isPublishData);
         switch (type) {
           case 1:
             return <CollectionParentPages key={singleId} {...props} rootParentId={singleId} ON_PUBLISH_DOC={ON_PUBLISH_DOC} />

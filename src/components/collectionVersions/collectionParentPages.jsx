@@ -19,6 +19,7 @@ import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction, setDefaultversionId } from '../../store/clientData/clientDataActions'
 import pageService from '../pages/pageService'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
+import { onDefaultVersion } from '../publishDocs/redux/publishDocsActions'
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
@@ -39,7 +40,8 @@ const mapDispatchToProps = (dispatch) => {
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     update_isExpand_for_pages: (payload) => dispatch(addIsExpandedAction(payload)),
-    set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload))
+    set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload)),
+    set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData))
   }
 }
 
@@ -75,6 +77,7 @@ class CollectionParentPages extends Component {
       defaultVersionId: '',
       publishDefaultVersionName: '',
       clickedList: [],
+      selectedCheckbox: null,
       isListVisible: false,
       publishVersion: '',
       checkboxChecked: false
@@ -98,8 +101,11 @@ class CollectionParentPages extends Component {
     if (endpointId) this.setParentPageForEntity(endpointId, 'endpoint')
     const defaultVersion = this.findDefaultVersion()
     if (defaultVersion) {
-      this.setState({ defaultVersionName: defaultVersion.name })
-      this.setState({ defaultVersionId: defaultVersion.id })
+      this.setState({
+        defaultVersionName: defaultVersion.name,
+        defaultVersionId: defaultVersion.id,
+        selectedCheckbox: defaultVersion.name || null,
+      });
     }
   }
 
@@ -307,8 +313,11 @@ class CollectionParentPages extends Component {
   }
   renderListButtons(list) {
     const object = this.props.pages
-    const namesList = list.map((itemId) => object[itemId].name)
-    this.setState({ clickedList: namesList })
+    const namesAndIds = list.map((itemId) => ({
+      id: object[itemId].id,
+      name: object[itemId].name
+    }));
+    this.setState({ clickedList: namesAndIds })
     this.toggleListVisibility()
   }
 
@@ -328,6 +337,29 @@ class CollectionParentPages extends Component {
       checkboxChecked: !prevState.checkboxChecked
     }))
   }
+  handleCheckboxClick = (name, id) => {
+
+  this.setState(
+    (prevState) => ({
+      selectedCheckbox: prevState.selectedCheckbox === name ? null : name,
+    }),
+    () => {
+      localStorage.setItem('selectedCheckbox', JSON.stringify({"id" : id , "name " : this.state.selectedCheckbox }));
+    }
+  );
+
+  const versionData = { oldVersionId: this.state.defaultVersionId, newVersionId: id };
+  if (this.state.defaultVersionId !== id) {
+    this.props.set_Default_Version(this.props.match.params.orgId, versionData);
+    this.props.set_Default_version_Id({
+      value: id,
+      defaultVersionId: id,
+      selectedVersionName: name,
+      defaultVersionName: name,
+      rootId: this.props.rootParentId
+    })
+  }
+};
 
   renderBody(pageId, index) {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
@@ -345,14 +377,12 @@ class CollectionParentPages extends Component {
                 tabIndex={-1}
                 //  className={'pl-3 ' + (expanded ? 'expanded' : '')}
               >
-                {console.log(this.props.selectAll, 'select all in side divvv')}
                 <div className='d-flex align-items-center cl-name'>
                   <input
                     type='checkbox'
                     checked={this.state.checkboxChecked || this.props.selectAll}
                     onChange={this.handleCheckboxChange}
                   />
-                  {console.log(this.state.checkboxChecked, 'check box checkeddd')}
                   <div className='d-flex gap-5 ms-2'>
                     <div className='sidebar-accordion-item text-truncate ml-2 '>{this.props.pages[pageId].name}</div>
                     <DropdownButton
@@ -378,20 +408,26 @@ class CollectionParentPages extends Component {
                         onClick={() => {
                           this.handleButton(rootId)
                         }}
-                        title={<span className='dropdown-title'>{this.state.publishVersion || this.state.defaultVersionName}</span>}
+                        title={"Select Default Version"}
                       >
-                        {this.state.clickedList.map((name, index) => (
-                          <Dropdown.Item key={index}>
-                            <button
-                              onClick={() => {
-                                this.handleListButton(name)
+                        {this.state.clickedList.map((item, index) => (
+                          <Dropdown.Item className='d-flex' key={index}>
+                            {console.log(this.state.selectedCheckbox, "selected check boxxxx")}
+                            <input 
+                            type='checkbox'
+                            checked= {this.state.selectedCheckbox === item.name}
+                            onChange={()=>{this.handleCheckboxClick(item.name, item.id)}}
+                            />
+                            <Dropdown.Item
+                              key={index}
+                              onClick={(event) => {
+                                event.stopPropagation();
                               }}
                             >
-                              {name}
-                            </button>
+                              {item.name}
+                            </Dropdown.Item>
                           </Dropdown.Item>
                         ))}
-                        {/* ))} */}
                       </DropdownButton>
                     </OverlayTrigger>
                   </div>
@@ -404,15 +440,12 @@ class CollectionParentPages extends Component {
                     <CombinedCollections
                       {...this.props}
                       page_id={pageId}
-                      //  show_filter_pages={this.propsFromParentPage.bind(this)}
                       rootParentId={this.state.selectedVersionId}
-                      //  defaultVersionId = {this.state.selectedVersionId}
-                      //  defaultVersion = ""
                     />
                   </div>
                 </Card.Body>
               </div>
-              {/* ) : null} */}
+               {/* ) : null}  */}
             </div>
           </div>
         ) : (
@@ -423,7 +456,7 @@ class CollectionParentPages extends Component {
                 ref={(newRef) => {
                   this.scrollRef[pageId] = newRef
                 }}
-                //  className={'pl-3 ' + (expanded ? 'expanded' : '')}
+                 className={'pl-3 ' + (expanded ? 'expanded' : '')}
               >
                 <div
                   className='d-flex align-items-center cl-name'
@@ -436,13 +469,12 @@ class CollectionParentPages extends Component {
                   </span>
                   <div className='d-flex'>
                     <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
-                    {console.log(this.state.selectedVersionName, 'version name')}
                     <DropdownButton
                       className=''
                       id='dropdown-basic-button'
                       title={
                         <span className='dropdown-title'>
-                          {this.state.selectedVersionName ? this.state.selectedVersionName : this.state.defaultVersionName}
+                          {this.props.pages[this.props.rootParentId].child.length === 1 ? this.state.defaultVersionName : this.props.clientData[rootId]?.selectedVersionName}
                         </span>
                       }
                     >
@@ -595,8 +627,7 @@ class CollectionParentPages extends Component {
                       <CombinedCollections
                         {...this.props}
                         page_id={pageId}
-                        //  show_filter_pages={this.propsFromParentPage.bind(this)}
-                        rootParentId={this.state.selectedVersionId}
+                        rootParentId={this.props.pages[this.props.rootParentId].child.length === 1 ? this.state.defaultVersionId : this.props.clientData[this.props.rootParentId]?.selectedVersionId}
                       />
                     </div>
                   </Card.Body>
@@ -844,7 +875,7 @@ class CollectionParentPages extends Component {
                 .filter((pageId) => this.filteredPages[pageId].collectionId === this.props.collection_id)
                 .map((pageId, index) => this.renderBody(pageId, index, versionsCount))}
 
-        <div className='pl-4'>{this.renderForm(versionsCount)}</div>
+        {/* <div className='pl-4'>{this.renderForm(versionsCount)}</div> */}
       </>
     )
   }

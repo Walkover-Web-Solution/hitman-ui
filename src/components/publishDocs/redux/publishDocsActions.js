@@ -28,3 +28,30 @@ export const onFeedbacksFetchedError = (error) => {
     error
   }
 }
+
+export const onDefaultVersion = (orgId,versionData) => {
+  console.log("inside onDefault versionnnn",versionData);
+  return (dispatch) =>{
+    publishDocsApiService
+    .setDefaultVersion(orgId,versionData)
+    .then((response)=>{
+      dispatch(onSetDefaultVersion(response.data))
+    })
+    .catch((error)=>{
+      dispatch(onSetDefaultVersionError(error.response ? error.response.data : error))
+    })
+  }
+}
+export const onSetDefaultVersion = (versionData) => {
+  console.log("inside on set dfault versionnnnn", versionData);
+  return {
+    type: publishDocsActionTypes.ON_DEFAULT_VERSION,
+    versionData
+  }
+}
+export const onSetDefaultVersionError = (error) => {
+  return {
+    type: publishDocsActionTypes.ON_DEFAULT_VERSION_ERROR,
+    error
+  }
+}
