@@ -10,6 +10,7 @@ import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpoint } f
 import filterService from '../../services/filterService'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
+import { updataForIsPublished } from '../../store/clientData/clientDataActions'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -22,7 +23,8 @@ const endpointsEnum = {
 const mapStateToProps = (state) => {
   return {
     endpoints: state.pages,
-    tabs: state.tabs
+    tabs: state.tabs,
+    clientData: state.clientData
   }
 }
 
@@ -37,7 +39,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback))
+    add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
 }
 
@@ -246,10 +249,12 @@ class Endpoints extends Component {
 
     return endpoints
   }
+  
   handleCheckboxChange = () => {
-    this.setState((prevState) => ({
-      checkboxChecked: !prevState.checkboxChecked
-    }))
+    this.props.setIsCheckForParenPage({
+      id: this.props?.endpointId,
+      isChecked: !this.props?.clientData?.[this?.props?.endpointId]?.checkedForPublished
+    })
   }
 
   makePositionWiseEndpoints(endpoints) {
@@ -281,7 +286,11 @@ class Endpoints extends Component {
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
           <div className='sidebar-accordion-item'>
-            <input type='checkbox' checked={this.state.checkboxChecked || this.props.selectAll} onChange={this.handleCheckboxChange} />
+            <input
+              type='checkbox'
+              checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
+              onChange={this.handleCheckboxChange}
+            />
             <div className='api-label GET request-type-bgcolor'>GET</div>
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
@@ -450,10 +459,10 @@ class Endpoints extends Component {
               <button
                 tabIndex={-1}
                 onClick={() => {
-                  this.handleDisplay(this.props.endpoints[endpointId], this.props.rootParentId, this.props.collection_id, true)
+                  this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
                 }}
                 onDoubleClick={() =>
-                  this.handleDisplay(this.props.endpoints[endpointId], this.props.rootParentId, this.props.collection_id, false)
+                  this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
                 }
               >
                 {this.displayEndpointName(endpointId)}

@@ -2079,7 +2079,6 @@ class DisplayEndpoint extends Component {
 
   toggleChatbotModal = () => {
     if (this.props.responseView === 'right' && this.state.showAskAiSlider === false) {
-      console.log('inside if condition')
       this.props.set_response_view('bottom')
     }
     this.setState((prevState) => ({
@@ -2885,7 +2884,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    // debugger
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)

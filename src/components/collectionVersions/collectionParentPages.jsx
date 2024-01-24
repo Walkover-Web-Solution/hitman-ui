@@ -16,7 +16,7 @@ import { deletePage, duplicatePage } from '../pages/redux/pagesActions'
 import { approvePage, draftPage, pendingPage, rejectPage } from '../publicEndpoint/publicPageService'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import CombinedCollections from '../combinedCollections/combinedCollections'
-import { addIsExpandedAction, setDefaultversionId } from '../../store/clientData/clientDataActions'
+import { addIsExpandedAction, setDefaultversionId, updataForIsPublished } from '../../store/clientData/clientDataActions'
 import pageService from '../pages/pageService'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 import { onDefaultVersion } from '../publishDocs/redux/publishDocsActions'
@@ -41,7 +41,8 @@ const mapDispatchToProps = (dispatch) => {
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     update_isExpand_for_pages: (payload) => dispatch(addIsExpandedAction(payload)),
     set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload)),
-    set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData))
+    set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData)),
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
 }
 
@@ -80,7 +81,6 @@ class CollectionParentPages extends Component {
       selectedCheckbox: null,
       isListVisible: false,
       publishVersion: '',
-      checkboxChecked: false
     }
 
     this.filterFlag = false
@@ -306,7 +306,6 @@ class CollectionParentPages extends Component {
   }
 
   handleButton(rootparentId) {
-    console.log('inside button clicked', rootparentId)
     const object = this.props.pages
     const list = object[rootparentId].child
     this.renderListButtons(list)
@@ -322,7 +321,6 @@ class CollectionParentPages extends Component {
   }
 
   handleListButton(name) {
-    console.log('List button clicked:', name)
     this.setState({ publishVersion: name })
     // You can perform other actions here
   }
@@ -333,9 +331,7 @@ class CollectionParentPages extends Component {
     }))
   }
   handleCheckboxChange = () => {
-    this.setState((prevState) => ({
-      checkboxChecked: !prevState.checkboxChecked
-    }))
+    this.props.setIsCheckForParenPage({ id: this.props.rootParentId, isChecked : !this.props?.clientData?.[this.props.rootParentId]?.checkedForPublished})
   }
   handleCheckboxClick = (name, id) => {
 
@@ -375,12 +371,12 @@ class CollectionParentPages extends Component {
             <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
               <button
                 tabIndex={-1}
-                //  className={'pl-3 ' + (expanded ? 'expanded' : '')}
+                 className={'pl-3 ' + (expanded ? 'expanded' : '')}
               >
                 <div className='d-flex align-items-center cl-name'>
                   <input
                     type='checkbox'
-                    checked={this.state.checkboxChecked || this.props.selectAll}
+                    checked={this.props?.clientData?.[this.props?.rootParentId]?.checkedForPublished || false}
                     onChange={this.handleCheckboxChange}
                   />
                   <div className='d-flex gap-5 ms-2'>
