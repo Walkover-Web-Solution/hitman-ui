@@ -466,6 +466,7 @@ class CollectionParentPages extends Component {
                     <DropdownButton
                       className=''
                       id='dropdown-basic-button'
+                      onClick={(event) => event.stopPropagation()}
                       title={
                         <span className='dropdown-title'>
                           {this.props.pages[this.props.rootParentId].child.length === 1
@@ -475,7 +476,7 @@ class CollectionParentPages extends Component {
                       }
                     >
                       {this.props.pages[rootId].child.map((childId, index) => (
-                        <Dropdown.Item key={index} onClick={() => this.handleDropdownItemClick(childId, rootId)}>
+                        <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
                           <span className='dropdown-item-text'>{this.props.pages[childId].name}</span>
                         </Dropdown.Item>
                       ))}
