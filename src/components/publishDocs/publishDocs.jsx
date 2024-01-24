@@ -839,7 +839,6 @@ class PublishDocs extends Component {
           <div className='col-12'>
             <div className='d-flex justify-content-between mx-2 mb-3 mt-4'>
               <div>
-                <h1>hello</h1>
                 <div className='contacts mb-2'>{this.props.groups[this.state.selectedGroupId]?.name}</div>
                 <div className='list-contacts'>{pageName}</div>
               </div>

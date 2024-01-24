@@ -5,7 +5,7 @@ import Groups from '../groups/groups'
 import Endpoints from '../endpoints/endpoints'
 
 function CombinedCollections(props) {
-  const { childIds, pages, ON_PUBLISH_DOC } = useSelector((state) => {
+  const { childIds, pages } = useSelector((state) => {
     return {
       childIds: state?.pages?.[props?.rootParentId]?.child || [],
       pages: state.pages
@@ -18,11 +18,11 @@ function CombinedCollections(props) {
         const type = pages?.[singleId]?.type || null
         switch (type) {
           case 1:
-            return <CollectionParentPages key={singleId} {...props} rootParentId={singleId} ON_PUBLISH_DOC={ON_PUBLISH_DOC} />
+            return <CollectionParentPages key={singleId} {...props} rootParentId={singleId} />
           case 3:
-            return <Groups key={singleId} {...props} rootParentId={singleId} ON_PUBLISH_DOC={ON_PUBLISH_DOC} />
+            return <Groups key={singleId} {...props} rootParentId={singleId} />
           case 4:
-            return <Endpoints key={singleId} {...props} endpointId={singleId} ON_PUBLISH_DOC={ON_PUBLISH_DOC} />
+            return <Endpoints key={singleId} {...props} endpointId={singleId} />
           default:
             break
         }

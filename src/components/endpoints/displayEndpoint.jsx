@@ -197,12 +197,14 @@ const untitledEndpointData = {
   sslMode: getCurrentUserSSLMode(),
   showAskAiSlider: false,
   currentView: 'testing',
-  docViewData : [{ type: 'host' },
-  { type: 'body' },
-  { type: 'params' },
-  { type: 'pathVariables' },
-  { type: 'headers' },
-  { type: 'sampleResponse' }]
+  docViewData: [
+    { type: 'host' },
+    { type: 'body' },
+    { type: 'params' },
+    { type: 'pathVariables' },
+    { type: 'headers' },
+    { type: 'sampleResponse' }
+  ]
 }
 
 const getEndpointContent = async (endpointId) => {
@@ -2260,9 +2262,9 @@ class DisplayEndpoint extends Component {
   }
 
   switchView = (currentView) => {
-    const data = this.props.endpointContent;
-    data.currentView = currentView;
-    this.props.setQueryUpdatedData(data);
+    const data = this.props.endpointContent
+    data.currentView = currentView
+    this.props.setQueryUpdatedData(data)
   }
 
   renderDefaultViewConfirmationModal() {
@@ -2453,10 +2455,13 @@ class DisplayEndpoint extends Component {
     if (isSavedEndpoint(this.props)) {
       return (
         <ButtonGroup className='btn-group-custom mb-3' aria-label='Basic example'>
-          <Button className={'mr-1 ' + (this.props?.endpointContent?.currentView === 'testing' ? 'active' : '')} onClick={() => this.switchView('testing')}>
+          <Button
+            className={'mr-1 ' + (this.props?.endpointContent?.currentView === 'testing' ? 'active' : '')}
+            onClick={() => this.switchView('testing')}
+          >
             Testing
           </Button>
-          <Button className={this.props?.endpointContent?.currentView=== 'doc' ? 'active' : ''} onClick={() => this.switchView('doc')}>
+          <Button className={this.props?.endpointContent?.currentView === 'doc' ? 'active' : ''} onClick={() => this.switchView('doc')}>
             Doc
           </Button>
         </ButtonGroup>
@@ -2465,7 +2470,7 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOptions() {
-    if (isDashboardRoute(this.props) &&this.props?.endpointContent.currentView === 'doc') {
+    if (isDashboardRoute(this.props) && this.props?.endpointContent.currentView === 'doc') {
       return (
         <div>
           <Dropdown>
@@ -2918,7 +2923,9 @@ class DisplayEndpoint extends Component {
 
     const { theme, codeEditorVisibility } = this.state
     const { responseView } = this.props
-    return (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView) || !isDashboardRoute(this.props) || !isSavedEndpoint(this.props) ? (
+    return (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView) ||
+      !isDashboardRoute(this.props) ||
+      !isSavedEndpoint(this.props) ? (
       <div
         ref={this.myRef}
         className={
@@ -2934,7 +2941,11 @@ class DisplayEndpoint extends Component {
           className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}
         >
           <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
-            <div className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''}`}>
+            <div
+              className={`hm-endpoint-container mid-part endpoint-container ${
+                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              }`}
+            >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
               {this.renderPublishConfirmationModal()}

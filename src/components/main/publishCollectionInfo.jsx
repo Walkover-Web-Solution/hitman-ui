@@ -13,7 +13,6 @@ import { openExternalLink, msgText } from '../common/utility'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { store } from '../../store/store'
 import { updateTab } from '../tabs/redux/tabsActions'
-import indexedDbService from '../indexedDb/indexedDbService'
 import _ from 'lodash'
 import { publishData } from '../modals/redux/modalsActions'
 import { updateCollectionIdForPublish } from '../../store/clientData/clientDataActions'
@@ -25,7 +24,8 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     endpoints: state.endpoints,
     modals: state.endpoints,
-    isPublishSliderOpen: state.modals.publishData
+    isPublishSliderOpen: state.modals.publishData,
+    tabs: state.tabs
   }
 }
 
@@ -110,7 +110,7 @@ class PublishCollectionInfo extends Component {
       >
         <div className='d-flex align-items-center cursor-pointer'>
           <img className='mr-1' src={SettingIcon} alt='' />
-          <span>Manage Public Doc..........</span>
+          <span>Manage Public Doc</span>
         </div>
         {this.renderInfoText('Add an endpoint first')}
       </button>
@@ -122,8 +122,8 @@ class PublishCollectionInfo extends Component {
     if (collectionId) {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
     }
-    const activeTab = await indexedDbService.getAllData('tabs_metadata')
-    store.dispatch(updateTab(activeTab.activeTabId, { state: { pageType: 'FEEDBACK' } }))
+    const activeTab = this.props.tabs.activeTabId
+    store.dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
   }
 
   renderInOverlay(method, msg) {
@@ -281,8 +281,8 @@ class PublishCollectionInfo extends Component {
     if (collectionId) {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
-    const activeTab = await indexedDbService.getAllData('tabs_metadata')
-    store.dispatch(updateTab(activeTab.activeTabId, { state: { pageType: 'SETTINGS' } }))
+    const activeTab = this.props.tabs.activeTabId
+    store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
   }
 
   closePublishSidebar() {

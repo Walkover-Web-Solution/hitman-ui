@@ -78,7 +78,7 @@ function pagesReducer(state = initialState, action) {
       delete pages[action.newPage.requestId]
       return pages
 
-      case pagesActionTypes.ADD_VERSION_REQUEST:
+    case pagesActionTypes.ADD_VERSION_REQUEST:
       return {
         ...state,
         [action.newVersion.requestId]: action.newVersion

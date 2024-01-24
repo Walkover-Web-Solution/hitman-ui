@@ -2,7 +2,7 @@ import clientDataActionTypes from './clientDataActionTypes'
 
 const initialState = {
   collectionToPublish: '',
-  publishDataForCollections : {}
+  publishDataForCollections: {}
 }
 
 const clientDataReducer = (state = initialState, action) => {
