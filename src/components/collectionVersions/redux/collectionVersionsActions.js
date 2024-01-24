@@ -122,7 +122,7 @@ export const onParentPageVersionAdded = (response) => {
 }
 // export const onVersionAdded = (response) => {
 //   return {
-//     type: versionActionTypes.ON_VERSION_ADDED,
+//     type: pagesActionTypes.ON_VERSION_ADDED,
 //     response
 //   }
 // }

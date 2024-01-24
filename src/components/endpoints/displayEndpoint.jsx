@@ -196,7 +196,13 @@ const untitledEndpointData = {
   docOptions: false,
   sslMode: getCurrentUserSSLMode(),
   showAskAiSlider: false,
-  currentView: 'testing'
+  currentView: 'testing',
+  docViewData : [{ type: 'host' },
+  { type: 'body' },
+  { type: 'params' },
+  { type: 'pathVariables' },
+  { type: 'headers' },
+  { type: 'sampleResponse' }]
 }
 
 const getEndpointContent = async (endpointId) => {
@@ -525,9 +531,9 @@ class DisplayEndpoint extends Component {
       endpoint = {}
       if (this.props.rejectedEndpointId) {
         this.setState({ publicEndpointId: this.props.rejectedEndpointId })
-        endpoint = endpoints[endpointId].publishedEndpoint
+        endpoint = this.props?.endpointContent?.publishedEndpoint
       } else {
-        endpoint = endpoints[endpointId]
+        endpoint = this.props?.endpointContent
       }
       let authType = {}
       if (endpoint.authorizationType !== null) {
@@ -560,6 +566,7 @@ class DisplayEndpoint extends Component {
       originalBody = endpoint.body
       const currentView = this.getCurrentView()
       const docViewData = this.getDocViewData(endpoint)
+
       this.setState(
         {
           data: {
@@ -1293,7 +1300,7 @@ class DisplayEndpoint extends Component {
         notes: this.state.endpoint.notes,
         preScript: this.state.preScriptText,
         postScript: this.state.postScriptText,
-        docViewData: this.state.docViewData
+        docViewData: this.props?.endpointContent?.docViewData
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
@@ -2176,7 +2183,7 @@ class DisplayEndpoint extends Component {
         open_body={this.openBody.bind(this)}
         close_body={this.closeBody.bind(this)}
         props_from_parent={this.propsFromSampleResponse.bind(this)}
-        currentView={this.state.currentView}
+        currentView={this.props?.endpointContent?.currentView}
       />
     )
   }
@@ -2253,10 +2260,9 @@ class DisplayEndpoint extends Component {
   }
 
   switchView = (currentView) => {
-    if (this.state.currentView !== currentView) {
-      this.setState({ currentView })
-      // this.setState({ showViewConfirmationModal: true })
-    }
+    const data = this.props.endpointContent;
+    data.currentView = currentView;
+    this.props.setQueryUpdatedData(data);
   }
 
   renderDefaultViewConfirmationModal() {
@@ -2273,14 +2279,14 @@ class DisplayEndpoint extends Component {
   }
 
   setDefaultView() {
-    const endpointView = { [getCurrentUser().identifier]: this.state.currentView }
+    const endpointView = { [getCurrentUser().identifier]: this.props?.endpointContent?.currentView }
     window.localStorage.setItem('endpointView', JSON.stringify(endpointView))
   }
 
   removePublicItem(item, index) {
     const showRemoveButton = !['body', 'host', 'params', 'pathVariables', 'headers', 'sampleResponse'].includes(item.type)
     const handleOnClick = () => {
-      const docData = _.cloneDeep(this.state.docViewData)
+      const docData = _.cloneDeep(this.props?.endpointContent?.docViewData)
       docData.splice(index, 1)
       this.setState({ docViewData: docData })
     }
@@ -2295,7 +2301,7 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocView = () => {
-    if (!this.state.docViewData) return
+    if (!this.props?.endpointContent?.docViewData) return
     if (isDashboardRoute(this.props)) {
       return (
         <SortableList
@@ -2306,7 +2312,7 @@ class DisplayEndpoint extends Component {
           }}
         >
           <div>
-            {this.state.docViewData.map((item, index) => (
+            {this.props?.endpointContent?.docViewData.map((item, index) => (
               <SortableItem key={index} index={index}>
                 <div className='doc-secs-container mb-3'>
                   <div className='doc-secs'>{this.renderPublicItem(item, index)}</div>
@@ -2321,7 +2327,7 @@ class DisplayEndpoint extends Component {
         </SortableList>
       )
     } else {
-      return this.state.docViewData?.map((item, index) => <div key={index}>{this.renderPublicItem(item, index)}</div>)
+      return this.props?.endpointContent?.docViewData?.map((item, index) => <div key={index}>{this.renderPublicItem(item, index)}</div>)
     }
   }
 
@@ -2350,7 +2356,7 @@ class DisplayEndpoint extends Component {
       <Tiptap
         initial={item.data}
         onChange={(e) => {
-          const docData = _.cloneDeep(this.state.docViewData)
+          const docData = _.cloneDeep(this.props?.endpointContent?.docViewData)
           docData[index].data = e
           this.setState({ docViewData: docData })
         }}
@@ -2408,11 +2414,11 @@ class DisplayEndpoint extends Component {
   }
 
   isNotDashboardOrDocView() {
-    return !isDashboardRoute(this.props) || this.state.currentView === 'doc'
+    return !isDashboardRoute(this.props) || this.props?.endpointContent?.currentView === 'doc'
   }
 
   isDashboardAndTestingView() {
-    return isDashboardRoute(this.props) && (this.state.currentView === 'testing' || !isSavedEndpoint(this.props))
+    return isDashboardRoute(this.props) && (this.props?.endpointContent?.currentView === 'testing' || !isSavedEndpoint(this.props))
   }
 
   getCurrentView() {
@@ -2447,10 +2453,10 @@ class DisplayEndpoint extends Component {
     if (isSavedEndpoint(this.props)) {
       return (
         <ButtonGroup className='btn-group-custom mb-3' aria-label='Basic example'>
-          <Button className={'mr-1 ' + (this.state.currentView === 'testing' ? 'active' : '')} onClick={() => this.switchView('testing')}>
+          <Button className={'mr-1 ' + (this.props?.endpointContent?.currentView === 'testing' ? 'active' : '')} onClick={() => this.switchView('testing')}>
             Testing
           </Button>
-          <Button className={this.state.currentView === 'doc' ? 'active' : ''} onClick={() => this.switchView('doc')}>
+          <Button className={this.props?.endpointContent?.currentView=== 'doc' ? 'active' : ''} onClick={() => this.switchView('doc')}>
             Doc
           </Button>
         </ButtonGroup>
@@ -2459,7 +2465,7 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOptions() {
-    if (isDashboardRoute(this.props) && this.state.currentView === 'doc') {
+    if (isDashboardRoute(this.props) &&this.props?.endpointContent.currentView === 'doc') {
       return (
         <div>
           <Dropdown>
@@ -2477,7 +2483,7 @@ class DisplayEndpoint extends Component {
   }
 
   addBlock(blockType) {
-    const docViewData = [...this.state.docViewData]
+    const docViewData = [...this.props?.endpointContent?.docViewData]
     docViewData.push({
       type: blockType,
       data: ''
@@ -2528,7 +2534,7 @@ class DisplayEndpoint extends Component {
         dataArray={this.props?.endpointContent?.originalHeaders || []}
         props_from_parent={this.propsFromChild.bind(this)}
         original_data={[this.props?.endpointContent?.originalHeaders || []]}
-        currentView={this.state.currentView}
+        currentView={this.props?.endpointContent?.currentView}
       />
     )
   }
@@ -2542,7 +2548,7 @@ class DisplayEndpoint extends Component {
           dataArray={this.state.originalHeaders}
           props_from_parent={this.propsFromChild.bind(this)}
           original_data={[...this.state.headers]}
-          currentView={this.state.currentView}
+          currentView={this.props?.endpointContent?.currentView}
         />
       )
     )
@@ -2557,7 +2563,7 @@ class DisplayEndpoint extends Component {
         props_from_parent={this.propsFromChild.bind(this)}
         original_data={[...(this.props?.endpointContent?.params || [])]}
         open_modal={this.props.open_modal}
-        currentView={this.state.currentView}
+        currentView={this.props?.endpointContent?.currentView}
       />
     )
   }
@@ -2572,7 +2578,7 @@ class DisplayEndpoint extends Component {
             dataArray={this.state.originalParams}
             props_from_parent={this.propsFromChild.bind(this)}
             original_data={[...this.state.params]}
-            currentView={this.state.currentView}
+            currentView={this.props?.endpointContent?.currentView}
           />
         </div>
       )
@@ -2589,7 +2595,7 @@ class DisplayEndpoint extends Component {
           dataArray={this.state.pathVariables}
           props_from_parent={this.propsFromChild.bind(this)}
           original_data={[...this.state.pathVariables]}
-          currentView={this.state.currentView}
+          currentView={this.props?.endpointContent?.currentView}
         />
       )
     )
@@ -2606,7 +2612,7 @@ class DisplayEndpoint extends Component {
             dataArray={this.state.pathVariables}
             props_from_parent={this.propsFromChild.bind(this)}
             original_data={[...this.state.pathVariables]}
-            currentView={this.state.currentView}
+            currentView={this.props?.endpointContent?.currentView}
           />
         </div>
       )
@@ -2692,7 +2698,7 @@ class DisplayEndpoint extends Component {
   renderDocViewOperations() {
     const endpoints = { ...this.props.endpoints }
     const endpointId = this.endpointId
-    if (isDashboardRoute(this.props) && this.state.currentView === 'doc' && endpoints[endpointId]) {
+    if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpoints[endpointId]) {
       const approvedOrRejected = isStateApproved(endpointId, endpoints) || isStateReject(endpointId, endpoints)
       const isPublicEndpoint = endpoints[endpointId].isPublished
       return (
@@ -2912,7 +2918,7 @@ class DisplayEndpoint extends Component {
 
     const { theme, codeEditorVisibility } = this.state
     const { responseView } = this.props
-    return (isDashboardRoute(this.props) && this.state.currentView) || !isDashboardRoute(this.props) || !isSavedEndpoint(this.props) ? (
+    return (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView) || !isDashboardRoute(this.props) || !isSavedEndpoint(this.props) ? (
       <div
         ref={this.myRef}
         className={
@@ -2928,7 +2934,7 @@ class DisplayEndpoint extends Component {
           className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}
         >
           <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
-            <div className={`hm-endpoint-container mid-part endpoint-container ${this.state.currentView === 'doc' ? 'doc-fix-width' : ''}`}>
+            <div className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''}`}>
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
               {this.renderPublishConfirmationModal()}
@@ -2970,7 +2976,7 @@ class DisplayEndpoint extends Component {
                   </div>
                 </div>
               ) : null}
-              <div className={'clear-both ' + (this.state.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
+              <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
                 <div className='endpoint-header' ref={this.scrollDiv}>
                   {this.isNotDashboardOrDocView() && (
                     <div className='endpoint-name-container'>
