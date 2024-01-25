@@ -2723,18 +2723,13 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOperations() {
-    // debugger
-    console.log(this.endpointId, 'endpoint id')
     const endpoints = this.props.endpointContent
     const endpointss = this.props.pages[this.endpointId]
     // const endpointPublish = this.props.endpoints
     const endpointId = this.endpointId
-    console.log(endpointId, 'endpoint id')
     if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpointss) {
       const approvedOrRejected = isStateApproved(endpointId, endpointss) || isStateReject(this.endpointId, endpointss)
-      console.log(approvedOrRejected, 'approved or rejecteddd')
       const isPublicEndpoint = endpointss?.isPublished
-      console.log(isPublicEndpoint, 'Public endpoint')
       return (
         <div>
           {isStatePending(endpointId, endpointss) && isAdmin() && (
@@ -2779,7 +2774,7 @@ class DisplayEndpoint extends Component {
   }
 
   renderInOverlay(method, endpointId) {
-    const endpoints = { ...this.props.endpoints }
+    const endpoints = { ...this.props.pages[endpointId] }
     return (
       <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
         <span className='d-inline-block float-right'>{method(endpointId, endpoints)}</span>
@@ -2788,9 +2783,7 @@ class DisplayEndpoint extends Component {
   }
 
   handleRemovePublicEndpoint(endpointId) {
-    debugger
     const endpoints = this.props.pages[endpointId]
-    console.log('hello', endpoints[endpointId])
     this.props.update_endpoint(
       {
         ...endpoints,
@@ -2806,10 +2799,10 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderUnPublishEndpoint(endpointId, endpoints) {
+  renderUnPublishEndpoint(endpointId, endpointss) {
     return (
       <UnPublishEntityButton
-        entity={endpoints}
+        entity={endpointss}
         entityId={endpointId}
         onUnpublish={() => this.handleRemovePublicEndpoint(endpointId)}
         entityName='Endpoint'
@@ -2844,7 +2837,6 @@ class DisplayEndpoint extends Component {
   }
 
   async handleApproveEndpointRequest() {
-    console.log('inside handle appproved endpoinnt request', this.endpointId)
     const endpointId = this.endpointId
     this.setState({ publishLoader: true })
     if (sensitiveInfoFound(this.props?.endpointContent)) {
