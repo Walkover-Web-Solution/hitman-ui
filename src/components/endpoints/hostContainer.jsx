@@ -93,7 +93,6 @@ class HostContainer extends Component {
 
   handleInputHostChange(e) {
     const data = this.splitUrlHelper(e)
-    console.log('data', data)
     this.setState(
       {
         ...data,
@@ -177,6 +176,7 @@ class HostContainer extends Component {
   }
 
   renderHostDatalist() {
+    console.log(this.state)
     const endpointId = this.props.endpointId
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>

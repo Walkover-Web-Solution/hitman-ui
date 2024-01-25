@@ -2639,7 +2639,9 @@ class DisplayEndpoint extends Component {
         <div className='hm-endpoint-header'>
           <div className='input-group'>
             <div className='input-group-prepend'>
-              <span className={`api-label api-label-lg input-group-text ${this.state.data.method}`}>{this.state.data.method}</span>
+              <span className={`api-label api-label-lg input-group-text ${this.props?.endpointContent.data.method}`}>
+                {this.props?.endpointContent.data.method}
+              </span>
             </div>
             <HostContainer
               {...this.props}
@@ -2650,8 +2652,8 @@ class DisplayEndpoint extends Component {
               }
               updatedUri={this.props.endpointContent?.data?.updatedUri}
               set_base_url={this.setBaseUrl.bind(this)}
-              customHost={this.state.BASE_URL || ''}
-              endpointId={this.state.endpoint.id}
+              customHost={this.props?.endpointContent?.host.BASE_URL || ''}
+              endpointId={this.props?.match.params.endpointId}
               set_host_uri={this.setHostUri.bind(this)}
               props_from_parent={this.propsFromChild.bind(this)}
             />
@@ -2692,7 +2694,7 @@ class DisplayEndpoint extends Component {
             {...this.props}
             groupId={this.state.groupId}
             endpointId={this.state.endpoint.id}
-            customHost={this.state.endpoint.BASE_URL || ''}
+            customHost={this.props?.endpointContent?.host.BASE_URL || ''}
             environmentHost={
               this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
             }
