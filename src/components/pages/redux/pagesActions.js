@@ -64,11 +64,8 @@ export const onPagesFetchedError = (error) => {
 }
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
-  console.log(editedEndpoint.id, 'edited endpointtt', stopSaveLoader, 'stop save loader')
-  debugger
   return (dispatch) => {
     const originalEndpoint = store.getState().pages[editedEndpoint.id]
-    console.log(originalEndpoint, 'original endpoint')
     dispatch(updateEndpointRequest(editedEndpoint))
     const id = editedEndpoint.id
     const updatedEndpoint = editedEndpoint
@@ -77,7 +74,6 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
     endpointApiService
       .updateEndpoint(id, updatedEndpoint)
       .then((response) => {
-        console.log(response.data, '1234567890')
         dispatch(onEndpointUpdated(response.data))
         if (stopSaveLoader) {
           stopSaveLoader()
