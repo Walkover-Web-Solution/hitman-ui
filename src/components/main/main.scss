@@ -71,7 +71,7 @@ html body {
       display: flex;
       -webkit-display: flex;
       align-items: center;
-      padding: 0.35rem 1rem;
+      // padding: 0.35rem 1rem;
       transition: all 0.3s ease-in;
       font-size: $font-normal;
     }
@@ -2878,7 +2878,7 @@ div#steve-parent-accordion {
 .ask-ai-btn {
   font-size: 14px;
   padding: 5px;
-  z-index: 9999;
+  z-index: 1000;
   position: absolute;
   top: 7px;
   right: 190px;
@@ -3248,11 +3248,18 @@ body .doc-secs-container {
   margin-right: auto;
 }
 
-.page-display {
-  margin: auto;
-  max-width: 50rem;
-  float: unset !important;
-}
+//page display for edit
+
+  // position: relative;
+  // overflow: auto; /* Add this line to enable scrolling */
+  .page-display {
+    margin: 20rem;
+    max-width: 50rem;
+    float: unset !important;
+    position: relative;
+  }
+
+
 
 .doc-plus {
   padding: 0px !important;
@@ -3326,5 +3333,14 @@ body .tox {
   .dropdown-menu {
     position: absolute;
     bottom: 1px;
+  }
+}
+.textEditorContainer{
+  position: relative;
+  .menuBar{
+    position: sticky;
+    top: -2px;
+    z-index: 1;
+    background: white;
   }
 }

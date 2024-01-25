@@ -21,15 +21,17 @@ import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLink
 import PublishDocsConfirmModal from './publishDocsConfirmModal'
 import { moveToNextStep } from '../../services/widgetService'
 import { openExternalLink, sensitiveInfoFound } from '../common/utility'
+import { publishData } from '../modals/redux/modalsActions'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
 
+// 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const publishDocsEnum = {
-  PENDING_STATE: 'Pending',
-  REJECT_STATE: 'Reject',
-  APPROVED_STATE: 'Approved',
-  DRAFT_STATE: 'Draft',
+  PENDING_STATE: 0,
+  REJECT_STATE: 3,
+  APPROVED_STATE: 2,
+  DRAFT_STATE: 1,
   EMPTY_STRING: ''
 }
 const DragHandle = SortableHandle(() => (
@@ -56,7 +58,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     reject_page: (page) => dispatch(rejectPage(page)),
-    update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId))
+    update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId)),
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
   }
 }
 
@@ -110,6 +113,7 @@ class PublishDocs extends Component {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ openPageSettingsSidebar: false })
     }
+    this.props.ON_PUBLISH_DOC(false)
   }
 
   componentDidUpdate(prevProps, prevState) {

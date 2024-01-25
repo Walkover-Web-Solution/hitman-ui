@@ -10,11 +10,12 @@ import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import PageIcon from '../../assets/icons/page-icon.svg'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
 
+// 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const pagesEnum = {
-  PENDING_STATE: 'Pending',
-  REJECT_STATE: 'Reject',
-  APPROVED_STATE: 'Approved',
-  DRAFT_STATE: 'Draft'
+  PENDING_STATE: 0,
+  REJECT_STATE: 3,
+  APPROVED_STATE: 2,
+  DRAFT_STATE: 1
 }
 
 const mapStateToProps = (state) => {

@@ -63,7 +63,7 @@ export const addNewTab = () => {
 }
 
 export const closeTab = (tabId, history) => {
-  const tabsOrder = store.getState().tabs.tabsOrder.filter((tId) => tId !== tabId)
+  // const tabsOrder = store.getState().tabs.tabsOrder.filter((tId) => tId !== tabId)
   return async (dispatch) => {
     dispatch({ type: tabsActionTypes.CLOSE_TAB, tabId })
     // await indexedDbService.deleteData('tabs', tabId)

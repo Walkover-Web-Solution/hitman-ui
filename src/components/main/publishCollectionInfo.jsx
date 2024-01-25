@@ -13,15 +13,26 @@ import { openExternalLink, msgText } from '../common/utility'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { store } from '../../store/store'
 import { updateTab } from '../tabs/redux/tabsActions'
-import indexedDbService from '../indexedDb/indexedDbService'
 import _ from 'lodash'
+import { publishData } from '../modals/redux/modalsActions'
+import { updateCollectionIdForPublish } from '../../store/clientData/clientDataActions'
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
+    modals: state.endpoints,
+    isPublishSliderOpen: state.modals.publishData,
+    tabs: state.tabs
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
+    setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data))
   }
 }
 
@@ -73,7 +84,8 @@ class PublishCollectionInfo extends Component {
           </Tooltip>
         }
       >
-        <button onClick={() => !isDisabled && openExternalLink(url)}>
+        {/* <button onClick={() => !isDisabled && openExternalLink(url)}> */}
+        <button onClick={() => openExternalLink(url)}>
           <div className={`sidebar-public-url text-center d-flex align-items-center${!isDisabled && ' text-link'}`}>
             <span className='icon d-flex mr-1'>
               {' '}
@@ -91,7 +103,7 @@ class PublishCollectionInfo extends Component {
     return (
       <button
         className='btn'
-        disabled={!totalEndpointCount}
+        // disabled={!totalEndpointCount}
         onClick={() => {
           isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast()
         }}
@@ -110,8 +122,8 @@ class PublishCollectionInfo extends Component {
     if (collectionId) {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
     }
-    const activeTab = await indexedDbService.getAllData('tabs_metadata')
-    store.dispatch(updateTab(activeTab.activeTabId, { state: { pageType: 'FEEDBACK' } }))
+    const activeTab = this.props.tabs.activeTabId
+    store.dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
   }
 
   renderInOverlay(method, msg) {
@@ -226,7 +238,7 @@ class PublishCollectionInfo extends Component {
       <button
         className='btn btn-outline orange w-100 publishCollection'
         id='publish_api_doc_navbar_btn'
-        disabled={!totalEndpointCount}
+        // disabled={!totalEndpointCount}
         onClick={() => {
           this.redirectUser()
         }}
@@ -260,6 +272,8 @@ class PublishCollectionInfo extends Component {
 
   redirectUser() {
     this.setState({ openPublishSidebar: true })
+    this.props.ON_PUBLISH_DOC(true)
+    this.props.setCollectionIdForPublish({ collectionId: this.props.collectionId })
   }
 
   async openPublishSettings() {
@@ -267,18 +281,19 @@ class PublishCollectionInfo extends Component {
     if (collectionId) {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
-    const activeTab = await indexedDbService.getAllData('tabs_metadata')
-    store.dispatch(updateTab(activeTab.activeTabId, { state: { pageType: 'SETTINGS' } }))
+    const activeTab = this.props.tabs.activeTabId
+    store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
   }
 
   closePublishSidebar() {
     this.setState({ openPublishSidebar: false })
+    this.props.ON_PUBLISH_DOC(false)
   }
 
   openPublishSidebar() {
     return (
       <>
-        {this.state.openPublishSidebar && (
+        {this.props.isPublishSliderOpen && (
           <PublishSidebar
             {...this.props}
             closePublishSidebar={this.closePublishSidebar.bind(this)}
@@ -301,4 +316,4 @@ class PublishCollectionInfo extends Component {
   }
 }
 
-export default connect(mapStateToProps)(PublishCollectionInfo)
+export default connect(mapStateToProps, mapDispatchToProps)(PublishCollectionInfo)

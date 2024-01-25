@@ -623,6 +623,15 @@ button.btn.custom-body-type-button {
   justify-content: space-between;
   z-index: 2;
 }
+.fixed-menu-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff; /* Set your desired background color */
+  z-index: 1000; /* Set a higher z-index to ensure it appears above other elements */
+}
+
 .menuBar button {
   font-size: 15px;
   margin: 5px;

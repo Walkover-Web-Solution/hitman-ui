@@ -268,10 +268,22 @@ class CollectionVersions extends Component {
                 this.toggleVersionIds(versionId)
               }}
             >
-              <span className='versionChovron'>
-                <img src={ExpandArrow} alt='' />
-              </span>
-              <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.rootParentId].name}</div>
+              {this.props?.defaultVersion === this.props?.defaultVersionId ? (
+                <>
+                  <span className='versionChovron'>
+                    <img src={ExpandArrow} alt='' />
+                  </span>
+                  <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.defaultVersionId]?.name}</div>
+                </>
+              ) : (
+                <>
+                  <span className='versionChovron'>
+                    <img src={ExpandArrow} alt='' />
+                  </span>
+                  <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.defaultVersionId]?.name}</div>
+                </>
+              )}
+              {/* <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[this.props.defaultVersionId].name}</div> */}
             </div>
             {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action d-flex align-items-center'>
@@ -389,8 +401,9 @@ class CollectionVersions extends Component {
                   <CombinedCollections
                     {...this.props}
                     // pagesToRender={pagesToRender}
-                    version_id={versionId}
-                    // show_filter_version={this.propsFromVersion.bind(this)}
+                    version_id={this.props.defaultVersionId}
+                    show_filter_version={this.propsFromVersion.bind(this)}
+                    // isPublishData={false}
                   />
                 </div>
               </Card.Body>
