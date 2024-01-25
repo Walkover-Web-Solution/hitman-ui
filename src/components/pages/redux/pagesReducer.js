@@ -39,6 +39,16 @@ function pagesReducer(state = initialState, action) {
         [action.newPage.requestId]: action.newPage
       }
 
+    case publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS:
+      return {
+        ...state,
+        [action.data.id]: action.data
+      }
+    case publicEndpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
+      return {
+        ...state,
+        [action.editedEndpoint.id]: action.editedEndpoint
+      }
     case pagesActionTypes.ON_PARENT_PAGE_ADDED: {
       pages = { ...state }
 

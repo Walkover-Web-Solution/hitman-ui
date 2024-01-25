@@ -4,6 +4,8 @@ import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
 import { getOrgId, focusSelectedEntity } from '../../common/utility'
 import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
+import endpointApiService from '../../endpoints/endpointApiService'
+import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 
 export const fetchPages = (orgId) => {
   return (dispatch) => {
@@ -60,6 +62,44 @@ export const onPagesFetchedError = (error) => {
     error
   }
 }
+
+export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
+  console.log(editedEndpoint.id, 'edited endpointtt', stopSaveLoader, 'stop save loader')
+  debugger
+  return (dispatch) => {
+    const originalEndpoint = store.getState().pages[editedEndpoint.id]
+    console.log(originalEndpoint, 'original endpoint')
+    dispatch(updateEndpointRequest(editedEndpoint))
+    const id = editedEndpoint.id
+    const updatedEndpoint = editedEndpoint
+    delete updatedEndpoint.id
+    // delete updatedEndpoint.groupId
+    endpointApiService
+      .updateEndpoint(id, updatedEndpoint)
+      .then((response) => {
+        console.log(response.data, '1234567890')
+        dispatch(onEndpointUpdated(response.data))
+        if (stopSaveLoader) {
+          stopSaveLoader()
+        }
+      })
+      .catch((error) => {
+        dispatch(onEndpointUpdatedError(error.response ? error.response.data : error, originalEndpoint))
+        if (stopSaveLoader) {
+          stopSaveLoader()
+        }
+      })
+  }
+}
+
+export const onEndpointUpdatedError = (error, originalEndpoint) => {
+  return {
+    type: endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR,
+    error,
+    originalEndpoint
+  }
+}
+
 export const updatePage = (history, editedPage, publishDocs = false) => {
   const orgId = getOrgId()
   const dataToSend = {
@@ -113,6 +153,19 @@ export const onPageUpdatedError = (error, originalPage) => {
     type: pagesActionTypes.ON_PAGE_UPDATED_ERROR,
     error,
     originalPage
+  }
+}
+export const updateEndpointRequest = (editedEndpoint) => {
+  return {
+    type: pagesActionTypes.UPDATE_ENDPOINT_REQUEST,
+    editedEndpoint
+  }
+}
+
+export const onEndpointUpdated = (response) => {
+  return {
+    type: pagesActionTypes.ON_ENDPOINT_UPDATED,
+    response
   }
 }
 
