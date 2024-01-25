@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
+import { publishData } from '../modals/redux/modalsActions'
 import './endpoints.scss'
 import { connect } from 'react-redux'
 import _ from 'lodash'
@@ -10,6 +11,17 @@ const hostContainerEnum = {
     customHost: { key: 'customHost', label: 'Custom Host' },
     environmentHost: { key: 'environmentHost', label: 'Environment Host' },
     versionHost: { key: 'versionHost', label: 'Version Host' }
+  }
+}
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    modals: state.modals
   }
 }
 class HostContainer extends Component {
@@ -34,6 +46,7 @@ class HostContainer extends Component {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ showDatalist: false, showInputHost: false })
     }
+    this.props.ON_PUBLISH_DOC(false)
   }
 
   componentDidMount() {
@@ -169,7 +182,7 @@ class HostContainer extends Component {
         <input
           id='host-container-input'
           className='form-control'
-          value={this.state.datalistHost + this.state.datalistUri}
+          value={this.state.datalistHost + this.state.datalistUri || ''}
           name={`${endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={(e) => this.handleInputHostChange(e)}
@@ -211,4 +224,4 @@ class HostContainer extends Component {
   }
 }
 
-export default HostContainer
+export default connect(mapStateToProps, mapDispatchToProps)(HostContainer)

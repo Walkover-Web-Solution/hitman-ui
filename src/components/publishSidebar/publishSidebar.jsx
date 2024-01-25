@@ -2,20 +2,23 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Dropdown, Accordion } from 'react-bootstrap'
 import { bulkPublish, bulkPublishSelectedData } from './redux/bulkPublishAction'
-
+// import { publishData } from '../modals/redux/modalsActions'
 import './publishSidebar.scss'
 import { ReactComponent as DownChevron } from '../../assets/icons/downChevron.svg'
 import { ReactComponent as GlobeIcon } from '../../assets/icons/globe-icon.svg'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 import { redirectToDashboard, getOrgId } from '../../components/common/utility'
 import { toast } from 'react-toastify'
+import CombinedCollections from '../combinedCollections/combinedCollections'
 
 const mapStateToProps = (state) => {
   return {
-    versions: state.versions,
+    versions: state.pages,
     groups: state.groups,
     pages: state.pages,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
+    modals: state.modals,
+    collectionIdForPublish: state.clientData.collectionToPublish
   }
 }
 
@@ -23,6 +26,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     bulk_publish: (collectionId, data) => dispatch(bulkPublish(collectionId, data)),
     bulk_publishSelectedData: (publishData) => dispatch(bulkPublishSelectedData(publishData))
+    // publishData: (modal, data) => dispatch(publishData(modal, data))
   }
 }
 
@@ -47,6 +51,7 @@ export class PublishSidebar extends Component {
     super(props)
     this.state = {
       selectedCollectionId: '',
+      selectedPageId: '',
       selectedPages: [],
       selectedEndpoints: [],
       groupData: {},
@@ -57,7 +62,13 @@ export class PublishSidebar extends Component {
       groups: {},
       pages: {},
       endpoints: {},
-      checkedData: {}
+      checkedData: {},
+      ParentPagesToRender: {},
+      VersionToRender: {},
+      showChildVersions: false,
+      expandedVersions: {},
+      publishPage: true,
+      selectAll: false
     }
   }
 
@@ -66,6 +77,11 @@ export class PublishSidebar extends Component {
     if (selectedCollectionId) {
       this.setState({ selectedCollectionId })
     }
+    const rootParentId = this.props.collections[selectedCollectionId].rootParentId
+    const pages = this.props.pages
+    // const matchingObject = Object.values(pages).find(obj => obj.parentId === rootParentId);
+    const matchingObjects = Object.values(pages).filter((obj) => obj.parentId === rootParentId)
+    this.setState({ ParentPagesToRender: matchingObjects })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -80,6 +96,12 @@ export class PublishSidebar extends Component {
         this.getAllData()
       })
     }
+  }
+  handleSelectAllCheckbox = (e) => {
+    const { checked } = e.target
+    this.setState({ selectAll: checked })
+    // Logic to select/deselect all checkboxes in CombinedCollections
+    // This will depend on how you're managing the state of those checkboxes
   }
 
   getAllData() {
@@ -440,68 +462,77 @@ export class PublishSidebar extends Component {
   renderCollectionDropDown() {
     return (
       <div className='collection-api-doc-dropdown'>
-        <div className='collection-api-doc-heading'>Collection</div>
-        <Dropdown className=' w-100 d-flex '>
-          <Dropdown.Toggle variant='' className=' w-100 d-flex sidebar-dropdown outline-border publish-api-dropdown'>
-            <span className='collection-name'>{this.props.collections[this.state.selectedCollectionId]?.name}</span>
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu className='collection-dropdown-menu'>
-            {Object.values(this.props.collections || {})
-              .filter((collection) => !collection.isPublic)
-              .map((collection, index) => (
-                <Dropdown.Item key={collection?.id} onClick={() => this.setState({ selectedCollectionId: collection?.id })}>
-                  {collection?.name}
-                </Dropdown.Item>
-              ))}
-          </Dropdown.Menu>
-        </Dropdown>
+        <div className='collection-api-doc-heading ml-2'>Collection</div>
+        <div className='d-flex align-items-center'>
+          <div>
+            <input type='checkbox' checked={this.state.selectAll} onChange={this.handleSelectAllCheckbox} />
+          </div>
+          <div>
+            <Dropdown className=' ml-2 sidebar-dropdown outline-border publish-api-dropdown'>
+              {/* <Dropdown.Toggle variant='' className=''> */}
+              <span className='collection-name ml-2'>{this.props.collections[this.props?.collectionIdForPublish]?.name}</span>
+              {/* </Dropdown.Toggle> */}
+            </Dropdown>
+          </div>
+        </div>
+        <CombinedCollections
+          {...this.props}
+          isPublishData={true}
+          collection_id={this.props?.collectionIdForPublish}
+          rootParentId={this.props.collections[this.props?.collectionIdForPublish]?.rootParentId}
+          selectedCollection
+          selectAll={this.state.selectAll}
+          // selectedVersionName=''
+        />
       </div>
     )
   }
 
   toggleVersion(versionId) {
-    const versionsToggle = {}
-    versionsToggle[versionId] = !this.state.versionsToggle[versionId]
-    this.setState({ versionsToggle })
+    const { expandedVersions } = this.state
+    this.setState({
+      expandedVersions: {
+        ...expandedVersions,
+        [versionId]: !expandedVersions[versionId]
+      }
+    })
   }
-
   renderVersionList() {
     return (
       <div>
-        <div className='mt-3 collection-api-doc-heading'>Select API Enpoints and Pages to publish</div>
-        <div className='publish-versions-list'>
-          <div className='items'>
-            {Object.values(this.state.versions).map((version, index) => (
-              <div className='d-flex mx-3 mt-3' key={version?.id}>
-                <div className=' d-flex align-items-start w-100'>
-                  <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
-                  <Accordion className='version-accordian w-100' defaultActiveKey={version?.id}>
-                    <Accordion.Toggle
-                      eventKey={version?.id}
-                      className='version-accordian-toggle w-100 version-outline-border'
-                      onClick={() => this.toggleVersion(version?.id)}
-                    >
-                      <div className='d-flex align-items-center justify-content-between w-100'>
-                        <div className=''>{version?.number}</div>
-                        <div className={['down-arrow', this.state.versionsToggle[version.id] ? 'rotate-toggle' : ' '].join(' ')}>
-                          {' '}
-                          <DownChevron />{' '}
-                        </div>
+        {/* <div className='mt-3 collection-api-doc-heading'>Select API Enpoints and Pages to publish</div> */}
+        {/* <div className='publish-versions-list'> */}
+        <div className='items'>
+          {Object.values(this.state.VersionToRender).map((version, index) => (
+            <div className='d-flex mx-3 mt-3' key={version?.id}>
+              <div className=' d-flex align-items-start w-100'>
+                <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
+                <Accordion className='version-accordian w-100' defaultActiveKey={version?.id}>
+                  <Accordion.Toggle
+                    eventKey={version?.id}
+                    className='version-accordian-toggle w-100 version-outline-border'
+                    onClick={() => this.toggleVersion(version?.id)}
+                  >
+                    <div className='d-flex align-items-center justify-content-between w-100'>
+                      <div className=''>{version?.number}</div>
+                      <div className={['down-arrow', this.state.versionsToggle[version.id] ? 'rotate-toggle' : ' '].join(' ')}>
+                        {' '}
+                        <DownChevron />{' '}
                       </div>
-                    </Accordion.Toggle>
-                    <Accordion.Collapse eventKey={version?.id} className='px-3 publish-sidebar-accordian-collapse'>
-                      <div className='my-2'>
-                        {this.renderVersionPages(version)}
-                        {this.renderGroups(version)}
-                      </div>
-                    </Accordion.Collapse>
-                  </Accordion>
-                </div>
+                    </div>
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey={version?.id} className='px-3 publish-sidebar-accordian-collapse'>
+                    <div className='my-2'>
+                      {this.renderVersionPages(version)}
+                      {this.renderGroups(version)}
+                    </div>
+                  </Accordion.Collapse>
+                </Accordion>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
+        {/* </div> */}
       </div>
     )
   }
@@ -558,7 +589,7 @@ export class PublishSidebar extends Component {
         <div style={saveAsSidebarStyle} className='publish-sidebar-container'>
           <div className='publish-api-doc-heading'>Publish API Documentation</div>
           {this.renderCollectionDropDown()}
-          {this.renderVersionList()}
+          {/* {this.renderParentPagesList()} */}
           {this.renderFooter()}
         </div>
       </div>

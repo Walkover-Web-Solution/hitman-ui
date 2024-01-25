@@ -66,6 +66,11 @@ function pagesReducer(state = initialState, action) {
       }
       return pages
     }
+    case pagesActionTypes.ADD_VERSION_REQUEST:
+      return {
+        ...state,
+        [action.newVersion.requestId]: action.newVersion
+      }
 
     case pagesActionTypes.ON_PAGE_ADDED_ERROR:
       toast.error(action.error)
@@ -73,7 +78,7 @@ function pagesReducer(state = initialState, action) {
       delete pages[action.newPage.requestId]
       return pages
 
-      case pagesActionTypes.ADD_VERSION_REQUEST:
+    case pagesActionTypes.ADD_VERSION_REQUEST:
       return {
         ...state,
         [action.newVersion.requestId]: action.newVersion

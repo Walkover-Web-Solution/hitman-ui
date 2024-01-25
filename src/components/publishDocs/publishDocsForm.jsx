@@ -408,7 +408,7 @@ class PublishDocForm extends Component {
           id='publish_collection_btn'
           variant='success publish-collection-button ml-4 mt-4'
           onClick={() => this.publishCollection(selectedCollection)}
-          disabled={!selectedCollection?.docProperties?.defaultTitle}
+          // disabled={!selectedCollection?.docProperties?.defaultTitle}
         >
           Publish Collection
         </Button>

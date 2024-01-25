@@ -8,16 +8,23 @@ import History from '../history/history.jsx'
 import TabOptions from './tabOptions'
 import { isElectron } from '../common/utility'
 import Plus from '../../assets/icons/plus.svg'
+import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 const mapStateToProps = (state) => {
   return {
+    responseView: state.responseView,
     pages: state.pages,
     tabState: state.tabs.tabs,
     tabsOrder: state.tabs.tabsOrder
   }
 }
-
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    set_response_view: (view) => dispatch(onToggle(view))
+  }
+}
 class CustomTabs extends Component {
   constructor(props) {
     super(props)
@@ -281,6 +288,9 @@ class CustomTabs extends Component {
   }
 
   handleHistoryClick = () => {
+    if (this.props.responseView === 'right' && this.state.showHistoryContainer === false) {
+      this.props.set_response_view('bottom')
+    }
     this.setState((prevState) => ({
       showHistoryContainer: !prevState.showHistoryContainer
     }))
@@ -319,7 +329,7 @@ class CustomTabs extends Component {
       top: '40px',
       right: '0px',
       height: '95vh',
-      width: '22%',
+      width: '24%',
       float: 'right'
     }
     const Heading = {
@@ -450,4 +460,4 @@ class CustomTabs extends Component {
   }
 }
 
-export default connect(mapStateToProps, null)(CustomTabs)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CustomTabs))

@@ -11,11 +11,12 @@ export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
 export const DEFAULT_URL = 'https://'
 
+// 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const statesEnum = {
-  PENDING_STATE: 'Pending',
-  REJECT_STATE: 'Reject',
-  APPROVED_STATE: 'Approved',
-  DRAFT_STATE: 'Draft'
+  PENDING_STATE: 0,
+  REJECT_STATE: 3,
+  APPROVED_STATE: 2,
+  DRAFT_STATE: 1
 }
 
 const tokenKey = 'token'
@@ -423,7 +424,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) { }
+        } catch (err) {}
       })
     })
   }
@@ -436,7 +437,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) { }
+        } catch (err) {}
       })
     })
   }
@@ -462,7 +463,7 @@ export function getUserProfile() {
   try {
     user = JSON.parse(user)
     return user
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function getCurrentUserSSLMode() {
@@ -472,7 +473,7 @@ export function getCurrentUserSSLMode() {
     sslModeData = JSON.parse(sslModeData)
     const { identifier } = user
     return sslModeData?.[identifier]
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function setCurrentUserSSLMode(sslModeFlag) {
@@ -483,7 +484,7 @@ export function setCurrentUserSSLMode(sslModeFlag) {
     sslModeData = JSON.parse(sslModeData || '{}')
     const sslMode = { ...sslModeData, [identifier]: sslModeFlag }
     window.localStorage.setItem('ssl-mode', JSON.stringify(sslMode))
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function compareAlphabetically(a, b, data) {
@@ -529,8 +530,8 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.data.body = endpoint.body
   untitled.data.updatedUri = endpoint.uri
   untitled.authType = endpoint.authorizationType
-  console.log(endpoint.headers,12345678900987654321)
-  let headersData = [];
+  console.log(endpoint.headers, 12345678900987654321)
+  let headersData = []
   headersData = Object.keys(endpoint.headers).map((key) => {
     return { key, ...endpoint.headers[key] }
   })
@@ -540,7 +541,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   })
   headersData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
   paramsData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
-  console.log(headersData,"heaseresrjkfh")
+  console.log(headersData, 'heaseresrjkfh')
   untitled.originalHeaders = headersData
   untitled.originalParams = paramsData
   untitled.postScriptText = endpoint.postScript

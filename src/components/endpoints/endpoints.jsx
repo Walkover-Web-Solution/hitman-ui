@@ -10,18 +10,21 @@ import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpoint } f
 import filterService from '../../services/filterService'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
+import { updataForIsPublished } from '../../store/clientData/clientDataActions'
 
+// 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
-  PENDING_STATE: 'Pending',
-  REJECT_STATE: 'Reject',
-  APPROVED_STATE: 'Approved',
-  DRAFT_STATE: 'Draft'
+  PENDING_STATE: 0,
+  REJECT_STATE: 3,
+  APPROVED_STATE: 2,
+  DRAFT_STATE: 1
 }
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.pages,
-    tabs: state.tabs
+    tabs: state.tabs,
+    clientData: state.clientData
   }
 }
 
@@ -36,7 +39,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback))
+    add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
 }
 
@@ -45,7 +49,8 @@ class Endpoints extends Component {
     super(props)
     this.state = {
       endpointState: 'Make Public',
-      theme: ''
+      theme: '',
+      checkboxChecked: false
     }
     this.scrollRef = {}
   }
@@ -245,6 +250,13 @@ class Endpoints extends Component {
     return endpoints
   }
 
+  handleCheckboxChange = () => {
+    this.props.setIsCheckForParenPage({
+      id: this.props?.endpointId,
+      isChecked: !this.props?.clientData?.[this?.props?.endpointId]?.checkedForPublished
+    })
+  }
+
   makePositionWiseEndpoints(endpoints) {
     const positionWiseEndpoints = []
     for (let i = 0; i < Object.keys(endpoints).length; i++) {
@@ -271,12 +283,24 @@ class Endpoints extends Component {
 
   displayEndpointName(endpointId) {
     return (
-      <div className='sidebar-accordion-item'>
-        {/* <div className={`api-label ${this.props?.endpoints[endpointId]?.requestType} request-type-bgcolor`}> */}
-        {/* {this.props.endpoints[endpointId].requestType} */}
-        <div className='api-label GET request-type-bgcolor'>GET</div>
-        <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
-      </div>
+      <>
+        {this.props.isPublishData && this.props.modals.publishData ? (
+          <div className='sidebar-accordion-item'>
+            <input
+              type='checkbox'
+              checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
+              onChange={this.handleCheckboxChange}
+            />
+            <div className='api-label GET request-type-bgcolor'>GET</div>
+            <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
+          </div>
+        ) : (
+          <div className='sidebar-accordion-item'>
+            <div className='api-label GET request-type-bgcolor'>GET</div>
+            <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
+          </div>
+        )}
+      </>
     )
   }
 
@@ -405,38 +429,56 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
+    const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     return (
-      <div
-        ref={(newRef) => {
-          this.scrollRef[endpointId] = newRef
-        }}
-        key={endpointId}
-      >
-        <div className={this.props?.endpoints[endpointId]?.state} />
-        <div className='sidebar-toggle d-flex justify-content-between'>
-          <button
-            tabIndex={-1}
-            onClick={() => {
-              this.handleDisplay(this.props.endpoints[endpointId], this.props.rootParentId, this.props.collection_id, true)
-            }}
-            onDoubleClick={() =>
-              this.handleDisplay(this.props.endpoints[endpointId], this.props.rootParentId, this.props.collection_id, false)
-            }
-          >
-            {this.displayEndpointName(endpointId)}
-            <div className='d-flex align-items-center'>
-              <div className=' sidebar-item-action'>
-                {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
-              </div>
-              <div className='ml-1 published-icon transition'>
-                {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
-              </div>
+      <>
+        {publishData ? (
+          <div className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
+            <div className={this.props?.endpoints[endpointId]?.state} />
+            <div className='sidebar-toggle d-flex justify-content-between'>
+              <button
+                tabIndex={-1}
+                // className={[focused && sidebarFocused ? 'focused' : '']}
+              >
+                {this.displayEndpointName(endpointId)}
+                <div className='d-flex align-items-center'></div>
+              </button>
             </div>
-          </button>
-        </div>
-      </div>
+          </div>
+        ) : (
+          <div
+            ref={(newRef) => {
+              this.scrollRef[endpointId] = newRef
+            }}
+            key={endpointId}
+          >
+            <div className={this.props?.endpoints[endpointId]?.state} />
+            <div className='sidebar-toggle d-flex justify-content-between'>
+              <button
+                tabIndex={-1}
+                onClick={() => {
+                  this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
+                }}
+                onDoubleClick={() =>
+                  this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
+                }
+              >
+                {this.displayEndpointName(endpointId)}
+                <div className='d-flex align-items-center'>
+                  <div className=' sidebar-item-action'>
+                    {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
+                  </div>
+                  <div className='ml-1 published-icon transition'>
+                    {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        )}
+      </>
     )
   }
 

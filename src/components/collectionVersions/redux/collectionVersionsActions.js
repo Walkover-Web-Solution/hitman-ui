@@ -5,7 +5,6 @@ import { toast } from 'react-toastify'
 import tabService from '../../tabs/tabService'
 import { sendAmplitudeData } from '../../../services/amplitude'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
-
 export const fetchAllVersions = (orgId) => {
   return (dispatch) => {
     collectionVersionsApiService

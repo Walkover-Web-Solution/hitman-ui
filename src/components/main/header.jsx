@@ -100,15 +100,14 @@ class Header extends Component {
     return this.props.collections && this.props.versions && this.props.groups && this.props.endpoints && this.props.pages
   }
 
+  // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
   getPublicCollections() {
     if (this.dataFetched()) {
       const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
-        (eId) =>
-          this.props.endpoints[eId].state === 'Pending' ||
-          (this.props.endpoints[eId].state === 'Draft' && this.props.endpoints[eId].isPublished)
+        (eId) => this.props.endpoints[eId].state === 0 || (this.props.endpoints[eId].state === 1 && this.props.endpoints[eId].isPublished)
       )
       const pendingPageIds = Object.keys(this.props.pages).filter(
-        (pId) => this.props.pages[pId].state === 'Pending' || (this.props.pages[pId].state === 'Draft' && this.props.pages[pId].isPublished)
+        (pId) => this.props.pages[pId].state === 0 || (this.props.pages[pId].state === 1 && this.props.pages[pId].isPublished)
       )
       const endpointCollections = this.findPendingEndpointsCollections(pendingEndpointIds)
       const pageCollections = this.findPendingPagesCollections(pendingPageIds)

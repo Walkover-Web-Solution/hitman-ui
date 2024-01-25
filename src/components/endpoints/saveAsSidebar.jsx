@@ -211,7 +211,7 @@ class SaveAsSidebar extends Form {
           .map((collection) => ({
             name: collection.name,
             id: collection.id,
-            rootParentId : collection.rootParentId
+            rootParentId: collection.rootParentId
           }))
         break
       case 'versions':
