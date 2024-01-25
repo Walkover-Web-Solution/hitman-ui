@@ -101,7 +101,7 @@ const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     versions: state.versions,
-    endpoints: state.endpoints,
+    endpoints: state.pages,
     environment: state.environment.environments[state.environment.currentEnvironmentId] || { id: null, name: 'No Environment' },
     currentEnvironmentId: state.environment.currentEnvironmentId,
     environments: state.environment.environments,
@@ -196,17 +196,21 @@ const untitledEndpointData = {
   sslMode: getCurrentUserSSLMode(),
   showAskAiSlider: false,
   currentView: 'testing',
-  docViewData : [{ type: 'host' },
-  { type: 'body' },
-  { type: 'params' },
-  { type: 'pathVariables' },
-  { type: 'headers' },
-  { type: 'sampleResponse' }]
+  docViewData: [
+    { type: 'host' },
+    { type: 'body' },
+    { type: 'params' },
+    { type: 'pathVariables' },
+    { type: 'headers' },
+    { type: 'sampleResponse' }
+  ]
 }
 
 const getEndpointContent = async (endpointId) => {
   const data = await getEndpoint(endpointId)
+  console.log(data, 12345678)
   const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
+  console.log('modifiedData', modifiedData)
   return modifiedData
 }
 
@@ -1262,80 +1266,84 @@ class DisplayEndpoint extends Component {
     return data
   }
 
-  handleSave = async (id, endpointObject, isGroupId = true) => {
+  handleSave = async (id, endpointObject) => {
     const { endpointName, endpointDescription } = endpointObject || {}
-    const effectiveGroupId = isGroupId ? id : this.state.groupId
-    const effectiveRootParentId = isGroupId ? this.state.rootParentId : id
+    const effectiveRootParentId = this.props.pages[this.props.currentEndpointId]
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
       })
     }
-    if (!(this.state.effectiveGroupId || effectiveRootParentId)) {
+    if (!effectiveRootParentId & (this.props?.match?.params?.endpointId === 'new')) {
       this.openEndpointFormModal()
     } else {
-      const body = this.prepareBodyForSaving(this.state.data.body)
+      const body = this.prepareBodyForSaving(this.props?.endpointContent?.data?.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
-        body_description: this.state.bodyDescription,
+        body_description: this.props?.endpointContent.bodyDescription,
         body: body.value
       })
-      if (this.state.data.body.type === 'raw') {
+      if (this.props?.endpointContent?.data?.body.type === 'raw') {
         body.value = this.parseBody(body.value)
       }
       const headersData = this.doSubmitHeader('save')
       const updatedParams = this.doSubmitParam()
       const pathVariables = this.doSubmitPathVariables()
       const endpoint = {
-        uri: this.state.data.updatedUri,
-        name: endpointName || this.state.data.name,
-        requestType: this.state.data.method,
+        id: this.props?.match?.params?.endpointId,
+        uri: this.props?.endpointContent?.data.updatedUri,
+        name: endpointName || this.props?.endpointContent?.data?.name,
+        requestType: this.props?.endpointContent?.data?.method,
         body: body,
         headers: headersData,
         params: updatedParams,
         pathVariables: pathVariables,
-        BASE_URL: this.state.host.selectedHost === 'customHost' ? this.state.host.BASE_URL : null,
-        bodyDescription: this.state.data.body.type === 'JSON' ? bodyDescription : {},
-        authorizationType: this.state.authType,
-        notes: this.state.endpoint.notes,
-        preScript: this.state.preScriptText,
-        postScript: this.state.postScriptText,
+        BASE_URL: this.props?.endpointContent.host.selectedHost === 'customHost' ? this.props?.endpointContent.host.BASE_URL : null,
+        bodyDescription: this.props?.endpointContent?.data?.body?.type === 'JSON' ? bodyDescription : {},
+        authorizationType: this.props?.endpointContent.authType,
+        notes: this.props?.endpointContent?.endpoint.notes,
+        preScript: this.props?.endpointContent?.preScriptText,
+        postScript: this.props?.endpointContent?.postScriptText,
         docViewData: this.props?.endpointContent?.docViewData
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
-      else if (this.props.location.pathname.split('/')[5] === 'new') {
-        endpoint.requestId = this.props.tab.id
-        endpoint.description = endpointDescription || ''
-        this.setState({ saveAsLoader: true })
-        this.props.add_endpointInCollection(
-          endpoint,
-          effectiveRootParentId || this.state.effectiveRootParentId,
-          ({ closeForm, stopLoader }) => {
-            if (closeForm) this.closeEndpointFormModal()
-            if (stopLoader) this.setState({ saveAsLoader: false })
-          }
-        )
-        tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
-        moveToNextStep(4)
-      } else {
+      // else if (this.props.location.pathname.split('/')[5] === 'new') {
+      //   endpoint.requestId = this.props.tab.id
+      //   endpoint.description = endpointDescription || ''
+      //   this.setState({ saveAsLoader: true })
+      //   this.props.add_endpointInCollection(
+      //     endpoint,
+      //     effectiveRootParentId || this.state.effectiveRootParentId,
+      //     ({ closeForm, stopLoader }) => {
+      //       if (closeForm) this.closeEndpointFormModal()
+      //       if (stopLoader) this.setState({ saveAsLoader: false })
+      //     }
+      //   )
+      //   tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
+      //   moveToNextStep(4)
+      // }
+      else {
         if (this.state.saveAsFlag) {
           endpoint.description = endpointDescription || ''
           delete endpoint.state
           delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
-          this.props.add_endpointInCollection(endpoint, effectiveGroupId || this.state.effectiveGroupId, ({ closeForm, stopLoader }) => {
-            if (closeForm) this.closeEndpointFormModal()
-            if (stopLoader) this.setState({ saveAsLoader: false })
-          })
+          this.props.add_endpointInCollection(
+            endpoint,
+            effectiveRootParentId || this.state.effectiveRootParentId,
+            ({ closeForm, stopLoader }) => {
+              if (closeForm) this.closeEndpointFormModal()
+              if (stopLoader) this.setState({ saveAsLoader: false })
+            }
+          )
           moveToNextStep(4)
-        } else if (this.state.title === 'update endpoint') {
+        } else {
           endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
-          endpoint.state = this.props.endpoints[this.endpointId]?.state
+          // endpoint.state = this.props.endpoints[this.endpointId]?.state
           this.setState({ saveLoader: true })
           this.props.update_endpoint(
             {
               ...endpoint,
-              id: this.state.endpoint.id,
-              effectiveGroupId: effectiveGroupId || this.state.effectiveGroupId
+              effectiveRootParentId: effectiveRootParentId || this.state.effectiveRootParentId
             },
             () => {
               this.setState({ saveLoader: false })
@@ -1349,8 +1357,8 @@ class DisplayEndpoint extends Component {
 
   doSubmitPathVariables() {
     const updatedPathVariables = {}
-    if (this.state.pathVariables) {
-      const pathVariables = [...this.state.pathVariables]
+    if (this.props?.endpointContent.pathVariables) {
+      const pathVariables = this.props?.endpointContent?.pathVariables || []
       for (let i = 0; i < pathVariables.length; i++) {
         if (pathVariables[i].key === '') {
           continue
@@ -1362,18 +1370,19 @@ class DisplayEndpoint extends Component {
           }
         }
       }
-      const endpoint = { ...this.state.endpoint }
+      const endpoint = { ...this.props?.endpointContent }
       endpoint.pathVariables = { ...updatedPathVariables }
       this.setState({
         pathVariables,
         endpoint
       })
+      this.props.setQueryUpdatedData(endpoint)
     }
     return updatedPathVariables
   }
 
   doSubmitHeader(title) {
-    const originalHeaders = [...this.state.originalHeaders]
+    const originalHeaders = [...this.props?.endpointContent.originalHeaders]
     const updatedHeaders = {}
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '') {
@@ -1386,12 +1395,13 @@ class DisplayEndpoint extends Component {
         }
       }
     }
-    const endpoint = { ...this.state.endpoint }
+    const endpoint = { ...this.props?.endpointContent }
     endpoint.headers = { ...updatedHeaders }
     this.setState({
       originalHeaders,
       endpoint
     })
+    this.props.setQueryUpdatedData(endpoint)
     return updatedHeaders
   }
 
@@ -1476,7 +1486,7 @@ class DisplayEndpoint extends Component {
   }
 
   doSubmitParam() {
-    const originalParams = [...this.state.originalParams]
+    const originalParams = [...this.props?.endpointContent.originalParams]
     const updatedParams = {}
     for (let i = 0; i < originalParams.length; i++) {
       if (originalParams[i].key === '') {
@@ -1489,12 +1499,13 @@ class DisplayEndpoint extends Component {
         }
       }
     }
-    const endpoint = { ...this.state.endpoint }
+    const endpoint = { ...this.props?.endpointContent }
     endpoint.params = { ...updatedParams }
     this.setState({
       originalParams,
       endpoint
     })
+    this.props.setQueryUpdatedData(endpoint)
     return updatedParams
   }
 
@@ -2255,9 +2266,9 @@ class DisplayEndpoint extends Component {
   }
 
   switchView = (currentView) => {
-    const data = this.props.endpointContent;
-    data.currentView = currentView;
-    this.props.setQueryUpdatedData(data);
+    const data = this.props.endpointContent
+    data.currentView = currentView
+    this.props.setQueryUpdatedData(data)
   }
 
   renderDefaultViewConfirmationModal() {
@@ -2448,10 +2459,13 @@ class DisplayEndpoint extends Component {
     if (isSavedEndpoint(this.props)) {
       return (
         <ButtonGroup className='btn-group-custom mb-3' aria-label='Basic example'>
-          <Button className={'mr-1 ' + (this.props?.endpointContent?.currentView === 'testing' ? 'active' : '')} onClick={() => this.switchView('testing')}>
+          <Button
+            className={'mr-1 ' + (this.props?.endpointContent?.currentView === 'testing' ? 'active' : '')}
+            onClick={() => this.switchView('testing')}
+          >
             Testing
           </Button>
-          <Button className={this.props?.endpointContent?.currentView=== 'doc' ? 'active' : ''} onClick={() => this.switchView('doc')}>
+          <Button className={this.props?.endpointContent?.currentView === 'doc' ? 'active' : ''} onClick={() => this.switchView('doc')}>
             Doc
           </Button>
         </ButtonGroup>
@@ -2460,7 +2474,7 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOptions() {
-    if (isDashboardRoute(this.props) &&this.props?.endpointContent.currentView === 'doc') {
+    if (isDashboardRoute(this.props) && this.props?.endpointContent.currentView === 'doc') {
       return (
         <div>
           <Dropdown>
@@ -2492,7 +2506,7 @@ class DisplayEndpoint extends Component {
         {...this.props}
         set_body={this.setBody.bind(this)}
         set_body_description={this.setDescription.bind(this)}
-        body={this.state.bodyFlag === true ? this.props.endpointContent.data.body : ''}
+        body={this.props.endpointContent?.data?.body || {}}
         Body={this.props?.endpointContent?.data?.body || {}}
         endpoint_id={this.props.tab.id}
         body_description={this.props?.endpointContent?.bodyDescription || ''}
@@ -2556,7 +2570,7 @@ class DisplayEndpoint extends Component {
         title='Params'
         dataArray={this.props?.endpointContent?.originalParams || []}
         props_from_parent={this.propsFromChild.bind(this)}
-        original_data={[...(this.props?.endpointContent?.params || [])]}
+        original_data={this.props?.endpointContent?.params || []}
         open_modal={this.props.open_modal}
         currentView={this.props?.endpointContent?.currentView}
       />
@@ -2570,9 +2584,9 @@ class DisplayEndpoint extends Component {
           <GenericTable
             {...this.props}
             title='Params'
-            dataArray={this.state.originalParams}
+            dataArray={this.props?.endpointContent?.originalParams || []}
             props_from_parent={this.propsFromChild.bind(this)}
-            original_data={[...this.state.params]}
+            original_data={this.props?.endpointContent?.params || []}
             currentView={this.props?.endpointContent?.currentView}
           />
         </div>
@@ -2587,9 +2601,9 @@ class DisplayEndpoint extends Component {
         <GenericTable
           {...this.props}
           title='Path Variables'
-          dataArray={this.state.pathVariables}
+          dataArray={this.props?.endpointContent?.pathVariables || []}
           props_from_parent={this.propsFromChild.bind(this)}
-          original_data={[...this.state.pathVariables]}
+          original_data={this.props?.endpointContent?.pathVariables || []}
           currentView={this.props?.endpointContent?.currentView}
         />
       )
@@ -2691,11 +2705,11 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOperations() {
-    const endpoints = { ...this.props.endpoints }
-    const endpointId = this.endpointId
-    if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpoints[endpointId]) {
+    const endpoints = this.props.endpointContent
+    const endpointId = endpoints?.id
+    if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpoints) {
       const approvedOrRejected = isStateApproved(endpointId, endpoints) || isStateReject(endpointId, endpoints)
-      const isPublicEndpoint = endpoints[endpointId].isPublished
+      const isPublicEndpoint = endpoints.isPublished
       return (
         <div>
           {isStatePending(endpointId, endpoints) && isAdmin() && (
@@ -2913,7 +2927,9 @@ class DisplayEndpoint extends Component {
 
     const { theme, codeEditorVisibility } = this.state
     const { responseView } = this.props
-    return (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView) || !isDashboardRoute(this.props) || !isSavedEndpoint(this.props) ? (
+    return (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView) ||
+      !isDashboardRoute(this.props) ||
+      !isSavedEndpoint(this.props) ? (
       <div
         ref={this.myRef}
         className={
@@ -2929,7 +2945,11 @@ class DisplayEndpoint extends Component {
           className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}
         >
           <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
-            <div className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''}`}>
+            <div
+              className={`hm-endpoint-container mid-part endpoint-container ${
+                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              }`}
+            >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
               {this.renderPublishConfirmationModal()}
@@ -2950,8 +2970,8 @@ class DisplayEndpoint extends Component {
                         onHide={() => this.closeEndpointFormModal()}
                         set_rootParent_id={this.setRootParentID.bind(this)}
                         // set_group_id={this.setGroupId.bind(this)}
-                        name={this.state.data.name}
-                        description={this.state.data.description}
+                        name={this.props.endpointContent.data.name}
+                        description={this.props.endpointContent.data.description}
                         save_endpoint={this.handleSave.bind(this)}
                         saveAsLoader={this.state.saveAsLoader}
                       />
@@ -3122,7 +3142,7 @@ class DisplayEndpoint extends Component {
                                 set_authoriztaion_params={this.setParams.bind(this)}
                                 set_authoriztaion_type={this.setAuthType.bind(this)}
                                 accessToken={this.accessToken}
-                                authorizationType={this.state.authType}
+                                authorizationType={this.props?.endpointContent?.authType}
                               />
                             </div>
                           </div>
@@ -3147,7 +3167,7 @@ class DisplayEndpoint extends Component {
                               <Script
                                 type='Pre-Script'
                                 handleScriptChange={this.handleScriptChange.bind(this)}
-                                scriptText={this.state.preScriptText}
+                                scriptText={this.props?.endpointContent?.preScriptText}
                               />
                             </div>
                           </div>
@@ -3161,7 +3181,7 @@ class DisplayEndpoint extends Component {
                               <Script
                                 type='Post-Script'
                                 handleScriptChange={this.handleScriptChange.bind(this)}
-                                scriptText={this.state.postScriptText}
+                                scriptText={this.props?.endpointContent?.postScriptText}
                               />
                             </div>
                           </div>
