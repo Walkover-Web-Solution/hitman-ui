@@ -209,9 +209,7 @@ const untitledEndpointData = {
 
 const getEndpointContent = async (endpointId) => {
   const data = await getEndpoint(endpointId)
-  console.log(data, 12345678)
   const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
-  console.log('modifiedData', modifiedData)
   return modifiedData
 }
 
@@ -2221,7 +2219,7 @@ class DisplayEndpoint extends Component {
   }
 
   setHostUri(host, uri, selectedHost) {
-    if (uri !== this.props?.endpointContent?.data?.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+    if (uri !== this.props?.endpointContent?.data?.uri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
     this.setBaseUrl(host, selectedHost)
   }
 
@@ -2652,7 +2650,7 @@ class DisplayEndpoint extends Component {
               }
               updatedUri={this.props.endpointContent?.data?.updatedUri}
               set_base_url={this.setBaseUrl.bind(this)}
-              customHost={this.state.endpoint.BASE_URL || ''}
+              customHost={this.state.BASE_URL || ''}
               endpointId={this.state.endpoint.id}
               set_host_uri={this.setHostUri.bind(this)}
               props_from_parent={this.propsFromChild.bind(this)}
@@ -2660,7 +2658,7 @@ class DisplayEndpoint extends Component {
           </div>
           {this.props.highlights?.uri ? <i className='fas fa-circle' /> : null}
         </div>
-        <input ref={this.uri} type='hidden' value={this.state.data.updatedUri} name='updatedUri' />
+        <input ref={this.uri} type='hidden' value={this.props.endpointContent?.data?.updatedUri} name='updatedUri' />
       </div>
     )
   }

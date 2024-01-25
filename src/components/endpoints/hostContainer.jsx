@@ -93,6 +93,7 @@ class HostContainer extends Component {
 
   handleInputHostChange(e) {
     const data = this.splitUrlHelper(e)
+    console.log('data', data)
     this.setState(
       {
         ...data,

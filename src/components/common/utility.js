@@ -530,23 +530,20 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.data.body = endpoint.body
   untitled.data.updatedUri = endpoint.uri
   untitled.authType = endpoint.authorizationType
-  console.log(endpoint.headers, 12345678900987654321)
   let headersData = []
   headersData = Object.keys(endpoint.headers).map((key) => {
     return { key, ...endpoint.headers[key] }
   })
-  console.log('headersData', headersData)
   const paramsData = Object.keys(endpoint.params).map((key) => {
     return { key, ...endpoint.params[key] }
   })
   headersData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
   paramsData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
-  console.log(headersData, 'heaseresrjkfh')
   untitled.originalHeaders = headersData
   untitled.originalParams = paramsData
   untitled.postScriptText = endpoint.postScript
   untitled.preScriptText = endpoint.preScript
-  console.log(untitled)
+  untitled.host['BASE_URL'] = endpoint.BASE_URL
   return { ...untitled }
 }
 
