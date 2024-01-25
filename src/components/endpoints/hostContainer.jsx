@@ -176,7 +176,6 @@ class HostContainer extends Component {
   }
 
   renderHostDatalist() {
-    console.log(this.state)
     const endpointId = this.props.endpointId
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
