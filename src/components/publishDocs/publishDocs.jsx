@@ -69,7 +69,7 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     groups: state.groups,
-    endpoints: state.endpoints
+    endpoints: state.pages
   }
 }
 
@@ -709,7 +709,7 @@ class PublishDocs extends Component {
       groupId: this.state.selectedGroupId,
       isPublished: false,
       publishedEndpoint: {},
-      state: 'Draft',
+      state: 1,
       position: null
     })
     const items = this.getInitialItems(this.state.selectedVersionId, this.state.groups, this.state.endpoints, this.state.pages, endpointId)
@@ -724,7 +724,7 @@ class PublishDocs extends Component {
     const page = { ...this.state.pages[pageId] }
     page.isPublished = false
     page.publishedEndpoint = {}
-    page.state = 'Draft'
+    page.state = 1
     page.position = null
     this.props.update_page(page)
     const items = this.getInitialItems(this.state.selectedVersionId, this.state.groups, this.state.endpoints, this.state.pages)

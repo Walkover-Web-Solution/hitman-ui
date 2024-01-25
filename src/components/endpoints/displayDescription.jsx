@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
-import { updateEndpoint } from './redux/endpointsActions'
+import { updateEndpoint } from '../pages/redux/pagesActions'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import EndpointBreadCrumb from './endpointBreadCrumb'

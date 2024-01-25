@@ -35,7 +35,7 @@ import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
 
-import { addEndpoint, updateEndpoint, setAuthorizationType, addEndpointInCollection } from './redux/endpointsActions'
+import { addEndpoint, setAuthorizationType, addEndpointInCollection } from './redux/endpointsActions'
 import { setAuthorizationResponses, setAuthorizationData } from '../collectionVersions/redux/collectionVersionsActions'
 import { addHistory } from '../history/redux/historyAction'
 import collectionsApiService from '../collections/collectionsApiService'
@@ -68,7 +68,7 @@ import Tiptap from '../tiptapEditor/tiptap'
 import ChatbotsideBar from './chatbotsideBar'
 import { useQuery, useQueryClient } from 'react-query'
 import utilityFunctions from '../common/utility.js'
-
+import { updateEndpoint } from '../pages/redux/pagesActions.js'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -101,7 +101,7 @@ const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     versions: state.versions,
-    endpoints: state.endpoints,
+    endpoints: state.pages,
     environment: state.environment.environments[state.environment.currentEnvironmentId] || { id: null, name: 'No Environment' },
     currentEnvironmentId: state.environment.currentEnvironmentId,
     environments: state.environment.environments,
@@ -1266,7 +1266,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleSave = async (id, endpointObject, isGroupId = true) => {
-    debugger
     const { endpointName, endpointDescription } = endpointObject || {}
     const effectiveGroupId = isGroupId ? id : this.state.groupId
     const effectiveRootParentId = isGroupId ? this.state.rootParentId : id
@@ -1335,16 +1334,16 @@ class DisplayEndpoint extends Component {
           endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
           endpoint.state = this.props.endpoints[this.endpointId]?.state
           this.setState({ saveLoader: true })
-          this.props.update_endpoint(
-            {
-              ...endpoint,
-              id: this.state.endpoint.id,
-              effectiveGroupId: effectiveGroupId || this.state.effectiveGroupId
-            },
-            () => {
-              this.setState({ saveLoader: false })
-            }
-          )
+          // this.props.update_endpoint(
+          //   {
+          //     ...endpoint,
+          //     id: this.state.endpoint.id,
+          //     effectiveGroupId: effectiveGroupId || this.state.effectiveGroupId
+          //   },
+          //   () => {
+          //     this.setState({ saveLoader: false })
+          //   }
+          // )
           tabService.markTabAsSaved(this.props.tab.id)
         }
       }
@@ -2702,15 +2701,22 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOperations() {
-    const endpoints = { ...this.props.endpoints }
+    // debugger
+    console.log(this.endpointId, 'endpoint id')
+    const endpoints = this.props.endpointContent
+    const endpointss = this.props.pages[this.endpointId]
+    // const endpointPublish = this.props.endpoints
     const endpointId = this.endpointId
-    if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpoints[endpointId]) {
-      const approvedOrRejected = isStateApproved(endpointId, endpoints) || isStateReject(endpointId, endpoints)
-      const isPublicEndpoint = endpoints[endpointId].isPublished
+    console.log(endpointId, 'endpoint id')
+    if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpointss) {
+      const approvedOrRejected = isStateApproved(endpointId, endpointss) || isStateReject(this.endpointId, endpointss)
+      console.log(approvedOrRejected, 'approved or rejecteddd')
+      const isPublicEndpoint = endpointss?.isPublished
+      console.log(isPublicEndpoint, 'Public endpoint')
       return (
         <div>
-          {isStatePending(endpointId, endpoints) && isAdmin() && (
-            <ApproveRejectEntity {...this.props} entity={endpoints} entityId={endpointId} entityName='endpoint' />
+          {isStatePending(endpointId, endpointss) && isAdmin() && (
+            <ApproveRejectEntity {...this.props} entity={endpointss} entityId={endpointId} entityName='endpoint' />
           )}
           <button
             id='api_save_btn'
@@ -2720,29 +2726,29 @@ class DisplayEndpoint extends Component {
           >
             {isPublicEndpoint ? 'Save Draft' : 'Save'}
           </button>
-          {isAdmin() && !isStatePending(endpointId, endpoints) && (
+          {isAdmin() && !isStatePending(endpointId, endpointss) && (
             <span>
               {' '}
               {approvedOrRejected
                 ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
-                : this.renderPublishEndpoint(endpointId, endpoints)}
+                : this.renderPublishEndpoint(endpointId, endpointss)}
             </span>
           )}
           {isAdmin() && isPublicEndpoint && (
             <span>
               {' '}
-              {isStateApproved(endpointId, endpoints)
+              {isStateApproved(endpointId, endpointss)
                 ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
-                : this.renderUnPublishEndpoint(endpointId, endpoints)}
+                : this.renderUnPublishEndpoint(endpointId, endpointss)}
             </span>
           )}
           {!isAdmin() && (
             <button
-              className={'ml-2 ' + (isStateDraft(endpointId, endpoints) ? 'btn btn-outline orange' : 'btn text-link')}
+              className={'ml-2 ' + (isStateDraft(endpointId, endpointss) ? 'btn btn-outline orange' : 'btn text-link')}
               type='button'
-              onClick={() => (isStateDraft(endpointId, endpoints) ? this.handlePublicEndpointState(endpoints[endpointId]) : null)}
+              onClick={() => (isStateDraft(endpointId, endpointss) ? this.handlePublicEndpointState(this.props.pages[endpointId]) : null)}
             >
-              {getEntityState(endpointId, endpoints)}
+              {getEntityState(endpointId, endpointss)}
             </button>
           )}
         </div>
@@ -2760,15 +2766,22 @@ class DisplayEndpoint extends Component {
   }
 
   handleRemovePublicEndpoint(endpointId) {
-    const endpoints = { ...this.props.endpoints }
-    this.props.update_endpoint({
-      ...endpoints[endpointId],
-      groupId: this.state.selectedGroupId,
-      isPublished: false,
-      publishedEndpoint: {},
-      state: 'Draft',
-      position: null
-    })
+    debugger
+    const endpoints = this.props.pages[endpointId]
+    console.log('hello', endpoints[endpointId])
+    this.props.update_endpoint(
+      {
+        ...endpoints,
+        // groupId: this.state.selectedGroupId,
+        isPublished: false,
+        publishedEndpoint: {},
+        state: 1,
+        position: null
+      },
+      () => {
+        this.setState({ saveLoader: false })
+      }
+    )
   }
 
   renderUnPublishEndpoint(endpointId, endpoints) {
@@ -2809,6 +2822,7 @@ class DisplayEndpoint extends Component {
   }
 
   async handleApproveEndpointRequest() {
+    console.log('inside handle appproved endpoinnt request', this.endpointId)
     const endpointId = this.endpointId
     this.setState({ publishLoader: true })
     if (sensitiveInfoFound(this.props.endpoints[endpointId])) {

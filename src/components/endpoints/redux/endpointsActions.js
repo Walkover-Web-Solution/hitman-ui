@@ -108,31 +108,6 @@ export const onEndpointFetchedError = (error) => {
   }
 }
 
-export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
-  return (dispatch) => {
-    const originalEndpoint = JSON.parse(JSON.stringify(store.getState().endpoints[editedEndpoint.id]))
-    dispatch(updateEndpointRequest(editedEndpoint))
-    const id = editedEndpoint.id
-    const updatedEndpoint = JSON.parse(JSON.stringify(editedEndpoint))
-    delete updatedEndpoint.id
-    delete updatedEndpoint.groupId
-    endpointApiService
-      .updateEndpoint(id, updatedEndpoint)
-      .then((response) => {
-        dispatch(onEndpointUpdated(response.data))
-        if (stopSaveLoader) {
-          stopSaveLoader()
-        }
-      })
-      .catch((error) => {
-        dispatch(onEndpointUpdatedError(error.response ? error.response.data : error, originalEndpoint))
-        if (stopSaveLoader) {
-          stopSaveLoader()
-        }
-      })
-  }
-}
-
 export const deleteEndpoint = (endpoint) => {
   return (dispatch) => {
     dispatch(deleteEndpointRequest(endpoint))
@@ -255,20 +230,6 @@ export const onEndpointAddedError = (error, newEndpoint, requestId) => {
     newEndpoint,
     error,
     requestId
-  }
-}
-
-export const updateEndpointRequest = (editedEndpoint) => {
-  return {
-    type: endpointsActionTypes.UPDATE_ENDPOINT_REQUEST,
-    editedEndpoint
-  }
-}
-
-export const onEndpointUpdated = (response) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINT_UPDATED,
-    response
   }
 }
 
