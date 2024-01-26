@@ -10,6 +10,7 @@ import { ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import { Dropdown } from 'react-bootstrap'
 import DropdownItem from 'react-bootstrap/esm/DropdownItem'
 import _ from 'lodash'
+import ShowCaseSaveAsModal from './showCaseSaveAsModal/showCaseSaveAsModal'
 
 const mapStateToProps = (state) => {
   return {
@@ -505,23 +506,8 @@ class SaveAsSidebar extends Form {
                 </>
               )} */}
             {/* </div> */}
-            
-            <div className='mt-5'>
-              <button className='btn btn-secondary outline mr-2 api-cancel-btn' onClick={() => this.props.onHide()}>
-                Cancel
-              </button>
-              <button
-                className={this.props.saveAsLoader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
-                onClick={this.handleSubmit}
-                disabled={
-                  this.state.dropdownList.selectedCollectionId === null || title.trim() === '' || title === 'Untitled' ? 'disabled' : ''
-                }
-              >
-                Save{' '}
-                {this.state.dropdownList.selectedCollectionId !== null &&
-                  `to ${this.props.collections[this.state.dropdownList.selectedCollectionId].name}`}
-              </button>
-            </div>
+            <ShowCaseSaveAsModal />
+
           </div>
         </div>
       </div>
