@@ -368,9 +368,9 @@ class SaveAsSidebar extends Form {
                 {title?.trim() === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
               </div>
             </form>
-            <div>
-              <div className='mb-2'>Collection to which you wish to save this to</div>
-              <Dropdown className='cst'>
+            {/* <div> */}
+              {/* <div className='mb-2'>Collection to which you wish to save this to</div> */}
+              {/* <Dropdown className='cst'>
                 <div
                   onClick={() => {
                     this.goDropdownBack('collections')
@@ -409,7 +409,7 @@ class SaveAsSidebar extends Form {
                     <DropdownItem className='disabled'>No Collection Found</DropdownItem>
                   )}
                 </Dropdown.Menu>
-              </Dropdown>
+              </Dropdown> */}
 
               {/* {this.state.dropdownList.parentId != null &&
                 this.renderDropdownItems('versions').length > 0 &&
@@ -504,7 +504,8 @@ class SaveAsSidebar extends Form {
                   </Dropdown>
                 </>
               )} */}
-            </div>
+            {/* </div> */}
+            
             <div className='mt-5'>
               <button className='btn btn-secondary outline mr-2 api-cancel-btn' onClick={() => this.props.onHide()}>
                 Cancel
