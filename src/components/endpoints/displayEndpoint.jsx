@@ -237,7 +237,7 @@ const withQuery = (WrappedComponent) => {
       }
     }
 
-    const setQueryUpdatedData = (data) => {
+      const setQueryUpdatedData = (data) => {
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(['endpoint', endpointId], data)
@@ -1265,17 +1265,16 @@ class DisplayEndpoint extends Component {
     return data
   }
 
-  handleSave = async (id, endpointObject, isGroupId = true) => {
-    debugger
+  handleSave = async (id, endpointObject) => {
     const { endpointName, endpointDescription } = endpointObject || {}
-    const effectiveGroupId = isGroupId ? id : this.state.groupId
-    const effectiveRootParentId = isGroupId ? this.state.rootParentId : id
+    // const effectiveGroupId = isGroupId ? id : this.state.groupId
+    const effectiveRootParentId = this.props.pages[this.props.currentEndpointId] 
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
       })
     }
-    if (!(this.state.effectiveGroupId || effectiveRootParentId)) {
+    if (!effectiveRootParentId) {
       this.openEndpointFormModal()
     } else {
       const body = this.prepareBodyForSaving(this.state.data.body)
@@ -1326,7 +1325,7 @@ class DisplayEndpoint extends Component {
           delete endpoint.state
           delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
-          this.props.add_endpointInCollection(endpoint, effectiveGroupId || this.state.effectiveGroupId, ({ closeForm, stopLoader }) => {
+          this.props.add_endpointInCollection(endpoint, effectiveRootParentId || this.state.effectiveRootParentId, ({ closeForm, stopLoader }) => {
             if (closeForm) this.closeEndpointFormModal()
             if (stopLoader) this.setState({ saveAsLoader: false })
           })
@@ -1339,7 +1338,7 @@ class DisplayEndpoint extends Component {
             {
               ...endpoint,
               id: this.state.endpoint.id,
-              effectiveGroupId: effectiveGroupId || this.state.effectiveGroupId
+              effectiveRootParentId: effectiveRootParentId || this.state.effectiveRootParentId
             },
             () => {
               this.setState({ saveLoader: false })
@@ -2343,26 +2342,35 @@ class DisplayEndpoint extends Component {
   }
 
   onSortEnd = (oldIndex, newIndex) => {
-    const { docViewData } = this.state
+    console.log(oldIndex,newIndex)
+    const docViewData  = this.props?.endpointContent?.docViewData
+    // console.log(docViewData,123456)
     if (newIndex !== oldIndex) {
       const newData = []
       docViewData.forEach((data, index) => {
         index !== oldIndex && newData.push(data)
       })
       newData.splice(newIndex, 0, docViewData[oldIndex])
-      this.setState({ docViewData: newData })
+      this.props.setQueryUpdatedData({ docViewData: newData })
     }
   }
+
+  saveData = (index, data) => {
+    const updatedDocViewData = [...this.props.endpointContent.docViewData];
+    updatedDocViewData[index] = { ...updatedDocViewData[index], data: data };
+    this.props.setQueryUpdatedData({ 
+      ...this.props.endpointContent, 
+      docViewData: updatedDocViewData 
+    });
+  }
+  
+  debouncedSave = _.debounce(this.saveData, 1000);
 
   renderTiptapEditor(item, index) {
     return (
       <Tiptap
         initial={item.data}
-        onChange={(e) => {
-          const docData = _.cloneDeep(this.props?.endpointContent?.docViewData)
-          docData[index].data = e
-          this.setState({ docViewData: docData })
-        }}
+        onChange={(e) => this.debouncedSave(index, e)}
         match={this.props.match}
         isInlineEditor
         disabled={!isDashboardRoute(this.props)}
@@ -2489,12 +2497,11 @@ class DisplayEndpoint extends Component {
   }
 
   addBlock(blockType) {
-    const docViewData = [...this.props?.endpointContent?.docViewData]
-    docViewData.push({
-      type: blockType,
-      data: ''
-    })
-    this.setState({ docViewData })
+    const updatedDocViewData = [
+      ...this.props.endpointContent.docViewData,
+      { type: blockType, data: '' }
+    ];
+    this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: updatedDocViewData });
   }
 
   renderBodyContainer() {
@@ -2702,11 +2709,12 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOperations() {
-    const endpoints = { ...this.props.endpoints }
-    const endpointId = this.endpointId
-    if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpoints[endpointId]) {
+    const endpoints = this.props.endpointContent 
+    const endpointId = endpoints?.id
+
+    if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpoints) {
       const approvedOrRejected = isStateApproved(endpointId, endpoints) || isStateReject(endpointId, endpoints)
-      const isPublicEndpoint = endpoints[endpointId].isPublished
+      const isPublicEndpoint = endpoints.isPublished
       return (
         <div>
           {isStatePending(endpointId, endpoints) && isAdmin() && (
@@ -2809,12 +2817,12 @@ class DisplayEndpoint extends Component {
   }
 
   async handleApproveEndpointRequest() {
-    const endpointId = this.endpointId
+    const endpointId = this.props.currentEndpointId
     this.setState({ publishLoader: true })
-    if (sensitiveInfoFound(this.props.endpoints[endpointId])) {
+    if (sensitiveInfoFound(this.props.endpointContent)) {
       this.setState({ warningModal: true })
     } else {
-      this.props.approve_endpoint(this.props.endpoints[endpointId], () => {
+      this.props.approve_endpoint(endpointId, () => {
         this.setState({ publishLoader: false })
       })
     }
@@ -2967,8 +2975,8 @@ class DisplayEndpoint extends Component {
                         onHide={() => this.closeEndpointFormModal()}
                         set_rootParent_id={this.setRootParentID.bind(this)}
                         // set_group_id={this.setGroupId.bind(this)}
-                        name={this.state.data.name}
-                        description={this.state.data.description}
+                        name={this.props.endpointContent.data.name}
+                        description={this.props.endpointContent.data.description}
                         save_endpoint={this.handleSave.bind(this)}
                         saveAsLoader={this.state.saveAsLoader}
                       />

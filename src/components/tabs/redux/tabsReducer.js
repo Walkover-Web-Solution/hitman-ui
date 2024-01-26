@@ -27,7 +27,6 @@ function tabsReducer(state = initialState, action) {
       return tabs
 
     case tabsActionTypes.CLOSE_TAB:
-      debugger
       tabs = {
         ...state
       }
