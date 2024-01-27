@@ -2288,9 +2288,9 @@ class DisplayEndpoint extends Component {
   removePublicItem(item, index) {
     const showRemoveButton = !['body', 'host', 'params', 'pathVariables', 'headers', 'sampleResponse'].includes(item.type)
     const handleOnClick = () => {
-      const docData = _.cloneDeep(this.props?.endpointContent?.docViewData)
+      const docData = [...this.props?.endpointContent?.docViewData]
       docData.splice(index, 1)
-      this.setState({ docViewData: docData })
+      this.props.setQueryUpdatedData({...this.props.endpointContent, docViewData: docData })
     }
     return (
       showRemoveButton && (
@@ -2342,16 +2342,14 @@ class DisplayEndpoint extends Component {
   }
 
   onSortEnd = (oldIndex, newIndex) => {
-    console.log(oldIndex,newIndex)
-    const docViewData  = this.props?.endpointContent?.docViewData
-    // console.log(docViewData,123456)
+    const docViewData  = [...this.props?.endpointContent?.docViewData]
     if (newIndex !== oldIndex) {
       const newData = []
       docViewData.forEach((data, index) => {
         index !== oldIndex && newData.push(data)
       })
       newData.splice(newIndex, 0, docViewData[oldIndex])
-      this.props.setQueryUpdatedData({ docViewData: newData })
+      this.props.setQueryUpdatedData({...this.props.endpointContent, docViewData: newData })
     }
   }
 
