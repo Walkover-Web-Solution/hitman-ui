@@ -27,3 +27,7 @@
         text-decoration: underline;
     }
 }
+
+.disable-save-btn {
+    pointer-events: none;
+}

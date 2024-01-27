@@ -24,13 +24,23 @@ export default function ShowCaseSaveAsModal() {
   }
 
   const handleGoBack = (index) => {
-    debugger
     let tempPathData = pathData
     if (index >= 0 && index < tempPathData.length - 1) {
       tempPathData.splice(index + 1)
-      setPathData([...tempPathData]);
+      setPathData([...tempPathData])
     } else {
       console.error('Invalid index provided.')
+    }
+  }
+
+  const getDisable = () => { 
+    if(pathData.length === 1) {
+      return 'disable-save-btn';
+    }
+    else{
+      const currentId = pathData[pathData.length - 1];
+      if(pages?.[currentId]?.type === 1) return 'disable-save-btn';
+      else return '';
     }
   }
 
@@ -52,7 +62,9 @@ export default function ShowCaseSaveAsModal() {
       <div className='showcase_modal_container'>
         <RenderData data={pathData} setPathData={setPathData} />
         <div className='mt-5 d-flex align-items-center justify-content-end pb-2 pr-1'>
-          <button className='btn btn-primary mr-2' disabled>Save</button>
+          <button className={`btn btn-primary mr-2 ${getDisable()}`}>
+            Save
+          </button>
           <button className='btn btn-secondary outline  api-cancel-btn'>Cancel</button>
         </div>
       </div>
