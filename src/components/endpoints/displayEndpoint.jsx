@@ -2216,6 +2216,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
+   // [info] published page part
   renderPublicItem = (item, index) => {
     switch (item.type) {
       case 'textArea': {
@@ -2263,6 +2264,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  // publihsed page case
   isNotDashboardOrDocView() {
     return !isDashboardRoute(this.props) || this.state.currentView === 'doc'
   }
@@ -2795,6 +2797,7 @@ class DisplayEndpoint extends Component {
                   />
                 )}
                 {
+                /* [info] not published page part*/
                   getCurrentUser()
                     ? (
                       <div
@@ -2836,7 +2839,9 @@ class DisplayEndpoint extends Component {
                 }
                 <div className={'clear-both ' + (this.state.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
                   <div className='endpoint-header' ref={this.scrollDiv}>
-                    {this.isNotDashboardOrDocView() && (
+                    { 
+                /* [info] published page part*/
+                    this.isNotDashboardOrDocView() && (
                       <div className='endpoint-name-container'>
                         {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
                       </div>
@@ -2846,6 +2851,7 @@ class DisplayEndpoint extends Component {
                     className={this.isNotDashboardOrDocView() ? 'hm-panel' : 'hm-panel'}
                   >
                     {
+                /* [info] not published page part*/
                       this.isDashboardAndTestingView() &&
                       (
                         <div className='endpoint-url-container'>
@@ -2864,7 +2870,7 @@ class DisplayEndpoint extends Component {
                         </div>
                       )
                     }
-                    {isElectron() && <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>SSL certificate verification {this.state.sslMode ? <span className='enabled'>enabled</span> : <span>disabled</span>} </div>}
+                    {  /* [info] not published page part*/  isElectron() && <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>SSL certificate verification {this.state.sslMode ? <span className='enabled'>enabled</span> : <span>disabled</span>} </div>}
                     <div
                       className={
                         this.isDashboardAndTestingView()
@@ -2874,6 +2880,8 @@ class DisplayEndpoint extends Component {
                     >
                       <div className='main-table-wrapper'>
                         {
+                        /* [info] not  published page part*/
+
                           this.isDashboardAndTestingView()
                             ? (
                               <div className='d-flex justify-content-between align-items-center'>
@@ -3072,9 +3080,12 @@ class DisplayEndpoint extends Component {
                                 </div>
                               </div>
                             )
-                            : this.renderDocView()
+                            : 
+                           /* [info] published page part*/
+                            this.renderDocView()
                         }
                         {
+                            /* [info] published page part*/
                           !isDashboardRoute(this.props) && (
                             <div className='request-button'>
                               <button
@@ -3089,14 +3100,15 @@ class DisplayEndpoint extends Component {
                             </div>
                           )
                         }
-                        {this.isDashboardAndTestingView() && this.renderScriptError()}
+                        {/* [info] published page part*/  this.isDashboardAndTestingView() && this.renderScriptError()}
                         {
+                          /* [info] published page part*/
                           this.displayResponse()
                         }
                       </div>
                     </div>
                   </div>
-                  {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) &&
+                  {/* [info] published page part*/  !this.isDashboardAndTestingView() && isDashboardRoute(this.props) &&
                     <div className='doc-options d-flex align-items-center'>
                       {this.renderDocViewOptions()}
                     </div>}
@@ -3104,6 +3116,7 @@ class DisplayEndpoint extends Component {
                 <ApiDocReview {...this.props} />
               </div>
               {
+                /* [info] not published page part*/
                 this.isDashboardAndTestingView()
                   ? (
                     <div className='response-container-main position-relative'>
@@ -3121,6 +3134,7 @@ class DisplayEndpoint extends Component {
                   : null
               }
               {
+                /* [info] published page part*/
                 this.isNotDashboardOrDocView() &&
                 this.state.harObject &&
                 this.props.location.pathname.split('/')[3] !== 'admin' && (
@@ -3138,7 +3152,7 @@ class DisplayEndpoint extends Component {
               }
             </div>
           </div>
-          {this.isDashboardAndTestingView() && <div>
+          {/* [info]  not published page part*/this.isDashboardAndTestingView() && <div>
             {this.state.showAskAiSlider &&
               <ChatbotsideBar
                 {...this.props}

@@ -122,7 +122,7 @@ class DisplayPage extends Component {
     }
     return (
       !isDashboardRoute(this.props, true)
-        ? <h3 className='page-heading-pub'>{this.state.data?.name || ''}</h3>
+        ? <h3 className='page-heading-pub'>{this.state.data?.name || ''}</h3> // only this runs at published page
         : <EndpointBreadCrumb
             {...this.props}
             page={this.state.page}
@@ -181,6 +181,7 @@ class DisplayPage extends Component {
     )
   }
 
+  // [info] =>  only works at dashboard page
   renderPublishPageOperations () {
     if (isDashboardRoute(this.props)) {
       const pages = { ...this.props.pages }
@@ -234,6 +235,7 @@ class DisplayPage extends Component {
     if (isStateDraft(page.id, this.props.pages) || isStateReject(page.id, this.props.pages)) this.props.pending_page(page)
   }
 
+  // [info] =>  It renders publish modals
   renderPublishConfirmationModal () {
     return this.state.openPublishConfirmationModal &&
       <ConfirmationModal
@@ -269,10 +271,11 @@ class DisplayPage extends Component {
   }
 
   render () {
+    
     return (
       <div className='custom-display-page'>
-        {this.renderPublishConfirmationModal()}
-        {this.renderPublishPageOperations()}
+        {this.renderPublishConfirmationModal() /* not used in published page*/} 
+        {this.renderPublishPageOperations() /* not used in published page*/ }
         {this.renderPageName()}
         {this.checkPageRejected()}
         <div>

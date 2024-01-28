@@ -862,7 +862,7 @@ class SideBarV2 extends Component {
 
   render () {
     return (
-      <nav className={this.getSidebarInteractionClass()}>
+      <nav className={this.getSidebarInteractionClass()/*used in published page*/}>
         {this.showAddEntitySelectionModal()}
         {this.showAddEntityModal()}
         {this.showDeleteEntityModal()}

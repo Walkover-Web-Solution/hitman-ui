@@ -51,6 +51,7 @@ class PublicEndpoint extends Component {
   };
 
   componentDidMount () {
+    // part 1
     window.addEventListener('scroll', () => {
       let sticky = false
       if (window.scrollY > 20) {
@@ -60,6 +61,8 @@ class PublicEndpoint extends Component {
       }
       this.setState({ isSticky: sticky })
     })
+
+    // part 2
     if (this.props.location.pathname) {
       const collectionIdentifier = this.props.location.pathname.split('/')[2]
       this.props.fetch_all_public_endpoints(collectionIdentifier, window.location.hostname)
@@ -69,6 +72,7 @@ class PublicEndpoint extends Component {
       })
     }
 
+    //  part 3
     const unsubscribe = store.subscribe(() => {
       // const baseUrl = window.location.href.split('/')[2]
       const collectionId = this.props.location.collectionIdentifier
@@ -85,6 +89,7 @@ class PublicEndpoint extends Component {
     })
   }
 
+  // [info] =>  finds out first page in version level , then group level , then endpoint
   redirectToDefaultPage () {
     const collectionId = this.props.match.params.collectionIdentifier
     const versionIds = Object.keys(this.props.versions)
@@ -250,7 +255,8 @@ class PublicEndpoint extends Component {
   }
 
   render () {
-    const collectionId = this.props.match.params.collectionIdentifier
+    // part 1
+        const collectionId = this.props.match.params.collectionIdentifier
     const docFaviconLink = (this.props.collections[collectionId]?.favicon)
       ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
       : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
@@ -272,6 +278,7 @@ class PublicEndpoint extends Component {
       this.setState({ collectionName, collectionTheme })
     }
     const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
+    // this gets called if only path specified is http://localhost:3000/p/BQCRhTcPF and next is not given
     if (
       this.props.location.pathname.split('/')[1] === 'p' &&
       (this.props.location.pathname.split('/')[3] === undefined ||
@@ -282,6 +289,7 @@ class PublicEndpoint extends Component {
     }
 
     const { isCTAandLinksPresent } = this.getCTALinks()
+
     return (
 
       <>
@@ -295,8 +303,13 @@ class PublicEndpoint extends Component {
           }
         `}
         </Style>
+
+
+
+
         <nav className='public-endpoint-navbar'>
           {
+            // condition where public page is from own domain
             process.env.REACT_APP_UI_URL === window.location.origin + '/'
               ? (
                   getCurrentUser() === null
@@ -347,6 +360,7 @@ class PublicEndpoint extends Component {
                     <Switch>
                       <Route
                         path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
+                        // It receives props as an argument, which includes match, location, and history information.
                         render={(props) => <DisplayEndpoint
                           {...props}
                           fetch_entity_name={this.fetchEntityName.bind(this)}
