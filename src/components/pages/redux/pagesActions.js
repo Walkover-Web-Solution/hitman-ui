@@ -268,3 +268,16 @@ export const updatePageData = (payload) => {
     }
   }
 }
+
+export const addChildInParent = (payload) => {
+  return {
+    type: pagesActionTypes.ADD_CHILD_IN_PARENT,
+    payload
+  }
+}
+
+// export const saveUntitledEndpoint = (payload) => {
+//   return (dispatch) => {
+//     const response =
+//   }
+// }

@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
 import { isElectron, toTitleCase } from '../common/utility'
+import { useQueryClient } from 'react-query'
+import _ from 'lodash'
 
 const mapStateToProps = (state) => {
   return {
@@ -11,10 +13,30 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     groups: state.groups,
     endpoints: state.endpoints,
-    tabState: state.tabs.tabs
+    tabState: state.tabs.tabs,
+    activeTabId: state.tabs.activeTabId
   }
 }
 
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    const queryClient = useQueryClient()
+    const currentId = props?.match?.params?.endpointId === 'new' ? props?.activeTabId : props?.match?.params?.endpointId
+    const data = queryClient.getQueryData(['endpoint', currentId])
+
+    const setEndpointData = (newData) => {
+      const currentId = props?.match?.params?.endpointId === 'new' ? props?.activeTabId : props?.match?.params?.endpointId
+      if (!props?.pages?.[currentId]) {
+        localStorage.setItem(currentId, JSON.stringify(_.cloneDeep(newData)))
+        queryClient.setQueryData(['endpoint', currentId], newData)
+        return
+      }
+      queryClient.setQueriesData(['endpoint', currentId], newData)
+    }
+
+    return <WrappedComponent {...props} endpointContent={data} setEndpointData={setEndpointData} />
+  }
+}
 class EndpointBreadCrumb extends Component {
   constructor(props) {
     super(props)
@@ -163,7 +185,10 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    this.setState({ endpointTitle: e.currentTarget.value })
+    const tempData = this.props?.endpointContent || {}
+    console.log(tempData, 1234567890)
+    tempData.data.name = e.currentTarget.value
+    this.props.setEndpointData(tempData)
   }
 
   handleInputBlur() {
@@ -228,15 +253,17 @@ class EndpointBreadCrumb extends Component {
               name='enpoint-title'
               style={{ width: 'auto', textTransform: 'capitalize' }}
               onChange={this.handleInputChange.bind(this)}
-              value={this.state.endpointTitle}
+              value={this.props?.endpointContent?.data?.name || 'Untitled'}
               onBlur={() => {
                 this.handleInputBlur()
               }}
               maxLength='50'
             />
             <h3 className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}>
-              {this.state.endpointTitle && this.state.endpointTitle !== '' ? this.state.endpointTitle : null}
-              {this.state.endpointTitle === '' && this.props.groupId ? 'Untitled' : null}
+              {this.props?.endpointContent?.data?.name && this.props?.endpointContent?.data?.name !== ''
+                ? this.props?.endpointContent?.data?.name
+                : 'Untitled'}
+              {/* {this.state.endpointTitle === '' && this.props.groupId ? 'Untitled' : null} */}
               <EditIcon
                 className='fa fa-pencil-square-o ml-2 cursor-pointer '
                 onClick={() => {
@@ -268,4 +295,4 @@ class EndpointBreadCrumb extends Component {
   }
 }
 
-export default connect(mapStateToProps, null)(EndpointBreadCrumb)
+export default connect(mapStateToProps, null)(withQuery(EndpointBreadCrumb))

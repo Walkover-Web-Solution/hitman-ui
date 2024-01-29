@@ -139,7 +139,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 const untitledEndpointData = {
   data: {
-    name: '',
+    name: 'Untitled',
     method: 'GET',
     body: { type: 'none', value: '' },
     uri: '',
@@ -1273,7 +1273,7 @@ class DisplayEndpoint extends Component {
         showLoginSignupModal: true
       })
     }
-    if (!effectiveRootParentId & (this.props?.match?.params?.endpointId === 'new')) {
+    if (!effectiveRootParentId && this.props?.match?.params?.endpointId === 'new' && !id) {
       this.openEndpointFormModal()
     } else {
       const body = this.prepareBodyForSaving(this.props?.endpointContent?.data?.body)
@@ -1305,22 +1305,17 @@ class DisplayEndpoint extends Component {
         docViewData: this.props?.endpointContent?.docViewData
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
-      // else if (this.props.location.pathname.split('/')[5] === 'new') {
-      //   endpoint.requestId = this.props.tab.id
-      //   endpoint.description = endpointDescription || ''
-      //   this.setState({ saveAsLoader: true })
-      //   this.props.add_endpointInCollection(
-      //     endpoint,
-      //     effectiveRootParentId || this.state.effectiveRootParentId,
-      //     ({ closeForm, stopLoader }) => {
-      //       if (closeForm) this.closeEndpointFormModal()
-      //       if (stopLoader) this.setState({ saveAsLoader: false })
-      //     }
-      //   )
-      //   tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
-      //   moveToNextStep(4)
-      // }
-      else {
+      else if (this.props.location.pathname.split('/')[5] === 'new') {
+        endpoint.requestId = this.props.tab.id
+        endpoint.description = endpointDescription || ''
+        this.setState({ saveAsLoader: true })
+        this.props.add_endpointInCollection(endpoint, id, ({ closeForm, stopLoader }) => {
+          if (closeForm) this.closeEndpointFormModal()
+          if (stopLoader) this.setState({ saveAsLoader: false })
+        })
+        tabService.removeTab(this.props?.activeTabId, { ...this.props })
+        moveToNextStep(4)
+      } else {
         if (this.state.saveAsFlag) {
           endpoint.description = endpointDescription || ''
           delete endpoint.state

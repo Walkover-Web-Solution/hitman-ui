@@ -5,6 +5,8 @@ import endpointsActionTypes from './endpointsActionTypes'
 import { getOrgId, focusSelectedEntity } from '../../common/utility'
 import shortid from 'shortid'
 import { sendAmplitudeData } from '../../../services/amplitude'
+import pagesActionTypes from '../../pages/redux/pagesActionTypes'
+import { addChildInParent } from '../../pages/redux/pagesActions'
 
 export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   const orgId = getOrgId()
@@ -41,19 +43,23 @@ export const addEndpointInCollection = (history, newEndpoint, rootParentId, cust
   const orgId = getOrgId()
   const requestId = shortid.generate()
   return (dispatch) => {
-    dispatch(addEndpointRequest({ ...newEndpoint, requestId, rootParentId }))
+    // dispatch(addEndpointRequest({ ...newEndpoint, requestId, rootParentId }))
     endpointApiService
       .saveEndpointInCollection(rootParentId, { ...newEndpoint, requestId })
       .then((response) => {
-        sendAmplitudeData('Endpoint created', {
-          endpointId: response.data.id,
-          endpointName: response.data.name,
-          rootParentId: response.data.rootParentId
-        })
-        dispatch(onEndpointAdded(response.data))
-        // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
-        // endpointsOrder.push(response.data.id);
-        // dispatch(setEndpointIds(endpointsOrder, groupId));
+        const responseToSend = {
+          id: response.data.id,
+          requestType: response.data.requestType,
+          name: response.data.name,
+          parentId: response.data.parentId,
+          child: [],
+          state: response.data.state,
+          isPublished: response.data.isPublished,
+          type: 4,
+          versionId: null,
+          collectionId: store.getState()?.pages?.[response?.data?.parentId].collectionId
+        }
+        dispatch(addChildInParent(responseToSend))
         history.push(`/orgs/${orgId}/dashboard/endpoint/${response.data.id}`)
         if (customCallback) {
           customCallback({ closeForm: true, stopLoader: true })

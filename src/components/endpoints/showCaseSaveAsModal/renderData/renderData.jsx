@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { FaFolder } from 'react-icons/fa'
 
-export default function RenderData(props){
+export default function RenderData(props) {
   const { pages, collections } = useSelector((state) => {
     return {
       pages: state.pages,

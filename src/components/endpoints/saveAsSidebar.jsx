@@ -370,8 +370,8 @@ class SaveAsSidebar extends Form {
               </div>
             </form>
             {/* <div> */}
-              {/* <div className='mb-2'>Collection to which you wish to save this to</div> */}
-              {/* <Dropdown className='cst'>
+            {/* <div className='mb-2'>Collection to which you wish to save this to</div> */}
+            {/* <Dropdown className='cst'>
                 <div
                   onClick={() => {
                     this.goDropdownBack('collections')
@@ -412,7 +412,7 @@ class SaveAsSidebar extends Form {
                 </Dropdown.Menu>
               </Dropdown> */}
 
-              {/* {this.state.dropdownList.parentId != null &&
+            {/* {this.state.dropdownList.parentId != null &&
                 this.renderDropdownItems('versions').length > 0 &&
                 this.renderDropdownItems('groups').length > 0 && (
                   <>
@@ -506,8 +506,11 @@ class SaveAsSidebar extends Form {
                 </>
               )} */}
             {/* </div> */}
-            <ShowCaseSaveAsModal />
-
+            <ShowCaseSaveAsModal
+              save_endpoint={this.props.save_endpoint}
+              name={this.state.data.name}
+              description={this.state.data.description}
+            />
           </div>
         </div>
       </div>

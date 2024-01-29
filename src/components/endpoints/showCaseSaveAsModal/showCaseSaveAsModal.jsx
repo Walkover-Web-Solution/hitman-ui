@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import RenderData from './renderData/renderData'
 import './showCaseSaveAsModal.scss'
 
-export default function ShowCaseSaveAsModal() {
-  const { pages, collections } = useSelector((state) => {
+export default function ShowCaseSaveAsModal(props) {
+  const { pages, collections, activeTabId } = useSelector((state) => {
     return {
       pages: state.pages,
-      collections: state.collections
+      collections: state.collections,
+      activeTabId: state.tabs.activeTabId
     }
   })
+
+  const dispatch = useDispatch()
 
   const [pathData, setPathData] = useState(['organisation'])
 
@@ -33,15 +36,27 @@ export default function ShowCaseSaveAsModal() {
     }
   }
 
-  const getDisable = () => { 
-    if(pathData.length === 1) {
-      return 'disable-save-btn';
+  const getDisable = () => {
+    if (pathData.length === 1) {
+      return 'disable-save-btn'
+    } else {
+      const currentId = pathData[pathData.length - 1]
+      if (pages?.[currentId]?.type === 1) return 'disable-save-btn'
+      else return ''
     }
-    else{
-      const currentId = pathData[pathData.length - 1];
-      if(pages?.[currentId]?.type === 1) return 'disable-save-btn';
-      else return '';
-    }
+  }
+
+  const handleSave = () => {
+    const currentId = pathData[pathData.length - 1]
+    // endpoint.requestId = this.props.tab.id
+    // endpoint.description = endpointDescription || ''
+    props.save_endpoint(currentId, { endpointName: props?.name || '', endpointDescription: props?.description || '' })
+    // this.props.add_endpointInCollection(endpoint, id, ({ closeForm, stopLoader }) => {
+    //   if (closeForm) this.closeEndpointFormModal()
+    //   if (stopLoader) this.setState({ saveAsLoader: false })
+    // })
+    // tabService.removeTab(activeTabId, { ...this.props })
+    // moveToNextStep(4)
   }
 
   return (
@@ -62,7 +77,7 @@ export default function ShowCaseSaveAsModal() {
       <div className='showcase_modal_container'>
         <RenderData data={pathData} setPathData={setPathData} />
         <div className='mt-5 d-flex align-items-center justify-content-end pb-2 pr-1'>
-          <button className={`btn btn-primary mr-2 ${getDisable()}`}>
+          <button onClick={handleSave} className={`btn btn-primary mr-2 ${getDisable()}`}>
             Save
           </button>
           <button className='btn btn-secondary outline  api-cancel-btn'>Cancel</button>
