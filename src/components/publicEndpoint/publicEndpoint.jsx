@@ -16,27 +16,33 @@ import { setTitle, setFavicon, comparePositions, hexToRgb } from '../common/util
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
 import SplitPane from 'react-split-pane'
+import { addCollectionAndPages } from '../redux/generalActions'
+import generalApiService from '../../services/generalApiService'
+
+
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
-    groups: state.groups,
-    endpoints: state.endpoints,
     versions: state.versions,
-    pages: state.pages
+    pages: state.pages,
+    endpoints: state.endpoints
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetch_all_public_endpoints: (collectionIdentifier, domain) =>
-      dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain))
+      dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain)),
+      add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams))
   }
 }
 
 class PublicEndpoint extends Component {
   state = {
     publicCollectionId: '',
+    publicEndpointId: '',
+    publicPageId: '',
     collectionName: '',
     collectionTheme: null,
     isNavBar: false,
@@ -50,7 +56,8 @@ class PublicEndpoint extends Component {
     openReviewModal: false
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    // [info] => part 1 scroll options
     window.addEventListener('scroll', () => {
       let sticky = false
       if (window.scrollY > 20) {
@@ -60,77 +67,54 @@ class PublicEndpoint extends Component {
       }
       this.setState({ isSticky: sticky })
     })
-    if (this.props.location.pathname) {
-      const collectionIdentifier = this.props.location.pathname.split('/')[2]
-      this.props.fetch_all_public_endpoints(collectionIdentifier, window.location.hostname)
-      this.props.history.push({
-        collectionIdentifier: collectionIdentifier,
-        Environment: 'publicCollectionEnvironment'
-      })
+
+    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+    const currentDomain = window.location.href.split('/')[2]
+    let url =  new URL(window.location.href);
+
+    var queryParamApi2 = {}
+     // example `https://localhost:300/path`
+    // [info] part 2 get sidebar data and collection data  also set queryParmas for 2nd api call
+    if(url.pathname.split('/')[1] == 'p' ) { // internal case
+      const collectionId = url.pathname.split('/')[2]
+      queryParamApi2.collectionId = collectionId
+      this.props.add_collection_and_pages(null,{collectionId:collectionId}) 
+    }else if(!domainsList.includes(currentDomain) && window.location.href.split('/')[1] !== 'p'){   // external case
+      queryParamApi2.custom_domain = currentDomain;
+      queryParamApi2.versionName = url.searchParams.has('VersionName');
+      queryParamApi2.path = url.pathname.substring(1);
+      this.props.add_collection_and_pages(null,{custom_domain:currentDomain}) 
+
     }
 
+    // setting query params value
+    let queryParamsString = `?`;
+    for(let key in queryParamApi2){queryParamsString += `${key}=${queryParamApi2[key]}`}
+
+    try {
+      const response = await generalApiService.getPublishedContent(queryParamsString);
+      
+      if (response) {
+        let data = response?.data?.publishedContent?.type === 4 ? { publicEndpointId: response?.data?.publishedContent?.id } : { publicPageId: response?.data?.publishedContent?.id };
+        this.setState(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    
+
+    // [info] to unsubscribe if a certain condition is met 
     const unsubscribe = store.subscribe(() => {
-      // const baseUrl = window.location.href.split('/')[2]
-      const collectionId = this.props.location.collectionIdentifier
-      // const domain = this.props.location.pathname.split("/");
-      if (this.props.collections[collectionId]) {
-        // const index = this.props.collections[
-        //   collectionId
-        // ].docProperties.domainsList.findIndex((d) => d.domain === baseUrl)
-        // document.title = this.props.collections[
-        //   collectionId
-        // ].docProperties.domainsList[index].title;
-        unsubscribe()
+      const collectionId = Object.keys(this.props.collections)[0];
+      if (collectionId) {
+        this.setState({ publicCollectionId: collectionId});
+        unsubscribe()  // [info] if this.props.collections[collectionId] is found then there will be no further updates to redux
       }
     })
   }
 
   redirectToDefaultPage() {
-    const collectionId = this.props.match.params.collectionIdentifier
-    const versionIds = Object.keys(this.props.versions)
-    if (versionIds.length > 0) {
-      const defaultVersion = versionIds[0]
-      let defaultGroup = null
-      let defaultPage = null
-      let defaultEndpoint = null
-      // Search for Version Pages
-      const versionPages = Object.values(this.props.pages).filter((page) => page.versionId === defaultVersion && page.groupId === null)
-      versionPages.sort(comparePositions)
-      defaultPage = versionPages[0]
-      if (defaultPage) {
-        this.props.history.push({
-          pathname: `/p/${collectionId}/pages/${defaultPage.id}/${this.state.collectionName}`
-        })
-      } else {
-        // Search for Group with minimum position
-        const versionGroups = Object.values(this.props.groups).filter((group) => group.versionId === defaultVersion)
-        versionGroups.sort(comparePositions)
-        defaultGroup = versionGroups[0]
-        if (defaultGroup) {
-          // Search for Group Pages with minimum position
-          const groupPages = Object.values(this.props.pages).filter(
-            (page) => page.versionId === defaultVersion && page.groupId === defaultGroup.id
-          )
-          groupPages.sort(comparePositions)
-          defaultPage = groupPages[0]
-          if (defaultPage) {
-            this.props.history.push({
-              pathname: `/p/${collectionId}/pages/${defaultPage.id}/${this.state.collectionName}`
-            })
-          } else {
-            // Search for Endpoint with minimum position
-            const groupEndpoints = Object.values(this.props.endpoints).filter((endpoint) => endpoint.groupId === defaultGroup.id)
-            groupEndpoints.sort(comparePositions)
-            defaultEndpoint = groupEndpoints[0]
-            if (defaultEndpoint) {
-              this.props.history.push({
-                pathname: `/p/${collectionId}/e/${defaultEndpoint.id}/${this.state.collectionName}`
-              })
-            }
-          }
-        }
-      }
-    }
+   
   }
 
   openLink(link) {
@@ -283,13 +267,17 @@ class PublicEndpoint extends Component {
   }
 
   render() {
-    const collectionId = this.props.match.params.collectionIdentifier
+    // [info] part 1  set collection data
+    const collectionId = this.state.publicCollectionId
     const docFaviconLink = this.props.collections[collectionId]?.favicon
       ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
       : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
     const docTitle = this.props.collections[collectionId]?.docProperties?.defaultTitle
     setTitle(docTitle)
     setFavicon(docFaviconLink)
+
+    // [info] part 2 seems not necessary 
+    // TODO later
     if (
       this.props.collections[this.props.location.pathname.split('/')[2]] &&
       this.props.collections[this.props.location.pathname.split('/')[2]].name &&
@@ -300,6 +288,9 @@ class PublicEndpoint extends Component {
 
       this.setState({ collectionName, collectionTheme })
     }
+
+    // [info] part 3 seems not necessary 
+    // TODO later
     const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
     if (
       this.props.location.pathname.split('/')[1] === 'p' &&
@@ -309,9 +300,13 @@ class PublicEndpoint extends Component {
       this.redirectToDefaultPage()
     }
 
+    // [info] part 3 seems not necessary 
+    // TODO later
     const { isCTAandLinksPresent } = this.getCTALinks()
+
     return (
       <>
+      {/* [info] part 1 style component */}
         <Style>
           {`
           .link {
@@ -323,7 +318,10 @@ class PublicEndpoint extends Component {
         `}
         </Style>
         <nav className='public-endpoint-navbar'>
-          {process.env.REACT_APP_UI_URL === window.location.origin + '/' ? (
+
+          {/* [info] part 2 only do this if from own origin TODO Later */}
+          {process.env.REACT_APP_UI_URL === window.location.origin + '/' ?
+           (
             getCurrentUser() === null ? (
               <div className='dropdown user-dropdown'>
                 <div className='user-info'>
@@ -354,10 +352,15 @@ class PublicEndpoint extends Component {
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
+
+          
+          {/* [info] part 3 */}
           <SplitPane split='vertical' className='split-sidebar'>
+            {/* [info] part 3 subpart 1 sidebar data left content */}
             <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.03') }}>
               <SideBarV2 {...this.props} collectionName={this.state.collectionName} />
             </div>
+            {/*  [info] part 3 subpart 1 sidebar data right content */}
             <div
               className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
               style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}
@@ -373,28 +376,25 @@ class PublicEndpoint extends Component {
                   }}
                   className='display-component'
                 >
-                  <Switch>
-                    <Route
-                      path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
-                      render={(props) => (
-                        <DisplayEndpoint
-                          {...props}
-                          fetch_entity_name={this.fetchEntityName.bind(this)}
-                          publicCollectionTheme={this.state.collectionTheme}
-                        />
-                      )}
-                    />
-                    <Route
-                      path={`/p/:collectionId/pages/:pageId/${this.state.collectionName}`}
-                      render={(props) => (
-                        <DisplayPage
-                          {...props}
-                          fetch_entity_name={this.fetchEntityName.bind(this)}
-                          publicCollectionTheme={this.state.collectionTheme}
-                        />
-                      )}
-                    />
-                  </Switch>
+                  
+                 {(this.state.publicEndpointId)  && <DisplayEndpoint
+                    {...this.props}
+                    fetch_entity_name={this.fetchEntityName.bind(this)}
+                    publicCollectionTheme={this.state.collectionTheme}
+                  />
+                 }
+              
+              {(this.state.publicPageId) &&   <DisplayPage
+                    {...this.props}
+                    fetch_entity_name={this.fetchEntityName.bind(this)}
+                    publicCollectionTheme={this.state.collectionTheme}
+                  />
+                }
+                {!(this.state.publicEndpointId) && (this.state.publicPageId) &&
+                     <p>API Doc is loading....</p>
+                
+                }
+                     
                   {this.displayCTAandLink()}
                   {/* <div className='d-flex flex-row justify-content-start'>
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>

@@ -855,11 +855,10 @@ class SideBarV2 extends Component {
             ADD_VERSION_MODAL_NAME
           )}
         <div className='primary-sidebar'>
+          {/* [info] for publishedPage only this part is important */}
           {isDashboardRoute(this.props, true) ? (
             this.renderDashboardSidebar()
-          ) : (
-            <Route path='/p/:collectionId' render={(props) => <Collections {...this.props} />} />
-          )}
+          ) : <Collections {...this.props} />}
         </div>
       </nav>
     )

@@ -127,13 +127,9 @@ class App extends Component {
           return null
         }
       } else {
-        if (path !== 'p') {
           return (
-            <Switch>
-              <Route path='/' component={ClientDoc} />
-            </Switch>
+            {Public} 
           )
-        }
       }
     }
 
