@@ -237,7 +237,7 @@ const withQuery = (WrappedComponent) => {
       }
     }
 
-      const setQueryUpdatedData = (data) => {
+    const setQueryUpdatedData = (data) => {
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(['endpoint', endpointId], data)
@@ -985,8 +985,8 @@ class DisplayEndpoint extends Component {
   }
 
   setData = async () => {
-    let body = this.state.data.body
-    if (this.state.data.body.type === 'raw') {
+    let body = this.props.endpointContent.data.body
+    if (this.props.endpointContent.data.body.type === 'raw') {
       body.value = this.parseBody(body.value)
     }
     body = this.prepareBodyForSending(body)
@@ -994,18 +994,18 @@ class DisplayEndpoint extends Component {
     const updatedParams = this.doSubmitParam()
     const pathVariables = this.doSubmitPathVariables()
     const endpoint = {
-      uri: this.state.data.updatedUri,
-      name: this.state.data.name,
-      requestType: this.state.data.method,
+      uri: this.props.endpointContent.data.updatedUri,
+      name: this.props.endpointContent.data.name,
+      requestType: this.props.endpointContent.data.method,
       body: body,
       id: this.state.endpoint.id || null,
       status: this.props.tab?.status || tabStatusTypes.NEW,
       headers: headersData,
       params: updatedParams,
       pathVariables: pathVariables,
-      BASE_URL: this.state.host.BASE_URL,
-      bodyDescription: this.state.data.body.type === 'JSON' ? this.state.bodyDescription : {},
-      authorizationType: this.state.authType
+      BASE_URL: this.props.endpointContent.host.BASE_URL,
+      bodyDescription: this.props.endpointContent.data.body.type === 'JSON' ? this.props.endpointContent.bodyDescription : {},
+      authorizationType: this.props.endpointContent.authType
     }
     const response = { ...this.state.response }
     const createdAt = new Date()
@@ -1268,7 +1268,7 @@ class DisplayEndpoint extends Component {
   handleSave = async (id, endpointObject) => {
     const { endpointName, endpointDescription } = endpointObject || {}
     // const effectiveGroupId = isGroupId ? id : this.state.groupId
-    const effectiveRootParentId = this.props.pages[this.props.currentEndpointId] 
+    const effectiveRootParentId = this.props.pages[this.props.currentEndpointId]
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
@@ -1325,10 +1325,14 @@ class DisplayEndpoint extends Component {
           delete endpoint.state
           delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
-          this.props.add_endpointInCollection(endpoint, effectiveRootParentId || this.state.effectiveRootParentId, ({ closeForm, stopLoader }) => {
-            if (closeForm) this.closeEndpointFormModal()
-            if (stopLoader) this.setState({ saveAsLoader: false })
-          })
+          this.props.add_endpointInCollection(
+            endpoint,
+            effectiveRootParentId || this.state.effectiveRootParentId,
+            ({ closeForm, stopLoader }) => {
+              if (closeForm) this.closeEndpointFormModal()
+              if (stopLoader) this.setState({ saveAsLoader: false })
+            }
+          )
           moveToNextStep(4)
         } else if (this.state.title === 'update endpoint') {
           endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
@@ -2290,7 +2294,7 @@ class DisplayEndpoint extends Component {
     const handleOnClick = () => {
       const docData = [...this.props?.endpointContent?.docViewData]
       docData.splice(index, 1)
-      this.props.setQueryUpdatedData({...this.props.endpointContent, docViewData: docData })
+      this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: docData })
     }
     return (
       showRemoveButton && (
@@ -2342,27 +2346,27 @@ class DisplayEndpoint extends Component {
   }
 
   onSortEnd = (oldIndex, newIndex) => {
-    const docViewData  = [...this.props?.endpointContent?.docViewData]
+    const docViewData = [...this.props?.endpointContent?.docViewData]
     if (newIndex !== oldIndex) {
       const newData = []
       docViewData.forEach((data, index) => {
         index !== oldIndex && newData.push(data)
       })
       newData.splice(newIndex, 0, docViewData[oldIndex])
-      this.props.setQueryUpdatedData({...this.props.endpointContent, docViewData: newData })
+      this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: newData })
     }
   }
 
   saveData = (index, data) => {
-    const updatedDocViewData = [...this.props.endpointContent.docViewData];
-    updatedDocViewData[index] = { ...updatedDocViewData[index], data: data };
-    this.props.setQueryUpdatedData({ 
-      ...this.props.endpointContent, 
-      docViewData: updatedDocViewData 
-    });
+    const updatedDocViewData = [...this.props.endpointContent.docViewData]
+    updatedDocViewData[index] = { ...updatedDocViewData[index], data: data }
+    this.props.setQueryUpdatedData({
+      ...this.props.endpointContent,
+      docViewData: updatedDocViewData
+    })
   }
-  
-  debouncedSave = _.debounce(this.saveData, 1000);
+
+  debouncedSave = _.debounce(this.saveData, 1000)
 
   renderTiptapEditor(item, index) {
     return (
@@ -2495,11 +2499,8 @@ class DisplayEndpoint extends Component {
   }
 
   addBlock(blockType) {
-    const updatedDocViewData = [
-      ...this.props.endpointContent.docViewData,
-      { type: blockType, data: '' }
-    ];
-    this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: updatedDocViewData });
+    const updatedDocViewData = [...this.props.endpointContent.docViewData, { type: blockType, data: '' }]
+    this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: updatedDocViewData })
   }
 
   renderBodyContainer() {
@@ -2707,7 +2708,7 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOperations() {
-    const endpoints = this.props.endpointContent 
+    const endpoints = this.props.endpointContent
     const endpointId = endpoints?.id
 
     if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpoints) {
