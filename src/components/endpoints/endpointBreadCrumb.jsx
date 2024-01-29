@@ -186,7 +186,6 @@ class EndpointBreadCrumb extends Component {
 
   handleInputChange(e) {
     const tempData = this.props?.endpointContent || {}
-    console.log(tempData, 1234567890)
     tempData.data.name = e.currentTarget.value
     this.props.setEndpointData(tempData)
   }
