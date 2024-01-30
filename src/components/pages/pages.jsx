@@ -6,6 +6,7 @@ import './page.scss'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import tabService from '../tabs/tabService'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
+import DisplayPage from './displayPage'
 
 import PageIcon from '../../assets/icons/page-icon.svg'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
@@ -92,10 +93,13 @@ class Pages extends Component {
         page: page
       })
     } else {
-      this.props.history.push({
-        pathname: `/p/${collectionId}/pages/${page.id}/${this.props.collections[collectionId].name}`,
-        page: page
-      })
+          //  <DisplayPage
+          //   {...this.props}
+          //   fetch_entity_name={this.fetchEntityName.bind(this)}
+          //   publicCollectionTheme={this.state.collectionTheme}
+          //   publicPageId = {this.state.publicPageId}
+          // />
+        
     }
   }
 

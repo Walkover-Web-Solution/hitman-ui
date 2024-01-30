@@ -340,6 +340,7 @@ class CollectionsComponent extends Component {
 
   renderBody(collectionId, collectionState) {
     const expanded = this.props.clientData?.[collectionId]?.isExpanded || false
+    var isOnDashboardPage = isDashboardRoute(this.props)
 
     if (this.scrollRef[collectionId]) {
       this.scrollToCollection(collectionId)
@@ -590,11 +591,15 @@ class CollectionsComponent extends Component {
           {expanded ? (
             <div id='collection-collapse'>
               <Card.Body>
-                <PublishCollectionInfo
+                {
+                isOnDashboardPage && 
+                < PublishCollectionInfo
                   {...this.props}
                   collectionId={collectionId}
                   // getTotalEndpointsCount={this.props.getTotalEndpointsCount.bind(this)}
                 />
+                }
+                
                 {
                   <CombinedCollections
                     {...this.props}
@@ -748,9 +753,9 @@ class CollectionsComponent extends Component {
                   </h4>
                 )}
               </div>
-              <div id='parent-accordion' key={index}>
-                <CollectionParentPages {...this.props} collection_id={collectionId} rootParentId= {this.props?.rootParentId} />
-              </div>
+              <div className='App-Side'>
+              {this.props.collectionsToRender.map((collectionId, index) => this.renderBody(collectionId, 'allCollections'))}
+            </div>
             </div>
           ))}
         </>

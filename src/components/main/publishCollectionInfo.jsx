@@ -245,7 +245,7 @@ class PublishCollectionInfo extends Component {
       >
         <div className='d-flex align-items-left'>
           <img className='ml-2 pl-1 mr-1' src={FileIcon} alt='' />
-          <span className='truncate'>Publish API Documentation</span>
+          <span className='truncate'>Publish API Documentation2</span>
         </div>
         {this.renderInfoText('Add an endpoint to publish')}
       </button>

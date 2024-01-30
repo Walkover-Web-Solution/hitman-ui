@@ -131,7 +131,7 @@ class CollectionParentPages extends Component {
   findDefaultVersion = () => {
     const { pages, rootParentId } = this.props
     const children = pages[rootParentId]?.child || []
-    return children.map((childId) => pages[childId]).find((page) => page.state === 1)
+    return children.map((childId) => pages[childId]).find((page) => page?.state === 1)
   }
 
   setParentPageForEntity(id, type) {
@@ -259,14 +259,16 @@ class CollectionParentPages extends Component {
   }
 
   toggleParentPageIds(id) {
+    debugger
+    console.log('came to collectionParentPages == ',id)
     const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
       id: id
     })
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
-    })
+    // this.props.history.push({
+    //   pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
+    // })
   }
 
   scrolltoPage(pageId) {
@@ -362,24 +364,30 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
+    // debugger
+    const expanded = true || this.props.onPublishedPage || this.props?.clientData?.[pageId]?.isExpanded || false
     const publishData = this.props.modals.publishData
     const rootId = pageId
+    let OnDashboardRoute = isDashboardRoute(this.props);
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
     // if (!isDashboardRoute(this.props, true)) return null
     return (
       <>
         {/* for publish side barrrrrrrr */}
-        {this.props.isPublishData && publishData ? (
+        {this.props.isPublishData && publishData ?
+         (
           <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
             <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
               <button tabIndex={-1} className={'pl-3 ' + (expanded ? 'expanded' : '')}>
                 <div className='d-flex align-items-center cl-name'>
+                  { OnDashboardRoute && 
                   <input
-                    type='checkbox'
-                    checked={this.props?.clientData?.[this.props?.rootParentId]?.checkedForPublished || false}
-                    onChange={this.handleCheckboxChange}
-                  />
+                  type='checkbox'
+                  checked={this.props?.clientData?.[this.props?.rootParentId]?.checkedForPublished || false}
+                  onChange={this.handleCheckboxChange}
+                />
+                  }
+                  
                   <div className='d-flex gap-5 ms-2'>
                     <div className='sidebar-accordion-item text-truncate ml-2 '>{this.props.pages[pageId]?.name}</div>
                     <DropdownButton
@@ -393,10 +401,11 @@ class CollectionParentPages extends Component {
                     >
                       {this.props.pages[rootId].child.map((childId, index) => (
                         <Dropdown.Item key={index} onClick={() => this.handleDropdownItemClick(childId, rootId)}>
-                          {this.props.pages[childId].name}
+                          {this.props.pages[childId]?.name}
                         </Dropdown.Item>
                       ))}
                     </DropdownButton>
+                    { OnDashboardRoute &&
                     <OverlayTrigger placement='top' overlay={<Tooltip>Select Default version to publish</Tooltip>}>
                       <DropdownButton
                         id='dropdown-basic-button'
@@ -428,6 +437,7 @@ class CollectionParentPages extends Component {
                         ))}
                       </DropdownButton>
                     </OverlayTrigger>
+                   }
                   </div>
                 </div>
               </button>
@@ -469,7 +479,7 @@ class CollectionParentPages extends Component {
                       onClick={(event) => event.stopPropagation()}
                       title={
                         <span className='dropdown-title'>
-                          {this.props.pages[this.props.rootParentId].child.length === 1
+                          {this.props.pages?.[this.props.rootParentId]?.child?.length === 1
                             ? this.state.defaultVersionName
                             : this.state.selectedVersionName}
                         </span>
@@ -477,7 +487,7 @@ class CollectionParentPages extends Component {
                     >
                       {this.props.pages[rootId].child.map((childId, index) => (
                         <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
-                          <span className='dropdown-item-text'>{this.props.pages[childId].name}</span>
+                          <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
                         </Dropdown.Item>
                       ))}
                     </DropdownButton>
@@ -809,6 +819,7 @@ class CollectionParentPages extends Component {
   }
 
   render() {
+    // debugger
     if (this.filterFlag === false || this.props.filter === '' || this.state.filter !== this.props.filter) {
       this.filteredPages = { ...this.props.pages }
       this.eventkey = {}
@@ -835,7 +846,8 @@ class CollectionParentPages extends Component {
         All your versions,subpages and endpoints present in this page will be deleted.`,
             this.state.selectedPage
           )}
-        {!isDashboardRoute(this.props, true) ? (
+          {/* [info] to render search functionalities on published Page */}
+        {/* {!isDashboardRoute(this.props, true) ? (
           <>
             <div
               className={
@@ -846,24 +858,11 @@ class CollectionParentPages extends Component {
                   : 'versionWrapper'
               }
             >
-              {this.filteredPages && Object.keys(this.filteredPages).length > 1 ? (
-                <select
-                  className='selected-version form-control light-orange-bg'
-                  onChange={(e) => {
-                    this.setSelectedParentPage(e)
-                  }}
-                >
-                  {Object.keys(this.filteredPages)?.map((id, index) => (
-                    <option key={index} value={index}>
-                      {this.props.pages[id]?.name}
-                    </option>
-                  ))}
-                </select>
-              ) : null}
+              
               {this.renderPublicSearchBar()}
             </div>
           </>
-        ) : null}
+        ) : null} */}
         {isDashboardRoute(this.props, true)
           ? // this.props.pagesToRender.map((pageId, index) => {
             this.renderBody(this.props.rootParentId)

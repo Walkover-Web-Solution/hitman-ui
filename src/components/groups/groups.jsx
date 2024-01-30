@@ -511,24 +511,26 @@ class Groups extends Component {
         )}
       </>
     ) : (
-      <div className='hm-sidebar-block'>
-        <div className='hm-sidebar-label mb-3'>{this.props.groups[groupId].name}</div>
-        <Endpoints
-          {...this.props}
-          group_id={groupId}
-          endpoints_order={this.props.groups[groupId].endpointsOrder}
-          theme={this.props.collections[this.props.collection_id].theme}
-          // show_filter_groups={this.propsFromGroups.bind(this)}
-        />
-      </div>
+      <div className='linkWrapper versionPages'>
+                <Card.Body>
+                  <CombinedCollections
+                    {...this.props}
+                    // isPublishData={false}
+                    // pagesToRender={pagesToRender}
+                    // version_id={this.props.groups[groupId].versionId}
+                    // set_page_drag={this.setPagedrag.bind(this)}
+                    // group_id={groupId}
+                    // show_filter_groups={this.propsFromGroups.bind(this)}
+                  />
+                </Card.Body>
+              </div>
     )
   }
 
   renderForm(sortedGroups) {
-    const groupsCount = sortedGroups.filter((group) => group.versionId === this.props.version_id).length
     return (
       <>
-        {(groupsCount === 0 && isDashboardRoute(this.props, true)) ||
+        {(false &&  isDashboardRoute(this.props, true)) ||
           (this.this.props.modals.publishData && this.props.isPublishData && (
             <AddEntity
               placeholder='Group Name'
@@ -542,17 +544,22 @@ class Groups extends Component {
   }
 
   toggleSubPageIds(id) {
+    debugger
+    console.log('came to groupsPages == ',id)
     const isExpanded = this.props.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
       id: id
     })
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
-    })
+    // this.props.history.push({
+    //   pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
+    // })
+
+    
   }
 
   render() {
+    // debugger
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false
     }
@@ -586,26 +593,13 @@ class Groups extends Component {
           )}
 
         {
-          isDashboardRoute(this.props, true) && (
+          isDashboardRoute(this.props, true) ? (
             // groupId ?
             <div className='linkWith'>{this.renderBody(this.props?.rootParentId)}</div>
-          )
+          ) :  <div className='linkWith'>{this.renderBody(this.props?.rootParentId)}</div>
           // : null
         }
 
-        {!isDashboardRoute(this.props, true) &&
-          this.sortedGroups &&
-          this.sortedGroups
-            .filter((group) => group.versionId === this.props.version_id)
-            .map((group) =>
-              group?.id ? (
-                <div key={group.id} className='linkWith'>
-                  {this.renderBody(group.id)}
-                </div>
-              ) : null
-            )}
-
-        <div className='pl-4'>{this.renderForm(this.sortedGroups)}</div>
       </>
     )
   }

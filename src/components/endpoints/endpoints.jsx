@@ -11,6 +11,7 @@ import filterService from '../../services/filterService'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
+import DisplayEndpoint from './displayEndpoint'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -160,13 +161,15 @@ class Endpoints extends Component {
         collectionId
       })
     } else {
-      this.props.history.push({
-        pathname: `/p/${collectionId}/e/${endpoint.id}/${this.props.collections[collectionId].name}`,
-        title: 'update endpoint',
-        endpoint: endpoint,
-        groupId: groupId,
-        Environment: 'publicCollectionEnvironment'
-      })
+      //  <DisplayEndpoint
+      //   {...this.props}
+      //   fetch_entity_name={this.fetchEntityName.bind(this)}
+      //   publicCollectionTheme={this.state.collectionTheme}
+      //   publicEndpointId = {this.state.publicEndpointId}
+      // />
+     
+  
+  
     }
   }
 
@@ -606,12 +609,14 @@ class Endpoints extends Component {
   }
 
   render() {
+    // debugger
     this.setFilterFlag()
     const endpointIds = this.filterEndpointIdsByGroup()
     let endpointsArray = []
     endpointsArray = this.extractEndpointsFromIds(endpointIds)
     let endpoints = {}
     endpoints = this.getEndpointsEntity(endpointsArray)
+    // debugger
 
     if (isDashboardRoute(this.props, true)) {
       return this.displayUserEndpoints(this?.props?.endpointId)

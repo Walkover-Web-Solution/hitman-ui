@@ -292,6 +292,7 @@ class SideBarV2 extends Component {
   }
 
   openPage(id) {
+    debugger
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
     })
@@ -665,6 +666,7 @@ class SideBarV2 extends Component {
                   </div>
                 </div>
                 <div>
+                  {/* [info] not to be used in published Page */}
                   <PublishColelctionInfo
                     {...this.props}
                     collectionId={this.collectionId}
@@ -705,19 +707,20 @@ class SideBarV2 extends Component {
   }
 
   renderDashboardSidebar() {
+    var isOnDashboardPage = isDashboardRoute(this.props)
     return (
       <>
         <div className='plr-3'>
-          {this.renderSearch()}
-          {getCurrentUser() && this.renderInviteTeam()}
+          {isOnDashboardPage && this.renderSearch()}
+          { isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
           {/* {this.renderDownloadDesktopApp()} */}
-          {this.renderGlobalAddButton()}
+          {isOnDashboardPage && this.renderGlobalAddButton()}
         </div>
         <div className='sidebar-content'>
           {this.state.data.filter !== '' && this.renderSearchList()}
           {this.state.data.filter === '' && this.renderSidebarContent()}
         </div>
-        {getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
+        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
       </>
     )
   }
@@ -753,7 +756,7 @@ class SideBarV2 extends Component {
   }
 
   getSidebarInteractionClass() {
-    return isDashboardRoute(this.props, true) ? 'sidebar' : 'public-endpoint-sidebar'
+    return isDashboardRoute(this.props, true) ? 'sidebar' : 'sidebar'
   }
 
   openAddVersionForm(collectionId) {
@@ -778,6 +781,7 @@ class SideBarV2 extends Component {
   }
 
   showAddEntitySelectionModal() {
+  
     return (
       this.state.openAddEntitySelectionModal && (
         <AddEntitySelectionModal
@@ -842,6 +846,7 @@ class SideBarV2 extends Component {
   }
 
   render() {
+    // debugger
     return (
       <nav className={this.getSidebarInteractionClass()}>
         {this.showAddEntitySelectionModal()}
@@ -858,7 +863,12 @@ class SideBarV2 extends Component {
           {/* [info] for publishedPage only this part is important */}
           {isDashboardRoute(this.props, true) ? (
             this.renderDashboardSidebar()
-          ) : <Collections {...this.props} rootParentId= {this.props?.rootParentId}/>}
+          ) : 
+          
+          this.renderDashboardSidebar()
+          
+          
+          }
         </div>
       </nav>
     )
