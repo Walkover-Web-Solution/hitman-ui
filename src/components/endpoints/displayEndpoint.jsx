@@ -206,8 +206,7 @@ const untitledEndpointData = {
   ]
 }
 
-const getEndpointContent = async (props, queryClient) => {
-  debugger
+const getEndpointContent = async (props) => {
   let endpointId = props?.match?.params.endpointId
   if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     const data = await getEndpoint(endpointId)
@@ -216,14 +215,12 @@ const getEndpointContent = async (props, queryClient) => {
   } else {
     endpointId = props?.activeTabId
     if (localStorage.getItem(endpointId)) {
-      // queryClient.setQueryData(['endpoint', endpointId], JSON.parse(localStorage.getItem(endpointId)) || {})
       const data = JSON.parse(localStorage.getItem(endpointId))
       return data
     } else {
       localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)))
       const data = _.cloneDeep(untitledEndpointData)
       return data
-      // queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(untitledEndpointData))
     }
   }
 }
@@ -231,7 +228,7 @@ const getEndpointContent = async (props, queryClient) => {
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
-    const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId : props?.activeTabId;
+    const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId : props?.activeTabId
     const data = useQuery(['endpoint', endpointId], () => getEndpointContent(props, queryClient), {
       refetchOnWindowFocus: false,
       cacheTime: 5000000,
@@ -239,10 +236,11 @@ const withQuery = (WrappedComponent) => {
       staleTime: Infinity
     })
 
-    console.log('data idris', data);
-    
+    console.log('data hello', data.data);
+
     const setQueryUpdatedData = (data) => {
-      const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId : props?.activeTabId;
+      debugger
+      const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId : props?.activeTabId
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(['endpoint', endpointId], data)
@@ -1423,6 +1421,7 @@ class DisplayEndpoint extends Component {
 
   propsFromChild(name, value) {
     if (name === 'Params') {
+      debugger
       this.handleUpdateUri(value)
       this.setState({ originalParams: value }, () => this.setModifiedTabData())
       const dummyData = this?.props?.endpointContent
@@ -1700,8 +1699,9 @@ class DisplayEndpoint extends Component {
   }
 
   setBaseUrl(BASE_URL, selectedHost) {
+    debugger
     this.setState({ host: { BASE_URL, selectedHost } })
-    const tempData = this?.props?.endpointContent || {}
+    const tempData = this?.props?.endpointContent || untitledEndpointData
     tempData.host = { BASE_URL, selectedHost }
     this.props.setQueryUpdatedData(tempData)
   }
@@ -2707,7 +2707,7 @@ class DisplayEndpoint extends Component {
             {...this.props}
             groupId={this.state.groupId}
             endpointId={this.state.endpoint.id}
-            customHost={this.props?.endpointContent?.host.BASE_URL || ''}
+            customHost={this.props?.endpointContent?.host?.BASE_URL || ''}
             environmentHost={
               this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
             }

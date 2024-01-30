@@ -528,6 +528,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.data.name = endpoint.name
   untitled.data.method = endpoint.requestType
   untitled.data.body = endpoint.body
+  untitled.data.uri = endpoint.uri
   untitled.data.updatedUri = endpoint.uri
   untitled.authType = endpoint.authorizationType
   let headersData = []
