@@ -366,7 +366,7 @@ class CollectionParentPages extends Component {
     const publishData = this.props.modals.publishData
     const rootId = pageId
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
-    if (!isDashboardRoute(this.props, true)) return null
+    // if (!isDashboardRoute(this.props, true)) return null
     return (
       <>
         {/* for publish side barrrrrrrr */}
@@ -381,7 +381,7 @@ class CollectionParentPages extends Component {
                     onChange={this.handleCheckboxChange}
                   />
                   <div className='d-flex gap-5 ms-2'>
-                    <div className='sidebar-accordion-item text-truncate ml-2 '>{this.props.pages[pageId].name}</div>
+                    <div className='sidebar-accordion-item text-truncate ml-2 '>{this.props.pages[pageId]?.name}</div>
                     <DropdownButton
                       id='dropdown-basic-button'
                       title={
@@ -462,7 +462,7 @@ class CollectionParentPages extends Component {
                     <img src={ExpandArrow} alt='' />
                   </span>
                   <div className='d-flex'>
-                    <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
+                    <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
                     <DropdownButton
                       className=''
                       id='dropdown-basic-button'
@@ -868,13 +868,7 @@ class CollectionParentPages extends Component {
           ? // this.props.pagesToRender.map((pageId, index) => {
             this.renderBody(this.props.rootParentId)
           : // })
-            this.state.value
-            ? this.renderResponses()
-            : this.filteredPages &&
-              Object.keys(this.filteredPages) &&
-              Object.keys(this.filteredPages)
-                .filter((pageId) => this.filteredPages[pageId].collectionId === this.props.collection_id)
-                .map((pageId, index) => this.renderBody(pageId, index, versionsCount))}
+          this.renderBody(this.props.rootParentId)}
 
         {/* <div className='pl-4'>{this.renderForm(versionsCount)}</div> */}
       </>

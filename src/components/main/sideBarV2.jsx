@@ -858,7 +858,7 @@ class SideBarV2 extends Component {
           {/* [info] for publishedPage only this part is important */}
           {isDashboardRoute(this.props, true) ? (
             this.renderDashboardSidebar()
-          ) : <Collections {...this.props} />}
+          ) : <Collections {...this.props} rootParentId= {this.props?.rootParentId}/>}
         </div>
       </nav>
     )

@@ -18,7 +18,20 @@ import { Modal } from 'react-bootstrap'
 import SplitPane from 'react-split-pane'
 import { addCollectionAndPages } from '../redux/generalActions'
 import generalApiService from '../../services/generalApiService'
+import { useQuery, useQueryClient } from 'react-query'
 
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    const queryClient = useQueryClient()
+
+    const setQueryUpdatedData = (type, id, data) => {
+      queryClient.setQueryData([type, id], data)
+      return
+    }
+
+    return <WrappedComponent {...props} setQueryUpdatedData={setQueryUpdatedData} />
+  }
+}
 
 
 const mapStateToProps = (state) => {
@@ -95,8 +108,15 @@ class PublicEndpoint extends Component {
       const response = await generalApiService.getPublishedContent(queryParamsString);
       
       if (response) {
-        let data = response?.data?.publishedContent?.type === 4 ? { publicEndpointId: response?.data?.publishedContent?.id } : { publicPageId: response?.data?.publishedContent?.id };
-        this.setState(data);
+        let id = response?.data?.publishedContent?.id;
+        if(response?.data?.publishedContent?.type === 4)  { 
+          this.setState({publicEndpointId:id})
+          this.props.setQueryUpdatedData('endpoint', id, response?.data?.publishedContent)
+         } 
+        else { 
+          this.setState({publicPageId:id})
+          this.props.setQueryUpdatedData('pageContent', id, response?.data?.publishedContent)
+        }
       }
     } catch (error) {
       console.error(error);
@@ -268,7 +288,7 @@ class PublicEndpoint extends Component {
 
   render() {
     // [info] part 1  set collection data
-    const collectionId = this.state.publicCollectionId
+    var collectionId = this.state?.publicCollectionId
     const docFaviconLink = this.props.collections[collectionId]?.favicon
       ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
       : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
@@ -357,8 +377,10 @@ class PublicEndpoint extends Component {
           {/* [info] part 3 */}
           <SplitPane split='vertical' className='split-sidebar'>
             {/* [info] part 3 subpart 1 sidebar data left content */}
-            <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.03') }}>
-              <SideBarV2 {...this.props} collectionName={this.state.collectionName} />
+            <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
+            { 
+            
+            collectionId   &&  <  SideBarV2 {...this.props} collectionName={this.state?.collectionName} rootParentId = {this.state?.collections[collectionId]?.rootParentId} />}
             </div>
             {/*  [info] part 3 subpart 1 sidebar data right content */}
             <div
@@ -381,6 +403,7 @@ class PublicEndpoint extends Component {
                     {...this.props}
                     fetch_entity_name={this.fetchEntityName.bind(this)}
                     publicCollectionTheme={this.state.collectionTheme}
+                    publicEndpointId = {this.state.publicEndpointId}
                   />
                  }
               
@@ -388,6 +411,7 @@ class PublicEndpoint extends Component {
                     {...this.props}
                     fetch_entity_name={this.fetchEntityName.bind(this)}
                     publicCollectionTheme={this.state.collectionTheme}
+                    publicPageId = {this.state.publicPageId}
                   />
                 }
                 {!(this.state.publicEndpointId) && (this.state.publicPageId) &&
@@ -411,4 +435,4 @@ class PublicEndpoint extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublicEndpoint)
+export default connect(mapStateToProps, mapDispatchToProps)(withQuery(PublicEndpoint))

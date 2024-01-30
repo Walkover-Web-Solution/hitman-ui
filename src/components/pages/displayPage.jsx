@@ -17,9 +17,10 @@ import { useQuery } from 'react-query'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
+    const pageId = props.match.params.pageId ?? props.publicPageId
     const { data, error } = useQuery(
-      ['pageContent', props.match.params.pageId],
-      () => getPageContent(props.match.params.orgId, props.match.params.pageId),
+      ['pageContent', pageId],
+      () => getPageContent(props.match.params.orgId, pageId),
       {
         refetchOnWindowFocus: false,
         cacheTime: 5000000,

@@ -749,7 +749,7 @@ class CollectionsComponent extends Component {
                 )}
               </div>
               <div id='parent-accordion' key={index}>
-                <CollectionParentPages {...this.props} collection_id={collectionId} />
+                <CollectionParentPages {...this.props} collection_id={collectionId} rootParentId= {this.props?.rootParentId} />
               </div>
             </div>
           ))}

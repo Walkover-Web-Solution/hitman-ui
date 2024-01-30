@@ -216,7 +216,7 @@ const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
     let endpointContentData = {}
-    let endpointId = props?.match?.params.endpointId
+    let endpointId = (props?.match?.params.endpointId) ?? props.publicEndpointId
     if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
       const data = useQuery(['endpoint', endpointId], () => getEndpointContent(endpointId), {
         refetchOnWindowFocus: false,
