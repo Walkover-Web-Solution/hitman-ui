@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -215,6 +215,7 @@ const getEndpointContent = async (endpointId) => {
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
+    // const [forceRender, setForceRender] = useState(false)
     const queryClient = useQueryClient()
     let endpointContentData = {}
     let endpointId = props?.match?.params.endpointId
@@ -229,18 +230,19 @@ const withQuery = (WrappedComponent) => {
     } else {
       endpointId = props?.activeTabId
       if (localStorage.getItem(endpointId)) {
-        queryClient.setQueryData(['endpoint', endpointId], JSON.parse(localStorage.getItem(endpointId)) || {})
+        queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(JSON.parse(localStorage.getItem(endpointId))) || {})
         endpointContentData['data'] = JSON.parse(localStorage.getItem(endpointId) || {})
       } else {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)))
         queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(untitledEndpointData))
       }
     }
-
+    
     const setQueryUpdatedData = (data) => {
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(['endpoint', endpointId], data)
+        // setForceRender(!forceRender)
         return
       }
       queryClient.setQueryData(['endpoint', endpointId], data)

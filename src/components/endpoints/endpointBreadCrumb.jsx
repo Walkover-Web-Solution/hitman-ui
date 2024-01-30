@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
 import { isElectron, toTitleCase } from '../common/utility'
 import { useQueryClient } from 'react-query'
-import _ from 'lodash'
+import _, { set } from 'lodash'
 
 const mapStateToProps = (state) => {
   return {
@@ -20,18 +20,20 @@ const mapStateToProps = (state) => {
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    const queryClient = useQueryClient()
     const currentId = props?.match?.params?.endpointId === 'new' ? props?.activeTabId : props?.match?.params?.endpointId
-    const data = queryClient.getQueryData(['endpoint', currentId])
+    const queryClient = useQueryClient()
+    const [data, setData] = useState(queryClient.getQueryData(['endpoint', currentId]))
 
     const setEndpointData = (newData) => {
       const currentId = props?.match?.params?.endpointId === 'new' ? props?.activeTabId : props?.match?.params?.endpointId
       if (!props?.pages?.[currentId]) {
         localStorage.setItem(currentId, JSON.stringify(_.cloneDeep(newData)))
-        queryClient.setQueryData(['endpoint', currentId], newData)
+        queryClient.setQueryData(['endpoint', currentId], _.cloneDeep(newData))
+        setData(_.cloneDeep(newData))
         return
       }
-      queryClient.setQueriesData(['endpoint', currentId], newData)
+      queryClient.setQueryData(['endpoint', currentId], _.cloneDeep(newData))
+      setData(newData)
     }
 
     return <WrappedComponent {...props} endpointContent={data} setEndpointData={setEndpointData} />
@@ -186,7 +188,6 @@ class EndpointBreadCrumb extends Component {
 
   handleInputChange(e) {
     const tempData = this.props?.endpointContent || {}
-    console.log(tempData, 1234567890)
     tempData.data.name = e.currentTarget.value
     this.props.setEndpointData(tempData)
   }
@@ -253,7 +254,7 @@ class EndpointBreadCrumb extends Component {
               name='enpoint-title'
               style={{ width: 'auto', textTransform: 'capitalize' }}
               onChange={this.handleInputChange.bind(this)}
-              value={this.props?.endpointContent?.data?.name || 'Untitled'}
+              value={this.props?.endpointContent?.data?.name || ''}
               onBlur={() => {
                 this.handleInputBlur()
               }}
