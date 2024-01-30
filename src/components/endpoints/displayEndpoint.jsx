@@ -1309,10 +1309,15 @@ class DisplayEndpoint extends Component {
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
-        this.props.add_endpointInCollection(endpoint, id, ({ closeForm, stopLoader }) => {
-          if (closeForm) this.closeEndpointFormModal()
-          if (stopLoader) this.setState({ saveAsLoader: false })
-        }, this.props)
+        this.props.add_endpointInCollection(
+          endpoint,
+          id,
+          ({ closeForm, stopLoader }) => {
+            if (closeForm) this.closeEndpointFormModal()
+            if (stopLoader) this.setState({ saveAsLoader: false })
+          },
+          this.props
+        )
         moveToNextStep(4)
       } else {
         if (this.state.saveAsFlag) {
@@ -1667,7 +1672,7 @@ class DisplayEndpoint extends Component {
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
-      this.setState({ harObject }, () => { })
+      this.setState({ harObject }, () => {})
     } catch (error) {
       toast.error(error)
     }
@@ -2958,8 +2963,9 @@ class DisplayEndpoint extends Component {
         >
           <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-                }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${
+                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
