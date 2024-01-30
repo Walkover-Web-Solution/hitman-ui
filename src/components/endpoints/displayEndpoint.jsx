@@ -146,15 +146,10 @@ const untitledEndpointData = {
     updatedUri: ''
   },
   pathVariables: [],
-  methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  // methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   environment: {},
-  startTime: '',
-  timeElapsed: '',
-  response: {},
   endpoint: {},
-  groupId: null,
   title: '',
-  flagResponse: false,
   originalHeaders: [
     {
       checked: 'notApplicable',
@@ -190,8 +185,6 @@ const untitledEndpointData = {
   postReqScriptError: '',
   host: {},
   draftDataSet: false,
-  runSendRequest: null,
-  requestKey: null,
   docOptions: false,
   sslMode: getCurrentUserSSLMode(),
   showAskAiSlider: false,
@@ -280,7 +273,6 @@ class DisplayEndpoint extends Component {
       timeElapsed: '',
       response: {},
       endpoint: {},
-      groupId: null,
       title: '',
       flagResponse: false,
       originalHeaders: [
@@ -2049,22 +2041,22 @@ class DisplayEndpoint extends Component {
   }
 
   displayResponse() {
-    if (this.isNotDashboardOrDocView() && this.props?.endpointContent?.flagResponse) {
+    if (this.isNotDashboardOrDocView() && this.state?.flagResponse) {
       return (
         <div ref={this.myRef} className='hm-panel endpoint-public-response-container public-doc'>
           <DisplayResponse
             {...this.props}
-            loader={this.props?.endpointContent?.loader}
-            timeElapsed={this.props?.endpointContent?.timeElapsed}
-            response={this.props?.endpointContent?.response}
-            flagResponse={this.props?.endpointContent?.flagResponse}
+            loader={this.state.loader}
+            timeElapsed={this.state.timeElapsed}
+            response={this.state?.response}
+            flagResponse={this.state?.flagResponse}
             add_sample_response={this.addSampleResponse.bind(this)}
             handleCancel={() => {
               this.handleCancel()
             }}
             tests={this.state.tests}
             sample_response_array={this.props?.endpointContent?.sampleResponseArray}
-            sample_response_flag_array={this.state.sampleResponseFlagArray}
+            sample_response_flag_array={this.state?.sampleResponseFlagArray}
             props_from_parent={this.propsFromSampleResponse.bind(this)}
           />
         </div>
@@ -2158,11 +2150,11 @@ class DisplayEndpoint extends Component {
               <div className='hm-panel endpoint-public-response-container '>
                 <DisplayResponse
                   {...this.props}
-                  loader={this.props?.endpointContent?.loader}
-                  timeElapsed={this.props?.endpointContent?.timeElapsed}
-                  response={this.props?.endpointContent?.response}
+                  loader={this.state?.loader}
+                  timeElapsed={this.state?.timeElapsed}
+                  response={this.state?.response}
                   tests={this.state.tests}
-                  flagResponse={this.props?.endpointContent?.flagResponse}
+                  flagResponse={this.state?.flagResponse}
                   sample_response_array={this.props?.endpointContent?.sampleResponseArray}
                   sample_response_flag_array={this.state.sampleResponseFlagArray}
                   add_sample_response={this.addSampleResponse.bind(this)}
@@ -2193,9 +2185,9 @@ class DisplayEndpoint extends Component {
     return (
       <SampleResponse
         {...this.props}
-        timeElapsed={this.props?.endpointContent?.timeElapsed}
-        response={this.props?.endpointContent?.response}
-        flagResponse={this.props?.endpointContent?.flagResponse}
+        timeElapsed={this.state?.timeElapsed}
+        response={this.state?.response}
+        flagResponse={this.state?.flagResponse}
         sample_response_array={this.props?.endpointContent?.sampleResponseArray}
         sample_response_flag_array={this.state.sampleResponseFlagArray}
         open_body={this.openBody.bind(this)}
