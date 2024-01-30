@@ -164,20 +164,26 @@ export const onPageAddedError = (error, newPage) => {
 }
 
 export const deletePage = (page) => {
+  debugger
+  console.log(page, "page inside delete page");
   return (dispatch) => {
     dispatch(deletePageRequest(page))
     pageApiService
       .deletePage(page.id)
       .then((res) => {
+        console.log(res, "response");
         dispatch(onPageDeleted(res.data))
       })
       .catch((error) => {
+        console.log(error,"error");
         dispatch(onPageDeletedError(error.response, page))
       })
   }
 }
 
 export const deletePageRequest = (page) => {
+  debugger
+  console.log(page, "page delete request");
   return {
     type: pagesActionTypes.DELETE_PAGE_REQUEST,
     page

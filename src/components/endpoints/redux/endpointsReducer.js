@@ -5,6 +5,7 @@ import versionActionTypes from '../../collectionVersions/redux/collectionVersion
 import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 
 const initialState = {}
 
@@ -125,8 +126,7 @@ function endpointsReducer(state = initialState, action) {
       return { ...state }
 
     case collectionActionTypes.ON_COLLECTION_DELETED:
-    case versionActionTypes.ON_VERSION_DELETED:
-    case groupsActionTypes.ON_GROUP_DELETED:
+    // case pagesActionTypes.ON_PAGE_DELETED:
       endpoints = { ...state }
       action.payload.endpointIds.forEach((eId) => {
         delete endpoints[eId]

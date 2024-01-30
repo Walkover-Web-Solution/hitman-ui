@@ -65,7 +65,9 @@ class CollectionsComponent extends Component {
       defaultPublicLogo: hitmanLogo,
       publicLogoError: false,
       showRemoveModal: false,
-      selectedCollectionIds: []
+      selectedCollectionIds: [],
+      openSelectedCollection: false,
+      childIdType: {}
     }
     this.names = {}
     this.scrollRef = {}
@@ -161,6 +163,38 @@ class CollectionsComponent extends Component {
   }
 
   openDeleteCollectionModal(collectionId) {
+
+    const getAllChildPages = (parentId) => {
+      const childPages = [];
+      
+      if (parentId in this.props.pages) {
+        const pages = this.props.pages[parentId].child;
+        if (pages && pages.length > 0) {
+          pages.forEach((pageId) => {
+            const subChildPages = getAllChildPages(pageId);
+            childPages.push(pageId, ...subChildPages);
+          });
+        }
+      }
+      return childPages;
+    };
+
+    const rootParentId = this.props.collections[collectionId].rootParentId;
+    const pagesChild = getAllChildPages(rootParentId);
+    
+    console.log(pagesChild, "pagesChild");
+    console.log(rootParentId, "rootParentId");
+
+    const childPageDetails = pagesChild.map((pageId) => {
+      const pageDetails = this.props.pages[pageId];
+      this.setState({ childIdType : {id: pageId, type: pageDetails?.type} });
+      return {
+        id: pageId,
+        type: pageDetails?.type,
+      };
+    });
+
+    console.log(childPageDetails, "type and id");
     if (this.state.openSelectedCollection === true) {
       this.setState({ openSelectedCollection: false })
     }
@@ -383,6 +417,7 @@ class CollectionsComponent extends Component {
                 <div className='dropdown-menu dropdown-menu-right'>
                   {!this.props.collections[collectionId]?.importedFromMarketPlace && (
                     <>
+                    {console.log(collectionId, "collection idddd")}
                       <div className='dropdown-item' onClick={() => this.openEditCollectionForm(collectionId)}>
                         <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                           <path
@@ -654,6 +689,7 @@ class CollectionsComponent extends Component {
   }
 
   showDeleteCollectionModal() {
+    console.log(this.state.childIdType, "chil id type inside show delete collection modal");
     const title = this.state.showRemoveModal ? 'Remove Collection' : 'Delete Collection'
     const message = this.state.showRemoveModal
       ? 'Are you sure you wish to remove this public collection?'
@@ -665,7 +701,8 @@ class CollectionsComponent extends Component {
         this.closeDeleteCollectionModal.bind(this),
         title,
         message,
-        this.state.selectedCollection
+        this.state.selectedCollection,
+        this.state.childIdType
       )
     )
   }

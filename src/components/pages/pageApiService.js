@@ -63,8 +63,11 @@ export function updatePage(pageId, page) {
 }
 
 export function deletePage(pageId) {
+  console.log(pageId, "page id inside delete page ");
+  const pageid = pageId.id? pageId.id : pageId
+  console.log(pageid, "pageid");
   const apiUrl = getApiUrl()
-  return http.delete(`${apiUrl}/pages/${pageId}`)
+  return http.delete(`${apiUrl}/pages/${pageid}`)
 }
 
 export function duplicatePage(pageId) {

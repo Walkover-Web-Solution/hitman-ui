@@ -26,8 +26,7 @@ function tabsReducer(state = initialState, action) {
       tabs.tabsOrder = state.tabsOrder.includes(action.tab.id) ? [...state.tabsOrder] : [...state.tabsOrder, action.tab.id]
       return tabs
 
-    case tabsActionTypes.CLOSE_TAB:
-      debugger
+    case tabsActionTypes.CLOSE_TAB:     
       tabs = {
         ...state
       }

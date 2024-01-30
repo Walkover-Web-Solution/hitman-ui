@@ -1266,7 +1266,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleSave = async (id, endpointObject, isGroupId = true) => {
-    debugger
     const { endpointName, endpointDescription } = endpointObject || {}
     const effectiveGroupId = isGroupId ? id : this.state.groupId
     const effectiveRootParentId = isGroupId ? this.state.rootParentId : id

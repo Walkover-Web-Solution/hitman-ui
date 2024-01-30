@@ -6,8 +6,8 @@ function showCollectionForm(props, onHide, title, selectedCollection) {
   return <CollectionForm {...props} show onHide={onHide} title={title} edited_collection={selectedCollection} />
 }
 
-function showDeleteCollectionModal(props, onHide, title, message, selectedCollection) {
-  return <DeleteModal {...props} show onHide={onHide} title={title} message={message} deleted_collection={selectedCollection} />
+function showDeleteCollectionModal(props, onHide, title, message, selectedCollection, childIdType) {
+  return <DeleteModal {...props} show onHide={onHide} title={title} message={message} deleted_collection={selectedCollection} childIdType= {childIdType} />
 }
 
 export default {

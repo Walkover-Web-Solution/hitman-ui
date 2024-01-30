@@ -151,6 +151,7 @@ export const onGroupUpdatedError = (error, originalGroup) => {
 }
 
 export const deleteGroup = (group, props) => {
+  console.log("inside deleteGroup", group, props);
   return (dispatch) => {
     dispatch(deleteGroupRequest(group))
     groupsApiService

@@ -7,6 +7,7 @@ import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpoin
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import generalActionsTypes from '../../redux/generalActionTypes'
 import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
+import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 
 const initialState = {}
 
@@ -66,11 +67,11 @@ function pagesReducer(state = initialState, action) {
       }
       return pages
     }
-    case pagesActionTypes.ADD_VERSION_REQUEST:
-      return {
-        ...state,
-        [action.newVersion.requestId]: action.newVersion
-      }
+    // case pagesActionTypes.ADD_VERSION_REQUEST:
+    //   return {
+    //     ...state,
+    //     [action.newVersion.requestId]: action.newVersion
+    //   }
 
     case pagesActionTypes.ON_PAGE_ADDED_ERROR:
       toast.error(action.error)
@@ -171,8 +172,8 @@ function pagesReducer(state = initialState, action) {
       return { ...state }
 
     case collectionActionTypes.ON_COLLECTION_DELETED:
-    case versionActionTypes.ON_VERSION_DELETED:
-    case groupsActionTypes.ON_GROUP_DELETED:
+    case pagesActionTypes.ON_PAGE_DELETED:
+    case endpointsActionTypes.DELETE_ENDPOINT_REQUEST:
       pages = { ...state }
       action.payload.pageIds.forEach((pId) => {
         delete pages[pId]

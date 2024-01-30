@@ -94,7 +94,7 @@ class Endpoints extends Component {
       }
     }
   }
-
+//delete endpoint
   async handleDelete(endpoint) {
     await this.props.delete_endpoint(endpoint)
     tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
@@ -303,7 +303,7 @@ class Endpoints extends Component {
       </>
     )
   }
-
+//here diplay
   displayDeleteOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleDelete(this.props.endpoints[endpointId])}>

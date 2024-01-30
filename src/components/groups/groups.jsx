@@ -17,10 +17,13 @@ import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
+import pageService from '../pages/pageService.js'
+// import { deletePage } from '../pages/pageApiService.js'
+import { deletePage} from '../pages/redux/pagesActions.js'
 
 const mapStateToProps = (state) => {
   return {
-    groups: state.groups,
+    groups: state.pages,
     pages: state.pages,
     endpoints: state.endpoints,
     versions: state.versions,
@@ -34,10 +37,11 @@ const mapDispatchToProps = (dispatch) => {
     reorder_endpoint: (sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, endpointId) =>
       dispatch(reorderEndpoint(sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, endpointId)),
     update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId)),
-    delete_group: (group, props) => dispatch(deleteGroup(group, props)),
+    // delete_group: (group, props) => dispatch(deleteGroup(group, props)),
     duplicate_group: (group) => dispatch(duplicateGroup(group)),
     update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    delete_page: (page) => dispatch(deletePage(page))
   }
 }
 
@@ -55,7 +59,8 @@ class Groups extends Component {
       theme: '',
       filter: '',
       selectedGroupIds: [],
-      checkboxChecked: false
+      checkboxChecked: false,
+      selectedGroup: ''
     }
 
     this.eventkey = {}
@@ -158,10 +163,11 @@ class Groups extends Component {
   }
 
   openDeleteGroupModal(groupId) {
+    console.log("inside open delete group modal", groupId);
     this.setState({
       showDeleteModal: true,
       selectedGroup: {
-        ...this.props.groups[groupId]
+        ...this.props.pages[groupId]
       }
     })
   }
@@ -408,6 +414,7 @@ class Groups extends Component {
                       </svg>{' '}
                       Edit
                     </div>
+                    {console.log(groupId, "inside div group id")}
                     <div
                       className='dropdown-item'
                       onClick={() => {
@@ -528,7 +535,7 @@ class Groups extends Component {
     const groupsCount = sortedGroups.filter((group) => group.versionId === this.props.version_id).length
     return (
       <>
-        {(groupsCount === 0 && isDashboardRoute(this.props, true)) ||
+        {(groupsCount === 0 && isDashboardRoute(this?.props, true)) ||
           (this.this.props.modals.publishData && this.props.isPublishData && (
             <AddEntity
               placeholder='Group Name'
@@ -573,10 +580,11 @@ class Groups extends Component {
 
     return (
       <>
+      {console.log(this.state.selectedGroup, "selected group")}
         {this.showShareGroupForm()}
         {this.showAddPageEndpointModal()}
         {this.state.showDeleteModal &&
-          groupsService.showDeleteGroupModal(
+          pageService.showDeletePageModal(
             this.props,
             this.closeDeleteGroupModal.bind(this),
             'Delete Page',
@@ -605,7 +613,7 @@ class Groups extends Component {
               ) : null
             )}
 
-        <div className='pl-4'>{this.renderForm(this.sortedGroups)}</div>
+        {/* <div className='pl-4'>{this.renderForm(this.sortedGroups)}</div> */}
       </>
     )
   }

@@ -21,6 +21,8 @@ class DeleteModal extends Component {
   }
 
   doSubmit() {
+    console.log(this.props, "inside delete modal");
+    debugger  
     this.props.onHide()
     const { title } = this.props
     if (title === 'Delete Collection') {
@@ -32,15 +34,20 @@ class DeleteModal extends Component {
       this.props.remove_public_collection(collection, this.props)
     }
     if (title === 'Delete Version') {
-      const { deleted_version: version } = this.props
-      this.props.delete_version(version, this.props)
+      console.log("inside delete version", title);
+      const { deleted_page: page } = this.props
+      console.log(page, "deleted_version");
+      this.props.delete_page(page)
     }
     if (title === 'Delete Group') {
+      console.log("inside delete_group");
       const { deleted_group: group } = this.props
       this.props.delete_group(group, this.props)
     }
     if (title === 'Delete Page') {
+      debugger
       const { deleted_page: page } = this.props
+      console.log(page, " title delete page ");
       tabService.removeTab(page.id, { ...this.props })
       this.props.delete_page(page)
     }

@@ -8,6 +8,7 @@ import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
+export const SET_DEFAULT_VERSION = 'Set Default Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
 export const DEFAULT_URL = 'https://'
 
@@ -557,6 +558,7 @@ export default {
   getOrgId,
   ADD_GROUP_MODAL_NAME,
   ADD_VERSION_MODAL_NAME,
+  SET_DEFAULT_VERSION,
   ADD_PAGE_MODAL_NAME,
   getParentIds,
   handleChangeInUrlField,
