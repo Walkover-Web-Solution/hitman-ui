@@ -18,7 +18,6 @@ const withQuery = (WrappedComponent) => {
     const pageId = props.match.params.pageId
     const orgId = props.match.params.orgId
     const pageContentData = useQuery(['pageContent', pageId])
-    console.log(123456789, pageContentData)
     const mutation = useMutation(updateContent, {
       onSuccess: (data) => {
         queryClient.setQueryData(['pageContent', pageId], data?.contents || '')
