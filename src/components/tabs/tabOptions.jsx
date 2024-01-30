@@ -44,7 +44,6 @@ class TabOptions extends Component {
     const { orgId } = this.props.match.params
     const { tabs, activeTabId } = this.props.tabs
     const tab = _.cloneDeep(tabs[activeTabId])
-
     tab.id = shortid.generate()
     tab.status = tabStatusTypes.NEW
     tab.previewMode = false

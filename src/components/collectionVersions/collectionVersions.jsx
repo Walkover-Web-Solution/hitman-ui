@@ -326,7 +326,7 @@ class CollectionVersions extends Component {
                     </svg>{' '}
                     Delete
                   </div>
-                  <div
+                  {/* <div
                     className='dropdown-item'
                     onClick={() => {
                       this.handleDuplicate(this.props.versions[versionId])
@@ -349,7 +349,7 @@ class CollectionVersions extends Component {
                       />
                     </svg>{' '}
                     Duplicate
-                  </div>
+                  </div> */}
                   <div className='dropdown-item' onClick={() => this.openShareVersionForm(this.props.versions[versionId])}>
                     <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                       <path

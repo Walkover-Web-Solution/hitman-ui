@@ -19,7 +19,7 @@ export const addHistory = (historyData) => {
   return (dispatch) => {
     dispatch(onHistoryAdded(historyData))
     try {
-      localStorage.setItem('history', historyData)
+      localStorage.setItem('history', JSON.stringify(historyData))
     } catch (error) {
       console.error(error)
       // dispatch(onHistoryAddedError(

@@ -51,9 +51,7 @@ export class DefaultViewModal extends Form {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Check if the condition to show the input is now true and was not true before
     if (this.state.showPageForm.addPage && !prevState.showPageForm.addPage) {
-      // this.inputRef.current && this.inputRef.current.focus();
       if (this.inputRef.current) {
         this.inputRef.current.focus()
       }
@@ -109,7 +107,13 @@ export class DefaultViewModal extends Form {
 
   renderTestingButton() {
     return (
-      <button className='block-view-btn mr-3' onClick={() => this.props.add_new_tab()}>
+      <button
+        className='block-view-btn mr-3'
+        onClick={() => {
+          this.props.add_new_tab()
+          this.props.onHide()
+        }}
+      >
         <img src={ApiIcon} alt='' />
         {'Create Endpoint'}
       </button>
