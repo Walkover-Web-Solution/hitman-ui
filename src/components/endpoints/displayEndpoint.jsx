@@ -714,12 +714,12 @@ class DisplayEndpoint extends Component {
         }
       }
       originalParams = this.makeOriginalParams(keys, values, description)
-      this.setState({ originalParams })
+      // this.setState({ originalParams })
       const tempData = this.props?.endpointContent || {}
       tempData.originalParams = originalParams
       this.props.setQueryUpdatedData(tempData)
     }
-    this.setState({ data })
+    // this.setState({ data })
     const tempData = this.props?.endpointContent || {}
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
@@ -1133,7 +1133,7 @@ class DisplayEndpoint extends Component {
     }
 
     /** Prepare Body & Modify Headers */
-    let { body, headers } = this.formatBody(this.state.data.body, headerJson)
+    let { body, headers } = this.formatBody(this.props?.endpointContent?.data.body, headerJson)
 
     /** Add Cookie in Headers */
     const cookiesString = this.prepareHeaderCookies(BASE_URL)
