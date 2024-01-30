@@ -23,28 +23,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-const withQuery = (WrappedComponent) => {
-  return (props) => {
-    console.log(props?.page, 123456789)
-    // const currentId = props?.match?.params?.endpointId === 'new' ? props?.activeTabId : props?.match?.params?.endpointId
-    // const queryClient = useQueryClient()
-    // const [data, setData] = useState(queryClient.getQueryData(['endpoint', currentId]))
-
-    // const setEndpointData = (newData) => {
-    //   const currentId = props?.match?.params?.endpointId === 'new' ? props?.activeTabId : props?.match?.params?.endpointId
-    //   if (!props?.pages?.[currentId]) {
-    //     localStorage.setItem(currentId, JSON.stringify(_.cloneDeep(newData)))
-    //     queryClient.setQueryData(['endpoint', currentId], _.cloneDeep(newData))
-    //     setData(_.cloneDeep(newData))
-    //     return
-    //   }
-    //   queryClient.setQueryData(['endpoint', currentId], _.cloneDeep(newData))
-    //   setData(newData)
-    // }
-
-    return <WrappedComponent {...props} />
-  }
-}
 class EndpointBreadCrumb extends Component {
   constructor(props) {
     super(props)
@@ -305,4 +283,4 @@ class EndpointBreadCrumb extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withQuery(EndpointBreadCrumb))
+export default connect(mapStateToProps, mapDispatchToProps)(EndpointBreadCrumb)
