@@ -428,7 +428,7 @@ class Groups extends Component {
                       </svg>{' '}
                       Delete
                     </div>
-                    <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[groupId])}>
+                    {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[groupId])}>
                       <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                         <path
                           d='M15 6.75H8.25C7.42157 6.75 6.75 7.42157 6.75 8.25V15C6.75 15.8284 7.42157 16.5 8.25 16.5H15C15.8284 16.5 16.5 15.8284 16.5 15V8.25C16.5 7.42157 15.8284 6.75 15 6.75Z'
@@ -446,7 +446,7 @@ class Groups extends Component {
                         />
                       </svg>{' '}
                       Duplicate
-                    </div>
+                    </div> */}
                     <div className='dropdown-item' onClick={() => this.openShareGroupForm(groupId)}>
                       <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                         <path

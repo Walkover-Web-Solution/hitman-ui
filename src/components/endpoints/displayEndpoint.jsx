@@ -179,7 +179,6 @@ const untitledEndpointData = {
   bodyDescription: {},
   fieldDescription: {},
   sampleResponseArray: [],
-  sampleResponseFlagArray: [],
   theme: '',
   loader: false,
   saveLoader: false,
@@ -1899,8 +1898,13 @@ class DisplayEndpoint extends Component {
 
   propsFromSampleResponse(sampleResponseArray, sampleResponseFlagArray) {
     this.setState({ sampleResponseArray, sampleResponseFlagArray })
+    const updatedEndpointData = {
+      ...this.props.endpointContent,
+      sampleResponseArray: sampleResponseArray
+    }
+    this.props.setQueryUpdatedData(updatedEndpointData)
     this.props.update_endpoint({
-      id: this.state.endpoint.id,
+      id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
   }
@@ -1994,11 +1998,16 @@ class DisplayEndpoint extends Component {
     const description = ''
     const title = ''
     const sampleResponse = { data, status, description, title }
-    const sampleResponseArray = [...this.state.sampleResponseArray, sampleResponse]
+    const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray, sampleResponse]
     sampleResponseFlagArray.push(false)
     this.setState({ sampleResponseArray, sampleResponseFlagArray })
+    const updatedEndpointData = {
+      ...this.props.endpointContent,
+      sampleResponseArray: sampleResponseArray
+    }
+    this.props.setQueryUpdatedData(updatedEndpointData)
     this.props.update_endpoint({
-      id: this.state.endpoint.id,
+      id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
   }
@@ -2037,21 +2046,21 @@ class DisplayEndpoint extends Component {
   }
 
   displayResponse() {
-    if (this.isNotDashboardOrDocView() && this.state.flagResponse) {
+    if (this.isNotDashboardOrDocView() && this.props?.endpointContent?.flagResponse) {
       return (
         <div ref={this.myRef} className='hm-panel endpoint-public-response-container public-doc'>
           <DisplayResponse
             {...this.props}
-            loader={this.state.loader}
-            timeElapsed={this.state.timeElapsed}
-            response={this.state.response}
-            flagResponse={this.state.flagResponse}
+            loader={this.props?.endpointContent?.loader}
+            timeElapsed={this.props?.endpointContent?.timeElapsed}
+            response={this.props?.endpointContent?.response}
+            flagResponse={this.props?.endpointContent?.flagResponse}
             add_sample_response={this.addSampleResponse.bind(this)}
             handleCancel={() => {
               this.handleCancel()
             }}
             tests={this.state.tests}
-            sample_response_array={this.state.sampleResponseArray}
+            sample_response_array={this.props?.endpointContent?.sampleResponseArray}
             sample_response_flag_array={this.state.sampleResponseFlagArray}
             props_from_parent={this.propsFromSampleResponse.bind(this)}
           />
@@ -2146,12 +2155,12 @@ class DisplayEndpoint extends Component {
               <div className='hm-panel endpoint-public-response-container '>
                 <DisplayResponse
                   {...this.props}
-                  loader={this.state.loader}
-                  timeElapsed={this.state.timeElapsed}
-                  response={this.state.response}
+                  loader={this.props?.endpointContent?.loader}
+                  timeElapsed={this.props?.endpointContent?.timeElapsed}
+                  response={this.props?.endpointContent?.response}
                   tests={this.state.tests}
-                  flagResponse={this.state.flagResponse}
-                  sample_response_array={this.state.sampleResponseArray}
+                  flagResponse={this.props?.endpointContent?.flagResponse}
+                  sample_response_array={this.props?.endpointContent?.sampleResponseArray}
                   sample_response_flag_array={this.state.sampleResponseFlagArray}
                   add_sample_response={this.addSampleResponse.bind(this)}
                   props_from_parent={this.propsFromSampleResponse.bind(this)}
@@ -2181,10 +2190,10 @@ class DisplayEndpoint extends Component {
     return (
       <SampleResponse
         {...this.props}
-        timeElapsed={this.state.timeElapsed}
-        response={this.state.response}
-        flagResponse={this.state.flagResponse}
-        sample_response_array={this.state.sampleResponseArray}
+        timeElapsed={this.props?.endpointContent?.timeElapsed}
+        response={this.props?.endpointContent?.response}
+        flagResponse={this.props?.endpointContent?.flagResponse}
+        sample_response_array={this.props?.endpointContent?.sampleResponseArray}
         sample_response_flag_array={this.state.sampleResponseFlagArray}
         open_body={this.openBody.bind(this)}
         close_body={this.closeBody.bind(this)}
