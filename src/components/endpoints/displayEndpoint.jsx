@@ -179,7 +179,6 @@ const untitledEndpointData = {
   bodyDescription: {},
   fieldDescription: {},
   sampleResponseArray: [],
-  sampleResponseFlagArray: [],
   theme: '',
   loader: false,
   saveLoader: false,
@@ -243,7 +242,6 @@ const withQuery = (WrappedComponent) => {
     console.log('data idris', data);
     
     const setQueryUpdatedData = (data) => {
-      debugger
       const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId : props?.activeTabId;
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
@@ -992,8 +990,8 @@ class DisplayEndpoint extends Component {
   }
 
   setData = async () => {
-    let body = this.state.data.body
-    if (this.state.data.body.type === 'raw') {
+    let body = this.props.endpointContent.data.body
+    if (this.props.endpointContent.data.body.type === 'raw') {
       body.value = this.parseBody(body.value)
     }
     body = this.prepareBodyForSending(body)
@@ -1001,18 +999,18 @@ class DisplayEndpoint extends Component {
     const updatedParams = this.doSubmitParam()
     const pathVariables = this.doSubmitPathVariables()
     const endpoint = {
-      uri: this.state.data.updatedUri,
-      name: this.state.data.name,
-      requestType: this.state.data.method,
+      uri: this.props.endpointContent.data.updatedUri,
+      name: this.props.endpointContent.data.name,
+      requestType: this.props.endpointContent.data.method,
       body: body,
       id: this.state.endpoint.id || null,
       status: this.props.tab?.status || tabStatusTypes.NEW,
       headers: headersData,
       params: updatedParams,
       pathVariables: pathVariables,
-      BASE_URL: this.state.host.BASE_URL,
-      bodyDescription: this.state.data.body.type === 'JSON' ? this.state.bodyDescription : {},
-      authorizationType: this.state.authType
+      BASE_URL: this.props.endpointContent.host.BASE_URL,
+      bodyDescription: this.props.endpointContent.data.body.type === 'JSON' ? this.props.endpointContent.bodyDescription : {},
+      authorizationType: this.props.endpointContent.authType
     }
     const response = { ...this.state.response }
     const createdAt = new Date()
@@ -1904,8 +1902,13 @@ class DisplayEndpoint extends Component {
 
   propsFromSampleResponse(sampleResponseArray, sampleResponseFlagArray) {
     this.setState({ sampleResponseArray, sampleResponseFlagArray })
+    const updatedEndpointData = {
+      ...this.props.endpointContent,
+      sampleResponseArray: sampleResponseArray
+    }
+    this.props.setQueryUpdatedData(updatedEndpointData)
     this.props.update_endpoint({
-      id: this.state.endpoint.id,
+      id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
   }
@@ -1999,11 +2002,16 @@ class DisplayEndpoint extends Component {
     const description = ''
     const title = ''
     const sampleResponse = { data, status, description, title }
-    const sampleResponseArray = [...this.state.sampleResponseArray, sampleResponse]
+    const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray, sampleResponse]
     sampleResponseFlagArray.push(false)
     this.setState({ sampleResponseArray, sampleResponseFlagArray })
+    const updatedEndpointData = {
+      ...this.props.endpointContent,
+      sampleResponseArray: sampleResponseArray
+    }
+    this.props.setQueryUpdatedData(updatedEndpointData)
     this.props.update_endpoint({
-      id: this.state.endpoint.id,
+      id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
   }
@@ -2042,21 +2050,21 @@ class DisplayEndpoint extends Component {
   }
 
   displayResponse() {
-    if (this.isNotDashboardOrDocView() && this.state.flagResponse) {
+    if (this.isNotDashboardOrDocView() && this.props?.endpointContent?.flagResponse) {
       return (
         <div ref={this.myRef} className='hm-panel endpoint-public-response-container public-doc'>
           <DisplayResponse
             {...this.props}
-            loader={this.state.loader}
-            timeElapsed={this.state.timeElapsed}
-            response={this.state.response}
-            flagResponse={this.state.flagResponse}
+            loader={this.props?.endpointContent?.loader}
+            timeElapsed={this.props?.endpointContent?.timeElapsed}
+            response={this.props?.endpointContent?.response}
+            flagResponse={this.props?.endpointContent?.flagResponse}
             add_sample_response={this.addSampleResponse.bind(this)}
             handleCancel={() => {
               this.handleCancel()
             }}
             tests={this.state.tests}
-            sample_response_array={this.state.sampleResponseArray}
+            sample_response_array={this.props?.endpointContent?.sampleResponseArray}
             sample_response_flag_array={this.state.sampleResponseFlagArray}
             props_from_parent={this.propsFromSampleResponse.bind(this)}
           />
@@ -2151,12 +2159,12 @@ class DisplayEndpoint extends Component {
               <div className='hm-panel endpoint-public-response-container '>
                 <DisplayResponse
                   {...this.props}
-                  loader={this.state.loader}
-                  timeElapsed={this.state.timeElapsed}
-                  response={this.state.response}
+                  loader={this.props?.endpointContent?.loader}
+                  timeElapsed={this.props?.endpointContent?.timeElapsed}
+                  response={this.props?.endpointContent?.response}
                   tests={this.state.tests}
-                  flagResponse={this.state.flagResponse}
-                  sample_response_array={this.state.sampleResponseArray}
+                  flagResponse={this.props?.endpointContent?.flagResponse}
+                  sample_response_array={this.props?.endpointContent?.sampleResponseArray}
                   sample_response_flag_array={this.state.sampleResponseFlagArray}
                   add_sample_response={this.addSampleResponse.bind(this)}
                   props_from_parent={this.propsFromSampleResponse.bind(this)}
@@ -2186,10 +2194,10 @@ class DisplayEndpoint extends Component {
     return (
       <SampleResponse
         {...this.props}
-        timeElapsed={this.state.timeElapsed}
-        response={this.state.response}
-        flagResponse={this.state.flagResponse}
-        sample_response_array={this.state.sampleResponseArray}
+        timeElapsed={this.props?.endpointContent?.timeElapsed}
+        response={this.props?.endpointContent?.response}
+        flagResponse={this.props?.endpointContent?.flagResponse}
+        sample_response_array={this.props?.endpointContent?.sampleResponseArray}
         sample_response_flag_array={this.state.sampleResponseFlagArray}
         open_body={this.openBody.bind(this)}
         close_body={this.closeBody.bind(this)}
@@ -2297,9 +2305,9 @@ class DisplayEndpoint extends Component {
   removePublicItem(item, index) {
     const showRemoveButton = !['body', 'host', 'params', 'pathVariables', 'headers', 'sampleResponse'].includes(item.type)
     const handleOnClick = () => {
-      const docData = _.cloneDeep(this.props?.endpointContent?.docViewData)
+      const docData = [...this.props?.endpointContent?.docViewData]
       docData.splice(index, 1)
-      this.setState({ docViewData: docData })
+      this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: docData })
     }
     return (
       showRemoveButton && (
@@ -2351,26 +2359,33 @@ class DisplayEndpoint extends Component {
   }
 
   onSortEnd = (oldIndex, newIndex) => {
-    const { docViewData } = this.state
+    const docViewData = [...this.props?.endpointContent?.docViewData]
     if (newIndex !== oldIndex) {
       const newData = []
       docViewData.forEach((data, index) => {
         index !== oldIndex && newData.push(data)
       })
       newData.splice(newIndex, 0, docViewData[oldIndex])
-      this.setState({ docViewData: newData })
+      this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: newData })
     }
   }
+
+  saveData = (index, data) => {
+    const updatedDocViewData = [...this.props.endpointContent.docViewData]
+    updatedDocViewData[index] = { ...updatedDocViewData[index], data: data }
+    this.props.setQueryUpdatedData({
+      ...this.props.endpointContent,
+      docViewData: updatedDocViewData
+    })
+  }
+
+  debouncedSave = _.debounce(this.saveData, 1000)
 
   renderTiptapEditor(item, index) {
     return (
       <Tiptap
         initial={item.data}
-        onChange={(e) => {
-          const docData = _.cloneDeep(this.props?.endpointContent?.docViewData)
-          docData[index].data = e
-          this.setState({ docViewData: docData })
-        }}
+        onChange={(e) => this.debouncedSave(index, e)}
         match={this.props.match}
         isInlineEditor
         disabled={!isDashboardRoute(this.props)}
@@ -2497,12 +2512,8 @@ class DisplayEndpoint extends Component {
   }
 
   addBlock(blockType) {
-    const docViewData = [...this.props?.endpointContent?.docViewData]
-    docViewData.push({
-      type: blockType,
-      data: ''
-    })
-    this.setState({ docViewData })
+    const updatedDocViewData = [...this.props.endpointContent.docViewData, { type: blockType, data: '' }]
+    this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: updatedDocViewData })
   }
 
   renderBodyContainer() {
@@ -2819,12 +2830,12 @@ class DisplayEndpoint extends Component {
   }
 
   async handleApproveEndpointRequest() {
-    const endpointId = this.endpointId
+    const endpointId = this.props.currentEndpointId
     this.setState({ publishLoader: true })
-    if (sensitiveInfoFound(this.props.endpoints[endpointId])) {
+    if (sensitiveInfoFound(this.props.endpointContent)) {
       this.setState({ warningModal: true })
     } else {
-      this.props.approve_endpoint(this.props.endpoints[endpointId], () => {
+      this.props.approve_endpoint(endpointId, () => {
         this.setState({ publishLoader: false })
       })
     }

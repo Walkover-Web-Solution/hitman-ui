@@ -541,6 +541,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   paramsData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
   untitled.originalHeaders = headersData
   untitled.originalParams = paramsData
+  untitled.sampleResponseArray = endpoint.sampleResponse || []
   untitled.postScriptText = endpoint.postScript
   untitled.preScriptText = endpoint.preScript
   untitled.host['BASE_URL'] = endpoint.BASE_URL
