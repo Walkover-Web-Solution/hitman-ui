@@ -63,9 +63,9 @@ export const onPagesFetchedError = (error) => {
 export const updatePage = (history, editedPage, publishDocs = false) => {
   const orgId = getOrgId()
   const dataToSend = {
-    name : editedPage.name,
-    contents : editedPage?.contents || null,
-    state : editedPage.state,
+    name: editedPage.name,
+    contents: editedPage?.contents || null,
+    state: editedPage.state
   }
   store.dispatch(updatePageRequest(dataToSend))
   pageApiService
