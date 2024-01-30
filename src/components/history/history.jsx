@@ -19,9 +19,7 @@ function compareByCreatedAt(a, b) {
 
 const mapStateToProps = (state) => {
   return {
-    groups: state.groups,
-    versions: state.versions,
-    endpoints: state.endpoints,
+    endpoints: state.pages,
     collections: state.collections
   }
 }
@@ -56,33 +54,33 @@ class History extends Component {
   }
 
   renderName(history) {
-    const baseUrl = history.endpoint.BASE_URL ? history.endpoint.BASE_URL + history.endpoint.uri : history.endpoint.uri
-    const endpointName = history.endpoint.name || baseUrl || 'Random Trigger'
+    const baseUrl = history?.endpoint?.BASE_URL ? history?.endpoint?.BASE_URL + history?.endpoint?.uri : history?.endpoint?.uri
+    const endpointName = history?.endpoint?.name || baseUrl || 'Random Trigger'
     return endpointName
   }
 
-  renderPath(id) {
-    let path = ''
-    let groupId = null
-    let versionId = null
-    let collectionId = null
-    let endpointId = null
+  // renderPath(id) {
+  //   let path = ''
+  //   let groupId = null
+  //   let versionId = null
+  //   let collectionId = null
+  //   let endpointId = null
 
-    endpointId = id
-    groupId = this.props.endpoints[endpointId]?.groupId
-    versionId = this.props.groups[groupId]?.versionId
-    collectionId = this.props.versions[versionId]?.collectionId
-    path =
-      this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number + ' > ' + this.props.groups[groupId]?.name
+  //   endpointId = id
+  //   groupId = this.props.endpoints[endpointId]?.groupId
+  //   versionId = this.props.groups[groupId]?.versionId
+  //   collectionId = this.props.versions[versionId]?.collectionId
+  //   path =
+  //     this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number + ' > ' + this.props.groups[groupId]?.name
 
-    if (id && path) {
-      return (
-        <div style={{ fontSize: '11px' }} className='text-muted'>
-          {path}
-        </div>
-      )
-    } else return <p />
-  }
+  //   if (id && path) {
+  //     return (
+  //       <div style={{ fontSize: '11px' }} className='text-muted'>
+  //         {path}
+  //       </div>
+  //     )
+  //   } else return <p />
+  // }
 
   renderHistoryItem(history) {
     return (
@@ -94,15 +92,15 @@ class History extends Component {
             this.openHistorySnapshot(history.id)
           }}
         >
-          <div className={`api-label lg-label ${history.endpoint.requestType}`}>
-            <div className='endpoint-request-div'>{history.endpoint.requestType}</div>
+          <div className={`api-label lg-label ${history?.endpoint?.requestType}`}>
+            <div className='endpoint-request-div'>{history?.endpoint?.requestType}</div>
           </div>
           <div className='ml-3'>
             <div className='sideBarListWrapper'>
               <div className='text-left'>
                 <p>
                   {this.renderName(history)}
-                  {this.renderPath(history.endpoint.id)}
+                  {/* {this.renderPath(history.endpoint.id)} */}
                 </p>
               </div>
               <small className='text-muted'>{moment(history.createdAt).format('ddd, Do MMM h:mm a')}</small>
