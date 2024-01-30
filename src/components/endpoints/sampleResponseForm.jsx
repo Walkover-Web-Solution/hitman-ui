@@ -58,7 +58,7 @@ class SampleResponseForm extends Form {
     }
 
     const sampleResponse = { title, status, description, data }
-    const sampleResponseArray = [...this.props.endpointContent.sample_response_array, sampleResponse]
+    const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray, sampleResponse]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array, false]
     this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray)
   }
