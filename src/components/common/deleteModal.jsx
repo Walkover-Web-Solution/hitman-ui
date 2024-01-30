@@ -54,7 +54,7 @@ class DeleteModal extends Component {
       this.props.delete_environment(environment)
     }
     if (title === 'Delete Sample Response') {
-      const sampleResponseArray = [...this.props.sample_response_array]
+      const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray]
       const sampleResponseFlagArray = [...this.props.sample_response_flag_array]
       const index = this.props.index
       sampleResponseArray.splice(index, 1)

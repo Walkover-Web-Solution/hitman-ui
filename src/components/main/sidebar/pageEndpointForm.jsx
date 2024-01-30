@@ -5,7 +5,6 @@ import Form from '../../common/form'
 import { toTitleCase, onEnter, DEFAULT_URL } from '../../common/utility'
 import shortid from 'shortid'
 import { connect } from 'react-redux'
-import { addCollection, updateCollection } from '../../collections/redux/collectionsActions'
 import { moveToNextStep } from '../../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../../common/constants'
 import DefaultViewModal from '../../collections/defaultViewModal/defaultViewModal'
@@ -19,10 +18,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_page: (rootParentId, newPage) => dispatch(addPage1(ownProps.history, rootParentId, newPage)),
-    add_collection: (newCollection, openSelectedCollection, callback) =>
-      dispatch(addCollection(newCollection, openSelectedCollection, callback)),
-    update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback))
+    add_page: (rootParentId, newPage) => dispatch(addPage1(ownProps.history, rootParentId, newPage))
   }
 }
 
@@ -48,65 +44,7 @@ class PageEndpointForm extends Form {
     }
   }
 
-  async componentDidMount() {
-    if (!this.props.show || this.props.title === 'Add new Collection') return
-    let data = {}
-    const collectionId = this.props.edited_collection.id
-    if (this.props.edited_collection) {
-      const { name, description } = this.props.edited_collection
-      data = {
-        name,
-        description
-      }
-    }
-    this.setState({ data, collectionId })
-  }
-
-  async onEditCollectionSubmit(defaultView) {
-    this.props.update_collection(
-      {
-        ...this.state.data,
-        id: this.state.collectionId,
-        defaultView
-      },
-      null,
-      this.redirectToCollection.bind(this)
-    )
-  }
-
-  redirectToCollection(collection) {
-    const { viewLoader } = this.state
-    if (!collection?.data) {
-      console.error('collection.data is undefined')
-      return // or handle this case appropriately
-    }
-    const { id: collectionId } = collection?.data
-    if (collection.success && viewLoader.doc && !this.props.setDropdownList) {
-      const { orgId } = this.props.match.params
-      this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
-    }
-    if (this.props.setDropdownList) this.props.setDropdownList(collection.data)
-    this.props.onHide()
-  }
-
   async onAddPageSubmit(props) {
-    // const requestId = shortid.generate()
-    // const defaultDocProperties = {
-    //   defaultLogoUrl: '',
-    //   defaultTitle: '',
-    //   versionHosts: {}
-    // }
-    // this.props.add_collection(
-    //   { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
-    //   null,
-    //   this.redirectToCollection.bind(this)
-    // )
-    // this.setState({
-    //   data: {
-    //     name: '',
-    //     description: ''
-    //   }
-    // })
     let { name } = { ...this.state.data }
     name = toTitleCase(name)
     const collections = this.props.selectedCollection
@@ -123,98 +61,19 @@ class PageEndpointForm extends Form {
     moveToNextStep(1)
   }
 
-  setViewLoader(type, flag) {
-    if (flag === 'edit') this.setState({ updating: true })
-    else {
-      const { viewLoader } = this.state
-      this.setState({ viewLoader: { ...viewLoader, [type]: flag } })
-    }
-  }
-
-  async doSubmit(defaultView) {
-    const body = this.state.data
-    body.name = toTitleCase(body.name.trim())
-    if (this.props.title === 'Edit Collection') {
-      this.onEditCollectionSubmit(defaultView)
-    }
-    if (this.props.title === 'Add new Collection') {
-      this.onAddPageSubmit(defaultView)
-      if (this.props.setDropdownList) this.props.onHide()
-    }
-  }
-
-  saveCollection(defaultView, flag) {
-    this.setViewLoader(defaultView, flag)
-    this.doSubmit(defaultView)
-  }
-
-  renderCollectionDetailsForm() {
-    return (
-      <>{this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}</>
-    )
-  }
   renderDefaultViewForm() {
     return (
       <DefaultViewModal
         viewLoader={this.state.viewLoader}
         saveCollection={this.saveCollection.bind(this)}
         onHide={() => this.props.onHide()}
-        runFunctionality={this.renderCollectionDetailsForm.bind(this)}
       />
     )
   }
 
   renderForm() {
     const { step } = this.statecp
-    return (
-      <>
-        {step === 2 && this.renderCollectionDetailsForm()}
-        {step === 1 && this.renderDefaultViewForm()}
-        {step === 1 ? this.renderNextButton() : this.renderBackButton()}
-      </>
-    )
-  }
-
-  onBack() {
-    this.setState({ step: 1 })
-  }
-
-  onNext() {
-    const errors = this.validate()
-    this.setState({ errors: errors || {} })
-    if (errors) return
-    if (this.props.title === 'Edit Collection') {
-      this.saveCollection(this.props.edited_collection?.defaultView, 'edit')
-    } else {
-      this.setState({ step: 2 })
-    }
-  }
-
-  renderNextButton() {
-    if (!this.props.setDropdownList) {
-      return (
-        <button className='btn btn-primary' onClick={() => this.onNext()}>
-          Next
-        </button>
-      )
-    }
-    return (
-      <button className='btn btn-primary' onClick={() => this.onNext()}>
-        {this.props.title === 'Edit Collection' ? (
-          <>{this.state.updating && <Spinner className=' mr-2 ' animation='border' size='sm' />}Update</>
-        ) : (
-          'Next'
-        )}
-      </button>
-    )
-  }
-
-  renderBackButton() {
-    return (
-      <button className='btn btn-primary mt-2' onClick={() => this.onBack()}>
-        Back
-      </button>
-    )
+    return <>{step === 1 && this.renderDefaultViewForm()}</>
   }
 
   handleCancel(e) {

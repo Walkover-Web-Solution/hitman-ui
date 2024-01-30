@@ -43,7 +43,7 @@ class SampleResponseForm extends Form {
     }
     const index = this.props.index
     const sampleResponse = { status, description, data, title }
-    const sampleResponseArray = [...this.props.sample_response_array]
+    const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array]
     sampleResponseArray[index] = sampleResponse
     this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray)
@@ -58,7 +58,7 @@ class SampleResponseForm extends Form {
     }
 
     const sampleResponse = { title, status, description, data }
-    const sampleResponseArray = [...this.props.sample_response_array, sampleResponse]
+    const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray, sampleResponse]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array, false]
     this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray)
   }
@@ -78,9 +78,9 @@ class SampleResponseForm extends Form {
   checkDuplicateName() {
     if (this.props && this.props.endpoints) {
       const usedTitles = []
-      const endpointId = this.props.location.pathname.split('/')[5]
-      const endpoint = this.props.endpoints[endpointId] || []
-      const sampleResponse = endpoint.sampleResponse || []
+      // const endpointId = this.props.location.pathname.split('/')[5]
+      // const endpoint = this.props.endpoints[endpointId] || []
+      const sampleResponse = this.props.endpointContent.sampleResponseArray || []
       sampleResponse.map((key) => {
         return usedTitles.push(key.title)
       })
