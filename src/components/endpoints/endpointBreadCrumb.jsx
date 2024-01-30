@@ -20,23 +20,23 @@ const mapStateToProps = (state) => {
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    const currentId = props?.match?.params?.endpointId === 'new' ? props?.activeTabId : props?.match?.params?.endpointId
-    const queryClient = useQueryClient()
-    const [data, setData] = useState(queryClient.getQueryData(['endpoint', currentId]))
+    // const currentId = props?.match?.params?.endpointId === 'new' ? props?.activeTabId : props?.match?.params?.endpointId
+    // const queryClient = useQueryClient()
+    // const [data, setData] = useState(queryClient.getQueryData(['endpoint', currentId]))
 
-    const setEndpointData = (newData) => {
-      const currentId = props?.match?.params?.endpointId === 'new' ? props?.activeTabId : props?.match?.params?.endpointId
-      if (!props?.pages?.[currentId]) {
-        localStorage.setItem(currentId, JSON.stringify(_.cloneDeep(newData)))
-        queryClient.setQueryData(['endpoint', currentId], _.cloneDeep(newData))
-        setData(_.cloneDeep(newData))
-        return
-      }
-      queryClient.setQueryData(['endpoint', currentId], _.cloneDeep(newData))
-      setData(newData)
-    }
+    // const setEndpointData = (newData) => {
+    //   const currentId = props?.match?.params?.endpointId === 'new' ? props?.activeTabId : props?.match?.params?.endpointId
+    //   if (!props?.pages?.[currentId]) {
+    //     localStorage.setItem(currentId, JSON.stringify(_.cloneDeep(newData)))
+    //     queryClient.setQueryData(['endpoint', currentId], _.cloneDeep(newData))
+    //     setData(_.cloneDeep(newData))
+    //     return
+    //   }
+    //   queryClient.setQueryData(['endpoint', currentId], _.cloneDeep(newData))
+    //   setData(newData)
+    // }
 
-    return <WrappedComponent {...props} endpointContent={data} setEndpointData={setEndpointData} />
+    return <WrappedComponent {...props}  />
   }
 }
 class EndpointBreadCrumb extends Component {
@@ -187,9 +187,11 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    const tempData = this.props?.endpointContent || {}
-    tempData.data.name = e.currentTarget.value
-    this.props.setEndpointData(tempData)
+    if(this.props?.isEndpoint) {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = e.currentTarget.value
+      this.props.setQueryUpdatedData(tempData)
+    }
   }
 
   handleInputBlur() {

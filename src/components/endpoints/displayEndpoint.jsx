@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -207,42 +207,47 @@ const untitledEndpointData = {
   ]
 }
 
-const getEndpointContent = async (endpointId) => {
-  const data = await getEndpoint(endpointId)
-  const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
-  return modifiedData
+const getEndpointContent = async (props, queryClient) => {
+  debugger
+  let endpointId = props?.match?.params.endpointId
+  if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
+    const data = await getEndpoint(endpointId)
+    const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
+    return modifiedData
+  } else {
+    endpointId = props?.activeTabId
+    if (localStorage.getItem(endpointId)) {
+      // queryClient.setQueryData(['endpoint', endpointId], JSON.parse(localStorage.getItem(endpointId)) || {})
+      const data = JSON.parse(localStorage.getItem(endpointId))
+      return data
+    } else {
+      localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)))
+      const data = _.cloneDeep(untitledEndpointData)
+      return data
+      // queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(untitledEndpointData))
+    }
+  }
 }
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    // const [forceRender, setForceRender] = useState(false)
     const queryClient = useQueryClient()
-    let endpointContentData = {}
-    let endpointId = props?.match?.params.endpointId
-    if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
-      const data = useQuery(['endpoint', endpointId], () => getEndpointContent(endpointId), {
-        refetchOnWindowFocus: false,
-        cacheTime: 5000000,
-        enabled: true,
-        staleTime: Infinity
-      })
-      endpointContentData = data
-    } else {
-      endpointId = props?.activeTabId
-      if (localStorage.getItem(endpointId)) {
-        queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(JSON.parse(localStorage.getItem(endpointId))) || {})
-        endpointContentData['data'] = JSON.parse(localStorage.getItem(endpointId) || {})
-      } else {
-        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)))
-        queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(untitledEndpointData))
-      }
-    }
+    const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId : props?.activeTabId;
+    const data = useQuery(['endpoint', endpointId], () => getEndpointContent(props, queryClient), {
+      refetchOnWindowFocus: false,
+      cacheTime: 5000000,
+      enabled: true,
+      staleTime: Infinity
+    })
+
+    console.log('data idris', data);
     
     const setQueryUpdatedData = (data) => {
+      debugger
+      const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId : props?.activeTabId;
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(['endpoint', endpointId], data)
-        // setForceRender(!forceRender)
         return
       }
       queryClient.setQueryData(['endpoint', endpointId], data)
@@ -251,8 +256,8 @@ const withQuery = (WrappedComponent) => {
     return (
       <WrappedComponent
         {...props}
-        endpointContent={endpointContentData.data}
-        endpointContentLoading={endpointContentData.isLoading}
+        endpointContent={data.data}
+        endpointContentLoading={data.isLoading}
         currentEndpointId={endpointId}
         setQueryUpdatedData={setQueryUpdatedData}
       />
