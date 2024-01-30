@@ -227,6 +227,12 @@ function pagesReducer(state = initialState, action) {
       }
       return { ...state }
 
+    case pagesActionTypes.UPDATE_NAME_OF_PAGE:
+      if (state[action.payload.id]) {
+        state[action.payload.id].name = action.payload.name
+      }
+      return { ...state }
+
     default:
       return state
   }

@@ -236,10 +236,7 @@ const withQuery = (WrappedComponent) => {
       staleTime: Infinity
     })
 
-    console.log('data hello', data.data);
-
     const setQueryUpdatedData = (data) => {
-      debugger
       const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId : props?.activeTabId
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
@@ -1421,7 +1418,6 @@ class DisplayEndpoint extends Component {
 
   propsFromChild(name, value) {
     if (name === 'Params') {
-      debugger
       this.handleUpdateUri(value)
       this.setState({ originalParams: value }, () => this.setModifiedTabData())
       const dummyData = this?.props?.endpointContent
@@ -1699,7 +1695,6 @@ class DisplayEndpoint extends Component {
   }
 
   setBaseUrl(BASE_URL, selectedHost) {
-    debugger
     this.setState({ host: { BASE_URL, selectedHost } })
     const tempData = this?.props?.endpointContent || untitledEndpointData
     tempData.host = { BASE_URL, selectedHost }

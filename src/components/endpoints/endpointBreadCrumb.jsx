@@ -1,10 +1,9 @@
-import React, { Component, useState } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
 import { isElectron, toTitleCase } from '../common/utility'
-import { useQueryClient } from 'react-query'
-import _, { set } from 'lodash'
+import { updateNameOfPages } from '../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -18,8 +17,15 @@ const mapStateToProps = (state) => {
   }
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    update_name: (payload) => dispatch(updateNameOfPages(payload))
+  }
+}
+
 const withQuery = (WrappedComponent) => {
   return (props) => {
+    console.log(props?.page, 123456789)
     // const currentId = props?.match?.params?.endpointId === 'new' ? props?.activeTabId : props?.match?.params?.endpointId
     // const queryClient = useQueryClient()
     // const [data, setData] = useState(queryClient.getQueryData(['endpoint', currentId]))
@@ -36,7 +42,7 @@ const withQuery = (WrappedComponent) => {
     //   setData(newData)
     // }
 
-    return <WrappedComponent {...props}  />
+    return <WrappedComponent {...props} />
   }
 }
 class EndpointBreadCrumb extends Component {
@@ -187,10 +193,12 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    if(this.props?.isEndpoint) {
+    if (this.props?.isEndpoint) {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = e.currentTarget.value
       this.props.setQueryUpdatedData(tempData)
+    } else {
+      this.props.update_name({ name: e.currentTarget.value, id: this.props?.pageId })
     }
   }
 
@@ -198,15 +206,15 @@ class EndpointBreadCrumb extends Component {
     this.setState({ nameEditable: false })
     if (this.state.endpointTitle.trim()) {
       if (this.props.isEndpoint) {
-        const data = this.props.endpoint
-        data.name = toTitleCase(this.state.endpointTitle)
-        if (data.id) {
-          this.props.update_endpoint(data)
-        }
-        this.props.alterEndpointName(data.name)
+        // const data = this.props.endpoint
+        // data.name = toTitleCase(this.state.endpointTitle)
+        // if (data.id) {
+        //   this.props.update_endpoint(data)
+        // }
+        // this.props.alterEndpointName(data.name)
       } else {
-        const page = this.props.page
-        page.name = toTitleCase(this.state.endpointTitle)
+        const page = this.props.pages[this.props?.pageId]
+        // page.name = toTitleCase(this.state.endpointTitle)
         this.props.update_page(page)
       }
       const title = toTitleCase(this.state.endpointTitle)
@@ -256,17 +264,14 @@ class EndpointBreadCrumb extends Component {
               name='enpoint-title'
               style={{ width: 'auto', textTransform: 'capitalize' }}
               onChange={this.handleInputChange.bind(this)}
-              value={this.props?.endpointContent?.data?.name || ''}
+              value={this.props?.isEndpoint ? this.props?.endpointContent?.data?.name || '' : this.props?.page?.name}
               onBlur={() => {
                 this.handleInputBlur()
               }}
               maxLength='50'
             />
             <h3 className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}>
-              {this.props?.endpointContent?.data?.name && this.props?.endpointContent?.data?.name !== ''
-                ? this.props?.endpointContent?.data?.name
-                : 'Untitled'}
-              {/* {this.state.endpointTitle === '' && this.props.groupId ? 'Untitled' : null} */}
+              {this.props?.isEndpoint ? this.props?.endpointContent?.data?.name || '' : this.props?.page?.name}
               <EditIcon
                 className='fa fa-pencil-square-o ml-2 cursor-pointer '
                 onClick={() => {
@@ -285,7 +290,7 @@ class EndpointBreadCrumb extends Component {
               {this.renderLeftAngle(this.versionName)}
               {this.groupName && <span>{`${this.groupName}`}</span>}
               {this.renderLeftAngle(this.groupName)}
-              <span className='end-point-title'>{this.state.endpointTitle}</span>
+              <span className='end-point-title'>{this.props?.isEndpoint ? this.props?.endpointContent?.data?.name || '' : this.props?.page?.name}</span>
               {this.props?.endpoint?.publishedEndpoint?.isPublished && (
                 <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
               )}
@@ -298,4 +303,4 @@ class EndpointBreadCrumb extends Component {
   }
 }
 
-export default connect(mapStateToProps, null)(withQuery(EndpointBreadCrumb))
+export default connect(mapStateToProps, mapDispatchToProps)(withQuery(EndpointBreadCrumb))

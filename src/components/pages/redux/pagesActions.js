@@ -61,15 +61,15 @@ export const onPagesFetchedError = (error) => {
   }
 }
 export const updatePage = (history, editedPage, publishDocs = false) => {
-  const newPage = { ...editedPage }
   const orgId = getOrgId()
-  delete newPage.id
-  delete newPage.versionId
-  delete newPage.groupId
-  const originalPage = store.getState().pages[editedPage.id]
-  store.dispatch(updatePageRequest(editedPage))
+  const dataToSend = {
+    name : editedPage.name,
+    contents : editedPage?.contents || null,
+    state : editedPage.state,
+  }
+  store.dispatch(updatePageRequest(dataToSend))
   pageApiService
-    .updatePage(editedPage.id, newPage)
+    .updatePage(editedPage.id, dataToSend)
     .then((response) => {
       store.dispatch(onPageUpdated(response.data))
       if (!publishDocs) {
@@ -78,7 +78,7 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
       return response.data
     })
     .catch((error) => {
-      store.dispatch(onPageUpdatedError(error.response ? error.response.data : error, originalPage))
+      store.dispatch(onPageUpdatedError(error.response ? error.response.data : error, editedPage))
     })
 }
 
@@ -276,8 +276,9 @@ export const addChildInParent = (payload) => {
   }
 }
 
-// export const saveUntitledEndpoint = (payload) => {
-//   return (dispatch) => {
-//     const response =
-//   }
-// }
+export const updateNameOfPages = (payload) => {
+  return {
+    type: pagesActionTypes.UPDATE_NAME_OF_PAGE,
+    payload
+  }
+}
