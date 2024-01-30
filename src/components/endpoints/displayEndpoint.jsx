@@ -117,8 +117,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
-    add_endpointInCollection: (newEndpoint, rootParentID, callback) =>
-      dispatch(addEndpointInCollection(ownProps.history, newEndpoint, rootParentID, callback)),
+    add_endpointInCollection: (newEndpoint, rootParentID, callback, props) =>
+      dispatch(addEndpointInCollection(ownProps.history, newEndpoint, rootParentID, callback, props)),
     update_endpoint: (editedEndpoint, stopSave) => dispatch(updateEndpoint(editedEndpoint, stopSave)),
     set_authorization_responses: (versionId, authResponses) => dispatch(setAuthorizationResponses(versionId, authResponses)),
     set_authorization_type: (endpointId, authData) => dispatch(setAuthorizationType(endpointId, authData)),
@@ -1312,8 +1312,7 @@ class DisplayEndpoint extends Component {
         this.props.add_endpointInCollection(endpoint, id, ({ closeForm, stopLoader }) => {
           if (closeForm) this.closeEndpointFormModal()
           if (stopLoader) this.setState({ saveAsLoader: false })
-        })
-        tabService.removeTab(this.props?.activeTabId, { ...this.props })
+        }, this.props)
         moveToNextStep(4)
       } else {
         if (this.state.saveAsFlag) {

@@ -7,6 +7,7 @@ import shortid from 'shortid'
 import { sendAmplitudeData } from '../../../services/amplitude'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 import { addChildInParent } from '../../pages/redux/pagesActions'
+import tabService from '../../tabs/tabService'
 
 export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   const orgId = getOrgId()
@@ -39,7 +40,7 @@ export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   }
 }
 
-export const addEndpointInCollection = (history, newEndpoint, rootParentId, customCallback) => {
+export const addEndpointInCollection = (history, newEndpoint, rootParentId, customCallback, props) => {
   const orgId = getOrgId()
   const requestId = shortid.generate()
   return (dispatch) => {
@@ -61,6 +62,7 @@ export const addEndpointInCollection = (history, newEndpoint, rootParentId, cust
         }
         dispatch(addChildInParent(responseToSend))
         history.push(`/orgs/${orgId}/dashboard/endpoint/${response.data.id}`)
+        tabService.removeTab(this.props?.activeTabId, { ...props })
         if (customCallback) {
           customCallback({ closeForm: true, stopLoader: true })
         }
