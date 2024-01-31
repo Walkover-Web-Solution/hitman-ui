@@ -218,12 +218,10 @@ export const deletePage = (page) => {
     pageApiService
       .deletePage(page.id)
       .then((res) => {
-        console.log(res, "response");
         const response = res.data
         dispatch(onPageDeleted(response))
       })
       .catch((error) => { 
-        console.log(error,"error");
         dispatch(onPageDeletedError(error.response, page))
       })
   }

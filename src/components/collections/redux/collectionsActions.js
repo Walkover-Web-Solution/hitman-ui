@@ -369,7 +369,6 @@ export const removePublicCollection = (collection, props) => {
 function prepareCollectionData(collection, props) {
   const storeData = { ...store.getState() }
   const versionIds = Object.keys(storeData.pages).filter((vId) => storeData.pages[vId].collectionId === collection.id)
-  console.log(versionIds, "version ides");
   let endpointIds = []
   let pageIds = []
   versionIds.forEach((vId) => {

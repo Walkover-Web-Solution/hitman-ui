@@ -63,6 +63,7 @@ export function updatePage(pageId, page) {
 }
 
 export function deletePage(pageId) {
+  const pageid = pageId.id? pageId.id : pageId
   const apiUrl = getApiUrl()
   return http.delete(`${apiUrl}/pages/${pageId}`)
 }

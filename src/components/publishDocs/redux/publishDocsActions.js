@@ -1,4 +1,5 @@
 // import {store} from '../../../store/store'
+import { store } from '../../../store/store'
 import publishDocsApiService from '../publishDocsApiService'
 import publishDocsActionTypes from './publishDocsActionTypes'
 
@@ -30,21 +31,25 @@ export const onFeedbacksFetchedError = (error) => {
 }
 
 export const onDefaultVersion = (orgId, versionData) => {
+  const pages = store.getState()
   return (dispatch) => {
     publishDocsApiService
       .setDefaultVersion(orgId, versionData)
       .then((response) => {
-        dispatch(onSetDefaultVersion(response.data))
+        if(response.data === 'Updated Successfully') {
+          dispatch(onSetDefaultVersion(versionData, pages))
+        }
       })
       .catch((error) => {
         dispatch(onSetDefaultVersionError(error.response ? error.response.data : error))
       })
   }
 }
-export const onSetDefaultVersion = (versionData) => {
+export const onSetDefaultVersion = (versionData, pages) => {
   return {
     type: publishDocsActionTypes.ON_DEFAULT_VERSION,
-    versionData
+    versionData,
+    pages
   }
 }
 export const onSetDefaultVersionError = (error) => {

@@ -26,7 +26,6 @@ class DeleteModal extends Component {
     if (title === 'Delete Collection') {
       const { deleted_collection: collection } = this.props
       this.props.delete_collection(collection, this.props)
-      console.log(collection.rootParentId, "root parent id", this.props.pages[collection.rootParentId], "id inside pages");
       // tabService.removeTab(collection.id, { ...this.props })
     }
     if (title === 'Remove Collection') {
@@ -34,14 +33,15 @@ class DeleteModal extends Component {
       this.props.remove_public_collection(collection, this.props)
     }
     if (title === 'Delete Version') {
-      const { deleted_version: version } = this.props
-      this.props.delete_version(version, this.props)
+      const { deleted_page: page } = this.props
+      this.props.delete_page(page)
     }
     if (title === 'Delete Group') {
       const { deleted_group: group } = this.props
       this.props.delete_group(group, this.props)
     }
     if (title === 'Delete Page') {
+      
       const { deleted_page: page } = this.props
       tabService.removeTab(page.id, { ...this.props })
       this.props.delete_page(page)

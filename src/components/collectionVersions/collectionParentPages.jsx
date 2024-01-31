@@ -111,7 +111,6 @@ class CollectionParentPages extends Component {
 
     if (endpointId) this.setParentPageForEntity(endpointId, 'endpoint')
     const defaultVersion = this.findDefaultVersion()
-  console.log(defaultVersion, "default versionnnnnnnn");
     if (defaultVersion) {
       this.setState({
         defaultVersionName: defaultVersion.name,
@@ -204,6 +203,15 @@ class CollectionParentPages extends Component {
       showPageForm,
       pageFormName: 'Share Parent Page',
       selectedPage: { ...this.props.pages[pageId] }
+    })
+  }
+
+  openDeleteVersionModal(versionId) {
+    this.setState({
+      showDeleteVersion: true,
+      selectedVersion: {
+        ...this.props.pages[versionId]
+      }
     })
   }
 
@@ -318,7 +326,6 @@ class CollectionParentPages extends Component {
   handleDropdownItemClick(id, rootId, event) {
     if (event.target.tagName.toLowerCase() === 'svg') {
       // Perform delete action
-      console.log("inside delete svggg", id, rootId);
 
       if(this.state.defaultVersionId === id){
         // this.setState({defaultVersionId: ''})
@@ -332,7 +339,6 @@ class CollectionParentPages extends Component {
     const selectedVersionName = this.props.pages[id].name
     const defaultVersionId = this.state.defaultVersionId
     const defaultVersionName = this.state.defaultVersionName
-    console.log(defaultVersionName, "defaultVersionName");
     this.setState({ selectedVersionName: selectedVersionName })
     this.setState({ selectedVersionId: id })
     if(this.props.modals.publishData && this.props.isPublishData){
@@ -348,7 +354,6 @@ class CollectionParentPages extends Component {
   handleButton(rootparentId) {
     const object = this.props.pages
     const list = object[rootparentId].child
-    console.log(list, "list ");
     this.renderListButtons(list)
   }
   renderListButtons(list) {
@@ -521,7 +526,6 @@ class CollectionParentPages extends Component {
                         </span>     
                       }
                     >
-                      {console.log(this.props.pages[rootId].child)}
                       {this.props.pages[rootId].child.map((childId, index) => (
                         <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId, e)}>
                           <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
@@ -870,7 +874,6 @@ class CollectionParentPages extends Component {
     }
 
     const versionsCount = this.getVersionsCount(this.filteredPages)
-    console.log(this.props, "props inside collection parent pagessss");
     return (
       <>
         {this.showShareVersionForm()}

@@ -145,7 +145,6 @@ function pagesReducer(state = initialState, action) {
         const updatedState = { ...state };
         const pageId = action.response.ParentPage.id;
         updatedState[pageId].child = action.response.ParentPage.child;
-        console.log(updatedState, "updated stattte")
         toast.success("Deleted succesfully");
         return updatedState;
 

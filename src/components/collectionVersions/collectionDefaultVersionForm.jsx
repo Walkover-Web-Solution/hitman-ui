@@ -13,18 +13,16 @@ import { Card, Dropdown, Accordion, DropdownButton, Button } from 'react-bootstr
 import { onDefaultVersion } from '../publishDocs/redux/publishDocsActions'
 
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_parentpage_version: (newCollectionVersion, parentPageId, callback) =>
     dispatch(addParentPageVersion(newCollectionVersion, parentPageId, callback)),
-    update_version: (editedVersion) => dispatch(updateVersion(editedVersion)),
     set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData)),
   }
 }
 class CollectionDefaultVersionForm extends Form {
   constructor(props) {
     super(props)
-    console.log(this.props, "props inside collectiondefaultversion");
     this.state = {
       data: { name: '', state: 0 },
       errors: {},
@@ -57,7 +55,6 @@ class CollectionDefaultVersionForm extends Form {
     }
     this.setState({ data, versionId, parentPageId })
     const defaultVersion = this.findDefaultVersion()
-    console.log(defaultVersion.name, "name ");
     if (defaultVersion) {
         this.setState({
           defaultVersionName: defaultVersion.name,
@@ -77,25 +74,24 @@ class CollectionDefaultVersionForm extends Form {
     if (this.props.setDropdownList) this.props.setDropdownList(version)
   }
 
-  async doSubmit() {
+   handleSubmit() {
     this.props.onHide()
-    let { name } = { ...this.state.data }
-    name = toTitleCase(name)
-    if (this.props.title === 'Edit Collection Version') {
-      const { id, parentPageId } = this.props.selectedVersion
-      const editedCollectionVersion = { ...this.state.data, parentPageId, id, name }
-      this.props.update_version(editedCollectionVersion)
-    }
-    if (this.props.title === ADD_VERSION_MODAL_NAME) {
-      const parentPageId = this.props.parentPage_id
-      const newVersion = { ...this.state.data, requestId: shortid.generate(), name }
-      this.props.add_parentpage_version(newVersion, parentPageId, this.redirectToForm.bind(this))
-      moveToNextStep(2)
-    }
+    // let { name } = { ...this.state.data }
+    // name = toTitleCase(name)
+    // if (this.props.title === 'Edit Collection Version') {
+    //   const { id, parentPageId } = this.props.selectedVersion
+    //   const editedCollectionVersion = { ...this.state.data, parentPageId, id, name }
+    //   this.props.update_version(editedCollectionVersion)
+    // }
+    // if (this.props.title === ADD_VERSION_MODAL_NAME) {
+    //   const parentPageId = this.props.parentPage_id
+    //   const newVersion = { ...this.state.data, requestId: shortid.generate(), name }
+    //   this.props.add_parentpage_version(newVersion, parentPageId, this.redirectToForm.bind(this))
+    //   moveToNextStep(2)
+    // }
   }
 
   selectDefaultVersion(id, index){
- console.log("inside select default verison", id);
  const versionData = { oldVersionId: this.state.defaultVersionId, newVersionId: id }
     if (this.state.defaultVersionId !== id) {
       this.props.set_Default_Version(this.props.match.params.orgId, versionData)
@@ -110,12 +106,11 @@ class CollectionDefaultVersionForm extends Form {
 
   render() {
     const rootId = this.props.rootParentId
-    console.log(rootId, "root id inside render");
     return (
       <div
-        onKeyPress={(e) => {
-          onEnter(e, this.handleKeyPress.bind(this))
-        }}
+        // onKeyPress={(e) => {
+        //   onEnter(e, this.handleKeyPress.bind(this))
+        // }}
       >
         <Modal
           show={this.props.show}
@@ -128,7 +123,7 @@ class CollectionDefaultVersionForm extends Form {
             <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <form onSubmit={this.handleSubmit}>
+            {/* <form> */}
               <div className='row'>
                 <div className='col-6'>
                   {/* {this.renderInput(
@@ -158,13 +153,13 @@ class CollectionDefaultVersionForm extends Form {
                 </div>
                 {/* <div className='col-6'>{this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', false, false, true)}</div> */}
               </div>
-              <div className='text-left mt-4 mb-2'>
-                {this.renderButton('Submit')}
+              {/* <div className='text-left mt-4 mb-2'>
+                <Button onClick={this.handleSubmit}>Submit</Button>
                 <button className='btn btn-secondary outline btn-lg ml-2' onClick={this.props.onHide}>
                   Cancel
                 </button>
-              </div>
-            </form>
+              </div> */}
+            {/* </form> */}
             
           </Modal.Body>
         </Modal>
