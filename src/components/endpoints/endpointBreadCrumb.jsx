@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
 import { isElectron, toTitleCase } from '../common/utility'
+import { updateNameOfPages } from '../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -11,7 +12,14 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     groups: state.groups,
     endpoints: state.endpoints,
-    tabState: state.tabs.tabs
+    tabState: state.tabs.tabs,
+    activeTabId: state.tabs.activeTabId
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    update_name: (payload) => dispatch(updateNameOfPages(payload))
   }
 }
 
@@ -163,22 +171,28 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    this.setState({ endpointTitle: e.currentTarget.value })
+    if (this.props?.isEndpoint) {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = e.currentTarget.value
+      this.props.setQueryUpdatedData(tempData)
+    } else {
+      this.props.update_name({ name: e.currentTarget.value, id: this.props?.pageId })
+    }
   }
 
   handleInputBlur() {
     this.setState({ nameEditable: false })
     if (this.state.endpointTitle.trim()) {
       if (this.props.isEndpoint) {
-        const data = this.props.endpoint
-        data.name = toTitleCase(this.state.endpointTitle)
-        if (data.id) {
-          this.props.update_endpoint(data)
-        }
-        this.props.alterEndpointName(data.name)
+        // const data = this.props.endpoint
+        // data.name = toTitleCase(this.state.endpointTitle)
+        // if (data.id) {
+        //   this.props.update_endpoint(data)
+        // }
+        // this.props.alterEndpointName(data.name)
       } else {
-        const page = this.props.page
-        page.name = toTitleCase(this.state.endpointTitle)
+        const page = this.props.pages[this.props?.pageId]
+        // page.name = toTitleCase(this.state.endpointTitle)
         this.props.update_page(page)
       }
       const title = toTitleCase(this.state.endpointTitle)
@@ -228,15 +242,14 @@ class EndpointBreadCrumb extends Component {
               name='enpoint-title'
               style={{ width: 'auto', textTransform: 'capitalize' }}
               onChange={this.handleInputChange.bind(this)}
-              value={this.state.endpointTitle}
+              value={this.props?.isEndpoint ? this.props?.endpointContent?.data?.name || '' : this.props?.page?.name}
               onBlur={() => {
                 this.handleInputBlur()
               }}
               maxLength='50'
             />
             <h3 className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}>
-              {this.state.endpointTitle && this.state.endpointTitle !== '' ? this.state.endpointTitle : null}
-              {this.state.endpointTitle === '' && this.props.groupId ? 'Untitled' : null}
+              {this.props?.isEndpoint ? this.props?.endpointContent?.data?.name || '' : this.props?.page?.name}
               <EditIcon
                 className='fa fa-pencil-square-o ml-2 cursor-pointer '
                 onClick={() => {
@@ -255,7 +268,9 @@ class EndpointBreadCrumb extends Component {
               {this.renderLeftAngle(this.versionName)}
               {this.groupName && <span>{`${this.groupName}`}</span>}
               {this.renderLeftAngle(this.groupName)}
-              <span className='end-point-title'>{this.state.endpointTitle}</span>
+              <span className='end-point-title'>
+                {this.props?.isEndpoint ? this.props?.endpointContent?.data?.name || '' : this.props?.page?.name}
+              </span>
               {this.props?.endpoint?.publishedEndpoint?.isPublished && (
                 <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
               )}
@@ -268,4 +283,4 @@ class EndpointBreadCrumb extends Component {
   }
 }
 
-export default connect(mapStateToProps, null)(EndpointBreadCrumb)
+export default connect(mapStateToProps, mapDispatchToProps)(EndpointBreadCrumb)

@@ -1,0 +1,91 @@
+import React, { useState } from 'react'
+import {useSelector } from 'react-redux'
+import RenderData from './renderData/renderData'
+import './showCaseSaveAsModal.scss'
+
+export default function ShowCaseSaveAsModal(props) {
+  const { pages, collections, activeTabId } = useSelector((state) => {
+    return {
+      pages: state.pages,
+      collections: state.collections,
+      activeTabId: state.tabs.activeTabId
+    }
+  })
+
+
+  const [pathData, setPathData] = useState(['organisation'])
+
+  const getName = (id) => {
+    const type = pages?.[id]?.type
+    if (type === 0) {
+      const parentId = pages?.[id]?.collectionId
+      return collections?.[parentId]?.name
+    } else {
+      return pages?.[id]?.name
+    }
+  }
+
+  const handleGoBack = (index) => {
+    let tempPathData = pathData
+    if (index >= 0 && index < tempPathData.length - 1) {
+      tempPathData.splice(index + 1)
+      setPathData([...tempPathData])
+    } else {
+      console.error('Invalid index provided.')
+    }
+  }
+
+  const getDisable = () => {
+    if (pathData.length === 1) {
+      return 'disable-save-btn'
+    } else {
+      const currentId = pathData[pathData.length - 1]
+      if (pages?.[currentId]?.type === 1) return 'disable-save-btn'
+      else return ''
+    }
+  }
+
+  const handleSave = () => {
+    const currentId = pathData[pathData.length - 1]
+    // endpoint.requestId = this.props.tab.id
+    // endpoint.description = endpointDescription || ''
+    props.save_endpoint(currentId, { endpointName: props?.name || '', endpointDescription: props?.description || '' })
+    props.onHide()
+    // this.props.add_endpointInCollection(endpoint, id, ({ closeForm, stopLoader }) => {
+    //   if (closeForm) this.closeEndpointFormModal()
+    //   if (stopLoader) this.setState({ saveAsLoader: false })
+    // })
+    // tabService.removeTab(activeTabId, { ...this.props })
+    // moveToNextStep(4)
+  }
+
+  return (
+    <div className='main_container p-2'>
+      <div className='d-flex justify-content-start align-items-center flex-wrap'>
+        <span>Save to </span>
+        {pathData.map((singleId, index) => {
+          return (
+            <div className='d-flex justify-content-start align-items-center'>
+              {index !== 0 && <span className='ml-1'>/</span>}
+              <div onClick={() => handleGoBack(index)} className='ml-1 tab-line'>
+                {index === 0 ? JSON.parse(localStorage.getItem(singleId)).name : getName(singleId)}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <div className='showcase_modal_container'>
+        <RenderData data={pathData} setPathData={setPathData} />
+        <div className='mt-5 d-flex align-items-center justify-content-end pb-2 pr-1'>
+          <button onClick={handleSave} className={`btn btn-primary mr-2 ${getDisable()}`}>
+            Save
+          </button>
+          <button onClick={() => {
+                props.onHide()
+              }}
+              className='btn btn-secondary outline  api-cancel-btn'>Cancel</button>
+        </div>
+      </div>
+    </div>
+  )
+}

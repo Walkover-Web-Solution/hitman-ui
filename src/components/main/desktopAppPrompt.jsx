@@ -53,7 +53,7 @@ function DesktopAppDownloadModal(props) {
       <Modal {...props} backdrop='static' show centered onHide={onHide}>
         <Modal.Header className='no-header' closeButton />
         <Modal.Body className='download-app-pop'>
-          {props.modals.modalData ? props.modals.modalData : <h5 className='text-center'>Seems you have already used 5 tabs.</h5>}
+          {props.modals.modalData ? props.modals.modalData : <h5 className='text-center'>Seems you have already used 10 tabs.</h5>}
           <p className='max-90 mb-3'>
             We suggest you use our desktop app for a better user experience.
             <br />
