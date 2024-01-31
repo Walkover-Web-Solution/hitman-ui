@@ -259,14 +259,13 @@ class CollectionParentPages extends Component {
   }
 
   toggleParentPageIds(id) {
-    // debugger
+
     const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
       id: id
     })
     let pathName = getUrlPathById(id, this.props.pages)
-    console.log('pathName == ', pathName)
     // this.props.history.push({
     //   pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
     // })
@@ -366,8 +365,6 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    console.log(this.props.pages[pageId]?.name,  'page Name on collectionParnetPafges')
-    // debugger
     const expanded = this.props.onPublishedPage || this.props?.clientData?.[pageId]?.isExpanded || false
     const publishData = this.props.modals.publishData
     const rootId = pageId
@@ -826,7 +823,7 @@ class CollectionParentPages extends Component {
   }
 
   render() {
-    // debugger
+    // 
     if (this.filterFlag === false || this.props.filter === '' || this.state.filter !== this.props.filter) {
       this.filteredPages = { ...this.props.pages }
       this.eventkey = {}

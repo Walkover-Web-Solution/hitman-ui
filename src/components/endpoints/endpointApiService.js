@@ -201,6 +201,10 @@ export function setAuthorizationType(endpointId, data) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/authorizationType`, data)
 }
 
+export function getSingleData(pageId, type) {
+  return http.get(`${process.env.REACT_APP_API_URL}/pages/${pageId}/getPublishedData?type=${type}`)
+}
+
 export default {
   saveEndpoint,
   getEndpoints,
@@ -214,5 +218,6 @@ export default {
   authorize,
   setAuthorizationType,
   updateEndpointOrder,
-  saveEndpointInCollection
+  saveEndpointInCollection,
+  getSingleData,
 }

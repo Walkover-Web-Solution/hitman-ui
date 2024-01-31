@@ -534,8 +534,6 @@ class Groups extends Component {
   }
 
   toggleSubPageIds(id) {
-    // debugger
-    console.log('came to groupsPages == ',id)
     let pathName = getUrlPathById(id, this.props.pages)
 
     const isExpanded = this.props.clientData?.[id]?.isExpanded || false
@@ -553,7 +551,7 @@ class Groups extends Component {
   }
 
   render() {
-    // debugger
+    // 
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false
     }

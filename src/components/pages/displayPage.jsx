@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import { store } from '../../store/store'
 import { connect } from 'react-redux'
 import { isDashboardRoute, isStateDraft, isStateReject, msgText, isStatePending, isStateApproved, getEntityState } from '../common/utility'
@@ -14,9 +14,21 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
 import { getPageContent } from '../../services/pageServices'
 import { useQuery } from 'react-query'
+import { getSingleData } from '../endpoints/endpointApiService'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
+
+    // const getSingleDataAtPage = async ()=>{
+    //   const response = await getSingleData('sa4QqCif1nFr', 4);
+    //   console.log('hello idris here is your api ', response.data[0]?.publishedEndpoint)
+      
+    // }
+
+    // useEffect(()=>{
+    //   getSingleDataAtPage();
+    // },[])
+
     const pageId = props.match.params.pageId ?? props.publicPageId
     const { data, error } = useQuery(
       ['pageContent', pageId],

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -16,7 +16,8 @@ import {
   msgText,
   getEntityState,
   getCurrentUserSSLMode,
-  setCurrentUserSSLMode
+  setCurrentUserSSLMode,
+  isNotDashboardOrDocView
 } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab, updateTab } from '../tabs/redux/tabsActions'
@@ -29,7 +30,7 @@ import DisplayResponse from './displayResponse'
 import SampleResponse from './sampleResponse'
 import { getCurrentUser, isAdmin } from '../auth/authServiceV2'
 
-import endpointApiService, { getEndpoint } from './endpointApiService'
+import endpointApiService, { getEndpoint, getSingleData } from './endpointApiService'
 import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
@@ -214,7 +215,28 @@ const getEndpointContent = async (endpointId) => {
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
+
     const queryClient = useQueryClient()
+
+    // useEffect(() => {
+    //   getSingleDataAtPage();
+    // }, [])
+
+    const getSingleDataAtPage = async () => {
+      const response = await getSingleData('sa4QqCif1nFr', 4);
+      const modifiedData = utilityFunctions.modifyEndpointContent(response.data[0]?.publishedEndpoint, _.cloneDeep(untitledEndpointData))
+      return modifiedData;
+    }
+    let publishedEndpointData = {};
+    if(isNotDashboardOrDocView) {
+      publishedEndpointData = useQuery(['endpointPublish', 'sa4QqCif1nFr'], () => getSingleDataAtPage(), {
+        refetchOnWindowFocus: false,
+        cacheTime: 5000000,
+        enabled: true,
+        staleTime: Infinity
+      })
+    }
+
     let endpointContentData = {}
     let endpointId = (props?.match?.params.endpointId) ?? props.publicEndpointId
     if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
@@ -252,6 +274,7 @@ const withQuery = (WrappedComponent) => {
         endpointContentLoading={endpointContentData.isLoading}
         currentEndpointId={endpointId}
         setQueryUpdatedData={setQueryUpdatedData}
+        publishedEndpointData = {publishedEndpointData.data}
       />
     )
   }
@@ -1669,7 +1692,7 @@ class DisplayEndpoint extends Component {
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
-      this.setState({ harObject }, () => {})
+      this.setState({ harObject }, () => { })
     } catch (error) {
       toast.error(error)
     }
@@ -2537,11 +2560,11 @@ class DisplayEndpoint extends Component {
           {...this.props}
           set_body={this.setBody.bind(this)}
           set_body_description={this.setDescription.bind(this)}
-          body={this.state.data.body}
-          original_body={this.state.originalBody}
-          public_body_flag={this.state.publicBodyFlag}
+          body={this.props?.publishedEndpointData?.data.body}
+          original_body={this.props?.publishedEndpointData?.originalBody}
+          public_body_flag={this.props?.publishedEndpointData?.publicBodyFlag}
           set_public_body={this.setPublicBody.bind(this)}
-          body_description={this.state.bodyDescription}
+          body_description={this.props?.publishedEndpointData?.bodyDescription}
         />
       )
     )
@@ -2652,14 +2675,14 @@ class DisplayEndpoint extends Component {
             </div>
             <HostContainer
               {...this.props}
-              groupId={this.state.groupId}
-              versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
+              // groupId={this.state.groupId}
+              // versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
               environmentHost={
                 this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
               }
               updatedUri={this.props.endpointContent?.data?.updatedUri}
               set_base_url={this.setBaseUrl.bind(this)}
-              customHost={this.state.endpoint.BASE_URL || ''}
+              customHost={this.props?.publishedEndpointData?.data?.updatedUri || ''}
               endpointId={this.state.endpoint.id}
               set_host_uri={this.setHostUri.bind(this)}
               props_from_parent={this.propsFromChild.bind(this)}
@@ -2959,9 +2982,8 @@ class DisplayEndpoint extends Component {
         >
           <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${
-                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-              }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+                }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
@@ -3006,9 +3028,10 @@ class DisplayEndpoint extends Component {
               ) : null}
               <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
                 <div className='endpoint-header' ref={this.scrollDiv}>
+                  {console.log(this.props?.publishEndpoint)}
                   {this.isNotDashboardOrDocView() && (
                     <div className='endpoint-name-container'>
-                      {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
+                      {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.props?.publishedEndpointData?.data?.name || ''}</h1>}
                     </div>
                   )}
                 </div>

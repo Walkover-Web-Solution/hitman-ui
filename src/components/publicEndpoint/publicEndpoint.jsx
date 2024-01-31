@@ -323,7 +323,6 @@ class PublicEndpoint extends Component {
     // [info] part 3 seems not necessary 
     // TODO later
     const { isCTAandLinksPresent } = this.getCTALinks()
-    console.log(this.state?.publicCollectionId,'123456789',this.state?.collections)
 
     return (
       <>
@@ -404,7 +403,7 @@ class PublicEndpoint extends Component {
                   className='display-component'
                 >
                   
-                 {(this.state.publicEndpointId)  && <DisplayEndpoint
+                 {<DisplayEndpoint
                     {...this.props}
                     fetch_entity_name={this.fetchEntityName.bind(this)}
                     publicCollectionTheme={this.state.collectionTheme}
