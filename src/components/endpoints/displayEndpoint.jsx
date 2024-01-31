@@ -101,7 +101,7 @@ const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     versions: state.versions,
-    endpoints: state.endpoints,
+    endpoints: state.pages,
     environment: state.environment.environments[state.environment.currentEnvironmentId] || { id: null, name: 'No Environment' },
     currentEnvironmentId: state.environment.currentEnvironmentId,
     environments: state.environment.environments,
@@ -117,8 +117,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
-    add_endpointInCollection: (newEndpoint, rootParentID, callback) =>
-      dispatch(addEndpointInCollection(ownProps.history, newEndpoint, rootParentID, callback)),
+    add_endpointInCollection: (newEndpoint, rootParentID, callback, props) =>
+      dispatch(addEndpointInCollection(ownProps.history, newEndpoint, rootParentID, callback, props)),
     update_endpoint: (editedEndpoint, stopSave) => dispatch(updateEndpoint(editedEndpoint, stopSave)),
     set_authorization_responses: (versionId, authResponses) => dispatch(setAuthorizationResponses(versionId, authResponses)),
     set_authorization_type: (endpointId, authData) => dispatch(setAuthorizationType(endpointId, authData)),
@@ -139,22 +139,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 const untitledEndpointData = {
   data: {
-    name: '',
+    name: 'Untitled',
     method: 'GET',
     body: { type: 'none', value: '' },
     uri: '',
     updatedUri: ''
   },
   pathVariables: [],
-  methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  // methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   environment: {},
-  startTime: '',
-  timeElapsed: '',
-  response: {},
   endpoint: {},
-  groupId: null,
   title: '',
-  flagResponse: false,
   originalHeaders: [
     {
       checked: 'notApplicable',
@@ -190,8 +185,6 @@ const untitledEndpointData = {
   postReqScriptError: '',
   host: {},
   draftDataSet: false,
-  runSendRequest: null,
-  requestKey: null,
   docOptions: false,
   sslMode: getCurrentUserSSLMode(),
   showAskAiSlider: false,
@@ -206,37 +199,38 @@ const untitledEndpointData = {
   ]
 }
 
-const getEndpointContent = async (endpointId) => {
-  const data = await getEndpoint(endpointId)
-  const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
-  return modifiedData
+const getEndpointContent = async (props) => {
+  let endpointId = props?.match?.params.endpointId
+  if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
+    const data = await getEndpoint(endpointId)
+    const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
+    return modifiedData
+  } else {
+    endpointId = props?.activeTabId
+    if (localStorage.getItem(endpointId)) {
+      const data = JSON.parse(localStorage.getItem(endpointId))
+      return data
+    } else {
+      localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)))
+      const data = _.cloneDeep(untitledEndpointData)
+      return data
+    }
+  }
 }
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
-    let endpointContentData = {}
-    let endpointId = (props?.match?.params.endpointId) ?? props.publicEndpointId
-    if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
-      const data = useQuery(['endpoint', endpointId], () => getEndpointContent(endpointId), {
-        refetchOnWindowFocus: false,
-        cacheTime: 5000000,
-        enabled: true,
-        staleTime: Infinity
-      })
-      endpointContentData = data
-    } else {
-      endpointId = props?.activeTabId
-      if (localStorage.getItem(endpointId)) {
-        queryClient.setQueryData(['endpoint', endpointId], JSON.parse(localStorage.getItem(endpointId)) || {})
-        endpointContentData['data'] = JSON.parse(localStorage.getItem(endpointId) || {})
-      } else {
-        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)))
-        queryClient.setQueryData(['endpoint', endpointId], _.cloneDeep(untitledEndpointData))
-      }
-    }
+    const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId : props?.activeTabId
+    const data = useQuery(['endpoint', endpointId], () => getEndpointContent(props, queryClient), {
+      refetchOnWindowFocus: false,
+      cacheTime: 5000000,
+      enabled: true,
+      staleTime: Infinity
+    })
 
     const setQueryUpdatedData = (data) => {
+      const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId : props?.activeTabId
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(['endpoint', endpointId], data)
@@ -248,8 +242,8 @@ const withQuery = (WrappedComponent) => {
     return (
       <WrappedComponent
         {...props}
-        endpointContent={endpointContentData.data}
-        endpointContentLoading={endpointContentData.isLoading}
+        endpointContent={data.data}
+        endpointContentLoading={data.isLoading}
         currentEndpointId={endpointId}
         setQueryUpdatedData={setQueryUpdatedData}
       />
@@ -279,7 +273,6 @@ class DisplayEndpoint extends Component {
       timeElapsed: '',
       response: {},
       endpoint: {},
-      groupId: null,
       title: '',
       flagResponse: false,
       originalHeaders: [
@@ -713,12 +706,12 @@ class DisplayEndpoint extends Component {
         }
       }
       originalParams = this.makeOriginalParams(keys, values, description)
-      this.setState({ originalParams })
+      // this.setState({ originalParams })
       const tempData = this.props?.endpointContent || {}
       tempData.originalParams = originalParams
       this.props.setQueryUpdatedData(tempData)
     }
-    this.setState({ data })
+    // this.setState({ data })
     const tempData = this.props?.endpointContent || {}
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
@@ -1132,7 +1125,7 @@ class DisplayEndpoint extends Component {
     }
 
     /** Prepare Body & Modify Headers */
-    let { body, headers } = this.formatBody(this.state.data.body, headerJson)
+    let { body, headers } = this.formatBody(this.props?.endpointContent?.data.body, headerJson)
 
     /** Add Cookie in Headers */
     const cookiesString = this.prepareHeaderCookies(BASE_URL)
@@ -1266,57 +1259,57 @@ class DisplayEndpoint extends Component {
 
   handleSave = async (id, endpointObject) => {
     const { endpointName, endpointDescription } = endpointObject || {}
-    // const effectiveGroupId = isGroupId ? id : this.state.groupId
     const effectiveRootParentId = this.props.pages[this.props.currentEndpointId]
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
       })
     }
-    if (!effectiveRootParentId) {
+    if (!effectiveRootParentId && this.props?.match?.params?.endpointId === 'new' && !id) {
       this.openEndpointFormModal()
     } else {
-      const body = this.prepareBodyForSaving(this.state.data.body)
+      const body = this.prepareBodyForSaving(this.props?.endpointContent?.data?.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
-        body_description: this.state.bodyDescription,
+        body_description: this.props?.endpointContent.bodyDescription,
         body: body.value
       })
-      if (this.state.data.body.type === 'raw') {
+      if (this.props?.endpointContent?.data?.body.type === 'raw') {
         body.value = this.parseBody(body.value)
       }
       const headersData = this.doSubmitHeader('save')
       const updatedParams = this.doSubmitParam()
       const pathVariables = this.doSubmitPathVariables()
       const endpoint = {
-        uri: this.state.data.updatedUri,
-        name: endpointName || this.state.data.name,
-        requestType: this.state.data.method,
+        id: this.props?.match?.params?.endpointId,
+        uri: this.props?.endpointContent?.data.updatedUri,
+        name: endpointName || this.props?.endpointContent?.data?.name,
+        requestType: this.props?.endpointContent?.data?.method,
         body: body,
         headers: headersData,
         params: updatedParams,
         pathVariables: pathVariables,
-        BASE_URL: this.state.host.selectedHost === 'customHost' ? this.state.host.BASE_URL : null,
-        bodyDescription: this.state.data.body.type === 'JSON' ? bodyDescription : {},
-        authorizationType: this.state.authType,
-        notes: this.state.endpoint.notes,
-        preScript: this.state.preScriptText,
-        postScript: this.state.postScriptText,
+        BASE_URL: this.props?.endpointContent.host.selectedHost === 'customHost' ? this.props?.endpointContent.host.BASE_URL : null,
+        bodyDescription: this.props?.endpointContent?.data?.body?.type === 'JSON' ? bodyDescription : {},
+        authorizationType: this.props?.endpointContent.authType,
+        notes: this.props?.endpointContent?.endpoint.notes,
+        preScript: this.props?.endpointContent?.preScriptText,
+        postScript: this.props?.endpointContent?.postScriptText,
         docViewData: this.props?.endpointContent?.docViewData
       }
-      if (endpoint.name === '') toast.error('Please enter Endpoint name')
+      if (endpoint.name === '' || endpoint.name.toLowerCase() === 'untitled') return toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
         this.props.add_endpointInCollection(
           endpoint,
-          effectiveRootParentId || this.state.effectiveRootParentId,
+          id,
           ({ closeForm, stopLoader }) => {
             if (closeForm) this.closeEndpointFormModal()
             if (stopLoader) this.setState({ saveAsLoader: false })
-          }
+          },
+          this.props
         )
-        tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
         moveToNextStep(4)
       } else {
         if (this.state.saveAsFlag) {
@@ -1333,14 +1326,13 @@ class DisplayEndpoint extends Component {
             }
           )
           moveToNextStep(4)
-        } else if (this.state.title === 'update endpoint') {
+        } else {
           endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
-          endpoint.state = this.props.endpoints[this.endpointId]?.state
+          // endpoint.state = this.props.endpoints[this.endpointId]?.state
           this.setState({ saveLoader: true })
           this.props.update_endpoint(
             {
               ...endpoint,
-              id: this.state.endpoint.id,
               effectiveRootParentId: effectiveRootParentId || this.state.effectiveRootParentId
             },
             () => {
@@ -1355,8 +1347,8 @@ class DisplayEndpoint extends Component {
 
   doSubmitPathVariables() {
     const updatedPathVariables = {}
-    if (this.state.pathVariables) {
-      const pathVariables = [...this.state.pathVariables]
+    if (this.props?.endpointContent.pathVariables) {
+      const pathVariables = this.props?.endpointContent?.pathVariables || []
       for (let i = 0; i < pathVariables.length; i++) {
         if (pathVariables[i].key === '') {
           continue
@@ -1368,18 +1360,19 @@ class DisplayEndpoint extends Component {
           }
         }
       }
-      const endpoint = { ...this.state.endpoint }
+      const endpoint = { ...this.props?.endpointContent }
       endpoint.pathVariables = { ...updatedPathVariables }
       this.setState({
         pathVariables,
         endpoint
       })
+      this.props.setQueryUpdatedData(endpoint)
     }
     return updatedPathVariables
   }
 
   doSubmitHeader(title) {
-    const originalHeaders = [...this.state.originalHeaders]
+    const originalHeaders = [...this.props?.endpointContent.originalHeaders]
     const updatedHeaders = {}
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '') {
@@ -1392,12 +1385,13 @@ class DisplayEndpoint extends Component {
         }
       }
     }
-    const endpoint = { ...this.state.endpoint }
+    const endpoint = { ...this.props?.endpointContent }
     endpoint.headers = { ...updatedHeaders }
     this.setState({
       originalHeaders,
       endpoint
     })
+    this.props.setQueryUpdatedData(endpoint)
     return updatedHeaders
   }
 
@@ -1482,7 +1476,7 @@ class DisplayEndpoint extends Component {
   }
 
   doSubmitParam() {
-    const originalParams = [...this.state.originalParams]
+    const originalParams = [...this.props?.endpointContent.originalParams]
     const updatedParams = {}
     for (let i = 0; i < originalParams.length; i++) {
       if (originalParams[i].key === '') {
@@ -1495,12 +1489,13 @@ class DisplayEndpoint extends Component {
         }
       }
     }
-    const endpoint = { ...this.state.endpoint }
+    const endpoint = { ...this.props?.endpointContent }
     endpoint.params = { ...updatedParams }
     this.setState({
       originalParams,
       endpoint
     })
+    this.props.setQueryUpdatedData(endpoint)
     return updatedParams
   }
 
@@ -1697,7 +1692,7 @@ class DisplayEndpoint extends Component {
 
   setBaseUrl(BASE_URL, selectedHost) {
     this.setState({ host: { BASE_URL, selectedHost } })
-    const tempData = this?.props?.endpointContent || {}
+    const tempData = this?.props?.endpointContent || untitledEndpointData
     tempData.host = { BASE_URL, selectedHost }
     this.props.setQueryUpdatedData(tempData)
   }
@@ -2046,22 +2041,22 @@ class DisplayEndpoint extends Component {
   }
 
   displayResponse() {
-    if (this.isNotDashboardOrDocView() && this.props?.endpointContent?.flagResponse) {
+    if (this.isNotDashboardOrDocView() && this.state?.flagResponse) {
       return (
         <div ref={this.myRef} className='hm-panel endpoint-public-response-container public-doc'>
           <DisplayResponse
             {...this.props}
-            loader={this.props?.endpointContent?.loader}
-            timeElapsed={this.props?.endpointContent?.timeElapsed}
-            response={this.props?.endpointContent?.response}
-            flagResponse={this.props?.endpointContent?.flagResponse}
+            loader={this.state.loader}
+            timeElapsed={this.state.timeElapsed}
+            response={this.state?.response}
+            flagResponse={this.state?.flagResponse}
             add_sample_response={this.addSampleResponse.bind(this)}
             handleCancel={() => {
               this.handleCancel()
             }}
             tests={this.state.tests}
             sample_response_array={this.props?.endpointContent?.sampleResponseArray}
-            sample_response_flag_array={this.state.sampleResponseFlagArray}
+            sample_response_flag_array={this.state?.sampleResponseFlagArray}
             props_from_parent={this.propsFromSampleResponse.bind(this)}
           />
         </div>
@@ -2155,11 +2150,11 @@ class DisplayEndpoint extends Component {
               <div className='hm-panel endpoint-public-response-container '>
                 <DisplayResponse
                   {...this.props}
-                  loader={this.props?.endpointContent?.loader}
-                  timeElapsed={this.props?.endpointContent?.timeElapsed}
-                  response={this.props?.endpointContent?.response}
+                  loader={this.state?.loader}
+                  timeElapsed={this.state?.timeElapsed}
+                  response={this.state?.response}
                   tests={this.state.tests}
-                  flagResponse={this.props?.endpointContent?.flagResponse}
+                  flagResponse={this.state?.flagResponse}
                   sample_response_array={this.props?.endpointContent?.sampleResponseArray}
                   sample_response_flag_array={this.state.sampleResponseFlagArray}
                   add_sample_response={this.addSampleResponse.bind(this)}
@@ -2190,9 +2185,9 @@ class DisplayEndpoint extends Component {
     return (
       <SampleResponse
         {...this.props}
-        timeElapsed={this.props?.endpointContent?.timeElapsed}
-        response={this.props?.endpointContent?.response}
-        flagResponse={this.props?.endpointContent?.flagResponse}
+        timeElapsed={this.state?.timeElapsed}
+        response={this.state?.response}
+        flagResponse={this.state?.flagResponse}
         sample_response_array={this.props?.endpointContent?.sampleResponseArray}
         sample_response_flag_array={this.state.sampleResponseFlagArray}
         open_body={this.openBody.bind(this)}
@@ -2225,7 +2220,7 @@ class DisplayEndpoint extends Component {
   }
 
   setHostUri(host, uri, selectedHost) {
-    if (uri !== this.props?.endpointContent?.data?.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+    if (uri !== this.props?.endpointContent?.data?.uri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
     this.setBaseUrl(host, selectedHost)
   }
 
@@ -2518,7 +2513,7 @@ class DisplayEndpoint extends Component {
         {...this.props}
         set_body={this.setBody.bind(this)}
         set_body_description={this.setDescription.bind(this)}
-        body={this.state.bodyFlag === true ? this.props.endpointContent.data.body : ''}
+        body={this.props.endpointContent?.data?.body || {}}
         Body={this.props?.endpointContent?.data?.body || {}}
         endpoint_id={this.props.tab.id}
         body_description={this.props?.endpointContent?.bodyDescription || ''}
@@ -2582,7 +2577,7 @@ class DisplayEndpoint extends Component {
         title='Params'
         dataArray={this.props?.endpointContent?.originalParams || []}
         props_from_parent={this.propsFromChild.bind(this)}
-        original_data={[...(this.props?.endpointContent?.params || [])]}
+        original_data={this.props?.endpointContent?.params || []}
         open_modal={this.props.open_modal}
         currentView={this.props?.endpointContent?.currentView}
       />
@@ -2596,9 +2591,9 @@ class DisplayEndpoint extends Component {
           <GenericTable
             {...this.props}
             title='Params'
-            dataArray={this.state.originalParams}
+            dataArray={this.props?.endpointContent?.originalParams || []}
             props_from_parent={this.propsFromChild.bind(this)}
-            original_data={[...this.state.params]}
+            original_data={this.props?.endpointContent?.params || []}
             currentView={this.props?.endpointContent?.currentView}
           />
         </div>
@@ -2613,9 +2608,9 @@ class DisplayEndpoint extends Component {
         <GenericTable
           {...this.props}
           title='Path Variables'
-          dataArray={this.state.pathVariables}
+          dataArray={this.props?.endpointContent?.pathVariables || []}
           props_from_parent={this.propsFromChild.bind(this)}
-          original_data={[...this.state.pathVariables]}
+          original_data={this.props?.endpointContent?.pathVariables || []}
           currentView={this.props?.endpointContent?.currentView}
         />
       )
@@ -2648,7 +2643,9 @@ class DisplayEndpoint extends Component {
         <div className='hm-endpoint-header'>
           <div className='input-group'>
             <div className='input-group-prepend'>
-              <span className={`api-label api-label-lg input-group-text ${this.state.data.method}`}>{this.state.data.method}</span>
+              <span className={`api-label api-label-lg input-group-text ${this.props?.endpointContent.data.method}`}>
+                {this.props?.endpointContent.data.method}
+              </span>
             </div>
             <HostContainer
               {...this.props}
@@ -2659,15 +2656,15 @@ class DisplayEndpoint extends Component {
               }
               updatedUri={this.props.endpointContent?.data?.updatedUri}
               set_base_url={this.setBaseUrl.bind(this)}
-              customHost={this.state.endpoint.BASE_URL || ''}
-              endpointId={this.state.endpoint.id}
+              customHost={this.props?.endpointContent?.host.BASE_URL || ''}
+              endpointId={this.props?.match.params.endpointId}
               set_host_uri={this.setHostUri.bind(this)}
               props_from_parent={this.propsFromChild.bind(this)}
             />
           </div>
           {this.props.highlights?.uri ? <i className='fas fa-circle' /> : null}
         </div>
-        <input ref={this.uri} type='hidden' value={this.state.data.updatedUri} name='updatedUri' />
+        <input ref={this.uri} type='hidden' value={this.props.endpointContent?.data?.updatedUri} name='updatedUri' />
       </div>
     )
   }
@@ -2701,7 +2698,7 @@ class DisplayEndpoint extends Component {
             {...this.props}
             groupId={this.state.groupId}
             endpointId={this.state.endpoint.id}
-            customHost={this.state.endpoint.BASE_URL || ''}
+            customHost={this.props?.endpointContent?.host?.BASE_URL || ''}
             environmentHost={
               this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
             }
@@ -2719,7 +2716,6 @@ class DisplayEndpoint extends Component {
   renderDocViewOperations() {
     const endpoints = this.props.endpointContent
     const endpointId = endpoints?.id
-
     if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpoints) {
       const approvedOrRejected = isStateApproved(endpointId, endpoints) || isStateReject(endpointId, endpoints)
       const isPublicEndpoint = endpoints.isPublished
@@ -3155,7 +3151,7 @@ class DisplayEndpoint extends Component {
                                 set_authoriztaion_params={this.setParams.bind(this)}
                                 set_authoriztaion_type={this.setAuthType.bind(this)}
                                 accessToken={this.accessToken}
-                                authorizationType={this.state.authType}
+                                authorizationType={this.props?.endpointContent?.authType}
                               />
                             </div>
                           </div>
@@ -3180,7 +3176,7 @@ class DisplayEndpoint extends Component {
                               <Script
                                 type='Pre-Script'
                                 handleScriptChange={this.handleScriptChange.bind(this)}
-                                scriptText={this.state.preScriptText}
+                                scriptText={this.props?.endpointContent?.preScriptText}
                               />
                             </div>
                           </div>
@@ -3194,7 +3190,7 @@ class DisplayEndpoint extends Component {
                               <Script
                                 type='Post-Script'
                                 handleScriptChange={this.handleScriptChange.bind(this)}
-                                scriptText={this.state.postScriptText}
+                                scriptText={this.props?.endpointContent?.postScriptText}
                               />
                             </div>
                           </div>

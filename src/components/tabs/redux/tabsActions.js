@@ -73,7 +73,7 @@ export const closeTab = (tabId, history) => {
 
 export const openInNewTab = (tab) => {
   const tabsOrder = store.getState().tabs.tabsOrder
-  if (!isElectron() && tabsOrder.length >= 7) {
+  if (!isElectron() && tabsOrder.length >= 10) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
   return async (dispatch) => {

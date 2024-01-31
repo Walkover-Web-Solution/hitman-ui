@@ -529,9 +529,11 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.data.name = endpoint.name
   untitled.data.method = endpoint.requestType
   untitled.data.body = endpoint.body
+  untitled.data.uri = endpoint.uri
   untitled.data.updatedUri = endpoint.uri
   untitled.authType = endpoint.authorizationType
-  const headersData = Object.keys(endpoint.headers).map((key) => {
+  let headersData = []
+  headersData = Object.keys(endpoint.headers).map((key) => {
     return { key, ...endpoint.headers[key] }
   })
   const paramsData = Object.keys(endpoint.params).map((key) => {
@@ -544,7 +546,8 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.sampleResponseArray = endpoint.sampleResponse || []
   untitled.postScriptText = endpoint.postScript
   untitled.preScriptText = endpoint.preScript
-  return untitled
+  untitled.host['BASE_URL'] = endpoint.BASE_URL
+  return { ...untitled }
 }
 
 export function getUrlPathById  (id, sidebar) {
