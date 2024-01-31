@@ -90,13 +90,6 @@ function groupsReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...state, ...action.data.groups }
 
-    case collectionActionTypes.ON_COLLECTION_DELETED:
-    case versionActionTypes.ON_VERSION_DELETED:
-      groups = { ...state }
-      action.payload.groupIds.forEach((gId) => {
-        delete groups[gId]
-      })
-      return groups
 
     case groupsActionTypes.ON_GROUPS_ORDER_UPDATED:
       groups = { ...action.groups }

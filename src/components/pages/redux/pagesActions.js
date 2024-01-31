@@ -172,9 +172,10 @@ export const deletePage = (page) => {
       .deletePage(page.id)
       .then((res) => {
         console.log(res, "response");
-        dispatch(onPageDeleted(res.data))
+        const response = res.data
+        dispatch(onPageDeleted(response))
       })
-      .catch((error) => {
+      .catch((error) => { 
         console.log(error,"error");
         dispatch(onPageDeletedError(error.response, page))
       })
@@ -190,10 +191,10 @@ export const deletePageRequest = (page) => {
   }
 }
 
-export const onPageDeleted = (page) => {
+export const onPageDeleted = (response) => {
   return {
     type: pagesActionTypes.ON_PAGE_DELETED,
-    page
+    response
   }
 }
 
