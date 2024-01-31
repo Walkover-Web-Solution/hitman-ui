@@ -182,8 +182,6 @@ class CollectionsComponent extends Component {
     const rootParentId = this.props.collections[collectionId].rootParentId;
     const pagesChild = getAllChildPages(rootParentId);
     
-    console.log(pagesChild, "pagesChild");
-    console.log(rootParentId, "rootParentId");
 
     const childPageDetails = pagesChild.map((pageId) => {
       const pageDetails = this.props.pages[pageId];
@@ -194,7 +192,6 @@ class CollectionsComponent extends Component {
       };
     });
 
-    console.log(childPageDetails, "type and id");
     if (this.state.openSelectedCollection === true) {
       this.setState({ openSelectedCollection: false })
     }
@@ -417,7 +414,6 @@ class CollectionsComponent extends Component {
                 <div className='dropdown-menu dropdown-menu-right'>
                   {!this.props.collections[collectionId]?.importedFromMarketPlace && (
                     <>
-                    {console.log(collectionId, "collection idddd")}
                       <div className='dropdown-item' onClick={() => this.openEditCollectionForm(collectionId)}>
                         <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                           <path
@@ -689,7 +685,6 @@ class CollectionsComponent extends Component {
   }
 
   showDeleteCollectionModal() {
-    console.log(this.state.childIdType, "chil id type inside show delete collection modal");
     const title = this.state.showRemoveModal ? 'Remove Collection' : 'Delete Collection'
     const message = this.state.showRemoveModal
       ? 'Are you sure you wish to remove this public collection?'

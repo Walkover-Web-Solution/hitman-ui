@@ -163,7 +163,6 @@ class Groups extends Component {
   }
 
   openDeleteGroupModal(groupId) {
-    console.log("inside open delete group modal", groupId);
     this.setState({
       showDeleteModal: true,
       selectedGroup: {
@@ -414,7 +413,6 @@ class Groups extends Component {
                       </svg>{' '}
                       Edit
                     </div>
-                    {console.log(groupId, "inside div group id")}
                     <div
                       className='dropdown-item'
                       onClick={() => {
@@ -580,7 +578,6 @@ class Groups extends Component {
 
     return (
       <>
-      {console.log(this.state.selectedGroup, "selected group")}
         {this.showShareGroupForm()}
         {this.showAddPageEndpointModal()}
         {this.state.showDeleteModal &&

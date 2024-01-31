@@ -49,7 +49,7 @@ export const onVersionsFetchedError = (error) => {
 
 export const updateVersion = (editedVersion) => {
   return (dispatch) => {
-    const originalVersion = store.getState().versions[editedVersion.id]
+    const originalVersion = store.getState().pages[editedVersion.id]
     dispatch(updateVersionRequest(editedVersion))
     const { number, host, id } = editedVersion
     collectionVersionsApiService

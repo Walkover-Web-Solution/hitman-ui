@@ -4,7 +4,6 @@ import CollectionVersionForm from './collectionVersionForm'
 import CollectionDefaultVersionForm from './collectionDefaultVersionForm'
 
 function showVersionForm(props, onHide, parentPageId, title) {
-  console.log("inside show version form", props);
   return <CollectionVersionForm {...props} show onHide={onHide} parentPage_id={parentPageId} title={title} />
 }
 
