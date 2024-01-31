@@ -260,7 +260,6 @@ class CollectionParentPages extends Component {
 
   toggleParentPageIds(id) {
     // debugger
-    console.log('came to collectionParentPages == ',id)
     const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
@@ -367,7 +366,7 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    console.log(this.props.pages[pageId]?.name,  123456789)
+    console.log(this.props.pages[pageId]?.name,  'page Name on collectionParnetPafges')
     // debugger
     const expanded = this.props.onPublishedPage || this.props?.clientData?.[pageId]?.isExpanded || false
     const publishData = this.props.modals.publishData
@@ -384,7 +383,7 @@ class CollectionParentPages extends Component {
             <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
               <button tabIndex={-1} className={'pl-3 ' + (expanded ? 'expanded' : '')}>
                 <div className='d-flex align-items-center cl-name'>
-                  { OnDashboardRoute && 
+                  {
                   <input
                   type='checkbox'
                   checked={this.props?.clientData?.[this.props?.rootParentId]?.checkedForPublished || false}
@@ -409,7 +408,7 @@ class CollectionParentPages extends Component {
                         </Dropdown.Item>
                       ))}
                     </DropdownButton>
-                    { OnDashboardRoute &&
+                    { 
                     <OverlayTrigger placement='top' overlay={<Tooltip>Select Default version to publish</Tooltip>}>
                       <DropdownButton
                         id='dropdown-basic-button'

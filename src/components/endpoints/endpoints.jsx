@@ -285,7 +285,6 @@ class Endpoints extends Component {
   }
 
   displayEndpointName(endpointId) {
-    // debugger
     return (
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
@@ -300,7 +299,7 @@ class Endpoints extends Component {
           </div>
         ) : (
           <div className='sidebar-accordion-item'>
-            <div className='api-label GET request-type-bgcolor'>GET</div>
+            <div className='api-label GET request-type-bgcolor'>{this.props.endpoints[endpointId].requestType}</div>
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         )}
@@ -438,6 +437,8 @@ class Endpoints extends Component {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const isOnDashboardPage = isDashboardRoute(this.props)
     if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
+
+
     return (
       <>
         {publishData ? (
@@ -474,7 +475,7 @@ class Endpoints extends Component {
                 {this.displayEndpointName(endpointId)}
                 <div className='d-flex align-items-center'>
                   <div className=' sidebar-item-action'>
-                    {isOnDashboardPage && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
+                    {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
                   </div>
                   <div className='ml-1 published-icon transition'>
                     {isOnDashboardPage && this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
