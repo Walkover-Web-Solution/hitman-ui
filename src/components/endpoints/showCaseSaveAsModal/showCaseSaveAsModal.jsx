@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import {useSelector } from 'react-redux'
 import RenderData from './renderData/renderData'
 import './showCaseSaveAsModal.scss'
 
@@ -12,7 +12,6 @@ export default function ShowCaseSaveAsModal(props) {
     }
   })
 
-  const dispatch = useDispatch()
 
   const [pathData, setPathData] = useState(['organisation'])
 
@@ -51,6 +50,7 @@ export default function ShowCaseSaveAsModal(props) {
     // endpoint.requestId = this.props.tab.id
     // endpoint.description = endpointDescription || ''
     props.save_endpoint(currentId, { endpointName: props?.name || '', endpointDescription: props?.description || '' })
+    props.onHide()
     // this.props.add_endpointInCollection(endpoint, id, ({ closeForm, stopLoader }) => {
     //   if (closeForm) this.closeEndpointFormModal()
     //   if (stopLoader) this.setState({ saveAsLoader: false })
@@ -80,7 +80,10 @@ export default function ShowCaseSaveAsModal(props) {
           <button onClick={handleSave} className={`btn btn-primary mr-2 ${getDisable()}`}>
             Save
           </button>
-          <button className='btn btn-secondary outline  api-cancel-btn'>Cancel</button>
+          <button onClick={() => {
+                props.onHide()
+              }}
+              className='btn btn-secondary outline  api-cancel-btn'>Cancel</button>
         </div>
       </div>
     </div>

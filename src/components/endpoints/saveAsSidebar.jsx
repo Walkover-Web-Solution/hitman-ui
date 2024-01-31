@@ -510,6 +510,7 @@ class SaveAsSidebar extends Form {
               save_endpoint={this.props.save_endpoint}
               name={this.state.data.name}
               description={this.state.data.description}
+              onHide= {this.props.onHide}
             />
           </div>
         </div>
