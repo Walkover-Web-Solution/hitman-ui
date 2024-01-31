@@ -135,11 +135,19 @@ function pagesReducer(state = initialState, action) {
 
     case pagesActionTypes.DELETE_PAGE_REQUEST:
       pages = { ...state }
+      // action.payload.pageIds.forEach((pId) => {
+      //   delete pages[pId]
+      // })
       delete pages[action.page.id]
       return pages
 
-    case pagesActionTypes.ON_PAGE_DELETED:
-      return state
+      case pagesActionTypes.ON_PAGE_DELETED:
+        const updatedState = { ...state };
+        const pageId = action.response.ParentPage.id;
+        updatedState[pageId].child = action.response.ParentPage.child;
+        console.log(updatedState, "updated stattte")
+        toast.success("Deleted succesfully");
+        return updatedState;
 
     case pagesActionTypes.ON_PAGE_DELETED_ERROR:
       toast.error(action.error.data)

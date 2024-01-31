@@ -3,7 +3,7 @@ import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpoin
 import { toast } from 'react-toastify'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import generalActionsTypes from '../../redux/generalActionTypes'
-import { onParentPageAdded } from '../../pages/redux/pagesActions'
+import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 
 const initialState = {}
 
@@ -82,11 +82,13 @@ function collectionsReducer(state = initialState, action) {
       }
 
     case collectionsActionTypes.DELETE_COLLECTION_REQUEST:
+    // case pagesActionTypes.ON_PAGE_DELETED:
       collections = { ...state }
       delete collections[action.collection.id]
       return collections
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
+    // case pagesActionTypes.ON_PAGE_DELETED:
       return state
 
     case collectionsActionTypes.ON_COLLECTION_DELETED_ERROR:

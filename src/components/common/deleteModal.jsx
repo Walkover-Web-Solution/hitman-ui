@@ -26,6 +26,8 @@ class DeleteModal extends Component {
     if (title === 'Delete Collection') {
       const { deleted_collection: collection } = this.props
       this.props.delete_collection(collection, this.props)
+      console.log(collection.rootParentId, "root parent id", this.props.pages[collection.rootParentId], "id inside pages");
+      // tabService.removeTab(collection.id, { ...this.props })
     }
     if (title === 'Remove Collection') {
       const { deleted_collection: collection } = this.props

@@ -112,14 +112,6 @@ function endpointsReducer(state = initialState, action) {
       toast.error(action.error)
       return { ...state }
 
-    case collectionActionTypes.ON_COLLECTION_DELETED:
-    case versionActionTypes.ON_VERSION_DELETED:
-    case groupsActionTypes.ON_GROUP_DELETED:
-      endpoints = { ...state }
-      action.payload.endpointIds.forEach((eId) => {
-        delete endpoints[eId]
-      })
-      return endpoints
 
     case endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED:
       endpoints = { ...action.endpoints }

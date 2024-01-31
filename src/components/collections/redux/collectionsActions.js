@@ -170,13 +170,12 @@ export const deleteCollection = (collection, props) => {
     collectionsApiService
       .deleteCollection(collection.id)
       .then((response) => {
-        const { versionIds, groupIds, endpointIds, pageIds } = prepareCollectionData(collection, props)
-
+        const { versionIds, endpointIds, pageIds } = prepareCollectionData(collection, props)
+       
         dispatch(
           onCollectionDeleted({
             collection: response.data,
             versionIds,
-            groupIds,
             endpointIds,
             pageIds
           })
@@ -369,14 +368,15 @@ export const removePublicCollection = (collection, props) => {
 
 function prepareCollectionData(collection, props) {
   const storeData = { ...store.getState() }
-  const versionIds = Object.keys(storeData.versions).filter((vId) => storeData.versions[vId].collectionId === collection.id)
+  const versionIds = Object.keys(storeData.pages).filter((vId) => storeData.pages[vId].collectionId === collection.id)
+  console.log(versionIds, "version ides");
   let endpointIds = []
   let pageIds = []
   versionIds.forEach((vId) => {
     pageIds = [...Object.keys(storeData.pages).filter((pId) => storeData.pages[pId].versionId === vId), ...pageIds]
   })
   endpointIds.map((eId) => tabService.removeTab(eId, props))
-  pageIds.map((pId) => tabService.removeTab(pId, props))
+  versionIds.map((pId) => tabService.removeTab(pId, props))
 
   return { versionIds, endpointIds, pageIds }
 }
