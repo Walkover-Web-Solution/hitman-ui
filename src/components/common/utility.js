@@ -562,9 +562,14 @@ export function getUrlPathById  (id, sidebar) {
   
   let actualPath  = path.reverse().join('/');
   if(versionName){
-    actualPath = `?versionName=${versionName}`
+    actualPath =  `${actualPath}?versionName=${versionName}`
   }
   return actualPath;
+}
+export function isTechdocOwnDomain  (id, sidebar) {
+  const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+  const currentDomain = window.location.href.split('/')[2]
+  return domainsList.includes(currentDomain)
 }
 
 export default {
@@ -602,4 +607,5 @@ export default {
   compareAlphabetically,
   sentryIntegration,
   modifyEndpointContent,
+  isTechdocOwnDomain
 }

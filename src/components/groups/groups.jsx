@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { isDashboardRoute, getParentIds, getUrlPathById } from '../common/utility'
+import { isDashboardRoute, getParentIds, getUrlPathById, isTechdocOwnDomain } from '../common/utility'
 // import Endpoints from "../endpoints/endpointsCopy";
 import Endpoints from '../endpoints/endpoints'
 // import GroupForm from '../groups/groupForm'
@@ -535,21 +535,26 @@ class Groups extends Component {
 
   toggleSubPageIds(id) {
     // debugger
-    console.log('came to groupsPages == ',id)
-    let pathName = getUrlPathById(id, this.props.pages)
-
     const isExpanded = this.props.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
       id: id
     })
 
-    // if()
-    // this.props.history.push({
-    //   pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
-    // })
-
-    
+    if(isDashboardRoute(this.props)){
+      this.props.history.push({
+            pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
+      })
+    }else{
+      let pathName = getUrlPathById(id, this.props.pages)
+      console.log(pathName)
+      // pathName = (isTechdocOwnDomain())? 'p/'+ pathName : pathName
+      let currentDomain = window.location.href.split('/')[2];
+      console.log('this.props.history == ', this.props.history)
+      this.props.history.replace({
+        pathname: pathName
+      })
+    }
   }
 
   render() {

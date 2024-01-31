@@ -382,7 +382,7 @@ class PublicEndpoint extends Component {
             { 
             collectionId   &&  <  SideBarV2 
             {...this.props} 
-            collectionName={this.props?.collections?.[collectionId].name} 
+            collectionName={this.props?.collections?.[collectionId]?.name} 
             rootParentId = {this.props?.collections?.[collectionId]?.rootParentId} 
             OnPublishedPage = {true}
             />}

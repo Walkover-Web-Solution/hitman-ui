@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain } from '../common/utility'
 import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
@@ -161,15 +161,13 @@ class Endpoints extends Component {
         collectionId
       })
     } else {
-      //  <DisplayEndpoint
-      //   {...this.props}
-      //   fetch_entity_name={this.fetchEntityName.bind(this)}
-      //   publicCollectionTheme={this.state.collectionTheme}
-      //   publicEndpointId = {this.state.publicEndpointId}
-      // />
-     
-  
-  
+      let id = endpoint?.id
+      let pathName = getUrlPathById(id, this.props.pages)
+      pathName = (isTechdocOwnDomain())? 'p/'+ pathName : pathName
+      let currentDomain = 
+      this.props.history.push({
+        pathname: `${currentDomain}p/${pathName}`
+      })
     }
   }
 
@@ -530,7 +528,6 @@ class Endpoints extends Component {
 
   displayPublicSingleEndpoint(endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[3] === 'e' ? this.props.location.pathname.split('/')[4] : null
-    // debugger
     return (
       <div
         className={idToCheck === endpointId ? 'hm-sidebar-item active' : 'hm-sidebar-item active'}
