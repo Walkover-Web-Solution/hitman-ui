@@ -292,6 +292,7 @@ class SideBarV2 extends Component {
   }
 
   openPage(id) {
+    // debugger
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
     })
@@ -711,8 +712,8 @@ class SideBarV2 extends Component {
     return (
       <>
         <div className='plr-3'>
-          {this.renderSearch()}
-          {getCurrentUser() && this.renderInviteTeam()}
+          { this.renderSearch()}
+          { isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
           {/* {this.renderDownloadDesktopApp()} */}
           {isOnDashboardPage && this.renderGlobalAddButton()}
         </div>

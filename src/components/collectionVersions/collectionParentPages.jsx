@@ -259,6 +259,8 @@ class CollectionParentPages extends Component {
   }
 
   toggleParentPageIds(id) {
+    // debugger
+    console.log('came to collectionParentPages == ',id)
     const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
@@ -365,7 +367,9 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
+    console.log(this.props.pages[pageId]?.name,  123456789)
+    // debugger
+    const expanded = this.props.onPublishedPage || this.props?.clientData?.[pageId]?.isExpanded || false
     const publishData = this.props.modals.publishData
     const rootId = pageId
     let OnDashboardRoute = isDashboardRoute(this.props);
