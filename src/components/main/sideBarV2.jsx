@@ -292,7 +292,6 @@ class SideBarV2 extends Component {
   }
 
   openPage(id) {
-    debugger
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
     })
@@ -650,7 +649,7 @@ class SideBarV2 extends Component {
       >
         {this.showAddCollectionModal()}
         {this.collectionId
-          ? isDashboardRoute(this.props, true) && (
+          ? (isDashboardRoute(this.props, true))  && (
               <div className='mx-3'>
                 <div className='d-flex collection-name my-2'>
                   <div
@@ -688,6 +687,7 @@ class SideBarV2 extends Component {
             )
           : !getCurrentUser()
             ? this.renderEmptyCollectionsIfNotLoggedIn()
+            // [info] collection render 
             : this.renderCollections()}
       </div>
     )
@@ -711,8 +711,8 @@ class SideBarV2 extends Component {
     return (
       <>
         <div className='plr-3'>
-          {isOnDashboardPage && this.renderSearch()}
-          { isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
+          {this.renderSearch()}
+          {getCurrentUser() && this.renderInviteTeam()}
           {/* {this.renderDownloadDesktopApp()} */}
           {isOnDashboardPage && this.renderGlobalAddButton()}
         </div>

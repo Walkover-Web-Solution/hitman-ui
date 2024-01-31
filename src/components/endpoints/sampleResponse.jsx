@@ -129,7 +129,7 @@ class SampleResponse extends Component {
   }
 
   render() {
-    const sampleResponseArray = [...this.props.sample_response_array]
+    const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array]
     return (
       <div

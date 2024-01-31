@@ -6,7 +6,7 @@ export function getCollectionsAndPages(orgId, queryParamsString = '') {
   return http.get(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString}`)
 }
 
-export function getPublishedContent(queryParamsString = ''){
+export function getPublishedContent(queryParamsString = ''){``
   return http.get(apiUrl + `/getPublishedDataByPath${queryParamsString}`)
 }
 

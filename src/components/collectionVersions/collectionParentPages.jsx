@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import ShareVersionForm from './shareVersionForm'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { isDashboardRoute, getParentIds, ADD_VERSION_MODAL_NAME } from '../common/utility'
+import { isDashboardRoute, getParentIds, ADD_VERSION_MODAL_NAME, getUrlPathById } from '../common/utility'
 import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
@@ -259,16 +259,17 @@ class CollectionParentPages extends Component {
   }
 
   toggleParentPageIds(id) {
-    debugger
-    console.log('came to collectionParentPages == ',id)
     const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
       id: id
     })
+    let pathName = getUrlPathById(id, this.props.pages)
+    console.log('pathName == ', pathName)
     // this.props.history.push({
     //   pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
     // })
+    
   }
 
   scrolltoPage(pageId) {
@@ -364,8 +365,7 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    // debugger
-    const expanded = true || this.props.onPublishedPage || this.props?.clientData?.[pageId]?.isExpanded || false
+    const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
     const publishData = this.props.modals.publishData
     const rootId = pageId
     let OnDashboardRoute = isDashboardRoute(this.props);
@@ -495,7 +495,10 @@ class CollectionParentPages extends Component {
                   </div>
                 </div>
 
-                {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                
+                { 
+                // [info] options not to show on publihsed page
+                isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
                   <div className='sidebar-item-action d-flex align-items-center'>
                     <div
                       className='mr-1 d-flex align-items-center'
@@ -625,7 +628,8 @@ class CollectionParentPages extends Component {
                       </div>
                     </div>
                   </div>
-                ) : null}
+                ) : null
+                }
               </button>
               {expanded ? (
                 <div className='version-collapse'>

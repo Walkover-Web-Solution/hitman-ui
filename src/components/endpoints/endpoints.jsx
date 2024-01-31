@@ -285,6 +285,7 @@ class Endpoints extends Component {
   }
 
   displayEndpointName(endpointId) {
+    // debugger
     return (
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
@@ -432,8 +433,10 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
+    // debugger
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
+    const isOnDashboardPage = isDashboardRoute(this.props)
     if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     return (
       <>
@@ -471,10 +474,10 @@ class Endpoints extends Component {
                 {this.displayEndpointName(endpointId)}
                 <div className='d-flex align-items-center'>
                   <div className=' sidebar-item-action'>
-                    {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
+                    {isOnDashboardPage && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
                   </div>
                   <div className='ml-1 published-icon transition'>
-                    {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+                    {isOnDashboardPage && this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div>
                 </div>
               </button>
@@ -512,6 +515,7 @@ class Endpoints extends Component {
   }
 
   displayUserEndpoints(endpointId) {
+    // debugger
     return (
       <>
         {this.displaySingleEndpoint(endpointId)}
@@ -525,22 +529,24 @@ class Endpoints extends Component {
 
   displayPublicSingleEndpoint(endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[3] === 'e' ? this.props.location.pathname.split('/')[4] : null
+    // debugger
     return (
       <div
-        className={idToCheck === endpointId ? 'hm-sidebar-item active' : 'hm-sidebar-item'}
+        className={idToCheck === endpointId ? 'hm-sidebar-item active' : 'hm-sidebar-item active'}
         key={endpointId}
         onClick={() => this.handleDisplay(this.props.endpoints[endpointId], this.props.parent_id, this.props.collection_id, true)}
         onDoubleClick={() => this.handleDisplay(this.props.endpoints[endpointId], this.props.parent_id, this.props.collection_id, false)}
       >
-        <div className={`api-label ${this.props.endpoints[endpointId].requestType}`}>
+        <div className={`api-label ${this.props.endpoints[endpointId]?.requestType}`}>
           <div className='endpoint-request-div pr-3'>{this.props.endpoints?.[endpointId]?.requestType}</div>
         </div>
-        <div className='endpoint-name-div ml-2'>{this.props.endpoints[endpointId].name}</div>
+        <div className='endpoint-name-div ml-2'>{this.props.endpoints[endpointId]?.name}</div>
       </div>
     )
   }
 
   displayPublicEndpoints(endpoints) {
+    // debugger
     const sortedEndpoints = []
     Object.values(endpoints).forEach((endpoint) => {
       sortedEndpoints.push(endpoint)
@@ -621,7 +627,7 @@ class Endpoints extends Component {
     if (isDashboardRoute(this.props, true)) {
       return this.displayUserEndpoints(this?.props?.endpointId)
     } else {
-      return this.displayPublicEndpoints(endpoints)
+      return this.displayUserEndpoints(this?.props?.endpointId)
     }
   }
 }

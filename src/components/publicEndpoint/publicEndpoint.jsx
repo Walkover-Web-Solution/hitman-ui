@@ -323,7 +323,6 @@ class PublicEndpoint extends Component {
     // [info] part 3 seems not necessary 
     // TODO later
     const { isCTAandLinksPresent } = this.getCTALinks()
-    console.log(this.state?.publicCollectionId,'123456789',this.state?.collections)
 
     return (
       <>
@@ -381,12 +380,7 @@ class PublicEndpoint extends Component {
             <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
             { 
             
-            collectionId   &&  <  SideBarV2 
-            {...this.props} 
-            collectionName={this.props?.collections?.[collectionId].name} 
-            rootParentId = {this.props?.collections?.[collectionId]?.rootParentId} 
-            OnPublishedPage = {true}
-            />}
+            collectionId   &&  <  SideBarV2 {...this.props} collectionName={this.state?.collectionName} rootParentId = {this.state?.collections[collectionId]?.rootParentId} />}
             </div>
             {/*  [info] part 3 subpart 1 sidebar data right content */}
             <div

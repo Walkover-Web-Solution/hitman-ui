@@ -90,6 +90,7 @@ export const msgText = {
 
 export function isDashboardRoute(props, sidebar = false) {
   if (
+    
     props.match.path.includes('/dashboard') ||
     props.match.path.includes('/orgs/:orgId/dashboard') ||
     (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish')) ||
@@ -546,6 +547,26 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   return untitled
 }
 
+export function getUrlPathById  (id, sidebar) {
+  let path = [];
+  let versionName = null;
+  // not add invisible parent page name in path 
+  while(sidebar?.[id]?.type > 0){
+    if(sidebar[id].type == 2){
+      versionName = sidebar[id].name
+    }else{
+      path.push(sidebar[id].name);
+    }
+    id = sidebar?.[id]?.parentId;
+  }
+  
+  let actualPath  = path.reverse().join('/');
+  if(versionName){
+    actualPath = `?versionName=${versionName}`
+  }
+  return actualPath;
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -580,5 +601,5 @@ export default {
   getUserProfile,
   compareAlphabetically,
   sentryIntegration,
-  modifyEndpointContent
+  modifyEndpointContent,
 }

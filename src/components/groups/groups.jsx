@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { isDashboardRoute, getParentIds } from '../common/utility'
+import { isDashboardRoute, getParentIds, getUrlPathById } from '../common/utility'
 // import Endpoints from "../endpoints/endpointsCopy";
 import Endpoints from '../endpoints/endpoints'
 // import GroupForm from '../groups/groupForm'
@@ -331,7 +331,7 @@ class Groups extends Component {
   renderBody(groupId) {
     const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded || false
 
-    return isDashboardRoute(this.props, true) ? (
+    return (
       <>
         {/* for publish side barrrr */}
         {this.props.isPublishData && this.props.modals.publishData ? (
@@ -387,7 +387,9 @@ class Groups extends Component {
                 </span>
                 <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[groupId]?.name}</div>
               </div>
-              {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+              {
+              // [info] options not to show on publihsed page
+              isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
                 <div className='sidebar-item-action d-flex align-items-center'>
                   <div onClick={() => this.openAddPageEndpointModal(groupId)} className='mr-1 d-flex align-items-center'>
                     <Plus />
@@ -489,7 +491,8 @@ class Groups extends Component {
                     </div>
                   </div>
                 </div>
-              ) : null}
+              ) : null
+              }
             </button>
             {expanded ? (
               <div className='linkWrapper versionPages'>
@@ -510,21 +513,8 @@ class Groups extends Component {
           </div>
         )}
       </>
-    ) : (
-      <div className='linkWrapper versionPages'>
-                <Card.Body>
-                  <CombinedCollections
-                    {...this.props}
-                    // isPublishData={false}
-                    // pagesToRender={pagesToRender}
-                    // version_id={this.props.groups[groupId].versionId}
-                    // set_page_drag={this.setPagedrag.bind(this)}
-                    // group_id={groupId}
-                    // show_filter_groups={this.propsFromGroups.bind(this)}
-                  />
-                </Card.Body>
-              </div>
     )
+    
   }
 
   renderForm(sortedGroups) {
@@ -544,13 +534,17 @@ class Groups extends Component {
   }
 
   toggleSubPageIds(id) {
-    debugger
+    // debugger
     console.log('came to groupsPages == ',id)
+    let pathName = getUrlPathById(id, this.props.pages)
+
     const isExpanded = this.props.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
       id: id
     })
+
+    // if()
     // this.props.history.push({
     //   pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
     // })

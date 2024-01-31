@@ -12,6 +12,8 @@ function CombinedCollections(props) {
       pages: state.pages
     }
   })
+
+  console.log(childIds, 'helloworod')
   // debugger
   return (
     <div>
