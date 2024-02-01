@@ -137,7 +137,7 @@ class DisplayPage extends Component {
     return !isDashboardRoute(this.props, true) ? (
       <h3 className='page-heading-pub'>{this.state.data?.name || ''}</h3>
     ) : (
-      <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={this.state.data.id} isEndpoint={false} />
+      <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
     )
   }
 
