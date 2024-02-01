@@ -298,18 +298,18 @@ class CollectionsComponent extends Component {
     })
   }
 
-  scrollToCollection(collectionId) {
-    const ref = this.scrollRef[collectionId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'start'
-        })
-      }, 100)
-    }
-  }
+  // scrollToCollection(collectionId) {
+  //   const ref = this.scrollRef[collectionId] || null
+  //   if (ref) {
+  //     setTimeout(() => {
+  //       ref.scrollIntoView({
+  //         behavior: 'smooth',
+  //         block: 'nearest',
+  //         inline: 'start'
+  //       })
+  //     }, 100)
+  //   }
+  // }
   openAddPageEndpointModal(collectionId) {
     this.setState({
       showAddCollectionModal: true,
@@ -341,9 +341,9 @@ class CollectionsComponent extends Component {
   renderBody(collectionId, collectionState) {
     const expanded = this.props.clientData?.[collectionId]?.isExpanded || false
 
-    if (this.scrollRef[collectionId]) {
-      this.scrollToCollection(collectionId)
-    }
+    // if (this.scrollRef[collectionId]) {
+    //   this.scrollToCollection(collectionId)
+    // }
 
     return (
       <React.Fragment key={collectionId}>

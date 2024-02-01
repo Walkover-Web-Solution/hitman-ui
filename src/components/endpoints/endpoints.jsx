@@ -60,27 +60,27 @@ class Endpoints extends Component {
       this.setState({ theme: this.props.theme })
     }
     const { endpointId } = this.props.match.params
-    if (endpointId) {
-      this.scrollToEndpoint(endpointId)
-    }
+    // if (endpointId) {
+    //   this.scrollToEndpoint(endpointId)
+    // }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { endpointId } = this.props.match.params
     const { endpointId: prevEndpointId } = prevProps.match.params
-    if (endpointId && endpointId !== prevEndpointId) {
-      this.scrollToEndpoint(endpointId)
-    }
+    // if (endpointId && endpointId !== prevEndpointId) {
+    //   this.scrollToEndpoint(endpointId)
+    // }
   }
 
-  scrollToEndpoint(endpointId) {
-    const ref = this.scrollRef[endpointId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }, 100)
-    }
-  }
+  // scrollToEndpoint(endpointId) {
+  //   const ref = this.scrollRef[endpointId] || null
+  //   if (ref) {
+  //     setTimeout(() => {
+  //       ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+  //     }, 100)
+  //   }
+  // }
 
   sequencingOnFilter() {
     const filteredEndpointKeys = this.filteredEndpoints ? Object.keys(this.filteredEndpoints) : []
@@ -431,7 +431,7 @@ class Endpoints extends Component {
   displaySingleEndpoint(endpointId) {
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
-    if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
+    // if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     return (
       <>
         {publishData ? (

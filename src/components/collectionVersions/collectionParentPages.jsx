@@ -269,16 +269,26 @@ class CollectionParentPages extends Component {
     })
   }
 
+  // scrolltoPage(pageId) {
+  //   const ref = this.scrollRef[pageId] || null
+  //   if (ref) {
+  //     setTimeout(() => {
+  //       ref.scrollIntoView({
+  //         behavior: 'smooth',
+  //         block: 'nearest',
+  //         inline: 'start'
+  //       })
+  //     }, 100)
+  //   }
+  // }
   scrolltoPage(pageId) {
-    const ref = this.scrollRef[pageId] || null
+    const ref = this.scrollRef[pageId] || null;
     if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'start'
-        })
-      }, 100)
+      ref.scrollIntoView(true,{
+        behavior: 'auto',
+        block: 'end',
+        inline: 'nearest',
+      });
     }
   }
   // renderVersion(rootId) {
@@ -365,7 +375,7 @@ class CollectionParentPages extends Component {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
     const publishData = this.props.modals.publishData
     const rootId = pageId
-    if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
+    // if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
     if (!isDashboardRoute(this.props, true)) return null
     return (
       <>
@@ -456,6 +466,7 @@ class CollectionParentPages extends Component {
                   className='d-flex align-items-center cl-name'
                   onClick={() => {
                     this.toggleParentPageIds(this.props.rootParentId)
+                    this.scrolltoPage(this.props.rootParentId)
                   }}
                 >
                   <span className='versionChovron'>
