@@ -7,7 +7,7 @@ const initialState = {
 const publicReducer = (state = initialState, action) => {
   switch (action.type) {
     case publicReducerActionTypes.CURRENT_PUBLISH_ID:
-      // debugger
+      
       return {
         ...state,
         currentPublishId: action.payload

@@ -432,7 +432,7 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
-    // // debugger
+    
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const isOnDashboardPage = isDashboardRoute(this.props)
@@ -516,7 +516,7 @@ class Endpoints extends Component {
   }
 
   displayUserEndpoints(endpointId) {
-    // // debugger
+    
     return (
       <>
         {this.displaySingleEndpoint(endpointId)}
@@ -546,7 +546,7 @@ class Endpoints extends Component {
   }
 
   displayPublicEndpoints(endpoints) {
-    // // debugger
+    
     const sortedEndpoints = []
     Object.values(endpoints).forEach((endpoint) => {
       sortedEndpoints.push(endpoint)
@@ -615,14 +615,14 @@ class Endpoints extends Component {
   }
 
   render() {
-    // // debugger
+    
     this.setFilterFlag()
     const endpointIds = this.filterEndpointIdsByGroup()
     let endpointsArray = []
     endpointsArray = this.extractEndpointsFromIds(endpointIds)
     let endpoints = {}
     endpoints = this.getEndpointsEntity(endpointsArray)
-    // // debugger
+    
 
     if (isDashboardRoute(this.props, true)) {
       return this.displayUserEndpoints(this?.props?.endpointId)

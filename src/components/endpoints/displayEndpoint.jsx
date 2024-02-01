@@ -206,9 +206,9 @@ const getEndpointContent = async (props) => {
   let endpointId = props?.match?.params.endpointId || currentIdToShow
   if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
-    const data = await (currentIdToShow)  ?   
-    getPublishedContentByIdAndType(currentIdToShow, type) 
-    : getEndpoint(endpointId)
+    const data = (currentIdToShow)  ?   
+    await getPublishedContentByIdAndType(currentIdToShow, type) 
+    : await getEndpoint(endpointId)
     const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
     return modifiedData
   } else {
@@ -227,7 +227,7 @@ const getEndpointContent = async (props) => {
 const withQuery = (WrappedComponent) => {
   
   return (props) => {
-    // debugger
+    
     const queryClient = useQueryClient()
     let currentIdToShow = props?.publicData?.currentPublishId
     const endpointId = props?.match?.params.endpointId !== 'new' ? (props?.match?.params.endpointId || currentIdToShow) : props?.activeTabId
@@ -965,7 +965,7 @@ class DisplayEndpoint extends Component {
   }
 
   setPathVariableValues() {
-    let uri = new URI(this.state.data.updatedUri)
+    let uri = new URI(this.props?.endpointContent?.data.updatedUri)
     uri = uri.pathname()
     const pathParameters = uri.split('/')
     let path = ''
@@ -1654,14 +1654,14 @@ class DisplayEndpoint extends Component {
 
   async prepareHarObject() {
     try {
-      const BASE_URL = this.state.host.BASE_URL
-      const uri = new URI(this.state.data.updatedUri)
+      const BASE_URL = this.props?.endpointContent?.host.BASE_URL
+      const uri = new URI(this.props?.endpointContent?.data.updatedUri)
       const queryparams = uri.search()
       const path = this.setPathVariableValues()
       let url = BASE_URL + path + queryparams
       url = this.replaceVariables(url)
-      const { method, body } = this.state.data
-      const { originalHeaders, originalParams } = this.state
+      const { method, body } = this.props?.endpointContent?.data
+      const { originalHeaders, originalParams } = this.props?.endpointContent
       const harObject = {
         method,
         url: url,
@@ -2075,12 +2075,12 @@ class DisplayEndpoint extends Component {
   }
 
   displayPublicSampleResponse() {
-    if (this.state.sampleResponseArray.length) {
+    if (this.props?.endpointContent?.sampleResponseArray.length) {
       return (
         <div className='mt-3'>
           <PublicSampleResponse
             highlights={this.props.highlights}
-            sample_response_array={this.state.sampleResponseArray}
+            sample_response_array={this.props?.endpointContent?.sampleResponseArray}
             publicCollectionTheme={this.props.publicCollectionTheme}
           />
         </div>
@@ -2296,7 +2296,7 @@ class DisplayEndpoint extends Component {
         />
       )
     )
-  }
+  } 
 
   setDefaultView() {
     const endpointView = { [getCurrentUser().identifier]: this.props?.endpointContent?.currentView }
@@ -2535,18 +2535,18 @@ class DisplayEndpoint extends Component {
 
   renderPublicBodyContainer() {
     return (
-      this.state.data.body &&
-      this.state.originalBody &&
-      this.state.data.body.value !== null && (
+      this.props?.endpointContent?.data.body &&
+      // this.props?.endpointContent?.originalBody &&
+      this.props?.endpointContent?.data.body.value !== null && (
         <PublicBodyContainer
           {...this.props}
           set_body={this.setBody.bind(this)}
           set_body_description={this.setDescription.bind(this)}
-          body={this.state.data.body}
-          original_body={this.state.originalBody}
-          public_body_flag={this.state.publicBodyFlag}
+          body={this.props?.endpointContent?.data.body}
+          original_body={this.props?.endpointContent?.data?.body}
+          public_body_flag={this.props?.endpointContent?.publicBodyFlag}
           set_public_body={this.setPublicBody.bind(this)}
-          body_description={this.state.bodyDescription}
+          body_description={this.props?.endpointContent?.bodyDescription}
         />
       )
     )
@@ -2567,13 +2567,13 @@ class DisplayEndpoint extends Component {
 
   renderPublicHeaders() {
     return (
-      this.state.headers.length > 1 && (
+      this.props?.endpointContent?.originalHeaders.length > 0 && (
         <GenericTable
           {...this.props}
           title='Headers'
-          dataArray={this.state.originalHeaders}
+          dataArray={this.props?.endpointContent?.originalHeaders}
           props_from_parent={this.propsFromChild.bind(this)}
-          original_data={[...this.state.headers]}
+          original_data={[...this.props?.endpointContent?.originalHeaders]}
           currentView={this.props?.endpointContent?.currentView}
         />
       )
@@ -2587,7 +2587,7 @@ class DisplayEndpoint extends Component {
         title='Params'
         dataArray={this.props?.endpointContent?.originalParams || []}
         props_from_parent={this.propsFromChild.bind(this)}
-        original_data={this.props?.endpointContent?.params || []}
+        original_data={this.props?.endpointContent?.originalParams || []}
         open_modal={this.props.open_modal}
         currentView={this.props?.endpointContent?.currentView}
       />
@@ -2596,14 +2596,14 @@ class DisplayEndpoint extends Component {
 
   renderPublicParams() {
     return (
-      this.state.params.length > 1 && (
+      this.props?.endpointContent?.originalParams.length > 0 && (
         <div>
           <GenericTable
             {...this.props}
             title='Params'
             dataArray={this.props?.endpointContent?.originalParams || []}
             props_from_parent={this.propsFromChild.bind(this)}
-            original_data={this.props?.endpointContent?.params || []}
+            original_data={[...this.props?.endpointContent?.originalParams]}
             currentView={this.props?.endpointContent?.currentView}
           />
         </div>
@@ -2629,15 +2629,15 @@ class DisplayEndpoint extends Component {
 
   renderPublicPathVariables() {
     return (
-      this.state.pathVariables &&
-      this.state.pathVariables.length !== 0 && (
+      this.props?.endpointContent?.pathVariables &&
+      this.props?.endpointContent?.pathVariables.length !== 0 && (
         <div>
           <GenericTable
             {...this.props}
             title='Path Variables'
-            dataArray={this.state.pathVariables}
+            dataArray={this.props?.endpointContent?.pathVariables}
             props_from_parent={this.propsFromChild.bind(this)}
-            original_data={[...this.state.pathVariables]}
+            original_data={[...this.props?.endpointContent?.pathVariables]}
             currentView={this.props?.endpointContent?.currentView}
           />
         </div>
@@ -2833,7 +2833,7 @@ class DisplayEndpoint extends Component {
   async handleApproveEndpointRequest() {
     const endpointId = this.props.currentEndpointId
     this.setState({ publishLoader: true })
-    if (sensitiveInfoFound(this.props.endpointContent)) {
+    if (sensitiveInfoFound(this.props?.endpointContent)) {
       this.setState({ warningModal: true })
     } else {
       this.props.approve_endpoint(endpointId, () => {
@@ -3014,7 +3014,7 @@ class DisplayEndpoint extends Component {
                 <div className='endpoint-header' ref={this.scrollDiv}>
                   {this.isNotDashboardOrDocView() && (
                     <div className='endpoint-name-container'>
-                      {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
+                      {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.props?.endpointContent?.data?.name || ''}</h1>}
                     </div>
                   )}
                 </div>
