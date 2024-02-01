@@ -40,7 +40,7 @@ import CollectionParentPages from '../collectionVersions/collectionParentPages'
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
-    endpoints: state.endpoints,
+    endpoints: state.pages,
     versions: state.versions,
     pages: state.pages,
     groups: state.groups,
@@ -102,6 +102,13 @@ class SideBarV2 extends Component {
   // }
 
   componentDidMount() {
+    const pages = this.props.pages
+    Object.keys(pages).forEach(key => {
+      const page = Object.values(pages).find(page => page.id === key);
+      if (page && page.type === 4) {
+        this.setState({ endpoint: page.id });
+      }
+    });
     if (getCurrentUser()) {
       const user = getCurrentUser()
       const name = user.first_name + user.last_name
@@ -300,6 +307,7 @@ class SideBarV2 extends Component {
   renderPath(id, type) {
     let path = ''
     let groupId = null
+    let parentId = null
     let versionId = null
     let collectionId = null
     let endpointId = null
@@ -308,29 +316,35 @@ class SideBarV2 extends Component {
       case 'endpoint':
         endpointId = id
         groupId = this.props.endpoints[endpointId]?.groupId
-        versionId = this.props.groups[groupId]?.versionId
-        collectionId = this.props.versions[versionId]?.collectionId
+        parentId = this.props.pages[id]?.versionId
+        versionId = this.props.pages[parentId]?.parentId
+        collectionId = this.props.pages[id]?.collectionId
         path =
           this.props.collections[collectionId]?.name +
           ' > ' +
-          this.props.versions[versionId]?.number +
+          this.props.pages[versionId]?.name +
           ' > ' +
-          this.props.groups[groupId]?.name
+          this.props.pages[parentId]?.name
         break
       case 'page':
         pageId = id
         groupId = this.props.pages[pageId]?.groupId
-        versionId = this.props.pages[pageId]?.versionId
-        collectionId = this.props.versions[versionId]?.collectionId
-        if (groupId) {
+        parentId = this.props.pages[id]?.versionId
+        versionId = this.props.pages[parentId]?.parentId
+        collectionId = this.props.pages[id]?.collectionId
+        if (id) {
           path =
             this.props.collections[collectionId]?.name +
             ' > ' +
-            this.props.versions[versionId]?.number +
-            ' > ' +
-            this.props.groups[groupId]?.name
-        } else {
+            this.props.pages[versionId]?.name
+            // ' > ' +
+            // this.props.groups[groupId]?.name
+        } 
+        else if (versionId) {
           path = this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number
+        }
+        else{
+          path = this.props.collections[collectionId]?.name
         }
         break
       default:
@@ -372,7 +386,6 @@ class SideBarV2 extends Component {
         <div className='px-3'>Endpoints</div>
         <div className='py-3'>
           {this.state.endpoints &&
-            this.props.endpoints &&
             this.state.endpoints.map(
               (endpoint) =>
                 Object.keys(endpoint).length !== 0 && (
@@ -382,8 +395,10 @@ class SideBarV2 extends Component {
                       this.openEndpoint(endpoint.id)
                     }}
                   >
-                    <div className={`api-label lg-label ${endpoint.requestType}`}>
-                      <div className='endpoint-request-div'>{endpoint.requestType}</div>
+                    {/* <div className={`api-label lg-label ${endpoint.requestType}`}>
+                      <div className='endpoint-request-div'>{endpoint.requestType}</div> */}
+                      <div className={`api-label lg-label ${'GET'}`}>
+                      <div className='endpoint-request-div'>{'GET'}</div>
                     </div>
                     <div className='ml-3'>
                       <div className='sideBarListWrapper'>

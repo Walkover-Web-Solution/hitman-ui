@@ -291,12 +291,16 @@ class Endpoints extends Component {
               checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
               onChange={this.handleCheckboxChange}
             />
-            <div className='api-label GET request-type-bgcolor'>{this.props.endpoints[endpointId].requestType}</div>
+            {/* <div className='api-label GET request-type-bgcolor'>{this.props.endpoints[endpointId].requestType}</div>
+            <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div> */}
+            <div className='api-label GET request-type-bgcolor'>{'GET'}</div>
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         ) : (
           <div className='sidebar-accordion-item'>
-            <div className='api-label GET request-type-bgcolor'>{this.props.endpoints[endpointId].requestType}</div>
+            {/* <div className='api-label GET request-type-bgcolor'>{this.props.endpoints[endpointId].requestType}</div>
+            <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div> */}
+            <div className='api-label GET request-type-bgcolor'>{'GET'}</div>
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         )}
