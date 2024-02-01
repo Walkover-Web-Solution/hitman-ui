@@ -292,7 +292,7 @@ class SideBarV2 extends Component {
   }
 
   openPage(id) {
-    // debugger
+    // // debugger
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
     })
@@ -847,7 +847,7 @@ class SideBarV2 extends Component {
   }
 
   render() {
-    // debugger
+    // // debugger
     return (
       <nav className={this.getSidebarInteractionClass()}>
         {this.showAddEntitySelectionModal()}

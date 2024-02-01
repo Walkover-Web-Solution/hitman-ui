@@ -156,7 +156,7 @@ class App extends Component {
 
           {/*  Public Page Routes */}
           <Route path='/p/error' component={NotFound} />
-          <Route path='/p/:collectionIdentifier' component={Public} />
+          <Route path='/p' component={Public} />
 
           {/* React App Auth Routes */}
           <Route path='/login' component={LoginV2} />

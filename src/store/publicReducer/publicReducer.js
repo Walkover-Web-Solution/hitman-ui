@@ -1,16 +1,20 @@
-import publicReducerActionTypes from "./publicReducerActionTypes"
+import publicReducerActionTypes from "./publicReducerActionTypes";
 
 const initialState = {
-  currentPublishId : ''
-}
+  currentPublishId: null
+};
 
-const publishReducer = (state = initialState, action) => {
+const publicReducer = (state = initialState, action) => {
   switch (action.type) {
     case publicReducerActionTypes.CURRENT_PUBLISH_ID:
-      return { ...action.currentPublishId }
+      // debugger
+      return {
+        ...state,
+        currentPublishId: action.payload
+      };
     default:
-      break
+      return state; // Return the original state if action type doesn't match
   }
-}
+};
 
-export default publishReducer
+export default publicReducer;

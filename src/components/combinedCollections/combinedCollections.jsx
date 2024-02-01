@@ -5,7 +5,7 @@ import Groups from '../groups/groups'
 import Endpoints from '../endpoints/endpoints'
 
 function CombinedCollections(props) {
-  // debugger
+  // // debugger
   const { childIds, pages } = useSelector((state) => {
     return {
       childIds: state?.pages?.[props?.rootParentId]?.child || [],
@@ -13,8 +13,7 @@ function CombinedCollections(props) {
     }
   })
 
-  console.log(childIds, 'helloworod')
-  // debugger
+  // // debugger
   return (
     <div>
       {childIds.map((singleId) => {

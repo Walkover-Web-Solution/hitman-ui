@@ -10,7 +10,14 @@ export function getPublishedContent(queryParamsString = ''){
   return http.get(apiUrl + `/getPublishedDataByPath${queryParamsString}`)
 }
 
+export async function getPublishedContentByIdAndType(id, type){
+  const data = await  http.get(apiUrl + `/pages/${id}/getPublishedData?type=${type}`)
+  debugger
+  return (type == 4) ? (data?.data?.publishedContent || {} ) :  (data?.data?.publishedContent?.contents || {})
+}
+
 export default {
   getCollectionsAndPages,
-  getPublishedContent
+  getPublishedContent,
+  getPublishedContentByIdAndType
 }

@@ -20,12 +20,15 @@ import { addIsExpandedAction, setDefaultversionId, updataForIsPublished } from '
 import pageService from '../pages/pageService'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 import { onDefaultVersion } from '../publishDocs/redux/publishDocsActions'
+import {currentPublishId} from '../../store/publicReducer/publicReducerActions.js'
+
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
     pages: state.pages,
-    clientData: state.clientData
+    clientData: state.clientData,
+    publicData: state.publicData
   }
 }
 
@@ -42,7 +45,8 @@ const mapDispatchToProps = (dispatch) => {
     update_isExpand_for_pages: (payload) => dispatch(addIsExpandedAction(payload)),
     set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload)),
     set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    setCurrentPublishId:(payload) => dispatch(currentPublishId(payload))
   }
 }
 
@@ -259,7 +263,7 @@ class CollectionParentPages extends Component {
   }
 
   toggleParentPageIds(id) {
-    // debugger
+    // // debugger
     const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
@@ -272,14 +276,9 @@ class CollectionParentPages extends Component {
               pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
         })
     }else{
+      this.props.setCurrentPublishId(id)
       let pathName = getUrlPathById(id, this.props.pages)
-      let currentDomain = window.location.href.split('/')[2];
-      console.log('pathName == ', pathName)
-      console.log('this.props.history == ', this.props.history)
-     
-      this.props.history.replace({
-        pathname: pathName
-      })
+      this.props.history.push(`/p/${pathName}`)
     }
   }
 
@@ -377,7 +376,7 @@ class CollectionParentPages extends Component {
 
   renderBody(pageId, index) {
     console.log(this.props.pages[pageId]?.name,  'page Name on collectionParnetPafges')
-    // debugger
+    // // debugger
     const expanded = this.props.onPublishedPage || this.props?.clientData?.[pageId]?.isExpanded || false
     const publishData = this.props.modals.publishData
     const rootId = pageId
@@ -836,7 +835,7 @@ class CollectionParentPages extends Component {
   }
 
   render() {
-    // debugger
+    // // debugger
     if (this.filterFlag === false || this.props.filter === '' || this.state.filter !== this.props.filter) {
       this.filteredPages = { ...this.props.pages }
       this.eventkey = {}

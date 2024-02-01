@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { isDashboardRoute, getParentIds, getUrlPathById, isTechdocOwnDomain } from '../common/utility'
@@ -16,6 +17,8 @@ import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
+import {currentPublishId} from '../../store/publicReducer/publicReducerActions.js'
+
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
 
 const mapStateToProps = (state) => {
@@ -25,7 +28,8 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     versions: state.versions,
     clientData: state.clientData,
-    modals: state.modals
+    modals: state.modals,
+    publicData: state.publicData
   }
 }
 
@@ -37,7 +41,8 @@ const mapDispatchToProps = (dispatch) => {
     delete_group: (group, props) => dispatch(deleteGroup(group, props)),
     duplicate_group: (group) => dispatch(duplicateGroup(group)),
     update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    setCurrentPublishId:(payload) => dispatch(currentPublishId(payload))
   }
 }
 
@@ -534,7 +539,7 @@ class Groups extends Component {
   }
 
   toggleSubPageIds(id) {
-    // debugger
+    // // debugger
     const isExpanded = this.props.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
@@ -546,19 +551,15 @@ class Groups extends Component {
             pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
       })
     }else{
+      // debugger
+      this.props.setCurrentPublishId(id)
       let pathName = getUrlPathById(id, this.props.pages)
-      console.log(pathName)
-      // pathName = (isTechdocOwnDomain())? 'p/'+ pathName : pathName
-      let currentDomain = window.location.href.split('/')[2];
-      console.log('this.props.history == ', this.props.history)
-      this.props.history.replace({
-        pathname: pathName
-      })
+      this.props.history.push(`/p/${pathName}`)
     }
   }
 
   render() {
-    // debugger
+    // // debugger
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false
     }
@@ -604,4 +605,4 @@ class Groups extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Groups)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Groups))

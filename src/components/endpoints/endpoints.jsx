@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain } from '../common/utility'
 import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
@@ -12,6 +13,8 @@ import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
 import DisplayEndpoint from './displayEndpoint'
+import {currentPublishId} from '../../store/publicReducer/publicReducerActions.js'
+
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -25,7 +28,8 @@ const mapStateToProps = (state) => {
   return {
     endpoints: state.pages,
     tabs: state.tabs,
-    clientData: state.clientData
+    clientData: state.clientData,
+    publicData: state.publicData
   }
 }
 
@@ -41,7 +45,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    setCurrentPublishId:(payload) => dispatch(currentPublishId(payload))
   }
 }
 
@@ -162,12 +167,9 @@ class Endpoints extends Component {
       })
     } else {
       let id = endpoint?.id
+      this.props.setCurrentPublishId(id)
       let pathName = getUrlPathById(id, this.props.pages)
-      pathName = (isTechdocOwnDomain())? 'p/'+ pathName : pathName
-      let currentDomain = 
-      this.props.history.push({
-        pathname: `${currentDomain}p/${pathName}`
-      })
+      this.props.history.push(`/p/${pathName}`)
     }
   }
 
@@ -430,7 +432,7 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
-    // debugger
+    // // debugger
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const isOnDashboardPage = isDashboardRoute(this.props)
@@ -514,7 +516,7 @@ class Endpoints extends Component {
   }
 
   displayUserEndpoints(endpointId) {
-    // debugger
+    // // debugger
     return (
       <>
         {this.displaySingleEndpoint(endpointId)}
@@ -544,7 +546,7 @@ class Endpoints extends Component {
   }
 
   displayPublicEndpoints(endpoints) {
-    // debugger
+    // // debugger
     const sortedEndpoints = []
     Object.values(endpoints).forEach((endpoint) => {
       sortedEndpoints.push(endpoint)
@@ -613,14 +615,14 @@ class Endpoints extends Component {
   }
 
   render() {
-    // debugger
+    // // debugger
     this.setFilterFlag()
     const endpointIds = this.filterEndpointIdsByGroup()
     let endpointsArray = []
     endpointsArray = this.extractEndpointsFromIds(endpointIds)
     let endpoints = {}
     endpoints = this.getEndpointsEntity(endpointsArray)
-    // debugger
+    // // debugger
 
     if (isDashboardRoute(this.props, true)) {
       return this.displayUserEndpoints(this?.props?.endpointId)
@@ -630,4 +632,4 @@ class Endpoints extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Endpoints)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Endpoints))
