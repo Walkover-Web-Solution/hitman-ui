@@ -223,13 +223,13 @@ const withQuery = (WrappedComponent) => {
     // }, [])
 
     const getSingleDataAtPage = async () => {
-      const response = await getSingleData('sa4QqCif1nFr', 4);
+      const response = await getSingleData('-f1wdRMUoabC', 4);
       const modifiedData = utilityFunctions.modifyEndpointContent(response.data[0]?.publishedEndpoint, _.cloneDeep(untitledEndpointData))
       return modifiedData;
     }
     let publishedEndpointData = {};
     if(isNotDashboardOrDocView) {
-      publishedEndpointData = useQuery(['endpointPublish', 'sa4QqCif1nFr'], () => getSingleDataAtPage(), {
+      publishedEndpointData = useQuery(['endpointPublish', '-f1wdRMUoabC'], () => getSingleDataAtPage(), {
         refetchOnWindowFocus: false,
         cacheTime: 5000000,
         enabled: true,
