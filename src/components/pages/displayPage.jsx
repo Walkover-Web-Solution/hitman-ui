@@ -13,23 +13,30 @@ import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from 
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
 import { getPageContent } from '../../services/pageServices'
-import {getPublishedContentByIdAndType} from '../../services/generalApiService'
+import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 import { useQuery } from 'react-query'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = props?.publicData?.currentPublishId
-    const pageId =  currentIdToShow ||  props.publicPageId || props.match.params.pageId;
+    const pageId = currentIdToShow || props.publicPageId || props.match.params.pageId;
     const { data, error } = useQuery(
       ['pageContent', pageId],
-      () => (currentIdToShow) ? getPublishedContentByIdAndType(currentIdToShow, this.props?.pages?.[currentIdToShow]?.type) : getPageContent(props.match.params.orgId, pageId),
+      async () => {
+        return (currentIdToShow) ?
+          await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
+          :
+          await getPageContent(props.match.params.orgId, pageId);
+      },
       {
         refetchOnWindowFocus: false,
         cacheTime: 5000000,
         enabled: true,
-        staleTime: 600000
+        staleTime: 600000,
+        retry: 2
       }
-    )
+    );
+
     return <WrappedComponent {...props} pageContent={data} pageContentError={error} />
   }
 }
@@ -46,7 +53,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
-    publicData : state.publicData
+    publicData: state.publicData
   }
 }
 
@@ -146,7 +153,7 @@ class DisplayPage extends Component {
   }
 
   renderTiptapEditor(contents) {
-    return <Tiptap onChange={() => {}} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
+    return <Tiptap onChange={() => { }} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
   }
 
   handleRemovePublicPage(pageId) {

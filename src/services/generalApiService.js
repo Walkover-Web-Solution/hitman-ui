@@ -11,7 +11,8 @@ export function getPublishedContentByPath(queryParamsString = ''){
 }
 
 export async function getPublishedContentByIdAndType(id, type){
-  return  await  http.get(apiUrl + `/pages/${id}/getPublishedData?type=${type}`)
+  let data =   await  http.get(apiUrl + `/pages/${id}/getPublishedData?type=${type}`)
+  return (type == 4) ? (data?.data?.publishedContent || {} ) :  (data?.data?.publishedContent?.contents || {})
 }
 
 export default {

@@ -13,6 +13,8 @@ export const addCollectionAndPages = (orgId, queryParams = null) => {
         dispatch({ type: generalActionsTypes.ADD_PAGES, data: response.data.pages })
       })
       .catch((error) => {
+        dispatch({ type: generalActionsTypes.ADD_COLLECTIONS, data: {} })
+        dispatch({ type: generalActionsTypes.ADD_PAGES, data: {} })
         console.error(error)
       })
   }

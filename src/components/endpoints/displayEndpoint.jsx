@@ -202,7 +202,8 @@ const untitledEndpointData = {
 }
 
 const getEndpointContent = async (props) => {
-  let currentIdToShow = props?.publicData?.currentPublishId
+  let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
+
   let endpointId = props?.match?.params.endpointId || currentIdToShow
   if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
@@ -228,17 +229,18 @@ const withQuery = (WrappedComponent) => {
   
   return (props) => {
     const queryClient = useQueryClient()
-    let currentIdToShow = props?.publicData?.currentPublishId
+    let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
     const endpointId = props?.match?.params.endpointId !== 'new' ? (props?.match?.params.endpointId || currentIdToShow) : props?.activeTabId
     const data = useQuery(['endpoint', endpointId], () => getEndpointContent(props, queryClient), {
       refetchOnWindowFocus: false,
       cacheTime: 5000000,
       enabled: true,
-      staleTime: Infinity
+      staleTime: Infinity,
+      retry: 3
     })
 
     const setQueryUpdatedData = (data) => {
-      let currentIdToShow = props?.publicData?.currentPublishId
+      let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
       const endpointId = props?.match?.params.endpointId !== 'new' ? (props?.match?.params.endpointId || currentIdToShow) : props?.activeTabId
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))

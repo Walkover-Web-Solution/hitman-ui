@@ -34,11 +34,20 @@ const withQuery = (WrappedComponent) => {
       return queryClient.getQueryData(id) == undefined;
     }
 
-    const mutation = useMutation((data) => {return data}, {
-      onSuccess: (data) => {
-        queryClient.setQueryData([data.type, data.id], data?.content || '')
+    const mutation = useMutation(
+      (data) => {return data;},
+      {
+        onSuccess: (data) => {
+          queryClient.setQueryData([data.type, data.id], data?.content || '', {
+            staleTime: Number.MAX_SAFE_INTEGER, // Set staleTime to a large value
+            retry: 2
+          });
+        },
       }
-    })
+    );
+    
+
+   
 
     return <WrappedComponent {...props} setQueryUpdatedData={setQueryUpdatedData} mutationFn={mutation} keyExistInReactQuery = {keyExistInReactQuery}/>
   }
@@ -96,14 +105,25 @@ class PublicEndpoint extends Component {
 
     let url =  new URL(window.location.href);
     const queryParams = new URLSearchParams(this.props.location.search);
-    let collectionId = queryParams.get('collectionId');
+    // let collectionId = queryParams.get('collectionId');
 
+    const x = sessionStorage.getItem('publicCollectionId')
+    // even if user copy paste other published collection with collection Id in the params change it
+    if(queryParams.has('collectionId')){
+      var collectionId = queryParams.get('collectionId')
+      console.log('came in if condition of session ===', collectionId)
+      sessionStorage.setItem('publicCollectionId', collectionId)
+    }else{
+       var collectionId = sessionStorage.getItem('publicCollectionId')
+       console.log('came in else condition of session ===', collectionId)
+
+    }
 
     var queryParamApi2 = {}
      // example `https://localhost:300/path`
     // [info] part 2 get sidebar data and collection data  also set queryParmas for 2nd api call
     if(isTechdocOwnDomain()) { // internal case here collectionId will be there always
-      queryParamApi2.collectionId = (url.searchParams.get('collectionId')) ? url.searchParams.get('collectionId') : Object.keys(this.props.collections)?.[0];
+      queryParamApi2.collectionId = collectionId
 
       // setting path
       const pathSegments = url.pathname.split("/");
@@ -129,18 +149,18 @@ class PublicEndpoint extends Component {
         queryParamsString += `${encodeURIComponent(key)}=${encodeURIComponent(queryParamApi2[key])}&`;
       }
     } 
+
     // Remove the last '&' character
     queryParamsString = queryParamsString.slice(0, -1);
-    
-
     const response = await generalApiService.getPublishedContentByPath(queryParamsString);
-    this.setDataToReactQuery(response)
+    this.setDataToReactQueryAndSessionStorage(response)
   }
   async componentDidUpdate(){
-      let currentIdToShow = this.props?.publicData?.currentPublishId
+      let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
+      console.log("this.props.keyExistInReactQuery(currentIdToShow)=== ",this.props.keyExistInReactQuery(currentIdToShow))
       if(!this.props.keyExistInReactQuery(currentIdToShow)){
+        console.log('also came inside component did update if condition')
         const response = generalApiService.getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type)
-
         if(this.props.pages?.[currentIdToShow]?.type == 4  ){
           this.props.mutationFn.mutate({ type:'endpoint' , id:currentIdToShow, content: response })
         }else if(this.props.pages?.[currentIdToShow]?.type != 4  ){
@@ -149,14 +169,16 @@ class PublicEndpoint extends Component {
       }
   }
 
-  setDataToReactQuery(response) {
+  setDataToReactQueryAndSessionStorage(response) {
     if (response) {
       var id = response?.data?.publishedContent?.id;
       if(response?.data?.publishedContent?.type === 4)  { 
-        this.props.mutationFn.mutate({ type:'endpoint' , id:id, content: response?.data?.publishedContent?.contents })
+        this.props.mutationFn.mutate({ type:'endpoint' , id:id, content: response?.data?.publishedContent })
+        sessionStorage.setItem('currentPublishIdToShow', id)
        } 
       else { 
-        this.props.mutationFn.mutate({ type:'pageContent' , id:id, content: response?.data?.publishedContent })
+        this.props.mutationFn.mutate({ type:'pageContent' , id:id, content:  response?.data?.publishedContent?.contents })
+        sessionStorage.setItem('currentPublishIdToShow', id)
       }
       this.props.setCurrentPublishId(id)
     }
@@ -326,6 +348,7 @@ class PublicEndpoint extends Component {
     setFavicon(docFaviconLink)
 
     let idToRender = this.props?.publicData?.currentPublishId;
+    let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 2 seems not necessary 
     // TODO later
@@ -434,14 +457,14 @@ class PublicEndpoint extends Component {
                   className='display-component'
                 >
                   
-                 { ( this.props?.pages?.[idToRender]?.type == 4 )  && <DisplayEndpoint
+                 { (type == 4)  && <DisplayEndpoint
                     {...this.props}
                     fetch_entity_name={this.fetchEntityName.bind(this)}
                     publicCollectionTheme={this.state.collectionTheme}
                   />
                  }
               
-              {( this.props?.pages?.[idToRender]?.type != 4) &&   <DisplayPage
+              {(type == 1 || type == 3) &&   <DisplayPage
                     {...this.props}
                     fetch_entity_name={this.fetchEntityName.bind(this)}
                     publicCollectionTheme={this.state.collectionTheme}

@@ -168,6 +168,7 @@ class Endpoints extends Component {
     } else {
       let id = endpoint?.id
       this.props.setCurrentPublishId(id)
+      sessionStorage.setItem('currentPublishIdToShow', id)
       let pathName = getUrlPathById(id, this.props.pages)
       this.props.history.push(`/p/${pathName}`)
     }

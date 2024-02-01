@@ -539,7 +539,6 @@ class Groups extends Component {
   }
 
   toggleSubPageIds(id) {
-    // // debugger
     const isExpanded = this.props.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
@@ -551,8 +550,8 @@ class Groups extends Component {
             pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
       })
     }else{
-      // debugger
       this.props.setCurrentPublishId(id)
+      sessionStorage.setItem('currentPublishIdToShow', id)
       let pathName = getUrlPathById(id, this.props.pages)
       this.props.history.push(`/p/${pathName}`)
     }

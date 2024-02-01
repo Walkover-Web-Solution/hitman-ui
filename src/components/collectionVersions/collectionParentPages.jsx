@@ -277,6 +277,7 @@ class CollectionParentPages extends Component {
         })
     }else{
       this.props.setCurrentPublishId(id)
+      sessionStorage.setItem('currentPublishIdToShow', id)
       let pathName = getUrlPathById(id, this.props.pages)
       this.props.history.push(`/p/${pathName}`)
     }
@@ -375,7 +376,6 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    console.log(this.props.pages[pageId]?.name,  'page Name on collectionParnetPafges')
     // // debugger
     const expanded = this.props.onPublishedPage || this.props?.clientData?.[pageId]?.isExpanded || false
     const publishData = this.props.modals.publishData
