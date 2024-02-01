@@ -6,18 +6,16 @@ export function getCollectionsAndPages(orgId, queryParamsString = '') {
   return http.get(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString}`)
 }
 
-export function getPublishedContent(queryParamsString = ''){
+export function getPublishedContentByPath(queryParamsString = ''){
   return http.get(apiUrl + `/getPublishedDataByPath${queryParamsString}`)
 }
 
 export async function getPublishedContentByIdAndType(id, type){
-  const data = await  http.get(apiUrl + `/pages/${id}/getPublishedData?type=${type}`)
-  debugger
-  return (type == 4) ? (data?.data?.publishedContent || {} ) :  (data?.data?.publishedContent?.contents || {})
+  return  await  http.get(apiUrl + `/pages/${id}/getPublishedData?type=${type}`)
 }
 
 export default {
   getCollectionsAndPages,
-  getPublishedContent,
+  getPublishedContentByPath,
   getPublishedContentByIdAndType
 }

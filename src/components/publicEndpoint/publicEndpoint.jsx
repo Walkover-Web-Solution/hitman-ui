@@ -18,7 +18,7 @@ import { Modal } from 'react-bootstrap'
 import SplitPane from 'react-split-pane'
 import { addCollectionAndPages } from '../redux/generalActions'
 import generalApiService from '../../services/generalApiService'
-import { useQuery, useQueryClient } from 'react-query'
+import { useQuery, useQueryClient, useMutation } from 'react-query'
 import {currentPublishId} from '../../store/publicReducer/publicReducerActions.js'
 
 const withQuery = (WrappedComponent) => {
@@ -34,7 +34,13 @@ const withQuery = (WrappedComponent) => {
       return queryClient.getQueryData(id) == undefined;
     }
 
-    return <WrappedComponent {...props} setQueryUpdatedData={setQueryUpdatedData}  keyExistInReactQuery = {keyExistInReactQuery}/>
+    const mutation = useMutation((data) => {return data}, {
+      onSuccess: (data) => {
+        queryClient.setQueryData([data.type, data.id], data?.content || '')
+      }
+    })
+
+    return <WrappedComponent {...props} setQueryUpdatedData={setQueryUpdatedData} mutationFn={mutation} keyExistInReactQuery = {keyExistInReactQuery}/>
   }
 }
 
@@ -88,10 +94,7 @@ class PublicEndpoint extends Component {
       this.setState({ isSticky: sticky })
     })
 
-    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
-    const currentDomain = window.location.href.split('/')[2]
     let url =  new URL(window.location.href);
-
     const queryParams = new URLSearchParams(this.props.location.search);
     let collectionId = queryParams.get('collectionId');
 
@@ -99,76 +102,68 @@ class PublicEndpoint extends Component {
     var queryParamApi2 = {}
      // example `https://localhost:300/path`
     // [info] part 2 get sidebar data and collection data  also set queryParmas for 2nd api call
-    if(!Object.keys(this.props.collections)?.[0]){
-        if(collectionId) { // internal case
-          queryParamApi2.collectionId = collectionId
-          this.props.add_collection_and_pages(null,{collectionId:collectionId}) 
-        }else if(!domainsList.includes(currentDomain) && window.location.href.split('/')[1] !== 'p'){   // external case
-          
-          queryParamApi2.versionName = url.searchParams.has('VersionName');
-          queryParamApi2.path = url.pathname.substring(1);
-          this.props.add_collection_and_pages(null,{custom_domain:currentDomain}) 
-        }
-     }
+    if(isTechdocOwnDomain()) { // internal case here collectionId will be there always
+      queryParamApi2.collectionId = (url.searchParams.get('collectionId')) ? url.searchParams.get('collectionId') : Object.keys(this.props.collections)?.[0];
 
-    //  debugger
-     if(!isTechdocOwnDomain()){
-      queryParamApi2.custom_domain = currentDomain;
-      queryParamApi2.path = url.pathname.substring(1);
-     }else {
-      queryParamApi2.collectionId = url.searchParams.get('collectionId');
-     }
-     if(url.searchParams.has('VersionName')){
+      // setting path
+      const pathSegments = url.pathname.split("/");
+      queryParamApi2.path = pathSegments.slice(2).join("/"); // ignoring /p in pathName
+
+      this.props.add_collection_and_pages(null,{ collectionId: collectionId}) 
+    }else if(!isTechdocOwnDomain()){   // external case
+      queryParamApi2.custom_domain = window.location.hostname; // setting hostname
+
+      queryParamApi2.path = url.pathname
+      this.props.add_collection_and_pages(null,{custom_domain: window.location.hostname}) 
+    }
+
+    // setting version if present
+    if(url.searchParams.has('VersionName')){
       queryParamApi2.versionName = url.searchParams.get('VersionName');
-
-     }
+    }
      
-    // setting query params value
-      let queryParamsString = `?`;
-      for(let key in queryParamApi2){queryParamsString += `${key}=${queryParamApi2[key]}`}
+     
+    let queryParamsString = "?";
+    for (let key in queryParamApi2) {
+      if (queryParamApi2.hasOwnProperty(key)) { // Check if the property belongs to the object (not inherited)
+        queryParamsString += `${encodeURIComponent(key)}=${encodeURIComponent(queryParamApi2[key])}&`;
+      }
+    } 
+    // Remove the last '&' character
+    queryParamsString = queryParamsString.slice(0, -1);
+    
 
-      const response = await generalApiService.getPublishedContent(queryParamsString);
-      this.setDataToReactQuery(response)
+    const response = await generalApiService.getPublishedContentByPath(queryParamsString);
+    this.setDataToReactQuery(response)
   }
   async componentDidUpdate(){
-
       let currentIdToShow = this.props?.publicData?.currentPublishId
-     
-      console.log("this.props.keyExistInReactQuery(currentIdToShow) == ", this.props.keyExistInReactQuery(currentIdToShow))
       if(!this.props.keyExistInReactQuery(currentIdToShow)){
-        console.log('came here', currentIdToShow)
         const response = generalApiService.getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type)
-        this.setDataToReactQuery(response, currentIdToShow)
+
+        if(this.props.pages?.[currentIdToShow]?.type == 4  ){
+          this.props.mutationFn.mutate({ type:'endpoint' , id:currentIdToShow, content: response })
+        }else if(this.props.pages?.[currentIdToShow]?.type != 4  ){
+          this.props.mutationFn.mutate({ type:'pageContent' , id:currentIdToShow, content: response })
+        }
       }
-     
-    
   }
 
   setDataToReactQuery(response) {
     if (response) {
       var id = response?.data?.publishedContent?.id;
       if(response?.data?.publishedContent?.type === 4)  { 
-        this.props.setQueryUpdatedData('endpoint', id, response?.data?.publishedContent)
+        this.props.mutationFn.mutate({ type:'endpoint' , id:id, content: response?.data?.publishedContent?.contents })
        } 
       else { 
-        this.props.setQueryUpdatedData('pageContent', id, response?.data?.publishedContent)
+        this.props.mutationFn.mutate({ type:'pageContent' , id:id, content: response?.data?.publishedContent })
       }
       this.props.setCurrentPublishId(id)
     }
   }
 
   redirectToDefaultPage(response) {
-    if (response) {
-      let id = response?.data?.publishedContent?.id;
-      if(response?.data?.publishedContent?.type === 4)  { 
-        this.setState({publicEndpointId:id})
-        this.props.setQueryUpdatedData('endpoint', id, response?.data?.publishedContent)
-       } 
-      else { 
-        this.setState({publicPageId:id})
-        this.props.setQueryUpdatedData('pageContent', id, response?.data?.publishedContent)
-      }
-    }
+  
   }
 
   openLink(link) {
@@ -331,7 +326,6 @@ class PublicEndpoint extends Component {
     setFavicon(docFaviconLink)
 
     let idToRender = this.props?.publicData?.currentPublishId;
-    console.log('idtoRender = ', idToRender)
 
     // [info] part 2 seems not necessary 
     // TODO later
@@ -428,7 +422,7 @@ class PublicEndpoint extends Component {
               className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
               style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}
             >
-              {this.state.publicData !== '' ? (
+              {this.state.idToRender !== '' ? (
                 <div
                   onScroll={(e) => {
                     if (e.target.scrollTop > 20) {
@@ -440,24 +434,18 @@ class PublicEndpoint extends Component {
                   className='display-component'
                 >
                   
-                 { (idToRender  && this.props?.pages?.[idToRender]?.type == 4 )  && <DisplayEndpoint
+                 { ( this.props?.pages?.[idToRender]?.type == 4 )  && <DisplayEndpoint
                     {...this.props}
                     fetch_entity_name={this.fetchEntityName.bind(this)}
                     publicCollectionTheme={this.state.collectionTheme}
-                    publicEndpointId = {this.state.publicEndpointId}
                   />
                  }
               
-              {(idToRender && this.state?.pages?.[idToRender]?.type != 4) &&   <DisplayPage
+              {( this.props?.pages?.[idToRender]?.type != 4) &&   <DisplayPage
                     {...this.props}
                     fetch_entity_name={this.fetchEntityName.bind(this)}
                     publicCollectionTheme={this.state.collectionTheme}
-                    publicPageId = {this.state.publicPageId}
                   />
-                }
-                {!idToRender &&
-                     <p>API Doc is loading....</p>
-                
                 }
                      
                   {this.displayCTAandLink()}
@@ -467,7 +455,8 @@ class PublicEndpoint extends Component {
                     </div> */}
                   {this.state.openReviewModal && this.reviewModal()}
                 </div>
-              ) : null}
+              ) :
+               <p>API Doc is loading....</p>}
             </div>
           </SplitPane>
         </main>
