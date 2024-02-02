@@ -8,6 +8,7 @@ import { sendAmplitudeData } from '../../../services/amplitude'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 import { addChildInParent } from '../../pages/redux/pagesActions'
 import tabService from '../../tabs/tabService'
+import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
 
 export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   const orgId = getOrgId()
@@ -47,7 +48,7 @@ export const addEndpointInCollection = (history, newEndpoint, rootParentId, cust
     // dispatch(addEndpointRequest({ ...newEndpoint, requestId, rootParentId }))
     endpointApiService
       .saveEndpointInCollection(rootParentId, { ...newEndpoint, requestId })
-      .then((response) => {
+      .then(async (response) => {
         const responseToSend = {
           id: response.data.id,
           requestType: response.data.requestType,
@@ -60,9 +61,10 @@ export const addEndpointInCollection = (history, newEndpoint, rootParentId, cust
           versionId: null,
           collectionId: store.getState()?.pages?.[response?.data?.parentId].collectionId
         }
-        dispatch(addChildInParent(responseToSend))
-        history.push(`/orgs/${orgId}/dashboard/endpoint/${response.data.id}`)
-        tabService.removeTab(this.props?.activeTabId, { ...props })
+
+        const data = await dispatch(addChildInParent(responseToSend))
+        history.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
+        await dispatch(replaceTabForUntitled(data.payload.id))
         if (customCallback) {
           customCallback({ closeForm: true, stopLoader: true })
         }
@@ -188,7 +190,7 @@ export const setAuthorizationType = (endpointId, authData) => {
     dispatch(setAuthorizationTypeRequest(endpointId, authData))
     endpointApiService
       .setAuthorizationType(endpointId, authData)
-      .then(() => {})
+      .then(() => { })
       .catch((error) => {
         dispatch(onAuthorizationTypeError(error.response ? error.response.data : error, endpointId, originalAuthType))
         toast.error(error)
@@ -365,7 +367,7 @@ export const reorderEndpoint = (sourceEndpointIds, sourceGroupId, destinationEnd
     )
     endpointApiService
       .updateEndpointOrder(sourceEndpointIds, sourceGroupId, destinationEndpointIds, destinationGroupId, endpointId)
-      .then(() => {})
+      .then(() => { })
       .catch((error) => {
         dispatch(reorderEndpointError(error.response ? error.response.data : error, originalEndpoints))
       })

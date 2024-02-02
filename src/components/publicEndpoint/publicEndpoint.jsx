@@ -113,8 +113,6 @@ class PublicEndpoint extends Component {
       this.props.add_collection_and_pages(null, { custom_domain: currentDomain })
     }
     //  }
-
-    //  debugger
     if (!isTechdocOwnDomain()) {
       queryParamApi2.custom_domain = currentDomain
       queryParamApi2.path = url.pathname.substring(1)

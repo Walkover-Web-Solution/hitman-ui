@@ -147,3 +147,9 @@ export const closeAllTabs = () => {
     // await indexedDbService.clearStore('tabs')
   }
 }
+
+export const replaceTabForUntitled = (newTabId) => {
+  return async (dispatch) => {
+    dispatch({ type: tabsActionTypes.REPLACE_TAB_ID, payload: { newTabId } })
+  }
+}

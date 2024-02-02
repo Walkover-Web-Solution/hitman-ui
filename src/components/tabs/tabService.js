@@ -1,5 +1,5 @@
 import { store } from '../../store/store'
-import { addNewTab, closeAllTabs, closeTab, setActiveTabId, updateTab } from '../tabs/redux/tabsActions'
+import { addNewTab, closeAllTabs, closeTab, replaceTab, replaceTabForUntitled, setActiveTabId, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from './tabStatusTypes'
 import { getCurrentUser } from '../auth/authServiceV2'
 
@@ -97,6 +97,10 @@ function markTabAsDeleted(tabId) {
   store.dispatch(updateTab(tabId, { status: tabStatusTypes.DELETED }))
 }
 
+function replaceTabWithNew(newTabId) {
+  store.dispatch(replaceTabForUntitled(newTabId))
+}
+
 export default {
   newTab,
   removeTab,
@@ -107,5 +111,6 @@ export default {
   markTabAsModified,
   unmarkTabAsModified,
   markTabAsSaved,
-  markTabAsDeleted
+  markTabAsDeleted,
+  replaceTabWithNew,
 }
