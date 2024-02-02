@@ -340,6 +340,7 @@ class CollectionsComponent extends Component {
 
   renderBody(collectionId, collectionState) {
     const expanded = this.props.clientData?.[collectionId]?.isExpanded || false
+    var isOnDashboardPage = isDashboardRoute(this.props)
 
     if (this.scrollRef[collectionId]) {
       this.scrollToCollection(collectionId)
@@ -372,6 +373,9 @@ class CollectionsComponent extends Component {
                 </div>
               </div>
             </div>
+            {
+              //  [info] options not to show on publihsed page
+              isOnDashboardPage && 
             <div className='d-flex align-items-center'>
               <div className='sidebar-item-action d-flex align-items-center'>
                 <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
@@ -586,15 +590,20 @@ class CollectionsComponent extends Component {
               </div>
               {/* <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span> */}
             </div>
+            }
           </button>
           {expanded ? (
             <div id='collection-collapse'>
               <Card.Body>
-                <PublishCollectionInfo
+                {
+                isOnDashboardPage && 
+                < PublishCollectionInfo
                   {...this.props}
                   collectionId={collectionId}
                   // getTotalEndpointsCount={this.props.getTotalEndpointsCount.bind(this)}
                 />
+                }
+                
                 {
                   <CombinedCollections
                     {...this.props}
@@ -719,40 +728,9 @@ class CollectionsComponent extends Component {
     } else {
       return (
         <>
-          {Object.keys(this.props.collections).map((collectionId, index) => (
-            <div key={collectionId}>
-              {this.addGTM(this.props.collections[collectionId].gtmId)}
-              <div className='hm-sidebar-header' onClick={() => window.open(this.props.collections[collectionId].website)}>
-                {!this.state.publicLogoError && (
-                  <div className='hm-sidebar-logo'>
-                    <img
-                      id='publicLogo'
-                      alt='public-logo'
-                      src={
-                        this.props.collections[collectionId]?.favicon
-                          ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
-                          : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl || EMPTY_STRING
-                      }
-                      onError={() => {
-                        this.setState({ publicLogoError: true })
-                      }}
-                      width='60'
-                      height='60'
-                    />
-                  </div>
-                )}
-                {this.props.collections[collectionId]?.docProperties?.defaultTitle && (
-                  <h4 className='hm-sidebar-title'>
-                    {this.props.collections[collectionId].docProperties.defaultTitle}
-                    <span>API Documenation</span>
-                  </h4>
-                )}
-              </div>
-              <div id='parent-accordion' key={index}>
-                <CollectionParentPages {...this.props} collection_id={collectionId} />
-              </div>
+         <div className='App-Side'>
+              {this.props.collectionsToRender.map((collectionId, index) => this.renderBody(collectionId, 'allCollections'))}
             </div>
-          ))}
         </>
       )
     }

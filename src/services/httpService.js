@@ -18,7 +18,7 @@ instance.interceptors.response.use(null, (error) => {
     })
   }
 
-  if (error.response.config.method === 'get' && error.response.status === 403) {
+  if (error?.response?.config?.method === 'get' && error?.response?.status === 403) {
     history.push({
       pathname: '/403_PAGE',
       error: error

@@ -110,6 +110,8 @@ class App extends Component {
     return this.renderApp()
   }
 
+
+  // TODO :: Refactor later
   renderApp = () => {
     const PUBLIC_URL = process.env.REACT_APP_PUBLIC_UI_URL || ''
     const PUBLIC_DOMAIN = PUBLIC_URL.split('/')[2]
@@ -127,13 +129,9 @@ class App extends Component {
           return null
         }
       } else {
-        if (path !== 'p') {
           return (
-            <Switch>
-              <Route path='/' component={ClientDoc} />
-            </Switch>
+            {Public} 
           )
-        }
       }
     }
 
@@ -160,7 +158,7 @@ class App extends Component {
 
           {/*  Public Page Routes */}
           <Route path='/p/error' component={NotFound} />
-          <Route path='/p/:collectionIdentifier' component={Public} />
+          <Route path='/p' component={Public} />
 
           {/* React App Auth Routes */}
           <Route path='/login' component={LoginV2} />

@@ -142,7 +142,7 @@ function collectionsReducer(state = initialState, action) {
       return state
 
     case generalActionsTypes.ADD_COLLECTIONS:
-      return { ...state, ...action.data }
+      return { ...action.data }
 
     // case versionActionTypes.IMPORT_VERSION:
     //   return { ...state, ...action.response.collection }

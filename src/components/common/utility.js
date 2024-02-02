@@ -19,6 +19,11 @@ const statesEnum = {
   DRAFT_STATE: 1
 }
 
+export const SESSION_STORAGE_KEY = {
+  CURRENT_PUBLISH_ID_SHOW : 'currentPublishIdToShow',
+  PUBLIC_COLLECTION_ID: 'publicCollectionId'
+}
+
 const tokenKey = 'token'
 const profileKey = 'profile'
 const orgKey = 'organisation'
@@ -89,11 +94,14 @@ export const msgText = {
 }
 
 export function isDashboardRoute(props, sidebar = false) {
+  // now our own domain will only be considered as dashboard route
   if (
-    props.match.path.includes('/dashboard') ||
-    props.match.path.includes('/orgs/:orgId/dashboard') ||
-    (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish')) ||
-    (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/feedback'))
+    isTechdocOwnDomain() &&
+    (props.match.path.includes('/dashboard') ||
+      props.match.path.includes('/orgs/:orgId/dashboard') ||
+      (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish')) ||
+      (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/feedback'))
+    )
   ) {
     return true
   } else return false
@@ -279,7 +287,7 @@ export function handleChangeInUrlField(data) {
 export function handleBlurInUrlField(data) {
   const inputValue = data
   const protocolRegex = /^(?:([a-z]+:\/\/))/i
-  let protocol = inputValue.split('/')[0]
+  let protocol = inputValue?.split('/')[0]
   protocol = inputValue.substring(0, protocol.length + 2)
   // Checks for inputValue has protocol or not, and if not then prefixes https:// with it
   if (!protocol.match(protocolRegex)) {
@@ -549,6 +557,37 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   return { ...untitled }
 }
 
+export function getUrlPathById  (id, sidebar, ) {
+  let path = [];
+  let versionName = null;
+  // not add invisible parent page name in path 
+  while(sidebar?.[id]?.type > 0){
+    if(sidebar[id].type == 2){
+      versionName = sidebar[id].name
+    }else{
+      path.push(sidebar[id].name);
+    }
+    id = sidebar?.[id]?.parentId;
+  }
+  
+  let actualPath  = path.reverse().join('/');
+  if(versionName){
+    actualPath = `${actualPath}?versionName=${versionName}`
+  }
+  // always add collectionId in query params in url if own domain
+  if(isTechdocOwnDomain()){
+    let collectionId = sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID);
+    let operator = (versionName) ? '&' : '?'; // if versionName is added then add & else add ?
+    actualPath = actualPath + operator +`collectionId=${collectionId}`
+  }
+  return actualPath;
+}
+export function isTechdocOwnDomain  () {
+  const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+  const currentDomain = window.location.href.split('/')[2]
+  return domainsList.includes(currentDomain)
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -583,5 +622,7 @@ export default {
   getUserProfile,
   compareAlphabetically,
   sentryIntegration,
-  modifyEndpointContent
+  modifyEndpointContent,
+  isTechdocOwnDomain,
+  SESSION_STORAGE_KEY
 }

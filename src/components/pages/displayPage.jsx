@@ -13,18 +13,27 @@ import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from 
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
 import { getPageContent } from '../../services/pageServices'
+import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 import { useQuery } from 'react-query'
+import { SESSION_STORAGE_KEY } from '../common/utility'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
+    let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+    const pageId = props.match.params.pageId || currentIdToShow
     const { data, error } = useQuery(
-      ['pageContent', props.match.params.pageId],
-      () => getPageContent(props.match.params.orgId, props.match.params.pageId),
+      ['pageContent', pageId],
+      async () => {
+        return currentIdToShow
+          ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
+          : await getPageContent(props.match.params.orgId, pageId)
+      },
       {
         refetchOnWindowFocus: false,
         cacheTime: 5000000,
         enabled: true,
-        staleTime: 600000
+        staleTime: 600000,
+        retry: 2
       }
     )
     return <WrappedComponent {...props} pageContent={data} pageContentError={error} />

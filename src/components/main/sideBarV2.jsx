@@ -665,6 +665,7 @@ class SideBarV2 extends Component {
                   </div>
                 </div>
                 <div>
+                  {/* [info] not to be used in published Page */}
                   <PublishColelctionInfo
                     {...this.props}
                     collectionId={this.collectionId}
@@ -684,9 +685,9 @@ class SideBarV2 extends Component {
                 </div>
               </div>
             )
-          : !getCurrentUser()
-            ? this.renderEmptyCollectionsIfNotLoggedIn()
-            : this.renderCollections()}
+            // [info] collection render 
+            : this.renderCollections()
+        }
       </div>
     )
   }
@@ -705,19 +706,20 @@ class SideBarV2 extends Component {
   }
 
   renderDashboardSidebar() {
+    var isOnDashboardPage = isDashboardRoute(this.props)
     return (
       <>
         <div className='plr-3'>
-          {this.renderSearch()}
-          {getCurrentUser() && this.renderInviteTeam()}
+          { this.renderSearch()}
+          { isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
           {/* {this.renderDownloadDesktopApp()} */}
-          {this.renderGlobalAddButton()}
+          {isOnDashboardPage && this.renderGlobalAddButton()}
         </div>
         <div className='sidebar-content'>
           {this.state.data.filter !== '' && this.renderSearchList()}
           {this.state.data.filter === '' && this.renderSidebarContent()}
         </div>
-        {getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
+        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
       </>
     )
   }
@@ -753,7 +755,7 @@ class SideBarV2 extends Component {
   }
 
   getSidebarInteractionClass() {
-    return isDashboardRoute(this.props, true) ? 'sidebar' : 'public-endpoint-sidebar'
+    return isDashboardRoute(this.props, true) ? 'sidebar' : 'sidebar'
   }
 
   openAddVersionForm(collectionId) {
@@ -855,11 +857,9 @@ class SideBarV2 extends Component {
             ADD_VERSION_MODAL_NAME
           )}
         <div className='primary-sidebar'>
-          {isDashboardRoute(this.props, true) ? (
-            this.renderDashboardSidebar()
-          ) : (
-            <Route path='/p/:collectionId' render={(props) => <Collections {...this.props} />} />
-          )}
+          {/* [info] for publishedPage only this part is important */}
+          
+          {this.renderDashboardSidebar()}
         </div>
       </nav>
     )
