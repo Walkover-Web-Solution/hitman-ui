@@ -276,11 +276,6 @@ class CollectionParentPages extends Component {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props.pages)
       pathName = (!isTechdocOwnDomain)?`/p/${pathName}`:`/${pathName}`
-
-
-
-      
-      console.log('pathName == ', pathName)
       this.props.history.push(pathName)
     }
   }

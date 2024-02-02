@@ -21,7 +21,6 @@ const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const pageId = props?.match?.params?.pageId || currentIdToShow
-    debugger
     const { data, error } = useQuery(
       ['pageContent', pageId],
       async () => {

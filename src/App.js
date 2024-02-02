@@ -129,7 +129,9 @@ class App extends Component {
         }
       } else {
           return (
-            <Public/>
+            <Switch>
+            <Route path='/' component={Public} />
+            </Switch>
           )
       }
     }
