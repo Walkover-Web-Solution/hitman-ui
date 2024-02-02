@@ -10,6 +10,7 @@ import { ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import { Dropdown } from 'react-bootstrap'
 import DropdownItem from 'react-bootstrap/esm/DropdownItem'
 import _ from 'lodash'
+import ShowCaseSaveAsModal from './showCaseSaveAsModal/showCaseSaveAsModal'
 
 const mapStateToProps = (state) => {
   return {
@@ -103,10 +104,10 @@ class SaveAsSidebar extends Form {
     const dropdownList = { ...this.state.dropdownList }
     switch (this.state.dropdownList.type) {
       case 'collections':
-        // list.type = 'versions'
+        list.type = 'versions'
         list.parentId = item.rootParentId
         this.setState({ list })
-        // dropdownList.type = 'versions'
+        dropdownList.type = 'versions'
         dropdownList.parentId = item.rootParentId
         dropdownList.selectedCollectionId = item.id
         this.setState({ dropdownList })
@@ -368,9 +369,9 @@ class SaveAsSidebar extends Form {
                 {title?.trim() === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
               </div>
             </form>
-            <div>
-              <div className='mb-2'>Collection to which you wish to save this to</div>
-              <Dropdown className='cst'>
+            {/* <div> */}
+            {/* <div className='mb-2'>Collection to which you wish to save this to</div> */}
+            {/* <Dropdown className='cst'>
                 <div
                   onClick={() => {
                     this.goDropdownBack('collections')
@@ -409,9 +410,9 @@ class SaveAsSidebar extends Form {
                     <DropdownItem className='disabled'>No Collection Found</DropdownItem>
                   )}
                 </Dropdown.Menu>
-              </Dropdown>
+              </Dropdown> */}
 
-              {/* {this.state.dropdownList.parentId != null &&
+            {/* {this.state.dropdownList.parentId != null &&
                 this.renderDropdownItems('versions').length > 0 &&
                 this.renderDropdownItems('groups').length > 0 && (
                   <>
@@ -504,23 +505,13 @@ class SaveAsSidebar extends Form {
                   </Dropdown>
                 </>
               )} */}
-            </div>
-            <div className='mt-5'>
-              <button className='btn btn-secondary outline mr-2 api-cancel-btn' onClick={() => this.props.onHide()}>
-                Cancel
-              </button>
-              <button
-                className={this.props.saveAsLoader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
-                onClick={this.handleSubmit}
-                disabled={
-                  this.state.dropdownList.selectedCollectionId === null || title.trim() === '' || title === 'Untitled' ? 'disabled' : ''
-                }
-              >
-                Save{' '}
-                {this.state.dropdownList.selectedCollectionId !== null &&
-                  `to ${this.props.collections[this.state.dropdownList.selectedCollectionId].name}`}
-              </button>
-            </div>
+            {/* </div> */}
+            <ShowCaseSaveAsModal
+              save_endpoint={this.props.save_endpoint}
+              name={this.state.data.name}
+              description={this.state.data.description}
+              onHide= {this.props.onHide}
+            />
           </div>
         </div>
       </div>

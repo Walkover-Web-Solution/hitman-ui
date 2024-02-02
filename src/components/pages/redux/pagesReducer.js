@@ -223,6 +223,25 @@ function pagesReducer(state = initialState, action) {
       }
       return { ...state }
 
+    case pagesActionTypes.UPDATE_PAGE_DATA:
+      if (state[action.payload.pageId]) {
+        state[action.payload.pageId] = { ...state[action.payload.pageId], ...action.payload.data }
+      }
+      return { ...state }
+
+    case pagesActionTypes.ADD_CHILD_IN_PARENT:
+      if (state[action.payload.parentId]) {
+        state[action.payload.parentId].child.push(action.payload.id)
+        state[action.payload.id] = action.payload
+      }
+      return { ...state }
+
+    case pagesActionTypes.UPDATE_NAME_OF_PAGE:
+      if (state[action.payload.id]) {
+        state[action.payload.id].name = action.payload.name
+      }
+      return { ...state }
+
     default:
       return state
   }

@@ -127,7 +127,6 @@ class History extends Component {
     }
     const groupedHistory = {}
 
-    // Group history items by date
     historySnapshot.forEach((history) => {
       const today = moment().startOf('day')
       const createdAtMoment = moment(history.createdAt)
@@ -147,8 +146,16 @@ class History extends Component {
 
       groupedHistory[dateGroup].push(history)
     })
+    const sortedGroupedHistory = Object.entries(groupedHistory)
+    .sort(([dateGroupA], [dateGroupB]) => {
+      if (dateGroupA === 'Today') return -1
+      if (dateGroupB === 'Today') return 1
+      if (dateGroupA === 'Yesterday') return -1
+      if (dateGroupB === 'Yesterday') return 1
+      return moment(dateGroupB, ['MMMM D, YYYY']).diff(moment(dateGroupA, ['MMMM D, YYYY']))
+    })
 
-    const dropdowns = Object.entries(groupedHistory).map(([dateGroup, histories]) => (
+    const dropdowns = sortedGroupedHistory.map(([dateGroup, histories]) => (
       <ul key={dateGroup}>
         <li>
           <h6 className='pb-4 ml-3'>{dateGroup}</h6>
