@@ -68,8 +68,7 @@ import Tiptap from '../tiptapEditor/tiptap'
 import ChatbotsideBar from './chatbotsideBar'
 import { useQuery, useQueryClient } from 'react-query'
 import utilityFunctions from '../common/utility.js'
-import {getPublishedContentByIdAndType} from '../../services/generalApiService'
-
+import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 
 const shortid = require('shortid')
 
@@ -207,9 +206,7 @@ const getEndpointContent = async (props) => {
   let endpointId = props?.match?.params.endpointId || currentIdToShow
   if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
-    const data =  (currentIdToShow)  ?   
-    await getPublishedContentByIdAndType(currentIdToShow, type) 
-    : await getEndpoint(endpointId)
+    const data = currentIdToShow ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
     const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
     return modifiedData
   } else {
@@ -226,11 +223,10 @@ const getEndpointContent = async (props) => {
 }
 
 const withQuery = (WrappedComponent) => {
-  
   return (props) => {
     const queryClient = useQueryClient()
     let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
-    const endpointId = props?.match?.params.endpointId !== 'new' ? (props?.match?.params.endpointId || currentIdToShow) : props?.activeTabId
+    const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId || currentIdToShow : props?.activeTabId
     const data = useQuery(['endpoint', endpointId], () => getEndpointContent(props, queryClient), {
       refetchOnWindowFocus: false,
       cacheTime: 5000000,
@@ -241,7 +237,7 @@ const withQuery = (WrappedComponent) => {
 
     const setQueryUpdatedData = (data) => {
       let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
-      const endpointId = props?.match?.params.endpointId !== 'new' ? (props?.match?.params.endpointId || currentIdToShow) : props?.activeTabId
+      const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params.endpointId || currentIdToShow : props?.activeTabId
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(['endpoint', endpointId], data)

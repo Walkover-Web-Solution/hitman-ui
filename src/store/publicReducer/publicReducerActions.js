@@ -1,4 +1,4 @@
-import publicReducerActionTypes from "./publicReducerActionTypes"
+import publicReducerActionTypes from './publicReducerActionTypes'
 
 export const currentPublishId = (payload) => {
   // debugger

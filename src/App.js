@@ -127,9 +127,7 @@ class App extends Component {
           return null
         }
       } else {
-          return (
-            {Public} 
-          )
+        return { Public }
       }
     }
 

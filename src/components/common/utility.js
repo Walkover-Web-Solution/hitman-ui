@@ -90,7 +90,6 @@ export const msgText = {
 
 export function isDashboardRoute(props, sidebar = false) {
   if (
-    
     props.match.path.includes('/dashboard') ||
     props.match.path.includes('/orgs/:orgId/dashboard') ||
     (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish')) ||
@@ -550,26 +549,26 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   return { ...untitled }
 }
 
-export function getUrlPathById  (id, sidebar) {
-  let path = [];
-  let versionName = null;
-  // not add invisible parent page name in path 
-  while(sidebar?.[id]?.type > 0){
-    if(sidebar[id].type == 2){
+export function getUrlPathById(id, sidebar) {
+  let path = []
+  let versionName = null
+  // not add invisible parent page name in path
+  while (sidebar?.[id]?.type > 0) {
+    if (sidebar[id].type == 2) {
       versionName = sidebar[id].name
-    }else{
-      path.push(sidebar[id].name);
+    } else {
+      path.push(sidebar[id].name)
     }
-    id = sidebar?.[id]?.parentId;
+    id = sidebar?.[id]?.parentId
   }
-  
-  let actualPath  = path.reverse().join('/');
-  if(versionName){
-    actualPath =  `${actualPath}?versionName=${versionName}`
+
+  let actualPath = path.reverse().join('/')
+  if (versionName) {
+    actualPath = `${actualPath}?versionName=${versionName}`
   }
-  return actualPath;
+  return actualPath
 }
-export function isTechdocOwnDomain  () {
+export function isTechdocOwnDomain() {
   const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
   return domainsList.includes(currentDomain)

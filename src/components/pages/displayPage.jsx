@@ -19,14 +19,13 @@ import { useQuery } from 'react-query'
 const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = props?.publicData?.currentPublishId
-    const pageId = currentIdToShow || props.publicPageId || props.match.params.pageId;
+    const pageId = currentIdToShow || props.publicPageId || props.match.params.pageId
     const { data, error } = useQuery(
       ['pageContent', pageId],
       async () => {
-        return (currentIdToShow) ?
-          await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
-          :
-          await getPageContent(props.match.params.orgId, pageId);
+        return currentIdToShow
+          ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
+          : await getPageContent(props.match.params.orgId, pageId)
       },
       {
         refetchOnWindowFocus: false,
@@ -35,7 +34,7 @@ const withQuery = (WrappedComponent) => {
         staleTime: 600000,
         retry: 2
       }
-    );
+    )
 
     return <WrappedComponent {...props} pageContent={data} pageContentError={error} />
   }
@@ -153,7 +152,7 @@ class DisplayPage extends Component {
   }
 
   renderTiptapEditor(contents) {
-    return <Tiptap onChange={() => { }} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
+    return <Tiptap onChange={() => {}} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
   }
 
   handleRemovePublicPage(pageId) {
