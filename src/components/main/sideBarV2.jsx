@@ -80,13 +80,15 @@ class SideBarV2 extends Component {
       },
       name: '',
       email: '',
+      endpoint: [],
       historySnapshot: null,
       selectedCollectionId: null,
       secondarySidebarToggle: false,
       primarySidebar: null,
       totalEndpointsCount: 0,
       showInviteTeam: false,
-      search: false
+      search: false,
+      endpoints: ''
     }
     this.inputRef = createRef()
     this.sidebarRef = createRef()
@@ -103,12 +105,15 @@ class SideBarV2 extends Component {
 
   componentDidMount() {
     const pages = this.props.pages
+    const endpoint = []
     Object.keys(pages).forEach(key => {
-      const page = Object.values(pages).find(page => page.id === key);
+      const page = pages[key];
       if (page && page.type === 4) {
-        this.setState({ endpoint: page.id });
+        endpoint.push(page);
       }
     });
+  
+    this.setState({ endpoint : endpoint });
     if (getCurrentUser()) {
       const user = getCurrentUser()
       const name = user.first_name + user.last_name
@@ -250,15 +255,22 @@ class SideBarV2 extends Component {
           o.endpoint.uri?.toLowerCase().includes(e.target.value.toLowerCase())
       )
     }
-    let obj2 = Object.values(this.props.endpoints)
+    let obj2 = Object.values((this.state.endpoint));
+    console.log(obj2, "obj222");
+    
     if (this.props.endpoints) {
-      obj2 = obj2.filter(
-        (o) =>
+      obj2 = obj2.filter((o) => {
+        console.log(o.name, "000000"); // Log the value of o
+        return (
           o.name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
           o.BASE_URL?.toLowerCase().includes(e.target.value.toLowerCase()) ||
           o.uri?.toLowerCase().includes(e.target.value.toLowerCase())
-      )
+        );
+      });
     }
+    
+    console.log(obj2, "filtered obj2");
+    
     let obj3 = Object.values(this.props.pages)
     if (this.props.pages) {
       obj3 = obj3.filter((o) => o.name?.toLowerCase().includes(e.target.value.toLowerCase()))
@@ -381,11 +393,13 @@ class SideBarV2 extends Component {
   }
 
   renderEndpointsList() {
+    const pages = this.props.endpoints
+    console.log(this.state.endpoints, "endpoounttt");
     return (
       <div>
         <div className='px-3'>Endpoints</div>
         <div className='py-3'>
-          {this.state.endpoints &&
+          {this.state.endpoints.length > 0 &&
             this.state.endpoints.map(
               (endpoint) =>
                 Object.keys(endpoint).length !== 0 && (
@@ -403,6 +417,7 @@ class SideBarV2 extends Component {
                     <div className='ml-3'>
                       <div className='sideBarListWrapper'>
                         <div className='text-left'>
+                          {console.log(endpoint.name, "namee")}
                           <p> {endpoint.name || endpoint.BASE_URL + endpoint.uri}</p>
                         </div>
                         {this.renderPath(endpoint.id, 'endpoint')}
@@ -501,10 +516,10 @@ class SideBarV2 extends Component {
 
   renderSearchList() {
     if (this.state.data.filter !== '') {
-      return this.state.pages.length > 0 || this.state.endpoints.length > 0 || this.state.historySnapshot.length > 0 ? (
+      return this.state.pages.length > 0 || this.state.endpoint.length > 0 || this.state.historySnapshot.length > 0 ? (
         <div className='searchResult'>
           {this.state.pages.length > 0 ? this.renderPagesList() : null}
-          {this.state.endpoints.length > 0 ? this.renderEndpointsList() : null}
+          {this.state.endpoint.length > 0 ? this.renderEndpointsList() : null}
           {this.state.historySnapshot.length > 0 ? (
             <div>
               <div className='px-3'>History</div>
