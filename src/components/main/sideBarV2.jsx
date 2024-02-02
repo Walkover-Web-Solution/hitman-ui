@@ -250,17 +250,17 @@ class SideBarV2 extends Component {
     if (this.props.historySnapshot) {
       obj = obj.filter(
         (o) =>
-          o.endpoint.name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          o.endpoint.BASE_URL?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          o.endpoint.uri?.toLowerCase().includes(e.target.value.toLowerCase())
+          o.endpoint?.name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          o.endpoint?.BASE_URL?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          o.endpoint?.uri?.toLowerCase().includes(e.target.value.toLowerCase())
       )
     }
     let obj2 = Object.values((this.state.endpoint));
-    console.log(obj2, "obj222");
+   
     
     if (this.props.endpoints) {
       obj2 = obj2.filter((o) => {
-        console.log(o.name, "000000"); // Log the value of o
+        
         return (
           o.name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
           o.BASE_URL?.toLowerCase().includes(e.target.value.toLowerCase()) ||
@@ -269,7 +269,7 @@ class SideBarV2 extends Component {
       });
     }
     
-    console.log(obj2, "filtered obj2");
+    
     
     let obj3 = Object.values(this.props.pages)
     if (this.props.pages) {
@@ -394,7 +394,7 @@ class SideBarV2 extends Component {
 
   renderEndpointsList() {
     const pages = this.props.endpoints
-    console.log(this.state.endpoints, "endpoounttt");
+    
     return (
       <div>
         <div className='px-3'>Endpoints</div>
@@ -417,7 +417,7 @@ class SideBarV2 extends Component {
                     <div className='ml-3'>
                       <div className='sideBarListWrapper'>
                         <div className='text-left'>
-                          {console.log(endpoint.name, "namee")}
+                          
                           <p> {endpoint.name || endpoint.BASE_URL + endpoint.uri}</p>
                         </div>
                         {this.renderPath(endpoint.id, 'endpoint')}
@@ -522,8 +522,8 @@ class SideBarV2 extends Component {
           {this.state.endpoint.length > 0 ? this.renderEndpointsList() : null}
           {this.state.historySnapshot.length > 0 ? (
             <div>
-              <div className='px-3'>History</div>
-              {this.renderHistoryList()}
+              {/* <div className='px-3'>History</div> */}
+              {/* {this.renderHistoryList()} */}
             </div>
           ) : null}
         </div>
