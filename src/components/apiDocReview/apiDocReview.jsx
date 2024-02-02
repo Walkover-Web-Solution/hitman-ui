@@ -28,7 +28,7 @@ class ApiDocReview extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.match.params !== this.props.match.params) {
+    if (prevProps?.match?.params !== this.props?.match?.params) {
       this.setParent()
     }
   }
@@ -42,7 +42,7 @@ class ApiDocReview extends Component {
   }
 
   setParent() {
-    const { pageId, endpointId } = this.props.match.params
+    const { pageId, endpointId } = this.props?.match?.params || {};
 
     const parentId = endpointId || pageId
     const parentType = endpointId ? 'endpoint' : 'page'

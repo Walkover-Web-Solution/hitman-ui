@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { Route, Switch, Redirect } from 'react-router-dom'
+import Public from '../publicEndpoint/publicEndpoint'
 import { Card, Dropdown, Accordion, DropdownButton, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -273,7 +275,12 @@ class CollectionParentPages extends Component {
     }else{
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props.pages)
-      pathName = (isTechdocOwnDomain)?`/p/${pathName}`: pathName
+      pathName = (!isTechdocOwnDomain)?`/p/${pathName}`:`/${pathName}`
+
+
+
+      
+      console.log('pathName == ', pathName)
       this.props.history.push(pathName)
     }
   }
@@ -849,6 +856,11 @@ class CollectionParentPages extends Component {
             {this.renderBody(this.props.rootParentId)}
 
         {/* <div className='pl-4'>{this.renderForm(versionsCount)}</div> */}
+
+        {/* <Switch>
+          {!isTechdocOwnDomain() &&  <Route path='/' component={Public} /> }
+
+        </Switch> */}
       </>
     )
   }

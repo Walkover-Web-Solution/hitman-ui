@@ -95,13 +95,15 @@ class PublicEndpoint extends Component {
     })
 
     let url =  new URL(window.location.href);
-    const queryParams = new URLSearchParams(this.props.location.search);
+    if(this.props?.location?.search){
+      var queryParams = new URLSearchParams(this.props.location.search);
+    }
 
     // even if user copy paste other published collection with collection Id in the params change it
-    if(queryParams.has('collectionId')){
+    if(queryParams && queryParams.has('collectionId')){
       var collectionId = queryParams.get('collectionId')
       sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId)
-    }else{
+    }else if(sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID) != null){
        var collectionId = sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID)
     }
 
@@ -118,7 +120,7 @@ class PublicEndpoint extends Component {
       this.props.add_collection_and_pages(null,{ collectionId: collectionId}) 
     }else if(!isTechdocOwnDomain()){   // external case
       queryParamApi2.custom_domain = window.location.hostname; // setting hostname
-      queryParamApi2.path = url.pathname
+      queryParamApi2.path =   url.pathname.slice(1) 
       this.props.add_collection_and_pages(null,{custom_domain: window.location.hostname}) 
     }
 
@@ -171,8 +173,8 @@ class PublicEndpoint extends Component {
   }
 
   getCTALinks() {
-    const collectionId = this.props.match.params.collectionIdentifier
-    let { cta, links } = this.props.collections[collectionId]?.docProperties || { cta: [], links: [] }
+    const collectionId = this.props?.match?.params?.collectionIdentifier
+    let { cta, links } = this.props.collections?.[collectionId]?.docProperties || { cta: [], links: [] }
     cta = cta ? cta.filter((o) => o.name.trim() && o.value.trim()) : []
     links = links ? links.filter((o) => o.name.trim() && o.link.trim()) : []
     const isCTAandLinksPresent = cta.length !== 0 || links.length !== 0
@@ -316,8 +318,11 @@ class PublicEndpoint extends Component {
   }
 
   render() {
+    console.log('came on public endpoint')
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     let type = this.props?.pages?.[idToRender]?.type
+
+    console.log(type, idToRender)
 
     // [info] part 1  set collection data
     let collectionId =  (idToRender) ?  this.props.pages?.[idToRender]?.collectionId : null
@@ -393,7 +398,7 @@ class PublicEndpoint extends Component {
                   />
                  }
               
-              {(type == 1 || type == 3) &&   <DisplayPage
+              {(type == 1 || type == 3 || console.log(type, idToRender)) &&   <DisplayPage
                     {...this.props}
                     fetch_entity_name={this.fetchEntityName.bind(this)}
                     publicCollectionTheme={this.state.collectionTheme}

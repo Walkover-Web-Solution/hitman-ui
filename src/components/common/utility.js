@@ -583,6 +583,7 @@ export function getUrlPathById  (id, sidebar, ) {
   return actualPath;
 }
 export function isTechdocOwnDomain  () {
+  return false;
   const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
   return domainsList.includes(currentDomain)

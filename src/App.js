@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useDebugValue } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
@@ -9,7 +9,7 @@ import PublicView from './components/main/publicView'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import { ToastContainer } from 'react-toastify'
 import ClientDoc from './components/publishDocs/clientDoc'
-import { getOrgId, isElectron } from './components/common/utility'
+import { getOrgId, isElectron, isTechdocOwnDomain } from './components/common/utility'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import Cookies from 'universal-cookie'
@@ -118,8 +118,7 @@ class App extends Component {
     const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
     const currentDomain = window.location.href.split('/')[2]
     const path = window.location.href.split('/')[3]
-
-    if (!isElectron() && !domainsList.includes(currentDomain)) {
+    if (!isElectron() && !isTechdocOwnDomain()) {
       if (currentDomain === PUBLIC_DOMAIN) {
         if (path !== 'p' && path !== 'dashboard') {
           window.localStorage.clear()
@@ -130,7 +129,7 @@ class App extends Component {
         }
       } else {
           return (
-            {Public} 
+            <Public/>
           )
       }
     }
@@ -163,12 +162,18 @@ class App extends Component {
           {/* React App Auth Routes */}
           <Route path='/login' component={LoginV2} />
           <Route path='/logout' component={Logout} />
-          <Route path='/' component={AuthServiceV2} />
-
+          
+          {!isTechdocOwnDomain() &&  <Route path='/' component={Public} /> }
+          {isTechdocOwnDomain() &&  <Route path='/' component={AuthServiceV2}  /> }
+            
+          
+           
           <Route path='/marketPlace' component={PublicView} />
-          <Route path='/'>
+          {!isTechdocOwnDomain() && 
+            <Route path='/'>
             <Redirect to='/dashboard' />
           </Route>
+          }
         </Switch>
       </>
     )

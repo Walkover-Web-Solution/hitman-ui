@@ -205,8 +205,8 @@ const untitledEndpointData = {
 const getEndpointContent = async (props) => {
   let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
 
-  let endpointId = props?.match?.params.endpointId || currentIdToShow
-  if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
+  let endpointId = props?.match?.params?.endpointId || currentIdToShow
+  if (props?.match?.params?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
     const data =  (currentIdToShow)  ?   
     await getPublishedContentByIdAndType(currentIdToShow, type) 
@@ -230,7 +230,7 @@ const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    const endpointId = props?.match?.params.endpointId !== 'new' ? (props?.match?.params.endpointId || currentIdToShow) : props?.activeTabId
+    const endpointId = props?.match?.params.endpointId !== 'new' ? (props?.match?.params?.endpointId || currentIdToShow) : props?.activeTabId
     const data = useQuery(['endpoint', endpointId], () => getEndpointContent(props, queryClient), {
       refetchOnWindowFocus: false,
       cacheTime: 5000000,
@@ -241,7 +241,7 @@ const withQuery = (WrappedComponent) => {
 
     const setQueryUpdatedData = (data) => {
       let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-      const endpointId = props?.match?.params.endpointId !== 'new' ? (props?.match?.params.endpointId || currentIdToShow) : props?.activeTabId
+      const endpointId = props?.match?.params.endpointId !== 'new' ? (props?.match?.params?.endpointId || currentIdToShow) : props?.activeTabId
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(['endpoint', endpointId], data)
