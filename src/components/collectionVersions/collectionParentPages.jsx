@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import ShareVersionForm from './shareVersionForm'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { isDashboardRoute, getParentIds, ADD_VERSION_MODAL_NAME, getUrlPathById, isTechdocOwnDomain } from '../common/utility'
+import { isDashboardRoute, getParentIds, ADD_VERSION_MODAL_NAME, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
 import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
@@ -273,7 +273,7 @@ class CollectionParentPages extends Component {
               pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
         })
     }else{
-      sessionStorage.setItem('currentPublishIdToShow', id)
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props.pages)
       pathName = (isTechdocOwnDomain)?`/p/${pathName}`: pathName
       this.props.history.push(pathName)
@@ -373,7 +373,7 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    // // debugger
+    
     const expanded = this.props.onPublishedPage || this.props?.clientData?.[pageId]?.isExpanded || false
     const publishData = this.props.modals.publishData
     const rootId = pageId
@@ -832,7 +832,7 @@ class CollectionParentPages extends Component {
   }
 
   render() {
-    // // debugger
+    
     if (this.filterFlag === false || this.props.filter === '' || this.state.filter !== this.props.filter) {
       this.filteredPages = { ...this.props.pages }
       this.eventkey = {}

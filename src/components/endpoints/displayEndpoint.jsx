@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { store } from '../../store/store'
+import {SESSION_STORAGE_KEY} from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -202,7 +203,7 @@ const untitledEndpointData = {
 }
 
 const getEndpointContent = async (props) => {
-  let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
+  let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
 
   let endpointId = props?.match?.params.endpointId || currentIdToShow
   if (props.match.params.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
@@ -229,7 +230,7 @@ const withQuery = (WrappedComponent) => {
   
   return (props) => {
     const queryClient = useQueryClient()
-    let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
+    let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const endpointId = props?.match?.params.endpointId !== 'new' ? (props?.match?.params.endpointId || currentIdToShow) : props?.activeTabId
     const data = useQuery(['endpoint', endpointId], () => getEndpointContent(props, queryClient), {
       refetchOnWindowFocus: false,
@@ -240,7 +241,7 @@ const withQuery = (WrappedComponent) => {
     })
 
     const setQueryUpdatedData = (data) => {
-      let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
+      let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
       const endpointId = props?.match?.params.endpointId !== 'new' ? (props?.match?.params.endpointId || currentIdToShow) : props?.activeTabId
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))

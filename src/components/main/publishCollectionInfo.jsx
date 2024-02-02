@@ -208,8 +208,10 @@ class PublishCollectionInfo extends Component {
 
   IsParentPagePublishedInACollection(rootParentId){
     let childs = this.props.pages?.[rootParentId]?.child;
-    for(let i = 0 ; childs?.length; i++){
-      if(this.props.pages[childs[i]]?. published == true) { return true }
+    if(childs?.length > 0){
+      for(let i = 0 ; i < childs?.length; i++){
+        if(this.props.pages[childs[i]]?.isPublished == true) { return true }
+      }
     }
     return false ; 
   }

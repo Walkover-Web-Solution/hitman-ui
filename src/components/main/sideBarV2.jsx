@@ -292,7 +292,7 @@ class SideBarV2 extends Component {
   }
 
   openPage(id) {
-    // // debugger
+    
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
     })

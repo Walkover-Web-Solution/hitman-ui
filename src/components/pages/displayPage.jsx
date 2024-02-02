@@ -15,10 +15,11 @@ import Tiptap from '../tiptapEditor/tiptap'
 import { getPageContent } from '../../services/pageServices'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 import { useQuery } from 'react-query'
+import {SESSION_STORAGE_KEY} from '../common/utility'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
+    let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const pageId = currentIdToShow || props.publicPageId || props.match.params.pageId;
     const { data, error } = useQuery(
       ['pageContent', pageId],

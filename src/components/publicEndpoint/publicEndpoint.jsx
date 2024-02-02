@@ -12,7 +12,7 @@ import { getCurrentUser } from '../auth/authServiceV2'
 import UserInfo from '../common/userInfo'
 // import ThumbUp from '../../assets/icons/thumb_up.svg'
 // import ThumbDown from '../../assets/icons/thumb_down.svg'
-import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain } from '../common/utility'
+import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
 import SplitPane from 'react-split-pane'
@@ -105,16 +105,12 @@ class PublicEndpoint extends Component {
     const queryParams = new URLSearchParams(this.props.location.search);
     // let collectionId = queryParams.get('collectionId');
 
-    const x = sessionStorage.getItem('publicCollectionId')
     // even if user copy paste other published collection with collection Id in the params change it
     if(queryParams.has('collectionId')){
       var collectionId = queryParams.get('collectionId')
-      console.log('came in if condition of session ===', collectionId)
-      sessionStorage.setItem('publicCollectionId', collectionId)
+      sessionStorage.setItem(SESSION_STORAGE_KEY.SESSION_STORAGE_KEY, collectionId)
     }else{
-       var collectionId = sessionStorage.getItem('publicCollectionId')
-       console.log('came in else condition of session ===', collectionId)
-
+       var collectionId = sessionStorage.getItem(SESSION_STORAGE_KEY.SESSION_STORAGE_KEY)
     }
 
     var queryParamApi2 = {}
@@ -154,10 +150,8 @@ class PublicEndpoint extends Component {
     this.setDataToReactQueryAndSessionStorage(response)
   }
   async componentDidUpdate(){
-      let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
-      console.log("this.props.keyExistInReactQuery(currentIdToShow)=== ",this.props.keyExistInReactQuery(currentIdToShow))
+      let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
       if(!this.props.keyExistInReactQuery(currentIdToShow)){
-        console.log('also came inside component did update if condition')
         const response = generalApiService.getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type)
         if(this.props.pages?.[currentIdToShow]?.type == 4  ){
           this.props.mutationFn.mutate({ type:'endpoint' , id:currentIdToShow, content: response })
@@ -176,7 +170,7 @@ class PublicEndpoint extends Component {
       else { 
         this.props.mutationFn.mutate({ type:'pageContent' , id:id, content:  response?.data?.publishedContent?.contents })
       }
-      sessionStorage.setItem('currentPublishIdToShow', id)
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
     }
   }
 
@@ -343,7 +337,7 @@ class PublicEndpoint extends Component {
     setTitle(docTitle)
     setFavicon(docFaviconLink)
 
-    let idToRender = sessionStorage.setItem('currentPublishIdToShow', id)
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 2 seems not necessary 

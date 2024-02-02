@@ -30,7 +30,6 @@ export const onFeedbacksFetchedError = (error) => {
 }
 
 export const onDefaultVersion = (orgId, versionData) => {
-  console.log('inside onDefault versionnnn', versionData)
   return (dispatch) => {
     publishDocsApiService
       .setDefaultVersion(orgId, versionData)
@@ -43,7 +42,6 @@ export const onDefaultVersion = (orgId, versionData) => {
   }
 }
 export const onSetDefaultVersion = (versionData) => {
-  console.log('inside on set dfault versionnnnn', versionData)
   return {
     type: publishDocsActionTypes.ON_DEFAULT_VERSION,
     versionData

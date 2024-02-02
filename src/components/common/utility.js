@@ -19,6 +19,11 @@ const statesEnum = {
   DRAFT_STATE: 1
 }
 
+export const SESSION_STORAGE_KEY = {
+  CURRENT_PUBLISH_ID_SHOW : 'currentPublishIdToShow',
+  PUBLIC_COLLECTION_ID: 'publicCollectionId'
+}
+
 const tokenKey = 'token'
 const profileKey = 'profile'
 const orgKey = 'organisation'
@@ -569,7 +574,7 @@ export function getUrlPathById  (id, sidebar, ) {
   }
   // always add collectionId in query params in url if own domain
   if(isTechdocOwnDomain()){
-    let collectionId = sessionStorage.getItem('publicCollectionId');
+    let collectionId = sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID);
     let operator = (versionName) ? '&' : '?'; // if versionName is added then add & else add ?
     actualPath = actualPath + operator +`collectionId=${collectionId}`
   }
@@ -616,5 +621,6 @@ export default {
   compareAlphabetically,
   sentryIntegration,
   modifyEndpointContent,
-  isTechdocOwnDomain
+  isTechdocOwnDomain,
+  SESSION_STORAGE_KEY
 }

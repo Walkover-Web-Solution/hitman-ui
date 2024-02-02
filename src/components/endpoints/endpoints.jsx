@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain } from '../common/utility'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
 import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
@@ -165,7 +165,7 @@ class Endpoints extends Component {
       })
     } else {
       let id = endpoint?.id
-      sessionStorage.setItem('currentPublishIdToShow', id)
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props.pages)
       pathName = (isTechdocOwnDomain)?`/p/${pathName}`: pathName
       this.props.history.push(pathName)
@@ -431,7 +431,7 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
-    // // debugger
+    
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const isOnDashboardPage = isDashboardRoute(this.props)
@@ -515,7 +515,7 @@ class Endpoints extends Component {
   }
 
   displayUserEndpoints(endpointId) {
-    // // debugger
+    
     return (
       <>
         {this.displaySingleEndpoint(endpointId)}
@@ -545,7 +545,7 @@ class Endpoints extends Component {
   }
 
   displayPublicEndpoints(endpoints) {
-    // // debugger
+    
     const sortedEndpoints = []
     Object.values(endpoints).forEach((endpoint) => {
       sortedEndpoints.push(endpoint)
@@ -614,14 +614,14 @@ class Endpoints extends Component {
   }
 
   render() {
-    // // debugger
+    
     this.setFilterFlag()
     const endpointIds = this.filterEndpointIdsByGroup()
     let endpointsArray = []
     endpointsArray = this.extractEndpointsFromIds(endpointIds)
     let endpoints = {}
     endpoints = this.getEndpointsEntity(endpointsArray)
-    // // debugger
+    
 
     if (isDashboardRoute(this.props, true)) {
       return this.displayUserEndpoints(this?.props?.endpointId)

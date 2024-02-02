@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { isDashboardRoute, getParentIds, getUrlPathById, isTechdocOwnDomain } from '../common/utility'
+import { isDashboardRoute, getParentIds, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
 // import Endpoints from "../endpoints/endpointsCopy";
 import Endpoints from '../endpoints/endpoints'
 // import GroupForm from '../groups/groupForm'
@@ -548,7 +548,7 @@ class Groups extends Component {
             pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
       })
     }else{
-      sessionStorage.setItem('currentPublishIdToShow', id)
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props.pages)
       pathName = (isTechdocOwnDomain)?`/p/${pathName}`: pathName
       this.props.history.push(pathName)
@@ -556,7 +556,7 @@ class Groups extends Component {
   }
 
   render() {
-    // // debugger
+    
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false
     }
