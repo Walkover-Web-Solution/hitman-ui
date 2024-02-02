@@ -190,7 +190,7 @@ export const setAuthorizationType = (endpointId, authData) => {
     dispatch(setAuthorizationTypeRequest(endpointId, authData))
     endpointApiService
       .setAuthorizationType(endpointId, authData)
-      .then(() => { })
+      .then(() => {})
       .catch((error) => {
         dispatch(onAuthorizationTypeError(error.response ? error.response.data : error, endpointId, originalAuthType))
         toast.error(error)
@@ -367,7 +367,7 @@ export const reorderEndpoint = (sourceEndpointIds, sourceGroupId, destinationEnd
     )
     endpointApiService
       .updateEndpointOrder(sourceEndpointIds, sourceGroupId, destinationEndpointIds, destinationGroupId, endpointId)
-      .then(() => { })
+      .then(() => {})
       .catch((error) => {
         dispatch(reorderEndpointError(error.response ? error.response.data : error, originalEndpoints))
       })

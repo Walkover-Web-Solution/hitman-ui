@@ -132,13 +132,13 @@ class BodyContainer extends Component {
         }
         this.props.set_body(this.state.selectedRawBodyType, this.state.data[bodyType])
       } else {
-          this.setState({
-            selectedBodyType: bodyType
-          })
-        }
+        this.setState({
+          selectedBodyType: bodyType
+        })
       }
-        this.showRawBodyType = false
-        if (this._isMounted) {
+    }
+    this.showRawBodyType = false
+    if (this._isMounted) {
     }
   }
 

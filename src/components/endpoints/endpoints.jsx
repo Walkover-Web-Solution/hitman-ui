@@ -13,8 +13,7 @@ import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
 import DisplayEndpoint from './displayEndpoint'
-import {currentPublishId} from '../../store/publicReducer/publicReducerActions.js'
-
+import { currentPublishId } from '../../store/publicReducer/publicReducerActions.js'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -46,7 +45,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
-    setCurrentPublishId:(payload) => dispatch(currentPublishId(payload))
+    setCurrentPublishId: (payload) => dispatch(currentPublishId(payload))
   }
 }
 
@@ -432,12 +431,10 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
-    
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const isOnDashboardPage = isDashboardRoute(this.props)
     if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
-
 
     return (
       <>
@@ -516,7 +513,6 @@ class Endpoints extends Component {
   }
 
   displayUserEndpoints(endpointId) {
-    
     return (
       <>
         {this.displaySingleEndpoint(endpointId)}
@@ -546,7 +542,6 @@ class Endpoints extends Component {
   }
 
   displayPublicEndpoints(endpoints) {
-    
     const sortedEndpoints = []
     Object.values(endpoints).forEach((endpoint) => {
       sortedEndpoints.push(endpoint)
@@ -615,14 +610,12 @@ class Endpoints extends Component {
   }
 
   render() {
-    
     this.setFilterFlag()
     const endpointIds = this.filterEndpointIdsByGroup()
     let endpointsArray = []
     endpointsArray = this.extractEndpointsFromIds(endpointIds)
     let endpoints = {}
     endpoints = this.getEndpointsEntity(endpointsArray)
-    
 
     if (isDashboardRoute(this.props, true)) {
       return this.displayUserEndpoints(this?.props?.endpointId)

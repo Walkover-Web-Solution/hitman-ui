@@ -13,16 +13,19 @@ import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from 
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
 import { getPageContent } from '../../services/pageServices'
-import {getPublishedContentByIdAndType} from '../../services/generalApiService'
+import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 import { useQuery } from 'react-query'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = props?.publicData?.currentPublishId
-    const pageId =  currentIdToShow ||  props.publicPageId || props.match.params.pageId;
+    const pageId = currentIdToShow || props.publicPageId || props.match.params.pageId
     const { data, error } = useQuery(
       ['pageContent', pageId],
-      () => (currentIdToShow) ? getPublishedContentByIdAndType(currentIdToShow, this.props?.pages?.[currentIdToShow]?.type) : getPageContent(props.match.params.orgId, pageId),
+      () =>
+        currentIdToShow
+          ? getPublishedContentByIdAndType(currentIdToShow, this.props?.pages?.[currentIdToShow]?.type)
+          : getPageContent(props.match.params.orgId, pageId),
       {
         refetchOnWindowFocus: false,
         cacheTime: 5000000,
@@ -46,7 +49,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
-    publicData : state.publicData
+    publicData: state.publicData
   }
 }
 

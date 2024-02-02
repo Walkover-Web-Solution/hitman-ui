@@ -93,13 +93,12 @@ class Pages extends Component {
         page: page
       })
     } else {
-          //  <DisplayPage
-          //   {...this.props}
-          //   fetch_entity_name={this.fetchEntityName.bind(this)}
-          //   publicCollectionTheme={this.state.collectionTheme}
-          //   publicPageId = {this.state.publicPageId}
-          // />
-        
+      //  <DisplayPage
+      //   {...this.props}
+      //   fetch_entity_name={this.fetchEntityName.bind(this)}
+      //   publicCollectionTheme={this.state.collectionTheme}
+      //   publicPageId = {this.state.publicPageId}
+      // />
     }
   }
 

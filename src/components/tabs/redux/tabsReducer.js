@@ -82,16 +82,16 @@ function tabsReducer(state = initialState, action) {
 
     case tabsActionTypes.REPLACE_TAB_ID:
       const data = {
-        id : action.payload.newTabId,
+        id: action.payload.newTabId,
         type: 'endpoint',
         status: 'SAVED',
         previewMode: true,
         isModified: false,
         state: {}
       }
-      const newTabs = state.tabs;
+      const newTabs = state.tabs
       newTabs[action.payload?.newTabId] = data
-      const newOrder = state.tabsOrder.map(item => (item === state.activeTabId ? action.payload.newTabId : item));
+      const newOrder = state.tabsOrder.map((item) => (item === state.activeTabId ? action.payload.newTabId : item))
       tabs = { ...state, tabsOrder: newOrder, activeTabId: action.payload.newTabId, tabs: newTabs }
       return tabs
 

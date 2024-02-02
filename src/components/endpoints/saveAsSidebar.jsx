@@ -21,7 +21,7 @@ class SaveAsSidebar extends Form {
       data: {
         name: '',
         description: ''
-      },
+      }
     }
     this.saveAsSidebar = createRef()
     this.schema = {
@@ -59,10 +59,22 @@ class SaveAsSidebar extends Form {
 
     return (
       <div>
-        <div tabIndex={-1} ref={(e) => {   this.saveAsSidebar = e }} style={saveAsSidebarStyle} className='save-as-sidebar-container'>
+        <div
+          tabIndex={-1}
+          ref={(e) => {
+            this.saveAsSidebar = e
+          }}
+          style={saveAsSidebarStyle}
+          className='save-as-sidebar-container'
+        >
           <div className='custom-collection-modal-container modal-header align-items-center'>
             <div className='modal-title h4'>{this.props.location.pathname.split('/')[5] !== 'new' ? 'Save As' : 'Save'}</div>
-            <button className='close' onClick={() => {   this.props.onHide() }} >
+            <button
+              className='close'
+              onClick={() => {
+                this.props.onHide()
+              }}
+            >
               <span aria-hidden='true'>×</span>
             </button>
           </div>
@@ -77,7 +89,7 @@ class SaveAsSidebar extends Form {
               save_endpoint={this.props.save_endpoint}
               name={this.state.data.name}
               description={this.state.data.description}
-              onHide= {this.props.onHide}
+              onHide={this.props.onHide}
             />
           </div>
         </div>

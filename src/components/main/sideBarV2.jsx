@@ -292,7 +292,6 @@ class SideBarV2 extends Component {
   }
 
   openPage(id) {
-    
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
     })
@@ -650,7 +649,7 @@ class SideBarV2 extends Component {
       >
         {this.showAddCollectionModal()}
         {this.collectionId
-          ? (isDashboardRoute(this.props, true))  && (
+          ? isDashboardRoute(this.props, true) && (
               <div className='mx-3'>
                 <div className='d-flex collection-name my-2'>
                   <div
@@ -688,8 +687,8 @@ class SideBarV2 extends Component {
             )
           : !getCurrentUser()
             ? this.renderEmptyCollectionsIfNotLoggedIn()
-            // [info] collection render 
-            : this.renderCollections()}
+            : // [info] collection render
+              this.renderCollections()}
       </div>
     )
   }
@@ -712,8 +711,8 @@ class SideBarV2 extends Component {
     return (
       <>
         <div className='plr-3'>
-          { this.renderSearch()}
-          { isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
+          {this.renderSearch()}
+          {isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
           {/* {this.renderDownloadDesktopApp()} */}
           {isOnDashboardPage && this.renderGlobalAddButton()}
         </div>
@@ -782,7 +781,6 @@ class SideBarV2 extends Component {
   }
 
   showAddEntitySelectionModal() {
-  
     return (
       this.state.openAddEntitySelectionModal && (
         <AddEntitySelectionModal
@@ -847,7 +845,6 @@ class SideBarV2 extends Component {
   }
 
   render() {
-    
     return (
       <nav className={this.getSidebarInteractionClass()}>
         {this.showAddEntitySelectionModal()}
@@ -862,14 +859,7 @@ class SideBarV2 extends Component {
           )}
         <div className='primary-sidebar'>
           {/* [info] for publishedPage only this part is important */}
-          {isDashboardRoute(this.props, true) ? (
-            this.renderDashboardSidebar()
-          ) : 
-          
-          this.renderDashboardSidebar()
-          
-          
-          }
+          {isDashboardRoute(this.props, true) ? this.renderDashboardSidebar() : this.renderDashboardSidebar()}
         </div>
       </nav>
     )
