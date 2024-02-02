@@ -80,8 +80,8 @@ class BodyContainer extends Component {
         selectedBodyType = 'raw'
       }
       const data = this.state.data
-      const type = selectedBodyType?.split('-')
-      data[type[type?.length - 1]] = this.props.body.value
+      const type = selectedBodyType?.split('-') || []
+      data[type[type?.length > 1 ? type?.length - 1 : 0]] = this.props.body.value
       if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
         document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
         this.setState({
