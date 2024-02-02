@@ -10,6 +10,11 @@
   max-width: 330px !important;
   min-width: 250px !important;
 }
+
+.split-sidebar > div:nth-child(3) {
+  overflow: scroll !important;
+}
+
 .Resizer {
   width: 1px;
   background: #e6dbd4;
