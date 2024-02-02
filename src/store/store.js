@@ -33,7 +33,6 @@ const rootReducer = combineReducers({
   responseView: toggleResponseReducer,
   feedbacks: publishDocsReducer,
   clientData: clientDataReducer,
-  publicData : publicReducer
 })
 
 const persistConfig = {

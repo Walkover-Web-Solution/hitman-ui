@@ -29,7 +29,6 @@ const mapStateToProps = (state) => {
     endpoints: state.pages,
     tabs: state.tabs,
     clientData: state.clientData,
-    publicData: state.publicData
   }
 }
 
@@ -46,7 +45,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
-    setCurrentPublishId:(payload) => dispatch(currentPublishId(payload))
   }
 }
 
@@ -167,10 +165,10 @@ class Endpoints extends Component {
       })
     } else {
       let id = endpoint?.id
-      this.props.setCurrentPublishId(id)
       sessionStorage.setItem('currentPublishIdToShow', id)
       let pathName = getUrlPathById(id, this.props.pages)
-      this.props.history.push(`/p/${pathName}`)
+      pathName = (isTechdocOwnDomain)?`/p/${pathName}`: pathName
+      this.props.history.push(pathName)
     }
   }
 

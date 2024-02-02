@@ -29,7 +29,6 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     clientData: state.clientData,
     modals: state.modals,
-    publicData: state.publicData
   }
 }
 
@@ -42,7 +41,6 @@ const mapDispatchToProps = (dispatch) => {
     duplicate_group: (group) => dispatch(duplicateGroup(group)),
     update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
-    setCurrentPublishId:(payload) => dispatch(currentPublishId(payload))
   }
 }
 
@@ -550,10 +548,10 @@ class Groups extends Component {
             pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
       })
     }else{
-      this.props.setCurrentPublishId(id)
       sessionStorage.setItem('currentPublishIdToShow', id)
       let pathName = getUrlPathById(id, this.props.pages)
-      this.props.history.push(`/p/${pathName}`)
+      pathName = (isTechdocOwnDomain)?`/p/${pathName}`: pathName
+      this.props.history.push(pathName)
     }
   }
 

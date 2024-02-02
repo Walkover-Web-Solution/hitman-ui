@@ -280,7 +280,7 @@ export function handleChangeInUrlField(data) {
 export function handleBlurInUrlField(data) {
   const inputValue = data
   const protocolRegex = /^(?:([a-z]+:\/\/))/i
-  let protocol = inputValue.split('/')[0]
+  let protocol = inputValue?.split('/')[0]
   protocol = inputValue.substring(0, protocol.length + 2)
   // Checks for inputValue has protocol or not, and if not then prefixes https:// with it
   if (!protocol.match(protocolRegex)) {
@@ -550,7 +550,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   return { ...untitled }
 }
 
-export function getUrlPathById  (id, sidebar) {
+export function getUrlPathById  (id, sidebar, ) {
   let path = [];
   let versionName = null;
   // not add invisible parent page name in path 
@@ -565,7 +565,13 @@ export function getUrlPathById  (id, sidebar) {
   
   let actualPath  = path.reverse().join('/');
   if(versionName){
-    actualPath =  `${actualPath}?versionName=${versionName}`
+    actualPath = `${actualPath}?versionName=${versionName}`
+  }
+  // always add collectionId in query params in url if own domain
+  if(isTechdocOwnDomain()){
+    let collectionId = sessionStorage.getItem('publicCollectionId');
+    let operator = (versionName) ? '&' : '?'; // if versionName is added then add & else add ?
+    actualPath = actualPath + operator +`collectionId=${collectionId}`
   }
   return actualPath;
 }

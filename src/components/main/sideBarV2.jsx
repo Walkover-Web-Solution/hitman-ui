@@ -847,7 +847,6 @@ class SideBarV2 extends Component {
   }
 
   render() {
-    // // debugger
     return (
       <nav className={this.getSidebarInteractionClass()}>
         {this.showAddEntitySelectionModal()}

@@ -28,7 +28,6 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     clientData: state.clientData,
-    publicData: state.publicData
   }
 }
 
@@ -46,7 +45,6 @@ const mapDispatchToProps = (dispatch) => {
     set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload)),
     set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
-    setCurrentPublishId:(payload) => dispatch(currentPublishId(payload))
   }
 }
 
@@ -263,7 +261,6 @@ class CollectionParentPages extends Component {
   }
 
   toggleParentPageIds(id) {
-    // // debugger
     const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
@@ -276,10 +273,10 @@ class CollectionParentPages extends Component {
               pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
         })
     }else{
-      this.props.setCurrentPublishId(id)
       sessionStorage.setItem('currentPublishIdToShow', id)
       let pathName = getUrlPathById(id, this.props.pages)
-      this.props.history.push(`/p/${pathName}`)
+      pathName = (isTechdocOwnDomain)?`/p/${pathName}`: pathName
+      this.props.history.push(pathName)
     }
   }
 

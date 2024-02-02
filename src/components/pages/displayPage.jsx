@@ -18,7 +18,7 @@ import { useQuery } from 'react-query'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    let currentIdToShow = props?.publicData?.currentPublishId
+    let currentIdToShow = sessionStorage.getItem('currentPublishIdToShow')
     const pageId = currentIdToShow || props.publicPageId || props.match.params.pageId;
     const { data, error } = useQuery(
       ['pageContent', pageId],
@@ -53,7 +53,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
-    publicData: state.publicData
   }
 }
 

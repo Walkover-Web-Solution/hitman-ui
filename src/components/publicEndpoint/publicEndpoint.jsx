@@ -60,7 +60,6 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     endpoints: state.endpoints,
-    publicData : state.publicData
   }
 }
 
@@ -69,7 +68,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetch_all_public_endpoints: (collectionIdentifier, domain) =>
       dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain)),
     add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams)),
-    setCurrentPublishId:(payload) => dispatch(currentPublishId(payload))
   }
 }
 
@@ -174,13 +172,11 @@ class PublicEndpoint extends Component {
       var id = response?.data?.publishedContent?.id;
       if(response?.data?.publishedContent?.type === 4)  { 
         this.props.mutationFn.mutate({ type:'endpoint' , id:id, content: response?.data?.publishedContent })
-        sessionStorage.setItem('currentPublishIdToShow', id)
        } 
       else { 
         this.props.mutationFn.mutate({ type:'pageContent' , id:id, content:  response?.data?.publishedContent?.contents })
-        sessionStorage.setItem('currentPublishIdToShow', id)
       }
-      this.props.setCurrentPublishId(id)
+      sessionStorage.setItem('currentPublishIdToShow', id)
     }
   }
 
@@ -347,7 +343,7 @@ class PublicEndpoint extends Component {
     setTitle(docTitle)
     setFavicon(docFaviconLink)
 
-    let idToRender = this.props?.publicData?.currentPublishId;
+    let idToRender = sessionStorage.setItem('currentPublishIdToShow', id)
     let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 2 seems not necessary 

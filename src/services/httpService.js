@@ -11,18 +11,18 @@ let instance = axios.create()
 instance.interceptors.response.use(null, (error) => {
   const expectedError = error.response && error.response.status >= 400 && error.response.status < 500
 
-  // if (error.response.config.method === 'get' && error.response.status === 404) {
-  //   history.push({
-  //     pathname: '/404_PAGE',
-  //     error: error
-  //   })
-  // }
+  if (error.response.config.method === 'get' && error.response.status === 404) {
+    history.push({
+      pathname: '/404_PAGE',
+      error: error
+    })
+  }
 
   if (error?.response?.config?.method === 'get' && error?.response?.status === 403) {
-    // history.push({
-    //   pathname: '/403_PAGE',
-    //   error: error
-    // })
+    history.push({
+      pathname: '/403_PAGE',
+      error: error
+    })
   }
 
   if (!expectedError) {
