@@ -70,6 +70,7 @@ import ChatbotsideBar from './chatbotsideBar'
 import { useQuery, useQueryClient } from 'react-query'
 import utilityFunctions from '../common/utility.js'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
+import Footer from '../main/Footer.jsx'
 
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
 const shortid = require('shortid')
@@ -228,7 +229,11 @@ const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    const endpointId = isOnPublishedPage() ? currentIdToShow : (props?.match?.params.endpointId !== 'new' ? props?.match?.params?.endpointId : props?.activeTabId)
+    const endpointId = isOnPublishedPage()
+      ? currentIdToShow
+      : props?.match?.params.endpointId !== 'new'
+        ? props?.match?.params?.endpointId
+        : props?.activeTabId
     const data = useQuery(['endpoint', endpointId], () => getEndpointContent(props, queryClient), {
       refetchOnWindowFocus: false,
       cacheTime: 5000000,
@@ -239,7 +244,8 @@ const withQuery = (WrappedComponent) => {
 
     const setQueryUpdatedData = (data) => {
       let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-      const endpointId = props?.match?.params.endpointId !== 'new' ? props?.match?.params?.endpointId || currentIdToShow : props?.activeTabId
+      const endpointId =
+        props?.match?.params.endpointId !== 'new' ? props?.match?.params?.endpointId || currentIdToShow : props?.activeTabId
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(['endpoint', endpointId], data)
@@ -3239,6 +3245,7 @@ class DisplayEndpoint extends Component {
                 )}
               </div>
               {/* <ApiDocReview {...this.props} /> */}
+              {isOnPublishedPage() && <Footer />}
             </div>
             {this.isDashboardAndTestingView() ? (
               <div className='response-container-main position-relative'>

@@ -387,7 +387,7 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    const expanded =  this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
+    const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
     const publishData = this.props.modals.publishData
     const rootId = pageId
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)

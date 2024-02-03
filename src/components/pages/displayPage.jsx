@@ -1,7 +1,16 @@
 import React, { Component } from 'react'
 import { store } from '../../store/store'
 import { connect } from 'react-redux'
-import { isDashboardRoute, isStateDraft, isStateReject, msgText, isStatePending, isStateApproved, getEntityState, isOnPublishedPage } from '../common/utility'
+import {
+  isDashboardRoute,
+  isStateDraft,
+  isStateReject,
+  msgText,
+  isStatePending,
+  isStateApproved,
+  getEntityState,
+  isOnPublishedPage
+} from '../common/utility'
 import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
@@ -16,6 +25,7 @@ import { getPageContent } from '../../services/pageServices'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 import { useQuery } from 'react-query'
 import { SESSION_STORAGE_KEY } from '../common/utility'
+import Footer from '../main/Footer'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -133,7 +143,10 @@ class DisplayPage extends Component {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
+        <div>
+          {isOnPublishedPage() && <h2>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
+          <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
+        </div>
       )
     }
   }
@@ -299,7 +312,7 @@ class DisplayPage extends Component {
         {this.renderPageName()}
         {this.checkPageRejected()}
         {/* <ApiDocReview {...this.props} /> */}
-       
+        {isOnPublishedPage() && <Footer />}
       </div>
     )
   }

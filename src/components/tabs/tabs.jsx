@@ -266,14 +266,14 @@ class CustomTabs extends Component {
         )
       }
     } else if (tab.type === 'endpoint') {
-      if (this.props.endpoints[tabId]) {
-        const endpoint = this.props.endpoints[tabId]
+      if (this.props.pages[tabId]) {
+        const endpoint = this.props.pages[tabId]
         return (
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[tabId]?.name}</div> */}
             <div className='d-flex align-items-center'>
-              <div className={`api-label ${endpoint.requestType} request-type-bgcolor ml-4 mt-1 arrow-top`}> {endpoint.requestType} </div>
-              <div className='endpoint-name ml-1'>{this.props.endpoints[tabId].name}</div>
+              <div className={`api-label ${this.props.pages[tabId]?.requestType} request-type-bgcolor ml-4 mt-1 arrow-top`}> {this.props.pages[tabId]?.requestType} </div>
+              <div className='endpoint-name ml-1'>{this.props.pages[tabId].name}</div>
             </div>
           </div>
         )

@@ -4,8 +4,8 @@ import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
 import moment from 'moment'
 import Collections from '../collections/collections'
-import { isDashboardRoute, ADD_VERSION_MODAL_NAME, isElectron, getOnlyUrlPathById, SESSION_STORAGE_KEY, getUrlPathById, isTechdocOwnDomain } from '../common/utility'
-
+import { isDashboardRoute, ADD_VERSION_MODAL_NAME, isElectron, getOnlyUrlPathById, SESSION_STORAGE_KEY, getUrlPathById, isTechdocOwnDomain,   isOnPublishedPage
+} from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import PublishColelctionInfo from './publishCollectionInfo'
 import { ReactComponent as ArrowIcon } from '../../assets/icons/Vector.svg'
@@ -697,11 +697,20 @@ class SideBarV2 extends Component {
     )
   }
 
+  renderCollectionName() {
+    let collectionKeys = Object.keys(this.props?.collections || {})
+    const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
+
+    return <h5>{collectionName}</h5>
+  }
+
   renderDashboardSidebar() {
+    const element = isOnPublishedPage()
     var isOnDashboardPage = isDashboardRoute(this.props)
     return (
       <>
         <div className='plr-3'>
+          {isOnPublishedPage() && this.renderCollectionName()}
           {this.renderSearch()}
           {isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
           {/* {this.renderDownloadDesktopApp()} */}
