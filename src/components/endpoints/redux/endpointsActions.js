@@ -268,20 +268,6 @@ export const onEndpointAddedError = (error, newEndpoint, requestId) => {
   }
 }
 
-export const updateEndpointRequest = (editedEndpoint) => {
-  return {
-    type: endpointsActionTypes.UPDATE_ENDPOINT_REQUEST,
-    editedEndpoint
-  }
-}
-
-export const onEndpointUpdated = (response) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINT_UPDATED,
-    response
-  }
-}
-
 export const onEndpointUpdatedError = (error, originalEndpoint) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR,

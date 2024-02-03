@@ -11,7 +11,7 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     groups: state.groups,
-    endpoints: state.endpoints,
+    endpoints: state.pages,
     tabState: state.tabs.tabs,
     activeTabId: state.tabs.activeTabId
   }
@@ -268,13 +268,11 @@ class EndpointBreadCrumb extends Component {
               {this.renderLeftAngle(this.versionName)}
               {this.groupName && <span>{`${this.groupName}`}</span>}
               {this.renderLeftAngle(this.groupName)}
-              <span className='end-point-title'>
-                {this.props?.isEndpoint ? this.props?.endpointContent?.data?.name || '' : this.props?.page?.name}
-              </span>
-              {this.props?.endpoint?.publishedEndpoint?.isPublished && (
+              <span className='end-point-title'>{this.state.endpointTitle}</span>
+              {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
                 <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
               )}
-              {this.state.isPagePublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
+              {/* {this.state.isPagePublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>} */}
             </div>
           )}
         </div>

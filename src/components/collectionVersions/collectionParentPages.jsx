@@ -18,6 +18,7 @@ import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
+import { ReactComponent as PlusOrange } from '../../assets/icons/plus_orange.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 import { deletePage, duplicatePage } from '../pages/redux/pagesActions'
@@ -343,6 +344,14 @@ class CollectionParentPages extends Component {
     // You can perform other actions here
   }
 
+  openEditVersionForm(pageId) {
+    this.setState({
+      selectedVersion: {
+        ...this.props.pages[pageId]
+      }
+    })
+  }
+
   toggleListVisibility() {
     this.setState((prevState) => ({
       isListVisible: !prevState.isListVisible
@@ -514,7 +523,7 @@ class CollectionParentPages extends Component {
                         <i className='uil uil-ellipsis-v' />
                       </div>
                       <div className='dropdown-menu dropdown-menu-right'>
-                        <div className='dropdown-item' onClick={() => this.openEditVersionForm(this.props.versions[pageId])}>
+                        {/* <div className='dropdown-item' onClick={() => this.openEditVersionForm(pageId)}>
                           <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                             <path
                               d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
@@ -525,7 +534,7 @@ class CollectionParentPages extends Component {
                             />
                           </svg>{' '}
                           Edit
-                        </div>
+                        </div> */}
                         <div
                           className='dropdown-item'
                           onClick={() => {
@@ -558,24 +567,7 @@ class CollectionParentPages extends Component {
                             this.openAddVersionForm(pageId)
                           }}
                         >
-                          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                            <path
-                              d='M2.25 4.5H3.75H15.75'
-                              stroke='#E98A36'
-                              strokeWidth='1.5'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                            />
-                            <path
-                              d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
-                              stroke='#E98A36'
-                              strokeWidth='1.5'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                            />
-                            <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                            <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          </svg>{' '}
+                                                   <PlusOrange />{' '}
                           Add Version
                         </div>
                         {/* <div

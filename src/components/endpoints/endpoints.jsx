@@ -466,13 +466,14 @@ class Endpoints extends Component {
                 }
               >
                 {this.displayEndpointName(endpointId)}
+
                 <div className='d-flex align-items-center'>
                   <div className=' sidebar-item-action'>
                     {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
                   </div>
-                  <div className='ml-1 published-icon transition'>
-                    {isOnDashboardPage && this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
-                  </div>
+                  {/* <div className='ml-1 published-icon transition'>
+                    {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+                  </div> */}
                 </div>
               </button>
             </div>
