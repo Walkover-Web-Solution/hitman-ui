@@ -587,7 +587,7 @@ export class PublishSidebar extends Component {
           {' '}
         </div>
         <div style={saveAsSidebarStyle} className='publish-sidebar-container'>
-          <div className='publish-api-doc-heading'>Publish API Documentation</div>
+          <div className='publish-api-doc-heading'>Publish API Documentation1</div>
           {this.renderCollectionDropDown()}
           {/* {this.renderParentPagesList()} */}
           {this.renderFooter()}

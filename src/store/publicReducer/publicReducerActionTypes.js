@@ -1,0 +1,5 @@
+const CURRENT_PUBLISH_ID = 'CURRENT_PUBLISH_ID'
+
+export default {
+  CURRENT_PUBLISH_ID
+}

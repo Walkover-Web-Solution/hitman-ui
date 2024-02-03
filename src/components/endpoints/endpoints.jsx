@@ -12,6 +12,8 @@ import filterService from '../../services/filterService'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
+import DisplayEndpoint from './displayEndpoint'
+import { currentPublishId } from '../../store/publicReducer/publicReducerActions.js'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -25,7 +27,8 @@ const mapStateToProps = (state) => {
   return {
     endpoints: state.pages,
     tabs: state.tabs,
-    clientData: state.clientData
+    clientData: state.clientData,
+    publicData: state.publicData
   }
 }
 
@@ -41,7 +44,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    setCurrentPublishId: (payload) => dispatch(currentPublishId(payload))
   }
 }
 
@@ -432,6 +436,7 @@ class Endpoints extends Component {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const isOnDashboardPage = isDashboardRoute(this.props)
     if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
+
     return (
       <>
         {publishData ? (

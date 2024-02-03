@@ -51,7 +51,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 const mapStateToProps = (state) => {
   return {
-    pages: state.pages
+    pages: state.pages,
+    publicData: state.publicData
   }
 }
 

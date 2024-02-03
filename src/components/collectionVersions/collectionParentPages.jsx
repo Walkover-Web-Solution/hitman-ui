@@ -27,12 +27,15 @@ import { addIsExpandedAction, setDefaultversionId, updataForIsPublished } from '
 import pageService from '../pages/pageService'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 import { onDefaultVersion } from '../publishDocs/redux/publishDocsActions'
+import { currentPublishId } from '../../store/publicReducer/publicReducerActions.js'
+
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
     pages: state.pages,
-    clientData: state.clientData
+    clientData: state.clientData,
+    publicData: state.publicData
   }
 }
 
@@ -49,7 +52,8 @@ const mapDispatchToProps = (dispatch) => {
     update_isExpand_for_pages: (payload) => dispatch(addIsExpandedAction(payload)),
     set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload)),
     set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    setCurrentPublishId: (payload) => dispatch(currentPublishId(payload))
   }
 }
 
@@ -377,9 +381,10 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
+    const expanded = this.props.onPublishedPage || this.props?.clientData?.[pageId]?.isExpanded || false
     const publishData = this.props.modals.publishData
     const rootId = pageId
+    let OnDashboardRoute = isDashboardRoute(this.props)
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
     return (
       <>
@@ -389,11 +394,14 @@ class CollectionParentPages extends Component {
             <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
               <button tabIndex={-1} className={'pl-3 ' + (expanded ? 'expanded' : '')}>
                 <div className='d-flex align-items-center cl-name'>
-                  <input
-                    type='checkbox'
-                    checked={this.props?.clientData?.[this.props?.rootParentId]?.checkedForPublished || false}
-                    onChange={this.handleCheckboxChange}
-                  />
+                  {
+                    <input
+                      type='checkbox'
+                      checked={this.props?.clientData?.[this.props?.rootParentId]?.checkedForPublished || false}
+                      onChange={this.handleCheckboxChange}
+                    />
+                  }
+
                   <div className='d-flex gap-5 ms-2'>
                     <div className='sidebar-accordion-item text-truncate ml-2 '>{this.props.pages[pageId]?.name}</div>
                     <DropdownButton
@@ -411,37 +419,39 @@ class CollectionParentPages extends Component {
                         </Dropdown.Item>
                       ))}
                     </DropdownButton>
-                    <OverlayTrigger placement='top' overlay={<Tooltip>Select Default version to publish</Tooltip>}>
-                      <DropdownButton
-                        id='dropdown-basic-button'
-                        className='dropdown-custom'
-                        drop='down-centered'
-                        onClick={() => {
-                          this.handleButton(rootId)
-                        }}
-                        title={'Select Default Version'}
-                      >
-                        {this.state.clickedList.map((item, index) => (
-                          <Dropdown.Item className='d-flex' key={index}>
-                            <input
-                              type='checkbox'
-                              checked={this.state.selectedCheckbox === item.name}
-                              onChange={() => {
-                                this.handleCheckboxClick(item.name, item.id)
-                              }}
-                            />
-                            <Dropdown.Item
-                              key={index}
-                              onClick={(event) => {
-                                event.stopPropagation()
-                              }}
-                            >
-                              {item.name}
+                    {
+                      <OverlayTrigger placement='top' overlay={<Tooltip>Select Default version to publish</Tooltip>}>
+                        <DropdownButton
+                          id='dropdown-basic-button'
+                          className='dropdown-custom'
+                          drop='down-centered'
+                          onClick={() => {
+                            this.handleButton(rootId)
+                          }}
+                          title={'Select Default Version'}
+                        >
+                          {this.state.clickedList.map((item, index) => (
+                            <Dropdown.Item className='d-flex' key={index}>
+                              <input
+                                type='checkbox'
+                                checked={this.state.selectedCheckbox === item.name}
+                                onChange={() => {
+                                  this.handleCheckboxClick(item.name, item.id)
+                                }}
+                              />
+                              <Dropdown.Item
+                                key={index}
+                                onClick={(event) => {
+                                  event.stopPropagation()
+                                }}
+                              >
+                                {item.name}
+                              </Dropdown.Item>
                             </Dropdown.Item>
-                          </Dropdown.Item>
-                        ))}
-                      </DropdownButton>
-                    </OverlayTrigger>
+                          ))}
+                        </DropdownButton>
+                      </OverlayTrigger>
+                    }
                   </div>
                 </div>
               </button>
