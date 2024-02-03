@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { store } from '../../store/store'
 import { connect } from 'react-redux'
-import { isDashboardRoute, isStateDraft, isStateReject, msgText, isStatePending, isStateApproved, getEntityState } from '../common/utility'
+import { isDashboardRoute, isStateDraft, isStateReject, msgText, isStatePending, isStateApproved, getEntityState, isOnPublishedPage } from '../common/utility'
 import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
@@ -20,7 +20,7 @@ import { SESSION_STORAGE_KEY } from '../common/utility'
 const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    const pageId = props?.match?.params?.pageId || currentIdToShow
+    const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
     const { data, error } = useQuery(
       ['pageContent', pageId],
       async () => {
