@@ -9,7 +9,7 @@ import PublicView from './components/main/publicView'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import { ToastContainer } from 'react-toastify'
 import ClientDoc from './components/publishDocs/clientDoc'
-import { getOrgId, isElectron } from './components/common/utility'
+import { getOrgId, isElectron, isTechdocOwnDomain } from './components/common/utility'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import Cookies from 'universal-cookie'
@@ -109,30 +109,14 @@ class App extends Component {
   render = () => {
     return this.renderApp()
   }
-
-
-  // TODO :: Refactor later
+  
   renderApp = () => {
-    const PUBLIC_URL = process.env.REACT_APP_PUBLIC_UI_URL || ''
-    const PUBLIC_DOMAIN = PUBLIC_URL.split('/')[2]
-    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
-    const currentDomain = window.location.href.split('/')[2]
-    const path = window.location.href.split('/')[3]
-
-    if (!isElectron() && !domainsList.includes(currentDomain)) {
-      if (currentDomain === PUBLIC_DOMAIN) {
-        if (path !== 'p' && path !== 'dashboard') {
-          window.localStorage.clear()
-          const cookies = new Cookies()
-          cookies.remove('token')
-          this.props.history.push({ pathname: '/dashboard/' })
-          return null
-        }
-      } else {
-          return (
-            {Public} 
-          )
-      }
+    if (!isElectron() && !isTechdocOwnDomain()) {
+        return (
+          <Switch>
+          <Route path='/' component={Public} />
+          </Switch>
+        )
     }
 
     return (

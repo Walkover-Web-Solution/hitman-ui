@@ -5,6 +5,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
 import DisplayPage from '../pages/displayPage'
 import SideBarV2 from '../main/sideBarV2'
+import { ERROR_404_PUBLISHED_PAGE } from '../../components/errorPages'
+
 import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
 import { store } from '../../store/store'
@@ -95,13 +97,15 @@ class PublicEndpoint extends Component {
     })
 
     let url =  new URL(window.location.href);
-    const queryParams = new URLSearchParams(this.props.location.search);
+    if(this.props?.location?.search){
+      var queryParams = new URLSearchParams(this.props.location.search);
+    }
 
     // even if user copy paste other published collection with collection Id in the params change it
-    if(queryParams.has('collectionId')){
+    if(queryParams?.has('collectionId')){
       var collectionId = queryParams.get('collectionId')
       sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId)
-    }else{
+    }else if(sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID) != null){
        var collectionId = sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID)
     }
 
@@ -110,23 +114,18 @@ class PublicEndpoint extends Component {
     // [info] part 2 get sidebar data and collection data  also set queryParmas for 2nd api call
     if(isTechdocOwnDomain()) { // internal case here collectionId will be there always
       queryParamApi2.collectionId = collectionId
-
-      // setting path
-      const pathSegments = url.pathname.split("/");
-      queryParamApi2.path = pathSegments.slice(2).join("/"); // ignoring /p in pathName
-
+      queryParamApi2.path = url.pathname.slice(2); // ignoring '/p' in pathName
       this.props.add_collection_and_pages(null,{ collectionId: collectionId}) 
     }else if(!isTechdocOwnDomain()){   // external case
       queryParamApi2.custom_domain = window.location.hostname; // setting hostname
-      queryParamApi2.path = url.pathname
+      queryParamApi2.path =   url.pathname.slice(1) // ignoring '/' in pathname
       this.props.add_collection_and_pages(null,{custom_domain: window.location.hostname}) 
     }
 
     // setting version if present
-    if(url.searchParams.has('VersionName')){
-      queryParamApi2.versionName = url.searchParams.get('VersionName');
+    if(queryParams?.has('version')){
+      queryParamApi2.versionName = queryParams.get('version');
     }
-     
      
     let queryParamsString = "?";
     for (let key in queryParamApi2) {
@@ -141,8 +140,10 @@ class PublicEndpoint extends Component {
     const response = await generalApiService.getPublishedContentByPath(queryParamsString);
     this.setDataToReactQueryAndSessionStorage(response)
   }
+  
   async componentDidUpdate(){
       let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+      // before this display page or display endpoint gets called and data gets rendered
       if(!this.props.keyExistInReactQuery(currentIdToShow)){
         const response = generalApiService.getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type)
         if(this.props.pages?.[currentIdToShow]?.type == 4  ){
@@ -171,8 +172,8 @@ class PublicEndpoint extends Component {
   }
 
   getCTALinks() {
-    const collectionId = this.props.match.params.collectionIdentifier
-    let { cta, links } = this.props.collections[collectionId]?.docProperties || { cta: [], links: [] }
+    const collectionId = this.props?.match?.params?.collectionIdentifier
+    let { cta, links } = this.props.collections?.[collectionId]?.docProperties || { cta: [], links: [] }
     cta = cta ? cta.filter((o) => o.name.trim() && o.value.trim()) : []
     links = links ? links.filter((o) => o.name.trim() && o.link.trim()) : []
     const isCTAandLinksPresent = cta.length !== 0 || links.length !== 0
@@ -393,12 +394,14 @@ class PublicEndpoint extends Component {
                   />
                  }
               
-              {(type == 1 || type == 3) &&   <DisplayPage
+              {(type == 1 || type == 3 ) &&   <DisplayPage
                     {...this.props}
                     fetch_entity_name={this.fetchEntityName.bind(this)}
                     publicCollectionTheme={this.state.collectionTheme}
                   />
                 }
+
+                { !type && <ERROR_404_PUBLISHED_PAGE/>}
                      
                   {this.displayCTAandLink()}
                   {/* <div className='d-flex flex-row justify-content-start'>
@@ -407,8 +410,19 @@ class PublicEndpoint extends Component {
                     </div> */}
                   {this.state.openReviewModal && this.reviewModal()}
                 </div>
-              ) :
-               <h3>Loading....</h3>}
+              ) : 
+              (
+                <>
+                <div className='custom-loading-container'>
+                  <div className='loading-content'>
+                    <button className='spinner-border' />
+                    <p className='mt-3'>Loading</p>
+                  </div>
+                </div>
+                     
+              </>
+              )
+               }
             </div>
           </SplitPane>
         </main>

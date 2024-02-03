@@ -531,7 +531,7 @@ class Groups extends Component {
     }else{
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props.pages)
-      pathName = (isTechdocOwnDomain)?`/p/${pathName}`: pathName
+      pathName = isTechdocOwnDomain()?`/p/${pathName}`: `/${pathName}`
       this.props.history.push(pathName)
     }
   }

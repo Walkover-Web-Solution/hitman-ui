@@ -572,7 +572,7 @@ export function getUrlPathById  (id, sidebar, ) {
   
   let actualPath  = path.reverse().join('/');
   if(versionName){
-    actualPath = `${actualPath}?versionName=${versionName}`
+    actualPath = `${actualPath}?version=${versionName}`
   }
   // always add collectionId in query params in url if own domain
   if(isTechdocOwnDomain()){
