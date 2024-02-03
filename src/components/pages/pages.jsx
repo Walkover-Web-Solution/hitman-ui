@@ -20,7 +20,8 @@ const pagesEnum = {
 
 const mapStateToProps = (state) => {
   return {
-    tabs: state.tabs
+    tabs: state.tabs,
+    pages: state.pages
   }
 }
 

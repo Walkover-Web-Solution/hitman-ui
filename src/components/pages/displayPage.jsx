@@ -312,7 +312,7 @@ class DisplayPage extends Component {
         {this.renderPageName()}
         {this.checkPageRejected()}
         {/* <ApiDocReview {...this.props} /> */}
-        <Footer />
+        {isOnPublishedPage() && <Footer />}
       </div>
     )
   }

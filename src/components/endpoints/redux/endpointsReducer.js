@@ -59,18 +59,6 @@ function endpointsReducer(state = initialState, action) {
       delete endpoints[action.requestId]
       return endpoints
 
-    case endpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
-      return {
-        ...state,
-        [action.editedEndpoint.id]: action.editedEndpoint
-      }
-
-    case endpointsActionTypes.ON_ENDPOINT_UPDATED:
-      return {
-        ...state,
-        [action.response.id]: action.response
-      }
-
     case endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR:
       toast.error(action.error)
       return {

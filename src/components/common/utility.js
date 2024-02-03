@@ -335,28 +335,28 @@ export function isDashboardAndTestingView(props, view) {
 }
 
 function checkVariableExist(id, entity) {
-  if (entity && entity[id] && entity[id].state !== undefined && entity[id].state !== null) return true
+  if (entity && entity?.id && entity?.state !== undefined && entity.state !== null) return true
   return false
 }
 
 export function isStateApproved(id, entity) {
   if (!checkVariableExist(id, entity)) return false
-  return entity[id].state === statesEnum.APPROVED_STATE
+  return entity?.state === statesEnum.APPROVED_STATE
 }
 
 export function isStatePending(id, entity) {
   if (!checkVariableExist(id, entity)) return false
-  return entity[id].state === statesEnum.PENDING_STATE
+  return entity?.state === statesEnum.PENDING_STATE
 }
 
 export function isStateDraft(id, entity) {
   if (!checkVariableExist(id, entity)) return false
-  return entity[id].state === statesEnum.DRAFT_STATE
+  return entity?.state === statesEnum.DRAFT_STATE
 }
 
 export function isStateReject(id, entity) {
   if (!checkVariableExist(id, entity)) return false
-  return entity[id].state === statesEnum.REJECT_STATE
+  return entity?.state === statesEnum.REJECT_STATE
 }
 
 export function hexToRgb(hex, opacity) {
@@ -424,7 +424,7 @@ export function sensitiveInfoFound(endpoint) {
   }
   // check for all params if theres any JWT token
   if (typeof endpoint.params === 'object') {
-    Object.entries(endpoint.params).forEach((entry) => {
+    Object.entries(endpoint?.params).forEach((entry) => {
       const value = typeof entry[1].value === 'string' ? entry[1].value : ''
       const authData = value.split(' ')
       authData.forEach((item) => {
@@ -453,9 +453,9 @@ export function sensitiveInfoFound(endpoint) {
 
 export function getEntityState(entityId, entity) {
   const isPublic = entity[entityId].isPublished
-  if (isStatePending(entityId, entity)) return 'Pending'
-  if (isStateReject(entityId, entity)) return 'Rejected'
-  if (isStateApproved(entityId, entity)) return 'Approved'
+  if (isStatePending(entityId, entity)) return 0
+  if (isStateReject(entityId, entity)) return 3
+  if (isStateApproved(entityId, entity)) return 2
   if (isStateDraft(entityId, entity) && isPublic) return 'Request Publish'
   if (isStateDraft(entityId, entity) && !isPublic) return 'Make Public'
 }
@@ -554,6 +554,17 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.preScriptText = endpoint.preScript
   untitled.host['BASE_URL'] = endpoint.BASE_URL
   return { ...untitled }
+}
+
+export function getOnlyUrlPathById(id, sidebar) {
+  let path = []
+  // not add invisible parent page name in path
+  while (sidebar?.[id]?.type > 0) {
+      path.push(sidebar[id].name)
+      id = sidebar?.[id]?.parentId
+  }
+  let actualPath = path.reverse().join('/')
+  return actualPath
 }
 
 export function getUrlPathById(id, sidebar) {
