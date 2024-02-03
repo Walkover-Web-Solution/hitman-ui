@@ -46,16 +46,8 @@ export default function ShowCaseSaveAsModal(props) {
 
   const handleSave = () => {
     const currentId = pathData[pathData.length - 1]
-    // endpoint.requestId = this.props.tab.id
-    // endpoint.description = endpointDescription || ''
     props.save_endpoint(currentId, { endpointName: props?.name || '', endpointDescription: props?.description || '' })
     props.onHide()
-    // this.props.add_endpointInCollection(endpoint, id, ({ closeForm, stopLoader }) => {
-    //   if (closeForm) this.closeEndpointFormModal()
-    //   if (stopLoader) this.setState({ saveAsLoader: false })
-    // })
-    // tabService.removeTab(activeTabId, { ...this.props })
-    // moveToNextStep(4)
   }
 
   return (
