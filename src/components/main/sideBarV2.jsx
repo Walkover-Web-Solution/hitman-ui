@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
 import moment from 'moment'
 import Collections from '../collections/collections'
-import CollectionVersions from '../collectionVersions/collectionVersions'
-import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME, isElectron, openExternalLink } from '../common/utility'
+import { isDashboardRoute, ADD_VERSION_MODAL_NAME, isElectron, getOnlyUrlPathById, SESSION_STORAGE_KEY, getUrlPathById, isTechdocOwnDomain } from '../common/utility'
 
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import PublishColelctionInfo from './publishCollectionInfo'
@@ -40,7 +39,7 @@ import CollectionParentPages from '../collectionVersions/collectionParentPages'
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
-    endpoints: state.endpoints,
+    endpoints: state.pages,
     versions: state.versions,
     pages: state.pages,
     groups: state.groups,
@@ -80,13 +79,15 @@ class SideBarV2 extends Component {
       },
       name: '',
       email: '',
+      endpoint: [],
       historySnapshot: null,
       selectedCollectionId: null,
       secondarySidebarToggle: false,
       primarySidebar: null,
       totalEndpointsCount: 0,
       showInviteTeam: false,
-      search: false
+      search: false,
+      endpoints: ''
     }
     this.inputRef = createRef()
     this.sidebarRef = createRef()
@@ -102,6 +103,15 @@ class SideBarV2 extends Component {
   // }
 
   componentDidMount() {
+    const pages = this.props.pages
+    const endpoint = []
+    Object.keys(pages).forEach((key) => {
+      const page = pages[key]
+      if (page && page.type === 4) {
+        endpoint.push(page)
+      }
+    })
+    this.setState({ endpoint: endpoint })
     if (getCurrentUser()) {
       const user = getCurrentUser()
       const name = user.first_name + user.last_name
@@ -161,23 +171,6 @@ class SideBarV2 extends Component {
     }
   }
 
-  openEntity(id, type) {
-    const { orgId } = this.props.match.params
-    let pathname = `/orgs/${orgId}/dashboard`
-    switch (type) {
-      case 'pages':
-        pathname += `/page/${id}`
-        break
-      case 'endpoints':
-        pathname += `/endpoint/${id}`
-        break
-      default:
-        pathname = ''
-        break
-    }
-    if (pathname) this.props.history.push({ pathname })
-  }
-
   // handleShortcuts = (event, data) => {
   //   // const { focused: sidebarFocused, navList, focusedNode } = this.props.sidebar
   //   switch (data) {
@@ -234,29 +227,32 @@ class SideBarV2 extends Component {
 
   handleOnChange = (e) => {
     this.setState({ data: { ...this.state.data, filter: e.target.value } })
-    let obj = Object.values(this.props.historySnapshot)
+    let obj1 = Object.values(this.props.historySnapshot)
+    let obj2 = [];
+    let obj3 = []; 
+    let searchData = e.target.value.toLowerCase()
     if (this.props.historySnapshot) {
-      obj = obj.filter(
+      obj1 = obj1.filter(
         (o) =>
-          o.endpoint.name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          o.endpoint.BASE_URL?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          o.endpoint.uri?.toLowerCase().includes(e.target.value.toLowerCase())
+          o.endpoint?.name?.toLowerCase().includes(searchData) ||
+          o.endpoint?.BASE_URL?.toLowerCase().includes(searchData) ||
+          o.endpoint?.uri?.toLowerCase().includes(searchData)
       )
     }
-    let obj2 = Object.values(this.props.endpoints)
-    if (this.props.endpoints) {
-      obj2 = obj2.filter(
-        (o) =>
-          o.name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          o.BASE_URL?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          o.uri?.toLowerCase().includes(e.target.value.toLowerCase())
-      )
+    let sideBarData = this.props.pages
+
+    for (let key in sideBarData) {
+      let o = sideBarData[key]
+      if (
+        o.name?.toLowerCase().includes(searchData) ||
+        o.BASE_URL?.toLowerCase().includes(searchData) ||
+        o.uri?.toLowerCase().includes(searchData)
+         ) {
+        sideBarData[key]?.type == 4 ? obj2.push(sideBarData[key]) : obj3.push(sideBarData[key])
+      }
     }
-    let obj3 = Object.values(this.props.pages)
-    if (this.props.pages) {
-      obj3 = obj3.filter((o) => o.name?.toLowerCase().includes(e.target.value.toLowerCase()))
-    }
-    this.setState({ historySnapshot: obj, endpoints: obj2, pages: obj3 })
+     
+    this.setState({ historySnapshot: obj1, endpoints: obj2, pages: obj3 })
   }
 
   emptyFilter() {
@@ -286,52 +282,45 @@ class SideBarV2 extends Component {
   }
 
   openEndpoint(id) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${id}`
-    })
+    if(isDashboardRoute(this.props)){
+      this.props.history.push({
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${id}`
+      })
+    }
+    else{
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
+      let pathName = getUrlPathById(id, this.props.pages)
+      pathName = isTechdocOwnDomain()?`/p/${pathName}`: `/${pathName}`
+      this.props.history.push(pathName)
+    }
+
+    
   }
 
   openPage(id) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
-    })
+
+    if(isDashboardRoute(this.props)){
+      this.props.history.push({
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
+      })
+    }
+    else{
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
+      let pathName = getUrlPathById(id, this.props.pages)
+      pathName = isTechdocOwnDomain()?`/p/${pathName}`: `/${pathName}`
+      this.props.history.push(pathName)
+    }
   }
 
   renderPath(id, type) {
     let path = ''
-    let groupId = null
-    let versionId = null
-    let collectionId = null
-    let endpointId = null
-    let pageId = null
+    let collectionId = this.props.pages[id]?.collectionId
     switch (type) {
       case 'endpoint':
-        endpointId = id
-        groupId = this.props.endpoints[endpointId]?.groupId
-        versionId = this.props.groups[groupId]?.versionId
-        collectionId = this.props.versions[versionId]?.collectionId
-        path =
-          this.props.collections[collectionId]?.name +
-          ' > ' +
-          this.props.versions[versionId]?.number +
-          ' > ' +
-          this.props.groups[groupId]?.name
+        path = this.props.collections[collectionId]?.name + ' > ' + getOnlyUrlPathById(id, this.props.pages)
         break
       case 'page':
-        pageId = id
-        groupId = this.props.pages[pageId]?.groupId
-        versionId = this.props.pages[pageId]?.versionId
-        collectionId = this.props.versions[versionId]?.collectionId
-        if (groupId) {
-          path =
-            this.props.collections[collectionId]?.name +
-            ' > ' +
-            this.props.versions[versionId]?.number +
-            ' > ' +
-            this.props.groups[groupId]?.name
-        } else {
-          path = this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number
-        }
+          path = this.props.collections[collectionId]?.name + '>' + getOnlyUrlPathById(id, this.props.pages)
         break
       default:
         path = ''
@@ -369,21 +358,23 @@ class SideBarV2 extends Component {
   renderEndpointsList() {
     return (
       <div>
-        <div className='px-3'>Endpoints</div>
+        {this.state.endpoints.length > 0 && <div className='px-3'>Endpoints</div>}
         <div className='py-3'>
-          {this.state.endpoints &&
-            this.props.endpoints &&
+          {this.state.endpoints.length > 0 &&
             this.state.endpoints.map(
-              (endpoint) =>
+              (endpoint,index) =>
                 Object.keys(endpoint).length !== 0 && (
                   <div
                     className='btn d-flex align-items-center mb-2'
                     onClick={() => {
                       this.openEndpoint(endpoint.id)
                     }}
+                    key={index}
                   >
                     <div className={`api-label lg-label ${endpoint.requestType}`}>
                       <div className='endpoint-request-div'>{endpoint.requestType}</div>
+                      {/* <div className={`api-label lg-label ${'GET'}`}>
+                      <div className='endpoint-request-div'>{'GET'}</div> */}
                     </div>
                     <div className='ml-3'>
                       <div className='sideBarListWrapper'>
@@ -409,13 +400,15 @@ class SideBarV2 extends Component {
           {this.state.pages &&
             this.props.pages &&
             this.state.pages.map(
-              (page) =>
+              
+              (page, index) =>
                 Object.keys(page).length !== 0 && (
                   <div
                     className='btn d-flex align-items-center mb-2'
                     onClick={() => {
                       this.openPage(page.id)
                     }}
+                    key={index}
                   >
                     <div>
                       <i className='uil uil-file-alt' aria-hidden='true' />
@@ -486,10 +479,10 @@ class SideBarV2 extends Component {
 
   renderSearchList() {
     if (this.state.data.filter !== '') {
-      return this.state.pages.length > 0 || this.state.endpoints.length > 0 || this.state.historySnapshot.length > 0 ? (
+      return this.state.pages.length > 0 || this.state.endpoint.length > 0 || this.state.historySnapshot.length > 0 ? (
         <div className='searchResult'>
           {this.state.pages.length > 0 ? this.renderPagesList() : null}
-          {this.state.endpoints.length > 0 ? this.renderEndpointsList() : null}
+          {this.state.endpoint.length > 0 ? this.renderEndpointsList() : null}
           {this.state.historySnapshot.length > 0 ? (
             <div>
               <div className='px-3'>History</div>
