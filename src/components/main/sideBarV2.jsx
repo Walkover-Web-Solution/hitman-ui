@@ -74,6 +74,7 @@ function compareByCreatedAt(a, b) {
 class SideBarV2 extends Component {
   constructor(props) {
     super(props)
+    console.log(this.props.historySnapshot, "history");
     this.state = {
       data: {
         filter: ''
@@ -112,6 +113,7 @@ class SideBarV2 extends Component {
         endpoint.push(page);
       }
     });
+    console.log(endpoint, "endpooint valueee");
   
     this.setState({ endpoint : endpoint });
     if (getCurrentUser()) {
@@ -125,6 +127,7 @@ class SideBarV2 extends Component {
         historySnapshot: Object.values(this.props.historySnapshot)
       })
     }
+    console.log(Object.values(this.props.historySnapshot), "76890")
     if (this.props.endpoints) {
       this.setState({
         endpoints: Object.values(this.props.endpoints)
@@ -165,6 +168,7 @@ class SideBarV2 extends Component {
       this.setState({
         historySnapshot: Object.values(this.props.historySnapshot)
       })
+      console.log(Object.values(this.props.historySnapshot), "inside ifff");
     }
     if (this.props.endpoints !== prevProps.endpoints) {
       this.setState({
@@ -340,10 +344,15 @@ class SideBarV2 extends Component {
         break
       case 'page':
         pageId = id
-        groupId = this.props.pages[pageId]?.groupId
-        parentId = this.props.pages[id]?.versionId
+        // groupId = this.props.pages[pageId]?.groupId
+        console.log(this.props.pages[id]);
+        parentId = this.props.pages[id]?.parentId
+        // console.log(parentId, "parentId");
         versionId = this.props.pages[parentId]?.parentId
+        // console.log(versionId, "versionId");
+        console.log(this.props.pages[parentId], 6789)
         collectionId = this.props.pages[id]?.collectionId
+        // console.log(collectionId, "collectionId");
         if (id) {
           path =
             this.props.collections[collectionId]?.name +
@@ -352,9 +361,9 @@ class SideBarV2 extends Component {
             // ' > ' +
             // this.props.groups[groupId]?.name
         } 
-        else if (versionId) {
-          path = this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number
-        }
+        // else if (versionId) {
+        //   path = this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number
+        // }
         else{
           path = this.props.collections[collectionId]?.name
         }
@@ -397,7 +406,7 @@ class SideBarV2 extends Component {
     
     return (
       <div>
-        <div className='px-3'>Endpoints</div>
+        {this.state.endpoints.length > 0 && (<div className='px-3'>Endpoints</div>)}
         <div className='py-3'>
           {this.state.endpoints.length > 0 &&
             this.state.endpoints.map(
@@ -409,10 +418,10 @@ class SideBarV2 extends Component {
                       this.openEndpoint(endpoint.id)
                     }}
                   >
-                    {/* <div className={`api-label lg-label ${endpoint.requestType}`}>
-                      <div className='endpoint-request-div'>{endpoint.requestType}</div> */}
-                      <div className={`api-label lg-label ${'GET'}`}>
-                      <div className='endpoint-request-div'>{'GET'}</div>
+                    <div className={`api-label lg-label ${endpoint.requestType}`}>
+                      <div className='endpoint-request-div'>{endpoint.requestType}</div>
+                      {/* <div className={`api-label lg-label ${'GET'}`}>
+                      <div className='endpoint-request-div'>{'GET'}</div> */}
                     </div>
                     <div className='ml-3'>
                       <div className='sideBarListWrapper'>
@@ -522,8 +531,8 @@ class SideBarV2 extends Component {
           {this.state.endpoint.length > 0 ? this.renderEndpointsList() : null}
           {this.state.historySnapshot.length > 0 ? (
             <div>
-              {/* <div className='px-3'>History</div> */}
-              {/* {this.renderHistoryList()} */}
+              <div className='px-3'>History</div>
+              {this.renderHistoryList()}
             </div>
           ) : null}
         </div>
