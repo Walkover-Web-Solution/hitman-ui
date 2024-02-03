@@ -118,12 +118,12 @@ class PublishCollectionInfo extends Component {
   }
 
   async redirectToApiFeedback() {
-    const collectionId = this.props.collectionId
-    if (collectionId) {
-      this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
-    }
-    const activeTab = this.props.tabs.activeTabId
-    store.dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
+    // const collectionId = this.props.collectionId
+    // if (collectionId) {
+    //   this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+    // }
+    // const activeTab = this.props.tabs.activeTabId
+    // store.dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
   }
 
   renderInOverlay(method, msg) {
@@ -224,7 +224,7 @@ class PublishCollectionInfo extends Component {
       !currentCollection?.importedFromMarketPlace && (
         <div className='public-colection-info'>
           {this.managePublicDoc()}
-          {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))}
+          {/* {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))} */}
           {this.IsParentPagePublishedInACollection(this.props.collections[this.props.collectionId]?.rootParentId) && isPublic && (
             <div className='publicurl'>{this.renderPublicUrl()}</div>
           )}

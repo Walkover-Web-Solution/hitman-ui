@@ -588,7 +588,7 @@ export function isTechdocOwnDomain() {
 }
 
 export function isOnPublishedPage() {
-  const path = window.location.href.split('/')[3] // example http://localhost:3000/p/
+  const path = window.location.pathname.split('/')[1] // example http://localhost:3000/p/
   return ((isTechdocOwnDomain() && path == 'p') ||  !isTechdocOwnDomain())
 }
 

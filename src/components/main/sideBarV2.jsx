@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
-import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME, isElectron, openExternalLink } from '../common/utility'
+ import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME, isElectron, openExternalLink, isOnPublishedPage } from '../common/utility'
 
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import PublishColelctionInfo from './publishCollectionInfo'
@@ -704,11 +704,22 @@ class SideBarV2 extends Component {
     )
   }
 
+  renderCollectionName(){
+    let collectionKeys = Object.keys(this.props?.collections||{});
+    const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
+
+    return (
+      <h5>{collectionName}</h5>
+    )
+  }
+
   renderDashboardSidebar() {
+    const element = isOnPublishedPage();
     var isOnDashboardPage = isDashboardRoute(this.props)
     return (
       <>
         <div className='plr-3'>
+          {isOnPublishedPage() && this.renderCollectionName()}
           {this.renderSearch()}
           {isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
           {/* {this.renderDownloadDesktopApp()} */}

@@ -363,7 +363,7 @@ class PublicEndpoint extends Component {
             {/* [info] part 3 subpart 1 sidebar data left content */}
             <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
             { 
-            collectionId   &&  <  SideBarV2 
+            collectionId   &&  <SideBarV2 
             {...this.props} 
             collectionName={collectionName} 
             rootParentId = {collectionTheme} 
