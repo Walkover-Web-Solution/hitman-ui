@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import RenderData from './renderData/renderData'
 import './showCaseSaveAsModal.scss'
 
@@ -11,7 +11,6 @@ export default function ShowCaseSaveAsModal(props) {
       activeTabId: state.tabs.activeTabId
     }
   })
-
 
   const [pathData, setPathData] = useState(['organisation'])
 
@@ -80,10 +79,14 @@ export default function ShowCaseSaveAsModal(props) {
           <button onClick={handleSave} className={`btn btn-primary mr-2 ${getDisable()}`}>
             Save
           </button>
-          <button onClick={() => {
-                props.onHide()
-              }}
-              className='btn btn-secondary outline  api-cancel-btn'>Cancel</button>
+          <button
+            onClick={() => {
+              props.onHide()
+            }}
+            className='btn btn-secondary outline  api-cancel-btn'
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>

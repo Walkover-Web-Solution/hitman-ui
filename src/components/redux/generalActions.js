@@ -3,9 +3,11 @@ import generalApiService from '../../services/generalApiService'
 
 export const addCollectionAndPages = (orgId, queryParams = null) => {
   return (dispatch) => {
-    let queryParamsString = `?`;
+    let queryParamsString = `?`
     // setting query params value
-    for(let key in queryParams){queryParamsString += `${key}=${queryParams[key]}`}
+    for (let key in queryParams) {
+      queryParamsString += `${key}=${queryParams[key]}`
+    }
     generalApiService
       .getCollectionsAndPages(orgId, queryParamsString)
       .then((response) => {

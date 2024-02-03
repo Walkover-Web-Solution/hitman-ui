@@ -685,9 +685,8 @@ class SideBarV2 extends Component {
                 </div>
               </div>
             )
-            // [info] collection render 
-            : this.renderCollections()
-        }
+          : // [info] collection render
+            this.renderCollections()}
       </div>
     )
   }
@@ -710,8 +709,8 @@ class SideBarV2 extends Component {
     return (
       <>
         <div className='plr-3'>
-          { this.renderSearch()}
-          { isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
+          {this.renderSearch()}
+          {isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
           {/* {this.renderDownloadDesktopApp()} */}
           {isOnDashboardPage && this.renderGlobalAddButton()}
         </div>
@@ -858,7 +857,7 @@ class SideBarV2 extends Component {
           )}
         <div className='primary-sidebar'>
           {/* [info] for publishedPage only this part is important */}
-          
+
           {this.renderDashboardSidebar()}
         </div>
       </nav>

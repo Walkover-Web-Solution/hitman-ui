@@ -10,7 +10,7 @@ class ERROR_404_PUBLISHED_PAGE extends Component {
         {message ? <h3>{message}</h3> : null}
         <button
           onClick={() => {
-            window.location.href = '/';
+            window.location.href = '/'
           }}
           mat-button
         >

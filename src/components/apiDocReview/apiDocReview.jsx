@@ -42,7 +42,7 @@ class ApiDocReview extends Component {
   }
 
   setParent() {
-    const { pageId, endpointId } = this.props?.match?.params || {};
+    const { pageId, endpointId } = this.props?.match?.params || {}
 
     const parentId = endpointId || pageId
     const parentType = endpointId ? 'endpoint' : 'page'

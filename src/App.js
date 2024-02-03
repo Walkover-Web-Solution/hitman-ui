@@ -109,14 +109,14 @@ class App extends Component {
   render = () => {
     return this.renderApp()
   }
-  
+
   renderApp = () => {
     if (!isElectron() && !isTechdocOwnDomain()) {
-        return (
-          <Switch>
+      return (
+        <Switch>
           <Route path='/' component={Public} />
-          </Switch>
-        )
+        </Switch>
+      )
     }
 
     return (
