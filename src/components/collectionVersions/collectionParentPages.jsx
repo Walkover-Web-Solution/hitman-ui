@@ -4,7 +4,15 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import ShareVersionForm from './shareVersionForm'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { isDashboardRoute, getParentIds, ADD_VERSION_MODAL_NAME } from '../common/utility'
+import {
+  isDashboardRoute,
+  getParentIds,
+  ADD_VERSION_MODAL_NAME,
+  getUrlPathById,
+  isTechdocOwnDomain,
+  SESSION_STORAGE_KEY,
+  isOnPublishedPage
+} from '../common/utility'
 import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
@@ -131,7 +139,7 @@ class CollectionParentPages extends Component {
   findDefaultVersion = () => {
     const { pages, rootParentId } = this.props
     const children = pages[rootParentId]?.child || []
-    return children.map((childId) => pages[childId]).find((page) => page.state === 1)
+    return children.map((childId) => pages[childId]).find((page) => page?.state === 1)
   }
 
   setParentPageForEntity(id, type) {
@@ -259,14 +267,22 @@ class CollectionParentPages extends Component {
   }
 
   toggleParentPageIds(id) {
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
       id: id
     })
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
-    })
+
+    if (isDashboardRoute(this.props)) {
+      this.props.history.push({
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
+      })
+    } else {
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
+      let pathName = getUrlPathById(id, this.props.pages)
+      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+      this.props.history.push(pathName)
+    }
   }
 
   scrolltoPage(pageId) {
@@ -362,11 +378,10 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
+    const expanded =  this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
     const publishData = this.props.modals.publishData
     const rootId = pageId
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
-    if (!isDashboardRoute(this.props, true)) return null
     return (
       <>
         {/* for publish side barrrrrrrr */}
@@ -381,7 +396,7 @@ class CollectionParentPages extends Component {
                     onChange={this.handleCheckboxChange}
                   />
                   <div className='d-flex gap-5 ms-2'>
-                    <div className='sidebar-accordion-item text-truncate ml-2 '>{this.props.pages[pageId].name}</div>
+                    <div className='sidebar-accordion-item text-truncate ml-2 '>{this.props.pages[pageId]?.name}</div>
                     <DropdownButton
                       id='dropdown-basic-button'
                       title={
@@ -393,7 +408,7 @@ class CollectionParentPages extends Component {
                     >
                       {this.props.pages[rootId].child.map((childId, index) => (
                         <Dropdown.Item key={index} onClick={() => this.handleDropdownItemClick(childId, rootId)}>
-                          {this.props.pages[childId].name}
+                          {this.props.pages[childId]?.name}
                         </Dropdown.Item>
                       ))}
                     </DropdownButton>
@@ -462,14 +477,14 @@ class CollectionParentPages extends Component {
                     <img src={ExpandArrow} alt='' />
                   </span>
                   <div className='d-flex'>
-                    <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId].name}</div>
+                    <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
                     <DropdownButton
                       className=''
                       id='dropdown-basic-button'
                       onClick={(event) => event.stopPropagation()}
                       title={
                         <span className='dropdown-title'>
-                          {this.props.pages[this.props.rootParentId].child.length === 1
+                          {this.props.pages?.[this.props.rootParentId]?.child?.length === 1
                             ? this.state.defaultVersionName
                             : this.state.selectedVersionName}
                         </span>
@@ -477,7 +492,7 @@ class CollectionParentPages extends Component {
                     >
                       {this.props.pages[rootId].child.map((childId, index) => (
                         <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
-                          <span className='dropdown-item-text'>{this.props.pages[childId].name}</span>
+                          <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
                         </Dropdown.Item>
                       ))}
                     </DropdownButton>
@@ -485,71 +500,85 @@ class CollectionParentPages extends Component {
                   </div>
                 </div>
 
-                {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
-                  <div className='sidebar-item-action d-flex align-items-center'>
-                    <div
-                      className='mr-1 d-flex align-items-center'
-                      onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
-                    >
-                      <Plus />
-                    </div>
-                    <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                      <i className='uil uil-ellipsis-v' />
-                    </div>
-                    <div className='dropdown-menu dropdown-menu-right'>
-                      <div className='dropdown-item' onClick={() => this.openEditVersionForm(this.props.versions[pageId])}>
-                        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                          <path
-                            d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
-                            stroke='#E98A36'
-                            strokeWidth='1.5'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                        </svg>{' '}
-                        Edit
-                      </div>
+                {
+                  // [info] options not to show on publihsed page
+                  isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                    <div className='sidebar-item-action d-flex align-items-center'>
                       <div
-                        className='dropdown-item'
-                        onClick={() => {
-                          this.openDeleteVersionModal(pageId)
-                        }}
+                        className='mr-1 d-flex align-items-center'
+                        onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
                       >
-                        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                          <path d='M2.25 4.5H3.75H15.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          <path
-                            d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
-                            stroke='#E98A36'
-                            strokeWidth='1.5'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                          <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                        </svg>{' '}
-                        Delete
+                        <Plus />
                       </div>
-                      <div
-                        className='dropdown-item'
-                        onClick={() => {
-                          this.openAddVersionForm(pageId)
-                        }}
-                      >
-                        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                          <path d='M2.25 4.5H3.75H15.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          <path
-                            d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
-                            stroke='#E98A36'
-                            strokeWidth='1.5'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                          <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                        </svg>{' '}
-                        Add Version
+                      <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                        <i className='uil uil-ellipsis-v' />
                       </div>
-                      {/* <div
+                      <div className='dropdown-menu dropdown-menu-right'>
+                        <div className='dropdown-item' onClick={() => this.openEditVersionForm(this.props.versions[pageId])}>
+                          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                            <path
+                              d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
+                              stroke='#E98A36'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            />
+                          </svg>{' '}
+                          Edit
+                        </div>
+                        <div
+                          className='dropdown-item'
+                          onClick={() => {
+                            this.openDeleteVersionModal(pageId)
+                          }}
+                        >
+                          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                            <path
+                              d='M2.25 4.5H3.75H15.75'
+                              stroke='#E98A36'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            />
+                            <path
+                              d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
+                              stroke='#E98A36'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            />
+                            <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                            <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                          </svg>{' '}
+                          Delete
+                        </div>
+                        <div
+                          className='dropdown-item'
+                          onClick={() => {
+                            this.openAddVersionForm(pageId)
+                          }}
+                        >
+                          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                            <path
+                              d='M2.25 4.5H3.75H15.75'
+                              stroke='#E98A36'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            />
+                            <path
+                              d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
+                              stroke='#E98A36'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            />
+                            <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                            <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                          </svg>{' '}
+                          Add Version
+                        </div>
+                        {/* <div
                         className='dropdown-item'
                         onClick={() => {
                           this.handleDuplicate(this.props.rootParentId)
@@ -573,49 +602,50 @@ class CollectionParentPages extends Component {
                         </svg>{' '}
                         Duplicate
                       </div> */}
-                      <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
-                        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                          <path
-                            d='M13.5 6C14.7426 6 15.75 4.99264 15.75 3.75C15.75 2.50736 14.7426 1.5 13.5 1.5C12.2574 1.5 11.25 2.50736 11.25 3.75C11.25 4.99264 12.2574 6 13.5 6Z'
-                            stroke='#E98A36'
-                            strokeWidth='1.5'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                          <path
-                            d='M4.5 11.25C5.74264 11.25 6.75 10.2426 6.75 9C6.75 7.75736 5.74264 6.75 4.5 6.75C3.25736 6.75 2.25 7.75736 2.25 9C2.25 10.2426 3.25736 11.25 4.5 11.25Z'
-                            stroke='#E98A36'
-                            strokeWidth='1.5'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                          <path
-                            d='M13.5 16.5C14.7426 16.5 15.75 15.4926 15.75 14.25C15.75 13.0074 14.7426 12 13.5 12C12.2574 12 11.25 13.0074 11.25 14.25C11.25 15.4926 12.2574 16.5 13.5 16.5Z'
-                            stroke='#E98A36'
-                            strokeWidth='1.5'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                          <path
-                            d='M6.4425 10.1323L11.565 13.1173'
-                            stroke='#E98A36'
-                            strokeWidth='1.5'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                          <path
-                            d='M11.5575 4.88232L6.4425 7.86732'
-                            stroke='#E98A36'
-                            strokeWidth='1.5'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                        </svg>
-                        Share
+                        <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
+                          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                            <path
+                              d='M13.5 6C14.7426 6 15.75 4.99264 15.75 3.75C15.75 2.50736 14.7426 1.5 13.5 1.5C12.2574 1.5 11.25 2.50736 11.25 3.75C11.25 4.99264 12.2574 6 13.5 6Z'
+                              stroke='#E98A36'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            />
+                            <path
+                              d='M4.5 11.25C5.74264 11.25 6.75 10.2426 6.75 9C6.75 7.75736 5.74264 6.75 4.5 6.75C3.25736 6.75 2.25 7.75736 2.25 9C2.25 10.2426 3.25736 11.25 4.5 11.25Z'
+                              stroke='#E98A36'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            />
+                            <path
+                              d='M13.5 16.5C14.7426 16.5 15.75 15.4926 15.75 14.25C15.75 13.0074 14.7426 12 13.5 12C12.2574 12 11.25 13.0074 11.25 14.25C11.25 15.4926 12.2574 16.5 13.5 16.5Z'
+                              stroke='#E98A36'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            />
+                            <path
+                              d='M6.4425 10.1323L11.565 13.1173'
+                              stroke='#E98A36'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            />
+                            <path
+                              d='M11.5575 4.88232L6.4425 7.86732'
+                              stroke='#E98A36'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            />
+                          </svg>
+                          Share
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ) : null}
+                  ) : null
+                }
               </button>
               {expanded ? (
                 <div className='version-collapse'>
@@ -835,46 +865,7 @@ class CollectionParentPages extends Component {
         All your versions,subpages and endpoints present in this page will be deleted.`,
             this.state.selectedPage
           )}
-        {!isDashboardRoute(this.props, true) ? (
-          <>
-            <div
-              className={
-                this.filteredPages && Object.keys(this.filteredPages).length > 1
-                  ? this.state.enableSearch
-                    ? 'versionWrapper versionsAvailable d-flex enableSearch'
-                    : 'versionWrapper versionsAvailable d-flex'
-                  : 'versionWrapper'
-              }
-            >
-              {this.filteredPages && Object.keys(this.filteredPages).length > 1 ? (
-                <select
-                  className='selected-version form-control light-orange-bg'
-                  onChange={(e) => {
-                    this.setSelectedParentPage(e)
-                  }}
-                >
-                  {Object.keys(this.filteredPages)?.map((id, index) => (
-                    <option key={index} value={index}>
-                      {this.props.pages[id]?.name}
-                    </option>
-                  ))}
-                </select>
-              ) : null}
-              {this.renderPublicSearchBar()}
-            </div>
-          </>
-        ) : null}
-        {isDashboardRoute(this.props, true)
-          ? // this.props.pagesToRender.map((pageId, index) => {
-            this.renderBody(this.props.rootParentId)
-          : // })
-            this.state.value
-            ? this.renderResponses()
-            : this.filteredPages &&
-              Object.keys(this.filteredPages) &&
-              Object.keys(this.filteredPages)
-                .filter((pageId) => this.filteredPages[pageId].collectionId === this.props.collection_id)
-                .map((pageId, index) => this.renderBody(pageId, index, versionsCount))}
+        {this.renderBody(this.props.rootParentId)}
 
         {/* <div className='pl-4'>{this.renderForm(versionsCount)}</div> */}
       </>

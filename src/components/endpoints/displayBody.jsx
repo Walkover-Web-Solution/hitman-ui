@@ -64,34 +64,34 @@ class BodyContainer extends Component {
     this._isMounted = false
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
-  //   if (this.props?.body !== '' && !this.state?.selectedBodyType) {
-  //     let selectedBodyType = this.props.body.type
-  //     if (
-  //       selectedBodyType === 'JSON' ||
-  //       selectedBodyType === 'HTML' ||
-  //       selectedBodyType === 'JavaScript' ||
-  //       selectedBodyType === 'XML' ||
-  //       selectedBodyType === 'TEXT'
-  //     ) {
-  //       this.showRawBodyType = true
-  //       this.rawBodyType = selectedBodyType
-  //       selectedBodyType = 'raw'
-  //     }
-  //     const data = this.state.data
-  //     const type = selectedBodyType?.split('-')
-  //     data[type[type?.length - 1]] = this.props.body.value
-  //     if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
-  //       document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
-  //       this.setState({
-  //         selectedRawBodyType: this.rawBodyType ? this.rawBodyType : 'TEXT',
-  //         selectedBodyType,
-  //         data
-  //       })
-  //     }
-  //   }
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
+    if (this.props?.body !== '' && !this.state?.selectedBodyType) {
+      let selectedBodyType = this.props.body.type
+      if (
+        selectedBodyType === 'JSON' ||
+        selectedBodyType === 'HTML' ||
+        selectedBodyType === 'JavaScript' ||
+        selectedBodyType === 'XML' ||
+        selectedBodyType === 'TEXT'
+      ) {
+        this.showRawBodyType = true
+        this.rawBodyType = selectedBodyType
+        selectedBodyType = 'raw'
+      }
+      const data = this.state.data
+      const type = selectedBodyType?.split('-') || []
+      data[type[type?.length > 1 ? type?.length - 1 : 0]] = this.props.body.value
+      if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
+        document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
+        this.setState({
+          selectedRawBodyType: this.rawBodyType ? this.rawBodyType : 'TEXT',
+          selectedBodyType,
+          data
+        })
+      }
+    }
+  }
 
   handleSelectBodyType(bodyType, bodyDescription) {
     switch (bodyType) {

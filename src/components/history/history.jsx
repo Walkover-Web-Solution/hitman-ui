@@ -146,8 +146,7 @@ class History extends Component {
 
       groupedHistory[dateGroup].push(history)
     })
-    const sortedGroupedHistory = Object.entries(groupedHistory)
-    .sort(([dateGroupA], [dateGroupB]) => {
+    const sortedGroupedHistory = Object.entries(groupedHistory).sort(([dateGroupA], [dateGroupB]) => {
       if (dateGroupA === 'Today') return -1
       if (dateGroupB === 'Today') return 1
       if (dateGroupA === 'Yesterday') return -1

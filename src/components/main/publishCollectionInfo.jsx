@@ -66,7 +66,7 @@ class PublishCollectionInfo extends Component {
   }
 
   renderPublicUrl() {
-    const url = defaultDomain + '/p/' + this.props.collectionId
+    const url = defaultDomain + '/p?collectionId=' + this.props.collectionId
     const { versions, groups, endpoints, collectionId } = this.props
     const targetVersionIds = _.values(versions)
       .filter((version) => version.collectionId === collectionId)
@@ -206,6 +206,18 @@ class PublishCollectionInfo extends Component {
   //   )
   // }
 
+  IsParentPagePublishedInACollection(rootParentId) {
+    let childs = this.props.pages?.[rootParentId]?.child
+    if (childs?.length > 0) {
+      for (let i = 0; i < childs?.length; i++) {
+        if (this.props.pages[childs[i]]?.isPublished == true) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
   renderPublicCollectionInfo(isPublic) {
     const currentCollection = this.props.collections[this.props.collectionId]
     return (
@@ -213,7 +225,9 @@ class PublishCollectionInfo extends Component {
         <div className='public-colection-info'>
           {this.managePublicDoc()}
           {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))}
-          {isPublic && <div className='publicurl'>{this.renderPublicUrl()}</div>}
+          {this.IsParentPagePublishedInACollection(this.props.collections[this.props.collectionId]?.rootParentId) && isPublic && (
+            <div className='publicurl'>{this.renderPublicUrl()}</div>
+          )}
         </div>
       )
     )

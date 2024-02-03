@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
 import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
@@ -160,13 +161,11 @@ class Endpoints extends Component {
         collectionId
       })
     } else {
-      this.props.history.push({
-        pathname: `/p/${collectionId}/e/${endpoint.id}/${this.props.collections[collectionId].name}`,
-        title: 'update endpoint',
-        endpoint: endpoint,
-        groupId: groupId,
-        Environment: 'publicCollectionEnvironment'
-      })
+      let id = endpoint?.id
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
+      let pathName = getUrlPathById(id, this.props.pages)
+      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+      this.props.history.push(pathName)
     }
   }
 
@@ -431,6 +430,7 @@ class Endpoints extends Component {
   displaySingleEndpoint(endpointId) {
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
+    const isOnDashboardPage = isDashboardRoute(this.props)
     if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     return (
       <>
@@ -471,7 +471,7 @@ class Endpoints extends Component {
                     {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
                   </div>
                   <div className='ml-1 published-icon transition'>
-                    {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+                    {isOnDashboardPage && this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div>
                 </div>
               </button>
@@ -516,46 +516,6 @@ class Endpoints extends Component {
           this.displaySingleEndpoint(endpointId)
         ))} */}
         {endpointId?.length === 0 && this.renderForm()}
-      </>
-    )
-  }
-
-  displayPublicSingleEndpoint(endpointId) {
-    const idToCheck = this.props.location.pathname.split('/')[3] === 'e' ? this.props.location.pathname.split('/')[4] : null
-    return (
-      <div
-        className={idToCheck === endpointId ? 'hm-sidebar-item active' : 'hm-sidebar-item'}
-        key={endpointId}
-        onClick={() => this.handleDisplay(this.props.endpoints[endpointId], this.props.parent_id, this.props.collection_id, true)}
-        onDoubleClick={() => this.handleDisplay(this.props.endpoints[endpointId], this.props.parent_id, this.props.collection_id, false)}
-      >
-        <div className={`api-label ${this.props.endpoints[endpointId].requestType}`}>
-          <div className='endpoint-request-div pr-3'>{this.props.endpoints?.[endpointId]?.requestType}</div>
-        </div>
-        <div className='endpoint-name-div ml-2'>{this.props.endpoints[endpointId].name}</div>
-      </div>
-    )
-  }
-
-  displayPublicEndpoints(endpoints) {
-    const sortedEndpoints = []
-    Object.values(endpoints).forEach((endpoint) => {
-      sortedEndpoints.push(endpoint)
-    })
-    sortedEndpoints.sort(function (a, b) {
-      if (a.position < b.position) {
-        return -1
-      }
-      if (a.position > b.position) {
-        return 1
-      }
-      return 0
-    })
-    return (
-      <>
-        {sortedEndpoints &&
-          Object.keys(sortedEndpoints).length !== 0 &&
-          sortedEndpoints.map((endpoint) => this.displayPublicSingleEndpoint(endpoint.id))}
       </>
     )
   }
@@ -612,13 +572,8 @@ class Endpoints extends Component {
     endpointsArray = this.extractEndpointsFromIds(endpointIds)
     let endpoints = {}
     endpoints = this.getEndpointsEntity(endpointsArray)
-
-    if (isDashboardRoute(this.props, true)) {
-      return this.displayUserEndpoints(this?.props?.endpointId)
-    } else {
-      return this.displayPublicEndpoints(endpoints)
-    }
+    return this.displayUserEndpoints(this?.props?.endpointId)
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Endpoints)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Endpoints))

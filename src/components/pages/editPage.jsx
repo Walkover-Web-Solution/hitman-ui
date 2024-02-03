@@ -20,7 +20,12 @@ const withQuery = (WrappedComponent) => {
     const pageContentData = useQuery(['pageContent', pageId])
     const mutation = useMutation(updateContent, {
       onSuccess: (data) => {
-        queryClient.setQueryData(['pageContent', pageId], data?.contents || '')
+        queryClient.setQueryData(['pageContent', pageId], data?.contents || '', {
+          refetchOnWindowFocus: false,
+          cacheTime: 5000000,
+          enabled: true,
+          staleTime: 600000
+        })
         props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
       }
     })

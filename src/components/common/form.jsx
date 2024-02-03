@@ -125,7 +125,7 @@ class Form extends Component {
         value={data[name]}
         onChange={(e) => this.handleChange(e, isURLInput)}
         onBlur={(e) => this.handleBlur(e, isURLInput)}
-        error={errors[name]}
+        error={errors?.[name]}
         placeholder={placeholder}
         disabled={data.disabled}
         mandatory={mandatory}

@@ -1243,11 +1243,10 @@ button.editBtn {
 }
 
 .hm-sidebar .hm-sidebar-outer-block {
-  padding: 15px 0 50px;
-  height: 90vh;
-  overflow: auto;
-  float: left;
-  width: 100%;
+  padding: 0;
+  // border: 0.5px solid #e6dbd4;
+  border-radius: 4px;
+  margin-bottom: 10px;
 }
 
 body .btn {

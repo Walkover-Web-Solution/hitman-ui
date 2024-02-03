@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { isDashboardRoute, getParentIds } from '../common/utility'
+import { isDashboardRoute, getParentIds, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
 // import Endpoints from "../endpoints/endpointsCopy";
 import Endpoints from '../endpoints/endpoints'
 // import GroupForm from '../groups/groupForm'
@@ -329,9 +330,9 @@ class Groups extends Component {
   }
 
   renderBody(groupId) {
-    const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded || false
+    const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ??  isOnPublishedPage()
 
-    return isDashboardRoute(this.props, true) ? (
+    return (
       <>
         {/* for publish side barrrr */}
         {this.props.isPublishData && this.props.modals.publishData ? (
@@ -387,7 +388,9 @@ class Groups extends Component {
                 </span>
                 <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[groupId]?.name}</div>
               </div>
-              {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+              {
+              // [info] options not to show on publihsed page
+              isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
                 <div className='sidebar-item-action d-flex align-items-center'>
                   <div onClick={() => this.openAddPageEndpointModal(groupId)} className='mr-1 d-flex align-items-center'>
                     <Plus />
@@ -510,46 +513,27 @@ class Groups extends Component {
           </div>
         )}
       </>
-    ) : (
-      <div className='hm-sidebar-block'>
-        <div className='hm-sidebar-label mb-3'>{this.props.groups[groupId].name}</div>
-        <Endpoints
-          {...this.props}
-          group_id={groupId}
-          endpoints_order={this.props.groups[groupId].endpointsOrder}
-          theme={this.props.collections[this.props.collection_id].theme}
-          // show_filter_groups={this.propsFromGroups.bind(this)}
-        />
-      </div>
     )
-  }
-
-  renderForm(sortedGroups) {
-    const groupsCount = sortedGroups.filter((group) => group.versionId === this.props.version_id).length
-    return (
-      <>
-        {(groupsCount === 0 && isDashboardRoute(this.props, true)) ||
-          (this.this.props.modals.publishData && this.props.isPublishData && (
-            <AddEntity
-              placeholder='Group Name'
-              type='group'
-              entity={this.props.versions[this.props.version_id]}
-              addNewEntity={this.props.addGroup}
-            />
-          ))}
-      </>
-    )
+    
   }
 
   toggleSubPageIds(id) {
-    const isExpanded = this.props.clientData?.[id]?.isExpanded || false
+    const isExpanded =  this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
       id: id
     })
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
-    })
+
+    if(isDashboardRoute(this.props)){
+      this.props.history.push({
+            pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
+      })
+    }else{
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
+      let pathName = getUrlPathById(id, this.props.pages)
+      pathName = isTechdocOwnDomain()?`/p/${pathName}`: `/${pathName}`
+      this.props.history.push(pathName)
+    }
   }
 
   render() {
@@ -585,30 +569,11 @@ class Groups extends Component {
             this.state.selectedGroup
           )}
 
-        {
-          isDashboardRoute(this.props, true) && (
-            // groupId ?
-            <div className='linkWith'>{this.renderBody(this.props?.rootParentId)}</div>
-          )
-          // : null
-        }
+        { <div className='linkWith'>{this.renderBody(this.props?.rootParentId)}</div> }
 
-        {!isDashboardRoute(this.props, true) &&
-          this.sortedGroups &&
-          this.sortedGroups
-            .filter((group) => group.versionId === this.props.version_id)
-            .map((group) =>
-              group?.id ? (
-                <div key={group.id} className='linkWith'>
-                  {this.renderBody(group.id)}
-                </div>
-              ) : null
-            )}
-
-        <div className='pl-4'>{this.renderForm(this.sortedGroups)}</div>
       </>
     )
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Groups)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Groups))
