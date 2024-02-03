@@ -291,7 +291,7 @@ class CollectionsComponent extends Component {
   }
 
   toggleSelectedColelctionIds(id) {
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage();
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_collection({
       value: !isExpanded,
       id

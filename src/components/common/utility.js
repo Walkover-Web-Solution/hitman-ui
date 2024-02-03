@@ -589,7 +589,7 @@ export function isTechdocOwnDomain() {
 
 export function isOnPublishedPage() {
   const path = window.location.pathname.split('/')[1] // example http://localhost:3000/p/
-  return ((isTechdocOwnDomain() && path == 'p') ||  !isTechdocOwnDomain())
+  return (isTechdocOwnDomain() && path == 'p') || !isTechdocOwnDomain()
 }
 
 export default {

@@ -171,7 +171,7 @@ class ContentPanel extends Component {
           })
         }
       } else {
-      this.props.add_new_tab()
+        this.props.add_new_tab()
       }
     }
   }
