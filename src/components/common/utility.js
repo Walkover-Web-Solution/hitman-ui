@@ -587,6 +587,11 @@ export function isTechdocOwnDomain() {
   return domainsList.includes(currentDomain)
 }
 
+export function isOnPublishedPage() {
+  const path = window.location.href.split('/')[3] // example http://localhost:3000/p/
+  return ((isTechdocOwnDomain() && path == 'p') ||  !isTechdocOwnDomain())
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -623,5 +628,6 @@ export default {
   sentryIntegration,
   modifyEndpointContent,
   isTechdocOwnDomain,
-  SESSION_STORAGE_KEY
+  SESSION_STORAGE_KEY,
+  isOnPublishedPage
 }

@@ -114,7 +114,7 @@ class PublicEndpoint extends Component {
     // [info] part 2 get sidebar data and collection data  also set queryParmas for 2nd api call
     if(isTechdocOwnDomain()) { // internal case here collectionId will be there always
       queryParamApi2.collectionId = collectionId
-      queryParamApi2.path = url.pathname.slice(2); // ignoring '/p' in pathName
+      queryParamApi2.path = url.pathname.slice(3); // ignoring '/p/' in pathName
       this.props.add_collection_and_pages(null,{ collectionId: collectionId}) 
     }else if(!isTechdocOwnDomain()){   // external case
       queryParamApi2.custom_domain = window.location.hostname; // setting hostname
