@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 import shortId from 'shortid'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
-import { isDashboardRoute, openExternalLink, getParentIds } from '../common/utility'
+import { isDashboardRoute, openExternalLink, getParentIds, isOnPublishedPage } from '../common/utility'
 import collectionsService from './collectionsService'
 import {
   addCollection,
@@ -291,7 +291,7 @@ class CollectionsComponent extends Component {
   }
 
   toggleSelectedColelctionIds(id) {
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage();
     this.props.update_isExpand_for_collection({
       value: !isExpanded,
       id
@@ -339,7 +339,7 @@ class CollectionsComponent extends Component {
   }
 
   renderBody(collectionId, collectionState) {
-    const expanded = this.props.clientData?.[collectionId]?.isExpanded || false
+    const expanded = this.props.clientData?.[collectionId]?.isExpanded ?? isOnPublishedPage()
     var isOnDashboardPage = isDashboardRoute(this.props)
 
     if (this.scrollRef[collectionId]) {

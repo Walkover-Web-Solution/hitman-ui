@@ -3231,7 +3231,7 @@ class DisplayEndpoint extends Component {
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
               </div>
-              <ApiDocReview {...this.props} />
+              {/* <ApiDocReview {...this.props} /> */}
             </div>
             {this.isDashboardAndTestingView() ? (
               <div className='response-container-main position-relative'>

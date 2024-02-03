@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { isDashboardRoute, getParentIds, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
+import { isDashboardRoute, getParentIds, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
 // import Endpoints from "../endpoints/endpointsCopy";
 import Endpoints from '../endpoints/endpoints'
 // import GroupForm from '../groups/groupForm'
@@ -330,7 +330,7 @@ class Groups extends Component {
   }
 
   renderBody(groupId) {
-    const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded || false
+    const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ??  isOnPublishedPage()
 
     return (
       <>
@@ -518,7 +518,7 @@ class Groups extends Component {
   }
 
   toggleSubPageIds(id) {
-    const isExpanded = this.props.clientData?.[id]?.isExpanded || false
+    const isExpanded =  this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
       id: id

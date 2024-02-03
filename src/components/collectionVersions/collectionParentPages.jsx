@@ -10,7 +10,8 @@ import {
   ADD_VERSION_MODAL_NAME,
   getUrlPathById,
   isTechdocOwnDomain,
-  SESSION_STORAGE_KEY
+  SESSION_STORAGE_KEY,
+  isOnPublishedPage
 } from '../common/utility'
 import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
@@ -266,7 +267,7 @@ class CollectionParentPages extends Component {
   }
 
   toggleParentPageIds(id) {
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded || false
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
       id: id
@@ -377,7 +378,7 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    const expanded = this.props?.clientData?.[pageId]?.isExpanded || false
+    const expanded =  this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
     const publishData = this.props.modals.publishData
     const rootId = pageId
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
