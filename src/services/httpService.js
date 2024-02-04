@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import history from '../history'
 import { logout, getProxyToken } from '../components/auth/authServiceV2'
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL
+// axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
 let instance = axios.create()
 instance.interceptors.response.use(null, (error) => {
