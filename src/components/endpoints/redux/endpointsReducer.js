@@ -102,12 +102,6 @@ function endpointsReducer(state = initialState, action) {
       toast.error(action.error)
       return state
 
-    case publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS:
-      return {
-        ...state,
-        [action.data.id]: action.data
-      }
-
     case publicEndpointsActionTypes.ON_ENDPOINT_STATE_ERROR:
       toast.error(action.error)
       return { ...state }

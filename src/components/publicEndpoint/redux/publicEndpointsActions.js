@@ -1,6 +1,7 @@
 import publicEndpointsService from '../publicEndpointsService.js'
 import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'
+import endpointApiService from '../../endpoints/endpointApiService.js'
 
 export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) => {
   return (dispatch) => {
@@ -102,7 +103,7 @@ export const pendingEndpoint = (endpoint) => {
     publicEndpointsService
       .pendingEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess(response.data))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id }))
       })
       .catch((error) => {
         dispatch(onEndpointStateError(error.response ? error.response.data : error))
@@ -115,7 +116,7 @@ export const approveEndpoint = (endpoint, publishLoaderHandler) => {
     publicEndpointsService
       .approveEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess(response.data))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id }))
         publishLoaderHandler()
       })
       .catch((error) => {
@@ -130,7 +131,7 @@ export const draftEndpoint = (endpoint) => {
     publicEndpointsService
       .draftEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess(response.data))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id }))
       })
       .catch((error) => {
         dispatch(onEndpointStateError(error.response ? error.response.data : error))
@@ -143,7 +144,7 @@ export const rejectEndpoint = (endpoint) => {
     publicEndpointsService
       .rejectEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess(response.data))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: endpoint.id }))
       })
       .catch((error) => {
         dispatch(onEndpointStateError(error.response ? error.response.data : error))
