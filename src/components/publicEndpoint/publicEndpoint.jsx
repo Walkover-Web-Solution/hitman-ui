@@ -6,12 +6,10 @@ import DisplayEndpoint from '../endpoints/displayEndpoint'
 import DisplayPage from '../pages/displayPage'
 import SideBarV2 from '../main/sideBarV2'
 import { ERROR_404_PUBLISHED_PAGE } from '../../components/errorPages'
-
+import '../collections/collections.scss'
 import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
-import { store } from '../../store/store'
-import { getCurrentUser } from '../auth/authServiceV2'
-import UserInfo from '../common/userInfo'
+import '../collectionVersions/collectionVersions.scss'
 // import ThumbUp from '../../assets/icons/thumb_up.svg'
 // import ThumbDown from '../../assets/icons/thumb_down.svg'
 import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
@@ -116,6 +114,8 @@ class PublicEndpoint extends Component {
     } else if (sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID) != null) {
       var collectionId = sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID)
     }
+
+    this.setState({publicCollectionId: collectionId})
 
     var queryParamApi2 = {}
     // example `https://localhost:300/path`
@@ -331,7 +331,7 @@ class PublicEndpoint extends Component {
     let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 1  set collection data
-    let collectionId = idToRender ? this.props.pages?.[idToRender]?.collectionId : null
+    let collectionId = this.state?.publicCollectionId ?? null
 
     // [info] part 2 seems not necessary
     // TODO later
@@ -343,7 +343,7 @@ class PublicEndpoint extends Component {
       setTitle(docTitle)
       setFavicon(docFaviconLink)
       var collectionName = this.props.collections[collectionId]?.name
-      var collectionTheme = this.props.collections[collectionId]?.theme
+      // var collectionTheme = this.props.collections[collectionId]?.theme
     }
 
     const { isCTAandLinksPresent } = this.getCTALinks()
@@ -370,7 +370,7 @@ class PublicEndpoint extends Component {
             {/* [info] part 3 subpart 1 sidebar data left content */}
             <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
               {collectionId && (
-                <SideBarV2 {...this.props} collectionName={collectionName} rootParentId={collectionTheme} OnPublishedPage={true} />
+                <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />
               )}
             </div>
             {/*  [info] part 3 subpart 1 sidebar data right content */}
