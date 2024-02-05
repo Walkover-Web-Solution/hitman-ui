@@ -216,7 +216,7 @@ export const onPageAddedError = (error, newPage) => {
 export const deletePage = (page) => {
   const tabs = store.getState().tabs
   return (dispatch) => {
-    // dispatch(deletePageRequest(page, tabs))
+    dispatch(deletePageRequest(page, tabs))
     pageApiService
       .deletePage(page.id)
       .then((res) => {

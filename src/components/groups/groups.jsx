@@ -402,7 +402,10 @@ class Groups extends Component {
                     <div onClick={() => this.openAddPageEndpointModal(groupId)} className='mr-1 d-flex align-items-center'>
                       <Plus />
                     </div>
-                    <div
+                    <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <i className='uil uil-ellipsis-v' />
+                  </div>
+                    {/* <div
                       className='dropdown-item'
                       onClick={() => {
                         this.openDeleteGroupModal(groupId)
@@ -421,7 +424,7 @@ class Groups extends Component {
                         <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                       </svg>{' '}
                       Delete
-                    </div>
+                    </div> */}
                     <div className='dropdown-menu dropdown-menu-right'>
                       <div className='dropdown-item' onClick={() => this.openEditGroupForm(this.props.groups[groupId])}>
                         <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>

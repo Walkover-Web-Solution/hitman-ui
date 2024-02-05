@@ -624,8 +624,7 @@ class CollectionsComponent extends Component {
                   </div>
                   {/* <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span> */}
                 </div>
-              )
-            }
+              
           </button>
           {expanded ? (
             <div id='collection-collapse'>

@@ -11,7 +11,8 @@ import {
   getUrlPathById,
   isTechdocOwnDomain,
   SESSION_STORAGE_KEY,
-  isOnPublishedPage
+  isOnPublishedPage,
+  SET_DEFAULT_VERSION
 } from '../common/utility'
 import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
@@ -20,7 +21,7 @@ import AddEntity from '../main/addEntity/addEntity'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import { ReactComponent as PlusOrange } from '../../assets/icons/plus_orange.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import {ReactComponent as SideArrow} from '../../assets/icons/side-arrow.svg'
+// import {ReactComponent as SideArrow} from '../../assets/icons/side-arrow.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 import { deletePage, duplicatePage } from '../pages/redux/pagesActions'
@@ -626,7 +627,7 @@ class CollectionParentPages extends Component {
                           this.openSelectDefaultVersionForm(pageId)
                         }}
                       >
-                        <SideArrow />
+                        {/* <SideArrow /> */}
                         Set Default Version
                       </div>
                       {/*<div

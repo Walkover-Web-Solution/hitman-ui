@@ -10,6 +10,7 @@ export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
 export const DEFAULT_URL = 'https://'
+export const SET_DEFAULT_VERSION = 'Set default version'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const statesEnum = {

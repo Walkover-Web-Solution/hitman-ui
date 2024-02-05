@@ -1,5 +1,6 @@
 import { store } from '../../store/store'
-import { addNewTab, closeAllTabs, closeTab,closeBulkTab, setActiveTabId, updateTab } from '../tabs/redux/tabsActions'
+import { addNewTab, closeAllTabs, closeTab, replaceTabForUntitled, setActiveTabId, updateTab } from '../tabs/redux/tabsActions'
+import {   closeBulkTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from './tabStatusTypes'
 import { getCurrentUser } from '../auth/authServiceV2'
 
