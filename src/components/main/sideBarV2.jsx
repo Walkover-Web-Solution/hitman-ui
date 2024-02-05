@@ -4,7 +4,15 @@ import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
 import moment from 'moment'
 import Collections from '../collections/collections'
-import { isDashboardRoute, ADD_VERSION_MODAL_NAME, isElectron, getOnlyUrlPathById, SESSION_STORAGE_KEY, getUrlPathById, isTechdocOwnDomain,   isOnPublishedPage
+import {
+  isDashboardRoute,
+  ADD_VERSION_MODAL_NAME,
+  isElectron,
+  getOnlyUrlPathById,
+  SESSION_STORAGE_KEY,
+  getUrlPathById,
+  isTechdocOwnDomain,
+  isOnPublishedPage
 } from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import PublishColelctionInfo from './publishCollectionInfo'
@@ -228,8 +236,8 @@ class SideBarV2 extends Component {
   handleOnChange = (e) => {
     this.setState({ data: { ...this.state.data, filter: e.target.value } })
     let obj1 = Object.values(this.props.historySnapshot)
-    let obj2 = [];
-    let obj3 = []; 
+    let obj2 = []
+    let obj3 = []
     let searchData = e.target.value.toLowerCase()
     if (this.props.historySnapshot) {
       obj1 = obj1.filter(
@@ -247,11 +255,11 @@ class SideBarV2 extends Component {
         o.name?.toLowerCase().includes(searchData) ||
         o.BASE_URL?.toLowerCase().includes(searchData) ||
         o.uri?.toLowerCase().includes(searchData)
-         ) {
+      ) {
         sideBarData[key]?.type == 4 ? obj2.push(sideBarData[key]) : obj3.push(sideBarData[key])
       }
     }
-     
+
     this.setState({ historySnapshot: obj1, endpoints: obj2, pages: obj3 })
   }
 
@@ -282,32 +290,27 @@ class SideBarV2 extends Component {
   }
 
   openEndpoint(id) {
-    if(isDashboardRoute(this.props)){
+    if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${id}`
       })
-    }
-    else{
+    } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props.pages)
-      pathName = isTechdocOwnDomain()?`/p/${pathName}`: `/${pathName}`
+      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
       this.props.history.push(pathName)
     }
-
-    
   }
 
   openPage(id) {
-
-    if(isDashboardRoute(this.props)){
+    if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
       })
-    }
-    else{
+    } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props.pages)
-      pathName = isTechdocOwnDomain()?`/p/${pathName}`: `/${pathName}`
+      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
       this.props.history.push(pathName)
     }
   }
@@ -320,7 +323,7 @@ class SideBarV2 extends Component {
         path = this.props.collections[collectionId]?.name + ' > ' + getOnlyUrlPathById(id, this.props.pages)
         break
       case 'page':
-          path = this.props.collections[collectionId]?.name + '>' + getOnlyUrlPathById(id, this.props.pages)
+        path = this.props.collections[collectionId]?.name + '>' + getOnlyUrlPathById(id, this.props.pages)
         break
       default:
         path = ''
@@ -362,7 +365,7 @@ class SideBarV2 extends Component {
         <div className='py-3'>
           {this.state.endpoints.length > 0 &&
             this.state.endpoints.map(
-              (endpoint,index) =>
+              (endpoint, index) =>
                 Object.keys(endpoint).length !== 0 && (
                   <div
                     className='btn d-flex align-items-center mb-2'
@@ -400,7 +403,6 @@ class SideBarV2 extends Component {
           {this.state.pages &&
             this.props.pages &&
             this.state.pages.map(
-              
               (page, index) =>
                 Object.keys(page).length !== 0 && (
                   <div
@@ -570,7 +572,7 @@ class SideBarV2 extends Component {
 
   renderSearch() {
     return (
-      <div className='d-flex align-items-center mb-2'>
+      <div tabIndex={0} className='d-flex align-items-center mb-2 search-container'>
         <SearchIcon className='mr-2' />
         <input
           ref={(element) => {
@@ -701,7 +703,30 @@ class SideBarV2 extends Component {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
 
-    return <h5>{collectionName}</h5>
+    return (
+      <div className='hm-sidebar-header'>
+        {this.props.collections[collectionKeys[0]]?.favicon || this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
+          <div className='hm-sidebar-logo'>
+            <img
+              id='publicLogo'
+              alt='public-logo'
+              src={
+                this.props.collections[collectionKeys[0]]?.favicon
+                  ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
+                  : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
+              }
+              // onError={() => { this.setState({ publicLogoError: true })}}
+              width='60'
+              height='60'
+            />
+          </div>
+        )}
+        <h4 className='hm-sidebar-title'>
+          {collectionName}
+          <span>API Documenation</span>
+        </h4>
+      </div>
+    )
   }
 
   renderDashboardSidebar() {
