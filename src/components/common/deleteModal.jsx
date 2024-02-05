@@ -35,10 +35,6 @@ class DeleteModal extends Component {
       const { deleted_version: version } = this.props
       this.props.delete_version(version, this.props)
     }
-    if (title === 'Delete Group') {
-      const { deleted_group: group } = this.props
-      this.props.delete_group(group, this.props)
-    }
     if (title === 'Delete Page') {
       const { deleted_page: page } = this.props
       tabService.removeTab(page.id, { ...this.props })
