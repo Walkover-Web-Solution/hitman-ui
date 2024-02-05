@@ -58,7 +58,13 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
-import { pendingEndpoint, approveEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
+import {
+  pendingEndpoint,
+  approveEndpoint,
+  rejectEndpoint,
+  unPublishEndpointAction,
+  draftEndpoint
+} from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
@@ -136,7 +142,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
     approve_endpoint: (endpoint, callback) => dispatch(approveEndpoint(endpoint, callback)),
     set_response_view: (view) => dispatch(onToggle(view)),
-    reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint))
+    reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
+    unPublish_endpoint: (endpointId) => dispatch(draftEndpoint(endpointId))
     // set_chat_view : (view) => dispatch(onChatResponseToggle(view))
   }
 }
@@ -208,7 +215,7 @@ const getEndpointContent = async (props) => {
 
   let endpointId = props?.match?.params?.endpointId || currentIdToShow
   if (props?.match?.params?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
-    let type = props?.pages?.[currentIdToShow]?.type
+    let type = props?.pages?.[currentIdToShow]?.type;
     const data = isOnPublishedPage() ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
     const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
     return modifiedData
@@ -2790,19 +2797,7 @@ class DisplayEndpoint extends Component {
 
   handleRemovePublicEndpoint(endpointId) {
     const endpoints = this.props.pages[endpointId]
-    this.props.update_endpoint(
-      {
-        ...endpoints,
-        // groupId: this.state.selectedGroupId,
-        isPublished: false,
-        publishedEndpoint: {},
-        state: 1,
-        position: null
-      },
-      () => {
-        this.setState({ saveLoader: false })
-      }
-    )
+    this.props.unPublish_endpoint(endpoints)
   }
 
   renderUnPublishEndpoint(endpointId, endpointss) {
