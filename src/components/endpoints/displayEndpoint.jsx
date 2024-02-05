@@ -58,7 +58,13 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
-import { pendingEndpoint, approveEndpoint, rejectEndpoint, unPublishEndpointAction, draftEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
+import {
+  pendingEndpoint,
+  approveEndpoint,
+  rejectEndpoint,
+  unPublishEndpointAction,
+  draftEndpoint
+} from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
@@ -137,7 +143,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_endpoint: (endpoint, callback) => dispatch(approveEndpoint(endpoint, callback)),
     set_response_view: (view) => dispatch(onToggle(view)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
-    unPublish_endpoint : (endpointId) => dispatch(draftEndpoint(endpointId))
+    unPublish_endpoint: (endpointId) => dispatch(draftEndpoint(endpointId))
     // set_chat_view : (view) => dispatch(onChatResponseToggle(view))
   }
 }

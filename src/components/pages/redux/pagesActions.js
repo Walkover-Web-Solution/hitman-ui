@@ -88,7 +88,6 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   }
 }
 
-
 export const onEndpointUpdatedError = (error, originalEndpoint) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR,

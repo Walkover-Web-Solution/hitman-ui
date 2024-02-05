@@ -103,7 +103,7 @@ export const pendingEndpoint = (endpoint) => {
     publicEndpointsService
       .pendingEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id}))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id }))
       })
       .catch((error) => {
         dispatch(onEndpointStateError(error.response ? error.response.data : error))
