@@ -97,11 +97,13 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 }
 
 export const updatePage = (history, editedPage, publishDocs = false) => {
+  debugger
+  console.log(editedPage, "edited pageeeeeee");
   const orgId = getOrgId()
   const dataToSend = {
     name: editedPage.name,
     contents: editedPage?.contents || null,
-    state: editedPage.state
+    state: 1
   }
   store.dispatch(updatePageRequest(dataToSend))
   pageApiService
@@ -114,6 +116,7 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
       return response.data
     })
     .catch((error) => {
+      debugger
       store.dispatch(onPageUpdatedError(error.response ? error.response.data : error, editedPage))
     })
 }
@@ -131,6 +134,7 @@ export const updateContent = async ({ pageData, id }) => {
 }
 
 export const updatePageRequest = (editedPage) => {
+  console.log(editedPage, "edited pageeekhskhkjdhfgjk");
   return {
     type: pagesActionTypes.UPDATE_PAGE_REQUEST,
     editedPage
@@ -138,6 +142,7 @@ export const updatePageRequest = (editedPage) => {
 }
 
 export const onPageUpdated = (response) => {
+  console.log(response, "responseeeeeee");
   return {
     type: pagesActionTypes.ON_PAGE_UPDATED,
     response

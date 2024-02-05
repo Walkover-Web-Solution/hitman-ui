@@ -8,17 +8,19 @@ import { addGroup, updateGroup } from '../groups/redux/groupsActions'
 import { onEnter, toTitleCase, ADD_GROUP_MODAL_NAME } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 import { moveToNextStep } from '../../services/widgetService'
+import { updatePage } from '../pages/redux/pagesActions'
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_group: (versionId, group, callback) => dispatch(addGroup(versionId, group, callback)),
-    update_group: (group) => dispatch(updateGroup(group))
+    update_page: (group) => dispatch(updatePage(ownProps.history,group))
   }
 }
 
 class GroupForm extends Form {
   constructor(props) {
     super(props)
+    console.log(this.props, "props inside group formmm");
     this.state = {
       data: { name: '' },
       groupId: '',
@@ -36,8 +38,8 @@ class GroupForm extends Form {
     this.setState({ versions })
     if (this.props.title === ADD_GROUP_MODAL_NAME) return
     let data = {}
-    if (this.props.selected_group) {
-      const { name } = this.props.selected_group
+    if (this.props.selectedPage) {
+      const { name } = this.props.selectedPage
       data = { name }
     }
     this.setState({ data })
@@ -69,13 +71,30 @@ class GroupForm extends Form {
     // }
 
     if (this.props.title === 'Edit Sub Page') {
+      const group = this.props.pages[this.props.selectedPage]
       const editedGroup = {
         ...this.state.data,
         name,
-        id: this.props.selected_group.id,
-        versionId: this.props.selected_group.versionId
+        id: this.props.selectedPage,
+        // versionId: this.props.selected_group.versionId
       }
-      this.props.update_group(editedGroup)
+
+      console.log(editedGroup, "edited grouppppppp", this.props.selectedPage);
+      debugger
+      this.props.update_page(editedGroup)
+    }
+    else if (this.props.title === 'Edit Page') {
+      const group = this.props.pages[this.props.selectedPage]
+      const editedGroup = {
+        ...this.state.data,
+        name,
+        id: this.props.selectedPage,
+        // versionId: this.props.selected_group.versionId
+      }
+
+      console.log(editedGroup, "edited grouppppppp", this.props.selectedPage);
+      debugger
+      this.props.update_page(editedGroup)
     }
   }
 
@@ -126,8 +145,8 @@ class GroupForm extends Form {
                 <div className='col-12'>
                   {this.renderInput(
                     'name',
-                    'Sub Page Name',
-                    'sub page name',
+                    this.props.title,
+                    this.props.title,
                     true,
                     true,
                     false,

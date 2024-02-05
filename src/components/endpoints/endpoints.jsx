@@ -48,6 +48,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class Endpoints extends Component {
   constructor(props) {
     super(props)
+    console.log(this.props, "props inside Endpoints");
     this.state = {
       endpointState: 'Make Public',
       theme: '',
@@ -72,6 +73,7 @@ class Endpoints extends Component {
     if (endpointId && endpointId !== prevEndpointId) {
       this.scrollToEndpoint(endpointId)
     }
+    // {this.displayEndpointName(endpointId)}
   }
 
   scrollToEndpoint(endpointId) {
@@ -281,6 +283,7 @@ class Endpoints extends Component {
   }
 
   displayEndpointName(endpointId) {
+    console.log(endpointId, "endpoint iddddddd");
     return (
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
@@ -290,12 +293,12 @@ class Endpoints extends Component {
               checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
               onChange={this.handleCheckboxChange}
             />
-            <div className='api-label GET request-type-bgcolor'>{this.props.endpoints[endpointId].requestType}</div>
+            <div className='api-label GET request-type-bgcolor'>{this.props.endpoints[endpointId]?.requestType}</div>
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         ) : (
           <div className='sidebar-accordion-item'>
-            <div className='api-label GET request-type-bgcolor'>{this.props.endpoints[endpointId].requestType}</div>
+            <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>{this.props.endpoints[endpointId].requestType}</div>
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         )}
@@ -428,6 +431,7 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
+    console.log("inside display single endpoint", endpointId);
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const isOnDashboardPage = isDashboardRoute(this.props)
@@ -510,6 +514,7 @@ class Endpoints extends Component {
   }
 
   displayUserEndpoints(endpointId) {
+    console.log(endpointId, "display user endppointssss");
     return (
       <>
         {this.displaySingleEndpoint(endpointId)}

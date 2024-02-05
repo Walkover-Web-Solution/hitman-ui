@@ -26,6 +26,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 export class DefaultViewModal extends Form {
   constructor(props) {
     super(props)
+    console.log("inside default viewModal", this.props);
     this.inputRef = React.createRef()
     this.state = {
       showPageForm: {
