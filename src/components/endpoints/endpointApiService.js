@@ -201,6 +201,11 @@ export function setAuthorizationType(endpointId, data) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/authorizationType`, data)
 }
 
+export function unpublishEndpoint(endpointId) {
+  const apiUrl = getApiUrl()
+  return http.patch(`${apiUrl}/endpoints/${endpointId}/draft`)
+}
+
 export default {
   saveEndpoint,
   getEndpoints,
@@ -214,5 +219,6 @@ export default {
   authorize,
   setAuthorizationType,
   updateEndpointOrder,
-  saveEndpointInCollection
+  saveEndpointInCollection,
+  unpublishEndpoint,
 }
