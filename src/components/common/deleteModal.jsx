@@ -43,7 +43,7 @@ class DeleteModal extends Component {
     if (title === 'Delete Page') {
       
       const { deleted_page: page } = this.props
-      tabService.removeTab(page.id, { ...this.props })
+      // tabService.bulkRemoveTab(page.id, { ...this.props },tabs)
       this.props.delete_page(page)
     }
 

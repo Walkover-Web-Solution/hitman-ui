@@ -71,6 +71,13 @@ export const closeTab = (tabId, history) => {
   }
 }
 
+export const closeBulkTab = (filteredPageIds) => {
+  console.log(filteredPageIds, "filrrrrr");
+  return async (dispatch) => {
+      dispatch({ type: tabsActionTypes.CLOSE_BULK_TABS, filteredPageIds })
+  }
+}
+
 export const openInNewTab = (tab) => {
   const tabsOrder = store.getState().tabs.tabsOrder
   if (!isElectron() && tabsOrder.length >= 10) {

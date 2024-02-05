@@ -1,5 +1,5 @@
 import { store } from '../../store/store'
-import { addNewTab, closeAllTabs, closeTab, replaceTabForUntitled, setActiveTabId, updateTab } from '../tabs/redux/tabsActions'
+import { addNewTab, closeAllTabs, closeTab,closeBulkTab, setActiveTabId, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from './tabStatusTypes'
 import { getCurrentUser } from '../auth/authServiceV2'
 
@@ -29,6 +29,20 @@ function removeTab(tabId, props) {
     }
   }
 }
+function bulkRemoveTab(tabIds, tabs) {
+  console.log("inside bulk remove tabs", tabIds);
+  let filter
+  const tabsData = tabs.tabs;
+  // const activeTabId = tabs.activeTabId;
+  // const tabsOrder = tabs.tabsOrder;
+
+  for (let i = 0; i < tabIds.length; i++) {
+    filter = Object.keys(tabsData).filter((id) => tabIds.includes(id));
+    console.log(filter, "filtered data");
+    }
+    store.dispatch(closeBulkTab(filter))
+}
+
 
 function changeRoute(props, tab) {
   if (tab.isSaved) {
@@ -103,6 +117,7 @@ function replaceTabWithNew(newTabId) {
 export default {
   newTab,
   removeTab,
+  bulkRemoveTab,
   changeRoute,
   removeAllTabs,
   selectTab,

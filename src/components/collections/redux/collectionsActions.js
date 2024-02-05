@@ -188,9 +188,11 @@ export const deleteCollection = (collection, props) => {
 }
 
 export const deleteCollectionRequest = (collection) => {
+  const allData = store.getState()
   return {
     type: collectionsActionTypes.DELETE_COLLECTION_REQUEST,
-    collection
+    collection,
+    allData
   }
 }
 

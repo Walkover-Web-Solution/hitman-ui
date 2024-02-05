@@ -6,8 +6,47 @@ import collectionActionTypes from '../../collections/redux/collectionsActionType
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import generalActionsTypes from '../../redux/generalActionTypes'
+import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
+import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
+import tabService from '../../tabs/tabService'
+import { useQuery, useQueryClient, QueryClient } from 'react-query'
+import { store } from '../../../store/store'
+
+const queryClient = new QueryClient();
 
 const initialState = {}
+// const deletePageAndChildren = (pages, pageId, pageIds, tabs) => {
+//   if (pages[pageId]) {
+//     // Delete child pages first (recursively)
+//     // queryClient.removeQueries(["pageContent", pageId]);
+//     // queryClient.removeQueries(["endpoint", pageId]);
+//     console.log(pageId, "pageId");
+//     pages[pageId].child.forEach((childPageId) => {
+//       pageIds.push(childPageId);
+//       console.log(childPageId, "child page idsssss");
+//       // queryClient.removeQueries(["pageContent", childPageId]);
+//       // queryClient.removeQueries(["endpoint", childPageId]);
+//       console.log(pageIds, "page ids inside delete page and children");
+//       deletePageAndChildren(pages, childPageId, pageIds, tabs);
+//     });
+
+//     // pageIds.push(pageId);
+
+//     delete pages[pageId];
+
+//     // return pageIds
+//     console.log(pageIds, "8998989");
+
+//   }
+//    tabsDataDelete(pageIds, pages, tabs) 
+//   // pageIds.map((pId) => tabService.removeTab(pId, pages))
+// };
+
+// const tabsDataDelete = (pageIds, pages, tabs) =>{
+//   console.log(pageIds, "inside tabs data delete");
+//   tabService.bulkRemoveTab(pageIds, pages, tabs)
+// };
+
 
 function pagesReducer(state = initialState, action) {
   let pages = {}
@@ -62,6 +101,7 @@ function pagesReducer(state = initialState, action) {
 
       if (action.page.type === 1) {
         const versionData = { ...action.version }
+        delete pages[action.page.requestId]
         delete versionData.requestId
         pages[action.version.id] = versionData
       }
@@ -132,19 +172,21 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.originalPage.id]: action.originalPage
       }
-
-    case pagesActionTypes.DELETE_PAGE_REQUEST:
-      pages = { ...state }
-      // action.payload.pageIds.forEach((pId) => {
-      //   delete pages[pId]
-      // })
-      delete pages[action.page.id]
-      return pages
+      // case pagesActionTypes.DELETE_PAGE_REQUEST:
+      //   // const tabs = action.tabs
+      //   const updatedPages = { ...state };
+      //   // const deletedPageId = action.page.id;
+      //   // const pageIds = []
+      //   // Delete the page and its children
+      //   // deletePageAndChildren(updatedPages, deletedPageId, pageIds, tabs);
+      
+      //   return updatedPages;
 
       case pagesActionTypes.ON_PAGE_DELETED:
         const updatedState = { ...state };
         const pageId = action.response.ParentPage.id;
         updatedState[pageId].child = action.response.ParentPage.child;
+        // delete pages[action.page.id]
         toast.success("Deleted succesfully");
         return updatedState;
 
@@ -187,8 +229,8 @@ function pagesReducer(state = initialState, action) {
       return { ...state }
 
     case collectionActionTypes.ON_COLLECTION_DELETED:
-    case versionActionTypes.ON_VERSION_DELETED:
-    case groupsActionTypes.ON_GROUP_DELETED:
+    case pagesActionTypes.ON_PAGE_DELETED:
+    // case pagesActionTypes.ON_ENDPOINT_DELETED:
       pages = { ...state }
       action.payload.pageIds.forEach((pId) => {
         delete pages[pId]
@@ -249,6 +291,26 @@ function pagesReducer(state = initialState, action) {
         state[action.payload.id].name = action.payload.name
       }
       return { ...state }
+
+      case pagesActionTypes.DELETE_ENDPOINT_REQUEST:
+        pages = { ...state }
+        delete pages[action.endpoint.id]
+        return pages
+
+      case pagesActionTypes.ON_ENDPOINT_DELETED:
+        const updatedEndpoint = { ...state };
+        const parentId = action.response.data.ParentPage.id;
+        updatedEndpoint[parentId].child = action.response.data.ParentPage.child;
+        toast.success(" Endpoint deleted succesfully");
+        return updatedEndpoint
+
+        case pagesActionTypes.ON_ENDPOINT_DELETED_ERROR:
+          toast.error(action.error.data)
+          if (action.error.status === 404) return state
+          return {
+            ...state,
+            [action.endpoint.id]: action.endpoint
+          }
 
     default:
       return state

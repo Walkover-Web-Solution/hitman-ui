@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 import publishDocsActionTypes from './publishDocsActionTypes'
@@ -15,6 +16,7 @@ function publishDocsReducer(state = initialState, action) {
       return state
 
     case publishDocsActionTypes.ON_DEFAULT_VERSION:
+      toast.success("Updated Successfully")
       const newData = action.versionData.newVersionId
       const pages = action.pages.pages
       pages[newData].state = 1

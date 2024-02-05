@@ -7,6 +7,16 @@ import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 
 const initialState = {}
 
+const deletePageAndChildren = (pages, pageId, collectionId, collection) => {
+  if (pages[pageId] && pages[pageId].child) {
+    pages[pageId].child.forEach((childPageId) => {
+      deletePageAndChildren(pages, childPageId, collectionId, collection);
+    });
+    delete pages[pageId];
+  }
+};
+
+
 function collectionsReducer(state = initialState, action) {
   let collections = {}
   switch (action.type) {
@@ -83,7 +93,13 @@ function collectionsReducer(state = initialState, action) {
 
     case collectionsActionTypes.DELETE_COLLECTION_REQUEST:
     // case pagesActionTypes.ON_PAGE_DELETED:
+    const allPages = action.allData.pages
+    const collectionId = action.collection.id
       collections = { ...state }
+      const updateCollection = { ...state}
+      const rootParentId = collections[action.collection.id].rootParentId
+      // const child = allPages[rootParentId].child
+      deletePageAndChildren(allPages, rootParentId, updateCollection, collectionId);
       delete collections[action.collection.id]
       return collections
 

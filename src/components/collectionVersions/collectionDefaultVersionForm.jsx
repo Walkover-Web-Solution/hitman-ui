@@ -102,6 +102,7 @@ class CollectionDefaultVersionForm extends Form {
       })
     }
     this.setState({defaultVersionId: id, defaultVersionName: this.props.pages[id].name})
+    this.props.onHide();
   }
 
   render() {
