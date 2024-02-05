@@ -391,6 +391,7 @@ class CollectionParentPages extends Component {
     const publishData = this.props.modals.publishData
     const rootId = pageId
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
+    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
     return (
       <>
         {/* for publish side barrrrrrrr */}
@@ -474,7 +475,7 @@ class CollectionParentPages extends Component {
                 ref={(newRef) => {
                   this.scrollRef[pageId] = newRef
                 }}
-                className={'pl-3 ' + (expanded ? 'expanded' : '')}
+                className={`pl-3 ${expanded ? 'expanded' : ''} ${isSelected}`}
               >
                 <div
                   className='d-flex align-items-center cl-name'

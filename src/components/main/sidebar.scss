@@ -302,6 +302,10 @@ body .sidebar {
           }
         }
       }
+
+      .selected {
+        background-color: $grey;
+      }
     }
     .sidebar-content {
       overflow: hidden auto;
