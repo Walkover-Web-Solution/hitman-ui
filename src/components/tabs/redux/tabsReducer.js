@@ -34,6 +34,20 @@ function tabsReducer(state = initialState, action) {
       tabs.tabsOrder = tabs.tabsOrder.filter((t) => t !== action.tabId)
       return { ...tabs }
 
+      case tabsActionTypes.CLOSE_BULK_TABS:
+        tabs = {
+          ...state
+        }
+        console.log(action, "actionnnnnnnnn");
+        const ids = action.filteredPageIds
+      for (let index = 0; index < ids?.length; index++) {
+        console.log(tabs.tabs[ids[index]], "0990909");
+        delete tabs.tabs[ids[index.id]]
+        tabs.tabsOrder = tabs.tabsOrder.filter((t) => t !== action.tabId)
+      }
+      
+      return { ...tabs }
+
     case tabsActionTypes.UPDATE_TAB:
       tabs = {
         ...state
