@@ -40,9 +40,9 @@ function pagesReducer(state = initialState, action) {
       }
 
     case publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS:
+      state[action.data.id].state = action.data.state
       return {
-        ...state,
-        [action.data.id]: action.data
+        ...state
       }
     case publicEndpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
       return {
