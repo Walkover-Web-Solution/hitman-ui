@@ -84,7 +84,7 @@ function InviteTeam() {
       </nav>
       <div className='container'>
         <button className='inviteButton' onClick={handleInviteClick}>
-          + Invite Members
+          + Add Member
         </button>
         <GenericModal
           name={name}
@@ -98,7 +98,7 @@ function InviteTeam() {
           handleCloseModal={handleCloseModal}
           showModal={showModal}
           onHide={handleCloseModal}
-          title='Invite Members'
+          title='Add Member'
           showInputGroup
           loading={loading}
         />

@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
 import moment from 'moment'
 import Collections from '../collections/collections'
+import './main.scss'
 import {
   isDashboardRoute,
   ADD_VERSION_MODAL_NAME,
@@ -33,7 +34,6 @@ import AddEntitySelectionModal from './addEntityModal'
 import PageForm from '../pages/pageForm'
 import EndpointForm from '../endpoints/endpointForm'
 import CollectionModal from '../collections/collectionsModal'
-import { store } from '../../store/store'
 // import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
 
 import DeleteSidebarEntityModal from './sidebar/deleteEntityModal'
@@ -42,7 +42,7 @@ import { openModal } from '../modals/redux/modalsActions'
 
 // import { sendAmplitudeData } from '../../services/amplitude'
 import { UserProfileV2 } from './userProfileV2'
-import CollectionParentPages from '../collectionVersions/collectionParentPages'
+import CombinedCollections from '../combinedCollections/combinedCollections'
 
 const mapStateToProps = (state) => {
   return {
@@ -627,6 +627,7 @@ class SideBarV2 extends Component {
 
   renderSidebarContent() {
     const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
+    const collectionId = Object.keys(this.props?.collections)?.[0]
     return (
       <div
         ref={this.sidebarRef}
@@ -643,45 +644,15 @@ class SideBarV2 extends Component {
         className={[''].join(' ')}
       >
         {this.showAddCollectionModal()}
-        {this.collectionId
-          ? isDashboardRoute(this.props, true) && (
-              <div className='mx-3'>
-                <div className='d-flex collection-name my-2'>
-                  <div
-                    className='d-flex cursor-pointer align-items-center mt-3'
-                    onClick={() => {
-                      this.openCollection(null)
-                    }}
-                  >
-                    <div className='ml-1 mr-2'>
-                      <ArrowIcon />
-                    </div>
-                    <div className='hm-sidebar-outer-block heading-collection'>{selectedCollectionName}</div>
-                  </div>
-                </div>
-                <div>
-                  {/* [info] not to be used in published Page */}
-                  <PublishColelctionInfo
-                    {...this.props}
-                    collectionId={this.collectionId}
-                    getTotalEndpointsCount={this.getTotalEndpointsCount.bind(this)}
-                  />
-                </div>
-                <div className='secondary-sidebar sidebar-content-scroll'>
-                  <div className='collectionVersionWrp'>
-                    <CollectionParentPages
-                      {...this.props}
-                      collection_id={this.state.selectedCollectionId}
-                      open_collection={this.openCollection.bind(this)}
-                      selectedCollectionId={this.state.selectedCollectionId}
-                      addVersion={this.openAddVersionForm.bind(this)}
-                    />
-                  </div>
-                </div>
-              </div>
-            )
-          : // [info] collection render
-            this.renderCollections()}
+          {isOnPublishedPage() ?  
+          <div className='sidebar-accordion'>
+                  <CombinedCollections
+          {...this.props}
+          collection_id={collectionId}
+          rootParentId={this.props.collections[collectionId].rootParentId}
+        />
+          </div>
+          : this.renderCollections()}
       </div>
     )
   }
