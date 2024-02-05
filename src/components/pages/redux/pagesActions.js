@@ -97,13 +97,12 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 }
 
 export const updatePage = (history, editedPage, publishDocs = false) => {
-  debugger
   console.log(editedPage, "edited pageeeeeee");
   const orgId = getOrgId()
   const dataToSend = {
     name: editedPage.name,
     contents: editedPage?.contents || null,
-    state: 1
+    state: editedPage.state
   }
   store.dispatch(updatePageRequest(dataToSend))
   pageApiService
@@ -116,7 +115,6 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
       return response.data
     })
     .catch((error) => {
-      debugger
       store.dispatch(onPageUpdatedError(error.response ? error.response.data : error, editedPage))
     })
 }

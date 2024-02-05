@@ -80,7 +80,7 @@ class GroupForm extends Form {
       }
 
       console.log(editedGroup, "edited grouppppppp", this.props.selectedPage);
-      debugger
+      // debugger
       this.props.update_page(editedGroup)
     }
     else if (this.props.title === 'Edit Page') {
@@ -93,7 +93,7 @@ class GroupForm extends Form {
       }
 
       console.log(editedGroup, "edited grouppppppp", this.props.selectedPage);
-      debugger
+      // debugger
       this.props.update_page(editedGroup)
     }
   }
