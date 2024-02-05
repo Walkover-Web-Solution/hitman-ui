@@ -209,7 +209,7 @@ const getEndpointContent = async (props) => {
   let endpointId = props?.match?.params?.endpointId || currentIdToShow
   if (props?.match?.params?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
-    const data = currentIdToShow ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
+    const data = isOnPublishedPage() ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
     const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
     return modifiedData
   } else {

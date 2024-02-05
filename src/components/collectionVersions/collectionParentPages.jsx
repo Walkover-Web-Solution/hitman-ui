@@ -567,8 +567,7 @@ class CollectionParentPages extends Component {
                             this.openAddVersionForm(pageId)
                           }}
                         >
-                                                   <PlusOrange />{' '}
-                          Add Version
+                          <PlusOrange /> Add Version
                         </div>
                         {/* <div
                         className='dropdown-item'

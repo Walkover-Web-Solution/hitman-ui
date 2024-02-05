@@ -272,7 +272,10 @@ class CustomTabs extends Component {
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[tabId]?.name}</div> */}
             <div className='d-flex align-items-center'>
-              <div className={`api-label ${this.props.pages[tabId]?.requestType} request-type-bgcolor ml-4 mt-1 arrow-top`}> {this.props.pages[tabId]?.requestType} </div>
+              <div className={`api-label ${this.props.pages[tabId]?.requestType} request-type-bgcolor ml-4 mt-1 arrow-top`}>
+                {' '}
+                {this.props.pages[tabId]?.requestType}{' '}
+              </div>
               <div className='endpoint-name ml-1'>{this.props.pages[tabId].name}</div>
             </div>
           </div>
