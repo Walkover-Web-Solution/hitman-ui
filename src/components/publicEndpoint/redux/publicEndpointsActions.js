@@ -103,7 +103,7 @@ export const pendingEndpoint = (endpoint) => {
     publicEndpointsService
       .pendingEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id }))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: false }))
       })
       .catch((error) => {
         dispatch(onEndpointStateError(error.response ? error.response.data : error))
@@ -116,7 +116,7 @@ export const approveEndpoint = (endpoint, publishLoaderHandler) => {
     publicEndpointsService
       .approveEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id }))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: true }))
         publishLoaderHandler()
       })
       .catch((error) => {
@@ -131,7 +131,7 @@ export const draftEndpoint = (endpoint) => {
     publicEndpointsService
       .draftEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id }))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: false }))
       })
       .catch((error) => {
         dispatch(onEndpointStateError(error.response ? error.response.data : error))
@@ -144,7 +144,7 @@ export const rejectEndpoint = (endpoint) => {
     publicEndpointsService
       .rejectEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess({ state: response.data.state, id: endpoint.id }))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: endpoint.id, isPublished: false }))
       })
       .catch((error) => {
         dispatch(onEndpointStateError(error.response ? error.response.data : error))
