@@ -34,7 +34,7 @@ const withQuery = (WrappedComponent) => {
     const { data, error } = useQuery(
       ['pageContent', pageId],
       async () => {
-        return currentIdToShow
+        return isOnPublishedPage()
           ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
           : await getPageContent(props?.match?.params?.orgId, pageId)
       },
