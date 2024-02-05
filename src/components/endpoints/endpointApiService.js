@@ -215,5 +215,5 @@ export default {
   setAuthorizationType,
   updateEndpointOrder,
   saveEndpointInCollection,
-  unpublishEndpoint
+  // unpublishEndpoint
 }
