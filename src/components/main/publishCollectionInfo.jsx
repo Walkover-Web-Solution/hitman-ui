@@ -74,18 +74,17 @@ class PublishCollectionInfo extends Component {
     const targetGroupIds = _.values(groups)
       .filter((group) => targetVersionIds.includes(group.versionId))
       .map((group) => group.id)
-    const publishedEndpoints = _.values(endpoints).filter((endpoint) => targetGroupIds.includes(endpoint.groupId) && endpoint.isPublished)
-    const isDisabled = _.isEmpty(publishedEndpoints)
+    const isDisabled = this.IsParentPagePublishedInACollection(this.props.collections[this.props.collectionId]?.rootParentId) 
     return (
       <OverlayTrigger
         overlay={
-          <Tooltip id='tooltip-unpublished-endpoint' className={!isDisabled && 'd-none'}>
+          <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled && 'd-none'}>
             Atleast one endpoint/page is to be published to enable this link.
           </Tooltip>
         }
       >
-        {/* <button onClick={() => !isDisabled && openExternalLink(url)}> */}
-        <button onClick={() => openExternalLink(url)}>
+        <button onClick={() => isDisabled && openExternalLink(url)}>
+        {/* <button onClick={() => openExternalLink(url)}> */}
           <div className={`sidebar-public-url text-center d-flex align-items-center${!isDisabled && ' text-link'}`}>
             <span className='icon d-flex mr-1'>
               {' '}
@@ -225,9 +224,7 @@ class PublishCollectionInfo extends Component {
         <div className='public-colection-info'>
           {this.managePublicDoc()}
           {/* {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))} */}
-          {this.IsParentPagePublishedInACollection(this.props.collections[this.props.collectionId]?.rootParentId) && isPublic && (
-            <div className='publicurl'>{this.renderPublicUrl()}</div>
-          )}
+          {isPublic && (<div className='publicurl'>{this.renderPublicUrl()}</div>)}
         </div>
       )
     )
