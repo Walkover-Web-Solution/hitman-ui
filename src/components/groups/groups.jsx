@@ -338,7 +338,7 @@ class Groups extends Component {
 
   renderBody(groupId) {
     const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isOnPublishedPage()
-
+    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === groupId ? 'selected' : ''
     return (
       <>
         {/* for publish side barrrr */}
@@ -387,7 +387,7 @@ class Groups extends Component {
               ref={(newRef) => {
                 this.scrollRef[groupId] = newRef
               }}
-              className={expanded ? 'expanded' : ''}
+              className={`${expanded ? 'expanded' : ''} ${isSelected}`}
             >
               <div className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(groupId)}>
                 <span className='versionChovron'>

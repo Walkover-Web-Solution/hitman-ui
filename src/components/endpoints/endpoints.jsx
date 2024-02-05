@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
 import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
@@ -432,6 +432,7 @@ class Endpoints extends Component {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const isOnDashboardPage = isDashboardRoute(this.props)
     if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
+    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
     return (
       <>
         {publishData ? (
@@ -458,6 +459,7 @@ class Endpoints extends Component {
             <div className='sidebar-toggle d-flex justify-content-between'>
               <button
                 tabIndex={-1}
+                className={isSelected}
                 onClick={() => {
                   this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
                 }}
