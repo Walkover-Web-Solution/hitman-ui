@@ -10,10 +10,6 @@ import {
   SESSION_STORAGE_KEY,
   isOnPublishedPage
 } from '../common/utility'
-// import Endpoints from "../endpoints/endpointsCopy";
-import Endpoints from '../endpoints/endpoints'
-// import GroupForm from '../groups/groupForm'
-import { deleteGroup, duplicateGroup, updateGroupOrder } from '../groups/redux/groupsActions'
 import { reorderEndpoint } from '../endpoints/redux/endpointsActions'
 import ShareGroupForm from '../groups/shareGroupForm'
 import './groups.scss'
@@ -41,9 +37,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     reorder_endpoint: (sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, endpointId) =>
       dispatch(reorderEndpoint(sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, endpointId)),
-    update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId)),
-    delete_group: (group, props) => dispatch(deleteGroup(group, props)),
-    duplicate_group: (group) => dispatch(duplicateGroup(group)),
     update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
@@ -120,10 +113,6 @@ class Groups extends Component {
       groupFormName: 'Share Subpage',
       selectedGroup: { ...this.props.pages[groupId] }
     })
-  }
-
-  handleDuplicate(group) {
-    this.props.duplicate_group(group)
   }
 
   closeGroupForm() {
@@ -287,7 +276,6 @@ class Groups extends Component {
         const groupIds = positionWisegroups.filter((item) => item !== this.draggedItem)
         groupIds.splice(index, 0, this.draggedItem)
 
-        this.props.update_groups_order(groupIds, this.props.version_id)
         this.draggedItem = null
       }
     }
@@ -338,7 +326,7 @@ class Groups extends Component {
 
   renderBody(groupId) {
     const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isOnPublishedPage()
-
+    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === groupId ? 'selected' : ''
     return (
       <>
         {/* for publish side barrrr */}
@@ -387,7 +375,7 @@ class Groups extends Component {
               ref={(newRef) => {
                 this.scrollRef[groupId] = newRef
               }}
-              className={expanded ? 'expanded' : ''}
+              className={`${expanded ? 'expanded' : ''} ${isSelected}`}
             >
               <div className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(groupId)}>
                 <span className='versionChovron'>

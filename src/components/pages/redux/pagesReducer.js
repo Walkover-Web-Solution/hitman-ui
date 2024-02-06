@@ -1,6 +1,5 @@
 import pagesActionTypes from './pagesActionTypes'
 import { toast } from 'react-toastify'
-import groupsActionTypes from '../../groups/redux/groupsActionTypes'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
@@ -79,9 +78,10 @@ function pagesReducer(state = initialState, action) {
       }
 
     case publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS:
+      state[action.data.id].state = action.data.state
+      state[action.data.id].isPublished = action.data.isPublished
       return {
-        ...state,
-        [action.data.id]: action.data
+        ...state
       }
     case publicEndpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
       return {
@@ -203,9 +203,6 @@ function pagesReducer(state = initialState, action) {
       pages[action.response.id] = action.response
       return pages
 
-    case groupsActionTypes.ON_GROUP_DUPLICATED:
-      return { ...state, ...action.response.pages }
-
     case versionActionTypes.ON_VERSION_DUPLICATED:
       return { ...state, ...action.response.pages }
 
@@ -229,8 +226,7 @@ function pagesReducer(state = initialState, action) {
       return { ...state }
 
     case collectionActionTypes.ON_COLLECTION_DELETED:
-    case pagesActionTypes.ON_PAGE_DELETED:
-    // case pagesActionTypes.ON_ENDPOINT_DELETED:
+    case versionActionTypes.ON_VERSION_DELETED:
       pages = { ...state }
       action.payload.pageIds.forEach((pId) => {
         delete pages[pId]

@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
 import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
-import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpoint } from './redux/endpointsActions'
+import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpointInCollection } from './redux/endpointsActions'
 import filterService from '../../services/filterService'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
+    add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpointInCollection(ownProps.history, newEndpoint, groupId, callback)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
 }
@@ -432,6 +432,7 @@ class Endpoints extends Component {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const isOnDashboardPage = isDashboardRoute(this.props)
     if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
+    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
     return (
       <>
         {publishData ? (
@@ -458,6 +459,7 @@ class Endpoints extends Component {
             <div className='sidebar-toggle d-flex justify-content-between'>
               <button
                 tabIndex={-1}
+                className={isSelected}
                 onClick={() => {
                   this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
                 }}
@@ -469,7 +471,9 @@ class Endpoints extends Component {
 
                 <div className='d-flex align-items-center'>
                   <div className=' sidebar-item-action'>
-                    {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
+                    {isDashboardRoute(this.props, true) &&
+                      !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
+                      this.displayEndpointOptions(endpointId)}
                   </div>
                   {/* <div className='ml-1 published-icon transition'>
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}

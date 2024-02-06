@@ -36,10 +36,6 @@ class DeleteModal extends Component {
       const { deleted_page: page } = this.props
       this.props.delete_page(page)
     }
-    if (title === 'Delete Group') {
-      const { deleted_group: group } = this.props
-      this.props.delete_group(group, this.props)
-    }
     if (title === 'Delete Page') {
       
       const { deleted_page: page } = this.props

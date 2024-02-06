@@ -94,7 +94,7 @@ body .sidebar {
       border: none;
       background: none;
       padding: 0;
-      border-bottom: 1px solid transparent;
+      width: 100%;
       &:focus {
         border-color: $outline-color;
       }
@@ -301,6 +301,10 @@ body .sidebar {
             color: #000;
           }
         }
+      }
+
+      .selected {
+        background-color: $grey;
       }
     }
     .sidebar-content {
@@ -621,4 +625,18 @@ input[type='text']:focus {
 .empty-box {
   padding: 0.25rem 0.75rem;
   opacity: 0.8;
+}
+
+.search-container {
+  border: 1px solid rgba(0, 0, 0, 0.104);
+  padding: 4px;
+  border-radius: 4px;
+
+  &:focus-within {
+    outline: 1px solid black;
+  }
+
+  &:focus {
+    border: 1px solid black;
+  }
 }

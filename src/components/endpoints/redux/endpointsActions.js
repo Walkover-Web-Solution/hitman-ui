@@ -10,37 +10,6 @@ import { addChildInParent } from '../../pages/redux/pagesActions'
 import tabService from '../../tabs/tabService'
 import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
 
-export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
-  const orgId = getOrgId()
-  const requestId = shortid.generate()
-  return (dispatch) => {
-    dispatch(addEndpointRequest({ ...newEndpoint, requestId, groupId }))
-    endpointApiService
-      .saveEndpoint(groupId, { ...newEndpoint, requestId })
-      .then((response) => {
-        sendAmplitudeData('Endpoint created', {
-          endpointId: response.data.id,
-          endpointName: response.data.name,
-          groupId: response.data.groupId
-        })
-        dispatch(onEndpointAdded(response.data))
-        // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
-        // endpointsOrder.push(response.data.id);
-        // dispatch(setEndpointIds(endpointsOrder, groupId));
-        history.push(`/orgs/${orgId}/dashboard/endpoint/${response.data.id}`)
-        if (customCallback) {
-          customCallback({ closeForm: true, stopLoader: true })
-        }
-      })
-      .catch((error) => {
-        dispatch(onEndpointAddedError(error.response ? error.response.data : error, newEndpoint, requestId))
-        if (customCallback) {
-          customCallback({ closeForm: false, stopLoader: true })
-        }
-      })
-  }
-}
-
 export const addEndpointInCollection = (history, newEndpoint, rootParentId, customCallback, props) => {
   const orgId = getOrgId()
   const requestId = shortid.generate()
@@ -242,20 +211,6 @@ export const onEndpointsFetchedError = (error) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINTS_FETCHED_ERROR,
     error
-  }
-}
-
-export const addEndpointRequest = (newEndpoint) => {
-  return {
-    type: endpointsActionTypes.ADD_ENDPOINT_REQUEST,
-    newEndpoint
-  }
-}
-
-export const onEndpointAdded = (response) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINT_ADDED,
-    response
   }
 }
 

@@ -67,6 +67,7 @@ class CollectionParentPages extends Component {
       selectedParentPageIds: {},
       showShareVersionForm: false,
       showDeleteModal: false,
+      showDeleteVersion: false,
       pageFormName: '',
       selectedPage: {},
       showPageForm: {
@@ -232,6 +233,7 @@ class CollectionParentPages extends Component {
   }
 
   openDeleteVersionModal(versionId) {
+    console.log("came inside the versionmodal",versionId)
     this.setState({
       showDeleteVersion: true,
       selectedVersion: {
@@ -308,10 +310,10 @@ class CollectionParentPages extends Component {
 
   toggleParentPageIds(id) {
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-    this.props.update_isExpand_for_pages({
-      value: !isExpanded,
-      id: id
-    })
+    // this.props.update_isExpand_for_pages({
+    //   value: !isExpanded,
+    //   id: id
+    // })
 
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
@@ -348,9 +350,9 @@ class CollectionParentPages extends Component {
   //     </div>
   //   );
   // }
-  handleDeleteVersion(id) {
+  handleDeleteVersion(e,id) {
+    e.preventDefault();
     if(this.state.defaultVersionId === id){
-      // this.setState({defaultVersionId: ''})
       toast.error("This is Default Version")
     }
     else{
@@ -440,6 +442,7 @@ class CollectionParentPages extends Component {
     const publishData = this.props.modals.publishData
     const rootId = pageId
     if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
+    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
     return (
       <>
         {/* for publish side barrrrrrrr */}
@@ -523,7 +526,7 @@ class CollectionParentPages extends Component {
                 ref={(newRef) => {
                   this.scrollRef[pageId] = newRef
                 }}
-                className={'pl-3 ' + (expanded ? 'expanded' : '')}
+                className={`pl-3 ${expanded ? 'expanded' : ''} ${isSelected}`}
               >
                 <div
                   className='d-flex align-items-center cl-name'
@@ -551,7 +554,7 @@ class CollectionParentPages extends Component {
                       {this.props.pages[rootId].child.map((childId, index) => (
                         <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId, e)}>
                           <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
-                          <button onClick={()=>{this.handleDeleteVersion(childId)}} className='version-delete-button'>
+                          <button onClick={(e)=>{this.handleDeleteVersion(e,childId)}} className='version-delete-button'>
                             <DeleteIcon />
                           </button>
                         </Dropdown.Item>
@@ -587,39 +590,32 @@ class CollectionParentPages extends Component {
                           Edit
                         </div> */}
                         <div
-                          className='dropdown-item'
-                          onClick={() => {
-                            this.openDeleteVersionModal(pageId)
-                          }}
-                        >
-                          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                            <path
-                              d='M2.25 4.5H3.75H15.75'
-                              stroke='#E98A36'
-                              strokeWidth='1.5'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                            />
-                            <path
-                              d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
-                              stroke='#E98A36'
-                              strokeWidth='1.5'
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                            />
-                            <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                            <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          </svg>{' '}
-                          Delete
-                        </div>
+                        className='dropdown-item'
+                        onClick={() => {
+                          this.openDeletePageModal(pageId)
+                        }}
+                      >
+                        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                          <path d='M2.25 4.5H3.75H15.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                          <path
+                            d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
+                            stroke='#E98A36'
+                            strokeWidth='1.5'
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                          />
+                          <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                          <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+                        </svg>{' '}
+                        Delete Page
+                      </div>
                         <div
                           className='dropdown-item'
                           onClick={() => {
                             this.openAddVersionForm(pageId)
                           }}
                         >
-                        <PlusOrange />{' '}
-                          Add Version
+                          <PlusOrange /> Add Version
                         </div>
                         <div
                         className='dropdown-item'
@@ -920,9 +916,18 @@ class CollectionParentPages extends Component {
             this.props,
             this.closeDeletePageModal.bind(this),
             'Delete Page',
-            `Are you sure you want to delete this pages?
-        All your versions,subpages and endpoints present in this page will be deleted.`,
+            `Are you sure you want to delete this page?
+        All your versions, subpages and endpoints present in this page will be deleted.`,
             this.state.selectedPage
+          )}
+        {this.state.showDeleteVersion &&
+          pageService.showDeletePageModal(
+            this.props,
+            this.closeDeleteVersionModal.bind(this),
+            'Delete Version',
+            `Are you sure you want to delete this version?
+        All your subpages and endpoints present in this version will be deleted.`,
+            this.state.selectedVersionId
           )}
         {this.renderBody(this.props.rootParentId)}
 

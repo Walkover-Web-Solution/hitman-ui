@@ -374,7 +374,7 @@ form.add-new-domain-form {
 
 // Sidebar Header
 .hm-sidebar-header {
-  padding: 20px 25px 0px 15px;
+  margin-bottom: 10px;
   display: flex;
   color: #fff;
   align-items: center;
@@ -407,6 +407,7 @@ h4.hm-sidebar-title {
   font-size: 20px !important;
   font-weight: 700 !important;
   color: #4b4b4d !important;
+  text-overflow: ellipsis;
 }
 
 h4.hm-sidebar-title span {

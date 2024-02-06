@@ -165,9 +165,8 @@ class ContentPanel extends Component {
             pathname:
               tab.type !== 'collection'
                 ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
-                : this.props.location.pathname.split('/')[6] === 'settings'
-                  ? `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
-                  : `/orgs/${orgId}/dashboard/collection/${tabId}/feedback`
+                : this.props.location.pathname.split('/')[6] === 'settings' && `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+            // : `/orgs/${orgId}/dashboard/collection/${tabId}/feedback`
           })
         }
       } else {

@@ -16,7 +16,7 @@ import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 import { isAdmin } from '../auth/authServiceV2'
-import { approvePage, pendingPage, rejectPage } from '../publicEndpoint/redux/publicEndpointsActions'
+import { approvePage, pendingPage, rejectPage, draftPage } from '../publicEndpoint/redux/publicEndpointsActions'
 import ConfirmationModal from '../common/confirmationModal'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -34,7 +34,7 @@ const withQuery = (WrappedComponent) => {
     const { data, error } = useQuery(
       ['pageContent', pageId],
       async () => {
-        return currentIdToShow
+        return isOnPublishedPage()
           ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
           : await getPageContent(props?.match?.params?.orgId, pageId)
       },
@@ -55,7 +55,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     pending_page: (page) => dispatch(pendingPage(page)),
-    reject_page: (page) => dispatch(rejectPage(page))
+    reject_page: (page) => dispatch(rejectPage(page)),
+    draft_page: (page) => dispatch(draftPage(page)),
   }
 }
 
@@ -171,15 +172,15 @@ class DisplayPage extends Component {
     const page = { ...this.props.pages[pageId] }
     page.isPublished = false
     page.publishedEndpoint = {}
-    page.state = 'Draft'
+    page.state = 1
     page.position = null
-    this.props.update_page(page)
+    this.props.draft_page(page)
   }
 
   renderUnPublishPage(pageId, pages) {
     return (
       <UnPublishEntityButton
-        {...this.props}
+        // {...this.props}
         entity={pages}
         entityId={pageId}
         entityName='Page'
@@ -193,9 +194,10 @@ class DisplayPage extends Component {
   }
 
   renderPublishPage(pageId, pages) {
+    const page = this.props.pages[pageId]
     return (
       <PublishEntityButton
-        entity={pages}
+        entity={page}
         entityId={pageId}
         open_publish_confirmation_modal={() => {
           if (this._isMounted) this.setState({ openPublishConfirmationModal: true })
@@ -207,9 +209,11 @@ class DisplayPage extends Component {
 
   renderPublishPageOperations() {
     if (isDashboardRoute(this.props)) {
-      const pages = { ...this.props.pages }
+      let pages = { ...this.props.pages }
       const pageId = this.props?.match.params?.pageId
-      const isPublicPage = pages[pageId]?.isPublished
+      pages = pages[pageId]
+      const isPublicPage = pages?.isPublished
+
       const approvedOrRejected = isStateApproved(pageId, pages) || isStateReject(pageId, pages)
       return (
         <div>

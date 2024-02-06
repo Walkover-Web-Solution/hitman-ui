@@ -561,8 +561,8 @@ export function getOnlyUrlPathById(id, sidebar) {
   let path = []
   // not add invisible parent page name in path
   while (sidebar?.[id]?.type > 0) {
-      path.push(sidebar[id].name)
-      id = sidebar?.[id]?.parentId
+    path.push(sidebar[id].name)
+    id = sidebar?.[id]?.parentId
   }
   let actualPath = path.reverse().join('/')
   return actualPath
