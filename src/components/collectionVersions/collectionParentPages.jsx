@@ -310,10 +310,10 @@ class CollectionParentPages extends Component {
 
   toggleParentPageIds(id) {
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-    // this.props.update_isExpand_for_pages({
-    //   value: !isExpanded,
-    //   id: id
-    // })
+    this.props.update_isExpand_for_pages({
+      value: !isExpanded,
+      id: id
+    })
 
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
