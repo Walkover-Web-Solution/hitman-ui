@@ -100,7 +100,10 @@ export const setTabsOrder = (tabsOrder) => {
 
 export const replaceTab = (oldTabId, newTab) => {
   const tabsOrder = store.getState().tabs.tabsOrder.filter((tId) => tId !== oldTabId)
-  if (!isElectron() && tabsOrder.length >= 7) {
+  const showDesktopModal = !window.matchMedia('(display-mode: standalone)').matches
+
+  const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
+  if (!isElectron() && tabsOrder.length >= 10 && showDesktopModal && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
   tabsOrder.push(newTab.id)
