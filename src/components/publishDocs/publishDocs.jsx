@@ -10,7 +10,6 @@ import { approveEndpoint, rejectEndpoint, approvePage, rejectPage } from '../pub
 import PublishDocsForm from './publishDocsForm'
 import DisplayPage from '../pages/displayPage'
 import { updatePage, updatePageOrder } from '../pages/redux/pagesActions'
-import { updateGroupOrder } from '../groups/redux/groupsActions'
 import './publishDocs.scss'
 import WarningModal from '../common/warningModal'
 import Footer from '../main/Footer'
@@ -58,7 +57,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     reject_page: (page) => dispatch(rejectPage(page)),
-    update_groups_order: (groupIds, versionId) => dispatch(updateGroupOrder(groupIds, versionId)),
     ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
   }
 }
@@ -462,9 +460,6 @@ class PublishDocs extends Component {
       }
       if (type === 'endpoints') {
         this.props.update_endpoints_order(newData)
-      }
-      if (type === 'groups') {
-        this.props.update_groups_order(newData, this.state.selectedVersionId)
       }
     }
   }
