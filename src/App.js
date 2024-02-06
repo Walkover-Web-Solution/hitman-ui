@@ -25,7 +25,9 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
   return {
-    modals: state.modals
+    modals: state.modals,
+    tabs: state.tabs.tabs,
+    tabsOrder: state.tabs.tabsOrder
   }
 }
 class App extends Component {
@@ -83,7 +85,14 @@ class App extends Component {
   }
 
   handleBeforeUnload = (e) => {
-    const unsavedChanges = true
+    const tabsOrderArray = this.props?.tabsOrder
+    let unsavedChanges = false
+    for (let i = 0; i < tabsOrderArray.length; i++) {
+      if (this.props.tabs?.[tabsOrderArray[i]]?.isModified === true) {
+        unsavedChanges = true
+        break
+      }
+    }
     if (unsavedChanges && window.location.pathname.includes('/dashboard')) {
       const message = 'Changes that you made may not be saved.'
       e.returnValue = message
