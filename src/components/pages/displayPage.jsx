@@ -46,7 +46,7 @@ const withQuery = (WrappedComponent) => {
         retry: 2
       }
     )
-    return <WrappedComponent {...props} pageContent={data} pageContentError={error} />
+    return <WrappedComponent {...props} pageContent={data} pageContentLoading = {data?.isLoading} pageContentError={error} />
   }
 }
 
@@ -56,7 +56,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     pending_page: (page) => dispatch(pendingPage(page)),
     reject_page: (page) => dispatch(rejectPage(page)),
-    draft_page: (page) => dispatch(draftPage(page)),
+    draft_page: (page) => dispatch(draftPage(page))
   }
 }
 
@@ -309,6 +309,16 @@ class DisplayPage extends Component {
   }
 
   render() {
+    if(this.props?.pageContentLoading) {
+      return (
+        <div className='custom-loading-container'>
+                    <div className='loading-content'>
+                      <button className='spinner-border' />
+                      <p className='mt-3'>Loading</p>
+                    </div>
+                  </div>
+      )
+    }
     return (
       <div className='custom-display-page'>
         {this.renderPublishConfirmationModal()}

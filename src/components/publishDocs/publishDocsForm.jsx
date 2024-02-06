@@ -10,7 +10,7 @@ import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
 import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
 import { moveToNextStep } from '../../services/widgetService'
 
-const MAPPING_DOMAIN = process.env.REACT_APP_HITMAN_MAPPING_DOMAIN
+const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
   NULL_STRING: '',
