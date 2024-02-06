@@ -56,7 +56,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     pending_page: (page) => dispatch(pendingPage(page)),
     reject_page: (page) => dispatch(rejectPage(page)),
-    draft_page: (page) => dispatch(draftPage(page)),
+    draft_page: (page) => dispatch(draftPage(page))
   }
 }
 

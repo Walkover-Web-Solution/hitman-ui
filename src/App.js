@@ -50,7 +50,7 @@ class App extends Component {
     //   this.props.install_modal(e)
     // })
 
-    window.addEventListener('beforeunload', this.handleBeforeUnload);
+    window.addEventListener('beforeunload', this.handleBeforeUnload)
 
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
@@ -68,7 +68,6 @@ class App extends Component {
         this.changeSelectedOrg(orgId)
       }
     }
-
   }
 
   componentDidUpdate(prevProps, prevState) {

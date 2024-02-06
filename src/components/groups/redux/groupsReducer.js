@@ -5,7 +5,6 @@ const initialState = {}
 function groupsReducer(state = initialState, action) {
   let groups = {}
   switch (action.type) {
-
     case groupsActionTypes.ON_GROUPS_FETCHED:
       return { ...action.groups }
 
