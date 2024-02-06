@@ -1,6 +1,5 @@
 import pagesActionTypes from './pagesActionTypes'
 import { toast } from 'react-toastify'
-import groupsActionTypes from '../../groups/redux/groupsActionTypes'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
@@ -155,9 +154,6 @@ function pagesReducer(state = initialState, action) {
       pages[action.response.id] = action.response
       return pages
 
-    case groupsActionTypes.ON_GROUP_DUPLICATED:
-      return { ...state, ...action.response.pages }
-
     case versionActionTypes.ON_VERSION_DUPLICATED:
       return { ...state, ...action.response.pages }
 
@@ -182,7 +178,6 @@ function pagesReducer(state = initialState, action) {
 
     case collectionActionTypes.ON_COLLECTION_DELETED:
     case versionActionTypes.ON_VERSION_DELETED:
-    case groupsActionTypes.ON_GROUP_DELETED:
       pages = { ...state }
       action.payload.pageIds.forEach((pId) => {
         delete pages[pId]

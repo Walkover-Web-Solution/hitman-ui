@@ -32,7 +32,6 @@ import './main.scss'
 import './sidebar.scss'
 import AddEntitySelectionModal from './addEntityModal'
 import PageForm from '../pages/pageForm'
-import EndpointForm from '../endpoints/endpointForm'
 import CollectionModal from '../collections/collectionsModal'
 // import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
 
@@ -807,18 +806,6 @@ class SideBarV2 extends Component {
         this.closeAddEntityModal.bind(this),
         this.pageId,
         ADD_VERSION_MODAL_NAME
-      )
-    }
-    if (this.state.entity === 'endpoint') {
-      return (
-        <EndpointForm
-          {...this.props}
-          show
-          onHide={() => this.closeAddEntityModal()}
-          title='Add new Endpoint'
-          addEntity
-          collectionId={this.collectionId}
-        />
       )
     }
     if (this.state.entity === 'page') {

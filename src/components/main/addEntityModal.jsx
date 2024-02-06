@@ -18,7 +18,7 @@ class AddEntitySelectionModal extends Component {
 
   checkAvailability(entity) {
     if (this.state.versions && this.state.groups) {
-      if ((entity === 'group' || entity === 'page') && Object.keys(this.state.versions).length === 0) {
+      if ((entity === 'page') && Object.keys(this.state.versions).length === 0) {
         return versionMessage
       } else if (entity === 'endpoint') {
         if (Object.keys(this.state.versions).length === 0) {
@@ -66,7 +66,6 @@ class AddEntitySelectionModal extends Component {
             <div className='col'>
               <div className='row justify-content-around'>
                 {this.renderEntity('version')}
-                {this.renderEntity('group')}
               </div>
               <div className='row justify-content-around'>
                 {this.renderEntity('endpoint')}
