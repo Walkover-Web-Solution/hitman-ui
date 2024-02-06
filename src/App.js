@@ -47,10 +47,10 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // window.addEventListener('beforeinstallprompt', (e) => {
-    //   e.preventDefault()
-    //   this.props.install_modal(e)
-    // })
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault()
+      this.props.install_modal(e)
+    })
 
     window.addEventListener('beforeunload', this.handleBeforeUnload)
 
