@@ -406,7 +406,7 @@ class Groups extends Component {
                         </svg>{' '}
                         Edit
                       </div>
-                      <div
+                      {/* <div
                         className='dropdown-item'
                         onClick={() => {
                           this.openDeleteGroupModal(groupId)
@@ -425,7 +425,7 @@ class Groups extends Component {
                           <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                         </svg>{' '}
                         Delete
-                      </div>
+                      </div> */}
                       {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[groupId])}>
                       <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                         <path
