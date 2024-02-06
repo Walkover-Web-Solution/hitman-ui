@@ -39,7 +39,6 @@ class GroupPages extends Component {
   }
 
   openDeletePageModal(pageId) {
-    console.log(pageId, "page id inside open delete page modal");
     this.setState({
       showDeleteModal: true,
       selectedPage: {

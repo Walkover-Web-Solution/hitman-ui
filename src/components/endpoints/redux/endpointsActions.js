@@ -5,6 +5,9 @@ import endpointsActionTypes from './endpointsActionTypes'
 import { getOrgId, focusSelectedEntity } from '../../common/utility'
 import shortid from 'shortid'
 import { sendAmplitudeData } from '../../../services/amplitude'
+import pagesActionTypes from '../../pages/redux/pagesActionTypes'
+import { addChildInParent } from '../../pages/redux/pagesActions'
+import tabService from '../../tabs/tabService'
 
 export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   const orgId = getOrgId()
@@ -37,24 +40,29 @@ export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   }
 }
 
-export const addEndpointInCollection = (history, newEndpoint, rootParentId, customCallback) => {
+export const addEndpointInCollection = (history, newEndpoint, rootParentId, customCallback, props) => {
   const orgId = getOrgId()
   const requestId = shortid.generate()
   return (dispatch) => {
-    dispatch(addEndpointRequest({ ...newEndpoint, requestId, rootParentId }))
+    // dispatch(addEndpointRequest({ ...newEndpoint, requestId, rootParentId }))
     endpointApiService
       .saveEndpointInCollection(rootParentId, { ...newEndpoint, requestId })
       .then((response) => {
-        sendAmplitudeData('Endpoint created', {
-          endpointId: response.data.id,
-          endpointName: response.data.name,
-          rootParentId: response.data.rootParentId
-        })
-        dispatch(onEndpointAdded(response.data))
-        // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
-        // endpointsOrder.push(response.data.id);
-        // dispatch(setEndpointIds(endpointsOrder, groupId));
+        const responseToSend = {
+          id: response.data.id,
+          requestType: response.data.requestType,
+          name: response.data.name,
+          parentId: response.data.parentId,
+          child: [],
+          state: response.data.state,
+          isPublished: response.data.isPublished,
+          type: 4,
+          versionId: null,
+          collectionId: store.getState()?.pages?.[response?.data?.parentId].collectionId
+        }
+        dispatch(addChildInParent(responseToSend))
         history.push(`/orgs/${orgId}/dashboard/endpoint/${response.data.id}`)
+        tabService.removeTab(this.props?.activeTabId, { ...props })
         if (customCallback) {
           customCallback({ closeForm: true, stopLoader: true })
         }
@@ -142,8 +150,8 @@ export const deleteEndpoint = (endpoint) => {
     // dispatch(setEndpointIds(endpointsOrder, endpoint.groupId));
     endpointApiService
       .deleteEndpoint(endpoint.id)
-      .then(() => {
-        dispatch(onEndpointDeleted(endpoint))
+      .then((res) => {
+        dispatch(onEndpointDeleted(res))
       })
       .catch((error) => {
         dispatch(onEndpointDeletedError(error.response, endpoint))
@@ -282,21 +290,22 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 
 export const deleteEndpointRequest = (endpoint) => {
   return {
-    type: endpointsActionTypes.DELETE_ENDPOINT_REQUEST,
+    type: pagesActionTypes.DELETE_ENDPOINT_REQUEST,
     endpoint
   }
 }
 
-export const onEndpointDeleted = (endpoint) => {
+export const onEndpointDeleted = (response) => {
+  console.log(response,"sdfgg")
   return {
-    type: endpointsActionTypes.ON_ENDPOINT_DELETED,
-    endpoint
+    type: pagesActionTypes.ON_ENDPOINT_DELETED,
+    response
   }
 }
 
 export const onEndpointDeletedError = (error, endpoint) => {
   return {
-    type: endpointsActionTypes.ON_ENDPOINT_DELETED_ERROR,
+    type: pagesActionTypes.ON_ENDPOINT_DELETED_ERROR,
     error,
     endpoint
   }

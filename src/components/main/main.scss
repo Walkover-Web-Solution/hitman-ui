@@ -3344,3 +3344,13 @@ body .tox {
     background: white;
   }
 }
+.collection-version{
+.version-delete-button {
+  // background-color: #000 !important;
+  width: 40% !important;
+  padding: 0 0.08rem 0 0.65rem !important;
+  &:hover{
+    background-color: #ece9e2;
+  }
+}
+}

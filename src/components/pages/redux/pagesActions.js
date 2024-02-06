@@ -4,6 +4,7 @@ import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
 import { getOrgId, focusSelectedEntity } from '../../common/utility'
 import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
+import tabService from '../../tabs/tabService'
 
 export const fetchPages = (orgId) => {
   return (dispatch) => {
@@ -61,15 +62,15 @@ export const onPagesFetchedError = (error) => {
   }
 }
 export const updatePage = (history, editedPage, publishDocs = false) => {
-  const newPage = { ...editedPage }
   const orgId = getOrgId()
-  delete newPage.id
-  delete newPage.versionId
-  delete newPage.groupId
-  const originalPage = store.getState().pages[editedPage.id]
-  store.dispatch(updatePageRequest(editedPage))
+  const dataToSend = {
+    name: editedPage.name,
+    contents: editedPage?.contents || null,
+    state: editedPage.state
+  }
+  store.dispatch(updatePageRequest(dataToSend))
   pageApiService
-    .updatePage(editedPage.id, newPage)
+    .updatePage(editedPage.id, dataToSend)
     .then((response) => {
       store.dispatch(onPageUpdated(response.data))
       if (!publishDocs) {
@@ -78,7 +79,7 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
       return response.data
     })
     .catch((error) => {
-      store.dispatch(onPageUpdatedError(error.response ? error.response.data : error, originalPage))
+      store.dispatch(onPageUpdatedError(error.response ? error.response.data : error, editedPage))
     })
 }
 
@@ -164,30 +165,54 @@ export const onPageAddedError = (error, newPage) => {
 }
 
 export const deletePage = (page) => {
-  debugger
-  console.log(page, "page inside delete page");
+  const tabs = store.getState().tabs
   return (dispatch) => {
-    dispatch(deletePageRequest(page))
+    // dispatch(deletePageRequest(page, tabs))
     pageApiService
       .deletePage(page.id)
       .then((res) => {
-        console.log(res, "response");
+        deletePageAndChildren(page.id, tabs)
         const response = res.data
         dispatch(onPageDeleted(response))
       })
       .catch((error) => { 
-        console.log(error,"error");
         dispatch(onPageDeletedError(error.response, page))
       })
   }
 }
 
-export const deletePageRequest = (page) => {
-  debugger
-  console.log(page, "page delete request");
+const deletePageAndChildren = (pageId, tabs, pageIds = []) => {
+  const pages = store.getState().pages;
+  console.log(pages, "pagessssss");
+
+  if (pages[pageId]) {
+    console.log(pageId, "pageId");
+    pages[pageId].child.forEach((childPageId) => {
+      console.log(childPageId, "child page idsssss");
+      const newPageIds = [...pageIds, childPageId];
+      console.log(newPageIds, "page ids inside delete page and children");
+      deletePageAndChildren(childPageId, tabs, newPageIds);
+    });
+
+    delete pages[pageId];
+    console.log(pageIds, "8998989");
+  }
+
+  tabsDataDelete(pageIds, tabs);
+
+  return pages;
+};
+
+const tabsDataDelete = (pageIds, tabs) =>{
+  console.log(pageIds, tabs, "inside tabs data delete");
+  tabService.bulkRemoveTab(pageIds, tabs)
+};
+
+export const deletePageRequest = (page, tabs) => {
   return {
     type: pagesActionTypes.DELETE_PAGE_REQUEST,
-    page
+    page,
+    tabs
   }
 }
 
@@ -273,5 +298,19 @@ export const updatePageData = (payload) => {
       pageId: payload.pageId,
       data: payload.data
     }
+  }
+}
+
+export const addChildInParent = (payload) => {
+  return {
+    type: pagesActionTypes.ADD_CHILD_IN_PARENT,
+    payload
+  }
+}
+
+export const updateNameOfPages = (payload) => {
+  return {
+    type: pagesActionTypes.UPDATE_NAME_OF_PAGE,
+    payload
   }
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { withRouter } from 'react-router-dom'
 // import { markTabAsModified } from '../tabs/tabService'
 import WarningModal from '../common/warningModal'
@@ -17,14 +17,14 @@ const withQuery = (WrappedComponent) => {
     const queryClient = useQueryClient()
     const pageId = props.match.params.pageId
     const orgId = props.match.params.orgId
-    const pageContentData = queryClient.getQueryData(['pageContent', pageId])
+    const pageContentData = useQuery(['pageContent', pageId])
     const mutation = useMutation(updateContent, {
       onSuccess: (data) => {
         queryClient.setQueryData(['pageContent', pageId], data?.contents || '')
         props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
       }
     })
-    return <WrappedComponent {...props} pageContentData={pageContentData} mutationFn={mutation} />
+    return <WrappedComponent {...props} pageContentData={pageContentData.data} mutationFn={mutation} />
   }
 }
 

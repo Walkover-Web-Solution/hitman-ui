@@ -165,8 +165,6 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
 }
 
 export const deleteCollection = (collection, props) => {
-  console.log("inside deleteCollection", collection, props);
-  debugger
   return (dispatch) => {
     dispatch(deleteCollectionRequest(collection))
     collectionsApiService
@@ -190,9 +188,11 @@ export const deleteCollection = (collection, props) => {
 }
 
 export const deleteCollectionRequest = (collection) => {
+  const allData = store.getState()
   return {
     type: collectionsActionTypes.DELETE_COLLECTION_REQUEST,
-    collection
+    collection,
+    allData
   }
 }
 
@@ -369,11 +369,8 @@ export const removePublicCollection = (collection, props) => {
 }
 
 function prepareCollectionData(collection, props) {
-  debugger
-  console.log("inside prepare collection", collection , props);
   const storeData = { ...store.getState() }
   const versionIds = Object.keys(storeData.pages).filter((vId) => storeData.pages[vId].collectionId === collection.id)
-  console.log(versionIds, "version ides");
   let endpointIds = []
   let pageIds = []
   versionIds.forEach((vId) => {
