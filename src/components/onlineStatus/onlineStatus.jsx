@@ -8,15 +8,6 @@ export default function OnlineSatus(props) {
   const [showStatus, changeShowStatus] = useState(false)
 
   const setOnline = async () => {
-    const { fetchFromIdb, timestampBackend } = await props.isIdbUpdated()
-    if (!fetchFromIdb) {
-      changeStatus(true)
-      setTime(timestampBackend)
-    } else {
-      setTimeout(() => {
-        changeShowStatus(false)
-      }, 1000)
-    }
     isOnline(true)
   }
   const setOffline = () => {

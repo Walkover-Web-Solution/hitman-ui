@@ -258,14 +258,11 @@ export class UserProfileV2 extends React.Component {
 
   openOptions(path) {
     const { match, handleOpenLink } = this.props
-    const viasocketUrl = process.env.REACT_APP_VIASOCKET_URL
     const currProductUrl = process.env.REACT_APP_UI_BASE_URL || process.env.REACT_APP_UI_URL
     const { orgId } = match.params
     if (orgId) {
-      let url = `${viasocketUrl}/orgs/${orgId}${path}?product=hitman`
-      if (path === '/products') {
-        url += ''
-      } else {
+      let url = `${currProductUrl}/orgs/${orgId}${path}?product=hitman`
+      if (path !== '/products') {
         url += `&redirect_uri=${currProductUrl}`
       }
       if (!handleOpenLink) {
