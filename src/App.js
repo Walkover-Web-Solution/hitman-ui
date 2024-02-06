@@ -8,7 +8,7 @@ import MainV2 from './components/main/MainV2'
 import PublicView from './components/main/publicView'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import { ToastContainer } from 'react-toastify'
-import { getOrgId, isElectron, isTechdocOwnDomain } from './components/common/utility'
+import { getOrgId, isDashboardRoute, isElectron, isTechdocOwnDomain } from './components/common/utility'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import Cookies from 'universal-cookie'
@@ -45,11 +45,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault()
-      this.props.install_modal(e)
-    })
+    // window.addEventListener('beforeinstallprompt', (e) => {
+    //   e.preventDefault()
+    //   this.props.install_modal(e)
+    // })
+
     window.addEventListener('beforeunload', this.handleBeforeUnload);
+
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
@@ -59,12 +61,14 @@ class App extends Component {
         })
       })
     }
+
     if (this.props.location.pathname.split('/')?.[1] === 'orgs') {
       const orgId = this.props.location.pathname.split('/')?.[2]
       if (orgId) {
         this.changeSelectedOrg(orgId)
       }
     }
+
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -74,14 +78,14 @@ class App extends Component {
       this.changeSelectedOrg(currentOrgId)
     }
   }
-  
+
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.handleBeforeUnload)
   }
 
   handleBeforeUnload = (e) => {
     const unsavedChanges = true
-    if (unsavedChanges) {
+    if (unsavedChanges && window.location.pathname.includes('/dashboard')) {
       const message = 'Changes that you made may not be saved.'
       e.returnValue = message
       return message
