@@ -400,10 +400,10 @@ class SideBarV2 extends Component {
         <div className='px-3'>Pages</div>
         <div className='py-3'>
           {this.state.pages &&
-            this.props.pages &&
+            this.props.pages && 
             this.state.pages.map(
               (page, index) =>
-                Object.keys(page).length !== 0 && (
+                Object.keys(page).length !== 0 && (!page?.type == 2) && (!page?.type== 0) (
                   <div
                     className='btn d-flex align-items-center mb-2'
                     onClick={() => {

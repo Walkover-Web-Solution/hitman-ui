@@ -210,7 +210,7 @@ const untitledEndpointData = {
 }
 
 const getEndpointContent = async (props) => {
-  let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+  let currentIdToShow = isOnPublishedPage() ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
 
   let endpointId = props?.match?.params?.endpointId || currentIdToShow
   if (props?.match?.params?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
@@ -234,7 +234,7 @@ const getEndpointContent = async (props) => {
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
-    let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+    let currentIdToShow = isOnPublishedPage() ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
     const endpointId = isOnPublishedPage()
       ? currentIdToShow
       : props?.match?.params.endpointId !== 'new'
@@ -264,7 +264,7 @@ const withQuery = (WrappedComponent) => {
       <WrappedComponent
         {...props}
         endpointContent={data.data}
-        endpointContentLoading={data.isLoading}
+        endpointContentLoading={data?.isLoading}
         currentEndpointId={endpointId}
         setQueryUpdatedData={setQueryUpdatedData}
       />
@@ -2924,6 +2924,16 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    if(this.props?.endpointContentLoading) {
+      return (
+        <div className='custom-loading-container'>
+                    <div className='loading-content'>
+                      <button className='spinner-border' />
+                      <p className='mt-3'>Loading</p>
+                    </div>
+                  </div>
+      )
+    }
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
