@@ -1,7 +1,6 @@
 import groupsApiService from '../groupsApiService'
 import groupsActionTypes from './groupsActionTypes'
 
-
 export const fetchGroups = (orgId) => {
   return (dispatch) => {
     groupsApiService
@@ -28,4 +27,3 @@ export const onGroupsFetchedError = (error) => {
     error
   }
 }
-
