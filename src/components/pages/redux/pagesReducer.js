@@ -197,6 +197,10 @@ function pagesReducer(state = initialState, action) {
       pages = { ...action.data.updatedPages }
       return pages
 
+    case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES:
+      pages = { ...action.data }
+      return pages
+
     case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_ERROR:
       pages = { ...action.originalData.originalPages }
       return pages

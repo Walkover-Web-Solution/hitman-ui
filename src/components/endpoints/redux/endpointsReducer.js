@@ -97,9 +97,9 @@ function endpointsReducer(state = initialState, action) {
       endpoints = { ...action.endpoints }
       return endpoints
 
-    case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION:
-      endpoints = { ...action.data.updatedEndpoints }
-      return endpoints
+    // case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION:
+    //   endpoints = { ...action.data.updatedEndpoints }
+    //   return endpoints
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_ERROR:
       endpoints = { ...action.originalData.originalEndpoints }

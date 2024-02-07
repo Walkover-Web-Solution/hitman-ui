@@ -115,14 +115,13 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
 export const deleteEndpoint = (endpoint) => {
   return (dispatch) => {
     dispatch(deleteEndpointRequest(endpoint))
-    // let endpointsOrder = store.getState().groups[endpoint.groupId]
-    // .endpointsOrder;
-    // endpointsOrder = endpointsOrder.filter((eId) => eId !== endpoint.id);
-    // dispatch(setEndpointIds(endpointsOrder, endpoint.groupId));
     endpointApiService
       .deleteEndpoint(endpoint.id)
       .then(() => {
         dispatch(onEndpointDeleted(endpoint))
+        // deletePageAndChildren(page.id, tabs)
+        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: [] })
+        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: { tabs: {},  tabsOrder: [] } })
       })
       .catch((error) => {
         dispatch(onEndpointDeletedError(error.response, endpoint))
