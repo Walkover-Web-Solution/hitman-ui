@@ -331,15 +331,15 @@ class CollectionsComponent extends Component {
 
   scrollToCollection(collectionId) {
     const ref = this.scrollRef[collectionId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'start'
-        })
-      }, 100)
-    }
+    // if (ref) {
+    //   setTimeout(() => {
+    //     ref.scrollIntoView({
+    //       behavior: 'smooth',
+    //       block: 'nearest',
+    //       inline: 'start'
+    //     })
+    //   }, 100)
+    // }
   }
   openAddPageEndpointModal(collectionId) {
     this.setState({

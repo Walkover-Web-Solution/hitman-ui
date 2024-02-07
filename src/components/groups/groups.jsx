@@ -319,11 +319,11 @@ class Groups extends Component {
 
   scrollToGroup(groupId) {
     const ref = this.scrollRef[groupId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }, 100)
-    }
+    // if (ref) {
+    //   setTimeout(() => {
+    //     ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+    //   }, 100)
+    // }
   }
 
   handleCheckboxChange = () => {

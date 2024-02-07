@@ -394,11 +394,11 @@ class DisplayEndpoint extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.location.pathname !== prevProps.location.pathname && this.scrollDiv.current) {
-      this.scrollDiv.current.scrollIntoView({ block: 'center' })
+      // this.scrollDiv.current.scrollIntoView({ block: 'center' })
       this.extractEndpointName()
     }
     if (this.props.endpointId !== prevProps.endpointId && this.scrollDiv.current) {
-      this.scrollDiv.current.scrollIntoView({ block: 'center' })
+      // this.scrollDiv.current.scrollIntoView({ block: 'center' })
     }
     if (!isDashboardRoute(this.props)) {
       if (
@@ -1173,7 +1173,7 @@ class DisplayEndpoint extends Component {
         requestKey: null
       })
       /** Scroll to Response */
-      this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      // this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
       /** Add to History */
       isDashboardRoute(this.props) && this.setData()
     } else {

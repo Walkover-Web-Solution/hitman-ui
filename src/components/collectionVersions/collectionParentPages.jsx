@@ -320,15 +320,15 @@ class CollectionParentPages extends Component {
 
   scrolltoPage(pageId) {
     const ref = this.scrollRef[pageId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'start'
-        })
-      }, 100)
-    }
+    // if (ref) {
+    //   setTimeout(() => {
+    //     ref.scrollIntoView({
+    //       behavior: 'smooth',
+    //       block: 'nearest',
+    //       inline: 'start'
+    //     })
+    //   }, 100)
+    // }
   }
   // renderVersion(rootId) {
   //   const versionToRender = this.props.pages[rootId].child;

@@ -64,11 +64,11 @@ class Pages extends Component {
 
   scrollToPage(pageId) {
     const newRef = this.scrollRef[pageId] || null
-    if (newRef) {
-      setTimeout(() => {
-        newRef.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }, 100)
-    }
+    // if (newRef) {
+    //   setTimeout(() => {
+    //     newRef.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+    //   }, 100)
+    // }
   }
 
   handleDisplay(page, collectionId, previewMode) {

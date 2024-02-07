@@ -75,11 +75,11 @@ class Endpoints extends Component {
 
   scrollToEndpoint(endpointId) {
     const ref = this.scrollRef[endpointId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }, 100)
-    }
+    // if (ref) {
+    //   setTimeout(() => {
+    //     ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+    //   }, 100)
+    // }
   }
 
   sequencingOnFilter() {

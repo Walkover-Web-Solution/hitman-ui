@@ -167,7 +167,6 @@ export const onPageAddedError = (error, newPage) => {
 export const deletePage = (page) => {
   const tabs = store.getState().tabs
   return (dispatch) => {
-    // dispatch(deletePageRequest(page, tabs))
     pageApiService
       .deletePage(page.id)
       .then((res) => {
@@ -175,7 +174,7 @@ export const deletePage = (page) => {
         const response = res.data
         dispatch(onPageDeleted(response))
       })
-      .catch((error) => { 
+      .catch((error) => {
         dispatch(onPageDeletedError(error.response, page))
       })
   }
@@ -183,28 +182,18 @@ export const deletePage = (page) => {
 
 const deletePageAndChildren = (pageId, tabs, pageIds = []) => {
   const pages = store.getState().pages;
-  console.log(pages, "pagessssss");
-
   if (pages[pageId]) {
-    console.log(pageId, "pageId");
     pages[pageId].child.forEach((childPageId) => {
-      console.log(childPageId, "child page idsssss");
       const newPageIds = [...pageIds, childPageId];
-      console.log(newPageIds, "page ids inside delete page and children");
       deletePageAndChildren(childPageId, tabs, newPageIds);
     });
-
     delete pages[pageId];
-    console.log(pageIds, "8998989");
   }
-
   tabsDataDelete(pageIds, tabs);
-
   return pages;
 };
 
-const tabsDataDelete = (pageIds, tabs) =>{
-  console.log(pageIds, tabs, "inside tabs data delete");
+const tabsDataDelete = (pageIds, tabs) => {
   tabService.bulkRemoveTab(pageIds, tabs)
 };
 

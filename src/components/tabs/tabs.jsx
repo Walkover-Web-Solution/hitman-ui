@@ -84,10 +84,10 @@ class CustomTabs extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.tabs.activeTabId !== prevProps.tabs.activeTabId) {
-      const newRef = this.scrollRef[this.props.tabs.activeTabId] || null
-      newRef && newRef.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
-    }
+    // if (this.props.tabs.activeTabId !== prevProps.tabs.activeTabId) {
+    //   const newRef = this.scrollRef[this.props.tabs.activeTabId] || null
+    //   newRef && newRef.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
+    // }
   }
 
   renderTabName(tabId) {

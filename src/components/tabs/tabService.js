@@ -30,7 +30,6 @@ function removeTab(tabId, props) {
   }
 }
 function bulkRemoveTab(tabIds, tabs) {
-  console.log("inside bulk remove tabs", tabIds);
   let filter
   const tabsData = tabs.tabs;
   // const activeTabId = tabs.activeTabId;

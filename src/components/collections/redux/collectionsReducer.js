@@ -92,7 +92,6 @@ function collectionsReducer(state = initialState, action) {
       }
 
     case collectionsActionTypes.DELETE_COLLECTION_REQUEST:
-    // case pagesActionTypes.ON_PAGE_DELETED:
       collections = { ...state }
       const rootParentId = collections[action.collection.id].rootParentId
       // const child = allPages[rootParentId].child
@@ -101,7 +100,6 @@ function collectionsReducer(state = initialState, action) {
       return collections
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
-    // case pagesActionTypes.ON_PAGE_DELETED:
       return state
 
     case collectionsActionTypes.ON_COLLECTION_DELETED_ERROR:
