@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { store } from '../../store/store'
-import { SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
+import { SESSION_STORAGE_KEY, isOnPublishedPage, deleteAllPagesAndTabsAndReactQueryData } from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -17,7 +17,7 @@ import {
   msgText,
   getEntityState,
   getCurrentUserSSLMode,
-  setCurrentUserSSLMode
+  setCurrentUserSSLMode,
 } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab, updateTab } from '../tabs/redux/tabsActions'
@@ -231,7 +231,7 @@ const getEndpointContent = async (props) => {
   }
 }
 
-const withQuery = (WrappedComponent) => {
+const withQuery =  (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
     let currentIdToShow = isOnPublishedPage() ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
@@ -240,6 +240,11 @@ const withQuery = (WrappedComponent) => {
       : props?.match?.params.endpointId !== 'new'
         ? props?.match?.params?.endpointId
         : props?.activeTabId
+
+
+    if(true && endpointId!=null){
+      deleteAllPagesAndTabsAndReactQueryData(endpointId)
+    }
     const data = useQuery(['endpoint', endpointId], () => getEndpointContent(props, queryClient), {
       refetchOnWindowFocus: false,
       cacheTime: 5000000,

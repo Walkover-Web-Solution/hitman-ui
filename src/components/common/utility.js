@@ -1,4 +1,7 @@
+import { useQueryClient } from 'react-query';
+import * as _ from 'lodash'
 import * as Sentry from '@sentry/react'
+import { store } from '../../store/store'
 import Joi from 'joi-browser'
 import { getProxyToken } from '../auth/authServiceV2'
 // import history from '../../history'
@@ -603,6 +606,84 @@ export function isOnPublishedPage() {
   return (isTechdocOwnDomain() && path == 'p') || !isTechdocOwnDomain()
 }
 
+const deleteSidebarData = (pages, tabs, pageId, deletedTabIds , deletedIds) => {
+  if (pages[pageId]) {
+    pages[pageId].child.forEach((childPageId) => {
+      deleteSidebarData(pages, tabs, childPageId, deletedTabIds , deletedIds);
+    });
+
+    // creating data for deleting from react query
+    (pages[pageId]?.type == 4 ? deletedIds.endpointIds.push(pageId) : deletedIds.pageIds.push(pageId) )
+
+    delete pages[pageId];
+    
+    // if tabs if present in the tabs 
+    if(tabs.tabs[pageId]) {
+      delete tabs.tabs[pageId], 
+      deletedTabIds.add(pageId)
+    }
+
+  }
+};
+
+export const deleteAllPagesAndTabsAndReactQueryData = async (pageId) =>  {
+  try{
+    // return false;
+    debugger
+    // return false;
+    const deletedTabIds = new Set(); // for tab deletion 
+
+    // for deleting from react query
+    let deletedIds = {};
+    deletedIds.pageIds = []
+    deletedIds.endpointIds = []
+
+    let foundActiveTabId = false;
+    let {pages, tabs} = store.getState();
+
+    // pages =  _.cloneDeep(pages)
+    // tabs =   _.cloneDeep(tabs)
+
+    deleteSidebarData(pages, tabs, pageId, deletedTabIds, deletedIds);  // deleting sidebar data
+
+    // filter tabsOrder from the ids which are deleted and also set foundActiveTabId = true; if tab id deleted is active id
+    tabs.tabsOrder = tabs.tabsOrder.filter(id => {
+      if(tabs?.activeTabId == id){
+        foundActiveTabId = true;
+      }
+      return !deletedTabIds.has(id);
+    });
+
+    deleteFromReactQuery(deletedIds) // deleting from react query 
+
+    // change active tab id if tab id  
+    if(foundActiveTabId){
+      if(tabs?.tabsOrder?.length > 0){
+        tabs.activeTabId = tabs.tabsOrder[0] 
+      }
+    }
+    debugger
+    // things left to do , if activeTabId found then change activeTabId and change path
+    return {pages, tabs, changePath : foundActiveTabId}
+  }catch(err){
+    console.log(err)
+    console.log('delete operation for pages,tabs , react query did not execute successfully');
+    return null ;
+  }
+ 
+}
+
+
+function deleteFromReactQuery(deletedIds) {
+  const queryClient = useQueryClient();
+  if (deletedIds?.pageIds?.length > 0) {
+    queryClient.removeQueries(['pageContent', deletedIds.pageIds]);
+  }
+  if(deletedIds?.endpointIds?.length > 0){
+    queryClient.removeQueries(['endpoint', deletedIds.endpointIds]);
+  }
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -640,5 +721,6 @@ export default {
   modifyEndpointContent,
   isTechdocOwnDomain,
   SESSION_STORAGE_KEY,
-  isOnPublishedPage
+  isOnPublishedPage,
+  deleteAllPagesAndTabsAndReactQueryData
 }

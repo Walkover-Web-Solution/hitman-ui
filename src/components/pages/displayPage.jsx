@@ -9,7 +9,8 @@ import {
   isStatePending,
   isStateApproved,
   getEntityState,
-  isOnPublishedPage
+  isOnPublishedPage,
+  deleteAllPagesAndTabsAndReactQueryData
 } from '../common/utility'
 import './page.scss'
 import { updatePage } from './redux/pagesActions'
@@ -31,6 +32,10 @@ const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
+
+    if(true && pageId!=null){
+      deleteAllPagesAndTabsAndReactQueryData(pageId)
+    }
     const { data, error } = useQuery(
       ['pageContent', pageId],
       async () => {

@@ -96,10 +96,7 @@ function tabsReducer(state = initialState, action) {
       return tabs
 
     case tabsActionTypes.ON_BULK_PUBLISH_TABS:
-      const tabsState = { ...state }
-      tabsState = { ...tabs, ...action.data }
-      return tabsState
-
+      return { ...action.data }
     default:
       return state
   }

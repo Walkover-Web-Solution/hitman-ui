@@ -51,7 +51,7 @@ class App extends Component {
       e.preventDefault()
       this.props.install_modal(e)
     })
-    window.addEventListener('beforeunload', this.handleBeforeUnload)
+    // window.addEventListener('beforeunload', this.handleBeforeUnload)
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
