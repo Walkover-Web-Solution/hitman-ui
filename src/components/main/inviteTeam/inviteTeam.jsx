@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { useSelector } from 'react-redux'
 import axios from 'axios'
 import './inviteTeam.scss'
 import { getCurrentOrg, getProxyToken } from '../../auth/authServiceV2'
@@ -8,6 +9,11 @@ import GenericModal from '../GenericModal'
 import { inviteMembers } from '../../../services/orgApiService'
 
 function InviteTeam() {
+  const {  tabs } = useSelector((state) => {
+    return {
+      tabs: state.tabs
+    }
+  })
   const [users, setUsers] = useState([])
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
@@ -39,7 +45,7 @@ function InviteTeam() {
 
   const handleBack = () => {
     const orgId = getCurrentOrg()?.id
-    history.push(`/orgs/${orgId}/dashboard/endpoint/new`)
+    history.push(`/orgs/${orgId}/dashboard/${tabs.activeTabId}`)
   }
 
   const handleInviteClick = () => setShowModal(true)
