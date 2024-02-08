@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { withRouter } from 'react-router-dom'
-// import { markTabAsModified } from '../tabs/tabService'
 import WarningModal from '../common/warningModal'
 import { updateContent, updatePage, updatePageData } from '../pages/redux/pagesActions'
 import './page.scss'
@@ -174,17 +173,11 @@ class EditPage extends Component {
   }
 
   isModified() {
-    const contents = this.state.data?.contents
-    const originalContents = this.state.originalData?.contents
-    if (
-      typeof contents !== 'undefined' &&
-      typeof originalContents !== 'undefined' &&
-      this.state.data.contents !== this.state.originalData.contents
-    ) {
+    if (!this.state.isAlreadyModified) {
+      this.setState({ isAlreadyModified: true })
       return true
-    } else {
-      return false
     }
+    return false
   }
 
   renderTiptapEditor(item, index) {

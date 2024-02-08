@@ -399,32 +399,32 @@ class SideBarV2 extends Component {
       <div>
         <div className='px-3'>Pages</div>
         <div className='py-3'>
-          {this.state.pages &&
-            this.props.pages && 
-            this.state.pages.map(
-              (page, index) =>
-                Object.keys(page).length !== 0 && (!page?.type == 2) && (!page?.type== 0) (
-                  <div
-                    className='btn d-flex align-items-center mb-2'
-                    onClick={() => {
-                      this.openPage(page.id)
-                    }}
-                    key={index}
-                  >
-                    <div>
-                      <i className='uil uil-file-alt' aria-hidden='true' />
-                    </div>
-                    <div className='ml-3'>
-                      <div className='sideBarListWrapper'>
-                        <div className='text-left'>
-                          <p> {page.name}</p>
-                        </div>
-                        {this.renderPath(page.id, 'page')}
-                      </div>
-                    </div>
-                  </div>
-                )
-            )}
+          {this.props.pages &&
+  this.state.pages &&
+  this.state.pages.map(
+    (page, index) =>
+      Object.keys(page).length !== 0 && !(page?.type === 2 || page?.type === 0) && (
+        <div
+          className='btn d-flex align-items-center mb-2'
+          onClick={() => {
+            this.openPage(page.id)
+          }}
+          key={index}
+        >
+          <div>
+            <i className='uil uil-file-alt' aria-hidden='true' />
+          </div>
+          <div className='ml-3'>
+            <div className='sideBarListWrapper'>
+              <div className='text-left'>
+                <p> {page.name}</p>
+              </div>
+              {this.renderPath(page.id, 'page')}
+            </div>
+          </div>
+        </div>
+      )
+  )}
         </div>
       </div>
     )

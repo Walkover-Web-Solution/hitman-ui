@@ -146,7 +146,7 @@ class CollectionsComponent extends Component {
   }
 
   async handleGoToDocs(collection) {
-    const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p/${collection.id}`
+    const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p?collectionId=${collection.id}`
     openExternalLink(publicDocsUrl)
   }
 
@@ -444,7 +444,7 @@ class CollectionsComponent extends Component {
                         </svg>{' '}
                         Duplicate
                       </div> */}
-                          <div className='dropdown-item' onClick={() => this.openImportVersionForm(collectionId)}>
+                          {/* <div className='dropdown-item' onClick={() => this.openImportVersionForm(collectionId)}>
                             <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                               <path d='M2 2L2 16' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                               <path
@@ -465,7 +465,7 @@ class CollectionsComponent extends Component {
                               <path d='M9.25 7.25L9.25 2' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                             </svg>{' '}
                             Import Version
-                          </div>
+                          </div> */}
                           {this.props.collections[collectionId].isPublic && (
                             <div className='dropdown-item' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
                               <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
