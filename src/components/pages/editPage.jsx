@@ -174,17 +174,11 @@ class EditPage extends Component {
   }
 
   isModified() {
-    const contents = this.state.data?.contents
-    const originalContents = this.state.originalData?.contents
-    if (
-      typeof contents !== 'undefined' &&
-      typeof originalContents !== 'undefined' &&
-      this.state.data.contents !== this.state.originalData.contents
-    ) {
+    if (!this.state.isAlreadyModified) {
+      this.setState({ isAlreadyModified: true })
       return true
-    } else {
-      return false
     }
+    return false
   }
 
   renderTiptapEditor(item, index) {
