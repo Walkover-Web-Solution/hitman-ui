@@ -18,24 +18,10 @@ const createDataBase = async (dbName) => {
 
   db = await openDB(dbName, version, {
     upgrade(db, oldVersion, newVersion, transaction) {
-      // const environmentStore = db.createObjectStore('environment')
-      db.createObjectStore('tabs', {
-        keyPath: 'id',
-        autoIncrement: true
-      })
-      // db.createObjectStore('history')
-      // db.createObjectStore('collections')
-      // db.createObjectStore('versions')
-      // db.createObjectStore('groups')
-      // db.createObjectStore('pages')
       db.createObjectStore('endpoints')
       db.createObjectStore('fileUploadMetadata')
-      // const tabsMetadataStore = db.createObjectStore('tabs_metadata')
       const authDataStore = db.createObjectStore('authData')
       const responseDataStore = db.createObjectStore('responseData')
-      // environmentStore.put(null, 'currentEnvironmentId')
-      // tabsMetadataStore.put(null, 'activeTabId')
-      // tabsMetadataStore.put([], 'tabsOrder')
       authDataStore.put({}, 'currentAuthData')
       responseDataStore.put({}, 'currentResponse')
       const metaData = db.createObjectStore('meta_data')
