@@ -132,7 +132,7 @@ class GroupPages extends Component {
           pageService.showDeletePageModal(
             this.props,
             this.closeDeletePageModal.bind(this),
-            'Delete Page',
+            'Delete Page',                                              
             ' Are you sure you wish to delete this page? ',
             this.state.selectedPage
           )}

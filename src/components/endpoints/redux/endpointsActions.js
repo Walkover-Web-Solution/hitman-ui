@@ -5,6 +5,7 @@ import endpointsActionTypes from './endpointsActionTypes'
 import { getOrgId, focusSelectedEntity } from '../../common/utility'
 import shortid from 'shortid'
 import { sendAmplitudeData } from '../../../services/amplitude'
+import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 
 export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   const orgId = getOrgId()
@@ -142,8 +143,8 @@ export const deleteEndpoint = (endpoint) => {
     // dispatch(setEndpointIds(endpointsOrder, endpoint.groupId));
     endpointApiService
       .deleteEndpoint(endpoint.id)
-      .then(() => {
-        dispatch(onEndpointDeleted(endpoint))
+      .then((res) => {
+        dispatch(onEndpointDeleted(res))
       })
       .catch((error) => {
         dispatch(onEndpointDeletedError(error.response, endpoint))
@@ -282,21 +283,22 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 
 export const deleteEndpointRequest = (endpoint) => {
   return {
-    type: endpointsActionTypes.DELETE_ENDPOINT_REQUEST,
+    type: pagesActionTypes.DELETE_ENDPOINT_REQUEST,
     endpoint
   }
 }
 
-export const onEndpointDeleted = (endpoint) => {
+export const onEndpointDeleted = (response) => {
+  console.log(response,"sdfgg")
   return {
-    type: endpointsActionTypes.ON_ENDPOINT_DELETED,
-    endpoint
+    type: pagesActionTypes.ON_ENDPOINT_DELETED,
+    response
   }
 }
 
 export const onEndpointDeletedError = (error, endpoint) => {
   return {
-    type: endpointsActionTypes.ON_ENDPOINT_DELETED_ERROR,
+    type: pagesActionTypes.ON_ENDPOINT_DELETED_ERROR,
     error,
     endpoint
   }

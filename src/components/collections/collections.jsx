@@ -65,7 +65,9 @@ class CollectionsComponent extends Component {
       defaultPublicLogo: hitmanLogo,
       publicLogoError: false,
       showRemoveModal: false,
-      selectedCollectionIds: []
+      selectedCollectionIds: [],
+      openSelectedCollection: false,
+      childIdType: {}
     }
     this.names = {}
     this.scrollRef = {}
@@ -161,6 +163,35 @@ class CollectionsComponent extends Component {
   }
 
   openDeleteCollectionModal(collectionId) {
+
+    const getAllChildPages = (parentId) => {
+      const childPages = [];
+      
+      if (parentId in this.props.pages) {
+        const pages = this.props.pages[parentId].child;
+        if (pages && pages.length > 0) {
+          pages.forEach((pageId) => {
+            const subChildPages = getAllChildPages(pageId);
+            childPages.push(pageId, ...subChildPages);
+          });
+        }
+      }
+      return childPages;
+    };
+
+    const rootParentId = this.props.collections[collectionId].rootParentId;
+    const pagesChild = getAllChildPages(rootParentId);
+    
+
+    const childPageDetails = pagesChild.map((pageId) => {
+      const pageDetails = this.props.pages[pageId];
+      this.setState({ childIdType : {id: pageId, type: pageDetails?.type} });
+      return {
+        id: pageId,
+        type: pageDetails?.type,
+      };
+    });
+
     if (this.state.openSelectedCollection === true) {
       this.setState({ openSelectedCollection: false })
     }
@@ -665,7 +696,8 @@ class CollectionsComponent extends Component {
         this.closeDeleteCollectionModal.bind(this),
         title,
         message,
-        this.state.selectedCollection
+        this.state.selectedCollection,
+        this.state.childIdType
       )
     )
   }
