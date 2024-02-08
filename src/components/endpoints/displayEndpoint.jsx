@@ -831,7 +831,7 @@ class DisplayEndpoint extends Component {
       timeElapsed,
       createdAt
     }
-    this.props.add_history(obj)
+        this.props.add_history(obj)
   }
 
   checkValue(param, originalParams) {
@@ -861,7 +861,7 @@ class DisplayEndpoint extends Component {
 
   addhttps(url) {
     if (url) {
-      if (this.state.data.updatedUri.includes('localhost') && !url.includes('localhost')) {
+      if (this.props?.endpointContent?.data?.updatedUri.includes('localhost') && !url.includes('localhost')) {
         url = 'localhost:' + url
       }
       if (!/^(?:f|ht)tps?:\/\//.test(url)) {
@@ -953,7 +953,7 @@ class DisplayEndpoint extends Component {
       headers.cookie = cookiesString.trim()
     }
 
-    const method = this.state.data.method
+    const method = this.props?.endpointContent?.data?.method
     /** Set Request Options */
     let requestOptions = null
     const cancelToken = runSendRequest.token
@@ -976,7 +976,7 @@ class DisplayEndpoint extends Component {
       url = this.replaceVariables(url, environment)
       url = this.addhttps(url)
       headers = this.replaceVariablesInJson(headers, environment)
-      const bodyType = this.state.data.body.type
+      const bodyType = this.props?.endpointContent?.data?.body?.type
       body = this.replaceVariablesInBody(body, bodyType, environment)
       requestOptions = { ...requestOptions, body, headers, url, bodyType }
       /** Steve Onboarding Step 5 Completed */
@@ -1215,13 +1215,11 @@ class DisplayEndpoint extends Component {
   }
 
   setMethod(method) {
-    const dummyData = this.props.endpointContent
+    const dummyData = this.props?.endpointContent
     dummyData.data.method = method
     this.props.setQueryUpdatedData(dummyData)
     const response = {}
-    const data = { ...this.state.data }
-    data.method = method
-    this.setState({ response, data }, () => this.setModifiedTabData())
+    this.setState({ response }, () => this.setModifiedTabData())
   }
 
   setModifiedTabData() {
@@ -3065,9 +3063,9 @@ class DisplayEndpoint extends Component {
           <div>
             {this.state.showAskAiSlider && <ChatbotsideBar {...this.props} onHide={() => this.closeChatBotModal()} />}
             <div />
-            <div className='ask-ai-btn' onClick={this.toggleChatbotModal}>
+            {/* <div className='ask-ai-btn' onClick={this.toggleChatbotModal}>
               <p>Ask AI</p>
-            </div>
+            </div> */}
           </div>
         )}
       </div>
