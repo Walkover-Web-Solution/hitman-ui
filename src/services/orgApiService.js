@@ -66,3 +66,16 @@ export async function inviteMembers(name, email) {
     return false
   }
 }
+export async function removeUser(clientUser, activity) {
+    try{
+    const res = await http.put(proxyUrl + `/clientUsers/${clientUser}/${activity}`)
+     if (res.status !== 200) {
+       throw new (res?.message ? res.message : 'Please enter message correctly')()
+     }
+     toast.success('User added successfully')
+     return true
+   } catch (e) {
+     toast.error(e?.message ? e.message : 'Something went wrong')
+     return false
+   }
+}

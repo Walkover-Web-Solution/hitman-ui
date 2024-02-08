@@ -6,7 +6,7 @@ import './inviteTeam.scss'
 import { getCurrentOrg, getProxyToken } from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
-import { inviteMembers } from '../../../services/orgApiService'
+import { inviteMembers, removeUser } from '../../../services/orgApiService'
 
 function InviteTeam() {
   const {  tabs } = useSelector((state) => {
@@ -19,6 +19,8 @@ function InviteTeam() {
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [editModalVisible, setEditModalVisible] = useState(false)
+  const [editUserIndex, setEditUserIndex] = useState(null);
   const history = useHistory()
   const inputRef = useRef(null)
 
@@ -58,6 +60,20 @@ function InviteTeam() {
       handleSendInvite(e)
     }
   }
+
+const handleEdit = (index) =>{
+  setEditModalVisible(!editModalVisible)
+  setEditUserIndex(index);
+}
+const handleBlockUnblock = async(activity) =>{
+  const clientUser = JSON.parse(localStorage.getItem('profile'))
+  const client_id = clientUser.client_id
+try {
+  await removeUser(client_id,activity)
+} catch (error) {
+  toast.error('Error fetching users: ' + error.message)
+}
+}
 
   const handleSendInvite = async (e) => {
     e.preventDefault()
@@ -124,14 +140,28 @@ function InviteTeam() {
                 <td>{user.email}</td>
                 <td>Admin</td>
                 <td>
-                  <button
+                 <button
                     className='editButton'
-                    onClick={() => {
-                      /* logic to edit user */
-                    }}
+                    onClick={() => handleEdit(user.email)}
                   >
                     Edit
                   </button>
+                  {editModalVisible && editUserIndex !== null && editUserIndex === user.email && (
+                  <>
+                  <button
+                    className='editButton ml-2 mr-2'
+                    onClick={() => handleBlockUnblock('block')}
+                  >
+                    Block
+                  </button>
+                  <button
+                    className='editButton'
+                    onClick={() => handleBlockUnblock('unblock')}
+                  >
+                    Unblock
+                  </button>
+                  </>
+                )}
                 </td>
               </tr>
             ))}
