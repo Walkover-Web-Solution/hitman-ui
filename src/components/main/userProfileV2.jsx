@@ -68,7 +68,7 @@ export class UserProfileV2 extends React.Component {
     return (
       <div>
         <div className='org-name'>{this.getCurrentOrg()?.name || null}</div>
-        <span className='profile-details-label-light'>{name}</span>
+        {/* <span className='profile-details-label-light'>{name}</span> */}
         {/* {
                 this.getNotificationCount() > 0 &&
                   <div className='user-notification-badge'>{this.getNotificationCount()}</div>
