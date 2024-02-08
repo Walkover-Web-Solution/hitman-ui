@@ -2,13 +2,14 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
-import { getOrgId, focusSelectedEntity } from '../../common/utility'
+import { getOrgId, focusSelectedEntity, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
 import shortid from 'shortid'
 import { sendAmplitudeData } from '../../../services/amplitude'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 import { addChildInParent } from '../../pages/redux/pagesActions'
 import tabService from '../../tabs/tabService'
 import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 export const addEndpointInCollection = (history, newEndpoint, rootParentId, customCallback, props) => {
   const orgId = getOrgId()
@@ -113,16 +114,20 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
 }
 
 export const deleteEndpoint = (endpoint) => {
-  console.log(endpoint,'hello idris')
   return (dispatch) => {
-    dispatch(deleteEndpointRequest(endpoint))
     endpointApiService
       .deleteEndpoint(endpoint.id)
       .then((res) => {
-        dispatch(onEndpointDeleted(res))
-        // deletePageAndChildren(page.id, tabs)
-        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: [] })
-        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: { tabs: {},  tabsOrder: [] } })
+        deleteAllPagesAndTabsAndReactQueryData(endpoint.id).then((data) => {
+
+          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
+
+          // after deletion operation
+          operationsAfterDeletion(data)
+        }).catch((error) => {
+          console.log('error after getting data from deleteAllPagesAndTabsAndReactQueryData == ', error)
+        })
       })
       .catch((error) => {
         dispatch(onEndpointDeletedError(error.response, endpoint))

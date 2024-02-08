@@ -536,7 +536,7 @@ class CollectionParentPages extends Component {
                           </svg>{' '}
                           Edit
                         </div> */}
-                        {/* <div
+                        <div
                           className='dropdown-item'
                           onClick={() => {
                             this.openDeleteVersionModal(pageId)
@@ -561,7 +561,7 @@ class CollectionParentPages extends Component {
                             <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                           </svg>{' '}
                           Delete
-                        </div> */}
+                        </div>
                         <div
                           className='dropdown-item'
                           onClick={() => {
