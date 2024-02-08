@@ -396,7 +396,7 @@ class CollectionParentPages extends Component {
   }
 
   openDeleteVersionModal(versionId) {
-    this.setState({
+        this.setState({
       showDeleteVersion: true,
       selectedVersion: {
         ...this.props.pages[versionId]
@@ -405,7 +405,7 @@ class CollectionParentPages extends Component {
   }
 
   handleDeleteVersion(id) {
-    console.log(id, "id");
+        console.log(id, "id");
     if (this.state.defaultVersionId === id) {
       // this.setState({defaultVersionId: ''})
       toast.error('This is Default Version')
@@ -442,7 +442,7 @@ class CollectionParentPages extends Component {
                           {this.props.clientData[rootId]?.selectedVersionName || this.props.clientData[rootId]?.defaultVersionName}
                         </span>
                       }
-                      //  show={true}
+                    //  show={true}
                     >
                       {this.props.pages[rootId].child.map((childId, index) => (
                         <Dropdown.Item key={index} onClick={() => this.handleDropdownItemClick(childId, rootId)}>
@@ -885,7 +885,6 @@ class CollectionParentPages extends Component {
             ADD_VERSION_MODAL_NAME
           )}
 
-{console.log(this.state.selectedVersion, "selected version")}
         {this.state.showDeleteVersion &&
           pageService.showDeletePageModal(
             this.props,
