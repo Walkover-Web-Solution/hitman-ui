@@ -5,6 +5,7 @@ import versionActionTypes from '../../collectionVersions/redux/collectionVersion
 import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 
 const initialState = {}
 
@@ -78,22 +79,6 @@ function endpointsReducer(state = initialState, action) {
         [action.originalEndpoint.id]: action.originalEndpoint
       }
 
-    case endpointsActionTypes.DELETE_ENDPOINT_REQUEST:
-      endpoints = { ...state }
-      delete endpoints[action.endpoint.id]
-      return endpoints
-
-    case endpointsActionTypes.ON_ENDPOINT_DELETED:
-      return state
-
-    case endpointsActionTypes.ON_ENDPOINT_DELETED_ERROR:
-      toast.error(action.error.data)
-      if (action.error.status === 404) return state
-      return {
-        ...state,
-        [action.endpoint.id]: action.endpoint
-      }
-
     case endpointsActionTypes.ON_ENDPOINT_DUPLICATED:
       return { ...state, [action.response.id]: action.response }
 
@@ -124,14 +109,6 @@ function endpointsReducer(state = initialState, action) {
       toast.error(action.error)
       return { ...state }
 
-    case collectionActionTypes.ON_COLLECTION_DELETED:
-    case versionActionTypes.ON_VERSION_DELETED:
-    case groupsActionTypes.ON_GROUP_DELETED:
-      endpoints = { ...state }
-      action.payload.endpointIds.forEach((eId) => {
-        delete endpoints[eId]
-      })
-      return endpoints
 
     case endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED:
       endpoints = { ...action.endpoints }

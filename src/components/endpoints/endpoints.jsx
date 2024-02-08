@@ -94,7 +94,7 @@ class Endpoints extends Component {
       }
     }
   }
-
+//delete endpoint
   async handleDelete(endpoint) {
     await this.props.delete_endpoint(endpoint)
     tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
@@ -291,19 +291,19 @@ class Endpoints extends Component {
               checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
               onChange={this.handleCheckboxChange}
             />
-            <div className='api-label GET request-type-bgcolor'>GET</div>
+            <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>{this.props.endpoints[endpointId].requestType}</div>
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         ) : (
           <div className='sidebar-accordion-item'>
-            <div className='api-label GET request-type-bgcolor'>GET</div>
+            <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>{this.props.endpoints[endpointId].requestType}</div>
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         )}
       </>
     )
   }
-
+//here diplay
   displayDeleteOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleDelete(this.props.endpoints[endpointId])}>
