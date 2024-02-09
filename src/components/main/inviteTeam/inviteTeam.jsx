@@ -44,18 +44,18 @@ function InviteTeam() {
   }, [showModal])
 
   const handleBack = () => {
-    const orgId = getCurrentOrg()?.id
-    const activeTab = tabs.activeTabId
-    const type = tabs.tabs[activeTab].type
-     if(type === 'endpoint'){
-      history.push(`/orgs/${orgId}/dashboard/endpoint/${activeTab}`)
-     }
-     else if (tabs.tabs[activeTab].status === 'NEW'){
-      history.push(`/orgs/${orgId}/dashboard/endpoint/${activeTab}`)
-     }
-     else{
-      history.push(`/orgs/${orgId}/dashboard/page/${activeTab}`)
-     }
+    const orgId = getCurrentOrg()?.id;
+    const activeTab = tabs.activeTabId;
+    const type = tabs.tabs[activeTab].type;
+    const status = tabs.tabs[activeTab].status;
+  
+    if (type === 'endpoint' || status === 'NEW') {
+      history.push(`/orgs/${orgId}/dashboard/endpoint/${activeTab}`);
+    } else if (type === 'history') {
+      history.push(`/orgs/${orgId}/dashboard/history/${activeTab}`);
+    } else {
+      history.push(`/orgs/${orgId}/dashboard/page/${activeTab}`);
+    }
   }
 
   const handleInviteClick = () => setShowModal(true)
