@@ -1,7 +1,14 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap'
 import tabService from './tabService'
+import { useQueryClient } from 'react-query'
 
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    const queryClient = useQueryClient()
+    return <WrappedComponent {...props} queryClient={queryClient} />
+  }
+}
 class SavePromptModal extends Component {
   constructor(props) {
     super(props)
@@ -33,6 +40,11 @@ class SavePromptModal extends Component {
   handleDontSave() {
     tabService.removeTab(this.props.tab_id, { ...this.props })
     this.props.onConfirm(this.props.tab_id)
+    if (this.props?.pages?.[this.props?.tab_id]?.type === 3 || this.props?.pages?.[this.props?.tab_id]?.type === 1) {
+      return this.props?.queryClient?.removeQueries(['pageContent', this.props?.tab_id])
+    } else {
+      return this.props?.queryClient?.removeQueries(['endpoint', this.props?.tab_id])
+    }
   }
 
   getTabName(tabId) {
@@ -90,4 +102,4 @@ class SavePromptModal extends Component {
   }
 }
 
-export default SavePromptModal
+export default withQuery(SavePromptModal)

@@ -25,6 +25,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     set_response_view: (view) => dispatch(onToggle(view))
   }
 }
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    return <WrappedComponent {...props} />
+  }
+}
 class CustomTabs extends Component {
   constructor(props) {
     super(props)
@@ -463,4 +468,4 @@ class CustomTabs extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CustomTabs))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(CustomTabs)))
