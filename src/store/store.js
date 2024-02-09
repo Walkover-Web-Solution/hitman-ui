@@ -2,7 +2,6 @@ import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import collectionsReducer from '../components/collections/redux/collectionsReducer'
 import versionsReducer from '../components/collectionVersions/redux/collectionVersionsReducer'
-import endpointsReducer from '../components/endpoints/redux/endpointsReducer'
 import environmentsReducer from '../components/environments/redux/environmentsReducer'
 import groupsReducer from '../components/groups/redux/groupsReducer'
 import pagesReducer from '../components/pages/redux/pagesReducer'
@@ -23,7 +22,6 @@ const rootReducer = combineReducers({
   versions: versionsReducer,
   groups: groupsReducer,
   pages: pagesReducer,
-  endpoints: endpointsReducer,
   environment: environmentsReducer,
   tabs: tabsReducer,
   history: historyReducer,

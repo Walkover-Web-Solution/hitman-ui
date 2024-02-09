@@ -29,6 +29,8 @@ import { addIsExpandedAction, setDefaultversionId, updataForIsPublished } from '
 import pageService from '../pages/pageService'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 import { onDefaultVersion } from '../publishDocs/redux/publishDocsActions'
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import { toast } from 'react-toastify'
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
@@ -385,6 +387,30 @@ class CollectionParentPages extends Component {
       })
     }
   }
+  closeDefaultVersionForm() {
+    this.setState({ setDefaultVersion: false })
+  }
+
+  closeDeleteVersionModal() {
+    this.setState({ showDeleteVersion: false })
+  }
+
+  openDeleteVersionModal(versionId) {
+    this.setState({
+      showDeleteVersion: true,
+      selectedVersion: {
+        ...this.props.pages[versionId]
+      }
+    })
+  }
+
+  handleDeleteVersion(id) {
+    if (this.state.defaultVersionId === id) {
+      toast.error("Default version can't be deleted")
+    } else {
+      this.openDeleteVersionModal(id)
+    }
+  }
 
   renderBody(pageId, index) {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
@@ -503,6 +529,15 @@ class CollectionParentPages extends Component {
                       {this.props.pages[rootId].child.map((childId, index) => (
                         <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
                           <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              this.handleDeleteVersion(childId)
+                            }}
+                            className='version-delete-button'
+                          >
+                            <DeleteIcon />
+                          </button>
                         </Dropdown.Item>
                       ))}
                     </DropdownButton>
@@ -536,10 +571,10 @@ class CollectionParentPages extends Component {
                           </svg>{' '}
                           Edit
                         </div> */}
-                        {/* <div
+                        <div
                           className='dropdown-item'
                           onClick={() => {
-                            this.openDeleteVersionModal(pageId)
+                            this.openDeletePageModal(pageId)
                           }}
                         >
                           <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -561,7 +596,7 @@ class CollectionParentPages extends Component {
                             <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                           </svg>{' '}
                           Delete
-                        </div> */}
+                        </div>
                         <div
                           className='dropdown-item'
                           onClick={() => {
@@ -847,6 +882,16 @@ class CollectionParentPages extends Component {
             this.closeVersionForm.bind(this),
             this.props.rootParentId,
             ADD_VERSION_MODAL_NAME
+          )}
+
+        {this.state.showDeleteVersion &&
+          pageService.showDeletePageModal(
+            this.props,
+            this.closeDeleteVersionModal.bind(this),
+            'Delete Version',
+            `Are you sure you want to delete this Version?
+        All your subpages and endpoints present in this version will be deleted.`,
+            this.state.selectedVersion
           )}
         {this.state.showDeleteModal &&
           pageService.showDeletePageModal(
