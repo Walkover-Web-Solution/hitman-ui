@@ -2,6 +2,7 @@ import { store } from '../../store/store'
 import { addNewTab, closeAllTabs, closeTab, replaceTabForUntitled, setActiveTabId, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from './tabStatusTypes'
 import { getCurrentUser } from '../auth/authServiceV2'
+import { getOrgId } from '../common/utility'
 
 function newTab() {
   store.dispatch(addNewTab())
@@ -59,6 +60,9 @@ function selectTab(props, tabId) {
     tab?.state?.pageType === 'SETTINGS' && props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
     // : props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
   } else {
+    if(!(tab?.type && tab?.id)) {
+      return props.history.push({pathname: `/orgs/${getOrgId()}/dashboard/endpoint/new`})
+    }
     props.history.push({
       pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}`
     })
