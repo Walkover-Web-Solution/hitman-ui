@@ -532,7 +532,8 @@ class CollectionParentPages extends Component {
                         <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
                           <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               this.handleDeleteVersion(childId)
                             }}
                             className='version-delete-button'
