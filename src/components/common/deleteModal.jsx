@@ -31,16 +31,10 @@ class DeleteModal extends Component {
       const { deleted_collection: collection } = this.props
       this.props.remove_public_collection(collection, this.props)
     }
-    if (title === 'Delete Version') {
-      const { deleted_version: version } = this.props
-      this.props.delete_version(version, this.props)
+    if (title === 'Delete Version' || title === 'Delete Page' || title=== '') {
+      const { deletedPage: page } = this.props
+      this.props.delete_page(page, this.props)
     }
-    if (title === 'Delete Page') {
-      const { deleted_page: page } = this.props
-      tabService.removeTab(page.id, { ...this.props })
-      this.props.delete_page(page)
-    }
-
     if (title === 'Delete Endpoint') {
       const { deleted_endpoint: endpoint } = this.props
       this.props.handle_delete(endpoint)

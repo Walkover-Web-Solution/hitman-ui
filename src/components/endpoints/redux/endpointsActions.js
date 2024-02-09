@@ -114,15 +114,12 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
 
 export const deleteEndpoint = (endpoint) => {
   return (dispatch) => {
-    dispatch(deleteEndpointRequest(endpoint))
-    // let endpointsOrder = store.getState().groups[endpoint.groupId]
-    // .endpointsOrder;
-    // endpointsOrder = endpointsOrder.filter((eId) => eId !== endpoint.id);
-    // dispatch(setEndpointIds(endpointsOrder, endpoint.groupId));
     endpointApiService
       .deleteEndpoint(endpoint.id)
-      .then(() => {
-        dispatch(onEndpointDeleted(endpoint))
+      .then((res) => {
+        // deletePageAndChildren(page.id, tabs)
+        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: [] })
+        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: { tabs: {},  tabsOrder: [] } })
       })
       .catch((error) => {
         dispatch(onEndpointDeletedError(error.response, endpoint))
@@ -159,7 +156,7 @@ export const setAuthorizationType = (endpointId, authData) => {
     dispatch(setAuthorizationTypeRequest(endpointId, authData))
     endpointApiService
       .setAuthorizationType(endpointId, authData)
-      .then(() => {})
+      .then(() => { })
       .catch((error) => {
         dispatch(onAuthorizationTypeError(error.response ? error.response.data : error, endpointId, originalAuthType))
         toast.error(error)
@@ -233,15 +230,15 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 
 export const deleteEndpointRequest = (endpoint) => {
   return {
-    type: endpointsActionTypes.DELETE_ENDPOINT_REQUEST,
+    type: pagesActionTypes.DELETE_ENDPOINT_REQUEST,
     endpoint
   }
 }
 
-export const onEndpointDeleted = (endpoint) => {
+export const onEndpointDeleted = (response) => {
   return {
-    type: endpointsActionTypes.ON_ENDPOINT_DELETED,
-    endpoint
+    type: pagesActionTypes.ON_ENDPOINT_DELETED,
+    response
   }
 }
 
@@ -308,7 +305,7 @@ export const reorderEndpoint = (sourceEndpointIds, sourceGroupId, destinationEnd
     )
     endpointApiService
       .updateEndpointOrder(sourceEndpointIds, sourceGroupId, destinationEndpointIds, destinationGroupId, endpointId)
-      .then(() => {})
+      .then(() => { })
       .catch((error) => {
         dispatch(reorderEndpointError(error.response ? error.response.data : error, originalEndpoints))
       })

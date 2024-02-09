@@ -63,6 +63,7 @@ export function updatePage(pageId, page) {
 }
 
 export function deletePage(pageId) {
+  console.log(pageId, "page idddd");
   const apiUrl = getApiUrl()
   return http.delete(`${apiUrl}/pages/${pageId}`)
 }
