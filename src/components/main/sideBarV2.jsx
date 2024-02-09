@@ -482,7 +482,7 @@ class SideBarV2 extends Component {
         <div className='searchResult'>
           {this.state.pages.length > 0 ? this.renderPagesList() : null}
           {this.state.endpoint.length > 0 ? this.renderEndpointsList() : null}
-          {this.state.historySnapshot.length > 0 ? (
+          {this.state.historySnapshot.length > 0 && !isOnPublishedPage() ? (
             <div>
               <div className='px-3'>History</div>
               {this.renderHistoryList()}
