@@ -331,7 +331,7 @@ class PublicEndpoint extends Component {
     let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 1  set collection data
-    let collectionId = this.state?.publicCollectionId ?? null
+    let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
 
     // [info] part 2 seems not necessary
     // TODO later

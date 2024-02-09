@@ -295,7 +295,7 @@ class SideBarV2 extends Component {
       })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
-      let pathName = getUrlPathById(id, this.props.pages)
+      let pathName = getUrlPathById(id, this.props?.pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
       this.props.history.push(pathName)
     }
@@ -308,7 +308,7 @@ class SideBarV2 extends Component {
       })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
-      let pathName = getUrlPathById(id, this.props.pages)
+      let pathName = getUrlPathById(id, this.props?.pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
       this.props.history.push(pathName)
     }
@@ -375,8 +375,6 @@ class SideBarV2 extends Component {
                   >
                     <div className={`api-label lg-label ${endpoint.requestType}`}>
                       <div className='endpoint-request-div'>{endpoint.requestType}</div>
-                      {/* <div className={`api-label lg-label ${'GET'}`}>
-                      <div className='endpoint-request-div'>{'GET'}</div> */}
                     </div>
                     <div className='ml-3'>
                       <div className='sideBarListWrapper'>
@@ -437,16 +435,16 @@ class SideBarV2 extends Component {
           key={history.id}
           className='btn d-flex align-items-center mb-2'
           onClick={() => {
-            this.openHistorySnapshot(history.id)
+            this.openHistorySnapshot(history?.id)
           }}
         >
-          <div className={`api-label lg-label ${history.endpoint.requestType}`}>
-            <div className='endpoint-request-div'>{history.endpoint.requestType}</div>
+          <div className={`api-label lg-label ${history?.endpoint?.requestType}`}>
+            <div className='endpoint-request-div'>{history?.endpoint?.requestType}</div>
           </div>
           <div className='ml-3'>
             <div className='sideBarListWrapper'>
               <div className='text-left'>
-                <p>{history.endpoint.name || history.endpoint.BASE_URL + history.endpoint.uri || 'Random Trigger'}</p>
+                <p>{history?.endpoint?.name || history?.endpoint?.BASE_URL + history?.endpoint?.uri || 'Random Trigger'}</p>
               </div>
               <small className='text-muted'>{moment(history.createdAt).format('ddd, Do MMM h:mm a')}</small>
             </div>
