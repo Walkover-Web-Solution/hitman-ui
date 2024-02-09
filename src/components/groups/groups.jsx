@@ -21,6 +21,8 @@ import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
+import { deletePage } from '../pages/redux/pagesActions.js'
+
 
 const mapStateToProps = (state) => {
   return {
@@ -38,7 +40,8 @@ const mapDispatchToProps = (dispatch) => {
     reorder_endpoint: (sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, endpointId) =>
       dispatch(reorderEndpoint(sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, endpointId)),
     update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    delete_page: (page) => dispatch(deletePage(page))
   }
 }
 
@@ -158,7 +161,7 @@ class Groups extends Component {
     this.setState({
       showDeleteModal: true,
       selectedGroup: {
-        ...this.props.groups[groupId]
+        ...this.props.pages[groupId]
       }
     })
   }
@@ -406,7 +409,7 @@ class Groups extends Component {
                         </svg>{' '}
                         Edit
                       </div>
-                      {/* <div
+                      <div
                         className='dropdown-item'
                         onClick={() => {
                           this.openDeleteGroupModal(groupId)
@@ -425,7 +428,7 @@ class Groups extends Component {
                           <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                         </svg>{' '}
                         Delete
-                      </div> */}
+                      </div>
                       {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[groupId])}>
                       <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                         <path
@@ -561,7 +564,7 @@ class Groups extends Component {
             'Delete Page',
             `Are you sure you wish to delete this page?
               All your pages and endpoints present in this page will be deleted.`,
-            this.state.selectedGroup
+            this.props?.pages[this.props?.rootParentId]
           )}
 
         {<div className='linkWith'>{this.renderBody(this.props?.rootParentId)}</div>}

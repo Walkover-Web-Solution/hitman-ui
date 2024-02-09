@@ -2,10 +2,11 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import { getOrgId, focusSelectedEntity } from '../../common/utility'
+import { getOrgId, focusSelectedEntity, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
 import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 export const fetchPages = (orgId) => {
   return (dispatch) => {
@@ -173,6 +174,7 @@ export const addPage1 = (history, rootParentId, newPage) => {
       .saveCollectionPage(rootParentId, newPage)
       .then((response) => {
         const data = response.data.page
+        response.data.page.requestId = newPage.requestId;
         dispatch(onParentPageAdded(response.data))
         history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
@@ -213,18 +215,40 @@ export const onPageAddedError = (error, newPage) => {
 }
 
 export const deletePage = (page) => {
+  const tabs = store.getState().tabs
   return (dispatch) => {
-    dispatch(deletePageRequest(page))
     pageApiService
-      .deletePage(page.id)
+      .deletePage(page?.id)
       .then((res) => {
-        dispatch(onPageDeleted(res.data))
+        deleteAllPagesAndTabsAndReactQueryData(page.id).then((data) => {
+
+          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
+
+          // after deletion operation
+          operationsAfterDeletion(data)
+        }).catch((error) => {
+          console.log('error after getting data from deletePages deleteAllPagesAndTabsAndReactQueryData == ', error)
+        })
       })
       .catch((error) => {
         dispatch(onPageDeletedError(error.response, page))
       })
   }
 }
+
+const deletePageAndChildren = (pageId, tabs, pageIds = []) => {
+  const pages = store.getState().pages;
+  if (pages[pageId]) {
+    pages[pageId].child.forEach((childPageId) => {
+      const newPageIds = [...pageIds, childPageId];
+      deletePageAndChildren(childPageId, tabs, newPageIds);
+    });
+    delete pages[pageId];
+  }
+  // tabsDataDelete(pageIds, tabs);
+  return pages;
+};
 
 export const deletePageRequest = (page) => {
   return {
