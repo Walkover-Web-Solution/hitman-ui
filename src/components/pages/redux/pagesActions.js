@@ -174,6 +174,7 @@ export const addPage1 = (history, rootParentId, newPage) => {
       .saveCollectionPage(rootParentId, newPage)
       .then((response) => {
         const data = response.data.page
+        response.data.page.requestId = newPage.requestId;
         dispatch(onParentPageAdded(response.data))
         history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
