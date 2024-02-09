@@ -2,7 +2,7 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import { getOrgId, focusSelectedEntity } from '../../common/utility'
+import { getOrgId, focusSelectedEntity, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
 import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
@@ -215,15 +215,20 @@ export const onPageAddedError = (error, newPage) => {
 
 export const deletePage = (page) => {
   const tabs = store.getState().tabs
-return (dispatch) => {
+  return (dispatch) => {
     pageApiService
       .deletePage(page?.id)
       .then((res) => {
-        // deletePageAndChildren(page.id, tabs)
-        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: [] })
-        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: { tabs: {},  tabsOrder: [] } })
-        const response = res.data
-        // dispatch(onPageDeleted(response))
+        deleteAllPagesAndTabsAndReactQueryData(page.id).then((data) => {
+
+          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
+
+          // after deletion operation
+          operationsAfterDeletion(data)
+        }).catch((error) => {
+          console.log('error after getting data from deletePages deleteAllPagesAndTabsAndReactQueryData == ', error)
+        })
       })
       .catch((error) => {
         dispatch(onPageDeletedError(error.response, page))

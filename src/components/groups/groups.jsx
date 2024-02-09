@@ -564,7 +564,7 @@ class Groups extends Component {
             'Delete Page',
             `Are you sure you wish to delete this page?
               All your pages and endpoints present in this page will be deleted.`,
-            this.state.selectedGroup
+            this.props?.pages[this.props?.rootParentId]
           )}
 
         {<div className='linkWith'>{this.renderBody(this.props?.rootParentId)}</div>}

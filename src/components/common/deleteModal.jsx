@@ -31,7 +31,7 @@ class DeleteModal extends Component {
       const { deleted_collection: collection } = this.props
       this.props.remove_public_collection(collection, this.props)
     }
-    if (title === 'Delete Version' || title === 'Delete Page' || title=== '') {
+    if (title === 'Delete Version' || title === 'Delete Page') {
       const { deletedPage: page } = this.props
       this.props.delete_page(page, this.props)
     }

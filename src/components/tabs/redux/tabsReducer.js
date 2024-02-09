@@ -1,4 +1,5 @@
 import tabsActionTypes from './tabsActionTypes'
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 const initialState = {
   tabs: {},
@@ -95,11 +96,8 @@ function tabsReducer(state = initialState, action) {
       tabs = { ...state, tabsOrder: newOrder, activeTabId: action.payload.newTabId, tabs: newTabs }
       return tabs
 
-    case tabsActionTypes.ON_BULK_PUBLISH_TABS:
-      const tabsState = { ...state }
-      tabsState = { ...tabs, ...action.data }
-      return tabsState
-
+    case bulkPublishActionTypes.ON_BULK_PUBLISH_TABS:
+      return { ...action.data }
     default:
       return state
   }

@@ -7,6 +7,9 @@ import versionActionTypes from '../../collectionVersions/redux/collectionVersion
 import { sendAmplitudeData } from '../../../services/amplitude'
 import { onParentPageAdded } from '../../pages/redux/pagesActions'
 import { toast } from 'react-toastify'
+import { deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+
 
 export const fetchCollections = (orgId) => {
   return (dispatch) => {
@@ -166,15 +169,24 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
 
 export const deleteCollection = (collection, props) => {
   return (dispatch) => {
-    dispatch(deleteCollectionRequest(collection))
     collectionsApiService
       .deleteCollection(collection.id)
-      .then((response) => {
-        // deletePageAndChildren(page.id, tabs)
-        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: [] })
-        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: { tabs: {},  tabsOrder: [] } })
+      .then((res) => {
+        const rootParentPageId = collection.rootParentId
+        deleteAllPagesAndTabsAndReactQueryData(rootParentPageId).then((data) => {
+          dispatch(deleteCollectionRequest(collection))
+          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
+
+          // after deletion operation
+          operationsAfterDeletion(data)
+        }).catch((error) => {
+          console.log('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)
+        })
+
       })
       .catch((error) => {
+        console.log('error', error)
         dispatch(onCollectionDeletedError(error.response, collection))
       })
   }
