@@ -37,12 +37,6 @@ class SaveAsSidebar extends Form {
     this.saveAsSidebar.focus()
   }
 
-  async doSubmit() {
-    const selectedCollection = this.props.collections[this.state.dropdownList.selectedCollectionId]
-    const rootParentId = selectedCollection.rootParentId
-    this.props.set_rootParent_id(rootParentId, { endpointName: this.state.data.name, endpointDescription: this.state.data.description })
-  }
-
   render() {
     const title = this.state.data.name
     const saveAsSidebarStyle = {

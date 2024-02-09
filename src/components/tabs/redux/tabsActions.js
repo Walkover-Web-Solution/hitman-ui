@@ -27,9 +27,8 @@ export const fetchTabsFromIdb = () => {
 export const addNewTab = () => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
-  const showDesktopModal = !window.matchMedia('(display-mode: standalone)').matches
   const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
-  if (!isElectron() && tabsOrder.length >= 10 && showDesktopModal && !isDesktopModalOpen) {
+  if (!isElectron() && tabsOrder.length >= 10  && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
 
@@ -61,9 +60,8 @@ export const closeTab = (tabId, history) => {
 
 export const openInNewTab = (tab) => {
   const tabsOrder = store.getState().tabs.tabsOrder
-  const showDesktopModal = !window.matchMedia('(display-mode: standalone)').matches
   const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
-  if (!isElectron() && tabsOrder.length >= 10 && showDesktopModal && !isDesktopModalOpen) {
+  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
   return async (dispatch) => {
@@ -100,10 +98,8 @@ export const setTabsOrder = (tabsOrder) => {
 
 export const replaceTab = (oldTabId, newTab) => {
   const tabsOrder = store.getState().tabs.tabsOrder.filter((tId) => tId !== oldTabId)
-  const showDesktopModal = !window.matchMedia('(display-mode: standalone)').matches
-
   const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
-  if (!isElectron() && tabsOrder.length >= 10 && showDesktopModal && !isDesktopModalOpen) {
+  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
   tabsOrder.push(newTab.id)

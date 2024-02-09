@@ -8,7 +8,7 @@ import _ from 'lodash'
 
 const hostContainerEnum = {
   hosts: {
-    customHost: { key: 'customHost', label: 'Custom Host' },
+    // customHost: { key: 'customHost', label: 'Custom Host' },
     environmentHost: { key: 'environmentHost', label: 'Environment Host' },
     versionHost: { key: 'versionHost', label: 'Version Host' }
   }
@@ -28,9 +28,9 @@ class HostContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      datalistHost: '',
+      datalistHost: this.props?.endpointContent?.host?.BASE_URL,
       datalistUri: '',
-      customHost: '',
+      // customHost: '',
       environmentHost: '',
       versionHost: '',
       selectedHost: '',
@@ -56,8 +56,8 @@ class HostContainer extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (
       prevProps.environmentHost !== this.props.environmentHost ||
-      prevProps.versionHost !== this.props.versionHost ||
-      prevProps.customHost !== this.props.customHost
+      prevProps.versionHost !== this.props.versionHost 
+      // prevProps.customHost !== this.props.customHost
     ) {
       this.setHosts()
     }
@@ -70,7 +70,7 @@ class HostContainer extends Component {
     const endpointUri = this.props.updatedUri || ''
     const topPriorityHost = this.customFindTopPriorityHost()
     const selectedHost = topPriorityHost
-    const host = this.state[selectedHost] || this.state.datalistHost || ''
+    const host = this.props?.endpointContent.host.BASE_URL || this.state[selectedHost] || this.state.datalistHost  || ''
     this.setState({ datalistUri: endpointUri, datalistHost: host, selectedHost }, () => this.setParentHostAndUri())
   }
 
@@ -80,7 +80,7 @@ class HostContainer extends Component {
 
   customFindTopPriorityHost() {
     const selectedHost = ''
-    if (this.state.selectedHost === 'customHost' || this.state.customHost) return 'customHost'
+    // if (this.state.selectedHost === 'customHost' || this.state.customHost) return 'customHost'
     if (this.state.environmentHost) return 'environmentHost'
     if (this.state.versionHost) return 'versionHost'
     return selectedHost
@@ -108,7 +108,7 @@ class HostContainer extends Component {
   handleClickHostOptions(host, type) {
     this.setState(
       {
-        datalistHost: host,
+        datalistHost: host || this.props?.endpointContent?.host?.BASE_URL,
         showDatalist: false,
         selectedHost: type,
         Flag: true
@@ -149,12 +149,12 @@ class HostContainer extends Component {
     }
     if (hostName) {
       const selectedHost = this.selectCurrentHost(hostName)
-      if (selectedHost === 'customHost') data.customHost = hostName
+      // if (selectedHost === 'customHost') data.customHost = hostName
       data.datalistHost = hostName
       data.selectedHost = selectedHost
       uri = value.replace(hostName, '')
     } else {
-      data.selectedHost = 'customHost'
+      // data.selectedHost = 'customHost'
       uri = value
     }
     data.datalistUri = uri
@@ -162,15 +162,15 @@ class HostContainer extends Component {
   }
 
   selectCurrentHost(hostname) {
-    if (hostname === this.state.customHost) return 'customHost'
+    // if (hostname === this.state.customHost) return 'customHost'
     if (hostname === this.state.environmentHost) return 'environmentHost'
     if (hostname === this.state.versionHost) return 'versionHost'
-    return 'customHost'
+    // return 'customHost'
   }
 
   setHosts() {
-    const { versionHost, environmentHost, customHost } = this.props
-    this.setState({ versionHost, environmentHost, customHost }, () => {
+    const { versionHost, environmentHost } = this.props
+    this.setState({ versionHost, environmentHost }, () => {
       this.setHostAndUri()
     })
   }
@@ -182,7 +182,7 @@ class HostContainer extends Component {
         <input
           id='host-container-input'
           className='form-control'
-          value={this.state.datalistHost + this.state.datalistUri || ''}
+          value={this.props?.endpointContent.host.BASE_URL + this.props?.endpointContent?.data?.updatedUri}
           name={`${endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={(e) => this.handleInputHostChange(e)}
