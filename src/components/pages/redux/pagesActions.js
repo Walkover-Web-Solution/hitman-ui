@@ -214,10 +214,11 @@ export const onPageAddedError = (error, newPage) => {
 }
 
 export const deletePage = (page) => {
+  console.log(page, "page inside delete page");
   const tabs = store.getState().tabs
   return (dispatch) => {
     pageApiService
-      .deletePage(page.id)
+      .deletePage(page?.id)
       .then((res) => {
         // deletePageAndChildren(page.id, tabs)
         // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: [] })

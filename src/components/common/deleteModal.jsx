@@ -32,11 +32,12 @@ class DeleteModal extends Component {
       this.props.remove_public_collection(collection, this.props)
     }
     if (title === 'Delete Version') {
-      const { deleted_version: version } = this.props
-      this.props.delete_version(version, this.props)
+      debugger
+      const { deletedPage: page } = this.props
+      this.props.delete_page(page, this.props)
     }
     if (title === 'Delete Page') {
-      const { deleted_page: page } = this.props
+      const { deletedPage: page } = this.props
       // tabService.bulkRemoveTab(page.id, { ...this.props },tabs)
       this.props.delete_page(page)
     }

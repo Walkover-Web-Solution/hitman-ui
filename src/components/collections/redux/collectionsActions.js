@@ -170,19 +170,9 @@ export const deleteCollection = (collection, props) => {
     collectionsApiService
       .deleteCollection(collection.id)
       .then((response) => {
-        const { versionIds, groupIds, endpointIds, pageIds } = prepareCollectionData(collection, props)
         // deletePageAndChildren(page.id, tabs)
         // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: [] })
         // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: { tabs: {},  tabsOrder: [] } })
-        dispatch(
-          onCollectionDeleted({
-            collection: response.data,
-            versionIds,
-            groupIds,
-            endpointIds,
-            pageIds
-          })
-        )
       })
       .catch((error) => {
         dispatch(onCollectionDeletedError(error.response, collection))
