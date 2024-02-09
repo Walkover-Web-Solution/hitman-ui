@@ -228,7 +228,7 @@ export const deletePage = (page) => {
           // after deletion operation
           operationsAfterDeletion(data)
         }).catch((error) => {
-          console.log('error after getting data from deletePages deleteAllPagesAndTabsAndReactQueryData == ', error)
+          console.errro(error)
         })
       })
       .catch((error) => {

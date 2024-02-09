@@ -396,7 +396,7 @@ class CollectionParentPages extends Component {
   }
 
   openDeleteVersionModal(versionId) {
-        this.setState({
+    this.setState({
       showDeleteVersion: true,
       selectedVersion: {
         ...this.props.pages[versionId]
@@ -406,7 +406,7 @@ class CollectionParentPages extends Component {
 
   handleDeleteVersion(id) {
     if (this.state.defaultVersionId === id) {
-      toast.error('This is Default Version')
+      toast.error("Default version can't be deleted")
     } else {
       this.openDeleteVersionModal(id)
     }
@@ -440,7 +440,7 @@ class CollectionParentPages extends Component {
                           {this.props.clientData[rootId]?.selectedVersionName || this.props.clientData[rootId]?.defaultVersionName}
                         </span>
                       }
-                    //  show={true}
+                      //  show={true}
                     >
                       {this.props.pages[rootId].child.map((childId, index) => (
                         <Dropdown.Item key={index} onClick={() => this.handleDropdownItemClick(childId, rootId)}>
@@ -531,7 +531,7 @@ class CollectionParentPages extends Component {
                           <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
                           <button
                             onClick={(e) => {
-                              e.stopPropagation();
+                              e.stopPropagation()
                               this.handleDeleteVersion(childId)
                             }}
                             className='version-delete-button'
@@ -890,7 +890,7 @@ class CollectionParentPages extends Component {
             this.closeDeleteVersionModal.bind(this),
             'Delete Version',
             `Are you sure you want to delete this Version?
-        All your subpages and endpoints present in this page will be deleted.`,
+        All your subpages and endpoints present in this version will be deleted.`,
             this.state.selectedVersion
           )}
         {this.state.showDeleteModal &&

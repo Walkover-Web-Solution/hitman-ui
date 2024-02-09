@@ -180,6 +180,7 @@ export const deleteCollection = (collection, props) => {
 
           // after deletion operation
           operationsAfterDeletion(data)
+          toast.success('collection has been deleted successfully')
         }).catch((error) => {
           console.log('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)
         })
