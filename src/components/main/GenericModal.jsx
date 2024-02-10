@@ -105,7 +105,7 @@ function GenericModal({
                       aria-describedby='basic-addon2'
                       value={orgName}
                       onChange={(e) => setName(e.target.value)}
-                      onKeyPress={handleKeyPress}
+                      onKeyPress={(e)=>{handleKeyPress(e)}}
                     />
                     <Button onClick={handleAddOrg} variant='outline-secondary' id='button-addon2'>
                       Create
