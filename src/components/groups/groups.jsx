@@ -21,8 +21,6 @@ import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
-import { deletePage } from '../pages/redux/pagesActions.js'
-
 
 const mapStateToProps = (state) => {
   return {
@@ -40,8 +38,7 @@ const mapDispatchToProps = (dispatch) => {
     reorder_endpoint: (sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, endpointId) =>
       dispatch(reorderEndpoint(sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, endpointId)),
     update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
-    delete_page: (page) => dispatch(deletePage(page))
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
 }
 

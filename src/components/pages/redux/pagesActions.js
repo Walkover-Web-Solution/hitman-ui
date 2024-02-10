@@ -6,7 +6,6 @@ import { getOrgId, focusSelectedEntity } from '../../common/utility'
 import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
-import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 export const fetchPages = (orgId) => {
   return (dispatch) => {
@@ -214,36 +213,18 @@ export const onPageAddedError = (error, newPage) => {
 }
 
 export const deletePage = (page) => {
-  console.log(page, "page inside delete page");
-  const tabs = store.getState().tabs
   return (dispatch) => {
+    dispatch(deletePageRequest(page))
     pageApiService
-      .deletePage(page?.id)
+      .deletePage(page.id)
       .then((res) => {
-        // deletePageAndChildren(page.id, tabs)
-        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: [] })
-        // dispatch({ type : bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: { tabs: {},  tabsOrder: [] } })
-        const response = res.data
-        dispatch(onPageDeleted(response))
+        dispatch(onPageDeleted(res.data))
       })
       .catch((error) => {
         dispatch(onPageDeletedError(error.response, page))
       })
   }
 }
-
-const deletePageAndChildren = (pageId, tabs, pageIds = []) => {
-  const pages = store.getState().pages;
-  if (pages[pageId]) {
-    pages[pageId].child.forEach((childPageId) => {
-      const newPageIds = [...pageIds, childPageId];
-      deletePageAndChildren(childPageId, tabs, newPageIds);
-    });
-    delete pages[pageId];
-  }
-  // tabsDataDelete(pageIds, tabs);
-  return pages;
-};
 
 export const deletePageRequest = (page) => {
   return {

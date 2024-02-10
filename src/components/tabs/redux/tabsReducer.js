@@ -95,11 +95,6 @@ function tabsReducer(state = initialState, action) {
       tabs = { ...state, tabsOrder: newOrder, activeTabId: action.payload.newTabId, tabs: newTabs }
       return tabs
 
-    case tabsActionTypes.ON_BULK_PUBLISH_TABS:
-      const tabsState = { ...state }
-      tabsState = { ...tabs, ...action.data }
-      return tabsState
-
     default:
       return state
   }
