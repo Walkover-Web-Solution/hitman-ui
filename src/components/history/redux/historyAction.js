@@ -44,6 +44,6 @@ export const onHistoryAdded = (data) => {
 }
 export const onHistoryRemoved = () => {
   return async (dispatch) => {
-    dispatch({type: historyActionTypes.REMOVE_HISTORY})
+    dispatch({ type: historyActionTypes.REMOVE_HISTORY })
   }
 }

@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { Button, Dropdown, Modal } from 'react-bootstrap'
 import Avatar from 'react-avatar'
 import lightArrow from '../../assets/icons/new-arrow.svg'
@@ -28,8 +28,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    close_all_tabs : (tabs) => dispatch(closeAllTabs(tabs)),
-    remove_history: (data) => dispatch(onHistoryRemoved(data)),
+    close_all_tabs: (tabs) => dispatch(closeAllTabs(tabs)),
+    remove_history: (data) => dispatch(onHistoryRemoved(data))
   }
 }
 
@@ -37,19 +37,19 @@ class UserProfileV2 extends Component {
   constructor(props) {
     super(props)
     this.state = {
-    name: '',
-    email: '',
-    orgFilter: '',
-    moreFlag: false,
-    showModal: false,
-    loading: false,
-    orgName: '',
-    modalForTabs: 'false',
-    tabsClosed: 'false',
-    selectedOrg: '',
-    currentOrg: '',
+      name: '',
+      email: '',
+      orgFilter: '',
+      moreFlag: false,
+      showModal: false,
+      loading: false,
+      orgName: '',
+      modalForTabs: 'false',
+      tabsClosed: 'false',
+      selectedOrg: '',
+      currentOrg: ''
+    }
   }
-}
 
   componentDidMount() {
     if (getCurrentUser()) {
@@ -324,48 +324,62 @@ class UserProfileV2 extends Component {
     })
   }
 
-  removeFromLocalStorage(tabIds){
+  removeFromLocalStorage(tabIds) {
     tabIds.forEach((key) => {
-      localStorage.removeItem(key);
-    });
+      localStorage.removeItem(key)
+    })
   }
 
   handleTabsandHistory(value) {
     const tabIdsToClose = this.props.tabs.tabsOrder
-    const history = this.props.historySnapshot;
+    const history = this.props.historySnapshot
 
-    if(value === 'yes'){
+    if (value === 'yes') {
       this.props.close_all_tabs(tabIdsToClose)
       this.removeFromLocalStorage(tabIdsToClose)
       this.props.remove_history(history)
       // window.removeEventListener('beforeunload', this.handleBeforeUnload)
       switchOrg(this.state.currentOrg.id)
-    }
-    else if(value === 'no'){
-      this.setState({modalForTabs: false, showModal: false})
+    } else if (value === 'no') {
+      this.setState({ modalForTabs: false, showModal: false })
       // window.addEventListener('beforeunload', this.handleBeforeUnload)
     }
   }
 
-   handleClose() {
-    this.setState({modalForTabs: false, showModal: false});
-   }
+  handleClose() {
+    this.setState({ modalForTabs: false, showModal: false })
+  }
 
-  showModalForTabs(){
-    if (this.state.modalForTabs === 'false') {     
-      return null; 
+  showModalForTabs() {
+    if (this.state.modalForTabs === 'false') {
+      return null
     }
     return (
-      <Modal show={this.state.modalForTabs} className='mt-4' >
-        <Modal.Header closeButton onClick={()=>{this.handleClose()}}>
+      <Modal show={this.state.modalForTabs} className='mt-4'>
+        <Modal.Header
+          closeButton
+          onClick={() => {
+            this.handleClose()
+          }}
+        >
           <Modal.Title>Save Tabs!</Modal.Title>
         </Modal.Header>
         <Modal.Body>If you switch organization all the tabs and history will be deleted!</Modal.Body>
         <Modal.Footer>
-          <button className='btn btn-danger btn-lg mr-2' onClick={()=>{this.handleTabsandHistory('yes')}}>
+          <button
+            className='btn btn-danger btn-lg mr-2'
+            onClick={() => {
+              this.handleTabsandHistory('yes')
+            }}
+          >
             Yes
           </button>
-          <Button variant="secondary" onClick={()=>{this.handleTabsandHistory('no')}} >
+          <Button
+            variant='secondary'
+            onClick={() => {
+              this.handleTabsandHistory('no')
+            }}
+          >
             No
           </Button>
         </Modal.Footer>
@@ -375,20 +389,18 @@ class UserProfileV2 extends Component {
 
   handleOrgClick(org, selectedOrg) {
     const tabIdsToClose = this.props.tabs.tabsOrder
-    this.setState({selectedOrg: selectedOrg, currentOrg: org})
-    if(org.id === selectedOrg.id){
-      this.setState({modalForTabs: false})
-      toast.error("This org is already selected")
-    }
-    else if (org.id !== selectedOrg.id && (tabIdsToClose.length === 1 || tabIdsToClose.length === 0)){
-    this.setState({modalForTabs: false})
-    switchOrg(org.id)
-    this.removeFromLocalStorage(tabIdsToClose)
-    this.props.close_all_tabs(tabIdsToClose)
-    this.props.remove_history(this.props.historySnapshot)
-    }
-    else{
-    this.setState({modalForTabs: true})
+    this.setState({ selectedOrg: selectedOrg, currentOrg: org })
+    if (org.id === selectedOrg.id) {
+      this.setState({ modalForTabs: false })
+      toast.error('This org is already selected')
+    } else if (org.id !== selectedOrg.id && (tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
+      this.setState({ modalForTabs: false })
+      switchOrg(org.id)
+      this.removeFromLocalStorage(tabIdsToClose)
+      this.props.close_all_tabs(tabIdsToClose)
+      this.props.remove_history(this.props.historySnapshot)
+    } else {
+      this.setState({ modalForTabs: true })
     }
   }
 
@@ -485,7 +497,10 @@ class UserProfileV2 extends Component {
               className={`btn btn-primary mb-2 p-2 ${org === selectedOrg ? 'active' : ''} `}
               key={key}
               // onClick={() => switchOrg(org.id)}
-              onClick={()=>{this.handleOrgClick(org, selectedOrg)}}>
+              onClick={() => {
+                this.handleOrgClick(org, selectedOrg)
+              }}
+            >
               {org.name}
             </button>
           ))}
@@ -545,7 +560,7 @@ class UserProfileV2 extends Component {
 
   handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      this.handleAddOrg();
+      this.handleAddOrg()
     }
   }
 
@@ -554,8 +569,7 @@ class UserProfileV2 extends Component {
       if (!this.validateName(this.state.orgName)) {
         toast.error('Only alphanumeric and underscores are allowed')
         return
-      }
-      else if (this.state.orgName.length < 3){
+      } else if (this.state.orgName.length < 3) {
         toast.error('Name must be at least 3 characters')
         return
       }
@@ -568,45 +582,45 @@ class UserProfileV2 extends Component {
   render() {
     return (
       <>
-      <div className='profile-menu'>
-        <Dropdown className='menu-dropdown transition d-flex align-items-center'>
-          <Dropdown.Toggle
-            as={React.forwardRef(({ children, onClick }, ref1) => this.renderAvatarWithOrg(onClick, ref1))}
-            id='dropdown-custom-components'
-          />
-          <Dropdown.Menu>
-            {this.renderUserDetails()}
-            <div className='profile-listing-container'>
-              {/* <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item> */}
-              {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
-              <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
-              <Dropdown.Divider />
-              {/* <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item> */}
-              <div className='profile-menu'>
-                <span className='p-2' onClick={this.toggleModal} type='button'>
-                  <img src={SwitchRight} alt='icon' />
-                  Switch Organization
-                </span>
-                <GenericModal
-                  orgName={this.state.orgName}
-                  validateName={this.validateName}
-                  handleKeyPress={this.handleKeyPress}
-                  inputRef={this.inputRef}
-                  setName={this.setName}
-                  handleCloseModal={this.toggleModal}
-                  showModal={this.state.showModal}
-                  title='Switch Organizations'
-                  modalBody={this.renderOrgListDropdown()}
-                  keyboard={false}
-                  showInput
-                  handleAddOrg={this.handleAddOrg}
-                />
+        <div className='profile-menu'>
+          <Dropdown className='menu-dropdown transition d-flex align-items-center'>
+            <Dropdown.Toggle
+              as={React.forwardRef(({ children, onClick }, ref1) => this.renderAvatarWithOrg(onClick, ref1))}
+              id='dropdown-custom-components'
+            />
+            <Dropdown.Menu>
+              {this.renderUserDetails()}
+              <div className='profile-listing-container'>
+                {/* <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item> */}
+                {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
+                <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
+                <Dropdown.Divider />
+                {/* <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item> */}
+                <div className='profile-menu'>
+                  <span className='p-2' onClick={this.toggleModal} type='button'>
+                    <img src={SwitchRight} alt='icon' />
+                    Switch Organization
+                  </span>
+                  <GenericModal
+                    orgName={this.state.orgName}
+                    validateName={this.validateName}
+                    handleKeyPress={this.handleKeyPress}
+                    inputRef={this.inputRef}
+                    setName={this.setName}
+                    handleCloseModal={this.toggleModal}
+                    showModal={this.state.showModal}
+                    title='Switch Organizations'
+                    modalBody={this.renderOrgListDropdown()}
+                    keyboard={false}
+                    showInput
+                    handleAddOrg={this.handleAddOrg}
+                  />
+                </div>
               </div>
-            </div>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-      {this.state.modalForTabs ? this.showModalForTabs(): ''}
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+        {this.state.modalForTabs ? this.showModalForTabs() : ''}
       </>
     )
   }
