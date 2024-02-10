@@ -419,9 +419,9 @@ class Endpoints extends Component {
         </div>
 
         <div className='dropdown-menu dropdown-menu-right'>
-          {/* {this.displayDeleteOpt(endpointId)} */}
-          {/* {this.displayDuplicateOpt(endpointId)} */}
-          {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
+          {this.displayDeleteOpt(endpointId)}
+          {/* {this.displayDuplicateOpt(endpointId)}
+          {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
         </div>
       </div>
     )
