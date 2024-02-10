@@ -1,6 +1,5 @@
 import pagesActionTypes from './pagesActionTypes'
 import { toast } from 'react-toastify'
-import groupsActionTypes from '../../groups/redux/groupsActionTypes'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
@@ -155,9 +154,6 @@ function pagesReducer(state = initialState, action) {
       pages[action.response.id] = action.response
       return pages
 
-    case groupsActionTypes.ON_GROUP_DUPLICATED:
-      return { ...state, ...action.response.pages }
-
     case versionActionTypes.ON_VERSION_DUPLICATED:
       return { ...state, ...action.response.pages }
 
@@ -182,7 +178,6 @@ function pagesReducer(state = initialState, action) {
 
     case collectionActionTypes.ON_COLLECTION_DELETED:
     case versionActionTypes.ON_VERSION_DELETED:
-    case groupsActionTypes.ON_GROUP_DELETED:
       pages = { ...state }
       action.payload.pageIds.forEach((pId) => {
         delete pages[pId]
@@ -201,6 +196,9 @@ function pagesReducer(state = initialState, action) {
     case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION:
       pages = { ...action.data.updatedPages }
       return pages
+
+    case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES:
+      return { ...action.data }
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_ERROR:
       pages = { ...action.originalData.originalPages }
@@ -243,6 +241,26 @@ function pagesReducer(state = initialState, action) {
         state[action.payload.id].name = action.payload.name
       }
       return { ...state }
+
+    case pagesActionTypes.DELETE_ENDPOINT_REQUEST:
+      pages = { ...state }
+      delete pages[action.endpoint.id]
+      return {...pages}
+
+    case pagesActionTypes.ON_ENDPOINT_DELETED:
+      const updatedEndpoint = { ...state };
+      const parentId = action?.response?.data?.ParentPage?.id;
+      updatedEndpoint[parentId].child = action.response.data.ParentPage.child;
+      toast.success(" Endpoint deleted succesfully");
+      return updatedEndpoint
+
+    case pagesActionTypes.ON_ENDPOINT_DELETED_ERROR:
+      toast.error(action?.error?.data)
+      if (action?.error?.status === 404) return state
+      return {
+        ...state,
+        [action.endpoint.id]: action.endpoint
+      }
 
     default:
       return state

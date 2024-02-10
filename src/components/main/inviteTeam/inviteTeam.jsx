@@ -6,6 +6,7 @@ import { getCurrentOrg, getProxyToken } from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
 import { inviteMembers } from '../../../services/orgApiService'
+import { useSelector } from 'react-redux'
 
 function InviteTeam() {
   const [users, setUsers] = useState([])
@@ -15,7 +16,12 @@ function InviteTeam() {
   const [showModal, setShowModal] = useState(false)
   const history = useHistory()
   const inputRef = useRef(null)
-
+  const { tabs } = useSelector((state) => {
+    return {
+      tabs: state.tabs,
+      pages: state.pages
+    }
+  })
   useEffect(() => {
     fetchUsers()
   }, [])
@@ -39,7 +45,17 @@ function InviteTeam() {
 
   const handleBack = () => {
     const orgId = getCurrentOrg()?.id
-    history.push(`/orgs/${orgId}/dashboard/endpoint/new`)
+    const activeTab = tabs.activeTabId
+    const type = tabs.tabs[activeTab].type
+    const status = tabs.tabs[activeTab].status
+
+    if (type === 'endpoint' || status === 'NEW') {
+      history.push(`/orgs/${orgId}/dashboard/endpoint/${activeTab}`)
+    } else if (type === 'history') {
+      history.push(`/orgs/${orgId}/dashboard/history/${activeTab}`)
+    } else {
+      history.push(`/orgs/${orgId}/dashboard/page/${activeTab}`)
+    }
   }
 
   const handleInviteClick = () => setShowModal(true)
@@ -105,7 +121,7 @@ function InviteTeam() {
         <table className='table'>
           <thead>
             <tr>
-              <th>Name</th>
+              {/* <th>Name</th> */}
               <th>Email</th>
               <th>Role</th>
               <th>Action</th>
@@ -114,7 +130,7 @@ function InviteTeam() {
           <tbody>
             {users.map((user) => (
               <tr key={user.email}>
-                <td>{user.name}</td>
+                {/* <td>{user.name}</td> */}
                 <td>{user.email}</td>
                 <td>Admin</td>
                 <td>

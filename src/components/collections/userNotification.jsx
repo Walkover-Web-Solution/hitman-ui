@@ -51,11 +51,6 @@ class UserInfo extends Component {
     return this.state.importCollectionForm && <OpenApiForm {...this.props} show onHide={() => this.closeImportCollectionForm()} />
   }
 
-  navigateToViaSocket() {
-    const viaSocketUrl = `${process.env.REACT_APP_VIASOCKET_URL}/manage`
-    window.open(viaSocketUrl, '_blank')
-  }
-
   render() {
     const notificationCount = this.props.get_notification_count()
 

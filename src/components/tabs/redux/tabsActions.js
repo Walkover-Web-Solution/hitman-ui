@@ -1,6 +1,5 @@
 import shortid from 'shortid'
 import { store } from '../../../store/store'
-// import indexedDbService from '../../indexedDb/indexedDbService'
 import tabStatusTypes from '../tabStatusTypes'
 import tabsActionTypes from './tabsActionTypes'
 import history from '../../../history'
@@ -28,8 +27,8 @@ export const fetchTabsFromIdb = () => {
 export const addNewTab = () => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
-  const showDesktopModal = !window.matchMedia('(display-mode: standalone)').matches
-  if (!isElectron() && tabsOrder.length >= 7 && showDesktopModal) {
+  const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
+  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
 
@@ -50,40 +49,23 @@ export const addNewTab = () => {
     })
     dispatch(setActiveTabId(id))
     history.push({ pathname: `/orgs/${orgId}/dashboard/endpoint/new` })
-    // await indexedDbService.addData('tabs', {
-    //   id,
-    //   type: 'endpoint',
-    //   status: tabStatusTypes.NEW,
-    //   previewMode: false,
-    //   isModified: false,
-    //   state: {}
-    // })
-    // await indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
   }
 }
 
 export const closeTab = (tabId, history) => {
-  // const tabsOrder = store.getState().tabs.tabsOrder.filter((tId) => tId !== tabId)
   return async (dispatch) => {
     dispatch({ type: tabsActionTypes.CLOSE_TAB, tabId })
-    // await indexedDbService.deleteData('tabs', tabId)
-    // await indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
   }
 }
 
 export const openInNewTab = (tab) => {
   const tabsOrder = store.getState().tabs.tabsOrder
-  if (!isElectron() && tabsOrder.length >= 10) {
+  const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
+  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
   return async (dispatch) => {
     dispatch({ type: tabsActionTypes.OPEN_IN_NEW_TAB, tab })
-    // await indexedDbService.addData('tabs', tab)
-    // indexedDbService.getValue('tabs_metadata', 'tabsOrder').then((tabsOrder) => {
-    //   if (!tabsOrder.includes(tab.id)) tabsOrder.push(tab.id)
-
-    //   indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
-    // })
     dispatch(setActiveTabId(tab.id))
   }
 }
@@ -93,7 +75,6 @@ export const updateTab = (tabId, data) => {
     if (!store.getState().tabs.tabs[tabId]) return
     dispatch({ type: tabsActionTypes.UPDATE_TAB, payload: { tabId, data } })
     return { ...store.getState().tabs.tabs[tabId], ...data }
-    // indexedDbService.updateData('tabs', tab)
   }
 }
 
@@ -103,7 +84,6 @@ export const setActiveTabId = (tabId) => {
       type: tabsActionTypes.SET_ACTIVE_TAB_ID,
       tabId
     })
-    // await indexedDbService.updateData('tabs_metadata', tabId, 'activeTabId')
   }
 }
 
@@ -113,13 +93,13 @@ export const setTabsOrder = (tabsOrder) => {
       type: tabsActionTypes.SET_TABS_ORDER,
       tabsOrder
     })
-    // await indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
   }
 }
 
 export const replaceTab = (oldTabId, newTab) => {
   const tabsOrder = store.getState().tabs.tabsOrder.filter((tId) => tId !== oldTabId)
-  if (!isElectron() && tabsOrder.length >= 7) {
+  const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
+  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
   tabsOrder.push(newTab.id)
@@ -133,18 +113,12 @@ export const replaceTab = (oldTabId, newTab) => {
       type: tabsActionTypes.SET_TABS_ORDER,
       tabsOrder
     })
-    // await indexedDbService.deleteData('tabs', oldTabId)
-    // await indexedDbService.addData('tabs', newTab)
-    // await indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
   }
 }
 
 export const closeAllTabs = () => {
   return async (dispatch) => {
     dispatch({ type: tabsActionTypes.CLOSE_ALL_TABS })
-    // await indexedDbService.updateData('tabs_metadata', [], 'tabsOrder')
-    // await indexedDbService.updateData('tabs_metadata', null, 'activeTabId')
-    // await indexedDbService.clearStore('tabs')
   }
 }
 

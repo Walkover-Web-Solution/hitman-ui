@@ -1,5 +1,5 @@
-import React from 'react'
-import { Dropdown } from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Button, Dropdown, Modal } from 'react-bootstrap'
 import Avatar from 'react-avatar'
 import lightArrow from '../../assets/icons/new-arrow.svg'
 import User from '../../assets/icons/user.svg'
@@ -13,16 +13,42 @@ import GenericModal from './GenericModal'
 import { switchOrg, createOrg } from '../../services/orgApiService'
 import './userProfile.scss'
 import { toast } from 'react-toastify'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { closeAllTabs } from '../tabs/redux/tabsActions'
+import { onHistoryRemoved } from '../history/redux/historyAction'
 
-export class UserProfileV2 extends React.Component {
-  state = {
-    name: '',
-    email: '',
-    orgFilter: '',
-    moreFlag: false,
-    showModal: false,
-    loading: false,
-    orgName: ''
+const mapStateToProps = (state) => {
+  return {
+    pages: state.pages,
+    historySnapshot: state.history,
+    tabs: state.tabs
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    close_all_tabs: (tabs) => dispatch(closeAllTabs(tabs)),
+    remove_history: (data) => dispatch(onHistoryRemoved(data))
+  }
+}
+
+class UserProfileV2 extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      name: '',
+      email: '',
+      orgFilter: '',
+      moreFlag: false,
+      showModal: false,
+      loading: false,
+      orgName: '',
+      modalForTabs: 'false',
+      tabsClosed: 'false',
+      selectedOrg: '',
+      currentOrg: ''
+    }
   }
 
   componentDidMount() {
@@ -68,7 +94,7 @@ export class UserProfileV2 extends React.Component {
     return (
       <div>
         <div className='org-name'>{this.getCurrentOrg()?.name || null}</div>
-        <span className='profile-details-label-light'>{name}</span>
+        {/* <span className='profile-details-label-light'>{name}</span> */}
         {/* {
                 this.getNotificationCount() > 0 &&
                   <div className='user-notification-badge'>{this.getNotificationCount()}</div>
@@ -91,7 +117,7 @@ export class UserProfileV2 extends React.Component {
           <img src={User} alt='user' />
         </div>
         <div className='profile-details-user-name'>
-          <span className='org-name'>{name}</span>
+          {/* <span className='org-name'>{name}</span> */}
           <span className='profile-details-label-light'>{email}</span>
         </div>
       </div>
@@ -258,14 +284,11 @@ export class UserProfileV2 extends React.Component {
 
   openOptions(path) {
     const { match, handleOpenLink } = this.props
-    const viasocketUrl = process.env.REACT_APP_VIASOCKET_URL
     const currProductUrl = process.env.REACT_APP_UI_BASE_URL || process.env.REACT_APP_UI_URL
     const { orgId } = match.params
     if (orgId) {
-      let url = `${viasocketUrl}/orgs/${orgId}${path}?product=hitman`
-      if (path === '/products') {
-        url += ''
-      } else {
+      let url = `${currProductUrl}/orgs/${orgId}${path}?product=hitman`
+      if (path !== '/products') {
         url += `&redirect_uri=${currProductUrl}`
       }
       if (!handleOpenLink) {
@@ -283,15 +306,102 @@ export class UserProfileV2 extends React.Component {
       <div
         className='profile-listing'
         onClick={() => {
-          this.props.history.push({
-            pathname: '/logout'
-          })
+          this.handleLogout()
         }}
       >
         <img src={Power} alt='power-icon' />
         <span className='label'>Logout</span>
       </div>
     )
+  }
+
+  handleLogout() {
+    this.removeFromLocalStorage(this.props.tabs.tabsOrder)
+    this.props.close_all_tabs(this.props.tabs.tabsOrder)
+    this.props.remove_history(this.props.historySnapshot)
+    this.props.history.push({
+      pathname: '/logout'
+    })
+  }
+
+  removeFromLocalStorage(tabIds) {
+    tabIds.forEach((key) => {
+      localStorage.removeItem(key)
+    })
+  }
+
+  handleTabsandHistory(value) {
+    const tabIdsToClose = this.props.tabs.tabsOrder
+    const history = this.props.historySnapshot
+
+    if (value === 'yes') {
+      this.props.close_all_tabs(tabIdsToClose)
+      this.removeFromLocalStorage(tabIdsToClose)
+      this.props.remove_history(history)
+      // window.removeEventListener('beforeunload', this.handleBeforeUnload)
+      switchOrg(this.state.currentOrg.id)
+    } else if (value === 'no') {
+      this.setState({ modalForTabs: false, showModal: false })
+      // window.addEventListener('beforeunload', this.handleBeforeUnload)
+    }
+  }
+
+  handleClose() {
+    this.setState({ modalForTabs: false, showModal: false })
+  }
+
+  showModalForTabs() {
+    if (this.state.modalForTabs === 'false') {
+      return null
+    }
+    return (
+      <Modal show={this.state.modalForTabs} className='mt-4'>
+        <Modal.Header
+          closeButton
+          onClick={() => {
+            this.handleClose()
+          }}
+        >
+          <Modal.Title>Save Tabs!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>If you switch organization all the tabs and history will be deleted!</Modal.Body>
+        <Modal.Footer>
+          <button
+            className='btn btn-danger btn-lg mr-2'
+            onClick={() => {
+              this.handleTabsandHistory('yes')
+            }}
+          >
+            Yes
+          </button>
+          <Button
+            variant='secondary'
+            onClick={() => {
+              this.handleTabsandHistory('no')
+            }}
+          >
+            No
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    )
+  }
+
+  handleOrgClick(org, selectedOrg) {
+    const tabIdsToClose = this.props.tabs.tabsOrder
+    this.setState({ selectedOrg: selectedOrg, currentOrg: org })
+    if (org.id === selectedOrg.id) {
+      this.setState({ modalForTabs: false })
+      toast.error('This org is already selected')
+    } else if (org.id !== selectedOrg.id && (tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
+      this.setState({ modalForTabs: false })
+      switchOrg(org.id)
+      this.removeFromLocalStorage(tabIdsToClose)
+      this.props.close_all_tabs(tabIdsToClose)
+      this.props.remove_history(this.props.historySnapshot)
+    } else {
+      this.setState({ modalForTabs: true })
+    }
   }
 
   renderOrgList() {
@@ -331,7 +441,7 @@ export class UserProfileV2 extends React.Component {
               aria-haspopup='true'
               aria-expanded='false'
             >
-              Switch Orgs
+              Switch Organization
             </span>
             <div className='dropdown-menu'>
               {organizations.map((org) => (
@@ -388,11 +498,7 @@ export class UserProfileV2 extends React.Component {
               key={key}
               // onClick={() => switchOrg(org.id)}
               onClick={() => {
-                if (org.id === selectedOrg.id) {
-                  toast.error('This Organization is Already selected')
-                } else {
-                  switchOrg(org.id)
-                }
+                this.handleOrgClick(org, selectedOrg)
               }}
             >
               {org.name}
@@ -445,10 +551,16 @@ export class UserProfileV2 extends React.Component {
 
   validateName = (orgName) => {
     const regex = /^[a-zA-Z0-9_]+$/
-    if (orgName && regex.test(this.orgName)) {
+    if (orgName && regex.test(orgName)) {
       return true
     } else {
       return false
+    }
+  }
+
+  handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      this.handleAddOrg()
     }
   }
 
@@ -456,6 +568,9 @@ export class UserProfileV2 extends React.Component {
     try {
       if (!this.validateName(this.state.orgName)) {
         toast.error('Only alphanumeric and underscores are allowed')
+        return
+      } else if (this.state.orgName.length < 3) {
+        toast.error('Name must be at least 3 characters')
         return
       }
       await createOrg(this.state.orgName)
@@ -466,44 +581,49 @@ export class UserProfileV2 extends React.Component {
 
   render() {
     return (
-      <div className='profile-menu'>
-        <Dropdown className='menu-dropdown transition d-flex align-items-center'>
-          <Dropdown.Toggle
-            as={React.forwardRef(({ children, onClick }, ref1) => this.renderAvatarWithOrg(onClick, ref1))}
-            id='dropdown-custom-components'
-          />
-          <Dropdown.Menu>
-            {this.renderUserDetails()}
-            <div className='profile-listing-container'>
-              {/* <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item> */}
-              {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
-              <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
-              <Dropdown.Divider />
-              {/* <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item> */}
-              <div className='profile-menu'>
-                <span className='p-2' onClick={this.toggleModal} type='button'>
-                  <img src={SwitchRight} alt='icon' />
-                  Switch Orgs
-                </span>
-                <GenericModal
-                  orgName={this.state.orgName}
-                  validateName={this.validateName}
-                  handleKeyPress={this.handleKeyPress}
-                  inputRef={this.inputRef}
-                  setName={this.setName}
-                  handleCloseModal={this.toggleModal}
-                  showModal={this.state.showModal}
-                  title='Switch Organizations'
-                  modalBody={this.renderOrgListDropdown()}
-                  keyboard={false}
-                  showInput
-                  handleAddOrg={this.handleAddOrg}
-                />
+      <>
+        <div className='profile-menu'>
+          <Dropdown className='menu-dropdown transition d-flex align-items-center'>
+            <Dropdown.Toggle
+              as={React.forwardRef(({ children, onClick }, ref1) => this.renderAvatarWithOrg(onClick, ref1))}
+              id='dropdown-custom-components'
+            />
+            <Dropdown.Menu>
+              {this.renderUserDetails()}
+              <div className='profile-listing-container'>
+                {/* <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item> */}
+                {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
+                <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
+                <Dropdown.Divider />
+                {/* <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item> */}
+                <div className='profile-menu'>
+                  <span className='p-2' onClick={this.toggleModal} type='button'>
+                    <img src={SwitchRight} alt='icon' />
+                    Switch Organization
+                  </span>
+                  <GenericModal
+                    orgName={this.state.orgName}
+                    validateName={this.validateName}
+                    handleKeyPress={this.handleKeyPress}
+                    inputRef={this.inputRef}
+                    setName={this.setName}
+                    handleCloseModal={this.toggleModal}
+                    showModal={this.state.showModal}
+                    title='Switch Organizations'
+                    modalBody={this.renderOrgListDropdown()}
+                    keyboard={false}
+                    showInput
+                    handleAddOrg={this.handleAddOrg}
+                  />
+                </div>
               </div>
-            </div>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+        {this.state.modalForTabs ? this.showModalForTabs() : ''}
+      </>
     )
   }
 }
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserProfileV2))

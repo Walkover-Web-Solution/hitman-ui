@@ -27,8 +27,8 @@ class TabOptions extends Component {
     const { tabs, activeTabId } = this.props.tabs
     const options = [
       { title: 'Close all tabs', handleOnClick: this.handleCloseAllTabs.bind(this), show: true },
-      { title: 'Close all tabs but current', handleOnClick: this.handleCloseAllButCurrent.bind(this), show: true },
-      { title: 'Duplicate Current Tab', handleOnClick: this.handleDuplicateTab.bind(this), show: tabs[activeTabId]?.type !== 'page' }
+      { title: 'Close all tabs but current', handleOnClick: this.handleCloseAllButCurrent.bind(this), show: true }
+      // { title: 'Duplicate Current Tab', handleOnClick: this.handleDuplicateTab.bind(this), show: tabs[activeTabId]?.type !== 'page' }
     ]
     return options.map(
       (option, index) =>

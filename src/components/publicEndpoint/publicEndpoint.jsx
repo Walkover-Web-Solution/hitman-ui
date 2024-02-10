@@ -115,7 +115,7 @@ class PublicEndpoint extends Component {
       var collectionId = sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID)
     }
 
-    this.setState({publicCollectionId: collectionId})
+    this.setState({ publicCollectionId: collectionId })
 
     var queryParamApi2 = {}
     // example `https://localhost:300/path`
@@ -331,7 +331,7 @@ class PublicEndpoint extends Component {
     let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 1  set collection data
-    let collectionId = this.state?.publicCollectionId ?? null
+    let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
 
     // [info] part 2 seems not necessary
     // TODO later
@@ -369,9 +369,7 @@ class PublicEndpoint extends Component {
           <SplitPane split='vertical' className='split-sidebar'>
             {/* [info] part 3 subpart 1 sidebar data left content */}
             <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
-              {collectionId && (
-                <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />
-              )}
+              {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
             </div>
             {/*  [info] part 3 subpart 1 sidebar data right content */}
             <div
