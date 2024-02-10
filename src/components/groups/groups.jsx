@@ -21,6 +21,7 @@ import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
+import { deletePage } from '../pages/redux/pagesActions.js'
 
 const mapStateToProps = (state) => {
   return {
@@ -106,7 +107,7 @@ class Groups extends Component {
     }
   }
 
-  openShareGroupForm(groupId) {
+  openShareSubPageForm(groupId) {
     const showGroupForm = { share: true, addPage: false }
     this.setState({
       showGroupForm,
@@ -115,19 +116,19 @@ class Groups extends Component {
     })
   }
 
-  closeGroupForm() {
+  closeSubPageForm() {
     const edit = false
     const addPage = false
     const showGroupForm = { edit, addPage }
     this.setState({ showGroupForm })
   }
 
-  showShareGroupForm() {
+  showShareSubPageForm() {
     return (
       this.state.showGroupForm.share && (
         <ShareGroupForm
           show={this.state.showGroupForm.share}
-          onHide={() => this.closeGroupForm()}
+          onHide={() => this.closeSubPageForm()}
           title={this.state.groupFormName}
           selectedGroup={this.props.rootParentId}
         />
@@ -135,18 +136,7 @@ class Groups extends Component {
     )
   }
 
-  openGroupPageForm(selectedVersion = '', selectedGroup = '', selectedCollection = '') {
-    const showGroupForm = { addPage: true }
-    this.setState({
-      showGroupForm,
-      groupFormName: 'Add Sub Page',
-      selectedVersion,
-      selectedGroup,
-      selectedCollection
-    })
-  }
-
-  openEditGroupForm(selectedGroup) {
+  openEditSubPageForm(selectedGroup) {
     const showGroupForm = { edit: true }
     this.setState({
       showGroupForm,
@@ -158,7 +148,7 @@ class Groups extends Component {
     this.setState({
       showDeleteModal: true,
       selectedGroup: {
-        ...this.props.groups[groupId]
+        ...this.props.pages[groupId]
       }
     })
   }
@@ -166,7 +156,7 @@ class Groups extends Component {
   closeDeleteGroupModal() {
     this.setState({ showDeleteModal: false })
   }
-  openAddPageEndpointModal(groupId) {
+  openAddSubPageModal(groupId) {
     this.setState({
       showAddCollectionModal: true,
       selectedPage: {
@@ -247,6 +237,7 @@ class Groups extends Component {
     return endpointIds
   }
 
+  // ! Todo Later :: remove this function
   onDrop(e, destinationGroupId) {
     e.preventDefault()
     if (this.endpointDrag === true) {
@@ -299,15 +290,18 @@ class Groups extends Component {
     return groups
   }
 
+  // !NOT BEING USED
   setEndpointdrag(eId) {
     this.endpointDrag = true
     this.endpointId = eId
   }
 
+  // !NOT BEING USED
   setPagedrag() {
     this.pageDrag = true
   }
 
+  // !NOT BEING USED
   scrollToGroup(groupId) {
     const ref = this.scrollRef[groupId] || null
     if (ref) {
@@ -324,9 +318,9 @@ class Groups extends Component {
     })
   }
 
-  renderBody(groupId) {
+  renderBody(subPageId) {
     const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isOnPublishedPage()
-    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === groupId ? 'selected' : ''
+    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === subPageId ? 'selected' : ''
     return (
       <>
         {/* for publish side barrrr */}
@@ -335,7 +329,7 @@ class Groups extends Component {
             <button
               tabIndex={-1}
               ref={(newRef) => {
-                this.scrollRef[groupId] = newRef
+                this.scrollRef[subPageId] = newRef
               }}
               className={expanded ? 'expanded' : ''}
             >
@@ -348,7 +342,7 @@ class Groups extends Component {
                   checked={this.props?.clientData?.[this.props?.rootParentId]?.checkedForPublished || false}
                   onChange={this.handleCheckboxChange}
                 />
-                <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[groupId]?.name}</div>
+                <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
               </div>
             </button>
             {expanded ? (
@@ -358,9 +352,9 @@ class Groups extends Component {
                     {...this.props}
                     // isPublishData={false}
                     // pagesToRender={pagesToRender}
-                    // version_id={this.props.groups[groupId].versionId}
+                    // version_id={this.props.groups[subPageId].versionId}
                     // set_page_drag={this.setPagedrag.bind(this)}
-                    // group_id={groupId}
+                    // group_id={subPageId}
                     // show_filter_groups={this.propsFromGroups.bind(this)}
                   />
                 </Card.Body>
@@ -373,28 +367,28 @@ class Groups extends Component {
             <button
               tabIndex={-1}
               ref={(newRef) => {
-                this.scrollRef[groupId] = newRef
+                this.scrollRef[subPageId] = newRef
               }}
               className={`${expanded ? 'expanded' : ''} ${isSelected}`}
             >
-              <div className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(groupId)}>
+              <div className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(subPageId)}>
                 <span className='versionChovron'>
                   <img src={ExpandedIcon} alt='' />
                 </span>
-                <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[groupId]?.name}</div>
+                <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
               </div>
               {
                 // [info] options not to show on publihsed page
                 isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
                   <div className='sidebar-item-action d-flex align-items-center'>
-                    <div onClick={() => this.openAddPageEndpointModal(groupId)} className='mr-1 d-flex align-items-center'>
+                    <div onClick={() => this.openAddSubPageModal(subPageId)} className='mr-1 d-flex align-items-center'>
                       <Plus />
                     </div>
                     <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                       <i className='uil uil-ellipsis-v' />
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
-                      <div className='dropdown-item' onClick={() => this.openEditGroupForm(this.props.groups[groupId])}>
+                      <div className='dropdown-item' onClick={() => this.openEditSubPageForm(this.props.groups[subPageId])}>
                         <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                           <path
                             d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
@@ -406,10 +400,10 @@ class Groups extends Component {
                         </svg>{' '}
                         Edit
                       </div>
-                      {/* <div
+                      <div
                         className='dropdown-item'
                         onClick={() => {
-                          this.openDeleteGroupModal(groupId)
+                          this.openDeleteGroupModal(subPageId)
                         }}
                       >
                         <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -425,8 +419,8 @@ class Groups extends Component {
                           <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                         </svg>{' '}
                         Delete
-                      </div> */}
-                      {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[groupId])}>
+                      </div>
+                      {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[subPageId])}>
                       <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                         <path
                           d='M15 6.75H8.25C7.42157 6.75 6.75 7.42157 6.75 8.25V15C6.75 15.8284 7.42157 16.5 8.25 16.5H15C15.8284 16.5 16.5 15.8284 16.5 15V8.25C16.5 7.42157 15.8284 6.75 15 6.75Z'
@@ -445,7 +439,7 @@ class Groups extends Component {
                       </svg>{' '}
                       Duplicate
                     </div> */}
-                      <div className='dropdown-item' onClick={() => this.openShareGroupForm(groupId)}>
+                      <div className='dropdown-item' onClick={() => this.openShareSubPageForm(subPageId)}>
                         <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                           <path
                             d='M13.5 6C14.7426 6 15.75 4.99264 15.75 3.75C15.75 2.50736 14.7426 1.5 13.5 1.5C12.2574 1.5 11.25 2.50736 11.25 3.75C11.25 4.99264 12.2574 6 13.5 6Z'
@@ -497,9 +491,9 @@ class Groups extends Component {
                     {...this.props}
                     // isPublishData={false}
                     // pagesToRender={pagesToRender}
-                    // version_id={this.props.groups[groupId].versionId}
+                    // version_id={this.props.groups[subPageId].versionId}
                     // set_page_drag={this.setPagedrag.bind(this)}
-                    // group_id={groupId}
+                    // group_id={subPageId}
                     // show_filter_groups={this.propsFromGroups.bind(this)}
                   />
                 </Card.Body>
@@ -552,7 +546,7 @@ class Groups extends Component {
 
     return (
       <>
-        {this.showShareGroupForm()}
+        {this.showShareSubPageForm()}
         {this.showAddPageEndpointModal()}
         {this.state.showDeleteModal &&
           groupsService.showDeleteGroupModal(
@@ -561,7 +555,7 @@ class Groups extends Component {
             'Delete Page',
             `Are you sure you wish to delete this page?
               All your pages and endpoints present in this page will be deleted.`,
-            this.state.selectedGroup
+            this.props?.pages[this.props?.rootParentId]
           )}
 
         {<div className='linkWith'>{this.renderBody(this.props?.rootParentId)}</div>}
