@@ -98,7 +98,7 @@ export default function RenderData(props) {
           case 'endpoint':
             return (
               <div key={index} className='folder-box d-flex justify-content-start align-items-center p-1'>
-                <div className='api-label GET request-type-bgcolor'>GET</div>
+                <div className={`api-label ${pages?.[singleId]?.requestType} request-type-bgcolor`}>{pages?.[singleId]?.requestType}</div>
                 <div className='ml-1'>{pages?.[singleId]?.name}</div>
               </div>
             )
