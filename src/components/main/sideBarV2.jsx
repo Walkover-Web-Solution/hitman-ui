@@ -40,7 +40,7 @@ import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 
 // import { sendAmplitudeData } from '../../services/amplitude'
-import { UserProfileV2 } from './userProfileV2'
+import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 
 const mapStateToProps = (state) => {
@@ -398,31 +398,32 @@ class SideBarV2 extends Component {
         <div className='px-3'>Pages</div>
         <div className='py-3'>
           {this.props.pages &&
-  this.state.pages &&
-  this.state.pages.map(
-    (page, index) =>
-      Object.keys(page).length !== 0 && !(page?.type === 2 || page?.type === 0) && (
-        <div
-          className='btn d-flex align-items-center mb-2'
-          onClick={() => {
-            this.openPage(page.id)
-          }}
-          key={index}
-        >
-          <div>
-            <i className='uil uil-file-alt' aria-hidden='true' />
-          </div>
-          <div className='ml-3'>
-            <div className='sideBarListWrapper'>
-              <div className='text-left'>
-                <p> {page.name}</p>
-              </div>
-              {this.renderPath(page.id, 'page')}
-            </div>
-          </div>
-        </div>
-      )
-  )}
+            this.state.pages &&
+            this.state.pages.map(
+              (page, index) =>
+                Object.keys(page).length !== 0 &&
+                !(page?.type === 2 || page?.type === 0) && (
+                  <div
+                    className='btn d-flex align-items-center mb-2'
+                    onClick={() => {
+                      this.openPage(page.id)
+                    }}
+                    key={index}
+                  >
+                    <div>
+                      <i className='uil uil-file-alt' aria-hidden='true' />
+                    </div>
+                    <div className='ml-3'>
+                      <div className='sideBarListWrapper'>
+                        <div className='text-left'>
+                          <p> {page.name}</p>
+                        </div>
+                        {this.renderPath(page.id, 'page')}
+                      </div>
+                    </div>
+                  </div>
+                )
+            )}
         </div>
       </div>
     )
@@ -641,15 +642,17 @@ class SideBarV2 extends Component {
         className={[''].join(' ')}
       >
         {this.showAddCollectionModal()}
-          {isOnPublishedPage() ?  
+        {isOnPublishedPage() ? (
           <div className='sidebar-accordion'>
-                  <CombinedCollections
-          {...this.props}
-          collection_id={collectionId}
-          rootParentId={this.props.collections[collectionId].rootParentId}
-        />
+            <CombinedCollections
+              {...this.props}
+              collection_id={collectionId}
+              rootParentId={this.props.collections[collectionId].rootParentId}
+            />
           </div>
-          : this.renderCollections()}
+        ) : (
+          this.renderCollections()
+        )}
       </div>
     )
   }
