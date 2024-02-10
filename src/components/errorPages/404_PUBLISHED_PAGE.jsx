@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 
 class ERROR_404_PUBLISHED_PAGE extends Component {
+  constructor(props) {
+    super(props)
+  }
   state = {}
   render() {
-    const message = this.props.location?.error?.response?.data || 'Content Not Found. Please Enter the url Path correctly'
+    const message = this.props.location?.error?.response?.data || this.props.error_msg ||  'Content Not Found. Please Enter the url Path correctly.'
     return (
       <div className='text-center errorPage'>
         <h4>OOPS! 404</h4>
