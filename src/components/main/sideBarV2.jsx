@@ -40,7 +40,7 @@ import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 
 // import { sendAmplitudeData } from '../../services/amplitude'
-import { UserProfileV2 } from './userProfileV2'
+import UserProfileV2  from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 
 const mapStateToProps = (state) => {
