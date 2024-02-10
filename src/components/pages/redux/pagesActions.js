@@ -6,6 +6,7 @@ import { getOrgId, focusSelectedEntity, operationsAfterDeletion, deleteAllPagesA
 import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 export const fetchPages = (orgId) => {
   return (dispatch) => {
