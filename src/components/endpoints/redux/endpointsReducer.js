@@ -43,6 +43,23 @@ function endpointsReducer(state = initialState, action) {
         ...state,
         [action.originalEndpoint.id]: action.originalEndpoint
       }
+
+    case endpointsActionTypes.DELETE_ENDPOINT_REQUEST:
+      endpoints = { ...state }
+      delete endpoints[action.endpoint.id]
+      return endpoints
+
+    case endpointsActionTypes.ON_ENDPOINT_DELETED:
+      return state
+
+    case endpointsActionTypes.ON_ENDPOINT_DELETED_ERROR:
+      toast.error(action.error.data)
+      if (action.error.status === 404) return state
+      return {
+        ...state,
+        [action.endpoint.id]: action.endpoint
+      }
+
     case endpointsActionTypes.ON_ENDPOINT_DUPLICATED:
       return { ...state, [action.response.id]: action.response }
 
@@ -69,6 +86,23 @@ function endpointsReducer(state = initialState, action) {
       action.payload.endpointIds.forEach((eId) => {
         delete endpoints[eId]
       })
+      return endpoints
+
+    case endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED:
+      endpoints = { ...action.endpoints }
+      return endpoints
+
+    case endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED_ERROR:
+      toast.error(action.error)
+      endpoints = { ...action.endpoints }
+      return endpoints
+
+    case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION:
+      endpoints = { ...action.data.updatedEndpoints }
+      return endpoints
+
+    case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_ERROR:
+      endpoints = { ...action.originalData.originalEndpoints }
       return endpoints
 
     default:
