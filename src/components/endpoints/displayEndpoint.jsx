@@ -205,7 +205,8 @@ const untitledEndpointData = {
     { type: 'pathVariables' },
     { type: 'headers' },
     { type: 'sampleResponse' }
-  ]
+  ],
+  harObject : {}
 }
 
 const getEndpointContent = async (props) => {
@@ -1470,7 +1471,11 @@ class DisplayEndpoint extends Component {
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
-      this.setState({ harObject }, () => {})
+      const updatedharObject = {
+        ...this.props.endpointContent,
+        harObject: harObject 
+      };
+      this.props.setQueryUpdatedData(updatedharObject);
     } catch (error) {
       toast.error(error)
     }
@@ -1490,7 +1495,7 @@ class DisplayEndpoint extends Component {
         onHide={() => {
           this.setState({ showCodeTemplate: false })
         }}
-        harObject={this.state.harObject}
+        harObject={this.props.endpointContent.harObject}
         title='Generate Code Snippets'
       />
     )
@@ -3043,7 +3048,7 @@ class DisplayEndpoint extends Component {
                 {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
               </div>
             ) : null}
-            {this.isNotDashboardOrDocView() && this.state.harObject && this.props.location.pathname.split('/')[3] !== 'admin' && (
+            {this.isNotDashboardOrDocView() && this.props.endpointContent.harObject && isOnPublishedPage() && (
               <CodeTemplate
                 show
                 onHide={() => {
@@ -3052,7 +3057,7 @@ class DisplayEndpoint extends Component {
                 editorToggle={() => {
                   this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
                 }}
-                harObject={this.state.harObject}
+                harObject={this.props.endpointContent.harObject}
                 title='Generate Code Snippets'
                 publicCollectionTheme={this.props.publicCollectionTheme}
               />
