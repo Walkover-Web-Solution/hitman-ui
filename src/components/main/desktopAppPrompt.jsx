@@ -39,7 +39,7 @@ function DesktopAppDownloadModal(props) {
     }
   }
 
-  const show = props.modals.activeModal === DESKTOP_APP_DOWNLOAD && shouldShowModal
+  const show = (props.modals.activeModal === DESKTOP_APP_DOWNLOAD) ? true : false
 
   const onHide = () => {
     const { orgId } = props.match.params
