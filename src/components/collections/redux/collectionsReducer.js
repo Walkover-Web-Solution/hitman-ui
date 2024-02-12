@@ -91,7 +91,7 @@ function collectionsReducer(state = initialState, action) {
 
     case collectionsActionTypes.ON_COLLECTION_DELETED_ERROR:
       toast.error(action.error)
-      if (action.error.status === 404) return state
+      if (action.error?.status === 404) return state
       return {
         ...state,
         [action.collection.id]: action.collection
