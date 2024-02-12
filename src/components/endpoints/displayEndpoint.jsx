@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { store } from '../../store/store'
-import { SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
+import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -1115,7 +1115,7 @@ class DisplayEndpoint extends Component {
         postScript: this.props?.endpointContent?.postScriptText,
         docViewData: this.props?.endpointContent?.docViewData
       }
-      if (endpoint.name === '' || endpoint.name.toLowerCase() === 'untitled') return toast.error('Please enter Endpoint name')
+      if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled') return toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''

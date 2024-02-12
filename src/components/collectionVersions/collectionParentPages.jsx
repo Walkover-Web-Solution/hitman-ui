@@ -514,6 +514,7 @@ class CollectionParentPages extends Component {
                   </span>
                   <div className='d-flex'>
                     <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
+
                     <DropdownButton
                       className=''
                       id='dropdown-basic-button'
@@ -529,15 +530,17 @@ class CollectionParentPages extends Component {
                       {this.props.pages[rootId].child.map((childId, index) => (
                         <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
                           <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              this.handleDeleteVersion(childId)
-                            }}
-                            className='version-delete-button'
-                          >
-                            <DeleteIcon />
-                          </button>
+                          {!isOnPublishedPage() && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                this.handleDeleteVersion(childId)
+                              }}
+                              className='version-delete-button'
+                            >
+                              <DeleteIcon />
+                            </button>
+                          )}
                         </Dropdown.Item>
                       ))}
                     </DropdownButton>
