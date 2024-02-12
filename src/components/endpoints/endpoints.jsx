@@ -290,12 +290,12 @@ class Endpoints extends Component {
               checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
               onChange={this.handleCheckboxChange}
             />
-            <div className='api-label GET request-type-bgcolor'>{this.props.endpoints[endpointId].requestType}</div>
+            <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>{this.props.endpoints[endpointId].requestType}</div>
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         ) : (
           <div className='sidebar-accordion-item'>
-            <div className='api-label GET request-type-bgcolor'>{this.props.endpoints[endpointId].requestType}</div>
+            <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>{this.props.endpoints[endpointId].requestType}</div>
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         )}
@@ -420,8 +420,8 @@ class Endpoints extends Component {
 
         <div className='dropdown-menu dropdown-menu-right'>
           {this.displayDeleteOpt(endpointId)}
-          {this.displayDuplicateOpt(endpointId)}
-          {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)}
+          {/* {this.displayDuplicateOpt(endpointId)} */}
+          {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
         </div>
       </div>
     )

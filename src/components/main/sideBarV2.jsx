@@ -644,11 +644,11 @@ class SideBarV2 extends Component {
         {this.showAddCollectionModal()}
         {isOnPublishedPage() ? (
           <div className='sidebar-accordion'>
-            <CombinedCollections
-              {...this.props}
-              collection_id={collectionId}
-              rootParentId={this.props.collections[collectionId].rootParentId}
-            />
+        <CombinedCollections
+          {...this.props}
+          collection_id={collectionId}
+          rootParentId={this.props.collections?.[collectionId]?.rootParentId}
+        />
           </div>
         ) : (
           this.renderCollections()
