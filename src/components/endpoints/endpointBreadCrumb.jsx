@@ -179,10 +179,16 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputBlur() {
+    debugger
     this.setState({ nameEditable: false })
-    if (trimString(this.props?.endpointContent?.data?.name).length === 0) {
+    if (this.props?.match?.params?.endpointId !== 'new' && trimString(this.props?.endpointContent?.data?.name).length === 0) {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = this.props?.pages?.[this.props?.match?.params?.endpointId]?.name
+      this.props.setQueryUpdatedData(tempData)
+    }
+    else if(this.props?.match?.params?.endpointId === 'new' && !this.props?.endpointContent?.data?.name) {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = 'Untitled'
       this.props.setQueryUpdatedData(tempData)
     }
   }
