@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
-import { isElectron, toTitleCase } from '../common/utility'
+import { isElectron, toTitleCase, trimString } from '../common/utility'
 import { updateNameOfPages } from '../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
@@ -180,6 +180,11 @@ class EndpointBreadCrumb extends Component {
 
   handleInputBlur() {
     this.setState({ nameEditable: false })
+    if (trimString(this.props?.endpointContent?.data?.name).length === 0) {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = this.props?.pages?.[this.props?.match?.params?.endpointId]?.name
+      this.props.setQueryUpdatedData(tempData)
+    }
   }
 
   setEndpointData() {
