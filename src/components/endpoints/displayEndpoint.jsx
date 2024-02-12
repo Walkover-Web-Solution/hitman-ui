@@ -206,7 +206,7 @@ const untitledEndpointData = {
     { type: 'headers' },
     { type: 'sampleResponse' }
   ],
-  harObject : {}
+  harObject: {}
 }
 
 const getEndpointContent = async (props) => {
@@ -832,7 +832,7 @@ class DisplayEndpoint extends Component {
       timeElapsed,
       createdAt
     }
-        this.props.add_history(obj)
+    this.props.add_history(obj)
   }
 
   checkValue(param, originalParams) {
@@ -1137,14 +1137,10 @@ class DisplayEndpoint extends Component {
           delete endpoint.state
           delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
-          this.props.add_endpointInCollection(
-            endpoint,
-            id,
-            ({ closeForm, stopLoader }) => {
-              if (closeForm) this.closeEndpointFormModal()
-              if (stopLoader) this.setState({ saveAsLoader: false })
-            }
-          )
+          this.props.add_endpointInCollection(endpoint, id, ({ closeForm, stopLoader }) => {
+            if (closeForm) this.closeEndpointFormModal()
+            if (stopLoader) this.setState({ saveAsLoader: false })
+          })
           moveToNextStep(4)
         } else {
           endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
@@ -1384,7 +1380,6 @@ class DisplayEndpoint extends Component {
     this.setState({ showAskAiSlider: false })
   }
 
-
   updateArray(updatedArray) {
     this.setState({ updatedArray })
   }
@@ -1473,9 +1468,9 @@ class DisplayEndpoint extends Component {
       }
       const updatedharObject = {
         ...this.props.endpointContent,
-        harObject: harObject 
-      };
-      this.props.setQueryUpdatedData(updatedharObject);
+        harObject: harObject
+      }
+      this.props.setQueryUpdatedData(updatedharObject)
     } catch (error) {
       toast.error(error)
     }

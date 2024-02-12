@@ -51,7 +51,7 @@ class PublishCollectionInfo extends Component {
   }
 
   componentDidMount() {
-    this.getPublicEntityCount()
+    // this.getPublicEntityCount()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -61,7 +61,7 @@ class PublishCollectionInfo extends Component {
       this.props.versions !== prevProps.versions ||
       this.props.groups !== prevProps.groups
     ) {
-      this.getPublicEntityCount()
+      // this.getPublicEntityCount()
     }
   }
 
@@ -74,7 +74,7 @@ class PublishCollectionInfo extends Component {
     const targetGroupIds = _.values(groups)
       .filter((group) => targetVersionIds.includes(group.versionId))
       .map((group) => group.id)
-    const isDisabled = this.IsParentPagePublishedInACollection(this.props.collections[this.props.collectionId]?.rootParentId) 
+    const isDisabled = this.IsParentPagePublishedInACollection(this.props.collections[this.props.collectionId]?.rootParentId)
     return (
       <OverlayTrigger
         overlay={
@@ -84,7 +84,7 @@ class PublishCollectionInfo extends Component {
         }
       >
         <button onClick={() => isDisabled && openExternalLink(url)}>
-        {/* <button onClick={() => openExternalLink(url)}> */}
+          {/* <button onClick={() => openExternalLink(url)}> */}
           <div className={`sidebar-public-url text-center d-flex align-items-center${!isDisabled && ' text-link'}`}>
             <span className='icon d-flex mr-1'>
               {' '}
@@ -152,7 +152,6 @@ class PublishCollectionInfo extends Component {
   getPublicEntityCount() {
     const collectionId = this.props.collectionId
     const { endpoints, pages, versions, groups } = this.props
-
     let totalPageCount = 0
     let totalEndpointCount = 0
     let livePageCount = 0
@@ -224,7 +223,7 @@ class PublishCollectionInfo extends Component {
         <div className='public-colection-info'>
           {this.managePublicDoc()}
           {/* {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))} */}
-          {isPublic && (<div className='publicurl'>{this.renderPublicUrl()}</div>)}
+          {isPublic && <div className='publicurl'>{this.renderPublicUrl()}</div>}
         </div>
       )
     )

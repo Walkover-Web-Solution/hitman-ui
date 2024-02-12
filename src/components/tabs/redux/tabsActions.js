@@ -28,7 +28,7 @@ export const addNewTab = () => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
   const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
-  if (!isElectron() && tabsOrder.length >= 10  && !isDesktopModalOpen) {
+  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
 
