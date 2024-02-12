@@ -4,15 +4,17 @@ import { Modal, Dropdown } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import shortid from 'shortid'
 import Form from '../common/form'
-import { addGroup, updateGroup } from '../groups/redux/groupsActions'
+// import { addGroup, updateGroup } from '../groups/redux/groupsActions'
 import { onEnter, toTitleCase, ADD_GROUP_MODAL_NAME } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 import { moveToNextStep } from '../../services/widgetService'
+import { updatePage } from '../pages/redux/pagesActions'
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_group: (versionId, group, callback) => dispatch(addGroup(versionId, group, callback)),
-    update_group: (group) => dispatch(updateGroup(group))
+    // add_group: (versionId, group, callback) => dispatch(addGroup(versionId, group, callback)),
+    // update_group: (group) => dispatch(updateGroup(group)),
+    update_page: (page) => dispatch(updatePage(ownProps.history,page))
   }
 }
 
@@ -32,12 +34,13 @@ class GroupForm extends Form {
   }
 
   async componentDidMount() {
+    const group = this.props.pages[this.props.selectedPage]
     const versions = extractCollectionInfoService.extractVersionsFromCollectionId(this.props.collectionId, this.props)
     this.setState({ versions })
     if (this.props.title === ADD_GROUP_MODAL_NAME) return
     let data = {}
-    if (this.props.selected_group) {
-      const { name } = this.props.selected_group
+    if (this.props.selectedPage) {
+      const  name  = group.name
       data = { name }
     }
     this.setState({ data })
@@ -67,15 +70,16 @@ class GroupForm extends Form {
     //   this.props.add_group(versionId, newGroup, this.redirectToForm.bind(this))
     //   moveToNextStep(3)
     // }
-
-    if (this.props.title === 'Edit Sub Page') {
+    
+    if (this.props.title === 'Edit Page') {
+      const group = this.props.pages[this.props.selectedPage]
       const editedGroup = {
         ...this.state.data,
         name,
-        id: this.props.selected_group.id,
-        versionId: this.props.selected_group.versionId
+        id: this.props.selectedPage,
+        state: group.state,
       }
-      this.props.update_group(editedGroup)
+      this.props.update_page(editedGroup)
     }
   }
 
@@ -126,12 +130,12 @@ class GroupForm extends Form {
                 <div className='col-12'>
                   {this.renderInput(
                     'name',
-                    'Sub Page Name',
-                    'sub page name',
+                    'Name',
+                    'Page Name',
                     true,
                     true,
                     false,
-                    '*sub page name accepts min 1 & max 20 characters'
+                    '*name accepts min 1 & max 20 characters'
                   )}
                 </div>
               </div>

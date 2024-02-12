@@ -121,9 +121,20 @@ function pagesReducer(state = initialState, action) {
       }
 
     case pagesActionTypes.ON_PAGE_UPDATED:
+      // toast.success('Updated successfully')
+      // console.log(action, "action inside ON_PAGE_UPDATED" );
+      // return {
+      //   ...state,
+      //   [action.response.id]: action.response
+      // }
+      toast.success('Updated successfully')
+      const updatedPage = {
+        ...state[action.response.id],
+        ...action.response
+      }
       return {
         ...state,
-        [action.response.id]: action.response
+        [action.response.id]: updatedPage
       }
 
     case pagesActionTypes.ON_PAGE_UPDATED_ERROR:
