@@ -242,10 +242,10 @@ function pagesReducer(state = initialState, action) {
       }
       return { ...state }
 
-
     case pagesActionTypes.ON_ENDPOINT_UPDATED:
       return {
-        ...state, [action.response.id]: {...state[action.response.id], requestType : action.response.requestType, name : action.response.name}
+        ...state,
+        [action.response.id]: { ...state[action.response.id], requestType: action.response.requestType, name: action.response.name }
       }
 
     default:

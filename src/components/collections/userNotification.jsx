@@ -51,8 +51,6 @@ class UserInfo extends Component {
     return this.state.importCollectionForm && <OpenApiForm {...this.props} show onHide={() => this.closeImportCollectionForm()} />
   }
 
- 
-
   render() {
     const notificationCount = this.props.get_notification_count()
 

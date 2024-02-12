@@ -118,16 +118,17 @@ export const deleteEndpoint = (endpoint) => {
     endpointApiService
       .deleteEndpoint(endpoint.id)
       .then((res) => {
-        deleteAllPagesAndTabsAndReactQueryData(endpoint.id).then((data) => {
+        deleteAllPagesAndTabsAndReactQueryData(endpoint.id)
+          .then((data) => {
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
 
-          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
-          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
-
-          // after deletion operation
-          operationsAfterDeletion(data)
-        }).catch((error) => {
-          console.log('error after getting data from deleteAllPagesAndTabsAndReactQueryData == ', error)
-        })
+            // after deletion operation
+            operationsAfterDeletion(data)
+          })
+          .catch((error) => {
+            console.log('error after getting data from deleteAllPagesAndTabsAndReactQueryData == ', error)
+          })
       })
       .catch((error) => {
         dispatch(onEndpointDeletedError(error.response, endpoint))

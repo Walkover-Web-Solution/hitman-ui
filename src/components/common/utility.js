@@ -1,4 +1,4 @@
-import { QueryCache } from 'react-query';
+import { QueryCache } from 'react-query'
 import * as _ from 'lodash'
 import * as Sentry from '@sentry/react'
 import { store } from '../../store/store'
@@ -9,7 +9,7 @@ import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
-import { openInNewTab } from '../tabs/redux/tabsActions';
+import { openInNewTab } from '../tabs/redux/tabsActions'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
@@ -607,96 +607,94 @@ export function isOnPublishedPage() {
   return (isTechdocOwnDomain() && path == 'p') || !isTechdocOwnDomain()
 }
 
-const deleteSidebarData = (pages, tabs, pageId, deletedTabIds , deletedIds) => {
+const deleteSidebarData = (pages, tabs, pageId, deletedTabIds, deletedIds) => {
   if (pages[pageId]) {
     pages[pageId].child.forEach((childPageId) => {
-      deleteSidebarData(pages, tabs, childPageId, deletedTabIds , deletedIds);
-    });
+      deleteSidebarData(pages, tabs, childPageId, deletedTabIds, deletedIds)
+    })
 
     // creating data for deleting from react query
-    (pages[pageId]?.type == 4 ? deletedIds.endpointIds.push(pageId) : deletedIds.pageIds.push(pageId) )
+    pages[pageId]?.type == 4 ? deletedIds.endpointIds.push(pageId) : deletedIds.pageIds.push(pageId)
 
-    delete pages[pageId];
-    
-    // if tabs if present in the tabs 
-    if(tabs.tabs[pageId]) {
+    delete pages[pageId]
+
+    // if tabs if present in the tabs
+    if (tabs.tabs[pageId]) {
       delete tabs.tabs[pageId]
       deletedTabIds.add(pageId)
     }
-
   }
-};
+}
 
-export const deleteAllPagesAndTabsAndReactQueryData = async (pageId) =>  {
-  try{
-    const deletedTabIds = new Set(); // to keep set of ids deleted
+export const deleteAllPagesAndTabsAndReactQueryData = async (pageId) => {
+  try {
+    const deletedTabIds = new Set() // to keep set of ids deleted
 
     // for deleting from react query
-    let deletedIds = {};
+    let deletedIds = {}
     deletedIds.pageIds = []
     deletedIds.endpointIds = []
 
-    let foundActiveTabId = false;  // used to check if the deleted tab id is actively open right now
+    let foundActiveTabId = false // used to check if the deleted tab id is actively open right now
 
     // get pages and tabs data form redux
-    let {pages, tabs} = store.getState();
-    pages =  _.cloneDeep(pages)
-    tabs =   _.cloneDeep(tabs)
+    let { pages, tabs } = store.getState()
+    pages = _.cloneDeep(pages)
+    tabs = _.cloneDeep(tabs)
 
-    // update the parent's child 
+    // update the parent's child
     let parentId = pages[pageId].parentId
-    if(parentId != null ){
-      pages[parentId].child = pages[parentId].child.filter(id => id !== pageId);
+    if (parentId != null) {
+      pages[parentId].child = pages[parentId].child.filter((id) => id !== pageId)
     }
-   
-    deleteSidebarData(pages, tabs, pageId, deletedTabIds, deletedIds);  // deleting sidebar data
+
+    deleteSidebarData(pages, tabs, pageId, deletedTabIds, deletedIds) // deleting sidebar data
 
     // filter tabsOrder from the ids which are deleted and also set foundActiveTabId = true; if tab id deleted is active id
-    let tabsOrder = tabs.tabsOrder.filter(id => {
-      if(tabs?.activeTabId == id){
-        foundActiveTabId = true;
+    let tabsOrder = tabs.tabsOrder.filter((id) => {
+      if (tabs?.activeTabId == id) {
+        foundActiveTabId = true
       }
-      return !deletedTabIds.has(id);
-    });
+      return !deletedTabIds.has(id)
+    })
 
     tabs.tabsOrder = _.cloneDeep(tabsOrder)
 
-    deleteFromReactQuery(deletedIds) // deleting from react query 
+    deleteFromReactQuery(deletedIds) // deleting from react query
 
-    // change active tab id if tab id  
-    if(foundActiveTabId){
-      if(tabs?.tabsOrder?.length > 0){
+    // change active tab id if tab id
+    if (foundActiveTabId) {
+      if (tabs?.tabsOrder?.length > 0) {
         tabs.activeTabId = _.cloneDeep(tabs.tabsOrder[0])
-      }else if(tabs?.tabsOrder?.length == 0){
-        tabs.activeTabId = null;
+      } else if (tabs?.tabsOrder?.length == 0) {
+        tabs.activeTabId = null
       }
     }
     // things left to do , if activeTabId found then change activeTabId and change path
-    return {pages, tabs, changePath : foundActiveTabId, openNewTab : !(tabs?.tabsOrder?.length > 0)}
-  }catch(err){
-    console.log("deleteAllPagesAndTabsAndReactQueryData == ", err)
-    return null ;
+    return { pages, tabs, changePath: foundActiveTabId, openNewTab: !(tabs?.tabsOrder?.length > 0) }
+  } catch (err) {
+    console.log('deleteAllPagesAndTabsAndReactQueryData == ', err)
+    return null
   }
- 
 }
 
 function deleteFromReactQuery(deletedIds) {
   const queryCache = new QueryCache()
   if (deletedIds?.pageIds?.length > 0) {
-    queryCache.remove(['pageContent', deletedIds.pageIds]);
+    queryCache.remove(['pageContent', deletedIds.pageIds])
   }
-  if(deletedIds?.endpointIds?.length > 0){
-    queryCache.remove(['endpoint', deletedIds.endpointIds]);
+  if (deletedIds?.endpointIds?.length > 0) {
+    queryCache.remove(['endpoint', deletedIds.endpointIds])
   }
 }
 
-export const operationsAfterDeletion  = (data) =>  {
-  // if path needs to be changed with new activeId if tabsOrder length > 0 
-  if(data?.changePath && data?.tabs?.tabsOrder?.length > 0){
+export const operationsAfterDeletion = (data) => {
+  // if path needs to be changed with new activeId if tabsOrder length > 0
+  if (data?.changePath && data?.tabs?.tabsOrder?.length > 0) {
     history.push(`/orgs/${getOrgId()}/dashboard`)
   }
   // when no tabs are opened then redirect to new tab and open new tab
-  if(data?.openNewTab){
+  if (data?.openNewTab) {
     history.push(`/orgs/${getOrgId()}/dashboard`)
   }
 }
