@@ -5,7 +5,7 @@ import { fetchCollections } from '../collections/redux/collectionsActions'
 import { fetchAllVersions } from '../collectionVersions/redux/collectionVersionsActions'
 import { fetchEndpoint, fetchEndpoints, moveEndpoint } from '../endpoints/redux/endpointsActions'
 import { fetchPage, fetchPages } from '../pages/redux/pagesActions'
-import { fetchHistoryFromIdb } from '../history/redux/historyAction'
+import { fetchHistoryFromLocal } from '../history/redux/historyAction'
 import ContentPanel from './contentPanel'
 import './main.scss'
 import SideBarV2 from './sideBarV2'
@@ -42,7 +42,7 @@ const mapDispatchToProps = (dispatch) => {
     // fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
     // fetch_endpoints: (orgId) => dispatch(fetchEndpoints(orgId)),
     // fetch_pages: (orgId) => dispatch(fetchPages(orgId)),
-    fetch_history: () => dispatch(fetchHistoryFromIdb()),
+    fetch_history: () => dispatch(fetchHistoryFromLocal()),
     move_endpoint: (endpointId, sourceGroupId, destinationGroupId) => dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),

@@ -7,7 +7,7 @@ import { getOrgId, isElectron } from '../../common/utility'
 import { openModal } from '../../modals/redux/modalsActions'
 import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
 
-export const fetchTabsFromIdb = () => {
+export const fetchTabsFromRedux = () => {
   return async (dispatch) => {
     const state = store.getState()
     const tabsList = state.tabs.tabs
@@ -17,7 +17,7 @@ export const fetchTabsFromIdb = () => {
     }
 
     dispatch({
-      type: tabsActionTypes.FETCH_TABS_FROM_IDB,
+      type: tabsActionTypes.FETCH_TABS_FROM_REDUX,
       tabsList,
       tabsMetadata
     })
@@ -28,7 +28,7 @@ export const addNewTab = () => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
   const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
-  if (!isElectron() && tabsOrder.length >= 10  && !isDesktopModalOpen) {
+  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
 

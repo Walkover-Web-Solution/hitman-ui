@@ -9,7 +9,7 @@ import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.sv
 import {
   addNewTab,
   closeTab,
-  fetchTabsFromIdb,
+  fetchTabsFromRedux,
   openInNewTab,
   replaceTab,
   setActiveTabId,
@@ -25,7 +25,7 @@ import LoginSignupModal from './loginSignupModal'
 import Environments from '../environments/environments'
 const mapStateToProps = (state) => {
   return {
-    endpoints: state.endpoints,
+    endpoints: state.pages,
     collections: state.collections,
     groups: state.groups,
     versions: state.versions,
@@ -43,7 +43,7 @@ const mapDispatchToProps = (dispatch) => {
     update_tab: (tab) => dispatch(updateTab(tab)),
     set_active_tab_id: (tabId) => dispatch(setActiveTabId(tabId)),
     set_tabs_order: (tabsOrder) => dispatch(setTabsOrder(tabsOrder)),
-    fetch_tabs_from_idb: (tabsOrder) => dispatch(fetchTabsFromIdb(tabsOrder)),
+    fetch_tabs_from_redux: (tabsOrder) => dispatch(fetchTabsFromRedux(tabsOrder)),
     replace_tab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab))
   }
 }
@@ -55,10 +55,7 @@ class ContentPanel extends Component {
   }
 
   async componentDidMount() {
-    this.props.fetch_tabs_from_idb({ ...this.props })
-    // this.props.history.push({
-    //   dashboardEnvironment: true,
-    // });
+    this.props.fetch_tabs_from_redux({ ...this.props })
   }
 
   componentDidUpdate() {
@@ -70,20 +67,14 @@ class ContentPanel extends Component {
         }
       } else {
         if (this.props.endpoints && this.props.endpoints[endpointId]) {
-          const requestId = this.props.endpoints[endpointId].requestId
-          const newTabObj = {
+          this.props.open_in_new_tab({
             id: endpointId,
             type: 'endpoint',
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
             state: {}
-          }
-          if (requestId) {
-            this.props.replace_tab(requestId, newTabObj)
-          } else {
-            this.props.open_in_new_tab(newTabObj)
-          }
+          })
         }
       }
     }
@@ -159,14 +150,12 @@ class ContentPanel extends Component {
         if (tabId !== activeTabId) this.props.set_active_tab_id(tabId)
 
         const collectionLength = Object.keys(this.props.collections).length
-        const temp = JSON.parse(window.localStorage.getItem('visitedOrgs'))
-        if ((temp && temp[orgId]) || collectionLength > 0) {
+        if (collectionLength > 0) {
           this.props.history.push({
             pathname:
               tab.type !== 'collection'
                 ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
-                : this.props.location.pathname.split('/')[6] === 'settings' && `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
-            // : `/orgs/${orgId}/dashboard/collection/${tabId}/feedback`
+                : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
           })
         }
       } else {

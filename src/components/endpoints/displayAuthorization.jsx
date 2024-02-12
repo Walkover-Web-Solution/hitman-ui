@@ -21,7 +21,7 @@ class Authorization extends Component {
     this.authorizationTypes = {
       noAuth: 'No Auth',
       basicAuth: 'Basic Auth',
-      oauth_2: 'OAuth 2.0'
+      // oauth_2: 'OAuth 2.0'
     }
   }
 
