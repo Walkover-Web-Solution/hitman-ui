@@ -9,6 +9,7 @@ function GenericModal({
   email,
   name,
   validateEmail,
+  validateName,
   keyboard,
   loading,
   centered,
@@ -33,8 +34,8 @@ function GenericModal({
   const handleClose = () => {
     handleCloseModal()
     setcreateOrg(false)
+    setName('')
   }
-  // const validateName = (orgName) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(orgName);
   return (
     <div>
       <Modal show={showModal} onHide={handleClose} aria-labelledby='contained-modal-title-vcenter' centered={centered} keyboard={keyboard}>
@@ -105,12 +106,18 @@ function GenericModal({
                       aria-describedby='basic-addon2'
                       value={orgName}
                       onChange={(e) => setName(e.target.value)}
-                      onKeyPress={handleKeyPress}
+                      onKeyPress={(e) => {
+                        handleKeyPress(e)
+                      }}
+                      isInvalid={orgName && !validateName(orgName)}
                     />
                     <Button onClick={handleAddOrg} variant='outline-secondary' id='button-addon2'>
                       Create
                     </Button>
                   </InputGroup>
+                  <div className='d-flex'>
+                    <small className='muted-text'>**Organization name accepts min 3 and max 50 characters</small>
+                  </div>
                 </>
               )}
             </>

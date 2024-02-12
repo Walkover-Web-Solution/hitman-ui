@@ -14,6 +14,9 @@ function historyReducer(state = initialState, action) {
       newState[action.data.id] = action.data
       return newState
 
+    case historyActionTyes.REMOVE_HISTORY:
+      return initialState
+
     default:
       return state
   }
