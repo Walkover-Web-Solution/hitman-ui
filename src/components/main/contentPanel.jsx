@@ -25,7 +25,7 @@ import LoginSignupModal from './loginSignupModal'
 import Environments from '../environments/environments'
 const mapStateToProps = (state) => {
   return {
-    endpoints: state.endpoints,
+    endpoints: state.pages,
     collections: state.collections,
     groups: state.groups,
     versions: state.versions,
@@ -55,14 +55,10 @@ class ContentPanel extends Component {
   }
 
   async componentDidMount() {
-    this.props.fetch_tabs_from_idb({ ...this.props })
-    // this.props.history.push({
-    //   dashboardEnvironment: true,
-    // });
   }
 
   componentDidUpdate() {
-    const { endpointId, pageId, historyId, collectionId } = this.props.match.params
+    const { endpointId, pageId, historyId, collectionId } = this.props.match.params 
     if (this.props.tabs.loaded && endpointId && endpointId !== 'new') {
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
@@ -70,20 +66,14 @@ class ContentPanel extends Component {
         }
       } else {
         if (this.props.endpoints && this.props.endpoints[endpointId]) {
-          const requestId = this.props.endpoints[endpointId].requestId
-          const newTabObj = {
+          this.props.open_in_new_tab({
             id: endpointId,
             type: 'endpoint',
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
             state: {}
-          }
-          if (requestId) {
-            this.props.replace_tab(requestId, newTabObj)
-          } else {
-            this.props.open_in_new_tab(newTabObj)
-          }
+          })
         }
       }
     }
@@ -159,14 +149,12 @@ class ContentPanel extends Component {
         if (tabId !== activeTabId) this.props.set_active_tab_id(tabId)
 
         const collectionLength = Object.keys(this.props.collections).length
-        const temp = JSON.parse(window.localStorage.getItem('visitedOrgs'))
-        if ((temp && temp[orgId]) || collectionLength > 0) {
+        if (collectionLength > 0) {
           this.props.history.push({
             pathname:
               tab.type !== 'collection'
                 ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
-                : this.props.location.pathname.split('/')[6] === 'settings' && `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
-            // : `/orgs/${orgId}/dashboard/collection/${tabId}/feedback`
+                :  `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
           })
         }
       } else {
