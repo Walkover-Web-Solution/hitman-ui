@@ -551,7 +551,7 @@ class UserProfileV2 extends Component {
 
   validateName = (orgName) => {
     const regex = /^[a-zA-Z0-9_]+$/
-    if (orgName && regex.test(orgName)) {
+    if (orgName && regex.test(orgName) && orgName.length >= 3 && orgName.length <= 50) {
       return true
     } else {
       return false
@@ -568,9 +568,6 @@ class UserProfileV2 extends Component {
     try {
       if (!this.validateName(this.state.orgName)) {
         toast.error('Only alphanumeric and underscores are allowed')
-        return
-      } else if (this.state.orgName.length < 3) {
-        toast.error('Name must be at least 3 characters')
         return
       }
       await createOrg(this.state.orgName)
