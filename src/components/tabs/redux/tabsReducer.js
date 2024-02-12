@@ -49,7 +49,7 @@ function tabsReducer(state = initialState, action) {
       tabs = { ...state, activeTabId: action.tabId }
       return tabs
 
-    case tabsActionTypes.FETCH_TABS_FROM_IDB:
+    case tabsActionTypes.FETCH_TABS_FROM_REDUX:
       tabs = {
         tabs: { ...state.tabs, ...action.tabsList },
         loaded: true,

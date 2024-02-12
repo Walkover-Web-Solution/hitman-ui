@@ -5,7 +5,7 @@ const initialState = {}
 function historyReducer(state = initialState, action) {
   let newState = {}
   switch (action.type) {
-    case historyActionTyes.FETCH_HISTORY_FROM_IDB:
+    case historyActionTyes.FETCH_HISTORY_FROM_LOCAL:
       newState = { ...state, ...action.data }
       return newState
 

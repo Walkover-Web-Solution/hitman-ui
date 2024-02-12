@@ -7,7 +7,7 @@ import { getOrgId, isElectron } from '../../common/utility'
 import { openModal } from '../../modals/redux/modalsActions'
 import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
 
-export const fetchTabsFromIdb = () => {
+export const fetchTabsFromRedux = () => {
   return async (dispatch) => {
     const state = store.getState()
     const tabsList = state.tabs.tabs
@@ -17,7 +17,7 @@ export const fetchTabsFromIdb = () => {
     }
 
     dispatch({
-      type: tabsActionTypes.FETCH_TABS_FROM_IDB,
+      type: tabsActionTypes.FETCH_TABS_FROM_REDUX,
       tabsList,
       tabsMetadata
     })

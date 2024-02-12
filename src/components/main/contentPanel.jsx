@@ -9,7 +9,7 @@ import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.sv
 import {
   addNewTab,
   closeTab,
-  fetchTabsFromIdb,
+  fetchTabsFromRedux,
   openInNewTab,
   replaceTab,
   setActiveTabId,
@@ -43,7 +43,7 @@ const mapDispatchToProps = (dispatch) => {
     update_tab: (tab) => dispatch(updateTab(tab)),
     set_active_tab_id: (tabId) => dispatch(setActiveTabId(tabId)),
     set_tabs_order: (tabsOrder) => dispatch(setTabsOrder(tabsOrder)),
-    fetch_tabs_from_idb: (tabsOrder) => dispatch(fetchTabsFromIdb(tabsOrder)),
+    fetch_tabs_from_redux: (tabsOrder) => dispatch(fetchTabsFromRedux(tabsOrder)),
     replace_tab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab))
   }
 }
@@ -55,6 +55,7 @@ class ContentPanel extends Component {
   }
 
   async componentDidMount() {
+    this.props.fetch_tabs_from_redux({...this.props})
   }
 
   componentDidUpdate() {
