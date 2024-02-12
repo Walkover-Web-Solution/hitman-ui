@@ -177,7 +177,7 @@ class History extends Component {
   }
 
   render() {
-    return <div>{this.renderHistoryList()}</div>
+    return this.renderHistoryList()
   }
 }
 export default connect(mapStateToProps, null)(History)
