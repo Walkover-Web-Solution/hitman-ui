@@ -646,7 +646,7 @@ class SideBarV2 extends Component {
                   <CombinedCollections
           {...this.props}
           collection_id={collectionId}
-          rootParentId={this.props.collections[collectionId].rootParentId}
+          rootParentId={this.props.collections?.[collectionId]?.rootParentId}
         />
           </div>
           : this.renderCollections()}
