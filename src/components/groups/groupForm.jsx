@@ -12,8 +12,6 @@ import { updatePage } from '../pages/redux/pagesActions'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    // add_group: (versionId, group, callback) => dispatch(addGroup(versionId, group, callback)),
-    // update_group: (group) => dispatch(updateGroup(group)),
     update_page: (page) => dispatch(updatePage(ownProps.history,page))
   }
 }
@@ -71,7 +69,7 @@ class GroupForm extends Form {
     //   moveToNextStep(3)
     // }
     
-    if (this.props.title === 'Edit Page') {
+    if (this.props.title === 'Edit') {
       const group = this.props.pages[this.props.selectedPage]
       const editedGroup = {
         ...this.state.data,
