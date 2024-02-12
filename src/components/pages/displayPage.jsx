@@ -46,7 +46,7 @@ const withQuery = (WrappedComponent) => {
         retry: 2
       }
     )
-    return <WrappedComponent {...props} pageContent={data} pageContentLoading = {data?.isLoading} pageContentError={error} />
+    return <WrappedComponent {...props} pageContent={data} pageContentLoading={data?.isLoading} pageContentError={error} />
   }
 }
 
@@ -309,14 +309,14 @@ class DisplayPage extends Component {
   }
 
   render() {
-    if(this.props?.pageContentLoading) {
+    if (this.props?.pageContentLoading) {
       return (
         <div className='custom-loading-container'>
-                    <div className='loading-content'>
-                      <button className='spinner-border' />
-                      <p className='mt-3'>Loading</p>
-                    </div>
-                  </div>
+          <div className='loading-content'>
+            <button className='spinner-border' />
+            <p className='mt-3'>Loading</p>
+          </div>
+        </div>
       )
     }
     return (
