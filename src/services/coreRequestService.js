@@ -2,7 +2,7 @@ const querystring = require('querystring')
 const FormData = require('form-data')
 const axios = require('axios')
 
-export async function makeHttpRequestThroughAxios ({ api: url, method, body: data, headers, cancelToken }) {
+export async function makeHttpRequestThroughAxios({ api: url, method, body: data, headers, cancelToken }) {
   headers = headers || {}
 
   const options = {
@@ -52,7 +52,7 @@ export async function makeHttpRequestThroughAxios ({ api: url, method, body: dat
   })
 }
 
-function prepareResponse (data) {
+function prepareResponse(data) {
   return {
     success: true,
     status: data.status,

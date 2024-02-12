@@ -24,9 +24,9 @@ if (!gotTheLock) {
     // Protocol handler for win32 & linux
     // argv: An array of the second instance’s (command line / deep linked) arguments
     if (process.platform === 'win32' || process.platform === 'linux') {
-    // Keep only command line / deep linked arguments
+      // Keep only command line / deep linked arguments
       if (commandLine) {
-        const hitmanProtocolData = commandLine.find(item => item.includes('hitman-app://'))
+        const hitmanProtocolData = commandLine.find((item) => item.includes('hitman-app://'))
         if (hitmanProtocolData) {
           deeplinkUrl = hitmanProtocolData
           const token = hitmanProtocolData.split('sokt-auth-token=').pop()
@@ -42,7 +42,7 @@ if (!gotTheLock) {
     }
   })
 }
-function createWindow () {
+function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -64,7 +64,7 @@ function createWindow () {
   /** For Dev */
   if (isDev) mainWindow.webContents.openDevTools()
   mainWindow.webContents.on('before-input-event', (event, input) => {
-    const CommandOrControl = (process.platform === 'darwin') ? input.meta : input.control
+    const CommandOrControl = process.platform === 'darwin' ? input.meta : input.control
     if (input.type === 'keyDown' && input.isAutoRepeat === false) {
       if (isDev) log.info('Intercept Before Input Event', input)
       /** Trigger Endpoint: CTRL+E or CMD+E */
@@ -203,36 +203,34 @@ autoUpdater.on('checking-for-update', () => {
   sendUpdateStatusToWindow({
     type: 'CHECKING_FOR_UPDATES',
     data: null
-
   })
 })
-autoUpdater.on('update-available', info => {
+autoUpdater.on('update-available', (info) => {
   sendUpdateStatusToWindow({
     type: 'UPDATE_AVAILABLE',
     data: null
   })
 })
-autoUpdater.on('update-not-available', info => {
+autoUpdater.on('update-not-available', (info) => {
   sendUpdateStatusToWindow({
     type: 'UPDATE_NOT_AVAILABLE',
     data: null
   })
 })
-autoUpdater.on('error', err => {
+autoUpdater.on('error', (err) => {
   log.error(err)
   sendUpdateStatusToWindow({
     type: 'ERROR',
     data: err
   })
 })
-autoUpdater.on('download-progress', progressObj => {
+autoUpdater.on('download-progress', (progressObj) => {
   sendUpdateStatusToWindow({
     type: 'DOWNLOAD_PROGRESS',
     data: progressObj
-  }
-  )
+  })
 })
-autoUpdater.on('update-downloaded', info => {
+autoUpdater.on('update-downloaded', (info) => {
   sendUpdateStatusToWindow({
     type: 'UPDATE_DOWNLOADED',
     data: null

@@ -4,57 +4,54 @@ import 'react-toastify/dist/ReactToastify.css'
 import { getProxyToken } from '../components/auth/authServiceV2'
 
 // axios.defaults.baseURL = process.env.REACT_APP_API_URL;
-var endpointInstance = axios.create()
+let endpointInstance = axios.create()
 
 endpointInstance.interceptors.response.use(null, (error) => {
-  const expectedError =
-    (error.response &&
-    error.response.status >= 400 &&
-    error.response.status < 500) || axios.isCancel(error)
+  const expectedError = (error.response && error.response.status >= 400 && error.response.status < 500) || axios.isCancel(error)
   if (!expectedError) {
     logger.log(!error)
   }
   return Promise.reject(error)
 })
 
-function setProxyToken (jwt) {
+function setProxyToken(jwt) {
   endpointInstance.defaults.headers.common.proxy_auth_token = jwt
 }
 
-function addProxyToken(){
-  let proxyToken = getProxyToken();
+function addProxyToken() {
+  const proxyToken = getProxyToken()
   if (proxyToken) {
-    endpointInstance.defaults.headers.common.proxy_auth_token = proxyToken;
+    endpointInstance.defaults.headers.common.proxy_auth_token = proxyToken
   }
-  return endpointInstance;
+  return endpointInstance
 }
 
 async function getMethod(url, config = null) {
-  endpointInstance = addProxyToken();
+  endpointInstance = addProxyToken()
   return await endpointInstance.get(url, config)
 }
 async function postMethod(url, data = null, config = null) {
-  endpointInstance = addProxyToken();
+  endpointInstance = addProxyToken()
   return await endpointInstance.post(url, data, config)
 }
 
 async function putMethod(url, data = null, config = null) {
-  endpointInstance = addProxyToken();
+  endpointInstance = addProxyToken()
   return await endpointInstance.put(url, data, config)
 }
 
 async function deleteMethod(url, config = null) {
-  endpointInstance = addProxyToken();
+  endpointInstance = addProxyToken()
   return await endpointInstance.delete(url, config)
 }
 
-function requestMethod(){
-  endpointInstance = addProxyToken();
+function requestMethod() {
+  endpointInstance = addProxyToken()
   return endpointInstance.request
 }
 
-async function patchMethod(url, data = null, config = null){
-  endpointInstance = addProxyToken();
+async function patchMethod(url, data = null, config = null) {
+  endpointInstance = addProxyToken()
   return await endpointInstance.patch(url, data, config)
 }
 

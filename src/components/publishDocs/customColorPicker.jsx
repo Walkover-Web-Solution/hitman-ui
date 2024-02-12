@@ -4,7 +4,7 @@ import { CustomPicker, TwitterPicker } from 'react-color'
 const colors = ['#f2994a', '#686EFF', '#7DCCEE', '#27AE60', '#F0BD3B', '#DD755E']
 
 class CustomColorPicker extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: {
@@ -13,7 +13,7 @@ class CustomColorPicker extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.theme) {
       const data = { ...this.state.data }
       data.theme = this.props.theme
@@ -21,7 +21,7 @@ class CustomColorPicker extends React.Component {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       const data = { ...this.state.data }
       data.theme = this.props.theme
@@ -29,7 +29,7 @@ class CustomColorPicker extends React.Component {
     }
   }
 
-  toggleColorOption () {
+  toggleColorOption() {
     this.setState({
       openColorPicker: !this.state.openColorPicker
     })
@@ -44,7 +44,7 @@ class CustomColorPicker extends React.Component {
     this.props.set_theme(color.hex)
   }
 
-  render () {
+  render() {
     const customColor = {
       backgroundColor: this.state.data.theme,
       height: '40px',

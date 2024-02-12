@@ -10,7 +10,7 @@ import './main.scss'
 import OpenApiForm from '../openApi/openApiForm'
 
 class Navbar extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       name: '',
@@ -18,14 +18,14 @@ class Navbar extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { user } = getCurrentUser()
     const name = user.first_name + user.last_name
     const email = user.email
     this.setState({ name, email })
   }
 
-  openCreateNewModal (onHide) {
+  openCreateNewModal(onHide) {
     return (
       <CreateNewModal
         {...this.props}
@@ -38,27 +38,27 @@ class Navbar extends Component {
     )
   }
 
-  openCollectionForm () {
+  openCollectionForm() {
     this.setState({ showCreateNewModal: false, showCollectionForm: true })
   }
 
-  openEnvironmentForm () {
+  openEnvironmentForm() {
     this.setState({ showCreateNewModal: false, showEnvironmentForm: true })
   }
 
-  handleAddEndpoint () {
+  handleAddEndpoint() {
     tabService.newTab({ ...this.props })
   }
 
-  openApiForm () {
+  openApiForm() {
     this.setState({ showOpenApiForm: true })
   }
 
-  closeOpenApiFormModal () {
+  closeOpenApiFormModal() {
     this.setState({ showOpenApiForm: false })
   }
 
-  render () {
+  render() {
     return (
       <nav className='navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow'>
         {this.state.showCreateNewModal &&
@@ -68,32 +68,18 @@ class Navbar extends Component {
             })
           )}
         {this.state.showCollectionForm &&
-          collectionsService.showCollectionForm(
-            this.props,
-            () => this.setState({ showCollectionForm: false }),
-            'Add new Collection'
-          )}
+          collectionsService.showCollectionForm(this.props, () => this.setState({ showCollectionForm: false }), 'Add new Collection')}
         {this.state.showEnvironmentForm &&
-          environmentsService.showEnvironmentForm(
-            this.props,
-            () => this.setState({ showEnvironmentForm: false }),
-            'Add new Environment'
-          )}
+          environmentsService.showEnvironmentForm(this.props, () => this.setState({ showEnvironmentForm: false }), 'Add new Environment')}
         {this.state.showOpenApiForm && this.state.showOpenApiForm === true && (
-          <OpenApiForm
-            {...this.props}
-            show
-            onHide={() => this.closeOpenApiFormModal()}
-            title='IMPORT API'
-          />
+          <OpenApiForm {...this.props} show onHide={() => this.closeOpenApiFormModal()} title='IMPORT API' />
         )}
         <div className='btn-group'>
-          <button
-            id='new-button'
-            className='btn'
-            onClick={() => this.setState({ showCreateNewModal: true })}
-          >
-            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' /></svg>
+          <button id='new-button' className='btn' onClick={() => this.setState({ showCreateNewModal: true })}>
+            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <path d='M9 3.75V14.25' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+              <path d='M3.75 9H14.25' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
+            </svg>
             New
           </button>
           <button
@@ -104,24 +90,14 @@ class Navbar extends Component {
             aria-expanded='false'
           />
           <div className='dropdown-menu'>
-            <li
-              className='dropdown-item'
-              onClick={() => this.handleAddEndpoint()}
-            >
-              <i className='fas fa-share-square' style={{ margin: '5px' }} />{' '}
-              Endpoint
+            <li className='dropdown-item' onClick={() => this.handleAddEndpoint()}>
+              <i className='fas fa-share-square' style={{ margin: '5px' }} /> Endpoint
             </li>
-            <li
-              className='dropdown-item'
-              onClick={() => this.openCollectionForm()}
-            >
+            <li className='dropdown-item' onClick={() => this.openCollectionForm()}>
               <i className='fas fa-folder-open' style={{ margin: '5px' }} />
               Collection
             </li>
-            <li
-              className='dropdown-item'
-              onClick={() => this.openEnvironmentForm()}
-            >
+            <li className='dropdown-item' onClick={() => this.openEnvironmentForm()}>
               <i className='fas fa-border-none' style={{ margin: '5px' }} />
               Environment
             </li>
@@ -148,11 +124,7 @@ class Navbar extends Component {
               <i className='fa fa-file-text' aria-hidden='true' />
             </button>
             <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-              <button
-                className='btn '
-                onClick={() => tabService.newTab(this.props)}
-                style={{ color: 'black', width: '100%' }}
-              >
+              <button className='btn ' onClick={() => tabService.newTab(this.props)} style={{ color: 'black', width: '100%' }}>
                 Open new tab
               </button>
             </div>
@@ -179,10 +151,7 @@ class Navbar extends Component {
             >
               <i className='fas fa-user' />
             </button>
-            <div
-              className='dropdown-menu dropdown-menu-right'
-              aria-labelledby='dropdownMenuButton'
-            >
+            <div className='dropdown-menu dropdown-menu-right' aria-labelledby='dropdownMenuButton'>
               <div id='custom-user-left'>
                 <i className='fas fa-user' />
               </div>

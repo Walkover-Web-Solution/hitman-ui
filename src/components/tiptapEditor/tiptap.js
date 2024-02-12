@@ -15,7 +15,7 @@ import TextStyle from '@tiptap/extension-text-style'
 import Placeholder from '@tiptap/extension-placeholder'
 import { Color } from '@tiptap/extension-color'
 
-export default function Tiptap ({ initial, onChange, disabled, isInlineEditor, minHeight }) {
+export default function Tiptap({ initial, onChange, disabled, isInlineEditor, minHeight }) {
   const editor = useEditor({
     editorProps: {
       attributes: {
@@ -46,7 +46,8 @@ export default function Tiptap ({ initial, onChange, disabled, isInlineEditor, m
         linkOnPaste: true,
         openOnClick: true,
         autolink: false
-      })],
+      })
+    ],
     content: initial,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
@@ -59,21 +60,23 @@ export default function Tiptap ({ initial, onChange, disabled, isInlineEditor, m
     // Cleanup function
     return () => {
       if (editor && editor.destroy) {
-        editor.destroy();
+        editor.destroy()
       }
-    };
-  }, [editor]);
+    }
+  }, [editor])
 
   return (
     <div className={`textEditorContainer ${!isInlineEditor ? 'editor' : ''}`}>
-      {isInlineEditor && editor &&
+      {isInlineEditor && editor && (
         <BubbleMenu className='bubble-menu' tippyOptions={{ duration: 100 }} editor={editor}>
           <MenuBar editor={editor} key={editor} />
-        </BubbleMenu>}
-      {isInlineEditor && editor &&
+        </BubbleMenu>
+      )}
+      {isInlineEditor && editor && (
         <FloatingMenu className='floating-menu' tippyOptions={{ duration: 100 }} editor={editor}>
           <MenuBar editor={editor} key={editor} />
-        </FloatingMenu>}
+        </FloatingMenu>
+      )}
       {!isInlineEditor && <MenuBar editor={editor} key={editor} />}
       <EditorContent editor={editor} />
     </div>

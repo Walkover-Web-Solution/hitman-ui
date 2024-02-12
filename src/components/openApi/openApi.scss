@@ -29,7 +29,6 @@
   }
 }
 
-
 span.customFileChooser {
   background: #f5f6f7;
   border: none;
@@ -39,7 +38,7 @@ span.customFileChooser {
   width: 100%;
 }
 
-span.customFileChooser > input { 
+span.customFileChooser > input {
   cursor: pointer;
   position: absolute;
   opacity: 0;

@@ -8,8 +8,7 @@ import { connect } from 'react-redux'
 import { addCollection, updateCollection } from './redux/collectionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../common/constants'
-import DefaultViewModal, { defaultViewTypes } from './defaultViewModal/defaultViewModal'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
+import { defaultViewTypes } from './defaultViewModal/defaultViewModal'
 
 const mapStateToProps = (state) => {
   return {
@@ -19,23 +18,19 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_collection: (newCollection, openSelectedCollection, callback) => dispatch(addCollection(newCollection, openSelectedCollection, callback)),
-    update_collection: (editedCollection, setLoader, callback) =>
-      dispatch(updateCollection(editedCollection, setLoader, callback))
+    add_collection: (newCollection, openSelectedCollection, callback) =>
+      dispatch(addCollection(newCollection, openSelectedCollection, callback)),
+    update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback))
   }
 }
 
 class CollectionForm extends Form {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: {
         name: '',
-        website: DEFAULT_URL,
         description: '',
-        keyword: '',
-        keyword1: '',
-        keyword2: '',
         defaultView: defaultViewTypes.TESTING
       },
       collectionId: '',
@@ -51,86 +46,75 @@ class CollectionForm extends Form {
 
     this.schema = {
       name: Joi.string().min(3).max(20).trim().required().label('Collection Name'),
-      website: Joi.string().min(3).regex(URL_VALIDATION_REGEX, { name: 'URL' }).trim().required().label('Website').error(() => { return { message: 'Website must be a valid URL' } }),
-      keyword: Joi.string().trim().allow(null, '').label('Keywords'),
-      keyword1: Joi.string().trim().allow(null, '').label('Keywords'),
-      keyword2: Joi.string().trim().allow(null, '').label('Keywords'),
       description: Joi.string().allow(null, '').label('Description'),
       defaultView: Joi.string().allow(null, '').label('Default View')
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     if (!this.props.show || this.props.title === 'Add new Collection') return
     let data = {}
     const collectionId = this.props.edited_collection.id
     if (this.props.edited_collection) {
-      const {
-        name,
-        website,
-        description,
-        keyword
-      } = this.props.edited_collection
+      const { name, description } = this.props.edited_collection
       data = {
         name,
-        website,
-        description,
-        keyword: keyword.split(',')[0],
-        keyword1: keyword.split(',')[1],
-        keyword2: keyword.split(',')[2]
+        description
       }
     }
     this.setState({ data, collectionId })
   }
 
-  async onEditCollectionSubmit (defaultView) {
-    this.props.update_collection({
-      ...this.state.data,
-      id: this.state.collectionId,
-      defaultView
-    }, null, this.redirectToCollection.bind(this))
+  async onEditCollectionSubmit(defaultView) {
+    this.props.update_collection(
+      {
+        ...this.state.data,
+        id: this.state.collectionId,
+        defaultView
+      },
+      null,
+      this.redirectToCollection.bind(this)
+    )
   }
 
-  focusSelectedCollection (collectionId) {
-    sidebarActions.focusSidebar()
-    sidebarActions.toggleItem('collections', collectionId, true)
-  }
-
-  redirectToCollection (collection) {
+  redirectToCollection(collection) {
     const { viewLoader } = this.state
+    if (!collection.data) {
+      console.error('collection.data is undefined')
+      return // or handle this case appropriately
+    }
     const { id: collectionId } = collection.data
     if (collection.success && viewLoader.doc && !this.props.setDropdownList) {
       const { orgId } = this.props.match.params
       this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
     }
     if (this.props.setDropdownList) this.props.setDropdownList(collection.data)
-    this.focusSelectedCollection(collectionId)
     this.props.onHide()
   }
 
-  async onAddCollectionSubmit (defaultView) {
+  async onAddCollectionSubmit(defaultView) {
     const requestId = shortid.generate()
     const defaultDocProperties = {
       defaultLogoUrl: '',
       defaultTitle: '',
       versionHosts: {}
     }
-    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView }, null, this.redirectToCollection.bind(this))
+    this.props.add_collection(
+      { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
+      null,
+      this.redirectToCollection.bind(this)
+    )
     this.setState({
       data: {
         name: '',
-        website: '',
         description: '',
-        keyword: '',
-        keyword1: '',
-        keyword2: '',
         defaultView: defaultViewTypes.TESTING
       }
     })
     moveToNextStep(1)
   }
 
-  setViewLoader (type, flag) {
+  setViewLoader(type, flag) {
     if (flag === 'edit') this.setState({ updating: true })
     else {
       const { viewLoader } = this.state
@@ -138,13 +122,9 @@ class CollectionForm extends Form {
     }
   }
 
-  async doSubmit (defaultView) {
+  async doSubmit(defaultView) {
     const body = this.state.data
     body.name = toTitleCase(body.name.trim())
-    body.website = body.website.trim()
-    body.keyword = body.name + ',' + body.keyword1.trim() + ',' + body.keyword2.trim()
-    delete body.keyword1
-    delete body.keyword2
     if (this.props.title === 'Edit Collection') {
       this.onEditCollectionSubmit(defaultView)
     }
@@ -154,83 +134,45 @@ class CollectionForm extends Form {
     }
   }
 
-  saveCollection (defaultView, flag) {
+  saveCollection(defaultView, flag) {
     this.setViewLoader(defaultView, flag)
-    this.doSubmit(defaultView)
+    this.doSubmit(defaultViewTypes.TESTING)
   }
 
-  renderCollectionDetailsForm () {
+  renderCollectionDetailsForm() {
     return (
       <>
         {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}
-        {this.renderInput('website', 'Website', 'https://yourwebsite.com', false, false, true)}
+        {this.renderSaveButton()}
       </>
     )
   }
 
-  renderDefaultViewForm () {
+  renderSaveButton() {
     return (
-      <DefaultViewModal viewLoader={this.state.viewLoader} saveCollection={this.saveCollection.bind(this)} onHide={() => this.props.onHide()} />
+      <button className='btn btn-primary' onClick={() => this.saveCollection(defaultViewTypes.TESTING, 'edit')}>
+        Save
+      </button>
     )
   }
 
-  renderForm () {
+  renderForm() {
     const { step } = this.state
-    return (
-      <>
-        {step === 1 && this.renderCollectionDetailsForm()}
-        {step === 2 && this.renderDefaultViewForm()}
-        {step === 1 ? this.renderNextButton() : this.renderBackButton()}
-      </>
-    )
+    return <>{step === 1 && this.renderCollectionDetailsForm()}</>
   }
 
-  onBack () {
-    this.setState({ step: 1 })
-  }
-
-  onNext () {
-    const errors = this.validate()
-    this.setState({ errors: errors || {} })
-    if (errors) return
-    if (this.props.title === 'Edit Collection') {
-      this.saveCollection(this.props.edited_collection?.defaultView, 'edit')
-    } else { this.setState({ step: 2 }) }
-  }
-
-  renderNextButton () {
-    if (!this.props.setDropdownList) {
-      return (
-        <button className='btn btn-primary' onClick={() => this.onNext()}>
-          Next
-        </button>
-      )
-    }
-    return (
-      <button className='btn btn-primary' onClick={() => this.onNext()}>
-        {this.props.title === 'Edit Collection'
-          ? <>{this.state.updating && <Spinner className=' mr-2 ' animation='border' size='sm' />}Update</>
-          : 'Next'}
-      </button>
-    )
-  }
-
-  renderBackButton () {
-    return (
-      <button className='btn btn-primary mt-2' onClick={() => this.onBack()}>
-        Back
-      </button>
-    )
-  }
-
-  handleCancel (e) {
+  handleCancel(e) {
     e.preventDefault()
     this.props.showOnlyForm ? this.props.onCancel() : this.props.onHide()
   }
 
-  renderInModal () {
+  renderInModal() {
     return (
-      <div onKeyPress={(e) => { onEnter(e, this.handleKeyPress.bind(this)) }}>
+      <div
+        onKeyPress={(e) => {
+          onEnter(e, this.handleKeyPress.bind(this))
+        }}
+      >
         <Modal
           size='sm'
           animation={false}
@@ -240,27 +182,18 @@ class CollectionForm extends Form {
           show={this.props.show}
         >
           <div>
-            <Modal.Header
-              className='custom-collection-modal-container'
-              closeButton
-            >
-              <Modal.Title id='contained-modal-title-vcenter'>
-                {this.props.title}
-              </Modal.Title>
+            <Modal.Header className='custom-collection-modal-container' closeButton>
+              <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-              {this.renderForm()}
-            </Modal.Body>
+            <Modal.Body>{this.renderForm()}</Modal.Body>
           </div>
         </Modal>
       </div>
     )
   }
 
-  render () {
-    return (
-      this.props.showOnlyForm ? this.renderForm() : this.renderInModal()
-    )
+  render() {
+    return this.props.showOnlyForm ? this.renderForm() : this.renderInModal()
   }
 }
 

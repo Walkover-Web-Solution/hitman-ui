@@ -4,44 +4,50 @@ const moment = require('moment')
 const chai = require('chai')
 
 class Environment {
-  constructor (env, setCallback) {
+  constructor(env, setCallback) {
     this.environment = _.clone(env)
     this.originalEnv = _.clone(env)
     this.setCallback = setCallback
   }
 
-  environment = {};
+  environment = {}
 
-  set (variableName, variableValue) {
+  set(variableName, variableValue) {
     if (_.isString(variableName)) {
       const trimmedKey = variableName.trim()
       if (trimmedKey.length) this.environment[trimmedKey] = variableValue
     }
   }
 
-  unset (variableName) {
-    if (this.has(variableName)) { delete this.environment[variableName] }
+  unset(variableName) {
+    if (this.has(variableName)) {
+      delete this.environment[variableName]
+    }
   }
 
-  get (variableName) {
+  get(variableName) {
     return this.environment[variableName]
   }
 
-  clear () {
+  clear() {
     this.environment = {}
   }
 
-  has (variableName) {
-    if (this.environment[variableName]) { return true } else { return false }
+  has(variableName) {
+    if (this.environment[variableName]) {
+      return true
+    } else {
+      return false
+    }
   }
 
-  updateCallback () {
+  updateCallback() {
     if (!_.isEqual(this.environment, this.originalEnv) && this.setCallback) {
       this.setCallback(this.environment)
     }
   }
 
-  getEnvironment () {
+  getEnvironment() {
     const environment = {}
     for (const [key, value] of Object.entries(this.environment)) {
       environment[key] = {
@@ -54,14 +60,14 @@ class Environment {
 }
 
 class Request {
-  constructor (request) {
+  constructor(request) {
     this.url = request.url
     this.headers = new HeaderList(request.headers)
     this.method = request.method
     this.body = request.body
   }
 
-  getRequest () {
+  getRequest() {
     return {
       url: this.url,
       headers: this.headers.getHeaders(),
@@ -72,14 +78,14 @@ class Request {
 }
 
 class Response {
-  constructor (response) {
+  constructor(response) {
     this.status = response.status
     this.statusText = response.statusText
     this.headers = new HeaderList(response.headers)
     this.body = response.body
   }
 
-  getResponse () {
+  getResponse() {
     return {
       status: this.status,
       headers: this.headers.getHeaders(),
@@ -90,48 +96,48 @@ class Response {
 }
 
 class HeaderList {
-  constructor (headers) {
+  constructor(headers) {
     this.headers = _.clone(headers)
   }
 
-  headers = {};
+  headers = {}
 
-  add (key, value = '') {
+  add(key, value = '') {
     if (key) {
       const trimmedKey = key.toString().trim()
       if (trimmedKey.length) this.headers[trimmedKey] = value
     }
   }
 
-  remove (headerName) {
+  remove(headerName) {
     if (this.has(headerName)) {
       delete this.headers[headerName]
     }
   }
 
-  has (headerName) {
-    return !!(this.headers[headerName])
+  has(headerName) {
+    return !!this.headers[headerName]
   }
 
-  get (headerName) {
-    return (this.headers[headerName])
+  get(headerName) {
+    return this.headers[headerName]
   }
 
-  getHeaders () {
+  getHeaders() {
     return this.headers
   }
 }
 
 class HitmanSandbox {
-  constructor ({ request, environment, response }) {
+  constructor({ request, environment, response }) {
     this.environment = environment
     this.request = request
     this.response = response
   }
 
-  testcases = [];
+  testcases = []
 
-  test (testName, callback) {
+  test(testName, callback) {
     testName = String(testName)
     try {
       if (callback) callback()
@@ -142,7 +148,7 @@ class HitmanSandbox {
   }
 }
 
-export function run (code, sandbox) {
+export function run(code, sandbox) {
   const hm = sandbox
   const context = { hm, console: console, expect: chai.expect, _, moment }
   try {
@@ -158,7 +164,7 @@ export function run (code, sandbox) {
   }
 }
 
-export function initialize ({ request, environment, response }) {
+export function initialize({ request, environment, response }) {
   if (environment) environment = new Environment(environment.value, environment.callback)
   if (request) request = new Request(request.value)
   if (response) response = new Response(response.value)

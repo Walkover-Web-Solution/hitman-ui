@@ -9,12 +9,12 @@ class CookiesList extends Component {
     }
   }
 
-  handleChange (e) {
+  handleChange(e) {
     if (e.target.value.trim() !== '') this.props.clearValidityMessage()
     this.setState({ currentDomain: { ...this.state.currentDomain, domain: e.target.value } })
   }
 
-  handleSubmit (e) {
+  handleSubmit(e) {
     e.preventDefault()
     //  let domains=this.state.domains;
     //  domains.push(this.state.currentDomain);
@@ -22,7 +22,7 @@ class CookiesList extends Component {
     this.setState({ currentDomain: { domain: '' } })
   }
 
-  deleteDomain (domain) {
+  deleteDomain(domain) {
     const deleteModalData = {
       title: 'Delete Domain',
       message: 'Are you sure, Do you want to delete this domain?',
@@ -32,43 +32,54 @@ class CookiesList extends Component {
     this.props.toggleDelete(true, deleteModalData)
   }
 
-  renderAddDomain () {
+  renderAddDomain() {
     return (
       <div className='form-group'>
         <form className='d-flex p-2' onSubmit={(e) => this.handleSubmit(e)}>
-          <input className='form-control' placeholder='Add Domain' value={this.state.currentDomain.domain} onChange={(e) => this.handleChange(e)} />
-          <button className='btn btn-primary ml-3' type='submit' disabled={this.state.currentDomain.domain === ''}>Add</button>
+          <input
+            className='form-control'
+            placeholder='Add Domain'
+            value={this.state.currentDomain.domain}
+            onChange={(e) => this.handleChange(e)}
+          />
+          <button className='btn btn-primary ml-3' type='submit' disabled={this.state.currentDomain.domain === ''}>
+            Add
+          </button>
         </form>
-        {(this.props.validityMessage) && <small className='muted-text'>*Please enter valid Domain</small>}
+        {this.props.validityMessage && <small className='muted-text'>*Please enter valid Domain</small>}
       </div>
-
     )
   }
 
-  renderCookiesListItem (domain) {
+  renderCookiesListItem(domain) {
     this.props.changeModalTab(2, domain)
   }
 
-  renderDomainList () {
-    return (
-
-      (Object.keys(this.props.domains).length > 0
-        ? Object.values(this.props.domains).map((domain, index) => (
-          <div key={index} className='d-flex justify-content-between align-items-center'>
-            <div className='cookie-list-parent-item d-flex justify-content-between cursor-pointer w-100' onClick={() => this.renderCookiesListItem(domain)}>
-              <div className='mr-5'>{domain.domain}</div>
-              <div className='d-flex justify-content-between align-items-center'>
-                <div>{`${Object.keys(domain.cookies || {}).length} cookies`}</div>
-              </div>
+  renderDomainList() {
+    return Object.keys(this.props.domains).length > 0 ? (
+      Object.values(this.props.domains).map((domain, index) => (
+        <div key={index} className='d-flex justify-content-between align-items-center'>
+          <div
+            className='cookie-list-parent-item d-flex justify-content-between cursor-pointer w-100'
+            onClick={() => this.renderCookiesListItem(domain)}
+          >
+            <div className='mr-5'>{domain.domain}</div>
+            <div className='d-flex justify-content-between align-items-center'>
+              <div>{`${Object.keys(domain.cookies || {}).length} cookies`}</div>
             </div>
-            <div className='cursor-pointer ml-2 icon-center' onClick={() => this.deleteDomain(domain)}> <DeleteIcon /> </div>
           </div>
-          ))
-        : <h4 className='text-center'>No Domain available!</h4>)
+          <div className='cursor-pointer ml-2 icon-center' onClick={() => this.deleteDomain(domain)}>
+            {' '}
+            <DeleteIcon />{' '}
+          </div>
+        </div>
+      ))
+    ) : (
+      <h4 className='text-center'>No Domain available!</h4>
     )
   }
 
-  render () {
+  render() {
     return (
       <div>
         {this.renderAddDomain()}

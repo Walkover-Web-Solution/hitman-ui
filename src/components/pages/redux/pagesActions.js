@@ -1,9 +1,12 @@
 import { toast } from 'react-toastify'
-import store from '../../../store/store'
+import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import { getOrgId, focusSelectedEntity } from '../../common/utility'
-import indexedDbService from '../../indexedDb/indexedDbService'
+import { getOrgId, focusSelectedEntity, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
+import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
+import endpointApiService from '../../endpoints/endpointApiService'
+import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 export const fetchPages = (orgId) => {
   return (dispatch) => {
@@ -12,8 +15,6 @@ export const fetchPages = (orgId) => {
       .then((response) => {
         const pages = response.data
         dispatch(onPagesFetched(pages))
-        indexedDbService.clearStore('pages')
-        indexedDbService.addMultipleData('pages', Object.values(response.data))
       })
       .catch((error) => {
         dispatch(onPagesFetchedError(error.message))
@@ -28,7 +29,6 @@ export const fetchPage = (pageId) => {
       .then((response) => {
         const page = response.data
         dispatch(onPageFetched(page))
-        indexedDbService.addData('pages', page, page.id)
       })
       .catch((error) => {
         dispatch(onPageFetchedError(error.message))
@@ -50,23 +50,6 @@ export const onPageFetchedError = (error) => {
   }
 }
 
-export const fetchPagesFromIdb = (orgId) => {
-  return (dispatch) => {
-    indexedDbService
-      .getAllData('pages')
-      .then((response) => {
-        dispatch(onPagesFetched(response))
-      })
-      .catch((error) => {
-        dispatch(
-          onPagesFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
-      })
-  }
-}
-
 export const onPagesFetched = (pages) => {
   return {
     type: pagesActionTypes.ON_PAGES_FETCHED,
@@ -80,31 +63,73 @@ export const onPagesFetchedError = (error) => {
     error
   }
 }
-export const updatePage = (history, editedPage, publishDocs = false) => {
-  const newPage = { ...editedPage }
-  const orgId = getOrgId()
-  delete newPage.id
-  delete newPage.versionId
-  delete newPage.groupId
+
+export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
-    const originalPage = store.getState().pages[editedPage.id]
-    dispatch(updatePageRequest(editedPage))
+    // const originalEndpoint = store.getState().pages[editedEndpoint.id]
+    // dispatch(updateEndpointRequest(editedEndpoint))
+    const id = editedEndpoint.id
+    const updatedEndpoint = editedEndpoint
+    delete updatedEndpoint.id
+    // delete updatedEndpoint.groupId
+    endpointApiService
+      .updateEndpoint(id, updatedEndpoint)
+      .then((response) => {
+        dispatch(onEndpointUpdated(response.data))
+        if (stopSaveLoader) {
+          stopSaveLoader()
+        }
+      })
+      .catch((error) => {
+        // dispatch(onEndpointUpdatedError(error.response ? error.response.data : error, originalEndpoint))
+        if (stopSaveLoader) {
+          stopSaveLoader()
+        }
+      })
+  }
+}
+
+export const onEndpointUpdatedError = (error, originalEndpoint) => {
+  return {
+    type: endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR,
+    error,
+    originalEndpoint
+  }
+}
+
+export const updatePage = (history, editedPage, publishDocs = false) => {
+  return (dispatch) => {
+    const orgId = getOrgId()
+    const dataToSend = {
+      name: editedPage.name,
+      contents: editedPage?.contents || null,
+      state: editedPage.state
+    }
+    dispatch(updatePageRequest(dataToSend))
     pageApiService
-      .updatePage(editedPage.id, newPage)
+      .updatePage(editedPage.id, dataToSend)
       .then((response) => {
         dispatch(onPageUpdated(response.data))
         if (!publishDocs) {
           history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}`)
         }
+        return response.data
       })
       .catch((error) => {
-        dispatch(
-          onPageUpdatedError(
-            error.response ? error.response.data : error,
-            originalPage
-          )
-        )
+        dispatch(onPageUpdatedError(error.response ? error.response.data : error, editedPage))
       })
+  }
+}
+
+export const updateContent = async ({ pageData, id }) => {
+  delete pageData.id
+  delete pageData.versionId
+  delete pageData.groupId
+  try {
+    const data = await pageApiService.updatePage(id, pageData)
+    return data.data
+  } catch (error) {
+    console.error(error)
   }
 }
 
@@ -129,42 +154,56 @@ export const onPageUpdatedError = (error, originalPage) => {
     originalPage
   }
 }
+export const updateEndpointRequest = (editedEndpoint) => {
+  return {
+    type: pagesActionTypes.UPDATE_ENDPOINT_REQUEST,
+    editedEndpoint
+  }
+}
 
-export const addPage = (history, versionId, newPage) => {
+export const onEndpointUpdated = (response) => {
+  return {
+    type: pagesActionTypes.ON_ENDPOINT_UPDATED,
+    response
+  }
+}
+
+export const addPage1 = (history, rootParentId, newPage) => {
   const orgId = getOrgId()
   return (dispatch) => {
-    dispatch(addPageRequest(versionId, newPage))
-    delete newPage.groupId
-    delete newPage.versionId
+    dispatch(addPageRequestInCollection(rootParentId, newPage))
     pageApiService
-      .saveVersionPage(versionId, newPage)
+      .saveCollectionPage(rootParentId, newPage)
       .then((response) => {
-        dispatch(onPageAdded(response.data))
-        focusSelectedEntity('pages', response.data.id)
-        history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
+        const data = response.data.page
+        response.data.page.requestId = newPage.requestId
+        dispatch(onParentPageAdded(response.data))
+        history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
       .catch((error) => {
-        dispatch(
-          onPageAddedError(
-            error.response ? error.response.data : error,
-            newPage
-          )
-        )
+        dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))
       })
   }
 }
 
-export const addPageRequest = (versionId, newPage) => {
+export const addPageRequestInCollection = (rootParentId, newPage) => {
   return {
-    type: pagesActionTypes.ADD_PAGE_REQUEST,
-    versionId,
+    type: pagesActionTypes.ADD_PARENT_PAGE_REQUEST,
+    rootParentId,
     newPage
   }
 }
 
-export const onPageAdded = (response) => {
+export const onParentPageAdded = (response) => {
   return {
-    type: pagesActionTypes.ON_PAGE_ADDED,
+    type: pagesActionTypes.ON_PARENT_PAGE_ADDED,
+    page: response.page,
+    version: response.version
+  }
+}
+export const onParentPageVersionAdded = (response) => {
+  return {
+    type: collectionVersionsActionTypes.ON_PARENTPAGE_VERSION_ADDED,
     response
   }
 }
@@ -177,60 +216,22 @@ export const onPageAddedError = (error, newPage) => {
   }
 }
 
-export const addGroupPage = (history, versionId, groupId, newPage) => {
-  const orgId = getOrgId()
-  return (dispatch) => {
-    dispatch(addGroupPageRequest(versionId, groupId, newPage))
-    delete newPage.groupId
-    delete newPage.versionId
-    pageApiService
-      .saveGroupPage(groupId, newPage)
-      .then((response) => {
-        dispatch(onGroupPageAdded(response.data))
-        history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
-      })
-      .catch((error) => {
-        dispatch(
-          onGroupPageAddedError(
-            error.response ? error.response.data : error,
-            newPage
-          )
-        )
-      })
-  }
-}
-
-export const addGroupPageRequest = (versionId, groupId, newPage) => {
-  return {
-    type: pagesActionTypes.ADD_GROUP_PAGE_REQUEST,
-    versionId,
-    groupId,
-    newPage
-  }
-}
-
-export const onGroupPageAdded = (response) => {
-  return {
-    type: pagesActionTypes.ON_GROUP_PAGE_ADDED,
-    response
-  }
-}
-
-export const onGroupPageAddedError = (error, newPage) => {
-  return {
-    type: pagesActionTypes.ON_GROUP_PAGE_ADDED_ERROR,
-    newPage,
-    error
-  }
-}
-
 export const deletePage = (page) => {
   return (dispatch) => {
-    dispatch(deletePageRequest(page))
     pageApiService
-      .deletePage(page.id)
+      .deletePage(page?.id)
       .then((res) => {
-        dispatch(onPageDeleted(res.data))
+        deleteAllPagesAndTabsAndReactQueryData(page.id)
+          .then((data) => {
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
+
+            // after deletion operation
+            operationsAfterDeletion(data)
+          })
+          .catch((error) => {
+            console.errro(error)
+          })
       })
       .catch((error) => {
         dispatch(onPageDeletedError(error.response, page))
@@ -290,12 +291,7 @@ export const updatePageOrder = (pagesOrder) => {
         toast.success(response.data)
       })
       .catch((error) => {
-        dispatch(
-          onPageOrderUpdatedError(
-            error.response ? error.response.data : error,
-            originalPages
-          )
-        )
+        dispatch(onPageOrderUpdatedError(error.response ? error.response.data : error, originalPages))
       })
   }
 }
@@ -315,5 +311,36 @@ export const onPageOrderUpdatedError = (error, pages) => {
     type: pagesActionTypes.ON_PAGES_ORDER_UPDATED_ERROR,
     pages,
     error
+  }
+}
+
+export const updatePageContentData = (payload) => {
+  return {
+    type: pagesActionTypes.UPDATE_CONTENT_OF_PAGE,
+    payload
+  }
+}
+
+export const updatePageData = (payload) => {
+  return {
+    type: pagesActionTypes.UPDATE_PAGE_DATA,
+    payload: {
+      pageId: payload.pageId,
+      data: payload.data
+    }
+  }
+}
+
+export const addChildInParent = (payload) => {
+  return {
+    type: pagesActionTypes.ADD_CHILD_IN_PARENT,
+    payload
+  }
+}
+
+export const updateNameOfPages = (payload) => {
+  return {
+    type: pagesActionTypes.UPDATE_NAME_OF_PAGE,
+    payload
   }
 }

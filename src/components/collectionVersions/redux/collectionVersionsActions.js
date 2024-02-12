@@ -1,10 +1,10 @@
 import collectionVersionsApiService from '../collectionVersionsApiService'
 import versionActionTypes from './collectionVersionsActionTypes'
-import store from '../../../store/store'
+import { store } from '../../../store/store'
 import { toast } from 'react-toastify'
 import tabService from '../../tabs/tabService'
-import indexedDbService from '../../indexedDb/indexedDbService'
 import { sendAmplitudeData } from '../../../services/amplitude'
+import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 export const fetchAllVersions = (orgId) => {
   return (dispatch) => {
     collectionVersionsApiService
@@ -12,28 +12,9 @@ export const fetchAllVersions = (orgId) => {
       .then((response) => {
         const versions = response.data
         dispatch(onVersionsFetched(versions))
-        indexedDbService.clearStore('versions')
-        indexedDbService.addMultipleData('versions', Object.values(response.data))
       })
       .catch((error) => {
         dispatch(onVersionsFetchedError(error.message))
-      })
-  }
-}
-
-export const fetchAllVersionsFromIdb = (orgId) => {
-  return (dispatch) => {
-    indexedDbService
-      .getAllData('versions')
-      .then((response) => {
-        dispatch(onVersionsFetched(response))
-      })
-      .catch((error) => {
-        dispatch(
-          onVersionsFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
       })
   }
 }
@@ -77,12 +58,7 @@ export const updateVersion = (editedVersion) => {
         dispatch(onVersionUpdated(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onVersionUpdatedError(
-            error.response ? error.response.data : error,
-            originalVersion
-          )
-        )
+        dispatch(onVersionUpdatedError(error.response ? error.response.data : error, originalVersion))
       })
   }
 }
@@ -109,46 +85,47 @@ export const onVersionUpdatedError = (error, originalVersion) => {
   }
 }
 
-export const addVersion = (newVersion, collectionId, customCallback) => {
+export const addParentPageVersion = (newVersion, pageId, customCallback) => {
   return (dispatch) => {
-    dispatch(addVersionRequest({ ...newVersion, collectionId }))
+    dispatch(addVersionRequest({ ...newVersion, pageId }))
     collectionVersionsApiService
-      .saveCollectionVersion(collectionId, newVersion)
+      .saveParentPageVersion(pageId, newVersion)
       .then((response) => {
         sendAmplitudeData('Version created', {
           versionId: response.data.id,
           versionNumber: response.data.number,
-          collectionId: response.data.collectionId
+          pageId: response.data.pageId
         })
-        dispatch(onVersionAdded(response.data))
+        dispatch(onParentPageVersionAdded(response.data))
         if (customCallback) {
           customCallback(response.data)
         }
       })
       .catch((error) => {
-        dispatch(
-          onVersionAddedError(
-            error.response ? error.response.data : error,
-            newVersion
-          )
-        )
+        dispatch(onVersionAddedError(error.response ? error.response.data : error, newVersion))
       })
   }
 }
 
 export const addVersionRequest = (newVersion) => {
   return {
-    type: versionActionTypes.ADD_VERSION_REQUEST,
+    type: pagesActionTypes.ADD_VERSION_REQUEST,
     newVersion
   }
 }
 
-export const onVersionAdded = (response) => {
+export const onParentPageVersionAdded = (response) => {
   return {
-    type: versionActionTypes.ON_VERSION_ADDED,
+    type: pagesActionTypes.ON_PARENTPAGE_VERSION_ADDED,
     response
   }
 }
+// export const onVersionAdded = (response) => {
+//   return {
+//     type: pagesActionTypes.ON_VERSION_ADDED,
+//     response
+//   }
+// }
 
 export const onVersionAddedError = (error, newVersion) => {
   return {
@@ -165,24 +142,13 @@ export const deleteVersion = (version, props) => {
       .deleteCollectionVersion(version.id)
       .then(() => {
         const storeData = { ...store.getState() }
-        const groupIds = Object.keys(storeData.groups).filter(
-          (gId) => storeData.groups[gId].versionId === version.id
-        )
-        const pageIds = [
-          ...Object.keys(storeData.pages).filter(
-            (pId) => storeData.pages[pId].versionId === version.id
-          )
-        ]
+        const groupIds = Object.keys(storeData.groups).filter((gId) => storeData.groups[gId].versionId === version.id)
+        const pageIds = [...Object.keys(storeData.pages).filter((pId) => storeData.pages[pId].versionId === version.id)]
         let endpointIds = []
 
         groupIds.map(
           (gId) =>
-            (endpointIds = [
-              ...Object.keys(storeData.endpoints).filter(
-                (eId) => storeData.endpoints[eId].groupId === gId
-              ),
-              ...endpointIds
-            ])
+            (endpointIds = [...Object.keys(storeData.endpoints).filter((eId) => storeData.endpoints[eId].groupId === gId), ...endpointIds])
         )
 
         endpointIds.map((eId) => tabService.removeTab(eId, props))
@@ -249,19 +215,11 @@ export const importVersion = (importLink, shareIdentifier, collectionId) => {
             dispatch(saveImportedVersion(response.data))
           })
           .catch((error) => {
-            dispatch(
-              onVersionImportError(
-                error.response ? error.response.data : error
-              )
-            )
+            dispatch(onVersionImportError(error.response ? error.response.data : error))
           })
       })
       .catch((error) => {
-        dispatch(
-          onVersionImportError(
-            error.response ? error.response.data : error
-          )
-        )
+        dispatch(onVersionImportError(error.response ? error.response.data : error))
       })
   }
 }
@@ -282,20 +240,13 @@ export const saveImportedVersion = (response) => {
 
 export const setAuthorizationResponses = (versionId, authResponses) => {
   return (dispatch) => {
-    const originalAuthResponses = store.getState().versions[versionId]
-      .authorizationResponse
+    const originalAuthResponses = store.getState().versions[versionId].authorizationResponse
     dispatch(setAuthorizationResponsesRequest(versionId, authResponses))
     collectionVersionsApiService
       .setAuthorizationResponse(versionId, authResponses)
       .then(() => {})
       .catch((error) => {
-        dispatch(
-          onAuthorizationResponsesError(
-            error.response ? error.response.data : error,
-            versionId,
-            originalAuthResponses
-          )
-        )
+        dispatch(onAuthorizationResponsesError(error.response ? error.response.data : error, versionId, originalAuthResponses))
       })
   }
 }
@@ -308,11 +259,7 @@ export const setAuthorizationResponsesRequest = (versionId, authResponses) => {
   }
 }
 
-export const onAuthorizationResponsesError = (
-  error,
-  versionId,
-  authResponses
-) => {
+export const onAuthorizationResponsesError = (error, versionId, authResponses) => {
   return {
     type: versionActionTypes.ON_AUTHORIZATION_RESPONSES_ERROR,
     error,
@@ -323,20 +270,13 @@ export const onAuthorizationResponsesError = (
 
 export const setAuthorizationData = (versionId, data) => {
   return (dispatch) => {
-    const originalAuthdata = store.getState().versions[versionId]
-      .authorizationData
+    const originalAuthdata = store.getState().versions[versionId].authorizationData
     dispatch(onAuthorizationDataRequest(versionId, data))
     collectionVersionsApiService
       .setAuthorizationData(versionId, data)
       .then(() => {})
       .catch((error) => {
-        dispatch(
-          onAuthorizationDataError(
-            error.response ? error.response.data : error,
-            versionId,
-            originalAuthdata
-          )
-        )
+        dispatch(onAuthorizationDataError(error.response ? error.response.data : error, versionId, originalAuthdata))
       })
   }
 }
@@ -349,11 +289,7 @@ export const onAuthorizationDataRequest = (versionId, data) => {
   }
 }
 
-export const onAuthorizationDataError = (
-  error,
-  versionId,
-  originalAuthdata
-) => {
+export const onAuthorizationDataError = (error, versionId, originalAuthdata) => {
   return {
     type: versionActionTypes.ON_AUTHORIZATION_DATA_ERROR,
     error,

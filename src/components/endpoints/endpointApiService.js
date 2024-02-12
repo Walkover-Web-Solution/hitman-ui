@@ -8,22 +8,22 @@ import { getProxyToken } from '../auth/authServiceV2'
 
 const apiUrlEndpoint = process.env.REACT_APP_API_URL
 
-setInterval(function () {
-  http.setProxyToken(getProxyToken())
-  httpService.setProxyToken(getProxyToken())
-}, 5000)
-
-function getApiUrl () {
+function getApiUrl() {
   const orgId = getOrgId()
   return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 }
 
-function endpointUrl (groupId) {
+function endpointUrl(groupId) {
   const apiUrl = getApiUrl()
   return `${apiUrl}/groups/${groupId}/endpoints`
 }
 
-export function apiTest (api, method, body, headers, bodyType, cancelToken) {
+function endpointUrlForCollection(pageId) {
+  const apiUrl = getApiUrl()
+  return `${apiUrl}/pages/${pageId}/endpoints`
+}
+
+export function apiTest(api, method, body, headers, bodyType, cancelToken) {
   if (api.indexOf('localhost') > 0 || api.indexOf('127.0.0.1') > 0) {
     return makeHttpRequestThroughAxios({ api, method, body, headers, bodyType, cancelToken })
   } else {
@@ -37,44 +37,50 @@ export function apiTest (api, method, body, headers, bodyType, cancelToken) {
   }
 }
 
-export function getAllEndpoints (id) {
+export function getAllEndpoints(id) {
   return http.get(`${apiUrlEndpoint}/orgs/${id}/endpoints`)
 }
 
-export function getEndpoints (groupId) {
-  return http.get(endpointUrl(groupId))
+export function getEndpoints(parentId) {
+  // author : Goutam Mehta
+  return http.get(endpointUrlForCollection(parentId))
 }
 
-export function getEndpoint (endpointId) {
+export async function getEndpoint(endpointId) {
+  // author : Goutam Mehta
   const apiUrl = getApiUrl()
-  return http.get(`${apiUrl}/endpoints/${endpointId}`)
+  return (await http.get(`${apiUrl}/endpoints/${endpointId}`))?.data
 }
-
-export function saveEndpoint (groupId, endpoint) {
+export function saveEndpoint(groupId, endpoint) {
   return http.post(endpointUrl(groupId), endpoint)
 }
 
-export function updateEndpoint (endpointId, endpoint) {
+export function saveEndpointInCollection(rootParentId, endpoint) {
+  // author : Goutam Mehta
+  return http.post(endpointUrlForCollection(rootParentId), endpoint)
+}
+
+export function updateEndpoint(endpointId, endpoint) {
   const apiUrl = getApiUrl()
   return http.put(`${apiUrl}/endpoints/${endpointId}`, endpoint)
 }
 
-export function deleteEndpoint (endpointId) {
+export function deleteEndpoint(endpointId) {
   const apiUrl = getApiUrl()
   return http.delete(`${apiUrl}/endpoints/${endpointId}`)
 }
 
-export function duplicateEndpoint (endpointId) {
+export function duplicateEndpoint(endpointId) {
   const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/duplicateEndpoints/${endpointId}`)
 }
 
-export function moveEndpoint (endpointId, body) {
+export function moveEndpoint(endpointId, body) {
   const apiUrl = getApiUrl()
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body)
 }
 
-export function updateEndpointOrder (
+export function updateEndpointOrder(
   endpointsOrder
   // sourceGroupId = null,
   // destinationEndpointIds = null,
@@ -91,7 +97,7 @@ export function updateEndpointOrder (
   })
 }
 
-function makeParams (params, grantType, authData) {
+function makeParams(params, grantType, authData) {
   let finalHeaders = {}
   let finalParams = {}
   if (authData.clientAuthentication === 'Send as Basic Auth header') {
@@ -118,9 +124,7 @@ function makeParams (params, grantType, authData) {
       delete finalParams.client_id
       delete finalParams.client_secret
     }
-  } else if (
-    authData.clientAuthentication === 'Send client credentials in body'
-  ) {
+  } else if (authData.clientAuthentication === 'Send client credentials in body') {
     finalHeaders = {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
@@ -132,18 +136,8 @@ function makeParams (params, grantType, authData) {
   return finalParamsandHeaders
 }
 
-export async function authorize (
-  requestApi,
-  params,
-  grantType,
-  props,
-  authData
-) {
-  if (
-    grantType === 'passwordCredentials' ||
-    grantType === 'clientCredentials' ||
-    grantType === 'auth_code'
-  ) {
+export async function authorize(requestApi, params, grantType, props, authData) {
+  if (grantType === 'passwordCredentials' || grantType === 'clientCredentials' || grantType === 'auth_code') {
     const finalParamsandHeaders = makeParams(params, grantType, authData)
     const finalParams = finalParamsandHeaders[0]
     const finalHeaders = finalParamsandHeaders[1]
@@ -157,15 +151,8 @@ export async function authorize (
     responseData.tokenName = authData.tokenName
     if (grantType === 'auth_code') {
       await indexedDbService.getDataBase()
-      await indexedDbService.updateData(
-        'responseData',
-        responseData,
-        'currentResponse'
-      )
-      const response = await indexedDbService.getValue(
-        'responseData',
-        'currentResponse'
-      )
+      await indexedDbService.updateData('responseData', responseData, 'currentResponse')
+      const response = await indexedDbService.getValue('responseData', 'currentResponse')
       const timer = setInterval(async function () {
         if (response) {
           clearInterval(timer)
@@ -184,20 +171,13 @@ export async function authorize (
     } else {
       requestApi = requestApi + '&response_type=token'
     }
-    const openWindow = window.open(
-      requestApi,
-      'windowName',
-      'width=400,height=600'
-    )
+    const openWindow = window.open(requestApi, 'windowName', 'width=400,height=600')
 
     const timer = setInterval(async function () {
       if (openWindow.closed) {
         clearInterval(timer)
         await indexedDbService.getDataBase()
-        const responseData = await indexedDbService.getValue(
-          'responseData',
-          'currentResponse'
-        )
+        const responseData = await indexedDbService.getValue('responseData', 'currentResponse')
         await indexedDbService.deleteData('responseData', 'currentResponse')
         if (responseData && responseData.access_token) {
           responseData.tokenName = authData.tokenName
@@ -209,19 +189,16 @@ export async function authorize (
   }
 }
 
-export async function setResponse (props, responseData) {
+export async function setResponse(props, responseData) {
   const versionId = props.groups[props.groupId].versionId
   const authResponses = props.versions[versionId].authorizationResponse
   authResponses.push(responseData)
   await props.set_authorization_responses(versionId, authResponses)
 }
 
-export function setAuthorizationType (endpointId, data) {
+export function setAuthorizationType(endpointId, data) {
   const apiUrl = getApiUrl()
-  return http.patch(
-    `${apiUrl}/endpoints/${endpointId}/authorizationType`,
-    data
-  )
+  return http.patch(`${apiUrl}/endpoints/${endpointId}/authorizationType`, data)
 }
 
 export default {
@@ -236,5 +213,6 @@ export default {
   moveEndpoint,
   authorize,
   setAuthorizationType,
-  updateEndpointOrder
+  updateEndpointOrder,
+  saveEndpointInCollection
 }

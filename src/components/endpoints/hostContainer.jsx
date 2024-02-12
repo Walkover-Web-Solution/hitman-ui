@@ -1,22 +1,36 @@
 import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
+import { publishData } from '../modals/redux/modalsActions'
 import './endpoints.scss'
+import { connect } from 'react-redux'
+import _ from 'lodash'
 
 const hostContainerEnum = {
   hosts: {
-    customHost: { key: 'customHost', label: 'Custom Host' },
+    // customHost: { key: 'customHost', label: 'Custom Host' },
     environmentHost: { key: 'environmentHost', label: 'Environment Host' },
     versionHost: { key: 'versionHost', label: 'Version Host' }
   }
 }
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    modals: state.modals
+  }
+}
 class HostContainer extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
-      datalistHost: '',
+      datalistHost: this.props?.endpointContent?.host?.BASE_URL,
       datalistUri: '',
-      customHost: '',
+      // customHost: '',
       environmentHost: '',
       versionHost: '',
       selectedHost: '',
@@ -27,22 +41,23 @@ class HostContainer extends Component {
     this.handleClickOutside = this.handleClickOutside.bind(this)
   }
 
-  handleClickOutside (event) {
+  handleClickOutside(event) {
     if ((this.state.showDatalist || this.state.showInputHost) && this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ showDatalist: false, showInputHost: false })
     }
+    this.props.ON_PUBLISH_DOC(false)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setHosts()
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (
       prevProps.environmentHost !== this.props.environmentHost ||
-      prevProps.versionHost !== this.props.versionHost ||
-      prevProps.customHost !== this.props.customHost
+      prevProps.versionHost !== this.props.versionHost
+      // prevProps.customHost !== this.props.customHost
     ) {
       this.setHosts()
     }
@@ -51,54 +66,58 @@ class HostContainer extends Component {
     }
   }
 
-  setHostAndUri () {
+  setHostAndUri() {
     const endpointUri = this.props.updatedUri || ''
     const topPriorityHost = this.customFindTopPriorityHost()
     const selectedHost = topPriorityHost
-    const host = this.state[selectedHost] || this.state.datalistHost || ''
+    const host = this.props?.endpointContent.host.BASE_URL || this.state[selectedHost] || this.state.datalistHost || ''
     this.setState({ datalistUri: endpointUri, datalistHost: host, selectedHost }, () => this.setParentHostAndUri())
   }
 
-  setParentHostAndUri () {
+  setParentHostAndUri() {
     this.props.set_host_uri(this.state.datalistHost, this.state.datalistUri, this.state.selectedHost)
   }
 
-  customFindTopPriorityHost () {
+  customFindTopPriorityHost() {
     const selectedHost = ''
-    if (this.state.selectedHost === 'customHost' || this.state.customHost) return 'customHost'
+    // if (this.state.selectedHost === 'customHost' || this.state.customHost) return 'customHost'
     if (this.state.environmentHost) return 'environmentHost'
     if (this.state.versionHost) return 'versionHost'
     return selectedHost
   }
 
-  fetchPublicEndpointHost () {
+  fetchPublicEndpointHost() {
     this.props.set_base_url(this.state.datalistHost)
     return null
   }
 
-  handleInputHostChange (e) {
+  handleInputHostChange(e) {
     const data = this.splitUrlHelper(e)
-    this.setState({
-      ...data,
-      showDatalist: e.target.value === ''
-    },
-    () => {
-      this.props.props_from_parent('HostAndUri')
-      this.setParentHostAndUri()
-    })
+    this.setState(
+      {
+        ...data,
+        showDatalist: e.target.value === ''
+      },
+      () => {
+        this.props.props_from_parent('HostAndUri')
+        this.setParentHostAndUri()
+      }
+    )
   }
 
-  handleClickHostOptions (host, type) {
-    this.setState({
-      datalistHost: host,
-      showDatalist: false,
-      selectedHost: type,
-      Flag: true
-    },
-    () => this.setParentHostAndUri())
+  handleClickHostOptions(host, type) {
+    this.setState(
+      {
+        datalistHost: host || this.props?.endpointContent?.host?.BASE_URL,
+        showDatalist: false,
+        selectedHost: type,
+        Flag: true
+      },
+      () => this.setParentHostAndUri()
+    )
   }
 
-  checkExistingHosts (value) {
+  checkExistingHosts(value) {
     const regex = /^((http[s]?|ftp):\/\/[\w.\-@:]*)/i
     const variableRegex = /^{{[\w|-]+}}/i
     const { environmentHost, versionHost } = this.state
@@ -118,7 +137,7 @@ class HostContainer extends Component {
     return null
   }
 
-  splitUrlHelper (e) {
+  splitUrlHelper(e) {
     const value = e.target.value
     const hostName = this.checkExistingHosts(value)
     let uri = ''
@@ -130,86 +149,85 @@ class HostContainer extends Component {
     }
     if (hostName) {
       const selectedHost = this.selectCurrentHost(hostName)
-      if (selectedHost === 'customHost') data.customHost = hostName
+      // if (selectedHost === 'customHost') data.customHost = hostName
       data.datalistHost = hostName
       data.selectedHost = selectedHost
       uri = value.replace(hostName, '')
     } else {
-      data.selectedHost = 'customHost'
+      // data.selectedHost = 'customHost'
       uri = value
     }
     data.datalistUri = uri
     return data
   }
 
-  selectCurrentHost (hostname) {
-    if (hostname === this.state.customHost) return 'customHost'
+  selectCurrentHost(hostname) {
+    // if (hostname === this.state.customHost) return 'customHost'
     if (hostname === this.state.environmentHost) return 'environmentHost'
     if (hostname === this.state.versionHost) return 'versionHost'
-    return 'customHost'
+    // return 'customHost'
   }
 
-  setHosts () {
-    const { versionHost, environmentHost, customHost } = this.props
-    this.setState({ versionHost, environmentHost, customHost }, () => { this.setHostAndUri() })
+  setHosts() {
+    const { versionHost, environmentHost } = this.props
+    this.setState({ versionHost, environmentHost }, () => {
+      this.setHostAndUri()
+    })
   }
 
-  renderHostDatalist () {
+  renderHostDatalist() {
     const endpointId = this.props.endpointId
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
         <input
           id='host-container-input'
           className='form-control'
-          value={this.state.datalistHost + this.state.datalistUri}
+          value={this.props?.endpointContent.host.BASE_URL + this.props?.endpointContent?.data?.updatedUri}
           name={`${endpointId}_hosts`}
           placeholder='Enter Request URL'
-          onChange={((e) => this.handleInputHostChange(e))}
+          onChange={(e) => this.handleInputHostChange(e)}
           autoComplete='off'
-          onFocus={() => this.setState({ showDatalist: true }, () => {
-            document.addEventListener('mousedown', this.handleClickOutside)
-          })}
+          onFocus={() =>
+            this.setState({ showDatalist: true }, () => {
+              document.addEventListener('mousedown', this.handleClickOutside)
+            })
+          }
         />
         <div className={['host-data', this.state.showDatalist ? 'd-block' : 'd-none'].join(' ')}>
-          {Object.values(hostContainerEnum.hosts).map((host, index) => (
-            this.state[host.key] &&
-              <div key={index} className='host-data-item' onClick={(e) => this.handleClickHostOptions(this.state[host.key], host.key)}>
-                <div>{this.state[host.key]}</div>
-                <small className='text-muted font-italic'>{host.label}</small>
-              </div>
-          ))}
+          {Object.values(hostContainerEnum.hosts).map(
+            (host, index) =>
+              this.state[host.key] && (
+                <div key={index} className='host-data-item' onClick={(e) => this.handleClickHostOptions(this.state[host.key], host.key)}>
+                  <div>{this.state[host.key]}</div>
+                  <small className='text-muted font-italic'>{host.label}</small>
+                </div>
+              )
+          )}
         </div>
       </div>
     )
   }
 
-  renderPublicHost () {
+  renderPublicHost() {
     return (
       <input
-        disabled className='form-control'
-        value={this.state.datalistHost + this.state.datalistUri}
+        disabled
+        className='form-control'
+        value={this.props?.endpointContent.host.BASE_URL + this.props?.endpointContent?.data?.updatedUri}
       />
     )
   }
 
-  render () {
-    if (
-      isDashboardRoute(this.props) &&
-      this.state.groupId &&
-      this.props.tab.status === tabStatusTypes.DELETED
-    ) {
+  render() {
+    if (isDashboardRoute(this.props) && this.state.groupId && this.props.tab.status === tabStatusTypes.DELETED) {
       this.setState({ groupId: null })
     }
     if (isDashboardRoute(this.props)) {
-      return (
-        this.renderHostDatalist()
-      )
+      return this.renderHostDatalist()
     } else {
-      return (
-        this.renderPublicHost()
-      )
+      return this.renderPublicHost()
     }
   }
 }
 
-export default HostContainer
+export default connect(mapStateToProps, mapDispatchToProps)(HostContainer)

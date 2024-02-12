@@ -3,20 +3,14 @@ import { Modal } from 'react-bootstrap'
 import './main.scss'
 
 class CreateNewModal extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = { showCollectionForm: false, showEnvironmentForm: false }
   }
 
-  render () {
+  render() {
     return (
-      <Modal
-        {...this.props}
-        size='xl'
-        animation={false}
-        aria-labelledby='contained-modal-title-vcenter'
-        centered
-      >
+      <Modal {...this.props} size='xl' animation={false} aria-labelledby='contained-modal-title-vcenter' centered>
         <div className='custom-modal-container'>
           <Modal.Header closeButton>Create New</Modal.Header>
           <Modal.Body>
@@ -32,9 +26,7 @@ class CreateNewModal extends Component {
               </div>
               <div className='new-button-text-wrapper'>
                 <h5 className='card-title'>Endpoint</h5>
-                <h6 className='card-subtitle mb-2 text-muted'>
-                  Create a basic request
-                </h6>
+                <h6 className='card-subtitle mb-2 text-muted'>Create a basic request</h6>
               </div>
             </div>
 
@@ -49,9 +41,7 @@ class CreateNewModal extends Component {
               </div>
               <div className='new-button-text-wrapper'>
                 <h5 className='card-title'>Collection</h5>
-                <h6 className='card-subtitle mb-2 text-muted'>
-                  Save your requests in a collection
-                </h6>
+                <h6 className='card-subtitle mb-2 text-muted'>Save your requests in a collection</h6>
               </div>
             </div>
 
@@ -66,9 +56,7 @@ class CreateNewModal extends Component {
               </div>
               <div className='new-button-text-wrapper'>
                 <h5 className='card-title'>Environment</h5>
-                <h6 className='card-subtitle mb-2 text-muted'>
-                  Save values you frequently use in an Environment
-                </h6>
+                <h6 className='card-subtitle mb-2 text-muted'>Save values you frequently use in an Environment</h6>
               </div>
             </div>
           </Modal.Body>

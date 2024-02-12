@@ -9,7 +9,6 @@ const ProtectedRouteV2 = ({ path, component: Component, render, ...rest }) => {
       render={(props) => {
         if (!getProxyToken()) {
           return (
-
             <Redirect
               to={{
                 pathname: '/logout',

@@ -10,7 +10,7 @@ import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
 import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
 import { moveToNextStep } from '../../services/widgetService'
 
-const MAPPING_DOMAIN = process.env.REACT_APP_HITMAN_MAPPING_DOMAIN
+const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
   NULL_STRING: '',
@@ -46,7 +46,6 @@ const publishDocFormEnum = {
     cta: 'CTA',
     links: 'Links'
   }
-
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -73,17 +72,17 @@ class PublishDocForm extends Component {
     links: publishDocFormEnum.INITIAL_LINKS
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setSelectedCollection()
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       this.setSelectedCollection()
     }
   }
 
-  setSelectedCollection () {
+  setSelectedCollection() {
     const collectionId = this.props.selected_collection_id
     let collection = {}
     let title, logoUrl, domain, theme, cta, links, favicon
@@ -130,21 +129,29 @@ class PublishDocForm extends Component {
 
   schema = {
     title: Joi.string().required().trim().label(publishDocFormEnum.LABELS.title),
-    domain: Joi.string().allow('').regex(HOSTNAME_VALIDATION_REGEX, { name: 'URL' }).trim().required().label('domain').error(() => { return { message: 'Domain must be valid' } }),
+    domain: Joi.string()
+      .allow('')
+      .regex(HOSTNAME_VALIDATION_REGEX, { name: 'URL' })
+      .trim()
+      .required()
+      .label('domain')
+      .error(() => {
+        return { message: 'Domain must be valid' }
+      }),
     logoUrl: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.logoUrl),
     theme: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.theme)
   }
 
-  validate (data) {
+  validate(data) {
     const options = { abortEarly: false }
     const { error } = Joi.validate(data, this.schema, options)
     if (!error) return null
     const errors = {}
     for (const item of error.details) errors[item.path[0]] = item.message
     return errors
-  };
+  }
 
-  saveCollectionDetails () {
+  saveCollectionDetails() {
     const collectionId = this.props.selected_collection_id
     const collection = { ...this.props.collections[collectionId] }
     const data = { ...this.state.data }
@@ -170,62 +177,103 @@ class PublishDocForm extends Component {
     this.setState({ errors: errors || {} })
     if (errors) return
     this.setState({ loader: true })
-    this.props.update_collection(collection, () => { this.setState({ loader: false }) })
+    this.props.update_collection(collection, () => {
+      this.setState({ loader: false })
+    })
   }
 
-  setTheme (theme) {
+  setTheme(theme) {
     const data = { ...this.state.data }
     data.theme = theme
     this.setState({ data })
   }
 
-  renderCTAButtons () {
+  renderCTAButtons() {
     return (
       <div className='form-group'>
-        <label>
-          {publishDocFormEnum.LABELS.cta}
-        </label>
+        <label>{publishDocFormEnum.LABELS.cta}</label>
         {this.state.cta.map((cta, index) => (
-          <div key={`cta-${index}`} className={(cta.name.trim() && cta.value.trim()) ? 'd-flex highlight' : 'd-flex'}>
-            <input type='text' className='form-control mb-2 mr-2' placeholder={`CTA Name ${index + 1}`} name={`cta-${index}-name`} value={cta.name} onChange={(e) => this.handleChangeLink(e)} />
-            <input type='text' className='form-control mb-2 mr-2' placeholder={`CTA Link ${index + 1}`} name={`cta-${index}-value`} value={cta.value} onChange={(e) => this.handleChangeLink(e)} />
+          <div key={`cta-${index}`} className={cta.name.trim() && cta.value.trim() ? 'd-flex highlight' : 'd-flex'}>
+            <input
+              type='text'
+              className='form-control mb-2 mr-2'
+              placeholder={`CTA Name ${index + 1}`}
+              name={`cta-${index}-name`}
+              value={cta.name}
+              onChange={(e) => this.handleChangeLink(e)}
+            />
+            <input
+              type='text'
+              className='form-control mb-2 mr-2'
+              placeholder={`CTA Link ${index + 1}`}
+              name={`cta-${index}-value`}
+              value={cta.value}
+              onChange={(e) => this.handleChangeLink(e)}
+            />
           </div>
         ))}
       </div>
     )
   }
 
-  renderLinkButtons () {
+  renderLinkButtons() {
     return (
       <div className='form-group'>
-        <label>
-          {publishDocFormEnum.LABELS.links}
-        </label>
+        <label>{publishDocFormEnum.LABELS.links}</label>
         {this.state.links.map((link, index) => (
-          <div key={`cta-${index}`} className={(link.name.trim() && link.link.trim()) ? 'd-flex highlight' : 'd-flex'}>
-            <input type='text' className='form-control mb-2 mr-2' placeholder={`Link Name ${index + 1}`} name={`links-${index}-name`} value={link.name} onChange={(e) => this.handleChangeLink(e)} />
-            <input type='text' className='form-control mb-2 mr-2' placeholder={`Referral Link ${index + 1}`} name={`links-${index}-link`} value={link.link} onChange={(e) => this.handleChangeLink(e)} />
+          <div key={`cta-${index}`} className={link.name.trim() && link.link.trim() ? 'd-flex highlight' : 'd-flex'}>
+            <input
+              type='text'
+              className='form-control mb-2 mr-2'
+              placeholder={`Link Name ${index + 1}`}
+              name={`links-${index}-name`}
+              value={link.name}
+              onChange={(e) => this.handleChangeLink(e)}
+            />
+            <input
+              type='text'
+              className='form-control mb-2 mr-2'
+              placeholder={`Referral Link ${index + 1}`}
+              name={`links-${index}-link`}
+              value={link.link}
+              onChange={(e) => this.handleChangeLink(e)}
+            />
           </div>
         ))}
       </div>
     )
   }
 
-  renderFooter () {
+  renderFooter() {
     return (
       <div className='d-flex align-items-center'>
-        {this.props.isSidebar && <Button className='btn btn-secondary outline mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
-        <Button className={this.state.loader ? 'buttonLoader' : ''} disabled={!this.state.data.title.trim()} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
+        {this.props.isSidebar && (
+          <Button
+            className='btn btn-secondary outline mr-2'
+            onClick={() => {
+              this.props.onHide()
+            }}
+          >
+            {' '}
+            Cancel
+          </Button>
+        )}
+        <Button
+          className={this.state.loader ? 'buttonLoader' : ''}
+          disabled={!this.state.data.title.trim()}
+          id='publish_doc_settings_save_btn'
+          onClick={() => this.saveCollectionDetails()}
+        >
+          {this.props.isSidebar ? 'Update' : 'Save'}
+        </Button>
       </div>
     )
   }
 
-  renderColorPicker () {
+  renderColorPicker() {
     return (
       <div className='form-group'>
-        <label>
-          {publishDocFormEnum.LABELS.theme}
-        </label>
+        <label>{publishDocFormEnum.LABELS.theme}</label>
         <div className='d-flex justify-content-between colorChooser'>
           <CustomColorPicker set_theme={this.setTheme.bind(this)} theme={this.state.data.theme} />
         </div>
@@ -240,7 +288,7 @@ class PublishDocForm extends Component {
     })
   }
 
-  onFileChange (e) {
+  onFileChange(e) {
     const selectedFile = e.target.files[0]
     if (selectedFile) {
       const reader = new window.FileReader()
@@ -254,52 +302,51 @@ class PublishDocForm extends Component {
     }
   }
 
-  getDisabledStyle (disabled) {
-    return disabled
-      ? { cursor: 'not-allowed', opacity: 0.4 }
-      : { cursor: 'pointer' }
+  getDisabledStyle(disabled) {
+    return disabled ? { cursor: 'not-allowed', opacity: 0.4 } : { cursor: 'pointer' }
   }
 
-  renderUploadModule (disabled) {
+  renderUploadModule(disabled) {
     return (
       <>
         <div>
           <label style={this.getDisabledStyle(disabled)} htmlFor='upload-button'>
             <UploadIcon />
           </label>
-          <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
+          <input
+            type='file'
+            id='upload-button'
+            disabled={disabled}
+            style={{ display: 'none' }}
+            accept='.png'
+            onChange={(e) => this.onFileChange(e)}
+          />
         </div>
       </>
     )
   }
 
-  renderUploadBox (name, mandatory = false, disabled) {
+  renderUploadBox(name, mandatory = false, disabled) {
     const { errors } = this.state
     return (
       <>
         <div className='d-flex'>
           <div className='uploadBox' style={this.getDisabledStyle(this.state.data.logoUrl)}>
-            {!this.state.binaryFile &&
-              <div className='d-flex align-items-center'>
-                {this.renderUploadModule(this.state.data.logoUrl)}
-              </div>}
+            {!this.state.binaryFile && <div className='d-flex align-items-center'>{this.renderUploadModule(this.state.data.logoUrl)}</div>}
             {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' alt='data' />}
           </div>
           <div className='uplod-info'>
-            {
-            this.state.uploadedFile &&
-              <p>
-                {this.state.uploadedFile.name}
-              </p>
-          }
+            {this.state.uploadedFile && <p>{this.state.uploadedFile.name}</p>}
             {this.state.binaryFile && (
               <span
-                style={{ cursor: 'pointer' }} onClick={() => {
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
                   const errors = this.state.errors || {}
                   delete errors.icon
                   this.setState({ binaryFile: null, uploadedFile: null, errors })
                 }}
-              >Remove
+              >
+                Remove
               </span>
             )}
           </div>
@@ -309,31 +356,42 @@ class PublishDocForm extends Component {
     )
   }
 
-  renderInput (name, mandatory = false, disabled, placeholder, isURLInput = false) {
+  renderInput(name, mandatory = false, disabled, placeholder, isURLInput = false) {
     const { data, errors } = this.state
     return (
       <div className='form-group'>
         <label>
           {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
         </label>
-        <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
-        {name === 'domain' && <span className='domain-info f-10 mt-1 d-block'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>}
+        <input
+          type='text'
+          placeholder={placeholder}
+          disabled={disabled}
+          className='form-control'
+          name={name}
+          value={data[name]}
+          onChange={(e) => this.handleChange(e, isURLInput)}
+          onBlur={(e) => this.handleBlur(e, isURLInput)}
+        />
+        {name === 'domain' && (
+          <span className='domain-info f-10 mt-1 d-block'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>
+        )}
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
       </div>
     )
   }
 
-  getSelectedCollection () {
+  getSelectedCollection() {
     const collectionId = this.props.selected_collection_id
     const collection = { ...this.props.collections[collectionId] }
     return collection
   }
 
-  isCollectionPublished (selectedCollection) {
+  isCollectionPublished(selectedCollection) {
     return selectedCollection?.isPublic || false
   }
 
-  publishCollection (selectedCollection) {
+  publishCollection(selectedCollection) {
     if (selectedCollection?.isPublic !== true) {
       const editedCollection = { ...selectedCollection }
       editedCollection.isPublic = true
@@ -342,7 +400,7 @@ class PublishDocForm extends Component {
     }
   }
 
-  renderPublishCollectionButton () {
+  renderPublishCollectionButton() {
     const selectedCollection = this.getSelectedCollection()
     if (!this.isCollectionPublished(selectedCollection)) {
       return (
@@ -350,7 +408,7 @@ class PublishDocForm extends Component {
           id='publish_collection_btn'
           variant='success publish-collection-button ml-4 mt-4'
           onClick={() => this.publishCollection(selectedCollection)}
-          disabled={!selectedCollection?.docProperties?.defaultTitle}
+          // disabled={!selectedCollection?.docProperties?.defaultTitle}
         >
           Publish Collection
         </Button>
@@ -358,23 +416,19 @@ class PublishDocForm extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <div className={this.props.onTab && 'publish-on-tab'}>
         <div className='d-flex mb-3 justify-content-between'>
           <h3 className='page-title mb-0'>Manage Public Doc</h3>
           <div className='publish-mo-btn'>
-            {(this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished()
-              ? (
-                <Button
-                  id='unpublish_doc_btn'
-                  variant='btn btn-outline danger ml-2'
-                  onClick={() => this.props.unPublishCollection()}
-                >
-                  Unpublish Doc
-                </Button>
-                )
-              : this.renderPublishCollectionButton()}
+            {(this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished() ? (
+              <Button id='unpublish_doc_btn' variant='btn btn-outline danger ml-2' onClick={() => this.props.unPublishCollection()}>
+                Unpublish Doc
+              </Button>
+            ) : (
+              this.renderPublishCollectionButton()
+            )}
           </div>
         </div>
         <div className='small-input'>
@@ -384,9 +438,7 @@ class PublishDocForm extends Component {
         <div className='d-flex favicon'>
           <div className='form-group'>
             <label> Fav Icon </label>
-            <div className='favicon-uploader'>
-              {this.renderUploadBox('icon')}
-            </div>
+            <div className='favicon-uploader'>{this.renderUploadBox('icon')}</div>
           </div>
           <div className='or-wrap d-flex align-items-center'>
             <p className='mb-0'>OR</p>
@@ -394,16 +446,12 @@ class PublishDocForm extends Component {
           {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
         </div>
 
-        <div className='color-picker'>
-          {this.renderColorPicker()}
-        </div>
+        <div className='color-picker'>{this.renderColorPicker()}</div>
         <div className='cta-buton'>
           {this.renderCTAButtons()}
           {this.renderLinkButtons()}
         </div>
-        <div className='foot-warpper'>
-          {this.renderFooter()}
-        </div>
+        <div className='foot-warpper'>{this.renderFooter()}</div>
       </div>
     )
   }

@@ -67,6 +67,8 @@
     "react-json-pretty": "^2.2.0",
     "react-jsonschema-form": "^1.8.1",
     "react-multi-email": "^0.5.3",
+    "react-query": "^3.39.3",
+    "react-query-devtools": "^2.6.3",
     "react-redux": "^7.2.0",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
@@ -81,6 +83,7 @@
     "react-window": "^1.8.6",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
     "redux-saga": "^1.1.3",
     "redux-subscribe-action": "^2.1.3",
     "redux-thunk": "^2.3.0",
@@ -105,13 +108,13 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "postinstall": "husky install",
-    "fix": "standard --fix",
     "build:electron": "react-app-rewired build",
     "serve:electron": "concurrently \"BROWSER=none npm start\" \"npm:electron:dev\"",
     "electron:dev": "wait-on http://localhost:3000 && electron .",
     "package:mac": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json  --macos --x64 --publish always",
     "package:linux": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json --linux --x64 --publish always",
-    "package:windows": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json --win --ia32 --x64 --publish always"
+    "package:windows": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json --win --ia32 --x64 --publish always",
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\""
   },
   "browserslist": {
     "production": [
@@ -128,18 +131,23 @@
   "devDependencies": {
     "electron": "^13.1.1",
     "electron-builder": "^22.10.5",
-    "husky": "^5.0.1",
+    "husky": "^5.2.0",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.1",
+    "pretty-quick": "^3.1.3",
     "react-app-rewired": "^2.1.8",
     "redux-saga": "^1.1.3",
-    "redux-thunk": "^2.3.0",
-    "standard": "^16.0.3"
+    "redux-thunk": "^2.3.0"
   },
-  "standard": {
-    "ignore": [
-      "registerServiceWorker.js",
-      "openApiForm.jsx",
-      "serviceWorker.js"
-    ],
-    "parser": "babel-eslint"
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run format --staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.+(js|jsx|json|css|md)": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }

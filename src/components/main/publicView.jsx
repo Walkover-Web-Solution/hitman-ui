@@ -10,50 +10,42 @@ import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 const logoUrl = 'https://www.google.com/s2/favicons?sz=64&domain_url='
 
 class PublicView extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       filteredPublicCollections: {}
     }
   }
 
-  async componentDidMount () {
-    const {
-      data: response
-    } = await collectionsApiService.getAllPublicCollections()
+  async componentDidMount() {
+    const { data: response } = await collectionsApiService.getAllPublicCollections()
     this.publicCollections = response
     this.setState({ filteredPublicCollections: response })
   }
 
-  filterPublicCollections (e) {
+  filterPublicCollections(e) {
     if (e.currentTarget.value.length === 0) {
       this.setState({ filteredPublicCollections: this.publicCollections })
     }
-    const filteredPublicCollectionIds = filterService.filter(
-      this.publicCollections,
-      e.currentTarget.value,
-      'publicView'
-    )
+    const filteredPublicCollectionIds = filterService.filter(this.publicCollections, e.currentTarget.value, 'publicView')
     const filteredPublicCollections = {}
     for (let i = 0; i < filteredPublicCollectionIds.length; i++) {
-      filteredPublicCollections[
-        filteredPublicCollectionIds[i]
-      ] = this.publicCollections[filteredPublicCollectionIds[i]]
+      filteredPublicCollections[filteredPublicCollectionIds[i]] = this.publicCollections[filteredPublicCollectionIds[i]]
     }
     this.setState({ filteredPublicCollections })
   }
 
-  openCollection (collectionId) {
+  openCollection(collectionId) {
     const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p/${collectionId}`
     window.open(publicDocsUrl, '_blank')
   }
 
-  getImgSrc (collection) {
+  getImgSrc(collection) {
     if (collection.docProperties?.defaultLogoUrl) return collection.docProperties.defaultLogoUrl
     else return `${logoUrl}${collection.website}`
   }
 
-  render () {
+  render() {
     // const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
     const filteredPublicCollections = this.state.filteredPublicCollections
     return (
@@ -70,7 +62,9 @@ class PublicView extends Component {
                 </div>
               </div>
               <div className='mar-top-left-wrapper'>
-                <a href='https://hitman.app/' rel='noreferrer' target='_blank'>Host You APIs</a>
+                <a href='https://hitman.app/' rel='noreferrer' target='_blank'>
+                  Host You APIs
+                </a>
 
                 <div className='public-dashboard-action'>
                   {/* {
@@ -90,11 +84,7 @@ class PublicView extends Component {
               <h3>Expand the possibilities, connect all your apps via "Hitman"</h3>
               <div className='public-dashboard-searchbox'>
                 <i className='uil uil-search' />
-                <input
-                  type='text'
-                  placeholder='Search Collections'
-                  onChange={this.filterPublicCollections.bind(this)}
-                />
+                <input type='text' placeholder='Search Collections' onChange={this.filterPublicCollections.bind(this)} />
               </div>
             </div>
           </div>
@@ -121,25 +111,14 @@ class PublicView extends Component {
             </ul>
           </div>
           <div className='collection-box-wrap'>
-            {
-            Object.keys(filteredPublicCollections).map((collectionId) =>
-              (
-                <div
-                  key={collectionId}
-                  onClick={() => this.openCollection(collectionId)}
-                  className='collection-box'
-                >
-                  <div className='collection-image'>
-                    <img
-                      src={this.getImgSrc(filteredPublicCollections[collectionId])}
-                      alt=''
-                    />
-                  </div>
-                  <h1>{filteredPublicCollections[collectionId].name}</h1>
+            {Object.keys(filteredPublicCollections).map((collectionId) => (
+              <div key={collectionId} onClick={() => this.openCollection(collectionId)} className='collection-box'>
+                <div className='collection-image'>
+                  <img src={this.getImgSrc(filteredPublicCollections[collectionId])} alt='' />
                 </div>
-              )
-            )
-          }
+                <h1>{filteredPublicCollections[collectionId].name}</h1>
+              </div>
+            ))}
           </div>
         </div>
       </>

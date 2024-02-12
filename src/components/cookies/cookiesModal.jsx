@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export class CookiesModal extends Component {
-  state={
+  state = {
     tab: 1,
     selectedDomain: null,
     domains: {},
@@ -36,59 +36,52 @@ export class CookiesModal extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     // this.props.fetch_all_cookies()
     if (this.props.cookies) {
       this.setState({ domains: this.props.cookies })
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.cookies !== prevProps.cookies) {
       this.setState({ domains: this.props.cookies })
     }
   }
 
-  addDomain (domain) {
+  addDomain(domain) {
     domain.requestId = shortid.generate()
-    if (domain.domain.trim() !== '') { this.props.add_cookies_domain(domain) } else this.setState({ validityMessage: true })
+    if (domain.domain.trim() !== '') {
+      this.props.add_cookies_domain(domain)
+    } else this.setState({ validityMessage: true })
   }
 
-  clearValidityMessage () {
+  clearValidityMessage() {
     this.setState({ validityMessage: false })
   }
 
-  addCookies (domain) {
+  addCookies(domain) {
     const domains = this.state.domains
     domains.push(domain)
     this.setState({ domains })
   }
 
-  renderCookiesModal () {
+  renderCookiesModal() {
     return (
-      <Modal
-        {...this.props}
-        size='lg'
-        aria-labelledby='contained-modal-title-vcenter'
-        centered
-      >
+      <Modal {...this.props} size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
         <Modal.Header closeButton>
-          <Modal.Title id='contained-modal-title-vcenter'>
-            Manage Cookies
-          </Modal.Title>
+          <Modal.Title id='contained-modal-title-vcenter'>Manage Cookies</Modal.Title>
         </Modal.Header>
-        <Modal.Body className='cookie-modal'>
-          {this.state.tab === 1 ? this.renderCookiesList() : this.renderCookiesListItem()}
-        </Modal.Body>
+        <Modal.Body className='cookie-modal'>{this.state.tab === 1 ? this.renderCookiesList() : this.renderCookiesListItem()}</Modal.Body>
       </Modal>
     )
   }
 
-  changeModalTab (id, domain = null) {
+  changeModalTab(id, domain = null) {
     this.setState({ tab: id, selectedDomain: domain ? this.state.domains[domain.id] : null })
   }
 
-  renderCookiesList () {
+  renderCookiesList() {
     return (
       <CookiesList
         {...this.props}
@@ -102,11 +95,11 @@ export class CookiesModal extends Component {
     )
   }
 
-  toggleDelete (deleteModal, deleteModalData) {
+  toggleDelete(deleteModal, deleteModalData) {
     this.setState({ deleteModal, deleteModalData })
   }
 
-  handleEntityDelete () {
+  handleEntityDelete() {
     const { title, domain } = this.state.deleteModalData
     if (title === 'Delete Cookie') {
       this.props.update_cookies(domain)
@@ -122,7 +115,7 @@ export class CookiesModal extends Component {
     this.setState({ deleteModalData: newData })
   }
 
-  renderCookiesListItem () {
+  renderCookiesListItem() {
     const selectedDomainId = this.state.selectedDomain.id
     return (
       <CookiesListItem
@@ -134,7 +127,7 @@ export class CookiesModal extends Component {
     )
   }
 
-  renderDeleteModal () {
+  renderDeleteModal() {
     return (
       <DeleteModal
         show={this.state.deleteModal}
@@ -146,7 +139,7 @@ export class CookiesModal extends Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <div>
         {this.renderCookiesModal()}

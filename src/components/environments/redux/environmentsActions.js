@@ -1,21 +1,17 @@
 import environmentsApiService from '../environmentsApiService'
 import environmentsActionTypes from './environmentsActionTypes'
-import store from '../../../store/store'
+import { store } from '../../../store/store'
 
 export const fetchEnvironments = () => {
-  return dispatch => {
+  return (dispatch) => {
     environmentsApiService
       .getEnvironments()
-      .then(response => {
+      .then((response) => {
         dispatch(OnEnvironmentsFetched(response.data))
         window.localStorage.setItem('environments', JSON.stringify(response.data))
       })
-      .catch(error => {
-        dispatch(
-          OnEnvironmentsFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
+      .catch((error) => {
+        dispatch(OnEnvironmentsFetchedError(error.response ? error.response.data : error))
       })
   }
 }
@@ -27,99 +23,85 @@ export const fetchEnvironmentsFromLocalStorage = () => {
       environments = JSON.parse(window.localStorage.getItem('cookies'))
       dispatch(OnEnvironmentsFetched(environments))
     } catch (err) {
-      dispatch(
-        OnEnvironmentsFetchedError(err)
-      )
+      dispatch(OnEnvironmentsFetchedError(err))
     }
   }
 }
 
-export const addEnvironment = newEnvironment => {
-  return dispatch => {
+export const addEnvironment = (newEnvironment) => {
+  return (dispatch) => {
     dispatch(addEnvironmentRequest(newEnvironment))
     environmentsApiService
       .saveEnvironment(newEnvironment)
-      .then(response => {
+      .then((response) => {
         dispatch(OnEnvironmentAdded(response.data, newEnvironment))
       })
-      .catch(error => {
-        dispatch(
-          OnEnvironmentAddedError(
-            error.response ? error.response.data : error,
-            newEnvironment
-          )
-        )
+      .catch((error) => {
+        dispatch(OnEnvironmentAddedError(error.response ? error.response.data : error, newEnvironment))
       })
   }
 }
 
-export const updateEnvironment = editedEnvironment => {
-  return dispatch => {
-    const originalEnvironment = store.getState().environment.environments[
-      editedEnvironment.id
-    ]
+export const updateEnvironment = (editedEnvironment) => {
+  return (dispatch) => {
+    const originalEnvironment = store.getState().environment.environments[editedEnvironment.id]
     dispatch(updateEnvironmentRequest(editedEnvironment))
     const id = editedEnvironment.id
     delete editedEnvironment.id
     environmentsApiService
       .updateEnvironment(id, editedEnvironment)
-      .then(response => {
+      .then((response) => {
         dispatch(OnEnvironmentUpdated(response.data))
       })
-      .catch(error => {
-        dispatch(
-          OnEnvironmentUpdatedError(
-            error.response ? error.response.data : error,
-            originalEnvironment
-          )
-        )
+      .catch((error) => {
+        dispatch(OnEnvironmentUpdatedError(error.response ? error.response.data : error, originalEnvironment))
       })
   }
 }
 
-export const deleteEnvironment = environment => {
-  return dispatch => {
+export const deleteEnvironment = (environment) => {
+  return (dispatch) => {
     dispatch(deleteEnvironmentRequest(environment))
     environmentsApiService
       .deleteEnvironment(environment.id)
       .then(() => {
         dispatch(OnEnvironmentDeleted())
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(OnEnvironmentDeletedError(error.response, environment))
       })
   }
 }
 
-export const setEnvironmentId = currentEnvironmentId => {
+export const setEnvironmentId = (currentEnvironmentId) => {
   return {
     type: environmentsActionTypes.SET_ENVIRONMENT_ID,
     currentEnvironmentId
   }
 }
 
-export const OnEnvironmentsFetched = environments => {
+export const OnEnvironmentsFetched = (environments) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENTS_FETCHED,
     environments
   }
 }
 
-export const OnEnvironmentsFetchedError = error => {
+export const OnEnvironmentsFetchedError = (error) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENTS_FETCHED_ERROR,
     error
   }
 }
 
-export const addEnvironmentRequest = newEnvironment => {
+export const addEnvironmentRequest = (newEnvironment) => {
   return {
     type: environmentsActionTypes.ADD_ENVIRONMENT_REQUEST,
     newEnvironment
   }
 }
 
-export const OnEnvironmentAdded = response => {
+export const OnEnvironmentAdded = (response) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_ADDED,
     response
@@ -134,14 +116,14 @@ export const OnEnvironmentAddedError = (error, newEnvironment) => {
   }
 }
 
-export const updateEnvironmentRequest = editedEnvironment => {
+export const updateEnvironmentRequest = (editedEnvironment) => {
   return {
     type: environmentsActionTypes.UPDATE_ENVIRONMENT_REQUEST,
     editedEnvironment
   }
 }
 
-export const OnEnvironmentUpdated = response => {
+export const OnEnvironmentUpdated = (response) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_UPDATED,
     response
@@ -156,7 +138,7 @@ export const OnEnvironmentUpdatedError = (error, originalEnvironment) => {
   }
 }
 
-export const deleteEnvironmentRequest = environment => {
+export const deleteEnvironmentRequest = (environment) => {
   return {
     type: environmentsActionTypes.DELETE_ENVIRONMENT_REQUEST,
     environment

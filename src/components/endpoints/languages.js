@@ -1,23 +1,23 @@
-import clojure from '../../assets/icons/clojure.svg';
-import c from '../../assets/icons/c.svg';
-import http from '../../assets/icons/http.svg';
-import js from '../../assets/icons/js.svg';
-import java from '../../assets/icons/java.svg';
-import json from '../../assets/icons/json.svg';
-import shell from '../../assets/icons/shell.svg';
-import node from '../../assets/icons/node.svg';
-import php from '../../assets/icons/php.svg';
-import csharp from '../../assets/icons/csharp.svg';
-import python from '../../assets/icons/python.svg';
-import ruby from '../../assets/icons/ruby.svg';
-import swift from '../../assets/icons/swift.svg';
-import go from '../../assets/icons/go.svg';
-import ocaml from '../../assets/icons/ocaml.svg';
-import objectivec from '../../assets/icons/objectivec.svg';
-import r from '../../assets/icons/r.svg';
+import clojure from '../../assets/icons/clojure.svg'
+import c from '../../assets/icons/c.svg'
+import http from '../../assets/icons/http.svg'
+import js from '../../assets/icons/js.svg'
+import java from '../../assets/icons/java.svg'
+import json from '../../assets/icons/json.svg'
+import shell from '../../assets/icons/shell.svg'
+import node from '../../assets/icons/node.svg'
+import php from '../../assets/icons/php.svg'
+import csharp from '../../assets/icons/csharp.svg'
+import python from '../../assets/icons/python.svg'
+import ruby from '../../assets/icons/ruby.svg'
+import swift from '../../assets/icons/swift.svg'
+import go from '../../assets/icons/go.svg'
+import ocaml from '../../assets/icons/ocaml.svg'
+import objectivec from '../../assets/icons/objectivec.svg'
+import r from '../../assets/icons/r.svg'
 
 const primaryLanguages = ['shell', 'node', 'php', 'python']
-const secondaryLanguages = ['c', 'csharp','clojure', 'go', 'http', 'java', 'javascript','objc', 'ocaml', 'r', 'ruby', 'swift']
+const secondaryLanguages = ['c', 'csharp', 'clojure', 'go', 'http', 'java', 'javascript', 'objc', 'ocaml', 'r', 'ruby', 'swift']
 const languages = {
   node: {
     name: 'Node',
@@ -101,8 +101,4 @@ const languages = {
   }
 }
 
-export {
-  languages,
-  primaryLanguages,
-  secondaryLanguages
-}
+export { languages, primaryLanguages, secondaryLanguages }

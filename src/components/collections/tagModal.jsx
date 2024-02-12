@@ -5,7 +5,7 @@ import { onEnter } from '../common/utility'
 import Joi from 'joi-browser'
 
 class TagManagerModal extends Form {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: { gtmId: '' },
@@ -17,7 +17,7 @@ class TagManagerModal extends Form {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const data = { gtmId: '' }
     if (this.props.collection_id) {
       data.gtmId = this.props.collections[this.props.collection_id].gtmId
@@ -25,7 +25,7 @@ class TagManagerModal extends Form {
     this.setState({ data })
   }
 
-  async doSubmit () {
+  async doSubmit() {
     const collection = this.props.collections[this.props.collection_id]
     const updatedCollection = { ...collection, gtmId: this.state.data.gtmId }
     delete updatedCollection?.isPublic
@@ -33,34 +33,24 @@ class TagManagerModal extends Form {
     this.props.onHide()
   }
 
-  render () {
+  render() {
     return (
-      <div onKeyPress={(e) => { onEnter(e, this.handleKeyPress.bind(this)) }}>
-        <Modal
-          {...this.props}
-          size='lg'
-          animation={false}
-          aria-labelledby='contained-modal-title-vcenter'
-          centered
-        >
+      <div
+        onKeyPress={(e) => {
+          onEnter(e, this.handleKeyPress.bind(this))
+        }}
+      >
+        <Modal {...this.props} size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered>
           <div>
-            <Modal.Header
-              className='custom-collection-modal-container'
-              closeButton
-            >
-              <Modal.Title id='contained-modal-title-vcenter'>
-                {this.props.title}
-              </Modal.Title>
+            <Modal.Header className='custom-collection-modal-container' closeButton>
+              <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <form onSubmit={this.handleSubmit}>
                 {this.renderInput('gtmId', 'GTM-ID', 'GTM-ID', true)}
                 <div className='text-left mt-2 mb-2'>
                   {this.renderButton('Submit')}
-                  <button
-                    className='btn btn-secondary outline btn-lg ml-2'
-                    onClick={this.props.onHide}
-                  >
+                  <button className='btn btn-secondary outline btn-lg ml-2' onClick={this.props.onHide}>
                     Cancel
                   </button>
                 </div>

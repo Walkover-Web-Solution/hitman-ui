@@ -4,11 +4,18 @@ import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
 import moment from 'moment'
 import Collections from '../collections/collections'
-import CollectionVersions from '../collectionVersions/collectionVersions'
-import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME, isElectron, openExternalLink } from '../common/utility'
-
+import './main.scss'
+import {
+  isDashboardRoute,
+  ADD_VERSION_MODAL_NAME,
+  isElectron,
+  getOnlyUrlPathById,
+  SESSION_STORAGE_KEY,
+  getUrlPathById,
+  isTechdocOwnDomain,
+  isOnPublishedPage
+} from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
-import LoginSignupModal from './loginSignupModal'
 import PublishColelctionInfo from './publishCollectionInfo'
 import { ReactComponent as ArrowIcon } from '../../assets/icons/Vector.svg'
 import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
@@ -24,30 +31,26 @@ import collectionVersionsService from '../collectionVersions/collectionVersionsS
 import './main.scss'
 import './sidebar.scss'
 import AddEntitySelectionModal from './addEntityModal'
-import GroupForm from '../groups/groupForm'
 import PageForm from '../pages/pageForm'
-import EndpointForm from '../endpoints/endpointForm'
 import CollectionModal from '../collections/collectionsModal'
-import store from '../../store/store'
-import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
+// import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
 
-import sidebarActions from './sidebar/redux/sidebarActions'
 import DeleteSidebarEntityModal from './sidebar/deleteEntityModal'
 import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 
 // import { sendAmplitudeData } from '../../services/amplitude'
-import { UserProfileV2 } from './userProfileV2'
+import UserProfileV2 from './userProfileV2'
+import CombinedCollections from '../combinedCollections/combinedCollections'
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
-    endpoints: state.endpoints,
+    endpoints: state.pages,
     versions: state.versions,
     pages: state.pages,
     groups: state.groups,
     historySnapshot: state.history,
-    sidebar: state.sidebar,
     filter: '',
     modals: state.modals
   }
@@ -55,9 +58,6 @@ const mapStateToProps = (state) => {
 
 /** Desktop App Download URL */
 // const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
-/* Internal Login Routes */
-const LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/login'
-const BROWSER_LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/browser-login'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -65,7 +65,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-function compareByCreatedAt (a, b) {
+function compareByCreatedAt(a, b) {
   const t1 = a?.createdAt
   const t2 = b?.createdAt
   let comparison = 0
@@ -77,23 +77,8 @@ function compareByCreatedAt (a, b) {
   return comparison
 }
 
-const LoginButton = () => {
-  return (
-    isElectron()
-      ? <div className='btn btn-primary' onClick={() => openExternalLink(BROWSER_LOGIN_ROUTE)}>Login/SignUp</div>
-      : <div
-          id='sokt-sso'
-          data-redirect-uri={LOGIN_ROUTE}
-          data-source='hitman'
-          data-token-key='sokt-auth-token'
-          data-view='button'
-          data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-          signup_uri={LOGIN_ROUTE + '?signup=true'}
-        />
-  )
-}
 class SideBarV2 extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: {
@@ -101,28 +86,39 @@ class SideBarV2 extends Component {
       },
       name: '',
       email: '',
+      endpoint: [],
       historySnapshot: null,
       selectedCollectionId: null,
       secondarySidebarToggle: false,
       primarySidebar: null,
       totalEndpointsCount: 0,
       showInviteTeam: false,
-      search: false
+      search: false,
+      endpoints: ''
     }
     this.inputRef = createRef()
     this.sidebarRef = createRef()
-    this.handleClickOutside = this.handleClickOutside.bind(this)
+    // this.handleClickOutside = this.handleClickOutside.bind(this)
   }
 
-  handleClickOutside (event) {
-    const { focused: sidebarFocused } = this.props.sidebar
-    if (sidebarFocused && this.sidebarRef && !this.sidebarRef.current.contains(event.target)) {
-      store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
-      document.removeEventListener('click', this.handleClickOutside)
-    }
-  }
+  // handleClickOutside(event) {
+  //   const { focused: sidebarFocused } = this.props.sidebar
+  //   if (sidebarFocused && this.sidebarRef && !this.sidebarRef.current.contains(event.target)) {
+  //     store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
+  //     document.removeEventListener('click', this.handleClickOutside)
+  //   }
+  // }
 
-  componentDidMount () {
+  componentDidMount() {
+    const pages = this.props.pages
+    const endpoint = []
+    Object.keys(pages).forEach((key) => {
+      const page = pages[key]
+      if (page && page.type === 4) {
+        endpoint.push(page)
+      }
+    })
+    this.setState({ endpoint: endpoint })
     if (getCurrentUser()) {
       const user = getCurrentUser()
       const name = user.first_name + user.last_name
@@ -155,14 +151,13 @@ class SideBarV2 extends Component {
     }
   }
 
-  preventDefaultBehavior (e) {
-    const { focused: sidebarFocused } = this.props.sidebar
-    if (sidebarFocused && ['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.code) > -1) {
+  preventDefaultBehavior(e) {
+    if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.code) > -1) {
       e.preventDefault()
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('SIDEBAR_SHORTCUTS_CHANNEL', this.handleShortcuts)
@@ -170,7 +165,7 @@ class SideBarV2 extends Component {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.historySnapshot !== prevProps.historySnapshot) {
       this.setState({
         historySnapshot: Object.values(this.props.historySnapshot)
@@ -183,47 +178,36 @@ class SideBarV2 extends Component {
     }
   }
 
-  openEntity (id, type) {
-    const { orgId } = this.props.match.params
-    let pathname = `/orgs/${orgId}/dashboard`
-    switch (type) {
-      case 'pages': pathname += `/page/${id}`; break
-      case 'endpoints': pathname += `/endpoint/${id}`; break
-      default: pathname = ''; break
-    }
-    if (pathname) this.props.history.push({ pathname })
-  }
+  // handleShortcuts = (event, data) => {
+  //   // const { focused: sidebarFocused, navList, focusedNode } = this.props.sidebar
+  //   switch (data) {
+  //     // case 'FOCUS_SEARCH': this.inputRef.focus()
+  //       // break
+  //     case 'UP_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_PREVIOUS_ITEM })
+  //       break
+  //     case 'DOWN_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_NEXT_ITEM })
+  //       break
+  //     case 'OPEN_ENTITY':
+  //       if (sidebarFocused && focusedNode) {
+  //         const { id, type, isExpandable } = navList[focusedNode]
+  //         // if (isExpandable) {
+  //         //   store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM })
+  //         // } else {
+  //         //   this.openEntity(id, type)
+  //         // }
+  //       }
+  //       break
+  //     case 'CLOSE_ENTITY': if (sidebarFocused && focusedNode) store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM })
+  //       break
+  //     case 'DUPLICATE_ENTITY': if (sidebarFocused && focusedNode) sidebarActions.duplicateEntity(focusedNode)
+  //       break
+  //     case 'DELETE_ENTITY': if (sidebarFocused && focusedNode) this.handleDeleteEntity(focusedNode)
+  //       break
+  //     default: break
+  //   }
+  // }
 
-  handleShortcuts = (event, data) => {
-    const { focused: sidebarFocused, navList, focusedNode } = this.props.sidebar
-    switch (data) {
-      case 'FOCUS_SEARCH': this.inputRef.focus()
-        break
-      case 'UP_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_PREVIOUS_ITEM })
-        break
-      case 'DOWN_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_NEXT_ITEM })
-        break
-      case 'OPEN_ENTITY':
-        if (sidebarFocused && focusedNode) {
-          const { id, type, isExpandable } = navList[focusedNode]
-          if (isExpandable) {
-            store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM })
-          } else {
-            this.openEntity(id, type)
-          }
-        }
-        break
-      case 'CLOSE_ENTITY': if (sidebarFocused && focusedNode) store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM })
-        break
-      case 'DUPLICATE_ENTITY': if (sidebarFocused && focusedNode) sidebarActions.duplicateEntity(focusedNode)
-        break
-      case 'DELETE_ENTITY': if (sidebarFocused && focusedNode) this.handleDeleteEntity(focusedNode)
-        break
-      default: break
-    }
-  }
-
-  handleDeleteEntity (focusedNode) {
+  handleDeleteEntity(focusedNode) {
     this.props.open_modal(DELETE_CONFIRMATION, { nodeAddress: focusedNode })
   }
 
@@ -250,144 +234,152 @@ class SideBarV2 extends Component {
 
   handleOnChange = (e) => {
     this.setState({ data: { ...this.state.data, filter: e.target.value } })
-    let obj = Object.values(this.props.historySnapshot)
+    let obj1 = Object.values(this.props.historySnapshot)
+    let obj2 = []
+    let obj3 = []
+    let searchData = e.target.value.toLowerCase()
     if (this.props.historySnapshot) {
-      obj = obj.filter(
+      obj1 = obj1.filter(
         (o) =>
-          o.endpoint.name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          o.endpoint.BASE_URL?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          o.endpoint.uri?.toLowerCase().includes(e.target.value.toLowerCase())
+          o.endpoint?.name?.toLowerCase().includes(searchData) ||
+          o.endpoint?.BASE_URL?.toLowerCase().includes(searchData) ||
+          o.endpoint?.uri?.toLowerCase().includes(searchData)
       )
     }
-    let obj2 = Object.values(this.props.endpoints)
-    if (this.props.endpoints) {
-      obj2 = obj2.filter(
-        (o) =>
-          o.name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          o.BASE_URL?.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          o.uri?.toLowerCase().includes(e.target.value.toLowerCase())
-      )
-    }
-    let obj3 = Object.values(this.props.pages)
-    if (this.props.pages) {
-      obj3 = obj3.filter(
-        (o) => o.name?.toLowerCase().includes(e.target.value.toLowerCase())
-      )
-    }
-    this.setState({ historySnapshot: obj, endpoints: obj2, pages: obj3 })
-  };
+    let sideBarData = this.props.pages
 
-  emptyFilter () {
+    for (let key in sideBarData) {
+      let o = sideBarData[key]
+      if (
+        o.name?.toLowerCase().includes(searchData) ||
+        o.BASE_URL?.toLowerCase().includes(searchData) ||
+        o.uri?.toLowerCase().includes(searchData)
+      ) {
+        sideBarData[key]?.type == 4 ? obj2.push(sideBarData[key]) : obj3.push(sideBarData[key])
+      }
+    }
+
+    this.setState({ historySnapshot: obj1, endpoints: obj2, pages: obj3 })
+  }
+
+  emptyFilter() {
     const data = { ...this.state.data }
     data.filter = ''
     this.setState({ data })
   }
 
-  openCollection (collectionId) {
+  openCollection(collectionId) {
     this.collectionId = collectionId
     this.setState({ selectedCollectionId: collectionId, primarySidebar: false, secondarySidebarToggle: false })
   }
 
-  openApiForm () {
+  openApiForm() {
     this.setState({ showOpenApiForm: true })
   }
 
-  closeOpenApiFormModal () {
+  closeOpenApiFormModal() {
     this.setState({ showOpenApiForm: false })
   }
 
-  closeLoginSignupModal () {
-    this.setState({
-      showLoginSignupModal: false
-    })
-  }
-
-  openHistorySnapshot (id) {
+  openHistorySnapshot(id) {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/history/${id}`,
       historySnapshotId: id
     })
   }
 
-  openEndpoint (id) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${id}`
-    })
+  openEndpoint(id) {
+    if (isDashboardRoute(this.props)) {
+      this.props.history.push({
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${id}`
+      })
+    } else {
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
+      let pathName = getUrlPathById(id, this.props?.pages)
+      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+      this.props.history.push(pathName)
+    }
   }
 
-  openPage (id) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
-    })
+  openPage(id) {
+    if (isDashboardRoute(this.props)) {
+      this.props.history.push({
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
+      })
+    } else {
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
+      let pathName = getUrlPathById(id, this.props?.pages)
+      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+      this.props.history.push(pathName)
+    }
   }
 
-  renderPath (id, type) {
+  renderPath(id, type) {
     let path = ''
-    let groupId = null
-    let versionId = null
-    let collectionId = null
-    let endpointId = null
-    let pageId = null
+    let collectionId = this.props.pages[id]?.collectionId
     switch (type) {
       case 'endpoint':
-        endpointId = id
-        groupId = this.props.endpoints[endpointId]?.groupId
-        versionId = this.props.groups[groupId]?.versionId
-        collectionId = this.props.versions[versionId]?.collectionId
-        path = this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number + ' > ' + this.props.groups[groupId]?.name
+        path = this.props.collections[collectionId]?.name + ' > ' + getOnlyUrlPathById(id, this.props.pages)
         break
       case 'page':
-        pageId = id
-        groupId = this.props.pages[pageId]?.groupId
-        versionId = this.props.pages[pageId]?.versionId
-        collectionId = this.props.versions[versionId]?.collectionId
-        if (groupId) {
-          path = this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number + ' > ' + this.props.groups[groupId]?.name
-        } else {
-          path = this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number
-        }
+        path = this.props.collections[collectionId]?.name + '>' + getOnlyUrlPathById(id, this.props.pages)
         break
-      default: path = ''
+      default:
+        path = ''
         break
     }
-    if (path) { return <div style={{ fontSize: '11px' }} className='text-muted'>{path}</div> } else return <p />
+    if (path) {
+      return (
+        <div style={{ fontSize: '11px' }} className='text-muted'>
+          {path}
+        </div>
+      )
+    } else return <p />
   }
 
-  renderHistoryList () {
+  renderHistoryList() {
     return (
       <div className='mt-3'>
-        {this.state.historySnapshot && this.state.historySnapshot.length > 0
-          ? (this.state.historySnapshot.sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
-          : (<div className='empty-collections'><div><EmptyHistory /></div><div className='content'><h5>  No History available.</h5><p /></div></div>)}
+        {this.state.historySnapshot && this.state.historySnapshot.length > 0 ? (
+          this.state.historySnapshot.sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history))
+        ) : (
+          <div className='empty-collections'>
+            <div>
+              <EmptyHistory />
+            </div>
+            <div className='content'>
+              <h5> No History available.</h5>
+              <p />
+            </div>
+          </div>
+        )}
       </div>
     )
   }
 
-  renderEndpointsList () {
+  renderEndpointsList() {
     return (
       <div>
-        <div className='px-3'>Endpoints</div>
+        {this.state.endpoints.length > 0 && <div className='px-3'>Endpoints</div>}
         <div className='py-3'>
-          {this.state.endpoints &&
-            this.props.endpoints &&
+          {this.state.endpoints.length > 0 &&
             this.state.endpoints.map(
-              (endpoint) =>
+              (endpoint, index) =>
                 Object.keys(endpoint).length !== 0 && (
                   <div
                     className='btn d-flex align-items-center mb-2'
-                    onClick={() => { this.openEndpoint(endpoint.id) }}
+                    onClick={() => {
+                      this.openEndpoint(endpoint.id)
+                    }}
+                    key={index}
                   >
                     <div className={`api-label lg-label ${endpoint.requestType}`}>
-                      <div className='endpoint-request-div'>
-                        {endpoint.requestType}
-                      </div>
+                      <div className='endpoint-request-div'>{endpoint.requestType}</div>
                     </div>
                     <div className='ml-3'>
                       <div className='sideBarListWrapper'>
                         <div className='text-left'>
-                          <p>   {endpoint.name ||
-                            endpoint.BASE_URL + endpoint.uri}
-                          </p>
+                          <p> {endpoint.name || endpoint.BASE_URL + endpoint.uri}</p>
                         </div>
                         {this.renderPath(endpoint.id, 'endpoint')}
                       </div>
@@ -400,19 +392,23 @@ class SideBarV2 extends Component {
     )
   }
 
-  renderPagesList () {
+  renderPagesList() {
     return (
       <div>
         <div className='px-3'>Pages</div>
         <div className='py-3'>
-          {this.state.pages &&
-            this.props.pages &&
+          {this.props.pages &&
+            this.state.pages &&
             this.state.pages.map(
-              (page) =>
-                Object.keys(page).length !== 0 && (
+              (page, index) =>
+                Object.keys(page).length !== 0 &&
+                !(page?.type === 2 || page?.type === 0) && (
                   <div
                     className='btn d-flex align-items-center mb-2'
-                    onClick={() => { this.openPage(page.id) }}
+                    onClick={() => {
+                      this.openPage(page.id)
+                    }}
+                    key={index}
                   >
                     <div>
                       <i className='uil uil-file-alt' aria-hidden='true' />
@@ -420,8 +416,7 @@ class SideBarV2 extends Component {
                     <div className='ml-3'>
                       <div className='sideBarListWrapper'>
                         <div className='text-left'>
-                          <p>   {page.name}
-                          </p>
+                          <p> {page.name}</p>
                         </div>
                         {this.renderPath(page.id, 'page')}
                       </div>
@@ -434,30 +429,25 @@ class SideBarV2 extends Component {
     )
   }
 
-  renderHistoryItem (history) {
+  renderHistoryItem(history) {
     return (
       Object.keys(history).length !== 0 && (
         <div
           key={history.id}
           className='btn d-flex align-items-center mb-2'
-          onClick={() => { this.openHistorySnapshot(history.id) }}
+          onClick={() => {
+            this.openHistorySnapshot(history?.id)
+          }}
         >
-          <div className={`api-label lg-label ${history.endpoint.requestType}`}>
-            <div className='endpoint-request-div'>
-              {history.endpoint.requestType}
-            </div>
+          <div className={`api-label lg-label ${history?.endpoint?.requestType}`}>
+            <div className='endpoint-request-div'>{history?.endpoint?.requestType}</div>
           </div>
           <div className='ml-3'>
             <div className='sideBarListWrapper'>
               <div className='text-left'>
-                <p>{history.endpoint.name ||
-                  history.endpoint.BASE_URL + history.endpoint.uri ||
-                  'Random Trigger'}
-                </p>
+                <p>{history?.endpoint?.name || history?.endpoint?.BASE_URL + history?.endpoint?.uri || 'Random Trigger'}</p>
               </div>
-              <small className='text-muted'>
-                {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
-              </small>
+              <small className='text-muted'>{moment(history.createdAt).format('ddd, Do MMM h:mm a')}</small>
             </div>
           </div>
         </div>
@@ -465,124 +455,127 @@ class SideBarV2 extends Component {
     )
   }
 
-  renderTriggerList () {
+  renderTriggerList() {
     return (
       <div className='mt-3'>
-        {
-          this.state.historySnapshot && this.state.historySnapshot.filter(o => o.endpoint.status === 'NEW').length > 0
-            ? (this.state.historySnapshot.filter(o => o.endpoint.status === 'NEW').sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
-            : (
-              <div className='empty-collections'>
-                <div>
-                  <NoInvocationsIcon />
-                </div>
-                <div className='content'>
-                  <h5>  No invocation made</h5>
-                  {/* <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 1</p> */}
-                </div>
-              </div>
-              )
-        }
+        {this.state.historySnapshot && this.state.historySnapshot.filter((o) => o.endpoint.status === 'NEW').length > 0 ? (
+          this.state.historySnapshot
+            .filter((o) => o.endpoint.status === 'NEW')
+            .sort(compareByCreatedAt)
+            .map((history) => this.renderHistoryItem(history))
+        ) : (
+          <div className='empty-collections'>
+            <div>
+              <NoInvocationsIcon />
+            </div>
+            <div className='content'>
+              <h5> No invocation made</h5>
+            </div>
+          </div>
+        )}
       </div>
     )
   }
 
-  renderSearchList () {
+  renderSearchList() {
     if (this.state.data.filter !== '') {
-      return (
-        (this.state.pages.length > 0 || this.state.endpoints.length > 0 || this.state.historySnapshot.length > 0)
-          ? (
-            <div className='searchResult'>
-              {this.state.pages.length > 0 ? this.renderPagesList() : null}
-              {this.state.endpoints.length > 0 ? this.renderEndpointsList() : null}
-              {this.state.historySnapshot.length > 0 ? <div><div className='px-3'>History</div>{this.renderHistoryList()}</div> : null}
+      return this.state.pages.length > 0 || this.state.endpoint.length > 0 || this.state.historySnapshot.length > 0 ? (
+        <div className='searchResult'>
+          {this.state.pages.length > 0 ? this.renderPagesList() : null}
+          {this.state.endpoint.length > 0 ? this.renderEndpointsList() : null}
+          {this.state.historySnapshot.length > 0 ? (
+            <div>
+              <div className='px-3'>History</div>
+              {this.renderHistoryList()}
             </div>
-            )
-          : (
-            <div className='d-flex justify-content-center align-items-center h-100 flex-d-col'>
-              <img src={NoFound} alt='' />
-              <span className='font-weight-700'>No Results</span>
-            </div>
-            )
+          ) : null}
+        </div>
+      ) : (
+        <div className='d-flex justify-content-center align-items-center h-100 flex-d-col'>
+          <img src={NoFound} alt='' />
+          <span className='font-weight-700'>No Results</span>
+        </div>
       )
     }
   }
 
-  renderEmptyCollectionsIfNotLoggedIn () {
+  renderEmptyCollectionsIfNotLoggedIn() {
     return (
       <div className='text-center'>
-        <div className='m-3 ml-4'>
-          {this.renderLoginButton()}
-        </div>
         <div className='empty-collections mt-5'>
           <div>
             <NoCollectionsIcon />
           </div>
           <div className='content'>
-            <h5>  Your collection is Empty.</h5>
+            <h5> Your collection is Empty.</h5>
           </div>
-          <Button className='btn-lg mt-2' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>+ Add here</Button>{' '}
+          <Button className='btn-lg mt-2' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>
+            + Add here
+          </Button>{' '}
         </div>
       </div>
     )
   }
 
-  renderCollections () {
-    const collectionsToRender = []
-    const { firstChild } = this.props.sidebar
-    if (firstChild) {
-      let childEntity = this.props.sidebar.navList[firstChild]
-      while (childEntity) {
-        collectionsToRender.push(childEntity.id)
-        childEntity = this.props.sidebar.navList[childEntity.nextSibling]
-      }
-    }
+  renderCollections() {
+    const collectionsToRender = Object.keys(this.props?.collections)
     return (
       <Collections
         {...this.props}
         collectionsToRender={collectionsToRender}
         selectedCollectionId={this.state.selectedCollectionId}
         empty_filter={this.emptyFilter.bind(this)}
-        disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}
+        disable_secondary_sidebar={() => {
+          this.setState({ secondarySidebarToggle: true })
+        }}
         collection_selected={this.openCollection.bind(this)}
         filter={this.state.data.filter}
       />
     )
   }
 
-  getTotalEndpointsCount (count) {
+  getTotalEndpointsCount(count) {
     this.setState({ totalEndpointsCount: count })
   }
 
-  showAddCollectionModal () {
+  showAddCollectionModal() {
     return (
-      this.state.showAddCollectionModal &&
+      this.state.showAddCollectionModal && (
         <CollectionModal
           {...this.props}
           title='Add Collection'
-          onHide={() => { this.setState({ showAddCollectionModal: false }) }}
+          onHide={() => {
+            this.setState({ showAddCollectionModal: false })
+          }}
           show={this.state.showAddCollectionModal}
           // open_selected_collection={this.openSelectedCollection.bind(this)}
         />
+      )
     )
   }
 
-  openSelectedCollection (collectionId) {
+  openSelectedCollection(collectionId) {
     this.empty_filter()
     this.openCollection(collectionId)
   }
 
-  handleOpenLink (link, current = false) {
+  handleOpenLink(link, current = false) {
     const { handleOpenLink } = this.props
-    if (!handleOpenLink) { current ? window.open(link, '_self') : window.open(link, '_blank') } else { handleOpenLink(link) }
+    if (!handleOpenLink) {
+      current ? window.open(link, '_self') : window.open(link, '_blank')
+    } else {
+      handleOpenLink(link)
+    }
   }
 
-  renderSearch () {
+  renderSearch() {
     return (
-      <div className='d-flex align-items-center mb-2'>
+      <div tabIndex={0} className='d-flex align-items-center mb-2 search-container'>
         <SearchIcon className='mr-2' />
         <input
-          ref={element => { this.inputRef = element }}
+          ref={(element) => {
+            this.inputRef = element
+          }}
           value={this.state.data.filter}
           className='search-input'
           placeholder='Search'
@@ -598,35 +591,22 @@ class SideBarV2 extends Component {
 
   renderInviteTeam() {
     return (
-      <div className='mb-2 cursor-pointer' onClick={() => { this.openAccountAndSettings() }}>
+      <div
+        className='mb-2 cursor-pointer'
+        onClick={() => {
+          this.openAccountAndSettings()
+        }}
+      >
         <Users className='mr-2' />
         <span>Invite Team</span>
       </div>
-    );
+    )
   }
 
   openAccountAndSettings = () => {
-    const { history } = this.props;
-    const orgId = getCurrentOrg()?.id;
-    history.push({ pathname: `/orgs/${orgId}/invite` });
-  }
-
-  openOptions (path) {
-    const { match, productName, handleOpenLink } = this.props
-    const viasocketUrl = process.env.REACT_APP_VIASOCKET_URL
-    const currProductUrl = process.env.REACT_APP_UI_BASE_URL || process.env.REACT_APP_UI_URL
-    const { orgId } = match.params
-    if (orgId) {
-      let url = `${viasocketUrl}/orgs/${orgId}${path}?product=${productName}`
-      if (path === '/products') {
-        url += ''
-      } else {
-        url += `&redirect_uri=${currProductUrl}`
-      }
-      if (!handleOpenLink) { window.open(url, '_blank') } else { handleOpenLink(url) }
-    } else {
-      console.log('Organization ID not found')
-    }
+    const { history } = this.props
+    const orgId = getCurrentOrg()?.id
+    history.push({ pathname: `/orgs/${orgId}/invite` })
   }
 
   // renderDownloadDesktopApp () {
@@ -643,69 +623,46 @@ class SideBarV2 extends Component {
   //   )
   // }
 
-  renderSidebarContent () {
+  renderSidebarContent() {
     const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
-    const { focused: sidebarFocused } = this.props.sidebar
+    const collectionId = Object.keys(this.props?.collections)?.[0]
     return (
       <div
         ref={this.sidebarRef}
         onClick={(e) => {
-          if (!sidebarFocused && this.sidebarRef.current.contains(document.activeElement)) {
-            store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR })
-          }
+          // if (!sidebarFocused && this.sidebarRef.current.contains(document.activeElement)) {
+          //   store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR })
+          // }
         }}
         onBlur={(e) => {
-          if (sidebarFocused && !this.sidebarRef.current.contains(e.relatedTarget)) {
-            store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
-          }
+          // if (sidebarFocused && !this.sidebarRef.current.contains(e.relatedTarget)) {
+          //   store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
+          // }
         }}
         className={[''].join(' ')}
       >
         {this.showAddCollectionModal()}
-        {this.collectionId
-          ? (
-              isDashboardRoute(this.props, true) && (
-                <div className='mx-3'>
-                  <div className='d-flex collection-name my-2'>
-                    <div className='d-flex cursor-pointer align-items-center mt-3' onClick={() => { this.openCollection(null) }}>
-                      <div className='ml-1 mr-2'><ArrowIcon /></div>
-                      <div className='hm-sidebar-outer-block heading-collection'>{selectedCollectionName}</div>
-                    </div>
-                  </div>
-                  <div>
-                    <PublishColelctionInfo
-                      {...this.props}
-                      collectionId={this.collectionId}
-                      getTotalEndpointsCount={this.getTotalEndpointsCount.bind(this)}
-                    />
-                  </div>
-                  <div className='secondary-sidebar sidebar-content-scroll'>
-                    <div className='collectionVersionWrp'>
-                      <CollectionVersions
-                        {...this.props}
-                        collection_id={this.state.selectedCollectionId}
-                        open_collection={this.openCollection.bind(this)}
-                        selectedCollectionId={this.state.selectedCollectionId}
-                        addVersion={this.openAddVersionForm.bind(this)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )
-            )
-          : (
-              !getCurrentUser()
-                ? (this.renderEmptyCollectionsIfNotLoggedIn())
-                : (this.renderCollections())
-            )}
+        {isOnPublishedPage() ? (
+          <div className='sidebar-accordion'>
+            <CombinedCollections
+              {...this.props}
+              collection_id={collectionId}
+              rootParentId={this.props.collections?.[collectionId]?.rootParentId}
+            />
+          </div>
+        ) : (
+          this.renderCollections()
+        )}
       </div>
     )
   }
 
-  renderSidebarHeader () {
+  renderSidebarHeader() {
     return (
       <div className='m-3 d-flex align-items-center'>
-        <div><HitmanIcon /></div>
+        <div>
+          <HitmanIcon />
+        </div>
         <div className='w-50 flex-grow-1 mx-3'>
           <div className='HITMAN-TITLE'>HITMAN</div>
         </div>
@@ -713,42 +670,81 @@ class SideBarV2 extends Component {
     )
   }
 
-  renderLoginButton () {
-    return getCurrentUser() ? '' : <LoginButton />
+  renderCollectionName() {
+    let collectionKeys = Object.keys(this.props?.collections || {})
+    const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
+
+    return (
+      <div className='hm-sidebar-header'>
+        {this.props.collections[collectionKeys[0]]?.favicon ||
+          (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
+            <div className='hm-sidebar-logo'>
+              <img
+                id='publicLogo'
+                alt='public-logo'
+                src={
+                  this.props.collections[collectionKeys[0]]?.favicon
+                    ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
+                    : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
+                }
+                // onError={() => { this.setState({ publicLogoError: true })}}
+                width='60'
+                height='60'
+              />
+            </div>
+          ))}
+        <h4 className='hm-sidebar-title'>
+          {collectionName}
+          <span>API Documenation</span>
+        </h4>
+      </div>
+    )
   }
 
-  renderDashboardSidebar () {
+  renderDashboardSidebar() {
+    const element = isOnPublishedPage()
+    var isOnDashboardPage = isDashboardRoute(this.props)
     return (
       <>
         <div className='plr-3'>
+          {isOnPublishedPage() && this.renderCollectionName()}
           {this.renderSearch()}
-          {getCurrentUser() && this.renderInviteTeam()}
+          {isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
           {/* {this.renderDownloadDesktopApp()} */}
-          {this.renderGlobalAddButton()}
+          {isOnDashboardPage && this.renderGlobalAddButton()}
         </div>
         <div className='sidebar-content'>
           {this.state.data.filter !== '' && this.renderSearchList()}
           {this.state.data.filter === '' && this.renderSidebarContent()}
         </div>
-        {getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
+        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
       </>
     )
   }
 
-  renderGlobalAddButton () {
+  renderGlobalAddButton() {
     const { filter } = this.state.data
     const isMarketplaceImported = this.props.collections[this.collectionId]?.importedFromMarketPlace
-    const title = this.collectionId ? isMarketplaceImported ? 'Cannot add Entities to a Marketplace Collection.' : 'Add Entities to Collection' : 'Add/Import Collection'
+    const title = this.collectionId
+      ? isMarketplaceImported
+        ? 'Cannot add Entities to a Marketplace Collection.'
+        : 'Add Entities to Collection'
+      : 'Add/Import Collection'
     return (
-      getCurrentUser() &&
+      getCurrentUser() && (
         <div className='d-flex align-items-center justify-content-between mb-2'>
           <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span>
-          {filter === '' && <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><Plus /></div>}
+          {filter === '' && (
+            <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}>
+              <Plus />
+            </div>
+          )}
         </div>
+      )
     )
   }
 
-  handleAdd () {
+  handleAdd() {
     if (this.collectionId) {
       this.setState({ openAddEntitySelectionModal: true })
     } else {
@@ -756,11 +752,11 @@ class SideBarV2 extends Component {
     }
   }
 
-  getSidebarInteractionClass () {
-    return (isDashboardRoute(this.props, true) ? 'sidebar' : 'public-endpoint-sidebar')
+  getSidebarInteractionClass() {
+    return isDashboardRoute(this.props, true) ? 'sidebar' : 'sidebar'
   }
 
-  openAddVersionForm (collectionId) {
+  openAddVersionForm(collectionId) {
     this.setState({
       showVersionForm: true,
       selectedCollection: {
@@ -769,21 +765,21 @@ class SideBarV2 extends Component {
     })
   }
 
-  closeVersionForm () {
+  closeVersionForm() {
     this.setState({ showVersionForm: false })
   }
 
-  openAddEntitySelectionModal () {
+  openAddEntitySelectionModal() {
     this.setState({ openAddEntitySelectionModal: true })
   }
 
-  closeAddEntitySelectionModal () {
+  closeAddEntitySelectionModal() {
     this.setState({ openAddEntitySelectionModal: false })
   }
 
-  showAddEntitySelectionModal () {
+  showAddEntitySelectionModal() {
     return (
-      this.state.openAddEntitySelectionModal &&
+      this.state.openAddEntitySelectionModal && (
         <AddEntitySelectionModal
           {...this.props}
           title='ADD'
@@ -792,48 +788,25 @@ class SideBarV2 extends Component {
           openAddEntityModal={this.openAddEntityModal.bind(this)}
           collectionId={this.collectionId}
         />
+      )
     )
   }
 
-  openAddEntityModal (entity) {
+  openAddEntityModal(entity) {
     this.setState({ openAddEntitySelectionModal: false, entity })
   }
 
-  closeAddEntityModal (entity) {
+  closeAddEntityModal(entity) {
     this.setState({ entity: false })
   }
 
-  showAddEntityModal () {
+  showAddEntityModal() {
     if (this.state.entity === 'version') {
-      return collectionVersionsService.showVersionForm(
+      return collectionVersionsService.showParentPageForm(
         this.props,
         this.closeAddEntityModal.bind(this),
-        this.collectionId,
+        this.pageId,
         ADD_VERSION_MODAL_NAME
-      )
-    }
-    if (this.state.entity === 'group') {
-      return (
-        <GroupForm
-          {...this.props}
-          show
-          onHide={() => this.closeAddEntityModal()}
-          title={ADD_GROUP_MODAL_NAME}
-          addEntity
-          collectionId={this.collectionId}
-        />
-      )
-    }
-    if (this.state.entity === 'endpoint') {
-      return (
-        <EndpointForm
-          {...this.props}
-          show
-          onHide={() => this.closeAddEntityModal()}
-          title='Add new Endpoint'
-          addEntity
-          collectionId={this.collectionId}
-        />
       )
     }
     if (this.state.entity === 'page') {
@@ -850,29 +823,18 @@ class SideBarV2 extends Component {
     }
   }
 
-  showDeleteEntityModal () {
+  showDeleteEntityModal() {
     const { activeModal, modalData } = this.props.modals
 
-    return activeModal === DELETE_CONFIRMATION &&
-      <DeleteSidebarEntityModal
-        show
-        {...modalData}
-      />
+    return activeModal === DELETE_CONFIRMATION && <DeleteSidebarEntityModal show {...modalData} />
   }
 
-  render () {
+  render() {
     return (
       <nav className={this.getSidebarInteractionClass()}>
         {this.showAddEntitySelectionModal()}
         {this.showAddEntityModal()}
         {this.showDeleteEntityModal()}
-        {this.state.showLoginSignupModal && (
-          <LoginSignupModal
-            show
-            onHide={() => this.closeLoginSignupModal()}
-            title='Add Collection'
-          />
-        )}
         {this.state.showVersionForm &&
           collectionVersionsService.showVersionForm(
             this.props,
@@ -881,16 +843,9 @@ class SideBarV2 extends Component {
             ADD_VERSION_MODAL_NAME
           )}
         <div className='primary-sidebar'>
-          {
-            isDashboardRoute(this.props, true)
-              ? (this.renderDashboardSidebar())
-              : (
-                <Route
-                  path='/p/:collectionId'
-                  render={(props) => <Collections {...this.props} />}
-                />
-                )
-          }
+          {/* [info] for publishedPage only this part is important */}
+
+          {this.renderDashboardSidebar()}
         </div>
       </nav>
     )

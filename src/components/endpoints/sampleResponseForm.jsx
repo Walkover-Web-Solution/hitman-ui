@@ -4,7 +4,7 @@ import Joi from 'joi-browser'
 import Form from '../common/form'
 
 class SampleResponseForm extends Form {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: { status: '', description: '', body: '', title: '' },
@@ -19,19 +19,14 @@ class SampleResponseForm extends Form {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     let data = {}
     if (this.props.selectedSampleResponse) {
-      let {
-        title,
-        status,
-        description,
-        data: body
-      } = this.props.selectedSampleResponse
+      let { title, status, description, data: body } = this.props.selectedSampleResponse
       body = JSON.stringify(body, null, 2)
       data = {
         title,
-        status: (status ? String(status) : ''),
+        status: status ? String(status) : '',
         description,
         body
       }
@@ -39,7 +34,7 @@ class SampleResponseForm extends Form {
     this.setState({ data })
   }
 
-  editSampleResponse () {
+  editSampleResponse() {
     let { status, description, body: data, title } = this.state.data
     try {
       data = JSON.parse(data)
@@ -48,13 +43,13 @@ class SampleResponseForm extends Form {
     }
     const index = this.props.index
     const sampleResponse = { status, description, data, title }
-    const sampleResponseArray = [...this.props.sample_response_array]
+    const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array]
     sampleResponseArray[index] = sampleResponse
     this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray)
   }
 
-  addSampleResponse () {
+  addSampleResponse() {
     let { title, status, description, body: data } = this.state.data
     try {
       data = JSON.parse(data)
@@ -63,18 +58,12 @@ class SampleResponseForm extends Form {
     }
 
     const sampleResponse = { title, status, description, data }
-    const sampleResponseArray = [
-      ...this.props.sample_response_array,
-      sampleResponse
-    ]
-    const sampleResponseFlagArray = [
-      ...this.props.sample_response_flag_array,
-      false
-    ]
+    const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray, sampleResponse]
+    const sampleResponseFlagArray = [...this.props.sample_response_flag_array, false]
     this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray)
   }
 
-  async doSubmit () {
+  async doSubmit() {
     if (this.checkDuplicateName()) {
       this.props.onHide()
       if (this.props.title === 'Add Sample Response') {
@@ -86,15 +75,19 @@ class SampleResponseForm extends Form {
     }
   }
 
-  checkDuplicateName () {
+  checkDuplicateName() {
     if (this.props && this.props.endpoints) {
       const usedTitles = []
-      const endpointId = this.props.location.pathname.split('/')[5]
-      const endpoint = this.props.endpoints[endpointId] || []
-      const sampleResponse = endpoint.sampleResponse || []
-      sampleResponse.map(key => { return usedTitles.push(key.title) })
+      // const endpointId = this.props.location.pathname.split('/')[5]
+      // const endpoint = this.props.endpoints[endpointId] || []
+      const sampleResponse = this.props.endpointContent.sampleResponseArray || []
+      sampleResponse.map((key) => {
+        return usedTitles.push(key.title)
+      })
 
-      if (this.props.title === 'Edit Sample Response') { usedTitles.splice(usedTitles.indexOf(sampleResponse[this.props.index].title), 1) }
+      if (this.props.title === 'Edit Sample Response') {
+        usedTitles.splice(usedTitles.indexOf(sampleResponse[this.props.index].title), 1)
+      }
 
       if (usedTitles.includes(this.state.data.title)) {
         this.setState({ errors: { ...this.state.errors, title: 'Title must be unique' } })
@@ -103,7 +96,7 @@ class SampleResponseForm extends Form {
     }
   }
 
-  render () {
+  render() {
     return (
       <Modal
         show={this.props.show}
@@ -114,25 +107,16 @@ class SampleResponseForm extends Form {
         centered
       >
         <Modal.Header className='custom-collection-modal-container' closeButton>
-          <Modal.Title id='contained-modal-title-vcenter'>
-            {this.props.title}
-          </Modal.Title>
+          <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
             {this.renderInput('title', 'Title: ', 'Enter Title ', false, false, false)}
             {this.renderInput('status', 'Status: ', 'Enter Status ', false, false, false)}
-            {this.renderInput(
-              'description',
-              'Description: ',
-              'Enter Descripton'
-            )}
+            {this.renderInput('description', 'Description: ', 'Enter Descripton')}
             {this.renderAceEditor('body', 'Body: ')}
             <div className='text-right mt-2 mb-2'>
-              <button
-                className='btn btn-secondary outline btn-lg mr-2'
-                onClick={this.props.onHide}
-              >
+              <button className='btn btn-secondary outline btn-lg mr-2' onClick={this.props.onHide}>
                 Cancel
               </button>
               {this.renderButton('Submit')}

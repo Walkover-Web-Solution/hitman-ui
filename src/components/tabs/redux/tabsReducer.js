@@ -1,4 +1,5 @@
 import tabsActionTypes from './tabsActionTypes'
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 const initialState = {
   tabs: {},
@@ -7,7 +8,7 @@ const initialState = {
   tabsOrder: []
 }
 
-function tabsReducer (state = initialState, action) {
+function tabsReducer(state = initialState, action) {
   let tabs = {}
   switch (action.type) {
     case tabsActionTypes.ADD_NEW_TAB:
@@ -32,7 +33,7 @@ function tabsReducer (state = initialState, action) {
       }
       delete tabs.tabs[action.tabId]
       tabs.tabsOrder = tabs.tabsOrder.filter((t) => t !== action.tabId)
-      return tabs
+      return { ...tabs }
 
     case tabsActionTypes.UPDATE_TAB:
       tabs = {
@@ -48,14 +49,14 @@ function tabsReducer (state = initialState, action) {
       tabs = { ...state, activeTabId: action.tabId }
       return tabs
 
-    case tabsActionTypes.FETCH_TABS_FROM_IDB:
+    case tabsActionTypes.FETCH_TABS_FROM_REDUX:
       tabs = {
         tabs: { ...state.tabs, ...action.tabsList },
         loaded: true,
         tabsOrder: [...state.tabsOrder],
         activeTabId: action.tabsMetadata.activeTabId ? action.tabsMetadata.activeTabId : state.activeTabId
       }
-      action.tabsMetadata.tabsOrder.forEach(t => {
+      action.tabsMetadata.tabsOrder.forEach((t) => {
         if (!tabs.tabsOrder.includes(t)) {
           tabs.tabsOrder.push(t)
         }
@@ -80,6 +81,23 @@ function tabsReducer (state = initialState, action) {
       tabs = { ...state, tabsOrder: action.tabsOrder }
       return tabs
 
+    case tabsActionTypes.REPLACE_TAB_ID:
+      const data = {
+        id: action.payload.newTabId,
+        type: 'endpoint',
+        status: 'SAVED',
+        previewMode: true,
+        isModified: false,
+        state: {}
+      }
+      const newTabs = state.tabs
+      newTabs[action.payload?.newTabId] = data
+      const newOrder = state.tabsOrder.map((item) => (item === state.activeTabId ? action.payload.newTabId : item))
+      tabs = { ...state, tabsOrder: newOrder, activeTabId: action.payload.newTabId, tabs: newTabs }
+      return tabs
+
+    case bulkPublishActionTypes.ON_BULK_PUBLISH_TABS:
+      return { ...action.data }
     default:
       return state
   }

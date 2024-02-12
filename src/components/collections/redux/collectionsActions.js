@@ -1,12 +1,14 @@
-import store from '../../../store/store'
+import { store } from '../../../store/store'
 import collectionsApiService from '../collectionsApiService'
 import collectionsActionTypes from './collectionsActionTypes'
 import tabService from '../../tabs/tabService'
 import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
-import indexedDbService from '../../indexedDb/indexedDbService'
 import { sendAmplitudeData } from '../../../services/amplitude'
-import sidebarActions from '../../main/sidebar/redux/sidebarActions'
+import { onParentPageAdded } from '../../pages/redux/pagesActions'
+import { toast } from 'react-toastify'
+import { deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 export const fetchCollections = (orgId) => {
   return (dispatch) => {
@@ -14,32 +16,9 @@ export const fetchCollections = (orgId) => {
       .getCollections(orgId)
       .then((response) => {
         dispatch(onCollectionsFetched(response.data))
-        indexedDbService.clearStore('collections')
-        indexedDbService.addMultipleData('collections', Object.values(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onCollectionsFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
-      })
-  }
-}
-
-export const fetchCollectionsFromIdb = (orgId) => {
-  return (dispatch) => {
-    indexedDbService
-      .getAllData('collections')
-      .then((response) => {
-        dispatch(onCollectionsFetched(response))
-      })
-      .catch((error) => {
-        dispatch(
-          onCollectionsFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
+        dispatch(onCollectionsFetchedError(error.response ? error.response.data : error))
       })
   }
 }
@@ -66,11 +45,7 @@ export const fetchCollection = (collectionId) => {
         dispatch(onCollectionsFetched(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onCollectionsFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
+        dispatch(onCollectionsFetchedError(error.response ? error.response.data : error))
       })
   }
 }
@@ -87,6 +62,14 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           orgId: response.data.orgId
         })
         dispatch(onCollectionAdded(response.data))
+        const inivisiblePageData = {
+          page: {
+            id: response.data.rootParentId,
+            type: 0,
+            child: []
+          }
+        }
+        dispatch(onParentPageAdded(inivisiblePageData))
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
         }
@@ -95,12 +78,7 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
         }
       })
       .catch((error) => {
-        dispatch(
-          onCollectionAddedError(
-            error.response ? error.response.data : error,
-            newCollection
-          )
-        )
+        dispatch(onCollectionAddedError(error.response ? error.response.data : error, newCollection))
         if (customCallback) {
           customCallback({ success: false })
         }
@@ -132,13 +110,12 @@ export const onCollectionAddedError = (error, newCollection) => {
 
 export const updateCollection = (editedCollection, stopLoader, customCallback) => {
   return (dispatch) => {
-    const originalCollection = store.getState().collections[
-      editedCollection.id
-    ]
+    const originalCollection = store.getState().collections[editedCollection.id]
     dispatch(updateCollectionRequest({ ...originalCollection, ...editedCollection }))
     const id = editedCollection.id
     delete editedCollection.id
     delete editedCollection.requestId
+    delete editedCollection.rootParentId
     collectionsApiService
       .updateCollection(id, editedCollection)
       .then((response) => {
@@ -158,12 +135,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
         if (customCallback) customCallback({ success: true, data: response.data })
       })
       .catch((error) => {
-        dispatch(
-          onCollectionUpdatedError(
-            error.response ? error.response.data : error,
-            originalCollection
-          )
-        )
+        dispatch(onCollectionUpdatedError(error.response ? error.response.data : error, originalCollection))
         if (stopLoader) {
           stopLoader()
         }
@@ -196,23 +168,26 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
 
 export const deleteCollection = (collection, props) => {
   return (dispatch) => {
-    dispatch(deleteCollectionRequest(collection))
     collectionsApiService
       .deleteCollection(collection.id)
-      .then((response) => {
-        const { versionIds, groupIds, endpointIds, pageIds } = prepareCollectionData(collection, props)
+      .then((res) => {
+        const rootParentPageId = collection.rootParentId
+        deleteAllPagesAndTabsAndReactQueryData(rootParentPageId)
+          .then((data) => {
+            dispatch(deleteCollectionRequest(collection))
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
 
-        dispatch(
-          onCollectionDeleted({
-            collection: response.data,
-            versionIds,
-            groupIds,
-            endpointIds,
-            pageIds
+            // after deletion operation
+            operationsAfterDeletion(data)
+            toast.success('collection has been deleted successfully')
           })
-        )
+          .catch((error) => {
+            console.log('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)
+          })
       })
       .catch((error) => {
+        console.log('error', error)
         dispatch(onCollectionDeletedError(error.response, collection))
       })
   }
@@ -246,15 +221,9 @@ export const duplicateCollection = (collection) => {
       .duplicateCollection(collection.id)
       .then((response) => {
         dispatch(onCollectionDuplicated(response.data))
-        sidebarActions.focusSidebar()
-        sidebarActions.toggleItem('collections', response.data.collection.id, true)
       })
       .catch((error) => {
-        dispatch(
-          onCollectionDuplicatedError(
-            error.response ? error.response.data : error
-          )
-        )
+        dispatch(onCollectionDuplicatedError(error.response ? error.response.data : error))
       })
   }
 }
@@ -273,10 +242,7 @@ export const onCollectionDuplicatedError = (error) => {
   }
 }
 
-export const addCustomDomain = (
-  collectionId,
-  domain
-) => {
+export const addCustomDomain = (collectionId, domain) => {
   return (dispatch) => {
     const collection = { ...store.getState().collections[collectionId] }
     if (!collection.docProperties.domainsList) {
@@ -295,12 +261,7 @@ export const addCustomDomain = (
         dispatch(onCollectionUpdated(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onCollectionUpdatedError(
-            error.response ? error.response.data : error,
-            collection
-          )
-        )
+        dispatch(onCollectionUpdatedError(error.response ? error.response.data : error, collection))
       })
   }
 }
@@ -311,14 +272,12 @@ export const importApi = (collection, importType, website, customCallback, defau
       openApiService
         .importPostmanCollection(collection, website, defaultView)
         .then((response) => {
-          // dispatch(saveImportedCollection(response.data));
-          dispatch(saveImportedVersion(response.data))
+          dispatch(onCollectionImported(response.data))
+          toast.success('Collection imported successfully')
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          dispatch(
-            onVersionsFetchedError(error.response ? error.response.data : error)
-          )
+          dispatch(onCollectionImportedError(error.response ? error.response.data : error))
           if (customCallback) customCallback({ success: false })
         })
     } else {
@@ -329,9 +288,7 @@ export const importApi = (collection, importType, website, customCallback, defau
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          dispatch(
-            onVersionsFetchedError(error.response ? error.response.data : error)
-          )
+          dispatch(onVersionsFetchedError(error.response ? error.response.data : error))
           if (customCallback) customCallback({ success: false })
         })
     }
@@ -362,12 +319,7 @@ export const importCollection = (collection, customCallback) => {
         if (customCallback) customCallback({ success: true })
       })
       .catch((error) => {
-        dispatch(
-          onCollectionImportedError(
-            error.response ? error.response.data : error,
-            collection
-          )
-        )
+        dispatch(onCollectionImportedError(error.response ? error.response.data : error, collection))
         if (customCallback) customCallback({ success: false })
       })
   }
@@ -383,7 +335,8 @@ export const importCollectionRequest = (collection) => {
 export const onCollectionImported = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_IMPORTED,
-    response
+    collection: response.collection,
+    pages: response.pages
   }
 }
 
@@ -419,41 +372,16 @@ export const removePublicCollection = (collection, props) => {
   }
 }
 
-function prepareCollectionData (collection, props) {
+function prepareCollectionData(collection, props) {
   const storeData = { ...store.getState() }
-  const versionIds = Object.keys(storeData.versions).filter(
-    (vId) => storeData.versions[vId].collectionId === collection.id
-  )
-  let groupIds = []
+  const versionIds = Object.keys(storeData.versions).filter((vId) => storeData.versions[vId].collectionId === collection.id)
   let endpointIds = []
   let pageIds = []
   versionIds.forEach((vId) => {
-    groupIds = [
-      ...Object.keys(storeData.groups).filter(
-        (gId) => storeData.groups[gId].versionId === vId
-      ),
-      ...groupIds
-    ]
-    pageIds = [
-      ...Object.keys(storeData.pages).filter(
-        (pId) => storeData.pages[pId].versionId === vId
-      ),
-      ...pageIds
-    ]
+    pageIds = [...Object.keys(storeData.pages).filter((pId) => storeData.pages[pId].versionId === vId), ...pageIds]
   })
-
-  groupIds.forEach(
-    (gId) =>
-      (endpointIds = [
-        ...Object.keys(storeData.endpoints).filter(
-          (eId) => storeData.endpoints[eId].groupId === gId
-        ),
-        ...endpointIds
-      ])
-  )
-
   endpointIds.map((eId) => tabService.removeTab(eId, props))
   pageIds.map((pId) => tabService.removeTab(pId, props))
 
-  return { versionIds, groupIds, endpointIds, pageIds }
+  return { versionIds, endpointIds, pageIds }
 }

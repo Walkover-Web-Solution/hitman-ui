@@ -5,7 +5,7 @@ let db = null
 
 const getDataBase = async () => {
   const orgId = getOrgId()
-  const dbName = orgId ? `hitman_${orgId}` : 'hitman_public'
+  const dbName = orgId ? `techdoc_${orgId}` : 'techdoc_public'
   if (db) return db
   else {
     db = await createDataBase(dbName)
@@ -17,25 +17,11 @@ const createDataBase = async (dbName) => {
   const version = 1
 
   db = await openDB(dbName, version, {
-    upgrade (db, oldVersion, newVersion, transaction) {
-      const environmentStore = db.createObjectStore('environment')
-      db.createObjectStore('tabs', {
-        keyPath: 'id',
-        autoIncrement: true
-      })
-      db.createObjectStore('history')
-      db.createObjectStore('collections')
-      db.createObjectStore('versions')
-      db.createObjectStore('groups')
-      db.createObjectStore('pages')
+    upgrade(db, oldVersion, newVersion, transaction) {
       db.createObjectStore('endpoints')
       db.createObjectStore('fileUploadMetadata')
-      const tabsMetadataStore = db.createObjectStore('tabs_metadata')
       const authDataStore = db.createObjectStore('authData')
       const responseDataStore = db.createObjectStore('responseData')
-      environmentStore.put(null, 'currentEnvironmentId')
-      tabsMetadataStore.put(null, 'activeTabId')
-      tabsMetadataStore.put([], 'tabsOrder')
       authDataStore.put({}, 'currentAuthData')
       responseDataStore.put({}, 'currentResponse')
       const metaData = db.createObjectStore('meta_data')
@@ -82,10 +68,7 @@ const getAllKeys = async (storeName) => {
   if (!db) {
     await getDataBase()
   }
-  const keys = await db
-    .transaction(storeName)
-    .objectStore(storeName)
-    .getAllKeys()
+  const keys = await db.transaction(storeName).objectStore(storeName).getAllKeys()
   return keys
 }
 
@@ -93,10 +76,7 @@ const getAllValues = async (storeName) => {
   if (!db) {
     await getDataBase()
   }
-  const values = await db
-    .transaction(storeName)
-    .objectStore(storeName)
-    .getAll()
+  const values = await db.transaction(storeName).objectStore(storeName).getAll()
   return values
 }
 

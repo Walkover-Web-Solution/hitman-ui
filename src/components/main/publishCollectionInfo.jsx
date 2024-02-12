@@ -11,24 +11,35 @@ import { ReactComponent as HelpIcon } from '../../assets/icons/helpcircle.svg'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { openExternalLink, msgText } from '../common/utility'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import store from '../../store/store'
+import { store } from '../../store/store'
 import { updateTab } from '../tabs/redux/tabsActions'
-import indexedDbService from '../indexedDb/indexedDbService'
 import _ from 'lodash'
+import { publishData } from '../modals/redux/modalsActions'
+import { updateCollectionIdForPublish } from '../../store/clientData/clientDataActions'
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
+    modals: state.endpoints,
+    isPublishSliderOpen: state.modals.publishData,
+    tabs: state.tabs
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
+    setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data))
   }
 }
 
 const defaultDomain = process.env.REACT_APP_PUBLIC_UI_URL
 
 class PublishCollectionInfo extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       openPublishSidebar: false,
@@ -39,35 +50,46 @@ class PublishCollectionInfo extends Component {
     }
   }
 
-  componentDidMount () {
-    this.getPublicEntityCount()
+  componentDidMount() {
+    // this.getPublicEntityCount()
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (
       this.props.endpoints !== prevProps.endpoints ||
       this.props.pages !== prevProps.pages ||
       this.props.versions !== prevProps.versions ||
       this.props.groups !== prevProps.groups
     ) {
-      this.getPublicEntityCount()
+      // this.getPublicEntityCount()
     }
   }
 
-  renderPublicUrl () {
-    const url = defaultDomain + '/p/' + this.props.collectionId
+  renderPublicUrl() {
+    const url = defaultDomain + '/p?collectionId=' + this.props.collectionId
     const { versions, groups, endpoints, collectionId } = this.props
-    const targetVersionIds = _.values(versions).filter((version) => version.collectionId === collectionId).map((version) => version.id)
-    const targetGroupIds = _.values(groups).filter((group) => targetVersionIds.includes(group.versionId)).map((group) => group.id)
-    const publishedEndpoints = _.values(endpoints).filter((endpoint) => targetGroupIds.includes(endpoint.groupId) && endpoint.isPublished)
-    const isDisabled = _.isEmpty(publishedEndpoints)
+    const targetVersionIds = _.values(versions)
+      .filter((version) => version.collectionId === collectionId)
+      .map((version) => version.id)
+    const targetGroupIds = _.values(groups)
+      .filter((group) => targetVersionIds.includes(group.versionId))
+      .map((group) => group.id)
+    const isDisabled = this.IsParentPagePublishedInACollection(this.props.collections[this.props.collectionId]?.rootParentId)
     return (
       <OverlayTrigger
-        overlay={<Tooltip id='tooltip-unpublished-endpoint' className={!isDisabled && 'd-none'}>Atleast one endpoint/page is to be published to enable this link.</Tooltip>}
+        overlay={
+          <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled && 'd-none'}>
+            Atleast one endpoint/page is to be published to enable this link.
+          </Tooltip>
+        }
       >
-        <button onClick={() => !isDisabled && openExternalLink(url)}>
+        <button onClick={() => isDisabled && openExternalLink(url)}>
+          {/* <button onClick={() => openExternalLink(url)}> */}
           <div className={`sidebar-public-url text-center d-flex align-items-center${!isDisabled && ' text-link'}`}>
-            <span className='icon d-flex mr-1'> <ExternalLinks /></span>
+            <span className='icon d-flex mr-1'>
+              {' '}
+              <ExternalLinks />
+            </span>
             <div className='text-truncate'>{url}</div>
           </div>
         </button>
@@ -75,10 +97,16 @@ class PublishCollectionInfo extends Component {
     )
   }
 
-  managePublicDoc () {
+  managePublicDoc() {
     const { totalEndpointCount } = this.state
     return (
-      <button className='btn' disabled={!totalEndpointCount} onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
+      <button
+        className='btn'
+        // disabled={!totalEndpointCount}
+        onClick={() => {
+          isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast()
+        }}
+      >
         <div className='d-flex align-items-center cursor-pointer'>
           <img className='mr-1' src={SettingIcon} alt='' />
           <span>Manage Public Doc</span>
@@ -88,28 +116,31 @@ class PublishCollectionInfo extends Component {
     )
   }
 
-  async redirectToApiFeedback () {
-    const collectionId = this.props.collectionId
-    if (collectionId) {
-      this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
-    }
-    const activeTab = await indexedDbService.getAllData('tabs_metadata')
-    store.dispatch(updateTab(activeTab.activeTabId, { state: { pageType: 'FEEDBACK' } }))
+  async redirectToApiFeedback() {
+    // const collectionId = this.props.collectionId
+    // if (collectionId) {
+    //   this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+    // }
+    // const activeTab = this.props.tabs.activeTabId
+    // store.dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
   }
 
-  renderInOverlay (method, msg) {
+  renderInOverlay(method, msg) {
     return (
       <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>{msg}</Tooltip>}>
-        <span className='d-inline-block'>
-          {method()}
-        </span>
+        <span className='d-inline-block'>{method()}</span>
       </OverlayTrigger>
     )
   }
 
-  apiDocFeedback () {
+  apiDocFeedback() {
     return (
-      <button disabled={!isAdmin()} onClick={() => { this.redirectToApiFeedback() }}>
+      <button
+        disabled={!isAdmin()}
+        onClick={() => {
+          this.redirectToApiFeedback()
+        }}
+      >
         <div className='d-flex align-items-center'>
           <img className='mr-1' src={DocIcon} alt='' />
           <span>API Doc Feedback</span>
@@ -118,10 +149,9 @@ class PublishCollectionInfo extends Component {
     )
   }
 
-  getPublicEntityCount () {
+  getPublicEntityCount() {
     const collectionId = this.props.collectionId
     const { endpoints, pages, versions, groups } = this.props
-
     let totalPageCount = 0
     let totalEndpointCount = 0
     let livePageCount = 0
@@ -174,41 +204,54 @@ class PublishCollectionInfo extends Component {
   //   )
   // }
 
-  renderPublicCollectionInfo (isPublic) {
+  IsParentPagePublishedInACollection(rootParentId) {
+    let childs = this.props.pages?.[rootParentId]?.child
+    if (childs?.length > 0) {
+      for (let i = 0; i < childs?.length; i++) {
+        if (this.props.pages[childs[i]]?.isPublished == true) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  renderPublicCollectionInfo(isPublic) {
     const currentCollection = this.props.collections[this.props.collectionId]
     return (
-      !currentCollection?.importedFromMarketPlace &&
+      !currentCollection?.importedFromMarketPlace && (
         <div className='public-colection-info'>
           {this.managePublicDoc()}
-          {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))}
+          {/* {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))} */}
           {isPublic && <div className='publicurl'>{this.renderPublicUrl()}</div>}
         </div>
+      )
     )
   }
 
-  renderInfoText (info) {
+  renderInfoText(info) {
     const { totalEndpointCount } = this.state
     return (
-      (totalEndpointCount < 1) &&
+      totalEndpointCount < 1 && (
         <div>
-          <OverlayTrigger
-            placement='right'
-            overlay={<Tooltip> {info} </Tooltip>}
-          >
+          <OverlayTrigger placement='right' overlay={<Tooltip> {info} </Tooltip>}>
             <HelpIcon />
           </OverlayTrigger>
         </div>
+      )
     )
   }
 
-  renderPublishCollection () {
+  renderPublishCollection() {
     const { totalEndpointCount } = this.state
     return (
       <button
         className='btn btn-outline orange w-100 publishCollection'
         id='publish_api_doc_navbar_btn'
-        disabled={!totalEndpointCount}
-        onClick={() => { this.redirectUser() }}
+        // disabled={!totalEndpointCount}
+        onClick={() => {
+          this.redirectUser()
+        }}
       >
         <div className='d-flex align-items-left'>
           <img className='ml-2 pl-1 mr-1' src={FileIcon} alt='' />
@@ -219,50 +262,59 @@ class PublishCollectionInfo extends Component {
     )
   }
 
-  renderSettingsLink () {
+  renderSettingsLink() {
     return (
-      <div className='text-link' onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
+      <div
+        className='text-link'
+        onClick={() => {
+          isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast()
+        }}
+      >
         <img src={SettingIcon} alt='' />
       </div>
     )
   }
 
-  showAccessDeniedToast () {
+  showAccessDeniedToast() {
     const message = 'You do not have access to the Public API Doc Settings, please contact workplace Admin'
     toast.error(message)
   }
 
-  redirectUser () {
+  redirectUser() {
     this.setState({ openPublishSidebar: true })
+    this.props.ON_PUBLISH_DOC(true)
+    this.props.setCollectionIdForPublish({ collectionId: this.props.collectionId })
   }
 
-  async openPublishSettings () {
+  async openPublishSettings() {
     const collectionId = this.props.collectionId
     if (collectionId) {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
-    const activeTab = await indexedDbService.getAllData('tabs_metadata')
-    store.dispatch(updateTab(activeTab.activeTabId, { state: { pageType: 'SETTINGS' } }))
+    const activeTab = this.props.tabs.activeTabId
+    store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
   }
 
-  closePublishSidebar () {
+  closePublishSidebar() {
     this.setState({ openPublishSidebar: false })
+    this.props.ON_PUBLISH_DOC(false)
   }
 
-  openPublishSidebar () {
+  openPublishSidebar() {
     return (
       <>
-        {this.state.openPublishSidebar &&
+        {this.props.isPublishSliderOpen && (
           <PublishSidebar
             {...this.props}
             closePublishSidebar={this.closePublishSidebar.bind(this)}
-            openPublishSettings = {this.openPublishSettings.bind(this)}
-          />}
+            openPublishSettings={this.openPublishSettings.bind(this)}
+          />
+        )}
       </>
     )
   }
 
-  render () {
+  render() {
     const isPublic = this.props.collections[this.props.collectionId]?.isPublic || false
     return (
       <div>
@@ -274,4 +326,4 @@ class PublishCollectionInfo extends Component {
   }
 }
 
-export default connect(mapStateToProps)(PublishCollectionInfo)
+export default connect(mapStateToProps, mapDispatchToProps)(PublishCollectionInfo)

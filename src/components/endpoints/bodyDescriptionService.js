@@ -11,30 +11,26 @@ const parseBody = (rawBody) => {
   }
 }
 
-function handleUpdate (isFirstTime, props, msg) {
-  originalBodyDescription = jQuery.extend(
-    true,
-    {},
-    props.body_description
-  )
-  const bodyDescription = updateBodyDescription(
-    props.body,
-    isFirstTime,
-    msg
-  )
+function handleUpdate(isFirstTime, props, msg) {
+  originalBodyDescription = jQuery.extend(true, {}, props.body_description)
+  const bodyDescription = updateBodyDescription(props.body, isFirstTime, msg)
   if (props.set_body_description) props.set_body_description(bodyDescription)
   return bodyDescription
 }
 
-function updateBodyDescription (body, isFirstTime, msg) {
-  if (msg) { return msg }
+function updateBodyDescription(body, isFirstTime, msg) {
+  if (msg) {
+    return msg
+  }
   body = { payload: parseBody(body) }
   let bodyDescription = generateBodyDescription(body, isFirstTime)
-  if (!isFirstTime) { bodyDescription = preserveDefaultValue(bodyDescription) }
+  if (!isFirstTime) {
+    bodyDescription = preserveDefaultValue(bodyDescription)
+  }
   return bodyDescription
 }
 
-function generateBodyDescription (body, isFirstTime) {
+function generateBodyDescription(body, isFirstTime) {
   let bodyDescription = null
   let keys = []
   if (!body) {
@@ -50,11 +46,7 @@ function generateBodyDescription (body, isFirstTime) {
 
   for (let i = 0; i < keys.length; i++) {
     const value = body[keys[i]]
-    if (
-      typeof value === 'string' ||
-      typeof value === 'number' ||
-      typeof value === 'boolean'
-    ) {
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
       if (isFirstTime) {
         bodyDescription[keys[i]] = {
           value,
@@ -88,61 +80,47 @@ function generateBodyDescription (body, isFirstTime) {
   return bodyDescription
 }
 
-function preserveDefaultValue (bodyDescription) {
+function preserveDefaultValue(bodyDescription) {
   if (!originalBodyDescription) return bodyDescription
   const copiedOriginalBodyDescription = originalBodyDescription
   let updatedBodyDescription = jQuery.extend(true, {}, bodyDescription)
-  updatedBodyDescription = compareDefaultValue(
-    updatedBodyDescription,
-    copiedOriginalBodyDescription
-  )
+  updatedBodyDescription = compareDefaultValue(updatedBodyDescription, copiedOriginalBodyDescription)
 
   return updatedBodyDescription
 }
 
-function compareDefaultValue (updatedBodyDescription, originalBodyDescription) {
+function compareDefaultValue(updatedBodyDescription, originalBodyDescription) {
   if (!updatedBodyDescription) return
   const updatedKeys = Object.keys(updatedBodyDescription)
   for (let i = 0; i < updatedKeys.length; i++) {
     if (
       originalBodyDescription?.[updatedKeys?.[i]] &&
-      updatedBodyDescription[updatedKeys[i]].type ===
-      originalBodyDescription[updatedKeys[i]].type
+      updatedBodyDescription[updatedKeys[i]].type === originalBodyDescription[updatedKeys[i]].type
     ) {
       switch (updatedBodyDescription[updatedKeys[i]].type) {
         case 'string':
         case 'number':
         case 'boolean':
-          updatedBodyDescription[updatedKeys[i]].value =
-            originalBodyDescription[updatedKeys[i]].value
-          updatedBodyDescription[updatedKeys[i]].description =
-            originalBodyDescription[updatedKeys[i]].description
+          updatedBodyDescription[updatedKeys[i]].value = originalBodyDescription[updatedKeys[i]].value
+          updatedBodyDescription[updatedKeys[i]].description = originalBodyDescription[updatedKeys[i]].description
           break
         case 'array':
-          updatedBodyDescription[
-            updatedKeys[i]
-          ].value = compareDefaultValue(
+          updatedBodyDescription[updatedKeys[i]].value = compareDefaultValue(
             updatedBodyDescription[updatedKeys[i]].value,
             originalBodyDescription[updatedKeys[i]].value
           )
-          updatedBodyDescription[
-            updatedKeys[i]
-          ].default = compareDefaultValue(
+          updatedBodyDescription[updatedKeys[i]].default = compareDefaultValue(
             updatedBodyDescription[updatedKeys[i]].value,
             originalBodyDescription[updatedKeys[i]].value
           )[0]
-          updatedBodyDescription[updatedKeys[i]].description =
-            originalBodyDescription[updatedKeys[i]].description
+          updatedBodyDescription[updatedKeys[i]].description = originalBodyDescription[updatedKeys[i]].description
           break
         case 'object':
-          updatedBodyDescription[
-            updatedKeys[i]
-          ].value = compareDefaultValue(
+          updatedBodyDescription[updatedKeys[i]].value = compareDefaultValue(
             updatedBodyDescription[updatedKeys[i]].value,
             originalBodyDescription[updatedKeys[i]].value
           )
-          updatedBodyDescription[updatedKeys[i]].description =
-            originalBodyDescription[updatedKeys[i]].description
+          updatedBodyDescription[updatedKeys[i]].description = originalBodyDescription[updatedKeys[i]].description
           break
         default:
           break

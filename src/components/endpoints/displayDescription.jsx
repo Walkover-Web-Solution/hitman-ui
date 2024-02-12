@@ -1,25 +1,23 @@
 import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
-import { updateEndpoint } from './redux/endpointsActions'
+import { updateEndpoint } from '../pages/redux/pagesActions'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import EndpointBreadCrumb from './endpointBreadCrumb'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    update_endpoint: (editedEndpoint) =>
-      dispatch(updateEndpoint(editedEndpoint))
+    update_endpoint: (editedEndpoint) => dispatch(updateEndpoint(editedEndpoint))
   }
 }
 
 class DisplayDescription extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       showDescriptionFormFlag: false,
       showAddDescriptionFlag: isDashboardRoute(this.props)
-        ? !!(this.props.endpoint.description === '' ||
-          this.props.endpoint.description == null)
+        ? !!(this.props.endpoint.description === '' || this.props.endpoint.description == null)
         : false,
       theme: ''
     }
@@ -35,39 +33,28 @@ class DisplayDescription extends Component {
       ]
     }
 
-    this.formats = [
-      'header',
-      'bold',
-      'italic',
-      'underline',
-      'strike',
-      'color',
-      'background',
-      'list',
-      'bullet',
-      'link'
-    ]
+    this.formats = ['header', 'bold', 'italic', 'underline', 'strike', 'color', 'background', 'list', 'bullet', 'link']
   }
 
-  handleChange (e) {
+  handleChange(e) {
     const data = { ...this.props.data }
     data[e.currentTarget.name] = e.currentTarget.value
     this.props.props_from_parent('data', data)
-  };
+  }
 
-  componentDidMount () {
+  componentDidMount() {
     if (!this.state.theme) {
       this.setState({ theme: this.props.publicCollectionTheme })
     }
   }
 
-  handleDescription () {
+  handleDescription() {
     const showDescriptionFormFlag = true
     const showAddDescriptionFlag = false
     this.setState({ showDescriptionFormFlag, showAddDescriptionFlag })
   }
 
-  handleDescriptionCancel () {
+  handleDescriptionCancel() {
     const endpoint = { ...this.props.endpoint }
     endpoint.description = this.props.old_description
     const showDescriptionFormFlag = false
@@ -78,7 +65,7 @@ class DisplayDescription extends Component {
     this.props.props_from_parent('endpoint', endpoint)
   }
 
-  handleDescriptionSave (e) {
+  handleDescriptionSave(e) {
     e.preventDefault()
     const value = this.props.endpoint.description
     const endpoint = { ...this.props.endpoint }
@@ -96,27 +83,13 @@ class DisplayDescription extends Component {
     const endpoint = { ...this.props.endpoint }
     endpoint.description = value
     this.props.props_from_parent('endpoint', endpoint)
-  };
+  }
 
-  render () {
+  render() {
     return (
       <div className='endpoint-header'>
-        <div
-          className={
-            isDashboardRoute(this.props)
-              ? 'panel-endpoint-name-container'
-              : 'endpoint-name-container'
-          }
-        >
-          {isDashboardRoute(this.props) && (
-            <>
-              {this.props.endpoint &&
-                <EndpointBreadCrumb
-                  {...this.props}
-                  isEndpoint
-                />}
-            </>
-          )}
+        <div className={isDashboardRoute(this.props) ? 'panel-endpoint-name-container' : 'endpoint-name-container'}>
+          {isDashboardRoute(this.props) && <>{this.props.endpoint && <EndpointBreadCrumb {...this.props} isEndpoint />}</>}
         </div>
       </div>
     )

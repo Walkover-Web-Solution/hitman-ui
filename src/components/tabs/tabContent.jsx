@@ -12,17 +12,25 @@ import PublishDocsReview from './../publishDocs/publishDocsReview'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    update_collection: (editedCollection) =>
-      dispatch(updateCollection(editedCollection))
+    update_collection: (editedCollection) => dispatch(updateCollection(editedCollection))
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    isTabsLoaded: state?.tabs?.loaded,
+    tabsOrder: state?.tabs?.tabsOrder,
+    activeTabId: state.tabs.activeTabId,
+    tabData: state?.tabs?.tabs
   }
 }
 class TabContent extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {}
   }
 
-  unPublishCollection (collectionId) {
+  unPublishCollection(collectionId) {
     const selectedCollection = this.props.collections[collectionId]
     if (selectedCollection?.isPublic === true) {
       const editedCollection = { ...selectedCollection }
@@ -31,24 +39,26 @@ class TabContent extends Component {
     }
   }
 
-  renderContent (tabId) {
-    const tab = this.props.tabs.tabs[tabId]
+  renderContent(tabId) {
+    const tab = this.props.tabData?.[tabId]
     switch (tab?.type) {
       case 'history':
-        return <DisplayEndpoint {...this.props} environment={{}} tab={tab} historySnapshotFlag historySnapshot={this.props.historySnapshots[tab.id]} />
+        return (
+          <DisplayEndpoint
+            {...this.props}
+            environment={{}}
+            tab={tab}
+            historySnapshotFlag
+            historySnapshot={this.props.historySnapshots[tab.id]}
+          />
+        )
       case 'endpoint':
         return <DisplayEndpoint {...this.props} environment={{}} tab={tab} />
       case 'page':
         return (
           <Switch>
-            <Route
-              path='/orgs/:orgId/dashboard/page/:pageId/edit'
-              render={(props) => <EditPage {...this.props} {...props} tab={tab} />}
-            />
-            <Route
-              path='/orgs/:orgId/dashboard/page/:pageId'
-              render={(props) => <DisplayPage {...props} tab={tab} />}
-            />
+            <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' render={(props) => <EditPage {...this.props} {...props} tab={tab} />} />
+            <Route path='/orgs/:orgId/dashboard/page/:pageId' render={(props) => <DisplayPage {...props} tab={tab} />} />
           </Switch>
         )
       case 'collection':
@@ -56,46 +66,39 @@ class TabContent extends Component {
           return (
             <PublishDocsForm
               {...this.props}
-              isCollectionPublished={() => { return this.props.collections[tabId]?.isPublic || false }}
+              isCollectionPublished={() => {
+                return this.props.collections[tabId]?.isPublic || false
+              }}
               unPublishCollection={() => this.unPublishCollection(tabId)}
               selected_collection_id={tabId}
               onTab
             />
           )
         } else {
-          return (
-            <PublishDocsReview
-              {...this.props}
-              selected_collection_id={tabId}
-            />
-          )
+          return <PublishDocsReview {...this.props} selected_collection_id={tabId} />
         }
       default:
         break
     }
   }
 
-  renderEndpoint () {
+  renderEndpoint() {
     return <DisplayEndpoint {...this.props} environment={{}} tab='' />
   }
 
-  render () {
+  render() {
     return (
       <Tab.Content>
-        {getCurrentUser() && this.props.tabs.loaded
-          ? (
-              Object.keys(this.props.tabs.tabs).map((tabId) =>
-                (
-                  <Tab.Pane eventKey={tabId} key={tabId}>
-                    {this.renderContent(tabId)}
-                  </Tab.Pane>
-                )
-              )
-            )
+        {getCurrentUser() && this.props.isTabsLoaded
+          ? Object.keys(this.props.tabData).map((tabId) => (
+              <Tab.Pane eventKey={tabId} key={tabId}>
+                {this.renderContent(tabId)}
+              </Tab.Pane>
+            ))
           : this.renderEndpoint()}
       </Tab.Content>
     )
   }
 }
 
-export default connect(null, mapDispatchToProps)(TabContent)
+export default connect(mapStateToProps, mapDispatchToProps)(TabContent)

@@ -3,16 +3,13 @@ import logger from './logService'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import history from '../history'
-import { logout,getProxyToken } from '../components/auth/authServiceV2'
+import { logout, getProxyToken } from '../components/auth/authServiceV2'
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL
+// axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
-var instance = axios.create()
+let instance = axios.create()
 instance.interceptors.response.use(null, (error) => {
-  const expectedError =
-    error.response &&
-    error.response.status >= 400 &&
-    error.response.status < 500
+  const expectedError = error.response && error.response.status >= 400 && error.response.status < 500
 
   if (error.response.config.method === 'get' && error.response.status === 404) {
     history.push({
@@ -21,7 +18,7 @@ instance.interceptors.response.use(null, (error) => {
     })
   }
 
-  if (error.response.config.method === 'get' && error.response.status === 403) {
+  if (error?.response?.config?.method === 'get' && error?.response?.status === 403) {
     history.push({
       pathname: '/403_PAGE',
       error: error
@@ -39,53 +36,53 @@ instance.interceptors.response.use(null, (error) => {
   return Promise.reject(error)
 })
 
-function setProxyToken (jwt) {
+function setProxyToken(jwt) {
   instance.defaults.headers.common.proxy_auth_token = jwt
 }
 
-function addProxyToken(){
-  let proxyToken = getProxyToken();
+function addProxyToken() {
+  const proxyToken = getProxyToken()
   if (proxyToken) {
-    instance.defaults.headers.common.proxy_auth_token = proxyToken;
+    instance.defaults.headers.common.proxy_auth_token = proxyToken
   }
-  return instance;
+  return instance
 }
 
 async function getMethod(url, config = null) {
-  instance = addProxyToken();
+  instance = addProxyToken()
   return await instance.get(url, config)
 }
 async function postMethod(url, data = null, config = null) {
-  instance = addProxyToken();
-  return await  instance.post(url, data, config)
+  instance = addProxyToken()
+  return await instance.post(url, data, config)
 }
 
 async function putMethod(url, data = null, config = null) {
-  instance = addProxyToken();
+  instance = addProxyToken()
   return await instance.put(url, data, config)
 }
 
 async function deleteMethod(url, config = null) {
-  instance = addProxyToken();
+  instance = addProxyToken()
   return await instance.delete(url, config)
 }
 
-async function requestMethod(){
-  instance = addProxyToken();
+async function requestMethod() {
+  instance = addProxyToken()
   return instance.request
 }
 
-async function patchMethod(url, data = null, config = null){
-  instance = addProxyToken();
+async function patchMethod(url, data = null, config = null) {
+  instance = addProxyToken()
   return instance.patch(url, data, config)
 }
 
 export default {
-  get:getMethod,
-  post:postMethod,
-  put:putMethod,
+  get: getMethod,
+  post: postMethod,
+  put: putMethod,
   delete: deleteMethod,
-  request:requestMethod(),
-  patch:patchMethod,
+  request: requestMethod(),
+  patch: patchMethod,
   setProxyToken
 }

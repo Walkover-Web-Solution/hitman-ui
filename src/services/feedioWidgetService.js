@@ -2,7 +2,7 @@
 // const BOARD_TOKEN = process.env.REACT_APP_FEEDIO_WGT_BOARD_TOKEN
 // const FEEDIO_WIDGET_URL = process.env.REACT_APP_FEEDIO_WGT_URL
 
-export function loadfeedioWidget () {
+export function loadfeedioWidget() {
   // let user = window.localStorage.getItem('profile')
   // try {
   //   user = JSON.parse(user)

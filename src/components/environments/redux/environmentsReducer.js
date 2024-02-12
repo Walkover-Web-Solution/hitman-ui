@@ -6,7 +6,7 @@ const initialState = {
   currentEnvironmentId: null
 }
 
-function environmentsReducer (state = initialState, action) {
+function environmentsReducer(state = initialState, action) {
   let environments = {}
   switch (action.type) {
     case environmentsActionTypes.SET_ENVIRONMENT_ID:

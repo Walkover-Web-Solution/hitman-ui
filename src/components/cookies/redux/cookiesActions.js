@@ -1,6 +1,6 @@
 import cookiesApiService from '../cookiesApiService'
 import cookiesActionTypes from './cookiesActionTypes'
-import store from '../../../store/store'
+import { store } from '../../../store/store'
 
 export const fetchAllCookies = () => {
   return (dispatch) => {
@@ -9,7 +9,8 @@ export const fetchAllCookies = () => {
       .then((response) => {
         dispatch(onCookiesFetched(response.data))
         window.localStorage.setItem('cookies', JSON.stringify(response.data))
-      }).catch((error) => {
+      })
+      .catch((error) => {
         dispatch(onCookiesFetchedError(error.response ? error.response.data : error))
       })
   }
@@ -48,7 +49,8 @@ export const addCookieDomain = (data) => {
       .addDomain(data)
       .then((response) => {
         dispatch(onDomainAdded(response.data))
-      }).catch((error) => {
+      })
+      .catch((error) => {
         dispatch(onDomainAddedError(error.response ? error.response.data : error, data))
       })
   }
@@ -87,7 +89,8 @@ export const updateCookies = (data) => {
       .updateDomain(id, data)
       .then((response) => {
         dispatch(onCookiesUpdated(response.data))
-      }).catch((error) => {
+      })
+      .catch((error) => {
         dispatch(onCookiesUpdateError(error.response ? error.response.data : error, originalData))
       })
   }
@@ -122,7 +125,8 @@ export const deleteDomain = (data) => {
       .deleteDomain(data.id)
       .then((response) => {
         dispatch(onDomainDeleted(response.data))
-      }).catch((error) => {
+      })
+      .catch((error) => {
         dispatch(onDomainDeleteError(error.response ? error.response.data : error, data))
       })
   }

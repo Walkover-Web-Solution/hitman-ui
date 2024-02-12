@@ -10,9 +10,11 @@ import tabsReducer from '../components/tabs/redux/tabsReducer'
 import cookiesReducer from '../components/cookies/redux/cookiesReducer'
 import modalsReducer from '../components/modals/redux/modalsReducer'
 import historyReducer from '../components/history/redux/historyReducer'
-import sidebarReducer from '../components/main/sidebar/redux/sidebarReducer'
 import toggleResponseReducer from '../components/common/redux/toggleResponse/toggleResponseReducer'
 import publishDocsReducer from '../components/publishDocs/redux/publishDocsReducer'
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+import clientDataReducer from './clientData/clientDataReducer'
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -27,10 +29,18 @@ const rootReducer = combineReducers({
   history: historyReducer,
   cookies: cookiesReducer,
   modals: modalsReducer,
-  sidebar: sidebarReducer,
   responseView: toggleResponseReducer,
-  feedbacks: publishDocsReducer
+  feedbacks: publishDocsReducer,
+  clientData: clientDataReducer
 })
-const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)))
 
-export default store
+const persistConfig = {
+  key: 'root',
+  storage
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+const store = createStore(persistedReducer, storeEnhancers(applyMiddleware(thunk)))
+const persistor = persistStore(store)
+
+export { store, persistor }

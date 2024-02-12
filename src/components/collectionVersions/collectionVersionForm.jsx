@@ -5,86 +5,77 @@ import Form from '../common/form'
 import { URL_VALIDATION_REGEX } from '../common/constants'
 import { connect } from 'react-redux'
 import { onEnter, toTitleCase, ADD_VERSION_MODAL_NAME, DEFAULT_URL } from '../common/utility'
-import {
-  addVersion,
-  updateVersion
-} from '../collectionVersions/redux/collectionVersionsActions'
+import { addParentPageVersion, updateVersion } from '../collectionVersions/redux/collectionVersionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import shortid from 'shortid'
-import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_version: (newCollectionVersion, collectionId, callback) =>
-      dispatch(addVersion(newCollectionVersion, collectionId, callback)),
+    add_parentpage_version: (newCollectionVersion, parentPageId, callback) =>
+      dispatch(addParentPageVersion(newCollectionVersion, parentPageId, callback)),
     update_version: (editedVersion) => dispatch(updateVersion(editedVersion))
   }
 }
 class CollectionVersionForm extends Form {
-  constructor (props) {
+  constructor(props) {
     super(props)
-
     this.state = {
-      data: { number: '', host: DEFAULT_URL },
+      data: { name: '', state: 0 },
       errors: {},
       versionId: null,
-      collectionId: ''
+      parentPageId: ''
     }
 
     this.schema = {
-      number: Joi.string().required().label('Version Name').max(20),
-      host: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).label('Version Endpoint')
-        .error(() => { return { message: 'Version Endpoint Must be Valid URL' } })
+      name: Joi.string().required().label('Version Name').max(20),
+      state: Joi.valid(0, 1).optional()
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     let data = {}
-    const collectionId = ''
+    const parentPageId = ''
     let versionId = ''
     if (this.props.title === ADD_VERSION_MODAL_NAME) return
-    if (this.props.selected_version) {
-      const { number, host, id } = this.props.selected_version
+    if (this.props.selectedVersion) {
+      const { name, type, id } = this.props.selectedVersion
       data = {
-        number,
-        host
+        name,
+        type
       }
       versionId = id
     }
-    this.setState({ data, versionId, collectionId })
+    this.setState({ data, versionId, parentPageId })
   }
 
-  focusSelectedVersion ({ versionId, collectionId }) {
-    sidebarActions.focusSidebar()
-    sidebarActions.toggleItem('collections', collectionId, true)
-    sidebarActions.toggleItem('versions', versionId, true)
-  }
-
-  redirectToForm (version) {
+  redirectToForm(version) {
     if (this.props.setDropdownList) this.props.setDropdownList(version)
-    this.focusSelectedVersion({ versionId: version.id, collectionId: version.collectionId })
   }
 
-  async doSubmit () {
+  async doSubmit() {
     this.props.onHide()
-    let { number } = { ...this.state.data }
-    number = toTitleCase(number)
+    let { name } = { ...this.state.data }
+    name = toTitleCase(name)
     if (this.props.title === 'Edit Collection Version') {
-      const { id, collectionId } = this.props.selected_version
-      const editedCollectionVersion = { ...this.state.data, collectionId, id, number }
+      const { id, parentPageId } = this.props.selectedVersion
+      const editedCollectionVersion = { ...this.state.data, parentPageId, id, name }
       this.props.update_version(editedCollectionVersion)
     }
     if (this.props.title === ADD_VERSION_MODAL_NAME) {
-      const collectionId = this.props.collection_id
-      const newVersion = { ...this.state.data, requestId: shortid.generate(), number }
-      this.props.add_version(newVersion, collectionId, this.redirectToForm.bind(this))
+      const parentPageId = this.props.parentPage_id
+      const newVersion = { ...this.state.data, requestId: shortid.generate(), name }
+      this.props.add_parentpage_version(newVersion, parentPageId, this.redirectToForm.bind(this))
       moveToNextStep(2)
     }
   }
 
-  render () {
+  render() {
     return (
-      <div onKeyPress={(e) => { onEnter(e, this.handleKeyPress.bind(this)) }}>
+      <div
+        onKeyPress={(e) => {
+          onEnter(e, this.handleKeyPress.bind(this))
+        }}
+      >
         <Modal
           show={this.props.show}
           onHide={this.props.onHide}
@@ -93,27 +84,27 @@ class CollectionVersionForm extends Form {
           aria-labelledby='contained-modal-title-vcenter'
         >
           <Modal.Header className='custom-collection-modal-container' closeButton>
-            <Modal.Title id='contained-modal-title-vcenter'>
-              {this.props.title}
-            </Modal.Title>
+            <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {this.renderInput('number', 'Version Name', 'Version Name', true, true, false, '*version name accepts min 1 & max 20 characters')}
+                  {this.renderInput(
+                    'name',
+                    'Version Name',
+                    'Version Name',
+                    true,
+                    true,
+                    false,
+                    '*version name accepts min 1 & max 20 characters'
+                  )}
                 </div>
-                <div className='col-6'>
-                  {this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', false, false, true)}
-                </div>
+                <div className='col-6'>{this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', false, false, true)}</div>
               </div>
               <div className='text-left mt-4 mb-2'>
-
                 {this.renderButton('Submit')}
-                <button
-                  className='btn btn-secondary outline btn-lg ml-2'
-                  onClick={this.props.onHide}
-                >
+                <button className='btn btn-secondary outline btn-lg ml-2' onClick={this.props.onHide}>
                   Cancel
                 </button>
               </div>

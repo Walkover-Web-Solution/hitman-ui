@@ -10,15 +10,15 @@ const versionAndGroupMessage = 'Please add version and group first'
 class AddEntitySelectionModal extends Component {
   state = {}
 
-  componentDidMount () {
+  componentDidMount() {
     const versions = extractCollectionInfoService.extractVersionsFromCollectionId(this.props.collectionId, this.props)
     const groups = extractCollectionInfoService.extractGroupsFromVersions(versions, this.props)
     this.setState({ versions, groups })
   }
 
-  checkAvailability (entity) {
+  checkAvailability(entity) {
     if (this.state.versions && this.state.groups) {
-      if ((entity === 'group' || entity === 'page') && Object.keys(this.state.versions).length === 0) {
+      if (entity === 'page' && Object.keys(this.state.versions).length === 0) {
         return versionMessage
       } else if (entity === 'endpoint') {
         if (Object.keys(this.state.versions).length === 0) {
@@ -31,7 +31,7 @@ class AddEntitySelectionModal extends Component {
     }
   }
 
-  renderEntity (entity) {
+  renderEntity(entity) {
     if (!this.checkAvailability(entity) || entity === 'version') {
       return (
         <button className='entity-name' onClick={() => this.props.openAddEntityModal(entity)}>
@@ -40,23 +40,14 @@ class AddEntitySelectionModal extends Component {
       )
     } else {
       return (
-        <OverlayTrigger
-          placement='top'
-          overlay={
-            <Tooltip id={entity}>
-              {this.checkAvailability(entity)}
-            </Tooltip>
-          }
-        >
-          <button className='entity-name'>
-            {entity}
-          </button>
+        <OverlayTrigger placement='top' overlay={<Tooltip id={entity}>{this.checkAvailability(entity)}</Tooltip>}>
+          <button className='entity-name'>{entity}</button>
         </OverlayTrigger>
       )
     }
   }
 
-  render () {
+  render() {
     return (
       <Modal
         show={this.props.show}
@@ -68,17 +59,12 @@ class AddEntitySelectionModal extends Component {
         dialogClassName='add-entity-modal-container'
       >
         <Modal.Header className='custom-collection-modal-container' closeButton>
-          <Modal.Title id='contained-modal-title-vcenter'>
-            {this.props.title}
-          </Modal.Title>
+          <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className='body'>
             <div className='col'>
-              <div className='row justify-content-around'>
-                {this.renderEntity('version')}
-                {this.renderEntity('group')}
-              </div>
+              <div className='row justify-content-around'>{this.renderEntity('version')}</div>
               <div className='row justify-content-around'>
                 {this.renderEntity('endpoint')}
                 {this.renderEntity('page')}

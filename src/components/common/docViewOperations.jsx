@@ -1,21 +1,21 @@
 import React from 'react'
 import { isStateReject, isStateApproved } from '../common/utility'
 
-export function ApproveRejectEntity (props) {
+export function ApproveRejectEntity(props) {
   const { entity, entityId, entityName } = props
   return (
     <span>
       <button
         className='ml-2 btn btn-outline orange'
         type='button'
-        onClick={() => entityName === 'endpoint' ? props.approve_endpoint(entity[entityId]) : props.approve_page(entity[entityId])}
+        onClick={() => (entityName === 'endpoint' ? props.approve_endpoint(entity[entityId]) : props.approve_page(entity[entityId]))}
       >
         Approve
       </button>
       <button
         className='ml-2 btn btn-outline orange'
         type='button'
-        onClick={() => entityName === 'endpoint' ? props.reject_endpoint(entity[entityId]) : props.reject_page(entity[entityId])}
+        onClick={() => (entityName === 'endpoint' ? props.reject_endpoint(entity[entityId]) : props.reject_page(entity[entityId]))}
       >
         Reject
       </button>
@@ -23,12 +23,14 @@ export function ApproveRejectEntity (props) {
   )
 }
 
-export function PublishEntityButton (props) {
+export function PublishEntityButton(props) {
   const { entity, entityId, publishLoader, entityName } = props
   const approvedOrRejected = isStateApproved(entityId, entity) || isStateReject(entityId, entity)
   return (
     <button
-      className={'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange ' : 'btn btn-secondary outline ml-2 orange')}
+      className={
+        'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange ' : 'btn btn-secondary outline ml-2 orange')
+      }
       type='button'
       onClick={() => props.open_publish_confirmation_modal()}
       disabled={approvedOrRejected}
@@ -38,18 +40,20 @@ export function PublishEntityButton (props) {
   )
 }
 
-export function UnPublishEntityButton (props) {
-  const { publishLoader, entityName,onUnpublish  } = props
+export function UnPublishEntityButton(props) {
+  const { publishLoader, entityName, onUnpublish } = props
   const handleClick = () => {
     if (onUnpublish) {
-        onUnpublish();
+      onUnpublish()
     } else {
-        props.open_publish_confirmation_modal();
+      props.open_publish_confirmation_modal()
     }
-} 
+  }
   return (
     <button
-      className={'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange ' : 'btn btn-secondary outline ml-2 orange')}
+      className={
+        'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange ' : 'btn btn-secondary outline ml-2 orange')
+      }
       type='button'
       onClick={handleClick}
     >

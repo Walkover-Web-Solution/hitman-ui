@@ -5,32 +5,72 @@ import 'react-toastify/dist/ReactToastify.css'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
 import DisplayPage from '../pages/displayPage'
 import SideBarV2 from '../main/sideBarV2'
+import { ERROR_404_PUBLISHED_PAGE } from '../../components/errorPages'
+import '../collections/collections.scss'
 import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
-import store from '../../store/store'
-import {getCurrentUser} from '../auth/authServiceV2'
-import UserInfo from '../common/userInfo'
+import '../collectionVersions/collectionVersions.scss'
 // import ThumbUp from '../../assets/icons/thumb_up.svg'
 // import ThumbDown from '../../assets/icons/thumb_down.svg'
-import { setTitle, setFavicon, comparePositions, hexToRgb } from '../common/utility'
+import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
 import SplitPane from 'react-split-pane'
+import { addCollectionAndPages } from '../redux/generalActions'
+import generalApiService from '../../services/generalApiService'
+import { useQueryClient, useMutation } from 'react-query'
+
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    const queryClient = useQueryClient()
+
+    const setQueryUpdatedData = (type, id, data) => {
+      queryClient.setQueryData([type, id], data)
+      return
+    }
+
+    const keyExistInReactQuery = (id) => {
+      return queryClient.getQueryData(id) == undefined
+    }
+
+    const mutation = useMutation(
+      (data) => {
+        return data
+      },
+      {
+        onSuccess: (data) => {
+          queryClient.setQueryData([data.type, data.id], data?.content || '', {
+            staleTime: Number.MAX_SAFE_INTEGER, // Set staleTime to a large value
+            retry: 2
+          })
+        }
+      }
+    )
+    return (
+      <WrappedComponent
+        {...props}
+        setQueryUpdatedData={setQueryUpdatedData}
+        mutationFn={mutation}
+        keyExistInReactQuery={keyExistInReactQuery}
+      />
+    )
+  }
+}
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
-    groups: state.groups,
-    endpoints: state.endpoints,
     versions: state.versions,
-    pages: state.pages
+    pages: state.pages,
+    endpoints: state.endpoints
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetch_all_public_endpoints: (collectionIdentifier, domain) =>
-      dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain))
+      dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain)),
+    add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams))
   }
 }
 
@@ -48,9 +88,10 @@ class PublicEndpoint extends Component {
       endpoint: {}
     },
     openReviewModal: false
-  };
+  }
 
-  componentDidMount () {
+  async componentDidMount() {
+    // [info] => part 1 scroll options
     window.addEventListener('scroll', () => {
       let sticky = false
       if (window.scrollY > 20) {
@@ -60,127 +101,153 @@ class PublicEndpoint extends Component {
       }
       this.setState({ isSticky: sticky })
     })
-    if (this.props.location.pathname) {
-      const collectionIdentifier = this.props.location.pathname.split('/')[2]
-      this.props.fetch_all_public_endpoints(collectionIdentifier, window.location.hostname)
-      this.props.history.push({
-        collectionIdentifier: collectionIdentifier,
-        Environment: 'publicCollectionEnvironment'
-      })
+
+    let url = new URL(window.location.href)
+    if (this.props?.location?.search) {
+      var queryParams = new URLSearchParams(this.props.location.search)
     }
 
-    const unsubscribe = store.subscribe(() => {
-      // const baseUrl = window.location.href.split('/')[2]
-      const collectionId = this.props.location.collectionIdentifier
-      // const domain = this.props.location.pathname.split("/");
-      if (this.props.collections[collectionId]) {
-        // const index = this.props.collections[
-        //   collectionId
-        // ].docProperties.domainsList.findIndex((d) => d.domain === baseUrl)
-        // document.title = this.props.collections[
-        //   collectionId
-        // ].docProperties.domainsList[index].title;
-        unsubscribe()
+    // even if user copy paste other published collection with collection Id in the params change it
+    if (queryParams?.has('collectionId')) {
+      var collectionId = queryParams.get('collectionId')
+      sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId)
+    } else if (sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID) != null) {
+      var collectionId = sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID)
+    }
+
+    this.setState({ publicCollectionId: collectionId })
+
+    var queryParamApi2 = {}
+    // example `https://localhost:300/path`
+    // [info] part 2 get sidebar data and collection data  also set queryParmas for 2nd api call
+    if (isTechdocOwnDomain()) {
+      // internal case here collectionId will be there always
+      queryParamApi2.collectionId = collectionId
+      queryParamApi2.path = url.pathname.slice(3) // ignoring '/p/' in pathName
+      this.props.add_collection_and_pages(null, { collectionId: collectionId })
+    } else if (!isTechdocOwnDomain()) {
+      // external case
+      queryParamApi2.custom_domain = window.location.hostname // setting hostname
+      queryParamApi2.path = url.pathname.slice(1) // ignoring '/' in pathname
+      this.props.add_collection_and_pages(null, { custom_domain: window.location.hostname })
+    }
+
+    // setting version if present
+    if (queryParams?.has('version')) {
+      queryParamApi2.versionName = queryParams.get('version')
+    }
+
+    let queryParamsString = '?'
+    for (let key in queryParamApi2) {
+      if (queryParamApi2.hasOwnProperty(key)) {
+        // Check if the property belongs to the object (not inherited)
+        queryParamsString += `${encodeURIComponent(key)}=${encodeURIComponent(queryParamApi2[key])}&`
       }
-    })
+    }
+
+    // Remove the last '&' character
+    queryParamsString = queryParamsString.slice(0, -1)
+
+    const response = await generalApiService.getPublishedContentByPath(queryParamsString)
+    this.setDataToReactQueryAndSessionStorage(response)
   }
 
-  redirectToDefaultPage () {
-    const collectionId = this.props.match.params.collectionIdentifier
-    const versionIds = Object.keys(this.props.versions)
-    if (versionIds.length > 0) {
-      const defaultVersion = versionIds[0]
-      let defaultGroup = null
-      let defaultPage = null
-      let defaultEndpoint = null
-      // Search for Version Pages
-      const versionPages = Object.values(this.props.pages).filter(page => page.versionId === defaultVersion && page.groupId === null)
-      versionPages.sort(comparePositions)
-      defaultPage = versionPages[0]
-      if (defaultPage) {
-        this.props.history.push({
-          pathname: `/p/${collectionId}/pages/${defaultPage.id}/${this.state.collectionName}`
-        })
+  async componentDidUpdate() {
+    let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+    // before this display page or display endpoint gets called and data gets rendered
+    if (!this.props.keyExistInReactQuery(currentIdToShow)) {
+      const response = generalApiService.getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type)
+      if (this.props.pages?.[currentIdToShow]?.type == 4) {
+        this.props.mutationFn.mutate({ type: 'endpoint', id: currentIdToShow, content: response })
+      } else if (this.props.pages?.[currentIdToShow]?.type != 4) {
+        this.props.mutationFn.mutate({ type: 'pageContent', id: currentIdToShow, content: response })
+      }
+    }
+  }
+
+  setDataToReactQueryAndSessionStorage(response) {
+    if (response) {
+      var id = response?.data?.publishedContent?.id
+      if (response?.data?.publishedContent?.type === 4) {
+        this.props.mutationFn.mutate({ type: 'endpoint', id: id, content: response?.data?.publishedContent })
       } else {
-        // Search for Group with minimum position
-        const versionGroups = Object.values(this.props.groups).filter(group => group.versionId === defaultVersion)
-        versionGroups.sort(comparePositions)
-        defaultGroup = versionGroups[0]
-        if (defaultGroup) {
-          // Search for Group Pages with minimum position
-          const groupPages = Object.values(this.props.pages).filter(page => page.versionId === defaultVersion && page.groupId === defaultGroup.id)
-          groupPages.sort(comparePositions)
-          defaultPage = groupPages[0]
-          if (defaultPage) {
-            this.props.history.push({
-              pathname: `/p/${collectionId}/pages/${defaultPage.id}/${this.state.collectionName}`
-            })
-          } else {
-            // Search for Endpoint with minimum position
-            const groupEndpoints = Object.values(this.props.endpoints).filter(endpoint => endpoint.groupId === defaultGroup.id)
-            groupEndpoints.sort(comparePositions)
-            defaultEndpoint = groupEndpoints[0]
-            if (defaultEndpoint) {
-              this.props.history.push({
-                pathname: `/p/${collectionId}/e/${defaultEndpoint.id}/${this.state.collectionName}`
-              })
-            }
-          }
-        }
+        this.props.mutationFn.mutate({ type: 'pageContent', id: id, content: response?.data?.publishedContent?.contents })
       }
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
     }
   }
 
-  openLink (link) {
+  openLink(link) {
     window.open(`${link}`, '_blank')
   }
 
-  getCTALinks () {
-    const collectionId = this.props.match.params.collectionIdentifier
-    let { cta, links } = this.props.collections[collectionId]?.docProperties || { cta: [], links: [] }
+  getCTALinks() {
+    const collectionId = this.props?.match?.params?.collectionIdentifier
+    let { cta, links } = this.props.collections?.[collectionId]?.docProperties || { cta: [], links: [] }
     cta = cta ? cta.filter((o) => o.name.trim() && o.value.trim()) : []
     links = links ? links.filter((o) => o.name.trim() && o.link.trim()) : []
-    const isCTAandLinksPresent = (cta.length !== 0 || links.length !== 0)
+    const isCTAandLinksPresent = cta.length !== 0 || links.length !== 0
     return { cta, links, isCTAandLinksPresent }
   }
 
-  displayCTAandLink () {
+  displayCTAandLink() {
     const { cta, links, isCTAandLinksPresent } = this.getCTALinks()
     return (
       <>
-        <div
-          className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'public-navbar d-flex'}
-        >
+        <div className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'public-navbar d-flex'}>
           {/* <div className='entityTitle'>
             {this.state.currentEntityName}
           </div> */}
-          {
-            isCTAandLinksPresent &&
-              <div className='d-flex align-items-center'>
-                {links.map((link, index) => (
-                  <div key={`link-${index}`}>
-                    <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
-                  </div>
-                ))}
-                {cta.map((cta, index) => (
-                  <div className='cta-button-wrapper' key={`cta-${index}`}>
-                    <button style={{ backgroundColor: this.state.collectionTheme, borderColor: this.state.collectionTheme, color: this.state.collectionTheme }} name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
-                  </div>
-                ))}
-              </div>
-          }
+          {isCTAandLinksPresent && (
+            <div className='d-flex align-items-center'>
+              {links.map((link, index) => (
+                <div key={`link-${index}`}>
+                  <label
+                    className='link'
+                    htmlFor={`link-${index}`}
+                    onClick={() => {
+                      this.openLink(link.link)
+                    }}
+                  >
+                    {link.name}
+                  </label>
+                </div>
+              ))}
+              {cta.map((cta, index) => (
+                <div className='cta-button-wrapper' key={`cta-${index}`}>
+                  <button
+                    style={{
+                      backgroundColor: this.state.collectionTheme,
+                      borderColor: this.state.collectionTheme,
+                      color: this.state.collectionTheme
+                    }}
+                    name={`cta-${index}`}
+                    onClick={() => {
+                      this.openLink(cta.value)
+                    }}
+                  >
+                    {cta.name}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </>
     )
   }
 
-  fetchEntityName (entityName) {
-    if (entityName) { this.setState({ currentEntityName: entityName }) } else { this.setState({ currentEntityName: '' }) }
+  fetchEntityName(entityName) {
+    if (entityName) {
+      this.setState({ currentEntityName: entityName })
+    } else {
+      this.setState({ currentEntityName: '' })
+    }
   }
 
-  toggleReviewModal= () => this.setState({ openReviewModal: !this.state.openReviewModal });
+  toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal })
 
-  reviewModal () {
+  reviewModal() {
     return (
       <div onHide={() => this.props.onHide()} show top>
         <Modal show top>
@@ -203,7 +270,13 @@ class PublicEndpoint extends Component {
             </Modal.Body>
 
             <Modal.Footer>
-              <button className='btn btn-custom-dark' onClick={() => this.subscribeToExtendedLog()} onHide={() => this.setState({ showExtendedLog: false })}>Subscribe For Extended Log</button>
+              <button
+                className='btn btn-custom-dark'
+                onClick={() => this.subscribeToExtendedLog()}
+                onHide={() => this.setState({ showExtendedLog: false })}
+              >
+                Subscribe For Extended Log
+              </button>
             </Modal.Footer>
           </div>
         </Modal>
@@ -211,29 +284,33 @@ class PublicEndpoint extends Component {
     )
   }
 
-  setDislike () {
+  setDislike() {
     this.setState({ dislikeActive: !this.state.dislikeActive }, () => {
       const data = this.props.match.params.endpointId
       // const endpoint = this.state
       this.setState({ endpoint: data })
       const review = { ...this.state.review.endpoint }
       review.endpoint = this.props.match.params
-      if (this.state.dislikeActive) { review.feedback = 'disliked' }
+      if (this.state.dislikeActive) {
+        review.feedback = 'disliked'
+      }
       window.localStorage.setItem('review', JSON.stringify(review))
     })
     this.toggleReviewModal()
   }
 
-  setLike () {
+  setLike() {
     this.setState({ likeActive: !this.state.likeActive }, () => {
       const review = { ...this.state.review }
       review.endpoint = this.props.match.params
-      if (this.state.likeActive) { review.feedback = 'liked' }
+      if (this.state.likeActive) {
+        review.feedback = 'liked'
+      }
       window.localStorage.setItem('review', JSON.stringify(review))
     })
   }
 
-  handleLike () {
+  handleLike() {
     if (this.state.dislikeActive) {
       // this.setLike();
       // this.setDislike();
@@ -241,7 +318,7 @@ class PublicEndpoint extends Component {
     this.setLike()
   }
 
-  handleDislike () {
+  handleDislike() {
     if (this.state.likeActive) {
       // this.setDislike();
       // this.setLike();
@@ -249,44 +326,32 @@ class PublicEndpoint extends Component {
     this.setDislike()
   }
 
-  render () {
-    const collectionId = this.props.match.params.collectionIdentifier
-    const docFaviconLink = (this.props.collections[collectionId]?.favicon)
-      ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
-      : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
-    const docTitle = this.props.collections[collectionId]?.docProperties?.defaultTitle
-    setTitle(docTitle)
-    setFavicon(docFaviconLink)
-    if (
-      this.props.collections[this.props.location.pathname.split('/')[2]] &&
-      this.props.collections[this.props.location.pathname.split('/')[2]].name &&
-      this.state.collectionName === ''
-    ) {
-      const collectionName = this.props.collections[
-        this.props.location.pathname.split('/')[2]
-      ].name
-      const collectionTheme = this.props.collections[
-        this.props.location.pathname.split('/')[2]
-      ].theme
+  render() {
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+    let type = this.props?.pages?.[idToRender]?.type
 
-      this.setState({ collectionName, collectionTheme })
-    }
-    const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
-    if (
-      this.props.location.pathname.split('/')[1] === 'p' &&
-      (this.props.location.pathname.split('/')[3] === undefined ||
-        this.props.location.pathname.split('/')[3] === '') &&
-      this.state.collectionName !== ''
-    ) {
-      this.redirectToDefaultPage()
+    // [info] part 1  set collection data
+    let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
+
+    // [info] part 2 seems not necessary
+    // TODO later
+    if (collectionId) {
+      const docFaviconLink = this.props.collections[collectionId]?.favicon
+        ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
+        : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
+      const docTitle = this.props.collections[collectionId]?.docProperties?.defaultTitle
+      setTitle(docTitle)
+      setFavicon(docFaviconLink)
+      var collectionName = this.props.collections[collectionId]?.name
+      // var collectionTheme = this.props.collections[collectionId]?.theme
     }
 
     const { isCTAandLinksPresent } = this.getCTALinks()
     return (
-
       <>
-
-        <Style>{`
+        {/* [info] part 1 style component */}
+        <Style>
+          {`
           .link {
             &:hover {
               color: ${this.state.collectionTheme};
@@ -295,90 +360,78 @@ class PublicEndpoint extends Component {
           }
         `}
         </Style>
-        <nav className='public-endpoint-navbar'>
-          {
-            process.env.REACT_APP_UI_URL === window.location.origin + '/'
-              ? (
-                  getCurrentUser() === null
-                    ? (
-                      <div className='dropdown user-dropdown'>
-                        <div className='user-info'>
-                          <div className='user-avatar'>
-                            <i className='uil uil-signin' />
-                          </div>
-                          <div className='user-details '>
-                            <div className='user-details-heading not-logged-in'>
-                              <div
-                                id='sokt-sso'
-                                data-redirect-uri={redirectionUrl}
-                                data-source='hitman'
-                                data-token-key='sokt-auth-token'
-                                data-view='button'
-                                data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-                                signup_uri={redirectionUrl + '?signup=true'}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      )
-                    : (
-                      <UserInfo />
-                      )
-                )
-              : null
-          }
-        </nav>
-        <main role='main' className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}>
+        <nav className='public-endpoint-navbar'></nav>
+        <main
+          role='main'
+          className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
+        >
+          {/* [info] part 3 */}
           <SplitPane split='vertical' className='split-sidebar'>
-            <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.03') }}>
-              <SideBarV2 {...this.props} collectionName={this.state.collectionName} />
+            {/* [info] part 3 subpart 1 sidebar data left content */}
+            <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
+              {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
             </div>
-            <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'} style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}>
-              {
-              this.state.collectionName !== ''
-                ? (
-                  <div
-                    onScroll={(e) => {
-                      if (e.target.scrollTop > 20) { this.setState({ isSticky: true }) } else { this.setState({ isSticky: false }) }
-                    }}
-                    className='display-component'
-                  >
-                    <Switch>
-                      <Route
-                        path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
-                        render={(props) => <DisplayEndpoint
-                          {...props}
-                          fetch_entity_name={this.fetchEntityName.bind(this)}
-                          publicCollectionTheme={this.state.collectionTheme}
-                                           />}
-                      />
-                      <Route
-                        path={`/p/:collectionId/pages/:pageId/${this.state.collectionName}`}
-                        render={(props) => <DisplayPage
-                          {...props}
-                          fetch_entity_name={this.fetchEntityName.bind(this)}
-                          publicCollectionTheme={this.state.collectionTheme}
-                                           />}
-                      />
-                    </Switch>
-                    {this.displayCTAandLink()}
-                    {/* <div className='d-flex flex-row justify-content-start'>
+            {/*  [info] part 3 subpart 1 sidebar data right content */}
+            <div
+              className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
+              style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}
+            >
+              {idToRender ? (
+                <div
+                  onScroll={(e) => {
+                    if (e.target.scrollTop > 20) {
+                      this.setState({ isSticky: true })
+                    } else {
+                      this.setState({ isSticky: false })
+                    }
+                  }}
+                  className='display-component'
+                >
+                  {type == 4 && (
+                    <DisplayEndpoint
+                      {...this.props}
+                      fetch_entity_name={this.fetchEntityName.bind(this)}
+                      publicCollectionTheme={this.state.collectionTheme}
+                    />
+                  )}
+
+                  {(type == 1 || type == 3) && (
+                    <DisplayPage
+                      {...this.props}
+                      fetch_entity_name={this.fetchEntityName.bind(this)}
+                      publicCollectionTheme={this.state.collectionTheme}
+                    />
+                  )}
+
+                  {!type && (
+                    <ERROR_404_PUBLISHED_PAGE
+                      error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
+                    />
+                  )}
+
+                  {this.displayCTAandLink()}
+                  {/* <div className='d-flex flex-row justify-content-start'>
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
                     </div> */}
-                    {this.state.openReviewModal && this.reviewModal()}
+                  {this.state.openReviewModal && this.reviewModal()}
+                </div>
+              ) : (
+                <>
+                  <div className='custom-loading-container'>
+                    <div className='loading-content'>
+                      <button className='spinner-border' />
+                      <p className='mt-3'>Loading</p>
+                    </div>
                   </div>
-                  )
-                : null
-            }
-            </div> 
+                </>
+              )}
+            </div>
           </SplitPane>
-
         </main>
       </>
     )
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublicEndpoint)
+export default connect(mapStateToProps, mapDispatchToProps)(withQuery(PublicEndpoint))

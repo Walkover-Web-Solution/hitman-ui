@@ -6,24 +6,29 @@
 
 .custom-display-page {
   padding: 10px 30px;
-  margin:auto;
+  margin: auto;
   max-width: 50rem;
   padding-top: 25px;
+  position: absolute;
+  left: 5px;
+  right: 6rem;
   // min-height: calc(100vh - 70px);
-  button { 
+  button {
     margin-bottom: 15px;
     float: right;
-    &.btn-outline.orange{
+    &.btn-outline.orange {
       pointer-events: none;
     }
   }
-  p{
+  p {
     margin-bottom: 0;
   }
 }
 
 .custom-edit-page {
-  margin: 15px; 
+  // margin: 30px;
+  // left: 10rem;
+  margin-left: 20px;
 
   button {
     align-self: center;
@@ -36,18 +41,18 @@
   }
 
   .ql-toolbar.ql-snow {
-    background: #EFEFEF;
-    border: 1px solid #E0E0E0;
+    background: #efefef;
+    border: 1px solid #e0e0e0;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
   }
 
   .ql-container.ql-snow {
-    border: 1px solid #E0E0E0;
+    border: 1px solid #e0e0e0;
     background: rgba(243, 243, 243, 0.38);
     border-top: none;
     border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;  
+    border-bottom-right-radius: 5px;
   }
 }
 
@@ -69,37 +74,37 @@
   background: inherit;
   min-height: 55vh;
   word-break: break-all;
-  *{
+  * {
     font-size: revert;
     margin-bottom: 0;
     word-break: break-word;
   }
 }
 
-.page-icon{
+.page-icon {
   margin-right: 6px;
   height: 14px;
   margin-top: -4px;
 }
 
-.page-name-icon-container{
+.page-name-icon-container {
   overflow-wrap: anywhere;
   max-width: 182px;
 }
 
-.dropdown-label{
-  color: #4F4F4F;
+.dropdown-label {
+  color: #4f4f4f;
   font-size: 13px !important;
   margin: 0;
   font-weight: 400 !important;
   margin-bottom: 10px;
 }
 
-.dropdown-validation{
+.dropdown-validation {
   background: #fff;
   border: none;
   padding: 0;
   font-size: 12px;
   color: #d61124;
-  font-weight: 400
-  }
+  font-weight: 400;
+}

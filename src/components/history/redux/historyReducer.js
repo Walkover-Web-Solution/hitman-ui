@@ -2,10 +2,10 @@ import historyActionTyes from './historyActionTypes'
 
 const initialState = {}
 
-function historyReducer (state = initialState, action) {
+function historyReducer(state = initialState, action) {
   let newState = {}
   switch (action.type) {
-    case historyActionTyes.FETCH_HISTORY_FROM_IDB:
+    case historyActionTyes.FETCH_HISTORY_FROM_LOCAL:
       newState = { ...state, ...action.data }
       return newState
 
@@ -13,6 +13,9 @@ function historyReducer (state = initialState, action) {
       newState = { ...state }
       newState[action.data.id] = action.data
       return newState
+
+    case historyActionTyes.REMOVE_HISTORY:
+      return initialState
 
     default:
       return state

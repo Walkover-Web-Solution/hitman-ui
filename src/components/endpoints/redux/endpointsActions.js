@@ -1,39 +1,46 @@
 import { toast } from 'react-toastify'
-import store from '../../../store/store'
+import { store } from '../../../store/store'
 import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
-import { getOrgId, focusSelectedEntity } from '../../common/utility'
-import indexedDbService from '../../indexedDb/indexedDbService'
+import { getOrgId, focusSelectedEntity, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
 import shortid from 'shortid'
 import { sendAmplitudeData } from '../../../services/amplitude'
+import pagesActionTypes from '../../pages/redux/pagesActionTypes'
+import { addChildInParent } from '../../pages/redux/pagesActions'
+import tabService from '../../tabs/tabService'
+import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
-export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
+export const addEndpointInCollection = (history, newEndpoint, rootParentId, customCallback, props) => {
   const orgId = getOrgId()
   const requestId = shortid.generate()
   return (dispatch) => {
-    dispatch(addEndpointRequest({ ...newEndpoint, requestId, groupId }))
+    // dispatch(addEndpointRequest({ ...newEndpoint, requestId, rootParentId }))
     endpointApiService
-      .saveEndpoint(groupId, { ...newEndpoint, requestId })
-      .then((response) => {
-        sendAmplitudeData('Endpoint created', {
-          endpointId: response.data.id,
-          endpointName: response.data.name,
-          groupId: response.data.groupId
-        })
-        dispatch(onEndpointAdded(response.data))
-        focusSelectedEntity('endpoints', response.data.id)
-        // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
-        // endpointsOrder.push(response.data.id);
-        // dispatch(setEndpointIds(endpointsOrder, groupId));
-        history.push(`/orgs/${orgId}/dashboard/endpoint/${response.data.id}`)
+      .saveEndpointInCollection(rootParentId, { ...newEndpoint, requestId })
+      .then(async (response) => {
+        const responseToSend = {
+          id: response.data.id,
+          requestType: response.data.requestType,
+          name: response.data.name,
+          parentId: response.data.parentId,
+          child: [],
+          state: response.data.state,
+          isPublished: response.data.isPublished,
+          type: 4,
+          versionId: null,
+          collectionId: store.getState()?.pages?.[response?.data?.parentId].collectionId
+        }
+
+        const data = await dispatch(addChildInParent(responseToSend))
+        history.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
+        await dispatch(replaceTabForUntitled(data.payload.id))
         if (customCallback) {
           customCallback({ closeForm: true, stopLoader: true })
         }
       })
       .catch((error) => {
-        dispatch(
-          onEndpointAddedError(error.response ? error.response.data : error, newEndpoint, requestId)
-        )
+        dispatch(onEndpointAddedError(error.response ? error.response.data : error, newEndpoint, requestId))
         if (customCallback) {
           customCallback({ closeForm: false, stopLoader: true })
         }
@@ -47,13 +54,9 @@ export const fetchEndpoints = (orgId) => {
       .getAllEndpoints(orgId)
       .then((response) => {
         dispatch(onEndpointsFetched(response.data))
-        indexedDbService.clearStore('endpoints')
-        indexedDbService.addMultipleData('endpoints', Object.values(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onEndpointsFetchedError(error.response ? error.response.data : error)
-        )
+        dispatch(onEndpointsFetchedError(error.response ? error.response.data : error))
       })
   }
 }
@@ -63,13 +66,10 @@ export const fetchEndpoint = (endpointId) => {
     endpointApiService
       .getEndpoint(endpointId)
       .then((response) => {
-        dispatch(onEndpointFetched(response.data))
-        indexedDbService.addData('endpoints', response.data, response.data.id)
+        dispatch(onEndpointFetched(response))
       })
       .catch((error) => {
-        dispatch(
-          onEndpointFetchedError(error.response ? error.response.data : error)
-        )
+        dispatch(onEndpointFetchedError(error.response ? error.response.data : error))
       })
   }
 }
@@ -88,46 +88,24 @@ export const onEndpointFetchedError = (error) => {
   }
 }
 
-export const fetchEndpointsFromIdb = (orgId) => {
-  return (dispatch) => {
-    indexedDbService
-      .getAllData('endpoints')
-      .then((response) => {
-        dispatch(onEndpointsFetched(response))
-      })
-      .catch((error) => {
-        dispatch(
-          onEndpointsFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
-      })
-  }
-}
-
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
-    const originalEndpoint = JSON.parse(JSON.stringify(store.getState().endpoints[editedEndpoint.id]))
-    dispatch(updateEndpointRequest(editedEndpoint))
+    // const originalEndpoint = JSON.parse(JSON.stringify(store.getState().endpoints[editedEndpoint.id]))
+    // dispatch(updateEndpointRequest(editedEndpoint))
     const id = editedEndpoint.id
-    const updatedEndpoint = JSON.parse(JSON.stringify(editedEndpoint))
+    const updatedEndpoint = editedEndpoint
     delete updatedEndpoint.id
     delete updatedEndpoint.groupId
     endpointApiService
       .updateEndpoint(id, updatedEndpoint)
       .then((response) => {
-        dispatch(onEndpointUpdated(response.data))
+        // dispatch(onEndpointUpdated(response.data))
         if (stopSaveLoader) {
           stopSaveLoader()
         }
       })
       .catch((error) => {
-        dispatch(
-          onEndpointUpdatedError(
-            error.response ? error.response.data : error,
-            originalEndpoint
-          )
-        )
+        // dispatch(onEndpointUpdatedError(error.response ? error.response.data : error, originalEndpoint))
         if (stopSaveLoader) {
           stopSaveLoader()
         }
@@ -137,15 +115,20 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
 
 export const deleteEndpoint = (endpoint) => {
   return (dispatch) => {
-    dispatch(deleteEndpointRequest(endpoint))
-    // let endpointsOrder = store.getState().groups[endpoint.groupId]
-    // .endpointsOrder;
-    // endpointsOrder = endpointsOrder.filter((eId) => eId !== endpoint.id);
-    // dispatch(setEndpointIds(endpointsOrder, endpoint.groupId));
     endpointApiService
       .deleteEndpoint(endpoint.id)
-      .then(() => {
-        dispatch(onEndpointDeleted(endpoint))
+      .then((res) => {
+        deleteAllPagesAndTabsAndReactQueryData(endpoint.id)
+          .then((data) => {
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
+
+            // after deletion operation
+            operationsAfterDeletion(data)
+          })
+          .catch((error) => {
+            console.log('error after getting data from deleteAllPagesAndTabsAndReactQueryData == ', error)
+          })
       })
       .catch((error) => {
         dispatch(onEndpointDeletedError(error.response, endpoint))
@@ -168,34 +151,23 @@ export const duplicateEndpoint = (endpoint) => {
 
 export const moveEndpoint = (endpointId, sourceGroupId, destinationGroupId) => {
   return (dispatch) => {
-    dispatch(
-      moveEndpointRequest(endpointId, sourceGroupId, destinationGroupId)
-    )
+    dispatch(moveEndpointRequest(endpointId, sourceGroupId, destinationGroupId))
 
-    endpointApiService
-      .moveEndpoint(endpointId, { groupId: destinationGroupId })
-      .then((response) => {
-        dispatch(moveEndpointSuccess(response.data))
-      })
+    endpointApiService.moveEndpoint(endpointId, { groupId: destinationGroupId }).then((response) => {
+      dispatch(moveEndpointSuccess(response.data))
+    })
   }
 }
 
 export const setAuthorizationType = (endpointId, authData) => {
-  const originalAuthType = store.getState().endpoints[endpointId]
-    .authorizationType
+  const originalAuthType = store.getState().endpoints[endpointId].authorizationType
   return (dispatch) => {
     dispatch(setAuthorizationTypeRequest(endpointId, authData))
     endpointApiService
       .setAuthorizationType(endpointId, authData)
-      .then(() => { })
+      .then(() => {})
       .catch((error) => {
-        dispatch(
-          onAuthorizationTypeError(
-            error.response ? error.response.data : error,
-            endpointId,
-            originalAuthType
-          )
-        )
+        dispatch(onAuthorizationTypeError(error.response ? error.response.data : error, endpointId, originalAuthType))
         toast.error(error)
       })
   }
@@ -209,11 +181,7 @@ export const setAuthorizationTypeRequest = (endpointId, authData) => {
   }
 }
 
-export const onAuthorizationTypeError = (
-  error,
-  endpointId,
-  originalAuthType
-) => {
+export const onAuthorizationTypeError = (error, endpointId, originalAuthType) => {
   return {
     type: endpointsActionTypes.SET_AUTHORIZATION_TYPE_ERROR,
     error,
@@ -222,11 +190,7 @@ export const onAuthorizationTypeError = (
   }
 }
 
-export const moveEndpointRequest = (
-  endpointId,
-  sourceGroupId,
-  destinationGroupId
-) => {
+export const moveEndpointRequest = (endpointId, sourceGroupId, destinationGroupId) => {
   return {
     type: endpointsActionTypes.MOVE_ENDPOINT_REQUEST,
     endpointId,
@@ -256,40 +220,12 @@ export const onEndpointsFetchedError = (error) => {
   }
 }
 
-export const addEndpointRequest = (newEndpoint) => {
-  return {
-    type: endpointsActionTypes.ADD_ENDPOINT_REQUEST,
-    newEndpoint
-  }
-}
-
-export const onEndpointAdded = (response) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINT_ADDED,
-    response
-  }
-}
-
 export const onEndpointAddedError = (error, newEndpoint, requestId) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR,
     newEndpoint,
     error,
     requestId
-  }
-}
-
-export const updateEndpointRequest = (editedEndpoint) => {
-  return {
-    type: endpointsActionTypes.UPDATE_ENDPOINT_REQUEST,
-    editedEndpoint
-  }
-}
-
-export const onEndpointUpdated = (response) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINT_UPDATED,
-    response
   }
 }
 
@@ -332,27 +268,15 @@ export const onEndpointDuplicated = (response) => {
 
 export const updateEndpointOrder = (sourceEndpointIds, groupId) => {
   return (dispatch) => {
-    const originalEndpoints = JSON.parse(
-      JSON.stringify(store.getState().endpoints)
-    )
-    dispatch(
-      updateEndpointOrderRequest(
-        { ...store.getState().endpoints },
-        sourceEndpointIds
-      )
-    )
+    const originalEndpoints = JSON.parse(JSON.stringify(store.getState().endpoints))
+    dispatch(updateEndpointOrderRequest({ ...store.getState().endpoints }, sourceEndpointIds))
     endpointApiService
       .updateEndpointOrder(sourceEndpointIds)
       .then((response) => {
         toast.success(response.data)
       })
       .catch((error) => {
-        dispatch(
-          onEndpointOrderUpdatedError(
-            error.response ? error.response.data : error,
-            originalEndpoints
-          )
-        )
+        dispatch(onEndpointOrderUpdatedError(error.response ? error.response.data : error, originalEndpoints))
       })
   }
 }
@@ -375,17 +299,9 @@ export const onEndpointOrderUpdatedError = (error, endpoints) => {
   }
 }
 
-export const reorderEndpoint = (
-  sourceEndpointIds,
-  sourceGroupId,
-  destinationEndpointIds,
-  destinationGroupId,
-  endpointId
-) => {
+export const reorderEndpoint = (sourceEndpointIds, sourceGroupId, destinationEndpointIds, destinationGroupId, endpointId) => {
   return (dispatch) => {
-    const originalEndpoints = JSON.parse(
-      JSON.stringify(store.getState().endpoints)
-    )
+    const originalEndpoints = JSON.parse(JSON.stringify(store.getState().endpoints))
     dispatch(
       reorderEndpointRequest(
         { ...store.getState().endpoints },
@@ -397,21 +313,10 @@ export const reorderEndpoint = (
       )
     )
     endpointApiService
-      .updateEndpointOrder(
-        sourceEndpointIds,
-        sourceGroupId,
-        destinationEndpointIds,
-        destinationGroupId,
-        endpointId
-      )
-      .then(() => { })
+      .updateEndpointOrder(sourceEndpointIds, sourceGroupId, destinationEndpointIds, destinationGroupId, endpointId)
+      .then(() => {})
       .catch((error) => {
-        dispatch(
-          reorderEndpointError(
-            error.response ? error.response.data : error,
-            originalEndpoints
-          )
-        )
+        dispatch(reorderEndpointError(error.response ? error.response.data : error, originalEndpoints))
       })
   }
 }

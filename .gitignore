@@ -75,3 +75,6 @@ embedded.provisionprofile
 
 *.swp
 *.swo
+
+.*DS_Store 
+*dump.rdb 

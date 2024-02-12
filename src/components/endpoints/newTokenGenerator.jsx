@@ -21,13 +21,13 @@ class TokenGenerator extends Component {
       state: '',
       clientAuthentication: 'Send as Basic Auth header'
     }
-  };
+  }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetchAuthorizationData()
   }
 
-  fetchAuthorizationData () {
+  fetchAuthorizationData() {
     if (this.props.groupId) {
       const versionId = this.props.groups[this.props.groupId].versionId
       const data = this.props.versions[versionId].authorizationData
@@ -42,7 +42,7 @@ class TokenGenerator extends Component {
     implicit: 'Implicit',
     passwordCredentials: 'Password Credentials',
     clientCredentials: 'Client Credentials'
-  };
+  }
 
   inputFields = {
     tokenName: 'Token Name',
@@ -57,21 +57,21 @@ class TokenGenerator extends Component {
     scope: 'Scope',
     state: 'State',
     clientAuthentication: 'Client Authentication'
-  };
+  }
 
-  setGrantType (key) {
+  setGrantType(key) {
     const data = this.state.data
     data.grantType = key
     this.setState({ data })
   }
 
-  handleChange (e) {
+  handleChange(e) {
     const data = { ...this.state.data }
     data[e.currentTarget.name] = e.currentTarget.value
     this.setState({ data })
   }
 
-  async makeRequest () {
+  async makeRequest() {
     const grantType = this.state.data.grantType
     let requestApi = ''
     const paramsObject = this.makeParams(grantType)
@@ -85,10 +85,7 @@ class TokenGenerator extends Component {
       //     this.state.data.authUrl + "?" + params + "&response_type=code";
     }
 
-    if (
-      grantType === 'passwordCredentials' ||
-      grantType === 'clientCredentials'
-    ) {
+    if (grantType === 'passwordCredentials' || grantType === 'clientCredentials') {
       delete paramsObject.grantType
       requestApi = this.state.data.accessTokenUrl
       if (grantType === 'passwordCredentials') {
@@ -99,10 +96,7 @@ class TokenGenerator extends Component {
     }
 
     if (this.props.groupId) {
-      await this.props.set_authorization_data(
-        this.props.groups[this.props.groupId].versionId,
-        this.state.data
-      )
+      await this.props.set_authorization_data(this.props.groups[this.props.groupId].versionId, this.state.data)
     }
 
     if (this.props.groupId) {
@@ -111,31 +105,18 @@ class TokenGenerator extends Component {
         type: 'oauth_2',
         value: this.props.oauth_2
       }
-      await this.props.set_authorization_type(
-        this.props.location.pathname.split('/')[5],
-        data
-      )
+      await this.props.set_authorization_type(this.props.location.pathname.split('/')[5], data)
     }
 
     await indexedDbService.getDataBase()
-    await indexedDbService.updateData(
-      'authData',
-      this.state.data,
-      'currentAuthData'
-    )
+    await indexedDbService.updateData('authData', this.state.data, 'currentAuthData')
 
-    await endpointApiService.authorize(
-      requestApi,
-      paramsObject,
-      grantType,
-      this.props,
-      this.state.data
-    )
+    await endpointApiService.authorize(requestApi, paramsObject, grantType, this.props, this.state.data)
 
     this.props.onHide()
   }
 
-  makeParams (grantType) {
+  makeParams(grantType) {
     const params = {}
     const data = { ...this.state.data }
     const keys = Object.keys(data)
@@ -184,13 +165,13 @@ class TokenGenerator extends Component {
     return params
   }
 
-  setClientAuthorization (e) {
+  setClientAuthorization(e) {
     const data = this.state.data
     data.clientAuthentication = e.currentTarget.value
     this.setState({ data })
   }
 
-  renderInput (key) {
+  renderInput(key) {
     const grantType = this.state.data.grantType
     switch (key) {
       case 'grantType':
@@ -207,16 +188,9 @@ class TokenGenerator extends Component {
               >
                 {this.grantTypes[grantType]}
               </button>
-              <div
-                className='dropdown-menu new-token-generator-dropdown-menu'
-                aria-labelledby='dropdownMenuButton'
-              >
+              <div className='dropdown-menu new-token-generator-dropdown-menu' aria-labelledby='dropdownMenuButton'>
                 {Object.keys(this.grantTypes).map((key) => (
-                  <button
-                    key={key}
-                    onClick={() => this.setGrantType(key)}
-                    className='dropdown-item'
-                  >
+                  <button key={key} onClick={() => this.setGrantType(key)} className='dropdown-item'>
                     {this.grantTypes[key]}
                   </button>
                 ))}
@@ -238,22 +212,11 @@ class TokenGenerator extends Component {
               >
                 {this.state.data.clientAuthentication}
               </button>
-              <div
-                className='dropdown-menu new-token-generator-dropdown-menu'
-                aria-labelledby='dropdownMenuButton'
-              >
-                <button
-                  value='Send as Basic Auth header'
-                  onClick={this.setClientAuthorization.bind(this)}
-                  className='dropdown-item'
-                >
+              <div className='dropdown-menu new-token-generator-dropdown-menu' aria-labelledby='dropdownMenuButton'>
+                <button value='Send as Basic Auth header' onClick={this.setClientAuthorization.bind(this)} className='dropdown-item'>
                   Send as Basic Auth header
                 </button>
-                <button
-                  value='Send client credentials in body'
-                  onClick={this.setClientAuthorization.bind(this)}
-                  className='dropdown-item'
-                >
+                <button value='Send client credentials in body' onClick={this.setClientAuthorization.bind(this)} className='dropdown-item'>
                   Send client credentials in body
                 </button>
               </div>
@@ -300,7 +263,7 @@ class TokenGenerator extends Component {
     }
   }
 
-  showPassword () {
+  showPassword() {
     if (this.state.showPassword && this.state.showPassword === true) {
       this.setState({ showPassword: false })
     } else {
@@ -308,21 +271,13 @@ class TokenGenerator extends Component {
     }
   }
 
-  fetchDefaultInputField (key) {
+  fetchDefaultInputField(key) {
     return (
       <>
         <label className='basic-auth-label'>{this.inputFields[key]}</label>
         <input
           id='input'
-          type={
-            key === 'password'
-              ? this.state.showPassword
-                  ? this.state.showPassword === true
-                      ? null
-                      : 'password'
-                  : 'password'
-              : null
-          }
+          type={key === 'password' ? (this.state.showPassword ? (this.state.showPassword === true ? null : 'password') : 'password') : null}
           className='token-generator-input-field'
           name={key}
           value={this.state.data[key]}
@@ -330,11 +285,7 @@ class TokenGenerator extends Component {
         />
         {key === 'password' && (
           <label className='mb-0 ml-3'>
-            <input
-              className='mr-1'
-              type='checkbox'
-              onClick={() => this.showPassword()}
-            />
+            <input className='mr-1' type='checkbox' onClick={() => this.showPassword()} />
             Show Password
           </label>
         )}
@@ -342,7 +293,7 @@ class TokenGenerator extends Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <div>
         <Modal
@@ -354,13 +305,8 @@ class TokenGenerator extends Component {
           aria-labelledby='contained-modal-title-vcenter'
           centered
         >
-          <Modal.Header
-            className='custom-collection-modal-container'
-            closeButton
-          >
-            <Modal.Title id='contained-modal-title-vcenter'>
-              {this.props.title}
-            </Modal.Title>
+          <Modal.Header className='custom-collection-modal-container' closeButton>
+            <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
           </Modal.Header>
 
           <Modal.Body className='new-token-generator-modal-body'>
@@ -373,11 +319,7 @@ class TokenGenerator extends Component {
               <button className='btn btn-secondary outline btn-lg' onClick={this.props.onHide}>
                 Cancel
               </button>
-              <button
-                className='btn btn-primary btn-lg ml-2'
-                type='button'
-                onClick={() => this.makeRequest()}
-              >
+              <button className='btn btn-primary btn-lg ml-2' type='button' onClick={() => this.makeRequest()}>
                 Request Token
               </button>
             </div>

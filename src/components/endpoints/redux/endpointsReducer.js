@@ -1,6 +1,5 @@
 import endpointsActionTypes from './endpointsActionTypes'
 import { toast } from 'react-toastify'
-import groupsActionTypes from '../../groups/redux/groupsActionTypes'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
@@ -8,7 +7,7 @@ import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishAction
 
 const initialState = {}
 
-function endpointsReducer (state = initialState, action) {
+function endpointsReducer(state = initialState, action) {
   let endpoints = {}
   switch (action.type) {
     case endpointsActionTypes.SET_AUTHORIZATION_TYPE_REQUEST:
@@ -38,39 +37,6 @@ function endpointsReducer (state = initialState, action) {
     case endpointsActionTypes.ON_ENDPOINT_FETCHED_ERROR:
       return state
 
-    case endpointsActionTypes.ADD_ENDPOINT_REQUEST:
-      return {
-        ...state,
-        [action.newEndpoint.requestId]: action.newEndpoint
-      }
-
-    case endpointsActionTypes.ON_ENDPOINT_ADDED: {
-      endpoints = { ...state }
-      const endpointData = { ...action.response }
-      delete endpoints[endpointData.requestId]
-      delete endpointData.requestId
-      endpoints[action.response.id] = endpointData
-      return endpoints
-    }
-
-    case endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR:
-      toast.error(action.error)
-      endpoints = { ...state }
-      delete endpoints[action.requestId]
-      return endpoints
-
-    case endpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
-      return {
-        ...state,
-        [action.editedEndpoint.id]: action.editedEndpoint
-      }
-
-    case endpointsActionTypes.ON_ENDPOINT_UPDATED:
-      return {
-        ...state,
-        [action.response.id]: action.response
-      }
-
     case endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR:
       toast.error(action.error)
       return {
@@ -97,17 +63,10 @@ function endpointsReducer (state = initialState, action) {
     case endpointsActionTypes.ON_ENDPOINT_DUPLICATED:
       return { ...state, [action.response.id]: action.response }
 
-    case groupsActionTypes.ON_GROUP_DUPLICATED:
-      endpoints = { ...state, ...action.response.endpoints }
-      return { ...state, ...action.response.endpoints }
-
     case versionActionTypes.ON_VERSION_DUPLICATED:
       return { ...state, ...action.response.endpoints }
 
     case collectionActionTypes.ON_COLLECTION_DUPLICATED:
-      return { ...state, ...action.response.endpoints }
-
-    case versionActionTypes.IMPORT_VERSION:
       return { ...state, ...action.response.endpoints }
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
@@ -117,19 +76,12 @@ function endpointsReducer (state = initialState, action) {
       toast.error(action.error)
       return state
 
-    case publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS:
-      return {
-        ...state,
-        [action.data.id]: action.data
-      }
-
     case publicEndpointsActionTypes.ON_ENDPOINT_STATE_ERROR:
       toast.error(action.error)
       return { ...state }
 
     case collectionActionTypes.ON_COLLECTION_DELETED:
     case versionActionTypes.ON_VERSION_DELETED:
-    case groupsActionTypes.ON_GROUP_DELETED:
       endpoints = { ...state }
       action.payload.endpointIds.forEach((eId) => {
         delete endpoints[eId]
@@ -151,10 +103,6 @@ function endpointsReducer (state = initialState, action) {
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_ERROR:
       endpoints = { ...action.originalData.originalEndpoints }
-      return endpoints
-
-    case collectionActionTypes.ON_COLLECTION_IMPORTED:
-      endpoints = { ...state, ...action.response.endpoints }
       return endpoints
 
     default:

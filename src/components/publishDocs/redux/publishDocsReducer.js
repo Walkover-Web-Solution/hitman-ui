@@ -2,7 +2,7 @@ import publishDocsActionTypes from './publishDocsActionTypes'
 import _ from 'lodash'
 const initialState = {}
 
-function publishDocsReducer (state = initialState, action) {
+function publishDocsReducer(state = initialState, action) {
   let feedbacks = {}
   switch (action.type) {
     case publishDocsActionTypes.ON_FEEDBACKS_FETCHED:

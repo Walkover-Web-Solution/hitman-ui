@@ -1,13 +1,13 @@
 const widgetToken = process.env.REACT_APP_HELLO_WIDGET_TOKEN
 
-function getUserName (profile) {
+function getUserName(profile) {
   const firstName = profile?.first_name || ''
   const lastName = profile?.last_name || ''
   const name = firstName + ' ' + lastName
   return name?.trim()
 }
 
-export function loadHelloWidget () {
+export function loadHelloWidget() {
   let user = window.localStorage.getItem('profile')
   try {
     user = JSON.parse(user)
@@ -30,8 +30,7 @@ export function loadHelloWidget () {
       initChatWidget(helloConfig);
       `
     document.body.appendChild(script)
-    script.onload = () => {
-    }
+    script.onload = () => {}
   }
 }
 

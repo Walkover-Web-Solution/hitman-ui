@@ -23,25 +23,27 @@ const mapDispatchToProps = (dispatch) => {
 class TabOptions extends Component {
   state = {}
 
-  renderMenuOptions () {
+  renderMenuOptions() {
     const { tabs, activeTabId } = this.props.tabs
     const options = [
       { title: 'Close all tabs', handleOnClick: this.handleCloseAllTabs.bind(this), show: true },
-      { title: 'Close all tabs but current', handleOnClick: this.handleCloseAllButCurrent.bind(this), show: true },
-      { title: 'Duplicate Current Tab', handleOnClick: this.handleDuplicateTab.bind(this), show: tabs[activeTabId]?.type !== 'page' }
+      { title: 'Close all tabs but current', handleOnClick: this.handleCloseAllButCurrent.bind(this), show: true }
+      // { title: 'Duplicate Current Tab', handleOnClick: this.handleDuplicateTab.bind(this), show: tabs[activeTabId]?.type !== 'page' }
     ]
-    return (
-      options.map((option, index) => (
-        option.show && <Dropdown.Item disabled={option.disabled} key={index} onClick={option.handleOnClick}>{option.title}</Dropdown.Item>
-      ))
+    return options.map(
+      (option, index) =>
+        option.show && (
+          <Dropdown.Item disabled={option.disabled} key={index} onClick={option.handleOnClick}>
+            {option.title}
+          </Dropdown.Item>
+        )
     )
   }
 
-  handleDuplicateTab () {
+  handleDuplicateTab() {
     const { orgId } = this.props.match.params
     const { tabs, activeTabId } = this.props.tabs
     const tab = _.cloneDeep(tabs[activeTabId])
-
     tab.id = shortid.generate()
     tab.status = tabStatusTypes.NEW
     tab.previewMode = false
@@ -56,26 +58,24 @@ class TabOptions extends Component {
     })
   }
 
-  async handleCloseAllTabs () {
+  async handleCloseAllTabs() {
     const tabIdsToClose = this.props.tabs.tabsOrder
     this.props.handleCloseTabs(tabIdsToClose)
   }
 
-  handleCloseAllButCurrent () {
+  handleCloseAllButCurrent() {
     const { tabsOrder, activeTabId } = this.props.tabs
-    const tabIdsToClose = tabsOrder.filter(tabId => tabId !== activeTabId)
+    const tabIdsToClose = tabsOrder.filter((tabId) => tabId !== activeTabId)
     this.props.handleCloseTabs(tabIdsToClose)
   }
 
-  render () {
+  render() {
     return (
       <Dropdown>
         <Dropdown.Toggle bsPrefix='dropdown' variant='default' id='dropdown-basic'>
           <MoreVerticalIcon />
         </Dropdown.Toggle>
-        <Dropdown.Menu className='tab-options-drop-down'>
-          {this.renderMenuOptions()}
-        </Dropdown.Menu>
+        <Dropdown.Menu className='tab-options-drop-down'>{this.renderMenuOptions()}</Dropdown.Menu>
       </Dropdown>
     )
   }

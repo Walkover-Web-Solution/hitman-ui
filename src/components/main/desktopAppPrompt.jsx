@@ -6,7 +6,6 @@ import { DESKTOP_APP_DOWNLOAD } from '../modals/modalTypes'
 import { sendAmplitudeData } from '../../services/amplitude'
 import { toast } from 'react-toastify'
 
-
 const mapDispatchToProps = (dispatch) => {
   return {
     close_modal: () => dispatch(closeModal())
@@ -20,27 +19,27 @@ const mapStateToProps = (state) => {
   }
 }
 
-function DesktopAppDownloadModal (props) {
-  const [isAppInstalled, setIsAppInstalled] = useState(false);
+function DesktopAppDownloadModal(props) {
+  const [isAppInstalled, setIsAppInstalled] = useState(false)
   const shouldShowModal = !window.matchMedia('(display-mode: standalone)').matches
   const handleDownloadClick = () => {
     sendAmplitudeData('Download popup')
     if (props.modals.installPrompt) {
-      props.modals.installPrompt.prompt();
+      props.modals.installPrompt.prompt()
       props.modals.installPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the install prompt');
+          console.log('User accepted the install prompt')
         } else {
-          console.log('User dismissed the install prompt');
+          console.log('User dismissed the install prompt')
         }
-      });
+      })
     } else {
       toast.success('App is installed already')
-      setIsAppInstalled(true);
+      setIsAppInstalled(true)
     }
   }
 
-  const show = props.modals.activeModal === DESKTOP_APP_DOWNLOAD && shouldShowModal
+  const show = props.modals.activeModal === DESKTOP_APP_DOWNLOAD ? true : false
 
   const onHide = () => {
     const { orgId } = props.match.params
@@ -50,14 +49,16 @@ function DesktopAppDownloadModal (props) {
     props.close_modal()
   }
   return (
-    show &&
+    show && (
       <Modal {...props} backdrop='static' show centered onHide={onHide}>
         <Modal.Header className='no-header' closeButton />
         <Modal.Body className='download-app-pop'>
-          {props.modals.modalData
-            ? props.modals.modalData
-            : <h5 className='text-center'>Seems you have already used 5 tabs.</h5>}
-          <p className='max-90 mb-3'>We suggest you use our desktop app for a better user experience.<br />Also, enjoy other benefits like</p>
+          {props.modals.modalData ? props.modals.modalData : <h5 className='text-center'>Seems you have already used 10 tabs.</h5>}
+          <p className='max-90 mb-3'>
+            We suggest you use our desktop app for a better user experience.
+            <br />
+            Also, enjoy other benefits like
+          </p>
           <ol>
             <li>The desktop agent overcomes the Cross Object Resource Sharing (CORS) limitations of browsers</li>
             <li>Better shortcuts</li>
@@ -66,9 +67,12 @@ function DesktopAppDownloadModal (props) {
           </ol>
         </Modal.Body>
         <Modal.Footer className='text-center justify-content-center'>
-          <button onClick={handleDownloadClick} disabled={isAppInstalled} className='btn btn-primary'>Download Desktop App</button>
+          <button onClick={handleDownloadClick} disabled={isAppInstalled} className='btn btn-primary'>
+            Download Desktop App
+          </button>
         </Modal.Footer>
       </Modal>
+    )
   )
 }
 

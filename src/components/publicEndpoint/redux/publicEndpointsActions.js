@@ -1,6 +1,7 @@
 import publicEndpointsService from '../publicEndpointsService.js'
 import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'
+import endpointApiService from '../../endpoints/endpointApiService.js'
 
 export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) => {
   return (dispatch) => {
@@ -10,11 +11,7 @@ export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) =
         dispatch(onPublicEndpointsFetched(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onPublicEndpointsFetchedError(
-            error.response ? error.response.data : error
-          )
-        )
+        dispatch(onPublicEndpointsFetchedError(error.response ? error.response.data : error))
         history.push({ pathname: '/p/error', collection: true })
       })
   }
@@ -42,9 +39,7 @@ export const pendingPage = (page) => {
         dispatch(onPageStateSuccess(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onPageStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onPageStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -58,9 +53,7 @@ export const approvePage = (page, publishPageLoaderHandler) => {
         publishPageLoaderHandler()
       })
       .catch((error) => {
-        dispatch(
-          onPageStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onPageStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -73,9 +66,7 @@ export const draftPage = (page) => {
         dispatch(onPageStateSuccess(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onPageStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onPageStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -88,9 +79,7 @@ export const rejectPage = (page) => {
         dispatch(onPageStateSuccess(response.data))
       })
       .catch((error) => {
-        dispatch(
-          onPageStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onPageStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -114,12 +103,10 @@ export const pendingEndpoint = (endpoint) => {
     publicEndpointsService
       .pendingEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess(response.data))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: false }))
       })
       .catch((error) => {
-        dispatch(
-          onEndpointStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onEndpointStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -129,13 +116,11 @@ export const approveEndpoint = (endpoint, publishLoaderHandler) => {
     publicEndpointsService
       .approveEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess(response.data))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: true }))
         publishLoaderHandler()
       })
       .catch((error) => {
-        dispatch(
-          onEndpointStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onEndpointStateError(error.response ? error.response.data : error))
         publishLoaderHandler()
       })
   }
@@ -146,12 +131,10 @@ export const draftEndpoint = (endpoint) => {
     publicEndpointsService
       .draftEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess(response.data))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: false }))
       })
       .catch((error) => {
-        dispatch(
-          onEndpointStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onEndpointStateError(error.response ? error.response.data : error))
       })
   }
 }
@@ -161,12 +144,10 @@ export const rejectEndpoint = (endpoint) => {
     publicEndpointsService
       .rejectEndpoint(endpoint)
       .then((response) => {
-        dispatch(onEndpointStateSuccess(response.data))
+        dispatch(onEndpointStateSuccess({ state: response.data.state, id: endpoint.id, isPublished: false }))
       })
       .catch((error) => {
-        dispatch(
-          onEndpointStateError(error.response ? error.response.data : error)
-        )
+        dispatch(onEndpointStateError(error.response ? error.response.data : error))
       })
   }
 }

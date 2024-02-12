@@ -3,7 +3,7 @@ import { toast } from 'react-toastify'
 
 const initialState = {}
 
-function cookiesReducer (state = initialState, action) {
+function cookiesReducer(state = initialState, action) {
   let cookies = {}
   switch (action.type) {
     case cookiesActionTypes.ON_COOKIES_FETCHED:

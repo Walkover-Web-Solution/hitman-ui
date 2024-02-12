@@ -14,11 +14,6 @@ const DELETE_VERSION = {
   message: `Are you sure you want to delete this versions?
     All your groups, pages and endpoints present in this version will be deleted.`
 }
-const DELETE_GROUP = {
-  title: 'Delete Group',
-  message: `Are you sure you wish to delete this group?
-    All your pages and endpoints present in this group will be deleted.`
-}
 const DELETE_PAGE = {
   title: 'Delete Page',
   message: 'Are you sure you wish to delete this page?'
@@ -31,7 +26,6 @@ const DELETE_ENDPOINT = {
 const confirmationModalEnum = {
   DELETE_COLLECTION,
   DELETE_VERSION,
-  DELETE_GROUP,
   DELETE_PAGE,
   DELETE_ENDPOINT,
   REMOVE_COLLECTION

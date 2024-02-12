@@ -5,7 +5,10 @@ const https = require('https')
 const HITMAN_AGENT = 'Hitman/1.0.0'
 const cancelTokenMap = new Map()
 
-async function makeHttpRequestThroughAxios ({ api: url, method, body: data, header: headers, keyForRequest, sslMode }, FILE_UPLOAD_DIRECTORY) {
+async function makeHttpRequestThroughAxios(
+  { api: url, method, body: data, header: headers, keyForRequest, sslMode },
+  FILE_UPLOAD_DIRECTORY
+) {
   const httpsAgent = getAgent(sslMode)
   headers = headers || {}
   headers['user-agent'] = HITMAN_AGENT
@@ -36,9 +39,7 @@ async function makeHttpRequestThroughAxios ({ api: url, method, body: data, head
 
           const stream = fs.createReadStream(filePath)
           bodyFormData.append(key, stream)
-        } catch (e) {
-
-        }
+        } catch (e) {}
       } else {
         bodyFormData.append(key, value)
       }
@@ -79,12 +80,12 @@ async function makeHttpRequestThroughAxios ({ api: url, method, body: data, head
   })
 }
 
-function createCancelToken (key) {
+function createCancelToken(key) {
   cancelTokenMap.set(key, axios.CancelToken.source())
   return cancelTokenMap.get(key).token
 }
 
-function getAgent (sslMode = true) {
+function getAgent(sslMode = true) {
   const rejectUnauthorized = sslMode
   const agent = new https.Agent({
     rejectUnauthorized
@@ -92,7 +93,7 @@ function getAgent (sslMode = true) {
   return agent
 }
 
-function prepareResponse (data) {
+function prepareResponse(data) {
   return {
     success: true,
     status: data.status,
@@ -102,7 +103,7 @@ function prepareResponse (data) {
   }
 }
 
-function invokeCancel (key) {
+function invokeCancel(key) {
   cancelTokenMap.get(key).cancel('Request was cancelled')
 }
 

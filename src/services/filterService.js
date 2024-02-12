@@ -1,4 +1,4 @@
-export function filter (entity, filter, title) {
+export function filter(entity, filter, title) {
   let entityId = ''
   if (title === 'groupPages' || title === 'endpoints') {
     entityId = 'groupId'
@@ -28,10 +28,7 @@ export function filter (entity, filter, title) {
   const uniqueIds = {}
   for (let i = 0; i < finalEntityNames.length; i++) {
     for (let j = 0; j < Object.keys(entityNameIds).length; j++) {
-      if (
-        finalEntityNames[i] === entityNameIds[j].name &&
-        !uniqueIds[entityNameIds[j].id]
-      ) {
+      if (finalEntityNames[i] === entityNameIds[j].name && !uniqueIds[entityNameIds[j].id]) {
         finalEntityIds.push(entityNameIds[j].id)
         uniqueIds[entityNameIds[j].id] = true
         break
@@ -51,11 +48,7 @@ export function filter (entity, filter, title) {
       ids.push(this.filtered[finalEntityIds[i]][entityId])
     }
   }
-  if (
-    title === 'versionPages' ||
-    title === 'groupPages' ||
-    title === 'endpoints'
-  ) {
+  if (title === 'versionPages' || title === 'groupPages' || title === 'endpoints') {
     const idsAndFilteredEntity = []
     idsAndFilteredEntity[0] = this.filtered
     idsAndFilteredEntity[1] = ids
@@ -64,7 +57,7 @@ export function filter (entity, filter, title) {
   return ids
 }
 
-export function jsonConcat (o1, o2) {
+export function jsonConcat(o1, o2) {
   for (const key in o2) {
     o1[key] = o2[key]
   }

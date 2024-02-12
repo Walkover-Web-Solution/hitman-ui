@@ -12,8 +12,8 @@
 .pageSettingsButton {
   width: 34px;
   height: 34px;
-  background: #FFFFFF;
-  border: 1px solid #E0E0E0;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
   box-sizing: border-box;
   border-radius: 4px;
 }
@@ -21,8 +21,8 @@
 .externalLinkButton {
   width: 34px;
   height: 34px;
-  background: #FFFFFF;
-  border: 1px solid #E0E0E0;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
   box-sizing: border-box;
   border-radius: 4px;
 }
@@ -36,7 +36,7 @@
   right: 0px;
   height: 100vh;
   width: 45vw;
-  box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07)
+  box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07);
 }
 
 .hosted-doc-heading {
@@ -59,7 +59,7 @@
 }
 
 .publish-api-doc-container {
-  background: #FFFFFF;
+  background: #ffffff;
   padding: 30px;
 }
 
@@ -225,10 +225,7 @@
 }
 
 .color5 {
-  background: linear-gradient(135deg,
-      #f2994a 2.5%,
-      #f2994a 2.51%,
-      #f0bd3b 100%);
+  background: linear-gradient(135deg, #f2994a 2.5%, #f2994a 2.51%, #f0bd3b 100%);
 }
 
 .circle-picker {
@@ -238,7 +235,6 @@
   div {
     border-radius: 0px !important;
   }
-
 }
 
 .status-new {
@@ -246,7 +242,7 @@
   float: right;
   background: #00c58a30;
   padding: 0;
-  color: #00C58A;
+  color: #00c58a;
   width: 100%;
   max-width: 35px;
   text-align: center;
@@ -258,7 +254,7 @@
   float: right;
   background: #9b51e069;
   padding: 0;
-  color: #9B51E0;
+  color: #9b51e0;
   width: 100%;
   max-width: 35px;
   text-align: center;
@@ -269,7 +265,6 @@ span.tag {
   background: #cadec8;
   margin-right: 10px;
   padding: 3px;
-
 }
 
 .rightBorder {
@@ -280,10 +275,10 @@ span.tag {
     height: 100%;
     top: 0;
     position: absolute;
-    content: "";
+    content: '';
     left: 20px;
     width: 2px;
-    background: #E0E0E0;
+    background: #e0e0e0;
   }
 }
 
@@ -315,17 +310,17 @@ span.tag {
   width: 100%;
   padding: 5px 4px;
   border-radius: 8px;
-  border: .5px solid transparent;
+  border: 0.5px solid transparent;
   display: flex;
   align-items: center;
 
   &:hover {
-    border-color: #E6DBD4 !important;
+    border-color: #e6dbd4 !important;
   }
 
   &.active {
     background: #fff;
-    border-color: #E6DBD4 !important;
+    border-color: #e6dbd4 !important;
   }
 }
 
@@ -348,7 +343,7 @@ span.tag {
 label.hostes-label {
   font-size: 14px;
   line-height: 17px;
-  color: #4F4F4F;
+  color: #4f4f4f;
 }
 
 .publish-reject button {
@@ -360,10 +355,10 @@ label.hostes-label {
   font-weight: 600 !important;
 }
 
-.custom-toggle{
-  border: 1px solid #E6DBD4 !important;
+.custom-toggle {
+  border: 1px solid #e6dbd4 !important;
   padding: 5px 5px 5px 10px !important;
-  &::after{
+  &::after {
     transform: rotate(-45deg) !important;
   }
 }
