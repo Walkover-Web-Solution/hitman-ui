@@ -118,16 +118,17 @@ export const deleteEndpoint = (endpoint) => {
     endpointApiService
       .deleteEndpoint(endpoint.id)
       .then((res) => {
-        deleteAllPagesAndTabsAndReactQueryData(endpoint.id).then((data) => {
+        deleteAllPagesAndTabsAndReactQueryData(endpoint.id)
+          .then((data) => {
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
 
-          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
-          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
-
-          // after deletion operation
-          operationsAfterDeletion(data)
-        }).catch((error) => {
-          console.log('error after getting data from deleteAllPagesAndTabsAndReactQueryData == ', error)
-        })
+            // after deletion operation
+            operationsAfterDeletion(data)
+          })
+          .catch((error) => {
+            console.log('error after getting data from deleteAllPagesAndTabsAndReactQueryData == ', error)
+          })
       })
       .catch((error) => {
         dispatch(onEndpointDeletedError(error.response, endpoint))
@@ -164,7 +165,7 @@ export const setAuthorizationType = (endpointId, authData) => {
     dispatch(setAuthorizationTypeRequest(endpointId, authData))
     endpointApiService
       .setAuthorizationType(endpointId, authData)
-      .then(() => { })
+      .then(() => {})
       .catch((error) => {
         dispatch(onAuthorizationTypeError(error.response ? error.response.data : error, endpointId, originalAuthType))
         toast.error(error)
@@ -313,7 +314,7 @@ export const reorderEndpoint = (sourceEndpointIds, sourceGroupId, destinationEnd
     )
     endpointApiService
       .updateEndpointOrder(sourceEndpointIds, sourceGroupId, destinationEndpointIds, destinationGroupId, endpointId)
-      .then(() => { })
+      .then(() => {})
       .catch((error) => {
         dispatch(reorderEndpointError(error.response ? error.response.data : error, originalEndpoints))
       })

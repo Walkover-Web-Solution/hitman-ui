@@ -176,7 +176,7 @@ export const addPage1 = (history, rootParentId, newPage) => {
       .saveCollectionPage(rootParentId, newPage)
       .then((response) => {
         const data = response.data.page
-        response.data.page.requestId = newPage.requestId;
+        response.data.page.requestId = newPage.requestId
         dispatch(onParentPageAdded(response.data))
         history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
@@ -222,16 +222,17 @@ export const deletePage = (page) => {
     pageApiService
       .deletePage(page?.id)
       .then((res) => {
-        deleteAllPagesAndTabsAndReactQueryData(page.id).then((data) => {
+        deleteAllPagesAndTabsAndReactQueryData(page.id)
+          .then((data) => {
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
 
-          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
-          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
-
-          // after deletion operation
-          operationsAfterDeletion(data)
-        }).catch((error) => {
-          console.errro(error)
-        })
+            // after deletion operation
+            operationsAfterDeletion(data)
+          })
+          .catch((error) => {
+            console.errro(error)
+          })
       })
       .catch((error) => {
         dispatch(onPageDeletedError(error.response, page))
@@ -240,17 +241,17 @@ export const deletePage = (page) => {
 }
 
 const deletePageAndChildren = (pageId, tabs, pageIds = []) => {
-  const pages = store.getState().pages;
+  const pages = store.getState().pages
   if (pages[pageId]) {
     pages[pageId].child.forEach((childPageId) => {
-      const newPageIds = [...pageIds, childPageId];
-      deletePageAndChildren(childPageId, tabs, newPageIds);
-    });
-    delete pages[pageId];
+      const newPageIds = [...pageIds, childPageId]
+      deletePageAndChildren(childPageId, tabs, newPageIds)
+    })
+    delete pages[pageId]
   }
   // tabsDataDelete(pageIds, tabs);
-  return pages;
-};
+  return pages
+}
 
 export const deletePageRequest = (page) => {
   return {

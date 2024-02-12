@@ -227,15 +227,19 @@ class EndpointBreadCrumb extends Component {
               maxLength='50'
             />
             <h3 className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}>
-              {this.props?.isEndpoint ? this.props?.endpointContent?.data?.name || '' : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
-              {this.props?.isEndpoint && <EditIcon
-                className='fa fa-pencil-square-o ml-2 cursor-pointer '
-                onClick={() => {
-                  this.setState({ nameEditable: true }, () => {
-                    this.nameInputRef.current.focus()
-                  })
-                }}
-              />}
+              {this.props?.isEndpoint
+                ? this.props?.endpointContent?.data?.name || ''
+                : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
+              {this.props?.isEndpoint && (
+                <EditIcon
+                  className='fa fa-pencil-square-o ml-2 cursor-pointer '
+                  onClick={() => {
+                    this.setState({ nameEditable: true }, () => {
+                      this.nameInputRef.current.focus()
+                    })
+                  }}
+                />
+              )}
             </h3>
           </div>
           {this.props.location.pathname.split('/')[5] !== 'new' && (

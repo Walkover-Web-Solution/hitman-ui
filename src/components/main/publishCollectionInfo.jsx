@@ -167,7 +167,7 @@ class PublishCollectionInfo extends Component {
           if (endpoints[endpointId]?.isPublished) liveEndpointCount++
         }
       }
-  
+
       for (const pageId of Object.keys(pages)) {
         const groupId = pages[pageId]?.groupId
         let versionId = ''
@@ -179,14 +179,13 @@ class PublishCollectionInfo extends Component {
           if (pages[pageId]?.isPublished) livePageCount++
         }
       }
-  
+
       this.setState({ totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount })
-  
+
       // if (this.props.getTotalEndpointsCount) {
       //   this.props.getTotalEndpointsCount(totalEndpointCount)
       // }
-    }
-    catch(error){
+    } catch (error) {
       console.error(error)
     }
   }
