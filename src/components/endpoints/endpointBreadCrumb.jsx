@@ -175,33 +175,11 @@ class EndpointBreadCrumb extends Component {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = e.currentTarget.value
       this.props.setQueryUpdatedData(tempData)
-    } else {
-      this.props.update_name({ name: e.currentTarget.value, id: this.props?.pageId })
     }
   }
 
   handleInputBlur() {
     this.setState({ nameEditable: false })
-    if (this.state.endpointTitle.trim()) {
-      if (this.props.isEndpoint) {
-        // const data = this.props.endpoint
-        // data.name = toTitleCase(this.state.endpointTitle)
-        // if (data.id) {
-        //   this.props.update_endpoint(data)
-        // }
-        // this.props.alterEndpointName(data.name)
-      } else {
-        const page = this.props.pages[this.props?.pageId]
-        // page.name = toTitleCase(this.state.endpointTitle)
-        this.props.update_page(page)
-      }
-      const title = toTitleCase(this.state.endpointTitle)
-      this.setState({ previousTitle: title })
-      this.setState({})
-    } else {
-      const title = this.state.previousTitle
-      this.setState({ endpointTitle: title })
-    }
   }
 
   setEndpointData() {
@@ -242,22 +220,26 @@ class EndpointBreadCrumb extends Component {
               name='enpoint-title'
               style={{ width: 'auto', textTransform: 'capitalize' }}
               onChange={this.handleInputChange.bind(this)}
-              value={this.props?.isEndpoint ? this.props?.endpointContent?.data?.name || '' : this.props?.page?.name}
+              value={this.props?.isEndpoint && (this.props?.endpointContent?.data?.name || '')}
               onBlur={() => {
                 this.handleInputBlur()
               }}
               maxLength='50'
             />
             <h3 className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}>
-              {this.props?.isEndpoint ? this.props?.endpointContent?.data?.name || '' : this.props?.page?.name}
-              <EditIcon
-                className='fa fa-pencil-square-o ml-2 cursor-pointer '
-                onClick={() => {
-                  this.setState({ nameEditable: true }, () => {
-                    this.nameInputRef.current.focus()
-                  })
-                }}
-              />
+              {this.props?.isEndpoint
+                ? this.props?.endpointContent?.data?.name || ''
+                : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
+              {this.props?.isEndpoint && (
+                <EditIcon
+                  className='fa fa-pencil-square-o ml-2 cursor-pointer '
+                  onClick={() => {
+                    this.setState({ nameEditable: true }, () => {
+                      this.nameInputRef.current.focus()
+                    })
+                  }}
+                />
+              )}
             </h3>
           </div>
           {this.props.location.pathname.split('/')[5] !== 'new' && (
