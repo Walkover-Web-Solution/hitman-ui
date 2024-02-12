@@ -205,7 +205,7 @@ const untitledEndpointData = {
     { type: 'headers' },
     { type: 'sampleResponse' }
   ],
-  harObject : {}
+  harObject: {}
 }
 
 const getEndpointContent = async (props) => {
@@ -1467,9 +1467,9 @@ class DisplayEndpoint extends Component {
       }
       const updatedharObject = {
         ...this.props.endpointContent,
-        harObject: harObject 
-      };
-      this.props.setQueryUpdatedData(updatedharObject);
+        harObject: harObject
+      }
+      this.props.setQueryUpdatedData(updatedharObject)
     } catch (error) {
       toast.error(error)
     }
@@ -2752,11 +2752,11 @@ class DisplayEndpoint extends Component {
       <div
         ref={this.myRef}
         className={
-        !this.isNotDashboardOrDocView()
-        ? ''
-        : codeEditorVisibility
-        ? 'mainContentWrapperPublic hideCodeEditor'
-        : 'mainContentWrapperPublic '
+          !this.isNotDashboardOrDocView()
+            ? ''
+            : codeEditorVisibility
+              ? 'mainContentWrapperPublic hideCodeEditor'
+              : 'mainContentWrapperPublic '
         }
       >
         <div
@@ -3042,7 +3042,7 @@ class DisplayEndpoint extends Component {
                 {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
               </div>
             ) : null}
-            {this.isNotDashboardOrDocView() && this.props.endpointContent.harObject && isOnPublishedPage() &&  (
+            {this.isNotDashboardOrDocView() && this.props.endpointContent.harObject && isOnPublishedPage() && (
               <CodeTemplate
                 show
                 onHide={() => {

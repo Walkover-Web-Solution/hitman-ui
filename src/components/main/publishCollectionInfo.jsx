@@ -51,7 +51,7 @@ class PublishCollectionInfo extends Component {
   }
 
   componentDidMount() {
-    this.getPublicEntityCount()
+    // this.getPublicEntityCount()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -61,7 +61,7 @@ class PublishCollectionInfo extends Component {
       this.props.versions !== prevProps.versions ||
       this.props.groups !== prevProps.groups
     ) {
-      this.getPublicEntityCount()
+      // this.getPublicEntityCount()
     }
   }
 
@@ -152,7 +152,6 @@ class PublishCollectionInfo extends Component {
   getPublicEntityCount() {
     const collectionId = this.props.collectionId
     const { endpoints, pages, versions, groups } = this.props
-
     let totalPageCount = 0
     let totalEndpointCount = 0
     let livePageCount = 0
@@ -168,7 +167,7 @@ class PublishCollectionInfo extends Component {
           if (endpoints[endpointId]?.isPublished) liveEndpointCount++
         }
       }
-  
+
       for (const pageId of Object.keys(pages)) {
         const groupId = pages[pageId]?.groupId
         let versionId = ''
@@ -180,14 +179,13 @@ class PublishCollectionInfo extends Component {
           if (pages[pageId]?.isPublished) livePageCount++
         }
       }
-  
+
       this.setState({ totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount })
-  
-      if (this.props.getTotalEndpointsCount) {
-        this.props.getTotalEndpointsCount(totalEndpointCount)
-      }
-    }
-    catch(error){
+
+      // if (this.props.getTotalEndpointsCount) {
+      //   this.props.getTotalEndpointsCount(totalEndpointCount)
+      // }
+    } catch (error) {
       console.error(error)
     }
   }

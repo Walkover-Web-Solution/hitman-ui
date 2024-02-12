@@ -245,13 +245,13 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.DELETE_ENDPOINT_REQUEST:
       pages = { ...state }
       delete pages[action.endpoint.id]
-      return {...pages}
+      return { ...pages }
 
     case pagesActionTypes.ON_ENDPOINT_DELETED:
-      const updatedEndpoint = { ...state };
-      const parentId = action?.response?.data?.ParentPage?.id;
-      updatedEndpoint[parentId].child = action.response.data.ParentPage.child;
-      toast.success(" Endpoint deleted succesfully");
+      const updatedEndpoint = { ...state }
+      const parentId = action?.response?.data?.ParentPage?.id
+      updatedEndpoint[parentId].child = action.response.data.ParentPage.child
+      toast.success(' Endpoint deleted succesfully')
       return updatedEndpoint
 
     case pagesActionTypes.ON_ENDPOINT_DELETED_ERROR:
@@ -260,6 +260,12 @@ function pagesReducer(state = initialState, action) {
       return {
         ...state,
         [action.endpoint.id]: action.endpoint
+      }
+
+    case pagesActionTypes.ON_ENDPOINT_UPDATED:
+      return {
+        ...state,
+        [action.response.id]: { ...state[action.response.id], requestType: action.response.requestType, name: action.response.name }
       }
 
     default:

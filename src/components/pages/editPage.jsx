@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { withRouter } from 'react-router-dom'
 import WarningModal from '../common/warningModal'
-import { updateContent, updatePage, updatePageData } from '../pages/redux/pagesActions'
+import { onPageUpdated, updateContent, updatePage } from '../pages/redux/pagesActions'
 import './page.scss'
 import { toast } from 'react-toastify'
 import * as _ from 'lodash'
@@ -13,6 +13,7 @@ import Tiptap from '../tiptapEditor/tiptap'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
+    const dispatch = useDispatch()
     const queryClient = useQueryClient()
     const pageId = props.match.params.pageId
     const orgId = props.match.params.orgId
@@ -25,6 +26,7 @@ const withQuery = (WrappedComponent) => {
           enabled: true,
           staleTime: 600000
         })
+        dispatch(onPageUpdated(data))
         props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
       }
     })
