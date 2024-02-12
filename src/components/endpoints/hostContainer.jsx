@@ -209,7 +209,13 @@ class HostContainer extends Component {
   }
 
   renderPublicHost() {
-    return <input disabled className='form-control' value={this.props?.endpointContent.host.BASE_URL + this.props?.endpointContent?.data?.updatedUri} />
+    return (
+      <input
+        disabled
+        className='form-control'
+        value={this.props?.endpointContent.host.BASE_URL + this.props?.endpointContent?.data?.updatedUri}
+      />
+    )
   }
 
   render() {

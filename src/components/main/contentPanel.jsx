@@ -55,11 +55,11 @@ class ContentPanel extends Component {
   }
 
   async componentDidMount() {
-    this.props.fetch_tabs_from_redux({...this.props})
+    this.props.fetch_tabs_from_redux({ ...this.props })
   }
 
   componentDidUpdate() {
-    const { endpointId, pageId, historyId, collectionId } = this.props.match.params 
+    const { endpointId, pageId, historyId, collectionId } = this.props.match.params
     if (this.props.tabs.loaded && endpointId && endpointId !== 'new') {
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
@@ -155,7 +155,7 @@ class ContentPanel extends Component {
             pathname:
               tab.type !== 'collection'
                 ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
-                :  `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+                : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
           })
         }
       } else {

@@ -403,9 +403,11 @@ class PublicEndpoint extends Component {
                     />
                   )}
 
-                  {!type && <ERROR_404_PUBLISHED_PAGE 
-                  error_msg = {(Object.keys(this.props?.pages)?.length > 1) ? null : 'Collection is not published'}
-                  />}
+                  {!type && (
+                    <ERROR_404_PUBLISHED_PAGE
+                      error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
+                    />
+                  )}
 
                   {this.displayCTAandLink()}
                   {/* <div className='d-flex flex-row justify-content-start'>
