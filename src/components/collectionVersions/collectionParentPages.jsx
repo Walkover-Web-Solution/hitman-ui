@@ -253,7 +253,7 @@ class CollectionParentPages extends Component {
       this.state.showPageForm.edit && (
         <GroupForm
           {...this.props}
-          title='Edit Page'
+          title='Edit'
           show={this.state.showPageForm.edit}
           onCancel={() => {
             this.setState({ showPageForm: false })
@@ -601,7 +601,7 @@ class CollectionParentPages extends Component {
                               strokeLinejoin='round'
                             />
                           </svg>{' '}
-                          Edit Page
+                          Edit
                         </div>
                         <div
                           className='dropdown-item'

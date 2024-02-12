@@ -152,7 +152,7 @@ class Groups extends Component {
       this.state.showGroupForm.edit && (
         <GroupForm
           {...this.props}
-          title='Edit Page'
+          title='Edit'
           show={this.state.showGroupForm.edit}
           onCancel={() => {
             this.setState({ showGroupForm: false })
