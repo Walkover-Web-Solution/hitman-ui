@@ -1,6 +1,6 @@
 import historyActionTypes from './historyActionTypes'
 
-export const fetchHistoryFromIdb = () => {
+export const fetchHistoryFromLocal = () => {
   return async (dispatch) => {
     try {
       const response = localStorage.getItem('history')
@@ -31,7 +31,7 @@ export const addHistory = (historyData) => {
 
 export const onHistoryDataFetched = (data) => {
   return {
-    type: historyActionTypes.FETCH_HISTORY_FROM_IDB,
+    type: historyActionTypes.FETCH_HISTORY_FROM_LOCAL,
     data
   }
 }
