@@ -186,7 +186,6 @@ const untitledEndpointData = {
   theme: '',
   loader: false,
   saveLoader: false,
-  codeEditorVisibility: true,
   showCookiesModal: false,
   preScriptText: '',
   postScriptText: '',
@@ -2747,17 +2746,18 @@ class DisplayEndpoint extends Component {
 
     const { theme, codeEditorVisibility } = this.state
     const { responseView } = this.props
+    console.log(codeEditorVisibility,12345)
     return (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView) ||
       !isDashboardRoute(this.props) ||
       !isSavedEndpoint(this.props) ? (
       <div
         ref={this.myRef}
         className={
-          !this.isNotDashboardOrDocView()
-            ? ''
-            : codeEditorVisibility
-              ? 'mainContentWrapperPublic hideCodeEditor'
-              : 'mainContentWrapperPublic '
+        !this.isNotDashboardOrDocView()
+        ? ''
+        : codeEditorVisibility
+        ? 'mainContentWrapperPublic hideCodeEditor'
+        : 'mainContentWrapperPublic '
         }
       >
         <div
@@ -3043,7 +3043,7 @@ class DisplayEndpoint extends Component {
                 {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
               </div>
             ) : null}
-            {this.isNotDashboardOrDocView() && this.props.endpointContent.harObject && this.props.location.pathname.split('/')[3] !== 'admin' && (
+            {this.isNotDashboardOrDocView() && this.props.endpointContent.harObject && isOnPublishedPage() &&  (
               <CodeTemplate
                 show
                 onHide={() => {
