@@ -97,28 +97,27 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 }
 
 export const updatePage = (history, editedPage, publishDocs = false) => {
-  const originalPage = store.getState().pages[editedPage.id]
-  console.log(originalPage, "original pageeeee");
-  const orgId = getOrgId()
-  // const dataToSend = {
-  //   name: editedPage.name,
-  //   contents: editedPage?.contents || null,
-  //   state: editedPage.state
-  // }
-  // console.log(dataToSend, "data");
-  store.dispatch(updatePageRequest({...originalPage , ...editedPage}))
-  pageApiService
-    .updatePage(editedPage.id, editedPage)
-    .then((response) => {
-      store.dispatch(onPageUpdated(response.data))
-      if (!publishDocs) {
-        history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}`)
-      }
-      return response.data
-    })
-    .catch((error) => {
-      store.dispatch(onPageUpdatedError(error.response ? error.response.data : error, editedPage))
-    })
+  return (dispatch) => {
+    const orgId = getOrgId()
+    const dataToSend = {
+      name: editedPage.name,
+      contents: editedPage?.contents || null,
+      state: editedPage.state
+    }
+    dispatch(updatePageRequest(dataToSend))
+    pageApiService
+      .updatePage(editedPage.id, dataToSend)
+      .then((response) => {
+        dispatch(onPageUpdated(response.data))
+        if (!publishDocs) {
+          history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}`)
+        }
+        return response.data
+      })
+      .catch((error) => {
+        dispatch(onPageUpdatedError(error.response ? error.response.data : error, editedPage))
+      })
+  }
 }
 
 export const updateContent = async ({ pageData, id }) => {
