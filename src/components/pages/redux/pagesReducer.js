@@ -245,7 +245,7 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.DELETE_ENDPOINT_REQUEST:
       pages = { ...state }
       delete pages[action.endpoint.id]
-      return {...pages}
+      return { ...pages }
 
     case pagesActionTypes.ON_ENDPOINT_DELETED:
       const updatedEndpoint = { ...state };
@@ -260,6 +260,12 @@ function pagesReducer(state = initialState, action) {
       return {
         ...state,
         [action.endpoint.id]: action.endpoint
+
+      }
+
+    case pagesActionTypes.ON_ENDPOINT_UPDATED:
+      return {
+        ...state, [action.response.id]: { ...state[action.response.id], requestType: action.response.requestType, name: action.response.name }
       }
 
     default:

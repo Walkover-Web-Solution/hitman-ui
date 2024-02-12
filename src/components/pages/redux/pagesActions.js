@@ -75,7 +75,7 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
     endpointApiService
       .updateEndpoint(id, updatedEndpoint)
       .then((response) => {
-        // dispatch(onEndpointUpdated(response.data))
+        dispatch(onEndpointUpdated(response.data))
         if (stopSaveLoader) {
           stopSaveLoader()
         }
