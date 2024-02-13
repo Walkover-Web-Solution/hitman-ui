@@ -367,7 +367,7 @@ class PublishDocForm extends Component {
           disabled={disabled}
           className='form-control'
           name={name}
-          value={data[name]}
+          value={name === 'title' ? data[name] || this.props?.collections?.[this.props?.match?.params?.collectionId]?.name : data[name]}
           onChange={(e) => this.handleChange(e, isURLInput)}
           onBlur={(e) => this.handleBlur(e, isURLInput)}
         />
