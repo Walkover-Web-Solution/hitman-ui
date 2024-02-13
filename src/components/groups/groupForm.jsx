@@ -111,7 +111,7 @@ class GroupForm extends Form {
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
-                {this.props.addEntity && (
+                {/* {this.props.addEntity && (
                   <div className='col-12'>
                     <div className='dropdown-label dropDownversion'>
                       <label> Select Version</label>
@@ -124,7 +124,7 @@ class GroupForm extends Form {
                       {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
                     </div>
                   </div>
-                )}
+                )} */}
                 <div className='col-12'>
                   {this.renderInput(
                     'name',
@@ -133,7 +133,7 @@ class GroupForm extends Form {
                     true,
                     true,
                     false,
-                    '*name accepts min 1 & max 20 characters'
+                    '*page name accepts min 1 & max 20 characters'
                   )}
                 </div>
               </div>
