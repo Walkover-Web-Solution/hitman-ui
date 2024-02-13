@@ -360,9 +360,7 @@ class PublishDocForm extends Component {
     const { data, errors } = this.state
     return (
       <div className='form-group'>
-        <label>
-          {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
-        </label>
+        <label>{publishDocFormEnum.LABELS[name]}</label>
         <input
           type='text'
           placeholder={placeholder}
@@ -375,6 +373,11 @@ class PublishDocForm extends Component {
         />
         {name === 'domain' && (
           <span className='domain-info f-10 mt-1 d-block'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>
+        )}
+        {name === 'title' && (
+          <span className='domain-info f-10 mt-1 d-block'>{`Your default title will be ${
+            this.props?.collections?.[this.props?.match?.params?.collectionId]?.name
+          }`}</span>
         )}
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
       </div>
