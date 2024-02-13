@@ -367,7 +367,7 @@ class PublishDocForm extends Component {
           disabled={disabled}
           className='form-control'
           name={name}
-          value={name === 'title' ? data[name] || this.props?.collections?.[this.props?.match?.params?.collectionId]?.name : data[name]}
+          value={data[name]}
           onChange={(e) => this.handleChange(e, isURLInput)}
           onBlur={(e) => this.handleBlur(e, isURLInput)}
         />
@@ -411,7 +411,7 @@ class PublishDocForm extends Component {
           id='publish_collection_btn'
           variant='success publish-collection-button ml-4 mt-4'
           onClick={() => this.publishCollection(selectedCollection)}
-          // disabled={!selectedCollection?.docProperties?.defaultTitle}
+          disabled={!selectedCollection?.docProperties?.defaultTitle}
         >
           Publish Collection
         </Button>
