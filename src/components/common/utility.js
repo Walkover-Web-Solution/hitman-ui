@@ -699,6 +699,10 @@ export const operationsAfterDeletion = (data) => {
   }
 }
 
+export const trimString = (str) => {
+  return str?.trim()
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -738,5 +742,6 @@ export default {
   SESSION_STORAGE_KEY,
   isOnPublishedPage,
   deleteAllPagesAndTabsAndReactQueryData,
-  operationsAfterDeletion
+  operationsAfterDeletion,
+  trimString
 }
