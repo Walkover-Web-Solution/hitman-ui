@@ -98,15 +98,6 @@ const DragHandle = SortableHandle(() => (
   </div>
 ))
 
-const defaultDocViewData = [
-  { type: 'host' },
-  { type: 'body' },
-  { type: 'params' },
-  { type: 'pathVariables' },
-  { type: 'headers' },
-  { type: 'sampleResponse' }
-]
-
 const mapStateToProps = (state) => {
   return {
     groups: state.groups,
@@ -2261,7 +2252,7 @@ class DisplayEndpoint extends Component {
   getDocViewData(endpoint) {
     if (endpoint) {
       if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
-        const docViewData = [...defaultDocViewData]
+        const docViewData = [...docViewData]
         if (endpoint.description && endpoint.description.length) docViewData.splice(0, 0, { type: 'textArea', data: endpoint.description })
         if (endpoint.notes && endpoint.notes.length) {
           docViewData.splice(docViewData.length - 1, 0, { type: 'textBlock', data: endpoint.notes })
