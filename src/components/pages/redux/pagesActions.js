@@ -105,7 +105,7 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
       contents: editedPage?.contents || null,
       state: editedPage.state
     }
-    dispatch(updatePageRequest(dataToSend))
+    // dispatch(updatePageRequest(dataToSend))
     pageApiService
       .updatePage(editedPage.id, dataToSend)
       .then((response) => {
@@ -134,7 +134,6 @@ export const updateContent = async ({ pageData, id }) => {
 }
 
 export const updatePageRequest = (editedPage) => {
-  console.log(editedPage, "edited paaagee");
   return {
     type: pagesActionTypes.UPDATE_PAGE_REQUEST,
     editedPage,
