@@ -121,6 +121,7 @@ function pagesReducer(state = initialState, action) {
       }
 
     case pagesActionTypes.ON_PAGE_UPDATED:
+      toast.success('Updated successfully')
       return {
         ...state,
         [action.response.id]: action.response
