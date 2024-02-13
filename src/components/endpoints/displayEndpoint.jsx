@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { store } from '../../store/store'
-import { SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
+import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -97,15 +97,6 @@ const DragHandle = SortableHandle(() => (
     <DragHandleIcon />
   </div>
 ))
-
-const defaultDocViewData = [
-  { type: 'host' },
-  { type: 'body' },
-  { type: 'params' },
-  { type: 'pathVariables' },
-  { type: 'headers' },
-  { type: 'sampleResponse' }
-]
 
 const mapStateToProps = (state) => {
   return {
@@ -1115,7 +1106,8 @@ class DisplayEndpoint extends Component {
         postScript: this.props?.endpointContent?.postScriptText,
         docViewData: this.props?.endpointContent?.docViewData
       }
-      if (endpoint.name === '' || endpoint.name.toLowerCase() === 'untitled') return toast.error('Please enter Endpoint name')
+      if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
+        return toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''
@@ -2260,7 +2252,7 @@ class DisplayEndpoint extends Component {
   getDocViewData(endpoint) {
     if (endpoint) {
       if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
-        const docViewData = [...defaultDocViewData]
+        const docViewData = [...docViewData]
         if (endpoint.description && endpoint.description.length) docViewData.splice(0, 0, { type: 'textArea', data: endpoint.description })
         if (endpoint.notes && endpoint.notes.length) {
           docViewData.splice(docViewData.length - 1, 0, { type: 'textBlock', data: endpoint.notes })
