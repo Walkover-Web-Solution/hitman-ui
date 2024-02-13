@@ -673,7 +673,7 @@ class SideBarV2 extends Component {
   renderCollectionName() {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
-
+    const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
     return (
       <div className='hm-sidebar-header'>
         {this.props.collections[collectionKeys[0]]?.favicon ||
@@ -694,7 +694,7 @@ class SideBarV2 extends Component {
             </div>
           ))}
         <h4 className='hm-sidebar-title'>
-          {collectionName}
+          {publishedCollectionTitle || collectionName || ''}
           <span>API Documenation</span>
         </h4>
       </div>

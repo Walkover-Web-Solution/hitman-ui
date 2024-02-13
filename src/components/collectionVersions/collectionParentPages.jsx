@@ -514,6 +514,7 @@ class CollectionParentPages extends Component {
                   </span>
                   <div className='d-flex'>
                     <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
+
                     <DropdownButton
                       className=''
                       id='dropdown-basic-button'
@@ -529,15 +530,17 @@ class CollectionParentPages extends Component {
                       {this.props.pages[rootId].child.map((childId, index) => (
                         <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
                           <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              this.handleDeleteVersion(childId)
-                            }}
-                            className='version-delete-button'
-                          >
-                            <DeleteIcon />
-                          </button>
+                          {!isOnPublishedPage() && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                this.handleDeleteVersion(childId)
+                              }}
+                              className='version-delete-button'
+                            >
+                              <DeleteIcon />
+                            </button>
+                          )}
                         </Dropdown.Item>
                       ))}
                     </DropdownButton>
@@ -629,7 +632,7 @@ class CollectionParentPages extends Component {
                         </svg>{' '}
                         Duplicate
                       </div> */}
-                        <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
+                        {/* <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
                           <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                             <path
                               d='M13.5 6C14.7426 6 15.75 4.99264 15.75 3.75C15.75 2.50736 14.7426 1.5 13.5 1.5C12.2574 1.5 11.25 2.50736 11.25 3.75C11.25 4.99264 12.2574 6 13.5 6Z'
@@ -668,7 +671,7 @@ class CollectionParentPages extends Component {
                             />
                           </svg>
                           Share
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   ) : null
