@@ -136,7 +136,7 @@ export const updateContent = async ({ pageData, id }) => {
 export const updatePageRequest = (editedPage) => {
   return {
     type: pagesActionTypes.UPDATE_PAGE_REQUEST,
-    editedPage,
+    editedPage
   }
 }
 

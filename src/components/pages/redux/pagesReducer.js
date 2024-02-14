@@ -121,7 +121,6 @@ function pagesReducer(state = initialState, action) {
       }
 
     case pagesActionTypes.ON_PAGE_UPDATED:
-      toast.success('Updated successfully')
       return {
         ...state,
         [action.response.id]: action.response
@@ -252,7 +251,6 @@ function pagesReducer(state = initialState, action) {
       const updatedEndpoint = { ...state }
       const parentId = action?.response?.data?.ParentPage?.id
       updatedEndpoint[parentId].child = action.response.data.ParentPage.child
-      toast.success(' Endpoint deleted succesfully')
       return updatedEndpoint
 
     case pagesActionTypes.ON_ENDPOINT_DELETED_ERROR:
