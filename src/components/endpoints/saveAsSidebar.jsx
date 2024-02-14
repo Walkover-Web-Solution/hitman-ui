@@ -5,6 +5,8 @@ import Form from '../common/form'
 import './endpoints.scss'
 import _ from 'lodash'
 import ShowCaseSaveAsModal from './showCaseSaveAsModal/showCaseSaveAsModal'
+import Input from '../common/input'
+import { trimString } from '../common/utility'
 
 const mapStateToProps = (state) => {
   return {
@@ -35,6 +37,41 @@ class SaveAsSidebar extends Form {
     data.name = this.props?.name
     this.setState({ data })
     this.saveAsSidebar.focus()
+  }
+
+  handleEndpointNameChange(e) {
+    const dummyData = this.props?.endpointContent
+    dummyData.data.name = e.currentTarget.value
+    this.props.setQueryUpdatedData(dummyData)
+  }
+
+  handleEndpointNameBlur(e) {
+    if (!trimString(e.currentTarget.value)) {
+      if (this.props?.match?.params?.endpointId !== 'new') {
+        this.props.setQueryUpdatedData({
+          ...this.props.endpointContent,
+          data: { ...this.props.endpointContent.data, name: this.props.pages?.[this.props?.match?.params?.endpointId]?.name || '' }
+        })
+      } else {
+        this.props.setQueryUpdatedData({ ...this.props.endpointContent, data: { ...this.props.endpointContent.data, name: 'Untitled' } })
+      }
+    }
+  }
+
+  renderEndpointNameInput() {
+    return (
+      <Input
+        ref={this.endpointInputRef}
+        value={this.props?.endpointContent?.data?.name || ''}
+        onChange={(e) => this.handleEndpointNameChange(e)}
+        onBlur={(e) => this.handleEndpointNameBlur(e)}
+        // error={errors?.[name]}
+        placeholder={'Endpoint Name'}
+        mandatory={'mandatory'}
+        firstLetterCapitalize
+        label={'Name'}
+      />
+    )
   }
 
   render() {
@@ -75,7 +112,7 @@ class SaveAsSidebar extends Form {
           <div className='drawer-body'>
             <form className='desc-box form-parent' onSubmit={this.handleSubmit}>
               <div className='p-form-group mb-3'>
-                {this.renderInput('name', 'Name', 'Endpoint Name')}
+                {this.renderEndpointNameInput()}
                 {title?.trim() === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
               </div>
             </form>
