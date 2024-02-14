@@ -549,6 +549,18 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   const paramsData = Object.keys(endpoint.params).map((key) => {
     return { key, ...endpoint.params[key] }
   })
+  if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
+    untitled.docViewData = [
+      { type: 'host' },
+      { type: 'body' },
+      { type: 'params' },
+      { type: 'pathVariables' },
+      { type: 'headers' },
+      { type: 'sampleResponse' }
+    ]
+  } else {
+    untitled.docViewData = endpoint.docViewData
+  }
   headersData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
   paramsData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
   untitled.originalHeaders = headersData

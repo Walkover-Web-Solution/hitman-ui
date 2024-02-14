@@ -25,18 +25,6 @@ function endpointsReducer(state = initialState, action) {
       endpoints[action.endpointId].groupId = action.destinationGroupId
       return endpoints
 
-    case endpointsActionTypes.ON_ENDPOINTS_FETCHED:
-      return { ...state, ...action.endpoints }
-
-    case endpointsActionTypes.ON_ENDPOINTS_FETCHED_ERROR:
-      return state
-
-    case endpointsActionTypes.ON_ENDPOINT_FETCHED:
-      return { [action.endpoints.id]: { ...action.endpoints } }
-
-    case endpointsActionTypes.ON_ENDPOINT_FETCHED_ERROR:
-      return state
-
     case endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR:
       toast.error(action.error)
       return {
