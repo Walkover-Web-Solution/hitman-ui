@@ -58,7 +58,6 @@ export function saveGroupPage(groupId, page) {
 }
 
 export function updatePage(pageId, page) {
-  console.log(pageId, page, 67677);
   const apiUrl = getApiUrl()
   return http.put(`${apiUrl}/pages/${pageId}`, page)
 }

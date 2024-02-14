@@ -10,7 +10,6 @@ import { toast } from 'react-toastify'
 import { deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
-
 export const fetchCollections = (orgId) => {
   return (dispatch) => {
     collectionsApiService
@@ -173,18 +172,19 @@ export const deleteCollection = (collection, props) => {
       .deleteCollection(collection.id)
       .then((res) => {
         const rootParentPageId = collection.rootParentId
-        deleteAllPagesAndTabsAndReactQueryData(rootParentPageId).then((data) => {
-          dispatch(deleteCollectionRequest(collection))
-          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
-          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
+        deleteAllPagesAndTabsAndReactQueryData(rootParentPageId)
+          .then((data) => {
+            dispatch(deleteCollectionRequest(collection))
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+            dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
 
-          // after deletion operation
-          operationsAfterDeletion(data)
-          toast.success('collection has been deleted successfully')
-        }).catch((error) => {
-          console.log('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)
-        })
-
+            // after deletion operation
+            operationsAfterDeletion(data)
+            toast.success('collection has been deleted successfully')
+          })
+          .catch((error) => {
+            console.log('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)
+          })
       })
       .catch((error) => {
         console.log('error', error)
