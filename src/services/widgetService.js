@@ -11,7 +11,7 @@ export function moveToNextStep(currentStepNo) {
       window.dispatchEvent(steveEvent)
     }
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
