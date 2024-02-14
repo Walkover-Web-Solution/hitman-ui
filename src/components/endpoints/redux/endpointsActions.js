@@ -48,46 +48,6 @@ export const addEndpointInCollection = (history, newEndpoint, rootParentId, cust
   }
 }
 
-export const fetchEndpoints = (orgId) => {
-  return (dispatch) => {
-    endpointApiService
-      .getAllEndpoints(orgId)
-      .then((response) => {
-        dispatch(onEndpointsFetched(response.data))
-      })
-      .catch((error) => {
-        dispatch(onEndpointsFetchedError(error.response ? error.response.data : error))
-      })
-  }
-}
-
-export const fetchEndpoint = (endpointId) => {
-  return (dispatch) => {
-    endpointApiService
-      .getEndpoint(endpointId)
-      .then((response) => {
-        dispatch(onEndpointFetched(response))
-      })
-      .catch((error) => {
-        dispatch(onEndpointFetchedError(error.response ? error.response.data : error))
-      })
-  }
-}
-
-export const onEndpointFetched = (endpoints) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINT_FETCHED,
-    endpoints
-  }
-}
-
-export const onEndpointFetchedError = (error) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINT_FETCHED_ERROR,
-    error
-  }
-}
-
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
     // const originalEndpoint = JSON.parse(JSON.stringify(store.getState().endpoints[editedEndpoint.id]))
@@ -203,20 +163,6 @@ export const moveEndpointSuccess = (response) => {
   return {
     type: endpointsActionTypes.MOVE_ENDPOINT_SUCCESS,
     response
-  }
-}
-
-export const onEndpointsFetched = (endpoints) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINTS_FETCHED,
-    endpoints
-  }
-}
-
-export const onEndpointsFetchedError = (error) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINTS_FETCHED_ERROR,
-    error
   }
 }
 
