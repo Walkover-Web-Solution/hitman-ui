@@ -50,7 +50,7 @@ class Groups extends Component {
     this.state = {
       GroupFormName: '',
       selectedPage: {},
-      showGroupForm: {
+      showPageForm: {
         addPage: false,
         edit: false,
         share: false
@@ -109,9 +109,9 @@ class Groups extends Component {
   }
 
   openShareSubPageForm(groupId) {
-    const showGroupForm = { share: true, addPage: false }
+    const showPageForm = { share: true, addPage: false }
     this.setState({
-      showGroupForm,
+      showPageForm,
       groupFormName: 'Share Subpage',
       selectedGroup: { ...this.props.pages[groupId] }
     })
@@ -120,15 +120,15 @@ class Groups extends Component {
   closeSubPageForm() {
     const edit = false
     const addPage = false
-    const showGroupForm = { edit, addPage }
-    this.setState({ showGroupForm })
+    const showPageForm = { edit, addPage }
+    this.setState({ showPageForm })
   }
 
   showShareSubPageForm() {
     return (
-      this.state.showGroupForm.share && (
+      this.state.showPageForm.share && (
         <ShareGroupForm
-          show={this.state.showGroupForm.share}
+          show={this.state.showPageForm.share}
           onHide={() => this.closeSubPageForm()}
           title={this.state.groupFormName}
           selectedGroup={this.props.rootParentId}
@@ -137,26 +137,26 @@ class Groups extends Component {
     )
   }
 
-  openEditSubPageForm(selectedGroup) {
-    const showGroupForm = { edit: true }
+  openEditSubPageForm(selectedPage) {
+    const showPageForm = { edit: true }
     this.setState({
-      showGroupForm,
-      selectedGroup
+      showPageForm,
+      selectedPage
     })
   }
 
   showEditPageModal() {
     return (
-      this.state.showGroupForm.edit && (
+      this.state.showPageForm.edit && (
         <SubPageForm
           {...this.props}
           title='Edit'
-          show={this.state.showGroupForm.edit}
+          show={this.state.showPageForm.edit}
           onCancel={() => {
-            this.setState({ showGroupForm: false })
+            this.setState({ showPageForm: false })
           }}
           onHide={() => {
-            this.setState({ showGroupForm: false })
+            this.setState({ showPageForm: false })
           }}
           selectedPage={this.props?.rootParentId}
           pageType={3}
@@ -569,6 +569,7 @@ class Groups extends Component {
       <>
         {this.showShareSubPageForm()}
         {this.showAddPageEndpointModal()}
+        {this.showEditPageModal()}
         {this.state.showDeleteModal &&
           groupsService.showDeleteGroupModal(
             this.props,

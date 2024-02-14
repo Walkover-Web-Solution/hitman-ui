@@ -906,6 +906,7 @@ class CollectionParentPages extends Component {
       <>
         {this.showShareVersionForm()}
         {this.showAddPageEndpointModal()}
+        {this.showEditPageModal()}
         {this.state.showVersionForm &&
           collectionVersionsService.showVersionForm(
             this.props,
