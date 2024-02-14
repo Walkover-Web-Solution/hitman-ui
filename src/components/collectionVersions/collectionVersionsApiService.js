@@ -8,17 +8,9 @@ function getApiUrl() {
   return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 }
 
-function collectionVersionsUrl(collectionId) {
-  const apiUrl = getApiUrl()
-  return `${apiUrl}/collections/${collectionId}/versions`
-}
 function collectionParentPagesUrl(pageId) {
   const apiUrl = getApiUrl()
   return `${apiUrl}/pages/${pageId}/versions`
-}
-
-export function getCollectionVersions(collectionId) {
-  return http.get(collectionVersionsUrl(collectionId))
 }
 
 export function getAllCollectionVersions(id) {
@@ -28,10 +20,6 @@ export function getAllCollectionVersions(id) {
 export function getCollectionVersion(versionId) {
   const apiUrl = getApiUrl()
   return http.get(`${apiUrl}/versions/${versionId}`)
-}
-
-export function saveCollectionVersion(collectionId, collectionVersion) {
-  return http.post(collectionVersionsUrl(collectionId), collectionVersion)
 }
 
 export function saveParentPageVersion(pageId, collectionParentPage) {
@@ -61,27 +49,13 @@ export function importCollectionVersion(importLink, shareIdentifier, data) {
   return http.post(`${apiUrl}/share/${shareIdentifier}/import`, data)
 }
 
-export function setAuthorizationData(versionId, data) {
-  const apiUrl = getApiUrl()
-  return http.patch(`${apiUrl}/versions/${versionId}/authorizationData`, data)
-}
-
-export function setAuthorizationResponse(versionId, authorizationResponse) {
-  const apiUrl = getApiUrl()
-  return http.patch(`${apiUrl}/versions/${versionId}/authorizationResponse`, authorizationResponse)
-}
-
 export default {
-  getCollectionVersions,
   getCollectionVersion,
-  saveCollectionVersion,
   updateCollectionVersion,
   deleteCollectionVersion,
   duplicateVersion,
   importCollectionVersion,
   exportCollectionVersion,
   getAllCollectionVersions,
-  setAuthorizationResponse,
-  setAuthorizationData,
   saveParentPageVersion
 }

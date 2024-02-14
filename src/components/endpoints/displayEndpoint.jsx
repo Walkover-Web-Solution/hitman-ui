@@ -33,8 +33,7 @@ import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
-import { setAuthorizationType, addEndpointInCollection } from './redux/endpointsActions'
-import { setAuthorizationResponses, setAuthorizationData } from '../collectionVersions/redux/collectionVersionsActions'
+import { addEndpointInCollection } from './redux/endpointsActions'
 import { addHistory } from '../history/redux/historyAction'
 import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
@@ -105,9 +104,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     add_endpointInCollection: (newEndpoint, rootParentID, callback, props) =>
       dispatch(addEndpointInCollection(ownProps.history, newEndpoint, rootParentID, callback, props)),
     update_endpoint: (editedEndpoint, stopSave) => dispatch(updateEndpoint(editedEndpoint, stopSave)),
-    set_authorization_responses: (versionId, authResponses) => dispatch(setAuthorizationResponses(versionId, authResponses)),
-    set_authorization_type: (endpointId, authData) => dispatch(setAuthorizationType(endpointId, authData)),
-    set_authorization_data: (versionId, data) => dispatch(setAuthorizationData(versionId, data)),
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
     update_environment: (data) => dispatch(updateEnvironment(data)),
@@ -130,7 +126,14 @@ const untitledEndpointData = {
     uri: '',
     updatedUri: ''
   },
-  pathVariables: [],
+  pathVariables: [
+    {
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    }
+  ],
   environment: {},
   endpoint: {},
   originalHeaders: [
@@ -697,7 +700,7 @@ class DisplayEndpoint extends Component {
     body = this.prepareBodyForSending(body)
     const headersData = this.doSubmitHeader('save')
     const updatedParams = this.doSubmitParam()
-    const pathVariables = this.doSubmitPathVariables()
+    const updatedPathVariables = this.doSubmitPathVariables()
     const endpoint = {
       uri: this.props.endpointContent.data.updatedUri,
       name: this.props.endpointContent.data.name,
@@ -707,7 +710,7 @@ class DisplayEndpoint extends Component {
       status: this.props.tab?.status || tabStatusTypes.NEW,
       headers: headersData,
       params: updatedParams,
-      pathVariables: pathVariables,
+      pathVariables: updatedPathVariables,
       BASE_URL: this.props.endpointContent.host.BASE_URL,
       bodyDescription: this.props.endpointContent.data.body.type === 'JSON' ? this.props.endpointContent.bodyDescription : {},
       authorizationType: this.props.endpointContent.authType
@@ -983,7 +986,7 @@ class DisplayEndpoint extends Component {
       }
       const headersData = this.doSubmitHeader('save')
       const updatedParams = this.doSubmitParam()
-      const pathVariables = this.doSubmitPathVariables()
+      const updatedPathVariables = this.doSubmitPathVariables()
       const endpoint = {
         id: slug === 'isHistory' ? this.props?.match?.params?.historyId : this.props?.match?.params?.endpointId,
         uri: this.props?.endpointContent?.data.updatedUri,
@@ -992,7 +995,7 @@ class DisplayEndpoint extends Component {
         body: body,
         headers: headersData,
         params: updatedParams,
-        pathVariables: pathVariables,
+        pathVariables: updatedPathVariables,
         BASE_URL: this.props?.endpointContent.host.BASE_URL || null,
         bodyDescription: this.props?.endpointContent?.data?.body?.type === 'JSON' ? bodyDescription : {},
         authorizationType: this.props?.endpointContent.authType,
@@ -1053,7 +1056,7 @@ class DisplayEndpoint extends Component {
   }
 
   doSubmitPathVariables() {
-    const updatedPathVariables = {}
+    const updatedPathVariables = [...this.props?.endpointContent.pathVariables]
     if (this.props?.endpointContent.pathVariables) {
       const pathVariables = this.props?.endpointContent?.pathVariables || []
       for (let i = 0; i < pathVariables.length; i++) {
