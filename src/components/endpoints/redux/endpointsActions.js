@@ -166,7 +166,6 @@ export const moveEndpointSuccess = (response) => {
   }
 }
 
-
 export const onEndpointAddedError = (error, newEndpoint, requestId) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR,
