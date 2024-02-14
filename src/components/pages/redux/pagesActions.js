@@ -8,62 +8,6 @@ import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
-export const fetchPages = (orgId) => {
-  return (dispatch) => {
-    pageApiService
-      .getAllPages(orgId)
-      .then((response) => {
-        const pages = response.data
-        dispatch(onPagesFetched(pages))
-      })
-      .catch((error) => {
-        dispatch(onPagesFetchedError(error.message))
-      })
-  }
-}
-
-export const fetchPage = (pageId) => {
-  return (dispatch) => {
-    pageApiService
-      .getPage(pageId)
-      .then((response) => {
-        const page = response.data
-        dispatch(onPageFetched(page))
-      })
-      .catch((error) => {
-        dispatch(onPageFetchedError(error.message))
-      })
-  }
-}
-
-export const onPageFetched = (page) => {
-  return {
-    type: pagesActionTypes.ON_PAGE_FETCHED,
-    page
-  }
-}
-
-export const onPageFetchedError = (error) => {
-  return {
-    type: pagesActionTypes.ON_PAGE_FETCHED_ERROR,
-    error
-  }
-}
-
-export const onPagesFetched = (pages) => {
-  return {
-    type: pagesActionTypes.ON_PAGES_FETCHED,
-    pages
-  }
-}
-
-export const onPagesFetchedError = (error) => {
-  return {
-    type: pagesActionTypes.ON_PAGES_FETCHED_ERROR,
-    error
-  }
-}
-
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
     // const originalEndpoint = store.getState().pages[editedEndpoint.id]
