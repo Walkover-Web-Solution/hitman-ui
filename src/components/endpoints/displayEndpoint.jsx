@@ -54,7 +54,7 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
-import {pendingEndpoint,approveEndpoint,rejectEndpoint,draftEndpoint} from '../publicEndpoint/redux/publicEndpointsActions'
+import { pendingEndpoint, approveEndpoint, rejectEndpoint, draftEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
@@ -73,9 +73,17 @@ const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
 
-const SortableItem = SortableElement(({ children }) => {return <>{children}</>})
-const SortableList = SortableContainer(({ children }) => {return <>{children}</>})
-const DragHandle = SortableHandle(() => (<div className='dragIcon'><DragHandleIcon /></div>))
+const SortableItem = SortableElement(({ children }) => {
+  return <>{children}</>
+})
+const SortableList = SortableContainer(({ children }) => {
+  return <>{children}</>
+})
+const DragHandle = SortableHandle(() => (
+  <div className='dragIcon'>
+    <DragHandleIcon />
+  </div>
+))
 
 const defaultDocViewData = [
   { type: 'host' },
@@ -134,18 +142,22 @@ const untitledEndpointData = {
   pathVariables: [],
   environment: {},
   endpoint: {},
-  originalHeaders: [{
+  originalHeaders: [
+    {
       checked: 'notApplicable',
       key: '',
       value: '',
       description: ''
-    }],
-  originalParams: [{
+    }
+  ],
+  originalParams: [
+    {
       checked: 'notApplicable',
       key: '',
       value: '',
       description: ''
-    }],
+    }
+  ],
   authType: null,
   oldDescription: '',
   headers: [],
@@ -297,12 +309,12 @@ class DisplayEndpoint extends Component {
         ? this.props.location.pathname.split('/')[5]
         : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
-    
+
     if (window.innerWidth < '1400') this.setState({ codeEditorVisibility: false })
-    
+
     const { endpointId } = this.props.match.params
     if (endpointId === 'new') this.setUnsavedTabDataInIDB()
-    
+
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
@@ -676,7 +688,8 @@ class DisplayEndpoint extends Component {
           pathParameters[i] = uniquePathparameters[pathParameters[i].slice(1)]
         } else {
           pathParameters[i] = this.props.endpointContent.pathVariables[counter]?.value
-          uniquePathparameters[this.props.endpointContent.pathVariables[counter]?.key] = this.props.endpointContent.pathVariables[counter]?.value
+          uniquePathparameters[this.props.endpointContent.pathVariables[counter]?.key] =
+            this.props.endpointContent.pathVariables[counter]?.value
           counter++
         }
       }
@@ -1505,7 +1518,7 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromSampleResponse(sampleResponseArray, sampleResponseFlagArray) {
-    this.setState({sampleResponseFlagArray })
+    this.setState({ sampleResponseFlagArray })
     const updatedEndpointData = {
       ...this.props.endpointContent,
       sampleResponseArray: sampleResponseArray
@@ -1608,7 +1621,7 @@ class DisplayEndpoint extends Component {
     const sampleResponse = { data, status, description, title }
     const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray, sampleResponse]
     sampleResponseFlagArray.push(false)
-    this.setState({sampleResponseFlagArray })
+    this.setState({ sampleResponseFlagArray })
     const updatedEndpointData = {
       ...this.props.endpointContent,
       sampleResponseArray: sampleResponseArray
