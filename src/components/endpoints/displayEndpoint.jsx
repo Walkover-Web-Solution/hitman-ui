@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { store } from '../../store/store'
 import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
 import {
   isDashboardRoute,
@@ -29,17 +28,14 @@ import DisplayDescription from './displayDescription'
 import DisplayResponse from './displayResponse'
 import SampleResponse from './sampleResponse'
 import { getCurrentUser, isAdmin } from '../auth/authServiceV2'
-
 import endpointApiService, { getEndpoint } from './endpointApiService'
 import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
-
-import { addEndpoint, setAuthorizationType, addEndpointInCollection } from './redux/endpointsActions'
+import { setAuthorizationType, addEndpointInCollection } from './redux/endpointsActions'
 import { setAuthorizationResponses, setAuthorizationData } from '../collectionVersions/redux/collectionVersionsActions'
 import { addHistory } from '../history/redux/historyAction'
-import collectionsApiService from '../collections/collectionsApiService'
 import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
 import LoginSignupModal from '../main/loginSignupModal'
@@ -58,13 +54,7 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
-import {
-  pendingEndpoint,
-  approveEndpoint,
-  rejectEndpoint,
-  unPublishEndpointAction,
-  draftEndpoint
-} from '../publicEndpoint/redux/publicEndpointsActions'
+import {pendingEndpoint,approveEndpoint,rejectEndpoint,draftEndpoint} from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
@@ -77,31 +67,18 @@ import { useQuery, useQueryClient } from 'react-query'
 import utilityFunctions from '../common/utility.js'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 import Footer from '../main/Footer.jsx'
-
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
-const shortid = require('shortid')
 
+const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
 
-const SortableItem = SortableElement(({ children }) => {
-  return <>{children}</>
-})
-
-const SortableList = SortableContainer(({ children }) => {
-  return <>{children}</>
-})
-
-const DragHandle = SortableHandle(() => (
-  <div className='dragIcon'>
-    <DragHandleIcon />
-  </div>
-))
+const SortableItem = SortableElement(({ children }) => {return <>{children}</>})
+const SortableList = SortableContainer(({ children }) => {return <>{children}</>})
+const DragHandle = SortableHandle(() => (<div className='dragIcon'><DragHandleIcon /></div>))
 
 const mapStateToProps = (state) => {
   return {
-    groups: state.groups,
-    versions: state.versions,
     endpoints: state.pages,
     environment: state.environment.environments[state.environment.currentEnvironmentId] || { id: null, name: 'No Environment' },
     currentEnvironmentId: state.environment.currentEnvironmentId,
@@ -123,7 +100,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     set_authorization_responses: (versionId, authResponses) => dispatch(setAuthorizationResponses(versionId, authResponses)),
     set_authorization_type: (endpointId, authData) => dispatch(setAuthorizationType(endpointId, authData)),
     set_authorization_data: (versionId, data) => dispatch(setAuthorizationData(versionId, data)),
-    // generate_temp_tab: (id) => dispatch(generateTempTab(id))
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
     update_environment: (data) => dispatch(updateEnvironment(data)),
@@ -149,23 +125,18 @@ const untitledEndpointData = {
   pathVariables: [],
   environment: {},
   endpoint: {},
-  title: '',
-  originalHeaders: [
-    {
+  originalHeaders: [{
       checked: 'notApplicable',
       key: '',
       value: '',
       description: ''
-    }
-  ],
-  originalParams: [
-    {
+    }],
+  originalParams: [{
       checked: 'notApplicable',
       key: '',
       value: '',
       description: ''
-    }
-  ],
+    }],
   authType: null,
   oldDescription: '',
   headers: [],
@@ -175,27 +146,12 @@ const untitledEndpointData = {
   fieldDescription: {},
   sampleResponseArray: [],
   theme: '',
-  loader: false,
-  saveLoader: false,
-  showCookiesModal: false,
   preScriptText: '',
   postScriptText: '',
-  preReqScriptError: '',
-  postReqScriptError: '',
   host: {},
-  draftDataSet: false,
-  docOptions: false,
   sslMode: getCurrentUserSSLMode(),
-  showAskAiSlider: false,
   currentView: 'testing',
-  docViewData: [
-    { type: 'host' },
-    { type: 'body' },
-    { type: 'params' },
-    { type: 'pathVariables' },
-    { type: 'headers' },
-    { type: 'sampleResponse' }
-  ],
+  docViewData: [],
   harObject: {}
 }
 
@@ -290,7 +246,6 @@ class DisplayEndpoint extends Component {
     this.sideRef = React.createRef()
     this.scrollDiv = React.createRef()
     this.state = {
-      pathVariables: [],
       methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
       environment: {},
       startTime: '',
@@ -299,38 +254,17 @@ class DisplayEndpoint extends Component {
       endpoint: {},
       title: '',
       flagResponse: false,
-      originalHeaders: [
-        {
-          checked: 'notApplicable',
-          key: '',
-          value: '',
-          description: ''
-        }
-      ],
-      originalParams: [
-        {
-          checked: 'notApplicable',
-          key: '',
-          value: '',
-          description: ''
-        }
-      ],
       authType: null,
       oldDescription: '',
-      headers: [],
       publicBodyFlag: true,
-      params: [],
       bodyDescription: {},
       fieldDescription: {},
-      sampleResponseArray: [],
       sampleResponseFlagArray: [],
       theme: '',
       loader: false,
       saveLoader: false,
       codeEditorVisibility: true,
       showCookiesModal: false,
-      preScriptText: '',
-      postScriptText: '',
       preReqScriptError: '',
       postReqScriptError: '',
       host: {},
@@ -339,21 +273,10 @@ class DisplayEndpoint extends Component {
       requestKey: null,
       docOptions: false,
       sslMode: getCurrentUserSSLMode(),
-      showAskAiSlider: false,
-      currentView: 'testing'
+      showAskAiSlider: false
     }
-
     this.uri = React.createRef()
     this.paramKey = React.createRef()
-
-    this.structueParamsHeaders = [
-      {
-        checked: 'notApplicable',
-        key: '',
-        value: '',
-        description: ''
-      }
-    ]
     this.setCurrentReponseView()
   }
 
@@ -364,18 +287,13 @@ class DisplayEndpoint extends Component {
       : isDashboardRoute(this.props)
         ? this.props.location.pathname.split('/')[5]
         : this.props.location.pathname.split('/')[4]
-    if (!this.state.theme) {
-      this.setState({ theme: this.props.publicCollectionTheme })
-    }
-    if (window.innerWidth < '1400') {
-      this.setState({ codeEditorVisibility: false })
-    }
-
+    if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
+    
+    if (window.innerWidth < '1400') this.setState({ codeEditorVisibility: false })
+    
     const { endpointId } = this.props.match.params
-    if (endpointId === 'new') {
-      this.setUnsavedTabDataInIDB()
-    }
-
+    if (endpointId === 'new') this.setUnsavedTabDataInIDB()
+    
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
@@ -456,22 +374,6 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async fetchPublicCollection(collectionId) {
-    const collection = await collectionsApiService.getCollection(collectionId)
-    if (collection.data.environment != null) {
-      this.setState({
-        publicCollectionEnvironmentId: collection.data.environment.id,
-        originalEnvironmentReplica: collection.data.environment
-      })
-    }
-    if (collection.data.environment == null) {
-      this.setState({
-        publicCollectionEnvironmentId: null,
-        originalEnvironmentReplica: null
-      })
-    }
-  }
-
   getFieldDescription(bodyDescription) {
     const keys = Object.keys(bodyDescription)
     const fieldDescription = {}
@@ -517,12 +419,10 @@ class DisplayEndpoint extends Component {
         }
       }
       originalParams = this.makeOriginalParams(keys, values, description)
-      // this.setState({ originalParams })
       const tempData = this.props?.endpointContent || {}
       tempData.originalParams = originalParams
       this.props.setQueryUpdatedData(tempData)
     }
-    // this.setState({ data })
     const tempData = this.props?.endpointContent || {}
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
@@ -561,45 +461,34 @@ class DisplayEndpoint extends Component {
           pathVariables.push({
             checked: 'notApplicable',
             key: pathVariableKeys[i].slice(1),
-            value: this.state.pathVariables[i - 1]
-              ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
-                ? this.state.pathVariables[i - 1].value
+            value: this.props.endpointContent.pathVariables[i - 1]
+              ? this.props.endpointContent.pathVariables[i - 1].key === pathVariableKeys[i]
+                ? this.props.endpointContent.pathVariables[i - 1].value
                 : ''
               : '',
-            description: this.state.pathVariables[i - 1]
-              ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
-                ? this.state.pathVariables[i - 1].description
+            description: this.props.endpointContent.pathVariables[i - 1]
+              ? this.props.endpointContent.pathVariables[i - 1].key === pathVariableKeys[i]
+                ? this.props.endpointContent.pathVariables[i - 1].description
                 : ''
               : ''
           })
         }
       }
     }
-
-    this.setState({ pathVariables })
-  }
-
-  getSampleResponseFlagArray(sampleResponse) {
-    const sampleResponseFlagArray = []
-    if (sampleResponse) {
-      let index = 0
-      while (index < sampleResponse.length) {
-        sampleResponseFlagArray.push(!isDashboardRoute(this.props))
-        index++
-      }
-    }
-    return sampleResponseFlagArray
+    const dummyData = this.props.endpointContent
+    dummyData.pathVariables = pathVariables
+    this.props.setQueryUpdatedData(dummyData)
   }
 
   makeOriginalParams(keys, values, description) {
     const originalParams = []
-    for (let i = 0; i < this.state.originalParams.length; i++) {
-      if (this.state.originalParams[i].checked === 'false') {
+    for (let i = 0; i < this.props.endpointContent.originalParams.length; i++) {
+      if (this.props.endpointContent.originalParams[i].checked === 'false') {
         originalParams.push({
-          checked: this.state.originalParams[i].checked,
-          key: this.state.originalParams[i].key,
-          value: this.state.originalParams[i].value,
-          description: this.state.originalParams[i].description
+          checked: this.props.endpointContent.originalParams[i].checked,
+          key: this.props.endpointContent.originalParams[i].key,
+          value: this.props.endpointContent.originalParams[i].value,
+          description: this.props.endpointContent.originalParams[i].description
         })
       }
     }
@@ -730,7 +619,7 @@ class DisplayEndpoint extends Component {
         /** request creation was successfull */
         const currentEnvironment = this.props.environment
         const request = { url: api, body, headers: header, method }
-        const code = this.state.postScriptText
+        const code = this.props?.endpointContent?.postScriptText
 
         this.processResponse(responseJson)
 
@@ -777,8 +666,8 @@ class DisplayEndpoint extends Component {
         if (uniquePathparameters[pathParameters[i].slice(1)] || uniquePathparameters[pathParameters[i].slice(1)] === '') {
           pathParameters[i] = uniquePathparameters[pathParameters[i].slice(1)]
         } else {
-          pathParameters[i] = this.state.pathVariables[counter]?.value
-          uniquePathparameters[this.state.pathVariables[counter]?.key] = this.state.pathVariables[counter]?.value
+          pathParameters[i] = this.props.endpointContent.pathVariables[counter]?.value
+          uniquePathparameters[this.props.endpointContent.pathVariables[counter]?.key] = this.props.endpointContent.pathVariables[counter]?.value
           counter++
         }
       }
@@ -952,7 +841,7 @@ class DisplayEndpoint extends Component {
 
     const currentEnvironment = this.props.environment
 
-    const code = this.state.preScriptText
+    const code = this.props.endpointContent.preScriptText
 
     /** Run Pre Request Script */
     const result = this.runScript(code, currentEnvironment, requestOptions)
@@ -1039,13 +928,6 @@ class DisplayEndpoint extends Component {
       }
     }
     return count + 1
-  }
-
-  extractCollectionId(groupId) {
-    const group = this.props.groups[groupId]
-    const versionId = group.versionId
-    const version = this.props.versions[versionId]
-    return version?.collectionId
   }
 
   prepareBodyForSaving(body) {
@@ -1169,10 +1051,6 @@ class DisplayEndpoint extends Component {
       }
       const endpoint = { ...this.props?.endpointContent }
       endpoint.pathVariables = { ...updatedPathVariables }
-      this.setState({
-        pathVariables,
-        endpoint
-      })
       this.props.setQueryUpdatedData(endpoint)
     }
     return updatedPathVariables
@@ -1194,10 +1072,6 @@ class DisplayEndpoint extends Component {
     }
     const endpoint = { ...this.props?.endpointContent }
     endpoint.headers = { ...updatedHeaders }
-    this.setState({
-      originalHeaders,
-      endpoint
-    })
     this.props.setQueryUpdatedData(endpoint)
     return updatedHeaders
   }
@@ -1220,21 +1094,24 @@ class DisplayEndpoint extends Component {
   propsFromChild(name, value) {
     if (name === 'Params') {
       this.handleUpdateUri(value)
-      this.setState({ originalParams: value }, () => this.setModifiedTabData())
+      // this.setState({ originalParams: value }, () => this.setModifiedTabData())
       const dummyData = this?.props?.endpointContent
       dummyData.originalParams = [...value]
       this.props.setQueryUpdatedData(dummyData)
     }
 
     if (name === 'Headers') {
-      this.setState({ originalHeaders: value }, () => this.setModifiedTabData())
+      // this.setState({ originalHeaders: value }, () => this.setModifiedTabData())
       const dummyData = this?.props?.endpointContent
       dummyData.originalHeaders = [...value]
       this.props.setQueryUpdatedData(dummyData)
     }
 
     if (name === 'Path Variables') {
-      this.setState({ pathVariables: value }, () => this.setModifiedTabData())
+      // this.setState({ pathVariables: value }, () => this.setModifiedTabData())
+      const dummyData = this?.props?.endpointContent
+      dummyData.pathVariables = [...value]
+      this.props.setQueryUpdatedData(dummyData)
     }
 
     if (name === 'HostAndUri') this.setModifiedTabData()
@@ -1254,7 +1131,6 @@ class DisplayEndpoint extends Component {
       const updatedUri = this.props.endpointContent.data.updatedUri.split('?')[0]
       const data = { ...this.props?.endpointContent.data }
       data.updatedUri = updatedUri
-      this.setState({ data })
       tempdata.data = data
       this.props.setQueryUpdatedData(tempdata)
       return
@@ -1275,7 +1151,6 @@ class DisplayEndpoint extends Component {
     } else {
       data.updatedUri = updatedUri
     }
-    this.setState({ data })
     tempdata.data = data
     this.props.setQueryUpdatedData(tempdata)
   }
@@ -1296,67 +1171,8 @@ class DisplayEndpoint extends Component {
     }
     const endpoint = { ...this.props?.endpointContent }
     endpoint.params = { ...updatedParams }
-    this.setState({
-      originalParams,
-      endpoint
-    })
     this.props.setQueryUpdatedData(endpoint)
     return updatedParams
-  }
-
-  fetchoriginalParams(params) {
-    const originalParams = []
-    let i = 0
-    for (i = 0; i < Object.keys(params).length; i++) {
-      originalParams[i] = {
-        checked: params[Object.keys(params)[i]].checked,
-        key: Object.keys(params)[i],
-        value: params[Object.keys(params)[i]].value,
-        description: params[Object.keys(params)[i]].description
-      }
-    }
-    originalParams[i] = {
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: ''
-    }
-
-    return originalParams
-  }
-
-  fetchoriginalHeaders(headers) {
-    const originalHeaders = []
-    let i = 0
-    for (i = 0; i < Object.keys(headers).length; i++) {
-      originalHeaders[i] = {
-        checked: headers[Object.keys(headers)[i]].checked,
-        key: Object.keys(headers)[i],
-        value: headers[Object.keys(headers)[i]].value,
-        description: headers[Object.keys(headers)[i]].description
-      }
-    }
-    originalHeaders[i] = {
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: ''
-    }
-    return originalHeaders
-  }
-
-  fetchPathVariables(pathVariables) {
-    const originalPathVariables = []
-    let i = 0
-    for (i = 0; i < Object.keys(pathVariables).length; i++) {
-      originalPathVariables[i] = {
-        checked: pathVariables[Object.keys(pathVariables)[i]].checked,
-        key: Object.keys(pathVariables)[i],
-        value: pathVariables[Object.keys(pathVariables)[i]].value,
-        description: pathVariables[Object.keys(pathVariables)[i]].description
-      }
-    }
-    return originalPathVariables
   }
 
   openEndpointFormModal() {
@@ -1369,10 +1185,6 @@ class DisplayEndpoint extends Component {
 
   closeChatBotModal = () => {
     this.setState({ showAskAiSlider: false })
-  }
-
-  updateArray(updatedArray) {
-    this.setState({ updatedArray })
   }
 
   makeHeaders(headers) {
@@ -1488,7 +1300,7 @@ class DisplayEndpoint extends Component {
   }
 
   setBaseUrl(BASE_URL, selectedHost) {
-    this.setState({ host: { BASE_URL, selectedHost } })
+    // this.setState({ host: { BASE_URL, selectedHost } })
     const tempData = this?.props?.endpointContent || untitledEndpointData
     tempData.host = { BASE_URL, selectedHost }
     this.props.setQueryUpdatedData(tempData)
@@ -1498,7 +1310,7 @@ class DisplayEndpoint extends Component {
     const data = { ...this.props?.endpointContent.data }
     data.body = { type: bodyType, value: body }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
-    this.setState({ data }, () => this.setModifiedTabData())
+    // this.setState({ data }, () => this.setModifiedTabData())
     const tempData = this.props.endpointContent
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
@@ -1579,7 +1391,7 @@ class DisplayEndpoint extends Component {
   }
 
   setParams(value, title, authorizationFlag) {
-    const originalParams = this.state.originalParams
+    const originalParams = this.props.endpointContent.originalParams
     const updatedParams = []
     const emptyParam = {
       checked: 'notApplicable',
@@ -1603,14 +1415,13 @@ class DisplayEndpoint extends Component {
       })
     }
     updatedParams.push(emptyParam)
-    this.setState({ originalParams: updatedParams })
     const dummyData = this.props.endpointContent
     dummyData.originalParams = updatedParams
     this.props.setQueryUpdatedData(dummyData)
   }
 
   setHeaders(value, title, authorizationFlag = undefined) {
-    const originalHeaders = this.state.originalHeaders
+    const originalHeaders = this.props.endpointContent.originalHeaders
     const updatedHeaders = []
     const emptyHeader = {
       checked: 'notApplicable',
@@ -1623,7 +1434,6 @@ class DisplayEndpoint extends Component {
         continue
       } else if (originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
         originalHeaders[i].value = this.identifyBodyType(value)
-        this.setState({ originalHeaders })
         const dummyData = this.props.endpointContent
         dummyData.originalHeaders = originalHeaders
         this.props.setQueryUpdatedData(dummyData)
@@ -1634,7 +1444,6 @@ class DisplayEndpoint extends Component {
     }
     if (value === 'none') {
       updatedHeaders.push(emptyHeader)
-      this.setState({ originalHeaders: updatedHeaders })
       const dummyData = this.props.endpointContent
       dummyData.originalHeaders = updatedHeaders
       this.props.setQueryUpdatedData(dummyData)
@@ -1653,7 +1462,6 @@ class DisplayEndpoint extends Component {
     }
 
     updatedHeaders.push(emptyHeader)
-    this.setState({ originalHeaders: updatedHeaders })
     const dummyData = this.props.endpointContent
     dummyData.originalHeaders = updatedHeaders
     this.props.setQueryUpdatedData(dummyData)
@@ -1689,7 +1497,7 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromSampleResponse(sampleResponseArray, sampleResponseFlagArray) {
-    this.setState({ sampleResponseArray, sampleResponseFlagArray })
+    this.setState({sampleResponseFlagArray })
     const updatedEndpointData = {
       ...this.props.endpointContent,
       sampleResponseArray: sampleResponseArray
@@ -1792,7 +1600,7 @@ class DisplayEndpoint extends Component {
     const sampleResponse = { data, status, description, title }
     const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray, sampleResponse]
     sampleResponseFlagArray.push(false)
-    this.setState({ sampleResponseArray, sampleResponseFlagArray })
+    this.setState({sampleResponseFlagArray })
     const updatedEndpointData = {
       ...this.props.endpointContent,
       sampleResponseArray: sampleResponseArray
@@ -2038,15 +1846,14 @@ class DisplayEndpoint extends Component {
   }
 
   handleScriptChange(text, type) {
-    let preScriptText = this.state.preScriptText || ''
-    let postScriptText = this.state.postScriptText || ''
+    let preScriptText = this.props?.endpointContent?.preScriptText || ''
+    let postScriptText = this.props?.endpointContent?.postScriptText || ''
     if (type === 'Pre-Script') {
       preScriptText = text
     } else {
       postScriptText = text
     }
-
-    this.setState({ preScriptText, postScriptText }, () => this.setModifiedTabData())
+    // this.setState({ preScriptText, postScriptText }, () => this.setModifiedTabData())
     const dummyData = this.props.endpointContent
     dummyData.preScriptText = preScriptText
     dummyData.postScriptText = postScriptText
@@ -2140,7 +1947,7 @@ class DisplayEndpoint extends Component {
 
   renderDragHandle(item) {
     if (item.type === 'pathVariables') {
-      if (this.state.pathVariables && this.state.pathVariables.length) return <DragHandle />
+      if (this.props?.endpointContent?.pathVariables && this.props?.endpointContent?.pathVariables.length) return <DragHandle />
       return
     }
     return <DragHandle />
@@ -2233,34 +2040,6 @@ class DisplayEndpoint extends Component {
 
   isDashboardAndTestingView() {
     return isDashboardRoute(this.props) && (this.props?.endpointContent?.currentView === 'testing' || !isSavedEndpoint(this.props))
-  }
-
-  getCurrentView() {
-    const { endpoints, collections } = this.props
-    const endpoint = endpoints[this.endpointId]
-    const collectionId = this.extractCollectionId(endpoint.groupId)
-    const collectionView = collections[collectionId]?.defaultView
-    if (window.localStorage.getItem('endpointView') && getCurrentUser()) {
-      const userId = getCurrentUser().identifier
-      const currentView = JSON.parse(window.localStorage.getItem('endpointView'))
-      if (currentView[userId]) return currentView[userId]
-      return collectionView
-    }
-    return collectionView
-  }
-
-  getDocViewData(endpoint) {
-    if (endpoint) {
-      if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
-        const docViewData = [...docViewData]
-        if (endpoint.description && endpoint.description.length) docViewData.splice(0, 0, { type: 'textArea', data: endpoint.description })
-        if (endpoint.notes && endpoint.notes.length) {
-          docViewData.splice(docViewData.length - 1, 0, { type: 'textBlock', data: endpoint.notes })
-        }
-        return docViewData
-      }
-      return endpoint.docViewData
-    }
   }
 
   renderToggleView() {
@@ -2400,8 +2179,8 @@ class DisplayEndpoint extends Component {
 
   renderPathVariables() {
     return (
-      this.state.pathVariables &&
-      this.state.pathVariables.length !== 0 && (
+      this.props.endpointContent.pathVariables &&
+      this.props.endpointContent.pathVariables.length !== 0 && (
         <GenericTable
           {...this.props}
           title='Path Variables'
@@ -2446,8 +2225,6 @@ class DisplayEndpoint extends Component {
             </div>
             <HostContainer
               {...this.props}
-              groupId={this.state.groupId}
-              versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
               environmentHost={
                 this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
               }
@@ -2479,7 +2256,6 @@ class DisplayEndpoint extends Component {
             aria-expanded='false'
             disabled={isDashboardRoute(this.props) ? null : true}
           >
-            {/* {this.state.data.method} */}
             {this.props?.endpointContent?.data?.method}
           </button>
           <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
@@ -2493,13 +2269,11 @@ class DisplayEndpoint extends Component {
         <div className='d-flex w-100 dashboard-url'>
           <HostContainer
             {...this.props}
-            groupId={this.state.groupId}
             endpointId={this.state.endpoint.id}
             // customHost={this.props?.endpointContent?.host?.BASE_URL || ''}
             environmentHost={
               this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
             }
-            versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
             updatedUri={this.props.endpointContent?.data?.updatedUri}
             set_host_uri={this.setHostUri.bind(this)}
             set_base_url={this.setBaseUrl.bind(this)}
@@ -2715,25 +2489,10 @@ class DisplayEndpoint extends Component {
       : isDashboardRoute(this.props)
         ? this.props.location.pathname.split('/')[5]
         : this.props.location.pathname.split('/')[4]
-    if (isDashboardRoute(this.props) && this.state.groupId && this.props.tab.status === tabStatusTypes.DELETED) {
-      this.setState({ groupId: null })
-    }
 
     if (this.props.save_endpoint_flag && this.props.tab.id === this.props.selected_tab_id) {
       this.props.handle_save_endpoint(false)
       this.handleSave()
-    }
-
-    if (
-      (!isDashboardRoute(this.props) && this.state.endpoint.id !== this.endpointId && this.props.endpoints[this.endpointId]) ||
-      (!isDashboardRoute(this.props) && this.props.rejectedEndpointId && this.state.publicEndpointId !== this.props.rejectedEndpointId)
-    ) {
-      this.fetchEndpoint(0, this.endpointId)
-      store.subscribe(() => {
-        if (!this.props.location.title && !this.state.title) {
-          this.fetchEndpoint(0, this.endpointId)
-        }
-      })
     }
 
     const { theme, codeEditorVisibility } = this.state
@@ -2791,7 +2550,6 @@ class DisplayEndpoint extends Component {
                         endpoint={this.state.endpoint}
                         data={this.state.data}
                         old_description={this.state.oldDescription}
-                        // groupId={this.state.groupId ? this.state.groupId : null}
                         props_from_parent={this.propsFromDescription.bind(this)}
                         alterEndpointName={(name) => this.alterEndpointName(name)}
                       />
@@ -3034,7 +2792,7 @@ class DisplayEndpoint extends Component {
                 {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
               </div>
             ) : null}
-            {this.isNotDashboardOrDocView() && this.props.endpointContent.harObject && isOnPublishedPage() && (
+            {this.isNotDashboardOrDocView() && this.props?.endpointContent?.harObject && isOnPublishedPage() && (
               <CodeTemplate
                 show
                 onHide={() => {
