@@ -58,6 +58,16 @@ class SaveAsSidebar extends Form {
     }
   }
 
+  handleEndpointSaveAsEndpointNameChange(e) {
+    this.setState({ data: { ...this.state.data, name: e.currentTarget.value } })
+  }
+
+  handleSaveAsEndpointNameBlur(e) {
+    if (!trimString(e.currentTarget.value)) {
+      this.setState({ data: { ...this.state.data, name: this.props?.endpointContent?.data?.name } })
+    }
+  }
+
   renderEndpointNameInput() {
     return (
       <Input
@@ -65,6 +75,21 @@ class SaveAsSidebar extends Form {
         value={this.props?.endpointContent?.data?.name || ''}
         onChange={(e) => this.handleEndpointNameChange(e)}
         onBlur={(e) => this.handleEndpointNameBlur(e)}
+        // error={errors?.[name]}
+        placeholder={'Endpoint Name'}
+        mandatory={'mandatory'}
+        firstLetterCapitalize
+        label={'Name'}
+      />
+    )
+  }
+
+  renderSaveAsExistingEndpointInput() {
+    return (
+      <Input
+        value={this.state.data.name}
+        onChange={(e) => this.handleEndpointSaveAsEndpointNameChange(e)}
+        onBlur={(e) => this.handleSaveAsEndpointNameBlur(e)}
         // error={errors?.[name]}
         placeholder={'Endpoint Name'}
         mandatory={'mandatory'}
@@ -112,7 +137,9 @@ class SaveAsSidebar extends Form {
           <div className='drawer-body'>
             <form className='desc-box form-parent' onSubmit={this.handleSubmit}>
               <div className='p-form-group mb-3'>
-                {this.renderEndpointNameInput()}
+                {this.props?.match?.params?.endpointId === 'new'
+                  ? this.renderEndpointNameInput()
+                  : this.renderSaveAsExistingEndpointInput()}
                 {title?.trim() === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
               </div>
             </form>

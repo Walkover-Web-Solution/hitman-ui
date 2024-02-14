@@ -87,7 +87,7 @@ class ApiDocReview extends Component {
         console.log(response)
       })
       .catch((error) => {
-        console.log(error)
+        console.error(error)
       })
     this.savelocalstorage(this.state.parentId, this.getVoteKey(this.state.vote))
     this.setState({ user: '', comment: '', vote: null }, () => {

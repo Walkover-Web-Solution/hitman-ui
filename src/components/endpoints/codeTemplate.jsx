@@ -42,7 +42,7 @@ class CodeTemplate extends Component {
       const snippet = this.makeCodeSnippet()
       codeSnippet = snippet.convert(selectedLanguage)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
     this.setState({ codeSnippet, copied: false })
   }
