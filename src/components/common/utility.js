@@ -528,7 +528,7 @@ export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = 
     window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
     window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
   } catch (e) {
-    console.log('error ', e)
+    console.error('error ', e)
     throw new Error(e?.message ? e.message : 'Something went wrong')
   }
 }
@@ -674,7 +674,7 @@ export const deleteAllPagesAndTabsAndReactQueryData = async (pageId) => {
     // things left to do , if activeTabId found then change activeTabId and change path
     return { pages, tabs, changePath: foundActiveTabId, openNewTab: !(tabs?.tabsOrder?.length > 0) }
   } catch (err) {
-    console.log('deleteAllPagesAndTabsAndReactQueryData == ', err)
+    console.error(err)
     return null
   }
 }

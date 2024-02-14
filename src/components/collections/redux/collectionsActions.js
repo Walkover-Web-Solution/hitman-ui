@@ -183,11 +183,11 @@ export const deleteCollection = (collection, props) => {
             toast.success('collection has been deleted successfully')
           })
           .catch((error) => {
-            console.log('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)
+            console.error('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)
           })
       })
       .catch((error) => {
-        console.log('error', error)
+        console.error('error', error)
         dispatch(onCollectionDeletedError(error.response, collection))
       })
   }

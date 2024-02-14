@@ -16,6 +16,7 @@ export const addEndpointInCollection = (history, newEndpoint, rootParentId, cust
   const requestId = shortid.generate()
   return (dispatch) => {
     // dispatch(addEndpointRequest({ ...newEndpoint, requestId, rootParentId }))
+    const prevCurrentTabId = store.getState()?.tabs?.activeTabId
     endpointApiService
       .saveEndpointInCollection(rootParentId, { ...newEndpoint, requestId })
       .then(async (response) => {
@@ -31,10 +32,11 @@ export const addEndpointInCollection = (history, newEndpoint, rootParentId, cust
           versionId: null,
           collectionId: store.getState()?.pages?.[response?.data?.parentId].collectionId
         }
-
         const data = await dispatch(addChildInParent(responseToSend))
         history.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
-        await dispatch(replaceTabForUntitled(data.payload.id))
+        if (props?.match?.params?.endpointId === 'new') {
+          dispatch(replaceTabForUntitled(data.payload.id, prevCurrentTabId))
+        }
         if (customCallback) {
           customCallback({ closeForm: true, stopLoader: true })
         }
@@ -127,7 +129,7 @@ export const deleteEndpoint = (endpoint) => {
             operationsAfterDeletion(data)
           })
           .catch((error) => {
-            console.log('error after getting data from deleteAllPagesAndTabsAndReactQueryData == ', error)
+            console.error('error after getting data from deleteAllPagesAndTabsAndReactQueryData == ', error)
           })
       })
       .catch((error) => {
