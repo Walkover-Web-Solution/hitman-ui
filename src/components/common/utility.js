@@ -557,9 +557,9 @@ const modifyEndpointContent = (endpointData, untitledData) => {
       { type: 'pathVariables' },
       { type: 'headers' },
       { type: 'sampleResponse' }
-    ];
+    ]
   } else {
-    untitled.docViewData = endpoint.docViewData;
+    untitled.docViewData = endpoint.docViewData
   }
   headersData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
   paramsData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
