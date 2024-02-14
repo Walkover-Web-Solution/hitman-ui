@@ -987,7 +987,7 @@ class DisplayEndpoint extends Component {
       const endpoint = {
         id: slug === 'isHistory' ? this.props?.match?.params?.historyId : this.props?.match?.params?.endpointId,
         uri: this.props?.endpointContent?.data.updatedUri,
-        name: endpointName || this.props?.endpointContent?.data?.name,
+        name: this.state.saveAsFlag ? endpointName : this.props?.endpointContent?.data?.name,
         requestType: this.props?.endpointContent?.data?.method,
         body: body,
         headers: headersData,
@@ -1023,10 +1023,15 @@ class DisplayEndpoint extends Component {
           delete endpoint.state
           delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
-          this.props.add_endpointInCollection(endpoint, id, ({ closeForm, stopLoader }) => {
-            if (closeForm) this.closeEndpointFormModal()
-            if (stopLoader) this.setState({ saveAsLoader: false })
-          })
+          this.props.add_endpointInCollection(
+            endpoint,
+            id,
+            ({ closeForm, stopLoader }) => {
+              if (closeForm) this.closeEndpointFormModal()
+              if (stopLoader) this.setState({ saveAsLoader: false })
+            },
+            this.state.saveAsFlag
+          )
           moveToNextStep(4)
         } else {
           endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
@@ -2583,6 +2588,7 @@ class DisplayEndpoint extends Component {
                         description={this.props.endpointContent.data.description}
                         save_endpoint={this.handleSave.bind(this)}
                         saveAsLoader={this.state.saveAsLoader}
+                        endpointContent={this.props?.endpointContent}
                       />
                     )}
                     {this.isDashboardAndTestingView() && (
