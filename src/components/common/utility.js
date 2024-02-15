@@ -568,7 +568,6 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.sampleResponseArray = endpoint.sampleResponse || []
   untitled.postScriptText = endpoint.postScript
   untitled.preScriptText = endpoint.preScript
-  untitled.docViewData = endpoint.docViewData
   untitled.host['BASE_URL'] = endpoint.BASE_URL
   return { ...untitled }
 }
