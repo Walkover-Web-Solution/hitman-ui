@@ -89,7 +89,7 @@ class PublishDocForm extends Component {
     if (this.props.collections) {
       collection = this.props.collections[collectionId]
       if (collection && Object.keys(collection).length > 0) {
-        title = collection?.docProperties?.defaultTitle || publishDocFormEnum.NULL_STRING
+        title = collection?.docProperties?.defaultTitle || collection?.name || publishDocFormEnum.NULL_STRING
         logoUrl = collection?.docProperties?.defaultLogoUrl || publishDocFormEnum.NULL_STRING
         domain = collection?.customDomain || publishDocFormEnum.NULL_STRING
         theme = collection?.theme || publishDocFormEnum.NULL_STRING
@@ -411,7 +411,7 @@ class PublishDocForm extends Component {
           id='publish_collection_btn'
           variant='success publish-collection-button ml-4 mt-4'
           onClick={() => this.publishCollection(selectedCollection)}
-          // disabled={!selectedCollection?.docProperties?.defaultTitle}
+          disabled={!selectedCollection?.docProperties?.defaultTitle}
         >
           Publish Collection
         </Button>

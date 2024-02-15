@@ -122,8 +122,8 @@ export const closeAllTabs = () => {
   }
 }
 
-export const replaceTabForUntitled = (newTabId) => {
+export const replaceTabForUntitled = (newTabId, currentActiveTabId) => {
   return async (dispatch) => {
-    dispatch({ type: tabsActionTypes.REPLACE_TAB_ID, payload: { newTabId } })
+    dispatch({ type: tabsActionTypes.REPLACE_TAB_ID, payload: { newTabId, currentActiveTabId } })
   }
 }
