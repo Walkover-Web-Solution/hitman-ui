@@ -73,7 +73,7 @@ export class DefaultViewModal extends Form {
       const newPage = {
         ...data,
         requestId: shortid.generate(),
-        versionId: this.props.pageType === 1 ? shortid.generate() : this.props.rootParentId,
+        versionId: this.props.pageType === 1 ? shortid.generate() : null,
         pageType: this.props.pageType
       }
       this.props.add_page(rootParentId, newPage)
@@ -85,7 +85,7 @@ export class DefaultViewModal extends Form {
       const newPage = {
         ...data,
         requestId: shortid.generate(),
-        versionId: this.props?.pageType === 1 ? shortid.generate() : this.props.rootParentId,
+        versionId: this.props?.pageType === 1 ? shortid.generate() : null,
         pageType: this.props?.pageType,
         state: 0
       }
