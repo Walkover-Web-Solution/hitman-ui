@@ -9,6 +9,7 @@ import { ERROR_404_PUBLISHED_PAGE } from '../../components/errorPages'
 import '../collections/collections.scss'
 import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
+import SplitPane from 'react-split-pane'
 import '../collectionVersions/collectionVersions.scss'
 // import ThumbUp from '../../assets/icons/thumb_up.svg'
 // import ThumbDown from '../../assets/icons/thumb_down.svg'
@@ -365,6 +366,7 @@ class PublicEndpoint extends Component {
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
           {/* [info] part 3 */}
+          <SplitPane split='vertical' className='split-sidebar'>
             {/* [info] part 3 subpart 1 sidebar data left content */}
             <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
               {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
@@ -426,6 +428,7 @@ class PublicEndpoint extends Component {
                 </>
               )}
             </div>
+            </SplitPane>
         </main>
       </>
     )

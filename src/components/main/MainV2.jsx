@@ -17,6 +17,7 @@ import CollectionModal from '../collections/collectionsModal'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
 import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 import { addCollectionAndPages } from '../redux/generalActions'
+import SplitPane from '../splitPane/SplitPane'
 
 const mapStateToProps = (state) => {
   return {
@@ -200,7 +201,7 @@ class MainV2 extends Component {
                 // fetchFromBackend={this.fetchFromBackend.bind(this)}
                 />
                 <div className='main-panel-wrapper'>
-                
+                <SplitPane split='vertical' className='split-sidebar'>
                     <SideBarV2
                       tabs={[...this.state.tabs]}
                       set_tabs={this.setTabs.bind(this)}
@@ -216,7 +217,7 @@ class MainV2 extends Component {
                         default_tab_index={this.state.defaultTabIndex}
                       />
                     )}
-                 
+                 </SplitPane>
                 </div>
                 <UpdateStatus />
               </div>
