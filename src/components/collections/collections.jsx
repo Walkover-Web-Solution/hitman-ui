@@ -29,7 +29,10 @@ import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
-
+import deleteIcon from '../../assets/icons/delete-icon.svg'
+import Editicon from '../../assets/icons/editsign.svg'
+import gotodocsign from '../../assets/icons/gotodocssign.svg'
+import addGoogleTag from '../../assets/icons/addGoogleTagsign.svg'
 const EMPTY_STRING = ''
 
 const mapStateToProps = (state) => {
@@ -388,15 +391,8 @@ class CollectionsComponent extends Component {
                       {!this.props.collections[collectionId]?.importedFromMarketPlace && (
                         <>
                           <div className='dropdown-item' onClick={() => this.openEditCollectionForm(collectionId)}>
-                            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                              <path
-                                d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
-                                stroke='#E98A36'
-                                strokeWidth='1.5'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                              />
-                            </svg>{' '}
+                           <img src= {Editicon}/>
+                           {' '}
                             Edit
                           </div>
                           <div
@@ -405,24 +401,7 @@ class CollectionsComponent extends Component {
                               this.openDeleteCollectionModal(collectionId)
                             }}
                           >
-                            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                              <path
-                                d='M2.25 4.5H3.75H15.75'
-                                stroke='#E98A36'
-                                strokeWidth='1.5'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                              />
-                              <path
-                                d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
-                                stroke='#E98A36'
-                                strokeWidth='1.5'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                              />
-                              <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                              <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                            </svg>{' '}
+                            <img src={deleteIcon}/> {' '}
                             Delete
                           </div>
                           {/* <div className='dropdown-item' onClick={() => this.handleDuplicateCollection(this.props.collections[collectionId])}>
@@ -468,24 +447,7 @@ class CollectionsComponent extends Component {
                           </div> */}
                           {this.props.collections[collectionId].isPublic && (
                             <div className='dropdown-item' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
-                              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                                <path
-                                  d='M10.5 1.5H4.5C4.10218 1.5 3.72064 1.65804 3.43934 1.93934C3.15804 2.22064 3 2.60218 3 3V15C3 15.3978 3.15804 15.7794 3.43934 16.0607C3.72064 16.342 4.10218 16.5 4.5 16.5H13.5C13.8978 16.5 14.2794 16.342 14.5607 16.0607C14.842 15.7794 15 15.3978 15 15V6L10.5 1.5Z'
-                                  stroke='#E98A36'
-                                  strokeWidth='1.5'
-                                  strokeLinecap='round'
-                                  strokeLinejoin='round'
-                                />
-                                <path d='M12 9.75H6' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                                <path d='M12 12.75H6' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                                <path
-                                  d='M7.5 6.75H6.75H6'
-                                  stroke='#E98A36'
-                                  strokeWidth='1.5'
-                                  strokeLinecap='round'
-                                  strokeLinejoin='round'
-                                />
-                              </svg>{' '}
+                            <img src = {gotodocsign}/>{' '}
                               Go to Docs
                             </div>
                           )}
@@ -514,52 +476,7 @@ class CollectionsComponent extends Component {
                               this.TagManagerModal(collectionId)
                             }}
                           >
-                            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                              <path
-                                d='M1.82189 8.02724L8.10274 1.74639C8.59828 1.25084 9.40172 1.25084 9.89726 1.74639L16.1781 8.02724C16.6737 8.52278 16.6737 9.32622 16.1781 9.82176L9.89726 16.1026C9.40172 16.5982 8.59828 16.5982 8.10274 16.1026L1.82189 9.82176C1.32634 9.32622 1.32634 8.52278 1.82189 8.02724Z'
-                                stroke='#E98A36'
-                                strokeWidth='1.5'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                              />
-                              <line
-                                x1='0.75'
-                                y1='-0.75'
-                                x2='7.32538'
-                                y2='-0.75'
-                                transform='matrix(-0.707107 0.707107 0.707107 0.707107 12.2629 3.70117)'
-                                stroke='#E98A36'
-                                strokeWidth='1.5'
-                                strokeLinecap='round'
-                              />
-                              <line
-                                x1='11.8551'
-                                y1='8.97961'
-                                x2='7.20558'
-                                y2='13.6291'
-                                stroke='#E98A36'
-                                strokeWidth='1.5'
-                                strokeLinecap='round'
-                              />
-                              <line
-                                x1='6.79772'
-                                y1='8.5957'
-                                x2='9.00001'
-                                y2='10.798'
-                                stroke='#E98A36'
-                                strokeWidth='1.5'
-                                strokeLinecap='round'
-                              />
-                              <line
-                                x1='9.24493'
-                                y1='6.14844'
-                                x2='11.8182'
-                                y2='8.7217'
-                                stroke='#E98A36'
-                                strokeWidth='1.5'
-                                strokeLinecap='round'
-                              />
-                            </svg>
+                            <img src= {addGoogleTag}/>
                             Add Google Tag Manager
                           </div>
                         </>
