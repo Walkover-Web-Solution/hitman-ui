@@ -25,10 +25,7 @@ import { deletePage } from '../pages/redux/pagesActions.js'
 
 const mapStateToProps = (state) => {
   return {
-    groups: state.groups,
     pages: state.pages,
-    endpoints: state.endpoints,
-    versions: state.versions,
     clientData: state.clientData,
     modals: state.modals
   }
@@ -56,54 +53,15 @@ class Groups extends Component {
       },
       theme: '',
       filter: '',
-      selectedGroupIds: [],
       checkboxChecked: false
     }
-
     this.eventkey = {}
-    this.filterFlag = false
-    this.filteredGroupEndpoints = {}
-    this.filteredGroupPages = {}
-    this.filteredEndpointsAndPages = {}
     this.scrollRef = {}
   }
 
   componentDidMount() {
     if (!this.state.theme) {
       this.setState({ theme: this.props.collections[this.props.collection_id].theme })
-    }
-
-    const { pageId, endpointId } = this.props.match.params
-
-    if (pageId) {
-      this.setGroupIdforEntity(pageId, 'page')
-    }
-
-    if (endpointId) {
-      this.setGroupIdforEntity(endpointId, 'endpoint')
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { pageId, endpointId } = this.props.match.params
-    const { pageId: prevPageId, endpointId: prevEndpointId } = prevProps.match.params
-
-    if (pageId && prevPageId !== pageId) {
-      this.setGroupIdforEntity(pageId, 'page')
-    }
-
-    if (endpointId && prevEndpointId !== endpointId) {
-      this.setGroupIdforEntity(endpointId, 'endpoint')
-    }
-  }
-
-  setGroupIdforEntity(id, type) {
-    const { groupId } = getParentIds(id, type, this.props)
-  }
-
-  setSelectedGroupId(id, value) {
-    if (id && this.state.selectedGroupIds[id] !== value) {
-      this.setState({ selectedGroupIds: { ...this.state.selectedGroupIds, [id]: value } })
     }
   }
 
@@ -185,131 +143,6 @@ class Groups extends Component {
     )
   }
 
-  filterGroups() {
-    if (this.props.selectedCollection === true && this.props.filter !== '' && this.filterFlag === false) {
-      this.filterFlag = true
-      let groupIds = []
-      this.filteredOnlyGroups = {}
-      groupIds = filterService.filter(this.props.groups, this.props.filter, 'groups')
-      this.setState({ filter: this.props.filter })
-      if (groupIds.length !== 0) {
-        for (let i = 0; i < groupIds.length; i++) {
-          this.filteredOnlyGroups[groupIds[i]] = this.props.groups[groupIds[i]]
-        }
-      }
-    } else {
-      this.filteredOnlyGroups = {}
-    }
-  }
-
-  onDragStart = (e, gId) => {
-    this.draggedItem = gId
-  }
-
-  extractEndpoints(groupId) {
-    const endpoints = {}
-    for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
-      if (
-        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId &&
-        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId === groupId
-      ) {
-        endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[Object.keys(this.props.endpoints)[i]]
-      }
-    }
-
-    return endpoints
-  }
-
-  makePositionWiseEndpoints(endpoints) {
-    const positionWiseEndpoints = []
-    for (let i = 0; i < Object.keys(endpoints).length; i++) {
-      positionWiseEndpoints[endpoints[Object.keys(endpoints)[i]].position] = Object.keys(endpoints)[i]
-    }
-    return positionWiseEndpoints
-  }
-
-  getEndpointIds(groupId) {
-    const endpoints = this.extractEndpoints(groupId)
-    const positionWiseEndpoints = this.makePositionWiseEndpoints({
-      ...endpoints
-    })
-    const endpointIds = positionWiseEndpoints.filter((item) => item !== this.endpointId)
-    return endpointIds
-  }
-
-  // ! Todo Later :: remove this function
-  onDrop(e, destinationGroupId) {
-    e.preventDefault()
-    if (this.endpointDrag === true) {
-      const endpoint = this.props.endpoints[this.endpointId]
-      if (endpoint.groupId !== destinationGroupId) {
-        const groupId = endpoint.groupId
-
-        const sourceEndpointIds = this.getEndpointIds(groupId)
-        const destinationEndpointIds = this.getEndpointIds(destinationGroupId)
-
-        destinationEndpointIds.push(this.endpointId)
-
-        this.endpointDrag = false
-        this.props.reorder_endpoint(sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, this.endpointId)
-      }
-    } else {
-      if (!this.draggedItem) {
-        //
-      } else {
-        if (this.draggedItem === destinationGroupId) {
-          this.draggedItem = null
-          return
-        }
-        const groups = this.extractGroups()
-        const positionWisegroups = this.makePositionWisegroups({ ...groups })
-        const index = positionWisegroups.findIndex((eId) => eId === destinationGroupId)
-        const groupIds = positionWisegroups.filter((item) => item !== this.draggedItem)
-        groupIds.splice(index, 0, this.draggedItem)
-
-        this.draggedItem = null
-      }
-    }
-  }
-
-  makePositionWisegroups(groups) {
-    const positionWisegroups = []
-    for (let i = 0; i < Object.keys(groups).length; i++) {
-      positionWisegroups[groups[Object.keys(groups)[i]].position] = Object.keys(groups)[i]
-    }
-    return positionWisegroups
-  }
-
-  extractGroups() {
-    const groups = {}
-    for (let i = 0; i < Object.keys(this.props.groups).length; i++) {
-      if (this.props.groups[Object.keys(this.props.groups)[i]].versionId === this.props.version_id) {
-        groups[Object.keys(this.props.groups)[i]] = this.props.groups[Object.keys(this.props.groups)[i]]
-      }
-    }
-    return groups
-  }
-
-  // !NOT BEING USED
-  setEndpointdrag(eId) {
-    this.endpointDrag = true
-    this.endpointId = eId
-  }
-
-  // !NOT BEING USED
-  setPagedrag() {
-    this.pageDrag = true
-  }
-
-  // !NOT BEING USED
-  scrollToGroup(groupId) {
-    const ref = this.scrollRef[groupId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }, 100)
-    }
-  }
 
   handleCheckboxChange = () => {
     this.props.setIsCheckForParenPage({
@@ -350,12 +183,6 @@ class Groups extends Component {
                 <Card.Body>
                   <CombinedCollections
                     {...this.props}
-                    // isPublishData={false}
-                    // pagesToRender={pagesToRender}
-                    // version_id={this.props.groups[subPageId].versionId}
-                    // set_page_drag={this.setPagedrag.bind(this)}
-                    // group_id={subPageId}
-                    // show_filter_groups={this.propsFromGroups.bind(this)}
                   />
                 </Card.Body>
               </div>
@@ -489,12 +316,6 @@ class Groups extends Component {
                 <Card.Body>
                   <CombinedCollections
                     {...this.props}
-                    // isPublishData={false}
-                    // pagesToRender={pagesToRender}
-                    // version_id={this.props.groups[subPageId].versionId}
-                    // set_page_drag={this.setPagedrag.bind(this)}
-                    // group_id={subPageId}
-                    // show_filter_groups={this.propsFromGroups.bind(this)}
                   />
                 </Card.Body>
               </div>
@@ -526,24 +347,6 @@ class Groups extends Component {
   }
 
   render() {
-    if (this.state.filter !== this.props.filter) {
-      this.filterFlag = false
-    }
-    if (this.filterFlag === false && this.props.filter === '') {
-      this.eventkey = {}
-    }
-    if (!this.props.filter || this.props.filter === '') {
-      this.groups = { ...this.props.groups }
-    }
-
-    if (this.groups && Object.keys(this.groups)) {
-      this.sortedGroups = Object.keys(this.groups)
-        .map((gId) => this.groups[gId])
-        .sort(function (a, b) {
-          return a.position - b.position
-        })
-    }
-
     return (
       <>
         {this.showShareSubPageForm()}
