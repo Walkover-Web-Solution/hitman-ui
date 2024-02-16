@@ -15,7 +15,6 @@ import '../collectionVersions/collectionVersions.scss'
 import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
-import SplitPane from 'react-split-pane'
 import { addCollectionAndPages } from '../redux/generalActions'
 import generalApiService from '../../services/generalApiService'
 import { useQueryClient, useMutation } from 'react-query'
@@ -368,7 +367,6 @@ class PublicEndpoint extends Component {
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
           {/* [info] part 3 */}
-          <SplitPane split='vertical' className='split-sidebar'>
             {/* [info] part 3 subpart 1 sidebar data left content */}
             <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
               {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
@@ -429,7 +427,6 @@ class PublicEndpoint extends Component {
                 </>
               )}
             </div>
-          </SplitPane>
         </main>
       </>
     )

@@ -8,14 +8,11 @@ import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
 import { isDesktop } from 'react-device-detect'
 import OnlineSatus from '../onlineStatus/onlineStatus'
-import { getOrgUpdatedAt } from '../../services/orgApiService'
-import moment from 'moment'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
-import SplitPane from 'react-split-pane'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
 import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 import { addCollectionAndPages } from '../redux/generalActions'
@@ -198,7 +195,7 @@ class MainV2 extends Component {
                 // fetchFromBackend={this.fetchFromBackend.bind(this)}
                 />
                 <div className='main-panel-wrapper'>
-                  <SplitPane split='vertical' className='split-sidebar'>
+                
                     <SideBarV2
                       tabs={[...this.state.tabs]}
                       set_tabs={this.setTabs.bind(this)}
@@ -214,7 +211,7 @@ class MainV2 extends Component {
                         default_tab_index={this.state.defaultTabIndex}
                       />
                     )}
-                  </SplitPane>
+                 
                 </div>
                 <UpdateStatus />
               </div>
