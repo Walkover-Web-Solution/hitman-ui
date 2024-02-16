@@ -316,7 +316,7 @@ class Endpoints extends Component {
   displayDeleteOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleDelete(this.props.endpoints[endpointId])}>
-        <img src= {deleteicon} />{' '}
+        <img src= {deleteicon} />
         Delete
       </div>
     )
@@ -352,7 +352,7 @@ class Endpoints extends Component {
   displayCancelRequestOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleCancelRequest(this.props.endpoints[endpointId])}>
-        <img src= {cancelRequest} />{' '}
+        <img src= {cancelRequest} />
         Cancel Request
       </div>
     )

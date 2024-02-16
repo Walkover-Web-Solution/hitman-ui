@@ -581,7 +581,7 @@ class CollectionParentPages extends Component {
                             this.openDeletePageModal(pageId)
                           }}
                         >
-                          <img src= {deleteIcon} />{' '}
+                          <img src= {DeleteIcon} />
                           Delete
                         </div>
                         <div
