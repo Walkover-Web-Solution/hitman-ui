@@ -46,10 +46,11 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
     const orgId = getOrgId()
     const dataToSend = {
       name: editedPage.name,
+      urlName: editedPage.urlName,
       contents: editedPage?.contents || null,
       state: editedPage.state
     }
-    dispatch(updatePageRequest(dataToSend))
+    // dispatch(updatePageRequest(dataToSend))
     pageApiService
       .updatePage(editedPage.id, dataToSend)
       .then((response) => {
@@ -172,7 +173,9 @@ export const deletePage = (page) => {
             dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
 
             // after deletion operation
-            operationsAfterDeletion(data)
+          operationsAfterDeletion(data)
+          toast.success('Deleted succesfully')
+
           })
           .catch((error) => {
             console.errro(error)

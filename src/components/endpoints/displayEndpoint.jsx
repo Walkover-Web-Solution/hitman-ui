@@ -1037,7 +1037,8 @@ class DisplayEndpoint extends Component {
           )
           moveToNextStep(4)
         } else {
-          endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
+          // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished 
+          // not sending isPublished during put method
           // endpoint.state = this.props.endpoints[this.endpointId]?.state
           this.setState({ saveLoader: true })
           this.props.update_endpoint(
@@ -1258,6 +1259,7 @@ class DisplayEndpoint extends Component {
   }
 
   async prepareHarObject() {
+    debugger
     try {
       const BASE_URL = this.props?.endpointContent?.host.BASE_URL
       const uri = new URI(this.props?.endpointContent?.data.updatedUri)
@@ -1276,9 +1278,9 @@ class DisplayEndpoint extends Component {
         postData: body.type === 'none' ? null : await this.makePostData(body),
         queryString: this.makeParams(originalParams)
       }
-      if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
-        harObject.url = 'https://' + url
-      }
+      // if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
+      //   harObject.url = 'https://' + url
+      // }
       const updatedharObject = {
         ...this.props.endpointContent,
         harObject: harObject
@@ -1303,14 +1305,14 @@ class DisplayEndpoint extends Component {
         onHide={() => {
           this.setState({ showCodeTemplate: false })
         }}
-        harObject={this.props.endpointContent.harObject}
+        harObject={this.props?.endpointContent?.harObject}
         title='Generate Code Snippets'
       />
     )
   }
 
   setBaseUrl(BASE_URL, selectedHost) {
-    // this.setState({ host: { BASE_URL, selectedHost } })
+    this.setState({ host: { BASE_URL, selectedHost } })
     const tempData = this?.props?.endpointContent || untitledEndpointData
     tempData.host = { BASE_URL, selectedHost }
     this.props.setQueryUpdatedData(tempData)

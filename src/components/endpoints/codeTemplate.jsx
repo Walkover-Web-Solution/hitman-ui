@@ -12,6 +12,7 @@ const HTTPSnippet = require('httpsnippet')
 
 class CodeTemplate extends Component {
   constructor(props) {
+    console.log(props)
     super(props)
     this.state = {
       theme: ''
@@ -20,7 +21,7 @@ class CodeTemplate extends Component {
   }
 
   makeCodeSnippet() {
-    const harObject = this.props.harObject
+    const harObject = this.props.endpointContent.harObject
     let { method, url, httpVersion, cookies, headers, postData } = harObject
     url = encodeURI(url)
     const snippet = new HTTPSnippet({
@@ -42,13 +43,15 @@ class CodeTemplate extends Component {
       const snippet = this.makeCodeSnippet()
       codeSnippet = snippet.convert(selectedLanguage)
     } catch (error) {
-      console.error(error)
+      console.log(error)
     }
     this.setState({ codeSnippet, copied: false })
   }
 
   componentDidMount() {
-    if (this.props.harObject) {
+    debugger
+    if (this.props?.endpointContent?.harObject) {
+      debugger
       this.makeCodeTemplate(this.selectedLanguage)
     }
     if (!this.state.theme) {
