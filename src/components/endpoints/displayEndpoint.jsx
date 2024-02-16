@@ -1056,25 +1056,14 @@ class DisplayEndpoint extends Component {
   }
 
   doSubmitPathVariables() {
-    const updatedPathVariables = [...this.props?.endpointContent.pathVariables]
     if (this.props?.endpointContent.pathVariables) {
       const pathVariables = this.props?.endpointContent?.pathVariables || []
-      for (let i = 0; i < pathVariables.length; i++) {
-        if (pathVariables[i].key === '') {
-          continue
-        } else {
-          updatedPathVariables[pathVariables[i].key] = {
-            checked: pathVariables[i].checked,
-            value: pathVariables[i].value,
-            description: pathVariables[i].description
-          }
-        }
-      }
       const endpoint = { ...this.props?.endpointContent }
-      endpoint.pathVariables = { ...updatedPathVariables }
+      endpoint.pathVariables = pathVariables
       this.props.setQueryUpdatedData(endpoint)
+      return pathVariables
     }
-    return updatedPathVariables
+    return [];
   }
 
   doSubmitHeader(title) {
