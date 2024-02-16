@@ -176,14 +176,6 @@ function pagesReducer(state = initialState, action) {
       toast.error(action.error)
       return { ...state }
 
-    case collectionActionTypes.ON_COLLECTION_DELETED:
-    case versionActionTypes.ON_VERSION_DELETED:
-      pages = { ...state }
-      action.payload.pageIds.forEach((pId) => {
-        delete pages[pId]
-      })
-      return pages
-
     case pagesActionTypes.ON_PAGES_ORDER_UPDATED:
       pages = { ...action.pages }
       return pages
