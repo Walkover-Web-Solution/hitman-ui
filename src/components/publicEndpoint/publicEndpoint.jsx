@@ -405,7 +405,6 @@ class PublicEndpoint extends Component {
 
                   {!type && (
                     <ERROR_404_PUBLISHED_PAGE
-                      debugger
                       error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
                     />
                   )}
