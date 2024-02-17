@@ -1043,7 +1043,7 @@ class DisplayEndpoint extends Component {
         } else {
           // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished 
           // not sending isPublished during put method
-          // endpoint.state = this.props.endpoints[this.endpointId]?.state
+          endpoint.state = 1
           this.setState({ saveLoader: true })
           this.props.update_endpoint(
             {
@@ -1068,7 +1068,7 @@ class DisplayEndpoint extends Component {
       this.props.setQueryUpdatedData(endpoint)
       return pathVariables
     }
-    return [];
+    return []
   }
 
   doSubmitHeader(title) {
@@ -2353,15 +2353,14 @@ class DisplayEndpoint extends Component {
   renderInOverlay(method, endpointId) {
     const endpoints = { ...this.props.pages[endpointId] }
     return (
-      <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
-        <span className='d-inline-block float-right'>{method(endpointId, endpoints)}</span>
-      </OverlayTrigger>
+      // <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
+      <span className='d-inline-block'>{method(endpointId, endpoints)}</span>
+      // </OverlayTrigger>
     )
   }
 
   handleRemovePublicEndpoint(endpointId) {
-    const endpoints = this.props.pages[endpointId]
-    this.props.unPublish_endpoint(endpoints)
+    this.setState({ openUnPublishConfirmationModal: true })
   }
 
   renderUnPublishEndpoint(endpointId, endpointss) {
@@ -2401,6 +2400,21 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  renderUnPublishConfirmationModal() {
+    return (
+      this.state.openUnPublishConfirmationModal && (
+        <ConfirmationModal
+          show={this.state.openUnPublishConfirmationModal}
+          onHide={() => this.setState({ openUnPublishConfirmationModal: false })}
+          proceed_button_callback={this.handleRejectEndpointRequest.bind(this)}
+          title={msgText.unpublishEndpoint}
+          submitButton='UnPublish'
+          rejectButton='Discard'
+        />
+      )
+    )
+  }
+
   async handleApproveEndpointRequest() {
     const endpointId = this.endpointId
     this.setState({ publishLoader: true })
@@ -2413,6 +2427,17 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  async handleRejectEndpointRequest() {
+    const endpoints = this.props.endpoints[this.endpointId]
+    this.setState({ publishLoader: true })
+    if (sensitiveInfoFound(this.props?.endpointContent)) {
+      this.setState({ warningModal: true })
+    } else {
+      this.props.unPublish_endpoint(endpoints, () => {
+        this.setState({ publishLoader: false })
+      })
+    }
+  }
   async handlePublicEndpointState(endpoint) {
     if (isStateDraft(endpoint.id, this.props.endpoints) || isStateReject(endpoint.id, this.props.endpoints)) {
       this.props.pending_endpoint(endpoint)
@@ -2538,6 +2563,7 @@ class DisplayEndpoint extends Component {
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
               {this.renderPublishConfirmationModal()}
+              {this.renderUnPublishConfirmationModal()}
               {this.renderWarningModal()}
               {this.state.showLoginSignupModal && (
                 <LoginSignupModal show onHide={() => this.closeLoginSignupModal()} title='Save Endpoint' />

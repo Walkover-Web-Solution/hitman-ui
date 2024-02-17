@@ -94,6 +94,7 @@ export const msgText = {
   publishPage: 'You are about to make these changes live on your Public API doc.',
   viewSwitch: 'Do you wish to set it as default view?',
   publishEndpoint: 'You are about to make these changes live on your Public API doc.',
+  unpublishEndpoint: 'You are about to make these changes live on your Public API doc.',
   adminAccees: 'Admin access required'
 }
 
@@ -456,7 +457,8 @@ export function sensitiveInfoFound(endpoint) {
 }
 
 export function getEntityState(entityId, entity) {
-  const isPublic = entity[entityId].isPublished
+  // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
+  const isPublic = entity[entityId]?.isPublished
   if (isStatePending(entityId, entity)) return 0
   if (isStateReject(entityId, entity)) return 3
   if (isStateApproved(entityId, entity)) return 2
