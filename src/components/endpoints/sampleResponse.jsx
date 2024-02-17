@@ -140,7 +140,7 @@ class SampleResponse extends Component {
         {isDashboardRoute(this.props) ? (
           <div className='add-sample-response'>
             <button className='adddescLink align-left' onClick={() => this.openAddForm({}, null, 'Add Sample Response')}>
-              <img src= {addToSample} />
+              <img src= {addToSample} />{' '}
               Add Sample Response
             </button>
           </div>

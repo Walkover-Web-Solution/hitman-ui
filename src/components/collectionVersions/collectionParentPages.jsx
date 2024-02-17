@@ -31,6 +31,7 @@ import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 import { onDefaultVersion } from '../publishDocs/redux/publishDocsActions'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { toast } from 'react-toastify'
+import deleteIcon from '../../assets/icons/delete-icon.svg'
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
@@ -580,7 +581,7 @@ class CollectionParentPages extends Component {
                             this.openDeletePageModal(pageId)
                           }}
                         >
-                          <img src= {DeleteIcon} />
+                          <img src= {deleteIcon} />{' '}
                           Delete
                         </div>
                         <div

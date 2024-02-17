@@ -298,7 +298,7 @@ class CollectionVersions extends Component {
                 </div>
                 <div className='dropdown-menu dropdown-menu-right'>
                   <div className='dropdown-item' onClick={() => this.openEditVersionForm(versionId)}>
-                    <img src= {editsign} />
+                    <img src= {editsign} />{' '}
                     Edit
                   </div>
                   <div
@@ -307,7 +307,7 @@ class CollectionVersions extends Component {
                       this.openDeleteVersionModal(versionId)
                     }}
                   >
-                   <img src= {deleteicon} />
+                   <img src= {deleteicon} />{' '}
                     Delete
                   </div>
                   {/* <div

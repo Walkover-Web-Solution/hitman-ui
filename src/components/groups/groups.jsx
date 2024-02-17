@@ -219,7 +219,7 @@ class Groups extends Component {
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
                       <div className='dropdown-item' onClick={() => this.openEditSubPageForm(this.props.groups[subPageId])}>
-                        <img src= {editsign} />
+                        <img src= {editsign} />{' '}
                         Edit
                       </div>
                       <div
@@ -228,7 +228,7 @@ class Groups extends Component {
                           this.openDeleteGroupModal(subPageId)
                         }}
                       >
-                        <img src= {deleteIcon} />
+                        <img src= {deleteIcon} />{' '}
                         Delete
                       </div>
                       {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[subPageId])}>
