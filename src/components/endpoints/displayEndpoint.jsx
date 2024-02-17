@@ -986,7 +986,11 @@ class DisplayEndpoint extends Component {
       }
       const headersData = this.doSubmitHeader('save')
       const updatedParams = this.doSubmitParam()
-      const updatedPathVariables = this.doSubmitPathVariables()
+      let updatedPathVariables = this.doSubmitPathVariables()
+       updatedPathVariables = Object.keys(updatedPathVariables).reduce((obj, key) => {
+        obj[key] = updatedPathVariables[key];
+        return obj;
+      }, {});
       const endpoint = {
         id: slug === 'isHistory' ? this.props?.match?.params?.historyId : this.props?.match?.params?.endpointId,
         uri: this.props?.endpointContent?.data.updatedUri,
@@ -1037,7 +1041,8 @@ class DisplayEndpoint extends Component {
           )
           moveToNextStep(4)
         } else {
-          endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
+          // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished 
+          // not sending isPublished during put method
           // endpoint.state = this.props.endpoints[this.endpointId]?.state
           this.setState({ saveLoader: true })
           this.props.update_endpoint(
@@ -1303,14 +1308,14 @@ class DisplayEndpoint extends Component {
         onHide={() => {
           this.setState({ showCodeTemplate: false })
         }}
-        harObject={this.props.endpointContent.harObject}
+        harObject={this.props?.endpointContent?.harObject}
         title='Generate Code Snippets'
       />
     )
   }
 
   setBaseUrl(BASE_URL, selectedHost) {
-    // this.setState({ host: { BASE_URL, selectedHost } })
+    this.setState({ host: { BASE_URL, selectedHost } })
     const tempData = this?.props?.endpointContent || untitledEndpointData
     tempData.host = { BASE_URL, selectedHost }
     this.props.setQueryUpdatedData(tempData)

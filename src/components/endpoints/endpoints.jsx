@@ -8,10 +8,10 @@ import tabService from '../tabs/tabService'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
 import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpointInCollection } from './redux/endpointsActions'
-import filterService from '../../services/filterService'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
+import SubPageForm from '../groups/subPageForm'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -51,7 +51,12 @@ class Endpoints extends Component {
     this.state = {
       endpointState: 'Make Public',
       theme: '',
-      checkboxChecked: false
+      checkboxChecked: false,
+      showEndpointForm: {
+        addPage: false,
+        edit: false,
+        share: false
+      }
     }
     this.scrollRef = {}
   }
@@ -83,19 +88,6 @@ class Endpoints extends Component {
     }
   }
 
-  sequencingOnFilter() {
-    const filteredEndpointKeys = this.filteredEndpoints ? Object.keys(this.filteredEndpoints) : []
-    this.filteredEndpointsOrder = []
-    for (let i = 0; i < this.props.endpoints_order.length; i++) {
-      for (let j = 0; j < filteredEndpointKeys.length; j++) {
-        if (this.props.endpoints_order[i] === filteredEndpointKeys[j]) {
-          this.filteredEndpointsOrder.push(this.props.endpoints_order[i])
-          break
-        }
-      }
-    }
-  }
-
   async handleDelete(endpoint) {
     await this.props.delete_endpoint(endpoint)
     tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
@@ -103,6 +95,16 @@ class Endpoints extends Component {
 
   handleDuplicate(endpoint) {
     this.props.duplicate_endpoint(endpoint)
+  }
+
+  openEditEndpointForm(selectedEndpoint) {
+    const showEndpointForm = { edit: true }
+    this.setState({
+      showEndpointForm,
+      selectedEndpoint: {
+        ...this.props.endpoints[selectedEndpoint]
+      }
+    })
   }
 
   openDeleteModal(endpointId) {
@@ -166,72 +168,6 @@ class Endpoints extends Component {
       let pathName = getUrlPathById(id, this.props.pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
       this.props.history.push(pathName)
-    }
-  }
-
-  filterEndpoints() {
-    if (this.props.selectedCollection === true && this.props.filter !== '' && this.filterFlag === false) {
-      this.filterFlag = true
-      let groupIds = []
-      let groupIdsAndFilteredEndpoints = []
-      groupIdsAndFilteredEndpoints = filterService.filter(this.props.endpoints, this.props.filter, 'endpoints')
-      this.filteredEndpoints = groupIdsAndFilteredEndpoints[0]
-      groupIds = groupIdsAndFilteredEndpoints[1]
-      this.setState({ filter: this.props.filter })
-      if (groupIds.length !== 0) {
-        this.props.show_filter_groups(groupIds, 'endpoints')
-      } else {
-        this.props.show_filter_groups(null, 'endpoints')
-      }
-    }
-  }
-
-  filterGroupPages() {
-    if (this.props.selectedCollection === true && this.props.filter !== '' && this.filterFlag === false) {
-      this.filterFlag = true
-      let groupIds = []
-      let groupIdsAndFilteredPages = []
-      groupIdsAndFilteredPages = filterService.filter(this.props.pages, this.props.filter, 'groupPages')
-      this.filteredGroupPages = groupIdsAndFilteredPages[0]
-      groupIds = groupIdsAndFilteredPages[1]
-      this.setState({ filter: this.props.filter })
-      if (groupIds.length !== 0) {
-        this.props.show_filter_groups(groupIds, 'pages')
-      } else {
-        this.props.show_filter_groups(null, 'pages')
-      }
-    }
-  }
-
-  onDragStart = (e, eId) => {
-    this.draggedItem = eId
-    this.props.set_endpoint_drag(eId)
-  }
-
-  onDragOver = (e, eId) => {
-    e.preventDefault()
-  }
-
-  onDrop(e, destinationEndpointId) {
-    e.preventDefault()
-
-    if (!this.draggedItem) {
-      //
-    } else {
-      if (this.draggedItem === destinationEndpointId) {
-        this.draggedItem = null
-        return
-      }
-      const endpoints = this.extractEndpoints()
-      const positionWiseEndpoints = this.makePositionWiseEndpoints({
-        ...endpoints
-      })
-      const index = positionWiseEndpoints.findIndex((eId) => eId === destinationEndpointId)
-      const endpointIds = positionWiseEndpoints.filter((item) => item !== this.draggedItem)
-      endpointIds.splice(index, 0, this.draggedItem)
-
-      this.props.update_endpoints_order(endpointIds, this.props.parent_id)
-      this.draggedItem = null
     }
   }
 
@@ -423,11 +359,42 @@ class Endpoints extends Component {
         </div>
 
         <div className='dropdown-menu dropdown-menu-right'>
+          <div className='dropdown-item' onClick={() => this.openEditEndpointForm(endpointId)}>
+                          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                            <path
+                              d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
+                              stroke='#E98A36'
+                              strokeWidth='1.5'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                            />
+                          </svg>{' '}
+                          Rename
+                        </div>
           {this.displayDeleteOpt(endpointId)}
           {/* {this.displayDuplicateOpt(endpointId)} */}
           {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
         </div>
       </div>
+    )
+  }
+  showEditEndpointModal() {
+    return (
+      this.state.showEndpointForm.edit && (
+        <SubPageForm
+          {...this.props}
+          title='Rename'
+          show={this.state.showEndpointForm.edit}
+          onCancel={() => {
+            this.setState({ showEndpointForm: false })
+          }}
+          onHide={() => {
+            this.setState({ showEndpointForm: false })
+          }}
+          selectedEndpoint = {this.props?.endpointId}
+          pageType={4}
+        />
+      )
     )
   }
 
@@ -474,11 +441,9 @@ class Endpoints extends Component {
                 {this.displayEndpointName(endpointId)}
 
                 <div className='d-flex align-items-center'>
-                  <div className=' sidebar-item-action'>
                     {isDashboardRoute(this.props, true) &&
                       !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
                       this.displayEndpointOptions(endpointId)}
-                  </div>
                   {/* <div className='ml-1 published-icon transition'>
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
@@ -529,16 +494,6 @@ class Endpoints extends Component {
     )
   }
 
-  setFilterFlag() {
-    if (this.state.filter !== this.props.filter) {
-      this.filterFlag = false
-    }
-    if (this.props.filter === '') {
-      this.filteredEndpoints = { ...this.props.endpoints }
-      // this.filteredEndpointsOrder = [...this.props.endpoints_order]
-    }
-  }
-
   filterEndpointIdsByGroup() {
     const endpointIds = Object.keys(this.props.endpoints).filter(
       (eId) => this.props.endpoints[eId].parentId && this.props.endpoints[eId].parentId === this.props.parent_id
@@ -575,13 +530,17 @@ class Endpoints extends Component {
   }
 
   render() {
-    this.setFilterFlag()
     const endpointIds = this.filterEndpointIdsByGroup()
     let endpointsArray = []
     endpointsArray = this.extractEndpointsFromIds(endpointIds)
     let endpoints = {}
     endpoints = this.getEndpointsEntity(endpointsArray)
-    return this.displayUserEndpoints(this?.props?.endpointId)
+    return (
+      <>
+      {this.showEditEndpointModal()}
+      {this.displayUserEndpoints(this?.props?.endpointId)}
+      </>
+      )
   }
 }
 
