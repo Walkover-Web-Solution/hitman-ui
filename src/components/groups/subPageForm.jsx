@@ -21,6 +21,7 @@ class SubPageForm extends Form {
     }
     this.schema = {
         name: Joi.string().required().label('Page Name').max(20),
+        urlName : Joi.string().optional().allow(/[^a-zA-Z0-9\-_\.~]+/g)
       };      
   }
 
@@ -41,16 +42,15 @@ class SubPageForm extends Form {
   async doSubmit() {
     this.props.onHide()
     let { name, urlName } = { ...this.state.data }
-    // name = toTitleCase(name)
 
     if (this.props.title === 'Rename') {
-      const subPage = this.props.pages[this.props?.selectedPage]
-      const endpoint = this.props.endpoints[this.props?.selectedEndpoint]
+      const subPage = this.props?.pages?.[this.props.selectedPage]
+      const endpoint = this.props?.endpoints?.[this.props.selectedEndpoint]
       const editedPage = {
         ...this.state.data,
         name,
         urlName,
-        id: this.props?.selectedPage || this.props?.selectedEndpoint,
+        id: subPage?.id || endpoint?.id,
         state: subPage?.state || endpoint?.state
       }
       this.props.update_page(editedPage)
@@ -78,10 +78,10 @@ class SubPageForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-12'>
-                  {this.renderInput('name', 'Name', 'Page Name', true, true, false, '*name accepts min 1 & max 20 characters')}
+                  {this.renderInput('name', 'Name', 'Page Name', true, false, false, '*name accepts min 1 & max 20 characters')}
                 </div>
                 <div className='col-12'>
-                  {this.renderInput('urlName', 'URL Name', 'URL Name', true, true, false, '*URL name can only contain alphanumeric values and reserved keywords like - _ . ~')}
+                  {this.renderInput('urlName', 'URL Name', 'URL Name', true, false, false, '*URL name can only contain alphanumeric values and reserved keywords like - _ . ~')}
                 </div>
               </div>
 

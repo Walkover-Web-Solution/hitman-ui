@@ -391,7 +391,7 @@ class Endpoints extends Component {
           onHide={() => {
             this.setState({ showEndpointForm: false })
           }}
-          selectedEndpoint = {this.props.endpointId}
+          selectedEndpoint = {this.props?.endpointId}
           pageType={4}
         />
       )

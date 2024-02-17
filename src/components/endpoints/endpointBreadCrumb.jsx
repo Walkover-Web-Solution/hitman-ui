@@ -248,7 +248,7 @@ class EndpointBreadCrumb extends Component {
           {this.props.location.pathname.split('/')[5] !== 'new' && (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
               {this.collectionName && <span>{`${this.collectionName}/`}</span>}
-              {<span>{getOnlyUrlPathById(this.props?.match?.params?.pageId || this.props?.match?.params?.endpointId, this.props.pages)}</span>}
+              {<span>{getOnlyUrlPathById(this.props?.match?.params?.pageId || this.props?.match?.params?.endpointId, this.props.pages,'internal')}</span>}
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
                 <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
               )}
