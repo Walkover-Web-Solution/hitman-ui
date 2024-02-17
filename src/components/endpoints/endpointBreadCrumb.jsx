@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
 import { getOnlyUrlPathById, isElectron, trimString } from '../common/utility'
-import { updateNameOfPages } from '../pages/redux/pagesActions'
+import { onPageUpdated, updateNameOfPages } from '../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -175,6 +175,7 @@ class EndpointBreadCrumb extends Component {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = e.currentTarget.value
       this.props.setQueryUpdatedData(tempData)
+      this.props.update_name({ id: this.props?.match?.params?.endpointId, name: e.currentTarget.value })
     }
   }
 
@@ -199,10 +200,10 @@ class EndpointBreadCrumb extends Component {
 
   setPageData() {
     this.pageId = this.props?.match?.params.pageId
-      this.collectionId = this.props.pages[this.pageId]?.collectionId
-      this.collectionName = this.collectionId ? this.props.collections[this.collectionId]?.name : null
-    }
-  
+    this.collectionId = this.props.pages[this.pageId]?.collectionId
+    this.collectionName = this.collectionId ? this.props.collections[this.collectionId]?.name : null
+  }
+
 
   renderLeftAngle(title) {
     return title && <span className='ml-1 mr-1'>/</span>
@@ -231,7 +232,7 @@ class EndpointBreadCrumb extends Component {
               className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
             >
               {this.props?.isEndpoint
-                ? this.props?.endpointContent?.data?.name || ''
+                ? this.props?.pages?.[this.props?.match?.params?.endpointId]?.name || 'Untitled'
                 : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
               {this.props?.isEndpoint && (
                 <EditIcon
@@ -248,12 +249,12 @@ class EndpointBreadCrumb extends Component {
           {this.props.location.pathname.split('/')[5] !== 'new' && (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
               {this.collectionName && <span>{`${this.collectionName}/`}</span>}
-              {<span>{getOnlyUrlPathById(this.props?.match?.params?.pageId || this.props?.match?.params?.endpointId, this.props.pages,'internal')}</span>}
+              {<span>{getOnlyUrlPathById(this.props?.match?.params?.pageId || this.props?.match?.params?.endpointId, this.props.pages, 'internal')}</span>}
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
                 <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
               )}
               {this.props.pages?.[this.props?.match?.params?.pageId]?.isPublished &&
-               <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
+                <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
             </div>
           )}
         </div>
