@@ -577,11 +577,12 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   return { ...untitled }
 }
 
-export function getOnlyUrlPathById(id, sidebar) {
+export function getOnlyUrlPathById(id, sidebar,mode = 'external') {
   let path = []
   // not add invisible parent page name in path
   while (sidebar?.[id]?.type > 0) {
-    path.push(sidebar[id].name)
+    const itemName = mode === 'internal' ? sidebar[id].name : sidebar[id].urlName;
+    path.push(itemName)
     id = sidebar?.[id]?.parentId
   }
   let actualPath = path.reverse().join('/')
@@ -594,9 +595,9 @@ export function getUrlPathById(id, sidebar) {
   // not add invisible parent page name in path
   while (sidebar?.[id]?.type > 0) {
     if (sidebar[id].type == 2) {
-      versionName = sidebar[id].name
+      versionName = sidebar[id].urlName
     } else {
-      path.push(sidebar[id].name)
+      path.push(sidebar[id].urlName)
     }
     id = sidebar?.[id]?.parentId
   }

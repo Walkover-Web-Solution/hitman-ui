@@ -120,11 +120,14 @@ function pagesReducer(state = initialState, action) {
         [action.editedPage.id]: action.editedPage
       }
 
-    case pagesActionTypes.ON_PAGE_UPDATED:
-      return {
-        ...state,
-        [action.response.id]: action.response
-      }
+      case pagesActionTypes.ON_PAGE_UPDATED:
+        return {
+          ...state,
+          [action.response.id]: {
+            ...state[action.response.id],
+            ...action.response
+          }
+        }
 
     case pagesActionTypes.ON_PAGE_UPDATED_ERROR:
       toast.error(action.error)
@@ -233,6 +236,25 @@ function pagesReducer(state = initialState, action) {
         state[action.payload.id].name = action.payload.name
       }
       return { ...state }
+
+    case pagesActionTypes.DELETE_ENDPOINT_REQUEST:
+      pages = { ...state }
+      delete pages[action.endpoint.id]
+      return { ...pages }
+
+    case pagesActionTypes.ON_ENDPOINT_DELETED:
+      const updatedEndpoint = { ...state }
+      const parentId = action?.response?.data?.ParentPage?.id
+      updatedEndpoint[parentId].child = action.response.data.ParentPage.child
+      return updatedEndpoint
+
+    case pagesActionTypes.ON_ENDPOINT_DELETED_ERROR:
+      toast.error(action?.error?.data)
+      if (action?.error?.status === 404) return state
+      return {
+        ...state,
+        [action.endpoint.id]: action.endpoint
+      }
 
     case pagesActionTypes.ON_ENDPOINT_UPDATED:
       return {
