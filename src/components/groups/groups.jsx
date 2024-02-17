@@ -144,7 +144,6 @@ class Groups extends Component {
     )
   }
 
-
   handleCheckboxChange = () => {
     this.props.setIsCheckForParenPage({
       id: this.props?.rootParentId,
@@ -182,9 +181,7 @@ class Groups extends Component {
             {expanded ? (
               <div className='linkWrapper versionPages'>
                 <Card.Body>
-                  <CombinedCollections
-                    {...this.props}
-                  />
+                  <CombinedCollections {...this.props} />
                 </Card.Body>
               </div>
             ) : null}
@@ -315,9 +312,7 @@ class Groups extends Component {
             {expanded ? (
               <div className='linkWrapper versionPages'>
                 <Card.Body>
-                  <CombinedCollections
-                    {...this.props}
-                  />
+                  <CombinedCollections {...this.props} />
                 </Card.Body>
               </div>
             ) : null}

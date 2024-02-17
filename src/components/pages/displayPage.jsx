@@ -259,9 +259,9 @@ class DisplayPage extends Component {
   renderInOverlay(method, pageId) {
     const pages = { ...this.props.pages }
     return (
-      <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
-        <span className='d-inline-block float-right'>{method(pageId, pages)}</span>
-      </OverlayTrigger>
+      // <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
+      <span className='d-inline-block float-right'>{method(pageId, pages)}</span>
+      // </OverlayTrigger>
     )
   }
 
