@@ -1037,7 +1037,7 @@ class DisplayEndpoint extends Component {
           )
           moveToNextStep(4)
         } else {
-          endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
+          // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished // not sending isPublished during put method 
           // endpoint.state = this.props.endpoints[this.endpointId]?.state
           this.setState({ saveLoader: true })
           this.props.update_endpoint(
