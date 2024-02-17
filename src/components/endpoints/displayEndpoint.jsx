@@ -986,7 +986,11 @@ class DisplayEndpoint extends Component {
       }
       const headersData = this.doSubmitHeader('save')
       const updatedParams = this.doSubmitParam()
-      const updatedPathVariables = this.doSubmitPathVariables()
+      let updatedPathVariables = this.doSubmitPathVariables()
+       updatedPathVariables = Object.keys(updatedPathVariables).reduce((obj, key) => {
+        obj[key] = updatedPathVariables[key];
+        return obj;
+      }, {});
       const endpoint = {
         id: slug === 'isHistory' ? this.props?.match?.params?.historyId : this.props?.match?.params?.endpointId,
         uri: this.props?.endpointContent?.data.updatedUri,
