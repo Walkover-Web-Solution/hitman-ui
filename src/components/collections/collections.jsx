@@ -391,7 +391,7 @@ class CollectionsComponent extends Component {
                       {!this.props.collections[collectionId]?.importedFromMarketPlace && (
                         <>
                           <div className='dropdown-item' onClick={() => this.openEditCollectionForm(collectionId)}>
-                          <img src= {Editicon}/>
+                          <img src= {Editicon}/>{' '}
                             Edit
                           </div>
                           <div
@@ -400,7 +400,7 @@ class CollectionsComponent extends Component {
                               this.openDeleteCollectionModal(collectionId)
                             }}
                           >
-                            <img src={deleteIcon}/>
+                            <img src={deleteIcon}/>{' '}
                             Delete
                           </div>
                           {/* <div className='dropdown-item' onClick={() => this.handleDuplicateCollection(this.props.collections[collectionId])}>
@@ -446,7 +446,7 @@ class CollectionsComponent extends Component {
                           </div> */}
                           {this.props.collections[collectionId].isPublic && (
                             <div className='dropdown-item' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
-                            <img src = {gotodocsign}/>
+                            <img src = {gotodocsign}/>{' '}
                               Go to Docs
                             </div>
                           )}
