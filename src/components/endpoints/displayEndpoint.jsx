@@ -1259,7 +1259,6 @@ class DisplayEndpoint extends Component {
   }
 
   async prepareHarObject() {
-    debugger
     try {
       const BASE_URL = this.props?.endpointContent?.host.BASE_URL
       const uri = new URI(this.props?.endpointContent?.data.updatedUri)
@@ -1278,9 +1277,9 @@ class DisplayEndpoint extends Component {
         postData: body.type === 'none' ? null : await this.makePostData(body),
         queryString: this.makeParams(originalParams)
       }
-      // if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
-      //   harObject.url = 'https://' + url
-      // }
+      if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
+        harObject.url = 'https://' + url
+      }
       const updatedharObject = {
         ...this.props.endpointContent,
         harObject: harObject
