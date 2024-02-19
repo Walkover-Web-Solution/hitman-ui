@@ -92,8 +92,10 @@ export function getDomainName(hostname) {
 }
 export const msgText = {
   publishPage: 'You are about to make these changes live on your Public API doc.',
+  unpublishPage: 'You are about to Unpublish Page from your Public API doc.',
   viewSwitch: 'Do you wish to set it as default view?',
   publishEndpoint: 'You are about to make these changes live on your Public API doc.',
+  unpublishEndpoint: 'You are about to Unpublish Endpoint from your Public API doc.',
   adminAccees: 'Admin access required'
 }
 
@@ -456,7 +458,8 @@ export function sensitiveInfoFound(endpoint) {
 }
 
 export function getEntityState(entityId, entity) {
-  const isPublic = entity[entityId].isPublished
+  // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
+  const isPublic = entity[entityId]?.isPublished
   if (isStatePending(entityId, entity)) return 0
   if (isStateReject(entityId, entity)) return 3
   if (isStateApproved(entityId, entity)) return 2
@@ -577,11 +580,11 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   return { ...untitled }
 }
 
-export function getOnlyUrlPathById(id, sidebar,mode = 'external') {
+export function getOnlyUrlPathById(id, sidebar, mode = 'external') {
   let path = []
   // not add invisible parent page name in path
   while (sidebar?.[id]?.type > 0) {
-    const itemName = mode === 'internal' ? sidebar[id].name : sidebar[id].urlName;
+    const itemName = mode === 'internal' ? sidebar[id].name : sidebar[id].urlName
     path.push(itemName)
     id = sidebar?.[id]?.parentId
   }

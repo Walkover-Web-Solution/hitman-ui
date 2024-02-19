@@ -33,7 +33,7 @@ import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
-import { addEndpointInCollection } from './redux/endpointsActions'
+import { addEndpoint } from './redux/endpointsActions'
 import { addHistory } from '../history/redux/historyAction'
 import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
@@ -101,8 +101,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_endpointInCollection: (newEndpoint, rootParentID, callback, props) =>
-      dispatch(addEndpointInCollection(ownProps.history, newEndpoint, rootParentID, callback, props)),
+    add_endpoint: (newEndpoint, rootParentID, callback, props) =>
+      dispatch(addEndpoint(ownProps.history, newEndpoint, rootParentID, callback, props)),
     update_endpoint: (editedEndpoint, stopSave) => dispatch(updateEndpoint(editedEndpoint, stopSave)),
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
@@ -987,10 +987,10 @@ class DisplayEndpoint extends Component {
       const headersData = this.doSubmitHeader('save')
       const updatedParams = this.doSubmitParam()
       let updatedPathVariables = this.doSubmitPathVariables()
-       updatedPathVariables = Object.keys(updatedPathVariables).reduce((obj, key) => {
-        obj[key] = updatedPathVariables[key];
-        return obj;
-      }, {});
+      updatedPathVariables = Object.keys(updatedPathVariables).reduce((obj, key) => {
+        obj[key] = updatedPathVariables[key]
+        return obj
+      }, {})
       const endpoint = {
         id: slug === 'isHistory' ? this.props?.match?.params?.historyId : this.props?.match?.params?.endpointId,
         uri: this.props?.endpointContent?.data.updatedUri,
@@ -1014,7 +1014,7 @@ class DisplayEndpoint extends Component {
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
-        this.props.add_endpointInCollection(
+        this.props.add_endpoint(
           endpoint,
           id,
           ({ closeForm, stopLoader }) => {
@@ -1030,7 +1030,7 @@ class DisplayEndpoint extends Component {
           delete endpoint.state
           delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
-          this.props.add_endpointInCollection(
+          this.props.add_endpoint(
             endpoint,
             id,
             ({ closeForm, stopLoader }) => {
@@ -1041,9 +1041,9 @@ class DisplayEndpoint extends Component {
           )
           moveToNextStep(4)
         } else {
-          // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished 
+          // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
           // not sending isPublished during put method
-          // endpoint.state = this.props.endpoints[this.endpointId]?.state
+          endpoint.state = 1
           this.setState({ saveLoader: true })
           this.props.update_endpoint(
             {
@@ -1068,7 +1068,7 @@ class DisplayEndpoint extends Component {
       this.props.setQueryUpdatedData(endpoint)
       return pathVariables
     }
-    return [];
+    return []
   }
 
   doSubmitHeader(title) {
@@ -2353,15 +2353,14 @@ class DisplayEndpoint extends Component {
   renderInOverlay(method, endpointId) {
     const endpoints = { ...this.props.pages[endpointId] }
     return (
-      <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
-        <span className='d-inline-block float-right'>{method(endpointId, endpoints)}</span>
-      </OverlayTrigger>
+      // <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
+      <span className='d-inline-block'>{method(endpointId, endpoints)}</span>
+      // </OverlayTrigger>
     )
   }
 
   handleRemovePublicEndpoint(endpointId) {
-    const endpoints = this.props.pages[endpointId]
-    this.props.unPublish_endpoint(endpoints)
+    this.setState({ openUnPublishConfirmationModal: true })
   }
 
   renderUnPublishEndpoint(endpointId, endpointss) {
@@ -2401,6 +2400,21 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  renderUnPublishConfirmationModal() {
+    return (
+      this.state.openUnPublishConfirmationModal && (
+        <ConfirmationModal
+          show={this.state.openUnPublishConfirmationModal}
+          onHide={() => this.setState({ openUnPublishConfirmationModal: false })}
+          proceed_button_callback={this.handleRejectEndpointRequest.bind(this)}
+          title={msgText.unpublishEndpoint}
+          submitButton='UnPublish'
+          rejectButton='Discard'
+        />
+      )
+    )
+  }
+
   async handleApproveEndpointRequest() {
     const endpointId = this.endpointId
     this.setState({ publishLoader: true })
@@ -2413,6 +2427,17 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  async handleRejectEndpointRequest() {
+    const endpoints = this.props.endpoints[this.endpointId]
+    this.setState({ publishLoader: true })
+    if (sensitiveInfoFound(this.props?.endpointContent)) {
+      this.setState({ warningModal: true })
+    } else {
+      this.props.unPublish_endpoint(endpoints, () => {
+        this.setState({ publishLoader: false })
+      })
+    }
+  }
   async handlePublicEndpointState(endpoint) {
     if (isStateDraft(endpoint.id, this.props.endpoints) || isStateReject(endpoint.id, this.props.endpoints)) {
       this.props.pending_endpoint(endpoint)
@@ -2538,6 +2563,7 @@ class DisplayEndpoint extends Component {
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
               {this.renderPublishConfirmationModal()}
+              {this.renderUnPublishConfirmationModal()}
               {this.renderWarningModal()}
               {this.state.showLoginSignupModal && (
                 <LoginSignupModal show onHide={() => this.closeLoginSignupModal()} title='Save Endpoint' />

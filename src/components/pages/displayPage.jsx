@@ -168,8 +168,7 @@ class DisplayPage extends Component {
     return <Tiptap onChange={() => {}} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
   }
 
-  handleRemovePublicPage(pageId) {
-    const page = { ...this.props.pages[pageId] }
+  handleRemovePublicPage(page) {
     page.isPublished = false
     page.publishedEndpoint = {}
     page.state = 1
@@ -184,7 +183,9 @@ class DisplayPage extends Component {
         entity={pages}
         entityId={pageId}
         entityName='Page'
-        onUnpublish={() => this.handleRemovePublicPage(pageId)}
+        open_unpublish_confirmation_modal={() => {
+          if (this._isMounted) this.setState({ openUnPublishConfirmationModal: true })
+        }}
       />
     )
   }
@@ -259,9 +260,9 @@ class DisplayPage extends Component {
   renderInOverlay(method, pageId) {
     const pages = { ...this.props.pages }
     return (
-      <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
-        <span className='d-inline-block float-right'>{method(pageId, pages)}</span>
-      </OverlayTrigger>
+      // <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
+      <span className='d-inline-block float-right'>{method(pageId, pages)}</span>
+      // </OverlayTrigger>
     )
   }
 
@@ -280,6 +281,23 @@ class DisplayPage extends Component {
           proceed_button_callback={this.handleApprovePageRequest.bind(this)}
           title={msgText.publishPage}
           submitButton='Publish'
+          rejectButton='Discard'
+        />
+      )
+    )
+  }
+
+  renderUnPublishConfirmationModal() {
+    return (
+      this.state.openUnPublishConfirmationModal && (
+        <ConfirmationModal
+          show={this.state.openUnPublishConfirmationModal}
+          onHide={() => {
+            if (this._isMounted) this.setState({ openUnPublishConfirmationModal: false })
+          }}
+          proceed_button_callback={this.handleDraftPageRequest.bind(this)}
+          title={msgText.unpublishPage}
+          submitButton='UnPublish'
           rejectButton='Discard'
         />
       )
@@ -308,6 +326,23 @@ class DisplayPage extends Component {
     }
   }
 
+  async handleDraftPageRequest() {
+    const pageId = this.props?.match?.params?.pageId
+    if (this._isMounted) {
+      this.setState({ publishLoader: true })
+    }
+
+    try {
+      this.handleRemovePublicPage(this.props.pages[pageId], () => {
+        if (this._isMounted) {
+          this.setState({ publishLoader: false })
+        }
+      })
+    } catch (error) {
+      console.error('Error during draft_page:', error)
+    }
+  }
+
   render() {
     if (this.props?.pageContentLoading) {
       return (
@@ -322,6 +357,7 @@ class DisplayPage extends Component {
     return (
       <div className='custom-display-page'>
         {this.renderPublishConfirmationModal()}
+        {this.renderUnPublishConfirmationModal()}
         {this.renderPublishPageOperations()}
         {this.renderPageName()}
         {this.checkPageRejected()}
