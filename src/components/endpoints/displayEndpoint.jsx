@@ -67,7 +67,7 @@ import utilityFunctions from '../common/utility.js'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 import Footer from '../main/Footer.jsx'
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
-
+import { statesEnum } from '../common/utility'
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -1027,6 +1027,7 @@ class DisplayEndpoint extends Component {
       } else {
         if (this.state.saveAsFlag || slug === 'isHistory') {
           endpoint.description = endpointDescription || ''
+            // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
           delete endpoint.state
           delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
@@ -1043,7 +1044,8 @@ class DisplayEndpoint extends Component {
         } else {
           // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
           // not sending isPublished during put method
-          endpoint.state = "1"
+            // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
+          endpoint.state = statesEnum.DRAFT_STATE
           this.setState({ saveLoader: true })
           this.props.update_endpoint(
             {
