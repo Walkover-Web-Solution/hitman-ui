@@ -115,12 +115,13 @@ class Form extends Component {
     this.setState({ data })
   }
 
-  renderInput(name, label, placeholder, mandatory = false, firstLetterCapitalize = false, isURLInput = false, note = '') {
+  renderInput(name, urlName, label, placeholder, mandatory = false, isURLInput = false, note = '') {
     const { data, errors } = this.state
     return (
       <Input
         ref={this.inputRef}
         name={name}
+        urlName ={urlName}
         label={label}
         value={data[name]}
         onChange={(e) => this.handleChange(e, isURLInput)}
@@ -129,7 +130,6 @@ class Form extends Component {
         placeholder={placeholder}
         disabled={data.disabled}
         mandatory={mandatory}
-        firstLetterCapitalize={firstLetterCapitalize}
         note={note}
       />
     )
