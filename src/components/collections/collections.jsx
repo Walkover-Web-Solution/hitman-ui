@@ -29,13 +29,13 @@ import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
-import deleteIcon from '../../assets/icons/delete-icon.svg'
-import Editicon from '../../assets/icons/editsign.svg'
-import gotodocsign from '../../assets/icons/gotodocssign.svg'
-import addGoogleTag from '../../assets/icons/addGoogleTagsign.svg'
-import duplicateSign from '../../assets/icons/duplicateSign.svg'
-import importVersionSign from '../../assets/icons/importVersionSign.svg'
-import shareBold from '../../assets/icons/shareBoldSign.svg'
+import {ReactComponent as DeleteIcon} from '../../assets/icons/delete-icon.svg'
+import {ReactComponent as EditIcon} from '../../assets/icons/editsign.svg'
+import {ReactComponent as GoToDocs} from '../../assets/icons/gotodocssign.svg'
+import {ReactComponent as AddGoogleTag} from '../../assets/icons/addGoogleTagsign.svg'
+// import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
+// import {ReactComponent as ImportVersion} from '../../assets/icons/importVersionSign.svg'
+// import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
 
 const EMPTY_STRING = ''
 
@@ -395,7 +395,7 @@ class CollectionsComponent extends Component {
                       {!this.props.collections[collectionId]?.importedFromMarketPlace && (
                         <>
                           <div className='dropdown-item' onClick={() => this.openEditCollectionForm(collectionId)}>
-                          <img src= {Editicon}/>{' '}
+                            <EditIcon/>{' '}
                             Rename
                           </div>
                           <div
@@ -404,21 +404,21 @@ class CollectionsComponent extends Component {
                               this.openDeleteCollectionModal(collectionId)
                             }}
                           >
-                            <img src={deleteIcon}/>{' '}
+                            <DeleteIcon/>{' '}
                             Delete
                           </div>
                           {/* <div className='dropdown-item' onClick={() => this.handleDuplicateCollection(this.props.collections[collectionId])}>
-                         <img src = {duplicateSign} /> {' '}
+                         <Duplicate/> {' '}
                         Duplicate
                       </div> */}
                           {/* <div className='dropdown-item' onClick={() => this.openImportVersionForm(collectionId)}>
-                            <img src = {importVersionSign} />{' '}
+                            <ImportVersion/>{' '}
                             Import Version
                           </div> */}
                           {this.props.collections[collectionId].isPublic && (
                             <div className='dropdown-item' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
-                            <img src = {gotodocsign}/>{' '}
-                            Go to API Documentation
+                              <GoToDocs/>{' '}
+                              Go to API Documentation
                             </div>
                           )}
                           {/* {
@@ -446,7 +446,7 @@ class CollectionsComponent extends Component {
                               this.TagManagerModal(collectionId)
                             }}
                           >
-                            <img src= {addGoogleTag}/>
+                            <AddGoogleTag/>{' '}
                             Add Google Tag Manager
                           </div>
                         </>
@@ -468,7 +468,7 @@ class CollectionsComponent extends Component {
                       this.navigateToMembersModule(collectionId);
                     }}
                   >
-                    <img src = {shareBold} />
+                    <ShareBold/>
                     Share
                   </div> */}
                     </div>

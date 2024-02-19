@@ -23,10 +23,10 @@ import { addIsExpandedAction, updataForIsPublished } from '../../store/clientDat
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
 import { deletePage } from '../pages/redux/pagesActions.js'
 import SubPageForm from './subPageForm.jsx'
-import editsign from '../../assets/icons/editsign.svg'
-import deleteIcon from '../../assets/icons/delete-icon.svg'
-import duplicateSign from '../../assets/icons/duplicateSign.svg'
-import shareSign from '../../assets/icons/sharesign.svg'
+import {ReactComponent as EditSign} from '../../assets/icons/editsign.svg'
+import {ReactComponent as DeleteIcon} from '../../assets/icons/delete-icon.svg'
+// import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
+// import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -239,7 +239,7 @@ class Groups extends Component {
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
                       <div className='dropdown-item' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
-                        <img src= {editsign} />{' '}
+                        <EditSign/>{' '}
                         Rename
                       </div>
                       <div
@@ -248,15 +248,15 @@ class Groups extends Component {
                           this.openDeleteSubPageModal(subPageId)
                         }}
                       >
-                        <img src= {deleteIcon} />{' '}
+                        <DeleteIcon/> {' '}
                         Delete
                       </div>
                       {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[subPageId])}>
-                      <img src = {duplicateSign} />{' '}
+                      <Duplicate/> {' '}
                       Duplicate
                     </div> */}
                       {/* <div className='dropdown-item' onClick={() => this.openShareSubPageForm(subPageId)}>
-                        <img src = {shareSign} />{' '}
+                        <ShareIcon/> {' '}
                         Share
                       </div> */}
                     </div>
