@@ -5,6 +5,7 @@ import './endpoints.scss'
 import SampleResponseForm from './sampleResponseForm'
 import DeleteModal from '../common/deleteModal'
 import DownArrow from '../../assets/icons/downChevron.svg'
+import addToSample from '../../assets/icons/addToSamplesign.svg'
 
 class SampleResponse extends Component {
   constructor(props) {
@@ -139,10 +140,7 @@ class SampleResponse extends Component {
         {isDashboardRoute(this.props) ? (
           <div className='add-sample-response'>
             <button className='adddescLink align-left' onClick={() => this.openAddForm({}, null, 'Add Sample Response')}>
-              <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                <path d='M9 3.75V14.25' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                <path d='M3.75 9H14.25' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-              </svg>{' '}
+              <img src= {addToSample} />{' '}
               Add Sample Response
             </button>
           </div>
