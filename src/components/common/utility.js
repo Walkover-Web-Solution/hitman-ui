@@ -16,7 +16,7 @@ export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
 export const DEFAULT_URL = 'https://'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
-const statesEnum = {
+export const statesEnum = {
   PENDING_STATE: 0,
   REJECT_STATE: 3,
   APPROVED_STATE: 2,
