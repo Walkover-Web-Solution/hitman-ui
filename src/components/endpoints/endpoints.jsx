@@ -8,15 +8,16 @@ import tabService from '../tabs/tabService'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
 import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpoint } from './redux/endpointsActions'
-import GlobeIcon from '../../assets/icons/globe-icon.svg'
+// import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
 import SubPageForm from '../groups/subPageForm'
-import deleteicon from '../../assets/icons/delete-icon.svg'
-import duplicate from '../../assets/icons/duplicateSign.svg'
-import approved from '../../assets/icons/approvedSign.svg'
-import makePublic from '../../assets/icons/makePublicSign.svg'
-import cancelRequest from '../../assets/icons/cancelRequest.svg'
+import { ReactComponent as DeleteIcon} from '../../assets/icons/delete-icon.svg'
+import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
+import {ReactComponent as Approved} from '../../assets/icons/approvedSign.svg'
+import {ReactComponent as MakePublic} from '../../assets/icons/makePublicSign.svg'
+import {ReactComponent as CancelRequest} from '../../assets/icons/cancelRequest.svg'
+import {ReactComponent as RenamedItem} from '../../assets/icons/renameSign.svg'
 
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
@@ -252,8 +253,8 @@ class Endpoints extends Component {
   displayDeleteOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleDelete(this.props.endpoints[endpointId])}>
-        <img src= {deleteicon} />{' '}
-        Delete
+        <DeleteIcon/>{' '}
+         Delete
       </div>
     )
   }
@@ -261,7 +262,7 @@ class Endpoints extends Component {
   displayDuplicateOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.endpoints[endpointId])}>
-        <img src= {duplicate} />
+        <Duplicate/>
         Duplicate
       </div>
     )
@@ -270,7 +271,7 @@ class Endpoints extends Component {
   displayApproveOpt() {
     return (
       <div className='dropdown-item' disabled>
-        <img src= {approved} />
+        <Approved/>
         Approved
       </div>
     )
@@ -279,7 +280,7 @@ class Endpoints extends Component {
   displayMakePublicOpt(endpointId) {
     return (
       <div id='make_public_btn' className='dropdown-item' onClick={() => this.handlePublicEndpointState(this.props.endpoints[endpointId])}>
-        <img src= {makePublic} />
+        <MakePublic/>
         Make Public
       </div>
     )
@@ -288,7 +289,7 @@ class Endpoints extends Component {
   displayCancelRequestOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleCancelRequest(this.props.endpoints[endpointId])}>
-        <img src= {cancelRequest} />{' '}
+        <CancelRequest/>{' '}
         Cancel Request
       </div>
     )
@@ -315,17 +316,9 @@ class Endpoints extends Component {
 
         <div className='dropdown-menu dropdown-menu-right'>
           <div className='dropdown-item' onClick={() => this.openEditEndpointForm(endpointId)}>
-            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-              <path
-                d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z'
-                stroke='#E98A36'
-                strokeWidth='1.5'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>{' '}
-            Rename
-          </div>
+                          <RenamedItem/>{' '}
+                          Rename
+                        </div>
           {this.displayDeleteOpt(endpointId)}
           {/* {this.displayDuplicateOpt(endpointId)} */}
           {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
