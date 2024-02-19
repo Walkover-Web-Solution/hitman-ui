@@ -51,21 +51,21 @@ export const fetchCollection = (collectionId) => {
 }
 
 export const addCollection = (newCollection, openSelectedCollection, customCallback) => {
+  newCollection.uniqueTabId = sessionStorage.getItem('uniqueTabId');
   return (dispatch) => {
-    dispatch(addCollectionRequest(newCollection))
     collectionsApiService
       .saveCollection(newCollection)
       .then((response) => {
-        console.log('response ', response)
-        // dispatch(onCollectionAdded(response.data))
-        // const inivisiblePageData = {
-        //   page: {
-        //     id: response.data.rootParentId,
-        //     type: 0,
-        //     child: []
-        //   }
-        // }
-        // dispatch(onParentPageAdded(inivisiblePageData))
+        dispatch(onCollectionAdded(response.data))
+        const inivisiblePageData = {
+          page: {
+            id: response.data.rootParentId,
+            type: 0,
+            child: [],
+            collectionId: response.data.id
+          }
+        }
+        dispatch(onParentPageAdded(inivisiblePageData))
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
         }

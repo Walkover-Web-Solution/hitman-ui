@@ -17,6 +17,7 @@ import InviteTeam from './components/main/inviteTeam/inviteTeam'
 import { connect } from 'react-redux'
 import { installModal } from './components/modals/redux/modalsActions'
 import { initConn, resetConn } from './services/webSocket/webSocketService.js'
+import shortid from 'shortid'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -38,6 +39,8 @@ class App extends Component {
     if(currentOrgId){
       initConn(currentOrgId)
     }
+    sessionStorage.setItem("uniqueTabId", shortid.generate())
+    
   }
   async redirectToClientDomain() {
     const isDesktop = process.env.REACT_APP_IS_DESKTOP

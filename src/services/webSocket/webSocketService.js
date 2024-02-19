@@ -1,46 +1,50 @@
 import WebSocketClient from 'rtlayer-client'
-import {store} from '../../store/store'
+import { store } from '../../store/store'
 import { onParentPageAdded } from '../../components/pages/redux/pagesActions';
 import { onCollectionAdded } from '../../components/collections/redux/collectionsActions';
 
-var client;
+var CLIENT, CHANNEL;
 
-export function initConn(_channel) {
-  console.log('came to initConn', _channel)
-client = new WebSocketClient(process.env.REACT_APP_RTLAYER_OID, process.env.REACT_APP_RTLAYER_SID);
-client.on('open', subscribe(_channel))
-client.on('message', handleMessage)
+export function initConn(channel) {
+  CHANNEL = channel;
+  CLIENT = new WebSocketClient(process.env.REACT_APP_RTLAYER_OID, process.env.REACT_APP_RTLAYER_SID);
+  if (CHANNEL) {
+    CLIENT.on('open', subscribe)
+    CLIENT.on('message', handleMessage)
+  }
 }
 
-export function resetConn(channel){
-  console.log('came to resetConn')
-client.unsubscribe(channel);
+export function resetConn(channel) {
+  CLIENT.unsubscribe(channel || CHANNEL);
 }
 
-const subscribe = (channel) => {
-client.subscribe(channel);
+const subscribe = () => {
+  CLIENT.subscribe(CHANNEL);
 }
 
 const handleMessage = (message) => {
-  console.log("message == ",message)
+  message = JSON.parse(message)
 
-  switch(message.operation) {
+  // api already updated the redux state don't update it again 
+  if(message?.uniqueTabId == sessionStorage.getItem('uniqueTabId')){
+    return ;
+  }
+
+  switch (message.operation) {
     case 'CollectionCreate':
-    if(message.operation == 'CollectionCreate'){
       store.dispatch(onCollectionAdded(message.data))
       const inivisiblePageData = {
         page: {
-          id: response.data.rootParentId,
+          id: message.data.rootParentId,
           type: 0,
-          child: []
+          child: [],
+          collectionId: message.data.id
         }
       }
       store.dispatch(onParentPageAdded(inivisiblePageData))
-      console.log('came here to CollectionCreate', message)
-    }
 
-  default:
+    default:
     // code block
   }
- 
+
 }
