@@ -56,20 +56,16 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
     collectionsApiService
       .saveCollection(newCollection)
       .then((response) => {
-        sendAmplitudeData('Collection created', {
-          collectionId: response.data.id,
-          collectionName: response.data.name,
-          orgId: response.data.orgId
-        })
-        dispatch(onCollectionAdded(response.data))
-        const inivisiblePageData = {
-          page: {
-            id: response.data.rootParentId,
-            type: 0,
-            child: []
-          }
-        }
-        dispatch(onParentPageAdded(inivisiblePageData))
+        console.log('response ', response)
+        // dispatch(onCollectionAdded(response.data))
+        // const inivisiblePageData = {
+        //   page: {
+        //     id: response.data.rootParentId,
+        //     type: 0,
+        //     child: []
+        //   }
+        // }
+        // dispatch(onParentPageAdded(inivisiblePageData))
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
         }
