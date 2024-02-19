@@ -33,7 +33,7 @@ import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
-import { addEndpointInCollection } from './redux/endpointsActions'
+import { addEndpoint } from './redux/endpointsActions'
 import { addHistory } from '../history/redux/historyAction'
 import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
@@ -101,8 +101,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_endpointInCollection: (newEndpoint, rootParentID, callback, props) =>
-      dispatch(addEndpointInCollection(ownProps.history, newEndpoint, rootParentID, callback, props)),
+    add_endpoint: (newEndpoint, rootParentID, callback, props) =>
+      dispatch(addEndpoint(ownProps.history, newEndpoint, rootParentID, callback, props)),
     update_endpoint: (editedEndpoint, stopSave) => dispatch(updateEndpoint(editedEndpoint, stopSave)),
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
@@ -1010,7 +1010,7 @@ class DisplayEndpoint extends Component {
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
-        this.props.add_endpointInCollection(
+        this.props.add_endpoint(
           endpoint,
           id,
           ({ closeForm, stopLoader }) => {
@@ -1026,7 +1026,7 @@ class DisplayEndpoint extends Component {
           delete endpoint.state
           delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
-          this.props.add_endpointInCollection(
+          this.props.add_endpoint(
             endpoint,
             id,
             ({ closeForm, stopLoader }) => {

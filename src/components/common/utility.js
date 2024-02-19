@@ -92,9 +92,10 @@ export function getDomainName(hostname) {
 }
 export const msgText = {
   publishPage: 'You are about to make these changes live on your Public API doc.',
+  unpublishPage: 'You are about to Unpublish Page from your Public API doc.',
   viewSwitch: 'Do you wish to set it as default view?',
   publishEndpoint: 'You are about to make these changes live on your Public API doc.',
-  unpublishEndpoint: 'You are about to make these changes live on your Public API doc.',
+  unpublishEndpoint: 'You are about to Unpublish Endpoint from your Public API doc.',
   adminAccees: 'Admin access required'
 }
 
