@@ -166,6 +166,7 @@ export const onPageAddedError = (error, newPage) => {
 }
 
 export const deletePage = (page) => {
+  const tabs = store.getState().tabs
   return (dispatch) => {
     pageApiService
       .deletePage(page?.id)
@@ -188,6 +189,19 @@ export const deletePage = (page) => {
         dispatch(onPageDeletedError(error.response, page))
       })
   }
+}
+
+const deletePageAndChildren = (pageId, tabs, pageIds = []) => {
+  const pages = store.getState().pages
+  if (pages[pageId]) {
+    pages[pageId].child.forEach((childPageId) => {
+      const newPageIds = [...pageIds, childPageId]
+      deletePageAndChildren(childPageId, tabs, newPageIds)
+    })
+    delete pages[pageId]
+  }
+  // tabsDataDelete(pageIds, tabs);
+  return pages
 }
 
 export const deletePageRequest = (page) => {
