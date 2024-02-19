@@ -397,7 +397,7 @@ class CollectionsComponent extends Component {
                                 strokeLinejoin='round'
                               />
                             </svg>{' '}
-                            Edit
+                            Rename
                           </div>
                           <div
                             className='dropdown-item'
@@ -486,7 +486,7 @@ class CollectionsComponent extends Component {
                                   strokeLinejoin='round'
                                 />
                               </svg>{' '}
-                              Go to Docs
+                              Go to API Documentation
                             </div>
                           )}
                           {/* {

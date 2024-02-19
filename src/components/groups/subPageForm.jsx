@@ -16,13 +16,15 @@ class SubPageForm extends Form {
   constructor(props) {
     super(props)
     this.state = {
-      data: { name: '', urlName: ''},
+      data: { name: '', urlName: '' },
       errors: {}
     }
     this.schema = {
-        name: Joi.string().required().label('Page Name').max(20),
-        urlName : Joi.string().optional().allow(/[^a-zA-Z0-9\-_\.~]+/g)
-      };      
+      name: Joi.string().required().label('Page Name').max(20),
+      urlName: Joi.string()
+        .optional()
+        .allow(/[^a-zA-Z0-9\-_\.~]+/g)
+    }
   }
 
   async componentDidMount() {
@@ -34,7 +36,7 @@ class SubPageForm extends Form {
     if (this.props.selectedPage || this.props.selectedEndpoint) {
       const name = subPage?.name || endpoint?.name
       const urlName = subPage?.urlName || endpoint?.urlName
-      data = { name,urlName }
+      data = { name, urlName }
     }
     this.setState({ data })
   }
@@ -81,7 +83,15 @@ class SubPageForm extends Form {
                   {this.renderInput('name', 'Name', 'Page Name', true, false, false, '*name accepts min 1 & max 20 characters')}
                 </div>
                 <div className='col-12'>
-                  {this.renderInput('urlName', 'URL Name', 'URL Name', true, false, false, '*URL name can only contain alphanumeric values and reserved keywords like - _ . ~')}
+                  {this.renderInput(
+                    'urlName',
+                    'URL Name',
+                    'URL Name',
+                    true,
+                    false,
+                    false,
+                    '*URL name can only contain alphanumeric values and reserved keywords like - _ . ~'
+                  )}
                 </div>
               </div>
 

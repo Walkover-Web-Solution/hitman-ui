@@ -304,13 +304,13 @@ class UserProfileV2 extends Component {
   renderLogout() {
     return (
       <div
-        className='profile-listing'
+        className='profile-details'
         onClick={() => {
           this.handleLogout()
         }}
       >
         <img src={Power} alt='power-icon' />
-        <span className='label'>Logout</span>
+        <span className=''>Logout</span>
       </div>
     )
   }
@@ -404,88 +404,6 @@ class UserProfileV2 extends Component {
     }
   }
 
-  renderOrgList() {
-    const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
-    // // const productName = 'hitman'
-    // const orgsLength = Object.keys(organizations || {})?.length
-    // // const filteredOrgsArray = this.getAllOrgs(organizations)
-    // const orgItem = ({ index, style }) => {
-    //   const item = organizations[index]
-    //   return (
-    //     <Dropdown.Item style={style}>
-    //       <div
-    //         key={item?.id}
-    //         className='org-listing d-flex justify-content-between'
-    //         onClick={() => {
-    //           const currentId = item?.id
-    //           this.switchOrg(currentId)
-    //         }}
-    //       >
-    //         <span className='org-listing-name'>{item?.name}</span>
-    //         <img src={RightArrow} />
-    //       </div>
-    //     </Dropdown.Item>
-    //   )
-    // }
-
-    return (
-      <>
-        <div className='OrgsBlock'>
-          <div className='btn-group dropdown org-listing'>
-            <img src={SwitchRight} alt='Switch' />
-            <span
-              type='button'
-              id='dropdown-custom-components'
-              className='dropdown-toggle'
-              data-toggle='dropdown'
-              aria-haspopup='true'
-              aria-expanded='false'
-            >
-              Switch Organization
-            </span>
-            <div className='dropdown-menu'>
-              {organizations.map((org) => (
-                <button key={org.id} className='dropdown-item' onClick={() => switchOrg(org.id)}>
-                  {org.name}
-                </button>
-              ))}
-            </div>
-          </div>
-          {/* </div> */}
-          {/* <Dropdown className='nested-org-dropdown' drop='right'>
-              <Dropdown.Toggle className='text-uppercase text-sm-bold plr-3'>
-                SWITCH ORGS
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <div className='orgs-listing-container'>
-                  {this.state.moreFlag &&
-                    <div className='p-2 search-profile'>
-                      <input
-                        className='form-control'
-                        onChange={(e) => this.setOrgFilter(e.target.value, organizations?.length || 0)}
-                        value={this.state.orgFilter}
-                        placeholder='Search'
-                      />
-                    </div>}
-                  {organizations.length === 0
-                    ? <div className='pb-2 text-center w-100'><small className='body-6'>No Organizations Found</small></div>
-                    : (
-                      <List height={organizations.length < 5 ? 36 * organizations.length : 180} itemCount={this.getItemCount(organizations.length)} itemSize={35}>
-                        {orgItem}
-                      </List>
-                    )}
-                </div>
-                {orgsLength > 5 &&
-                  <div className='ShowMore text-center' onClick={() => this.setShowFlag()}>
-                    {!this.state.moreFlag ? 'Show more' : 'Show less'}
-                  </div>}
-              </Dropdown.Menu>
-            </Dropdown> */}
-        </div>
-      </>
-    )
-  }
-
   renderOrgListDropdown() {
     const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
     const selectedOrg = organizations[0]
@@ -496,7 +414,6 @@ class UserProfileV2 extends Component {
             <button
               className={`btn btn-primary mb-2 p-2 ${org === selectedOrg ? 'active' : ''} `}
               key={key}
-              // onClick={() => switchOrg(org.id)}
               onClick={() => {
                 this.handleOrgClick(org, selectedOrg)
               }}
@@ -591,11 +508,11 @@ class UserProfileV2 extends Component {
                 {/* <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item> */}
                 {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
                 <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
-                <Dropdown.Divider />
-                {/* <Dropdown.Item> {this.renderOrgList()}</Dropdown.Item> */}
-                <div className='profile-menu'>
-                  <span className='p-2' onClick={this.toggleModal} type='button'>
-                    <img src={SwitchRight} alt='icon' />
+                {/* <Dropdown.Divider /> */}
+                <Dropdown.Item>
+                  {/* <div className='profile-menu'> */}
+                  <span className='profile-details' onClick={this.toggleModal} type='button'>
+                    <img className='user-icon' src={SwitchRight} alt='icon' />
                     Switch Organization
                   </span>
                   <GenericModal
@@ -612,7 +529,8 @@ class UserProfileV2 extends Component {
                     showInput
                     handleAddOrg={this.handleAddOrg}
                   />
-                </div>
+                  {/* </div> */}
+                </Dropdown.Item>
               </div>
             </Dropdown.Menu>
           </Dropdown>

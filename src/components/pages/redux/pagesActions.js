@@ -9,8 +9,7 @@ import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import { QueryClient } from 'react-query'
 
-const queryClient = new QueryClient();
-
+const queryClient = new QueryClient()
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -20,11 +19,11 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
     const updatedEndpoint = editedEndpoint
     delete updatedEndpoint.id
     // delete updatedEndpoint.groupId
-    
+
     endpointApiService
-    .updateEndpoint(id, updatedEndpoint)
-    .then((response) => {
-      dispatch(onEndpointUpdated(response.data))
+      .updateEndpoint(id, updatedEndpoint)
+      .then((response) => {
+        dispatch(onEndpointUpdated(response.data))
         if (stopSaveLoader) {
           stopSaveLoader()
         }
@@ -48,7 +47,7 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 
 export const updatePage = (history, editedPage, publishDocs = false) => {
   return (dispatch) => {
-     const dataToSend = {
+    const dataToSend = {
       name: editedPage.name,
       urlName: editedPage.urlName,
       contents: editedPage?.contents || null,
@@ -117,7 +116,7 @@ export const onEndpointUpdated = (response) => {
   }
 }
 
-export const addPage1 = (history, rootParentId, newPage) => {
+export const addPage = (history, rootParentId, newPage) => {
   const orgId = getOrgId()
   return (dispatch) => {
     dispatch(addPageRequestInCollection(rootParentId, newPage))
@@ -177,9 +176,8 @@ export const deletePage = (page) => {
             dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
 
             // after deletion operation
-          operationsAfterDeletion(data)
-          toast.success('Deleted succesfully')
-
+            operationsAfterDeletion(data)
+            toast.success('Deleted succesfully')
           })
           .catch((error) => {
             console.errro(error)
