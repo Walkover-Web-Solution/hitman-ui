@@ -120,14 +120,14 @@ function pagesReducer(state = initialState, action) {
         [action.editedPage.id]: action.editedPage
       }
 
-      case pagesActionTypes.ON_PAGE_UPDATED:
-        return {
-          ...state,
-          [action.response.id]: {
-            ...state[action.response.id],
-            ...action.response
-          }
+    case pagesActionTypes.ON_PAGE_UPDATED:
+      return {
+        ...state,
+        [action.response.id]: {
+          ...state[action.response.id],
+          ...action.response
         }
+      }
 
     case pagesActionTypes.ON_PAGE_UPDATED_ERROR:
       toast.error(action.error)

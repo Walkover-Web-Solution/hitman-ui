@@ -580,11 +580,11 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   return { ...untitled }
 }
 
-export function getOnlyUrlPathById(id, sidebar,mode = 'external') {
+export function getOnlyUrlPathById(id, sidebar, mode = 'external') {
   let path = []
   // not add invisible parent page name in path
   while (sidebar?.[id]?.type > 0) {
-    const itemName = mode === 'internal' ? sidebar[id].name : sidebar[id].urlName;
+    const itemName = mode === 'internal' ? sidebar[id].name : sidebar[id].urlName
     path.push(itemName)
     id = sidebar?.[id]?.parentId
   }

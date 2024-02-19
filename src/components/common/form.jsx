@@ -121,7 +121,7 @@ class Form extends Component {
       <Input
         ref={this.inputRef}
         name={name}
-        urlName ={urlName}
+        urlName={urlName}
         label={label}
         value={data[name]}
         onChange={(e) => this.handleChange(e, isURLInput)}

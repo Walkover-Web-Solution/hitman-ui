@@ -404,7 +404,6 @@ class UserProfileV2 extends Component {
     }
   }
 
-
   renderOrgListDropdown() {
     const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
     const selectedOrg = organizations[0]
@@ -511,7 +510,7 @@ class UserProfileV2 extends Component {
                 <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
                 {/* <Dropdown.Divider /> */}
                 <Dropdown.Item>
-                {/* <div className='profile-menu'> */}
+                  {/* <div className='profile-menu'> */}
                   <span className='profile-details' onClick={this.toggleModal} type='button'>
                     <img className='user-icon' src={SwitchRight} alt='icon' />
                     Switch Organization
@@ -530,7 +529,7 @@ class UserProfileV2 extends Component {
                     showInput
                     handleAddOrg={this.handleAddOrg}
                   />
-                {/* </div> */}
+                  {/* </div> */}
                 </Dropdown.Item>
               </div>
             </Dropdown.Menu>
