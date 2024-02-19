@@ -255,6 +255,7 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.endpoint.id]: action.endpoint
       }
+
     case pagesActionTypes.ON_ENDPOINT_UPDATED:
       return {
         ...state,

@@ -2057,34 +2057,6 @@ class DisplayEndpoint extends Component {
     return isDashboardRoute(this.props) && (this.props?.endpointContent?.currentView === 'testing' || !isSavedEndpoint(this.props))
   }
 
-  getCurrentView() {
-    const { endpoints, collections } = this.props
-    const endpoint = endpoints[this.endpointId]
-    const collectionId = this.extractCollectionId(endpoint.groupId)
-    const collectionView = collections[collectionId]?.defaultView
-    if (window.localStorage.getItem('endpointView') && getCurrentUser()) {
-      const userId = getCurrentUser().identifier
-      const currentView = JSON.parse(window.localStorage.getItem('endpointView'))
-      if (currentView[userId]) return currentView[userId]
-      return collectionView
-    }
-    return collectionView
-  }
-
-  getDocViewData(endpoint) {
-    if (endpoint) {
-      if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
-        const docViewData = [...docViewData]
-        if (endpoint.description && endpoint.description.length) docViewData.splice(0, 0, { type: 'textArea', data: endpoint.description })
-        if (endpoint.notes && endpoint.notes.length) {
-          docViewData.splice(docViewData.length - 1, 0, { type: 'textBlock', data: endpoint.notes })
-        }
-        return docViewData
-      }
-      return endpoint.docViewData
-    }
-  }
-
   renderToggleView() {
     if (isSavedEndpoint(this.props)) {
       return (
