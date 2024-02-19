@@ -187,15 +187,15 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 
 export const deleteEndpointRequest = (endpoint) => {
   return {
-    type: endpointsActionTypes.DELETE_ENDPOINT_REQUEST,
+    type: pagesActionTypes.DELETE_ENDPOINT_REQUEST,
     endpoint
   }
 }
 
-export const onEndpointDeleted = (endpoint) => {
+export const onEndpointDeleted = (response) => {
   return {
-    type: endpointsActionTypes.ON_ENDPOINT_DELETED,
-    endpoint
+    type: pagesActionTypes.ON_ENDPOINT_DELETED,
+    response
   }
 }
 

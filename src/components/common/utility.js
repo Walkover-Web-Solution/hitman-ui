@@ -238,7 +238,7 @@ export function getParentIds(id, type, data) {
       entities = {}
   }
 
-  const entity = entities[id]
+  const entity = entities?.[id]
   if (!entity) {
     return parentIds
   }
