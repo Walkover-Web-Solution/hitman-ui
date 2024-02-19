@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { moveToNextStep } from '../../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../../common/constants'
 import DefaultViewModal from '../../collections/defaultViewModal/defaultViewModal'
-import { addPage1 } from '../../pages/redux/pagesActions'
+import { addPage } from '../../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -18,7 +18,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_page: (rootParentId, newPage) => dispatch(addPage1(ownProps.history, rootParentId, newPage))
+    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage))
   }
 }
 
