@@ -46,7 +46,7 @@ export function UnPublishEntityButton(props) {
     if (onUnpublish) {
       onUnpublish()
     } else {
-      props.open_publish_confirmation_modal()
+      props.open_unpublish_confirmation_modal()
     }
   }
   return (

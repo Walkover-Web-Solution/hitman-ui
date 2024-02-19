@@ -7,7 +7,7 @@ import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
-import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpointInCollection } from './redux/endpointsActions'
+import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpoint } from './redux/endpointsActions'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpointInCollection(ownProps.history, newEndpoint, groupId, callback)),
+    add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
 }

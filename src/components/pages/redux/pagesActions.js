@@ -117,7 +117,7 @@ export const onEndpointUpdated = (response) => {
   }
 }
 
-export const addPage1 = (history, rootParentId, newPage) => {
+export const addPage = (history, rootParentId, newPage) => {
   const orgId = getOrgId()
   return (dispatch) => {
     dispatch(addPageRequestInCollection(rootParentId, newPage))
