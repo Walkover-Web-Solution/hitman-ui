@@ -73,11 +73,11 @@ export class PublishSidebar extends Component {
   }
 
   componentDidMount() {
-    const selectedCollectionId = this.props.collectionId
+    const selectedCollectionId = this.props.selected_collection_id
     if (selectedCollectionId) {
       this.setState({ selectedCollectionId })
     }
-    const rootParentId = this.props.collections[selectedCollectionId].rootParentId
+    const rootParentId = this.props.collections[selectedCollectionId]?.rootParentId
     const pages = this.props.pages
     // const matchingObject = Object.values(pages).find(obj => obj.parentId === rootParentId);
     const matchingObjects = Object.values(pages).filter((obj) => obj.parentId === rootParentId)

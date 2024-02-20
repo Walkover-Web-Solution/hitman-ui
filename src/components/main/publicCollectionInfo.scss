@@ -4,7 +4,7 @@
 @import '../main/variables.scss';
 
 .public-colection-info {
-  padding: 0 0 0 0.65rem;
+  // padding: 0 0 0 0.65rem;
 }
 
 .endpoints-list {
@@ -19,7 +19,8 @@
 }
 
 .sidebar-public-url {
-  justify-content: space-between;
+  // justify-content: space-between;
+  margin-left: 0px;
   color: $success-color;
   overflow: hidden;
   i {
@@ -31,4 +32,17 @@
       visibility: visible;
     }
   }
+}
+.publicUrl-btn{
+border: none !important;
+justify-content: center;
+background-color: #f8f9fa !important;
+border: 1px solid #e6dbd4 !important;
+margin-top: 8px !important;
+padding-left: 2px !important;
+}
+.publicUrl-btn.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  // Add any other styles for the disabled state
 }
