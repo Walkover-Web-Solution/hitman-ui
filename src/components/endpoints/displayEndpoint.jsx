@@ -49,7 +49,6 @@ import Script from './script/script'
 import * as _ from 'lodash'
 import { openModal } from '../modals/redux/modalsActions'
 import Axios from 'axios'
-import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
@@ -740,8 +739,8 @@ class DisplayEndpoint extends Component {
   }
 
   checkEmptyParams() {
-    const params = this.state.params
-    const originalParams = this.state.originalParams
+    const params = this.props?.endpointContent?.params
+    const originalParams = this.props?.endpointContent?.originalParams
     let isEmpty = false
     params.forEach((param) => {
       if (param.checked !== 'notApplicable' && param.checked === 'true' && this.checkValue(param, originalParams)) {
@@ -751,7 +750,10 @@ class DisplayEndpoint extends Component {
         param.empty = false
       }
     })
-    this.setState({ params })
+    const endpoint = { ...this.props?.endpointContent }
+    endpoint.params = { ...params }
+    this.props.setQueryUpdatedData(endpoint)
+    // this.setState({ params })
     return isEmpty
   }
 
@@ -877,10 +879,6 @@ class DisplayEndpoint extends Component {
       requestOptions = { ...requestOptions, body, headers, url, bodyType }
       /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
-      sendAmplitudeData('API called', {
-        url: url,
-        endpointId: this.props.match.params.endpointId
-      })
       /** Handle Request Call */
       await this.handleApiCall(requestOptions)
       this.setState({
@@ -905,7 +903,7 @@ class DisplayEndpoint extends Component {
       response = { value: response }
     }
 
-    if (code.trim().length === 0 || !isDashboardRoute(this.props, true)) {
+    if (code?.trim()?.length === 0 || !isDashboardRoute(this.props, true)) {
       return { success: true, data: { environment: environment.variables, request, response, tests: [] } }
     }
 
@@ -1044,7 +1042,6 @@ class DisplayEndpoint extends Component {
         } else {
           // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
           // not sending isPublished during put method
-            // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
           endpoint.state = statesEnum.DRAFT_STATE
           this.setState({ saveLoader: true })
           this.props.update_endpoint(
