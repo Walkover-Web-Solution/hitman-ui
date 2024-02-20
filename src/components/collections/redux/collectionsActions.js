@@ -334,17 +334,3 @@ export const onCollectionImportedError = (error, collection) => {
   }
 }
 
-//Not in use
-function prepareCollectionData(collection, props) {
-  const storeData = { ...store.getState() }
-  const versionIds = Object.keys(storeData.versions).filter((vId) => storeData.versions[vId].collectionId === collection.id)
-  let endpointIds = []
-  let pageIds = []
-  versionIds.forEach((vId) => {
-    pageIds = [...Object.keys(storeData.pages).filter((pId) => storeData.pages[pId].versionId === vId), ...pageIds]
-  })
-  endpointIds.map((eId) => tabService.removeTab(eId, props))
-  pageIds.map((pId) => tabService.removeTab(pId, props))
-
-  return { versionIds, endpointIds, pageIds }
-}

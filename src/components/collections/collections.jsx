@@ -409,10 +409,6 @@ class CollectionsComponent extends Component {
                          <Duplicate/> {' '}
                         Duplicate
                       </div> */}
-                          {/* <div className='dropdown-item' onClick={() => this.openImportVersionForm(collectionId)}>
-                            <ImportVersion/>{' '}
-                            Import Version
-                          </div> */}
                           {this.props.collections[collectionId].isPublic && (
                             <div className='dropdown-item' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
                               <GoToDocs/>{' '}
