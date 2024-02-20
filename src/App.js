@@ -16,6 +16,8 @@ import AuthServiceV2 from './components/auth/authServiceV2'
 import InviteTeam from './components/main/inviteTeam/inviteTeam'
 import { connect } from 'react-redux'
 import { installModal } from './components/modals/redux/modalsActions'
+import { initConn, resetConn } from './services/webSocket/webSocketService.js'
+import shortid from 'shortid'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -31,6 +33,14 @@ const mapStateToProps = (state) => {
   }
 }
 class App extends Component {
+  constructor(props) {
+    super(props)
+    const currentOrgId = getOrgId() ?? props.location.pathname.split('/')?.[2]
+    if(currentOrgId){
+      initConn(currentOrgId)
+    }
+    sessionStorage.setItem("uniqueTabId", shortid.generate())
+  }
   async redirectToClientDomain() {
     const isDesktop = process.env.REACT_APP_IS_DESKTOP
     const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
@@ -80,6 +90,7 @@ class App extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.handleBeforeUnload)
+    resetConn(getOrgId())
   }
 
   handleBeforeUnload = (e) => {
