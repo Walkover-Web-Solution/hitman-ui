@@ -15,7 +15,6 @@ import {
 } from '../common/utility'
 import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
-import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import { ReactComponent as PlusOrange } from '../../assets/icons/plus_orange.svg'

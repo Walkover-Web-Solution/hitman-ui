@@ -2,11 +2,10 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
-import { getOrgId, focusSelectedEntity, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
+import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
 import shortid from 'shortid'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 import { addChildInParent } from '../../pages/redux/pagesActions'
-import tabService from '../../tabs/tabService'
 import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
@@ -14,10 +13,9 @@ export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, 
   const orgId = getOrgId()
   const requestId = shortid.generate()
   return (dispatch) => {
-    // dispatch(addEndpointRequest({ ...newEndpoint, requestId, rootParentId }))
     const prevCurrentTabId = store.getState()?.tabs?.activeTabId
     endpointApiService
-      .saveEndpointInCollection(rootParentId, { ...newEndpoint, requestId })
+      .saveEndpoint(rootParentId, { ...newEndpoint, requestId })
       .then(async (response) => {
         const responseToSend = {
           id: response.data.id,
@@ -28,9 +26,9 @@ export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, 
           child: [],
           state: response.data.state,
           isPublished: response.data.isPublished,
-          type: 4,
-          versionId: null,
-          collectionId: store.getState()?.pages?.[response?.data?.parentId].collectionId
+          type: response.data.type || 4,
+          versionId: response.data.versionId || null,
+          collectionId: response.data.collectionId
         }
         const data = await dispatch(addChildInParent(responseToSend))
         history.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
@@ -87,9 +85,10 @@ export const deleteEndpoint = (endpoint) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
+            toast.success("Endpoint Deleted Successfully")
           })
           .catch((error) => {
-            console.error('error after getting data from deleteAllPagesAndTabsAndReactQueryData == ', error)
+            console.error('Can not delete endpoint', error)
           })
       })
       .catch((error) => {
