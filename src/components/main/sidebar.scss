@@ -388,6 +388,12 @@ body .sidebar {
 
 .sidebar-public-url .text-truncate {
   padding-right: 20px;
+  // font-style: italic;
+  font-family: 'Courier New', Courier, monospace;
+  // font-family:Verdana, Geneva, Tahoma, sans-serif;
+  &:hover{
+    text-decoration: underline;
+  }
 }
 
 .user-info .user-avatar {

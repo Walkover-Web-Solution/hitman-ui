@@ -97,6 +97,12 @@
       max-width: 12rem;
     }
   }
+  .publish {
+  .publish_collection_btn , .unpublish_doc_btn, .bulk_publish {
+    position: absolute;
+    right: 10rem;
+  }
+}
 }
 
 .doc-title {
