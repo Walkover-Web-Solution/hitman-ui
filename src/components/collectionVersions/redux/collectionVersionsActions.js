@@ -1,14 +1,10 @@
 import collectionVersionsApiService from '../collectionVersionsApiService'
 import versionActionTypes from './collectionVersionsActionTypes'
-import { store } from '../../../store/store'
 import { toast } from 'react-toastify'
-import tabService from '../../tabs/tabService'
-import { sendAmplitudeData } from '../../../services/amplitude'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 
 export const updateVersion = (editedVersion) => {
   return (dispatch) => {
-    const originalVersion = store.getState().versions[editedVersion.id]
     dispatch(updateVersionRequest(editedVersion))
     const { number, host, id } = editedVersion
     collectionVersionsApiService
@@ -17,7 +13,7 @@ export const updateVersion = (editedVersion) => {
         dispatch(onVersionUpdated(response.data))
       })
       .catch((error) => {
-        dispatch(onVersionUpdatedError(error.response ? error.response.data : error, originalVersion))
+        dispatch(onVersionUpdatedError(error.response ? error.response.data : error))
       })
   }
 }
@@ -50,11 +46,6 @@ export const addParentPageVersion = (newVersion, pageId, customCallback) => {
     collectionVersionsApiService
       .saveParentPageVersion(pageId, newVersion)
       .then((response) => {
-        sendAmplitudeData('Version created', {
-          versionId: response.data.id,
-          versionNumber: response.data.number,
-          pageId: response.data.pageId
-        })
         dispatch(onParentPageVersionAdded(response.data))
         if (customCallback) {
           customCallback(response.data)
@@ -87,7 +78,7 @@ export const onVersionAddedError = (error, newVersion) => {
     error
   }
 }
-
+// To do later
 export const duplicateVersion = (version) => {
   return (dispatch) => {
     collectionVersionsApiService
@@ -100,44 +91,10 @@ export const duplicateVersion = (version) => {
       })
   }
 }
-
+// To do later
 export const onVersionDuplicated = (response) => {
   return {
     type: versionActionTypes.ON_VERSION_DUPLICATED,
-    response
-  }
-}
-export const importVersion = (importLink, shareIdentifier, collectionId) => {
-  return (dispatch) => {
-    collectionVersionsApiService
-      .exportCollectionVersion(importLink, shareIdentifier)
-      .then((response) => {
-        response.data.collectionId = collectionId
-        collectionVersionsApiService
-          .importCollectionVersion(importLink, shareIdentifier, response.data)
-          .then((response) => {
-            dispatch(saveImportedVersion(response.data))
-          })
-          .catch((error) => {
-            dispatch(onVersionImportError(error.response ? error.response.data : error))
-          })
-      })
-      .catch((error) => {
-        dispatch(onVersionImportError(error.response ? error.response.data : error))
-      })
-  }
-}
-
-export const onVersionImportError = (error) => {
-  return {
-    type: versionActionTypes.ON_VERSION_IMPORT_ERROR,
-    error
-  }
-}
-
-export const saveImportedVersion = (response) => {
-  return {
-    type: versionActionTypes.IMPORT_VERSION,
     response
   }
 }

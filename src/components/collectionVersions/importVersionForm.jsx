@@ -2,7 +2,6 @@ import Joi from 'joi-browser'
 import React from 'react'
 import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { importVersion } from '../collectionVersions/redux/collectionVersionsActions'
 import Form from '../common/form'
 import { onEnter } from '../common/utility'
 
@@ -10,7 +9,6 @@ const apiUrl = process.env.REACT_APP_API_URL
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_version: (importLink, shareIdentifier, collectionId) => dispatch(importVersion(importLink, shareIdentifier, collectionId))
   }
 }
 class ShareVersionForm extends Form {
@@ -54,7 +52,7 @@ class ShareVersionForm extends Form {
       const collectionId = this.props.selected_collection.id
       const importLink = this.state.data.shareVersionLink
       const shareIdentifier = importLink.split('/')[4]
-      this.props.import_version(importLink, shareIdentifier, collectionId)
+      // this.props.import_version(importLink, shareIdentifier, collectionId)
     }
   }
 

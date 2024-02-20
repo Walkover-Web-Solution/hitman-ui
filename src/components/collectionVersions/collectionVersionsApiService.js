@@ -40,22 +40,14 @@ export function duplicateVersion(versionId) {
   const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/duplicateVersions/${versionId}`)
 }
-export function exportCollectionVersion(importLink, shareIdentifier) {
-  return http.get(`${importLink}`)
-}
 
-export function importCollectionVersion(importLink, shareIdentifier, data) {
-  const apiUrl = getApiUrl()
-  return http.post(`${apiUrl}/share/${shareIdentifier}/import`, data)
-}
+
 
 export default {
   getCollectionVersion,
   updateCollectionVersion,
   deleteCollectionVersion,
   duplicateVersion,
-  importCollectionVersion,
-  exportCollectionVersion,
   getAllCollectionVersions,
   saveParentPageVersion
 }

@@ -49,7 +49,6 @@ import Script from './script/script'
 import * as _ from 'lodash'
 import { openModal } from '../modals/redux/modalsActions'
 import Axios from 'axios'
-import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
@@ -877,10 +876,6 @@ class DisplayEndpoint extends Component {
       requestOptions = { ...requestOptions, body, headers, url, bodyType }
       /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
-      sendAmplitudeData('API called', {
-        url: url,
-        endpointId: this.props.match.params.endpointId
-      })
       /** Handle Request Call */
       await this.handleApiCall(requestOptions)
       this.setState({
