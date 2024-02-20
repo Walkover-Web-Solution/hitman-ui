@@ -2,14 +2,11 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import { getOrgId, focusSelectedEntity, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
+import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
 import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
-import { QueryClient } from 'react-query'
-
-const queryClient = new QueryClient()
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -18,8 +15,7 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
     const id = editedEndpoint.id
     const updatedEndpoint = editedEndpoint
     delete updatedEndpoint.id
-    // delete updatedEndpoint.groupId
-
+    
     endpointApiService
       .updateEndpoint(id, updatedEndpoint)
       .then((response) => {
@@ -69,18 +65,6 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
   }
 }
 
-export const updateContent = async ({ pageData, id }) => {
-  delete pageData.id
-  delete pageData.versionId
-  delete pageData.groupId
-  try {
-    const data = await pageApiService.updatePage(id, pageData)
-    return data.data
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 export const updatePageRequest = (editedPage) => {
   return {
     type: pagesActionTypes.UPDATE_PAGE_REQUEST,
@@ -102,6 +86,19 @@ export const onPageUpdatedError = (error, originalPage) => {
     originalPage
   }
 }
+
+export const updateContent = async ({ pageData, id }) => {
+  delete pageData.id
+  delete pageData.versionId
+  delete pageData.groupId
+  try {
+    const data = await pageApiService.updatePage(id, pageData)
+    return data.data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const updateEndpointRequest = (editedEndpoint) => {
   return {
     type: pagesActionTypes.UPDATE_ENDPOINT_REQUEST,
@@ -147,12 +144,6 @@ export const onParentPageAdded = (response) => {
     type: pagesActionTypes.ON_PARENT_PAGE_ADDED,
     page: response.page,
     version: response.version
-  }
-}
-export const onParentPageVersionAdded = (response) => {
-  return {
-    type: collectionVersionsActionTypes.ON_PARENTPAGE_VERSION_ADDED,
-    response
   }
 }
 

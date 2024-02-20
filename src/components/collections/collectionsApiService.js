@@ -59,11 +59,6 @@ export function importCollection(collectionId) {
   return http.post(`${apiUrl}/orgs/${orgId}/marketplace/collections/${collectionId}`)
 }
 
-export function removePublicCollection(collectionId) {
-  const orgId = getOrgId()
-  return http.delete(`${apiUrl}/orgs/${orgId}/marketplace/collections/${collectionId}`)
-}
-
 export default {
   getCollections,
   getCollection,
@@ -74,5 +69,4 @@ export default {
   getAllPublicCollections,
   getCollectionsByCustomDomain,
   importCollection,
-  removePublicCollection
 }
