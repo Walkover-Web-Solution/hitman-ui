@@ -7,7 +7,7 @@ import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
-import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
+import { handleChangeInUrlField, handleBlurInUrlField, modifyDataForBulkPublish } from '../common/utility'
 import { moveToNextStep } from '../../services/widgetService'
 
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
@@ -73,6 +73,7 @@ class PublishDocForm extends Component {
   }
 
   componentDidMount() {
+    modifyDataForBulkPublish(this.props?.collections, this.props?.pages, 'Cp8Byl7_e3ei')
     this.setSelectedCollection()
   }
 
