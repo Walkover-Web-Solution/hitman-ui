@@ -437,7 +437,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) {}
+        } catch (err) { }
       })
     })
   }
@@ -450,7 +450,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) {}
+        } catch (err) { }
       })
     })
   }
@@ -477,7 +477,7 @@ export function getUserProfile() {
   try {
     user = JSON.parse(user)
     return user
-  } catch (e) {}
+  } catch (e) { }
 }
 
 export function getCurrentUserSSLMode() {
@@ -487,7 +487,7 @@ export function getCurrentUserSSLMode() {
     sslModeData = JSON.parse(sslModeData)
     const { identifier } = user
     return sslModeData?.[identifier]
-  } catch (e) {}
+  } catch (e) { }
 }
 
 export function setCurrentUserSSLMode(sslModeFlag) {
@@ -498,7 +498,7 @@ export function setCurrentUserSSLMode(sslModeFlag) {
     sslModeData = JSON.parse(sslModeData || '{}')
     const sslMode = { ...sslModeData, [identifier]: sslModeFlag }
     window.localStorage.setItem('ssl-mode', JSON.stringify(sslMode))
-  } catch (e) {}
+  } catch (e) { }
 }
 
 export function compareAlphabetically(a, b, data) {
@@ -724,6 +724,42 @@ export const trimString = (str) => {
   return str?.trim()
 }
 
+export const modifyDataForBulkPublish = (collectionData, allPagesData, collectionId) => {
+  const rootParentId = collectionData?.[collectionId]?.rootParentId;
+  const formatedData = {
+    name: collectionData?.[collectionId]?.name,
+    metadata: { rootParentId, collectionId },
+    children: modifiedData(allPagesData?.[rootParentId]?.child || [], allPagesData),
+  }
+  return formatedData;
+}
+
+const modifiedData = (childs, allPagesData) => {
+  return childs?.map((singleId) => {
+    return {
+      name: allPagesData?.[singleId]?.name,
+      children: modifiedData(allPagesData?.[singleId]?.child || [], allPagesData),
+      metadata: { actualId: singleId }
+    }
+  })
+}
+
+export const modifyCheckBoxDataToSend = (flattenData, allSelectedIds, dataToPublishSet) => {
+  allSelectedIds.forEach((singleId) => {
+    if (!dataToPublishSet.has(singleId)) dataToPublishSet.add(singleId);
+    addItsParent(flattenData, singleId, dataToPublishSet);
+  })
+}
+
+function addItsParent(flattenData, singleId, dataToPublishSet) {
+  let parentId = flattenData?.[singleId]?.parent;
+  while (parentId !== null) {
+    if (dataToPublishSet.has(parentId) || !parentId) break;
+    dataToPublishSet.add(parentId)
+    parentId = flattenData?.[parentId]?.parentId;
+  }
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -764,5 +800,6 @@ export default {
   isOnPublishedPage,
   deleteAllPagesAndTabsAndReactQueryData,
   operationsAfterDeletion,
-  trimString
+  trimString,
+  modifyDataForBulkPublish,
 }
