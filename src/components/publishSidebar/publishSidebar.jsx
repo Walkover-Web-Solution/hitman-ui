@@ -78,7 +78,8 @@ function PublishSidebar(props) {
     })
     try {
       await bulkPublishApiService.bulkPublishSelectedData({ rootParentId, endpointIds, pageIds })
-      toast.success('Selected Data has been published')
+      toast.success('Successfully published')
+      props.closePublishSidebar()
     } catch (error) {
       console.error(error)
       toast.error('Cannot Publish at this moment')
@@ -113,7 +114,7 @@ function PublishSidebar(props) {
 
   function RenderFooter() {
     return (
-      <div className='d-flex mt-3'>
+      <div className='d-flex'>
         <button className='btn btn-primary justify-content-center api-save-btn' onClick={sendPublishRequest}>
           Publish
         </button>
@@ -128,8 +129,11 @@ function PublishSidebar(props) {
     <div>
       <div onClick={() => props.closePublishSidebar()} style={darkBackgroundStyle}></div>
       <div style={saveAsSidebarStyle} className='publish-sidebar-container'>
-        <div className='publish-api-doc-heading'>Bulk Publish</div>
-        <div className='checkbox'>
+        <div className='d-flex justify-content-between align-item-center'>
+          <div className='publish-api-doc-heading'>Bulk Publish</div>
+          <RenderFooter />
+        </div>
+        <div className='checkbox mt-3'>
           <TreeView
             data={flattenData || []}
             aria-label='Checkbox tree'
@@ -174,7 +178,6 @@ function PublishSidebar(props) {
               )
             }}
           />
-          <RenderFooter />
         </div>
       </div>
     </div>

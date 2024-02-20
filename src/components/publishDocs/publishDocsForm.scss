@@ -97,6 +97,12 @@
       max-width: 12rem;
     }
   }
+  .publish {
+  // .publish_collection_btn , .unpublish_doc_btn, .bulk_publish {
+  //   position: absolute;
+  //   right: 10rem;
+  // }
+}
 }
 
 .doc-title {
@@ -105,4 +111,20 @@
   font-size: 36px;
   line-height: 36px;
   color: $text-color-dark;
+}
+
+.public-title {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.text-disable{
+  color: #3b7837;
+  &:hover{
+    text-decoration: underline;
+  }
+}
+
+.disabled-link {
+  opacity: 0.5;
 }

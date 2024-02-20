@@ -31,8 +31,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
-    setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data))
+    // ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
+    // setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data))
   }
 }
 
@@ -65,7 +65,7 @@ class PublishCollectionInfo extends Component {
     }
   }
 
-  renderPublicUrl() {
+ renderPublicUrl() {
     const url = defaultDomain + '/p?collectionId=' + this.props.collectionId
     const { versions, groups, endpoints, collectionId } = this.props
     const targetVersionIds = _.values(versions)
@@ -225,9 +225,9 @@ class PublishCollectionInfo extends Component {
     return (
       !currentCollection?.importedFromMarketPlace && (
         <div className='public-colection-info'>
-          {this.managePublicDoc()}
+          {/* {this.managePublicDoc()} */}
           {/* {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))} */}
-          {isPublic && <div className='publicurl'>{this.renderPublicUrl()}</div>}
+          {/* {isPublic && <div className='publicurl'>{this.renderPublicUrl()}</div>} */}
         </div>
       )
     )
@@ -285,6 +285,7 @@ class PublishCollectionInfo extends Component {
   }
 
   redirectUser() {
+    console.log("inside redirect user");
     this.setState({ openPublishSidebar: true })
     this.props.ON_PUBLISH_DOC(true)
     this.props.setCollectionIdForPublish({ collectionId: this.props.collectionId })
@@ -322,9 +323,9 @@ class PublishCollectionInfo extends Component {
     const isPublic = this.props.collections[this.props.collectionId]?.isPublic || false
     return (
       <div>
-        {this.renderPublishCollection()}
-        {this.renderPublicCollectionInfo(isPublic)}
-        {this.openPublishSidebar()}
+        {/* {this.renderPublishCollection()} */}
+        {/* {this.renderPublicCollectionInfo(isPublic)} */}
+        {/* {this.openPublishSidebar()} */}
       </div>
     )
   }
