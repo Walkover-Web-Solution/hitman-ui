@@ -12,7 +12,6 @@ import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
-import { sendAmplitudeData } from '../../services/amplitude'
 import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
@@ -80,10 +79,6 @@ class MainV2 extends Component {
           loadfeedioWidget()
           // loadHelloWidget() commenting to hide helloWidget
         }
-        sendAmplitudeData('Dashboard Landing', {
-          orgId: orgId,
-          orgName: orgName
-        })
         await this.fetchAll()
         this.props.add_collection_and_pages(orgId)
       }

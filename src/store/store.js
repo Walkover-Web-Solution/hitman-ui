@@ -1,7 +1,6 @@
 import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import collectionsReducer from '../components/collections/redux/collectionsReducer'
-import versionsReducer from '../components/collectionVersions/redux/collectionVersionsReducer'
 import environmentsReducer from '../components/environments/redux/environmentsReducer'
 import groupsReducer from '../components/groups/redux/groupsReducer'
 import pagesReducer from '../components/pages/redux/pagesReducer'
@@ -19,7 +18,6 @@ const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const rootReducer = combineReducers({
   collections: collectionsReducer,
-  versions: versionsReducer,
   groups: groupsReducer,
   pages: pagesReducer,
   environment: environmentsReducer,

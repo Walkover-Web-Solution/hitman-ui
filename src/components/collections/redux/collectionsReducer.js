@@ -118,11 +118,11 @@ function collectionsReducer(state = initialState, action) {
       toast.error(action.error)
       return state
 
-    // case collectionsActionTypes.IMPORT_COLLECTION_REQUEST:
-    //   return {
-    //     ...state,
-    //     [action.collection.id]: action.collection
-    //   }
+    case collectionsActionTypes.IMPORT_COLLECTION_REQUEST:
+      return {
+        ...state,
+        [action.collection.id]: action.collection
+      }
 
     case collectionsActionTypes.ON_COLLECTION_IMPORTED:
       return {
@@ -143,9 +143,6 @@ function collectionsReducer(state = initialState, action) {
 
     case generalActionsTypes.ADD_COLLECTIONS:
       return { ...action.data }
-
-    // case versionActionTypes.IMPORT_VERSION:
-    //   return { ...state, ...action.response.collection }
 
     default:
       return state

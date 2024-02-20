@@ -13,7 +13,6 @@ import {
   duplicateCollection,
   updateCollection,
   addCustomDomain,
-  removePublicCollection
 } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
@@ -55,7 +54,6 @@ const mapDispatchToProps = (dispatch) => {
     delete_collection: (collection, props) => dispatch(deleteCollection(collection, props)),
     duplicate_collection: (collection) => dispatch(duplicateCollection(collection)),
     add_custom_domain: (collectionId, domain) => dispatch(addCustomDomain(collectionId, domain)),
-    remove_public_collection: (collection, props) => dispatch(removePublicCollection(collection, props)),
     add_new_tab: () => dispatch(addNewTab()),
     update_isExpand_for_collection: (payload) => dispatch(addIsExpandedAction(payload))
   }
