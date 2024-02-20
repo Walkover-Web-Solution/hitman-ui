@@ -67,10 +67,10 @@ class HostContainer extends Component {
   }
 
   setHostAndUri() {
-    const endpointUri = this.props.updatedUri || ''
+    const endpointUri = this.props?.updatedUri || ''
     const topPriorityHost = this.customFindTopPriorityHost()
     const selectedHost = topPriorityHost
-    const host = this.props?.endpointContent.host.BASE_URL || this.state[selectedHost] || this.state.datalistHost || ''
+    const host = this.props?.endpointContent?.host?.BASE_URL || this.state[selectedHost] || this.state?.datalistHost || ''
     this.setState({ datalistUri: endpointUri, datalistHost: host, selectedHost }, () => this.setParentHostAndUri())
   }
 
@@ -213,7 +213,7 @@ class HostContainer extends Component {
       <input
         disabled
         className='form-control'
-        value={this.props?.endpointContent.host.BASE_URL + this.props?.endpointContent?.data?.updatedUri}
+        value={this.props?.endpointContent?.host?.BASE_URL + this.props?.endpointContent?.data?.updatedUri}
       />
     )
   }
