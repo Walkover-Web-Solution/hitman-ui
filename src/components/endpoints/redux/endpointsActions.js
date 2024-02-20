@@ -11,7 +11,7 @@ import tabService from '../../tabs/tabService'
 import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
-export const addEndpointInCollection = (history, newEndpoint, rootParentId, customCallback, props) => {
+export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, props) => {
   const orgId = getOrgId()
   const requestId = shortid.generate()
   return (dispatch) => {
@@ -24,6 +24,7 @@ export const addEndpointInCollection = (history, newEndpoint, rootParentId, cust
           id: response.data.id,
           requestType: response.data.requestType,
           name: response.data.name,
+          urlName: response.data.urlName,
           parentId: response.data.parentId,
           child: [],
           state: response.data.state,
