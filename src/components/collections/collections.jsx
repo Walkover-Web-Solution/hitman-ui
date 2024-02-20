@@ -23,7 +23,7 @@ import hitmanLogo from '../../assets/icons/hitman.svg'
 import PublishCollectionInfo from '../main/publishCollectionInfo'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandIcon from '../../assets/icons/expand-arrow.svg'
-import { addNewTab } from '../tabs/redux/tabsActions'
+import { addNewTab, updateTab } from '../tabs/redux/tabsActions'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
@@ -35,6 +35,7 @@ import {ReactComponent as AddGoogleTag} from '../../assets/icons/addGoogleTagsig
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ImportVersion} from '../../assets/icons/importVersionSign.svg'
 // import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
+import { store } from '../../store/store'
 
 const EMPTY_STRING = ''
 
@@ -215,6 +216,7 @@ class CollectionsComponent extends Component {
 
   closeDeleteCollectionModal() {
     this.setState({ showRemoveModal: false, showDeleteModal: false })
+    
   }
 
   openSelectedCollection(collectionId) {
@@ -222,6 +224,7 @@ class CollectionsComponent extends Component {
     this.props.collection_selected(collectionId)
     this.collectionId = collectionId
     this.setState({ openSelectedCollection: true })
+    // this.openPublishSettings(collectionId)
   }
 
   openAllCollections() {
@@ -301,6 +304,15 @@ class CollectionsComponent extends Component {
       value: !isExpanded,
       id
     })
+    this.openPublishSettings(id)
+  }
+
+  async openPublishSettings(collectionId) {
+    if (collectionId) {
+      this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
+    }
+    const activeTab = this.props.tabs.activeTabId
+    store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
   }
 
   scrollToCollection(collectionId) {
@@ -484,11 +496,12 @@ class CollectionsComponent extends Component {
             <div id='collection-collapse'>
               <Card.Body>
                 {isOnDashboardPage && (
-                  <PublishCollectionInfo
-                    {...this.props}
-                    collectionId={collectionId}
-                    // getTotalEndpointsCount={this.props.getTotalEndpointsCount.bind(this)}
-                  />
+                  // <PublishCollectionInfo
+                  //   {...this.props}
+                  //   collectionId={collectionId}
+                  //   getTotalEndpointsCount={this.props.getTotalEndpointsCount.bind(this)}
+                  // />
+                  <></>
                 )}
 
                 {

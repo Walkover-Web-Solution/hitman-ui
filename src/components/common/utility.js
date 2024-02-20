@@ -669,6 +669,7 @@ export const deleteAllPagesAndTabsAndReactQueryData = async (pageId) => {
       pages[parentId].child = pages[parentId].child.filter((id) => id !== pageId)
     }
 
+
     deleteSidebarData(pages, tabs, pageId, deletedTabIds, deletedIds) // deleting sidebar data
 
     // filter tabsOrder from the ids which are deleted and also set foundActiveTabId = true; if tab id deleted is active id

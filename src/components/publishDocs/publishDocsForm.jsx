@@ -2,14 +2,17 @@ import React, { Component } from 'react'
 import CustomColorPicker from './customColorPicker'
 import { connect } from 'react-redux'
 import Joi from 'joi-browser'
-import { Button } from 'react-bootstrap'
+import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
-import { handleChangeInUrlField, handleBlurInUrlField, modifyDataForBulkPublish } from '../common/utility'
+import { handleChangeInUrlField, handleBlurInUrlField, modifyDataForBulkPublish, openExternalLink } from '../common/utility'
 import { moveToNextStep } from '../../services/widgetService'
-
+import { updateCollectionIdForPublish } from '../../store/clientData/clientDataActions'
+import { publishData } from '../modals/redux/modalsActions'
+import PublishSidebar from '../publishSidebar/publishSidebar'
+import { HiOutlineExternalLink } from 'react-icons/hi'
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
@@ -50,12 +53,15 @@ const publishDocFormEnum = {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    update_collection: (collection, stopLoader) => dispatch(updateCollection(collection, stopLoader))
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
+    update_collection: (collection, stopLoader) => dispatch(updateCollection(collection, stopLoader)),
+    setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data))
   }
 }
 
 const mapStateToProps = (state) => {
   return {
+    isPublishSliderOpen: state.modals.publishData,
     collections: state.collections
   }
 }
@@ -248,17 +254,6 @@ class PublishDocForm extends Component {
   renderFooter() {
     return (
       <div className='d-flex align-items-center'>
-        {this.props.isSidebar && (
-          <Button
-            className='btn btn-secondary outline mr-2'
-            onClick={() => {
-              this.props.onHide()
-            }}
-          >
-            {' '}
-            Cancel
-          </Button>
-        )}
         <Button
           className={this.state.loader ? 'buttonLoader' : ''}
           disabled={!this.state.data.title.trim()}
@@ -404,59 +399,137 @@ class PublishDocForm extends Component {
     }
   }
 
-  renderPublishCollectionButton() {
-    const selectedCollection = this.getSelectedCollection()
-    if (!this.isCollectionPublished(selectedCollection)) {
-      return (
-        <Button
-          id='publish_collection_btn'
-          variant='success publish-collection-button ml-4 mt-4'
-          onClick={() => this.publishCollection(selectedCollection)}
-          disabled={!selectedCollection?.docProperties?.defaultTitle}
+  redirectUser() {
+    console.log('inside redirect user', this.props.selected_collection_id)
+    this.setState({ openPublishSidebar: true })
+    this.props.ON_PUBLISH_DOC(true)
+    this.props.setCollectionIdForPublish({ collectionId: this.props.selected_collection_id })
+  }
+
+  renderPublicUrl() {
+    const isCollectionPublished = this.props.collections[this.props.selected_collection_id]?.isPublic
+    const url = process.env.REACT_APP_PUBLIC_UI_URL + '/p?collectionId=' + this.props.selected_collection_id
+    const isDisabled = this.IsParentPagePublishedInACollection(this.props.collections[this.props.selected_collection_id]?.rootParentId)
+
+    if (!isCollectionPublished) return null
+
+    return (
+      <div>
+        <span className='public-title mt-1 d-block'>
+          Public Link
+        </span>
+        <OverlayTrigger
+          overlay={
+            <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled ? 'd-none' : ''}>
+              At least one endpoint/page is to be published to enable this link.
+            </Tooltip>
+          }
         >
-          Publish Collection
-        </Button>
-      )
+          <div
+            onClick={() => isDisabled && openExternalLink(url)}
+            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-3 ${isDisabled ? 'text-disable' : 'disabled-link'}`}
+          >
+            <HiOutlineExternalLink className='mr-1' size={13} />
+            <span>{url}</span>
+          </div>
+        </OverlayTrigger>
+      </div>
+    )
+  }
+
+  IsParentPagePublishedInACollection(rootParentId) {
+    let childs = this.props.pages?.[rootParentId]?.child
+    if (childs?.length > 0) {
+      for (let i = 0; i < childs?.length; i++) {
+        if (this.props.pages[childs[i]]?.isPublished == true) {
+          return true
+        }
+      }
     }
+    return false
+  }
+
+  openPublishSidebar() {
+    return (
+      <>{this.props.isPublishSliderOpen && <PublishSidebar {...this.props} closePublishSidebar={this.closePublishSidebar.bind(this)} />}</>
+    )
+  }
+  closePublishSidebar() {
+    this.setState({ openPublishSidebar: false })
+    this.props.ON_PUBLISH_DOC(false)
+  }
+
+  renderActionButtons(publishCheck) {
+    const selectedCollection = this.getSelectedCollection()
+    const isNotPublished = !this.isCollectionPublished(selectedCollection)
+    return (
+      <div>
+        <Button
+          className={this.state.loader ? 'buttonLoader m-1' : 'm-1'}
+          disabled={!this.state.data.title.trim()}
+          onClick={() => this.saveCollectionDetails()}
+          variant='btn btn-outline'
+        >
+          Save
+        </Button>
+        <Button id='publish_collection_btn' variant='btn btn-outline' className='m-1' onClick={() => this.redirectUser()}>
+          Bulk Publish
+        </Button>
+        <>
+          {publishCheck ? (
+            <Button variant='btn btn-outline-danger' className='m-1' onClick={() => this.props.unPublishCollection()}>
+              Unpublish Doc
+            </Button>
+          ) : (
+            isNotPublished && (
+              <Button
+                className='m-1'
+                onClick={() => this.publishCollection(selectedCollection)}
+                disabled={!selectedCollection?.docProperties?.defaultTitle}
+                variant='btn btn-success'
+              >
+                Publish Collection
+              </Button>
+            )
+          )}
+        </>
+      </div>
+    )
   }
 
   render() {
+    const publishCheck = (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished()
     return (
-      <div className={this.props.onTab && 'publish-on-tab'}>
-        <div className='d-flex mb-3 justify-content-between'>
-          <h3 className='page-title mb-0'>Manage Public Doc</h3>
-          <div className='publish-mo-btn'>
-            {(this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished() ? (
-              <Button id='unpublish_doc_btn' variant='btn btn-outline danger ml-2' onClick={() => this.props.unPublishCollection()}>
-                Unpublish Doc
-              </Button>
-            ) : (
-              this.renderPublishCollectionButton()
-            )}
+      <>
+        <div className={this.props.onTab && 'publish-on-tab'}>
+          <div className='d-flex justify-content-between align-item-center'>
+            <h3 className='page-title mb-0'>Manage Public Doc</h3>
+            {this.renderActionButtons(publishCheck)}
           </div>
-        </div>
-        <div className='small-input'>
-          {this.renderInput('title', true, false, 'brand name')}
-          {this.renderInput('domain', false, false, 'docs.example.com')}
-        </div>
-        <div className='d-flex favicon'>
-          <div className='form-group'>
-            <label> Fav Icon </label>
-            <div className='favicon-uploader'>{this.renderUploadBox('icon')}</div>
+          {publishCheck && this.renderPublicUrl()}
+          <div className='small-input mt-2'>
+            {this.renderInput('title', true, false, 'brand name')}
+            {this.renderInput('domain', false, false, 'docs.example.com')}
           </div>
-          <div className='or-wrap d-flex align-items-center'>
-            <p className='mb-0'>OR</p>
+          <div className='d-flex favicon'>
+            <div className='form-group'>
+              <label> Fav Icon </label>
+              <div className='favicon-uploader'>{this.renderUploadBox('icon')}</div>
+            </div>
+            <div className='or-wrap d-flex align-items-center'>
+              <p className='mb-0'>OR</p>
+            </div>
+            {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
           </div>
-          {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
-        </div>
 
-        <div className='color-picker'>{this.renderColorPicker()}</div>
-        <div className='cta-buton'>
-          {this.renderCTAButtons()}
-          {this.renderLinkButtons()}
+          <div className='color-picker'>{this.renderColorPicker()}</div>
+          <div className='cta-buton'>
+            {this.renderCTAButtons()}
+            {this.renderLinkButtons()}
+          </div>
         </div>
-        <div className='foot-warpper'>{this.renderFooter()}</div>
-      </div>
+        {this.state.openPublishSidebar && this.openPublishSidebar()}
+      </>
     )
   }
 }
