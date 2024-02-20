@@ -739,8 +739,8 @@ class DisplayEndpoint extends Component {
   }
 
   checkEmptyParams() {
-    const params = this.state.params
-    const originalParams = this.state.originalParams
+    const params = this.props?.endpointContent?.params
+    const originalParams = this.props?.endpointContent?.originalParams
     let isEmpty = false
     params.forEach((param) => {
       if (param.checked !== 'notApplicable' && param.checked === 'true' && this.checkValue(param, originalParams)) {
@@ -750,7 +750,10 @@ class DisplayEndpoint extends Component {
         param.empty = false
       }
     })
-    this.setState({ params })
+    const endpoint = { ...this.props?.endpointContent }
+    endpoint.params = { ...params }
+    this.props.setQueryUpdatedData(endpoint)
+    // this.setState({ params })
     return isEmpty
   }
 
@@ -900,7 +903,7 @@ class DisplayEndpoint extends Component {
       response = { value: response }
     }
 
-    if (code.trim().length === 0 || !isDashboardRoute(this.props, true)) {
+    if (code?.trim()?.length === 0 || !isDashboardRoute(this.props, true)) {
       return { success: true, data: { environment: environment.variables, request, response, tests: [] } }
     }
 
@@ -1039,7 +1042,6 @@ class DisplayEndpoint extends Component {
         } else {
           // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
           // not sending isPublished during put method
-            // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
           endpoint.state = statesEnum.DRAFT_STATE
           this.setState({ saveLoader: true })
           this.props.update_endpoint(

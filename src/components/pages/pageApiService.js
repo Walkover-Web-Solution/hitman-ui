@@ -8,21 +8,7 @@ function getApiUrl() {
   return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 }
 
-function versionPagesUrl(versionId) {
-  const apiUrl = getApiUrl()
-  return `${apiUrl}/versions/${versionId}/pages`
-}
 function collectionPagesUrl(pageId) {
-  const apiUrl = getApiUrl()
-  return `${apiUrl}/pages/${pageId}`
-}
-
-function groupPagesUrl(groupId) {
-  const apiUrl = getApiUrl()
-  return `${apiUrl}/groups/${groupId}/pages`
-}
-
-function pageUrl(pageId) {
   const apiUrl = getApiUrl()
   return `${apiUrl}/pages/${pageId}`
 }
@@ -34,27 +20,8 @@ export function getAllPages(id) {
   return http.get(getAllPagesUrl(id))
 }
 
-export function getVersionPages(versionId) {
-  return http.get(versionPagesUrl(versionId))
-}
-
-export function getGroupPages(groupId) {
-  return http.get(groupPagesUrl(groupId))
-}
-
-export function getPage(pageId) {
-  return http.get(pageUrl(pageId))
-}
-
-export function saveVersionPage(versionId, page) {
-  return http.post(versionPagesUrl(versionId), page)
-}
 export function saveCollectionPage(rootParentId, page) {
   return http.post(collectionPagesUrl(rootParentId), page)
-}
-
-export function saveGroupPage(groupId, page) {
-  return http.post(groupPagesUrl(groupId), page)
 }
 
 export function updatePage(pageId, page) {
@@ -80,11 +47,6 @@ export function updatePageOrder(pagesOrder) {
 }
 
 export default {
-  getVersionPages,
-  getGroupPages,
-  getPage,
-  saveVersionPage,
-  saveGroupPage,
   updatePage,
   deletePage,
   duplicatePage,

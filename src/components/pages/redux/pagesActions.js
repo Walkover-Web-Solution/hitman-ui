@@ -3,15 +3,12 @@ import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
 import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
-import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
-    // const originalEndpoint = store.getState().pages[editedEndpoint.id]
-    // dispatch(updateEndpointRequest(editedEndpoint))
     const id = editedEndpoint.id
     const updatedEndpoint = editedEndpoint
     delete updatedEndpoint.id
@@ -54,9 +51,6 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
       .updatePage(editedPage.id, dataToSend)
       .then((response) => {
         dispatch(onPageUpdated(response.data))
-        // if (!publishDocs) {
-        //   history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}`)
-        // }
         return response.data
       })
       .catch((error) => {
@@ -90,7 +84,6 @@ export const onPageUpdatedError = (error, originalPage) => {
 export const updateContent = async ({ pageData, id }) => {
   delete pageData.id
   delete pageData.versionId
-  delete pageData.groupId
   try {
     const data = await pageApiService.updatePage(id, pageData)
     return data.data
@@ -156,7 +149,6 @@ export const onPageAddedError = (error, newPage) => {
 }
 
 export const deletePage = (page) => {
-  const tabs = store.getState().tabs
   return (dispatch) => {
     pageApiService
       .deletePage(page?.id)
@@ -189,7 +181,6 @@ const deletePageAndChildren = (pageId, tabs, pageIds = []) => {
     })
     delete pages[pageId]
   }
-  // tabsDataDelete(pageIds, tabs);
   return pages
 }
 
