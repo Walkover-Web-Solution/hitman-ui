@@ -49,6 +49,7 @@
     "query-string": "^6.9.0",
     "querystring": "^0.2.1",
     "react": "^17.0.2",
+    "react-accessible-treeview": "^2.8.3",
     "react-ace": "^8.1.0",
     "react-autocomplete-input": "^1.0.18",
     "react-avatar": "^4.0.0",
