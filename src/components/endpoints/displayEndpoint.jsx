@@ -1279,7 +1279,6 @@ class DisplayEndpoint extends Component {
         postData: body.type === 'none' ? null : await this.makePostData(body),
         queryString: this.makeParams(originalParams)
       }
-      console.log(harObject)
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
