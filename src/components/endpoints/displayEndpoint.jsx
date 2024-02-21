@@ -1279,7 +1279,6 @@ class DisplayEndpoint extends Component {
         postData: body.type === 'none' ? null : await this.makePostData(body),
         queryString: this.makeParams(originalParams)
       }
-      console.log(harObject)
       if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
         harObject.url = 'https://' + url
       }
@@ -2191,8 +2190,8 @@ class DisplayEndpoint extends Component {
 
   renderPathVariables() {
     return (
-      this.props.endpointConten?.pathVariables &&
-      this.props.endpointConten?.pathVariables?.length !== 0 && (
+      this.props.endpointContent?.pathVariables &&
+      this.props.endpointContent?.pathVariables?.length !== 0 && (
         <GenericTable
           {...this.props}
           title='Path Variables'
