@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
-import { isElectron, toTitleCase, trimString } from '../common/utility'
-import { updateNameOfPages } from '../pages/redux/pagesActions'
+import { getOnlyUrlPathById, isElectron, trimString } from '../common/utility'
+import { onPageUpdated, updateNameOfPages } from '../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -175,6 +175,7 @@ class EndpointBreadCrumb extends Component {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = e.currentTarget.value
       this.props.setQueryUpdatedData(tempData)
+      this.props.update_name({ id: this.props?.match?.params?.endpointId, name: e.currentTarget.value })
     }
   }
 
@@ -192,25 +193,15 @@ class EndpointBreadCrumb extends Component {
   }
 
   setEndpointData() {
-    this.groupId = this.props.groupId
-    this.groupName = this.groupId ? this.props.groups[this.groupId]?.name : null
-    this.versionId = this.groupId ? this.props.groups[this.groupId]?.versionId : null
-    this.versionName = this.versionId ? this.props.versions[this.versionId]?.number : null
-    this.collectionId = this.versionId ? this.props.versions[this.versionId]?.collectionId : null
+    this.endpointId = this.props?.match?.params.endpointId
+    this.collectionId = this.props.pages[this.endpointId]?.collectionId
     this.collectionName = this.collectionId ? this.props.collections[this.collectionId]?.name : null
   }
 
   setPageData() {
-    const { pages, groups, versions, collections } = this.props
-    const pageId = this.props?.match?.params.pageId
-    const page = pages[pageId]
-    if (page) {
-      const { versionId, groupId } = page
-      this.groupName = groupId ? groups[groupId]?.name : null
-      this.versionName = versionId ? versions[versionId]?.number : null
-      this.collectionId = versionId ? versions[versionId]?.collectionId : null
-      this.collectionName = this.collectionId ? collections[this.collectionId]?.name : null
-    }
+    this.pageId = this.props?.match?.params.pageId
+    this.collectionId = this.props.pages[this.pageId]?.collectionId
+    this.collectionName = this.collectionId ? this.props.collections[this.collectionId]?.name : null
   }
 
   renderLeftAngle(title) {
@@ -240,7 +231,7 @@ class EndpointBreadCrumb extends Component {
               className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
             >
               {this.props?.isEndpoint
-                ? this.props?.endpointContent?.data?.name || ''
+                ? this.props?.pages?.[this.props?.match?.params?.endpointId]?.name || 'Untitled'
                 : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
               {this.props?.isEndpoint && (
                 <EditIcon
@@ -256,17 +247,22 @@ class EndpointBreadCrumb extends Component {
           </div>
           {this.props.location.pathname.split('/')[5] !== 'new' && (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
-              {this.collectionName && <span className=''>{`${this.collectionName}`}</span>}
-              {this.renderLeftAngle(this.collectionName)}
-              {this.versionName && <span>{`${this.versionName}`}</span>}
-              {this.renderLeftAngle(this.versionName)}
-              {this.groupName && <span>{`${this.groupName}`}</span>}
-              {this.renderLeftAngle(this.groupName)}
-              <span className='end-point-title'>{this.state.endpointTitle}</span>
+              {this.collectionName && <span>{`${this.collectionName}/`}</span>}
+              {
+                <span>
+                  {getOnlyUrlPathById(
+                    this.props?.match?.params?.pageId || this.props?.match?.params?.endpointId,
+                    this.props.pages,
+                    'internal'
+                  )}
+                </span>
+              }
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
                 <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
               )}
-              {/* {this.state.isPagePublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>} */}
+              {this.props.pages?.[this.props?.match?.params?.pageId]?.isPublished && (
+                <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
+              )}
             </div>
           )}
         </div>

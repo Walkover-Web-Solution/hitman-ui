@@ -7,6 +7,9 @@ import collectionVersionsActionTypes from '../../collectionVersions/redux/collec
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { QueryClient } from 'react-query'
+
+const queryClient = new QueryClient()
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -16,6 +19,7 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
     const updatedEndpoint = editedEndpoint
     delete updatedEndpoint.id
     // delete updatedEndpoint.groupId
+
     endpointApiService
       .updateEndpoint(id, updatedEndpoint)
       .then((response) => {
@@ -43,20 +47,20 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 
 export const updatePage = (history, editedPage, publishDocs = false) => {
   return (dispatch) => {
-    const orgId = getOrgId()
     const dataToSend = {
       name: editedPage.name,
+      urlName: editedPage.urlName,
       contents: editedPage?.contents || null,
       state: editedPage.state
     }
-    dispatch(updatePageRequest(dataToSend))
+    // dispatch(updatePageRequest(dataToSend))
     pageApiService
       .updatePage(editedPage.id, dataToSend)
       .then((response) => {
         dispatch(onPageUpdated(response.data))
-        if (!publishDocs) {
-          history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}`)
-        }
+        // if (!publishDocs) {
+        //   history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}`)
+        // }
         return response.data
       })
       .catch((error) => {
@@ -112,7 +116,7 @@ export const onEndpointUpdated = (response) => {
   }
 }
 
-export const addPage1 = (history, rootParentId, newPage) => {
+export const addPage = (history, rootParentId, newPage) => {
   const orgId = getOrgId()
   return (dispatch) => {
     dispatch(addPageRequestInCollection(rootParentId, newPage))
@@ -173,6 +177,7 @@ export const deletePage = (page) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
+            toast.success('Deleted succesfully')
           })
           .catch((error) => {
             console.errro(error)

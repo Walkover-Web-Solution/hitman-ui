@@ -11,7 +11,7 @@ import { withRouter } from 'react-router-dom'
 import { addNewTab } from '../../tabs/redux/tabsActions'
 import { onEnter, toTitleCase } from '../../common/utility'
 import Form from '../../common/form'
-import { addPage1 } from '../../pages/redux/pagesActions'
+import { addPage } from '../../pages/redux/pagesActions'
 export const defaultViewTypes = {
   TESTING: 'testing',
   DOC: 'doc'
@@ -20,7 +20,7 @@ export const defaultViewTypes = {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_new_tab: () => dispatch(addNewTab()),
-    add_page: (rootParentId, newPage) => dispatch(addPage1(ownProps.history, rootParentId, newPage))
+    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage))
   }
 }
 export class DefaultViewModal extends Form {

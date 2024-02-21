@@ -182,9 +182,9 @@ class PublishCollectionInfo extends Component {
 
       this.setState({ totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount })
 
-      if (this.props.getTotalEndpointsCount) {
-        this.props.getTotalEndpointsCount(totalEndpointCount)
-      }
+      // if (this.props.getTotalEndpointsCount) {
+      //   this.props.getTotalEndpointsCount(totalEndpointCount)
+      // }
     } catch (error) {
       console.error(error)
     }
