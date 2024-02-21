@@ -138,7 +138,7 @@ function PublishSidebar(props) {
             propagateSelectUpwards
             togglableSelect
             onSelect={onSelect}
-            expandedIds={[...defaultExpandedIds]}
+            expandedIds={defaultExpandedIds}
             nodeRenderer={({
               element,
               isBranch,
