@@ -245,26 +245,26 @@ export function getParentIds(id, type, data) {
     return parentIds
   }
 
-  const groupId = entity?.groupId
+  const groupId = entity.groupId
   let versionId = ''
 
   if (groupId) {
     parentIds.groupId = groupId
-    versionId = groups?.[entity.groupId]?.versionId
-  } else if (entity?.versionId) {
-    versionId = entity?.versionId
+    versionId = groups[entity.groupId]?.versionId
+  } else if (entity.versionId) {
+    versionId = entity.versionId
   }
 
   let collectionId = ''
 
   if (versionId) {
     parentIds.versionId = versionId
-    collectionId = versions?.[versionId]?.collectionId
+    collectionId = versions[versionId]?.collectionId
   }
   const pageId = ''
   if (pageId) {
     parentIds.pageId = pageId
-    collectionId = pages?.[pageId]?.collectionId
+    collectionId = pages[pageId]?.collectionId
   }
 
   if (collectionId) {
