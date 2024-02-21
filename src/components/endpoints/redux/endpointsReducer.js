@@ -31,9 +31,6 @@ function endpointsReducer(state = initialState, action) {
         ...state,
         [action.originalEndpoint.id]: action.originalEndpoint
       }
-    case endpointsActionTypes.ON_ENDPOINT_DUPLICATED:
-      return { ...state, [action.response.id]: action.response }
-
     case versionActionTypes.ON_VERSION_DUPLICATED:
       return { ...state, ...action.response.endpoints }
 
