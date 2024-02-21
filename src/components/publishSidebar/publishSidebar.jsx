@@ -68,8 +68,9 @@ function PublishSidebar(props) {
     let rootParentId = collections[params.collectionId]?.rootParentId || ''
     modifyCheckBoxDataToSend(flattenData, allSelectedIds, dataToPublish)
     dataToPublish.delete(1)
+    const pageIds = Array.from(dataToPublish).map((id)=> flattenData?.[id]?.metadata?.actualId);
     try {
-      await bulkPublishApiService.bulkPublishSelectedData({ rootParentId, pageIds: Array.from(dataToPublish) })
+      await bulkPublishApiService.bulkPublishSelectedData({ rootParentId, pageIds })
       toast.success('Successfully published')
       props.closePublishSidebar()
     } catch (error) {
