@@ -757,7 +757,7 @@ function addItsParent(flattenData, singleId, dataToPublishSet) {
   while (parentId !== null) {
     if (dataToPublishSet.has(parentId) || !parentId) break;
     dataToPublishSet.add(parentId)
-    parentId = flattenData?.[parentId]?.parentId;
+    parentId = flattenData?.[parentId]?.parent;
   }
 }
 
