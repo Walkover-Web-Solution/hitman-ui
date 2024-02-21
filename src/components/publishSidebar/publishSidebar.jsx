@@ -66,18 +66,10 @@ function PublishSidebar(props) {
     if (allSelectedIds.length === 0) return toast.error('Please Select Something To Publish')
     const dataToPublish = new Set()
     let rootParentId = collections[params.collectionId]?.rootParentId || ''
-    let endpointIds = []
-    let pageIds = []
     modifyCheckBoxDataToSend(flattenData, allSelectedIds, dataToPublish)
-    Array.from(dataToPublish).forEach((singleId) => {
-      if (singleId !== 1 && pages[flattenData?.[singleId]?.metadata?.actualId]?.type === 4) {
-        endpointIds.push(flattenData?.[singleId]?.metadata?.actualId)
-      } else if (singleId !== 1) {
-        pageIds.push(flattenData?.[singleId]?.metadata?.actualId)
-      }
-    })
+    dataToPublish.delete(1)
     try {
-      await bulkPublishApiService.bulkPublishSelectedData({ rootParentId, endpointIds, pageIds })
+      await bulkPublishApiService.bulkPublishSelectedData({ rootParentId, pageIds: Array.from(dataToPublish) })
       toast.success('Successfully published')
       props.closePublishSidebar()
     } catch (error) {
