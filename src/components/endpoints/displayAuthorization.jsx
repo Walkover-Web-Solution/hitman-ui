@@ -20,8 +20,8 @@ class Authorization extends Component {
 
     this.authorizationTypes = {
       noAuth: 'No Auth',
-      basicAuth: 'Basic Auth',
-      oauth_2: 'OAuth 2.0'
+      basicAuth: 'Basic Auth'
+      // oauth_2: 'OAuth 2.0'
     }
   }
 
@@ -35,13 +35,13 @@ class Authorization extends Component {
 
   fetchAuthorizationResponse() {
     if (
-      this.authResponses?.length === 0 &&
-      Object.keys(this.props.versions).length !== 0 &&
-      Object.keys(this.props.groups).length !== 0 &&
-      this.props.groupId !== undefined &&
-      this.props.groupId !== null
+      this.authResponses?.length === 0 
+      // Object.keys(this.props.versions).length !== 0 &&
+      // Object.keys(this.props.groups).length !== 0 &&
+      // this.props.groupId !== undefined &&
+      // this.props.groupId !== null
     ) {
-      this.authResponses = this.props.versions[this.props.groups[this.props.groupId]?.versionId]?.authorizationResponse
+      // this.authResponses = this.props.versions[this.props.groups[this.props.groupId]?.versionId]?.authorizationResponse
       if (this.authResponses === null) {
         this.authResponses = []
       }

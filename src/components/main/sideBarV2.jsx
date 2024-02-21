@@ -34,12 +34,9 @@ import AddEntitySelectionModal from './addEntityModal'
 import PageForm from '../pages/pageForm'
 import CollectionModal from '../collections/collectionsModal'
 // import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
-
 import DeleteSidebarEntityModal from './sidebar/deleteEntityModal'
 import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
-
-// import { sendAmplitudeData } from '../../services/amplitude'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 
@@ -611,7 +608,6 @@ class SideBarV2 extends Component {
 
   // renderDownloadDesktopApp () {
   //   const handleDownloadClick = () => {
-  //     sendAmplitudeData('Download clicked')
   //     const link = `${DESKTOP_APP_DOWNLOAD_LINK}?source=header`
   //     openExternalLink(link)
   //   }
@@ -673,7 +669,7 @@ class SideBarV2 extends Component {
   renderCollectionName() {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
-
+    const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
     return (
       <div className='hm-sidebar-header'>
         {this.props.collections[collectionKeys[0]]?.favicon ||
@@ -694,7 +690,7 @@ class SideBarV2 extends Component {
             </div>
           ))}
         <h4 className='hm-sidebar-title'>
-          {collectionName}
+          {publishedCollectionTitle || collectionName || ''}
           <span>API Documenation</span>
         </h4>
       </div>

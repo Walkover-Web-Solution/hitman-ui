@@ -1,11 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
-import { fetchCollections } from '../collections/redux/collectionsActions'
-import { fetchAllVersions } from '../collectionVersions/redux/collectionVersionsActions'
-import { fetchEndpoint, fetchEndpoints, moveEndpoint } from '../endpoints/redux/endpointsActions'
-import { fetchPage, fetchPages } from '../pages/redux/pagesActions'
-import { fetchHistoryFromLocal } from '../history/redux/historyAction'
 import ContentPanel from './contentPanel'
 import './main.scss'
 import SideBarV2 from './sideBarV2'
@@ -15,11 +10,8 @@ import { isDesktop } from 'react-device-detect'
 import OnlineSatus from '../onlineStatus/onlineStatus'
 import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
-// import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
-// import { loadHelloWidget } from '../../services/helloWidgetService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
-import { sendAmplitudeData } from '../../services/amplitude'
 import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
@@ -38,16 +30,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    // fetch_collections: (orgId) => dispatch(fetchCollections(orgId)),
-    // fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
-    // fetch_endpoints: (orgId) => dispatch(fetchEndpoints(orgId)),
-    // fetch_pages: (orgId) => dispatch(fetchPages(orgId)),
-    fetch_history: () => dispatch(fetchHistoryFromLocal()),
-    move_endpoint: (endpointId, sourceGroupId, destinationGroupId) => dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
-    // fetch_endpoint: (endpointId) => dispatch(fetchEndpoint(endpointId)),
-    // fetch_page: (pageId) => dispatch(fetchPage(pageId)),
     add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId))
   }
 }
@@ -95,10 +79,6 @@ class MainV2 extends Component {
           loadfeedioWidget()
           // loadHelloWidget() commenting to hide helloWidget
         }
-        sendAmplitudeData('Dashboard Landing', {
-          orgId: orgId,
-          orgName: orgName
-        })
         await this.fetchAll()
         this.props.add_collection_and_pages(orgId)
       }
@@ -114,7 +94,6 @@ class MainV2 extends Component {
   async fetchAll() {
     // this.fetchFromBackend()
     this.props.fetch_all_cookies()
-    this.props.fetch_history()
   }
 
   // fetchFromBackend() {

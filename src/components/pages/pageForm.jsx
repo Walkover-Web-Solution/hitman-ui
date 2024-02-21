@@ -5,13 +5,13 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import shortid from 'shortid'
 import Form from '../common/form'
-import { addPage1 } from '../pages/redux/pagesActions'
+import { addPage } from '../pages/redux/pagesActions'
 import { onEnter, toTitleCase } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_page: (rootParentId, newPage) => dispatch(addPage1(ownProps.history, rootParentId, newPage))
+    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage))
   }
 }
 

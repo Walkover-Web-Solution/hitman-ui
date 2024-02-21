@@ -4,7 +4,6 @@ import collectionsActionTypes from './collectionsActionTypes'
 import tabService from '../../tabs/tabService'
 import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
-import { sendAmplitudeData } from '../../../services/amplitude'
 import { onParentPageAdded } from '../../pages/redux/pagesActions'
 import { toast } from 'react-toastify'
 import { deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
@@ -56,11 +55,6 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
     collectionsApiService
       .saveCollection(newCollection)
       .then((response) => {
-        sendAmplitudeData('Collection created', {
-          collectionId: response.data.id,
-          collectionName: response.data.name,
-          orgId: response.data.orgId
-        })
         dispatch(onCollectionAdded(response.data))
         const inivisiblePageData = {
           page: {
@@ -119,15 +113,6 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
     collectionsApiService
       .updateCollection(id, editedCollection)
       .then((response) => {
-        const { id, isPublic, name, orgId } = response.data
-        if (isPublic === true) {
-          sendAmplitudeData('Collection Published', {
-            id: id,
-            docName: name,
-            orgId: orgId,
-            customDomain: response.data?.customDomain
-          })
-        }
         dispatch(onCollectionUpdated(response.data))
         if (stopLoader) {
           stopLoader()
@@ -180,14 +165,14 @@ export const deleteCollection = (collection, props) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
-            toast.success('collection has been deleted successfully')
+            toast.success('Collection deleted successfully')
           })
           .catch((error) => {
-            console.log('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)
+            console.error('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)
           })
       })
       .catch((error) => {
-        console.log('error', error)
+        console.error('error', error)
         dispatch(onCollectionDeletedError(error.response, collection))
       })
   }
@@ -215,6 +200,7 @@ export const onCollectionDeletedError = (error, collection) => {
   }
 }
 
+// To do later
 export const duplicateCollection = (collection) => {
   return (dispatch) => {
     collectionsApiService
@@ -227,14 +213,14 @@ export const duplicateCollection = (collection) => {
       })
   }
 }
-
+// To do later
 export const onCollectionDuplicated = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DUPLICATED,
     response
   }
 }
-
+// To do later
 export const onCollectionDuplicatedError = (error) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR,
@@ -308,7 +294,7 @@ export const onVersionsFetchedError = (error) => {
     error
   }
 }
-
+// To do later
 export const importCollection = (collection, customCallback) => {
   return (dispatch) => {
     dispatch(importCollectionRequest(collection))
@@ -324,14 +310,14 @@ export const importCollection = (collection, customCallback) => {
       })
   }
 }
-
+// To do later
 export const importCollectionRequest = (collection) => {
   return {
     type: collectionsActionTypes.IMPORT_COLLECTION_REQUEST,
     collection
   }
 }
-
+// To do later
 export const onCollectionImported = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_IMPORTED,
@@ -339,7 +325,7 @@ export const onCollectionImported = (response) => {
     pages: response.pages
   }
 }
-
+// To do later
 export const onCollectionImportedError = (error, collection) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR,
@@ -348,40 +334,3 @@ export const onCollectionImportedError = (error, collection) => {
   }
 }
 
-export const removePublicCollection = (collection, props) => {
-  return (dispatch) => {
-    dispatch(deleteCollectionRequest(collection))
-    collectionsApiService
-      .removePublicCollection(collection.id)
-      .then((response) => {
-        const { versionIds, groupIds, endpointIds, pageIds } = prepareCollectionData(collection, props)
-
-        dispatch(
-          onCollectionDeleted({
-            collection: response.data,
-            versionIds,
-            groupIds,
-            endpointIds,
-            pageIds
-          })
-        )
-      })
-      .catch((error) => {
-        dispatch(onCollectionDeletedError(error.response, collection))
-      })
-  }
-}
-
-function prepareCollectionData(collection, props) {
-  const storeData = { ...store.getState() }
-  const versionIds = Object.keys(storeData.versions).filter((vId) => storeData.versions[vId].collectionId === collection.id)
-  let endpointIds = []
-  let pageIds = []
-  versionIds.forEach((vId) => {
-    pageIds = [...Object.keys(storeData.pages).filter((pId) => storeData.pages[pId].versionId === vId), ...pageIds]
-  })
-  endpointIds.map((eId) => tabService.removeTab(eId, props))
-  pageIds.map((pId) => tabService.removeTab(pId, props))
-
-  return { versionIds, endpointIds, pageIds }
-}

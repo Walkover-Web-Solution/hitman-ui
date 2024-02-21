@@ -123,7 +123,10 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.ON_PAGE_UPDATED:
       return {
         ...state,
-        [action.response.id]: action.response
+        [action.response.id]: {
+          ...state[action.response.id],
+          ...action.response
+        }
       }
 
     case pagesActionTypes.ON_PAGE_UPDATED_ERROR:
@@ -175,14 +178,6 @@ function pagesReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_PAGE_STATE_ERROR:
       toast.error(action.error)
       return { ...state }
-
-    case collectionActionTypes.ON_COLLECTION_DELETED:
-    case versionActionTypes.ON_VERSION_DELETED:
-      pages = { ...state }
-      action.payload.pageIds.forEach((pId) => {
-        delete pages[pId]
-      })
-      return pages
 
     case pagesActionTypes.ON_PAGES_ORDER_UPDATED:
       pages = { ...action.pages }
@@ -242,10 +237,34 @@ function pagesReducer(state = initialState, action) {
       }
       return { ...state }
 
+    case pagesActionTypes.DELETE_ENDPOINT_REQUEST:
+      pages = { ...state }
+      delete pages[action.endpoint.id]
+      return { ...pages }
+
+    case pagesActionTypes.ON_ENDPOINT_DELETED:
+      const updatedEndpoint = { ...state }
+      const parentId = action?.response?.data?.ParentPage?.id
+      updatedEndpoint[parentId].child = action.response.data.ParentPage.child
+      return updatedEndpoint
+
+    case pagesActionTypes.ON_ENDPOINT_DELETED_ERROR:
+      toast.error(action?.error?.data)
+      if (action?.error?.status === 404) return state
+      return {
+        ...state,
+        [action.endpoint.id]: action.endpoint
+      }
+
     case pagesActionTypes.ON_ENDPOINT_UPDATED:
       return {
         ...state,
-        [action.response.id]: { ...state[action.response.id], requestType: action.response.requestType, name: action.response.name }
+        [action.response.id]: {
+          ...state[action.response.id],
+          requestType: action.response?.requestType,
+          name: action.response?.name,
+          state: action.response?.state
+        }
       }
 
     default:

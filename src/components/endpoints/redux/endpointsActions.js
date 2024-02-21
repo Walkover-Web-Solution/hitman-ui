@@ -2,39 +2,39 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
-import { getOrgId, focusSelectedEntity, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
+import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
 import shortid from 'shortid'
-import { sendAmplitudeData } from '../../../services/amplitude'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 import { addChildInParent } from '../../pages/redux/pagesActions'
-import tabService from '../../tabs/tabService'
 import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
-export const addEndpointInCollection = (history, newEndpoint, rootParentId, customCallback, props) => {
+export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, props) => {
   const orgId = getOrgId()
   const requestId = shortid.generate()
   return (dispatch) => {
-    // dispatch(addEndpointRequest({ ...newEndpoint, requestId, rootParentId }))
+    const prevCurrentTabId = store.getState()?.tabs?.activeTabId
     endpointApiService
-      .saveEndpointInCollection(rootParentId, { ...newEndpoint, requestId })
+      .saveEndpoint(rootParentId, { ...newEndpoint, requestId })
       .then(async (response) => {
         const responseToSend = {
           id: response.data.id,
           requestType: response.data.requestType,
           name: response.data.name,
+          urlName: response.data.urlName,
           parentId: response.data.parentId,
           child: [],
           state: response.data.state,
           isPublished: response.data.isPublished,
-          type: 4,
-          versionId: null,
-          collectionId: store.getState()?.pages?.[response?.data?.parentId].collectionId
+          type: response.data.type || 4,
+          versionId: response.data.versionId || null,
+          collectionId: response.data.collectionId
         }
-
         const data = await dispatch(addChildInParent(responseToSend))
         history.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
-        await dispatch(replaceTabForUntitled(data.payload.id))
+        if (props?.match?.params?.endpointId === 'new') {
+          dispatch(replaceTabForUntitled(data.payload.id, prevCurrentTabId))
+        }
         if (customCallback) {
           customCallback({ closeForm: true, stopLoader: true })
         }
@@ -45,46 +45,6 @@ export const addEndpointInCollection = (history, newEndpoint, rootParentId, cust
           customCallback({ closeForm: false, stopLoader: true })
         }
       })
-  }
-}
-
-export const fetchEndpoints = (orgId) => {
-  return (dispatch) => {
-    endpointApiService
-      .getAllEndpoints(orgId)
-      .then((response) => {
-        dispatch(onEndpointsFetched(response.data))
-      })
-      .catch((error) => {
-        dispatch(onEndpointsFetchedError(error.response ? error.response.data : error))
-      })
-  }
-}
-
-export const fetchEndpoint = (endpointId) => {
-  return (dispatch) => {
-    endpointApiService
-      .getEndpoint(endpointId)
-      .then((response) => {
-        dispatch(onEndpointFetched(response))
-      })
-      .catch((error) => {
-        dispatch(onEndpointFetchedError(error.response ? error.response.data : error))
-      })
-  }
-}
-
-export const onEndpointFetched = (endpoints) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINT_FETCHED,
-    endpoints
-  }
-}
-
-export const onEndpointFetchedError = (error) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINT_FETCHED_ERROR,
-    error
   }
 }
 
@@ -125,9 +85,10 @@ export const deleteEndpoint = (endpoint) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
+            toast.success("Endpoint Deleted Successfully")
           })
           .catch((error) => {
-            console.log('error after getting data from deleteAllPagesAndTabsAndReactQueryData == ', error)
+            console.error('Can not delete endpoint', error)
           })
       })
       .catch((error) => {
@@ -206,20 +167,6 @@ export const moveEndpointSuccess = (response) => {
   }
 }
 
-export const onEndpointsFetched = (endpoints) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINTS_FETCHED,
-    endpoints
-  }
-}
-
-export const onEndpointsFetchedError = (error) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINTS_FETCHED_ERROR,
-    error
-  }
-}
-
 export const onEndpointAddedError = (error, newEndpoint, requestId) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR,
@@ -239,15 +186,15 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 
 export const deleteEndpointRequest = (endpoint) => {
   return {
-    type: endpointsActionTypes.DELETE_ENDPOINT_REQUEST,
+    type: pagesActionTypes.DELETE_ENDPOINT_REQUEST,
     endpoint
   }
 }
 
-export const onEndpointDeleted = (endpoint) => {
+export const onEndpointDeleted = (response) => {
   return {
-    type: endpointsActionTypes.ON_ENDPOINT_DELETED,
-    endpoint
+    type: pagesActionTypes.ON_ENDPOINT_DELETED,
+    response
   }
 }
 

@@ -151,14 +151,14 @@ class CustomTabs extends Component {
             return (
               <>
                 {this.props.pages[tabId].name}
-                <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.number}</span>
+                {/* <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.number}</span> */}
               </>
             )
           } else {
             return (
               <>
                 {page.name}
-                <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.name}</span>
+                {/* <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.name}</span> */}
               </>
             )
           }

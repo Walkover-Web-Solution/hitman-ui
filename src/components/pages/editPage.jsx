@@ -52,7 +52,7 @@ class EditPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: { id: null, versionId: null, groupId: null, name: '', contents: '', state: '' },
+      data: { id: null, versionId: null, name: '', contents: '', state: '' },
       showEditor: false
     }
     this.name = React.createRef()
@@ -64,11 +64,10 @@ class EditPage extends Component {
     const { pages } = this.props
     const page = pages[pageId]
     if (page) {
-      const { id, versionId, groupId, name, contents, isPublished, state } = page
+      const { id, versionId, name, contents, isPublished, state } = page
       data = {
         id,
         versionId,
-        groupId,
         name,
         contents,
         isPublished,

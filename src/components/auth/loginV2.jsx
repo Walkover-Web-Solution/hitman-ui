@@ -22,7 +22,7 @@ class LoginV2 extends Component {
         console.log("response", data);
       },
       failure: (error) => {
-        console.log("failure reason", error);
+        console.error("failure reason", error);
       },
     };
     this.script = document.createElement("script");

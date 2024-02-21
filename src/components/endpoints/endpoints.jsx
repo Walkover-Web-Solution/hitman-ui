@@ -7,11 +7,18 @@ import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
-import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpointInCollection } from './redux/endpointsActions'
-import filterService from '../../services/filterService'
-import GlobeIcon from '../../assets/icons/globe-icon.svg'
+import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpoint } from './redux/endpointsActions'
+// import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
+import SubPageForm from '../groups/subPageForm'
+import { ReactComponent as DeleteIcon} from '../../assets/icons/delete-icon.svg'
+import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
+import {ReactComponent as Approved} from '../../assets/icons/approvedSign.svg'
+import {ReactComponent as MakePublic} from '../../assets/icons/makePublicSign.svg'
+import {ReactComponent as CancelRequest} from '../../assets/icons/cancelRequest.svg'
+import {ReactComponent as RenamedItem} from '../../assets/icons/renameSign.svg'
+
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -40,7 +47,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpointInCollection(ownProps.history, newEndpoint, groupId, callback)),
+    add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
 }
@@ -51,7 +58,12 @@ class Endpoints extends Component {
     this.state = {
       endpointState: 'Make Public',
       theme: '',
-      checkboxChecked: false
+      checkboxChecked: false,
+      showEndpointForm: {
+        addPage: false,
+        edit: false,
+        share: false
+      }
     }
     this.scrollRef = {}
   }
@@ -83,19 +95,6 @@ class Endpoints extends Component {
     }
   }
 
-  sequencingOnFilter() {
-    const filteredEndpointKeys = this.filteredEndpoints ? Object.keys(this.filteredEndpoints) : []
-    this.filteredEndpointsOrder = []
-    for (let i = 0; i < this.props.endpoints_order.length; i++) {
-      for (let j = 0; j < filteredEndpointKeys.length; j++) {
-        if (this.props.endpoints_order[i] === filteredEndpointKeys[j]) {
-          this.filteredEndpointsOrder.push(this.props.endpoints_order[i])
-          break
-        }
-      }
-    }
-  }
-
   async handleDelete(endpoint) {
     await this.props.delete_endpoint(endpoint)
     tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
@@ -103,6 +102,16 @@ class Endpoints extends Component {
 
   handleDuplicate(endpoint) {
     this.props.duplicate_endpoint(endpoint)
+  }
+
+  openEditEndpointForm(selectedEndpoint) {
+    const showEndpointForm = { edit: true }
+    this.setState({
+      showEndpointForm,
+      selectedEndpoint: {
+        ...this.props.endpoints[selectedEndpoint]
+      }
+    })
   }
 
   openDeleteModal(endpointId) {
@@ -166,72 +175,6 @@ class Endpoints extends Component {
       let pathName = getUrlPathById(id, this.props.pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
       this.props.history.push(pathName)
-    }
-  }
-
-  filterEndpoints() {
-    if (this.props.selectedCollection === true && this.props.filter !== '' && this.filterFlag === false) {
-      this.filterFlag = true
-      let groupIds = []
-      let groupIdsAndFilteredEndpoints = []
-      groupIdsAndFilteredEndpoints = filterService.filter(this.props.endpoints, this.props.filter, 'endpoints')
-      this.filteredEndpoints = groupIdsAndFilteredEndpoints[0]
-      groupIds = groupIdsAndFilteredEndpoints[1]
-      this.setState({ filter: this.props.filter })
-      if (groupIds.length !== 0) {
-        this.props.show_filter_groups(groupIds, 'endpoints')
-      } else {
-        this.props.show_filter_groups(null, 'endpoints')
-      }
-    }
-  }
-
-  filterGroupPages() {
-    if (this.props.selectedCollection === true && this.props.filter !== '' && this.filterFlag === false) {
-      this.filterFlag = true
-      let groupIds = []
-      let groupIdsAndFilteredPages = []
-      groupIdsAndFilteredPages = filterService.filter(this.props.pages, this.props.filter, 'groupPages')
-      this.filteredGroupPages = groupIdsAndFilteredPages[0]
-      groupIds = groupIdsAndFilteredPages[1]
-      this.setState({ filter: this.props.filter })
-      if (groupIds.length !== 0) {
-        this.props.show_filter_groups(groupIds, 'pages')
-      } else {
-        this.props.show_filter_groups(null, 'pages')
-      }
-    }
-  }
-
-  onDragStart = (e, eId) => {
-    this.draggedItem = eId
-    this.props.set_endpoint_drag(eId)
-  }
-
-  onDragOver = (e, eId) => {
-    e.preventDefault()
-  }
-
-  onDrop(e, destinationEndpointId) {
-    e.preventDefault()
-
-    if (!this.draggedItem) {
-      //
-    } else {
-      if (this.draggedItem === destinationEndpointId) {
-        this.draggedItem = null
-        return
-      }
-      const endpoints = this.extractEndpoints()
-      const positionWiseEndpoints = this.makePositionWiseEndpoints({
-        ...endpoints
-      })
-      const index = positionWiseEndpoints.findIndex((eId) => eId === destinationEndpointId)
-      const endpointIds = positionWiseEndpoints.filter((item) => item !== this.draggedItem)
-      endpointIds.splice(index, 0, this.draggedItem)
-
-      this.props.update_endpoints_order(endpointIds, this.props.parent_id)
-      this.draggedItem = null
     }
   }
 
@@ -310,19 +253,8 @@ class Endpoints extends Component {
   displayDeleteOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleDelete(this.props.endpoints[endpointId])}>
-        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-          <path d='M2.25 4.5H3.75H15.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-          <path
-            d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
-            stroke='#E98A36'
-            strokeWidth='1.5'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-          <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-          <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-        </svg>{' '}
-        Delete
+        <DeleteIcon/>{' '}
+         Delete
       </div>
     )
   }
@@ -330,22 +262,7 @@ class Endpoints extends Component {
   displayDuplicateOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.endpoints[endpointId])}>
-        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-          <path
-            d='M15 6.75H8.25C7.42157 6.75 6.75 7.42157 6.75 8.25V15C6.75 15.8284 7.42157 16.5 8.25 16.5H15C15.8284 16.5 16.5 15.8284 16.5 15V8.25C16.5 7.42157 15.8284 6.75 15 6.75Z'
-            stroke='#E98A36'
-            strokeWidth='1.5'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-          <path
-            d='M3.75 11.25H3C2.60218 11.25 2.22064 11.092 1.93934 10.8107C1.65804 10.5294 1.5 10.1478 1.5 9.75V3C1.5 2.60218 1.65804 2.22064 1.93934 1.93934C2.22064 1.65804 2.60218 1.5 3 1.5H9.75C10.1478 1.5 10.5294 1.65804 10.8107 1.93934C11.092 2.22064 11.25 2.60218 11.25 3V3.75'
-            stroke='#E98A36'
-            strokeWidth='1.5'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-        </svg>
+        <Duplicate/>
         Duplicate
       </div>
     )
@@ -354,17 +271,7 @@ class Endpoints extends Component {
   displayApproveOpt() {
     return (
       <div className='dropdown-item' disabled>
-        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-          <path
-            d='M15.2222 1H2.77778C1.79594 1 1 1.79594 1 2.77778V15.2222C1 16.2041 1.79594 17 2.77778 17H15.2222C16.2041 17 17 16.2041 17 15.2222V2.77778C17 1.79594 16.2041 1 15.2222 1Z'
-            stroke='#E98A36'
-            strokeWidth='1.5'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-          <path d='M5.44444 9.37305L7.4364 11.2339' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-          <path d='M12.268 6.63057L7.58466 11.3713' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-        </svg>
+        <Approved/>
         Approved
       </div>
     )
@@ -373,12 +280,7 @@ class Endpoints extends Component {
   displayMakePublicOpt(endpointId) {
     return (
       <div id='make_public_btn' className='dropdown-item' onClick={() => this.handlePublicEndpointState(this.props.endpoints[endpointId])}>
-        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-          <path
-            d='M9 1.5C4.86 1.5 1.5 4.86 1.5 9C1.5 13.14 4.86 16.5 9 16.5C13.14 16.5 16.5 13.14 16.5 9C16.5 4.86 13.14 1.5 9 1.5ZM8.25 14.9475C5.2875 14.58 3 12.06 3 9C3 8.535 3.06 8.0925 3.1575 7.6575L6.75 11.25V12C6.75 12.825 7.425 13.5 8.25 13.5V14.9475ZM13.425 13.0425C13.23 12.435 12.675 12 12 12H11.25V9.75C11.25 9.3375 10.9125 9 10.5 9H6V7.5H7.5C7.9125 7.5 8.25 7.1625 8.25 6.75V5.25H9.75C10.575 5.25 11.25 4.575 11.25 3.75V3.4425C13.4475 4.335 15 6.4875 15 9C15 10.56 14.4 11.9775 13.425 13.0425Z'
-            fill='#E98A36'
-          />
-        </svg>
+        <MakePublic/>
         Make Public
       </div>
     )
@@ -387,17 +289,7 @@ class Endpoints extends Component {
   displayCancelRequestOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleCancelRequest(this.props.endpoints[endpointId])}>
-        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-          <path
-            d='M15.2222 1H2.77778C1.79594 1 1 1.79594 1 2.77778V15.2222C1 16.2041 1.79594 17 2.77778 17H15.2222C16.2041 17 17 16.2041 17 15.2222V2.77778C17 1.79594 16.2041 1 15.2222 1Z'
-            stroke='#E98A36'
-            strokeWidth='1.5'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-          <path d='M6 6L12 12' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-          <path d='M12 6L6 12' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-        </svg>{' '}
+        <CancelRequest/>{' '}
         Cancel Request
       </div>
     )
@@ -423,11 +315,34 @@ class Endpoints extends Component {
         </div>
 
         <div className='dropdown-menu dropdown-menu-right'>
+          <div className='dropdown-item' onClick={() => this.openEditEndpointForm(endpointId)}>
+                          <RenamedItem/>{' '}
+                          Rename
+                        </div>
           {this.displayDeleteOpt(endpointId)}
           {/* {this.displayDuplicateOpt(endpointId)} */}
           {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
         </div>
       </div>
+    )
+  }
+  showEditEndpointModal() {
+    return (
+      this.state.showEndpointForm.edit && (
+        <SubPageForm
+          {...this.props}
+          title='Rename'
+          show={this.state.showEndpointForm.edit}
+          onCancel={() => {
+            this.setState({ showEndpointForm: false })
+          }}
+          onHide={() => {
+            this.setState({ showEndpointForm: false })
+          }}
+          selectedEndpoint={this.props?.endpointId}
+          pageType={4}
+        />
+      )
     )
   }
 
@@ -474,11 +389,9 @@ class Endpoints extends Component {
                 {this.displayEndpointName(endpointId)}
 
                 <div className='d-flex align-items-center'>
-                  <div className=' sidebar-item-action'>
-                    {isDashboardRoute(this.props, true) &&
-                      !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
-                      this.displayEndpointOptions(endpointId)}
-                  </div>
+                  {isDashboardRoute(this.props, true) &&
+                    !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
+                    this.displayEndpointOptions(endpointId)}
                   {/* <div className='ml-1 published-icon transition'>
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
@@ -529,16 +442,6 @@ class Endpoints extends Component {
     )
   }
 
-  setFilterFlag() {
-    if (this.state.filter !== this.props.filter) {
-      this.filterFlag = false
-    }
-    if (this.props.filter === '') {
-      this.filteredEndpoints = { ...this.props.endpoints }
-      // this.filteredEndpointsOrder = [...this.props.endpoints_order]
-    }
-  }
-
   filterEndpointIdsByGroup() {
     const endpointIds = Object.keys(this.props.endpoints).filter(
       (eId) => this.props.endpoints[eId].parentId && this.props.endpoints[eId].parentId === this.props.parent_id
@@ -575,13 +478,17 @@ class Endpoints extends Component {
   }
 
   render() {
-    this.setFilterFlag()
     const endpointIds = this.filterEndpointIdsByGroup()
     let endpointsArray = []
     endpointsArray = this.extractEndpointsFromIds(endpointIds)
     let endpoints = {}
     endpoints = this.getEndpointsEntity(endpointsArray)
-    return this.displayUserEndpoints(this?.props?.endpointId)
+    return (
+      <>
+        {this.showEditEndpointModal()}
+        {this.displayUserEndpoints(this?.props?.endpointId)}
+      </>
+    )
   }
 }
 
