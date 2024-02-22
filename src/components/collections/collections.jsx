@@ -312,7 +312,7 @@ class CollectionsComponent extends Component {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
     const activeTab = this.props.tabs.activeTabId
-    store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
+    // store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
   }
 
   scrollToCollection(collectionId) {

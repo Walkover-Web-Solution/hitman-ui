@@ -15,7 +15,7 @@ const hostContainerEnum = {
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
+    // ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
   }
 }
 
@@ -46,7 +46,7 @@ class HostContainer extends Component {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ showDatalist: false, showInputHost: false })
     }
-    this.props.ON_PUBLISH_DOC(false)
+    // this.props.ON_PUBLISH_DOC(false)
   }
 
   componentDidMount() {
