@@ -12,7 +12,7 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
     const id = editedEndpoint.id
     const updatedEndpoint = editedEndpoint
     delete updatedEndpoint.id
-    
+
     endpointApiService
       .updateEndpoint(id, updatedEndpoint)
       .then((response) => {

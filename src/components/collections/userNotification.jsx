@@ -115,7 +115,7 @@ class UserInfo extends Component {
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <div className='dropdown-item' style={{ cursor: 'pointer' }} onClick={() => this.navigateToViaSocket()}>
-                    <img src= {TeamIcon}/>
+                      <img src={TeamIcon} />
                       Team
                     </div>
                     <Dropdown.Item
@@ -125,16 +125,16 @@ class UserInfo extends Component {
                         this.navigateToPublishDocs()
                       }}
                     >
-                      <img src= {hostedApi} />
+                      <img src={hostedApi} />
                       Hosted API
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => this.openImportCollectionForm()}>
-                      <img src= {importsign}/>
+                      <img src={importsign} />
                       Import
                     </Dropdown.Item>
 
                     <Link to='/logout' className='dropdown-item'>
-                      <img src= {signout}/>
+                      <img src={signout} />
                       Sign out
                     </Link>
                   </Dropdown.Menu>

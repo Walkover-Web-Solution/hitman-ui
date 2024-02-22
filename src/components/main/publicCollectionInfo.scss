@@ -4,7 +4,7 @@
 @import '../main/variables.scss';
 
 .public-colection-info {
-  padding: 0 0 0 0.65rem;
+  // padding: 0 0 0 0.65rem;
 }
 
 .endpoints-list {
@@ -19,16 +19,26 @@
 }
 
 .sidebar-public-url {
-  justify-content: space-between;
-  color: $success-color;
-  overflow: hidden;
-  i {
-    visibility: hidden;
-  }
+  margin-left: 0px;
+  overflow: scroll;
+  cursor: pointer;
+  background-color: white;
+  padding: 5px 10px 1px 10px;
+  width: fit-content;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
 
-  &:hover {
-    i {
-      visibility: visible;
-    }
-  }
+.publicUrl-btn{
+border: none !important;
+justify-content: center;
+background-color: #f8f9fa !important;
+border: 1px solid #e6dbd4 !important;
+margin-top: 8px !important;
+padding-left: 2px !important;
+}
+.publicUrl-btn.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  // Add any other styles for the disabled state
 }

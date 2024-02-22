@@ -724,6 +724,42 @@ export const trimString = (str) => {
   return str?.trim()
 }
 
+export const modifyDataForBulkPublish = (collectionData, allPagesData, collectionId) => {
+  const rootParentId = collectionData?.[collectionId]?.rootParentId
+  const formatedData = {
+    name: collectionData?.[collectionId]?.name,
+    metadata: { rootParentId, collectionId },
+    children: modifiedData(allPagesData?.[rootParentId]?.child || [], allPagesData)
+  }
+  return formatedData
+}
+
+const modifiedData = (childs, allPagesData) => {
+  return childs?.map((singleId) => {
+    return {
+      name: allPagesData?.[singleId]?.name,
+      children: modifiedData(allPagesData?.[singleId]?.child || [], allPagesData),
+      metadata: { actualId: singleId }
+    }
+  })
+}
+
+export const modifyCheckBoxDataToSend = (flattenData, allSelectedIds, dataToPublishSet) => {
+  allSelectedIds.forEach((singleId) => {
+    if (!dataToPublishSet.has(singleId)) dataToPublishSet.add(singleId)
+    addItsParent(flattenData, singleId, dataToPublishSet)
+  })
+}
+
+function addItsParent(flattenData, singleId, dataToPublishSet) {
+  let parentId = flattenData?.[singleId]?.parent
+  while (parentId !== null) {
+    if (dataToPublishSet.has(parentId) || !parentId) break
+    dataToPublishSet.add(parentId)
+    parentId = flattenData?.[parentId]?.parent
+  }
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -764,5 +800,6 @@ export default {
   isOnPublishedPage,
   deleteAllPagesAndTabsAndReactQueryData,
   operationsAfterDeletion,
-  trimString
+  trimString,
+  modifyDataForBulkPublish
 }
