@@ -1263,7 +1263,7 @@ body .btn {
     }
     &:focus,
     &:active {
-      background-color: $theme-color !important;
+      background-color: $theme-color;
     }
   }
   &.btn-outline {
