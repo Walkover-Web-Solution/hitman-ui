@@ -61,7 +61,6 @@ class Groups extends Component {
       checkboxChecked: false
     }
     this.eventkey = {}
-    this.scrollRef = {}
   }
 
   componentDidMount() {
@@ -185,9 +184,6 @@ class Groups extends Component {
           <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
             <button
               tabIndex={-1}
-              ref={(newRef) => {
-                this.scrollRef[subPageId] = newRef
-              }}
               className={expanded ? 'expanded' : ''}
             >
               <div className='d-flex align-items-center cl-name'>
@@ -215,9 +211,6 @@ class Groups extends Component {
           <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
             <button
               tabIndex={-1}
-              ref={(newRef) => {
-                this.scrollRef[subPageId] = newRef
-              }}
               className={`${expanded ? 'expanded' : ''} ${isSelected}`}
             >
               <div className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(subPageId)}>

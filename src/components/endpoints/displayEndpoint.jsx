@@ -258,7 +258,6 @@ class DisplayEndpoint extends Component {
     this.handleRemovePublicEndpoint = this.handleRemovePublicEndpoint.bind(this)
     this.myRef = React.createRef()
     this.sideRef = React.createRef()
-    this.scrollDiv = React.createRef()
     this.state = {
       methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
       environment: {},
@@ -347,12 +346,10 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.location.pathname !== prevProps.location.pathname && this.scrollDiv.current) {
-      this.scrollDiv.current.scrollIntoView({ block: 'center' })
+    if (this.props.location.pathname !== prevProps.location.pathname) {
       this.extractEndpointName()
     }
-    if (this.props.endpointId !== prevProps.endpointId && this.scrollDiv.current) {
-      this.scrollDiv.current.scrollIntoView({ block: 'center' })
+    if (this.props.endpointId !== prevProps.endpointId) {
     }
     if (!isDashboardRoute(this.props)) {
       if (
@@ -886,8 +883,6 @@ class DisplayEndpoint extends Component {
         runSendRequest: null,
         requestKey: null
       })
-      /** Scroll to Response */
-      this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
       /** Add to History */
       isDashboardRoute(this.props) && this.setData()
     } else {
@@ -2599,7 +2594,7 @@ class DisplayEndpoint extends Component {
                 </div>
               ) : null}
               <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
-                <div className='endpoint-header' ref={this.scrollDiv}>
+                <div className='endpoint-header'>
                   {this.isNotDashboardOrDocView() && (
                     <div className='endpoint-name-container'>
                       {this.isNotDashboardOrDocView() && (
