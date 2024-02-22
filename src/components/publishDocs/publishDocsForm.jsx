@@ -7,7 +7,7 @@ import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
-import { handleChangeInUrlField, handleBlurInUrlField, modifyDataForBulkPublish, openExternalLink } from '../common/utility'
+import { handleChangeInUrlField, handleBlurInUrlField, openExternalLink } from '../common/utility'
 import { moveToNextStep } from '../../services/widgetService'
 import { updateCollectionIdForPublish } from '../../store/clientData/clientDataActions'
 import { publishData } from '../modals/redux/modalsActions'
@@ -79,7 +79,6 @@ class PublishDocForm extends Component {
   }
 
   componentDidMount() {
-    modifyDataForBulkPublish(this.props?.collections, this.props?.pages, 'Cp8Byl7_e3ei')
     this.setSelectedCollection()
   }
 
@@ -461,6 +460,8 @@ class PublishDocForm extends Component {
   renderActionButtons(publishCheck) {
     const selectedCollection = this.getSelectedCollection()
     const isNotPublished = !this.isCollectionPublished(selectedCollection)
+    const rootParentId = this.props?.collections[this.props.selected_collection_id]?.rootParentId
+    const disableCondition = this.props.pages[rootParentId]?.child.length > 0
     return (
       <div>
         <Button
@@ -471,9 +472,23 @@ class PublishDocForm extends Component {
         >
           Save
         </Button>
-        <Button id='publish_collection_btn' variant='btn btn-outline' className='m-1' onClick={() => this.redirectUser()}>
+        {/* <OverlayTrigger
+          overlay={
+            <Tooltip id='tooltip-bulkPublish'>
+              {!disableCondition ? "Add Page/Endpoint inside Collection." : "Allow to publish all Pages/Endpoint inside Collection"}
+            </Tooltip>
+          }
+        > */}
+        <Button
+          disabled={!disableCondition}
+          id='publish_collection_btn'
+          variant='btn btn-outline'
+          className='m-1'
+          onClick={() => this.redirectUser()}
+        >
           Bulk Publish
         </Button>
+        {/* </OverlayTrigger> */}
         <>
           {publishCheck ? (
             <Button variant='btn btn-outline-danger' className='m-1' onClick={() => this.props.unPublishCollection()}>
@@ -482,10 +497,11 @@ class PublishDocForm extends Component {
           ) : (
             isNotPublished && (
               <Button
+                id='publish_collection_btn'
                 className='m-1'
                 onClick={() => this.publishCollection(selectedCollection)}
                 disabled={!selectedCollection?.docProperties?.defaultTitle}
-                variant='btn btn-success'
+                variant='btn btn-outline'
               >
                 Publish Collection
               </Button>

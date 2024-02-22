@@ -321,6 +321,7 @@ class Endpoints extends Component {
           }}
           selectedEndpoint={this.props?.endpointId}
           pageType={4}
+          isEndpoint={true}
         />
       )
     )
@@ -332,49 +333,32 @@ class Endpoints extends Component {
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
     return (
       <>
-        {publishData ? (
-          <div className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
-            <div className={this.props?.endpoints[endpointId]?.state} />
-            <div className='sidebar-toggle d-flex justify-content-between'>
-              <button
-                tabIndex={-1}
-                // className={[focused && sidebarFocused ? 'focused' : '']}
-              >
-                {this.displayEndpointName(endpointId)}
-                <div className='d-flex align-items-center'></div>
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div
-            key={endpointId}
-          >
-            <div className={this.props?.endpoints[endpointId]?.state} />
-            <div className='sidebar-toggle d-flex justify-content-between'>
-              <button
-                tabIndex={-1}
-                className={isSelected}
-                onClick={() => {
-                  this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
-                }}
-                onDoubleClick={() =>
-                  this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
-                }
-              >
-                {this.displayEndpointName(endpointId)}
+        <div key={endpointId}>
+          <div className={this.props?.endpoints[endpointId]?.state} />
+          <div className='sidebar-toggle d-flex justify-content-between'>
+            <button
+              tabIndex={-1}
+              className={isSelected}
+              onClick={() => {
+                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
+              }}
+              onDoubleClick={() =>
+                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
+              }
+            >
+              {this.displayEndpointName(endpointId)}
 
-                <div className='d-flex align-items-center'>
-                  {isDashboardRoute(this.props, true) &&
-                    !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
-                    this.displayEndpointOptions(endpointId)}
-                  {/* <div className='ml-1 published-icon transition'>
+              <div className='d-flex align-items-center'>
+                {isDashboardRoute(this.props, true) &&
+                  !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
+                  this.displayEndpointOptions(endpointId)}
+                {/* <div className='ml-1 published-icon transition'>
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
-                </div>
-              </button>
-            </div>
+              </div>
+            </button>
           </div>
-        )}
+        </div>
       </>
     )
   }

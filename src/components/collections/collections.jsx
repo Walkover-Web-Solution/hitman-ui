@@ -341,11 +341,7 @@ class CollectionsComponent extends Component {
 
     return (
       <React.Fragment key={collectionId}>
-        <div
-          key={collectionId}
-          id='parent-accordion'
-          className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}
-        >
+        <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
           <button tabIndex={-1} variant='default' className={expanded ? 'expanded' : ''}>
             <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='d-flex justify-content-between'>

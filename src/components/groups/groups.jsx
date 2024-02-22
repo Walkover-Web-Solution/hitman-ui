@@ -179,91 +179,58 @@ class Groups extends Component {
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === subPageId ? 'selected' : ''
     return (
       <>
-        {/* for publish side barrrr */}
-        {this.props.isPublishData && this.props.modals.publishData ? (
-          <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
-            <button
-              tabIndex={-1}
-              className={expanded ? 'expanded' : ''}
-            >
-              <div className='d-flex align-items-center cl-name'>
-                {/* <span className='versionChovron'>
-                    <img src={ExpandedIcon} alt='' />
-                  </span> */}
-                <input
-                  type='checkbox'
-                  checked={this.props?.clientData?.[this.props?.rootParentId]?.checkedForPublished || false}
-                  onChange={this.handleCheckboxChange}
-                />
-                <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
-              </div>
-            </button>
-            {expanded ? (
-              <div className='linkWrapper versionPages'>
-                <Card.Body>
-                  <CombinedCollections {...this.props} />
-                </Card.Body>
-              </div>
-            ) : null}
-            {/* </Card> */}
-          </div>
-        ) : (
-          <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
-            <button
-              tabIndex={-1}
-              className={`${expanded ? 'expanded' : ''} ${isSelected}`}
-            >
-              <div className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(subPageId)}>
-                <span className='versionChovron'>
-                  <img src={ExpandedIcon} alt='' />
-                </span>
-                <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
-              </div>
-              {
-                // [info] options not to show on publihsed page
-                isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
-                  <div className='sidebar-item-action d-flex align-items-center'>
-                    <div onClick={() => this.openAddSubPageModal(subPageId)} className='mr-1 d-flex align-items-center'>
-                      <Plus />
+        <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
+          <button tabIndex={-1} className={`${expanded ? 'expanded' : ''} ${isSelected}`}>
+            <div className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(subPageId)}>
+              <span className='versionChovron'>
+                <img src={ExpandedIcon} alt='' />
+              </span>
+              <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
+            </div>
+            {
+              // [info] options not to show on publihsed page
+              isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                <div className='sidebar-item-action d-flex align-items-center'>
+                  <div onClick={() => this.openAddSubPageModal(subPageId)} className='mr-1 d-flex align-items-center'>
+                    <Plus />
+                  </div>
+                  <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <i className='uil uil-ellipsis-v' />
+                  </div>
+                  <div className='dropdown-menu dropdown-menu-right'>
+                    <div className='dropdown-item' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
+                      <EditSign /> Rename
                     </div>
-                    <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                      <i className='uil uil-ellipsis-v' />
+                    <div
+                      className='dropdown-item'
+                      onClick={() => {
+                        this.openDeleteSubPageModal(subPageId)
+                      }}
+                    >
+                      <DeleteIcon /> Delete
                     </div>
-                    <div className='dropdown-menu dropdown-menu-right'>
-                      <div className='dropdown-item' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
-                        <EditSign /> Rename
-                      </div>
-                      <div
-                        className='dropdown-item'
-                        onClick={() => {
-                          this.openDeleteSubPageModal(subPageId)
-                        }}
-                      >
-                        <DeleteIcon /> Delete
-                      </div>
-                      {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[subPageId])}>
+                    {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[subPageId])}>
                       <Duplicate/> {' '}
                       Duplicate
                     </div> */}
-                      {/* <div className='dropdown-item' onClick={() => this.openShareSubPageForm(subPageId)}>
+                    {/* <div className='dropdown-item' onClick={() => this.openShareSubPageForm(subPageId)}>
                         <ShareIcon/> {' '}
                         Share
                       </div> */}
-                    </div>
                   </div>
-                ) : null
-              }
-            </button>
-            {expanded ? (
-              <div className='linkWrapper versionPages'>
-                <Card.Body>
-                  <CombinedCollections {...this.props} />
-                </Card.Body>
-              </div>
-            ) : null}
-            {/* </Card> */}
-          </div>
-        )}
+                </div>
+              ) : null
+            }
+          </button>
+          {expanded ? (
+            <div className='linkWrapper versionPages'>
+              <Card.Body>
+                <CombinedCollections {...this.props} />
+              </Card.Body>
+            </div>
+          ) : null}
+          {/* </Card> */}
+        </div>
       </>
     )
   }
