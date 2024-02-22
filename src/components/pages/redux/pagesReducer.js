@@ -205,10 +205,9 @@ function pagesReducer(state = initialState, action) {
       pages = { ...state }
       action.data.map((pageId) => {
         if (pages?.[pageId]?.type === 3 || pages?.[pageId]?.type === 4 || pages?.[pageId]?.type === 1) {
-          pages[pageId].state = statesEnum.APPROVED_STATE;
-          pages[pageId].isPublished = true;
-        }
-        else if(pages?.[pageId]?.type === 2) pages[pageId].isPublished = true;
+          pages[pageId].state = statesEnum.APPROVED_STATE
+          pages[pageId].isPublished = true
+        } else if (pages?.[pageId]?.type === 2) pages[pageId].isPublished = true
       })
       return pages
 

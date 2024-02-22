@@ -437,7 +437,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) { }
+        } catch (err) {}
       })
     })
   }
@@ -450,7 +450,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) { }
+        } catch (err) {}
       })
     })
   }
@@ -477,7 +477,7 @@ export function getUserProfile() {
   try {
     user = JSON.parse(user)
     return user
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function getCurrentUserSSLMode() {
@@ -487,7 +487,7 @@ export function getCurrentUserSSLMode() {
     sslModeData = JSON.parse(sslModeData)
     const { identifier } = user
     return sslModeData?.[identifier]
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function setCurrentUserSSLMode(sslModeFlag) {
@@ -498,7 +498,7 @@ export function setCurrentUserSSLMode(sslModeFlag) {
     sslModeData = JSON.parse(sslModeData || '{}')
     const sslMode = { ...sslModeData, [identifier]: sslModeFlag }
     window.localStorage.setItem('ssl-mode', JSON.stringify(sslMode))
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function compareAlphabetically(a, b, data) {
@@ -669,7 +669,6 @@ export const deleteAllPagesAndTabsAndReactQueryData = async (pageId) => {
       pages[parentId].child = pages[parentId].child.filter((id) => id !== pageId)
     }
 
-
     deleteSidebarData(pages, tabs, pageId, deletedTabIds, deletedIds) // deleting sidebar data
 
     // filter tabsOrder from the ids which are deleted and also set foundActiveTabId = true; if tab id deleted is active id
@@ -726,13 +725,13 @@ export const trimString = (str) => {
 }
 
 export const modifyDataForBulkPublish = (collectionData, allPagesData, collectionId) => {
-  const rootParentId = collectionData?.[collectionId]?.rootParentId;
+  const rootParentId = collectionData?.[collectionId]?.rootParentId
   const formatedData = {
     name: collectionData?.[collectionId]?.name,
     metadata: { rootParentId, collectionId },
-    children: modifiedData(allPagesData?.[rootParentId]?.child || [], allPagesData),
+    children: modifiedData(allPagesData?.[rootParentId]?.child || [], allPagesData)
   }
-  return formatedData;
+  return formatedData
 }
 
 const modifiedData = (childs, allPagesData) => {
@@ -747,17 +746,17 @@ const modifiedData = (childs, allPagesData) => {
 
 export const modifyCheckBoxDataToSend = (flattenData, allSelectedIds, dataToPublishSet) => {
   allSelectedIds.forEach((singleId) => {
-    if (!dataToPublishSet.has(singleId)) dataToPublishSet.add(singleId);
-    addItsParent(flattenData, singleId, dataToPublishSet);
+    if (!dataToPublishSet.has(singleId)) dataToPublishSet.add(singleId)
+    addItsParent(flattenData, singleId, dataToPublishSet)
   })
 }
 
 function addItsParent(flattenData, singleId, dataToPublishSet) {
-  let parentId = flattenData?.[singleId]?.parent;
+  let parentId = flattenData?.[singleId]?.parent
   while (parentId !== null) {
-    if (dataToPublishSet.has(parentId) || !parentId) break;
+    if (dataToPublishSet.has(parentId) || !parentId) break
     dataToPublishSet.add(parentId)
-    parentId = flattenData?.[parentId]?.parent;
+    parentId = flattenData?.[parentId]?.parent
   }
 }
 
@@ -802,5 +801,5 @@ export default {
   deleteAllPagesAndTabsAndReactQueryData,
   operationsAfterDeletion,
   trimString,
-  modifyDataForBulkPublish,
+  modifyDataForBulkPublish
 }

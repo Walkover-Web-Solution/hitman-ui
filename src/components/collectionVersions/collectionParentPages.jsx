@@ -31,7 +31,7 @@ import { onDefaultVersion } from '../publishDocs/redux/publishDocsActions'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { toast } from 'react-toastify'
 import SubPageForm from '../groups/subPageForm'
-import {ReactComponent as Rename} from '../../assets/icons/renameSign.svg'
+import { ReactComponent as Rename } from '../../assets/icons/renameSign.svg'
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ShareSign} from '../../assets/icons/sharesign.svg'
 
@@ -595,8 +595,7 @@ class CollectionParentPages extends Component {
                       </div>
                       <div className='dropdown-menu dropdown-menu-right'>
                         <div className='dropdown-item' onClick={() => this.openEditPageForm(pageId)}>
-                          <Rename/>{' '}
-                          Rename
+                          <Rename /> Rename
                         </div>
                         <div
                           className='dropdown-item'
@@ -604,8 +603,7 @@ class CollectionParentPages extends Component {
                             this.openDeletePageModal(pageId)
                           }}
                         >
-                           <DeleteIcon/>{' '}
-                           Delete
+                          <DeleteIcon /> Delete
                         </div>
                         <div
                           className='dropdown-item'

@@ -63,7 +63,7 @@ class PublishCollectionInfo extends Component {
     }
   }
 
- renderPublicUrl() {
+  renderPublicUrl() {
     const url = defaultDomain + '/p?collectionId=' + this.props.collectionId
     const { versions, groups, endpoints, collectionId } = this.props
     const targetVersionIds = _.values(versions)
