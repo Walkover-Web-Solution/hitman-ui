@@ -49,7 +49,6 @@ import Script from './script/script'
 import * as _ from 'lodash'
 import { openModal } from '../modals/redux/modalsActions'
 import Axios from 'axios'
-import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
@@ -490,20 +489,20 @@ class DisplayEndpoint extends Component {
         }
       }
     }
-    const dummyData = this.props.endpointContent
+    const dummyData = this.props?.endpointContent
     dummyData.pathVariables = pathVariables
     this.props.setQueryUpdatedData(dummyData)
   }
 
   makeOriginalParams(keys, values, description) {
     const originalParams = []
-    for (let i = 0; i < this.props.endpointContent.originalParams.length; i++) {
-      if (this.props.endpointContent.originalParams[i].checked === 'false') {
+    for (let i = 0; i < this.props?.endpointContent?.originalParams?.length; i++) {
+      if (this.props?.endpointContent?.originalParams[i].checked === 'false') {
         originalParams.push({
-          checked: this.props.endpointContent.originalParams[i].checked,
-          key: this.props.endpointContent.originalParams[i].key,
-          value: this.props.endpointContent.originalParams[i].value,
-          description: this.props.endpointContent.originalParams[i].description
+          checked: this.props?.endpointContent?.originalParams[i].checked,
+          key: this.props?.endpointContent?.originalParams[i].key,
+          value: this.props?.endpointContent?.originalParams[i].value,
+          description: this.props?.endpointContent?.originalParams[i].description
         })
       }
     }
@@ -670,7 +669,7 @@ class DisplayEndpoint extends Component {
   }
 
   setPathVariableValues() {
-    let uri = new URI(this.props?.endpointContent?.data.updatedUri)
+    let uri = new URI(this.props?.endpointContent?.data?.updatedUri)
     uri = uri.pathname()
     const pathParameters = uri.split('/')
     let path = ''
@@ -683,7 +682,7 @@ class DisplayEndpoint extends Component {
         } else {
           pathParameters[i] = this.props.endpointContent.pathVariables[counter]?.value
           uniquePathparameters[this.props.endpointContent.pathVariables[counter]?.key] =
-            this.props.endpointContent.pathVariables[counter]?.value
+            this.props?.endpointContent?.pathVariables[counter]?.value
           counter++
         }
       }
@@ -693,8 +692,8 @@ class DisplayEndpoint extends Component {
   }
 
   setData = async () => {
-    let body = this.props.endpointContent.data.body
-    if (this.props.endpointContent.data.body.type === 'raw') {
+    let body = this.props?.endpointContent?.data?.body
+    if (this.props?.endpointContent?.data?.body?.type === 'raw') {
       body.value = this.parseBody(body.value)
     }
     body = this.prepareBodyForSending(body)
@@ -740,8 +739,8 @@ class DisplayEndpoint extends Component {
   }
 
   checkEmptyParams() {
-    const params = this.state.params
-    const originalParams = this.state.originalParams
+    const params = this.props?.endpointContent?.params
+    const originalParams = this.props?.endpointContent?.originalParams
     let isEmpty = false
     params.forEach((param) => {
       if (param.checked !== 'notApplicable' && param.checked === 'true' && this.checkValue(param, originalParams)) {
@@ -751,6 +750,9 @@ class DisplayEndpoint extends Component {
         param.empty = false
       }
     })
+    // const endpoint = { ...this.props?.endpointContent }
+    // endpoint.params = { ...params }
+    // this.props.setQueryUpdatedData(endpoint)
     this.setState({ params })
     return isEmpty
   }
@@ -877,10 +879,6 @@ class DisplayEndpoint extends Component {
       requestOptions = { ...requestOptions, body, headers, url, bodyType }
       /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
-      sendAmplitudeData('API called', {
-        url: url,
-        endpointId: this.props.match.params.endpointId
-      })
       /** Handle Request Call */
       await this.handleApiCall(requestOptions)
       this.setState({
@@ -905,7 +903,7 @@ class DisplayEndpoint extends Component {
       response = { value: response }
     }
 
-    if (code.trim().length === 0 || !isDashboardRoute(this.props, true)) {
+    if (code?.trim()?.length === 0 || !isDashboardRoute(this.props, true)) {
       return { success: true, data: { environment: environment.variables, request, response, tests: [] } }
     }
 
@@ -1044,7 +1042,6 @@ class DisplayEndpoint extends Component {
         } else {
           // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
           // not sending isPublished during put method
-            // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
           endpoint.state = statesEnum.DRAFT_STATE
           this.setState({ saveLoader: true })
           this.props.update_endpoint(
@@ -1265,9 +1262,8 @@ class DisplayEndpoint extends Component {
   }
 
   async prepareHarObject() {
-    try {
-      const BASE_URL = this.props?.endpointContent?.host.BASE_URL
-      const uri = new URI(this.props?.endpointContent?.data.updatedUri)
+      const BASE_URL = this.props?.endpointContent?.host?.BASE_URL
+      const uri = new URI(this.props?.endpointContent?.data?.updatedUri)
       const queryparams = uri.search()
       const path = this.setPathVariableValues()
       let url = BASE_URL + path + queryparams
@@ -1291,9 +1287,7 @@ class DisplayEndpoint extends Component {
         harObject: harObject
       }
       this.props.setQueryUpdatedData(updatedharObject)
-    } catch (error) {
-      toast.error(error)
-    }
+   
   }
 
   openCodeTemplate(harObject) {
@@ -1687,13 +1681,13 @@ class DisplayEndpoint extends Component {
   }
 
   displayPublicSampleResponse() {
-    if (this.props?.endpointContent?.sampleResponseArray.length) {
+    if (this.props?.endpointContent?.sampleResponseArray?.length) {
       return (
         <div className='mt-3'>
           <PublicSampleResponse
-            highlights={this.props.highlights}
+            highlights={this.props?.highlights}
             sample_response_array={this.props?.endpointContent?.sampleResponseArray}
-            publicCollectionTheme={this.props.publicCollectionTheme}
+            publicCollectionTheme={this.props?.publicCollectionTheme}
           />
         </div>
       )
@@ -2118,14 +2112,14 @@ class DisplayEndpoint extends Component {
 
   renderPublicBodyContainer() {
     return (
-      this.props?.endpointContent?.data.body &&
+      this.props?.endpointContent?.data?.body &&
       // this.props?.endpointContent?.originalBody &&
-      this.props?.endpointContent?.data.body.value !== null && (
+      this.props?.endpointContent?.data?.body?.value !== null && (
         <PublicBodyContainer
           {...this.props}
           set_body={this.setBody.bind(this)}
           set_body_description={this.setDescription.bind(this)}
-          body={this.props?.endpointContent?.data.body}
+          body={this.props?.endpointContent?.data?.body}
           original_body={this.props?.endpointContent?.data?.body}
           public_body_flag={this.props?.endpointContent?.publicBodyFlag}
           set_public_body={this.setPublicBody.bind(this)}
@@ -2150,7 +2144,7 @@ class DisplayEndpoint extends Component {
 
   renderPublicHeaders() {
     return (
-      this.props?.endpointContent?.originalHeaders.length > 0 && (
+      this.props?.endpointContent?.originalHeaders?.length > 0 && (
         <GenericTable
           {...this.props}
           title='Headers'
@@ -2179,14 +2173,14 @@ class DisplayEndpoint extends Component {
 
   renderPublicParams() {
     return (
-      this.props?.endpointContent?.originalParams.length > 0 && (
+      this.props?.endpointContent?.originalParams?.length > 0 && (
         <div>
           <GenericTable
             {...this.props}
             title='Params'
             dataArray={this.props?.endpointContent?.originalParams || []}
             props_from_parent={this.propsFromChild.bind(this)}
-            original_data={[...this.props?.endpointContent?.originalParams]}
+            original_data={this.props?.endpointContent?.originalParams}
             currentView={this.props?.endpointContent?.currentView}
           />
         </div>
@@ -2196,8 +2190,8 @@ class DisplayEndpoint extends Component {
 
   renderPathVariables() {
     return (
-      this.props.endpointContent.pathVariables &&
-      this.props.endpointContent.pathVariables.length !== 0 && (
+      this.props.endpointContent?.pathVariables &&
+      this.props.endpointContent?.pathVariables?.length !== 0 && (
         <GenericTable
           {...this.props}
           title='Path Variables'
@@ -2213,14 +2207,14 @@ class DisplayEndpoint extends Component {
   renderPublicPathVariables() {
     return (
       this.props?.endpointContent?.pathVariables &&
-      this.props?.endpointContent?.pathVariables.length !== 0 && (
+      this.props?.endpointContent?.pathVariables?.length !== 0 && (
         <div>
           <GenericTable
             {...this.props}
             title='Path Variables'
             dataArray={this.props?.endpointContent?.pathVariables}
             props_from_parent={this.propsFromChild.bind(this)}
-            original_data={[...this.props?.endpointContent?.pathVariables]}
+            original_data={this.props?.endpointContent?.pathVariables}
             currentView={this.props?.endpointContent?.currentView}
           />
         </div>
@@ -2236,26 +2230,26 @@ class DisplayEndpoint extends Component {
         <div className='hm-endpoint-header'>
           <div className='input-group'>
             <div className='input-group-prepend'>
-              <span className={`api-label api-label-lg input-group-text ${this.props?.endpointContent.data.method}`}>
-                {this.props?.endpointContent.data.method}
+              <span className={`api-label api-label-lg input-group-text ${this.props?.endpointContent?.data?.method}`}>
+                {this.props?.endpointContent?.data?.method}
               </span>
             </div>
             <HostContainer
               {...this.props}
               environmentHost={
-                this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
+                this.props?.environment?.variables?.BASE_URL?.currentValue || this.props?.environment?.variables?.BASE_URL?.initialValue || ''
               }
-              updatedUri={this.props.endpointContent?.data?.updatedUri}
+              updatedUri={this.props?.endpointContent?.data?.updatedUri}
               set_base_url={this.setBaseUrl.bind(this)}
               // customHost={this.props?.endpointContent?.host.BASE_URL || ''}
-              endpointId={this.props?.match.params.endpointId}
+              endpointId={this.props?.match?.params?.endpointId}
               set_host_uri={this.setHostUri.bind(this)}
               props_from_parent={this.propsFromChild.bind(this)}
             />
           </div>
-          {this.props.highlights?.uri ? <i className='fas fa-circle' /> : null}
+          {this.props?.highlights?.uri ? <i className='fas fa-circle' /> : null}
         </div>
-        <input ref={this.uri} type='hidden' value={this.props.endpointContent?.data?.updatedUri} name='updatedUri' />
+        <input ref={this.uri} type='hidden' value={this.props?.endpointContent?.data?.updatedUri} name='updatedUri' />
       </div>
     )
   }
@@ -2845,9 +2839,9 @@ class DisplayEndpoint extends Component {
                 editorToggle={() => {
                   this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
                 }}
-                harObject={this.props.endpointContent.harObject}
+                harObject={this.props?.endpointContent?.harObject}
                 title='Generate Code Snippets'
-                publicCollectionTheme={this.props.publicCollectionTheme}
+                publicCollectionTheme={this.props?.publicCollectionTheme}
               />
             )}
           </div>

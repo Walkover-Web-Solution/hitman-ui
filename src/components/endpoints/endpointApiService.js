@@ -13,11 +13,6 @@ function getApiUrl() {
   return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 }
 
-function endpointUrl(groupId) {
-  const apiUrl = getApiUrl()
-  return `${apiUrl}/groups/${groupId}/endpoints`
-}
-
 function endpointUrlForCollection(pageId) {
   const apiUrl = getApiUrl()
   return `${apiUrl}/pages/${pageId}/endpoints`
@@ -42,21 +37,15 @@ export function getAllEndpoints(id) {
 }
 
 export function getEndpoints(parentId) {
-  // author : Goutam Mehta
   return http.get(endpointUrlForCollection(parentId))
 }
 
 export async function getEndpoint(endpointId) {
-  // author : Goutam Mehta
   const apiUrl = getApiUrl()
   return (await http.get(`${apiUrl}/endpoints/${endpointId}`))?.data
 }
-export function saveEndpoint(groupId, endpoint) {
-  return http.post(endpointUrl(groupId), endpoint)
-}
 
-export function saveEndpointInCollection(rootParentId, endpoint) {
-  // author : Goutam Mehta
+export function saveEndpoint(rootParentId, endpoint) {
   return http.post(endpointUrlForCollection(rootParentId), endpoint)
 }
 
@@ -202,7 +191,6 @@ export function setAuthorizationType(endpointId, data) {
 }
 
 export default {
-  saveEndpoint,
   getEndpoints,
   deleteEndpoint,
   apiTest,
@@ -214,5 +202,5 @@ export default {
   authorize,
   setAuthorizationType,
   updateEndpointOrder,
-  saveEndpointInCollection
+  saveEndpoint
 }

@@ -3,7 +3,6 @@ import { Modal } from 'react-bootstrap'
 import { closeModal } from '../modals/redux/modalsActions'
 import { connect } from 'react-redux'
 import { DESKTOP_APP_DOWNLOAD } from '../modals/modalTypes'
-import { sendAmplitudeData } from '../../services/amplitude'
 import { toast } from 'react-toastify'
 
 const mapDispatchToProps = (dispatch) => {
@@ -23,7 +22,6 @@ function DesktopAppDownloadModal(props) {
   const [isAppInstalled, setIsAppInstalled] = useState(false)
   const shouldShowModal = !window.matchMedia('(display-mode: standalone)').matches
   const handleDownloadClick = () => {
-    sendAmplitudeData('Download popup')
     if (props.modals.installPrompt) {
       props.modals.installPrompt.prompt()
       props.modals.installPrompt.userChoice.then((choiceResult) => {

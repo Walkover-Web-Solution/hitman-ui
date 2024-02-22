@@ -2,24 +2,17 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import { getOrgId, focusSelectedEntity, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
-import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
+import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
-import { QueryClient } from 'react-query'
-
-const queryClient = new QueryClient()
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
-    // const originalEndpoint = store.getState().pages[editedEndpoint.id]
-    // dispatch(updateEndpointRequest(editedEndpoint))
     const id = editedEndpoint.id
     const updatedEndpoint = editedEndpoint
     delete updatedEndpoint.id
-    // delete updatedEndpoint.groupId
-
+    
     endpointApiService
       .updateEndpoint(id, updatedEndpoint)
       .then((response) => {
@@ -58,26 +51,11 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
       .updatePage(editedPage.id, dataToSend)
       .then((response) => {
         dispatch(onPageUpdated(response.data))
-        // if (!publishDocs) {
-        //   history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}`)
-        // }
         return response.data
       })
       .catch((error) => {
         dispatch(onPageUpdatedError(error.response ? error.response.data : error, editedPage))
       })
-  }
-}
-
-export const updateContent = async ({ pageData, id }) => {
-  delete pageData.id
-  delete pageData.versionId
-  delete pageData.groupId
-  try {
-    const data = await pageApiService.updatePage(id, pageData)
-    return data.data
-  } catch (error) {
-    console.error(error)
   }
 }
 
@@ -102,6 +80,18 @@ export const onPageUpdatedError = (error, originalPage) => {
     originalPage
   }
 }
+
+export const updateContent = async ({ pageData, id }) => {
+  delete pageData.id
+  delete pageData.versionId
+  try {
+    const data = await pageApiService.updatePage(id, pageData)
+    return data.data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const updateEndpointRequest = (editedEndpoint) => {
   return {
     type: pagesActionTypes.UPDATE_ENDPOINT_REQUEST,
@@ -149,12 +139,6 @@ export const onParentPageAdded = (response) => {
     version: response.version
   }
 }
-export const onParentPageVersionAdded = (response) => {
-  return {
-    type: collectionVersionsActionTypes.ON_PARENTPAGE_VERSION_ADDED,
-    response
-  }
-}
 
 export const onPageAddedError = (error, newPage) => {
   return {
@@ -165,7 +149,6 @@ export const onPageAddedError = (error, newPage) => {
 }
 
 export const deletePage = (page) => {
-  const tabs = store.getState().tabs
   return (dispatch) => {
     pageApiService
       .deletePage(page?.id)
@@ -198,7 +181,6 @@ const deletePageAndChildren = (pageId, tabs, pageIds = []) => {
     })
     delete pages[pageId]
   }
-  // tabsDataDelete(pageIds, tabs);
   return pages
 }
 
