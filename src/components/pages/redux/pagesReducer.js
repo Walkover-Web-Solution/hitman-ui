@@ -201,7 +201,6 @@ function pagesReducer(state = initialState, action) {
       return pages
 
     case bulkPublishActionTypes.UPDATE_PAGES_STATE_ON_BULK_PUBLISH:
-      debugger
       pages = { ...state }
       action.data.map((pageId) => {
         if (pages?.[pageId]?.type === 3 || pages?.[pageId]?.type === 4 || pages?.[pageId]?.type === 1) {
