@@ -64,7 +64,6 @@ class Endpoints extends Component {
         share: false
       }
     }
-    this.scrollRef = {}
   }
 
   componentDidMount() {
@@ -72,26 +71,11 @@ class Endpoints extends Component {
       this.setState({ theme: this.props.theme })
     }
     const { endpointId } = this.props.match.params
-    if (endpointId) {
-      this.scrollToEndpoint(endpointId)
-    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { endpointId } = this.props.match.params
     const { endpointId: prevEndpointId } = prevProps.match.params
-    if (endpointId && endpointId !== prevEndpointId) {
-      this.scrollToEndpoint(endpointId)
-    }
-  }
-
-  scrollToEndpoint(endpointId) {
-    const ref = this.scrollRef[endpointId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }, 100)
-    }
   }
 
   async handleDelete(endpoint) {
@@ -345,8 +329,6 @@ class Endpoints extends Component {
   displaySingleEndpoint(endpointId) {
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
-    const isOnDashboardPage = isDashboardRoute(this.props)
-    if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
     return (
       <>
@@ -365,9 +347,6 @@ class Endpoints extends Component {
           </div>
         ) : (
           <div
-            ref={(newRef) => {
-              this.scrollRef[endpointId] = newRef
-            }}
             key={endpointId}
           >
             <div className={this.props?.endpoints[endpointId]?.state} />

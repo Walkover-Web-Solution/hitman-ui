@@ -100,7 +100,6 @@ class CollectionParentPages extends Component {
 
     this.filterFlag = false
     this.eventkey = {}
-    this.scrollRef = {}
   }
 
   componentDidMount() {
@@ -320,18 +319,6 @@ class CollectionParentPages extends Component {
     }
   }
 
-  scrolltoPage(pageId) {
-    const ref = this.scrollRef[pageId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'start'
-        })
-      }, 100)
-    }
-  }
   // renderVersion(rootId) {
   //   const versionToRender = this.props.pages[rootId].child;
   //   return (
@@ -448,7 +435,6 @@ class CollectionParentPages extends Component {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
     const publishData = this.props.modals.publishData
     const rootId = pageId
-    if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
     return (
       <>
@@ -530,9 +516,6 @@ class CollectionParentPages extends Component {
             <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
               <button
                 tabIndex={-1}
-                ref={(newRef) => {
-                  this.scrollRef[pageId] = newRef
-                }}
                 className={`pl-3 ${expanded ? 'expanded' : ''} ${isSelected}`}
               >
                 <div

@@ -68,7 +68,6 @@ class CollectionsComponent extends Component {
       selectedCollectionIds: []
     }
     this.names = {}
-    this.scrollRef = {}
   }
 
   closeCollectionForm() {
@@ -308,18 +307,6 @@ class CollectionsComponent extends Component {
     // store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
   }
 
-  scrollToCollection(collectionId) {
-    const ref = this.scrollRef[collectionId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'start'
-        })
-      }, 100)
-    }
-  }
   openAddPageEndpointModal(collectionId) {
     this.setState({
       showAddCollectionModal: true,
@@ -352,19 +339,12 @@ class CollectionsComponent extends Component {
     const expanded = this.props.clientData?.[collectionId]?.isExpanded ?? isOnPublishedPage()
     var isOnDashboardPage = isDashboardRoute(this.props)
 
-    if (this.scrollRef[collectionId]) {
-      this.scrollToCollection(collectionId)
-    }
-
     return (
       <React.Fragment key={collectionId}>
         <div
           key={collectionId}
           id='parent-accordion'
           className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}
-          ref={(newRef) => {
-            this.scrollRef[collectionId] = newRef
-          }}
         >
           <button tabIndex={-1} variant='default' className={expanded ? 'expanded' : ''}>
             <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
