@@ -18,6 +18,7 @@ import { ReactComponent as Approved } from '../../assets/icons/approvedSign.svg'
 import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.svg'
 import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
+import { updateDragDrop } from '../pages/redux/pagesActions'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -47,7 +48,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    update_drag_drop: (draggedItemId,  droppedOnItem) =>  dispatch(updateDragDrop(draggedItemId,  droppedOnItem))
   }
 }
 
@@ -55,6 +57,7 @@ class Endpoints extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      draggedItemId: null,
       endpointState: 'Make Public',
       theme: '',
       checkboxChecked: false,
@@ -327,13 +330,38 @@ class Endpoints extends Component {
     )
   }
 
+  handleOnDragOver(e) {
+    e.preventDefault()
+  }
+
+  onDragStart(tId) {
+    this.setState({draggedItemId:'DLVqb-_y8RDj'})
+  }
+
+  onDrop = (e, droppedOnItem) => {
+    e.preventDefault()
+    this.setState({draggedItemId:'DLVqb-_y8RDj'})
+    if (this.state.draggedItemId === droppedOnItem) {
+      this.state.draggedItemId = null
+      return
+    }
+    this.props.update_drag_drop('DLVqb-_y8RDj',  droppedOnItem)
+  }
+
   displaySingleEndpoint(endpointId) {
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
     return (
       <>
-        <div key={endpointId}>
+        <div 
+        key={endpointId} 
+        draggable="true" 
+        onDragOver={this.handleOnDragOver}
+        onDragStart={() => this.onDragStart(endpointId)}
+        onDrop={(e) => this.onDrop(e, endpointId)}
+
+        >
           <div className={this.props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between'>
             <button

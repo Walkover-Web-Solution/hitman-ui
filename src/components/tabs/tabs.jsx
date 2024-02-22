@@ -356,7 +356,10 @@ class CustomTabs extends Component {
     return (
       <>
         <div className='d-flex navs-container'>
-          {this.showScrollButton() ? (
+
+          {
+            // ? to show scroll button if tabs are more than the screen can handle
+          this.showScrollButton() ? (
             <div
               className={`scroll-button scroll-button--left d-flex ${this.leftHideTabs() ? '' : 'disabled'}`}
               onMouseEnter={() => this.handleMouseEnter('left')}
@@ -367,7 +370,8 @@ class CustomTabs extends Component {
               </span>
               <span>{this.leftHideTabs() ? `${this.leftHideTabs()}+` : null}</span>
             </div>
-          ) : null}
+          ) : null
+          }
           <Nav
             variant='pills'
             className='flex-row flex-nowrap item-wrp'
@@ -376,7 +380,9 @@ class CustomTabs extends Component {
             style={{ scrollBehavior: 'smooth' }}
           >
             <div>
-              {this.state.showSavePromptFor.length > 0 && (
+              {
+                // ? not Important
+              this.state.showSavePromptFor.length > 0 && (
                 <SavePromptModal
                   {...this.props}
                   show

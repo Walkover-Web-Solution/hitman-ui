@@ -289,3 +289,10 @@ export const updateNameOfPages = (payload) => {
     payload
   }
 }
+
+export const updateDragDrop = (draggedItem,  droppedOnItem) => {
+  return {
+    type: pagesActionTypes.ON_DRAG_DROP,
+    payload : {draggedItem,  droppedOnItem}
+  }
+}

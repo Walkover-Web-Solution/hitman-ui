@@ -25,13 +25,6 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.ON_PAGE_FETCHED_ERROR:
       return state
 
-    // case pagesActionTypes.ADD_PAGE_REQUEST:
-    //   action.newPage.groupId = null
-    //   action.newPage.versionId = action.versionId
-    //   return {
-    //     ...state,
-    //     [action.newPage.requestId]: action.newPage
-    //   }
     case pagesActionTypes.ADD_PARENT_PAGE_REQUEST:
       action.newPage.parentId = action.parentId
       return {
@@ -277,6 +270,21 @@ function pagesReducer(state = initialState, action) {
           state: action.response?.state
         }
       }
+    case pagesActionTypes.ON_DRAG_DROP:
+      debugger
+      let pages = { ...state }
+      let droppedOnItem = action.payload.droppedOnItem;
+      let draggedItem = action.payload.draggedItem;
+      let parentIdDroppedItem = pages[droppedOnItem].parentId;
+      let parentIdDraggedItem = pages[draggedItem].parentId;
+      let parentIdDroppedItemChildOrder = pages[parentIdDroppedItem].child.filter((item) => item !== droppedOnItem)
+      const index = parentIdDroppedItemChildOrder.findIndex((id) => id === droppedOnItem)
+      parentIdDroppedItemChildOrder.splice(index, 0, draggedItem)
+      pages[parentIdDroppedItem].child = parentIdDroppedItemChildOrder;
+      if(parentIdDraggedItem !=parentIdDroppedItem){
+        pages[parentIdDraggedItem].child = pages[parentIdDraggedItem].child.filter((item) => item !== draggedItem)
+      }
+      return pages
 
     default:
       return state
