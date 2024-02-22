@@ -27,8 +27,6 @@ export function duplicateVersion(versionId) {
   return http.post(`${apiUrl}/duplicateVersions/${versionId}`)
 }
 
-
-
 export default {
   updateCollectionVersion,
   duplicateVersion,

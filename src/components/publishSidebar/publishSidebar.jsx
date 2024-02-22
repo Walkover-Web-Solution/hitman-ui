@@ -33,11 +33,10 @@ const darkBackgroundStyle = {
 }
 
 function PublishSidebar(props) {
-
   const params = useParams()
 
   const dispatch = useDispatch()
-  
+
   const { pages, collections } = useSelector((state) => {
     return {
       pages: state.pages,

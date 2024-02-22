@@ -7,13 +7,7 @@ import shortId from 'shortid'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
 import { isDashboardRoute, openExternalLink, getParentIds, isOnPublishedPage } from '../common/utility'
 import collectionsService from './collectionsService'
-import {
-  addCollection,
-  deleteCollection,
-  duplicateCollection,
-  updateCollection,
-  addCustomDomain,
-} from './redux/collectionsActions'
+import { addCollection, deleteCollection, duplicateCollection, updateCollection, addCustomDomain } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
 import TagManager from 'react-gtm-module'
@@ -28,10 +22,10 @@ import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
-import {ReactComponent as DeleteIcon} from '../../assets/icons/delete-icon.svg'
-import {ReactComponent as EditIcon} from '../../assets/icons/editsign.svg'
-import {ReactComponent as GoToDocs} from '../../assets/icons/gotodocssign.svg'
-import {ReactComponent as AddGoogleTag} from '../../assets/icons/addGoogleTagsign.svg'
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
+import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
+import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTagsign.svg'
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ImportVersion} from '../../assets/icons/importVersionSign.svg'
 // import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
@@ -216,7 +210,6 @@ class CollectionsComponent extends Component {
 
   closeDeleteCollectionModal() {
     this.setState({ showRemoveModal: false, showDeleteModal: false })
-    
   }
 
   openSelectedCollection(collectionId) {
@@ -405,8 +398,7 @@ class CollectionsComponent extends Component {
                       {!this.props.collections[collectionId]?.importedFromMarketPlace && (
                         <>
                           <div className='dropdown-item' onClick={() => this.openEditCollectionForm(collectionId)}>
-                            <EditIcon/>{' '}
-                            Rename
+                            <EditIcon /> Rename
                           </div>
                           <div
                             className='dropdown-item'
@@ -414,8 +406,7 @@ class CollectionsComponent extends Component {
                               this.openDeleteCollectionModal(collectionId)
                             }}
                           >
-                            <DeleteIcon/>{' '}
-                            Delete
+                            <DeleteIcon /> Delete
                           </div>
                           {/* <div className='dropdown-item' onClick={() => this.handleDuplicateCollection(this.props.collections[collectionId])}>
                          <Duplicate/> {' '}
@@ -423,8 +414,7 @@ class CollectionsComponent extends Component {
                       </div> */}
                           {this.props.collections[collectionId].isPublic && (
                             <div className='dropdown-item' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
-                              <GoToDocs/>{' '}
-                              Go to API Documentation
+                              <GoToDocs /> Go to API Documentation
                             </div>
                           )}
                           {/* {
@@ -452,8 +442,7 @@ class CollectionsComponent extends Component {
                               this.TagManagerModal(collectionId)
                             }}
                           >
-                            <AddGoogleTag/>{' '}
-                            Add Google Tag Manager
+                            <AddGoogleTag /> Add Google Tag Manager
                           </div>
                         </>
                       )}

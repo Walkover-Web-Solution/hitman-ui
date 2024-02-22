@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch) => {
 
 class EndpointBreadCrumb extends Component {
   constructor(props) {
-        super(props)
+    super(props)
     this.nameInputRef = React.createRef()
     this.state = {
       nameEditable: false,
@@ -183,13 +183,13 @@ class EndpointBreadCrumb extends Component {
   handleInputBlur() {
     this.setState({ nameEditable: false })
     if (this.props?.match?.params?.endpointId !== 'new' && trimString(this.props?.endpointContent?.data?.name).length === 0) {
-        const tempData = this.props?.endpointContent || {}
-        tempData.data.name = this.props?.pages?.[this.props?.match?.params?.endpointId]?.name
-        this.props.setQueryUpdatedData(tempData)
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = this.props?.pages?.[this.props?.match?.params?.endpointId]?.name
+      this.props.setQueryUpdatedData(tempData)
     } else if (this.props?.match?.params?.endpointId === 'new' && !this.props?.endpointContent?.data?.name) {
-        const tempData = this.props?.endpointContent || {}
-        tempData.data.name = 'Untitled'
-        this.props.setQueryUpdatedData(tempData)
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = 'Untitled'
+      this.props.setQueryUpdatedData(tempData)
     }
   }
 
@@ -232,9 +232,9 @@ class EndpointBreadCrumb extends Component {
               className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
             >
               {this.props?.isEndpoint
-                ? this.props?.pages?.[this.props?.match?.params?.endpointId]?.name || 
-                this.props?.history?.[this.props?.match?.params?.historyId]?.endpoint?.name || 
-                this.props?.endpointContent?.data?.name
+                ? this.props?.pages?.[this.props?.match?.params?.endpointId]?.name ||
+                  this.props?.history?.[this.props?.match?.params?.historyId]?.endpoint?.name ||
+                  this.props?.endpointContent?.data?.name
                 : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
               {this.props?.isEndpoint && (
                 <EditIcon

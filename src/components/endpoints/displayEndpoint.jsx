@@ -1025,7 +1025,7 @@ class DisplayEndpoint extends Component {
       } else {
         if (this.state.saveAsFlag || slug === 'isHistory') {
           endpoint.description = endpointDescription || ''
-            // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
+          // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
           delete endpoint.state
           delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
@@ -1042,6 +1042,7 @@ class DisplayEndpoint extends Component {
         } else {
           // endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
           // not sending isPublished during put method
+          // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
           endpoint.state = statesEnum.DRAFT_STATE
           this.setState({ saveLoader: true })
           this.props.update_endpoint(
@@ -1262,32 +1263,31 @@ class DisplayEndpoint extends Component {
   }
 
   async prepareHarObject() {
-      const BASE_URL = this.props?.endpointContent?.host?.BASE_URL
-      const uri = new URI(this.props?.endpointContent?.data?.updatedUri)
-      const queryparams = uri.search()
-      const path = this.setPathVariableValues()
-      let url = BASE_URL + path + queryparams
-      url = this.replaceVariables(url)
-      const { method, body } = this.props?.endpointContent?.data
-      const { originalHeaders, originalParams } = this.props?.endpointContent
-      const harObject = {
-        method,
-        url: url,
-        httpVersion: 'HTTP/1.1',
-        cookies: [],
-        headers: this.makeHeaders(originalHeaders),
-        postData: body.type === 'none' ? null : await this.makePostData(body),
-        queryString: this.makeParams(originalParams)
-      }
-      if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
-        harObject.url = 'https://' + url
-      }
-      const updatedharObject = {
-        ...this.props.endpointContent,
-        harObject: harObject
-      }
-      this.props.setQueryUpdatedData(updatedharObject)
-   
+    const BASE_URL = this.props?.endpointContent?.host?.BASE_URL
+    const uri = new URI(this.props?.endpointContent?.data?.updatedUri)
+    const queryparams = uri.search()
+    const path = this.setPathVariableValues()
+    let url = BASE_URL + path + queryparams
+    url = this.replaceVariables(url)
+    const { method, body } = this.props?.endpointContent?.data
+    const { originalHeaders, originalParams } = this.props?.endpointContent
+    const harObject = {
+      method,
+      url: url,
+      httpVersion: 'HTTP/1.1',
+      cookies: [],
+      headers: this.makeHeaders(originalHeaders),
+      postData: body.type === 'none' ? null : await this.makePostData(body),
+      queryString: this.makeParams(originalParams)
+    }
+    if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
+      harObject.url = 'https://' + url
+    }
+    const updatedharObject = {
+      ...this.props.endpointContent,
+      harObject: harObject
+    }
+    this.props.setQueryUpdatedData(updatedharObject)
   }
 
   openCodeTemplate(harObject) {
@@ -2237,7 +2237,9 @@ class DisplayEndpoint extends Component {
             <HostContainer
               {...this.props}
               environmentHost={
-                this.props?.environment?.variables?.BASE_URL?.currentValue || this.props?.environment?.variables?.BASE_URL?.initialValue || ''
+                this.props?.environment?.variables?.BASE_URL?.currentValue ||
+                this.props?.environment?.variables?.BASE_URL?.initialValue ||
+                ''
               }
               updatedUri={this.props?.endpointContent?.data?.updatedUri}
               set_base_url={this.setBaseUrl.bind(this)}

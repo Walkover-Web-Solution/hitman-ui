@@ -15,11 +15,10 @@ import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
-import {ReactComponent as EditIcon} from '../../assets/icons/editsign.svg'
-import {ReactComponent as DeleteIcon} from '../../assets/icons/delete-icon.svg'
-import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
+import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import { ReactComponent as ShareIcon } from '../../assets/icons/sharesign.svg'
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
-
 
 const mapStateToProps = (state) => {
   return {
@@ -300,8 +299,7 @@ class CollectionVersions extends Component {
                 </div>
                 <div className='dropdown-menu dropdown-menu-right'>
                   <div className='dropdown-item' onClick={() => this.openEditVersionForm(versionId)}>
-                    <EditIcon/> {' '}
-                    Edit
+                    <EditIcon /> Edit
                   </div>
                   <div
                     className='dropdown-item'
@@ -309,8 +307,7 @@ class CollectionVersions extends Component {
                       this.openDeleteVersionModal(versionId)
                     }}
                   >
-                   <DeleteIcon/> {' '}
-                    Delete
+                    <DeleteIcon /> Delete
                   </div>
                   {/* <div
                     className='dropdown-item'
@@ -322,7 +319,7 @@ class CollectionVersions extends Component {
                     Duplicate
                   </div> */}
                   <div className='dropdown-item' onClick={() => this.openShareVersionForm(this.props.versions[versionId])}>
-                    <ShareIcon/>
+                    <ShareIcon />
                     Share
                   </div>
                 </div>
