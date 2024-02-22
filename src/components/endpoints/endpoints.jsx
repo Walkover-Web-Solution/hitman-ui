@@ -12,13 +12,12 @@ import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpoint } f
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
 import SubPageForm from '../groups/subPageForm'
-import { ReactComponent as DeleteIcon} from '../../assets/icons/delete-icon.svg'
-import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
-import {ReactComponent as Approved} from '../../assets/icons/approvedSign.svg'
-import {ReactComponent as MakePublic} from '../../assets/icons/makePublicSign.svg'
-import {ReactComponent as CancelRequest} from '../../assets/icons/cancelRequest.svg'
-import {ReactComponent as RenamedItem} from '../../assets/icons/renameSign.svg'
-
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import { ReactComponent as Duplicate } from '../../assets/icons/duplicateSign.svg'
+import { ReactComponent as Approved } from '../../assets/icons/approvedSign.svg'
+import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.svg'
+import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
+import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -65,7 +64,6 @@ class Endpoints extends Component {
         share: false
       }
     }
-    this.scrollRef = {}
   }
 
   componentDidMount() {
@@ -73,26 +71,11 @@ class Endpoints extends Component {
       this.setState({ theme: this.props.theme })
     }
     const { endpointId } = this.props.match.params
-    if (endpointId) {
-      this.scrollToEndpoint(endpointId)
-    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { endpointId } = this.props.match.params
     const { endpointId: prevEndpointId } = prevProps.match.params
-    if (endpointId && endpointId !== prevEndpointId) {
-      this.scrollToEndpoint(endpointId)
-    }
-  }
-
-  scrollToEndpoint(endpointId) {
-    const ref = this.scrollRef[endpointId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }, 100)
-    }
   }
 
   async handleDelete(endpoint) {
@@ -253,8 +236,7 @@ class Endpoints extends Component {
   displayDeleteOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleDelete(this.props.endpoints[endpointId])}>
-        <DeleteIcon/>{' '}
-         Delete
+        <DeleteIcon /> Delete
       </div>
     )
   }
@@ -262,7 +244,7 @@ class Endpoints extends Component {
   displayDuplicateOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.endpoints[endpointId])}>
-        <Duplicate/>
+        <Duplicate />
         Duplicate
       </div>
     )
@@ -271,7 +253,7 @@ class Endpoints extends Component {
   displayApproveOpt() {
     return (
       <div className='dropdown-item' disabled>
-        <Approved/>
+        <Approved />
         Approved
       </div>
     )
@@ -280,7 +262,7 @@ class Endpoints extends Component {
   displayMakePublicOpt(endpointId) {
     return (
       <div id='make_public_btn' className='dropdown-item' onClick={() => this.handlePublicEndpointState(this.props.endpoints[endpointId])}>
-        <MakePublic/>
+        <MakePublic />
         Make Public
       </div>
     )
@@ -289,8 +271,7 @@ class Endpoints extends Component {
   displayCancelRequestOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleCancelRequest(this.props.endpoints[endpointId])}>
-        <CancelRequest/>{' '}
-        Cancel Request
+        <CancelRequest /> Cancel Request
       </div>
     )
   }
@@ -316,9 +297,8 @@ class Endpoints extends Component {
 
         <div className='dropdown-menu dropdown-menu-right'>
           <div className='dropdown-item' onClick={() => this.openEditEndpointForm(endpointId)}>
-                          <RenamedItem/>{' '}
-                          Rename
-                        </div>
+            <RenamedItem /> Rename
+          </div>
           {this.displayDeleteOpt(endpointId)}
           {/* {this.displayDuplicateOpt(endpointId)} */}
           {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
@@ -341,6 +321,7 @@ class Endpoints extends Component {
           }}
           selectedEndpoint={this.props?.endpointId}
           pageType={4}
+          isEndpoint={true}
         />
       )
     )
@@ -349,57 +330,35 @@ class Endpoints extends Component {
   displaySingleEndpoint(endpointId) {
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
-    const isOnDashboardPage = isDashboardRoute(this.props)
-    if (this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
     return (
       <>
-        {publishData ? (
-          <div className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
-            <div className={this.props?.endpoints[endpointId]?.state} />
-            <div className='sidebar-toggle d-flex justify-content-between'>
-              <button
-                tabIndex={-1}
-                // className={[focused && sidebarFocused ? 'focused' : '']}
-              >
-                {this.displayEndpointName(endpointId)}
-                <div className='d-flex align-items-center'></div>
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div
-            ref={(newRef) => {
-              this.scrollRef[endpointId] = newRef
-            }}
-            key={endpointId}
-          >
-            <div className={this.props?.endpoints[endpointId]?.state} />
-            <div className='sidebar-toggle d-flex justify-content-between'>
-              <button
-                tabIndex={-1}
-                className={isSelected}
-                onClick={() => {
-                  this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
-                }}
-                onDoubleClick={() =>
-                  this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
-                }
-              >
-                {this.displayEndpointName(endpointId)}
+        <div key={endpointId}>
+          <div className={this.props?.endpoints[endpointId]?.state} />
+          <div className='sidebar-toggle d-flex justify-content-between'>
+            <button
+              tabIndex={-1}
+              className={isSelected}
+              onClick={() => {
+                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
+              }}
+              onDoubleClick={() =>
+                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
+              }
+            >
+              {this.displayEndpointName(endpointId)}
 
-                <div className='d-flex align-items-center'>
-                  {isDashboardRoute(this.props, true) &&
-                    !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
-                    this.displayEndpointOptions(endpointId)}
-                  {/* <div className='ml-1 published-icon transition'>
+              <div className='d-flex align-items-center'>
+                {isDashboardRoute(this.props, true) &&
+                  !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
+                  this.displayEndpointOptions(endpointId)}
+                {/* <div className='ml-1 published-icon transition'>
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
-                </div>
-              </button>
-            </div>
+              </div>
+            </button>
           </div>
-        )}
+        </div>
       </>
     )
   }

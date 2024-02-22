@@ -14,8 +14,6 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { store } from '../../store/store'
 import { updateTab } from '../tabs/redux/tabsActions'
 import _ from 'lodash'
-import { publishData } from '../modals/redux/modalsActions'
-import { updateCollectionIdForPublish } from '../../store/clientData/clientDataActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -31,8 +29,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
-    setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data))
+    // ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
+    // setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data))
   }
 }
 
@@ -225,9 +223,9 @@ class PublishCollectionInfo extends Component {
     return (
       !currentCollection?.importedFromMarketPlace && (
         <div className='public-colection-info'>
-          {this.managePublicDoc()}
+          {/* {this.managePublicDoc()} */}
           {/* {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))} */}
-          {isPublic && <div className='publicurl'>{this.renderPublicUrl()}</div>}
+          {/* {isPublic && <div className='publicurl'>{this.renderPublicUrl()}</div>} */}
         </div>
       )
     )
@@ -286,8 +284,6 @@ class PublishCollectionInfo extends Component {
 
   redirectUser() {
     this.setState({ openPublishSidebar: true })
-    this.props.ON_PUBLISH_DOC(true)
-    this.props.setCollectionIdForPublish({ collectionId: this.props.collectionId })
   }
 
   async openPublishSettings() {
@@ -301,7 +297,6 @@ class PublishCollectionInfo extends Component {
 
   closePublishSidebar() {
     this.setState({ openPublishSidebar: false })
-    this.props.ON_PUBLISH_DOC(false)
   }
 
   openPublishSidebar() {
@@ -323,8 +318,8 @@ class PublishCollectionInfo extends Component {
     return (
       <div>
         {/* {this.renderPublishCollection()} */}
-        {this.renderPublicCollectionInfo(isPublic)}
-        {this.openPublishSidebar()}
+        {/* {this.renderPublicCollectionInfo(isPublic)} */}
+        {/* {this.openPublishSidebar()} */}
       </div>
     )
   }

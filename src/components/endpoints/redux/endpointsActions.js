@@ -85,7 +85,7 @@ export const deleteEndpoint = (endpoint) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
-            toast.success("Endpoint Deleted Successfully")
+            toast.success('Endpoint Deleted Successfully')
           })
           .catch((error) => {
             console.error('Can not delete endpoint', error)

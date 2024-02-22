@@ -8,8 +8,7 @@ import { onEnter } from '../common/utility'
 const apiUrl = process.env.REACT_APP_API_URL
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-  }
+  return {}
 }
 class ShareVersionForm extends Form {
   constructor(props) {

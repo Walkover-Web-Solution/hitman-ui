@@ -15,11 +15,10 @@ import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
-import {ReactComponent as EditIcon} from '../../assets/icons/editsign.svg'
-import {ReactComponent as DeleteIcon} from '../../assets/icons/delete-icon.svg'
-import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
+import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import { ReactComponent as ShareIcon } from '../../assets/icons/sharesign.svg'
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
-
 
 const mapStateToProps = (state) => {
   return {
@@ -66,7 +65,6 @@ class CollectionVersions extends Component {
     this.filterFlag = false
     this.eventkey = {}
     this.filteredOnlyVersions = {}
-    this.scrollRef = {}
   }
 
   componentDidMount() {
@@ -245,28 +243,13 @@ class CollectionVersions extends Component {
     })
   }
 
-  scrollToVersion(versionId) {
-    const ref = this.scrollRef[versionId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }, 100)
-    }
-  }
-
   renderBody(versionId, index) {
     const expanded = this.props?.clientData?.[this?.props?.rootParentId]?.isExpanded || false
     if (!isDashboardRoute(this.props, true)) return null
     return (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={versionId}>
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-          <button
-            tabIndex={-1}
-            ref={(newRef) => {
-              this.scrollRef[versionId] = newRef
-            }}
-            className={'pl-3 ' + (expanded ? 'expanded' : '')}
-          >
+          <button tabIndex={-1} className={'pl-3 ' + (expanded ? 'expanded' : '')}>
             <div
               className='d-flex align-items-center cl-name'
               onClick={() => {
@@ -300,8 +283,7 @@ class CollectionVersions extends Component {
                 </div>
                 <div className='dropdown-menu dropdown-menu-right'>
                   <div className='dropdown-item' onClick={() => this.openEditVersionForm(versionId)}>
-                    <EditIcon/> {' '}
-                    Edit
+                    <EditIcon /> Edit
                   </div>
                   <div
                     className='dropdown-item'
@@ -309,8 +291,7 @@ class CollectionVersions extends Component {
                       this.openDeleteVersionModal(versionId)
                     }}
                   >
-                   <DeleteIcon/> {' '}
-                    Delete
+                    <DeleteIcon /> Delete
                   </div>
                   {/* <div
                     className='dropdown-item'
@@ -322,7 +303,7 @@ class CollectionVersions extends Component {
                     Duplicate
                   </div> */}
                   <div className='dropdown-item' onClick={() => this.openShareVersionForm(this.props.versions[versionId])}>
-                    <ShareIcon/>
+                    <ShareIcon />
                     Share
                   </div>
                 </div>

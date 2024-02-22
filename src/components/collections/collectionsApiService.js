@@ -68,5 +68,5 @@ export default {
   duplicateCollection,
   getAllPublicCollections,
   getCollectionsByCustomDomain,
-  importCollection,
+  importCollection
 }
