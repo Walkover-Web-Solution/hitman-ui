@@ -12,13 +12,12 @@ import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpoint } f
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
 import SubPageForm from '../groups/subPageForm'
-import { ReactComponent as DeleteIcon} from '../../assets/icons/delete-icon.svg'
-import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
-import {ReactComponent as Approved} from '../../assets/icons/approvedSign.svg'
-import {ReactComponent as MakePublic} from '../../assets/icons/makePublicSign.svg'
-import {ReactComponent as CancelRequest} from '../../assets/icons/cancelRequest.svg'
-import {ReactComponent as RenamedItem} from '../../assets/icons/renameSign.svg'
-
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import { ReactComponent as Duplicate } from '../../assets/icons/duplicateSign.svg'
+import { ReactComponent as Approved } from '../../assets/icons/approvedSign.svg'
+import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.svg'
+import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
+import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -253,8 +252,7 @@ class Endpoints extends Component {
   displayDeleteOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleDelete(this.props.endpoints[endpointId])}>
-        <DeleteIcon/>{' '}
-         Delete
+        <DeleteIcon /> Delete
       </div>
     )
   }
@@ -262,7 +260,7 @@ class Endpoints extends Component {
   displayDuplicateOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.endpoints[endpointId])}>
-        <Duplicate/>
+        <Duplicate />
         Duplicate
       </div>
     )
@@ -271,7 +269,7 @@ class Endpoints extends Component {
   displayApproveOpt() {
     return (
       <div className='dropdown-item' disabled>
-        <Approved/>
+        <Approved />
         Approved
       </div>
     )
@@ -280,7 +278,7 @@ class Endpoints extends Component {
   displayMakePublicOpt(endpointId) {
     return (
       <div id='make_public_btn' className='dropdown-item' onClick={() => this.handlePublicEndpointState(this.props.endpoints[endpointId])}>
-        <MakePublic/>
+        <MakePublic />
         Make Public
       </div>
     )
@@ -289,8 +287,7 @@ class Endpoints extends Component {
   displayCancelRequestOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.handleCancelRequest(this.props.endpoints[endpointId])}>
-        <CancelRequest/>{' '}
-        Cancel Request
+        <CancelRequest /> Cancel Request
       </div>
     )
   }
@@ -316,9 +313,8 @@ class Endpoints extends Component {
 
         <div className='dropdown-menu dropdown-menu-right'>
           <div className='dropdown-item' onClick={() => this.openEditEndpointForm(endpointId)}>
-                          <RenamedItem/>{' '}
-                          Rename
-                        </div>
+            <RenamedItem /> Rename
+          </div>
           {this.displayDeleteOpt(endpointId)}
           {/* {this.displayDuplicateOpt(endpointId)} */}
           {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}

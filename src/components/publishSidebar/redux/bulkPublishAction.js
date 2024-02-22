@@ -8,10 +8,9 @@ export const bulkPublish = (rootParentId, pageIds) => {
       try {
         dispatch({ type: bulkPublishActionTypes.UPDATE_PAGES_STATE_ON_BULK_PUBLISH, data: response.data.pageIds })
         toast.success('Published Successfully')
-      }
-      catch (error) {
+      } catch (error) {
         console.error(error)
-        toast.error("Could not Update")
+        toast.error('Could not Update')
       }
     })
   }

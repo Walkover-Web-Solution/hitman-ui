@@ -414,9 +414,7 @@ class PublishDocForm extends Component {
 
     return (
       <div>
-        <span className='public-title mt-1 d-block'>
-          Public Link
-        </span>
+        <span className='public-title mt-1 d-block'>Public Link</span>
         <OverlayTrigger
           overlay={
             <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled ? 'd-none' : ''}>
@@ -426,7 +424,9 @@ class PublishDocForm extends Component {
         >
           <div
             onClick={() => isDisabled && openExternalLink(url)}
-            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-3 ${isDisabled ? 'text-disable' : 'disabled-link'}`}
+            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-3 ${
+              isDisabled ? 'text-disable' : 'disabled-link'
+            }`}
           >
             <HiOutlineExternalLink className='mr-1' size={13} />
             <span>{url}</span>
