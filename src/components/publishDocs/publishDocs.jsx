@@ -663,9 +663,7 @@ class PublishDocs extends Component {
             </div>
             <div className='publish-reject mt-3 d-flex'>{this.endpointPublishAndReject()}</div>
           </div>
-          <div className='scrollTo'>
-            {this.checkEndpointState()}
-          </div>
+          <div className='scrollTo'>{this.checkEndpointState()}</div>
         </div>
       )
     }

@@ -65,6 +65,7 @@ function PublishSidebar(props) {
   }
 
   const sendPublishRequest = async () => {
+    props.closePublishSidebar()
     if (allSelectedIds.length === 0) return toast.error('Please Select Something To Publish')
     const dataToPublish = new Set()
     let rootParentId = collections[params.collectionId]?.rootParentId || ''
@@ -72,7 +73,7 @@ function PublishSidebar(props) {
     dataToPublish.delete(1)
     const pageIds = Array.from(dataToPublish).map((id) => flattenData?.[id]?.metadata?.actualId)
     try {
-      // await bulkPublishApiService.bulkPublishSelectedData({ rootParentId, pageIds })
+      // await bulkPublishApiService.bulkPublishSelectedData({ rootParentId pageIds })
       dispatch(bulkPublish(rootParentId, pageIds))
       // props.closePublishSidebar()
     } catch (error) {
