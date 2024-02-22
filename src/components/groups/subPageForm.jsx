@@ -60,6 +60,7 @@ class SubPageForm extends Form {
   }
 
   render() {
+    const nameTitle = this.props.isEndpoint ? 'Endpoint Name' : 'Page Name'
     return (
       <div
         onKeyPress={(e) => {
@@ -80,7 +81,7 @@ class SubPageForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-12'>
-                  {this.renderInput('name', 'Name', 'Page Name', true, false, false, '*name accepts min 1 & max 20 characters')}
+                  {this.renderInput('name', 'Name', nameTitle, true, false, false, '*name accepts min 1 & max 20 characters')}
                 </div>
                 <div className='col-12'>
                   {this.renderInput(

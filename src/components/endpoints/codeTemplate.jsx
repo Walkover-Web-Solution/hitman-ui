@@ -35,6 +35,8 @@ class CodeTemplate extends Component {
   }
 
   makeCodeTemplate(selectedLanguage) {
+    const harObject = this.props.harObject
+    if (!harObject || !harObject.method) return
     this.selectedLanguage = selectedLanguage
     this.selectedLanguageName = languages[selectedLanguage].name
     let codeSnippet = ''

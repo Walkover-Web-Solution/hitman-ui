@@ -243,17 +243,13 @@ class CollectionVersions extends Component {
     })
   }
 
-
   renderBody(versionId, index) {
     const expanded = this.props?.clientData?.[this?.props?.rootParentId]?.isExpanded || false
     if (!isDashboardRoute(this.props, true)) return null
     return (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={versionId}>
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-          <button
-            tabIndex={-1}
-            className={'pl-3 ' + (expanded ? 'expanded' : '')}
-          >
+          <button tabIndex={-1} className={'pl-3 ' + (expanded ? 'expanded' : '')}>
             <div
               className='d-flex align-items-center cl-name'
               onClick={() => {
