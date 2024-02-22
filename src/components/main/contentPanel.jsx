@@ -147,17 +147,27 @@ class ContentPanel extends Component {
         if (!tabs[tabId]) tabId = tabsOrder[0]
 
         const tab = tabs[tabId]
-        if (tabId !== activeTabId) this.props.set_active_tab_id(tabId)
 
-        const collectionLength = Object.keys(this.props.collections).length
-        if (collectionLength > 0) {
+        if (this.props.pages?.[tabId] || this.props.collections?.[tabId] || this.props.history?.[tabId]){
+          tabId !==activeTabId && this.props.set_active_tab_id(tabId)  // set active tab id if it's not set
+
           this.props.history.push({
             pathname:
               tab.type !== 'collection'
-                ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
+                ? `/orgs/${orgId}/dashboard/${tab.type}/${tabId}` // this will cover all pages, endpoint and history route
                 : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
           })
         }
+        //  tab.status == 'NEW' is case for endpoint only and in this case active tab id is already set || just redirect to the url
+        else if(tab.status == 'NEW'){
+          this.props.history.push({pathname:`/orgs/${orgId}/dashboard/endpoint/new`}) 
+        }
+        // if tabId exist but it's data doesn't exist in pages,collection or history then close that tab then add new tab 
+        else if (!(this.props.pages[tabId] || this.props.collections[tabId] || this.props.history[tabId])){
+          this.props.close_tab(tabId)
+          this.props.add_new_tab()
+        }
+
       } else {
         this.props.add_new_tab()
       }
