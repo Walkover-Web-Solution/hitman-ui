@@ -65,7 +65,6 @@ class CollectionVersions extends Component {
     this.filterFlag = false
     this.eventkey = {}
     this.filteredOnlyVersions = {}
-    this.scrollRef = {}
   }
 
   componentDidMount() {
@@ -244,14 +243,6 @@ class CollectionVersions extends Component {
     })
   }
 
-  scrollToVersion(versionId) {
-    const ref = this.scrollRef[versionId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }, 100)
-    }
-  }
 
   renderBody(versionId, index) {
     const expanded = this.props?.clientData?.[this?.props?.rootParentId]?.isExpanded || false
@@ -261,9 +252,6 @@ class CollectionVersions extends Component {
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
           <button
             tabIndex={-1}
-            ref={(newRef) => {
-              this.scrollRef[versionId] = newRef
-            }}
             className={'pl-3 ' + (expanded ? 'expanded' : '')}
           >
             <div
