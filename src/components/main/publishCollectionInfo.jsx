@@ -14,8 +14,6 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { store } from '../../store/store'
 import { updateTab } from '../tabs/redux/tabsActions'
 import _ from 'lodash'
-import { publishData } from '../modals/redux/modalsActions'
-import { updateCollectionIdForPublish } from '../../store/clientData/clientDataActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -285,10 +283,7 @@ class PublishCollectionInfo extends Component {
   }
 
   redirectUser() {
-    console.log("inside redirect user");
     this.setState({ openPublishSidebar: true })
-    this.props.ON_PUBLISH_DOC(true)
-    this.props.setCollectionIdForPublish({ collectionId: this.props.collectionId })
   }
 
   async openPublishSettings() {
@@ -302,7 +297,6 @@ class PublishCollectionInfo extends Component {
 
   closePublishSidebar() {
     this.setState({ openPublishSidebar: false })
-    this.props.ON_PUBLISH_DOC(false)
   }
 
   openPublishSidebar() {

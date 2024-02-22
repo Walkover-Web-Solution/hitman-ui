@@ -111,7 +111,7 @@ class PublishDocs extends Component {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ openPageSettingsSidebar: false })
     }
-    this.props.ON_PUBLISH_DOC(false)
+    // this.props.ON_PUBLISH_DOC(false)
   }
 
   componentDidUpdate(prevProps, prevState) {

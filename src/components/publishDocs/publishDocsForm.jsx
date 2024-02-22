@@ -400,10 +400,9 @@ class PublishDocForm extends Component {
   }
 
   redirectUser() {
-    console.log('inside redirect user', this.props.selected_collection_id)
     this.setState({ openPublishSidebar: true })
     this.props.ON_PUBLISH_DOC(true)
-    this.props.setCollectionIdForPublish({ collectionId: this.props.selected_collection_id })
+    // this.props.setCollectionIdForPublish({ collectionId: this.props.selected_collection_id })
   }
 
   renderPublicUrl() {
