@@ -3333,7 +3333,9 @@ body .tox {
     background: white;
   }
 }
-
-// .Pane {
-//   overflow: scroll !important;
-// }
+.Pane::-webkit-scrollbar{
+  display: none !important;
+}
+.Pane {
+  overflow: scroll !important;
+}
