@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { FaSquare, FaCheckSquare, FaMinusSquare } from 'react-icons/fa'
 import { MdArrowDropUp } from 'react-icons/md'
 import { MdOutlineArrowDropDown } from 'react-icons/md'
 import TreeView, { flattenTree } from 'react-accessible-treeview'
 import { modifyCheckBoxDataToSend, modifyDataForBulkPublish } from '../common/utility'
-import bulkPublishApiService from './bulkPublishApiService'
+import { bulkPublish } from './redux/bulkPublishAction'
 import { toast } from 'react-toastify'
 import './checkBoxTreeView.scss'
 import './publishSidebar.scss'
@@ -33,8 +33,11 @@ const darkBackgroundStyle = {
 }
 
 function PublishSidebar(props) {
+
   const params = useParams()
 
+  const dispatch = useDispatch()
+  
   const { pages, collections } = useSelector((state) => {
     return {
       pages: state.pages,
@@ -68,11 +71,11 @@ function PublishSidebar(props) {
     let rootParentId = collections[params.collectionId]?.rootParentId || ''
     modifyCheckBoxDataToSend(flattenData, allSelectedIds, dataToPublish)
     dataToPublish.delete(1)
-    const pageIds = Array.from(dataToPublish).map((id)=> flattenData?.[id]?.metadata?.actualId);
+    const pageIds = Array.from(dataToPublish).map((id) => flattenData?.[id]?.metadata?.actualId)
     try {
-      await bulkPublishApiService.bulkPublishSelectedData({ rootParentId, pageIds })
-      toast.success('Successfully published')
-      props.closePublishSidebar()
+      // await bulkPublishApiService.bulkPublishSelectedData({ rootParentId, pageIds })
+      dispatch(bulkPublish(rootParentId, pageIds))
+      // props.closePublishSidebar()
     } catch (error) {
       console.error(error)
       toast.error('Cannot Publish at this moment')
