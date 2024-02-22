@@ -32,6 +32,8 @@ import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg
 import { toast } from 'react-toastify'
 import SubPageForm from '../groups/subPageForm'
 import { ReactComponent as Rename } from '../../assets/icons/renameSign.svg'
+import VersionPublishDropdown from './versionPublishDropdown/versionPublishDropdown'
+import SelectVersion from './selectVersion/selectVersion'
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ShareSign} from '../../assets/icons/sharesign.svg'
 
@@ -447,42 +449,19 @@ class CollectionParentPages extends Component {
                   this.toggleParentPageIds(this.props.rootParentId)
                 }}
               >
-                <span className='versionChovron'>
-                  <img src={ExpandArrow} alt='' />
-                </span>
-                <div className='d-flex'>
-                  <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
-
-                  <DropdownButton
-                    className=''
-                    id='dropdown-basic-button'
-                    onClick={(event) => event.stopPropagation()}
-                    title={
-                      <span className='dropdown-title'>
-                        {this.props.pages?.[this.props.rootParentId]?.child?.length === 1
-                          ? this.state.defaultVersionName
-                          : this.state.selectedVersionName}
-                      </span>
-                    }
-                  >
-                    {this.props.pages[rootId].child.map((childId, index) => (
-                      <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
-                        <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
-                        {!isOnPublishedPage() && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              this.handleDeleteVersion(childId)
-                            }}
-                            className='version-delete-button'
-                          >
-                            <DeleteIcon />
-                          </button>
-                        )}
-                      </Dropdown.Item>
-                    ))}
-                  </DropdownButton>
-                  {/* </div> */}
+                <div
+                  className='d-flex align-items-center cl-name'
+                  onClick={() => {
+                    this.toggleParentPageIds(this.props.rootParentId)
+                  }}
+                >
+                  <span className='versionChovron'>
+                    <img src={ExpandArrow} alt='' />
+                  </span>
+                  <div className='d-flex justify-content-between align-items-center'>
+                    <div className='text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
+                    {isOnPublishedPage() ? <VersionPublishDropdown /> : <SelectVersion parentPageId={pageId} />}
+                  </div>
                 </div>
               </div>
 
@@ -519,7 +498,27 @@ class CollectionParentPages extends Component {
                       >
                         <PlusOrange /> Add Version
                       </div>
-                      {/* <div
+                      <div className='dropdown-menu dropdown-menu-right'>
+                        <div className='dropdown-item' onClick={() => this.openEditPageForm(pageId)}>
+                          <Rename /> Rename
+                        </div>
+                        <div
+                          className='dropdown-item'
+                          onClick={() => {
+                            this.openDeletePageModal(pageId)
+                          }}
+                        >
+                          <DeleteIcon /> Delete
+                        </div>
+                        <div
+                          className='dropdown-item'
+                          onClick={() => {
+                            this.openAddVersionForm(pageId)
+                          }}
+                        >
+                          <PlusOrange /> Add Version
+                        </div>
+                        {/* <div
                         className='dropdown-item'
                         onClick={() => {
                           this.handleDuplicate(this.props.rootParentId)
@@ -528,10 +527,11 @@ class CollectionParentPages extends Component {
                         <Duplicate/>  {' '}
                         Duplicate
                       </div> */}
-                      {/* <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
+                        {/* <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
                           <ShareSign/>
                           Share
                         </div> */}
+                      </div>
                     </div>
                   </div>
                 ) : null
