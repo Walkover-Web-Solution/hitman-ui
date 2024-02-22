@@ -85,7 +85,6 @@ class PublishDocs extends Component {
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
-    this.scrollmyRef = React.createRef()
   }
 
   componentDidMount() {
@@ -111,7 +110,7 @@ class PublishDocs extends Component {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ openPageSettingsSidebar: false })
     }
-    this.props.ON_PUBLISH_DOC(false)
+    // this.props.ON_PUBLISH_DOC(false)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -664,9 +663,7 @@ class PublishDocs extends Component {
             </div>
             <div className='publish-reject mt-3 d-flex'>{this.endpointPublishAndReject()}</div>
           </div>
-          <div className='scrollTo' ref={this.scrollmyRef}>
-            {this.checkEndpointState()}
-          </div>
+          <div className='scrollTo'>{this.checkEndpointState()}</div>
         </div>
       )
     }
@@ -695,7 +692,6 @@ class PublishDocs extends Component {
         )
       }
     }
-    // this.scrollmyRef.current.scrollIntoView({ block: "center" })
   }
 
   handleRemovePublicEndpoint(endpointId) {

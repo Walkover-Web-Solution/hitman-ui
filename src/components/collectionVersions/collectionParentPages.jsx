@@ -31,7 +31,7 @@ import { onDefaultVersion } from '../publishDocs/redux/publishDocsActions'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { toast } from 'react-toastify'
 import SubPageForm from '../groups/subPageForm'
-import {ReactComponent as Rename} from '../../assets/icons/renameSign.svg'
+import { ReactComponent as Rename } from '../../assets/icons/renameSign.svg'
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ShareSign} from '../../assets/icons/sharesign.svg'
 
@@ -100,7 +100,6 @@ class CollectionParentPages extends Component {
 
     this.filterFlag = false
     this.eventkey = {}
-    this.scrollRef = {}
   }
 
   componentDidMount() {
@@ -320,18 +319,6 @@ class CollectionParentPages extends Component {
     }
   }
 
-  scrolltoPage(pageId) {
-    const ref = this.scrollRef[pageId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'start'
-        })
-      }, 100)
-    }
-  }
   // renderVersion(rootId) {
   //   const versionToRender = this.props.pages[rootId].child;
   //   return (
@@ -448,174 +435,91 @@ class CollectionParentPages extends Component {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
     const publishData = this.props.modals.publishData
     const rootId = pageId
-    if (this.scrollRef[pageId]) this.scrolltoPage(pageId)
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
     return (
       <>
-        {/* for publish side barrrrrrrr */}
-        {this.props.isPublishData && publishData ? (
-          <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
-            <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-              <button tabIndex={-1} className={'pl-3 ' + (expanded ? 'expanded' : '')}>
-                <div className='d-flex align-items-center cl-name'>
-                  <input
-                    type='checkbox'
-                    checked={this.props?.clientData?.[this.props?.rootParentId]?.checkedForPublished || false}
-                    onChange={this.handleCheckboxChange}
-                  />
-                  <div className='d-flex gap-5 ms-2'>
-                    <div className='sidebar-accordion-item text-truncate ml-2 '>{this.props.pages[pageId]?.name}</div>
-                    <DropdownButton
-                      id='dropdown-basic-button'
-                      title={
-                        <span className='dropdown-title'>
-                          {this.props.clientData[rootId]?.selectedVersionName || this.props.clientData[rootId]?.defaultVersionName}
-                        </span>
-                      }
-                      //  show={true}
-                    >
-                      {this.props.pages[rootId].child.map((childId, index) => (
-                        <Dropdown.Item key={index} onClick={() => this.handleDropdownItemClick(childId, rootId)}>
-                          {this.props.pages[childId]?.name}
-                        </Dropdown.Item>
-                      ))}
-                    </DropdownButton>
-                    <OverlayTrigger placement='top' overlay={<Tooltip>Select Default version to publish</Tooltip>}>
-                      <DropdownButton
-                        id='dropdown-basic-button'
-                        className='dropdown-custom'
-                        drop='down-centered'
-                        onClick={() => {
-                          this.handleButton(rootId)
-                        }}
-                        title={'Select Default Version'}
-                      >
-                        {this.state.clickedList.map((item, index) => (
-                          <Dropdown.Item className='d-flex' key={index}>
-                            <input
-                              type='checkbox'
-                              checked={this.state.selectedCheckbox === item.name}
-                              onChange={() => {
-                                this.handleCheckboxClick(item.name, item.id)
-                              }}
-                            />
-                            <Dropdown.Item
-                              key={index}
-                              onClick={(event) => {
-                                event.stopPropagation()
-                              }}
-                            >
-                              {item.name}
-                            </Dropdown.Item>
-                          </Dropdown.Item>
-                        ))}
-                      </DropdownButton>
-                    </OverlayTrigger>
-                  </div>
-                </div>
-              </button>
-              {/* {expanded ? ( */}
-              <div className='version-collapse'>
-                <Card.Body>
-                  <div className='linkWrapper versionPages pl-4'>
-                    <CombinedCollections {...this.props} page_id={pageId} rootParentId={this.state.selectedVersionId} />
-                  </div>
-                </Card.Body>
-              </div>
-              {/* ) : null}  */}
-            </div>
-          </div>
-        ) : (
-          <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
-            <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-              <button
-                tabIndex={-1}
-                ref={(newRef) => {
-                  this.scrollRef[pageId] = newRef
+        <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
+          <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
+            <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''} ${isSelected}`}>
+              <div
+                className='d-flex align-items-center cl-name'
+                onClick={() => {
+                  this.toggleParentPageIds(this.props.rootParentId)
                 }}
-                className={`pl-3 ${expanded ? 'expanded' : ''} ${isSelected}`}
               >
-                <div
-                  className='d-flex align-items-center cl-name'
-                  onClick={() => {
-                    this.toggleParentPageIds(this.props.rootParentId)
-                  }}
-                >
-                  <span className='versionChovron'>
-                    <img src={ExpandArrow} alt='' />
-                  </span>
-                  <div className='d-flex'>
-                    <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
+                <span className='versionChovron'>
+                  <img src={ExpandArrow} alt='' />
+                </span>
+                <div className='d-flex'>
+                  <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
 
-                    <DropdownButton
-                      className=''
-                      id='dropdown-basic-button'
-                      onClick={(event) => event.stopPropagation()}
-                      title={
-                        <span className='dropdown-title'>
-                          {this.props.pages?.[this.props.rootParentId]?.child?.length === 1
-                            ? this.state.defaultVersionName
-                            : this.state.selectedVersionName}
-                        </span>
-                      }
-                    >
-                      {this.props.pages[rootId].child.map((childId, index) => (
-                        <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
-                          <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
-                          {!isOnPublishedPage() && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                this.handleDeleteVersion(childId)
-                              }}
-                              className='version-delete-button'
-                            >
-                              <DeleteIcon />
-                            </button>
-                          )}
-                        </Dropdown.Item>
-                      ))}
-                    </DropdownButton>
-                    {/* </div> */}
-                  </div>
+                  <DropdownButton
+                    className=''
+                    id='dropdown-basic-button'
+                    onClick={(event) => event.stopPropagation()}
+                    title={
+                      <span className='dropdown-title'>
+                        {this.props.pages?.[this.props.rootParentId]?.child?.length === 1
+                          ? this.state.defaultVersionName
+                          : this.state.selectedVersionName}
+                      </span>
+                    }
+                  >
+                    {this.props.pages[rootId].child.map((childId, index) => (
+                      <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
+                        <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
+                        {!isOnPublishedPage() && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              this.handleDeleteVersion(childId)
+                            }}
+                            className='version-delete-button'
+                          >
+                            <DeleteIcon />
+                          </button>
+                        )}
+                      </Dropdown.Item>
+                    ))}
+                  </DropdownButton>
+                  {/* </div> */}
                 </div>
+              </div>
 
-                {
-                  // [info] options not to show on publihsed page
-                  isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
-                    <div className='sidebar-item-action d-flex align-items-center'>
+              {
+                // [info] options not to show on publihsed page
+                isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                  <div className='sidebar-item-action d-flex align-items-center'>
+                    <div
+                      className='mr-1 d-flex align-items-center'
+                      onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
+                    >
+                      <Plus />
+                    </div>
+                    <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                      <i className='uil uil-ellipsis-v' />
+                    </div>
+                    <div className='dropdown-menu dropdown-menu-right'>
+                      <div className='dropdown-item' onClick={() => this.openEditPageForm(pageId)}>
+                        <Rename /> Rename
+                      </div>
                       <div
-                        className='mr-1 d-flex align-items-center'
-                        onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
+                        className='dropdown-item'
+                        onClick={() => {
+                          this.openDeletePageModal(pageId)
+                        }}
                       >
-                        <Plus />
+                        <DeleteIcon /> Delete
                       </div>
-                      <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                        <i className='uil uil-ellipsis-v' />
+                      <div
+                        className='dropdown-item'
+                        onClick={() => {
+                          this.openAddVersionForm(pageId)
+                        }}
+                      >
+                        <PlusOrange /> Add Version
                       </div>
-                      <div className='dropdown-menu dropdown-menu-right'>
-                        <div className='dropdown-item' onClick={() => this.openEditPageForm(pageId)}>
-                          <Rename/>{' '}
-                          Rename
-                        </div>
-                        <div
-                          className='dropdown-item'
-                          onClick={() => {
-                            this.openDeletePageModal(pageId)
-                          }}
-                        >
-                           <DeleteIcon/>{' '}
-                           Delete
-                        </div>
-                        <div
-                          className='dropdown-item'
-                          onClick={() => {
-                            this.openAddVersionForm(pageId)
-                          }}
-                        >
-                          <PlusOrange /> Add Version
-                        </div>
-                        {/* <div
+                      {/* <div
                         className='dropdown-item'
                         onClick={() => {
                           this.handleDuplicate(this.props.rootParentId)
@@ -624,35 +528,34 @@ class CollectionParentPages extends Component {
                         <Duplicate/>  {' '}
                         Duplicate
                       </div> */}
-                        {/* <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
+                      {/* <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
                           <ShareSign/>
                           Share
                         </div> */}
-                      </div>
                     </div>
-                  ) : null
-                }
-              </button>
-              {expanded ? (
-                <div className='version-collapse'>
-                  <Card.Body>
-                    <div className='linkWrapper versionPages pl-4'>
-                      <CombinedCollections
-                        {...this.props}
-                        page_id={pageId}
-                        rootParentId={
-                          this.props.pages[this.props.rootParentId].child.length === 1
-                            ? this.state.defaultVersionId
-                            : this.state.selectedVersionId
-                        }
-                      />
-                    </div>
-                  </Card.Body>
-                </div>
-              ) : null}
-            </div>
+                  </div>
+                ) : null
+              }
+            </button>
+            {expanded ? (
+              <div className='version-collapse'>
+                <Card.Body>
+                  <div className='linkWrapper versionPages pl-4'>
+                    <CombinedCollections
+                      {...this.props}
+                      page_id={pageId}
+                      rootParentId={
+                        this.props.pages[this.props.rootParentId].child.length === 1
+                          ? this.state.defaultVersionId
+                          : this.state.selectedVersionId
+                      }
+                    />
+                  </div>
+                </Card.Body>
+              </div>
+            ) : null}
           </div>
-        )}
+        </div>
       </>
     )
   }

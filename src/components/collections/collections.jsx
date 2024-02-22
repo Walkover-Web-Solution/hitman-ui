@@ -7,13 +7,7 @@ import shortId from 'shortid'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
 import { isDashboardRoute, openExternalLink, getParentIds, isOnPublishedPage } from '../common/utility'
 import collectionsService from './collectionsService'
-import {
-  addCollection,
-  deleteCollection,
-  duplicateCollection,
-  updateCollection,
-  addCustomDomain,
-} from './redux/collectionsActions'
+import { addCollection, deleteCollection, duplicateCollection, updateCollection, addCustomDomain } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
 import TagManager from 'react-gtm-module'
@@ -23,18 +17,19 @@ import hitmanLogo from '../../assets/icons/hitman.svg'
 import PublishCollectionInfo from '../main/publishCollectionInfo'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandIcon from '../../assets/icons/expand-arrow.svg'
-import { addNewTab } from '../tabs/redux/tabsActions'
+import { addNewTab, updateTab } from '../tabs/redux/tabsActions'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
-import {ReactComponent as DeleteIcon} from '../../assets/icons/delete-icon.svg'
-import {ReactComponent as EditIcon} from '../../assets/icons/editsign.svg'
-import {ReactComponent as GoToDocs} from '../../assets/icons/gotodocssign.svg'
-import {ReactComponent as AddGoogleTag} from '../../assets/icons/addGoogleTagsign.svg'
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
+import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
+import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTagsign.svg'
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ImportVersion} from '../../assets/icons/importVersionSign.svg'
 // import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
+import { store } from '../../store/store'
 
 const EMPTY_STRING = ''
 
@@ -73,7 +68,6 @@ class CollectionsComponent extends Component {
       selectedCollectionIds: []
     }
     this.names = {}
-    this.scrollRef = {}
   }
 
   closeCollectionForm() {
@@ -222,6 +216,7 @@ class CollectionsComponent extends Component {
     this.props.collection_selected(collectionId)
     this.collectionId = collectionId
     this.setState({ openSelectedCollection: true })
+    // this.openPublishSettings(collectionId)
   }
 
   openAllCollections() {
@@ -301,20 +296,17 @@ class CollectionsComponent extends Component {
       value: !isExpanded,
       id
     })
+    this.openPublishSettings(id)
   }
 
-  scrollToCollection(collectionId) {
-    const ref = this.scrollRef[collectionId] || null
-    if (ref) {
-      setTimeout(() => {
-        ref.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'start'
-        })
-      }, 100)
+  async openPublishSettings(collectionId) {
+    if (collectionId) {
+      this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
+    const activeTab = this.props.tabs.activeTabId
+    // store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
   }
+
   openAddPageEndpointModal(collectionId) {
     this.setState({
       showAddCollectionModal: true,
@@ -347,20 +339,9 @@ class CollectionsComponent extends Component {
     const expanded = this.props.clientData?.[collectionId]?.isExpanded ?? isOnPublishedPage()
     var isOnDashboardPage = isDashboardRoute(this.props)
 
-    if (this.scrollRef[collectionId]) {
-      this.scrollToCollection(collectionId)
-    }
-
     return (
       <React.Fragment key={collectionId}>
-        <div
-          key={collectionId}
-          id='parent-accordion'
-          className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}
-          ref={(newRef) => {
-            this.scrollRef[collectionId] = newRef
-          }}
-        >
+        <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
           <button tabIndex={-1} variant='default' className={expanded ? 'expanded' : ''}>
             <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='d-flex justify-content-between'>
@@ -393,8 +374,7 @@ class CollectionsComponent extends Component {
                       {!this.props.collections[collectionId]?.importedFromMarketPlace && (
                         <>
                           <div className='dropdown-item' onClick={() => this.openEditCollectionForm(collectionId)}>
-                            <EditIcon/>{' '}
-                            Rename
+                            <EditIcon /> Rename
                           </div>
                           <div
                             className='dropdown-item'
@@ -402,8 +382,7 @@ class CollectionsComponent extends Component {
                               this.openDeleteCollectionModal(collectionId)
                             }}
                           >
-                            <DeleteIcon/>{' '}
-                            Delete
+                            <DeleteIcon /> Delete
                           </div>
                           {/* <div className='dropdown-item' onClick={() => this.handleDuplicateCollection(this.props.collections[collectionId])}>
                          <Duplicate/> {' '}
@@ -411,8 +390,7 @@ class CollectionsComponent extends Component {
                       </div> */}
                           {this.props.collections[collectionId].isPublic && (
                             <div className='dropdown-item' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
-                              <GoToDocs/>{' '}
-                              Go to API Documentation
+                              <GoToDocs /> Go to API Documentation
                             </div>
                           )}
                           {/* {
@@ -440,8 +418,7 @@ class CollectionsComponent extends Component {
                               this.TagManagerModal(collectionId)
                             }}
                           >
-                            <AddGoogleTag/>{' '}
-                            Add Google Tag Manager
+                            <AddGoogleTag /> Add Google Tag Manager
                           </div>
                         </>
                       )}
@@ -484,11 +461,12 @@ class CollectionsComponent extends Component {
             <div id='collection-collapse'>
               <Card.Body>
                 {isOnDashboardPage && (
-                  <PublishCollectionInfo
-                    {...this.props}
-                    collectionId={collectionId}
-                    // getTotalEndpointsCount={this.props.getTotalEndpointsCount.bind(this)}
-                  />
+                  // <PublishCollectionInfo
+                  //   {...this.props}
+                  //   collectionId={collectionId}
+                  //   getTotalEndpointsCount={this.props.getTotalEndpointsCount.bind(this)}
+                  // />
+                  <></>
                 )}
 
                 {

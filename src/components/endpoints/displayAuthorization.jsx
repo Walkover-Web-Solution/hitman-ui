@@ -35,7 +35,7 @@ class Authorization extends Component {
 
   fetchAuthorizationResponse() {
     if (
-      this.authResponses?.length === 0 
+      this.authResponses?.length === 0
       // Object.keys(this.props.versions).length !== 0 &&
       // Object.keys(this.props.groups).length !== 0 &&
       // this.props.groupId !== undefined &&

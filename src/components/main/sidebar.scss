@@ -307,6 +307,9 @@ body .sidebar {
         background-color: $grey;
       }
     }
+    .sidebar-content::-webkit-scrollbar {
+      display: none;
+    }
     .sidebar-content {
       overflow: hidden auto;
       flex: auto;
@@ -386,9 +389,6 @@ body .sidebar {
   height: 35px;
 }
 
-.sidebar-public-url .text-truncate {
-  padding-right: 20px;
-}
 
 .user-info .user-avatar {
   width: 32px;

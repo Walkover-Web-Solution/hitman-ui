@@ -370,8 +370,7 @@ class DisplayResponse extends Component {
                         className='add-to-sample-response'
                       >
                         <div className='adddescLink' onClick={() => this.addSampleResponse(this.props.response)}>
-                          <img src= {addtosample} />{' '}
-                          Add to Sample Response
+                          <img src={addtosample} /> Add to Sample Response
                         </div>
                       </div>
                     ) : null}
