@@ -461,7 +461,7 @@ class PublishDocForm extends Component {
     const selectedCollection = this.getSelectedCollection()
     const isNotPublished = !this.isCollectionPublished(selectedCollection)
     const rootParentId = this.props?.collections[this.props.selected_collection_id]?.rootParentId
-    const disableCondition = this.props.pages[rootParentId]?.child.length > 0
+    const disableCondition = this.props?.pages[rootParentId]?.child?.length > 0
     return (
       <div>
         <Button

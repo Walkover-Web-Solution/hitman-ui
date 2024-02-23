@@ -3,13 +3,15 @@ import { Card, Dropdown, Accordion, DropdownButton, Button } from 'react-bootstr
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import ShareVersionForm from './shareVersionForm'
+import collectionVersionsService from './collectionVersionsService'
 import {
   isDashboardRoute,
   getParentIds,
   getUrlPathById,
   isTechdocOwnDomain,
   SESSION_STORAGE_KEY,
-  isOnPublishedPage
+  isOnPublishedPage,
+  ADD_VERSION_MODAL_NAME
 } from '../common/utility'
 import './collectionVersions.scss'
 import AddEntity from '../main/addEntity/addEntity'
@@ -528,7 +530,10 @@ class CollectionParentPages extends Component {
                           this.manageVersion(true)
                         }}
                       >
-                        <MdOutlineSettings size={20} color='#f2994a' /> Manage Version
+                        <MdOutlineSettings size={20} color='#f2994a' />
+                        <span data-toggle='modal' data-target='#exampleModalCenter'>
+                          Manage Version
+                        </span>
                       </div>
                     </div>
                   </div>
