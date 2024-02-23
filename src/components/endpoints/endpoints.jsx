@@ -300,7 +300,7 @@ class Endpoints extends Component {
             <RenamedItem /> Rename
           </div>
           {this.displayDeleteOpt(endpointId)}
-          {/* {this.displayDuplicateOpt(endpointId)} */}
+          {this.displayDuplicateOpt(endpointId)}
           {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
         </div>
       </div>
