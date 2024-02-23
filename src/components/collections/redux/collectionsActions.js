@@ -6,7 +6,7 @@ import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import { onParentPageAdded } from '../../pages/redux/pagesActions'
 import { toast } from 'react-toastify'
-import { deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
+import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 export const fetchCollections = (orgId) => {
@@ -50,8 +50,8 @@ export const fetchCollection = (collectionId) => {
 }
 
 export const addCollection = (newCollection, openSelectedCollection, customCallback) => {
+  newCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
   return (dispatch) => {
-    dispatch(addCollectionRequest(newCollection))
     collectionsApiService
       .saveCollection(newCollection)
       .then((response) => {
@@ -60,7 +60,8 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           page: {
             id: response.data.rootParentId,
             type: 0,
-            child: []
+            child: [],
+            collectionId: response.data.id
           }
         }
         dispatch(onParentPageAdded(inivisiblePageData))
@@ -104,6 +105,7 @@ export const onCollectionAddedError = (error, newCollection) => {
 
 export const updateCollection = (editedCollection, stopLoader, customCallback) => {
   return (dispatch) => {
+    editedCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
     const originalCollection = store.getState().collections[editedCollection.id]
     dispatch(updateCollectionRequest({ ...originalCollection, ...editedCollection }))
     const id = editedCollection.id
@@ -152,9 +154,10 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
 }
 
 export const deleteCollection = (collection, props) => {
+  collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     collectionsApiService
-      .deleteCollection(collection.id)
+      .deleteCollection(collection.id,collection)
       .then((res) => {
         const rootParentPageId = collection.rootParentId
         deleteAllPagesAndTabsAndReactQueryData(rootParentPageId)
@@ -253,6 +256,7 @@ export const addCustomDomain = (collectionId, domain) => {
 }
 
 export const importApi = (collection, importType, website, customCallback, defaultView) => {
+  collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     if (importType === 'postman') {
       openApiService

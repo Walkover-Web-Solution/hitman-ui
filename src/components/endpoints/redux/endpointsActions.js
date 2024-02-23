@@ -2,14 +2,32 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
-import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
+import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
 import shortid from 'shortid'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 import { addChildInParent } from '../../pages/redux/pagesActions'
 import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
+
+export const formatResponseToSend = (response) => {
+  return {
+    id: response.data.id,
+    requestType: response.data.requestType,
+    name: response.data.name,
+    urlName: response.data.urlName,
+    parentId: response.data.parentId,
+    child: [],
+    state: response.data.state,
+    isPublished: response.data.isPublished,
+    type: response.data.type || 4,
+    versionId: response.data.versionId || null,
+    collectionId: response.data.collectionId
+  };
+}
+
 export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, props) => {
+  newEndpoint.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   const orgId = getOrgId()
   const requestId = shortid.generate()
   return (dispatch) => {
@@ -17,19 +35,7 @@ export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, 
     endpointApiService
       .saveEndpoint(rootParentId, { ...newEndpoint, requestId })
       .then(async (response) => {
-        const responseToSend = {
-          id: response.data.id,
-          requestType: response.data.requestType,
-          name: response.data.name,
-          urlName: response.data.urlName,
-          parentId: response.data.parentId,
-          child: [],
-          state: response.data.state,
-          isPublished: response.data.isPublished,
-          type: response.data.type || 4,
-          versionId: response.data.versionId || null,
-          collectionId: response.data.collectionId
-        }
+        const responseToSend = formatResponseToSend(response)
         const data = await dispatch(addChildInParent(responseToSend))
         history.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
         if (props?.match?.params?.endpointId === 'new') {
@@ -74,9 +80,10 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
 }
 
 export const deleteEndpoint = (endpoint) => {
+  endpoint.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     endpointApiService
-      .deleteEndpoint(endpoint.id)
+      .deleteEndpoint(endpoint.id,endpoint)
       .then((res) => {
         deleteAllPagesAndTabsAndReactQueryData(endpoint.id)
           .then((data) => {

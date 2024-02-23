@@ -45,8 +45,8 @@ export function updateCollection(collectionId, collection) {
   return http.put(collectionUrl(collectionId), collection)
 }
 
-export function deleteCollection(collectionId) {
-  return http.delete(collectionUrl(collectionId))
+export function deleteCollection(collectionId, collection) {
+  return http.delete(collectionUrl(collectionId), { data: collection })
 }
 
 export function duplicateCollection(collectionId) {

@@ -25,7 +25,8 @@ export const statesEnum = {
 
 export const SESSION_STORAGE_KEY = {
   CURRENT_PUBLISH_ID_SHOW: 'currentPublishIdToShow',
-  PUBLIC_COLLECTION_ID: 'publicCollectionId'
+  PUBLIC_COLLECTION_ID: 'publicCollectionId',
+  UNIQUE_TAB_ID: 'uniqueTabId'
 }
 
 const tokenKey = 'token'
