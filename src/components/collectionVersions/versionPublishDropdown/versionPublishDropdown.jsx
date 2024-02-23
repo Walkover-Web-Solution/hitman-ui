@@ -3,30 +3,16 @@ import { Dropdown, DropdownButton } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 
 export default function VersionPublishDropdown(props) {
-    const [defaultVersion, setDefaultVersion] = useState('')
-    const [selectedVersion, setSelectedVersion] = useState('')
-
-  useEffect(() => {
-    var defaultVersion = findDefaultVersion()
-    setDefaultVersion(defaultVersion)
-  }, [])
 
   const { pages } = useSelector((state) => {
     return { pages: state.pages }
   })
+  
   const handleDropdownItemClick = (childId) => {
     var selected = pages[childId].name
-    console.log(selected, "selecteddd");
     setSelectedVersion(...selected)
-    console.log('inisde handle dropdown clickedddd', childId)
   }
 
-  const findDefaultVersion = () => {
-    const children = pages[props.rootParentId]?.child || []
-    return children.map((childId) => pages[childId]).find((page) => page?.state === 1)
-  }
-  
-console.log(selectedVersion.name, "selected version nameee");
   return (
     <DropdownButton
       className=''

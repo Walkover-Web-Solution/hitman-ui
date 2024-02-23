@@ -6,6 +6,7 @@ import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpoin
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import generalActionsTypes from '../../redux/generalActionTypes'
 import { statesEnum } from '../../common/utility'
+import publishDocsActionTypes from '../../publishDocs/redux/publishDocsActionTypes'
 
 const initialState = {}
 
@@ -82,19 +83,23 @@ function pagesReducer(state = initialState, action) {
       }
 
     case pagesActionTypes.ON_PARENTPAGE_VERSION_ADDED:
-      pages = { ...state }
-      delete pages[action.response.requestId]
-      const versionData = { ...action.response }
-      delete versionData.requestId
-      pages[action.response.id] = versionData
-      if (action.response.parentId) {
-        const parentId = action.response.parentId
-        if (!pages[parentId].child) {
-          pages[parentId].child = []
+      debugger
+      let pagesData={};
+      try {
+        pagesData = { ...state }
+        pagesData[action.response.id] = { ...action.response }
+        if (action.response.parentId) {
+          const parentId = action.response.parentId
+          if (!pagesData[parentId].child) {
+            pagesData[parentId].child = []
+          }
+          pagesData[parentId].child.push(action.response.id)
         }
-        pages[parentId].child.push(action.response.id)
       }
-      return pages
+      catch (error) {
+        console.log(error)
+      }
+      return { ...pagesData }
 
     case pagesActionTypes.ON_GROUP_PAGE_ADDED_ERROR:
       toast.error(action.error)
@@ -271,6 +276,11 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action?.response?.id]: action?.response
       }
+    case publishDocsActionTypes.ON_DEFAULT_VERSION:
+      const pages = { ...state }
+      pages[action?.versionData?.newVersionId].state = 1
+      pages[action.versionData?.oldVersionId].state = 0
+      return pages
 
     default:
       return state
