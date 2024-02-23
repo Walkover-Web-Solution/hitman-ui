@@ -54,9 +54,9 @@ export function updateEndpoint(endpointId, endpoint) {
   return http.put(`${apiUrl}/endpoints/${endpointId}`, endpoint)
 }
 
-export function deleteEndpoint(endpointId) {
+export function deleteEndpoint(endpointId, endpoint) {
   const apiUrl = getApiUrl()
-  return http.delete(`${apiUrl}/endpoints/${endpointId}`)
+  return http.delete(`${apiUrl}/endpoints/${endpointId}`, { data: endpoint })
 }
 
 export function duplicateEndpoint(endpointId) {
