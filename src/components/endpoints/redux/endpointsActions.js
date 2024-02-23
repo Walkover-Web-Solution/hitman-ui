@@ -208,7 +208,7 @@ export const onEndpointDeletedError = (error, endpoint) => {
 
 export const onEndpointDuplicated = (response) => {
   return {
-    type: endpointsActionTypes.ON_ENDPOINT_DUPLICATED,
+    type: pagesActionTypes.ON_ENDPOINT_DUPLICATED,
     response
   }
 }

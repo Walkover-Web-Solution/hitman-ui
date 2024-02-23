@@ -278,6 +278,13 @@ function pagesReducer(state = initialState, action) {
         }
       }
 
+    case pagesActionTypes.ON_ENDPOINT_DUPLICATED:
+      state[action?.response?.parentId].child.push(action?.response?.id)
+      return {
+        ...state,
+        [action?.response?.id]: action?.response
+      }
+
     default:
       return state
   }
