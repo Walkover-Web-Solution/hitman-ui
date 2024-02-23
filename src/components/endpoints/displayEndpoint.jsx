@@ -1199,7 +1199,7 @@ class DisplayEndpoint extends Component {
 
   makeHeaders(headers) {
     const processedHeaders = []
-    for (let i = 0; i < Object.keys(headers).length; i++) {
+    for (let i = 0; i < Object.keys(headers)?.length; i++) {
       if (headers[Object.keys(headers)[i]].checked === 'true') {
         processedHeaders.push({
           name: headers[Object.keys(headers)[i]].key,
