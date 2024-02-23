@@ -54,7 +54,7 @@ const VersionInput = (props) => {
           <input
             onBlur={() => setShowEdit(false)}
             type='text'
-            class='form-control version-input col-form-label-sm'
+            className='form-control version-input col-form-label-sm'
             aria-label='Small'
             aria-describedby='inputGroup-sizing-sm'
           ></input>
@@ -89,19 +89,10 @@ const AddVersion = () => {
 }
 
 export default function SelectVersion(props) {
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(props?.showModal)
 
   return (
     <div onClick={(e) => e.stopPropagation()} className='flex ml-3'>
-      <span
-        onClick={(e) => {
-          e.stopPropagation()
-          setShowModal(true)
-        }}
-      >
-        Select <IoMdArrowDropdown />
-      </span>
-
       <CustomModal modalShow={showModal} setModal={setShowModal}>
         <VersionModal {...props} />
       </CustomModal>
