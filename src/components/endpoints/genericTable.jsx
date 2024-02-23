@@ -253,7 +253,7 @@ class GenericTable extends Component {
               <input
                 disabled={originalData[index].checked === 'false' ? null : 'disabled'}
                 name={index + '.checkbox'}
-                value={dataArray[index].checked}
+                defaultValue={dataArray[index].checked}
                 checked={dataArray[index].checked === 'true'}
                 type='checkbox'
                 className='Checkbox'
@@ -273,7 +273,7 @@ class GenericTable extends Component {
           <div className='d-flex align-items-center'>
             <input
               name={index + '.value'}
-              value={dataArray[index].type === 'file' ? '' : dataArray[index].value}
+              defaultValue={dataArray[index].type === 'file' ? '' : dataArray[index].value}
               key={index + this.state.randomId}
               onChange={this.handleChange}
               type='text'
@@ -299,7 +299,7 @@ class GenericTable extends Component {
           {...autoCompleterDefaultProps}
           name={key}
           key={key}
-          value={dataArray[index].key}
+          defaultValue={dataArray[index].key}
           onChange={(e) => this.handleChange(e, { name: key, value: e })}
           type='text'
           placeholder='Key'
@@ -368,7 +368,7 @@ class GenericTable extends Component {
               <input
                 disabled={isDashboardRoute(this.props, true) || originalData[index].checked === 'false' ? null : 'disabled'}
                 name={index + '.checkbox'}
-                value={dataArray[index].checked}
+                defaultValue={dataArray[index].checked}
                 checked={dataArray[index].checked === 'true'}
                 type='checkbox'
                 className='Checkbox'
@@ -390,7 +390,7 @@ class GenericTable extends Component {
                 {...autoCompleterDefaultProps}
                 name={valueKey}
                 key={valueKey}
-                value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
+                defaultValue={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
                 onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
                 className='form-control'
                 placeholder={dataArray[index].checked === 'notApplicable' ? 'Value' : `Enter ${dataArray[index].key}`}
@@ -406,7 +406,7 @@ class GenericTable extends Component {
               <input
                 disabled={isDashboardRoute(this.props) ? null : 'disabled'}
                 name={index + '.description'}
-                value={dataArray[index].description}
+                defaultValue={dataArray[index].description}
                 onChange={this.handleChange}
                 type='text'
                 placeholder='Description'
@@ -599,7 +599,7 @@ class GenericTable extends Component {
               name='contents'
               id='contents'
               rows='9'
-              value={this.textAreaValue}
+              defaultValue={this.textAreaValue}
               onChange={this.handleBulkChange}
               placeholder={
                 'Rows are separated by new lines \nKeys and values are separated by : \nPrepend // to any row you want to add but keep disabled'
