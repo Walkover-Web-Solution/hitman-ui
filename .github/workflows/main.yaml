@@ -59,6 +59,10 @@ jobs:
           REACT_APP_TINYMCE_API_KEY : ${{vars.REACT_APP_TINYMCE_API_KEY}}
           REACT_APP_TECHDOC_MAPPING_DOMAIN : ${{vars.REACT_APP_TECHDOC_MAPPING_DOMAIN}}
 
+          REACT_APP_RTLAYER_OID : ${{vars.REACT_APP_RTLAYER_OID}}
+          REACT_APP_RTLAYER_SID : ${{vars.REACT_APP_RTLAYER_SID}}
+
+
         run: npm run build
       - name: Archive Production Artifact
         uses: actions/upload-artifact@v2
