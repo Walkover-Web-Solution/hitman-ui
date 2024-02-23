@@ -29,9 +29,9 @@ export function updatePage(pageId, page) {
   return http.put(`${apiUrl}/pages/${pageId}`, page)
 }
 
-export function deletePage(pageId) {
+export function deletePage(pageId, page) {
   const apiUrl = getApiUrl()
-  return http.delete(`${apiUrl}/pages/${pageId}`)
+  return http.delete(`${apiUrl}/pages/${pageId}`,{data: page})
 }
 
 export function duplicatePage(pageId) {

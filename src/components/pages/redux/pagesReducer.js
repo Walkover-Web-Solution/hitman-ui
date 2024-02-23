@@ -25,31 +25,19 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.ON_PAGE_FETCHED_ERROR:
       return state
 
-    // case pagesActionTypes.ADD_PAGE_REQUEST:
-    //   action.newPage.groupId = null
-    //   action.newPage.versionId = action.versionId
-    //   return {
-    //     ...state,
-    //     [action.newPage.requestId]: action.newPage
-    //   }
-    case pagesActionTypes.ADD_PARENT_PAGE_REQUEST:
-      action.newPage.parentId = action.parentId
-      return {
-        ...state,
-        [action.newPage.requestId]: action.newPage
-      }
-
     case publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS:
       state[action.data.id].state = action.data.state
       state[action.data.id].isPublished = action.data.isPublished
       return {
         ...state
       }
+      
     case publicEndpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
       return {
         ...state,
         [action.editedEndpoint.id]: action.editedEndpoint
       }
+
     case pagesActionTypes.ON_PARENT_PAGE_ADDED: {
       pages = { ...state }
 
@@ -57,8 +45,6 @@ function pagesReducer(state = initialState, action) {
       if (pageData.type === 0) {
         pages[action.page.id] = pageData
       }
-      delete pages[action.page.requestId]
-      delete pageData.requestId
       pages[action.page.id] = pageData
 
       if (action.page.type === 1) {
@@ -76,6 +62,7 @@ function pagesReducer(state = initialState, action) {
       }
       return pages
     }
+
     case pagesActionTypes.ADD_VERSION_REQUEST:
       return {
         ...state,
