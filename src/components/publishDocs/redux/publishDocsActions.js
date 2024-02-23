@@ -1,4 +1,5 @@
 // import {store} from '../../../store/store'
+import { store } from '../../../store/store'
 import publishDocsApiService from '../publishDocsApiService'
 import publishDocsActionTypes from './publishDocsActionTypes'
 
@@ -30,24 +31,29 @@ export const onFeedbacksFetchedError = (error) => {
 }
 
 export const onDefaultVersion = (orgId, versionData) => {
+  const pages = store.getState().pages
+  console.log(versionData,"version data",orgId, "version data inside on default versionnn");
   return (dispatch) => {
     publishDocsApiService
       .setDefaultVersion(orgId, versionData)
       .then((response) => {
-        dispatch(onSetDefaultVersion(response.data))
+        console.log(response, "respoonsde");
+        dispatch(onSetDefaultVersion(response.data, pages))
       })
       .catch((error) => {
         dispatch(onSetDefaultVersionError(error.response ? error.response.data : error))
       })
   }
 }
-export const onSetDefaultVersion = (versionData) => {
+export const onSetDefaultVersion = (versionData, pages) => {
   return {
     type: publishDocsActionTypes.ON_DEFAULT_VERSION,
-    versionData
+    versionData,
+    pages
   }
 }
 export const onSetDefaultVersionError = (error) => {
+  console.log(error);
   return {
     type: publishDocsActionTypes.ON_DEFAULT_VERSION_ERROR,
     error

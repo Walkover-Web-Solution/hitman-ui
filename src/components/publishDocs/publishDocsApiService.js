@@ -7,6 +7,7 @@ export function getFeedbacks(collectionId, orgId) {
   return false
 }
 export function setDefaultVersion(orgId, versionData) {
+  console.log(orgId, versionData, "api call");
   return http.put(apiUrl + `/orgs/${orgId}/defaultVersion`, versionData)
 }
 
