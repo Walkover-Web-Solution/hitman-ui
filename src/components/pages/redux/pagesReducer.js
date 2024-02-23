@@ -25,13 +25,6 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.ON_PAGE_FETCHED_ERROR:
       return state
 
-    // case pagesActionTypes.ADD_PAGE_REQUEST:
-    //   action.newPage.groupId = null
-    //   action.newPage.versionId = action.versionId
-    //   return {
-    //     ...state,
-    //     [action.newPage.requestId]: action.newPage
-    //   }
     case pagesActionTypes.ADD_PARENT_PAGE_REQUEST:
       action.newPage.parentId = action.parentId
       return {
@@ -277,6 +270,22 @@ function pagesReducer(state = initialState, action) {
           state: action.response?.state
         }
       }
+    case pagesActionTypes.ON_DRAG_DROP:
+      let pages = { ...state }
+      let droppedOnId = action.payload.droppedOnId;
+      let draggedId = action.payload.draggedId;
+      
+      // if both data is not  from same parent then stop the user 
+      let draggedIdParentId = pages?.[draggedId]?.parentId
+      let droppedOnIdParentId = pages?.[droppedOnId]?.parentId
+
+      if(draggedIdParentId == droppedOnIdParentId){
+        let droppedOnIdParentIdChildOrder = pages[droppedOnIdParentId].child.filter((item) => item !== draggedId) // removed dragged Item from the child array
+        const index = droppedOnIdParentIdChildOrder.findIndex((id) => id === droppedOnId) // found out the index of droppedOnId
+        droppedOnIdParentIdChildOrder.splice(index, 0, draggedId) // added draggedId before droppedOnId
+        pages[droppedOnIdParentId].child = droppedOnIdParentIdChildOrder;
+      }
+      return pages
 
     default:
       return state
