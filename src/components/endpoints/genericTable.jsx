@@ -324,7 +324,7 @@ class GenericTable extends Component {
   }
 
   getName(name) {
-    return name.split('\\\\')[name.split('\\\\').length - 1]
+    return name.split('\\')[name.split('\\').length - 1]
   }
 
   handleFileInput(dataArray, index) {
