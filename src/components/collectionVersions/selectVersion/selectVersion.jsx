@@ -8,6 +8,7 @@ import { addParentPageVersion } from '../redux/collectionVersionsActions'
 import { deletePage } from '../../pages/redux/pagesActions'
 import { onDefaultVersion } from '../../publishDocs/redux/publishDocsActions'
 import './selectVersion.scss'
+import { toast } from 'react-toastify'
 
 const VersionInput = (props) => {
   const { pages } = useSelector((state) => {
@@ -50,13 +51,28 @@ const VersionInput = (props) => {
 }
 
 const AddVersion = (props) => {
+  const { pages } = useSelector((state) => {
+    return { pages: state.pages }
+  })
+
   const dispatch = useDispatch()
 
   const newVersionNameInputRef = useRef()
 
   const addVersion = () => {
+    if (newVersionNameInputRef.current.value.trim().length === 0) return toast.error('Cannot Add Empty Value')
+    const versionChilds = pages?.[props?.parentPageId]?.child
+    try {
+      versionChilds.forEach((element) => {
+        if (pages[element]?.name.trim() === newVersionNameInputRef.current.value.trim()) {
+          throw new Error('StopIteration')
+        }
+      })
+    } catch (error) {
+      return toast.error('Version Name already Exist!')
+    }
     const parentPageId = props?.parentPageId
-    const newVersion = { name: newVersionNameInputRef.current.value, state: 0 }
+    const newVersion = { name: newVersionNameInputRef.current.value.trim(), state: 0 }
     newVersionNameInputRef.current.value = ''
     dispatch(addParentPageVersion(newVersion, parentPageId))
   }
