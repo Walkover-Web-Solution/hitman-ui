@@ -444,52 +444,6 @@ class CollectionParentPages extends Component {
     )
   }
 
-  // versionPublishDropdown(rootId) {
-
-  //   function checkIfVersionHasPublishedChild(singleId) {
-  //     debugger
-  //     this.props.pages[singleId].child.forEach((childId) => {
-  //       if(this.props?.pages?.[childId] && this.props?.pages?.[childId]?.isPublished) return true
-  //     })
-  //     return false
-  //   }
-
-  //   function showDropDown() {
-  //     if(this.props.pages?.[this.props.rootParentId]?.child?.length === 0 ) return [];
-  //     return this.props.pages?.[this.props.rootParentId]?.child.filter((singleId) => {
-  //       if (
-  //         this.props.pages?.[singleId] &&
-  //         this.props?.pages?.[singleId]?.isPublished
-  //         &&
-  //         checkIfVersionHasPublishedChild.bind(this)(singleId)
-  //       )
-  //         return singleId
-  //     })
-  //   }
-
-  //   const show = showDropDown.bind(this)()
-
-  //   console.log(show,1234)
-
-  //   if (show.length === 0) return null
-  //   return (
-  //     <DropdownButton
-  //       className=''
-  //       id='dropdown-basic-button'
-  //       onClick={(e) => e.stopPropagation()}
-  //       title={'select version'
-  //         // this.props.pages?.[this.props.rootParentId]?.child?.length === 1 ? this.state.defaultVersionName : this.state.selectedVersionName
-  //       }
-  //     >
-  //       {show.map((childId, index) => (
-  //         <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
-  //           {this.props.pages[childId]?.name}
-  //         </Dropdown.Item>
-  //       ))}
-  //     </DropdownButton>
-  //   )
-  // }
-
   renderBody(pageId, index) {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
     const rootId = pageId

@@ -622,6 +622,11 @@ button.btn.custom-body-type-button {
   align-items: center;
   justify-content: space-between;
   z-index: 2;
+
+  @media only screen and (max-width: 1600px){
+    flex-wrap: wrap;
+    justify-content: center;
+   }
 }
 .fixed-menu-bar {
   position: fixed;
