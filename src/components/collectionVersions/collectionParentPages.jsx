@@ -352,7 +352,7 @@ class CollectionParentPages extends Component {
   //   );
   // }
   handleDropdownItemClick(id, rootId) {
-    const selectedVersionName = this.props.pages[id].name
+    const selectedVersionName = this.props?.pages[id]?.name
     const defaultVersionId = this.state.defaultVersionId
     const defaultVersionName = this.state.defaultVersionName
     this.setState({ selectedVersionName: selectedVersionName })
@@ -399,34 +399,6 @@ class CollectionParentPages extends Component {
       isListVisible: !prevState.isListVisible
     }))
   }
-  handleCheckboxChange = () => {
-    this.props.setIsCheckForParenPage({
-      id: this.props.rootParentId,
-      isChecked: !this.props?.clientData?.[this.props.rootParentId]?.checkedForPublished
-    })
-  }
-  handleCheckboxClick = (name, id) => {
-    this.setState(
-      (prevState) => ({
-        selectedCheckbox: prevState.selectedCheckbox === name ? null : name
-      }),
-      () => {
-        localStorage.setItem('selectedCheckbox', JSON.stringify({ id: id, 'name ': this.state.selectedCheckbox }))
-      }
-    )
-
-    const versionData = { oldVersionId: this.state.defaultVersionId, newVersionId: id }
-    if (this.state.defaultVersionId !== id) {
-      this.props.set_Default_Version(this.props.match.params.orgId, versionData)
-      this.props.set_Default_version_Id({
-        value: id,
-        defaultVersionId: id,
-        selectedVersionName: name,
-        defaultVersionName: name,
-        rootId: this.props.rootParentId
-      })
-    }
-  }
   closeDefaultVersionForm() {
     this.setState({ setDefaultVersion: false })
   }
@@ -454,7 +426,6 @@ class CollectionParentPages extends Component {
 
   renderBody(pageId, index) {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
-    const publishData = this.props.modals.publishData
     const rootId = pageId
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
     return (
@@ -468,12 +439,7 @@ class CollectionParentPages extends Component {
                   this.toggleParentPageIds(this.props.rootParentId)
                 }}
               >
-                <div
-                  className='d-flex align-items-center cl-name'
-                  onClick={() => {
-                    this.toggleParentPageIds(this.props.rootParentId)
-                  }}
-                >
+                <div className='d-flex align-items-center cl-name'>
                   <span className='versionChovron'>
                     <img src={ExpandArrow} alt='' />
                   </span>
@@ -482,7 +448,7 @@ class CollectionParentPages extends Component {
                     <DropdownButton
                       className=''
                       id='dropdown-basic-button'
-                      onClick={(event) => event.stopPropagation()}
+                      onClick={(e) => e.stopPropagation()}
                       title={
                         this.props.pages?.[this.props.rootParentId]?.child?.length === 1
                           ? this.state.defaultVersionName
