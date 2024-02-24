@@ -432,10 +432,11 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
+    let isUserOnPublishedPage = isOnPublishedPage()
+    const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const publishData = this.props.modals.publishData
     const rootId = pageId
-    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
     return (
       <>
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
@@ -450,7 +451,12 @@ class CollectionParentPages extends Component {
                 <span className='versionChovron'>
                   <img src={ExpandArrow} alt='' />
                 </span>
-                <div className='d-flex'>
+                <div className='d-flex' 
+                draggable={!isUserOnPublishedPage}
+                onDragOver={this.props.handleOnDragOver}
+                onDragStart={() => this.props.onDragStart(pageId)}
+                onDrop={(e) => this.props.onDrop(e, pageId)}
+                >
                   <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
 
                   <DropdownButton
@@ -468,7 +474,7 @@ class CollectionParentPages extends Component {
                     {this.props.pages[rootId].child.map((childId, index) => (
                       <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
                         <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
-                        {!isOnPublishedPage() && (
+                        {!isUserOnPublishedPage && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation()

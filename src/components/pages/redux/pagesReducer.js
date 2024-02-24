@@ -264,6 +264,11 @@ function pagesReducer(state = initialState, action) {
           state: action.response?.state
         }
       }
+    case pagesActionTypes.ON_DRAG_DROP:
+      let pages = { ...state }
+      let pageData = action.payload
+      pages[pageData.id] = { ...pages[pageData.id], ...pageData }
+      return pages
 
     case pagesActionTypes.ON_ENDPOINT_DUPLICATED:
       state[action?.response?.parentId].child.push(action?.response?.id)

@@ -27,3 +27,10 @@ export const updateCollectionIdForPublish = (payload) => {
     payload
   }
 }
+
+export const setDraggedId = (draggedId) => {
+  return {
+    type: clientDataActionTypes.SET_DRAGGED_ID,
+    draggedId : draggedId
+  }
+}
