@@ -3,21 +3,19 @@ import { Card, Dropdown, Accordion, DropdownButton, Button } from 'react-bootstr
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import ShareVersionForm from './shareVersionForm'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import collectionVersionsService from './collectionVersionsService'
 import {
   isDashboardRoute,
   getParentIds,
-  ADD_VERSION_MODAL_NAME,
   getUrlPathById,
   isTechdocOwnDomain,
   SESSION_STORAGE_KEY,
-  isOnPublishedPage
+  isOnPublishedPage,
+  ADD_VERSION_MODAL_NAME
 } from '../common/utility'
 import './collectionVersions.scss'
-import collectionVersionsService from './collectionVersionsService'
 import AddEntity from '../main/addEntity/addEntity'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
-import { ReactComponent as PlusOrange } from '../../assets/icons/plus_orange.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 import { deletePage, duplicatePage } from '../pages/redux/pagesActions'
@@ -32,8 +30,10 @@ import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg
 import { toast } from 'react-toastify'
 import SubPageForm from '../groups/subPageForm'
 import { ReactComponent as Rename } from '../../assets/icons/renameSign.svg'
-// import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
-// import {ReactComponent as ShareSign} from '../../assets/icons/sharesign.svg'
+import SelectVersion from './selectVersion/selectVersion'
+import CustomModal from '../customModal/customModal'
+import { MdOutlineSettings } from 'react-icons/md'
+import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
 
 const mapStateToProps = (state) => {
   return {
@@ -191,6 +191,28 @@ class CollectionParentPages extends Component {
     })
   }
 
+  manageVersion() {
+    this.setState({
+      showVersionForm: true
+    })
+  }
+
+  hideModalVersion() {
+    this.setState({
+      showVersionForm: false
+    })
+  }
+
+  openManageVersionModal() {
+    return (
+      this.state.showVersionForm && (
+        <CustomModal modalShow={this.state.showVersionForm} setModal={() => this.hideModalVersion()}>
+          <SelectVersion parentPageId={this.props?.rootParentId} />
+        </CustomModal>
+      )
+    )
+  }
+
   openAddPageEndpointModal(pageId) {
     this.setState({
       showAddCollectionModal: true,
@@ -331,7 +353,7 @@ class CollectionParentPages extends Component {
   //   );
   // }
   handleDropdownItemClick(id, rootId) {
-    const selectedVersionName = this.props.pages[id].name
+    const selectedVersionName = this.props?.pages[id]?.name
     const defaultVersionId = this.state.defaultVersionId
     const defaultVersionName = this.state.defaultVersionName
     this.setState({ selectedVersionName: selectedVersionName })
@@ -378,34 +400,6 @@ class CollectionParentPages extends Component {
       isListVisible: !prevState.isListVisible
     }))
   }
-  handleCheckboxChange = () => {
-    this.props.setIsCheckForParenPage({
-      id: this.props.rootParentId,
-      isChecked: !this.props?.clientData?.[this.props.rootParentId]?.checkedForPublished
-    })
-  }
-  handleCheckboxClick = (name, id) => {
-    this.setState(
-      (prevState) => ({
-        selectedCheckbox: prevState.selectedCheckbox === name ? null : name
-      }),
-      () => {
-        localStorage.setItem('selectedCheckbox', JSON.stringify({ id: id, 'name ': this.state.selectedCheckbox }))
-      }
-    )
-
-    const versionData = { oldVersionId: this.state.defaultVersionId, newVersionId: id }
-    if (this.state.defaultVersionId !== id) {
-      this.props.set_Default_Version(this.props.match.params.orgId, versionData)
-      this.props.set_Default_version_Id({
-        value: id,
-        defaultVersionId: id,
-        selectedVersionName: name,
-        defaultVersionName: name,
-        rootId: this.props.rootParentId
-      })
-    }
-  }
   closeDefaultVersionForm() {
     this.setState({ setDefaultVersion: false })
   }
@@ -431,9 +425,27 @@ class CollectionParentPages extends Component {
     }
   }
 
+  versionDropDown(rootId) {
+    return (
+      <DropdownButton
+        className=''
+        id='dropdown-basic-button'
+        onClick={(e) => e.stopPropagation()}
+        title={
+          this.props.pages?.[this.props.rootParentId]?.child?.length === 1 ? this.state.defaultVersionName : this.state.selectedVersionName
+        }
+      >
+        {this.props.pages[rootId].child.map((childId, index) => (
+          <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
+            {this.props.pages[childId]?.name}
+          </Dropdown.Item>
+        ))}
+      </DropdownButton>
+    )
+  }
+
   renderBody(pageId, index) {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
-    const publishData = this.props.modals.publishData
     const rootId = pageId
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
     return (
@@ -447,42 +459,23 @@ class CollectionParentPages extends Component {
                   this.toggleParentPageIds(this.props.rootParentId)
                 }}
               >
-                <span className='versionChovron'>
-                  <img src={ExpandArrow} alt='' />
-                </span>
-                <div className='d-flex'>
-                  <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
-
-                  <DropdownButton
-                    className=''
-                    id='dropdown-basic-button'
-                    onClick={(event) => event.stopPropagation()}
-                    title={
-                      <span className='dropdown-title'>
-                        {this.props.pages?.[this.props.rootParentId]?.child?.length === 1
-                          ? this.state.defaultVersionName
-                          : this.state.selectedVersionName}
-                      </span>
-                    }
-                  >
-                    {this.props.pages[rootId].child.map((childId, index) => (
-                      <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
-                        <span className='dropdown-item-text'>{this.props.pages[childId]?.name}</span>
-                        {!isOnPublishedPage() && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              this.handleDeleteVersion(childId)
-                            }}
-                            className='version-delete-button'
-                          >
-                            <DeleteIcon />
-                          </button>
-                        )}
-                      </Dropdown.Item>
-                    ))}
-                  </DropdownButton>
-                  {/* </div> */}
+                <div className='d-flex align-items-center cl-name'>
+                  <span className='versionChovron'>
+                    <img src={ExpandArrow} alt='' />
+                  </span>
+                  <div className='d-flex justify-content-between align-items-center'>
+                    <div className='text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
+                    {!isOnPublishedPage(pageId) ? (
+                      this.versionDropDown(rootId)
+                    ) : (
+                      <PublishedVersionDropDown
+                        handleDropdownItemClick={this.handleDropdownItemClick.bind(this)}
+                        rootParentId={this.props?.rootParentId}
+                        defaultVersionName={this.state.defaultVersionName}
+                        selectedVersionName={this.state.selectedVersionName}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -514,24 +507,14 @@ class CollectionParentPages extends Component {
                       <div
                         className='dropdown-item'
                         onClick={() => {
-                          this.openAddVersionForm(pageId)
+                          this.manageVersion(true)
                         }}
                       >
-                        <PlusOrange /> Add Version
+                        <MdOutlineSettings size={20} color='#f2994a' />
+                        <span data-toggle='modal' data-target='#exampleModalCenter'>
+                          Manage Version
+                        </span>
                       </div>
-                      {/* <div
-                        className='dropdown-item'
-                        onClick={() => {
-                          this.handleDuplicate(this.props.rootParentId)
-                        }}
-                      >
-                        <Duplicate/>  {' '}
-                        Duplicate
-                      </div> */}
-                      {/* <div className='dropdown-item' onClick={() => this.openShareParentPageForm(this.props.pages[pageId])}>
-                          <ShareSign/>
-                          Share
-                        </div> */}
                     </div>
                   </div>
                 ) : null
@@ -738,14 +721,16 @@ class CollectionParentPages extends Component {
       <>
         {this.showShareVersionForm()}
         {this.showAddPageEndpointModal()}
+
+        {this.state.showVersionForm && this.openManageVersionModal()}
         {this.showEditPageModal()}
-        {this.state.showVersionForm &&
+        {/* {this.state.showVersionForm &&
           collectionVersionsService.showVersionForm(
             this.props,
             this.closeVersionForm.bind(this),
             this.props.rootParentId,
             ADD_VERSION_MODAL_NAME
-          )}
+          )} */}
 
         {this.state.showDeleteVersion &&
           pageService.showDeletePageModal(

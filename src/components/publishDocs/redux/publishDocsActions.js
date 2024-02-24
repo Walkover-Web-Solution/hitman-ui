@@ -1,4 +1,5 @@
 // import {store} from '../../../store/store'
+import { store } from '../../../store/store'
 import publishDocsApiService from '../publishDocsApiService'
 import publishDocsActionTypes from './publishDocsActionTypes'
 
@@ -33,8 +34,8 @@ export const onDefaultVersion = (orgId, versionData) => {
   return (dispatch) => {
     publishDocsApiService
       .setDefaultVersion(orgId, versionData)
-      .then((response) => {
-        dispatch(onSetDefaultVersion(response.data))
+      .then(() => {
+        dispatch(onSetDefaultVersion(versionData))
       })
       .catch((error) => {
         dispatch(onSetDefaultVersionError(error.response ? error.response.data : error))
@@ -44,7 +45,7 @@ export const onDefaultVersion = (orgId, versionData) => {
 export const onSetDefaultVersion = (versionData) => {
   return {
     type: publishDocsActionTypes.ON_DEFAULT_VERSION,
-    versionData
+    versionData,
   }
 }
 export const onSetDefaultVersionError = (error) => {
