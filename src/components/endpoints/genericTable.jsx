@@ -100,7 +100,7 @@ class GenericTable extends Component {
     const dataArray = []
     const dataArrayOfFileType = _.filter(propsDataArray, { type: 'file' })
     this.textAreaValue = e.currentTarget.value
-    const array = e.currentTarget.value.split('\\n')
+    const array = e.currentTarget.value.split('\n')
     let j = 0
     for (let i = 0; i < array.length; i++) {
       let key = array[i].split(':')[0]
@@ -201,9 +201,9 @@ class GenericTable extends Component {
           if (checked === 'notApplicable') continue
           if (type === 'file') continue
           if (checked === 'true') {
-            textAreaValue += dataArray[index].key + ':' + dataArray[index].value + '\\n'
+            textAreaValue += dataArray[index].key + ':' + dataArray[index].value + '\n'
           } else {
-            textAreaValue += '//' + dataArray[index].key + ':' + dataArray[index].value + '\\n'
+            textAreaValue += '//' + dataArray[index].key + ':' + dataArray[index].value + '\n'
           }
         }
         this.textAreaValue = textAreaValue
@@ -216,9 +216,9 @@ class GenericTable extends Component {
           if (checked === 'notApplicable') continue
           if (type === 'file') continue
           if (checked === 'true') {
-            textAreaValue += dataArray[index].key + ':' + dataArray[index].value + '\\n'
+            textAreaValue += dataArray[index].key + ':' + dataArray[index].value + '\n'
           } else {
-            textAreaValue += '//' + dataArray[index].key + ':' + dataArray[index].value + '\\n'
+            textAreaValue += '//' + dataArray[index].key + ':' + dataArray[index].value + '\n'
           }
         }
         this.textAreaValue = textAreaValue
