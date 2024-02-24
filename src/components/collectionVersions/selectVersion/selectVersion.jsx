@@ -57,8 +57,14 @@ const AddVersion = (props) => {
   const addVersion = () => {
     const parentPageId = props?.parentPageId
     const newVersion = { name: newVersionNameInputRef.current.value, state: 0 }
-    newVersionNameInputRef.current.value = '';
+    newVersionNameInputRef.current.value = ''
     dispatch(addParentPageVersion(newVersion, parentPageId))
+  }
+
+  function handleKeyDown(e) {
+    if (e.key === 'Enter') {
+      addVersion()
+    }
   }
 
   return (
@@ -70,6 +76,7 @@ const AddVersion = (props) => {
         aria-label='Small'
         aria-describedby='inputGroup-sizing-sm'
         ref={newVersionNameInputRef}
+        onKeyDown={handleKeyDown}
       ></input>
       <Button onClick={addVersion} id='publish_collection_btn' className='btn-sm' variant='btn btn-outline ml-2'>
         Add
@@ -97,7 +104,7 @@ export default function SelectVersion(props) {
   const handleDefaultVersion = async (versionId) => {
     var orgList = localStorage.getItem('organisation')
     orgList = JSON.parse(orgList)
-    const defaultVersionData = findDefaultVersion();
+    const defaultVersionData = findDefaultVersion()
     const versionData = { oldVersionId: defaultVersionData.id, newVersionId: versionId }
     dispatch(onDefaultVersion(orgList.id, versionData))
   }

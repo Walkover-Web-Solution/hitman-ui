@@ -6,7 +6,7 @@ export default function CustomModal(props) {
     <Modal
       show={props.modalShow}
       onHide={() => props?.setModal()}
-      size='lg'
+      size='md'
       aria-labelledby='contained-modal-title-vcenter'
       centered
     >
