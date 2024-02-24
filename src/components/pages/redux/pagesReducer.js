@@ -83,7 +83,6 @@ function pagesReducer(state = initialState, action) {
       }
 
     case pagesActionTypes.ON_PARENTPAGE_VERSION_ADDED:
-      debugger
       let pagesData={};
       try {
         pagesData = { ...state }
@@ -277,7 +276,7 @@ function pagesReducer(state = initialState, action) {
         [action?.response?.id]: action?.response
       }
     case publishDocsActionTypes.ON_DEFAULT_VERSION:
-      const pages = { ...state }
+      pages = { ...state }
       pages[action?.versionData?.newVersionId].state = 1
       pages[action.versionData?.oldVersionId].state = 0
       return pages
