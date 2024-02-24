@@ -96,7 +96,7 @@ function pagesReducer(state = initialState, action) {
         }
       }
       catch (error) {
-        console.log(error)
+        console.error(error)
       }
       return { ...pagesData }
 
