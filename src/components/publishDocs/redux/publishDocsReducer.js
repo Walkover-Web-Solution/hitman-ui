@@ -1,7 +1,8 @@
+import { statesEnum } from '../../common/utility'
 import publishDocsActionTypes from './publishDocsActionTypes'
 import _ from 'lodash'
-const initialState = {}
 
+const initialState = {}
 function publishDocsReducer(state = initialState, action) {
   let feedbacks = {}
   switch (action.type) {

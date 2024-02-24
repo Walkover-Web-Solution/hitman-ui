@@ -1271,8 +1271,8 @@ class DisplayEndpoint extends Component {
       url: url,
       httpVersion: 'HTTP/1.1',
       cookies: [],
-      headers: this.makeHeaders(originalHeaders),
-      postData: body.type === 'none' ? null : await this.makePostData(body),
+      headers: this.makeHeaders(originalHeaders || {}),
+      postData: body && body.type !== 'none' ? await this.makePostData(body) : null,
       queryString: this.makeParams(originalParams)
     }
     if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
