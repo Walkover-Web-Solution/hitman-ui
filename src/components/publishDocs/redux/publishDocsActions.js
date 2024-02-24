@@ -49,7 +49,6 @@ export const onSetDefaultVersion = (versionData) => {
   }
 }
 export const onSetDefaultVersionError = (error) => {
-  console.log(error);
   return {
     type: publishDocsActionTypes.ON_DEFAULT_VERSION_ERROR,
     error
