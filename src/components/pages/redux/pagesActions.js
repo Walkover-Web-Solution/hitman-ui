@@ -2,7 +2,7 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData } from '../../common/utility'
+import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
@@ -38,7 +38,8 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
   }
 }
 
-export const updatePage = (history, editedPage, publishDocs = false) => {
+export const updatePage = (history, editedPage) => {
+  editedPage.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     const dataToSend = {
       name: editedPage.name,
@@ -107,14 +108,13 @@ export const onEndpointUpdated = (response) => {
 }
 
 export const addPage = (history, rootParentId, newPage) => {
+  newPage.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   const orgId = getOrgId()
   return (dispatch) => {
-    dispatch(addPageRequestInCollection(rootParentId, newPage))
     pageApiService
-      .saveCollectionPage(rootParentId, newPage)
-      .then((response) => {
+    .saveCollectionPage(rootParentId, newPage)
+    .then((response) => {
         const data = response.data.page
-        response.data.page.requestId = newPage.requestId
         dispatch(onParentPageAdded(response.data))
         history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
@@ -149,9 +149,10 @@ export const onPageAddedError = (error, newPage) => {
 }
 
 export const deletePage = (page) => {
+  page.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     pageApiService
-      .deletePage(page?.id)
+      .deletePage(page?.id,page)
       .then((res) => {
         deleteAllPagesAndTabsAndReactQueryData(page.id)
           .then((data) => {
