@@ -3331,6 +3331,12 @@ body .tox {
     top: -2px;
     z-index: 1;
     background: white;
+    @media (max-width: 1600px) and (min-width: 1405px){
+      button{
+        min-width: 1rem !important;
+        flex-wrap: wrap;
+      }
+    }
   }
 }
 .Pane::-webkit-scrollbar{
