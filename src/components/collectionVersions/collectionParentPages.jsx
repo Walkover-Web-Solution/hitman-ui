@@ -445,9 +445,11 @@ class CollectionParentPages extends Component {
   }
 
   renderBody(pageId, index) {
-    const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isOnPublishedPage()
+    let isUserOnPublishedPage = isOnPublishedPage()
+    const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
+    const publishData = this.props.modals.publishData
     const rootId = pageId
-    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
     return (
       <>
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
@@ -463,9 +465,14 @@ class CollectionParentPages extends Component {
                   <span className='versionChovron'>
                     <img src={ExpandArrow} alt='' />
                   </span>
-                  <div className='d-flex justify-content-between align-items-center'>
+                  <div className='d-flex justify-content-between align-items-center'
+                  draggable={!isUserOnPublishedPage}
+                  onDragOver={this.props.handleOnDragOver}
+                  onDragStart={() => this.props.onDragStart(pageId)}
+                  onDrop={(e) => this.props.onDrop(e, pageId)}
+                  >
                     <div className='text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
-                    {!isOnPublishedPage(pageId) ? (
+                    {!isUserOnPublishedPage ? (
                       this.versionDropDown(rootId)
                     ) : (
                       <PublishedVersionDropDown

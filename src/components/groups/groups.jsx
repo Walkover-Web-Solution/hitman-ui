@@ -175,13 +175,20 @@ class Groups extends Component {
   }
 
   renderBody(subPageId) {
-    const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isOnPublishedPage()
-    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === subPageId ? 'selected' : ''
+    let isUserOnPublishedPage = isOnPublishedPage()
+    const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isUserOnPublishedPage
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === subPageId ? 'selected' : ''
     return (
       <>
-        <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
+        <div className='sidebar-accordion accordion pl-3' id='child-accordion'
+        >
           <button tabIndex={-1} className={`${expanded ? 'expanded' : ''} ${isSelected}`}>
-            <div className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(subPageId)}>
+            <div
+             draggable={!isUserOnPublishedPage} 
+             onDragOver={this.props.handleOnDragOver}
+             onDragStart={() => this.props.onDragStart(subPageId)}
+             onDrop={(e) => this.props.onDrop(e, subPageId)}
+             className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(subPageId)}>
               <span className='versionChovron'>
                 <img src={ExpandedIcon} alt='' />
               </span>
