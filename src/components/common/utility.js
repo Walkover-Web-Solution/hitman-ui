@@ -29,6 +29,15 @@ export const SESSION_STORAGE_KEY = {
   UNIQUE_TAB_ID: 'uniqueTabId'
 }
 
+export const docViewDataFormat =  [
+  { type: 'host' },
+  { type: 'body' },
+  { type: 'params' },
+  { type: 'pathVariables' },
+  { type: 'headers' },
+  { type: 'sampleResponse' }
+]
+
 const tokenKey = 'token'
 const profileKey = 'profile'
 const orgKey = 'organisation'
@@ -556,17 +565,11 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   const path = Object.keys(endpoint.pathVariables).map((key) => {
     return { key, ...endpoint.pathVariables[key] }
   })
+
   if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
-    untitled.docViewData = [
-      { type: 'host' },
-      { type: 'body' },
-      { type: 'params' },
-      { type: 'pathVariables' },
-      { type: 'headers' },
-      { type: 'sampleResponse' }
-    ]
+    untitled.docViewData = docViewDataFormat;
   } else {
-    untitled.docViewData = endpoint.docViewData
+    untitled.docViewData = (endpoint?.docViewData?.length !=0 ) ? endpoint?.docViewData : docViewDataFormat
   }
   headersData.push({ checked: 'notApplicable', key: '', value: '', description: '' })
   paramsData.push({ checked: 'notApplicable', key: '', value: '', description: '' })

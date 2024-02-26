@@ -257,11 +257,11 @@ export const addCustomDomain = (collectionId, domain) => {
 }
 
 export const importApi = (collection, importType, website, customCallback, defaultView) => {
-  collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
+  let uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     if (importType === 'postman') {
       openApiService
-        .importPostmanCollection(collection, website, defaultView)
+        .importPostmanCollection(collection, website, defaultView, uniqueTabId)
         .then((response) => {
           dispatch(onCollectionImported(response.data))
           toast.success('Collection imported successfully')

@@ -11,9 +11,9 @@ export function importApi(openApiObject, defaultView) {
   return http.post(`${apiUrl}/import/openApi?view=${defaultView}`, openApiObject)
 }
 
-export function importPostmanCollection(collection, website, defaultView) {
-  const apiUrl = getApiUrl()
-  return http.post(`${apiUrl}/import/postman?website=${website}&view=${defaultView}`, collection)
+export function importPostmanCollection(collection, website, defaultView, uniqueTabId) {
+  const apiUrl = getApiUrl();
+  return http.post(`${apiUrl}/import/postman?website=${website}&view=${defaultView}&uniqueTabId=${uniqueTabId} `, collection);
 }
 
 export default {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
+import { SESSION_STORAGE_KEY, docViewDataFormat, isOnPublishedPage, trimString } from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -999,7 +999,7 @@ class DisplayEndpoint extends Component {
         notes: this.props?.endpointContent?.endpoint.notes,
         preScript: this.props?.endpointContent?.preScriptText,
         postScript: this.props?.endpointContent?.postScriptText,
-        docViewData: this.props?.endpointContent?.docViewData
+        docViewData: (this.props?.endpointContent?.docViewData?.length == 0) ? this.props?.endpointContent?.docViewData : docViewDataFormat
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
@@ -1921,6 +1921,8 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocView = () => {
+    console.log("isDashboardRoute == ", isDashboardRoute(this.props));
+    console.log('this.props?.endpointContent?.docViewData == ', this.props?.endpointContent?.docViewData)
     if (!this.props?.endpointContent?.docViewData) return
     if (isDashboardRoute(this.props)) {
       return (
