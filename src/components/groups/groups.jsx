@@ -189,6 +189,7 @@ class Groups extends Component {
              onDragStart={() => this.props.onDragStart(subPageId)}
              onDrop={(e) => this.props.onDrop(e, subPageId)}
              onDragEnter = {(e) => this.props.onDragEnter(e, subPageId)}
+             onDragEnd = {(e) => this.props.onDragEnd(e)}
              style={this.props.draggingOverId === subPageId ? { borderTop:'3px solid red'}: null}
              className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(subPageId)}>
               <span className='versionChovron'>
