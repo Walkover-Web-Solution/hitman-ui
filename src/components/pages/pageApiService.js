@@ -46,11 +46,17 @@ export function updatePageOrder(pagesOrder) {
   })
 }
 
+export function dragAndDropApi(body) {
+  const apiUrl = getApiUrl();
+  return http.post(`${apiUrl}/dragAndDrop`, body)
+} 
+
 export default {
   updatePage,
   deletePage,
   duplicatePage,
   getAllPages,
   updatePageOrder,
-  saveCollectionPage
+  saveCollectionPage,
+  dragAndDropApi
 }
