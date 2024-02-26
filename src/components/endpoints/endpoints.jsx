@@ -330,10 +330,19 @@ class Endpoints extends Component {
   displaySingleEndpoint(endpointId) {
     const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
-    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
+    let isUserOnPublishedPage = isOnPublishedPage()
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
     return (
       <>
-        <div key={endpointId}>
+        <div 
+        key={endpointId} 
+        draggable={!isUserOnPublishedPage}
+        onDragOver={this.props.handleOnDragOver}
+        onDragStart={() => this.props.onDragStart(endpointId)}
+        onDrop={(e) => this.props.onDrop(e, endpointId)}
+        onDragEnter = {(e) => this.props.onDragEnter(e, endpointId)}
+        style={this.props.draggingOverId === endpointId ? { borderTop:'3px solid red'}: null}
+        >
           <div className={this.props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between'>
             <button
