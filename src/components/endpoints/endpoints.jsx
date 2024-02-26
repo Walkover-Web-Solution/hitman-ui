@@ -340,6 +340,8 @@ class Endpoints extends Component {
         onDragOver={this.props.handleOnDragOver}
         onDragStart={() => this.props.onDragStart(endpointId)}
         onDrop={(e) => this.props.onDrop(e, endpointId)}
+        onDragEnter = {(e) => this.props.onDragEnter(e, endpointId)}
+        style={this.props.draggingOverId === endpointId ? { borderTop:'3px solid red'}: null}
         >
           <div className={this.props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between'>
