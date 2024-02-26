@@ -194,8 +194,7 @@ function pagesReducer(state = initialState, action) {
       return pages
 
     case bulkPublishActionTypes.UPDATE_PAGES_STATE_ON_BULK_PUBLISH:
-      let sidebarData = cloneDeep({ ...state })
-      let x= action.data;
+      let sidebarData = { ...state }
       
       action.data.map((pageId) => {
         if (sidebarData?.[pageId]?.type === 3 || sidebarData?.[pageId]?.type === 4 || sidebarData?.[pageId]?.type === 1) {
@@ -272,12 +271,12 @@ function pagesReducer(state = initialState, action) {
           state: action.response?.state
         }
       }
-    case pagesActionTypes.ON_DRAG_DROP:
-      let pages = { ...state }
+    case pagesActionTypes.ON_DRAG_DROP:{
+      pages = { ...state }
       let pageData = action.payload
       pages[pageData.id] = { ...pages[pageData.id], ...pageData }
       return pages
-
+    }   
     case pagesActionTypes.ON_ENDPOINT_DUPLICATED:
       state[action?.response?.parentId].child.push(action?.response?.id)
       return {
