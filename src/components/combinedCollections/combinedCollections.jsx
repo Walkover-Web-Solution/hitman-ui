@@ -1,4 +1,4 @@
-import React from 'react'
+import React , {useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import Groups from '../groups/groups'
@@ -10,6 +10,8 @@ import { updateDragDrop } from '../pages/redux/pagesActions'
 
 
 function CombinedCollections(props) {
+  const [draggingOverId, setDraggingOverId] = useState(null);
+
   const { childIds, pages, clientData } = useSelector((state) => {
     return {
       childIds: state?.pages?.[props?.rootParentId]?.child || [],
@@ -24,12 +26,19 @@ function CombinedCollections(props) {
     e.preventDefault()
   }
 
+  const onDragEnter = (e, draggingOverId) => {
+    e.preventDefault();
+    setDraggingOverId(draggingOverId);
+  }
+
   const onDragStart = (draggedId) => {
     dispatch(setDraggedId(draggedId))
   }
 
   const onDrop = (e, droppedOnId) => {
     e.preventDefault()
+
+    setDraggingOverId(null);
 
     let draggedId = clientData.dragAndDrop.draggedId
     if (draggedId === droppedOnId) {
@@ -61,6 +70,8 @@ function CombinedCollections(props) {
             handleOnDragOver={handleOnDragOver}
             onDragStart = {onDragStart}
             onDrop = {onDrop}
+            onDragEnter = {onDragEnter}
+            draggingOverId = {draggingOverId}
              />
           case 3:
             return <Groups 
@@ -70,6 +81,8 @@ function CombinedCollections(props) {
             handleOnDragOver={handleOnDragOver}
             onDragStart = {onDragStart}
             onDrop = {onDrop}
+            onDragEnter = {onDragEnter}
+            draggingOverId = {draggingOverId}
              />
           case 4:
             return <Endpoints 
@@ -79,6 +92,8 @@ function CombinedCollections(props) {
             handleOnDragOver={handleOnDragOver}
             onDragStart = {onDragStart}
             onDrop = {onDrop}
+            onDragEnter = {onDragEnter}
+            draggingOverId = {draggingOverId}
              />
           default:
             break
