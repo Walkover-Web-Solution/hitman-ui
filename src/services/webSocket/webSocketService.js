@@ -1,10 +1,11 @@
 import WebSocketClient from 'rtlayer-client'
 import { store } from '../../store/store'
-import { addChildInParent, onPageUpdated, onParentPageAdded } from '../../components/pages/redux/pagesActions';
+import { addChildInParent, onPageUpdated, onParentPageAdded, updateDragDrop } from '../../components/pages/redux/pagesActions';
 import { deleteCollectionRequest, onCollectionAdded, onCollectionImported, onCollectionUpdated } from '../../components/collections/redux/collectionsActions';
 import bulkPublishActionTypes from '../../components/publishSidebar/redux/bulkPublishActionTypes';
 import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../components/common/utility';
 import { formatResponseToSend } from '../../components/endpoints/redux/endpointsActions';
+import pagesActionTypes from '../../components/pages/redux/pagesActionTypes';
 
 var CLIENT, CHANNEL;
 
@@ -36,7 +37,8 @@ const OperationTypes = {
   PAGE_DELETE: 'page-delete',
   ENDPOINT_CREATE: 'endpoint-create',
   ENDPOINT_UPDATE: 'endpoint-update',
-  ENDPOINT_DELETE: 'endpoint-delete'
+  ENDPOINT_DELETE: 'endpoint-delete',
+  DRAG_AND_DROP: 'drag-and-drop'
 };
 
 const handleDeleteActions = (data) => {
@@ -112,6 +114,13 @@ const handleMessage = (message) => {
       deleteAllPagesAndTabsAndReactQueryData(message.data.endpoint.id).then((data) => {
       handleDeleteActions(data)
       })
+      break;
+
+      case OperationTypes.DRAG_AND_DROP:
+      store.dispatch({
+        type: pagesActionTypes.ON_DRAG_DROP,
+        payload: message.data
+      });
       break;   
 
     default:

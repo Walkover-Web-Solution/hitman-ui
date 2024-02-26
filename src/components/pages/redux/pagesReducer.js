@@ -7,6 +7,8 @@ import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishAction
 import generalActionsTypes from '../../redux/generalActionTypes'
 import { statesEnum } from '../../common/utility'
 import publishDocsActionTypes from '../../publishDocs/redux/publishDocsActionTypes'
+import { cloneDeep } from 'lodash'
+
 
 const initialState = {}
 
@@ -192,14 +194,16 @@ function pagesReducer(state = initialState, action) {
       return pages
 
     case bulkPublishActionTypes.UPDATE_PAGES_STATE_ON_BULK_PUBLISH:
-      pages = { ...state }
+      let sidebarData = cloneDeep({ ...state })
+      let x= action.data;
+      
       action.data.map((pageId) => {
-        if (pages?.[pageId]?.type === 3 || pages?.[pageId]?.type === 4 || pages?.[pageId]?.type === 1) {
-          pages[pageId].state = statesEnum.APPROVED_STATE
-          pages[pageId].isPublished = true
-        } else if (pages?.[pageId]?.type === 2) pages[pageId].isPublished = true
+        if (sidebarData?.[pageId]?.type === 3 || sidebarData?.[pageId]?.type === 4 || sidebarData?.[pageId]?.type === 1) {
+          sidebarData[pageId].state = statesEnum.APPROVED_STATE
+          sidebarData[pageId].isPublished = true
+        } else if (sidebarData?.[pageId]?.type === 2) sidebarData[pageId].isPublished = true
       })
-      return pages
+      return sidebarData
 
     case collectionActionTypes.ON_COLLECTION_IMPORTED:
       pages = { ...state, ...action.pages }
@@ -268,6 +272,11 @@ function pagesReducer(state = initialState, action) {
           state: action.response?.state
         }
       }
+    case pagesActionTypes.ON_DRAG_DROP:
+      let pages = { ...state }
+      let pageData = action.payload
+      pages[pageData.id] = { ...pages[pageData.id], ...pageData }
+      return pages
 
     case pagesActionTypes.ON_ENDPOINT_DUPLICATED:
       state[action?.response?.parentId].child.push(action?.response?.id)
