@@ -290,3 +290,19 @@ export const updateNameOfPages = (payload) => {
     payload
   }
 }
+
+export const updateDragDrop = (draggedId, droppedOnId) => {
+  let uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
+  return (dispatch) => {
+    pageApiService.dragAndDropApi({draggedId, droppedOnId, uniqueTabId})
+      .then((response) => {
+        dispatch({
+          type: pagesActionTypes.ON_DRAG_DROP,
+          payload: response.data
+        });
+      })
+      .catch((error) => {
+        console.error('Error occurred during drag and drop:', error);
+      });
+  };
+};
