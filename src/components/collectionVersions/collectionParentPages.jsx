@@ -456,6 +456,8 @@ class CollectionParentPages extends Component {
                 onDragOver={this.props.handleOnDragOver}
                 onDragStart={() => this.props.onDragStart(pageId)}
                 onDrop={(e) => this.props.onDrop(e, pageId)}
+                onDragEnter = {(e) => this.props.onDragEnter(e, pageId)}
+                style={this.props.draggingOverId === pageId ? { borderTop:'3px solid red'}: null}
                 >
                   <div className='sidebar-accordion-item text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
 
