@@ -1,17 +1,22 @@
 import WebSocketClient from 'rtlayer-client'
 import { store } from '../../store/store'
-import { addChildInParent, onPageUpdated, onParentPageAdded, updateDragDrop } from '../../components/pages/redux/pagesActions';
-import { deleteCollectionRequest, onCollectionAdded, onCollectionImported, onCollectionUpdated } from '../../components/collections/redux/collectionsActions';
-import bulkPublishActionTypes from '../../components/publishSidebar/redux/bulkPublishActionTypes';
-import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../components/common/utility';
-import { formatResponseToSend } from '../../components/endpoints/redux/endpointsActions';
-import pagesActionTypes from '../../components/pages/redux/pagesActionTypes';
+import { addChildInParent, onPageUpdated, onParentPageAdded, updateDragDrop } from '../../components/pages/redux/pagesActions'
+import {
+  deleteCollectionRequest,
+  onCollectionAdded,
+  onCollectionImported,
+  onCollectionUpdated
+} from '../../components/collections/redux/collectionsActions'
+import bulkPublishActionTypes from '../../components/publishSidebar/redux/bulkPublishActionTypes'
+import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../components/common/utility'
+import { formatResponseToSend } from '../../components/endpoints/redux/endpointsActions'
+import pagesActionTypes from '../../components/pages/redux/pagesActionTypes'
 
-var CLIENT, CHANNEL;
+var CLIENT, CHANNEL
 
 export function initConn(channel) {
-  CHANNEL = channel;
-  CLIENT = new WebSocketClient(process.env.REACT_APP_RTLAYER_OID, process.env.REACT_APP_RTLAYER_SID);
+  CHANNEL = channel
+  CLIENT = new WebSocketClient(process.env.REACT_APP_RTLAYER_OID, process.env.REACT_APP_RTLAYER_SID)
   if (CHANNEL) {
     CLIENT.on('open', subscribe)
     CLIENT.on('message', handleMessage)
@@ -19,11 +24,11 @@ export function initConn(channel) {
 }
 
 export function resetConn(channel) {
-  CLIENT.unsubscribe(channel || CHANNEL);
+  CLIENT.unsubscribe(channel || CHANNEL)
 }
 
 const subscribe = () => {
-  CLIENT.subscribe(CHANNEL);
+  CLIENT.subscribe(CHANNEL)
 }
 
 const OperationTypes = {
@@ -39,22 +44,22 @@ const OperationTypes = {
   ENDPOINT_UPDATE: 'endpoint-update',
   ENDPOINT_DELETE: 'endpoint-delete',
   DRAG_AND_DROP: 'drag-and-drop'
-};
+}
 
 const handleDeleteActions = (data) => {
-  store.dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages });
-  store.dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs });
-  operationsAfterDeletion(data);
-};
+  store.dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
+  store.dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
+  operationsAfterDeletion(data)
+}
 
 const handleMessage = (message) => {
   message = JSON.parse(message)
 
-  // api already updated the redux state don't update it again 
-  if(message?.uniqueTabId == sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)) return ;
+  // api already updated the redux state don't update it again
+  if (message?.uniqueTabId == sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)) return
 
   switch (message.operation) {
-      case OperationTypes.COLLECTION_CREATE:
+    case OperationTypes.COLLECTION_CREATE:
       store.dispatch(onCollectionAdded(message.data))
       const inivisiblePageData = {
         page: {
@@ -65,66 +70,65 @@ const handleMessage = (message) => {
         }
       }
       store.dispatch(onParentPageAdded(inivisiblePageData))
-      break;
+      break
 
-      case OperationTypes.COLLECTION_UPDATE:
+    case OperationTypes.COLLECTION_UPDATE:
       store.dispatch(onCollectionUpdated(message.data))
-      break; 
+      break
 
-      case OperationTypes.COLLECTION_DELETE:
+    case OperationTypes.COLLECTION_DELETE:
       const rootParentPageId = message.data.rootParentId
       deleteAllPagesAndTabsAndReactQueryData(rootParentPageId).then((data) => {
-      store.dispatch(deleteCollectionRequest(message.data))
-      handleDeleteActions(data)
+        store.dispatch(deleteCollectionRequest(message.data))
+        handleDeleteActions(data)
       })
-      break;
-      
-      case OperationTypes.COLLECTION_IMPORT:
+      break
+
+    case OperationTypes.COLLECTION_IMPORT:
       store.dispatch(onCollectionImported(message.data))
-      break; 
+      break
 
-      case OperationTypes.PARENTPAGE_CREATE:
+    case OperationTypes.PARENTPAGE_CREATE:
       store.dispatch(onParentPageAdded(message.data))
-      break;  
+      break
 
-      case OperationTypes.PAGE_CREATE:
-      store.dispatch(onParentPageAdded({page: message.data}))
-      break; 
-      
-      case OperationTypes.PAGE_UPDATE:
+    case OperationTypes.PAGE_CREATE:
+      store.dispatch(onParentPageAdded({ page: message.data }))
+      break
+
+    case OperationTypes.PAGE_UPDATE:
       store.dispatch(onPageUpdated(message.data))
-      break; 
+      break
 
-      case OperationTypes.PAGE_DELETE:
+    case OperationTypes.PAGE_DELETE:
       deleteAllPagesAndTabsAndReactQueryData(message.data.id).then((data) => {
-      handleDeleteActions(data)
+        handleDeleteActions(data)
       })
-      break;  
+      break
 
-      case OperationTypes.ENDPOINT_CREATE:
-      const responseToSend = formatResponseToSend(message) 
+    case OperationTypes.ENDPOINT_CREATE:
+      const responseToSend = formatResponseToSend(message)
       store.dispatch(addChildInParent(responseToSend))
-      break; 
-        
-      case OperationTypes.ENDPOINT_UPDATE:
+      break
+
+    case OperationTypes.ENDPOINT_UPDATE:
       store.dispatch(onPageUpdated(message.data))
-      break; 
+      break
 
-      case OperationTypes.ENDPOINT_DELETE:
+    case OperationTypes.ENDPOINT_DELETE:
       deleteAllPagesAndTabsAndReactQueryData(message.data.endpoint.id).then((data) => {
-      handleDeleteActions(data)
+        handleDeleteActions(data)
       })
-      break;
+      break
 
-      case OperationTypes.DRAG_AND_DROP:
+    case OperationTypes.DRAG_AND_DROP:
       store.dispatch({
         type: pagesActionTypes.ON_DRAG_DROP,
         payload: message.data
-      });
-      break;   
+      })
+      break
 
     default:
     // code block
   }
-
 }

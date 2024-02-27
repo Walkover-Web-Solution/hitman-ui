@@ -17,6 +17,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { closeAllTabs } from '../tabs/redux/tabsActions'
 import { onHistoryRemoved } from '../history/redux/historyAction'
+import { ReactComponent as Users } from '../../assets/icons/users.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -122,6 +123,26 @@ class UserProfileV2 extends Component {
         </div>
       </div>
     )
+  }
+
+  renderInviteTeam() {
+    return (
+      <div
+        className='mb-2 cursor-pointer'
+        onClick={() => {
+          this.openAccountAndSettings()
+        }}
+      >
+        <Users className='mr-2' />
+        <span>Invite User</span>
+      </div>
+    )
+  }
+
+  openAccountAndSettings = () => {
+    const { history } = this.props
+    const orgId = this.getCurrentOrg()?.id
+    history.push({ pathname: `/orgs/${orgId}/invite` })
   }
 
   getUserDetails() {
@@ -507,6 +528,7 @@ class UserProfileV2 extends Component {
               <div className='profile-listing-container'>
                 {/* <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item> */}
                 {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
+                <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
                 <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
                 {/* <Dropdown.Divider /> */}
                 <Dropdown.Item>

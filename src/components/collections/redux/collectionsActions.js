@@ -50,7 +50,7 @@ export const fetchCollection = (collectionId) => {
 }
 
 export const addCollection = (newCollection, openSelectedCollection, customCallback) => {
-  newCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
+  newCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     collectionsApiService
       .saveCollection(newCollection)
@@ -116,7 +116,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
       .updateCollection(id, editedCollection)
       .then((response) => {
         dispatch(onCollectionUpdated(response.data))
-      toast.success('Updated successfully')
+        toast.success('Updated successfully')
         if (stopLoader) {
           stopLoader()
         }
@@ -158,7 +158,7 @@ export const deleteCollection = (collection, props) => {
   collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     collectionsApiService
-      .deleteCollection(collection.id,collection)
+      .deleteCollection(collection.id, collection)
       .then((res) => {
         const rootParentPageId = collection.rootParentId
         deleteAllPagesAndTabsAndReactQueryData(rootParentPageId)
@@ -268,6 +268,7 @@ export const importApi = (collection, importType, website, customCallback, defau
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
+          toast.error('Something went wrong')
           dispatch(onCollectionImportedError(error.response ? error.response.data : error))
           if (customCallback) customCallback({ success: false })
         })
