@@ -471,7 +471,8 @@ class CollectionParentPages extends Component {
                   onDragStart={() => this.props.onDragStart(pageId)}
                   onDrop={(e) => this.props.onDrop(e, pageId)}
                   onDragEnter = {(e) => this.props.onDragEnter(e, pageId)}
-                  style={this.props.draggingOverId === pageId ? { borderTop:'3px solid red'}: null}
+                  onDragEnd = {(e) => this.props.onDragEnd(e)}
+                  style={this.props.draggingOverId === pageId ? { border:'3px solid red'}: null}
                   >
                     <div className='text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
                     {!isUserOnPublishedPage ? (
