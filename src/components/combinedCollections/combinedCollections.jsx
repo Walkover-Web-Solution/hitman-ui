@@ -4,15 +4,15 @@ import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import Groups from '../groups/groups'
 import Endpoints from '../endpoints/endpoints'
 import { toast } from 'react-toastify'
-import { setDraggedId } from '../../store/clientData/clientDataActions'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 
 
 
 function CombinedCollections(props) {
   const [draggingOverId, setDraggingOverId] = useState(null);
+  const [draggedIdSelected, setDraggedIdSelected] = useState(null)
 
-  const { childIds, pages, clientData } = useSelector((state) => {
+  const { childIds, pages } = useSelector((state) => {
     return {
       childIds: state?.pages?.[props?.rootParentId]?.child || [],
       pages: state.pages,
@@ -31,8 +31,13 @@ function CombinedCollections(props) {
     setDraggingOverId(draggingOverId);
   }
 
+  const onDragEnd  = (e) => {
+    e.preventDefault()
+    setDraggingOverId(null);
+  }
+
   const onDragStart = (draggedId) => {
-    dispatch(setDraggedId(draggedId))
+    setDraggedIdSelected(draggedId)
   }
 
   const onDrop = (e, droppedOnId) => {
@@ -40,7 +45,7 @@ function CombinedCollections(props) {
 
     setDraggingOverId(null);
 
-    let draggedId = clientData.dragAndDrop.draggedId
+    let draggedId = draggedIdSelected
     if (draggedId === droppedOnId) {
       return ;
     }
@@ -71,6 +76,7 @@ function CombinedCollections(props) {
             onDragStart = {onDragStart}
             onDrop = {onDrop}
             onDragEnter = {onDragEnter}
+            onDragEnd = {onDragEnd}
             draggingOverId = {draggingOverId}
              />
           case 3:
@@ -82,6 +88,7 @@ function CombinedCollections(props) {
             onDragStart = {onDragStart}
             onDrop = {onDrop}
             onDragEnter = {onDragEnter}
+            onDragEnd = {onDragEnd}
             draggingOverId = {draggingOverId}
              />
           case 4:
@@ -93,6 +100,7 @@ function CombinedCollections(props) {
             onDragStart = {onDragStart}
             onDrop = {onDrop}
             onDragEnter = {onDragEnter}
+            onDragEnd = {onDragEnd}
             draggingOverId = {draggingOverId}
              />
           default:
