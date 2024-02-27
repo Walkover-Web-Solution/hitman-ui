@@ -586,8 +586,6 @@ class SideBarV2 extends Component {
     )
   }
 
-
-
   // renderDownloadDesktopApp () {
   //   const handleDownloadClick = () => {
   //     const link = `${DESKTOP_APP_DOWNLOAD_LINK}?source=header`
