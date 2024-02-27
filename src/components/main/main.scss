@@ -3347,3 +3347,20 @@ body .tox {
 .Pane {
   overflow: scroll !important;
 }
+.create-org{
+
+  display: flex;
+  justify-content: center;
+  font-weight: 500 !important;
+  button{
+    border-radius: 8px !important;
+    height: 44px !important;
+  }
+}
+.name-sub-page{
+  overflow-wrap: anywhere;
+  max-width: 240px !important;
+    @media (max-width: 1400px) and (min-width: 400px){
+      max-width: 160px !important;
+    }
+  }
