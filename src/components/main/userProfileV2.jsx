@@ -94,7 +94,7 @@ class UserProfileV2 extends Component {
     return (
       <div>
         <div className='org-name'>{this.getCurrentOrg()?.name || null}</div>
-        {/* <span className='profile-details-label-light'>{name}</span> */}
+        <span className='profile-details-label-light'>{name}</span>
         {/* {
                 this.getNotificationCount() > 0 &&
                   <div className='user-notification-badge'>{this.getNotificationCount()}</div>
@@ -117,7 +117,7 @@ class UserProfileV2 extends Component {
           <img src={User} alt='user' />
         </div>
         <div className='profile-details-user-name'>
-          {/* <span className='org-name'>{name}</span> */}
+          <span className='org-name'>{name}</span>
           <span className='profile-details-label-light'>{email}</span>
         </div>
       </div>
@@ -411,15 +411,17 @@ class UserProfileV2 extends Component {
       <div className='org-listing-container '>
         <div className='org-listing-column d-flex flex-column'>
           {organizations.map((org, key) => (
-            <button
-              className={`btn btn-primary mb-2 p-2 ${org === selectedOrg ? 'active' : ''} `}
+            <Button
+              className={`mb-2 p-2 ${org === selectedOrg ? 'active' : ''} `}
+              id= 'publish_collection_btn'
+              // variant= 'btn btn-outline'
               key={key}
               onClick={() => {
                 this.handleOrgClick(org, selectedOrg)
               }}
             >
               {org.name}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

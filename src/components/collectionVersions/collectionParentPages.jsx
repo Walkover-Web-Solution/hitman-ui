@@ -465,7 +465,7 @@ class CollectionParentPages extends Component {
                   <span className='versionChovron'>
                     <img src={ExpandArrow} alt='' />
                   </span>
-                  <div className='d-flex justify-content-between align-items-center'
+                  <div className='d-flex justify-content-between align-items-center name-parent-page'
                   draggable={!isUserOnPublishedPage}
                   onDragOver={this.props.handleOnDragOver}
                   onDragStart={() => this.props.onDragStart(pageId)}
