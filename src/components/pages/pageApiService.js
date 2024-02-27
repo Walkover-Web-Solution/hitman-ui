@@ -31,7 +31,7 @@ export function updatePage(pageId, page) {
 
 export function deletePage(pageId, page) {
   const apiUrl = getApiUrl()
-  return http.delete(`${apiUrl}/pages/${pageId}`,{data: page})
+  return http.delete(`${apiUrl}/pages/${pageId}`, { data: page })
 }
 
 export function duplicatePage(pageId) {
@@ -47,9 +47,9 @@ export function updatePageOrder(pagesOrder) {
 }
 
 export function dragAndDropApi(body) {
-  const apiUrl = getApiUrl();
+  const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/dragAndDrop`, body)
-} 
+}
 
 export default {
   updatePage,

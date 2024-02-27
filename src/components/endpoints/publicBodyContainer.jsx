@@ -429,14 +429,14 @@ class PublicBodyContainer extends Component {
               <ul className='public-endpoint-tabs'>
                 <li
                   className={this.state.showBodyCodeEditor ? 'active' : ''}
-                  style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                  style={this.state.showBodyCodeEditor ? { backgroundColor: '#f2994a' } : {}}
                   onClick={() => this.setState({ showBodyCodeEditor: true })}
                 >
                   Raw
                 </li>
                 <li
                   className={!this.state.showBodyCodeEditor ? 'active' : ''}
-                  style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                  style={!this.state.showBodyCodeEditor ? { backgroundColor: '#f2994a' } : {}}
                   onClick={() => this.setState({ showBodyCodeEditor: false })}
                 >
                   Body description

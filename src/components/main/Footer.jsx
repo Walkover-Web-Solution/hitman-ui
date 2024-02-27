@@ -10,7 +10,9 @@ function Footer({ theme }) {
     <footer>
       <div className='footerWrapper'>
         <p className='for-public-view' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <span className='poweredByText' style={{color: 'grey'}}>Powered by </span>
+          <span className='poweredByText' style={{ color: 'grey' }}>
+            Powered by{' '}
+          </span>
           <a
             className='hitmanLink'
             rel='noopener noreferrer'
