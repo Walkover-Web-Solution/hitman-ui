@@ -89,11 +89,9 @@ function GenericModal({
           {showInput && (
             <>
               <div className='m-2 d-grid gap-2 col-6 mx-auto create-org'>
-              {/* <div className='d-flex justify-content-center'> */}
+                {/* <div className='d-flex justify-content-center'> */}
                 {!createOrg && (
-                  <Button className='' 
-                  variant='btn btn-outline'
-                  onClick={handleClick}>
+                  <Button className='' variant='btn btn-outline' onClick={handleClick}>
                     {' '}
                     + Create Organization
                   </Button>
