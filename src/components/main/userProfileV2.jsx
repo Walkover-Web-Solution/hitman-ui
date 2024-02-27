@@ -434,7 +434,7 @@ class UserProfileV2 extends Component {
           {organizations.map((org, key) => (
             <Button
               className={`mb-2 p-2 ${org === selectedOrg ? 'active' : ''} `}
-              id= 'publish_collection_btn'
+              id='publish_collection_btn'
               // variant= 'btn btn-outline'
               key={key}
               onClick={() => {
