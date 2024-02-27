@@ -109,7 +109,8 @@ export const duplicateEndpoint = (endpoint) => {
     endpointApiService
       .duplicateEndpoint(endpoint.id)
       .then((response) => {
-        dispatch(onEndpointDuplicated(response.data))
+        const responseToSend = formatResponseToSend(response)
+        dispatch(onEndpointDuplicated(responseToSend))
       })
       .catch((error) => {
         toast.error(error)
