@@ -166,7 +166,8 @@ const untitledEndpointData = {
   sslMode: getCurrentUserSSLMode(),
   currentView: 'testing',
   docViewData: [],
-  harObject: {}
+  harObject: {},
+  
 }
 
 const getEndpointContent = async (props) => {
@@ -286,7 +287,11 @@ class DisplayEndpoint extends Component {
       requestKey: null,
       docOptions: false,
       sslMode: getCurrentUserSSLMode(),
-      showAskAiSlider: false
+      showAskAiSlider: false,
+      parseHeaders: '',
+      method: '', 
+      decodedKey:'',
+      decodedValue:''
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -311,6 +316,20 @@ class DisplayEndpoint extends Component {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
+  }
+  handleHeadersValue = (value) => {
+    this.setState({ parseHeaders: value.header }) 
+    this.setState({method: value.method})
+
+   
+  }
+  handleMethodChange = (newMethod) => {
+    this.setState(prevState => ({
+      data: {
+        ...prevState.data,
+        method: newMethod.method
+      }
+    }));
   }
 
   handleShortcuts = (event, data) => {
@@ -402,7 +421,11 @@ class DisplayEndpoint extends Component {
       const keys = []
       const values = []
       const description = []
+      const headerKeys = []
+      const headerValues = []
+      const headerDescription = []
       let originalParams = this.props?.endpointContent?.originalParams || {}
+      let originalHeaders = this.state.parseHeaders
       const updatedUri = e.currentTarget.value.split('?')[1]
       let path = new URI(e.currentTarget.value)
       path = path.pathname()
@@ -430,8 +453,48 @@ class DisplayEndpoint extends Component {
         }
       }
       originalParams = this.makeOriginalParams(keys, values, description)
+
+      for (let i = 0; i < Object.keys(originalHeaders).length; i++) {
+        headerKeys.push(Object.keys(originalHeaders)[i]);
+      }
+
+      for (let i = 0; i < headerKeys.length; i++) {
+        headerValues.push(originalHeaders[headerKeys[i]])
+        if (headerKeys[i] === 'Authorization' ) {
+          if( headerValues[i].startsWith('Basic ')){
+            let splitHeaderValue = headerValues[i].split(' ')[1]; 
+            splitHeaderValue = atob(splitHeaderValue);
+            splitHeaderValue = splitHeaderValue.split(":")
+            this.setState({decodedKey : splitHeaderValue[0]})
+            this.setState({decodedValue: splitHeaderValue[1]})
+          }
+          else {
+            if( headerValues[i].startsWith('Bearer')){
+              let splitHeaderValue = headerValues[i].split(' '); 
+              this.setState({auth2Key: splitHeaderValue[0]})
+              this.setState({auth2Value: splitHeaderValue[1]})
+            }
+          }
+        }
+        if (originalHeaders[i]) {
+          for (let k = 0; k < originalHeaders.length; k++) {
+            if (
+              originalHeaders[k].key === headerKeys[i] &&
+              originalHeaders[k].checked === 'true'
+            ) {
+              description[i] = originalHeaders[k].description
+              break
+            } else if (k === originalHeaders.length - 1) {
+              description[i] = ''
+            }
+          }
+        }
+      }
+      originalHeaders = this.makeOriginalHeaders(headerKeys, headerValues, headerDescription)
+      this.setState({ originalHeaders })
       const tempData = this.props?.endpointContent || {}
       tempData.originalParams = originalParams
+      tempData.originalHeaders = originalHeaders
       this.props.setQueryUpdatedData(tempData)
     }
     const tempData = this.props?.endpointContent || {}
@@ -520,6 +583,34 @@ class DisplayEndpoint extends Component {
     return originalParams
   }
 
+  makeOriginalHeaders(keys, values, description) {
+    const originalHeaders = []
+    for (let i = 0; i < this.state?.originalHeaders?.length; i++) {
+      if (this.state.originalHeaders[i].checked === 'false') {
+        originalHeaders.push({
+          checked: this.state.originalHeaders[i].checked,
+          key: this.state.originalHeaders[i].key,
+          value: this.state.originalHeaders[i].value,
+          description: this.state.originalHeaders[i].description
+        })
+      }
+    }
+    for (let i = 0; i < keys.length; i++) {
+      originalHeaders.push({
+        checked: 'true',
+        key: keys[i],
+        value: values[i],
+        description: description[i]
+      })
+    }
+    originalHeaders.push({
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    })
+    return originalHeaders
+  }
   replaceVariables(str, customEnv) {
     let envVars = this.props.environment.variables
     if (customEnv) {
@@ -1438,7 +1529,7 @@ class DisplayEndpoint extends Component {
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
         continue
-      } else if (originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
+      } else if (originalHeaders[i].key === '' || originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
         originalHeaders[i].value = this.identifyBodyType(value)
         const dummyData = this.props.endpointContent
         dummyData.originalHeaders = originalHeaders
@@ -1831,8 +1922,13 @@ class DisplayEndpoint extends Component {
   }
 
   setHostUri(host, uri, selectedHost) {
-    if (uri !== this.props?.endpointContent?.data?.uri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
-    this.setBaseUrl(host, selectedHost)
+    // if (uri !== this.state?.data?.updatedUri){
+      this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+      this.setBaseUrl(host, selectedHost)
+    // }
+    // else{
+    //   this.handleChange({currentTarget: { name: 'updatedUri', value: host}})
+    // }
   }
 
   alterEndpointName(name) {
@@ -2236,6 +2332,7 @@ class DisplayEndpoint extends Component {
                 this.props?.environment?.variables?.BASE_URL?.initialValue ||
                 ''
               }
+              handleInputValue={this.handleInputValue}
               updatedUri={this.props?.endpointContent?.data?.updatedUri}
               set_base_url={this.setBaseUrl.bind(this)}
               // customHost={this.props?.endpointContent?.host.BASE_URL || ''}
@@ -2264,7 +2361,7 @@ class DisplayEndpoint extends Component {
             aria-expanded='false'
             disabled={isDashboardRoute(this.props) ? null : true}
           >
-            {this.props?.endpointContent?.data?.method}
+            {this.props?.endpointContent?.data?.method || this.state.data.method}
           </button>
           <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
             {this.state.methodList.map((methodName) => (
@@ -2276,12 +2373,16 @@ class DisplayEndpoint extends Component {
         </div>
         <div className='d-flex w-100 dashboard-url'>
           <HostContainer
+            handleHeadersValue={this.handleHeadersValue}
+            handleMethodChange={this.handleMethodChange}
             {...this.props}
             endpointId={this.state.endpoint.id}
             // customHost={this.props?.endpointContent?.host?.BASE_URL || ''}
             environmentHost={
               this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
             }
+            // handleInputValue={this.handleInputValue}
+
             updatedUri={this.props.endpointContent?.data?.updatedUri}
             set_host_uri={this.setHostUri.bind(this)}
             set_base_url={this.setBaseUrl.bind(this)}
@@ -2741,6 +2842,10 @@ class DisplayEndpoint extends Component {
                               <Authorization
                                 {...this.props}
                                 title='Authorization'
+                                decodedKey = {this.state.decodedKey}
+                                decodedValue = {this.state.decodedValue}
+                                auth2Key = {this.state.auth2Key}
+                                auth2Value = {this.state.auth2Value}
                                 groupId={this.state.groupId}
                                 set_authorization_headers={this.setHeaders.bind(this)}
                                 set_authoriztaion_params={this.setParams.bind(this)}

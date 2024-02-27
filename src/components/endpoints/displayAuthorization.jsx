@@ -312,7 +312,7 @@ class Authorization extends Component {
               <input
                 className='form-control'
                 name='username'
-                value={this.state.basicAuth.username}
+                value={this.props.decodedKey || this.state.basicAuth.username}
                 onChange={this.handleChange.bind(this)}
               />
               <label htmlFor='password'>Password</label>
@@ -322,7 +322,7 @@ class Authorization extends Component {
                   id='password'
                   type={this.state.showPassword ? (this.state.showPassword === true ? null : 'password') : 'password'}
                   name='password'
-                  value={this.state.basicAuth.password}
+                  value={this.props.decodedValue||this.state.basicAuth.password}
                   onChange={this.handleChange.bind(this)}
                 />
                 <label className='mb-3 ml-3'>

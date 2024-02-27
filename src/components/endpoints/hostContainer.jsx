@@ -3,6 +3,10 @@ import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import { publishData } from '../modals/redux/modalsActions'
 import './endpoints.scss'
+import parseCurl from 'parse-curl'
+import { withRouter } from 'react-router-dom'
+import { updateTab } from '../tabs/redux/tabsActions'
+import { unescape } from 'lodash'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
@@ -21,28 +25,32 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 const mapStateToProps = (state) => {
   return {
-    modals: state.modals
+    modals: state.modals,
+    endpoints: state.endpoints,
+    environment: state.environment.environments[state.environment.currentEnvironmentId] || { id: null, name: 'No Environment' },
+    currentEnvironmentId: state.environment.currentEnvironmentId
   }
 }
 class HostContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      datalistHost: this.props?.endpointContent?.host?.BASE_URL,
+      datalistHost: this.props?.endpointContent?.host?.BASE_URL || '',
       datalistUri: '',
       // customHost: '',
       environmentHost: '',
       versionHost: '',
       selectedHost: '',
       groupId: null,
-      versionId: null
+      versionId: null,
+      isCurl: false
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
   }
 
   handleClickOutside(event) {
-    if ((this.state.showDatalist || this.state.showInputHost) && this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+    if ((this.state.showDatalist || this.state.showInputHost) && this.wrapperRef && !this.wrapperRef.current?.contains(event.target)) {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ showDatalist: false, showInputHost: false })
     }
@@ -91,18 +99,60 @@ class HostContainer extends Component {
     return null
   }
 
+  // handleInputHostChange(e) {
+  //   const data = this.splitUrlHelper(e)
+  //   this.setState(
+  //     {
+  //       ...data,
+  //       showDatalist: e.target.value === ''
+  //     },
+  //     () => {
+  //       this.props.props_from_parent('HostAndUri')
+  //       this.setParentHostAndUri()
+  //     }
+  //   )
+  // }
   handleInputHostChange(e) {
-    const data = this.splitUrlHelper(e)
-    this.setState(
-      {
-        ...data,
-        showDatalist: e.target.value === ''
-      },
-      () => {
-        this.props.props_from_parent('HostAndUri')
-        this.setParentHostAndUri()
+    const inputValue = e.target.value
+    if (inputValue.trim().startsWith('curl ')) {
+      this.setState({ isCurl: true })
+      try {
+        const modifiedCurlCommand = decodeURIComponent(inputValue.replace(/\\/g, ''))
+
+        const parsedData = parseCurl(modifiedCurlCommand)
+
+        const data = this.splitUrlHelper(parsedData.url)
+        this.props.handleHeadersValue(parsedData)
+        this.props.handleMethodChange(parsedData)
+        // this.props.handleInputValue(parsedData)
+        this.setState(
+          {
+            ...data,
+            datalistHost: parsedData.url
+          },
+          () => {
+            // this.props.tab.state
+            this.props.props_from_parent('HostAndUri')
+            this.setParentHostAndUri()
+          }
+        )
+      } catch (error) {
+        console.error('Error parsing cURL command:', error)
       }
-    )
+    } else {
+      this.setState({ isCurl: false })
+      const data = this.splitUrlHelper(e)
+      this.setState(
+        {
+          ...data,
+          showDatalist: inputValue === ''
+        },
+        () => {
+          this.props.props_from_parent('HostAndUri')
+          this.setParentHostAndUri()
+        }
+      )
+    }
   }
 
   handleClickHostOptions(host, type) {
@@ -121,7 +171,7 @@ class HostContainer extends Component {
     const regex = /^((http[s]?|ftp):\/\/[\w.\-@:]*)/i
     const variableRegex = /^{{[\w|-]+}}/i
     const { environmentHost, versionHost } = this.state
-    if (value.match(variableRegex)) {
+    if (value?.match(variableRegex)) {
       return value.match(variableRegex)[0]
     }
     if (environmentHost && value.match(new RegExp('^' + environmentHost) + '/')) {
@@ -138,7 +188,12 @@ class HostContainer extends Component {
   }
 
   splitUrlHelper(e) {
-    const value = e.target.value
+    let value = ''
+    if (this.state.isCurl) {
+      value = e
+    } else {
+      value = e.target.value
+    }
     const hostName = this.checkExistingHosts(value)
     let uri = ''
     const data = {
@@ -182,8 +237,10 @@ class HostContainer extends Component {
         <input
           id='host-container-input'
           className='form-control'
-          value={this.props?.endpointContent.host.BASE_URL + this.props?.endpointContent?.data?.updatedUri}
-          name={`${endpointId}_hosts`}
+          value={this.state.datalistHost + this.state.datalistUri}
+          // name={`${endpointId}_hosts`}
+          name={`${this.props?.endpointContent}_hosts`}
+          // name='hello'
           placeholder='Enter Request URL'
           onChange={(e) => this.handleInputHostChange(e)}
           autoComplete='off'
@@ -230,4 +287,4 @@ class HostContainer extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HostContainer)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HostContainer))
