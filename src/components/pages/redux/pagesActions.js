@@ -112,8 +112,8 @@ export const addPage = (history, rootParentId, newPage) => {
   const orgId = getOrgId()
   return (dispatch) => {
     pageApiService
-    .saveCollectionPage(rootParentId, newPage)
-    .then((response) => {
+      .saveCollectionPage(rootParentId, newPage)
+      .then((response) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
         history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
@@ -152,7 +152,7 @@ export const deletePage = (page) => {
   page.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     pageApiService
-      .deletePage(page?.id,page)
+      .deletePage(page?.id, page)
       .then((res) => {
         deleteAllPagesAndTabsAndReactQueryData(page.id)
           .then((data) => {
@@ -292,17 +292,18 @@ export const updateNameOfPages = (payload) => {
 }
 
 export const updateDragDrop = (draggedId, droppedOnId) => {
-  let uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
+  let uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
-    pageApiService.dragAndDropApi({draggedId, droppedOnId, uniqueTabId})
+    pageApiService
+      .dragAndDropApi({ draggedId, droppedOnId, uniqueTabId })
       .then((response) => {
         dispatch({
           type: pagesActionTypes.ON_DRAG_DROP,
           payload: response.data
-        });
+        })
       })
       .catch((error) => {
-        console.error('Error occurred during drag and drop:', error);
-      });
-  };
-};
+        console.error('Error occurred during drag and drop:', error)
+      })
+  }
+}

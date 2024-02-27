@@ -3,13 +3,7 @@ import { Modal } from 'react-bootstrap'
 
 export default function CustomModal(props) {
   return (
-    <Modal
-      show={props.modalShow}
-      onHide={() => props?.setModal()}
-      size='md'
-      aria-labelledby='contained-modal-title-vcenter'
-      centered
-    >
+    <Modal show={props.modalShow} onHide={() => props?.setModal()} size='md' aria-labelledby='contained-modal-title-vcenter' centered>
       {props.children}
     </Modal>
   )

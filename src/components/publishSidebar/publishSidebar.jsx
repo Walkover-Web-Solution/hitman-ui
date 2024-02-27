@@ -64,7 +64,7 @@ function PublishSidebar(props) {
     setAllSelectedIds(setToArrayConvertedData)
   }
 
-  const sendPublishRequest =  () => {
+  const sendPublishRequest = () => {
     props.closePublishSidebar()
     if (allSelectedIds.length === 0) return toast.error('Please Select Something To Publish')
     const dataToPublish = new Set()

@@ -45,7 +45,7 @@ export const onDefaultVersion = (orgId, versionData) => {
 export const onSetDefaultVersion = (versionData) => {
   return {
     type: publishDocsActionTypes.ON_DEFAULT_VERSION,
-    versionData,
+    versionData
   }
 }
 export const onSetDefaultVersionError = (error) => {

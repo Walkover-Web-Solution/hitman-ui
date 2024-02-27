@@ -34,7 +34,7 @@ const clientDataReducer = (state = initialState, action) => {
       state['collectionToPublish'] = action.payload.collectionId
       return { ...state }
     case clientDataActionTypes.SET_DRAGGED_ID:
-      state['dragAndDrop'] = {};
+      state['dragAndDrop'] = {}
       state['dragAndDrop'].draggedId = action.draggedId
       return { ...state }
     default:

@@ -36,7 +36,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     const currentOrgId = getOrgId() ?? props.location.pathname.split('/')?.[2]
-    if(currentOrgId){
+    if (currentOrgId) {
       initConn(currentOrgId)
     }
     sessionStorage.setItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID, shortid.generate())
