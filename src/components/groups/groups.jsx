@@ -180,18 +180,19 @@ class Groups extends Component {
     const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === subPageId ? 'selected' : ''
     return (
       <>
-        <div className='sidebar-accordion accordion pl-3' id='child-accordion'
-        >
+        <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
           <button tabIndex={-1} className={`${expanded ? 'expanded' : ''} ${isSelected}`}>
             <div
-             draggable={!isUserOnPublishedPage} 
-             onDragOver={this.props.handleOnDragOver}
-             onDragStart={() => this.props.onDragStart(subPageId)}
-             onDrop={(e) => this.props.onDrop(e, subPageId)}
-             onDragEnter = {(e) => this.props.onDragEnter(e, subPageId)}
-             onDragEnd = {(e) => this.props.onDragEnd(e)}
-             style={this.props.draggingOverId === subPageId ? { border:'3px solid red'}: null}
-             className='d-flex align-items-center cl-name' onClick={() => this.toggleSubPageIds(subPageId)}>
+              draggable={!isUserOnPublishedPage}
+              onDragOver={this.props.handleOnDragOver}
+              onDragStart={() => this.props.onDragStart(subPageId)}
+              onDrop={(e) => this.props.onDrop(e, subPageId)}
+              onDragEnter={(e) => this.props.onDragEnter(e, subPageId)}
+              onDragEnd={(e) => this.props.onDragEnd(e)}
+              style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
+              className='d-flex align-items-center cl-name'
+              onClick={() => this.toggleSubPageIds(subPageId)}
+            >
               <span className='versionChovron'>
                 <img src={ExpandedIcon} alt='' />
               </span>

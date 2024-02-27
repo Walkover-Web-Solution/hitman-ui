@@ -53,16 +53,16 @@ function InviteTeam() {
       history.push(`/orgs/${orgId}/dashboard/endpoint/${activeTab}`)
     } else if (type === 'history') {
       history.push(`/orgs/${orgId}/dashboard/history/${activeTab}`)
-    }else if (type === 'collection') {
+    } else if (type === 'collection') {
       history.push(`/orgs/${orgId}/dashboard/collection/${activeTab}/settings`)
-    }else {
+    } else {
       history.push(`/orgs/${orgId}/dashboard/page/${activeTab}`)
     }
   }
 
   const handleInviteClick = () => setShowModal(true)
   const handleCloseModal = () => {
-    setShowModal(false) 
+    setShowModal(false)
     setName('')
     setEmail('')
   }
@@ -84,14 +84,13 @@ function InviteTeam() {
 
     try {
       setLoading(true)
-     const response = await inviteMembers(name, email)
-     if(response === true){
-      setUsers((prevUsers) => [{ name, email }, ...prevUsers])
-      handleCloseModal()
-     }
-     else{
-      handleCloseModal()
-     }
+      const response = await inviteMembers(name, email)
+      if (response === true) {
+        setUsers((prevUsers) => [{ name, email }, ...prevUsers])
+        handleCloseModal()
+      } else {
+        handleCloseModal()
+      }
     } catch (error) {
       toast.error('Cannot proceed at the moment. Please try again later')
     } finally {

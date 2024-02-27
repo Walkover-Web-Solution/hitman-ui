@@ -62,10 +62,9 @@ export async function inviteMembers(name, email) {
     toast.success('User added successfully')
     return true
   } catch (e) {
-    if(e.response.status !== 418) {
+    if (e.response.status !== 418) {
       toast.error(e?.message ? e.message : 'Something went wrong')
-    }
-    else{
+    } else {
       toast.error('Not Authenticated Proxy User')
     }
     return false

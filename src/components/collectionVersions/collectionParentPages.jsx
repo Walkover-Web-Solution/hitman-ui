@@ -465,14 +465,15 @@ class CollectionParentPages extends Component {
                   <span className='versionChovron'>
                     <img src={ExpandArrow} alt='' />
                   </span>
-                  <div className='d-flex justify-content-between align-items-center'
-                  draggable={!isUserOnPublishedPage}
-                  onDragOver={this.props.handleOnDragOver}
-                  onDragStart={() => this.props.onDragStart(pageId)}
-                  onDrop={(e) => this.props.onDrop(e, pageId)}
-                  onDragEnter = {(e) => this.props.onDragEnter(e, pageId)}
-                  onDragEnd = {(e) => this.props.onDragEnd(e)}
-                  style={this.props.draggingOverId === pageId ? { border:'3px solid red'}: null}
+                  <div
+                    className='d-flex justify-content-between align-items-center'
+                    draggable={!isUserOnPublishedPage}
+                    onDragOver={this.props.handleOnDragOver}
+                    onDragStart={() => this.props.onDragStart(pageId)}
+                    onDrop={(e) => this.props.onDrop(e, pageId)}
+                    onDragEnter={(e) => this.props.onDragEnter(e, pageId)}
+                    onDragEnd={(e) => this.props.onDragEnd(e)}
+                    style={this.props.draggingOverId === pageId ? { border: '3px solid red' } : null}
                   >
                     <div className='text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
                     {!isUserOnPublishedPage ? (
