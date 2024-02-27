@@ -54,7 +54,8 @@ const publishDocFormEnum = {
 const mapDispatchToProps = (dispatch) => {
   return {
     update_collection: (collection, stopLoader) => dispatch(updateCollection(collection, stopLoader)),
-    setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data))
+    setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data)),
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
   }
 }
 
@@ -399,6 +400,7 @@ class PublishDocForm extends Component {
 
   redirectUser() {
     this.setState({ openPublishSidebar: true })
+    this.props.ON_PUBLISH_DOC(true)
     // this.props.setCollectionIdForPublish({ collectionId: this.props.selected_collection_id })
   }
 
@@ -452,6 +454,7 @@ class PublishDocForm extends Component {
   }
   closePublishSidebar() {
     this.setState({ openPublishSidebar: false })
+    this.props.ON_PUBLISH_DOC(false)
   }
 
   renderActionButtons(publishCheck) {

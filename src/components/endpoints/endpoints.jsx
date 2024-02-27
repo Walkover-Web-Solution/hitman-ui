@@ -328,7 +328,6 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
-    const publishData = this.props.modals.publishData
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     let isUserOnPublishedPage = isOnPublishedPage()
     const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
@@ -341,6 +340,7 @@ class Endpoints extends Component {
         onDragStart={() => this.props.onDragStart(endpointId)}
         onDrop={(e) => this.props.onDrop(e, endpointId)}
         onDragEnter = {(e) => this.props.onDragEnter(e, endpointId)}
+        onDragEnd = {(e) => this.props.onDragEnd(e)}
         style={this.props.draggingOverId === endpointId ? { borderTop:'3px solid red'}: null}
         >
           <div className={this.props?.endpoints[endpointId]?.state} />
