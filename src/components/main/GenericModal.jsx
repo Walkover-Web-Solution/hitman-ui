@@ -88,12 +88,15 @@ function GenericModal({
         <Modal.Footer>
           {showInput && (
             <>
-              <div className='d-grid gap-2 col-6 mx-auto'>
+              <div className='m-2 d-grid gap-2 col-6 mx-auto create-org'>
+              {/* <div className='d-flex justify-content-center'> */}
                 {!createOrg && (
-                  <button className='btn btn-primary' onClick={handleClick}>
+                  <Button className='' 
+                  variant='btn btn-outline'
+                  onClick={handleClick}>
                     {' '}
                     + Create Organization
-                  </button>
+                  </Button>
                 )}
               </div>
               {createOrg && (
