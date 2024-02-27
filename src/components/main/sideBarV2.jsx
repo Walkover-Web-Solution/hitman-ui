@@ -586,25 +586,7 @@ class SideBarV2 extends Component {
     )
   }
 
-  renderInviteTeam() {
-    return (
-      <div
-        className='mb-2 cursor-pointer'
-        onClick={() => {
-          this.openAccountAndSettings()
-        }}
-      >
-        <Users className='mr-2' />
-        <span>Invite Team</span>
-      </div>
-    )
-  }
 
-  openAccountAndSettings = () => {
-    const { history } = this.props
-    const orgId = getCurrentOrg()?.id
-    history.push({ pathname: `/orgs/${orgId}/invite` })
-  }
 
   // renderDownloadDesktopApp () {
   //   const handleDownloadClick = () => {
@@ -705,7 +687,6 @@ class SideBarV2 extends Component {
         <div className='plr-3'>
           {isOnPublishedPage() && this.renderCollectionName()}
           {this.renderSearch()}
-          {isOnDashboardPage && getCurrentUser() && this.renderInviteTeam()}
           {/* {this.renderDownloadDesktopApp()} */}
           {isOnDashboardPage && this.renderGlobalAddButton()}
         </div>
