@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./auth.scss";
 import "./login.scss";
 import { ReactComponent as TECHDOC } from "../../assets/icons/TECHDOC100.svg";
+import { getCurrentOrg, getCurrentUser, getOrgList } from "./authServiceV2";
 
 class LoginV2 extends Component {
   proxyGooglereferenceMapping = {
@@ -11,7 +12,16 @@ class LoginV2 extends Component {
   };
 
   componentDidMount() {
-    this.loadScript();
+    this.checkIfUserAlreadyLogin()
+  }
+
+  checkIfUserAlreadyLogin() {
+    if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
+      this.props.history.push(
+        `/org/${getCurrentOrg().id}/dashboard`,
+      );
+    }
+    else this.loadScript();
   }
 
   loadScript() {
@@ -46,6 +56,7 @@ class LoginV2 extends Component {
   render() {
     const env = process.env.REACT_APP_ENV || "";
     const divId = this.proxyGooglereferenceMapping[env];
+
     return (
       <>
         <div className="login d-flex gap-sm-0 gap-4 flex-column-reverse flex-sm-row">
