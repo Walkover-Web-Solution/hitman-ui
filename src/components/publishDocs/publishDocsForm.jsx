@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     update_collection: (collection, stopLoader) => dispatch(updateCollection(collection, stopLoader)),
     setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data)),
-    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
   }
 }
 

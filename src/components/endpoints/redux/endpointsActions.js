@@ -9,7 +9,6 @@ import { addChildInParent } from '../../pages/redux/pagesActions'
 import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
-
 export const formatResponseToSend = (response) => {
   return {
     id: response.data.id,
@@ -23,7 +22,7 @@ export const formatResponseToSend = (response) => {
     type: response.data.type || 4,
     versionId: response.data.versionId || null,
     collectionId: response.data.collectionId
-  };
+  }
 }
 
 export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, props) => {
@@ -83,7 +82,7 @@ export const deleteEndpoint = (endpoint) => {
   endpoint.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     endpointApiService
-      .deleteEndpoint(endpoint.id,endpoint)
+      .deleteEndpoint(endpoint.id, endpoint)
       .then((res) => {
         deleteAllPagesAndTabsAndReactQueryData(endpoint.id)
           .then((data) => {

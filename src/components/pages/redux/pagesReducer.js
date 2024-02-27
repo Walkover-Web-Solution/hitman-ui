@@ -9,7 +9,6 @@ import { statesEnum } from '../../common/utility'
 import publishDocsActionTypes from '../../publishDocs/redux/publishDocsActionTypes'
 import { cloneDeep } from 'lodash'
 
-
 const initialState = {}
 
 function pagesReducer(state = initialState, action) {
@@ -34,7 +33,7 @@ function pagesReducer(state = initialState, action) {
       return {
         ...state
       }
-      
+
     case publicEndpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
       return {
         ...state,
@@ -85,7 +84,7 @@ function pagesReducer(state = initialState, action) {
       }
 
     case pagesActionTypes.ON_PARENTPAGE_VERSION_ADDED:
-      let pagesData={};
+      let pagesData = {}
       try {
         pagesData = { ...state }
         pagesData[action.response.id] = { ...action.response }
@@ -96,8 +95,7 @@ function pagesReducer(state = initialState, action) {
           }
           pagesData[parentId].child.push(action.response.id)
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error(error)
       }
       return { ...pagesData }
@@ -193,9 +191,9 @@ function pagesReducer(state = initialState, action) {
       pages = { ...action.originalData.originalPages }
       return pages
 
-    case bulkPublishActionTypes.UPDATE_PAGES_STATE_ON_BULK_PUBLISH:{
+    case bulkPublishActionTypes.UPDATE_PAGES_STATE_ON_BULK_PUBLISH: {
       let sidebarData = { ...state }
-      
+
       action.data.map((pageId) => {
         if (sidebarData?.[pageId]?.type === 3 || sidebarData?.[pageId]?.type === 4 || sidebarData?.[pageId]?.type === 1) {
           sidebarData[pageId].state = statesEnum.APPROVED_STATE
@@ -272,12 +270,12 @@ function pagesReducer(state = initialState, action) {
           state: action.response?.state
         }
       }
-    case pagesActionTypes.ON_DRAG_DROP:{
+    case pagesActionTypes.ON_DRAG_DROP: {
       pages = { ...state }
       let pageData = action.payload
       pages[pageData.id] = { ...pages[pageData.id], ...pageData }
       return pages
-    }   
+    }
     case pagesActionTypes.ON_ENDPOINT_DUPLICATED:
       state[action?.response?.parentId].child.push(action?.response?.id)
       return {
