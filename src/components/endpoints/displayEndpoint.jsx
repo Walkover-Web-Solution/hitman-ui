@@ -1129,9 +1129,11 @@ class DisplayEndpoint extends Component {
 
   setPublicBody(body) {
     const json = body
-    const data = { ...this.state.data }
+    const data = { ...this.props.endpointContent.data }
     data.body = { type: 'JSON', value: json }
-
+    const tempData = this.props.endpointContent
+    tempData.data = data
+    this.props.setQueryUpdatedData(tempData)
     this.setState({ data, publicBodyFlag: false })
   }
 
