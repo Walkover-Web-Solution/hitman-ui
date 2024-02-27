@@ -213,7 +213,7 @@ class HostContainer extends Component {
       <input
         disabled
         className='form-control'
-        defaultValue={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}
+        value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}
       />
     )
   }
