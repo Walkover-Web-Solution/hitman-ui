@@ -22,7 +22,6 @@ class CodeTemplate extends Component {
   makeCodeSnippet() {
     const harObject = this.props.harObject
     let { method, url, httpVersion, cookies, headers, postData } = harObject
-    url = encodeURI(url)
     const snippet = new HTTPSnippet({
       method,
       url,
@@ -43,6 +42,8 @@ class CodeTemplate extends Component {
     try {
       const snippet = this.makeCodeSnippet()
       codeSnippet = snippet.convert(selectedLanguage)
+      codeSnippet = decodeURIComponent(codeSnippet)
+      codeSnippet = codeSnippet.replace('///' , '//')
     } catch (error) {
       console.error(error)
     }
@@ -91,7 +92,7 @@ class CodeTemplate extends Component {
                 </button>
               ))}
               <Dropdown>
-                <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active' : ''}>
+                <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active mb-2 mt-2' : ''}>
                   {primaryLanguages.includes(this.selectedLanguage) ? (
                     <span>More</span>
                   ) : (
@@ -102,12 +103,12 @@ class CodeTemplate extends Component {
                   {secondaryLanguages.map((key) => (
                     <Dropdown.Item
                       key={key}
-                      className={key === this.selectedLanguage ? 'active' : ''}
+                      className={key === this.selectedLanguage ? 'active mb-2 mt-2' : 'mb-2 mt-2'}
                       onClick={() => {
                         this.makeCodeTemplate(key)
                       }}
                     >
-                      <img src={languages[key].imagePath} alt={languages[key].name} />
+                      <img src={languages[key].imagePath} alt={languages[key].name} className='mr-2' />
                       {languages[key].name}
                     </Dropdown.Item>
                   ))}
