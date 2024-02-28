@@ -158,9 +158,9 @@ class PublicEndpoint extends Component {
     if (!this.props.keyExistInReactQuery(currentIdToShow)) {
       const response = generalApiService.getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type)
       if (this.props.pages?.[currentIdToShow]?.type == 4) {
-        this.props.mutationFn.mutate({ type: 'endpoint', id: currentIdToShow, content: response })
+        // this.props.mutationFn.mutate({ type: 'endpoint', id: currentIdToShow, content: response })
       } else if (this.props.pages?.[currentIdToShow]?.type != 4) {
-        this.props.mutationFn.mutate({ type: 'pageContent', id: currentIdToShow, content: response })
+        // this.props.mutationFn.mutate({ type: 'pageContent', id: currentIdToShow, content: response })
       }
     }
   }
@@ -169,9 +169,9 @@ class PublicEndpoint extends Component {
     if (response) {
       var id = response?.data?.publishedContent?.id
       if (response?.data?.publishedContent?.type === 4) {
-        this.props.mutationFn.mutate({ type: 'endpoint', id: id, content: response?.data?.publishedContent })
+        // this.props.mutationFn.mutate({ type: 'endpoint', id: id, content: response?.data?.publishedContent })
       } else {
-        this.props.mutationFn.mutate({ type: 'pageContent', id: id, content: response?.data?.publishedContent?.contents })
+        // this.props.mutationFn.mutate({ type: 'pageContent', id: id, content: response?.data?.publishedContent?.contents })
       }
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
     }

@@ -286,7 +286,8 @@ class DisplayEndpoint extends Component {
       requestKey: null,
       docOptions: false,
       sslMode: getCurrentUserSSLMode(),
-      showAskAiSlider: false
+      showAskAiSlider: false,
+      endpointContentState: null
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -294,6 +295,9 @@ class DisplayEndpoint extends Component {
   }
 
   async componentDidMount() {
+    if (this.props.endpointContent) {
+      this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
+    }
     this.extractEndpointName()
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -353,16 +357,23 @@ class DisplayEndpoint extends Component {
     }
     if (!isDashboardRoute(this.props)) {
       if (
-        this.state.data !== prevState.data ||
-        this.state.originalParams !== prevState.originalParams ||
-        this.state.originalHeaders !== prevState.originalHeaders ||
-        this.state.host !== prevState.host
+        this.props?.endpointContent &&
+        this.state?.endpointContentState &&
+        (!_.isEqual(this.state?.endpointContentState?.data, this.props?.endpointContent?.data) ||
+          !_.isEqual(this.state?.endpointContentState?.originalParams, this.props?.endpointContent?.originalParams) ||
+          !_.isEqual(this.state?.endpointContentState?.originalHeaders, this.props?.endpointContent?.originalHeaders) ||
+          !_.isEqual(this.state?.endpointContentState?.pathVariables, this.props?.endpointContent?.pathVariables) ||
+          !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
       ) {
         this.prepareHarObject()
       }
     }
     if (this.state.endpoint.id !== prevState.endpoint.id && !this.props.location.pathname.includes('history')) {
       this.setState({ flagResponse: false })
+    }
+
+    if (this.props?.endpointContent && !_.isEqual(this.props.endpointContent, this.state.endpointContentState)) {
+      this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
     }
   }
 
@@ -666,7 +677,7 @@ class DisplayEndpoint extends Component {
   }
 
   setPathVariableValues() {
-    let uri = new URI(this.props?.endpointContent?.data?.updatedUri)
+    let uri = new URI(this.props?.endpointContent?.data?.updatedUri || '')
     uri = uri.pathname()
     const pathParameters = uri.split('/')
     let path = ''
@@ -827,7 +838,7 @@ class DisplayEndpoint extends Component {
 
     /** Prepare URL */
     const BASE_URL = this.props.endpointContent.host.BASE_URL || ''
-    const uri = new URI(this.props.endpointContent.data.updatedUri)
+    const uri = new URI(this.props.endpointContent.data.updatedUri || '')
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
     const url = BASE_URL + path + queryparams
@@ -1128,10 +1139,9 @@ class DisplayEndpoint extends Component {
   }
 
   setPublicBody(body) {
-    const json = body
-    const data = { ...this.props.endpointContent.data }
-    data.body = { type: 'JSON', value: json }
-    const tempData = this.props.endpointContent
+    const data = { ...this.props?.endpointContent?.data }
+    data.body = { type: data?.body?.type ?? 'none', value: body }
+    const tempData = this.props?.endpointContent
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
     this.setState({ data, publicBodyFlag: false })
@@ -1215,13 +1225,15 @@ class DisplayEndpoint extends Component {
 
   makeParams(params) {
     const processedParams = []
-    for (let i = 0; i < Object.keys(params).length; i++) {
-      if (params[Object.keys(params)[i]].checked === 'true') {
-        processedParams.push({
-          name: params[Object.keys(params)[i]].key,
-          value: params[Object.keys(params)[i]].value,
-          comment: params[Object.keys(params)[i]].description
-        })
+    if (params) {
+      for (let i = 0; i < Object.keys(params).length; i++) {
+        if (params[Object.keys(params)[i]].checked === 'true') {
+          processedParams.push({
+            name: params[Object.keys(params)[i]].key,
+            value: params[Object.keys(params)[i]].value,
+            comment: params[Object.keys(params)[i]].description
+          })
+        }
       }
     }
     return processedParams
@@ -1260,14 +1272,15 @@ class DisplayEndpoint extends Component {
   }
 
   async prepareHarObject() {
-    const BASE_URL = this.props?.endpointContent?.host?.BASE_URL
-    const uri = new URI(this.props?.endpointContent?.data?.updatedUri)
+    const BASE_URL = this.props?.endpointContent?.host?.BASE_URL || ''
+    const uri = new URI(this.props?.endpointContent?.data?.updatedUri || '')
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
     let url = BASE_URL + path + queryparams
     url = this.replaceVariables(url)
-    const { method, body } = this.props?.endpointContent?.data
-    const { originalHeaders, originalParams } = this.props?.endpointContent
+    const method = this.props?.endpointContent?.data?.method || ''
+    const body = this.props?.endpointContent?.data?.body || {}
+    const { originalHeaders, originalParams } = this.props?.endpointContent || {}
     const harObject = {
       method,
       url: url,

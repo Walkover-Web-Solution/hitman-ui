@@ -16,7 +16,9 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 addAnalyticsScripts()
-sentryIntegration()
+if(process.env.REACT_APP_ENV != 'local'){
+  sentryIntegration()
+}
 const queryClient = new QueryClient()
 ReactDOM.render(
   <Provider store={store}>
