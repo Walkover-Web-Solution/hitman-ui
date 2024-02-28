@@ -8,7 +8,7 @@ import { updateDragDrop } from '../pages/redux/pagesActions'
 
 function CombinedCollections(props) {
   const [draggingOverId, setDraggingOverId] = useState(null);
-  const [draggedId, setDraggedId] = useState(null);
+  const [draggedIdSelected, setDraggedIdSelected] = useState(null);
   const dispatch = useDispatch()
 
   const { childIds, pages } = useSelector((state) => {
@@ -31,17 +31,17 @@ function CombinedCollections(props) {
     setDraggingOverId(null)
   }
 
-  const onDragStart = (draggedId) => {
-    setDraggedId(draggedId);
+  const onDragStart = (draggedIdSelected) => {
+    setDraggedIdSelected(draggedIdSelected);
   }
 
   const onDrop = (e, droppedOnId) => {
     e.preventDefault()
     setDraggingOverId(null);
 
-    if (draggedId === droppedOnId) return ;
+    if (draggedIdSelected === droppedOnId) return ;
 
-    let draggedIdParentId = pages?.[draggedId]?.parentId
+    let draggedIdParentId = pages?.[draggedIdSelected]?.parentId
     let droppedOnIdParentId = pages?.[droppedOnId]?.parentId
 
     // if both data is not from same parent then stop the user 
@@ -50,36 +50,48 @@ function CombinedCollections(props) {
       return ;
     }
 
-    dispatch(updateDragDrop(draggedId,  droppedOnId))
+    dispatch(updateDragDrop(draggedIdSelected,  droppedOnId))
   }
-
-  const componentMap = {
-    1: CollectionParentPages,
-    3: Groups,
-    4: Endpoints,
-  };
   
   return (
     <div>
       {childIds.map((singleId) => {
         const type = pages?.[singleId]?.type || null;
-        const Component = componentMap[type];
-  
-        if (!Component) return null;
         const commonProps = {
           key: singleId,
           ...props,
-          rootParentId: singleId,
           handleOnDragOver: handleOnDragOver,
           onDragStart: onDragStart,
           onDrop: onDrop,
           onDragEnter: onDragEnter,
           draggingOverId: draggingOverId,
           onDragEnd:onDragEnd
-        };
-        if (type === 4) commonProps.endpointId = singleId; 
-        
-        return <Component {...commonProps} />;
+        }
+        switch (type) {
+          case 1:
+            return (
+              <CollectionParentPages
+                {...commonProps}
+                rootParentId={singleId}
+              />
+            )
+          case 3:
+            return (
+              <Groups
+                {...commonProps}
+                rootParentId={singleId}
+              />
+            )
+          case 4:
+            return (
+              <Endpoints
+                {...commonProps}
+                endpointId={singleId}
+              />
+            )
+          default:
+            break
+        }
       })}
     </div>
   );
