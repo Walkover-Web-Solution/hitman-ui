@@ -330,9 +330,9 @@ class UserProfileV2 extends Component {
           this.handleLogout()
         }}
       >
-        <img src={Power} alt='power-icon' />
-        <span className=''>Logout</span>
-      </div>
+        <img src={Power} className='mr-2' alt='power-icon' />
+        <span className='mr-2'>Logout</span>
+      </div>          
     )
   }
 
@@ -376,7 +376,7 @@ class UserProfileV2 extends Component {
       return null
     }
     return (
-      <Modal show={this.state.modalForTabs} className='mt-4'>
+      <Modal show={this.state.modalForTabs} backdrop='static' keyboard={false} className='mt-4'>
         <Modal.Header
           closeButton
           onClick={() => {
@@ -385,7 +385,7 @@ class UserProfileV2 extends Component {
         >
           <Modal.Title>Save Tabs!</Modal.Title>
         </Modal.Header>
-        <Modal.Body>If you switch organization all the tabs and history will be deleted!</Modal.Body>
+        <Modal.Body style={{ fontWeight: '500' }}>If you switch organization all the tabs and history will be Deleted!</Modal.Body>
         <Modal.Footer>
           <button
             className='btn btn-danger btn-lg mr-2'
@@ -396,6 +396,7 @@ class UserProfileV2 extends Component {
             Yes
           </button>
           <Button
+            className='btn btn-secondary outline btn-lg'
             variant='secondary'
             onClick={() => {
               this.handleTabsandHistory('no')
@@ -409,6 +410,7 @@ class UserProfileV2 extends Component {
   }
 
   handleOrgClick(org, selectedOrg) {
+    this.toggleModal()
     const tabIdsToClose = this.props.tabs.tabsOrder
     this.setState({ selectedOrg: selectedOrg, currentOrg: org })
     if (org.id === selectedOrg.id) {
@@ -520,7 +522,7 @@ class UserProfileV2 extends Component {
     return (
       <>
         <div className='profile-menu'>
-          <Dropdown className='menu-dropdown transition d-flex align-items-center'>
+          <Dropdown className='d-flex align-items-center'>
             <Dropdown.Toggle
               as={React.forwardRef(({ children, onClick }, ref1) => this.renderAvatarWithOrg(onClick, ref1))}
               id='dropdown-custom-components'
@@ -536,7 +538,7 @@ class UserProfileV2 extends Component {
                 <Dropdown.Item>
                   {/* <div className='profile-menu'> */}
                   <span className='profile-details' onClick={this.toggleModal} type='button'>
-                    <img className='user-icon' src={SwitchRight} alt='icon' />
+                    <img className='user-icon mr-2' src={SwitchRight} alt='icon' />
                     Switch Organization
                   </span>
                   <GenericModal
