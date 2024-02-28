@@ -193,7 +193,7 @@ class MainV2 extends Component {
             {
               <div className='custom-main-container'>
                 {/* <Header {...this.props} /> */}
-                <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
+                <DesktopAppDownloadModal history={this.props?.history} location={this.props?.location} match={this.props?.match} />
                 <OnlineSatus
                 // fetchFromBackend={this.fetchFromBackend.bind(this)}
                 />

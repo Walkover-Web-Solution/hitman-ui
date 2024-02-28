@@ -328,35 +328,83 @@ class GenericTable extends Component {
   }
 
   handleFileInput(dataArray, index) {
-    if (isElectron()) {
-      const { dialog } = window.require('electron').remote
-      const files = dialog.showOpenDialogSync({
-        properties: ['openFile']
-      })
-      if (files) {
-        const id = shortid.generate()
-        this.handleChange({
-          currentTarget: {
-            name: index + '.value',
-            value: {
-              id,
-              name: this.getName(files[0]),
-              srcPath: files[0]
-            }
-          }
-        })
-      }
-    } else {
+    if (!window.matchMedia('(display-mode: standalone)').matches) {
       const data = <h5 className='text-center'>File upload feature is not supported on Web</h5>
       this.props.open_modal('DESKTOP_APP_DOWNLOAD', data)
       this.handleChange({
         currentTarget: {
-          name: index + '.type',
+          name: index + '.type', 
           value: 'text'
         }
       })
+    } else {
+      // const { dialog } = window.require('electron').remote
+      // const files = dialog.showOpenDialogSync({
+      //   properties: ['openFile']
+      // })
+      // if (files) {
+      //   const id = shortid.generate()
+      //   this.handleChange({
+      //     currentTarget: {
+      //       name: index + '.value',
+      //       value: {
+      //         id,
+      //         name: this.getName(files[0]),
+      //         srcPath: files[0]
+      //       }
+      //     }
+      //   })
+      // }
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = 'image/*' // Set the accepted file types if needed
+      input.onchange = (event) => {
+        const files = event.target.files
+        if (files && files.length > 0) {
+          const id = shortid.generate()
+          this.handleChange({
+            currentTarget: {
+              name: index + '.value',
+              value: {
+                id,
+                name: files[0].name,
+                srcPath: files[0]
+              }
+            }
+          })
+        }
+      }
+      input.click() // Open the file picker dialog
     }
   }
+  // if (isElectron()) {
+  //   const { dialog } = window.require('electron').remote
+  //   const files = dialog.showOpenDialogSync({
+  //     properties: ['openFile']
+  //   })
+  //   if (files) {
+  //     const id = shortid.generate()
+  //     this.handleChange({
+  //       currentTarget: {
+  //         name: index + '.value',
+  //         value: {
+  //           id,
+  //           name: this.getName(files[0]),
+  //           srcPath: files[0]
+  //         }
+  //       }
+  //     })
+  //   }
+  // } else {
+  //   const data = <h5 className='text-center'>File upload feature is not supported on Web</h5>
+  //   this.props.open_modal('DESKTOP_APP_DOWNLOAD', data)
+  //   this.handleChange({
+  //     currentTarget: {
+  //       name: index + '.type',
+  //       value: 'text'
+  //     }
+  //   })
+  // }
 
   renderTableRow(dataArray, index, originalData, title) {
     const valueKey = `${index}.value`
