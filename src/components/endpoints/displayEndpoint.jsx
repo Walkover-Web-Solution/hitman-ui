@@ -682,7 +682,7 @@ class DisplayEndpoint extends Component {
   }
 
   setPathVariableValues() {
-    let uri = new URI(this.props?.endpointContent?.data?.updatedUri)
+    let uri = new URI(this.props?.endpointContent?.data?.updatedUri || '')
     uri = uri.pathname()
     const pathParameters = uri.split('/')
     let path = ''
@@ -843,7 +843,7 @@ class DisplayEndpoint extends Component {
 
     /** Prepare URL */
     const BASE_URL = this.props.endpointContent.host.BASE_URL || ''
-    const uri = new URI(this.props.endpointContent.data.updatedUri)
+    const uri = new URI(this.props.endpointContent.data.updatedUri || '')
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
     const url = BASE_URL + path + queryparams
@@ -1230,15 +1230,18 @@ class DisplayEndpoint extends Component {
 
   makeParams(params) {
     const processedParams = []
-    for (let i = 0; i < Object.keys(params).length; i++) {
-      if (params[Object.keys(params)[i]].checked === 'true') {
-        processedParams.push({
-          name: params[Object.keys(params)[i]].key,
-          value: params[Object.keys(params)[i]].value,
-          comment: params[Object.keys(params)[i]].description
-        })
+    if(params){
+      for (let i = 0; i < Object.keys(params).length; i++) {
+        if (params[Object.keys(params)[i]].checked === 'true') {
+          processedParams.push({
+            name: params[Object.keys(params)[i]].key,
+            value: params[Object.keys(params)[i]].value,
+            comment: params[Object.keys(params)[i]].description
+          })
+        }
       }
     }
+   
     return processedParams
   }
 
@@ -1276,13 +1279,13 @@ class DisplayEndpoint extends Component {
 
   async prepareHarObject() {
     const BASE_URL = this.props?.endpointContent?.host?.BASE_URL
-    const uri = new URI(this.props?.endpointContent?.data?.updatedUri)
+    const uri = new URI(this.props?.endpointContent?.data?.updatedUri || "")
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
     let url = BASE_URL + path + queryparams
     url = this.replaceVariables(url)
-    const { method, body } = this.props?.endpointContent?.data
-    const { originalHeaders, originalParams } = this.props?.endpointContent
+    const { method, body } = this.props?.endpointContent?.data || {}
+    const { originalHeaders, originalParams } = this.props?.endpointContent || {}
     // debugger
     const harObject = {
       method,
