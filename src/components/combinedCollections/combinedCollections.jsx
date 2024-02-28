@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React , {useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import Groups from '../groups/groups'
@@ -7,112 +7,83 @@ import { toast } from 'react-toastify'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 
 function CombinedCollections(props) {
-  const [draggingOverId, setDraggingOverId] = useState(null)
-  const [draggedIdSelected, setDraggedIdSelected] = useState(null)
+  const [draggingOverId, setDraggingOverId] = useState(null);
+  const [draggedId, setDraggedId] = useState(null);
+  const dispatch = useDispatch()
 
   const { childIds, pages } = useSelector((state) => {
     return {
       childIds: state?.pages?.[props?.rootParentId]?.child || [],
-      pages: state.pages,
-      clientData: state.clientData
+      pages: state.pages
     }
   })
 
-  const dispatch = useDispatch()
-
-  const handleOnDragOver = (e) => {
+  const handleOnDragOver = (e)  =>  {
     e.preventDefault()
   }
 
   const onDragEnter = (e, draggingOverId) => {
-    e.preventDefault()
-    setDraggingOverId(draggingOverId)
+    e.preventDefault();
+    setDraggingOverId(draggingOverId);
   }
-
   const onDragEnd = (e) => {
     e.preventDefault()
     setDraggingOverId(null)
   }
 
   const onDragStart = (draggedId) => {
-    setDraggedIdSelected(draggedId)
+    setDraggedId(draggedId);
   }
 
   const onDrop = (e, droppedOnId) => {
     e.preventDefault()
+    setDraggingOverId(null);
 
-    setDraggingOverId(null)
-
-    let draggedId = draggedIdSelected
-    if (draggedId === droppedOnId) {
-      return
-    }
+    if (draggedId === droppedOnId) return ;
 
     let draggedIdParentId = pages?.[draggedId]?.parentId
     let droppedOnIdParentId = pages?.[droppedOnId]?.parentId
 
-    // if both data is not from same parent then stop the user
-    if (draggedIdParentId != droppedOnIdParentId) {
-      toast.error('Reordering is allowed inside the same parent')
-      return
+    // if both data is not from same parent then stop the user 
+    if(draggedIdParentId != droppedOnIdParentId){
+      toast.error("Reordering is allowed inside the same parent")        
+      return ;
     }
 
-    dispatch(updateDragDrop(draggedId, droppedOnId))
+    dispatch(updateDragDrop(draggedId,  droppedOnId))
   }
 
+  const componentMap = {
+    1: CollectionParentPages,
+    3: Groups,
+    4: Endpoints,
+  };
+  
   return (
     <div>
       {childIds.map((singleId) => {
-        const type = pages?.[singleId]?.type || null
-        switch (type) {
-          case 1:
-            return (
-              <CollectionParentPages
-                key={singleId}
-                {...props}
-                rootParentId={singleId}
-                handleOnDragOver={handleOnDragOver}
-                onDragStart={onDragStart}
-                onDrop={onDrop}
-                onDragEnter={onDragEnter}
-                onDragEnd={onDragEnd}
-                draggingOverId={draggingOverId}
-              />
-            )
-          case 3:
-            return (
-              <Groups
-                key={singleId}
-                {...props}
-                rootParentId={singleId}
-                handleOnDragOver={handleOnDragOver}
-                onDragStart={onDragStart}
-                onDrop={onDrop}
-                onDragEnter={onDragEnter}
-                onDragEnd={onDragEnd}
-                draggingOverId={draggingOverId}
-              />
-            )
-          case 4:
-            return (
-              <Endpoints
-                key={singleId}
-                {...props}
-                endpointId={singleId}
-                handleOnDragOver={handleOnDragOver}
-                onDragStart={onDragStart}
-                onDrop={onDrop}
-                onDragEnter={onDragEnter}
-                onDragEnd={onDragEnd}
-                draggingOverId={draggingOverId}
-              />
-            )
-          default:
-            break
-        }
+        const type = pages?.[singleId]?.type || null;
+        const Component = componentMap[type];
+  
+        if (!Component) return null;
+        const commonProps = {
+          key: singleId,
+          ...props,
+          rootParentId: singleId,
+          handleOnDragOver: handleOnDragOver,
+          onDragStart: onDragStart,
+          onDrop: onDrop,
+          onDragEnter: onDragEnter,
+          draggingOverId: draggingOverId,
+          onDragEnd:onDragEnd
+        };
+        if (type === 4) commonProps.endpointId = singleId; 
+        
+        return <Component {...commonProps} />;
       })}
     </div>
-  )
+  );
+  
 }
 
 export default CombinedCollections
