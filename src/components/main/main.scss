@@ -1811,6 +1811,9 @@ html body div#sokt-sso-modal {
   &:last-child {
     margin-right: 0;
   }
+  &:hover {
+    border-color: #fff;
+  }
 }
 
 .select-code-wrapper > button.active {
