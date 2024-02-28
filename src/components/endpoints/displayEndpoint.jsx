@@ -286,7 +286,8 @@ class DisplayEndpoint extends Component {
       requestKey: null,
       docOptions: false,
       sslMode: getCurrentUserSSLMode(),
-      showAskAiSlider: false
+      showAskAiSlider: false,
+      endpointContentState: null
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -294,6 +295,7 @@ class DisplayEndpoint extends Component {
   }
 
   async componentDidMount() {
+    this.setState({ endpointContentState: this.props.endpointContent });
     this.extractEndpointName()
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -346,23 +348,37 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    debugger
+
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.extractEndpointName()
     }
     if (this.props.endpointId !== prevProps.endpointId) {
     }
     if (!isDashboardRoute(this.props)) {
+      // debugger
       if (
-        this.state.data !== prevState.data ||
-        this.state.originalParams !== prevState.originalParams ||
-        this.state.originalHeaders !== prevState.originalHeaders ||
-        this.state.host !== prevState.host
+        !_.isEqual(this.state?.endpointContentState?.data, this.props?.endpointContent?.data )||
+        !_.isEqual(this.state?.endpointContentState?.originalParams, this.props?.endpointContent?.originalParams) ||
+        !_.isEqual(this.state?.endpointContentState?.originalHeaders, this.props?.endpointContent?.originalHeaders) ||
+        !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host)
       ) {
         this.prepareHarObject()
       }
     }
+    let x = this.props.endpointContent == this.state.endpointContentState
+    console.log("guess == ", x)
+    console.log("from Lodash  ", _.isEqual(this.props.endpointContent, this.state.endpointContentState))
+
     if (this.state.endpoint.id !== prevState.endpoint.id && !this.props.location.pathname.includes('history')) {
       this.setState({ flagResponse: false })
+    }
+
+    if(!_.isEqual(this.props.endpointContent, this.state.endpointContentState)){
+      debugger
+      let x = this.state.endpointContentState;
+      let y =  _.cloneDeep(this.props.endpointContent)
+      this.setState({ endpointContentState:  y});
     }
   }
 
@@ -1128,10 +1144,11 @@ class DisplayEndpoint extends Component {
   }
 
   setPublicBody(body) {
-    const json = body
-    const data = { ...this.state.data }
-    data.body = { type: 'JSON', value: json }
-
+    const data = { ...this.props.endpointContent.data }
+    data.body = { type: data.body.type, value: body }
+    const tempData = this.props.endpointContent
+    tempData.data = data
+    this.props.setQueryUpdatedData(tempData)
     this.setState({ data, publicBodyFlag: false })
   }
 
@@ -1266,6 +1283,7 @@ class DisplayEndpoint extends Component {
     url = this.replaceVariables(url)
     const { method, body } = this.props?.endpointContent?.data
     const { originalHeaders, originalParams } = this.props?.endpointContent
+    // debugger
     const harObject = {
       method,
       url: url,
@@ -2507,6 +2525,10 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    let x = this.props.endpointContent == this.state.endpointContentState
+    console.log("guessFrom Render == ",x )
+    console.log("from Lodash Render ", _.isEqual(this.props.endpointContent, this.state.endpointContentState))
+// debugger
     if (this.props?.endpointContentLoading) {
       return (
         <div className='custom-loading-container'>
