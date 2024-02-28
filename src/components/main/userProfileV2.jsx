@@ -94,7 +94,7 @@ class UserProfileV2 extends Component {
     return (
       <div>
         <div className='org-name'>{this.getCurrentOrg()?.name || null}</div>
-        <span className='profile-details-label-light'>{name}</span>
+        {/* <span className='profile-details-label-light'>{name}</span> */}
         {/* {
                 this.getNotificationCount() > 0 &&
                   <div className='user-notification-badge'>{this.getNotificationCount()}</div>
@@ -117,7 +117,7 @@ class UserProfileV2 extends Component {
           <img src={User} alt='user' />
         </div>
         <div className='profile-details-user-name'>
-          <span className='org-name'>{name}</span>
+          {/* <span className='org-name'>{name}</span> */}
           <span className='profile-details-label-light'>{email}</span>
         </div>
       </div>
@@ -392,7 +392,7 @@ class UserProfileV2 extends Component {
     this.setState({ selectedOrg: selectedOrg, currentOrg: org })
     if (org.id === selectedOrg.id) {
       this.setState({ modalForTabs: false })
-      toast.error('This org is already selected')
+      toast.error('This organization is already selected')
     } else if (org.id !== selectedOrg.id && (tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
       this.setState({ modalForTabs: false })
       switchOrg(org.id)
@@ -525,7 +525,7 @@ class UserProfileV2 extends Component {
                     setName={this.setName}
                     handleCloseModal={this.toggleModal}
                     showModal={this.state.showModal}
-                    title='Switch Organizations'
+                    title='Switch Organization'
                     modalBody={this.renderOrgListDropdown()}
                     keyboard={false}
                     showInput
