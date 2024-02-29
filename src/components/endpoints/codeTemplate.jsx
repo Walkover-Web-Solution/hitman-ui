@@ -82,7 +82,7 @@ class CodeTemplate extends Component {
               {primaryLanguages.map((key) => (
                 <button
                   key={key}
-                  className={key === this.selectedLanguage ? 'active' : ''}
+                  className={key === this.selectedLanguage ? 'active mr-2' : ' mr-2'}
                   onClick={() => {
                     this.makeCodeTemplate(key)
                   }}
@@ -92,7 +92,7 @@ class CodeTemplate extends Component {
                 </button>
               ))}
               <Dropdown>
-                <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active mb-2 mt-2' : ''}>
+                <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active' : ''}>
                   {primaryLanguages.includes(this.selectedLanguage) ? (
                     <span>More</span>
                   ) : (
