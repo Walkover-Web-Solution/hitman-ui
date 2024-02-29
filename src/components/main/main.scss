@@ -1279,6 +1279,10 @@ body .btn {
 
 .panel-endpoint-name-container span {
   color: #828282;
+ &:not(.collection-name-path) {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 }
 
 .endpoint-headers-container .button-panel-wrapper .body {

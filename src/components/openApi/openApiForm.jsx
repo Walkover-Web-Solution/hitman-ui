@@ -165,7 +165,7 @@ class OpenApiForm extends Component {
           }}
         >
           <option value=''>Select</option>
-          <option value='openAPI'>Socket Doc</option>
+          {/* <option value='openAPI'>Socket Doc</option> */}
           <option value='postman'>Postman</option>
         </select>
         {this.state.errors?.type && <div className='alert alert-danger'>{this.state.errors?.type}</div>}
