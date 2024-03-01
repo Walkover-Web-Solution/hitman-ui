@@ -268,7 +268,7 @@ class DisplayResponse extends Component {
   render() {
     const { theme } = this.state
     return (
-      <div className='endpoint-response-container overflow-auto'>
+      <div className='endpoint-response-container overflow-auto mt-4'>
         {this.props.loader ? (
           this.renderLoader()
         ) : this.props.flagResponse ? (
