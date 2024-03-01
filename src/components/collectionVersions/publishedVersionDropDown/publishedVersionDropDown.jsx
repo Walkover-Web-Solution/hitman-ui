@@ -34,10 +34,14 @@ export default function PublishedVersionDropDown(props) {
       if (pages?.[versionId] && pages?.[versionId]?.isPublished && value) {
         return versionId
       }
+      else if(pages?.[versionId]?.state === 1){
+        return  versionId
+      }
     })
   }
 
   if (show?.length === 0) return null
+
   return (
     <DropdownButton
       key={props?.rootParentId}
