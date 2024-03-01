@@ -608,19 +608,25 @@ class DisplayEndpoint extends Component {
   }
 
   handleErrorResponse(error) {
+    const dummyEndpointData = this.props?.endpointContent;
     if (error.response) {
       const response = {
         status: error.response.status,
         statusText: status[error.response.status],
         data: error.response.data
       }
-      this.setState({ response, flagResponse: true })
+      dummyEndpointData.testResponse =  response
+      dummyEndpointData.flagResponse =  true
+      this.props.setQueryUpdatedData(dummyEndpointData);
     } else {
       const timeElapsed = new Date().getTime() - this.state.startTime
       const response = {
         data: error.message || 'ERROR:Server Connection Refused'
       }
-      this.setState({ response, timeElapsed, flagResponse: true })
+      dummyEndpointData.testResponse =  response
+      dummyEndpointData.flagResponse =  true
+      this.props.setQueryUpdatedData(dummyEndpointData);
+      this.setState({ timeElapsed })
     }
   }
 
@@ -672,7 +678,11 @@ class DisplayEndpoint extends Component {
     }
     if (responseJson.status === 200) {
       const timeElapsed = new Date().getTime() - this.state.startTime
-      this.setState({ response, timeElapsed, flagResponse: true })
+      const dummyEndpointData = this.props?.endpointContent;
+      dummyEndpointData.testResponse =  response
+      dummyEndpointData.flagResponse =  true
+      this.props.setQueryUpdatedData(dummyEndpointData);
+      this.setState({ timeElapsed })
     }
   }
 
@@ -1667,15 +1677,15 @@ class DisplayEndpoint extends Component {
   }
 
   displayResponse() {
-    if (this.isNotDashboardOrDocView() && this.state?.flagResponse) {
+    if (this.isNotDashboardOrDocView() && this.props?.endpointContent?.flagResponse) {
       return (
         <div ref={this.myRef} className='hm-panel endpoint-public-response-container public-doc'>
           <DisplayResponse
             {...this.props}
             loader={this.state.loader}
             timeElapsed={this.state.timeElapsed}
-            response={this.state?.response}
-            flagResponse={this.state?.flagResponse}
+            response={this.props?.endpointContent?.testResponse}
+            flagResponse={this.props?.endpointContent?.flagResponse}
             add_sample_response={this.addSampleResponse.bind(this)}
             handleCancel={() => {
               this.handleCancel()
@@ -1733,7 +1743,7 @@ class DisplayEndpoint extends Component {
   displayResponseAndSampleResponse() {
     return (
       <>
-        <div className='custom-tabs clear-both response-container' ref={this.myRef}>
+        <div className='custom-tabs clear-both response-container mb-2' ref={this.myRef}>
           <div className='d-flex justify-content-between align-items-center'>
             <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
               <li className='nav-item'>
@@ -1778,9 +1788,9 @@ class DisplayEndpoint extends Component {
                   {...this.props}
                   loader={this.state?.loader}
                   timeElapsed={this.state?.timeElapsed}
-                  response={this.state?.response}
+                  response={this.props?.endpointContent?.testResponse}
                   tests={this.state.tests}
-                  flagResponse={this.state?.flagResponse}
+                  flagResponse={this.props?.endpointContent?.flagResponse}
                   sample_response_array={this.props?.endpointContent?.sampleResponseArray}
                   sample_response_flag_array={this.state.sampleResponseFlagArray}
                   add_sample_response={this.addSampleResponse.bind(this)}
@@ -1834,8 +1844,8 @@ class DisplayEndpoint extends Component {
             loader={this.state.loader}
             tests={this.state.tests}
             timeElapsed={this.state.timeElapsed}
-            response={this.state.response}
-            flagResponse={this.state.flagResponse}
+            response={this.props?.endpointContent?.testResponse}
+            flagResponse={this.props?.endpointContent?.flagResponse}
             handleCancel={() => {
               this.handleCancel()
             }}
