@@ -1128,6 +1128,7 @@ class DisplayEndpoint extends Component {
       // this.setState({ originalParams: value }, () => this.setModifiedTabData())
       const dummyData = this?.props?.endpointContent
       dummyData.originalParams = [...value]
+      this.setState({ endpointContentState: dummyData })
       this.props.setQueryUpdatedData(dummyData)
     }
 
@@ -1135,6 +1136,7 @@ class DisplayEndpoint extends Component {
       // this.setState({ originalHeaders: value }, () => this.setModifiedTabData())
       const dummyData = this?.props?.endpointContent
       dummyData.originalHeaders = [...value]
+      this.setState({ endpointContentState: dummyData })
       this.props.setQueryUpdatedData(dummyData)
     }
 
@@ -1142,6 +1144,7 @@ class DisplayEndpoint extends Component {
       // this.setState({ pathVariables: value }, () => this.setModifiedTabData())
       const dummyData = this?.props?.endpointContent
       dummyData.pathVariables = [...value]
+      this.setState({ endpointContentState: dummyData })
       this.props.setQueryUpdatedData(dummyData)
     }
 
