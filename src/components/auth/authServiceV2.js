@@ -128,7 +128,6 @@ function AuthServiceV2() {
           <Modal.Title>Select Organization</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {/* dropdown removed */}
           <div className="org-listing-container ">
             <div className="org-listing-column d-flex flex-column">
               {orgList?.map((org, key) => (
