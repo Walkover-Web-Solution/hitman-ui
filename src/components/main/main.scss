@@ -2967,6 +2967,10 @@ ul.react-autoComplete-input {
 .top-part {
   .page-title-name {
     padding-right: 7rem;
+    .page-title{
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
   }
 }
 .table-alignment {
@@ -3368,3 +3372,7 @@ body .tox {
       max-width: 120px !important;
     }
   }
+.endpoint-title{
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

@@ -16,6 +16,7 @@ function InviteTeam() {
   const [showModal, setShowModal] = useState(false)
   const history = useHistory()
   const inputRef = useRef(null)
+  const [loadingUsers, setLoadingUsers] = useState(true);
   const { tabs } = useSelector((state) => {
     return {
       tabs: state.tabs,
@@ -34,6 +35,8 @@ function InviteTeam() {
       setUsers(response?.data?.data?.data)
     } catch (error) {
       toast.error('Error fetching users: ' + error.message)
+    }finally {
+      setLoadingUsers(false);
     }
   }
 
@@ -77,7 +80,6 @@ function InviteTeam() {
 
   const handleSendInvite = async (e) => {
     e.preventDefault()
-    handleCloseModal()
     if (!validateEmail(email)) {
       toast.error('Invalid email format')
       return
@@ -88,6 +90,10 @@ function InviteTeam() {
       const response = await inviteMembers(name, email)
       if (response === true) {
         setUsers((prevUsers) => [{ name, email }, ...prevUsers])
+        handleCloseModal()
+      }
+      else{
+        handleCloseModal()
       }
     } catch (error) {
       toast.error('Cannot proceed at the moment. Please try again later')
@@ -133,6 +139,14 @@ function InviteTeam() {
               <th>Action</th>
             </tr>
           </thead>
+          {loadingUsers ? (
+          <div className='custom-loading-container'>
+            <div className='loading-content'>
+              <button className='spinner-border' />
+              <p className='mt-3'>Loading</p>
+            </div>
+          </div>
+                ) : (
           <tbody>
             {users.map((user) => (
               <tr key={user.email}>
@@ -152,6 +166,7 @@ function InviteTeam() {
               </tr>
             ))}
           </tbody>
+          )}
         </table>
       </div>
     </>

@@ -376,7 +376,7 @@ class UserProfileV2 extends Component {
       return null
     }
     return (
-      <Modal show={this.state.modalForTabs} backdrop='static' keyboard={false} className='mt-4'>
+      <Modal show={this.state.modalForTabs} onHide={()=>{this.handleClose()}} className='mt-4'>
         <Modal.Header
           closeButton
           onClick={() => {
