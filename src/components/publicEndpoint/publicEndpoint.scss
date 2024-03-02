@@ -349,6 +349,8 @@ form.add-new-domain-form {
           display: flex;
           align-items: center;
           justify-content: flex-start;
+          text-overflow: ellipsis !important;
+          overflow: hidden !important;
         }
       }
 
