@@ -406,6 +406,7 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
+    // debugger
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
@@ -443,10 +444,14 @@ class DisplayEndpoint extends Component {
       originalParams = this.makeOriginalParams(keys, values, description)
       const tempData = this.props?.endpointContent || {}
       tempData.originalParams = originalParams
+      this.setState({ endpointContentState: tempData })
+      // debugger
       this.props.setQueryUpdatedData(tempData)
+      return ;
     }
     const tempData = this.props?.endpointContent || {}
     tempData.data = data
+    this.setState({ endpointContentState: tempData })
     this.props.setQueryUpdatedData(tempData)
   }
 
@@ -483,7 +488,7 @@ class DisplayEndpoint extends Component {
           pathVariables.push({
             checked: 'notApplicable',
             key: pathVariableKeys[i].slice(1),
-            value: this.props.endpointContent.pathVariables[i - 1]
+            value: this.props.endpointContent.pathVariables[i - 1] // correct this index and assign correct value
               ? this.props.endpointContent.pathVariables[i - 1].key === pathVariableKeys[i]
                 ? this.props.endpointContent.pathVariables[i - 1].value
                 : ''
@@ -499,6 +504,7 @@ class DisplayEndpoint extends Component {
     }
     const dummyData = this.props?.endpointContent
     dummyData.pathVariables = pathVariables
+    this.setState({ endpointContentState: dummyData })
     this.props.setQueryUpdatedData(dummyData)
   }
 
@@ -1337,6 +1343,7 @@ class DisplayEndpoint extends Component {
     this.setState({ host: { BASE_URL, selectedHost } })
     const tempData = this?.props?.endpointContent || untitledEndpointData
     tempData.host = { BASE_URL, selectedHost }
+    this.setState({ endpointContentState: tempData })
     this.props.setQueryUpdatedData(tempData)
   }
 
