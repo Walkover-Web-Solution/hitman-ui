@@ -445,7 +445,6 @@ class DisplayEndpoint extends Component {
       const tempData = this.props?.endpointContent || {}
       tempData.originalParams = originalParams
       this.setState({ endpointContentState: tempData })
-      // debugger
       this.props.setQueryUpdatedData(tempData)
     }
     const tempData = this.props?.endpointContent || {}
