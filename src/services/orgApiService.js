@@ -43,7 +43,7 @@ export async function createOrg(name) {
     await createOrganizationAndRunCode()
     redirectToDashboard(org.id)
   } catch (e) {
-    console.log(e)
+    toast.error(e?.response?.data?.message ? e?.response?.data?.message : "Something went wrong")
   }
 }
 
@@ -63,7 +63,7 @@ export async function inviteMembers(name, email) {
     return true
   } catch (e) {
     if (e.response.status !== 418) {
-      toast.error(e?.message ? e.message : 'Something went wrong')
+      toast.error(e?.response?.data?.message ? e?.response?.data?.message : 'Something went wrong')
     } else {
       toast.error('Not Authenticated Proxy User')
     }
