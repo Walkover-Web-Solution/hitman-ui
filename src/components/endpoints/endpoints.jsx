@@ -18,6 +18,7 @@ import { ReactComponent as Approved } from '../../assets/icons/approvedSign.svg'
 import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.svg'
 import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
+import endpointService from './endpointService'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -61,7 +62,8 @@ class Endpoints extends Component {
       showEndpointForm: {
         addPage: false,
         edit: false,
-        share: false
+        share: false,
+        delete: false,
       }
     }
   }
@@ -97,9 +99,10 @@ class Endpoints extends Component {
     })
   }
 
-  openDeleteModal(endpointId) {
+  openDeleteEndpointModal(endpointId) {
+    const showEndpointForm =  {delete: true}
     this.setState({
-      showDeleteModal: true,
+      showEndpointForm,
       selectedEndpoint: {
         ...this.props.endpoints[endpointId]
       }
@@ -107,7 +110,8 @@ class Endpoints extends Component {
   }
 
   closeDeleteEndpointModal() {
-    this.setState({ showDeleteModal: false })
+    const showEndpointForm = { delete: false }
+    this.setState({ showEndpointForm })
   }
 
   async handlePublicEndpointState(endpoint) {
@@ -235,9 +239,9 @@ class Endpoints extends Component {
 
   displayDeleteOpt(endpointId) {
     return (
-      <div className='dropdown-item' onClick={() => this.handleDelete(this.props.endpoints[endpointId])}>
-        <DeleteIcon /> Delete
-      </div>
+      <div className='dropdown-item' onClick={() => this.openDeleteEndpointModal(endpointId)}>
+      <DeleteIcon /> Delete
+    </div>
     )
   }
 
@@ -454,6 +458,15 @@ class Endpoints extends Component {
     return (
       <>
         {this.showEditEndpointModal()}
+        {this.state.showEndpointForm.delete &&
+          endpointService.showDeleteEndpointModal(
+            this.props,
+            this.handleDelete.bind(this),
+            this.closeDeleteEndpointModal.bind(this),
+            'Delete Endpoint',
+            `Are you sure you want to delete this endpoint?`,
+            this.state.selectedEndpoint
+          )}
         {this.displayUserEndpoints(this?.props?.endpointId)}
       </>
     )
