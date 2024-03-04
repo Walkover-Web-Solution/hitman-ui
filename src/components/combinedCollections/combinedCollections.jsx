@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React , {useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import Groups from '../groups/groups'
@@ -7,104 +7,86 @@ import { toast } from 'react-toastify'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 
 function CombinedCollections(props) {
-  const [draggingOverId, setDraggingOverId] = useState(null)
-  const [draggedIdSelected, setDraggedIdSelected] = useState(null)
+  const [draggingOverId, setDraggingOverId] = useState(null);
+  const [draggedIdSelected, setDraggedIdSelected] = useState(null);
+  const dispatch = useDispatch()
 
   const { childIds, pages } = useSelector((state) => {
     return {
       childIds: state?.pages?.[props?.rootParentId]?.child || [],
-      pages: state.pages,
-      clientData: state.clientData
+      pages: state.pages
     }
   })
 
-  const dispatch = useDispatch()
-
-  const handleOnDragOver = (e) => {
+  const handleOnDragOver = (e)  =>  {
     e.preventDefault()
   }
 
   const onDragEnter = (e, draggingOverId) => {
-    e.preventDefault()
-    setDraggingOverId(draggingOverId)
+    e.preventDefault();
+    setDraggingOverId(draggingOverId);
   }
-
   const onDragEnd = (e) => {
     e.preventDefault()
     setDraggingOverId(null)
   }
 
-  const onDragStart = (draggedId) => {
-    setDraggedIdSelected(draggedId)
+  const onDragStart = (draggedIdSelected) => {
+    setDraggedIdSelected(draggedIdSelected);
   }
 
   const onDrop = (e, droppedOnId) => {
     e.preventDefault()
+    setDraggingOverId(null);
 
-    setDraggingOverId(null)
+    if (draggedIdSelected === droppedOnId) return ;
 
-    let draggedId = draggedIdSelected
-    if (draggedId === droppedOnId) {
-      return
-    }
-
-    let draggedIdParentId = pages?.[draggedId]?.parentId
+    let draggedIdParentId = pages?.[draggedIdSelected]?.parentId
     let droppedOnIdParentId = pages?.[droppedOnId]?.parentId
 
-    // if both data is not from same parent then stop the user
-    if (draggedIdParentId != droppedOnIdParentId) {
-      toast.error('Reordering is allowed inside the same parent')
-      return
+    // if both data is not from same parent then stop the user 
+    if(draggedIdParentId != droppedOnIdParentId){
+      toast.error("Reordering is allowed inside the same parent")        
+      return ;
     }
 
-    dispatch(updateDragDrop(draggedId, droppedOnId))
+    dispatch(updateDragDrop(draggedIdSelected,  droppedOnId))
   }
-
+  
   return (
     <div>
       {childIds.map((singleId) => {
-        const type = pages?.[singleId]?.type || null
+        const type = pages?.[singleId]?.type || null;
+        const commonProps = {
+          key: singleId,
+          ...props,
+          handleOnDragOver: handleOnDragOver,
+          onDragStart: onDragStart,
+          onDrop: onDrop,
+          onDragEnter: onDragEnter,
+          draggingOverId: draggingOverId,
+          onDragEnd:onDragEnd
+        }
         switch (type) {
           case 1:
             return (
               <CollectionParentPages
-                key={singleId}
-                {...props}
+                {...commonProps}
                 rootParentId={singleId}
-                handleOnDragOver={handleOnDragOver}
-                onDragStart={onDragStart}
-                onDrop={onDrop}
-                onDragEnter={onDragEnter}
-                onDragEnd={onDragEnd}
-                draggingOverId={draggingOverId}
               />
             )
           case 3:
             return (
               <Groups
-                key={singleId}
-                {...props}
+                {...commonProps}
                 rootParentId={singleId}
-                handleOnDragOver={handleOnDragOver}
-                onDragStart={onDragStart}
-                onDrop={onDrop}
-                onDragEnter={onDragEnter}
-                onDragEnd={onDragEnd}
-                draggingOverId={draggingOverId}
               />
             )
           case 4:
             return (
               <Endpoints
-                key={singleId}
-                {...props}
+                {...commonProps}
                 endpointId={singleId}
-                handleOnDragOver={handleOnDragOver}
-                onDragStart={onDragStart}
-                onDrop={onDrop}
-                onDragEnter={onDragEnter}
-                onDragEnd={onDragEnd}
-                draggingOverId={draggingOverId}
               />
             )
           default:
@@ -112,7 +94,8 @@ function CombinedCollections(props) {
         }
       })}
     </div>
-  )
+  );
+  
 }
 
 export default CombinedCollections
