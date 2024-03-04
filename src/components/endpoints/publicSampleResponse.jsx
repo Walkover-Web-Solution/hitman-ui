@@ -44,9 +44,9 @@ class PublicSampleResponse extends Component {
           </h3>
           <div className='sample-response mb-3'>
             <Tabs id='uncontrolled-tab-example'>
-              {this.props.sample_response_array.map((sampleResponse) => (
+              {this.props.sample_response_array.map((sampleResponse, key) => (
                 <Tab
-                  key={sampleResponse}
+                key={key}
                   eventKey={sampleResponse.title}
                   title={
                     getHighlightsData(this.props, 'sampleResponse', sampleResponse.title) ? (

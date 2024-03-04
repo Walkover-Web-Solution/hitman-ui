@@ -8,7 +8,7 @@ import MainV2 from './components/main/MainV2'
 import PublicView from './components/main/publicView'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import { ToastContainer } from 'react-toastify'
-import { SESSION_STORAGE_KEY, getOrgId, isDashboardRoute, isElectron, isTechdocOwnDomain } from './components/common/utility'
+import { SESSION_STORAGE_KEY, getOrgId, isDashboardRoute, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import Cookies from 'universal-cookie'
@@ -36,7 +36,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     const currentOrgId = getOrgId() ?? props.location.pathname.split('/')?.[2]
-    if (currentOrgId) {
+    if (currentOrgId && !isOnPublishedPage()) {
       initConn(currentOrgId)
     }
     sessionStorage.setItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID, shortid.generate())
