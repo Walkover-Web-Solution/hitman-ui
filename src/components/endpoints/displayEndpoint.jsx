@@ -228,16 +228,19 @@ const withQuery = (WrappedComponent) => {
       retry: 3
     })
 
-    const setQueryUpdatedData = (data) => {
+    const setQueryUpdatedData = (data, callbackFn = null) => {
       let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
       const endpointId =
         props?.match?.params.endpointId !== 'new' ? props?.match?.params?.endpointId || currentIdToShow : props?.activeTabId
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(queryKey, data)
-        return
+      }else{
+        queryClient.setQueryData(queryKey, data)
       }
-      queryClient.setQueryData(queryKey, data)
+      if(callbackFn){
+        callbackFn()
+      } 
     }
 
     return (
@@ -358,7 +361,6 @@ class DisplayEndpoint extends Component {
     if (!isDashboardRoute(this.props)) {
       if (
         this.props?.endpointContent &&
-        this.state?.endpointContentState &&
         (!_.isEqual(this.state?.endpointContentState?.data, this.props?.endpointContent?.data) ||
           !_.isEqual(this.state?.endpointContentState?.originalParams, this.props?.endpointContent?.originalParams) ||
           !_.isEqual(this.state?.endpointContentState?.originalHeaders, this.props?.endpointContent?.originalHeaders) ||
@@ -409,6 +411,7 @@ class DisplayEndpoint extends Component {
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
+    let tempData = this.props?.endpointContent || {}
     if (e.currentTarget.name === 'updatedUri') {
       const keys = []
       const values = []
@@ -441,11 +444,8 @@ class DisplayEndpoint extends Component {
         }
       }
       originalParams = this.makeOriginalParams(keys, values, description)
-      const tempData = this.props?.endpointContent || {}
       tempData.originalParams = originalParams
-      this.props.setQueryUpdatedData(tempData)
     }
-    const tempData = this.props?.endpointContent || {}
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
   }
@@ -476,24 +476,29 @@ class DisplayEndpoint extends Component {
 
   setPathVariables(pathVariableKeys, pathVariableKeysObject) {
     const pathVariables = []
-    for (let i = 1; i < pathVariableKeys.length; i++) {
-      if (pathVariableKeys[i][0] === ':' && pathVariableKeysObject[pathVariableKeys[i]] === false) {
+    let counter = 0;
+    for (let i = 0; i < pathVariableKeys.length; i++) {
+      if (pathVariableKeys[i][0] === ':' && 
+      pathVariableKeysObject[pathVariableKeys[i]] === false
+      ) {
         pathVariableKeysObject[pathVariableKeys[i]] = true
-        if (pathVariableKeys[i].slice(1).trim() !== '') {
+        let pathVariableKeyWithoutColon = pathVariableKeys[i].slice(1).trim();
+        if (pathVariableKeyWithoutColon !== '') {
           pathVariables.push({
             checked: 'notApplicable',
-            key: pathVariableKeys[i].slice(1),
-            value: this.props.endpointContent.pathVariables[i - 1]
-              ? this.props.endpointContent.pathVariables[i - 1].key === pathVariableKeys[i]
-                ? this.props.endpointContent.pathVariables[i - 1].value
+            key: pathVariableKeyWithoutColon,
+            value: this.props.endpointContent.pathVariables[counter] // TODO :: correct this index and assign correct value
+              ? this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon
+                ? this.props.endpointContent.pathVariables[counter].value
                 : ''
               : '',
-            description: this.props.endpointContent.pathVariables[i - 1]
-              ? this.props.endpointContent.pathVariables[i - 1].key === pathVariableKeys[i]
-                ? this.props.endpointContent.pathVariables[i - 1].description
+            description: this.props.endpointContent.pathVariables[counter]
+              ? this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon
+                ? this.props.endpointContent.pathVariables[counter].description
                 : ''
               : ''
           })
+          counter++
         }
       }
     }
@@ -695,7 +700,10 @@ class DisplayEndpoint extends Component {
     const uniquePathparameters = {}
     for (let i = 0; i < pathParameters.length; i++) {
       if (pathParameters[i][0] === ':' && pathParameters[i].slice(1).trim()) {
-        if (uniquePathparameters[pathParameters[i].slice(1)] || uniquePathparameters[pathParameters[i].slice(1)] === '') {
+        if (
+                uniquePathparameters[pathParameters[i].slice(1)] 
+             || uniquePathparameters[pathParameters[i].slice(1)] === ''
+           ) {
           pathParameters[i] = uniquePathparameters[pathParameters[i].slice(1)]
         } else {
           pathParameters[i] = this.props.endpointContent.pathVariables[counter]?.value
@@ -1128,21 +1136,24 @@ class DisplayEndpoint extends Component {
       // this.setState({ originalParams: value }, () => this.setModifiedTabData())
       const dummyData = this?.props?.endpointContent
       dummyData.originalParams = [...value]
-      this.props.setQueryUpdatedData(dummyData)
+      this.setState({ endpointContentState: dummyData })
+      this.props.setQueryUpdatedData(dummyData, this.prepareHarObject.bind(this))
     }
 
     if (name === 'Headers') {
       // this.setState({ originalHeaders: value }, () => this.setModifiedTabData())
       const dummyData = this?.props?.endpointContent
       dummyData.originalHeaders = [...value]
-      this.props.setQueryUpdatedData(dummyData)
+      this.setState({ endpointContentState: dummyData })
+      this.props.setQueryUpdatedData(dummyData, this.prepareHarObject.bind(this))
     }
 
     if (name === 'Path Variables') {
       // this.setState({ pathVariables: value }, () => this.setModifiedTabData())
       const dummyData = this?.props?.endpointContent
       dummyData.pathVariables = [...value]
-      this.props.setQueryUpdatedData(dummyData)
+      this.setState({ endpointContentState: dummyData })
+       this.props.setQueryUpdatedData(dummyData, this.prepareHarObject.bind(this))
     }
 
     if (name === 'HostAndUri') this.setModifiedTabData()
