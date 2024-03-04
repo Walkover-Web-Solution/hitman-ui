@@ -250,7 +250,7 @@ class EndpointBreadCrumb extends Component {
           </div>
           {this.props.location.pathname.split('/')[5] !== 'new' && (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
-              {this.collectionName && <span>{`${this.collectionName}/`}</span>}
+              {this.collectionName && <span className='collection-name-path'>{`${this.collectionName}/`}</span>}
               {
                 <span>
                   {getOnlyUrlPathById(
