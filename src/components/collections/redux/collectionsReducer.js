@@ -47,6 +47,7 @@ function collectionsReducer(state = initialState, action) {
       collections = { ...state }
       delete collections[action.response.requestId]
       const { page, ...newCollection } = action.response
+      toast.success('Successfully updated')
       collections[action.response.id] = newCollection
       return collections
     }
@@ -68,6 +69,7 @@ function collectionsReducer(state = initialState, action) {
         ...state[action.response.id],
         ...action.response
       }
+      toast.success('Collection updateed succesfully')
       return {
         ...state,
         [action.response.id]: updatedCollection

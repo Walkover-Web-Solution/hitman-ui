@@ -62,6 +62,7 @@ function pagesReducer(state = initialState, action) {
         }
         pages[parentId].child.push(action.page.id)
       }
+      toast.success("Page added succesfully")
       return pages
     }
 
