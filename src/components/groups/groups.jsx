@@ -78,7 +78,7 @@ class Groups extends Component {
   }
 
   closeSubPageForm() {
-    this.setState({ showSubPageForm : {edit: false, addPage: true} })
+    this.setState({ showSubPageForm : {edit: false, addPage: false} })
   }
 
   showShareSubPageForm() {
