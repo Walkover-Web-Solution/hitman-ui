@@ -87,7 +87,8 @@ class PublicEndpoint extends Component {
       feedback: {},
       endpoint: {}
     },
-    openReviewModal: false
+    openReviewModal: false,
+    idToRenderState : null
   }
 
   async componentDidMount() {
@@ -174,6 +175,7 @@ class PublicEndpoint extends Component {
         // this.props.mutationFn.mutate({ type: 'pageContent', id: id, content: response?.data?.publishedContent?.contents })
       }
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
+      this.setState({ idToRenderState: id })
     }
   }
 
@@ -327,7 +329,7 @@ class PublicEndpoint extends Component {
   }
 
   render() {
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState ;
     let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 1  set collection data
