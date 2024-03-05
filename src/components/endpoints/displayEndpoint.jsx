@@ -310,7 +310,6 @@ class DisplayEndpoint extends Component {
         : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
-    if (window.innerWidth < '1400') this.setState({ codeEditorVisibility: false })
 
     const { endpointId } = this.props.match.params
     if (endpointId === 'new') this.setUnsavedTabDataInIDB()

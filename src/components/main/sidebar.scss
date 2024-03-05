@@ -10,6 +10,10 @@
   max-width: 330px !important;
   min-width: 250px !important;
 }
+.split-sidebar-public > div:first-child {
+  max-width: 330px !important;
+  min-width: 250px !important;
+}
 .Resizer {
   width: 1px;
   background: #e6dbd4;

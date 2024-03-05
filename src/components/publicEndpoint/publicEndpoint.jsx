@@ -87,10 +87,15 @@ class PublicEndpoint extends Component {
       feedback: {},
       endpoint: {}
     },
+    isMobileView: false,
+    width: 0,
+    height: 0,
+    sidebarVisibility: false,
     openReviewModal: false
   }
 
   async componentDidMount() {
+    this.isMobileView();
     // [info] => part 1 scroll options
     window.addEventListener('scroll', () => {
       let sticky = false
@@ -152,7 +157,12 @@ class PublicEndpoint extends Component {
     this.setDataToReactQueryAndSessionStorage(response)
   }
 
-  async componentDidUpdate() {
+  async componentDidUpdate(prevState) {
+    // window.addEventListener('resize', this.updateDimensions);
+    // if (prevState.isMobileView !== this.state.isMobileView) {
+    //   this.isMobileView()
+    // }
+
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     // before this display page or display endpoint gets called and data gets rendered
     if (!this.props.keyExistInReactQuery(currentIdToShow)) {
@@ -163,6 +173,10 @@ class PublicEndpoint extends Component {
         // this.props.mutationFn.mutate({ type: 'pageContent', id: currentIdToShow, content: response })
       }
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
   }
 
   setDataToReactQueryAndSessionStorage(response) {
@@ -246,6 +260,15 @@ class PublicEndpoint extends Component {
   }
 
   toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal })
+
+  isMobileView = () => {
+    if(window.innerWidth < 800){
+      this.setState({isMobileView : true, sidebarVisibility: true})
+    }
+    else{
+      this.setState({isMobileView : false, sidebarVisibility: false})
+    }
+  };
 
   reviewModal() {
     return (
@@ -366,10 +389,12 @@ class PublicEndpoint extends Component {
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
           {/* [info] part 3 */}
-          <SplitPane split='vertical' className='split-sidebar'>
+          <SplitPane split='vertical' className='split-sidebar-public'>
             {/* [info] part 3 subpart 1 sidebar data left content */}
             <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
-              {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
+              {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} sidebarToggle={() => {
+                  this.setState({ sidebarVisibility: !this.state.sidebarVisibility })
+                }} />}
             </div>
             {/*  [info] part 3 subpart 1 sidebar data right content */}
             <div
