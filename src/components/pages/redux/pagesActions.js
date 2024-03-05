@@ -134,7 +134,7 @@ export const addPageRequestInCollection = (rootParentId, newPage) => {
 }
 
 export const onParentPageAdded = (response) => {
-  showToast("Page added successfully")
+  showToast("Added successfully")
   return {
     type: pagesActionTypes.ON_PARENT_PAGE_ADDED,
     page: response.page,

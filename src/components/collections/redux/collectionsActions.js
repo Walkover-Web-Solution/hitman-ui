@@ -89,7 +89,6 @@ export const addCollectionRequest = (newCollection) => {
 }
 
 export const onCollectionAdded = (response) => {
-  showToast("Collection added successfully")
   return {
     type: collectionsActionTypes.ON_COLLECTION_ADDED,
     response
