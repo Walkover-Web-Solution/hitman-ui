@@ -251,6 +251,7 @@ form.add-new-domain-form {
 }
 
 .hm-sidebar {
+  background-color: #000000;
   height: 100vh;
   max-height: 100vh;
   position: sticky;
@@ -268,6 +269,7 @@ form.add-new-domain-form {
   .public-endpoint-sidebar .primary-sidebar {
     border: none;
     padding-top: 0;
+    background-color: #000000;
   }
 }
 
@@ -746,6 +748,7 @@ button.toggleButton {
   }
   button.toggleButton {
     font-size: $font-normal;
+    background-color: #000000;
     position: absolute;
     left: -113px;
     color: #fff;
@@ -757,6 +760,9 @@ button.toggleButton {
     img {
       display: none;
     }
+    @media only screen and (max-width: 1600px){
+      left: -218px
+     }
   }
 }
 .copy-button {

@@ -276,7 +276,10 @@ class DisplayEndpoint extends Component {
       theme: '',
       loader: false,
       saveLoader: false,
-      codeEditorVisibility: true,
+      codeEditorVisibility: false,
+      isMobileView: false,
+      width: 0, 
+      height: 0 ,
       showCookiesModal: false,
       preReqScriptError: '',
       postReqScriptError: '',
@@ -295,6 +298,7 @@ class DisplayEndpoint extends Component {
   }
 
   async componentDidMount() {
+    this.isMobileView();
     if (this.props.endpointContent) {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
     }
@@ -342,7 +346,22 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  updateDimensions = () => {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+    this.isMobileView()
+  };
+
+  isMobileView = () => {
+    if(window.innerWidth < 800){
+      this.setState({isMobileView : true, codeEditorVisibility: true})
+    }
+    else{
+      this.setState({isMobileView : false, codeEditorVisibility: false})
+    }
+  };
+
   componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
@@ -350,6 +369,10 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    window.addEventListener('resize', this.updateDimensions);
+    if (prevState.isMobileView !== this.state.isMobileView) {
+      this.isMobileView()
+    }
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.extractEndpointName()
     }
