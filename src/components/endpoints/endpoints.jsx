@@ -90,9 +90,8 @@ class Endpoints extends Component {
   }
 
   openEditEndpointForm(selectedEndpoint) {
-    const showEndpointForm = { edit: true }
     this.setState({
-      showEndpointForm,
+      showEndpointForm: { edit: true},
       selectedEndpoint: {
         ...this.props.endpoints[selectedEndpoint]
       }
@@ -100,18 +99,14 @@ class Endpoints extends Component {
   }
 
   openDeleteEndpointModal(endpointId) {
-    const showEndpointForm =  {delete: true}
     this.setState({
-      showEndpointForm,
-      selectedEndpoint: {
-        ...this.props.endpoints[endpointId]
-      }
+      showEndpointForm: { delete: true },
+      selectedEndpoint: { ...this.props.endpoints[endpointId] }
     })
   }
-
+  
   closeDeleteEndpointModal() {
-    const showEndpointForm = { delete: false }
-    this.setState({ showEndpointForm })
+    this.setState({ showEndpointForm: { delete: false } })
   }
 
   async handlePublicEndpointState(endpoint) {
