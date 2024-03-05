@@ -1,6 +1,7 @@
 import environmentsApiService from '../environmentsApiService'
 import environmentsActionTypes from './environmentsActionTypes'
 import { store } from '../../../store/store'
+import { showToast } from '../../common/utility'
 
 export const fetchEnvironments = () => {
   return (dispatch) => {
@@ -102,6 +103,7 @@ export const addEnvironmentRequest = (newEnvironment) => {
 }
 
 export const OnEnvironmentAdded = (response) => {
+  showToast("Environment added successfully")
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_ADDED,
     response
@@ -124,6 +126,7 @@ export const updateEnvironmentRequest = (editedEnvironment) => {
 }
 
 export const OnEnvironmentUpdated = (response) => {
+  showToast("Environment updated successfully")
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_UPDATED,
     response
@@ -146,6 +149,7 @@ export const deleteEnvironmentRequest = (environment) => {
 }
 
 export const OnEnvironmentDeleted = () => {
+  showToast("Environment deleted successfully")
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_DELETED
   }

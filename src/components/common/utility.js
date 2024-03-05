@@ -10,6 +10,7 @@ import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
 import { openInNewTab } from '../tabs/redux/tabsActions'
+import { toast } from 'react-toastify'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
@@ -98,6 +99,10 @@ export const msgText = {
   publishEndpoint: 'You are about to make these changes live on your Public API doc.',
   unpublishEndpoint: 'You are about to Unpublish Endpoint from your Public API doc.',
   adminAccees: 'Admin access required'
+}
+
+export function showToast(message) {
+  toast.success(message)
 }
 
 export function isDashboardRoute(props, sidebar = false) {

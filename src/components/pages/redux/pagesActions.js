@@ -2,7 +2,7 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
+import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY, showToast } from '../../common/utility'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
@@ -68,6 +68,7 @@ export const updatePageRequest = (editedPage) => {
 }
 
 export const onPageUpdated = (response) => {
+  showToast("Page updated successfully")
   return {
     type: pagesActionTypes.ON_PAGE_UPDATED,
     response
@@ -133,6 +134,7 @@ export const addPageRequestInCollection = (rootParentId, newPage) => {
 }
 
 export const onParentPageAdded = (response) => {
+  showToast("Page added successfully")
   return {
     type: pagesActionTypes.ON_PARENT_PAGE_ADDED,
     page: response.page,

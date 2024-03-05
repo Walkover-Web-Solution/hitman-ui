@@ -2,6 +2,7 @@ import publicEndpointsService from '../publicEndpointsService.js'
 import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'
 import endpointApiService from '../../endpoints/endpointApiService.js'
+import { showToast } from '../../common/utility.js'
 
 export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) => {
   return (dispatch) => {
@@ -85,6 +86,7 @@ export const rejectPage = (page) => {
 }
 
 export const onPageStateSuccess = (data) => {
+  showToast("Operation successful")
   return {
     type: publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS,
     data
@@ -153,6 +155,7 @@ export const rejectEndpoint = (endpoint) => {
 }
 
 export const onEndpointStateSuccess = (data) => {
+  showToast("Operation successful!")
   return {
     type: publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS,
     data
