@@ -30,6 +30,7 @@ function pagesReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS:
       state[action.data.id].state = action.data.state
       state[action.data.id].isPublished = action.data.isPublished
+      toast.success('Done successfully')
       return {
         ...state
       }
@@ -62,6 +63,7 @@ function pagesReducer(state = initialState, action) {
         }
         pages[parentId].child.push(action.page.id)
       }
+      toast.success("Added successfully")
       return pages
     }
 
@@ -162,6 +164,7 @@ function pagesReducer(state = initialState, action) {
       return { ...state, ...action.data.pages }
 
     case publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS:
+      toast.success('Page updated successfully')
       return {
         ...state,
         [action.data.id]: action.data
@@ -261,6 +264,7 @@ function pagesReducer(state = initialState, action) {
       }
 
     case pagesActionTypes.ON_ENDPOINT_UPDATED:
+      toast.success('Endpoint updated successfully')
       return {
         ...state,
         [action.response.id]: {

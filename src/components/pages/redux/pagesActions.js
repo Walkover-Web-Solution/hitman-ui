@@ -161,7 +161,7 @@ export const deletePage = (page) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
-            toast.success('Deleted succesfully')
+            toast.success('Page Deleted succesfully')
           })
           .catch((error) => {
             console.errro(error)

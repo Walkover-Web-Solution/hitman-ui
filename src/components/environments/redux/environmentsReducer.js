@@ -39,6 +39,7 @@ function environmentsReducer(state = initialState, action) {
       delete environments[action.response.requestId]
       delete action.response.requestId
       environments[action.response.id] = action.response
+      toast.success("Environment variable added successfully")
       return { ...state, environments }
 
     case environmentsActionTypes.ON_ENVIRONMENT_ADDED_ERROR:
@@ -57,6 +58,7 @@ function environmentsReducer(state = initialState, action) {
       }
 
     case environmentsActionTypes.ON_ENVIRONMENT_UPDATED:
+      toast.success("Environment variable updated successfully")
       return {
         ...state,
         environments: {
@@ -81,6 +83,7 @@ function environmentsReducer(state = initialState, action) {
       return { ...state, environments }
 
     case environmentsActionTypes.ON_ENVIRONMENT_DELETED:
+      toast.success('Deleted successfully')
       return state
 
     case environmentsActionTypes.ON_ENVIRONMENT_DELETED_ERROR:
