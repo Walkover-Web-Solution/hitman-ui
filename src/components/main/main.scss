@@ -1279,6 +1279,10 @@ body .btn {
 
 .panel-endpoint-name-container span {
   color: #828282;
+ &:not(.collection-name-path) {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 }
 
 .endpoint-headers-container .button-panel-wrapper .body {
@@ -2963,6 +2967,10 @@ ul.react-autoComplete-input {
 .top-part {
   .page-title-name {
     padding-right: 7rem;
+    .page-title{
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
   }
 }
 .table-alignment {
@@ -3347,3 +3355,25 @@ body .tox {
 .Pane {
   overflow: scroll !important;
 }
+.create-org{
+
+  display: flex;
+  justify-content: center;
+  font-weight: 500 !important;
+  button{
+    border-radius: 8px !important;
+    height: 44px !important;
+  }
+}
+.name-sub-page{
+  overflow-wrap: anywhere;
+  max-width: 180px !important;
+    @media (max-width: 1400px) and (min-width: 400px){
+      max-width: 120px !important;
+    }
+  }
+  .endpoint-title,
+  .page-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
