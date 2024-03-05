@@ -43,7 +43,7 @@ export async function createOrg(name) {
     await createOrganizationAndRunCode()
     redirectToDashboard(org.id)
   } catch (e) {
-    console.log(e)
+    toast.error(e?.response?.data?.message ? e?.response?.data?.message : "Something went wrong")
   }
 }
 

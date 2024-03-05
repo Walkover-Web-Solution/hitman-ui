@@ -223,9 +223,8 @@ class CollectionParentPages extends Component {
   }
 
   openShareParentPageForm(pageId) {
-    const showPageForm = { share: true }
     this.setState({
-      showPageForm,
+      showPageForm : {share: true},
       pageFormName: 'Share Parent Page',
       selectedPage: { ...this.props.pages[pageId] }
     })
@@ -294,16 +293,14 @@ class CollectionParentPages extends Component {
   }
 
   openEditPageForm(pageId) {
-    const showPageForm = { edit: true }
     this.setState({
-      showPageForm,
+      showPageForm : { edit: true},
       selectedPage: pageId
     })
   }
 
   closePageForm() {
-    const showPageForm = { share: false, addEndpoint: false, addPage: false }
-    this.setState({ showPageForm })
+    this.setState({ showPageForm: {share: false, addEndpoint: false, addPage: false} })
   }
 
   closeVersionForm() {
