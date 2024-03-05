@@ -6,7 +6,7 @@ import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import { onParentPageAdded } from '../../pages/redux/pagesActions'
 import { toast } from 'react-toastify'
-import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion, showToast } from '../../common/utility'
+import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 export const fetchCollections = (orgId) => {
@@ -116,7 +116,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
       .updateCollection(id, editedCollection)
       .then((response) => {
         dispatch(onCollectionUpdated(response.data))
-        showToast('Updated successfully')
+        toast.success('Updated successfully')
         if (stopLoader) {
           stopLoader()
         }
@@ -169,7 +169,7 @@ export const deleteCollection = (collection, props) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
-            showToast('Collection deleted successfully')
+            toast.success('Collection deleted successfully')
           })
           .catch((error) => {
             console.error('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)

@@ -2,7 +2,6 @@ import collectionVersionsApiService from '../collectionVersionsApiService'
 import versionActionTypes from './collectionVersionsActionTypes'
 import { toast } from 'react-toastify'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
-import { showToast } from '../../common/utility'
 
 export const updateVersion = (editedVersion) => {
   return (dispatch) => {
@@ -12,6 +11,7 @@ export const updateVersion = (editedVersion) => {
       .updateCollectionVersion(id, { number, host })
       .then((response) => {
         dispatch(onVersionUpdated(response.data))
+        toast.success("Version added successfully")
       })
       .catch((error) => {
         dispatch(onVersionUpdatedError(error.response ? error.response.data : error))
@@ -59,7 +59,6 @@ export const addParentPageVersion = (newVersion, pageId, customCallback) => {
 }
 
 export const addVersionRequest = (newVersion) => {
-  showToast("Version added successfully")
   return {
     type: pagesActionTypes.ADD_VERSION_REQUEST,
     newVersion

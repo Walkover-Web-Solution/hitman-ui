@@ -2,6 +2,7 @@ import environmentsApiService from '../environmentsApiService'
 import environmentsActionTypes from './environmentsActionTypes'
 import { store } from '../../../store/store'
 import { showToast } from '../../common/utility'
+import { toast } from 'react-toastify'
 
 export const fetchEnvironments = () => {
   return (dispatch) => {
@@ -36,6 +37,7 @@ export const addEnvironment = (newEnvironment) => {
       .saveEnvironment(newEnvironment)
       .then((response) => {
         dispatch(OnEnvironmentAdded(response.data, newEnvironment))
+        toast.success("Environment added successfully")
       })
       .catch((error) => {
         dispatch(OnEnvironmentAddedError(error.response ? error.response.data : error, newEnvironment))
@@ -53,6 +55,7 @@ export const updateEnvironment = (editedEnvironment) => {
       .updateEnvironment(id, editedEnvironment)
       .then((response) => {
         dispatch(OnEnvironmentUpdated(response.data))
+        toast.success("Environment updated successfully")
       })
       .catch((error) => {
         dispatch(OnEnvironmentUpdatedError(error.response ? error.response.data : error, originalEnvironment))
@@ -67,6 +70,7 @@ export const deleteEnvironment = (environment) => {
       .deleteEnvironment(environment.id)
       .then(() => {
         dispatch(OnEnvironmentDeleted())
+        toast.success("Environment deleted successfully")
       })
       .catch((error) => {
         dispatch(OnEnvironmentDeletedError(error.response, environment))
@@ -103,7 +107,6 @@ export const addEnvironmentRequest = (newEnvironment) => {
 }
 
 export const OnEnvironmentAdded = (response) => {
-  showToast("Environment added successfully")
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_ADDED,
     response
@@ -126,7 +129,6 @@ export const updateEnvironmentRequest = (editedEnvironment) => {
 }
 
 export const OnEnvironmentUpdated = (response) => {
-  showToast("Environment updated successfully")
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_UPDATED,
     response
@@ -149,7 +151,6 @@ export const deleteEnvironmentRequest = (environment) => {
 }
 
 export const OnEnvironmentDeleted = () => {
-  showToast("Environment deleted successfully")
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_DELETED
   }

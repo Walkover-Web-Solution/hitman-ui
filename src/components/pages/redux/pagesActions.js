@@ -2,7 +2,7 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY, showToast } from '../../common/utility'
+import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
@@ -20,6 +20,7 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
         if (stopSaveLoader) {
           stopSaveLoader()
         }
+        toast.success("Endpoint updated successfully")
       })
       .catch((error) => {
         // dispatch(onEndpointUpdatedError(error.response ? error.response.data : error, originalEndpoint))
@@ -52,6 +53,7 @@ export const updatePage = (history, editedPage) => {
       .updatePage(editedPage.id, dataToSend)
       .then((response) => {
         dispatch(onPageUpdated(response.data))
+        toast.success("Page updated successfully")
         return response.data
       })
       .catch((error) => {
@@ -68,7 +70,6 @@ export const updatePageRequest = (editedPage) => {
 }
 
 export const onPageUpdated = (response) => {
-  showToast("Page updated successfully")
   return {
     type: pagesActionTypes.ON_PAGE_UPDATED,
     response
@@ -118,6 +119,7 @@ export const addPage = (history, rootParentId, newPage) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
         history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
+        toast.success("Added successfully")
       })
       .catch((error) => {
         dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))
@@ -134,7 +136,7 @@ export const addPageRequestInCollection = (rootParentId, newPage) => {
 }
 
 export const onParentPageAdded = (response) => {
-  showToast("Added successfully")
+  toast.success("Added successfully")
   return {
     type: pagesActionTypes.ON_PARENT_PAGE_ADDED,
     page: response.page,

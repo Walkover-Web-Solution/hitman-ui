@@ -101,10 +101,6 @@ export const msgText = {
   adminAccees: 'Admin access required'
 }
 
-export function showToast(message) {
-  toast.success(message)
-}
-
 export function isDashboardRoute(props, sidebar = false) {
   // now our own domain will only be considered as dashboard route
   if (
