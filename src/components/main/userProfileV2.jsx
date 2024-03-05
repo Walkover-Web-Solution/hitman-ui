@@ -385,7 +385,7 @@ class UserProfileV2 extends Component {
         >
           <Modal.Title>Save Tabs!</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ fontWeight: '500' }}>If you switch organization all the tabs and history will be Deleted!</Modal.Body>
+        <Modal.Body style={{ fontWeight: '500' }}>If you switch organization all the tabs and history will be deleted!</Modal.Body>
         <Modal.Footer>
           <button
             className='btn btn-danger btn-lg mr-2'

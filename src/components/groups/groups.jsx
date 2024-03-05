@@ -70,19 +70,15 @@ class Groups extends Component {
   }
 
   openShareSubPageForm(groupId) {
-    const showSubPageForm = { share: true, addPage: false }
     this.setState({
-      showSubPageForm,
+      showSubPageForm: {share: true, addPage: false},
       groupFormName: 'Share Subpage',
       selectedGroup: { ...this.props.pages[groupId] }
     })
   }
 
   closeSubPageForm() {
-    const edit = false
-    const addPage = false
-    const showSubPageForm = { edit, addPage }
-    this.setState({ showSubPageForm })
+    this.setState({ showSubPageForm : {edit: false, addPage: false} })
   }
 
   showShareSubPageForm() {
@@ -119,9 +115,8 @@ class Groups extends Component {
   }
 
   openEditSubPageForm(selectedGroup) {
-    const showSubPageForm = { edit: true }
     this.setState({
-      showSubPageForm,
+      showSubPageForm :{edit: true},
       selectedGroup
     })
   }
