@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import CustomColorPicker from './customColorPicker'
 import { connect } from 'react-redux'
 import Joi from 'joi-browser'
-import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { Button, Tooltip, OverlayTrigger, Modal, ListGroup } from 'react-bootstrap'
 import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
@@ -13,6 +13,8 @@ import { updateCollectionIdForPublish } from '../../store/clientData/clientDataA
 import { publishData } from '../modals/redux/modalsActions'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
+import PublicEnviromentModal from './publicEnviromentModal/publicEnviromentModal'
+import environmentsService from '../environments/environmentsService'
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
@@ -75,7 +77,9 @@ class PublishDocForm extends Component {
       theme: ''
     },
     cta: publishDocFormEnum.INITIAL_CTA,
-    links: publishDocFormEnum.INITIAL_LINKS
+    links: publishDocFormEnum.INITIAL_LINKS,
+    publicEnviromentModal: false,
+    setOpenNewModal: false
   }
 
   componentDidMount() {
@@ -457,6 +461,22 @@ class PublishDocForm extends Component {
     this.props.ON_PUBLISH_DOC(false)
   }
 
+  openPublicEnviromentModal() {
+    this.setState({ publicEnviromentModal: true })
+  }
+
+  closePublicEnviromentModal() {
+    this.setState({ publicEnviromentModal: false })
+  }
+
+  handleOpenNewPublicEnvModal = () => {
+    this.setState({ setOpenNewModal: true, publicEnviromentModal: false })
+  }
+
+  closeNewPublicEnvModal = () => {
+    this.setState({ setOpenNewModal: false })
+  }
+
   renderActionButtons(publishCheck) {
     const selectedCollection = this.getSelectedCollection()
     const isNotPublished = !this.isCollectionPublished(selectedCollection)
@@ -488,6 +508,16 @@ class PublishDocForm extends Component {
         >
           Bulk Publish
         </Button>
+        <Button id='publish_collection_btn' variant='btn btn-outline' className='m-1' onClick={() => this.openPublicEnviromentModal()}>
+          Manage Public Enviroment
+        </Button>
+        <PublicEnviromentModal
+          handleOpenNewModal={this.handleOpenNewPublicEnvModal.bind(this)}
+          openModal={this.state.publicEnviromentModal}
+          handleCloseModal={this.closePublicEnviromentModal.bind(this)}
+        />
+        {this.state.setOpenNewModal &&
+          environmentsService.showEnvironmentForm(this.props, this.closeNewPublicEnvModal.bind(this), 'Add New Public Environment')}
         {/* </OverlayTrigger> */}
         <>
           {publishCheck ? (

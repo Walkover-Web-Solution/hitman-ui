@@ -33,7 +33,7 @@ class EnvironmentVariables extends Component {
   }
 
   async componentDidMount() {
-    if (this.props.title === 'Add new Environment') return
+    if (this.props.title === 'Add new Environment' || this.props.title === 'Add New Public Environment') return
     let environment = {}
     environment = jQuery.extend(true, {}, this.props.environment)
     const originalVariableNames = Object.keys(environment.variables)
