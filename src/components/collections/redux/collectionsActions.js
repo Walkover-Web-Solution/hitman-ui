@@ -4,7 +4,6 @@ import collectionsActionTypes from './collectionsActionTypes'
 import tabService from '../../tabs/tabService'
 import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
-import { sendAmplitudeData } from '../../../services/amplitude'
 import { onParentPageAdded } from '../../pages/redux/pagesActions'
 import { toast } from 'react-toastify'
 import { deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
@@ -56,11 +55,7 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
     collectionsApiService
       .saveCollection(newCollection)
       .then((response) => {
-        sendAmplitudeData('Collection created', {
-          collectionId: response.data.id,
-          collectionName: response.data.name,
-          orgId: response.data.orgId
-        })
+        
         dispatch(onCollectionAdded(response.data))
         const inivisiblePageData = {
           page: {
@@ -121,12 +116,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
       .then((response) => {
         const { id, isPublic, name, orgId } = response.data
         if (isPublic === true) {
-          sendAmplitudeData('Collection Published', {
-            id: id,
-            docName: name,
-            orgId: orgId,
-            customDomain: response.data?.customDomain
-          })
+         
         }
         dispatch(onCollectionUpdated(response.data))
         if (stopLoader) {

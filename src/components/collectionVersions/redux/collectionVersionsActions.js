@@ -3,7 +3,6 @@ import versionActionTypes from './collectionVersionsActionTypes'
 import { store } from '../../../store/store'
 import { toast } from 'react-toastify'
 import tabService from '../../tabs/tabService'
-import { sendAmplitudeData } from '../../../services/amplitude'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 export const fetchAllVersions = (orgId) => {
   return (dispatch) => {
@@ -91,11 +90,7 @@ export const addParentPageVersion = (newVersion, pageId, customCallback) => {
     collectionVersionsApiService
       .saveParentPageVersion(pageId, newVersion)
       .then((response) => {
-        sendAmplitudeData('Version created', {
-          versionId: response.data.id,
-          versionNumber: response.data.number,
-          pageId: response.data.pageId
-        })
+        
         dispatch(onParentPageVersionAdded(response.data))
         if (customCallback) {
           customCallback(response.data)
