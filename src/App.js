@@ -135,7 +135,7 @@ class App extends Component {
     if (!isElectron() && !isTechdocOwnDomain()) {
       return (
         <Switch>
-          <Route path='/' component={Public} />
+          <Route path='*' component={Public} />
         </Switch>
       )
     }
