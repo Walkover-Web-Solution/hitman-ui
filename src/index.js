@@ -27,6 +27,7 @@ ReactDOM.render(
         <Router history={history}>
           <Switch>
             <Route path='/' component={App} />
+            <Route path='/sid' component={()=><div>HELLLO</div>} />
           </Switch>
         </Router>
         <ReactQueryDevtools initialIsOpen={false} />
