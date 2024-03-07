@@ -1,9 +1,11 @@
 # syntax=docker/dockerfile:1
 FROM node:18.17
 WORKDIR /app
+EXPOSE 3000
 COPY ["package.json", "package-lock.json*", "./"]
-RUN npm install pm2 -g
+RUN npm install -g pm2
+RUN npm install -g serve
 RUN npm install --legacy-peer-deps
 COPY . .
 RUN npm run build
-ENTRYPOINT ["npm","serve"]
+ENTRYPOINT ["serve","-s","build","-l","3000"]
