@@ -1,5 +1,5 @@
 import React from 'react'
-import {  BrowserRouter } from 'react-router-dom'
+import { Route, Switch, Router } from 'react-router-dom'
 import ReactDOM from 'react-dom'
 
 import './index.scss'
@@ -24,12 +24,12 @@ ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter history={history}>
-          {/* <Routes>
+        <Router history={history}>
+          <Switch>
+            <Route path='/sid' component={()=><div>HELLLO</div>} />
             <Route path='/' component={App} />
-          </Routes> */}
-          <App/>
-        </BrowserRouter>
+          </Switch>
+        </Router>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </PersistGate>

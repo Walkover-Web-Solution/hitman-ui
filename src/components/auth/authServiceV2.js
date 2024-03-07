@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import http from "../../services/httpService";
 import { Modal } from "react-bootstrap";
 import { switchOrg } from "../../services/orgApiService";
@@ -100,7 +100,7 @@ function getProxyToken() {
 
 function AuthServiceV2() {
   const query = useQuery();
-  const history = useNavigate();
+  const history = useHistory();
   const [show, setShow] = useState(true);
   const [orgList, setOrgList] = useState(null);
 
