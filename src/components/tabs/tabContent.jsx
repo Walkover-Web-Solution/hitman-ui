@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Tab } from 'react-bootstrap'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
 import DisplayPage from '../pages/displayPage'
 import EditPage from '../pages/editPage'
@@ -56,10 +56,10 @@ class TabContent extends Component {
         return <DisplayEndpoint {...this.props} environment={{}} tab={tab} />
       case 'page':
         return (
-          <Switch>
+          <Routes>
             <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' render={(props) => <EditPage {...this.props} {...props} tab={tab} />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId' render={(props) => <DisplayPage {...props} tab={tab} />} />
-          </Switch>
+          </Routes>
         )
       case 'collection':
         if (this.props.location.pathname.split('/')[6] === 'settings') {
