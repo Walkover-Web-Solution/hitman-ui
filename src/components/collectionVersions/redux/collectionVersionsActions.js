@@ -1,6 +1,7 @@
 import collectionVersionsApiService from '../collectionVersionsApiService'
 import versionActionTypes from './collectionVersionsActionTypes'
 import { toast } from 'react-toastify'
+import tabService from '../../tabs/tabService'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 
 export const updateVersion = (editedVersion) => {
@@ -46,6 +47,7 @@ export const addParentPageVersion = (newVersion, pageId, customCallback) => {
     collectionVersionsApiService
       .saveParentPageVersion(pageId, newVersion)
       .then((response) => {
+        
         dispatch(onParentPageVersionAdded(response.data))
         if (customCallback) {
           customCallback(response.data)

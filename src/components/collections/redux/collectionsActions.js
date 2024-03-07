@@ -55,6 +55,7 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
     collectionsApiService
       .saveCollection(newCollection)
       .then((response) => {
+        
         dispatch(onCollectionAdded(response.data))
         const inivisiblePageData = {
           page: {
@@ -115,6 +116,10 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
     collectionsApiService
       .updateCollection(id, editedCollection)
       .then((response) => {
+        const { id, isPublic, name, orgId } = response.data
+        if (isPublic === true) {
+         
+        }
         dispatch(onCollectionUpdated(response.data))
         toast.success('Updated successfully')
         if (stopLoader) {

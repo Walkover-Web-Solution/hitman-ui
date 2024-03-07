@@ -77,6 +77,7 @@ class MainV2 extends Component {
           loadfeedioWidget()
           // loadHelloWidget() commenting to hide helloWidget
         }
+        
         await this.fetchAll()
         this.props.add_collection_and_pages(orgId)
       }
