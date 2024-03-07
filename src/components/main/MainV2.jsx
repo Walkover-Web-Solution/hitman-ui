@@ -16,7 +16,7 @@ import CollectionModal from '../collections/collectionsModal'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
 import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 import { addCollectionAndPages } from '../redux/generalActions'
-import SplitPane from '../splitPane/SplitPane'
+import SplitPane from '../splitPane/splitPane'
 
 const mapStateToProps = (state) => {
   return {
