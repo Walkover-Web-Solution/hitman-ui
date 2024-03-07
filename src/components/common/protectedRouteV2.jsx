@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Redirect } from 'react-router-dom'
+import { Route, Navigate } from 'react-router-dom'
 import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 import { useLocation } from 'react-router'
 
@@ -14,7 +14,7 @@ const ProtectedRouteV2 = ({ path, component: Component, render, ...rest }) => {
       render={(props) => {
         if (!getProxyToken()) {
           return (
-            <Redirect
+            <Navigate
               to={{
                 pathname: '/logout',
                 search: `?redirect_uri=${props.location.pathname}`
@@ -39,7 +39,7 @@ const ProtectedRouteV2 = ({ path, component: Component, render, ...rest }) => {
           return Component ? <Component {...props} /> : render(props)
         } else {
           return (
-            <Redirect
+            <Navigate
               to={{
                 pathname: '/login',
                 search: `?redirect_uri=${props.location.pathname}`
