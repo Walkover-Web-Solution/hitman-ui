@@ -8,17 +8,15 @@ import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
 import { isDesktop } from 'react-device-detect'
 import OnlineSatus from '../onlineStatus/onlineStatus'
-import { getOrgUpdatedAt } from '../../services/orgApiService'
-import moment from 'moment'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
-import SplitPane from 'react-split-pane'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
 import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 import { addCollectionAndPages } from '../redux/generalActions'
+import SplitPane from '../splitPane/splitPane'
 
 const mapStateToProps = (state) => {
   return {
