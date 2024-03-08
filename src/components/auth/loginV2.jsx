@@ -16,12 +16,12 @@ class LoginV2 extends Component {
   }
 
   checkIfUserAlreadyLogin() {
-    // if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
-    //   this.props.history.push(
-    //     `/org/${getCurrentOrg().id}/dashboard`,
-    //   );
-    // }
-    // else this.loadScript();
+    if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
+      this.props.history.push(
+        `/org/${getCurrentOrg().id}/dashboard`,
+      );
+    }
+    else this.loadScript();
   }
 
   loadScript() {
@@ -39,11 +39,11 @@ class LoginV2 extends Component {
     this.script.src =
       "https://proxy.msg91.com/assets/proxy-auth/proxy-auth.js?time=34093049";
     this.script.async = true;
-    // this.script.onload = () => {
-    //   // if (window.initVerification) {
-    //   //   // window.initVerification(this.configuration);
-    //   // }
-    // };
+    this.script.onload = () => {
+      if (window.initVerification) {
+        window.initVerification(this.configuration);
+      }
+    };
     document.body.appendChild(this.script);
   }
 
