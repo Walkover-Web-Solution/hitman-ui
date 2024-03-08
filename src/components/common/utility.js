@@ -5,7 +5,6 @@ import { store } from '../../store/store'
 import Joi from 'joi-browser'
 import { getProxyToken } from '../auth/authServiceV2'
 import history from '../../history'
-import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
@@ -329,7 +328,6 @@ export function addAnalyticsScripts() {
         ? (document.getElementsByTagName('head')[0].innerHTML += scripts[script])
         : (document.getElementsByTagName('body')[0].innerHTML += scripts[script])
     })
-    initAmplitude()
   }
 }
 

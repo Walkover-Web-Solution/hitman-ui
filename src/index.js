@@ -26,7 +26,6 @@ ReactDOM.render(
       <QueryClientProvider client={queryClient}>
         <Router history={history}>
           <Switch>
-            <Route path='/sid' component={()=><div>HELLLO</div>} />
             <Route path='/' component={App} />
           </Switch>
         </Router>

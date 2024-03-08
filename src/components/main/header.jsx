@@ -76,7 +76,6 @@ class Header extends Component {
     profile.id = currentUser.id
     profile.show_demo_form = currentUser.show_demo_form
     this.setState({ profile })
-    setAmplitudeUserId(profile.email)
   }
 
   openPublishDocs(collection) {
