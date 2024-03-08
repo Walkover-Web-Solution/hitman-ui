@@ -290,7 +290,8 @@ class DisplayEndpoint extends Component {
       docOptions: false,
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
-      endpointContentState: null
+      endpointContentState: null,
+      sidebarVisibility: true
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -2502,6 +2503,11 @@ class DisplayEndpoint extends Component {
     const { docOptions } = this.state
     this.setState({ docOptions: !docOptions })
   }
+  handleSideBarVisibility() {
+    console.log("handlesidebar visibility");
+    this.setState({sidebarVisibility: !this.state.sidebarVisibility})
+    console.log(this.state.sidebarVisibility, "sidebar visibility");
+  }
 
   renderSaveButton() {
     return (
@@ -2645,7 +2651,10 @@ class DisplayEndpoint extends Component {
                   {this.isNotDashboardOrDocView() && (
                     <div className='endpoint-name-container'>
                       {this.isNotDashboardOrDocView() && (
+                        <>
+                        {this.state.sidebarVisibility && (<button className='hamburger-for-sidebar' onClick={()=> {this.handleSideBarVisibility()}}>main</button>)}
                         <h1 className='endpoint-title'>{this.props?.endpointContent?.data?.name || ''}</h1>
+                        </>
                       )}
                     </div>
                   )}

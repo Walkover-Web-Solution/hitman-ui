@@ -648,6 +648,7 @@ class SideBarV2 extends Component {
   }
 
   toggleCodeEditor() {
+    console.log("inside toggle code edito");
     this.props.sidebarToggle()
   }
 
@@ -678,9 +679,9 @@ class SideBarV2 extends Component {
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documenation</span>
         </h4>
-        {/* <button className='toggleButton justify-content-start' onClick={() => { this.toggleCodeEditor() }}>
+        <button className='toggleButton justify-content-start' onClick={() => { this.toggleCodeEditor() }}>
         <img src={CloseIcon} alt='' />
-      </button> */}
+      </button>
       </div>
     )
   }
@@ -813,7 +814,10 @@ class SideBarV2 extends Component {
   }
 
   render() {
+    const { sidebarVisibility} = this.state
     return (
+      <>
+      <div className={sidebarVisibility ? 'sidebar' : 'sidebar hideCodeEditor' }>
       <nav className={this.getSidebarInteractionClass()}>
         {this.showAddEntitySelectionModal()}
         {this.showAddEntityModal()}
@@ -831,6 +835,8 @@ class SideBarV2 extends Component {
           {this.renderDashboardSidebar()}
         </div>
       </nav>
+      </div>
+      </>
     )
   }
 }

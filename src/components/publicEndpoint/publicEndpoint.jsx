@@ -260,6 +260,10 @@ class PublicEndpoint extends Component {
   }
 
   toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal })
+  handleSidebarCollapse (){
+    console.log("inside handle sidebar collapseeee");
+    this.setState({sidebarVisibility: !this.state.sidebarVisibility})
+  }
 
   isMobileView = () => {
     if(window.innerWidth < 800){

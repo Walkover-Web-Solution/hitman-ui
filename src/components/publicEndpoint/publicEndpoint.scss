@@ -298,6 +298,11 @@ form.add-new-domain-form {
       &:hover {
         opacity: 0.7;
       }
+      @media only screen and (max-width: 1600px){
+        width: 33px !important; 
+        height: 35px !important;
+        padding: 0px;
+       }
     }
   }
   .innerContainer {
@@ -350,6 +355,9 @@ form.add-new-domain-form {
           display: flex;
           align-items: center;
           justify-content: flex-start;
+          @media only screen and (max-width: 1600px){
+            font-size: 15px;
+           }
         }
       }
 
@@ -720,6 +728,11 @@ button.toggleButton {
     button {
       height: 38px;
     }
+    @media only screen and (max-width: 200px){
+      position: relative !important;
+      background-color: #1d9ee2;
+      width: 100% !important;
+     }
   }
   .inner-editor {
     height: 100%;
@@ -744,6 +757,9 @@ button.toggleButton {
   .pubCodeWrapper.closeEditor {
     transition: 450ms;
     transform: translate3d(100%, 0, 0);
+    @media only screen and (max-width: 200px){
+
+     }
   }
   button.toggleButton {
     font-size: $font-normal;
@@ -760,7 +776,10 @@ button.toggleButton {
       display: none;
     }
     @media only screen and (max-width: 1600px){
-      left: -218px
+      left: -140px;
+      font-size: 12px;
+      padding: 5px;
+      border-radius: 5px;
      }
   }
 }
