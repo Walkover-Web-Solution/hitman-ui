@@ -1677,6 +1677,12 @@ table#custom-generic-table tbody input[value='true'] + span.checkmark {
 .hm-public-table table tbody tr td .customCheckbox {
   padding-left: 0;
 }
+.footerWrapper{
+  width: 75% !important;
+  @media screen and (max-width:768px) {
+    width: 100% !important;
+  }
+}
 
 .footerWrapper p {
   margin: 0;
@@ -1684,9 +1690,7 @@ table#custom-generic-table tbody input[value='true'] + span.checkmark {
   font-size: 14px;
   color: #333333;
   text-align: right;
-  @media only screen and (max-width: 800px){
-display: none !important;
-   }
+ 
 }
 
 .footerWrapper {
@@ -1696,9 +1700,7 @@ display: none !important;
     display: flex;
     flex-direction: column;
     align-items: center;
-    @media only screen and (max-width: 800px){
-      display: none !important;
-    }
+  
   }
 }
 
@@ -3381,29 +3383,19 @@ body .tox {
 //     }
 // }
 
-.Pane1{
-  width: 0 !important;
-  transition: 0.6s ease;
-  // height: 0;
-  @media screen and (max-width: 768px) {
-    // div{
-    //  Pane {
-        // &.vertical
-        // {
-            position: fixed !important;
-            z-index: 999;
-            top: 0;
-            left: 0 ;
-            // height: 100vh !important;
-            width: 40vw !important;
-          // }
-        // }
-      // }
-  }
-}
+
 .hamburger-for-sidebar{
   display: none !important;
   @media screen and (max-width: 768px) {
     display: block !important;
+  }
+}
+
+
+
+
+.footerHide{
+  @media screen and (max-width:768px) {
+    display: block;
   }
 }

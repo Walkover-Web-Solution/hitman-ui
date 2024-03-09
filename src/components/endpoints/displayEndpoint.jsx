@@ -2600,7 +2600,7 @@ class DisplayEndpoint extends Component {
           onClick={this.closeChatBotModal}
           className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}
         >
-          <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
+          <div className={`innerContainer flex-lg-row flex-column ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
             <div
               className={`hm-endpoint-container mid-part endpoint-container ${
                 this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
@@ -2652,7 +2652,7 @@ class DisplayEndpoint extends Component {
                     <div className='endpoint-name-container'>
                       {this.isNotDashboardOrDocView() && (
                         <>
-                        {this.state.sidebarVisibility && (<button className='hamburger-for-sidebar' onClick={()=> {this.handleSideBarVisibility()}}>main</button>)}
+                       
                         <h1 className='endpoint-title'>{this.props?.endpointContent?.data?.name || ''}</h1>
                         </>
                       )}
@@ -2872,8 +2872,9 @@ class DisplayEndpoint extends Component {
                 )}
               </div>
               {/* <ApiDocReview {...this.props} /> */}
-              {isOnPublishedPage() && <Footer />}
+              {/* <span className=' d-lg-block d-md-none'>{isOnPublishedPage() && <Footer />}</span> */}
             </div>
+
             {this.isDashboardAndTestingView() ? (
               <div className='response-container-main position-relative'>
                 <div className='d-flex response-switcher'>
@@ -2885,19 +2886,20 @@ class DisplayEndpoint extends Component {
             ) : null}
             {this.isNotDashboardOrDocView() && this.props?.endpointContent?.harObject && isOnPublishedPage() && (
               <CodeTemplate
-                show
-                onHide={() => {
-                  this.setState({ showCodeTemplate: false })
-                }}
-                editorToggle={() => {
-                  this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
-                }}
-                harObject={this.props?.endpointContent?.harObject}
-                title='Generate Code Snippets'
-                publicCollectionTheme={this.props?.publicCollectionTheme}
+              show
+              onHide={() => {
+                this.setState({ showCodeTemplate: false })
+              }}
+              editorToggle={() => {
+                this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
+              }}
+              harObject={this.props?.endpointContent?.harObject}
+              title='Generate Code Snippets'
+              publicCollectionTheme={this.props?.publicCollectionTheme}
               />
-            )}
+              )}
           </div>
+          <span className='me-auto ms-auto'>{isOnPublishedPage() && <Footer/>}</span>
         </div>
         {this.isDashboardAndTestingView() && (
           <div>
