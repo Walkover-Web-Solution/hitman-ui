@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete-icon.svg'
 import { BiSolidPencil } from 'react-icons/bi'
@@ -15,18 +15,57 @@ const VersionInput = (props) => {
     return { pages: state.pages }
   })
   const versionNameInputRef = useRef()
+  const editContainerRef = useRef();
 
   const dispatch = useDispatch()
 
+  // const onRename = (versionId) => {
+  //   const versionChilds = pages?.[props?.parentPageId]?.child
+  //   try {
+  //     versionChilds.forEach((element) => {
+  //       if (pages[element]?.name.trim() === versionNameInputRef.current.value) {
+  //         throw new Error('StopIteration')
+  //       }
+  //     })
+  //   } catch (error) {
+  //     return toast.error('Version Name already Exist!')
+  //   }
+  //   dispatch(updatePage(null, { ...pages?.[versionId], name: versionNameInputRef.current.value }))
+  //   props.setShowEdit(null)
+  // }
+
   const onRename = (versionId) => {
-    dispatch(updatePage(null, { ...pages?.[versionId], name: versionNameInputRef.current.value }))
+    const versionChilds = pages?.[props?.parentPageId]?.child
+    const newVersionName = versionNameInputRef.current.value.trim()
+  
+    // Check if the new version name already exists
+    if (versionChilds.some((element) => pages[element]?.name.trim() === newVersionName)) {
+      return toast.error('Version Name already Exist!')
+    }
+  
+    dispatch(updatePage(null, { ...pages?.[versionId], name: newVersionName }))
     props.setShowEdit(null)
   }
+  const handleClickOutside = (event) => {
+    if (editContainerRef.current && !editContainerRef.current.contains(event.target)) {
+      // Clicked outside the edit container, close the input field
+      props.setShowEdit(null);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
 
   return (
     <div className='d-flex justify-content-start align-items-center'>
       {props?.showEdit === props?.index ? (
-        <div className='d-flex justify-content-start align-items-center'>
+        <div ref={editContainerRef} className='d-flex justify-content-start align-items-center'>
           <input
             type='text'
             className='form-control version-input col-form-label-sm'
@@ -39,7 +78,7 @@ const VersionInput = (props) => {
             Save
           </Button>
         </div>
-      ) : (
+      )  : (
         <div className='d-flex justify-content-start align-items-center'>
           <div className='version-title'>{pages?.[props?.singleChildId]?.name}</div>
           <BiSolidPencil className='cursor-pointer ml-1' onClick={() => props?.setShowEdit(props?.index)} />
@@ -135,7 +174,7 @@ export default function SelectVersion(props) {
         return (
           <div>
             <div className='d-flex justify-content-between align-items-center mt-3'>
-              <VersionInput setShowEdit={setShowEdit} showEdit={showEdit} index={index} singleChildId={singleChildId} />
+              <VersionInput setShowEdit={setShowEdit} showEdit={showEdit} index={index} singleChildId={singleChildId} {...props} />
               <div>
                 {pages?.[singleChildId]?.state !== 1 && (
                   <Button

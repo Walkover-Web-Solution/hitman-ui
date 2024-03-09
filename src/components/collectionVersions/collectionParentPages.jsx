@@ -113,19 +113,25 @@ class CollectionParentPages extends Component {
     if (pageId) this.setParentPageForEntity(pageId, 'page')
 
     if (endpointId) this.setParentPageForEntity(endpointId, 'endpoint')
+      this.updateVersionId()
+  }
+
+  updateVersionId() {
     const defaultVersion = this.findDefaultVersion()
     if (defaultVersion) {
       this.setState({
         defaultVersionName: defaultVersion.name,
         selectedVersionId: defaultVersion.id,
         defaultVersionId: defaultVersion.id,
-        selectedVersionName: defaultVersion.name,
-        selectedCheckbox: defaultVersion.name || null
+        selectedVersionName: defaultVersion.name
       })
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.props?.pages?.[this.state.defaultVersionId]?.state !== 1) {
+      this.updateVersionId()
+    }
     if (prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
       this.setState({ selectedParentPageIds: {} })
     }
@@ -139,6 +145,12 @@ class CollectionParentPages extends Component {
 
     if (endpointId && prevEndpointId !== endpointId) {
       this.setParentPageForEntity(endpointId, 'endpoint')
+    }
+    if (this.props.pages[prevState.selectedVersionId]?.name !== this.state.selectedVersionName) {
+      this.setState({ selectedVersionName: this.props.pages[prevState.selectedVersionId]?.name })
+    }
+    if (!this.props.pages.hasOwnProperty(prevState.selectedVersionId)) {
+      this.setState({ selectedVersionName: this.state.defaultVersionName, selectedVersionId: this.state.defaultVersionId })
     }
   }
 
