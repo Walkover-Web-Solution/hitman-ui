@@ -13,8 +13,10 @@ import publishDocsReducer from '../components/publishDocs/redux/publishDocsReduc
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import clientDataReducer from './clientData/clientDataReducer'
+if (typeof window !== "undefined") {
+  const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
 
 const rootReducer = combineReducers({
   collections: collectionsReducer,
@@ -38,5 +40,5 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 const store = createStore(persistedReducer, storeEnhancers(applyMiddleware(thunk)))
 const persistor = persistStore(store)
-
+}
 export { store, persistor }

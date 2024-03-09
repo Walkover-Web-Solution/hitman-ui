@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import Form from '../common/form'
 import { onEnter } from '../common/utility'
 
-const apiUrl = process.env.REACT_APP_API_URL
+const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 const mapDispatchToProps = (dispatch) => {
   return {}

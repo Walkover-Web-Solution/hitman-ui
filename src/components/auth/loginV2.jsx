@@ -1,25 +1,24 @@
 import React, { Component } from "react";
-import "./auth.scss";
-import "./login.scss";
+// import "./auth.scss";
+// import "./login.scss";
 import { ReactComponent as TECHDOC } from "../../assets/icons/TECHDOC100.svg";
-import { getCurrentOrg, getCurrentUser, getOrgList } from "./authServiceV2";
+// import { getCurrentOrg, getCurrentUser, getOrgList } from "./authServiceV2";
 
 class LoginV2 extends Component {
   proxyGooglereferenceMapping = {
-    local: process.env.REACT_APP_PROXY_REFERENCE_ID_LOCAL,
-    test: process.env.REACT_APP_PROXY_REFERENCE_ID_TEST,
-    prod: process.env.REACT_APP_PROXY_REFERENCE_ID_PROD,
+    local: process.env.NEXT_PUBLIC_PROXY_REFERENCE_ID_LOCAL,
+    test: process.env.NEXT_PUBLIC_PROXY_REFERENCE_ID_TEST,
+    prod: process.env.NEXT_PUBLIC_PROXY_REFERENCE_ID_PROD,
   };
 
   componentDidMount() {
+    debugger
     this.checkIfUserAlreadyLogin()
   }
 
   checkIfUserAlreadyLogin() {
-    if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
-      this.props.history.push(
-        `/org/${getCurrentOrg().id}/dashboard`,
-      );
+    if (false) {
+      
     }
     else this.loadScript();
   }
@@ -27,7 +26,7 @@ class LoginV2 extends Component {
   loadScript() {
     this.configuration = {
       referenceId:
-        this.proxyGooglereferenceMapping[process.env.REACT_APP_ENV] || "",
+        this.proxyGooglereferenceMapping[process.env.NEXT_PUBLIC_ENV] || "",
       success: (data) => {
         console.log("response", data);
       },
@@ -54,7 +53,7 @@ class LoginV2 extends Component {
   }
 
   render() {
-    const env = process.env.REACT_APP_ENV || "";
+    const env = process.env.NEXT_PUBLIC_ENV || "";
     const divId = this.proxyGooglereferenceMapping[env];
 
     return (

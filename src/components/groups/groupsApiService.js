@@ -1,11 +1,11 @@
 import http from '../../services/httpService'
 import { getOrgId } from '../common/utility'
 
-const apiBaseUrl = process.env.REACT_APP_API_URL
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
 
 function getApiUrl() {
   const orgId = getOrgId()
-  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+  return process.env.NEXT_PUBLIC_API_URL + `/orgs/${orgId}`
 }
 
 function GroupsUrl(versionId) {

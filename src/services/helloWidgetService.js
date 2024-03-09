@@ -1,4 +1,4 @@
-const widgetToken = process.env.REACT_APP_HELLO_WIDGET_TOKEN
+const widgetToken = process.env.NEXT_PUBLIC_HELLO_WIDGET_TOKEN
 
 function getUserName(profile) {
   const firstName = profile?.first_name || ''

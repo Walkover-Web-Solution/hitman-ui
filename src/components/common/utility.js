@@ -32,7 +32,7 @@ const tokenKey = 'token'
 const profileKey = 'profile'
 const orgKey = 'organisation'
 const orgListKey = 'organisationList'
-const proxyUrl = process.env.REACT_APP_PROXY_URL
+const proxyUrl = process.env.NEXT_PUBLIC_PROXY_URL
 
 export function sentryIntegration() {
   Sentry.init({
@@ -122,8 +122,9 @@ export function redirectToDashboard(orgId) {
 }
 
 export function isElectron() {
-  const userAgent = navigator.userAgent.toLowerCase()
-  return userAgent.indexOf(' electron/') !== -1
+  return false
+  // const userAgent = navigator.userAgent.toLowerCase()
+  // return userAgent.indexOf(' electron/') !== -1
 }
 
 export function openExternalLink(link) {
@@ -315,14 +316,14 @@ export function formatBytes(bytes, decimals = 2) {
 }
 
 export function isValidDomain() {
-  const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+  const domainsList = process.env.NEXT_PUBLIC_DOMAINS_LIST ? process.env.NEXT_PUBLIC_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
   const path = window.location.href.split('/')[3]
   return domainsList.includes(currentDomain) && path !== 'p'
 }
 
 export function addAnalyticsScripts() {
-  if (isValidDomain() && process.env.REACT_APP_ENV === 'production') {
+  if (isValidDomain() && process.env.NEXT_PUBLIC_ENV === 'production') {
     Object.keys(scripts).forEach((script) => {
       script !== 'gtmBody'
         ? (document.getElementsByTagName('head')[0].innerHTML += scripts[script])
@@ -619,7 +620,7 @@ export function getUrlPathById(id, sidebar) {
   return actualPath
 }
 export function isTechdocOwnDomain() {
-  const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+  const domainsList = process.env.NEXT_PUBLIC_DOMAINS_LIST ? process.env.NEXT_PUBLIC_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
   return domainsList.includes(currentDomain)
 }

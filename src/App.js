@@ -1,19 +1,10 @@
 import React, { Component } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import LoginV2 from './components/auth/loginV2'
-import Logout from './components/auth/logout'
 import collectionsApiService from './components/collections/collectionsApiService'
-import NotFound from './components/common/notFound'
-import MainV2 from './components/main/MainV2'
-import PublicView from './components/main/publicView'
-import Public from './components/publicEndpoint/publicEndpoint.jsx'
+// import MainV2 from './components/main/MainV2'
 import { ToastContainer } from 'react-toastify'
 import { SESSION_STORAGE_KEY, getOrgId, isDashboardRoute, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility'
-import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
-import ProtectedRouteV2 from './components/common/protectedRouteV2'
-import Cookies from 'universal-cookie'
-import AuthServiceV2 from './components/auth/authServiceV2'
-import InviteTeam from './components/main/inviteTeam/inviteTeam'
 import { connect } from 'react-redux'
 import { installModal } from './components/modals/redux/modalsActions'
 import { initConn, resetConn } from './services/webSocket/webSocketService.js'
@@ -42,8 +33,8 @@ class App extends Component {
     sessionStorage.setItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID, shortid.generate())
   }
   async redirectToClientDomain() {
-    const isDesktop = process.env.REACT_APP_IS_DESKTOP
-    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+    const isDesktop = process.env.NEXT_PUBLIC_IS_DESKTOP
+    const domainsList = process.env.NEXT_PUBLIC_DOMAINS_LIST ? process.env.NEXT_PUBLIC_DOMAINS_LIST.split(',') : []
     const currentDomain = window.location.href.split('/')[2]
     if (!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p' && !isDesktop) {
       const { data: clientCollection } = await collectionsApiService.getCollectionsByCustomDomain(currentDomain)
@@ -134,9 +125,10 @@ class App extends Component {
   renderApp = () => {
     if (!isElectron() && !isTechdocOwnDomain()) {
       return (
-        <Switch>
-          <Route path='/' component={Public} />
-        </Switch>
+        <></>
+        // <Switch>
+        //   <Route path='/' component={Public} />
+        // </Switch>
       )
     }
 
@@ -145,35 +137,35 @@ class App extends Component {
         <ToastContainer />
         <Switch>
           {/* Error Page Routes */}
-          <Route path='/404_PAGE' component={ERROR_404_PAGE} />
-          <Route path='/403_PAGE' component={ERROR_403_PAGE} />
+          {/* <Route path='/404_PAGE' component={ERROR_404_PAGE} />
+          <Route path='/403_PAGE' component={ERROR_403_PAGE} /> */}
 
           {/* Logged in Dashboard Routes */}
-          <ProtectedRouteV2 exact path='/orgs/:orgId/dashboard/' component={MainV2} />
+          {/* <ProtectedRouteV2 exact path='/orgs/:orgId/dashboard/' component={MainV2} /> */}
           {/* <ProtectedRouteV2 path='/orgs/:orgId/admin/publish' component={MainV2} /> */}
-          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={MainV2} />
-          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/settings' component={MainV2} />
+          {/* <ProtectedRouteV2 path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={MainV2} />
+          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/settings' component={MainV2} /> */}
           {/* <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' component={MainV2} /> */}
-          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/page/:pageId' component={MainV2} />
+          {/* <ProtectedRouteV2 path='/orgs/:orgId/dashboard/page/:pageId' component={MainV2} />
           <ProtectedRouteV2 path='/orgs/:orgId/dashboard/history/:historyId' component={MainV2} />
-          <Route path='/orgs/:orgId/invite' component={InviteTeam} />
+          <Route path='/orgs/:orgId/invite' component={InviteTeam} /> */}
 
           {/* Not Logged in Dashboard Route */}
-          <Route path='/dashboard/' component={MainV2} />
+          {/* <Route path='/dashboard/' component={MainV2} /> */}
 
           {/*  Public Page Routes */}
-          <Route path='/p/error' component={NotFound} />
-          <Route path='/p' component={Public} />
+          {/* <Route path='/p/error' component={NotFound} />
+          <Route path='/p' component={Public} /> */}
 
           {/* React App Auth Routes */}
-          <Route path='/login' component={LoginV2} />
-          <Route path='/logout' component={Logout} />
+          <Route path='/' component={LoginV2} />
+          {/* <Route path='/logout' component={Logout} />
           <Route path='/' component={AuthServiceV2} />
 
           <Route path='/marketPlace' component={PublicView} />
           <Route path='/'>
             <Redirect to='/dashboard' />
-          </Route>
+          </Route> */}
         </Switch>
       </>
     )

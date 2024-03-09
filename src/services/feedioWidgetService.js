@@ -1,6 +1,6 @@
 /** Uncomment These Lines to enable Feedio Widget */
-// const BOARD_TOKEN = process.env.REACT_APP_FEEDIO_WGT_BOARD_TOKEN
-// const FEEDIO_WIDGET_URL = process.env.REACT_APP_FEEDIO_WGT_URL
+// const BOARD_TOKEN = process.env.NEXT_PUBLIC_FEEDIO_WGT_BOARD_TOKEN
+// const FEEDIO_WIDGET_URL = process.env.NEXT_PUBLIC_FEEDIO_WGT_URL
 
 export function loadfeedioWidget() {
   // let user = window.localStorage.getItem('profile')

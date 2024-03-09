@@ -3,7 +3,7 @@ import logger from './logService'
 import 'react-toastify/dist/ReactToastify.css'
 import { getProxyToken } from '../components/auth/authServiceV2'
 
-// axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+// axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL;
 let endpointInstance = axios.create()
 
 endpointInstance.interceptors.response.use(null, (error) => {

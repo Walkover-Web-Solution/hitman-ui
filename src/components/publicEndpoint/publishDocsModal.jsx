@@ -157,7 +157,7 @@
 //       return
 //     }
 //     try {
-//       cirlceCiApiService.addEnvVariable('REACT_APP_CUSTOM_DOMAINS_LIST', process.env.REACT_APP_CUSTOM_DOMAINS_LIST + `;${this.state.data.newDomain},${this.props.collection_id}`)
+//       cirlceCiApiService.addEnvVariable('NEXT_PUBLIC_CUSTOM_DOMAINS_LIST', process.env.NEXT_PUBLIC_CUSTOM_DOMAINS_LIST + `;${this.state.data.newDomain},${this.props.collection_id}`)
 
 //       this.props.update_collection({
 //         customDomain: this.state.data.newDomain,
@@ -339,7 +339,7 @@
 //               )}
 //           </div>
 //           <h5>Custom domain</h5>
-//           Please map your domain to {process.env.REACT_APP_UI_IP} after adding here.
+//           Please map your domain to {process.env.NEXT_PUBLIC_UI_IP} after adding here.
 //           <table className='table domain-list-table'>
 //             <thead>
 //               <tr>

@@ -36,7 +36,7 @@ class PublicView extends Component {
   }
 
   openCollection(collectionId) {
-    const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p/${collectionId}`
+    const publicDocsUrl = `${process.env.NEXT_PUBLIC_PUBLIC_UI_URL}/p/${collectionId}`
     window.open(publicDocsUrl, '_blank')
   }
 
@@ -46,7 +46,7 @@ class PublicView extends Component {
   }
 
   render() {
-    // const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
+    // const redirectionUrl = process.env.NEXT_PUBLIC_UI_URL + '/login'
     const filteredPublicCollections = this.state.filteredPublicCollections
     return (
       <>

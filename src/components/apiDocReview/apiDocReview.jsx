@@ -80,7 +80,7 @@ class ApiDocReview extends Component {
   postApi() {
     const feedback = _.pick(_.cloneDeep(this.state), 'parentId', 'parentType', 'user', 'vote', 'comment')
 
-    const apiUrl = process.env.REACT_APP_API_URL
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL
     const collectionId = this.props.match.params.collectionId
     Axios.post(apiUrl + `/collections/${collectionId}/feedbacks`, feedback)
       .then((response) => {

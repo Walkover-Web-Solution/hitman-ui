@@ -16,7 +16,7 @@ var CLIENT, CHANNEL
 
 export function initConn(channel) {
   CHANNEL = channel
-  CLIENT = new WebSocketClient(process.env.REACT_APP_RTLAYER_OID, process.env.REACT_APP_RTLAYER_SID)
+  CLIENT = new WebSocketClient(process.env.NEXT_PUBLIC_RTLAYER_OID, process.env.NEXT_PUBLIC_RTLAYER_SID)
   if (CHANNEL) {
     CLIENT.on('open', subscribe)
     CLIENT.on('message', handleMessage)

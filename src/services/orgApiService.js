@@ -2,8 +2,8 @@ import http from './httpService'
 import { redirectToDashboard, getDataFromProxyAndSetDataToLocalStorage } from '../components/common/utility'
 import { getOrgList, orgListKey, orgKey, getCurrentOrg } from '../components/auth/authServiceV2'
 import { toast } from 'react-toastify'
-const apiBaseUrl = process.env.REACT_APP_API_URL
-const proxyUrl = process.env.REACT_APP_PROXY_URL
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+const proxyUrl = process.env.NEXT_PUBLIC_PROXY_URL
 
 export function getOrgUpdatedAt(orgId) {
   return http.get(`${apiBaseUrl}/orgs/${orgId}/lastSync`)

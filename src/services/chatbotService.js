@@ -3,7 +3,7 @@ import { getProxyToken } from '../components/auth/authServiceV2'
 import { toast } from 'react-toastify'
 
 let chatbotInstance = axios.create()
-const apiBaseUrl = process.env.REACT_APP_API_URL
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
 
 function addProxyToken() {
   const proxyToken = getProxyToken()

@@ -9,8 +9,8 @@ const tokenKey = "token";
 const profileKey = "profile";
 export const orgKey = "organisation";
 export const orgListKey = "organisationList";
-const uiURL = process.env.REACT_APP_UI_URL;
-const proxyUrl = process.env.REACT_APP_PROXY_URL;
+const uiURL = process.env.NEXT_PUBLIC_UI_URL;
+const proxyUrl = process.env.NEXT_PUBLIC_PROXY_URL;
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -21,9 +21,9 @@ function isAdmin() {
 }
 
 function logout(redirectUrl = "/login") {
-  // const isDesktop = process.env.REACT_APP_IS_DESKTOP
+  // const isDesktop = process.env.NEXT_PUBLIC_IS_DESKTOP
   try {
-    if (getProxyToken()) {
+    if (false) {
       http
         .delete(proxyUrl + "/logout")
         .then(() => {
@@ -94,6 +94,7 @@ function getOrgList() {
 }
 
 function getProxyToken() {
+  return ""
   const tokenKey = "token";
   return window.localStorage.getItem(tokenKey) || "";
 }

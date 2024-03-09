@@ -9,7 +9,7 @@ export default function TinyEditor(props) {
   return (
     <>
       <Editor
-        apiKey={process.env.REACT_APP_TINYMCE_API_KEY}
+        apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
         onEditorChange={handleOnChange.bind(this)}
         onInit={(evt, editor) => {
           editorRef.current = editor

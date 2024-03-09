@@ -1,7 +1,7 @@
-const widgetURL = process.env.REACT_APP_STEVE_WIDGET_URL
-const projectId = process.env.REACT_APP_STEVE_PROJECT_ID
-const authkey = process.env.REACT_APP_STEVE_AUTHKEY
-const widgetId = process.env.REACT_APP_STEVE_WIDGET_ID
+const widgetURL = process.env.NEXT_PUBLIC_STEVE_WIDGET_URL
+const projectId = process.env.NEXT_PUBLIC_STEVE_PROJECT_ID
+const authkey = process.env.NEXT_PUBLIC_STEVE_AUTHKEY
+const widgetId = process.env.NEXT_PUBLIC_STEVE_WIDGET_ID
 const FIRST_JULY_2021 = new Date('2021-07-01').valueOf()
 
 export function moveToNextStep(currentStepNo) {

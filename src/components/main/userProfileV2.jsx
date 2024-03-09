@@ -305,7 +305,7 @@ class UserProfileV2 extends Component {
 
   openOptions(path) {
     const { match, handleOpenLink } = this.props
-    const currProductUrl = process.env.REACT_APP_UI_BASE_URL || process.env.REACT_APP_UI_URL
+    const currProductUrl = process.env.NEXT_PUBLIC_UI_BASE_URL || process.env.NEXT_PUBLIC_UI_URL
     const { orgId } = match.params
     if (orgId) {
       let url = `${currProductUrl}/orgs/${orgId}${path}?product=hitman`

@@ -54,7 +54,7 @@ const mapStateToProps = (state) => {
 }
 
 /** Desktop App Download URL */
-// const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
+// const DESKTOP_APP_DOWNLOAD_LINK = process.env.NEXT_PUBLIC_DESKTOP_APP_DOWNLOAD_LINK
 
 const mapDispatchToProps = (dispatch) => {
   return {

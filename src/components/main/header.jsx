@@ -19,11 +19,11 @@ const mapStateToProps = (state) => {
 }
 
 /* Internal Login Routes */
-const LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/login'
-const BROWSER_LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/browser-login'
+const LOGIN_ROUTE = process.env.NEXT_PUBLIC_UI_URL + '/login'
+const BROWSER_LOGIN_ROUTE = process.env.NEXT_PUBLIC_UI_URL + '/browser-login'
 
 /** Desktop App Download URL */
-const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
+const DESKTOP_APP_DOWNLOAD_LINK = process.env.NEXT_PUBLIC_DESKTOP_APP_DOWNLOAD_LINK
 
 const LoginButton = () => {
   return isElectron() ? (
@@ -250,11 +250,11 @@ class Header extends Component {
 
   render() {
     const productLinks = {
-      FEEDIO: process.env.REACT_APP_FEEDIO_UI_URL,
-      HITMAN: process.env.REACT_APP_UI_URL,
-      CONTENTBASE: process.env.REACT_APP_CONTENTBASE_URL,
-      EBL: process.env.REACT_APP_VIASOCKET_URL,
-      HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL
+      FEEDIO: process.env.NEXT_PUBLIC_FEEDIO_UI_URL,
+      HITMAN: process.env.NEXT_PUBLIC_UI_URL,
+      CONTENTBASE: process.env.NEXT_PUBLIC_CONTENTBASE_URL,
+      EBL: process.env.NEXT_PUBLIC_VIASOCKET_URL,
+      HTTPDUMP: process.env.NEXT_PUBLIC_HTTPDUMP_URL
     }
     return (
       <>

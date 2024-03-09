@@ -2,10 +2,10 @@ import React, { useEffect } from 'react'
 import { Modal } from 'react-bootstrap'
 import notLoggedIn from '../../assets/icons/notLoggedIn.svg'
 import './loginSignupModal.scss'
-const isDesktopApp = process.env.REACT_APP_IS_DESKTOP
+const isDesktopApp = process.env.NEXT_PUBLIC_IS_DESKTOP
 
 function LoginSignupModal(props) {
-  const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
+  const redirectionUrl = process.env.NEXT_PUBLIC_UI_URL + '/login'
 
   useEffect(() => {
     const ssoDiv = document.getElementById('sokt-sso-modal')
@@ -16,7 +16,7 @@ function LoginSignupModal(props) {
   }, [])
 
   function openLink() {
-    const url = `${process.env.REACT_APP_UI_URL}/browser-login`
+    const url = `${process.env.NEXT_PUBLIC_UI_URL}/browser-login`
     window.require('electron').shell.openExternal(url)
   }
 

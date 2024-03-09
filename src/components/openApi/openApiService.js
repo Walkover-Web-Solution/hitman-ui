@@ -3,7 +3,7 @@ import { getOrgId } from '../common/utility'
 
 function getApiUrl() {
   const orgId = getOrgId()
-  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+  return process.env.NEXT_PUBLIC_API_URL + `/orgs/${orgId}`
 }
 
 export function importApi(openApiObject, defaultView) {

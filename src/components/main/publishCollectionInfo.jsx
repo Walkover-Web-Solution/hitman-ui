@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-const defaultDomain = process.env.REACT_APP_PUBLIC_UI_URL
+const defaultDomain = process.env.NEXT_PUBLIC_PUBLIC_UI_URL
 
 class PublishCollectionInfo extends Component {
   constructor(props) {

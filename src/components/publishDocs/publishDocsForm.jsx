@@ -13,7 +13,7 @@ import { updateCollectionIdForPublish } from '../../store/clientData/clientDataA
 import { publishData } from '../modals/redux/modalsActions'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
-const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
+const MAPPING_DOMAIN = process.env.NEXT_PUBLIC_TECHDOC_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
   NULL_STRING: '',
@@ -406,7 +406,7 @@ class PublishDocForm extends Component {
 
   renderPublicUrl() {
     const isCollectionPublished = this.props.collections[this.props.selected_collection_id]?.isPublic
-    const url = process.env.REACT_APP_PUBLIC_UI_URL + '/p?collectionId=' + this.props.selected_collection_id
+    const url = process.env.NEXT_PUBLIC_PUBLIC_UI_URL + '/p?collectionId=' + this.props.selected_collection_id
     const isDisabled = this.IsParentPagePublishedInACollection(this.props.collections[this.props.selected_collection_id]?.rootParentId)
 
     if (!isCollectionPublished) return null

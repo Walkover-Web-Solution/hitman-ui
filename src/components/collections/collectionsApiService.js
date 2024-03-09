@@ -2,7 +2,7 @@ import http from '../../services/httpService'
 import httpService from '../../services/endpointHttpService'
 import { getOrgId } from '../common/utility'
 
-const apiUrl = process.env.REACT_APP_API_URL
+const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 function getApiEndpoint() {
   const orgId = getOrgId()
