@@ -10,7 +10,7 @@ function Footer({ theme }) {
     // <footer>
       <div className='footerWrapper my-4'>
         <p className='for-public-view' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <span className='poweredByText' style={{ color: 'grey' }}>
+          <span className='poweredByText' style={{ color: 'grey', marginLeft: '90px' }}>
             Powered by{' '}
           </span>
           <a
@@ -20,7 +20,7 @@ function Footer({ theme }) {
             href={domainSrc}
             style={{ backgroundColor: hexToRgb(theme, '1') }}
           >
-            <TECHDOCPUBLISH />
+            <TECHDOCPUBLISH className= 'techdoc-svg' />
           </a>
         </p>
       </div>
