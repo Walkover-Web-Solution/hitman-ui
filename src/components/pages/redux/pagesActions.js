@@ -41,17 +41,22 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
 export const updatePage = (history, editedPage) => {
   editedPage.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
+    debugger
     const dataToSend = {
       name: editedPage.name,
       urlName: editedPage.urlName,
+      redirectUrl: editedPage.redirectUrl,
       contents: editedPage?.contents || null,
       state: editedPage.state
     }
+    debugger
+    console.log(dataToSend, "data to send")
     // dispatch(updatePageRequest(dataToSend))
     pageApiService
       .updatePage(editedPage.id, dataToSend)
       .then((response) => {
         dispatch(onPageUpdated(response.data))
+        console.log(response.data,"response-data")
         return response.data
       })
       .catch((error) => {

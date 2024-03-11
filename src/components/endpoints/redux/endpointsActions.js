@@ -9,12 +9,13 @@ import { addChildInParent } from '../../pages/redux/pagesActions'
 import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
-export const formatResponseToSend = (response) => {
+export const  formatResponseToSend= (response) => {
   return {
     id: response.data.id,
     requestType: response.data.requestType,
     name: response.data.name,
     urlName: response.data.urlName,
+    redirectUrl: response.data.redirectUrl,
     parentId: response.data.parentId,
     child: [],
     state: response.data.state,

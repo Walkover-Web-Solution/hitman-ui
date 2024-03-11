@@ -16,14 +16,15 @@ class SubPageForm extends Form {
   constructor(props) {
     super(props)
     this.state = {
-      data: { name: '', urlName: '' },
+      data: { name: '', urlName: '', redirectUrl: '' },
       errors: {}
     }
     this.schema = {
       name: Joi.string().required().label('Page Name').max(20),
       urlName: Joi.string()
         .optional()
-        .allow(/[^a-zA-Z0-9\-_\.~]+/g)
+        .allow(/[^a-zA-Z0-9\-_\.~]+/g),
+      redirectUrl: Joi.string()
     }
   }
 
@@ -36,14 +37,15 @@ class SubPageForm extends Form {
     if (this.props.selectedPage || this.props.selectedEndpoint) {
       const name = subPage?.name || endpoint?.name
       const urlName = subPage?.urlName || endpoint?.urlName
-      data = { name, urlName }
+      const redirectUrl = subPage?.redirectUrl || endpoint?.redirectUrl
+      data = { name, urlName, redirectUrl }
     }
     this.setState({ data })
   }
 
   async doSubmit() {
     this.props.onHide()
-    let { name, urlName } = { ...this.state.data }
+    let { name, urlName, redirectUrl } = { ...this.state.data }
 
     if (this.props.title === 'Rename') {
       const subPage = this.props?.pages?.[this.props.selectedPage]
@@ -52,6 +54,7 @@ class SubPageForm extends Form {
         ...this.state.data,
         name,
         urlName,
+        redirectUrl,
         id: subPage?.id || endpoint?.id,
         state: subPage?.state || endpoint?.state
       }
@@ -92,6 +95,16 @@ class SubPageForm extends Form {
                     false,
                     false,
                     '*URL name can only contain alphanumeric values and reserved keywords like - _ . ~'
+                  )}
+                </div>
+                <div className='col-12'>
+                  {this.renderInput(
+                    'redirectUrl',
+                    'Redirect URL',
+                    'Redirect URL',
+                    true,
+                    false,
+                    false,
                   )}
                 </div>
               </div>
