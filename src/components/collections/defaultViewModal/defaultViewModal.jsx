@@ -12,6 +12,7 @@ import { addNewTab } from '../../tabs/redux/tabsActions'
 import { onEnter, toTitleCase } from '../../common/utility'
 import Form from '../../common/form'
 import { addPage } from '../../pages/redux/pagesActions'
+import { toast } from 'react-toastify'
 export const defaultViewTypes = {
   TESTING: 'testing',
   DOC: 'doc'
@@ -40,7 +41,7 @@ export class DefaultViewModal extends Form {
     }
 
     this.schema = {
-      name: Joi.string().required().label('Page name'),
+      name: Joi.string().min(1).max(20).required().label('Page name'),
       contents: Joi.string().allow(null, ''),
       state: Joi.valid(0, 1, 2, 3)
     }
@@ -59,6 +60,9 @@ export class DefaultViewModal extends Form {
   }
 
   async doSubmit() {
+    const valid = Joi.validate(this.state.data, this.schema, {
+      abortEarly: false
+    });
     if (!this.state.selectedCollection && this.props.addEntity) {
       this.setState({ versionRequired: true })
       return
@@ -68,6 +72,11 @@ export class DefaultViewModal extends Form {
     let { name } = { ...this.state?.data }
     name = toTitleCase(name)
     if (this.props.title === 'Add Parent Page' || this.props.addEntity) {
+      if(valid?.error){
+        const popup= valid?.error?.message?.trim().slice(33,valid?.error?.message?.length-1)
+        toast.error(popup)
+      }
+      else{
       const rootParentId = collections?.rootParentId
       const data = { ...this.state.data, name }
       const newPage = {
@@ -78,7 +87,14 @@ export class DefaultViewModal extends Form {
       }
       this.props.add_page(rootParentId, newPage)
     }
+    }
+  
     if (this.props?.title === 'Add Page' || this.props?.title === 'Add Sub Page' || this.props?.addEntity) {
+      if(valid?.error){
+        const popup= valid?.error?.message?.trim().slice(33,valid?.error?.message?.length-1)
+        toast.error(popup)
+      }
+      else{
       const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
       const ParentId = selectedId
       const data = { ...this.state.data }
@@ -91,7 +107,7 @@ export class DefaultViewModal extends Form {
       }
       this.props.add_page(ParentId, newPage)
     }
-  }
+      }}
   renderCollectionDetailsForm() {
     return (
       <div className='mt-5'>
