@@ -279,7 +279,10 @@ class DisplayEndpoint extends Component {
       theme: '',
       loader: false,
       saveLoader: false,
-      codeEditorVisibility: true,
+      codeEditorVisibility: false,
+      isMobileView: false,
+      width: 0, 
+      height: 0 ,
       showCookiesModal: false,
       preReqScriptError: '',
       postReqScriptError: '',
@@ -290,7 +293,8 @@ class DisplayEndpoint extends Component {
       docOptions: false,
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
-      endpointContentState: null
+      endpointContentState: null,
+      sidebarVisibility: true
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -298,6 +302,7 @@ class DisplayEndpoint extends Component {
   }
 
   async componentDidMount() {
+    this.isMobileView();
     if (this.props.endpointContent) {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
     }
@@ -309,7 +314,6 @@ class DisplayEndpoint extends Component {
         : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
-    if (window.innerWidth < '1400') this.setState({ codeEditorVisibility: false })
 
     const { endpointId } = this.props.match.params
     if (endpointId === 'new') this.setUnsavedTabDataInIDB()
@@ -345,7 +349,22 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  updateDimensions = () => {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+    this.isMobileView()
+  };
+
+  isMobileView = () => {
+    if(window.innerWidth < 800){
+      this.setState({isMobileView : true, codeEditorVisibility: true})
+    }
+    else{
+      this.setState({isMobileView : false, codeEditorVisibility: false})
+    }
+  };
+
   componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
@@ -353,6 +372,10 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    window.addEventListener('resize', this.updateDimensions);
+    if (prevState.isMobileView !== this.state.isMobileView) {
+      this.isMobileView()
+    }
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.extractEndpointName()
     }
@@ -2491,6 +2514,11 @@ class DisplayEndpoint extends Component {
     const { docOptions } = this.state
     this.setState({ docOptions: !docOptions })
   }
+  handleSideBarVisibility() {
+    console.log("handlesidebar visibility");
+    this.setState({sidebarVisibility: !this.state.sidebarVisibility})
+    console.log(this.state.sidebarVisibility, "sidebar visibility");
+  }
 
   renderSaveButton() {
     return (
@@ -2583,7 +2611,7 @@ class DisplayEndpoint extends Component {
           onClick={this.closeChatBotModal}
           className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}
         >
-          <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
+          <div className={`innerContainer flex-lg-row flex-column ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
             <div
               className={`hm-endpoint-container mid-part endpoint-container ${
                 this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
@@ -2634,7 +2662,10 @@ class DisplayEndpoint extends Component {
                   {this.isNotDashboardOrDocView() && (
                     <div className='endpoint-name-container'>
                       {this.isNotDashboardOrDocView() && (
+                        <>
+                       
                         <h1 className='endpoint-title'>{this.props?.endpointContent?.data?.name || ''}</h1>
+                        </>
                       )}
                     </div>
                   )}
@@ -2852,8 +2883,9 @@ class DisplayEndpoint extends Component {
                 )}
               </div>
               {/* <ApiDocReview {...this.props} /> */}
-              {isOnPublishedPage() && <Footer />}
+              {/* <span className=' d-lg-block d-md-none'>{isOnPublishedPage() && <Footer />}</span> */}
             </div>
+
             {this.isDashboardAndTestingView() ? (
               <div className='response-container-main position-relative'>
                 <div className='d-flex response-switcher'>
@@ -2865,19 +2897,20 @@ class DisplayEndpoint extends Component {
             ) : null}
             {this.isNotDashboardOrDocView() && this.props?.endpointContent?.harObject && isOnPublishedPage() && (
               <CodeTemplate
-                show
-                onHide={() => {
-                  this.setState({ showCodeTemplate: false })
-                }}
-                editorToggle={() => {
-                  this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
-                }}
-                harObject={this.props?.endpointContent?.harObject}
-                title='Generate Code Snippets'
-                publicCollectionTheme={this.props?.publicCollectionTheme}
+              show
+              onHide={() => {
+                this.setState({ showCodeTemplate: false })
+              }}
+              editorToggle={() => {
+                this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
+              }}
+              harObject={this.props?.endpointContent?.harObject}
+              title='Generate Code Snippets'
+              publicCollectionTheme={this.props?.publicCollectionTheme}
               />
-            )}
+              )}
           </div>
+          <span className='me-auto ms-auto'>{isOnPublishedPage() && <Footer/>}</span>
         </div>
         {this.isDashboardAndTestingView() && (
           <div>

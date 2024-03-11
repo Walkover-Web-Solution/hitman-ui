@@ -27,6 +27,7 @@ import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
 // import { ReactComponent as DownloadIcon } from '../../assets/icons/download.svg'
 import { ReactComponent as Users } from '../../assets/icons/users.svg'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
+import CloseIcon from '../../assets/icons/x.svg'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
@@ -646,6 +647,11 @@ class SideBarV2 extends Component {
     )
   }
 
+  toggleCodeEditor() {
+    console.log("inside toggle code edito");
+    this.props.sidebarToggle()
+  }
+
   renderCollectionName() {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
@@ -673,6 +679,9 @@ class SideBarV2 extends Component {
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documenation</span>
         </h4>
+        <button className='toggleButton justify-content-start' onClick={() => { this.toggleCodeEditor() }}>
+        <img src={CloseIcon} alt='' />
+      </button>
       </div>
     )
   }
@@ -805,7 +814,10 @@ class SideBarV2 extends Component {
   }
 
   render() {
+    const { sidebarVisibility} = this.state
     return (
+      <>
+      <div className={sidebarVisibility ? 'sidebar' : 'sidebar hideCodeEditor' }>
       <nav className={this.getSidebarInteractionClass()}>
         {this.showAddEntitySelectionModal()}
         {this.showAddEntityModal()}
@@ -823,6 +835,8 @@ class SideBarV2 extends Component {
           {this.renderDashboardSidebar()}
         </div>
       </nav>
+      </div>
+      </>
     )
   }
 }

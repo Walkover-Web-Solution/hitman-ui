@@ -19,6 +19,7 @@ import SplitPane from 'react-split-pane'
 import { addCollectionAndPages } from '../redux/generalActions'
 import generalApiService from '../../services/generalApiService'
 import { useQueryClient, useMutation } from 'react-query'
+import { MdDehaze, MdClose } from "react-icons/md";
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -87,11 +88,17 @@ class PublicEndpoint extends Component {
       feedback: {},
       endpoint: {}
     },
+    isMobileView: false,
+    width: 0,
+    height: 0,
+    sidebarVisibility: false,
     openReviewModal: false,
-    idToRenderState : null
+    idToRenderState : null,
+    toggleSideBar: false,
   }
 
   async componentDidMount() {
+    this.isMobileView();
     // [info] => part 1 scroll options
     window.addEventListener('scroll', () => {
       let sticky = false
@@ -153,7 +160,12 @@ class PublicEndpoint extends Component {
     this.setDataToReactQueryAndSessionStorage(response)
   }
 
-  async componentDidUpdate() {
+  async componentDidUpdate(prevState) {
+    // window.addEventListener('resize', this.updateDimensions);
+    // if (prevState.isMobileView !== this.state.isMobileView) {
+    //   this.isMobileView()
+    // }
+
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     // before this display page or display endpoint gets called and data gets rendered
     if (!this.props.keyExistInReactQuery(currentIdToShow)) {
@@ -164,6 +176,10 @@ class PublicEndpoint extends Component {
         // this.props.mutationFn.mutate({ type: 'pageContent', id: currentIdToShow, content: response })
       }
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
   }
 
   setDataToReactQueryAndSessionStorage(response) {
@@ -248,6 +264,19 @@ class PublicEndpoint extends Component {
   }
 
   toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal })
+  handleSidebarCollapse() {
+    console.log("inside handle sidebar collapseeee");
+    this.setState({ sidebarVisibility: !this.state.sidebarVisibility })
+  }
+
+  isMobileView = () => {
+    if (window.innerWidth < 800) {
+      this.setState({ isMobileView: true, sidebarVisibility: true })
+    }
+    else {
+      this.setState({ isMobileView: false, sidebarVisibility: false })
+    }
+  };
 
   reviewModal() {
     return (
@@ -349,8 +378,24 @@ class PublicEndpoint extends Component {
     }
 
     const { isCTAandLinksPresent } = this.getCTALinks()
+
+    // class Toggle extends React.Component {
+    //   constructor(props) {
+    //     super(props);
+    //     this.state = {isToggleOn: true};
+    //     this.handleClick = this.handleClick.bind(this);
+    //   }
+
+    // handleClick() {
+    //   this.setState(prevState => ({
+    //     isToggleOn: !prevState.isToggleOn
+    //   }));
+    // }
+    const menuOpen = false;
     return (
       <>
+             {/* <button onClick={toggleShow}>{buttonText}</button> */}
+             
         {/* [info] part 1 style component */}
         <Style>
           {`
@@ -367,69 +412,74 @@ class PublicEndpoint extends Component {
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
+              <span className={'hamberger-icon' + (this.state.toggleSideBar ? ' close-icon' : '')} onClick={() => this.setState({ toggleSideBar: !this.state.toggleSideBar })}>
+                { !this.state.toggleSideBar && <MdDehaze className='fs-4 fw-bold' /> }
+                { this.state.toggleSideBar && <MdClose /> }
+
+              </span>
           {/* [info] part 3 */}
-          <SplitPane split='vertical' className='split-sidebar'>
-            {/* [info] part 3 subpart 1 sidebar data left content */}
-            <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
-              {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
-            </div>
-            {/*  [info] part 3 subpart 1 sidebar data right content */}
-            <div
-              className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
-              style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}
-            >
-              {idToRender ? (
-                <div
-                  onScroll={(e) => {
-                    if (e.target.scrollTop > 20) {
-                      this.setState({ isSticky: true })
-                    } else {
-                      this.setState({ isSticky: false })
-                    }
-                  }}
-                  className='display-component'
-                >
-                  {type == 4 && (
-                    <DisplayEndpoint
-                      {...this.props}
-                      fetch_entity_name={this.fetchEntityName.bind(this)}
-                      publicCollectionTheme={this.state.collectionTheme}
-                    />
-                  )}
+            <SplitPane split='vertical' className={'split-sidebar-public' + (this.state.toggleSideBar ? ' open' : '') }>
+              {/* [info] part 3 subpart 1 sidebar data left content */}
+              <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
+                {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
+              </div>
+              {/*  [info] part 3 subpart 1 sidebar data right content */}
+              <div
+                className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
+                style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}
+              >
+                {idToRender ? (
+                  <div
+                    onScroll={(e) => {
+                      if (e.target.scrollTop > 20) {
+                        this.setState({ isSticky: true })
+                      } else {
+                        this.setState({ isSticky: false })
+                      }
+                    }}
+                    className='display-component'
+                  >
+                    {type == 4 && (
+                      <DisplayEndpoint
+                        {...this.props}
+                        fetch_entity_name={this.fetchEntityName.bind(this)}
+                        publicCollectionTheme={this.state.collectionTheme}
+                      />
+                    )}
 
-                  {(type == 1 || type == 3) && (
-                    <DisplayPage
-                      {...this.props}
-                      fetch_entity_name={this.fetchEntityName.bind(this)}
-                      publicCollectionTheme={this.state.collectionTheme}
-                    />
-                  )}
+                    {(type == 1 || type == 3) && (
+                      <DisplayPage
+                        {...this.props}
+                        fetch_entity_name={this.fetchEntityName.bind(this)}
+                        publicCollectionTheme={this.state.collectionTheme}
+                      />
+                    )}
 
-                  {!type && (
-                    <ERROR_404_PUBLISHED_PAGE
-                      error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
-                    />
-                  )}
+                    {!type && (
+                      <ERROR_404_PUBLISHED_PAGE
+                        error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
+                      />
+                    )}
 
-                  {this.displayCTAandLink()}
-                  {/* <div className='d-flex flex-row justify-content-start'>
+                    {this.displayCTAandLink()}
+                    {/* <div className='d-flex flex-row justify-content-start'>
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
                     </div> */}
-                  {this.state.openReviewModal && this.reviewModal()}
-                </div>
-              ) : (
-                <>
-                  <div className='custom-loading-container'>
-                    <div className='loading-content'>
-                      <button className='spinner-border' />
-                      <p className='mt-3'>Loading</p>
-                    </div>
+                    {this.state.openReviewModal && this.reviewModal()}
                   </div>
-                </>
-              )}
-            </div>
-          </SplitPane>
+                ) : (
+                  <>
+                    <div className='custom-loading-container'>
+                      <div className='loading-content'>
+                        <button className='spinner-border' />
+                        <p className='mt-3'>Loading</p>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </SplitPane>
         </main>
       </>
     )
