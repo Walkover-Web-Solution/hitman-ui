@@ -146,7 +146,7 @@ try {
                   >
                     Edit
                   </button>
-                  {editModalVisible && editUserIndex !== null && editUserIndex === user.email && (
+                  {editUserIndex !== null && editUserIndex === user.email && (
                   <>
                   <button
                     className='editButton ml-2 mr-2'
