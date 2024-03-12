@@ -88,17 +88,12 @@ class PublicEndpoint extends Component {
       feedback: {},
       endpoint: {}
     },
-    isMobileView: false,
-    width: 0,
-    height: 0,
-    sidebarVisibility: false,
     openReviewModal: false,
     idToRenderState : null,
     toggleSideBar: false,
   }
 
   async componentDidMount() {
-    this.isMobileView();
     // [info] => part 1 scroll options
     window.addEventListener('scroll', () => {
       let sticky = false
@@ -161,10 +156,6 @@ class PublicEndpoint extends Component {
   }
 
   async componentDidUpdate(prevState) {
-    // window.addEventListener('resize', this.updateDimensions);
-    // if (prevState.isMobileView !== this.state.isMobileView) {
-    //   this.isMobileView()
-    // }
 
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     // before this display page or display endpoint gets called and data gets rendered
@@ -178,9 +169,6 @@ class PublicEndpoint extends Component {
     }
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateDimensions);
-  }
 
   setDataToReactQueryAndSessionStorage(response) {
     if (response) {
@@ -264,19 +252,7 @@ class PublicEndpoint extends Component {
   }
 
   toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal })
-  handleSidebarCollapse() {
-    console.log("inside handle sidebar collapseeee");
-    this.setState({ sidebarVisibility: !this.state.sidebarVisibility })
-  }
 
-  isMobileView = () => {
-    if (window.innerWidth < 800) {
-      this.setState({ isMobileView: true, sidebarVisibility: true })
-    }
-    else {
-      this.setState({ isMobileView: false, sidebarVisibility: false })
-    }
-  };
 
   reviewModal() {
     return (
@@ -357,6 +333,10 @@ class PublicEndpoint extends Component {
     this.setDislike()
   }
 
+  handleShowSideBar(){
+    this.setState({ toggleSideBar: !this.state.toggleSideBar })
+  }
+
   render() {
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState ;
     let type = this.props?.pages?.[idToRender]?.type
@@ -412,9 +392,9 @@ class PublicEndpoint extends Component {
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
-              <span className={'hamberger-icon' + (this.state.toggleSideBar ? ' close-icon' : '')} onClick={() => this.setState({ toggleSideBar: !this.state.toggleSideBar })}>
-                { !this.state.toggleSideBar && <MdDehaze className='fs-4 fw-bold' /> }
-                { this.state.toggleSideBar && <MdClose /> }
+              <span className={'hamberger-icon' + (this.state.toggleSideBar ? ' close-icon' : '')}>
+                { !this.state.toggleSideBar && <MdDehaze className='fs-4 fw-bold' onClick={()=>{this.handleShowSideBar()}} /> }
+                { this.state.toggleSideBar && <MdClose onClick={()=>{this.handleShowSideBar()}} /> }
 
               </span>
           {/* [info] part 3 */}

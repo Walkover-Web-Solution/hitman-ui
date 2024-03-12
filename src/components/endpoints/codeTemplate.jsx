@@ -7,9 +7,7 @@ import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ReactComponent as CopyIcon } from '../../assets/icons/copyIcon.svg'
-import CloseIcon from '../../assets/icons/x.svg'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
-import Footer from '../main/Footer'
 const HTTPSnippet = require('httpsnippet')
 
 class CodeTemplate extends Component {
@@ -67,18 +65,12 @@ class CodeTemplate extends Component {
     }
   }
 
-  toggleCodeEditor() {
-    this.props.editorToggle()
-  }
+  // toggleCodeEditor() {
+  //   this.props.editorToggle()
+  // }
 
   render() {
-    const { codeEditorVisibility, theme} = this.state
     return (
-      // <div className={codeEditorVisibility ? 'pubCodeWrapper' : 'pubCodeWrapper closeEditor'}>
-      // <button className='toggleButton justify-content-start' onClick={() => { this.toggleCodeEditor() }}>
-      //   Sample Code
-      //   <img src={CloseIcon} alt='' />
-      // </button>
       <div>
       <div className='pubCodeWrapper '>
         <div className='inner-editor'>
@@ -161,7 +153,6 @@ class CodeTemplate extends Component {
           </Col>
         </div>
       </div>
-      {/* <Footer /> */}
       </div>
     )
   }

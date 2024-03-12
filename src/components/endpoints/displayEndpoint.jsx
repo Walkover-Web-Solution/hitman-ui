@@ -281,8 +281,8 @@ class DisplayEndpoint extends Component {
       saveLoader: false,
       codeEditorVisibility: false,
       isMobileView: false,
-      width: 0, 
-      height: 0 ,
+      publicEndpointWidth: 0, 
+      publicEndpointHeight: 0 ,
       showCookiesModal: false,
       preReqScriptError: '',
       postReqScriptError: '',
@@ -294,7 +294,6 @@ class DisplayEndpoint extends Component {
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
       endpointContentState: null,
-      sidebarVisibility: true
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -350,7 +349,7 @@ class DisplayEndpoint extends Component {
   }
 
   updateDimensions = () => {
-    this.setState({ width: window.innerWidth, height: window.innerHeight });
+    this.setState({ publicEndpointWidth: window.innerWidth, publicEndpointHeight: window.innerHeight });
     this.isMobileView()
   };
 
@@ -2513,11 +2512,6 @@ class DisplayEndpoint extends Component {
   showDocOptions() {
     const { docOptions } = this.state
     this.setState({ docOptions: !docOptions })
-  }
-  handleSideBarVisibility() {
-    console.log("handlesidebar visibility");
-    this.setState({sidebarVisibility: !this.state.sidebarVisibility})
-    console.log(this.state.sidebarVisibility, "sidebar visibility");
   }
 
   renderSaveButton() {

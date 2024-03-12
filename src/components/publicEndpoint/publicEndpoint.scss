@@ -722,11 +722,6 @@ button.toggleButton {
     button {
       height: 38px;
     }
-    @media only screen and (max-width: 200px){
-      position: relative !important;
-      background-color: #1d9ee2;
-      width: 100% !important;
-     }
   }
   .inner-editor {
     height: 100%;
