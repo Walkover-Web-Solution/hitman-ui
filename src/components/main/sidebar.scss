@@ -60,6 +60,12 @@ body .sidebar {
     border-bottom: 1px solid #ebe9e8;
     > button {
       height: 2rem;
+      &.inc-zindex {
+        z-index: 2000;
+      }
+      &.dec-zindex {
+        z-index: 1;
+      }
     }
     .inner-container {
       max-width: 70%;

@@ -19,6 +19,7 @@ import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.
 import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 import endpointService from './endpointService'
+import OutsideClickHandler from 'react-outside-click-handler';
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -64,8 +65,9 @@ class Endpoints extends Component {
         edit: false,
         share: false,
         delete: false,
-      }
+      },
     }
+    this.dropdownRef = React.createRef();
   }
 
   componentDidMount() {
@@ -91,7 +93,7 @@ class Endpoints extends Component {
 
   openEditEndpointForm(selectedEndpoint) {
     this.setState({
-      showEndpointForm: { edit: true},
+      showEndpointForm: { edit: true },
       selectedEndpoint: {
         ...this.props.endpoints[selectedEndpoint]
       }
@@ -104,7 +106,7 @@ class Endpoints extends Component {
       selectedEndpoint: { ...this.props.endpoints[endpointId] }
     })
   }
-  
+
   closeDeleteEndpointModal() {
     this.setState({ showEndpointForm: { delete: false } })
   }
@@ -235,8 +237,8 @@ class Endpoints extends Component {
   displayDeleteOpt(endpointId) {
     return (
       <div className='dropdown-item' onClick={() => this.openDeleteEndpointModal(endpointId)}>
-      <DeleteIcon /> Delete
-    </div>
+        <DeleteIcon /> Delete
+      </div>
     )
   }
 
@@ -287,24 +289,34 @@ class Endpoints extends Component {
     )
   }
 
+  handleDropDownClick(event) {
+    event.stopPropagation()
+    this.dropdownRef.current.classList.add('show');
+  }
+
   displayEndpointOptions(endpointId) {
     return (
-      <div className='sidebar-item-action'>
+      <div onClick={(e) => this.handleDropDownClick(e)} className='sidebar-item-action'>
         <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
           <i className='uil uil-ellipsis-v' />
         </div>
 
-        <div className='dropdown-menu dropdown-menu-right'>
-          <div className='dropdown-item' onClick={() => this.openEditEndpointForm(endpointId)}>
-            <RenamedItem /> Rename
+        <OutsideClickHandler onOutsideClick={() => {
+          this.dropdownRef.current.classList.remove('show');
+        }}>
+          <div style={{zIndex:50000000}} ref={this.dropdownRef} className={`dropdown-menu-right dropdown-menu`}>
+            <div className='dropdown-item' onClick={() => this.openEditEndpointForm(endpointId)}>
+              <RenamedItem /> Rename
+            </div>
+            {this.displayDeleteOpt(endpointId)}
+            {this.displayDuplicateOpt(endpointId)}
+            {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
           </div>
-          {this.displayDeleteOpt(endpointId)}
-          {this.displayDuplicateOpt(endpointId)}
-          {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
-        </div>
+        </OutsideClickHandler>
       </div>
     )
   }
+
   showEditEndpointModal() {
     return (
       this.state.showEndpointForm.edit && (

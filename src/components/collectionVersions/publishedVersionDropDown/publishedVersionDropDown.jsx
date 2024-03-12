@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Dropdown, DropdownButton } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
+import OutsideClickHandler from 'react-outside-click-handler';
 
 export default function PublishedVersionDropDown(props) {
   const { pages } = useSelector((state) => {
@@ -9,11 +10,12 @@ export default function PublishedVersionDropDown(props) {
     }
   })
 
-  const [show, setShow] = useState([])
+  const [showVersionList, setShowVersionList] = useState([])
+  const [versionDropDownState, setVersionDropDownState] = useState(false)
 
   useEffect(() => {
     const data = showDropDown()
-    setShow(data)
+    setShowVersionList(data)
   }, [props?.rootParentId])
 
   function checkIfVersionHasPublishedChild(versionId) {
@@ -34,27 +36,37 @@ export default function PublishedVersionDropDown(props) {
       if (pages?.[versionId] && pages?.[versionId]?.isPublished && value) {
         return versionId
       }
-      else if(pages?.[versionId]?.state === 1){
-        return  versionId
+      else if (pages?.[versionId]?.state === 1) {
+        return versionId
       }
     })
   }
 
-  if (show?.length === 0) return null
+  const handleDropdownBtnClick = (e) => {
+    e.stopPropagation()
+    setVersionDropDownState(!versionDropDownState)
+  }
+
+  if (showVersionList?.length === 0) return null
 
   return (
-    <DropdownButton
-      key={props?.rootParentId}
-      className=''
-      id={`dropdown-basic-button-${props?.rootParentId}`}
-      onClick={(e) => e.stopPropagation()}
-      title={pages?.[props?.rootParentId]?.child?.length === 1 ? props.defaultVersionName : props.selectedVersionName}
-    >
-      {show.map((childId, index) => (
-        <Dropdown.Item key={index} onClick={() => props.handleDropdownItemClick(childId, props?.rootParentId)}>
-          {pages[childId]?.name}
-        </Dropdown.Item>
-      ))}
-    </DropdownButton>
+    <OutsideClickHandler onOutsideClick={() => {
+      setVersionDropDownState(false)
+    }}>
+      <DropdownButton
+        key={props?.rootParentId}
+        className=''
+        id={`dropdown-basic-button-${props?.rootParentId}`}
+        onClick={(e) => handleDropdownBtnClick(e)}
+        title={pages?.[props?.rootParentId]?.child?.length === 1 ? props.defaultVersionName : props.selectedVersionName}
+        show={versionDropDownState}
+      >
+        {showVersionList.map((childId, index) => (
+          <Dropdown.Item key={index} onClick={() => props.handleDropdownItemClick(childId, props?.rootParentId)}>
+            {pages[childId]?.name}
+          </Dropdown.Item>
+        ))}
+      </DropdownButton>
+    </OutsideClickHandler>
   )
 }
