@@ -70,9 +70,9 @@ class CodeTemplate extends Component {
   // }
 
   render() {
-    const { theme } = this.state
     return (
-      <div className='pubCodeWrapper'>
+      <div>
+      <div className='pubCodeWrapper '>
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
             <div className='code-heading mb-3 d-flex justify-content-center'>
@@ -152,6 +152,7 @@ class CodeTemplate extends Component {
             </div>
           </Col>
         </div>
+      </div>
       </div>
     )
   }
