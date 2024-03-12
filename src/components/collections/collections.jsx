@@ -29,6 +29,7 @@ import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTags
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ImportVersion} from '../../assets/icons/importVersionSign.svg'
 // import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
+import OutsideClickHandler from 'react-outside-click-handler';
 import { store } from '../../store/store'
 
 const EMPTY_STRING = ''
@@ -65,7 +66,8 @@ class CollectionsComponent extends Component {
       defaultPublicLogo: hitmanLogo,
       publicLogoError: false,
       showRemoveModal: false,
-      selectedCollectionIds: []
+      selectedCollectionIds: [],
+      isDropdownOpenId: false,
     }
     this.names = {}
   }
@@ -335,6 +337,11 @@ class CollectionsComponent extends Component {
     )
   }
 
+  handleDropdownClick(e, collectionId) {
+    e.stopPropagation()
+    this.setState({ isDropdownOpenId: collectionId });
+  }
+
   renderBody(collectionId, collectionState) {
     const expanded = this.props.clientData?.[collectionId]?.isExpanded ?? isOnPublishedPage()
     var isOnDashboardPage = isDashboardRoute(this.props)
@@ -342,7 +349,7 @@ class CollectionsComponent extends Component {
     return (
       <React.Fragment key={collectionId}>
         <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
-          <button tabIndex={-1} variant='default' className={expanded ? 'expanded' : ''}>
+          <button tabIndex={-1} variant='default' className={`${expanded ? 'expanded' : ''} ${this.state.isDropdownOpenId === collectionId ? 'inc-zindex' : 'dec-zindex'} `}>
             <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
@@ -360,40 +367,42 @@ class CollectionsComponent extends Component {
               </div>
             </div>
             {
-              //  [info] options not to show on publihsed page
               isOnDashboardPage && (
                 <div className='d-flex align-items-center'>
                   <div className='sidebar-item-action d-flex align-items-center'>
                     <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
                       <Plus />
                     </div>
-                    <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <div onClick={(e) => this.handleDropdownClick(e, collectionId)} className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                       <i className='uil uil-ellipsis-v' />
                     </div>
-                    <div className='dropdown-menu dropdown-menu-right'>
-                      {!this.props.collections[collectionId]?.importedFromMarketPlace && (
-                        <>
-                          <div className='dropdown-item' onClick={() => this.openEditCollectionForm(collectionId)}>
-                            <EditIcon /> Rename
-                          </div>
-                          <div
-                            className='dropdown-item'
-                            onClick={() => {
-                              this.openDeleteCollectionModal(collectionId)
-                            }}
-                          >
-                            <DeleteIcon /> Delete
-                          </div>
-                          {/* <div className='dropdown-item' onClick={() => this.handleDuplicateCollection(this.props.collections[collectionId])}>
+                    <OutsideClickHandler onOutsideClick={() => {
+                      this.setState({ isDropdownOpenId: null })
+                    }}>
+                      <div className={`dropdown-menu dropdown-menu-right ${this.state.isDropdownOpenId === collectionId ? 'show' : ''}`}>
+                        {!this.props.collections[collectionId]?.importedFromMarketPlace && (
+                          <>
+                            <div className='dropdown-item' onClick={() => this.openEditCollectionForm(collectionId)}>
+                              <EditIcon /> Rename
+                            </div>
+                            <div
+                              className='dropdown-item'
+                              onClick={() => {
+                                this.openDeleteCollectionModal(collectionId)
+                              }}
+                            >
+                              <DeleteIcon /> Delete
+                            </div>
+                            {/* <div className='dropdown-item' onClick={() => this.handleDuplicateCollection(this.props.collections[collectionId])}>
                          <Duplicate/> {' '}
                         Duplicate
                       </div> */}
-                          {this.props.collections[collectionId].isPublic && (
-                            <div className='dropdown-item' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
-                              <GoToDocs /> Go to API Documentation
-                            </div>
-                          )}
-                          {/* {
+                            {this.props.collections[collectionId].isPublic && (
+                              <div className='dropdown-item' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
+                                <GoToDocs /> Go to API Documentation
+                              </div>
+                            )}
+                            {/* {
                   isAdmin()
                     ? (
                       <div
@@ -412,28 +421,28 @@ class CollectionsComponent extends Component {
                     : null
                 } */}
 
+                            <div
+                              className='dropdown-item'
+                              onClick={() => {
+                                this.TagManagerModal(collectionId)
+                              }}
+                            >
+                              <AddGoogleTag /> Add Google Tag Manager
+                            </div>
+                          </>
+                        )}
+                        {this.props.collections[collectionId]?.importedFromMarketPlace && (
                           <div
-                            className='dropdown-item'
+                            className='dropdown-item d-flex align-items-center justify-content-between'
                             onClick={() => {
-                              this.TagManagerModal(collectionId)
+                              this.removeImporedPublicCollection(collectionId)
                             }}
                           >
-                            <AddGoogleTag /> Add Google Tag Manager
+                            <div className='marketplace-icon mr-2'> M </div>
+                            <div> Remove Public Collection </div>
                           </div>
-                        </>
-                      )}
-                      {this.props.collections[collectionId]?.importedFromMarketPlace && (
-                        <div
-                          className='dropdown-item d-flex align-items-center justify-content-between'
-                          onClick={() => {
-                            this.removeImporedPublicCollection(collectionId)
-                          }}
-                        >
-                          <div className='marketplace-icon mr-2'> M </div>
-                          <div> Remove Public Collection </div>
-                        </div>
-                      )}
-                      {/* <div
+                        )}
+                        {/* <div
                     className="dropdown-item"
                     onClick={() => {
                       this.navigateToMembersModule(collectionId);
@@ -442,7 +451,8 @@ class CollectionsComponent extends Component {
                     <ShareBold/>
                     Share
                   </div> */}
-                    </div>
+                      </div>
+                    </OutsideClickHandler>
                   </div>
                   <div className='theme-color d-flex transition counts ml-1 f-12'>
                     {this.props.collections[collectionId]?.importedFromMarketPlace ? (
@@ -475,7 +485,7 @@ class CollectionsComponent extends Component {
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
-                    // isPublishData={false}
+                  // isPublishData={false}
                   />
                 }
               </Card.Body>

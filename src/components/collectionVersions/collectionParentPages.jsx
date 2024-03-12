@@ -34,6 +34,7 @@ import SelectVersion from './selectVersion/selectVersion'
 import CustomModal from '../customModal/customModal'
 import { MdOutlineSettings } from 'react-icons/md'
 import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
+import OutsideClickHandler from 'react-outside-click-handler';
 
 const mapStateToProps = (state) => {
   return {
@@ -95,11 +96,13 @@ class CollectionParentPages extends Component {
       clickedList: [],
       selectedCheckbox: null,
       isListVisible: false,
-      publishVersion: ''
+      publishVersion: '',
+      dropdownState: false,
     }
 
     this.filterFlag = false
     this.eventkey = {}
+    this.dropdownRef = React.createRef();
   }
 
   componentDidMount() {
@@ -224,7 +227,7 @@ class CollectionParentPages extends Component {
 
   openShareParentPageForm(pageId) {
     this.setState({
-      showPageForm : {share: true},
+      showPageForm: { share: true },
       pageFormName: 'Share Parent Page',
       selectedPage: { ...this.props.pages[pageId] }
     })
@@ -294,13 +297,13 @@ class CollectionParentPages extends Component {
 
   openEditPageForm(pageId) {
     this.setState({
-      showPageForm : { edit: true},
+      showPageForm: { edit: true },
       selectedPage: pageId
     })
   }
 
   closePageForm() {
-    this.setState({ showPageForm: {share: false, addEndpoint: false, addPage: false} })
+    this.setState({ showPageForm: { share: false, addEndpoint: false, addPage: false } })
   }
 
   closeVersionForm() {
@@ -422,15 +425,24 @@ class CollectionParentPages extends Component {
     }
   }
 
+  handleDropdownBtnClick(e) {
+    e.stopPropagation();
+    this.setState({ dropdownState: !this.state.dropdownState })
+  }
+
   versionDropDown(rootId) {
     return (
       <DropdownButton
         className=''
         id='dropdown-basic-button'
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => this.handleDropdownBtnClick(e)}
         title={
           this.props.pages?.[this.props.rootParentId]?.child?.length === 1 ? this.state.defaultVersionName : this.state.selectedVersionName
         }
+        show={this.state.dropdownState}
+        onBlur={() => {
+          this.setState({ dropdownState: false })
+        }}
       >
         {this.props.pages[rootId].child.map((childId, index) => (
           <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
@@ -439,6 +451,11 @@ class CollectionParentPages extends Component {
         ))}
       </DropdownButton>
     )
+  }
+
+  handleDropDownClick(event) {
+    event.stopPropagation()
+    this.dropdownRef.current.classList.add('show');
   }
 
   renderBody(pageId, index) {
@@ -497,33 +514,37 @@ class CollectionParentPages extends Component {
                     >
                       <Plus />
                     </div>
-                    <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <div onClick={(e) => this.handleDropDownClick(e)} className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                       <i className='uil uil-ellipsis-v' />
                     </div>
-                    <div className='dropdown-menu dropdown-menu-right'>
-                      <div className='dropdown-item' onClick={() => this.openEditPageForm(pageId)}>
-                        <Rename /> Rename
+                    <OutsideClickHandler onOutsideClick={() => {
+                      this.dropdownRef.current.classList.remove('show');
+                    }}>
+                      <div ref={this.dropdownRef} className={`dropdown-menu dropdown-menu-right`}>
+                        <div className='dropdown-item' onClick={() => this.openEditPageForm(pageId)}>
+                          <Rename /> Rename
+                        </div>
+                        <div
+                          className='dropdown-item'
+                          onClick={() => {
+                            this.openDeletePageModal(pageId)
+                          }}
+                        >
+                          <DeleteIcon /> Delete
+                        </div>
+                        <div
+                          className='dropdown-item'
+                          onClick={() => {
+                            this.manageVersion(true)
+                          }}
+                        >
+                          <MdOutlineSettings size={20} color='#f2994a' />
+                          <span data-toggle='modal' data-target='#exampleModalCenter'>
+                            Manage Version
+                          </span>
+                        </div>
                       </div>
-                      <div
-                        className='dropdown-item'
-                        onClick={() => {
-                          this.openDeletePageModal(pageId)
-                        }}
-                      >
-                        <DeleteIcon /> Delete
-                      </div>
-                      <div
-                        className='dropdown-item'
-                        onClick={() => {
-                          this.manageVersion(true)
-                        }}
-                      >
-                        <MdOutlineSettings size={20} color='#f2994a' />
-                        <span data-toggle='modal' data-target='#exampleModalCenter'>
-                          Manage Version
-                        </span>
-                      </div>
-                    </div>
+                    </OutsideClickHandler>
                   </div>
                 ) : null
               }
