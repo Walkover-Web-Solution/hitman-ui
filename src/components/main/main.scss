@@ -1681,21 +1681,6 @@ table#custom-generic-table tbody input[value='true'] + span.checkmark {
 .hm-public-table table tbody tr td .customCheckbox {
   padding-left: 0;
 }
-.footerWrapper{
-  width: 75% !important;
-  @media screen and (max-width:768px) {
-    width: 100% !important;
-  }
-}
-
-.footerWrapper p {
-  margin: 0;
-  padding: 21px;
-  font-size: 14px;
-  color: #333333;
-  text-align: right;
- 
-}
 
 .footerWrapper {
   border-top: 0;
@@ -1706,11 +1691,19 @@ table#custom-generic-table tbody input[value='true'] + span.checkmark {
     align-items: center;
   
   }
-}
-
-.footerWrapper p {
-  a {
-    color: #cc0000;
+  p {
+    margin: 0;
+    padding: 21px;
+    font-size: 14px;
+    color: #333333;
+    text-align: right;
+    a {
+      color: #cc0000;
+    }
+  }
+  width: 75% !important;
+  @media screen and (max-width:768px) {
+    width: 100% !important;
   }
 }
 
@@ -3413,27 +3406,9 @@ body .tox {
     margin: 24px;
     .closeEditor {
       transition: 450ms;
-      // transform: translate3d(100%, 0, 0);
     }
    }
 }
-
-// @media screen and (max-width: 768px) {
-//   div{
-//     &.Pane {
-//       &.vertical
-//       {
-//           position: fixed !important;
-//           z-index: 999;
-//           top: 0;
-//           left: 0 ;
-//           height: 100vh;
-//           transform: translateY(0%);
-//         }
-//       }
-//     }
-// }
-
 
 .hamburger-for-sidebar{
   display: none !important;
@@ -3441,10 +3416,6 @@ body .tox {
     display: block !important;
   }
 }
-
-
-
-
 .footerHide{
   @media screen and (max-width:768px) {
     display: block;

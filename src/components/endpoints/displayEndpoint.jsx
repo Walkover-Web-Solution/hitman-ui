@@ -2877,7 +2877,6 @@ class DisplayEndpoint extends Component {
                 )}
               </div>
               {/* <ApiDocReview {...this.props} /> */}
-              {/* <span className=' d-lg-block d-md-none'>{isOnPublishedPage() && <Footer />}</span> */}
             </div>
 
             {this.isDashboardAndTestingView() ? (

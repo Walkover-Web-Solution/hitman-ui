@@ -65,13 +65,9 @@ class CodeTemplate extends Component {
     }
   }
 
-  // toggleCodeEditor() {
-  //   this.props.editorToggle()
-  // }
 
   render() {
     return (
-      <div>
       <div className='pubCodeWrapper '>
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
@@ -152,7 +148,6 @@ class CodeTemplate extends Component {
             </div>
           </Col>
         </div>
-      </div>
       </div>
     )
   }
