@@ -11,9 +11,9 @@ export function fetchAll(collectionIdentifier, domain) {
   return http.get(`${apiUrlPublic}/public/${collectionIdentifier}?domain=${domain}`)
 }
 
-export function approveEndpoint(endpointId) {
+export function approveEndpoint(endpointId,uniqueTabId) {
   const apiUrl = getApiUrl()
-  return http.patch(`${apiUrl}/endpoints/${endpointId}/approved`)
+  return http.patch(`${apiUrl}/endpoints/${endpointId}/approved`,uniqueTabId)
 }
 
 export function pendingEndpoint(endpoint) {
