@@ -2903,7 +2903,6 @@ class DisplayEndpoint extends Component {
               />
               )}
           </div>
-          <span className='me-auto ms-auto'>{isOnPublishedPage() && <Footer/>}</span>
         </div>
         {this.isDashboardAndTestingView() && (
           <div>
@@ -2914,6 +2913,7 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
+          <span className='me-auto ms-auto mt-auto'>{isOnPublishedPage() && <Footer/>}</span>
       </div>
     ) : null
   }

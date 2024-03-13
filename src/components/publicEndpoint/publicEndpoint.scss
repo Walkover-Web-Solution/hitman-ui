@@ -645,6 +645,10 @@ button.toggleButton {
   z-index: 19;
 }
 .mainContentWrapperPublic {
+  display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
   &:not(.hideCodeEditor) {
     .toggleButton {
       background-color: transparent !important;
@@ -701,7 +705,7 @@ button.toggleButton {
     display: flex;
     flex-direction: column;
     // justify-content: flex-end;
-    padding-bottom: 2rem;
+    // padding-bottom: 2rem;
     @media screen and (max-width:1160px) {
       padding-top: 3rem;
     }

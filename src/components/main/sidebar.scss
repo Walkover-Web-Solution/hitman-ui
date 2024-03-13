@@ -1,5 +1,12 @@
 @import './variables.scss';
 
+.Pane1 {
+  width: 330px !important;
+  @media screen and (max-width:1400px) {
+    width: 250px !important;
+  }
+}  
+
 .top-right {
   right: 0;
   top: 50%;
@@ -14,6 +21,7 @@
 
 .split-sidebar-public>div:first-child {
   max-width: 330px !important;
+  // width: unset;
   min-width: 250px !important;
 
   @media screen and (max-width: 1160px) {
