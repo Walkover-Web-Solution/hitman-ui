@@ -832,6 +832,11 @@ label.data-type {
 
   .ace_scroller {
     left: 2px !important;
+    .ace_content {
+      padding-top: 20px !important;
+      // width: calc(100%-20%)
+      // background-color: #898989 !important;
+    }
   }
 }
 
@@ -1682,14 +1687,6 @@ table#custom-generic-table tbody input[value='true'] + span.checkmark {
   padding-left: 0;
 }
 
-.footerWrapper p {
-  margin: 0;
-  padding: 21px;
-  font-size: 14px;
-  color: #333333;
-  text-align: right;
-}
-
 .footerWrapper {
   border-top: 0;
   span {
@@ -1697,12 +1694,21 @@ table#custom-generic-table tbody input[value='true'] + span.checkmark {
     display: flex;
     flex-direction: column;
     align-items: center;
+  
   }
-}
-
-.footerWrapper p {
-  a {
-    color: #cc0000;
+  p {
+    margin: 0;
+    padding: 21px;
+    font-size: 14px;
+    color: #333333;
+    text-align: right;
+    a {
+      color: #cc0000;
+    }
+  }
+  width: 75% !important;
+  @media screen and (max-width:768px) {
+    width: 100% !important;
   }
 }
 
@@ -2458,6 +2464,21 @@ main.mainpublic-endpoint-main .for-public-view {
   align-items: center;
   justify-content: center;
   padding: 0;
+  .poweredByText{
+    display: flex;
+    justify-content: center;
+    font-size: 14px;
+    @media screen and (max-width:768px) {
+    font-size: 12px !important;
+    }
+  }
+  .techdoc-svg{
+    @media screen and (max-width:768px) {
+      padding: 10px;
+      margin-left: -34px;
+      margin-right: -33px;
+    }
+  }
 }
 .mainpublic-endpoint-main .footerWrapper {
   text-align: right;
@@ -2766,6 +2787,11 @@ li.nav-item.cookie-tab a {
       position: absolute;
       right: 15px;
       z-index: 9;
+      @media screen and (max-width:768px) {
+        position: static !important;
+        margin-right: 2rem;
+        padding-bottom: 10px;
+      }
     }
     .response-viewer {
       .respTabsListing.nav-tabs {
@@ -3377,3 +3403,26 @@ body .tox {
     text-overflow: ellipsis;
     overflow: hidden;
   }
+.pubCodeWrapper {
+  @media only screen and (max-width: 800px){
+    position: static !important;
+    width: 85% !important;
+    max-height: 50vh !important;
+    margin: 24px;
+    .closeEditor {
+      transition: 450ms;
+    }
+   }
+}
+
+.hamburger-for-sidebar{
+  display: none !important;
+  @media screen and (max-width: 768px) {
+    display: block !important;
+  }
+}
+.footerHide{
+  @media screen and (max-width:768px) {
+    display: block;
+  }
+}
