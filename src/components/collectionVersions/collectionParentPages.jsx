@@ -98,6 +98,7 @@ class CollectionParentPages extends Component {
       isListVisible: false,
       publishVersion: '',
       dropdownState: false,
+      endpointOptions: false,
     }
 
     this.filterFlag = false
@@ -455,7 +456,7 @@ class CollectionParentPages extends Component {
 
   handleDropDownClick(event) {
     event.stopPropagation()
-    this.dropdownRef.current.classList.add('show');
+    this.setState({ endpointOptions: true })
   }
 
   renderBody(pageId, index) {
@@ -518,9 +519,9 @@ class CollectionParentPages extends Component {
                       <i className='uil uil-ellipsis-v' />
                     </div>
                     <OutsideClickHandler onOutsideClick={() => {
-                      this.dropdownRef.current.classList.remove('show');
+                      this.setState({ endpointOptions: false })
                     }}>
-                      <div ref={this.dropdownRef} className={`dropdown-menu dropdown-menu-right`}>
+                      <div ref={this.dropdownRef} className={`dropdown-menu dropdown-menu-right ${this.state.endpointOptions ? 'show' : ''}`}>
                         <div className='dropdown-item' onClick={() => this.openEditPageForm(pageId)}>
                           <Rename /> Rename
                         </div>
