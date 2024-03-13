@@ -158,7 +158,9 @@ class DisplayPage extends Component {
       this.fetchPage(pageId)
     }
     return isOnPublishedPage() ? (
-      <h3 className='page-heading-pub'>{this.state.data?.name || ''}</h3>
+      <>
+      { this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}
+      </>
     ) : (
       <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
     )
