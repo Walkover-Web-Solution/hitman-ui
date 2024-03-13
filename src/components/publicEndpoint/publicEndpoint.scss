@@ -702,7 +702,10 @@ button.toggleButton {
     flex-direction: column;
     // justify-content: flex-end;
     padding-bottom: 2rem;
-    padding-top: 3rem;
+    @media screen and (max-width:1160px) {
+      padding-top: 3rem;
+    }
+    padding-top: 1.25rem;
   }
 }
 .pubCodeWrapper {
@@ -721,6 +724,14 @@ button.toggleButton {
     height: 30px;
     button {
       height: 38px;
+    }
+    .codeTemplateButtonMore{
+      height: 38px !important;
+      z-index: 1000;
+      width: 100px !important;
+      .dropdownMore{
+      border: none !important;
+      }
     }
   }
   .inner-editor {

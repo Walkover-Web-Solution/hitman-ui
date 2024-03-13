@@ -832,6 +832,11 @@ label.data-type {
 
   .ace_scroller {
     left: 2px !important;
+    .ace_content {
+      padding-top: 20px !important;
+      // width: calc(100%-20%)
+      // background-color: #898989 !important;
+    }
   }
 }
 
@@ -2462,7 +2467,7 @@ main.mainpublic-endpoint-main .for-public-view {
   .poweredByText{
     display: flex;
     justify-content: center;
-    font-size: 10px;
+    font-size: 14px;
     @media screen and (max-width:768px) {
     font-size: 12px !important;
     }
