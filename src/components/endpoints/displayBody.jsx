@@ -67,14 +67,8 @@ class BodyContainer extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
     if (this.props?.body !== '' && !this.state?.selectedBodyType) {
-      let selectedBodyType = this.props.body.type
-      if (
-        selectedBodyType === 'JSON' ||
-        selectedBodyType === 'HTML' ||
-        selectedBodyType === 'JavaScript' ||
-        selectedBodyType === 'XML' ||
-        selectedBodyType === 'TEXT'
-      ) {
+      let selectedBodyType = this.props.endpointContent?.data?.body?.type
+      if (['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(selectedBodyType) ) {
         this.showRawBodyType = true
         this.rawBodyType = selectedBodyType
         selectedBodyType = 'raw'
@@ -91,7 +85,32 @@ class BodyContainer extends Component {
         })
       }
     }
-  }
+
+    if(this.props.endpointContent?.data?.body?.type == 'multipart/form-data' &&  !_.isEqual(this.props.endpointContent?.data?.body, prevProps?.body)){
+      debugger
+      this.setState({
+        data: { data: this.props.endpointContent?.data?.body.value || [] },
+        selectedBodyType: this.props.endpointContent?.data?.body?.type 
+      });
+        
+    }
+    if(this.props.endpointContent?.data?.body?.type == 'application/x-www-form-urlencoded' && !_.isEqual(this.props.endpointContent?.data?.body , prevProps?.body) ){
+      debugger
+      this.setState({
+        data: { urlencoded: this.props.endpointContent?.data?.body.value || []},
+        selectedBodyType: this.props.endpointContent?.data?.body?.type 
+      }); 
+    }
+
+    if(['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(this.props.endpointContent?.data?.body?.type) &&  !_.isEqual(this.props.endpointContent?.data?.body , prevProps?.body) ){
+      this.setState({
+        data: { raw: this.props.endpointContent?.data?.body.value || []},
+        // selectedRawBodyType: this.props.endpointContent?.data?.body?.type ,
+        // selectedBodyType: 'raw', // Set selectedBodyType to 'raw'
+      }); 
+    }
+}
+  
 
   handleSelectBodyType(bodyType, bodyDescription) {
     switch (bodyType) {
@@ -108,6 +127,7 @@ class BodyContainer extends Component {
         break
     }
     if (bodyType === 'raw' && bodyDescription) {
+      debugger
       this.flag = true
       this.showRawBodyType = true
       if (this._isMounted) {
@@ -117,6 +137,7 @@ class BodyContainer extends Component {
       }
       this.props.set_body(this.state.selectedRawBodyType, this.state.data[bodyType])
     } else {
+      debugger
       this.flag = false
       if (document.getElementById(`toggle-raw-${this.props.endpoint_id}`)) {
         document.getElementById(`toggle-raw-${this.props.endpoint_id}`).className = 'btn btn-secondary active'
@@ -202,6 +223,7 @@ class BodyContainer extends Component {
   }
 
   setRawBodyType(rawBodyType) {
+    debugger
     if (this._isMounted) {
       this.setState({
         selectedRawBodyType: rawBodyType,
@@ -221,20 +243,21 @@ class BodyContainer extends Component {
             <GenericTable
               {...this.props}
               title='formData'
-              dataArray={[...this.state.data.data]}
+              dataArray={[...(this.state?.data?.data || [])]}
               handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.state.data.data]}
+              original_data={[...(this.state?.data?.data || [])]}
               count='1'
             />
           )
         case 'application/x-www-form-urlencoded':
+          debugger
           return (
             <GenericTable
               {...this.props}
               title='x-www-form-urlencoded'
-              dataArray={[...this.state.data.urlencoded]}
+              dataArray={[...(this.state?.data?.urlencoded || [])]}
               handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.state.data.urlencoded]}
+              original_data={[...(this.state.data.urlencoded || [])]}
               count='2'
             />
           )

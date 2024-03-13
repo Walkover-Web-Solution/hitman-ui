@@ -117,6 +117,263 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
+/*
+{
+    "id": "3EBS3_ZiMBLl",
+    "name": "validateGithubSignUp",
+    "urlName": "validateGithubSignUp",
+    "uri": "/api/:v5/nexus/validateGithubSignUp",
+    "requestType": "POST",
+    "body": {
+        "type": "JSON",
+        "value": "{\n    \"code\": \"sirfhdrgjeruishgicunhoewirsunhcgoiunrcoinuwehsx\",\n    \"state\": \"afdszhbghjaszbfkasndfkioaejhnfod\",\n    \"mobileToken\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZXF1ZXN0SWQiOiIzMzY4NjI3MjYxNTkzMzM1MzkzNzM3MzgiLCJjb21wYW55SWQiOiIyNzgwNjAifQ.yLXtGWVY78v4mfzanAHnY2OIkq9ASrUJnOEMWWWs90M\",\n    \"utm_term\": \"utm_term\",\n    \"utm_medium\": \"utm_medium\",\n    \"utm_source\": \"utm_source\",\n    \"utm_campaign\": \"utm_campaign\",\n    \"utm_content\": \"utm_content\",\n    \"utm_matchtype\": \"utm_matchtype\",\n    \"ad\": \"ad\",\n    \"adposition\": \"adposition\",\n    \"reference\": \"reference\",\n    \"source\": \"msg91\"\n}"
+    },
+    "headers": {},
+    "params": {},
+    "pathVariables": {
+        "0": {
+            "checked": "notApplicable",
+            "key": "v5",
+            "value": "123",
+            "description": "nothing"
+        }
+    },
+    "BASE_URL": "{{url}}",
+    "state": 2,
+    "description": "",
+    "notes": null,
+    "bodyDescription": {
+        "payload": {
+            "value": {
+                "code": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "state": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "mobileToken": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "utm_term": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "utm_medium": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "utm_source": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "utm_campaign": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "utm_content": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "utm_matchtype": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "ad": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "adposition": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "reference": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                },
+                "source": {
+                    "value": null,
+                    "type": "string",
+                    "description": ""
+                }
+            },
+            "type": "object",
+            "description": ""
+        }
+    },
+    "authorizationType": null,
+    "sampleResponse": null,
+    "isPublished": true,
+    "publishedEndpoint": {
+        "id": "3EBS3_ZiMBLl",
+        "name": "validateGithubSignUp",
+        "urlName": "validateGithubSignUp",
+        "uri": "/api/:v5/nexus/validateGithubSignUp",
+        "requestType": "POST",
+        "body": {
+            "type": "JSON",
+            "value": "{\n    \"code\": \"sirfhdrgjeruishgicunhoewirsunhcgoiunrcoinuwehsx\",\n    \"state\": \"afdszhbghjaszbfkasndfkioaejhnfod\",\n    \"mobileToken\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZXF1ZXN0SWQiOiIzMzY4NjI3MjYxNTkzMzM1MzkzNzM3MzgiLCJjb21wYW55SWQiOiIyNzgwNjAifQ.yLXtGWVY78v4mfzanAHnY2OIkq9ASrUJnOEMWWWs90M\",\n    \"utm_term\": \"utm_term\",\n    \"utm_medium\": \"utm_medium\",\n    \"utm_source\": \"utm_source\",\n    \"utm_campaign\": \"utm_campaign\",\n    \"utm_content\": \"utm_content\",\n    \"utm_matchtype\": \"utm_matchtype\",\n    \"ad\": \"ad\",\n    \"adposition\": \"adposition\",\n    \"reference\": \"reference\",\n    \"source\": \"msg91\"\n}"
+        },
+        "headers": {},
+        "params": {},
+        "pathVariables": {
+            "0": {
+                "checked": "notApplicable",
+                "key": "v5",
+                "value": "123",
+                "description": "nothing"
+            }
+        },
+        "BASE_URL": "{{url}}",
+        "state": 1,
+        "description": "",
+        "notes": null,
+        "bodyDescription": {
+            "payload": {
+                "value": {
+                    "code": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "state": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "mobileToken": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "utm_term": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "utm_medium": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "utm_source": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "utm_campaign": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "utm_content": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "utm_matchtype": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "ad": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "adposition": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "reference": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    },
+                    "source": {
+                        "value": null,
+                        "type": "string",
+                        "description": ""
+                    }
+                },
+                "type": "object",
+                "description": ""
+            }
+        },
+        "authorizationType": null,
+        "sampleResponse": null,
+        "isPublished": false,
+        "publishedEndpoint": {},
+        "preScript": "",
+        "postScript": "",
+        "docViewData": [
+            {
+                "type": "host"
+            },
+            {
+                "type": "body"
+            },
+            {
+                "type": "params"
+            },
+            {
+                "type": "pathVariables"
+            },
+            {
+                "type": "headers"
+            },
+            {
+                "type": "sampleResponse"
+            }
+        ],
+        "parentId": "oh77MJq4bU4U",
+        "versionId": null,
+        "collectionId": "XLdWYHL7uX-d",
+        "type": 4
+    },
+    "preScript": "",
+    "postScript": "",
+    "docViewData": [
+        {
+            "type": "host"
+        },
+        {
+            "type": "body"
+        },
+        {
+            "type": "params"
+        },
+        {
+            "type": "pathVariables"
+        },
+        {
+            "type": "headers"
+        },
+        {
+            "type": "sampleResponse"
+        }
+    ],
+    "parentId": "oh77MJq4bU4U",
+    "versionId": null,
+    "collectionId": "XLdWYHL7uX-d",
+    "type": 4
+}
+ */
 const untitledEndpointData = {
   data: {
     name: 'Untitled',
@@ -125,14 +382,8 @@ const untitledEndpointData = {
     uri: '',
     updatedUri: ''
   },
-  pathVariables: [
-    {
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: ''
-    }
-  ],
+  // not sure about this
+  pathVariables: [],
   environment: {},
   endpoint: {},
   originalHeaders: [
@@ -157,7 +408,7 @@ const untitledEndpointData = {
   publicBodyFlag: true,
   params: [],
   bodyDescription: {},
-  fieldDescription: {},
+  fieldDescription: {}, // not sure
   sampleResponseArray: [],
   theme: '',
   preScriptText: '',
@@ -250,6 +501,7 @@ const withQuery = (WrappedComponent) => {
         endpointContentLoading={data?.isLoading}
         currentEndpointId={endpointId}
         setQueryUpdatedData={setQueryUpdatedData}
+        untitledEndpointData = {untitledEndpointData}
       />
     )
   }
@@ -408,6 +660,9 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
+    debugger
+    if(!e.currentTarget.value)
+    return ;
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
@@ -417,7 +672,7 @@ class DisplayEndpoint extends Component {
       const values = []
       const description = []
       let originalParams = this.props?.endpointContent?.originalParams || {}
-      const updatedUri = e.currentTarget.value.split('?')[1]
+      const updatedUri = e.currentTarget.value?.split('?')[1]
       let path = new URI(e.currentTarget.value)
       path = path.pathname()
       const pathVariableKeys = path.split('/')
@@ -2126,13 +2381,14 @@ class DisplayEndpoint extends Component {
   }
 
   renderBodyContainer() {
+    let body = this.props.endpointContent?.data?.body; 
     return (
       <BodyContainer
         {...this.props}
         set_body={this.setBody.bind(this)}
         set_body_description={this.setDescription.bind(this)}
-        body={this.props.endpointContent?.data?.body || {}}
-        Body={this.props?.endpointContent?.data?.body || {}}
+        body={body}
+        Body={body}
         endpoint_id={this.props.tab.id}
         body_description={this.props?.endpointContent?.bodyDescription || ''}
         field_description={this.props?.endpointContent?.fieldDescription || ''}
@@ -2272,12 +2528,14 @@ class DisplayEndpoint extends Component {
                 this.props?.environment?.variables?.BASE_URL?.initialValue ||
                 ''
               }
-              updatedUri={this.props?.endpointContent?.data?.updatedUri}
+              updatedUri={_.cloneDeep(this.props?.endpointContent?.data?.updatedUri)}
               set_base_url={this.setBaseUrl.bind(this)}
               // customHost={this.props?.endpointContent?.host.BASE_URL || ''}
               endpointId={this.props?.match?.params?.endpointId}
               set_host_uri={this.setHostUri.bind(this)}
               props_from_parent={this.propsFromChild.bind(this)}
+              setQueryUpdatedData = {this.props.setQueryUpdatedData.bind(this)}
+              untitledEndpointData = { _.cloneDeep(this.props.untitledEndpointData)}
             />
           </div>
           {this.props?.highlights?.uri ? <i className='fas fa-circle' /> : null}
