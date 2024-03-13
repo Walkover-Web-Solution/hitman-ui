@@ -156,15 +156,17 @@ class PublicBodyContainer extends Component {
 
   handleChangeBodyDescription = (data) => {
     try {
-      const body = data
+      const body = JSON.stringify(JSON.parse(data), null, 2); 
       const bodyData = {
         bodyDescription: this.bodyDescription,
         body: body
-      }
-      this.setBody(bodyData)
-    } catch (e) {}
+      };
+      this.setBody(bodyData);
+    } catch (e) {
+      console.error("Error beautifying data:", e);
+    }
   }
-
+  
   displayAddButton(name) {
     return (
       <div className='array-row-add-wrapper'>

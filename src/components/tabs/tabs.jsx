@@ -45,6 +45,7 @@ class CustomTabs extends Component {
   }
 
   componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown)
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('TAB_SHORTCUTS_CHANNEL', this.handleShortcuts)
@@ -52,30 +53,37 @@ class CustomTabs extends Component {
   }
 
   componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown)
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('TAB_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
   }
 
-  handleShortcuts = (e, { type, payload }) => {
-    const { activeTabId } = this.props.tabs
-    switch (type) {
-      case 'OPEN_TAB_AT_INDEX':
-        this.openTabAtIndex(payload - 1)
-        break
-      case 'SWITCH_NEXT_TAB':
-        this.handleOpenNextTab()
-        break
-      case 'CLOSE_CURRENT_TAB':
-        this.handleCloseTabs([activeTabId])
-        break
-      case 'OPEN_NEW_TAB':
-        this.handleAddTab()
-        break
-      default:
+  handleKeyDown = (e) => {
+    const activeTabId = this.props?.tabs?.activeTabId;
+    const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0;
+
+    if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
+        switch (e.key) {
+            case 't':
+                e.preventDefault();
+                this.handleOpenNextTab();
+                break;
+            case 'w':
+                e.preventDefault();
+                this.handleCloseTabs([activeTabId]);
+                break;
+            case 'n': 
+              e.preventDefault();
+              this.handleAddTab();
+                break;
+            default:
+                break;
+        }
     }
-  }
+}
 
   openTabAtIndex(index) {
     const { tabsOrder } = this.props.tabs
@@ -311,7 +319,7 @@ class CustomTabs extends Component {
     for (let i = 0; i < tabIds.length; i++) {
       const tabData = tabsData[tabIds[i]]
 
-      if (tabData.isModified) {
+      if (tabData?.isModified) {
         showSavePromptFor.push(tabIds[i])
       } else {
         // Check if there's only one tab left before removing
@@ -404,7 +412,7 @@ class CustomTabs extends Component {
                   onMouseEnter={() => this.setState({ showPreview: true, previewId: tabId })}
                   onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
                 >
-                  {this.props.tabs[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
+                  {this.props?.tabState[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
                   <Nav.Link eventKey={tabId}>
                     <button
                       className='btn truncate'

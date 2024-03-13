@@ -146,6 +146,14 @@ class SideBarV2 extends Component {
       ipcRenderer.on('SIDEBAR_SHORTCUTS_CHANNEL', this.handleShortcuts)
       document.addEventListener('keydown', this.preventDefaultBehavior.bind(this), false)
     }
+    document.addEventListener('keydown', this.handleShortcutKeys)
+
+  }
+  handleShortcutKeys = (event) => {
+    if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+      event.preventDefault(); 
+      this.inputRef.focus(); 
+    }
   }
 
   preventDefaultBehavior(e) {
@@ -207,27 +215,6 @@ class SideBarV2 extends Component {
   handleDeleteEntity(focusedNode) {
     this.props.open_modal(DELETE_CONFIRMATION, { nodeAddress: focusedNode })
   }
-
-  // async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
-  //   const groups = { ...this.state.groups }
-  //   const endpoints = { ...this.state.endpoints }
-  //   const originalEndpoints = { ...this.state.endpoints }
-  //   const originalGroups = { ...this.state.groups }
-  //   const endpoint = endpoints[endpointId]
-  //   endpoint.groupId = destinationGroupId
-  //   endpoints[endpointId] = endpoint
-  //   groups[sourceGroupId].endpointsOrder = groups[
-  //     sourceGroupId
-  //   ].endpointsOrder.filter((gId) => gId !== endpointId.toString())
-  //   groups[destinationGroupId].endpointsOrder.push(endpointId)
-  //   this.setState({ endpoints, groups })
-  //   try {
-  //     delete endpoint.id
-  //     await endpointApiService.updateEndpoint(endpointId, endpoint)
-  //   } catch (error) {
-  //     this.setState({ endpoints: originalEndpoints, groups: originalGroups })
-  //   }
-  // }
 
   handleOnChange = (e) => {
     this.setState({ data: { ...this.state.data, filter: e.target.value } })
@@ -575,7 +562,7 @@ class SideBarV2 extends Component {
           }}
           value={this.state.data.filter}
           className='search-input'
-          placeholder='Search'
+          placeholder='Type / to search'
           autoComplete='off'
           type='text'
           name='filter'
