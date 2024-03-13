@@ -343,8 +343,12 @@ class Endpoints extends Component {
           style={this.props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
         >
           <div className={this.props?.endpoints[endpointId]?.state} />
-          <div className='sidebar-toggle d-flex justify-content-between'>
-            <button
+          <div className='sidebar-toggle d-flex justify-content-between' onClick={(e)=>{e.stopPropagation()}}>
+
+          </div>
+          
+        </div>
+                    <button
               tabIndex={-1}
               className={isSelected}
               onClick={() => {
@@ -365,8 +369,6 @@ class Endpoints extends Component {
                   </div> */}
               </div>
             </button>
-          </div>
-        </div>
       </>
     )
   }

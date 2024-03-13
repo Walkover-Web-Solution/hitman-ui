@@ -49,9 +49,8 @@ const OperationTypes = {
   VERSION_CREATE: 'version-create',
   VERSION_DEFAULT: 'version-default',
   DRAG_AND_DROP: 'drag-and-drop',
-  PUBLISH_PAGE_OR_ENDPOINT: 'publish_page_or_endpoint',
-  UNPUBLISH_PAGE_OR_ENDPOINT: 'unpublish_page_or_endpoint'
-
+  PUBLISH_PAGE_OR_ENDPOINT: 'publish-page-or-endpoint',
+  UNPUBLISH_PAGE_OR_ENDPOINT: 'unpublish-page-or-endpoint'
 }
 
 const handleDeleteActions = (data) => {
