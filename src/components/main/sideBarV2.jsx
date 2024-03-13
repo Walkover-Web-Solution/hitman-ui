@@ -150,9 +150,9 @@ class SideBarV2 extends Component {
 
   }
   handleShortcutKeys = (event) => {
-    if ((event.metaKey || event.ctrlKey) && (event.key === '/')) {
-      event.preventDefault(); // Prevent default browser behavior for search
-      this.inputRef.focus(); // Focus on the search input field
+    if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+      event.preventDefault(); 
+      this.inputRef.focus(); 
     }
   }
 
@@ -562,7 +562,7 @@ class SideBarV2 extends Component {
           }}
           value={this.state.data.filter}
           className='search-input'
-          placeholder='Search'
+          placeholder='Type / to search'
           autoComplete='off'
           type='text'
           name='filter'
