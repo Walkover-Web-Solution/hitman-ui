@@ -6,10 +6,14 @@
 
 .custom-display-page {
   padding: 10px 30px;
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
   max-width: 50rem;
   padding-top: 25px;
-  position: absolute;
   left: 5px;
   right: 6rem;
   // min-height: calc(100vh - 70px);
