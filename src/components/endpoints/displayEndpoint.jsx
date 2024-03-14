@@ -660,8 +660,7 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
-    debugger
-    if(!e.currentTarget.value)
+    if(!e?.currentTarget?.value)
     return ;
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
@@ -2381,7 +2380,7 @@ class DisplayEndpoint extends Component {
   }
 
   renderBodyContainer() {
-    let body = this.props.endpointContent?.data?.body; 
+    let body = this.props.endpointContent?.data?.body
     return (
       <BodyContainer
         {...this.props}

@@ -67,15 +67,13 @@ class BodyContainer extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
     if (this.props?.body !== '' && !this.state?.selectedBodyType) {
-      let selectedBodyType = this.props.endpointContent?.data?.body?.type
+      let selectedBodyType = this.props.body.type
       if (['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(selectedBodyType) ) {
         this.showRawBodyType = true
         this.rawBodyType = selectedBodyType
         selectedBodyType = 'raw'
       }
-      const data = this.state.data
-      const type = selectedBodyType?.split('-') || []
-      data[type[type?.length > 1 ? type?.length - 1 : 0]] = this.props.body.value
+      let data = _.cloneDeep(this.state.data)
       if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
         document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
         this.setState({
@@ -86,27 +84,42 @@ class BodyContainer extends Component {
       }
     }
 
-    if(this.props.endpointContent?.data?.body?.type == 'multipart/form-data' &&  !_.isEqual(this.props.endpointContent?.data?.body, prevProps?.body)){
-      debugger
-      this.setState({
-        data: { data: this.props.endpointContent?.data?.body.value || [] },
-        selectedBodyType: this.props.endpointContent?.data?.body?.type 
-      });
+    if(this.props?.body?.type == 'multipart/form-data' &&  !_.isEqual(this.props?.body?.value, this.state?.data?.data)){
+   
+      this.setState(prevState => ({
+        data: {
+          ...prevState.data, 
+          data: _.cloneDeep(this.props?.body?.value) 
+        },
+        selectedBodyType: this.props?.body?.type 
+      }));
         
     }
-    if(this.props.endpointContent?.data?.body?.type == 'application/x-www-form-urlencoded' && !_.isEqual(this.props.endpointContent?.data?.body , prevProps?.body) ){
-      debugger
-      this.setState({
-        data: { urlencoded: this.props.endpointContent?.data?.body.value || []},
-        selectedBodyType: this.props.endpointContent?.data?.body?.type 
-      }); 
+
+    if(this.props?.body?.type == 'application/x-www-form-urlencoded' &&  !_.isEqual(this.props?.body?.value, this.state?.data?.urlencoded)){
+      this.setState(prevState => ({
+        data: {
+          ...prevState.data, // Spread the current state's data object
+          urlencoded: _.cloneDeep(this.props?.body?.value) // Update the data property
+        },
+        selectedBodyType: this.props?.body?.type // Update the selectedBodyType property
+      }));
+      // this.setState({
+      //   data: { 
+      //     urlencoded: _.cloneDeep(this.props?.body.value)
+      //   },
+      //   selectedBodyType: this.props?.body.type 
+      // }); 
     }
 
-    if(['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(this.props.endpointContent?.data?.body?.type) &&  !_.isEqual(this.props.endpointContent?.data?.body , prevProps?.body) ){
+    if(['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(this.props.endpointContent?.data?.body?.type) &&     !_.isEqual(this.props?.body?.value, this.state?.data?.raw) ){
       this.setState({
-        data: { raw: this.props.endpointContent?.data?.body.value || []},
-        // selectedRawBodyType: this.props.endpointContent?.data?.body?.type ,
-        // selectedBodyType: 'raw', // Set selectedBodyType to 'raw'
+        data: {
+          ...prevState.data, // Spread the current state's data object
+          raw: _.cloneDeep(this.props.endpointContent?.data?.body.value) // Update the data property
+        },
+        selectedRawBodyType: this.props.endpointContent?.data?.body?.type ,
+        selectedBodyType: 'raw', // Set selectedBodyType to 'raw'
       }); 
     }
 }

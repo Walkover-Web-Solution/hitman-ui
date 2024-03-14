@@ -534,6 +534,7 @@ class GenericTable extends Component {
 
   render() {
     const { dataArray, original_data: originalData, title } = this.props
+    // [info] removing empty key on public page
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
         if (dataArray[index].key === '') {
