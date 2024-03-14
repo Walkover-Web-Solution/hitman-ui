@@ -144,7 +144,6 @@ class CodeTemplate extends Component {
                   $blockScrolling: false
                 }}
                 onLoad={(editor) => {
-                  editor.focus()
                   editor.getSession().setUseWrapMode(true)
                   editor.setShowPrintMargin(false)
                 }}

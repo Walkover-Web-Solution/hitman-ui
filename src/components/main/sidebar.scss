@@ -99,7 +99,7 @@ body .sidebar {
         border-color: $outline-color;
       }
       &::placeholder {
-        color: $text-color;
+        color: 'lightgray';
       }
     }
     .sidebar-accordion {

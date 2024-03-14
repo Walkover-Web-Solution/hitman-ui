@@ -406,7 +406,7 @@ class PublicEndpoint extends Component {
                     />
                   )}
 
-                  {!type && (
+                  {!type && idToRender == 'undefined' && (
                     <ERROR_404_PUBLISHED_PAGE
                       error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
                     />
