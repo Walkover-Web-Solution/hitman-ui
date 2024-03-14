@@ -313,6 +313,10 @@ form.add-new-domain-form {
   .custom-display-page {
     padding: 0 1.5rem;
     max-width: 52rem;
+    min-width: 25rem;
+    @media screen and (max-width: 564px){
+      min-width: 15rem;
+    }
     + .public-navbar {
       padding: 0.75rem 1.5rem !important;
       max-width: 100% !important;
