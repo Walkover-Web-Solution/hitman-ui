@@ -382,22 +382,9 @@ class PublicEndpoint extends Component {
 
     const { isCTAandLinksPresent } = this.getCTALinks()
 
-    // class Toggle extends React.Component {
-    //   constructor(props) {
-    //     super(props);
-    //     this.state = {isToggleOn: true};
-    //     this.handleClick = this.handleClick.bind(this);
-    //   }
-
-    // handleClick() {
-    //   this.setState(prevState => ({
-    //     isToggleOn: !prevState.isToggleOn
-    //   }));
-    // }
     const menuOpen = false;
     return (
       <>
-        {/* <button onClick={toggleShow}>{buttonText}</button> */}
 
         {/* [info] part 1 style component */}
         <Style>
