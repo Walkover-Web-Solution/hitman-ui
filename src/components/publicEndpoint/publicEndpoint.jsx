@@ -93,7 +93,6 @@ class PublicEndpoint extends Component {
       },
       openReviewModal: false,
       idToRenderState: null,
-      toggleSideBar: false,
     }
     this.iconRef = React.createRef()
     this.hamburgerIconRef = React.createRef()
@@ -341,8 +340,7 @@ class PublicEndpoint extends Component {
     this.setDislike()
   }
 
-  handleShowSideBar(e) {
-    e.preventDefault()
+  handleShowSideBar() {
     const splitPaneElement = document.querySelector('.split-sidebar-public');
     const hamburgerElement = document.querySelector('#hamburgerIcon');
     const closeElement = document.querySelector('#closeIcon');
@@ -418,8 +416,8 @@ class PublicEndpoint extends Component {
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
           <span ref={this.iconRef} className={'hamberger-icon'}>
-            <MdDehaze id='hamburgerIcon' className='fs-4 fw-bold' onClick={(e) => { this.handleShowSideBar(e) }} />
-            <MdClose id='closeIcon' className='icon-none' onClick={(e) => { this.handleShowSideBar(e) }} />
+            <MdDehaze id='hamburgerIcon' className='fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
+            <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
           </span>
           {/* [info] part 3 */}
           <SplitPane split='vertical' className={'split-sidebar-public'}>
