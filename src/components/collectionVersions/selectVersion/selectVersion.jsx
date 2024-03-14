@@ -52,7 +52,7 @@ const VersionInput = (props) => {
       ) : (
         <div className='d-flex justify-content-start align-items-center'>
           <div className='version-title'>{pages?.[props?.singleChildId]?.name}</div>
-          <BiSolidPencil className='cursor-pointer ml-1' onClick={handleEditClick} />
+          <BiSolidPencil size={14} className='cursor-pointer ml-1' onClick={handleEditClick} />
           {pages[props?.singleChildId]?.state === 1 && <span class='badge badge-primary ml-1'>Default</span>}
         </div>
       )}

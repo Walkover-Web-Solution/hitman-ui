@@ -157,7 +157,6 @@ class CollectionParentPages extends Component {
 
   checkIfSelectedVersionIdIsPresent() {
     for (let index = 0; index < this.props?.pages?.[this.props?.rootParentId]?.child.length; index++) {
-      debugger
       const elementId = this.props?.pages?.[this.props?.rootParentId]?.child?.[index];
       if (elementId === this.state.selectedVersionId) {
         return true
