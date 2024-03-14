@@ -7,6 +7,7 @@ import { updatePage } from '../../pages/redux/pagesActions'
 import { addParentPageVersion } from '../redux/collectionVersionsActions'
 import { deletePage } from '../../pages/redux/pagesActions'
 import { onDefaultVersion } from '../../publishDocs/redux/publishDocsActions'
+import OutsideClickHandler from 'react-outside-click-handler';
 import './selectVersion.scss'
 import { toast } from 'react-toastify'
 
@@ -35,20 +36,21 @@ const VersionInput = (props) => {
   return (
     <div className='d-flex justify-content-start align-items-center'>
       {props?.showEdit === props?.index ? (
-        <div className='d-flex justify-content-start align-items-center'>
-          <input
-            onBlur={handleOutsideClickOfInputField}
-            type='text'
-            className='form-control version-input col-form-label-sm'
-            aria-label='Small'
-            aria-describedby='inputGroup-sizing-sm'
-            defaultValue={pages?.[props?.singleChildId]?.name}
-            ref={versionNameInputRef}
-          ></input>
-          <Button id='publish_collection_btn' variant='btn btn-outline ml-2' onClick={() => onRename(props?.singleChildId)}>
-            Save
-          </Button>
-        </div>
+        <OutsideClickHandler onOutsideClick={handleOutsideClickOfInputField}>
+          <div className='d-flex justify-content-start align-items-center'>
+            <input
+              type='text'
+              className='form-control version-input col-form-label-sm'
+              aria-label='Small'
+              aria-describedby='inputGroup-sizing-sm'
+              defaultValue={pages?.[props?.singleChildId]?.name}
+              ref={versionNameInputRef}
+            ></input>
+            <Button id='publish_collection_btn' variant='btn btn-outline ml-2' onClick={() => onRename(props?.singleChildId)}>
+              Save
+            </Button>
+          </div>
+        </OutsideClickHandler>
       ) : (
         <div className='d-flex justify-content-start align-items-center'>
           <div className='version-title'>{pages?.[props?.singleChildId]?.name}</div>
