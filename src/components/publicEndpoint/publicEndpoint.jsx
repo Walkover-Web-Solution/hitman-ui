@@ -334,8 +334,9 @@ class PublicEndpoint extends Component {
     this.setDislike()
   }
 
-  handleShowSideBar(){
+  handleShowSideBar(e){
     this.setState({ toggleSideBar: !this.state.toggleSideBar })
+    e.preventDefault()
   }
 
   render() {
@@ -394,8 +395,8 @@ class PublicEndpoint extends Component {
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
               <span className={'hamberger-icon' + (this.state.toggleSideBar ? ' close-icon' : '')}>
-                { !this.state.toggleSideBar && <MdDehaze className='fs-4 fw-bold' onClick={()=>{this.handleShowSideBar()}} /> }
-                { this.state.toggleSideBar && <MdClose onClick={()=>{this.handleShowSideBar()}} /> }
+                { !this.state.toggleSideBar && <MdDehaze className='fs-4 fw-bold' onClick={(e)=>{this.handleShowSideBar(e)}} /> }
+                { this.state.toggleSideBar && <MdClose onClick={(e)=>{this.handleShowSideBar(e)}} /> }
 
               </span>
           {/* [info] part 3 */}

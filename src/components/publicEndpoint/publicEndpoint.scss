@@ -318,7 +318,7 @@ form.add-new-domain-form {
       min-width: 15rem;
     }
     + .public-navbar {
-      padding: 0.75rem 1.5rem !important;
+      // padding: 0.75rem 1.5rem !important;
       max-width: 100% !important;
     }
   }
@@ -706,8 +706,8 @@ button.toggleButton {
   .display-component {
     height: 100%;
     // overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
     // justify-content: flex-end;
     // padding-bottom: 2rem;
     @media screen and (max-width:1160px) {

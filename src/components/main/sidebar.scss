@@ -1,11 +1,13 @@
 @import './variables.scss';
 
-.Pane1 {
-  width: 330px !important;
-  @media screen and (max-width:1400px) {
-    width: 250px !important;
-  }
-}  
+.mainpublic-endpoint-main{
+  .Pane1 {
+    width: 330px !important;
+    @media screen and (max-width:1400px) {
+      width: 250px !important;
+    }
+  }  
+}
 
 .top-right {
   right: 0;
@@ -778,11 +780,6 @@ input[type='text']:focus {
       position: fixed;
       background: transparent;
       padding-left: 10px;
-    }
-
-  
-    @media screen and (max-width: 1160px) {
-      display: block;
     }
   }
   .pubCodeWrapper{
