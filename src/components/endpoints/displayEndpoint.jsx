@@ -1133,7 +1133,7 @@ class DisplayEndpoint extends Component {
   propsFromChild(name, value) {
     if (name === 'Params') {
       this.handleUpdateUri(value)
-      // this.setState({ originalParams: value }, () => this.setModifiedTabData())
+      this.setModifiedTabData()
       const dummyData = this?.props?.endpointContent
       dummyData.originalParams = [...value]
       this.setState({ endpointContentState: dummyData })
@@ -1141,7 +1141,7 @@ class DisplayEndpoint extends Component {
     }
 
     if (name === 'Headers') {
-      // this.setState({ originalHeaders: value }, () => this.setModifiedTabData())
+      this.setModifiedTabData()
       const dummyData = this?.props?.endpointContent
       dummyData.originalHeaders = [...value]
       this.setState({ endpointContentState: dummyData })
@@ -1149,7 +1149,7 @@ class DisplayEndpoint extends Component {
     }
 
     if (name === 'Path Variables') {
-      // this.setState({ pathVariables: value }, () => this.setModifiedTabData())
+      this.setModifiedTabData()
       const dummyData = this?.props?.endpointContent
       dummyData.pathVariables = [...value]
       this.setState({ endpointContentState: dummyData })
@@ -1352,7 +1352,7 @@ class DisplayEndpoint extends Component {
     const data = { ...this.props?.endpointContent.data }
     data.body = { type: bodyType, value: body }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
-    // this.setState({ data }, () => this.setModifiedTabData())
+    this.setModifiedTabData()
     const tempData = this.props.endpointContent
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
@@ -1628,7 +1628,7 @@ class DisplayEndpoint extends Component {
         value
       }
     }
-    this.setState({ authType })
+    this.setState({ authType }, () => this.setModifiedTabData())
     const dummyData = this.props.endpointContent
     dummyData.authType = authType
     this.props.setQueryUpdatedData(dummyData)
@@ -1895,7 +1895,7 @@ class DisplayEndpoint extends Component {
     } else {
       postScriptText = text
     }
-    // this.setState({ preScriptText, postScriptText }, () => this.setModifiedTabData())
+    this.setModifiedTabData()
     const dummyData = this.props.endpointContent
     dummyData.preScriptText = preScriptText
     dummyData.postScriptText = postScriptText

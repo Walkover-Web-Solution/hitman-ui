@@ -11,6 +11,9 @@ import bulkPublishActionTypes from '../../components/publishSidebar/redux/bulkPu
 import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../components/common/utility'
 import { formatResponseToSend } from '../../components/endpoints/redux/endpointsActions'
 import pagesActionTypes from '../../components/pages/redux/pagesActionTypes'
+import { onEndpointStateSuccess } from '../../components/publicEndpoint/redux/publicEndpointsActions'
+import { onParentPageVersionAdded } from '../../components/collectionVersions/redux/collectionVersionsActions'
+import { onSetDefaultVersion } from '../../components/publishDocs/redux/publishDocsActions'
 
 var CLIENT, CHANNEL
 
@@ -43,7 +46,12 @@ const OperationTypes = {
   ENDPOINT_CREATE: 'endpoint-create',
   ENDPOINT_UPDATE: 'endpoint-update',
   ENDPOINT_DELETE: 'endpoint-delete',
-  DRAG_AND_DROP: 'drag-and-drop'
+  VERSION_CREATE: 'version-create',
+  VERSION_DEFAULT: 'version-default',
+  DRAG_AND_DROP: 'drag-and-drop',
+  PUBLISH_PAGE_OR_ENDPOINT: 'publish-page-or-endpoint',
+  UNPUBLISH_PAGE_OR_ENDPOINT: 'unpublish-page-or-endpoint'
+
 }
 
 const handleDeleteActions = (data) => {
@@ -106,6 +114,14 @@ const handleMessage = (message) => {
       })
       break
 
+    case OperationTypes.VERSION_CREATE:
+      store.dispatch(onParentPageVersionAdded(message.data))
+      break
+
+    case OperationTypes.VERSION_DEFAULT:
+      store.dispatch(onSetDefaultVersion(message.data))
+      break
+
     case OperationTypes.ENDPOINT_CREATE:
       const responseToSend = formatResponseToSend(message)
       store.dispatch(addChildInParent(responseToSend))
@@ -120,6 +136,14 @@ const handleMessage = (message) => {
         handleDeleteActions(data)
       })
       break
+
+      case OperationTypes.PUBLISH_PAGE_OR_ENDPOINT:
+        store.dispatch(onEndpointStateSuccess({ state: message.data.state, id: message.data.id, isPublished: message.data.isPublished }))
+        break
+
+      case OperationTypes.UNPUBLISH_PAGE_OR_ENDPOINT:
+        store.dispatch(onEndpointStateSuccess({ state: message.data.state, id: message.data.id, isPublished: message.data.isPublished }))
+        break
 
     case OperationTypes.DRAG_AND_DROP:
       store.dispatch({

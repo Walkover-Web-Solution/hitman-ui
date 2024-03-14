@@ -1,5 +1,6 @@
 // import {store} from '../../../store/store'
 import { store } from '../../../store/store'
+import { SESSION_STORAGE_KEY } from '../../common/utility'
 import publishDocsApiService from '../publishDocsApiService'
 import publishDocsActionTypes from './publishDocsActionTypes'
 
@@ -31,6 +32,7 @@ export const onFeedbacksFetchedError = (error) => {
 }
 
 export const onDefaultVersion = (orgId, versionData) => {
+  versionData.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     publishDocsApiService
       .setDefaultVersion(orgId, versionData)

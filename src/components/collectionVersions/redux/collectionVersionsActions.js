@@ -2,6 +2,7 @@ import collectionVersionsApiService from '../collectionVersionsApiService'
 import versionActionTypes from './collectionVersionsActionTypes'
 import { toast } from 'react-toastify'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
+import { SESSION_STORAGE_KEY } from '../../common/utility'
 
 export const updateVersion = (editedVersion) => {
   return (dispatch) => {
@@ -41,8 +42,8 @@ export const onVersionUpdatedError = (error, originalVersion) => {
 }
 
 export const addParentPageVersion = (newVersion, pageId, customCallback) => {
+  newVersion.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
-    dispatch(addVersionRequest({ ...newVersion, pageId }))
     collectionVersionsApiService
       .saveParentPageVersion(pageId, newVersion)
       .then((response) => {
@@ -54,13 +55,6 @@ export const addParentPageVersion = (newVersion, pageId, customCallback) => {
       .catch((error) => {
         dispatch(onVersionAddedError(error.response ? error.response.data : error, newVersion))
       })
-  }
-}
-
-export const addVersionRequest = (newVersion) => {
-  return {
-    type: pagesActionTypes.ADD_VERSION_REQUEST,
-    newVersion
   }
 }
 
