@@ -23,11 +23,21 @@ const VersionInput = (props) => {
     props.setShowEdit(null)
   }
 
+  const handleEditClick = () => {
+    props.setShowEdit(props?.index)
+    setTimeout(() => { if (versionNameInputRef.current) versionNameInputRef.current.focus() }, 100);
+  }
+
+  const handleOutsideClickOfInputField = () => {
+    props.setShowEdit(null)
+  }
+
   return (
     <div className='d-flex justify-content-start align-items-center'>
       {props?.showEdit === props?.index ? (
         <div className='d-flex justify-content-start align-items-center'>
           <input
+            onBlur={handleOutsideClickOfInputField}
             type='text'
             className='form-control version-input col-form-label-sm'
             aria-label='Small'
@@ -42,7 +52,7 @@ const VersionInput = (props) => {
       ) : (
         <div className='d-flex justify-content-start align-items-center'>
           <div className='version-title'>{pages?.[props?.singleChildId]?.name}</div>
-          <BiSolidPencil className='cursor-pointer ml-1' onClick={() => props?.setShowEdit(props?.index)} />
+          <BiSolidPencil className='cursor-pointer ml-1' onClick={handleEditClick} />
           {pages[props?.singleChildId]?.state === 1 && <span class='badge badge-primary ml-1'>Default</span>}
         </div>
       )}
@@ -64,7 +74,7 @@ const AddVersion = (props) => {
     const versionChilds = pages?.[props?.parentPageId]?.child
     try {
       versionChilds.forEach((element) => {
-        if (pages[element]?.name.trim() === newVersionNameInputRef.current.value.trim()) {
+        if (pages[element]?.name.trim().toLowerCase() === newVersionNameInputRef.current.value.trim().toLowerCase()) {
           throw new Error('StopIteration')
         }
       })
