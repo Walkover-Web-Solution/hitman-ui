@@ -77,22 +77,29 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 class PublicEndpoint extends Component {
-  state = {
-    publicCollectionId: '',
-    collectionName: '',
-    collectionTheme: null,
-    isNavBar: false,
-    isSticky: false,
-    likeActive: false,
-    dislikeActive: false,
-    review: {
-      feedback: {},
-      endpoint: {}
-    },
-    openReviewModal: false,
-    idToRenderState : null,
-    toggleSideBar: false,
+  constructor() {
+    super()
+    this.state = {
+      publicCollectionId: '',
+      collectionName: '',
+      collectionTheme: null,
+      isNavBar: false,
+      isSticky: false,
+      likeActive: false,
+      dislikeActive: false,
+      review: {
+        feedback: {},
+        endpoint: {}
+      },
+      openReviewModal: false,
+      idToRenderState: null,
+      toggleSideBar: false,
+    }
+    this.iconRef = React.createRef()
+    this.hamburgerIconRef = React.createRef()
+    this.closeIconRef = React.createRef()
   }
+
 
   async componentDidMount() {
     // [info] => part 1 scroll options
@@ -334,13 +341,29 @@ class PublicEndpoint extends Component {
     this.setDislike()
   }
 
-  handleShowSideBar(e){
-    this.setState({ toggleSideBar: !this.state.toggleSideBar })
+  handleShowSideBar(e) {
     e.preventDefault()
+    const splitPaneElement = document.querySelector('.split-sidebar-public');
+    const hamburgerElement = document.querySelector('#hamburgerIcon');
+    const closeElement = document.querySelector('#closeIcon');
+    if (this.iconRef.current && splitPaneElement) {
+      if (this.iconRef.current.classList.contains('close-icon') && splitPaneElement.classList.contains('open')) {
+        this.iconRef.current.classList.remove('close-icon');
+        splitPaneElement.classList.remove('open');
+        closeElement.classList.add('icon-none')
+        hamburgerElement.classList.remove('icon-none')
+      }
+      else {
+        this.iconRef.current.classList.add('close-icon');
+        splitPaneElement.classList.add('open');
+        hamburgerElement.classList.add('icon-none');
+        closeElement.classList.remove('icon-none');
+      }
+    }
   }
 
   render() {
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState ;
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
     let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 1  set collection data
@@ -376,8 +399,8 @@ class PublicEndpoint extends Component {
     const menuOpen = false;
     return (
       <>
-             {/* <button onClick={toggleShow}>{buttonText}</button> */}
-             
+        {/* <button onClick={toggleShow}>{buttonText}</button> */}
+
         {/* [info] part 1 style component */}
         <Style>
           {`
@@ -394,74 +417,73 @@ class PublicEndpoint extends Component {
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
-              <span className={'hamberger-icon' + (this.state.toggleSideBar ? ' close-icon' : '')}>
-                { !this.state.toggleSideBar && <MdDehaze className='fs-4 fw-bold' onClick={(e)=>{this.handleShowSideBar(e)}} /> }
-                { this.state.toggleSideBar && <MdClose onClick={(e)=>{this.handleShowSideBar(e)}} /> }
-
-              </span>
+          <span ref={this.iconRef} className={'hamberger-icon'}>
+            <MdDehaze id='hamburgerIcon' className='fs-4 fw-bold' onClick={(e) => { this.handleShowSideBar(e) }} />
+            <MdClose id='closeIcon' className='icon-none' onClick={(e) => { this.handleShowSideBar(e) }} />
+          </span>
           {/* [info] part 3 */}
-            <SplitPane split='vertical' className={'split-sidebar-public' + (this.state.toggleSideBar ? ' open' : '') }>
-              {/* [info] part 3 subpart 1 sidebar data left content */}
-              <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
-                {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
-              </div>
-              {/*  [info] part 3 subpart 1 sidebar data right content */}
-              <div
-                className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
-                style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}
-              >
-                {idToRender ? (
-                  <div
-                    onScroll={(e) => {
-                      if (e.target.scrollTop > 20) {
-                        this.setState({ isSticky: true })
-                      } else {
-                        this.setState({ isSticky: false })
-                      }
-                    }}
-                    className='display-component'
-                  >
-                    {type == 4 && (
-                      <DisplayEndpoint
-                        {...this.props}
-                        fetch_entity_name={this.fetchEntityName.bind(this)}
-                        publicCollectionTheme={this.state.collectionTheme}
-                      />
-                    )}
+          <SplitPane split='vertical' className={'split-sidebar-public'}>
+            {/* [info] part 3 subpart 1 sidebar data left content */}
+            <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
+              {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
+            </div>
+            {/*  [info] part 3 subpart 1 sidebar data right content */}
+            <div
+              className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
+              style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}
+            >
+              {idToRender ? (
+                <div
+                  onScroll={(e) => {
+                    if (e.target.scrollTop > 20) {
+                      this.setState({ isSticky: true })
+                    } else {
+                      this.setState({ isSticky: false })
+                    }
+                  }}
+                  className='display-component'
+                >
+                  {type == 4 && (
+                    <DisplayEndpoint
+                      {...this.props}
+                      fetch_entity_name={this.fetchEntityName.bind(this)}
+                      publicCollectionTheme={this.state.collectionTheme}
+                    />
+                  )}
 
-                    {(type == 1 || type == 3) && (
-                      <DisplayPage
-                        {...this.props}
-                        fetch_entity_name={this.fetchEntityName.bind(this)}
-                        publicCollectionTheme={this.state.collectionTheme}
-                      />
-                    )}
+                  {(type == 1 || type == 3) && (
+                    <DisplayPage
+                      {...this.props}
+                      fetch_entity_name={this.fetchEntityName.bind(this)}
+                      publicCollectionTheme={this.state.collectionTheme}
+                    />
+                  )}
 
-                    {!type && (
-                      <ERROR_404_PUBLISHED_PAGE
-                        error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
-                      />
-                    )}
+                  {!type && (
+                    <ERROR_404_PUBLISHED_PAGE
+                      error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
+                    />
+                  )}
 
-                    {this.displayCTAandLink()}
-                    {/* <div className='d-flex flex-row justify-content-start'>
+                  {this.displayCTAandLink()}
+                  {/* <div className='d-flex flex-row justify-content-start'>
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
                     </div> */}
-                    {this.state.openReviewModal && this.reviewModal()}
-                  </div>
-                ) : (
-                  <>
-                    <div className='custom-loading-container'>
-                      <div className='loading-content'>
-                        <button className='spinner-border' />
-                        <p className='mt-3'>Loading</p>
-                      </div>
+                  {this.state.openReviewModal && this.reviewModal()}
+                </div>
+              ) : (
+                <>
+                  <div className='custom-loading-container'>
+                    <div className='loading-content'>
+                      <button className='spinner-border' />
+                      <p className='mt-3'>Loading</p>
                     </div>
-                  </>
-                )}
-              </div>
-            </SplitPane>
+                  </div>
+                </>
+              )}
+            </div>
+          </SplitPane>
         </main>
       </>
     )
