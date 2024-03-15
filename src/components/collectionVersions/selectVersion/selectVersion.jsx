@@ -20,6 +20,16 @@ const VersionInput = (props) => {
   const dispatch = useDispatch()
 
   const onRename = (versionId) => {
+    const versionChilds = pages?.[props?.parentPageId]?.child
+    try {
+      versionChilds.forEach((element) => {
+        if (versionId !== element && pages[element]?.name.trim().toLowerCase() === versionNameInputRef.current.value.trim().toLowerCase()) {
+          throw new Error('StopIteration')
+        }
+      })
+    } catch (error) {
+      return toast.error('Version Name already Exist!')
+    }
     dispatch(updatePage(null, { ...pages?.[versionId], name: versionNameInputRef.current.value }))
     props.setShowEdit(null)
   }
@@ -147,7 +157,7 @@ export default function SelectVersion(props) {
         return (
           <div>
             <div className='d-flex justify-content-between align-items-center mt-3'>
-              <VersionInput setShowEdit={setShowEdit} showEdit={showEdit} index={index} singleChildId={singleChildId} />
+              <VersionInput {...props} setShowEdit={setShowEdit} showEdit={showEdit} index={index} singleChildId={singleChildId} />
               <div>
                 {pages?.[singleChildId]?.state !== 1 && (
                   <Button
