@@ -325,7 +325,7 @@ form.add-new-domain-form {
     transition: all 0.3s ease-in;
     position: relative;
     max-width: 72.25%;
-    padding: 0 1.5rem;
+    // padding: 0 1.5rem;
     margin-left: 0;
     scrollbar-width: none;
     &::-webkit-scrollbar {
@@ -687,7 +687,7 @@ button.toggleButton {
     .hm-endpoint-container {
       padding: 0;
       max-width: 52rem;
-      padding: 0 1.5rem;
+      // padding: 0 1.5rem;
     }
     + .public-navbar {
       margin: 0 auto;
@@ -702,6 +702,8 @@ button.toggleButton {
     // justify-content: flex-end;
     padding-bottom: 2rem;
     padding-top: 1.25rem;
+    padding-left: 24px;
+    // padding-right: 24px;
   }
 }
 .pubCodeWrapper {

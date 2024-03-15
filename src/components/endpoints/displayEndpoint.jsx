@@ -2546,8 +2546,7 @@ class DisplayEndpoint extends Component {
     if (this.props?.endpointContentLoading) {
       return (
       <>
-        {/* <div className="nav-bar bg"></div> */}
-        <div className="p-4 loading">
+        <div className="ps-4 loading">
             <div className="box bg"></div>
             <div className="d-flex align-items-center justify-content-between mt-3">
                 <div>
