@@ -96,6 +96,7 @@ class PublicEndpoint extends Component {
     }
     this.iconRef = React.createRef()
     this.hamburgerIconRef = React.createRef()
+    this.logoName = React.createRef()
     this.closeIconRef = React.createRef()
   }
 
@@ -343,6 +344,7 @@ class PublicEndpoint extends Component {
   handleShowSideBar() {
     const splitPaneElement = document.querySelector('.split-sidebar-public');
     const hamburgerElement = document.querySelector('#hamburgerIcon');
+    const logoElement = document.querySelector('#logoName');
     const closeElement = document.querySelector('#closeIcon');
     if (this.iconRef.current && splitPaneElement) {
       if (this.iconRef.current.classList.contains('close-icon') && splitPaneElement.classList.contains('open')) {
@@ -350,11 +352,13 @@ class PublicEndpoint extends Component {
         splitPaneElement.classList.remove('open');
         closeElement.classList.add('icon-none')
         hamburgerElement.classList.remove('icon-none')
+        logoElement.classList.remove('icon-none')
       }
       else {
         this.iconRef.current.classList.add('close-icon');
         splitPaneElement.classList.add('open');
         hamburgerElement.classList.add('icon-none');
+        logoElement.classList.add('icon-none');
         closeElement.classList.remove('icon-none');
       }
     }
@@ -404,25 +408,26 @@ class PublicEndpoint extends Component {
         >
           <span ref={this.iconRef} className={'hamberger-icon'}>
             {/* Insert the image here */}
-            
-            <img
-            className='hamberger-img'
-                id='publicLogo'
-                alt='public-logo'
-                src={
-                  this.props.collections[collectionId]?.favicon
-                    ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
-                    : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl || ''
-                }
-                // onError={() => { this.setState({ publicLogoError: true })}}
-                width='20'
-                height='20'
-              />
-              <span className="icon-name">{this.props.collections[collectionId]?.name}</span>
-
-            {/* Original icons */}
             <MdDehaze id='hamburgerIcon' className='fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
             <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
+           <span className='logo-name' id="logoName" onClick={() => { this.handleShowSideBar() }}>
+            <img
+              className='hamberger-img'
+              id='publicLogo'
+              alt='public-logo'
+              src={
+                this.props.collections[collectionId]?.favicon
+                  ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
+                  : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl || ''
+              }
+              // onError={() => { this.setState({ publicLogoError: true })}}
+              width='20'
+              height='20'
+            />
+            <span className="icon-name">{this.props.collections[collectionId]?.name}</span>
+            </span>
+            {/* Original icons */}
+
           </span>
           {/* [info] part 3 */}
           <SplitPane split='vertical' className={'split-sidebar-public'}>

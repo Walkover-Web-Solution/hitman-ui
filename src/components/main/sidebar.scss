@@ -1,12 +1,13 @@
 @import './variables.scss';
 
-.mainpublic-endpoint-main{
+.mainpublic-endpoint-main {
   .Pane1 {
     width: 330px !important;
+
     @media screen and (max-width:1400px) {
       width: 250px !important;
     }
-  }  
+  }
 }
 
 .top-right {
@@ -272,10 +273,12 @@ body .sidebar {
       button {
         >div.cl-name {
           width: 100%;
-          .name-parent-page{
+
+          .name-parent-page {
             overflow-wrap: anywhere;
             max-width: 240px !important;
-            @media (max-width: 1400px) and (min-width: 400px){
+
+            @media (max-width: 1400px) and (min-width: 400px) {
               max-width: 180px !important;
             }
           }
@@ -765,35 +768,46 @@ input[type='text']:focus {
     right: 0;
     z-index: 1000;
     display: none;
-    transition:  400ms;
+    transition: 400ms;
     display: block;
     width: 100%;
     background: white;
     padding: 10px 20px;
-    svg{
+
+    svg {
       font-size: 20px;
       font-weight: 700 !important;
     }
-  
-    &.close-icon{
+
+    &.close-icon {
       left: 218px !important;
       position: fixed;
       background: transparent;
       padding-left: 10px;
     }
-    .icon-name{
+  }
+
+  .logo-name {
+    position: fixed;
+    left: 40px;
+    top: 8px;
+    z-index: 1111;
+
+    .icon-name {
       position: fixed;
-    margin-left: 80px;
-    padding-left: 10px;
+      font-weight: 700;
+      font-size: 20px;
+      // margin-left: 80px;
+      // padding-left: 10px;
     }
-    .hamberger-img{
+
+    .hamberger-img {
       margin-left: 20px;
+      width: 34px;
     }
   }
-  .pubCodeWrapper{
+
+  .pubCodeWrapper {
     top: 41px !important;
   }
 }
-
-
-
