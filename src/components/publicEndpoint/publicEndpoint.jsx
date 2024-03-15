@@ -403,6 +403,24 @@ class PublicEndpoint extends Component {
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
           <span ref={this.iconRef} className={'hamberger-icon'}>
+            {/* Insert the image here */}
+            
+            <img
+            className='hamberger-img'
+                id='publicLogo'
+                alt='public-logo'
+                src={
+                  this.props.collections[collectionId]?.favicon
+                    ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
+                    : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl || ''
+                }
+                // onError={() => { this.setState({ publicLogoError: true })}}
+                width='20'
+                height='20'
+              />
+              <span className="icon-name">{this.props.collections[collectionId]?.name}</span>
+
+            {/* Original icons */}
             <MdDehaze id='hamburgerIcon' className='fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
             <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
           </span>
