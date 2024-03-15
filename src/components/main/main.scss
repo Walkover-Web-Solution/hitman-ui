@@ -156,6 +156,7 @@ html body {
   flex-direction: row;
   height: 100vh;
   overflow: hidden;
+  // background-color: $light-grey;
 
   nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
     margin-top: 10px;
@@ -165,6 +166,10 @@ html body {
     padding-right: 0;
     border-right: 2px solid $border-color;
     background-color: white !important;
+  }
+
+  .Pane2 {
+    background-color: $light-grey;
   }
 
   .main {

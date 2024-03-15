@@ -141,32 +141,32 @@ function InviteTeam() {
           </thead>
           {loadingUsers ? (
             <>
-            <div class="team">
-              <div class="d-flex align-items-center justify-content-between">
-                <div class="email bg"></div>
-                <div class="admin bg"></div>
-                <div class="edit bg"></div>
+            <div className="team">
+              <div className="d-flex align-items-center justify-content-between">
+                <div className="email bg"></div>
+                <div className="admin bg"></div>
+                <div className="edit bg"></div>
               </div>
             </div>
-             <div class="team my-3">
-             <div class="d-flex align-items-center justify-content-between">
-               <div class="email bg"></div>
-               <div class="admin bg"></div>
-               <div class="edit bg"></div>
+             <div className="team my-3">
+             <div className="d-flex align-items-center justify-content-between">
+               <div className="email bg"></div>
+               <div className="admin bg"></div>
+               <div className="edit bg"></div>
              </div>
            </div>
-           <div class="team">
-             <div class="d-flex align-items-center justify-content-between">
-               <div class="email bg"></div>
-               <div class="admin bg"></div>
-               <div class="edit bg"></div>
+           <div className="team">
+             <div className="d-flex align-items-center justify-content-between">
+               <div className="email bg"></div>
+               <div className="admin bg"></div>
+               <div className="edit bg"></div>
              </div>
            </div>
-           <div class="team my-3">
-             <div class="d-flex align-items-center justify-content-between">
-               <div class="email bg"></div>
-               <div class="admin bg"></div>
-               <div class="edit bg"></div>
+           <div className="team my-3">
+             <div className="d-flex align-items-center justify-content-between">
+               <div className="email bg"></div>
+               <div className="admin bg"></div>
+               <div className="edit bg"></div>
              </div>
            </div>
            </>
