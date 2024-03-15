@@ -97,9 +97,9 @@ class CollectionParentPages extends Component {
       isListVisible: false,
       publishVersion: ''
     }
-
     this.filterFlag = false
     this.eventkey = {}
+    this.versionDropDownRef = React.createRef();
   }
 
   componentDidMount() {
@@ -140,6 +140,29 @@ class CollectionParentPages extends Component {
     if (endpointId && prevEndpointId !== endpointId) {
       this.setParentPageForEntity(endpointId, 'endpoint')
     }
+
+    if (prevProps?.pages?.[this.props?.rootParentId]?.child !== this.props?.pages?.[this.props?.rootParentId]?.child) {
+      let hello = this.checkIfSelectedVersionIdIsPresent()
+      if (!hello) {
+        for (let index = 0; index < this.props?.pages?.[this.props?.rootParentId]?.child?.length; index++) {
+          const versionId = this.props?.pages?.[this.props?.rootParentId]?.child?.[index]
+          if (this.props?.pages?.[versionId]?.state === 1) {
+            this.setState({ selectedVersionId: versionId, selectedVersionName: this.props?.pages?.[versionId]?.name, defaultVersionId: versionId, defaultVersionName: this.props?.pages?.[versionId]?.name })
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  checkIfSelectedVersionIdIsPresent() {
+    for (let index = 0; index < this.props?.pages?.[this.props?.rootParentId]?.child.length; index++) {
+      const elementId = this.props?.pages?.[this.props?.rootParentId]?.child?.[index];
+      if (elementId === this.state.selectedVersionId) {
+        return true
+      }
+    }
+    return false
   }
 
   findDefaultVersion = () => {
@@ -224,7 +247,7 @@ class CollectionParentPages extends Component {
 
   openShareParentPageForm(pageId) {
     this.setState({
-      showPageForm : {share: true},
+      showPageForm: { share: true },
       pageFormName: 'Share Parent Page',
       selectedPage: { ...this.props.pages[pageId] }
     })
@@ -294,13 +317,13 @@ class CollectionParentPages extends Component {
 
   openEditPageForm(pageId) {
     this.setState({
-      showPageForm : { edit: true},
+      showPageForm: { edit: true },
       selectedPage: pageId
     })
   }
 
   closePageForm() {
-    this.setState({ showPageForm: {share: false, addEndpoint: false, addPage: false} })
+    this.setState({ showPageForm: { share: false, addEndpoint: false, addPage: false } })
   }
 
   closeVersionForm() {
@@ -425,6 +448,7 @@ class CollectionParentPages extends Component {
   versionDropDown(rootId) {
     return (
       <DropdownButton
+        ref={this.versionDropDownRef}
         className=''
         id='dropdown-basic-button'
         onClick={(e) => e.stopPropagation()}
