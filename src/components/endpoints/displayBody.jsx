@@ -103,13 +103,7 @@ class BodyContainer extends Component {
           urlencoded: _.cloneDeep(this.props?.body?.value) // Update the data property
         },
         selectedBodyType: this.props?.body?.type // Update the selectedBodyType property
-      }));
-      // this.setState({
-      //   data: { 
-      //     urlencoded: _.cloneDeep(this.props?.body.value)
-      //   },
-      //   selectedBodyType: this.props?.body.type 
-      // }); 
+      })); 
     }
 
     if(['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(this.props.endpointContent?.data?.body?.type) &&     !_.isEqual(this.props?.body?.value, this.state?.data?.raw) ){
@@ -121,6 +115,8 @@ class BodyContainer extends Component {
         selectedRawBodyType: this.props.endpointContent?.data?.body?.type ,
         selectedBodyType: 'raw', // Set selectedBodyType to 'raw'
       }); 
+      this.rawBodyType = this.props.endpointContent?.data?.body?.type
+      this.showRawBodyType = true
     }
 }
   
