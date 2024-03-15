@@ -165,7 +165,7 @@ class DisplayPage extends Component {
   }
 
   renderTiptapEditor(contents) {
-    return <Tiptap onChange={() => {}} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
+    return <Tiptap onChange={() => { }} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
   }
 
   handleRemovePublicPage(page) {
@@ -346,12 +346,16 @@ class DisplayPage extends Component {
   render() {
     if (this.props?.pageContentLoading) {
       return (
-        <div className='custom-loading-container'>
-          <div className='loading-content'>
-            <button className='spinner-border' />
-            <p className='mt-3'>Loading</p>
+        <>
+        <div className="container p-4">
+          <div className="page bg"></div>
+          <div className="details d-flex flex-column justify-content-between align-items-center mt-5">
+            <div className="page-box bg"></div>
+            <div className="page-footer text-center bg"></div>
+
           </div>
         </div>
+        </>
       )
     }
     return (

@@ -35,7 +35,7 @@ function InviteTeam() {
       setUsers(response?.data?.data?.data)
     } catch (error) {
       toast.error('Error fetching users: ' + error.message)
-    }finally {
+    } finally {
       setLoadingUsers(false);
     }
   }
@@ -92,7 +92,7 @@ function InviteTeam() {
         setUsers((prevUsers) => [{ name, email }, ...prevUsers])
         handleCloseModal()
       }
-      else{
+      else {
         handleCloseModal()
       }
     } catch (error) {
@@ -140,32 +140,56 @@ function InviteTeam() {
             </tr>
           </thead>
           {loadingUsers ? (
-          <div className='custom-loading-container'>
-            <div className='loading-content'>
-              <button className='spinner-border' />
-              <p className='mt-3'>Loading</p>
+            <>
+            <div class="team">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="email bg"></div>
+                <div class="admin bg"></div>
+                <div class="edit bg"></div>
+              </div>
             </div>
-          </div>
-                ) : (
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.email}>
-                {/* <td>{user.name}</td> */}
-                <td>{user.email}</td>
-                <td>Admin</td>
-                <td>
-                  <button
-                    className='editButton'
-                    onClick={() => {
-                      /* logic to edit user */
-                    }}
-                  >
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+             <div class="team my-3">
+             <div class="d-flex align-items-center justify-content-between">
+               <div class="email bg"></div>
+               <div class="admin bg"></div>
+               <div class="edit bg"></div>
+             </div>
+           </div>
+           <div class="team">
+             <div class="d-flex align-items-center justify-content-between">
+               <div class="email bg"></div>
+               <div class="admin bg"></div>
+               <div class="edit bg"></div>
+             </div>
+           </div>
+           <div class="team my-3">
+             <div class="d-flex align-items-center justify-content-between">
+               <div class="email bg"></div>
+               <div class="admin bg"></div>
+               <div class="edit bg"></div>
+             </div>
+           </div>
+           </>
+          ) : (
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.email}>
+                  {/* <td>{user.name}</td> */}
+                  <td>{user.email}</td>
+                  <td>Admin</td>
+                  <td>
+                    <button
+                      className='editButton'
+                      onClick={() => {
+                        /* logic to edit user */
+                      }}
+                    >
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           )}
         </table>
       </div>
