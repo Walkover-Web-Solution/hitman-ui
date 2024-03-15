@@ -31,7 +31,7 @@ const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
-    const { data, error } = useQuery(
+    const { data, isLoading, error } = useQuery(
       ['pageContent', pageId],
       async () => {
         return isOnPublishedPage()
@@ -46,7 +46,7 @@ const withQuery = (WrappedComponent) => {
         retry: 2
       }
     )
-    return <WrappedComponent {...props} pageContent={data} pageContentLoading={data?.isLoading} pageContentError={error} />
+    return <WrappedComponent {...props} pageContent={data} pageContentLoading={isLoading} pageContentError={error} />;
   }
 }
 
@@ -348,7 +348,18 @@ class DisplayPage extends Component {
       return (
         <>
         <div className="container p-4">
-          <div className="page bg"></div>
+          <div className="d-flex justify-content-between">
+            <div className="page bg rounded-1"></div>
+                {!isOnPublishedPage() && (
+                <>
+                <div className="d-flex gap-3">
+                <div className="edit bg rounded-1"></div>
+                  <div className="unpublish bg rounded-1"></div>
+                <div className="publish bg rounded-1"></div>
+            </div>
+                </>
+                )}
+        </div> 
           <div className="details d-flex flex-column justify-content-between align-items-center mt-5">
             <div className="page-box bg"></div>
             <div className="page-footer text-center bg"></div>
