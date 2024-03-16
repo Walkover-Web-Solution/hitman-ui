@@ -68,7 +68,7 @@ class BodyContainer extends Component {
     if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
     if (this.props?.body !== '' && !this.state?.selectedBodyType) {
       let selectedBodyType = this.props.body.type
-      if (['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(selectedBodyType) ) {
+      if (['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(selectedBodyType)) {
         this.showRawBodyType = true
         this.rawBodyType = selectedBodyType
         selectedBodyType = 'raw'
@@ -85,30 +85,32 @@ class BodyContainer extends Component {
     }
 
     // Update state based on body type
-    if (this.props?.body?.type === 'multipart/form-data') {
-      this.updateStateBasedOnBodyType('data', this.props.body.value);
-    } else if (this.props?.body?.type === 'application/x-www-form-urlencoded') {
-      this.updateStateBasedOnBodyType('urlencoded', this.props.body.value);
-    }
-    else if (['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(this.props?.body?.type)) {
-      this.updateStateBasedOnBodyType('raw', this.props.body.value);
+    if (this.props?.body?.type === 'multipart/form-data' && !_.isEqual(this.props.body.value, prevProps.body.value)) {
+      this.updateStateBasedOnBodyType('data', this.props.body.value)
+    } else if (this.props?.body?.type === 'application/x-www-form-urlencoded' && !_.isEqual(this.props.body.value, prevProps.body.value)) {
+      this.updateStateBasedOnBodyType('urlencoded', this.props.body.value)
+    } else if (
+      ['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(this.props?.body?.type) &&
+      !_.isEqual(this.props.body.value, prevProps.body.value)
+    ) {
+      this.updateStateBasedOnBodyType('raw', this.props.body.value)
       this.rawBodyType = this.props?.body?.type
       this.showRawBodyType = true
     }
-}
+  }
 
   updateStateBasedOnBodyType(bodyType, value) {
-    if (_.isEqual(value, this.state.data[bodyType])) return; // No need to update if the value hasn't changed
+    if (_.isEqual(value, this.state.data[bodyType])) return // No need to update if the value hasn't changed
 
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       data: {
         ...prevState.data,
         [bodyType]: _.cloneDeep(value)
       },
-      selectedBodyType: bodyType == 'raw' ? 'raw' : this.props?.body?.type,
-    }));
-    if(bodyType == 'raw'){
-      this.setState({selectedRawBodyType : this.props?.body?.type })
+      selectedBodyType: bodyType == 'raw' ? 'raw' : this.props?.body?.type
+    }))
+    if (bodyType == 'raw') {
+      this.setState({ selectedRawBodyType: this.props?.body?.type })
     }
   }
 
