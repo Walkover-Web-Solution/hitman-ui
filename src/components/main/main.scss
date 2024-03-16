@@ -130,6 +130,19 @@ html body {
 
 .clear-both {
   clear: both;
+  width: 900px;
+  @media screen and (max-width:1650px) {
+    width: 800px;
+  }
+  @media screen and (max-width:1450px) {
+    width: 700px;
+  }
+  @media screen and (max-width:1250px) {
+    width: 600px;
+  }
+  @media screen and (max-width:1160px) {
+    width: 100%;
+  }
 }
 
 .hover {
@@ -1798,11 +1811,11 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
     }
   }
 
-  width: 75% !important;
+  // width: 75% !important;
 
-  @media screen and (max-width:768px) {
+ 
     width: 100% !important;
-  }
+  
 }
 
 footer {
@@ -3412,7 +3425,7 @@ body .doc-secs-container {
 
 .mid-part {
   width: 70%;
-  padding: 1.25rem 1.25rem 0;
+  // padding: 1.25rem 1.25rem 0;
 }
 
 .response-container-main {
@@ -3676,11 +3689,11 @@ body .tox {
 }
 
 .pubCodeWrapper {
-  @media only screen and (max-width: 800px) {
+  @media only screen and (max-width: 991px) {
     position: static !important;
-    width: 85% !important;
+    width: 100% !important;
     max-height: 50vh !important;
-    margin: 24px;
+    // margin: 24px;
 
     .closeEditor {
       transition: 450ms;

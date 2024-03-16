@@ -289,9 +289,7 @@ form.add-new-domain-form {
     }
   }
   .request-button {
-    position: absolute;
-    top: 0rem;
-    right: 1.5rem;
+   
     .custom-theme-btn {
       color: white;
       background-color: $theme-color;
@@ -302,8 +300,10 @@ form.add-new-domain-form {
   }
   .innerContainer {
     display: flex;
-    flex-wrap: wrap;
+    // flex-wrap: wrap;
     justify-content: space-between;
+    padding-left: 24px;
+    padding-right: 24px;
   }
   .doc-view {
     box-shadow: none;
@@ -323,16 +323,20 @@ form.add-new-domain-form {
     }
   }
   .hm-endpoint-container {
-    display: block;
+    // display: block;
     transition: 450ms;
-    height: 100%;
+    height: 97vh;
     overflow: auto;
     transition: all 0.3s ease-in;
     position: relative;
     max-width: 72.25%;
-    padding: 0 1.5rem;
+    // padding: 0 1.5rem;
     margin-left: 0;
     scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    max-width: 1100px;
+    align-items: center;
     &::-webkit-scrollbar {
       display: none;
       width: 0px;
@@ -696,7 +700,7 @@ button.toggleButton {
     .hm-endpoint-container {
       padding: 0;
       max-width: 52rem;
-      padding: 0 1.5rem;
+      // padding: 0 1.5rem;
     }
     + .public-navbar {
       margin: 0 auto;
@@ -724,9 +728,9 @@ button.toggleButton {
   background: #333333;
   transition: 300ms;
   height: 100vh;
-  position: absolute;
-  right: 0;
-  top: 0;
+  // position: absolute;
+  // right: 0;
+  // top: 0;
   .select-code-wrapper {
     flex-direction: row;
     height: 30px;

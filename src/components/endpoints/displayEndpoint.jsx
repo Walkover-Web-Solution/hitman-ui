@@ -2654,11 +2654,24 @@ class DisplayEndpoint extends Component {
               <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
                 <div className='endpoint-header'>
                   {this.isNotDashboardOrDocView() && (
-                    <div className='endpoint-name-container'>
+                    <div className='endpoint-name-container d-flex justify-content-between'>
                       {this.isNotDashboardOrDocView() && (
                         <>
                        
                         <h1 className='endpoint-title'>{this.props?.endpointContent?.data?.name || ''}</h1>
+                        {!isDashboardRoute(this.props) && (
+                        <div className='request-button'>
+                          <button
+                            className={this.state.loader ? 'btn custom-theme-btn btn-lg buttonLoader' : 'btn btn-lg custom-theme-btn px-2 '}
+                            style={{ background: theme }}
+                            type='submit'
+                            id='send-request-button'
+                            onClick={() => this.handleSend()}
+                          >
+                            Try
+                          </button>
+                        </div>
+                      )}
                         </>
                       )}
                     </div>
@@ -2854,19 +2867,7 @@ class DisplayEndpoint extends Component {
                       ) : (
                         this.renderDocView()
                       )}
-                      {!isDashboardRoute(this.props) && (
-                        <div className='request-button'>
-                          <button
-                            className={this.state.loader ? 'btn custom-theme-btn btn-lg buttonLoader' : 'btn btn-lg custom-theme-btn'}
-                            style={{ background: theme }}
-                            type='submit'
-                            id='send-request-button'
-                            onClick={() => this.handleSend()}
-                          >
-                            Try
-                          </button>
-                        </div>
-                      )}
+                     
                       {this.isDashboardAndTestingView() && this.renderScriptError()}
                       {this.displayResponse()}
                     </div>
@@ -2877,6 +2878,8 @@ class DisplayEndpoint extends Component {
                 )}
               </div>
               {/* <ApiDocReview {...this.props} /> */}
+          <span className='d-lg-block d-none'>{isOnPublishedPage() && <Footer/>}</span>
+
             </div>
 
             {this.isDashboardAndTestingView() ? (
@@ -2913,7 +2916,7 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
-          <span className='me-auto ms-auto mt-auto'>{isOnPublishedPage() && <Footer/>}</span>
+          <span className='d-lg-none d-md-block'>{isOnPublishedPage() && <Footer/>}</span>
       </div>
     ) : null
   }
