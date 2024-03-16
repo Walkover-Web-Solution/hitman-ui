@@ -66,6 +66,7 @@ class Endpoints extends Component {
         share: false,
         delete: false,
       },
+      isDropdownOpen: false,
     }
     this.dropdownRef = React.createRef();
   }
@@ -291,7 +292,8 @@ class Endpoints extends Component {
 
   handleDropDownClick(event) {
     event.stopPropagation()
-    this.dropdownRef.current.classList.add('show');
+    this.setState({ isDropdownOpen: !this.state.isDropdownOpen })
+    // this.dropdownRef.current.classList.add('show');
   }
 
   displayEndpointOptions(endpointId) {
@@ -302,9 +304,10 @@ class Endpoints extends Component {
         </div>
 
         <OutsideClickHandler onOutsideClick={() => {
-          this.dropdownRef.current.classList.remove('show');
+          // this.dropdownRef.current.classList.remove('show');
+          this.setState({ isDropdownOpen: false })
         }}>
-          <div style={{zIndex:50000000}} ref={this.dropdownRef} className={`dropdown-menu-right dropdown-menu`}>
+          <div style={{ zIndex: 50000000 }} ref={this.dropdownRef} className={`dropdown-menu-right dropdown-menu ${this.state.isDropdownOpen ? 'show' : ''}`}>
             <div className='dropdown-item' onClick={() => this.openEditEndpointForm(endpointId)}>
               <RenamedItem /> Rename
             </div>
