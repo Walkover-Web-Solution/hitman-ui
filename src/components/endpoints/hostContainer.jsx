@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
+import tabService from '../tabs/tabService'
 import { publishData } from '../modals/redux/modalsActions'
 import './endpoints.scss'
 import { connect } from 'react-redux'
@@ -24,7 +25,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 const mapStateToProps = (state) => {
   return {
-    modals: state.modals
+    modals: state.modals,
+    tabs: state?.tabs
   }
 }
 class HostContainer extends Component {
@@ -128,6 +130,10 @@ class HostContainer extends Component {
 
       if(parsedData?.data){
       // if content-type is json then value is added json stringified and body description is specially handled
+      // parsedData.data is in the format of json string then convert it to object format
+      try {
+        parsedData.data = JSON.parse(parsedData.data)
+      } catch (e) {}
       if(parsedData.headers?.['Content-Type']?.toLowerCase().includes('application/json') ||  parsedData.headers?.['content-type']?.toLowerCase().includes('application/json')){
         untitledEndpointData.data.body.type = 'JSON';
         untitledEndpointData.data.body.value = JSON.stringify(parsedData.data);
@@ -196,6 +202,7 @@ class HostContainer extends Component {
       untitledEndpointData.originalParams.push(...untitledEndpointData.originalParams.splice(0, 1));
 
     this.props.setQueryUpdatedData(untitledEndpointData)
+    tabService.markTabAsModified(this.props.tabs.activeTabId)
   }
   
   async handleInputHostChange(e) {
