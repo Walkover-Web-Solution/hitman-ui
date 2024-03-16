@@ -7,5 +7,5 @@ RUN npm install -g pm2
 RUN npm install -g serve
 RUN npm install --legacy-peer-deps
 COPY . .
-RUN npm run build
+RUN npm run build:test
 ENTRYPOINT ["serve","-s","build","-l","3000"]
