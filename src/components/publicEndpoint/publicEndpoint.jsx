@@ -98,6 +98,7 @@ class PublicEndpoint extends Component {
     this.hamburgerIconRef = React.createRef()
     this.logoName = React.createRef()
     this.closeIconRef = React.createRef()
+    this.closeBar = React.createRef()
   }
 
 
@@ -346,11 +347,13 @@ class PublicEndpoint extends Component {
     const hamburgerElement = document.querySelector('#hamburgerIcon');
     const logoElement = document.querySelector('#logoName');
     const closeElement = document.querySelector('#closeIcon');
+    const barElement = document.querySelector('#closeBar');
     if (this.iconRef.current && splitPaneElement) {
       if (this.iconRef.current.classList.contains('close-icon') && splitPaneElement.classList.contains('open')) {
         this.iconRef.current.classList.remove('close-icon');
         splitPaneElement.classList.remove('open');
         closeElement.classList.add('icon-none')
+        barElement.classList.add('icon-none')
         hamburgerElement.classList.remove('icon-none')
         logoElement.classList.remove('icon-none')
       }
@@ -360,6 +363,7 @@ class PublicEndpoint extends Component {
         hamburgerElement.classList.add('icon-none');
         logoElement.classList.add('icon-none');
         closeElement.classList.remove('icon-none');
+        barElement.classList.remove('icon-none');
       }
     }
   }
@@ -410,7 +414,7 @@ class PublicEndpoint extends Component {
             {/* Insert the image here */}
             <MdDehaze id='hamburgerIcon' className='fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
             <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
-           <span className='logo-name' id="logoName" onClick={() => { this.handleShowSideBar() }}>
+           <span className='logo-name' id="logoName">
             <img
               className='hamberger-img'
               id='publicLogo'
@@ -425,12 +429,15 @@ class PublicEndpoint extends Component {
               height='20'
             />
             <span className="icon-name">{this.props.collections[collectionId]?.name}</span>
+            
+            <div id='closeBar' className='sidebar-backdrop' onClick={() => { this.handleShowSideBar() }}></div>
+
             </span>
             {/* Original icons */}
-
           </span>
           {/* [info] part 3 */}
           <SplitPane split='vertical' className={'split-sidebar-public'}>
+        
             {/* [info] part 3 subpart 1 sidebar data left content */}
             <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
               {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}

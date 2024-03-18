@@ -380,6 +380,7 @@ class DisplayEndpoint extends Component {
     }
     if (this.props.endpointId !== prevProps.endpointId) {
     }
+    this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
     if (!isDashboardRoute(this.props)) {
       if (
         this.props?.endpointContent &&
@@ -2620,7 +2621,9 @@ class DisplayEndpoint extends Component {
                 <LoginSignupModal show onHide={() => this.closeLoginSignupModal()} title='Save Endpoint' />
               )}
               {getCurrentUser() ? (
-                <div className={this.isDashboardAndTestingView() ? 'hm-panel' : null}>
+                <>
+                { this.isDashboardAndTestingView() &&  (
+                  <div className="hm-panel">
                   <div className='d-flex justify-content-between'>
                     {this.renderToggleView()}
                     {this.renderDocViewOperations()}
@@ -2650,6 +2653,10 @@ class DisplayEndpoint extends Component {
                     {this.renderSaveButton()}
                   </div>
                 </div>
+                )}
+                </>
+
+                
               ) : null}
               <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
                 <div className='endpoint-header'>
@@ -2662,13 +2669,13 @@ class DisplayEndpoint extends Component {
                         {!isDashboardRoute(this.props) && (
                         <div className='request-button'>
                           <button
-                            className={this.state.loader ? 'btn custom-theme-btn btn-lg buttonLoader' : 'btn btn-lg custom-theme-btn px-2 '}
+                            className={this.state.loader ? 'btn custom-theme-btn btn-lg buttonLoader' : 'btn btn-lg custom-theme-btn px-md-4 px-3'}
                             style={{ background: theme }}
                             type='submit'
                             id='send-request-button'
                             onClick={() => this.handleSend()}
                           >
-                            Try
+                            TRY
                           </button>
                         </div>
                       )}

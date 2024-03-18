@@ -268,7 +268,7 @@ class DisplayResponse extends Component {
   render() {
     const { theme } = this.state
     return (
-      <div className='endpoint-response-container overflow-auto mt-4'>
+      <div className='endpoint-response-container overflow-auto mt-4' id='output'>
         {this.props.loader ? (
           this.renderLoader()
         ) : this.props.flagResponse ? (
@@ -316,7 +316,7 @@ class DisplayResponse extends Component {
                 </div>
               </div>
               {this.showAddForm()}
-              <div className='response-viewer'>
+              <div className='response-viewer' ref={this.props.componentBRef}>
                 <div className='response-tabs'>
                   {/* {isDashboardRoute(this.props) && (
                         <ul className='nav nav-tabs' id='myTab' role='tablist'>

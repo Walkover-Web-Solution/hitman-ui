@@ -5,7 +5,7 @@
     width: 330px !important;
 
     @media screen and (max-width:1400px) {
-      width: 250px !important;
+      width: 280px !important;
     }
   }
 }
@@ -42,6 +42,9 @@
 @media screen and (max-width: 1160px) {
   .split-sidebar-public {
     &.open {
+      .sidebar-backdrop {
+        display: none;
+      }
       &> {
         div {
           &:first-child {
@@ -49,6 +52,11 @@
             transform: translateX(0) !important;
           }
         }
+      }
+    }
+    &.icon-none {
+      .sidebar-backdrop {
+        display: none;
       }
     }
   }
@@ -287,10 +295,6 @@ body .sidebar {
 
               @media screen and (max-width:768px) {
                 font-size: 18px;
-              }
-
-              @media screen and (max-width:568px) {
-                font-size: 20px;
               }
             }
           }
@@ -615,21 +619,15 @@ input[type='text']:focus {
 
   .api-label {
     margin-right: 5px;
-    @media screen and (max-width:768px) {
-      font-size: 14px;
-    }
 
-    @media screen and (max-width:568px) {
-      font-size: 16px;
+    @media screen and (max-width:768px) {
+      font-size: 12px;
     }
   }
-  .truncate{
+
+  .truncate {
     @media screen and (max-width:768px) {
       font-size: 16px;
-    }
-
-    @media screen and (max-width:568px) {
-      font-size: 18px;
     }
   }
 }
@@ -808,7 +806,7 @@ input[type='text']:focus {
     }
 
     &.close-icon {
-      left: 218px !important;
+      left: 245px !important;
       position: fixed;
       background: transparent;
       padding-left: 10px;
@@ -820,9 +818,11 @@ input[type='text']:focus {
     left: 40px;
     top: 8px;
     z-index: 1111;
+    display: flex;
+    align-items: center;
 
     .icon-name {
-      position: fixed;
+      // position: fixed;
       font-weight: 700;
       font-size: 20px;
       // margin-left: 80px;
@@ -835,7 +835,15 @@ input[type='text']:focus {
     }
   }
 
+
   .pubCodeWrapper {
     top: 41px !important;
   }
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  background: rgba($color: #000000, $alpha: 0.0);
+  width: 100%;
+  height: 100%;
 }

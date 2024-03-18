@@ -1597,6 +1597,16 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
 .mainContentWrapper {
   width: 100%;
   margin-top: 0px;
+  height: 100%;
+  // padding-left: 24px;
+  @media screen and (max-width:992px) {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+  @media screen and (max-width:568px) {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
 }
 
 .btn.btn-secondary.outline {
@@ -3424,8 +3434,8 @@ body .doc-secs-container {
 }
 
 .mid-part {
-  width: 70%;
-  // padding: 1.25rem 1.25rem 0;
+  width: 60%;
+  padding: 1.25rem 1.25rem ;
 }
 
 .response-container-main {
@@ -3444,8 +3454,9 @@ body .doc-secs-container {
 
 .response-bottom {
   .response-container-main {
-    width: 70%;
-    padding: 0.25rem 1.25rem 1.25rem 1.25rem;
+    width: 60%;
+  padding: 1.25rem 1.25rem ;
+    
 
     h4 {
       height: 3.25rem;
@@ -3692,7 +3703,7 @@ body .tox {
   @media only screen and (max-width: 991px) {
     position: static !important;
     width: 100% !important;
-    max-height: 50vh !important;
+    height: 50vh !important;
     // margin: 24px;
 
     .closeEditor {

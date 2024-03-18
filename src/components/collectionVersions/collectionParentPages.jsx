@@ -451,7 +451,7 @@ class CollectionParentPages extends Component {
       <>
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
           <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-            <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''} ${isSelected}`}>
+            <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''} ${isSelected}`} >
               <div
                 className='d-flex align-items-center cl-name'
                 onClick={() => {
