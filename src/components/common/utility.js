@@ -538,6 +538,7 @@ export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = 
 }
 
 const modifyEndpointContent = (endpointData, untitledData) => {
+  debugger
   const endpoint = cloneDeep(endpointData)
   const untitled = cloneDeep(untitledData)
   untitled.data.name = endpoint.name

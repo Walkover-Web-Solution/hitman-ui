@@ -78,6 +78,13 @@ export const updateTab = (tabId, data) => {
   }
 }
 
+export const updateTabDraft = (tabId, draft) => {
+  return (dispatch) => {
+    if (!store.getState().tabs.tabs[tabId]) return
+    dispatch({ type: tabsActionTypes.UPDATE_TAB_DRAFT, payload: { tabId, draft } })
+  }
+}
+
 export const setActiveTabId = (tabId) => {
   return async (dispatch) => {
     dispatch({
