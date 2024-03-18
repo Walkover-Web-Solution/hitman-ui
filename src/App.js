@@ -18,6 +18,7 @@ import { connect } from 'react-redux'
 import { installModal } from './components/modals/redux/modalsActions'
 import { initConn, resetConn } from './services/webSocket/webSocketService.js'
 import shortid from 'shortid'
+import OauthPage from './components/OauthPage/OauthPage.js'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -147,6 +148,7 @@ class App extends Component {
           {/* Error Page Routes */}
           <Route path='/404_PAGE' component={ERROR_404_PAGE} />
           <Route path='/403_PAGE' component={ERROR_403_PAGE} />
+          <Route path='/auth/redirect' component={OauthPage} />
 
           {/* Logged in Dashboard Routes */}
           <ProtectedRouteV2 exact path='/orgs/:orgId/dashboard/' component={MainV2} />

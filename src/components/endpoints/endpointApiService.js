@@ -139,14 +139,9 @@ export async function authorize(requestApi, params, grantType, props, authData) 
     })
     responseData.tokenName = authData.tokenName
     if (grantType === 'auth_code') {
-      await indexedDbService.getDataBase()
-      await indexedDbService.updateData('responseData', responseData, 'currentResponse')
-      const response = await indexedDbService.getValue('responseData', 'currentResponse')
       const timer = setInterval(async function () {
-        if (response) {
-          clearInterval(timer)
-          window.close()
-        }
+        clearInterval(timer)
+        window.close()
       }, 1000)
     } else {
       if (responseData && responseData.access_token) {
@@ -160,21 +155,16 @@ export async function authorize(requestApi, params, grantType, props, authData) 
     } else {
       requestApi = requestApi + '&response_type=token'
     }
-    const openWindow = window.open(requestApi, 'windowName', 'width=400,height=600')
+    var options = "width=200,height=200,resizable=yes,scrollbars=yes,status=yes";
+    const openWindow = window.open(requestApi, '_blank', options)
 
-    const timer = setInterval(async function () {
-      if (openWindow.closed) {
-        clearInterval(timer)
-        await indexedDbService.getDataBase()
-        const responseData = await indexedDbService.getValue('responseData', 'currentResponse')
-        await indexedDbService.deleteData('responseData', 'currentResponse')
-        if (responseData && responseData.access_token) {
-          responseData.tokenName = authData.tokenName
-          if (props.groupId) await setResponse(props, responseData)
-          props.set_access_token(responseData.access_token)
-        }
-      }
-    }, 1000)
+
+    // const timer = setInterval(async function () {
+    //   if (openWindow.closed) {
+    //     clearInterval(timer)
+    //     window.removeEventListener('message')
+    //   }
+    // }, 1000)
   }
 }
 
