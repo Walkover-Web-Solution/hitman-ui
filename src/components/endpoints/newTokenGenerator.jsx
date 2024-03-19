@@ -120,6 +120,10 @@ function TokenGenerator(props) {
     setData((prev) => { return { ...prev, selectedGrantType: grantTypes[key] } })
   }
 
+  function handleInputFieldChange(e, key) {
+    setData((prev) => { return { ...prev, [key]: e.target.value } })
+  }
+
   function renderInput(key) {
     const grantType = data.grantType
     switch (key) {
@@ -228,6 +232,7 @@ function TokenGenerator(props) {
           className='token-generator-input-field'
           name={key}
           value={data[key]}
+          onChange={(e) => handleInputFieldChange(e, key)}
         />
         {key === 'password' && (
           <label className='mb-0 ml-3'>
