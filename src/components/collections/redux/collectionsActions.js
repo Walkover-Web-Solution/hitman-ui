@@ -268,7 +268,7 @@ export const importApi = (collection, importType, website, customCallback, defau
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          toast.error('Something went wrong')
+          toast.error('Collection with the same name already exists')
           dispatch(onCollectionImportedError(error.response ? error.response.data : error))
           if (customCallback) customCallback({ success: false })
         })

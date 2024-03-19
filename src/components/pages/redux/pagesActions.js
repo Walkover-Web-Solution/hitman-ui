@@ -20,6 +20,7 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
         if (stopSaveLoader) {
           stopSaveLoader()
         }
+        toast.success("Endpoint updated successfully")
       })
       .catch((error) => {
         // dispatch(onEndpointUpdatedError(error.response ? error.response.data : error, originalEndpoint))
@@ -52,6 +53,7 @@ export const updatePage = (history, editedPage) => {
       .updatePage(editedPage.id, dataToSend)
       .then((response) => {
         dispatch(onPageUpdated(response.data))
+        toast.success("Page updated successfully")
         return response.data
       })
       .catch((error) => {
@@ -117,6 +119,7 @@ export const addPage = (history, rootParentId, newPage) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
         history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
+        toast.success("Added successfully")
       })
       .catch((error) => {
         dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))

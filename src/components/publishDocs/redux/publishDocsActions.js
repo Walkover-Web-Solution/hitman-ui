@@ -1,4 +1,5 @@
 // import {store} from '../../../store/store'
+import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import { SESSION_STORAGE_KEY } from '../../common/utility'
 import publishDocsApiService from '../publishDocsApiService'
@@ -37,6 +38,7 @@ export const onDefaultVersion = (orgId, versionData) => {
     publishDocsApiService
       .setDefaultVersion(orgId, versionData)
       .then(() => {
+        toast.success("Default version set successfully")
         dispatch(onSetDefaultVersion(versionData))
       })
       .catch((error) => {
