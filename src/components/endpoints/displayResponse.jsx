@@ -316,7 +316,7 @@ class DisplayResponse extends Component {
                 </div>
               </div>
               {this.showAddForm()}
-              <div className='response-viewer' ref={this.props.componentBRef}>
+              <div className='response-viewer'>
                 <div className='response-tabs'>
                   {/* {isDashboardRoute(this.props) && (
                         <ul className='nav nav-tabs' id='myTab' role='tablist'>

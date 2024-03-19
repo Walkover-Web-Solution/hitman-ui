@@ -380,7 +380,6 @@ class DisplayEndpoint extends Component {
     }
     if (this.props.endpointId !== prevProps.endpointId) {
     }
-    this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
     if (!isDashboardRoute(this.props)) {
       if (
         this.props?.endpointContent &&
@@ -864,7 +863,7 @@ class DisplayEndpoint extends Component {
       requestKey: keyForRequest,
       runSendRequest
     })
-
+    this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
       this.setState({ loader: false })
       return

@@ -98,7 +98,7 @@ class PublicEndpoint extends Component {
     this.hamburgerIconRef = React.createRef()
     this.logoName = React.createRef()
     this.closeIconRef = React.createRef()
-    this.closeBar = React.createRef()
+    // this.closeBar = React.createRef()
   }
 
 
@@ -347,15 +347,15 @@ class PublicEndpoint extends Component {
     const hamburgerElement = document.querySelector('#hamburgerIcon');
     const logoElement = document.querySelector('#logoName');
     const closeElement = document.querySelector('#closeIcon');
-    const barElement = document.querySelector('#closeBar');
+    // const sidebarElement = document.querySelector('#closeBar');
     if (this.iconRef.current && splitPaneElement) {
       if (this.iconRef.current.classList.contains('close-icon') && splitPaneElement.classList.contains('open')) {
         this.iconRef.current.classList.remove('close-icon');
         splitPaneElement.classList.remove('open');
-        closeElement.classList.add('icon-none')
-        barElement.classList.add('icon-none')
-        hamburgerElement.classList.remove('icon-none')
-        logoElement.classList.remove('icon-none')
+        closeElement.classList.add('icon-none');
+        // sidebarElement.classList.add('icon-none');
+        hamburgerElement.classList.remove('icon-none');
+        logoElement.classList.remove('icon-none');
       }
       else {
         this.iconRef.current.classList.add('close-icon');
@@ -363,7 +363,7 @@ class PublicEndpoint extends Component {
         hamburgerElement.classList.add('icon-none');
         logoElement.classList.add('icon-none');
         closeElement.classList.remove('icon-none');
-        barElement.classList.remove('icon-none');
+        // sidebarElement.classList.remove('icon-none');
       }
     }
   }
@@ -387,7 +387,9 @@ class PublicEndpoint extends Component {
       var collectionName = this.props.collections[collectionId]?.name
       // var collectionTheme = this.props.collections[collectionId]?.theme
     }
-
+    let collectionKeys = Object.keys(this.props?.collections || {})
+    // const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
+    // const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
     const { isCTAandLinksPresent } = this.getCTALinks()
 
     const menuOpen = false;
@@ -414,30 +416,32 @@ class PublicEndpoint extends Component {
             {/* Insert the image here */}
             <MdDehaze id='hamburgerIcon' className='fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
             <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
-           <span className='logo-name' id="logoName">
-            <img
-              className='hamberger-img'
-              id='publicLogo'
-              alt='public-logo'
-              src={
-                this.props.collections[collectionId]?.favicon
-                  ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
-                  : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl || ''
-              }
-              // onError={() => { this.setState({ publicLogoError: true })}}
-              width='20'
-              height='20'
-            />
-            <span className="icon-name">{this.props.collections[collectionId]?.name}</span>
-            
-            <div id='closeBar' className='sidebar-backdrop' onClick={() => { this.handleShowSideBar() }}></div>
+            <span className='logo-name' id="logoName">
+              {this.props.collections[collectionKeys[0]]?.favicon ||
+                (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
+                  <img
+                    className='hamberger-img'
+                    id='publicLogo'
+                    alt='public-logo'
+                    src={
+                      this.props.collections[collectionKeys[0]]?.favicon
+                        ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
+                        : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
+                    }
+                    // onError={() => { this.setState({ publicLogoError: true })}}
+                    width='20'
+                    height='20'
+                  />
+                ))}
+              <span className="icon-name">{this.props.collections[collectionId]?.name}</span>
 
             </span>
+              {/* <div id='closeBar' className='close-bar' onClick={() => { this.handleShowSideBar() }}></div> */}
             {/* Original icons */}
           </span>
           {/* [info] part 3 */}
           <SplitPane split='vertical' className={'split-sidebar-public'}>
-        
+
             {/* [info] part 3 subpart 1 sidebar data left content */}
             <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
               {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}

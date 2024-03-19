@@ -78,7 +78,7 @@ class CodeTemplate extends Component {
               {primaryLanguages.map((key) => (
                 <button
                   key={key}
-                  className={key === this.selectedLanguage ? 'active mr-2' : ' mr-2'}
+                  className={key === this.selectedLanguage ? 'active mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center' : ' mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center'}
                   onClick={() => {
                     this.makeCodeTemplate(key)
                   }}

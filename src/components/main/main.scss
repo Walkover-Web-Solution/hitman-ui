@@ -55,11 +55,12 @@ html body {
     justify-content: center;
 
     &::after {
-      border: none !important;
-      content: '\221F';
-      transform: rotate(-45deg);
+      // border: none !important;
+      // content: '\221F';
+      // transform: rotate(-45deg);
       position: relative;
-      top: -0.15rem;
+      top: 1px;
+      color: gray;
     }
   }
 

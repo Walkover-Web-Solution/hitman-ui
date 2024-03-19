@@ -34,6 +34,7 @@ import SelectVersion from './selectVersion/selectVersion'
 import CustomModal from '../customModal/customModal'
 import { MdOutlineSettings } from 'react-icons/md'
 import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
+import { MdExpandMore } from "react-icons/md"
 
 const mapStateToProps = (state) => {
   return {
@@ -460,7 +461,7 @@ class CollectionParentPages extends Component {
               >
                 <div className='d-flex align-items-center cl-name'>
                   <span className='versionChovron'>
-                    <img src={ExpandArrow} alt='' />
+                  <MdExpandMore className='fs-4'/>
                   </span>
                   <div
                     className='d-flex justify-content-between align-items-center name-parent-page'
