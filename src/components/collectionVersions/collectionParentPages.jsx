@@ -126,6 +126,7 @@ class CollectionParentPages extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    debugger
     if (prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
       this.setState({ selectedParentPageIds: {} })
     }
@@ -142,8 +143,8 @@ class CollectionParentPages extends Component {
     }
 
     if (prevProps?.pages?.[this.props?.rootParentId]?.child !== this.props?.pages?.[this.props?.rootParentId]?.child) {
-      let hello = this.checkIfSelectedVersionIdIsPresent()
-      if (!hello) {
+      let check = this.checkIfSelectedVersionIdIsPresent()
+      if (!check) {
         for (let index = 0; index < this.props?.pages?.[this.props?.rootParentId]?.child?.length; index++) {
           const versionId = this.props?.pages?.[this.props?.rootParentId]?.child?.[index]
           if (this.props?.pages?.[versionId]?.state === 1) {
@@ -152,6 +153,10 @@ class CollectionParentPages extends Component {
           }
         }
       }
+    }
+
+    if (this.props?.pages?.[this.state.selectedVersionId] && this.props?.pages?.[this.state.selectedVersionId]?.name !== prevState.selectedVersionName) {
+      this.setState({ selectedVersionName: this.props.pages?.[this.state.selectedVersionId]?.name })
     }
   }
 
