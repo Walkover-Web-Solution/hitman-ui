@@ -172,15 +172,23 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    if (this.props?.isEndpoint) {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = e.currentTarget.value
-      this.props.setQueryUpdatedData(tempData)
-      this.props.update_name({ id: this.props?.match?.params?.endpointId, name: e.currentTarget.value })
-    }
+    // console.log(343,this.props.endpointContent)
+    // if (this.props?.isEndpoint) {
+    //   const tempData = this.props?.endpointContent || {}
+    //   tempData.data.name = e.currentTarget.value
+    //   this.props.setQueryUpdatedData(tempData)
+    //   this.props.update_name({ id: this.props?.match?.params?.endpointId, name: e.currentTarget.value })
+    // }
+    this.setState({endpointTitle:e.target.value})
   }
 
   handleInputBlur() {
+    if (this.props?.isEndpoint) {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = this.state.endpointTitle
+      this.props.setQueryUpdatedData(tempData)
+      this.props.update_name({ id: this.props?.match?.params?.endpointId, name: this.state.endpointTitle })
+    }
     this.setState({ nameEditable: false })
     if (this.props?.match?.params?.endpointId !== 'new' && trimString(this.props?.endpointContent?.data?.name).length === 0) {
       const tempData = this.props?.endpointContent || {}
@@ -220,8 +228,8 @@ class EndpointBreadCrumb extends Component {
               className={['endpoint-name-input form-control', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
               name='enpoint-title'
               style={{ width: 'auto', textTransform: 'capitalize' }}
-              onChange={this.handleInputChange.bind(this)}
-              value={this.props?.isEndpoint && (this.props?.endpointContent?.data?.name || '')}
+              onChange={(e) => this.handleInputChange(e)}
+              value={this.state.endpointTitle}
               onBlur={() => {
                 this.handleInputBlur()
               }}
