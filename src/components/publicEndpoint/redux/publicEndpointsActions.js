@@ -3,6 +3,8 @@ import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'
 import endpointApiService from '../../endpoints/endpointApiService.js'
 import { SESSION_STORAGE_KEY } from '../../common/utility.js'
+import { toast } from 'react-toastify'
+
 
 export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) => {
   return (dispatch) => {
@@ -52,6 +54,7 @@ export const approvePage = (page, publishPageLoaderHandler) => {
       .then((response) => {
         dispatch(onPageStateSuccess(response.data))
         publishPageLoaderHandler()
+        toast.success("Page published succesfully")
       })
       .catch((error) => {
         dispatch(onPageStateError(error.response ? error.response.data : error))
@@ -65,6 +68,7 @@ export const draftPage = (page) => {
       .draftPage(page)
       .then((response) => {
         dispatch(onPageStateSuccess(response.data))
+        toast.success("Page unpublished successfully")
       })
       .catch((error) => {
         dispatch(onPageStateError(error.response ? error.response.data : error))
@@ -120,6 +124,7 @@ export const approveEndpoint = (endpoint, publishLoaderHandler) => {
       .then((response) => {
         dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: true }))
         publishLoaderHandler()
+        toast.success("Endpoint published successfully")
       })
       .catch((error) => {
         dispatch(onEndpointStateError(error.response ? error.response.data : error))
@@ -134,6 +139,7 @@ export const draftEndpoint = (endpoint) => {
       .draftEndpoint(endpoint)
       .then((response) => {
         dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: false }))
+        toast.success("Endpoint unpublished successfully")
       })
       .catch((error) => {
         dispatch(onEndpointStateError(error.response ? error.response.data : error))
