@@ -155,7 +155,12 @@ class CollectionParentPages extends Component {
     }
 
     if (this.props?.pages?.[this.state.selectedVersionId] && this.props?.pages?.[this.state.selectedVersionId]?.name !== prevState.selectedVersionName) {
-      this.setState({ selectedVersionName: this.props.pages?.[this.state.selectedVersionId]?.name })
+      if (prevState.selectedVersionId === prevState.defaultVersionId) {
+        this.setState({ selectedVersionName: this.props.pages?.[this.state.selectedVersionId]?.name, defaultVersionName: this.props.pages?.[this.state.selectedVersionId]?.name })
+      }
+      else {
+        this.setState({ selectedVersionName: this.props.pages?.[this.state.selectedVersionId]?.name })
+      }
     }
   }
 
