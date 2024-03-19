@@ -61,6 +61,7 @@ export default function RenderData(props) {
     <div>
       {listData?.map((singleId, index) => {
         const type = getType(singleId)
+        debugger
         switch (type) {
           case 'collection':
             return (

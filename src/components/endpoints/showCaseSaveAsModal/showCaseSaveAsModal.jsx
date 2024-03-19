@@ -45,6 +45,7 @@ export default function ShowCaseSaveAsModal(props) {
   }
 
   const handleSave = () => {
+    debugger
     const currentId = pathData[pathData.length - 1]
     props.save_endpoint(
       currentId,
@@ -62,6 +63,7 @@ export default function ShowCaseSaveAsModal(props) {
       <div className='d-flex justify-content-start align-items-center flex-wrap'>
         <span>Save to </span>
         {pathData.map((singleId, index) => {
+          debugger
           return (
             <div className='d-flex justify-content-start align-items-center'>
               {index !== 0 && <span className='ml-1'>/</span>}

@@ -69,6 +69,7 @@ class SaveAsSidebar extends Form {
   }
 
   renderEndpointNameInput() {
+    debugger
     return (
       <Input
         ref={this.endpointInputRef}
@@ -85,6 +86,7 @@ class SaveAsSidebar extends Form {
   }
 
   renderSaveAsExistingEndpointInput() {
+    debugger
     return (
       <Input
         value={this.state.data.name}
@@ -100,6 +102,7 @@ class SaveAsSidebar extends Form {
   }
 
   render() {
+    debugger
     const title = this.state.data.name
     const saveAsSidebarStyle = {
       position: 'fixed',

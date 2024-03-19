@@ -16,6 +16,7 @@ class SavePromptModal extends Component {
   }
 
   async handleSave() {
+    debugger
     const { tabs, activeTabId } = this.props.tabs
     const tab = tabs[activeTabId]
     switch (tab.type) {
@@ -23,6 +24,9 @@ class SavePromptModal extends Component {
         await this.props.handle_save_page(true, this.props.tab_id)
         break
       case 'endpoint':
+        await this.props.handle_save_endpoint(true, this.props.tab_id)
+        break
+      case 'history':
         await this.props.handle_save_endpoint(true, this.props.tab_id)
         break
       default:

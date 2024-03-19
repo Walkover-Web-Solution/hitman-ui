@@ -172,20 +172,16 @@ const getEndpointContent = async (props) => {
     let data = isOnPublishedPage() ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
     // showing data from draft if data is modified
     if(props?.tabs[endpointId]?.isModified && props?.tabs[endpointId]?.draft){
-     data = props?.tabs[endpointId]?.draft
+     return props?.tabs[endpointId]?.draft
     }
-    const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
-    return modifiedData
+    return   utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
   } else {
     endpointId = props?.activeTabId
     // showing data from draft if data is modified
     if (props?.tabs[endpointId]?.isModified && props?.tabs[endpointId]?.draft) {
-      const data = props?.tabs[endpointId]?.draft
-      return data
+      return  props?.tabs[endpointId]?.draft
     } else {
-      const data = _.cloneDeep(untitledEndpointData)
-      store.dispatch(updateTabDraft(endpointId, data)) // updating draft data 
-      return data
+      return   _.cloneDeep(untitledEndpointData)
     }
   }
 }
@@ -194,12 +190,12 @@ const fetchHistory = (historyId, props) => {
   debugger
   const history = props?.historySnapshots[historyId]
   let data = history?.endpoint
+  let draftData = props?.tabs[historyId]?.draft;
   // showing data from draft if data is modified
-  if(props?.tabs[historyId]?.isModified && props?.tabs[historyId]?.draft){
-    data = props?.tabs[historyId]?.draft
+  if(props?.tabs[historyId]?.isModified && draftData ){
+    return  draftData
    }
-  const modifiedData = utilityFunctions.modifyEndpointContent(_.cloneDeep(data), _.cloneDeep(untitledEndpointData))
-  return modifiedData
+  return  utilityFunctions.modifyEndpointContent(_.cloneDeep(data), _.cloneDeep(untitledEndpointData))
 }
 
 const withQuery = (WrappedComponent) => {
@@ -238,7 +234,10 @@ const withQuery = (WrappedComponent) => {
         props?.match?.params.endpointId !== 'new' ? props?.match?.params?.endpointId || currentIdToShow || props?.match?.params?.historyId : props?.activeTabId
       data = _.cloneDeep(data);
       queryClient.setQueryData(queryKey, data)
-      store.dispatch(updateTabDraft(endpointId, data)) // updating draft data 
+      // only update the data if it is different from default data
+      if( !_.isEqual(untitledEndpointData, data)){
+        store.dispatch(updateTabDraft(endpointId, data)) // updating draft data
+      }
       if(callbackFn){
         callbackFn()
       } 
@@ -292,7 +291,8 @@ class DisplayEndpoint extends Component {
       docOptions: false,
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
-      endpointContentState: null
+      endpointContentState: null,
+      showEndpointFormModal:false
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -355,6 +355,7 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    console.log('this.state.dfgfdg == ', this.state.showEndpointFormModal)
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.extractEndpointName()
     }
@@ -1037,6 +1038,7 @@ class DisplayEndpoint extends Component {
       if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
+        debugger
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
@@ -1044,6 +1046,7 @@ class DisplayEndpoint extends Component {
           endpoint,
           id,
           ({ closeForm, stopLoader }) => {
+            debugger
             if (closeForm) this.closeEndpointFormModal()
             if (stopLoader) this.setState({ saveAsLoader: false })
           },
@@ -1227,6 +1230,7 @@ class DisplayEndpoint extends Component {
   }
 
   closeEndpointFormModal() {
+    debugger
     this.setState({ showEndpointFormModal: false, saveAsFlag: false })
   }
 
@@ -2604,7 +2608,7 @@ class DisplayEndpoint extends Component {
                 <LoginSignupModal show onHide={() => this.closeLoginSignupModal()} title='Save Endpoint' />
               )}
               {getCurrentUser() ? (
-                <div className={this.isDashboardAndTestingView() ? 'hm-panel' : null}>
+                <div className={true ? 'hm-panel' : null}>
                   <div className='d-flex justify-content-between'>
                     {this.renderToggleView()}
                     {this.renderDocViewOperations()}
