@@ -126,7 +126,6 @@ class CollectionParentPages extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    debugger
     if (prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
       this.setState({ selectedParentPageIds: {} })
     }
