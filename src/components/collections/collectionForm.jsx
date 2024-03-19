@@ -9,6 +9,7 @@ import { addCollection, updateCollection } from './redux/collectionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../common/constants'
 import { defaultViewTypes } from './defaultViewModal/defaultViewModal'
+import { toast } from 'react-toastify'
 
 const mapStateToProps = (state) => {
   return {
@@ -123,14 +124,27 @@ class CollectionForm extends Form {
   }
 
   async doSubmit(defaultView) {
+    const valid = Joi.validate(this.state.data, this.schema, {
+      abortEarly: false
+    })
     const body = this.state.data
     body.name = toTitleCase(body.name.trim())
     if (this.props.title === 'Edit Collection') {
+      if (valid?.error) {
+        const popup = valid?.error?.message?.trim().slice(39, valid?.error?.message?.length - 1)
+        toast.error(popup)
+      } else {
       this.onEditCollectionSubmit(defaultView)
+      }
     }
     if (this.props.title === 'Add new Collection') {
-      this.onAddCollectionSubmit(defaultView)
-      if (this.props.setDropdownList) this.props.onHide()
+      if (valid?.error) {
+        const popup = valid?.error?.message?.trim().slice(39, valid?.error?.message?.length - 1)
+        toast.error(popup)
+      } else {
+        this.onAddCollectionSubmit(defaultView)
+        if (this.props.setDropdownList) this.props.onHide()
+      }
     }
   }
 

@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import Form from '../common/form'
 import { onEnter, toTitleCase, ADD_GROUP_MODAL_NAME } from '../common/utility'
 import { updatePage } from '../pages/redux/pagesActions'
+import { toast } from 'react-toastify'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -20,7 +21,7 @@ class SubPageForm extends Form {
       errors: {}
     }
     this.schema = {
-      name: Joi.string().required().label('Page Name').max(20),
+      name: Joi.string().min(1).max(20).required().label('Page Name'),
       urlName: Joi.string()
         .optional()
         .allow(/[^a-zA-Z0-9\-_\.~]+/g)
@@ -42,10 +43,18 @@ class SubPageForm extends Form {
   }
 
   async doSubmit() {
+    const valid = Joi.validate(this.state.data, this.schema, {
+      abortEarly: false
+    });
     this.props.onHide()
     let { name, urlName } = { ...this.state.data }
 
     if (this.props.title === 'Rename') {
+      if(valid?.error){
+        const popup= valid?.error?.message?.trim().slice(33,valid?.error?.message?.length-1)
+        toast.error(popup)
+      }
+      else{
       const subPage = this.props?.pages?.[this.props.selectedPage]
       const endpoint = this.props?.endpoints?.[this.props.selectedEndpoint]
       const editedPage = {
@@ -56,6 +65,7 @@ class SubPageForm extends Form {
         state: subPage?.state || endpoint?.state
       }
       this.props.update_page(editedPage)
+    }
     }
   }
 
