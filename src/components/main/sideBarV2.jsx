@@ -637,8 +637,7 @@ class SideBarV2 extends Component {
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
     const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
     return (
-      <div className='hm-sidebar-header d-flex justify-content-between align-items-center'>
-        {this.props.collections?.[collectionKeys[0]]?.favicon  && (
+      <div className='hm-sidebar-header d-flex align-items-center'>
             <div className='hm-sidebar-logo'>
               <img
                 id='publicLogo'
@@ -653,7 +652,6 @@ class SideBarV2 extends Component {
                 height='60'
               />
             </div>
-          )}
         <h4 className='hm-sidebar-title'>
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documentation</span>
