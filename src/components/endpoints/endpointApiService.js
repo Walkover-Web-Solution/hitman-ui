@@ -1,6 +1,90 @@
-
+import http from '../../services/httpService'
 import httpService from '../../services/endpointHttpService'
+import indexedDbService from '../indexedDb/indexedDbService'
 import qs from 'qs'
+import { getOrgId } from '../common/utility'
+import { makeHttpRequestThroughAxios } from '../../services/coreRequestService'
+import { getProxyToken } from '../auth/authServiceV2'
+
+const apiUrlEndpoint = process.env.REACT_APP_API_URL
+
+function getApiUrl() {
+  const orgId = getOrgId()
+  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+}
+
+function endpointUrlForCollection(pageId) {
+  const apiUrl = getApiUrl()
+  return `${apiUrl}/pages/${pageId}/endpoints`
+}
+
+export function apiTest(api, method, body, headers, bodyType, cancelToken) {
+  if (api.indexOf('localhost') > 0 || api.indexOf('127.0.0.1') > 0) {
+    return makeHttpRequestThroughAxios({ api, method, body, headers, bodyType, cancelToken })
+  } else {
+    const data = {
+      url: api,
+      method,
+      data: bodyType === 'urlEncoded' ? qs.stringify({ body }) : body,
+      headers
+    }
+    return httpService.post(`${apiUrlEndpoint}/test-apis/run`, data, { cancelToken })
+  }
+}
+
+export function getAllEndpoints(id) {
+  return http.get(`${apiUrlEndpoint}/orgs/${id}/endpoints`)
+}
+
+export function getEndpoints(parentId) {
+  return http.get(endpointUrlForCollection(parentId))
+}
+
+export async function getEndpoint(endpointId) {
+  const apiUrl = getApiUrl()
+  return (await http.get(`${apiUrl}/endpoints/${endpointId}`))?.data
+}
+
+export function saveEndpoint(rootParentId, endpoint) {
+  return http.post(endpointUrlForCollection(rootParentId), endpoint)
+}
+
+export function updateEndpoint(endpointId, endpoint) {
+  const apiUrl = getApiUrl()
+  return http.put(`${apiUrl}/endpoints/${endpointId}`, endpoint)
+}
+
+export function deleteEndpoint(endpointId, endpoint) {
+  const apiUrl = getApiUrl()
+  return http.delete(`${apiUrl}/endpoints/${endpointId}`, { data: endpoint })
+}
+
+export function duplicateEndpoint(endpointId) {
+  const apiUrl = getApiUrl()
+  return http.post(`${apiUrl}/duplicateEndpoints/${endpointId}`)
+}
+
+export function moveEndpoint(endpointId, body) {
+  const apiUrl = getApiUrl()
+  return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body)
+}
+
+export function updateEndpointOrder(
+  endpointsOrder
+  // sourceGroupId = null,
+  // destinationEndpointIds = null,
+  // destinationGroupId = null,
+  // endpointId = null
+) {
+  const apiUrl = getApiUrl()
+  return http.patch(`${apiUrl}/updateEndpointsOrder`, {
+    endpointsOrder
+    // sourceGroupId,
+    // destinationEndpointIds,
+    // destinationGroupId,
+    // endpointId
+  })
+}
 
 function makeParams(params, grantType, authData) {
   let finalHeaders = {}
@@ -91,4 +175,22 @@ export async function setResponse(props, responseData) {
   await props.set_authorization_responses(versionId, authResponses)
 }
 
-export default { authorize }
+export function setAuthorizationType(endpointId, data) {
+  const apiUrl = getApiUrl()
+  return http.patch(`${apiUrl}/endpoints/${endpointId}/authorizationType`, data)
+}
+
+export default {
+  getEndpoints,
+  deleteEndpoint,
+  apiTest,
+  updateEndpoint,
+  getEndpoint,
+  getAllEndpoints,
+  duplicateEndpoint,
+  moveEndpoint,
+  authorize,
+  setAuthorizationType,
+  updateEndpointOrder,
+  saveEndpoint
+}
