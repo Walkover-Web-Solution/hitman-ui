@@ -101,8 +101,10 @@
     "npm": "9.6.7"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
+    "build:test": "dotenv -e .env.test npm run build",
+    "build:prod": "dotenv -e .env.prod npm run build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "postinstall": "husky install",
