@@ -650,7 +650,7 @@ const deleteSidebarData = (pages, tabs, pageId, deletedTabIds, deletedIds) => {
   }
 }
 
-export const deleteAllPagesAndTabsAndReactQueryData = async (pageId) => {
+export const deleteAllPagesAndTabsAndReactQueryData = async (pageId,collectionId) => {
   try {
     const deletedTabIds = new Set() // to keep set of ids deleted
 
@@ -665,7 +665,17 @@ export const deleteAllPagesAndTabsAndReactQueryData = async (pageId) => {
     let { pages, tabs } = store.getState()
     pages = _.cloneDeep(pages)
     tabs = _.cloneDeep(tabs)
+   
+      if (collectionId && tabs.tabs?.[collectionId]) {
+        delete tabs.tabs[collectionId];
+        tabs.tabsOrder = tabs.tabsOrder.filter(tab => tab !== collectionId);
+        if (tabs?.activeTabId == collectionId) {
+          foundActiveTabId = true
+        }
+        
+    }
 
+    
     // update the parent's child
     let parentId = pages[pageId].parentId
     if (parentId != null) {
