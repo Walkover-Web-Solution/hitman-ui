@@ -65,6 +65,7 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           }
         }
         dispatch(onParentPageAdded(inivisiblePageData))
+        toast.success("Collection added successfully")
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
         }

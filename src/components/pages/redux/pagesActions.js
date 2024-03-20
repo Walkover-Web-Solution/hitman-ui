@@ -119,7 +119,7 @@ export const addPage = (history, rootParentId, newPage) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
         history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
-        toast.success("Added successfully")
+        toast.success("Page Added successfully")
       })
       .catch((error) => {
         dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))

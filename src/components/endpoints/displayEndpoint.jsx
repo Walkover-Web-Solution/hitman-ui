@@ -1055,7 +1055,7 @@ class DisplayEndpoint extends Component {
       if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
-        toast.success("Endpoint saved successfully")
+        toast.success("Endpoint created successfully")
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })

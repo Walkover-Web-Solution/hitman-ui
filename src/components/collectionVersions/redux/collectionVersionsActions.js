@@ -12,7 +12,6 @@ export const updateVersion = (editedVersion) => {
       .updateCollectionVersion(id, { number, host })
       .then((response) => {
         dispatch(onVersionUpdated(response.data))
-        toast.success("Version added successfully")
       })
       .catch((error) => {
         dispatch(onVersionUpdatedError(error.response ? error.response.data : error))
