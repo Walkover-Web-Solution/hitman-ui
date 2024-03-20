@@ -3,7 +3,7 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import Form from '../common/form'
-import { onEnter, toTitleCase, ADD_GROUP_MODAL_NAME } from '../common/utility'
+import { onEnter, ADD_GROUP_MODAL_NAME, validate } from '../common/utility'
 import { updatePage } from '../pages/redux/pagesActions'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -20,7 +20,7 @@ class SubPageForm extends Form {
       errors: {}
     }
     this.schema = {
-      name: Joi.string().required().label('Page Name').max(20),
+      name: Joi.string().min(1).max(100).required().label('Name'),
       urlName: Joi.string()
         .optional()
         .allow(/[^a-zA-Z0-9\-_\.~]+/g)
@@ -42,11 +42,16 @@ class SubPageForm extends Form {
   }
 
   async doSubmit() {
+    const errors = validate({ name: this.state.data.name }, this.schema)
+    if (errors) {
+      this.setState({ errors })
+      return null
+    }
     this.props.onHide()
     let { name, urlName } = { ...this.state.data }
 
     if (this.props.title === 'Rename') {
-      const subPage = this.props?.pages?.[this.props.selectedPage]
+    const subPage = this.props?.pages?.[this.props.selectedPage]
       const endpoint = this.props?.endpoints?.[this.props.selectedEndpoint]
       const editedPage = {
         ...this.state.data,
@@ -81,7 +86,7 @@ class SubPageForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-12'>
-                  {this.renderInput('name', 'Name', nameTitle, true, false, false, '*name accepts min 1 & max 20 characters')}
+                  {this.renderInput('name', 'Name', nameTitle, true, false, false, '*name accepts min 1 & max 100 characters')}
                 </div>
                 <div className='col-12'>
                   {this.renderInput(
