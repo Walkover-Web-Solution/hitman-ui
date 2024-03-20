@@ -425,8 +425,9 @@ class CollectionParentPages extends Component {
 
   versionDropDown(rootId) {
     return (
+      // <div className='version-dropdown'>
       <DropdownButton
-        className=''
+        className='version-dropdown'
         id='dropdown-basic-button'
         onClick={(e) => e.stopPropagation()}
         title={
@@ -439,6 +440,7 @@ class CollectionParentPages extends Component {
           </Dropdown.Item>
         ))}
       </DropdownButton>
+      // </div>
     )
   }
 
@@ -473,7 +475,7 @@ class CollectionParentPages extends Component {
                     onDragEnd={(e) => this.props.onDragEnd(e)}
                     style={this.props.draggingOverId === pageId ? { border: '3px solid red' } : null}
                   >
-                    <div className='text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
+                    <div className='text-truncate d-inline sss'>{this.props.pages[pageId]?.name}</div>
                     {!isUserOnPublishedPage ? (
                       this.versionDropDown(rootId)
                     ) : (

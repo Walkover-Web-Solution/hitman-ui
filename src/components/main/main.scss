@@ -43,7 +43,25 @@ html body {
   float: left;
 }
 
+.version-dropdown{
+  // background-color: #cc0000 !important;
+  // .dropdown{
+    .dropdown-toggle{
+
+      &::after {
+        border: outset !important;
+        content: '' !important;
+        transform: rotate(45deg) !important;
+        position: relative;
+        top: -2px;
+        color: gray;
+      }
+    }
+  }
+// }
+
 .dropdown {
+
   font-size: $font-normal !important;
   font-weight: 400;
   color: #d6d6d6;
@@ -55,12 +73,12 @@ html body {
     justify-content: center;
 
     &::after {
-      // border: none !important;
-      // content: '\221F';
-      // transform: rotate(-45deg);
+      border: none;
+      content: '\221F';
+      transform: rotate(-45deg);
       position: relative;
-      top: 1px;
-      color: gray;
+      top: -2px;
+      // color: gray;
     }
   }
 

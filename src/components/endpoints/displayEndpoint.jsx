@@ -1811,6 +1811,7 @@ class DisplayEndpoint extends Component {
           </div>
           <div className='tab-content responseTabWrapper' id='pills-tabContent'>
             <div
+            
               className='tab-pane fade show active'
               id={this.isDashboardAndTestingView() ? `response-${this.props.tab.id}` : 'response'}
               role='tabpanel'
@@ -2621,7 +2622,7 @@ class DisplayEndpoint extends Component {
               )}
               {getCurrentUser() ? (
                 <>
-                { this.isDashboardAndTestingView() &&  (
+                {isDashboardRoute(this.props) &&  (
                   <div className="hm-panel">
                   <div className='d-flex justify-content-between'>
                     {this.renderToggleView()}
@@ -2884,7 +2885,7 @@ class DisplayEndpoint extends Component {
                 )}
               </div>
               {/* <ApiDocReview {...this.props} /> */}
-          <span className='d-lg-block d-none'>{isOnPublishedPage() && <Footer/>}</span>
+          <span className='d-lg-inline d-none'>{isOnPublishedPage() && <Footer/>}</span>
 
             </div>
 
@@ -2922,7 +2923,7 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
-          <span className='d-lg-none d-md-block'>{isOnPublishedPage() && <Footer/>}</span>
+          <span className='d-lg-none d-inline'>{isOnPublishedPage() && <Footer/>}</span>
       </div>
     ) : null
   }
