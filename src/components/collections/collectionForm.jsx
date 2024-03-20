@@ -45,7 +45,7 @@ class CollectionForm extends Form {
     }
 
     this.schema = {
-      name: Joi.string().min(3).max(20).trim().required().label('Collection Name'),
+      name: Joi.string().min(3).max(50).trim().required().label('Collection Name'),
       description: Joi.string().allow(null, '').label('Description'),
       defaultView: Joi.string().allow(null, '').label('Default View')
     }
@@ -142,7 +142,7 @@ class CollectionForm extends Form {
   renderCollectionDetailsForm() {
     return (
       <>
-        {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}
+        {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 50 characters')}
         {this.renderSaveButton()}
       </>
     )

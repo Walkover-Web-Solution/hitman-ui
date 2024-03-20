@@ -40,7 +40,7 @@ export class DefaultViewModal extends Form {
     }
 
     this.schema = {
-      name: Joi.string().required().label('Page name'),
+      name: Joi.string().min(1).max(100).required().label('Page name'),
       contents: Joi.string().allow(null, ''),
       state: Joi.valid(0, 1, 2, 3)
     }
@@ -96,7 +96,7 @@ export class DefaultViewModal extends Form {
     return (
       <div className='mt-5'>
         {/* <div className='d-flex gap-5 justify-content-center mt-5'> */}
-        {this.renderInput('name', 'Name', this.props.title, 'Page name', false, false, '*name accepts min 1 & max 20 characters')}
+        {this.renderInput('name', 'Name', this.props.title, 'Page name', false, false, '*name accepts min 1 & max 100 characters')}
         <div className='text-left mt-4 mx-2'>
           <Button onClick={this.handleSubmit}>Submit</Button>
         </div>
