@@ -74,6 +74,7 @@ const AddVersion = (props) => {
     const parentPageId = props?.parentPageId
     const newVersion = { name: newVersionNameInputRef.current.value.trim(), state: 0 }
     newVersionNameInputRef.current.value = ''
+    toast.success("Version added successfully")
     dispatch(addParentPageVersion(newVersion, parentPageId))
   }
 

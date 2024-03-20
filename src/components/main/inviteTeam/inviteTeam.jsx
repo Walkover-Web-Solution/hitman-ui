@@ -154,14 +154,14 @@ function InviteTeam() {
                 <td>{user.email}</td>
                 <td>Admin</td>
                 <td>
-                  <button
+                  {/* <button
                     className='editButton'
-                    onClick={() => {
-                      /* logic to edit user */
-                    }}
+                    onClick={() => { */}
+                     
+                    {/* }}
                   >
                     Edit
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}
