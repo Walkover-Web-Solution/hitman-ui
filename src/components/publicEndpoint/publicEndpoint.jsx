@@ -9,11 +9,8 @@ import { ERROR_404_PUBLISHED_PAGE } from '../../components/errorPages'
 import '../collections/collections.scss'
 import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
-// import SplitPane from 'react-split-pane'
 import SplitPane from '../splitPane/splitPane.js'
 import '../collectionVersions/collectionVersions.scss'
-// import ThumbUp from '../../assets/icons/thumb_up.svg'
-// import ThumbDown from '../../assets/icons/thumb_down.svg'
 import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
@@ -134,7 +131,7 @@ class PublicEndpoint extends Component {
       // internal case here collectionId will be there always
       queryParamApi2.collectionId = collectionId
       queryParamApi2.path = url.pathname.slice(3) // ignoring '/p/' in pathName
-      this.props.add_collection_and_pages(null, { collectionId: collectionId })
+      this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true})
     } else if (!isTechdocOwnDomain()) {
       // external case
       queryParamApi2.custom_domain = window.location.hostname // setting hostname
@@ -158,8 +155,14 @@ class PublicEndpoint extends Component {
     // Remove the last '&' character
     queryParamsString = queryParamsString.slice(0, -1)
 
-    const response = await generalApiService.getPublishedContentByPath(queryParamsString)
-    this.setDataToReactQueryAndSessionStorage(response)
+    try{
+      const response = await generalApiService.getPublishedContentByPath(queryParamsString)
+      this.setDataToReactQueryAndSessionStorage(response)
+    }catch(e){
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, 'undefined')
+      this.setState({ idToRenderState: 'undefined' })
+    }
+    
   }
 
   async componentDidUpdate(prevState) {
