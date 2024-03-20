@@ -111,7 +111,7 @@ class Navbar extends Component {
             Import open API
           </button>
 
-          {/* <div className="dropdown" id="nav-left-buttons"> */}
+          {/* down" id="nav-left-buttons"> */}
           <div className='dropdown nav-left-button-2'>
             <button
               className='btn btn-secondary dropdown-toggle '

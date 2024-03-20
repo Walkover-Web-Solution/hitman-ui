@@ -65,14 +65,10 @@ class CodeTemplate extends Component {
     }
   }
 
-  // toggleCodeEditor() {
-  //   this.props.editorToggle()
-  // }
 
   render() {
-    const { theme } = this.state
     return (
-      <div className='pubCodeWrapper'>
+      <div className='pubCodeWrapper '>
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
             <div className='code-heading mb-3 d-flex justify-content-center'>
@@ -82,7 +78,7 @@ class CodeTemplate extends Component {
               {primaryLanguages.map((key) => (
                 <button
                   key={key}
-                  className={key === this.selectedLanguage ? 'active mr-2' : ' mr-2'}
+                  className={key === this.selectedLanguage ? 'active mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center' : ' mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center'}
                   onClick={() => {
                     this.makeCodeTemplate(key)
                   }}
@@ -91,8 +87,9 @@ class CodeTemplate extends Component {
                   {languages[key].name}
                 </button>
               ))}
-              <Dropdown>
-                <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active' : ''}>
+              <button className='codeTemplateButtonMore mr-2 d-flex justify-content-center align-items-center'>
+              <Dropdown >
+                <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore' : 'dropdownMore'}>
                   {primaryLanguages.includes(this.selectedLanguage) ? (
                     <span>More</span>
                   ) : (
@@ -114,6 +111,7 @@ class CodeTemplate extends Component {
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
+              </button>
             </div>
           </Col>
           <Col className='editor-body-wrapper' xs={12}>

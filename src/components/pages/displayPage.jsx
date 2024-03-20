@@ -144,7 +144,7 @@ class DisplayPage extends Component {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div>
+        <div className='pt-3'> 
           {isOnPublishedPage() && <h2>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
           <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
         </div>
@@ -158,7 +158,9 @@ class DisplayPage extends Component {
       this.fetchPage(pageId)
     }
     return isOnPublishedPage() ? (
-      <h3 className='page-heading-pub'>{this.state.data?.name || ''}</h3>
+      <>
+      { this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}
+      </>
     ) : (
       <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
     )

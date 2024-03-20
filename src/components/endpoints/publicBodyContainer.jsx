@@ -458,7 +458,7 @@ class PublicBodyContainer extends Component {
                     $blockScrolling: false
                   }}
                   onLoad={(editor) => {
-                    editor.focus()
+                    editor.focus();
                     editor.getSession().setUseWrapMode(true)
                     editor.setShowPrintMargin(false)
                   }}
@@ -490,7 +490,9 @@ class PublicBodyContainer extends Component {
                   $blockScrolling: false
                 }}
                 onLoad={(editor) => {
-                  editor.focus()
+                  if (window.innerWidth > 425) { // Adjust the threshold width as per your mobile view requirement
+                    editor.focus();
+                  }
                   editor.getSession().setUseWrapMode(true)
                   editor.setShowPrintMargin(false)
                 }}
