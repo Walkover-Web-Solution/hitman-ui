@@ -51,7 +51,6 @@ function TokenGenerator(props) {
   const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId;
   const queryKey = ['endpoint', endpointId];
 
-  // const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) : JSON.parse(localStorage.getItem(activeTabId)) || {};
   const endpointStoredData = useQuery(queryKey).data
 
   const [data, setData] = useState({
