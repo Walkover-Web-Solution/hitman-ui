@@ -53,7 +53,7 @@ export const updatePage = (history, editedPage) => {
       .updatePage(editedPage.id, dataToSend)
       .then((response) => {
         dispatch(onPageUpdated(response.data))
-        toast.success("Page updated successfully")
+        toast.success("Updated successfully")
         return response.data
       })
       .catch((error) => {
