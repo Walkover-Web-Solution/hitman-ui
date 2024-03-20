@@ -187,7 +187,7 @@ class EndpointBreadCrumb extends Component {
     }
   
     if (endpointId !== 'new' && trimmedName.length === 0) {
-      const newName = pages?.[endpointId]?.name || 'Untitled';
+      const newName = pages?.[endpointId]?.name;
       setQueryUpdatedData({ ...endpointContent, data: { ...endpointContent.data, name: newName } });
     } else if (endpointId === 'new' && !endpointContent?.data?.name) {
       setQueryUpdatedData({ ...endpointContent, data: { ...endpointContent.data, name: 'Untitled' } });
