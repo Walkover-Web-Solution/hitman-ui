@@ -69,7 +69,10 @@ const untitledEndpointData = {
       description: ''
     }
   ],
-  authType: null,
+  authorizationData: {
+    authorization: {},
+    authorizationTypeSelected: ''
+  },
   oldDescription: '',
   headers: {},
   publicBodyFlag: true,
@@ -597,7 +600,7 @@ const modifyEndpointContent = (endpointData, untitledData = untitledEndpointData
   untitled.data.body = endpoint.body
   untitled.data.uri = endpoint.uri
   untitled.data.updatedUri = endpoint.uri
-  untitled.authType = endpoint.authorizationType
+  untitled.authorizationData = endpoint?.authorizationData || untitled.authorizationData;
   const headersData = Object.keys(endpoint.headers).map((key) => {
     return { key, ...endpoint.headers[key] }
   })
@@ -631,7 +634,6 @@ const modifyEndpointContent = (endpointData, untitledData = untitledEndpointData
   untitled.host['BASE_URL'] = endpoint.BASE_URL
   untitled.testResponse = {}
   untitled.flagResponse = false;
-  untitled.oauth2 = endpoint.oauth2;
   return { ...untitled }
 }
 

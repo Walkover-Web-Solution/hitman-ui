@@ -48,7 +48,7 @@ export default function Auth2Configurations(props) {
                     </div>
                 </form>
             </div>
-            <TokenGenerator onHide={handleGenerateToken} show={true} title='Get new access token' {...props} />
+            <TokenGenerator onHide={handleGenerateToken} show={showTokenGenerator} title='Get new access token' {...props} />
         </>
     )
 }

@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import endpointApiService from './endpointApiService'
 import { useParams } from 'react-router'
-import { useQueryClient } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 import './endpoints.scss'
+import { useSelector } from 'react-redux'
 
 const URI = require('urijs')
 
@@ -38,30 +39,36 @@ const codeMethodTypes = {
 }
 
 function TokenGenerator(props) {
-
+  const { activeTabId } = useSelector((state) => {
+    return {
+      activeTabId: state.tabs.activeTabId,
+    }
+  })
   const params = useParams();
 
   const queryClient = useQueryClient()
 
-  const queryKey = ['endpoint', params.endpointId];
+  const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId;
+  const queryKey = ['endpoint', endpointId];
 
-  const endpointStoredData = queryClient.getQueryData(queryKey);
+  // const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) : JSON.parse(localStorage.getItem(activeTabId)) || {};
+  const endpointStoredData = useQuery(queryKey).data
 
   const [data, setData] = useState({
-    tokenName: endpointStoredData.oauth2.tokenName || 'Token Name',
-    selectedGrantType: endpointStoredData.oauth2.selectedGrantType || grantTypes.authorizationCode,
-    callbackUrl: endpointStoredData.oauth2.callbackUrl || '',
-    authUrl: endpointStoredData.oauth2.authUrl || '',
-    username: endpointStoredData.oauth2.username || '',
-    password: endpointStoredData.oauth2.password || '',
-    accessTokenUrl: endpointStoredData.oauth2.accessTokenUrl || '',
-    clientId: endpointStoredData.oauth2.clientId || '',
-    clientSecret: endpointStoredData.oauth2.clientSecret || '',
-    scope: endpointStoredData.oauth2.scope || '',
-    state: endpointStoredData.oauth2.state || '',
-    clientAuthentication: endpointStoredData.oauth2.clientAuthentication || 'Send as Basic Auth header',
-    codeMethod: endpointStoredData.oauth2.codeMethod || codeMethodTypes.sh256,
-    codeVerifier: endpointStoredData.oauth2.codeVerifier || '',
+    tokenName: endpointStoredData?.authorizationData?.authorization?.oauth2?.tokenName || 'Token Name',
+    selectedGrantType: endpointStoredData?.authorizationData?.authorization?.oauth2?.selectedGrantType || grantTypes.authorizationCode,
+    callbackUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.callbackUrl || '',
+    authUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.authUrl || '',
+    username: endpointStoredData?.authorizationData?.authorization?.oauth2?.username || '',
+    password: endpointStoredData?.authorizationData?.authorization?.oauth2?.password || '',
+    accessTokenUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.accessTokenUrl || '',
+    clientId: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientId || '',
+    clientSecret: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientSecret || '',
+    scope: endpointStoredData?.authorizationData?.authorization?.oauth2?.scope || '',
+    state: endpointStoredData?.authorizationData?.authorization?.oauth2?.state || '',
+    clientAuthentication: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientAuthentication || 'Send as Basic Auth header',
+    codeMethod: endpointStoredData?.authorizationData?.authorization?.oauth2?.codeMethod || codeMethodTypes.sh256,
+    codeVerifier: endpointStoredData?.authorizationData?.authorization?.oauth2?.codeVerifier || '',
   })
 
   async function makeRequest() {
@@ -144,15 +151,21 @@ function TokenGenerator(props) {
     setData((prev) => { return { ...prev, [key]: e.target.value } })
   }
 
-  function handleInputFieldChange(e, key) {
-    setData((prev) => { return { ...prev, [key]: e.target.value } })
-  }
-
   function handleSaveConfiguration() {
     const endpointDataToSend = endpointStoredData;
-    endpointDataToSend.oauth2 = data
+    if (!(endpointDataToSend?.authorizationData?.authorization?.oauth2)) {
+      endpointDataToSend.authorizationData.authorization = { oauth2: {} }
+    }
+    endpointDataToSend.authorizationData.authorization.oauth2 = { ...endpointDataToSend.authorizationData.authorization.oauth2, ...data }
     queryClient.setQueryData(queryKey, endpointDataToSend)
-    props.handleSaveEndpoint(params.endpointId, endpointDataToSend)
+    if (params.endpointId === 'new') {
+      localStorage.setItem(activeTabId, JSON.stringify(endpointDataToSend));
+      props.handleSaveEndpoint(null, endpointDataToSend)
+      props.onHide();
+      return;
+    }
+    props.onHide();
+    props.handleSaveEndpoint(endpointId, endpointDataToSend)
   }
 
   function renderInput(key) {
@@ -302,8 +315,12 @@ function TokenGenerator(props) {
     setData((prev) => { return { ...prev, codeMethod: value } })
   }
 
+  const closeModal = () => {
+    props.onHide()
+  }
+
   return (
-    <Modal onHide={props?.onHide} id='modal-new-token-generator' size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered show={props?.show}>
+    <Modal onHide={closeModal} id='modal-new-token-generator' size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered show={props?.show}>
 
       <Modal.Header className='custom-collection-modal-container' closeButton>
         <Modal.Title id='contained-modal-title-vcenter'>{props?.title}</Modal.Title>

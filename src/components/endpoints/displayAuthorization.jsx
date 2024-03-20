@@ -3,11 +3,15 @@ import TokenGenerator from './newTokenGenerator'
 import AccessTokenManager from './displayTokenManager';
 import './endpoints.scss'
 import Auth2Configurations from './authConfiguration/auth2Configurations';
+import { useParams } from 'react-router';
+import { useQuery, useQueryClient } from 'react-query';
+import { useSelector } from 'react-redux';
+import { cloneDeep } from 'lodash';
 
 const authorizationTypes = {
   noAuth: 'No Auth',
   basicAuth: 'Basic Auth',
-  oauth_2: 'OAuth 2.0',
+  oauth2: 'OAuth 2.0',
 }
 
 const addAuthorizationDataTypes = {
@@ -18,8 +22,25 @@ const addAuthorizationDataTypes = {
 
 export default function Authorization(props) {
 
-  const [selectedAuthorizationType, setSelectedAuthorizationType] = useState(authorizationTypes.noAuth)
-  const [addAuthorizationDataToForAuth2, setAddAuthorizationDataToForAuth2] = useState(addAuthorizationDataTypes.select)
+  const { activeTabId } = useSelector((state) => {
+    return {
+      activeTabId: state.tabs.activeTabId,
+    }
+  })
+
+  const params = useParams();
+
+  const queryClient = useQueryClient()
+
+  const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId;
+  const queryKey = ['endpoint', endpointId];
+
+  const endpointStoredData = useQuery(queryKey).data
+
+  const [selectedAuthorizationType, setSelectedAuthorizationType] = useState(authorizationTypes[endpointStoredData?.authorizationData?.authorizationTypeSelected] || authorizationTypes.noAuth)
+  const [addAuthorizationDataToForAuth2, setAddAuthorizationDataToForAuth2] = useState(addAuthorizationDataTypes[endpointStoredData?.authorizationData?.authorization?.oauth2?.addAuthorizationRequestTo] || addAuthorizationDataTypes.select)
+  const [basicAuthData, setBasicAuthData] = useState({ username: endpointStoredData?.authorizationData?.authorization?.basicAuth?.username || '', password: endpointStoredData?.authorizationData?.authorization?.basicAuth?.password || '' })
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     window.addEventListener('message', receiveMessage, false);
@@ -30,62 +51,53 @@ export default function Authorization(props) {
   }
 
   function handleChange(e) {
-    // const basicAuth = { ...basicAuth }
-    // if (e.currentTarget.name === 'username') {
-    //   basicAuth.username = e.currentTarget.value
-    //   this.generateEncodedValue(e.currentTarget.value, basicAuth.password)
-    // } else if (e.currentTarget.name === 'password') {
-    //   basicAuth.password = e.currentTarget.value
-    //   this.generateEncodedValue(basicAuth.username, e.currentTarget.value)
-    // }
-    // this.setState({ basicAuth })
+    setBasicAuthData((prev) => { return { ...prev, [e.target.name]: e.target.value } })
+    if (e.target.name === 'username') {
+      props.set_authoriztaion_type('basicAuth', { username: e.target.value, password: basicAuthData.password })
+      generateEncodedValue(e.target.value, basicAuthData.password)
+    } else if (e.target.name === 'password') {
+      props.set_authoriztaion_type('basicAuth', { username: basicAuthData.password, password: e.target.value })
+      generateEncodedValue(basicAuthData.username, e.target.value)
+    }
   }
 
   function generateEncodedValue(username, password) {
-    const value = {
-      username,
-      password
+    const value = { username, password }
+    props.set_authoriztaion_type('basicAuth', value)
+    const encodedValue = btoa(`${username}:${password}`)
+    props.set_authorization_headers(encodedValue, 'Authorization.basicAuth')
+  }
+
+  const handleSelectAuthorizationType = (key) => {
+    const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) : JSON.parse(localStorage.getItem(activeTabId)) || {};
+    const dataToSave = cloneDeep(endpointStoredData);
+    dataToSave.authorizationData.authorizationTypeSelected = key;
+    queryClient.setQueriesData(queryKey, dataToSave);
+    if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
+    setSelectedAuthorizationType(authorizationTypes[key]);
+  }
+
+  const handleAddAuthorizationTo = (key) => {
+    const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) : JSON.parse(localStorage.getItem(activeTabId)) || {};
+    let dataToSave = cloneDeep(endpointStoredData);
+    if (dataToSave?.authorizationData?.authorization?.oauth2) {
+      dataToSave.authorizationData.authorization.oauth2 = { ...dataToSave?.authorizationData?.authorization?.oauth2, addAuthorizationRequestTo: key }
     }
-    // set_authoriztaion_type('basicAuth', value)
-    // const encodedValue = Buffer.from(username + ':' + password).toString('base64')
-    // // const encodedValue = new Buffer(username + ':' + password).toString(
-    // //   'base64'
-    // // )
-    // set_authorization_headers(encodedValue, 'Authorization.basicAuth')
+    else {
+      dataToSave.authorizationData.authorization = { oauth2: {} }
+      dataToSave.authorizationData.authorization.oauth2 = { ...dataToSave?.authorizationData?.authorization?.oauth2, addAuthorizationRequestTo: key }
+    }
+    queryClient.setQueriesData(queryKey, dataToSave);
+    if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
+    setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes[key]);
   }
 
-  function getNewAccessTokenModal() {
-
+  function handleShowPassword() {
+    setShowPassword(!showPassword)
   }
-
-  function closeGetNewAccessTokenModal() {
-  }
-
-  function openManageTokenModel() {
-  }
-
-  async function closeManageTokenModel() {
-
-  }
-
-  function selectAccessToken(index) {
-
-  }
-
-  function updateAccessToken(e) {
-
-  }
-
-  function showPassword() {
-
-  }
-
 
   return (
     <div className='authorization-panel'>
-      {/* {getNewAccessToken === true && (
-        
-      )} */}
       {/* {openManageTokenModel === true && (
         <AccessTokenManager
           {...this.props}
@@ -95,7 +107,7 @@ export default function Authorization(props) {
           title='MANAGE ACCESS TOKENS'
           set_access_token={this.setAccessToken.bind(this)}
           set_auth_responses={this.setAuthResponses.bind(this)}
-          accessToken={oauth_2.accessToken}
+          accessToken={oauth2.accessToken}
         />
       )} */}
       <div className='authorization-selector-wrapper'>
@@ -113,33 +125,28 @@ export default function Authorization(props) {
             </button>
             <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
               {Object.keys(authorizationTypes).map((key, index) => (
-                <button className='dropdown-item' onClick={() => setSelectedAuthorizationType(authorizationTypes[key])} key={index}>
+                <button className='dropdown-item' onClick={() => handleSelectAuthorizationType(key)} key={index}>
                   {authorizationTypes[key]}
                 </button>
               ))}
             </div>
           </div>
           <br />
-          {selectedAuthorizationType === authorizationTypes.oauth_2 && (
+          {selectedAuthorizationType === authorizationTypes.oauth2 && (
             <div>
               <label>Add authorization data to</label>
               <div className='dropdown'>
-                <button
-                  className='btn dropdown-toggle outline-border'
-                  id='dropdownMenuButton'
-                  data-toggle='dropdown'
-                  aria-haspopup='true'
-                  aria-expanded='false'
-                >
+                <button className='btn dropdown-toggle outline-border' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                   {addAuthorizationDataToForAuth2}
                 </button>
                 <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                  <button onClick={() => setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes.requestHeaders)} className='dropdown-item' >
-                    {addAuthorizationDataTypes.requestHeaders}
-                  </button>
-                  <button onClick={() => setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes.requestUrl)} className='dropdown-item' >
-                    {addAuthorizationDataTypes.requestUrl}
-                  </button>
+                  {Object.keys(addAuthorizationDataTypes).map((key, index) => {
+                    return (
+                      <button key={index} onClick={() => handleAddAuthorizationTo(key)} className='dropdown-item' >
+                        {addAuthorizationDataTypes[key]}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             </div>
@@ -160,7 +167,7 @@ export default function Authorization(props) {
             <input
               className='form-control'
               name='username'
-              // value={basicAuth.username}
+              value={basicAuthData.username}
               onChange={handleChange}
             />
             <label htmlFor='password'>Password</label>
@@ -170,18 +177,18 @@ export default function Authorization(props) {
                 id='password'
                 type={showPassword ? (showPassword === true ? null : 'password') : 'password'}
                 name='password'
-                // value={basicAuth.password}
+                value={basicAuthData.password}
                 onChange={handleChange}
               />
               <label className='mb-3 ml-3'>
-                <input className='mr-1' type='checkbox' onClick={() => showPassword()} />
+                <input className='mr-1' type='checkbox' onClick={handleShowPassword} />
                 Show Password
               </label>
             </div>
           </form>
         </div>
       )}
-      {selectedAuthorizationType === authorizationTypes.oauth_2 && <Auth2Configurations handleSaveEndpoint={props?.handleSaveEndpoint} />}
+      {selectedAuthorizationType === authorizationTypes.oauth2 && <Auth2Configurations handleSaveEndpoint={props?.handleSaveEndpoint} />}
     </div>
   )
 }
