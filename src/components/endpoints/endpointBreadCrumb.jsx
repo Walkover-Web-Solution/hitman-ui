@@ -176,23 +176,26 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputBlur() {
-    if (this.props?.isEndpoint) {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = this.state.endpointTitle
-      this.props.setQueryUpdatedData(tempData)
-      this.props.update_name({ id: this.props?.match?.params?.endpointId, name: this.state.endpointTitle })
+    const { match, isEndpoint, endpointContent, setQueryUpdatedData, update_name, pages } = this.props;
+    const endpointId = match?.params?.endpointId;
+    const trimmedName = trimString(endpointContent?.data?.name);
+  
+    if (isEndpoint) {
+      const tempData = { ...endpointContent, data: { ...endpointContent.data, name: this.state.endpointTitle } };
+      setQueryUpdatedData(tempData);
+      update_name({ id: endpointId, name: this.state.endpointTitle });
     }
-    this.setState({ nameEditable: false })
-    if (this.props?.match?.params?.endpointId !== 'new' && trimString(this.props?.endpointContent?.data?.name).length === 0) {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = this.props?.pages?.[this.props?.match?.params?.endpointId]?.name
-      this.props.setQueryUpdatedData(tempData)
-    } else if (this.props?.match?.params?.endpointId === 'new' && !this.props?.endpointContent?.data?.name) {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = 'Untitled'
-      this.props.setQueryUpdatedData(tempData)
+  
+    if (endpointId !== 'new' && trimmedName.length === 0) {
+      const newName = pages?.[endpointId]?.name || 'Untitled';
+      setQueryUpdatedData({ ...endpointContent, data: { ...endpointContent.data, name: newName } });
+    } else if (endpointId === 'new' && !endpointContent?.data?.name) {
+      setQueryUpdatedData({ ...endpointContent, data: { ...endpointContent.data, name: 'Untitled' } });
     }
+  
+    this.setState({ nameEditable: false });
   }
+  
 
   setEndpointData() {
     this.endpointId = this.props?.match?.params.endpointId
