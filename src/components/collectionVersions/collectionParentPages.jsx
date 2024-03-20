@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Card, Dropdown, Accordion, DropdownButton, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { RiArrowDropDownLine } from "react-icons/ri";
 import ShareVersionForm from './shareVersionForm'
 import collectionVersionsService from './collectionVersionsService'
 import {
@@ -460,7 +461,7 @@ class CollectionParentPages extends Component {
               >
                 <div className='d-flex align-items-center cl-name'>
                   <span className='versionChovron'>
-                    <img src={ExpandArrow} alt='' />
+                  <RiArrowDropDownLine className='custom-icon' size={40} />
                   </span>
                   <div
                     className='d-flex justify-content-between align-items-center name-parent-page'

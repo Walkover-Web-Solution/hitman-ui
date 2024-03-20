@@ -13,6 +13,7 @@ import {
 import { reorderEndpoint } from '../endpoints/redux/endpointsActions'
 import ShareGroupForm from '../groups/shareGroupForm'
 import './groups.scss'
+import { RiArrowDropDownLine } from "react-icons/ri";
 import groupsService from './groupsService'
 import AddEntity from '../main/addEntity/addEntity'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
@@ -188,8 +189,8 @@ class Groups extends Component {
               className='d-flex align-items-center cl-name name-sub-page '
               onClick={() => this.toggleSubPageIds(subPageId)}
             >
-              <span className='versionChovron'>
-                <img src={ExpandedIcon} alt='' />
+              <span className='versionChovron custom-icon'>
+              <RiArrowDropDownLine size={40}  />
               </span>
               <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
             </div>

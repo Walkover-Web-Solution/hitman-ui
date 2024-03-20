@@ -72,7 +72,8 @@ class PublishDocForm extends Component {
       title: '',
       domain: '',
       logoUrl: '',
-      theme: ''
+      theme: '',
+      unSavedChanges: false
     },
     cta: publishDocFormEnum.INITIAL_CTA,
     links: publishDocFormEnum.INITIAL_LINKS
@@ -108,7 +109,9 @@ class PublishDocForm extends Component {
     }
   }
 
-  handleChange = (e, isURLInput = false) => {
+  handleChange = (e, isURLInput = false) => {    
+    console.log("inside handle change");
+    this.setState({unSavedChanges: true})
     const data = { ...this.state.data }
     data[e.currentTarget.name] = e.currentTarget.value
     if (isURLInput) {
@@ -126,6 +129,7 @@ class PublishDocForm extends Component {
   }
 
   handleChangeLink = (e) => {
+    console.log("inside handle change link");
     const [type, index, name] = e.target.name.split('-')
 
     const data = [...this.state[type]]
@@ -186,6 +190,7 @@ class PublishDocForm extends Component {
     this.props.update_collection(collection, () => {
       this.setState({ loader: false })
     })
+    this.setState({unSavedChanges:false})
   }
 
   setTheme(theme) {
@@ -284,6 +289,7 @@ class PublishDocForm extends Component {
   }
 
   onFileChange(e) {
+    console.log("inside handle change file");
     const selectedFile = e.target.files[0]
     if (selectedFile) {
       const reader = new window.FileReader()
@@ -363,7 +369,7 @@ class PublishDocForm extends Component {
           className='form-control'
           name={name}
           value={data[name]}
-          onChange={(e) => this.handleChange(e, isURLInput)}
+          onChange={(e) => this.handleChange(e, isURLInput)}Your default title will be Testtt
           onBlur={(e) => this.handleBlur(e, isURLInput)}
         />
         {name === 'domain' && (
@@ -413,7 +419,7 @@ class PublishDocForm extends Component {
 
     return (
       <div>
-        <span className='public-title mt-1 d-block'>Public Link</span>
+        <span className='public-title mt-1 d-block'>publish doc Link</span>
         <OverlayTrigger
           overlay={
             <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled ? 'd-none' : ''}>
@@ -466,11 +472,11 @@ class PublishDocForm extends Component {
       <div>
         <Button
           className={this.state.loader ? 'buttonLoader m-1' : 'm-1'}
-          disabled={!this.state.data.title.trim()}
+          disabled={!this.state.data.title.trim() || !this.state.unSavedChanges}
           onClick={() => this.saveCollectionDetails()}
           variant='btn btn-outline'
         >
-          Save
+          {this.state.unSavedChanges ? 'SAVE AND PUBLISH' : 'Save'}
         </Button>
         {/* <OverlayTrigger
           overlay={

@@ -1321,7 +1321,10 @@ table#custom-generic-table {
 // }
 
 .end-point-name {
-  overflow-wrap: anywhere;
+  white-space: normal !important;
+  word-break: break-all;
+  margin-top: 40px ;
+  // overflow-wrap: anywhere;
   max-width: 180px;
   @media (max-width: 1400px) and (min-width: 400px){
     max-width: 170px !important;

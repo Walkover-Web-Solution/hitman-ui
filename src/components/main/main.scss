@@ -3377,3 +3377,15 @@ body .tox {
     text-overflow: ellipsis;
     overflow: hidden;
   }
+
+  .dropdown{
+  .version-dropdown{
+    content: ' '; /* Remove the default arrow */
+  }
+}
+
+.custom-icon {
+  font-size: 24px;
+  opacity: 0.5;
+  font-weight: normal;
+}

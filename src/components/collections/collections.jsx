@@ -22,6 +22,7 @@ import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
+import { RiArrowDropDownLine } from "react-icons/ri";
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
 import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
@@ -347,7 +348,7 @@ class CollectionsComponent extends Component {
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
                   <span className='versionChovron'>
-                    <img src={ExpandIcon} alt='' />
+                  <RiArrowDropDownLine className='custom-icon' size={40} />
                   </span>
                   {collectionState === 'singleCollection' ? (
                     <div className='sidebar-accordion-item' onClick={() => this.openSelectedCollection(collectionId)}>
