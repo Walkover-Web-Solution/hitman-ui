@@ -172,26 +172,30 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    if (this.props?.isEndpoint) {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = e.currentTarget.value
-      this.props.setQueryUpdatedData(tempData)
-      this.props.update_name({ id: this.props?.match?.params?.endpointId, name: e.currentTarget.value })
-    }
+    this.setState({endpointTitle:e.target.value})
   }
 
   handleInputBlur() {
-    this.setState({ nameEditable: false })
-    if (this.props?.match?.params?.endpointId !== 'new' && trimString(this.props?.endpointContent?.data?.name).length === 0) {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = this.props?.pages?.[this.props?.match?.params?.endpointId]?.name
-      this.props.setQueryUpdatedData(tempData)
-    } else if (this.props?.match?.params?.endpointId === 'new' && !this.props?.endpointContent?.data?.name) {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = 'Untitled'
-      this.props.setQueryUpdatedData(tempData)
+    const { match, isEndpoint, endpointContent, setQueryUpdatedData, update_name, pages } = this.props;
+    const endpointId = match?.params?.endpointId;
+    const trimmedName = trimString(endpointContent?.data?.name);
+  
+    if (isEndpoint) {
+      const tempData = { ...endpointContent, data: { ...endpointContent.data, name: this.state.endpointTitle } };
+      setQueryUpdatedData(tempData);
+      update_name({ id: endpointId, name: this.state.endpointTitle });
     }
+  
+    if (endpointId !== 'new' && trimmedName.length === 0) {
+      const newName = pages?.[endpointId]?.name;
+      setQueryUpdatedData({ ...endpointContent, data: { ...endpointContent.data, name: newName } });
+    } else if (endpointId === 'new' && !endpointContent?.data?.name) {
+      setQueryUpdatedData({ ...endpointContent, data: { ...endpointContent.data, name: 'Untitled' } });
+    }
+  
+    this.setState({ nameEditable: false });
   }
+  
 
   setEndpointData() {
     this.endpointId = this.props?.match?.params.endpointId
@@ -220,8 +224,8 @@ class EndpointBreadCrumb extends Component {
               className={['endpoint-name-input form-control', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
               name='enpoint-title'
               style={{ width: 'auto', textTransform: 'capitalize' }}
-              onChange={this.handleInputChange.bind(this)}
-              value={this.props?.isEndpoint && (this.props?.endpointContent?.data?.name || '')}
+              onChange={(e) => this.handleInputChange(e)}
+              value={this.state.endpointTitle}
               onBlur={() => {
                 this.handleInputBlur()
               }}

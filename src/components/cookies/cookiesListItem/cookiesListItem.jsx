@@ -111,6 +111,10 @@ class CookiesListItem extends Component {
       }
     })
     cookieString = cookie + path + expires + httponly + secure
+    cookieString = cookieString.trim();
+    if (cookieString.endsWith(';')) {
+      cookieString = cookieString.slice(0, -1).trim();
+  }
     return { cookieString, name, expiresValue }
   }
 
