@@ -7,6 +7,10 @@ export const addCollectionAndPages = (orgId, queryParams = null) => {
     // setting query params value
     for (let key in queryParams) {
       queryParamsString += `${key}=${queryParams[key]}`
+      queryParamsString +='&'
+    } 
+    if (queryParamsString.slice(-1) === '&') {
+      queryParamsString = queryParamsString.slice(0, -1);
     }
     generalApiService
       .getCollectionsAndPages(orgId, queryParamsString)
