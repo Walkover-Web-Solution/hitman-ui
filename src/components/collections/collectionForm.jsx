@@ -1,14 +1,15 @@
 import React from 'react'
-import { Modal, Spinner } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import Joi from 'joi-browser'
 import Form from '../common/form'
-import { toTitleCase, onEnter, DEFAULT_URL } from '../common/utility'
+import { toTitleCase, onEnter, validate } from '../common/utility'
 import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { addCollection, updateCollection } from './redux/collectionsActions'
 import { moveToNextStep } from '../../services/widgetService'
-import { URL_VALIDATION_REGEX } from '../common/constants'
 import { defaultViewTypes } from './defaultViewModal/defaultViewModal'
+
+
 
 const mapStateToProps = (state) => {
   return {
@@ -45,7 +46,7 @@ class CollectionForm extends Form {
     }
 
     this.schema = {
-      name: Joi.string().min(3).max(20).trim().required().label('Collection Name'),
+      name: Joi.string().min(3).max(50).trim().required().label('Collection Name'),
       description: Joi.string().allow(null, '').label('Description'),
       defaultView: Joi.string().allow(null, '').label('Default View')
     }
@@ -123,6 +124,11 @@ class CollectionForm extends Form {
   }
 
   async doSubmit(defaultView) {
+    const errors = validate({ name: this.state.data.name }, this.schema)
+    if (errors) {
+      this.setState({ errors })
+      return null
+    }
     const body = this.state.data
     body.name = toTitleCase(body.name.trim())
     if (this.props.title === 'Edit Collection') {
@@ -130,7 +136,7 @@ class CollectionForm extends Form {
     }
     if (this.props.title === 'Add new Collection') {
       this.onAddCollectionSubmit(defaultView)
-      if (this.props.setDropdownList) this.props.onHide()
+        if (this.props.setDropdownList) this.props.onHide()
     }
   }
 
@@ -142,7 +148,7 @@ class CollectionForm extends Form {
   renderCollectionDetailsForm() {
     return (
       <>
-        {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}
+        {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 50 characters')}
         {this.renderSaveButton()}
       </>
     )
