@@ -50,7 +50,6 @@ export class CookiesModal extends Component {
   }
 
   addDomain(domain) {
-    console.log(this.props)
     domain.requestId = shortid.generate()
     if (domain.domain.trim() !== '') {
       this.props.add_cookies_domain(domain)
