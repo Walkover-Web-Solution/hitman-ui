@@ -44,17 +44,16 @@ html body {
 }
 
 .version-dropdown{
-  // background-color: #cc0000 !important;
-  // .dropdown{
-    .dropdown-toggle{
 
+    .dropdown-toggle{
       &::after {
-        border: outset !important;
+        border: outset #f7f6f3 !important;
         content: '' !important;
         transform: rotate(45deg) !important;
         position: relative;
         top: -2px;
         color: gray;
+        background-color: #f7f6f3 !important ;
       }
     }
   }

@@ -302,7 +302,15 @@ body .sidebar {
 
         &:hover {
           background: $grey;
-
+          .version-dropdown {
+            .dropdown-toggle {
+              &::after {
+                background: $grey !important;
+                color: $grey !important;
+                border: outset $grey !important;
+              }
+            }
+          }
           .published-icon {
             opacity: 0;
           }
@@ -410,7 +418,16 @@ body .sidebar {
       }
 
       .selected {
-        background-color: $grey;
+        background-color: $grey; 
+        .version-dropdown {
+          .dropdown-toggle {
+            &::after {
+              background: $grey !important;
+              color: $grey !important;
+              border: outset $grey !important;
+            }
+          }
+        }
       }
     }
 
