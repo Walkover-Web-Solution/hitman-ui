@@ -951,7 +951,7 @@ class DisplayEndpoint extends Component {
       return currentEnv?.variables?.[key]?.initialValue || ''
     }
     if (currentEnv.id) {
-      for (const [key, value] of Object.entries(variablesObj)) {
+      for (const [key, value] of Object.entries(variablesObj)) { 
         variables[key] = { initialValue: getInitalValue(key), currentValue: value }
       }
       this.props.update_environment({ ...currentEnv, variables })
@@ -1028,7 +1028,8 @@ class DisplayEndpoint extends Component {
         notes: this.props?.endpointContent?.endpoint.notes,
         preScript: this.props?.endpointContent?.preScriptText,
         postScript: this.props?.endpointContent?.postScriptText,
-        docViewData: this.props?.endpointContent?.docViewData
+        docViewData: this.props?.endpointContent?.docViewData,
+        oauth2: this.props?.endpointContent?.oauth2
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
@@ -2783,6 +2784,7 @@ class DisplayEndpoint extends Component {
                                 set_authoriztaion_type={this.setAuthType.bind(this)}
                                 accessToken={this.accessToken}
                                 authorizationType={this.props?.endpointContent?.authType}
+                                handleSaveEndpoint={this.handleSave.bind(this)}
                               />
                             </div>
                           </div>

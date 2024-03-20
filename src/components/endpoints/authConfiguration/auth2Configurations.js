@@ -3,7 +3,7 @@ import TokenGenerator from '../newTokenGenerator'
 
 const authResponses = []
 
-export default function Auth2Configurations() {
+export default function Auth2Configurations(props) {
 
     const [showTokenGenerator, setShowTokenGenerator] = useState(false);
 
@@ -48,7 +48,7 @@ export default function Auth2Configurations() {
                     </div>
                 </form>
             </div>
-            <TokenGenerator onHide={handleGenerateToken} show={showTokenGenerator} title='Get new access token' />
+            <TokenGenerator onHide={handleGenerateToken} show={true} title='Get new access token' {...props} />
         </>
     )
 }

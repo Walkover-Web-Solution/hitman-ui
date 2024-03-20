@@ -16,7 +16,7 @@ const addAuthorizationDataTypes = {
   requestUrl: 'Request URL',
 }
 
-export default function Authorization() {
+export default function Authorization(props) {
 
   const [selectedAuthorizationType, setSelectedAuthorizationType] = useState(authorizationTypes.noAuth)
   const [addAuthorizationDataToForAuth2, setAddAuthorizationDataToForAuth2] = useState(addAuthorizationDataTypes.select)
@@ -181,7 +181,7 @@ export default function Authorization() {
           </form>
         </div>
       )}
-      {selectedAuthorizationType === authorizationTypes.oauth_2 && <Auth2Configurations />}
+      {selectedAuthorizationType === authorizationTypes.oauth_2 && <Auth2Configurations handleSaveEndpoint={props?.handleSaveEndpoint} />}
     </div>
   )
 }
