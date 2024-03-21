@@ -50,14 +50,6 @@ export default function Authorization(props) {
   const [basicAuthData, setBasicAuthData] = useState({ username: endpointStoredData?.authorizationData?.authorization?.basicAuth?.username || '', password: endpointStoredData?.authorizationData?.authorization?.basicAuth?.password || '' })
   const [showPassword, setShowPassword] = useState(false)
 
-  useEffect(() => {
-    window.addEventListener('message', receiveMessage, false);
-  }, [])
-
-  function receiveMessage(event) {
-    if (event.data) console.log(event.data)
-  }
-
   function handleChange(e) {
     setBasicAuthData((prev) => { return { ...prev, [e.target.name]: e.target.value } })
     if (e.target.name === 'username') {

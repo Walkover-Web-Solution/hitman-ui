@@ -1,0 +1,36 @@
+const grantTypesEnums = {
+    authorizationCode: 'Authorization Code',
+    authorizationCodeWithPkce: 'Authorization Code (With PKCE)',
+    implicit: 'Implicit',
+    passwordCredentials: 'Password Credentials',
+    clientCredentials: 'Client Credentials'
+}
+
+const inputFieldsEnums = {
+    tokenName: 'Token Name',
+    grantType: 'Grant Type',
+    callbackUrl: 'Callback URL',
+    authUrl: 'Auth URL',
+    accessTokenUrl: 'Access Token URL',
+    codeMethod: 'Code Challenge Method',
+    codeVerifier: 'Code Verifier',
+    username: 'Username',
+    password: 'Password',
+    clientId: 'Client ID',
+    clientSecret: 'Client Secret',
+    scope: 'Scope',
+    state: 'State',
+    clientAuthentication: 'Client Authentication',
+}
+
+const codeMethodTypesEnums = {
+    sh256: 'sh-256',
+    plain: 'Plain',
+}
+
+const clientAuthenticationTypeEnums = {
+    sendOnHeaders: 'Send as Basic Auth header',
+    sendOnBody: 'Send client credentials in body',
+}
+
+export { grantTypesEnums, inputFieldsEnums, codeMethodTypesEnums, clientAuthenticationTypeEnums }
