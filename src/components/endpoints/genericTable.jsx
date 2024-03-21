@@ -16,8 +16,10 @@ const autoCompleterDefaultProps = {
 class GenericTable extends Component {
   constructor(props) {
     super(props)
+    this.fileInputRef = React.createRef()
     this.state = {
       bulkEdit: false,
+      uploadedFile: null,
       optionalParams: false,
       editButtonName: 'Bulk Edit',
       originalParams: [],
@@ -253,7 +255,7 @@ class GenericTable extends Component {
               <input
                 disabled={originalData[index].checked === 'false' ? null : 'disabled'}
                 name={index + '.checkbox'}
-                value = {dataArray[index].checked}
+                value={dataArray[index].checked}
                 checked={dataArray[index].checked === 'true'}
                 type='checkbox'
                 className='Checkbox'
@@ -273,7 +275,7 @@ class GenericTable extends Component {
           <div className='d-flex align-items-center'>
             <input
               name={index + '.value'}
-              value = {dataArray[index].type === 'file' ? '' : dataArray[index].value}
+              value={dataArray[index].type === 'file' ? '' : dataArray[index].value}
               key={index + this.state.randomId}
               onChange={this.handleChange}
               type='text'
@@ -299,7 +301,7 @@ class GenericTable extends Component {
           {...autoCompleterDefaultProps}
           name={key}
           key={key}
-          value = {dataArray[index].key}
+          value={dataArray[index].key}
           onChange={(e) => this.handleChange(e, { name: key, value: e })}
           type='text'
           placeholder='Key'
@@ -310,7 +312,7 @@ class GenericTable extends Component {
           <select
             className='transition cursor-pointer'
             name={index + '.type'}
-            value = 'text'
+            value='text'
             onChange={(e) => {
               this.handleChange(e)
             }}
@@ -328,25 +330,7 @@ class GenericTable extends Component {
   }
 
   handleFileInput(dataArray, index) {
-    if (isElectron()) {
-      const { dialog } = window.require('electron').remote
-      const files = dialog.showOpenDialogSync({
-        properties: ['openFile']
-      })
-      if (files) {
-        const id = shortid.generate()
-        this.handleChange({
-          currentTarget: {
-            name: index + '.value',
-            value: {
-              id,
-              name: this.getName(files[0]),
-              srcPath: files[0]
-            }
-          }
-        })
-      }
-    } else {
+    if (!window.matchMedia('(display-mode: standalone)').matches) {
       const data = <h5 className='text-center'>File upload feature is not supported on Web</h5>
       this.props.open_modal('DESKTOP_APP_DOWNLOAD', data)
       this.handleChange({
@@ -355,6 +339,8 @@ class GenericTable extends Component {
           value: 'text'
         }
       })
+    } else {
+      this.fileInputRef.current.click()
     }
   }
 
@@ -368,7 +354,7 @@ class GenericTable extends Component {
               <input
                 disabled={isDashboardRoute(this.props, true) || originalData[index].checked === 'false' ? null : 'disabled'}
                 name={index + '.checkbox'}
-                value = {dataArray[index].checked}
+                value={dataArray[index].checked}
                 checked={dataArray[index].checked === 'true'}
                 type='checkbox'
                 className='Checkbox'
@@ -390,7 +376,7 @@ class GenericTable extends Component {
                 {...autoCompleterDefaultProps}
                 name={valueKey}
                 key={valueKey}
-                value = {dataArray[index].type !== 'file' ? dataArray[index].value : ''}
+                value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
                 onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
                 className='form-control'
                 placeholder={dataArray[index].checked === 'notApplicable' ? 'Value' : `Enter ${dataArray[index].key}`}
@@ -407,7 +393,7 @@ class GenericTable extends Component {
               <input
                 disabled={isDashboardRoute(this.props) ? null : 'disabled'}
                 name={index + '.description'}
-                value = {dataArray[index].description}
+                value={dataArray[index].description}
                 onChange={this.handleChange}
                 type='text'
                 placeholder='Description'
@@ -477,10 +463,27 @@ class GenericTable extends Component {
       }
     }
     return (
-      <div className='selectFile d-flex align-items-center'>
-        <button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button>
-      </div>
+        <div className='selectFile d-flex align-items-center'>
+          <button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button>
+          <input type='file' accept='.json' ref={this.fileInputRef} style={{ display: 'none' }} onChange={this.handleFileChange} />
+          {this.state.errors?.file && <div className='alert alert-danger'>{this.state.errors?.file}</div>}
+          {this.state.uploadedFile && <div>{this.state.selectedFileName}</div>}
+        </div>
     )
+  }
+
+  handleFileChange = (event) => {
+    const selectedFile = event.currentTarget.files[0]
+
+    if (selectedFile) {
+      const uploadedFile = new FormData()
+      uploadedFile.append('myFile', selectedFile, selectedFile.name)
+      this.setState({ uploadedFile, errors: { ...this.state.error, file: null }, selectedFileName: selectedFile.name })
+    }
+  }
+
+  handleSelectFile = () => {
+    this.fileInputRef.current.click()
   }
 
   handleDeSelectFile(index) {
@@ -600,7 +603,7 @@ class GenericTable extends Component {
               name='contents'
               id='contents'
               rows='9'
-              value= {this.textAreaValue}
+              value={this.textAreaValue}
               onChange={this.handleBulkChange}
               placeholder={
                 'Rows are separated by new lines \\nKeys and values are separated by : \\nPrepend // to any row you want to add but keep disabled'
