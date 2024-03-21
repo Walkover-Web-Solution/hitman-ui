@@ -66,22 +66,15 @@ class BodyContainer extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
+
     if (this.props?.body !== '' && !this.state?.selectedBodyType) {
       let selectedBodyType = this.props.body.type
-      if (
-        selectedBodyType === 'JSON' ||
-        selectedBodyType === 'HTML' ||
-        selectedBodyType === 'JavaScript' ||
-        selectedBodyType === 'XML' ||
-        selectedBodyType === 'TEXT'
-      ) {
+      if (['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(selectedBodyType)) {
         this.showRawBodyType = true
         this.rawBodyType = selectedBodyType
         selectedBodyType = 'raw'
       }
-      const data = this.state.data
-      const type = selectedBodyType?.split('-') || []
-      data[type[type?.length > 1 ? type?.length - 1 : 0]] = this.props.body.value
+      let data = _.cloneDeep(this.state.data)
       if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
         document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
         this.setState({
@@ -90,6 +83,41 @@ class BodyContainer extends Component {
           data
         })
       }
+    }
+
+    // Update state based on body type
+    if (this.props?.body?.type === 'multipart/form-data' ) {
+      this.updateStateBasedOnBodyType('data', this.props.body.value)
+    } else if (this.props?.body?.type === 'application/x-www-form-urlencoded' ) {
+      this.updateStateBasedOnBodyType('urlencoded', this.props.body.value)
+    } else if (this.props?.body?.type === 'none' ) {
+      this.updateStateBasedOnBodyType('none', null)
+    }
+    else if (['JSON', 'TEXT', 'HTML', 'XML', 'Javascript'].includes(this.props?.body?.type)) {
+      this.updateStateBasedOnBodyType('raw', this.props.body.value)
+      this.rawBodyType = this.props?.body?.type
+      this.showRawBodyType = true
+    }
+  }
+
+  updateStateBasedOnBodyType(bodyType, value) {
+    if(this.showRawBodyType == true && ['multipart/form-data', 'application/x-www-form-urlencoded', 'none'].includes(this.props?.body?.type)){
+      this.showRawBodyType = false
+    }
+
+    let bodyTypeToUpdate = bodyType == 'raw' ? 'raw' : (bodyType == 'none') ? null :this.props?.body?.type
+
+    if (_.isEqual(value, this.state.data[bodyType]) && this.state.selectedBodyType == bodyTypeToUpdate) return // No need to update if the value hasn't changed
+    
+    this.setState((prevState) => ({
+      data: {
+        ...prevState.data,
+        [bodyType]: _.cloneDeep(value)
+      },
+      selectedBodyType: bodyTypeToUpdate
+    }))
+    if (bodyType == 'raw') {
+      this.setState({ selectedRawBodyType: this.props?.body?.type })
     }
   }
 
