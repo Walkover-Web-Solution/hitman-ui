@@ -5,12 +5,13 @@ export default function OauthPage() {
   const location = useLocation();
 
   const queryParams = new URLSearchParams(location.search);
-  const techdocAuthCode = queryParams.get('code') || '';
-  const techdocAuthState = queryParams.get('state') || '';
+  const code = queryParams.get('code') || '';
+  const state = queryParams.get('state') || '';
+  const accessToken = queryParams.get('access_token') || '';
 
   useEffect(() => {
     window.opener.postMessage(
-      { techdocAuthenticationDetails: { techdocAuthCode, techdocAuthState } },
+      { techdocAuthenticationDetails: { code, state, accessToken } },
       window.location.origin
     );
 
@@ -19,7 +20,7 @@ export default function OauthPage() {
     }, 1300);
 
     return () => clearTimeout(closeWindowTimeout);
-  }, [techdocAuthCode, techdocAuthState]);
+  }, [code, state, accessToken]);
 
   return (
     <div className='d-flex justify-content-center align-items-center h-100'>

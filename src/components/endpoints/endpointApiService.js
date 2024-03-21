@@ -150,7 +150,7 @@ export async function authorize(requestApi, params, grantType, props, authData) 
       requestApi = requestApi + '&response_type=token'
     }
     var options = "width=200,height=200,resizable=yes,scrollbars=yes,status=yes";
-    const openWindow = window.open(requestApi, '_blank', options)
+    window.open(requestApi, '_blank', options)
   }
 }
 
@@ -166,6 +166,45 @@ export function setAuthorizationType(endpointId, data) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/authorizationType`, data)
 }
 
+export async function getAuth2AccessToken(accessTokenURL, code, data) {
+  debugger
+  let body = {}
+  let headers = {}
+
+  if (data.selectedGrantType === grantTypesEnums.authorizationCode) {
+    headers = { Accept: 'application/json' }
+    body = {
+      client_id: data.clientId,
+      client_secret: data.clientSecret,
+      code: code,
+      redirect_uri: data.callbackUrl,
+    }
+  }
+  else if (data.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
+    headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
+    body = {
+      grant_type: 'authorization_code',
+      client_id: data.clientId,
+      redirect_uri: data.callbackUrl,
+      code: code,
+      code_verifier: data.codeVerifier,
+    }
+  }
+
+  try {
+    const { data: responseData } = await httpService.request({
+      url: accessTokenURL,
+      method: 'POST',
+      data: body,
+      headers: headers,
+    })
+    return responseData
+  }
+  catch (error) {
+    throw error
+  }
+}
+
 export default {
   getEndpoints,
   deleteEndpoint,
@@ -178,5 +217,6 @@ export default {
   authorize,
   setAuthorizationType,
   updateEndpointOrder,
-  saveEndpoint
+  saveEndpoint,
+  getAuth2AccessToken
 }

@@ -54,7 +54,31 @@ function TokenGenerator(props) {
   }, [])
 
   function receiveMessage(event) {
-    if (event.data) console.log(event.data, data)
+    if (event?.data && event?.data?.techdocAuthenticationDetails) {
+      console.log(event.data.techdocAuthenticationDetails)
+      getAuthenticationDetails(event?.data?.techdocAuthenticationDetails)
+    }
+  }
+
+  const getAuthenticationDetails = async (authDetail) => {
+    const code = authDetail.code;
+    const state = authDetail.state;
+    if (data.selectedGrantType === grantTypesEnums.authorizationCode || data.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
+      try {
+        const accessTokenData = await endpointApiService.getAuth2AccessToken(data.accessTokenUrl, code, data)
+        console.log(accessTokenData)
+      }
+      catch (error) {
+        console.error(error)
+      }
+    }
+    else if (data.selectedGrantType === grantTypesEnums.implicit) {
+      const accessToken = authDetail.accessToken;
+      console.log(accessToken, 'access token of implicit one')
+    }
+    else if (data.selectedGrantType === grantTypesEnums.passwordCredentials) {
+      
+    }
   }
 
   async function makeRequest(e) {
@@ -95,7 +119,7 @@ function TokenGenerator(props) {
           }
           break
         case 'callbackUrl':
-          if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode) {
+          if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
             params.redirect_uri = data[keys[i]]
           }
           break
@@ -114,8 +138,16 @@ function TokenGenerator(props) {
           params[keys[i]] = data[keys[i]]
           break
         case 'state':
-          if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode) {
+          if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
             params[keys[i]] = data[keys[i]]
+          }
+        case 'codeMethod':
+          if (grantType === grantTypesEnums.authorizationCodeWithPkce) {
+            params['code_challenge_method'] = data[keys[i]];
+          }
+        case 'codeVerifier':
+          if (grantType === grantTypesEnums.authorizationCodeWithPkce) {
+            params['code_challenge'] = data[keys[i]];
           }
           break
         default:
