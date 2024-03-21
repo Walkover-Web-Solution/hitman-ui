@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import endpointApiService from './endpointApiService'
 import { useParams } from 'react-router'
 import { useQuery, useQueryClient } from 'react-query'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { grantTypesEnums, inputFieldsEnums, codeMethodTypesEnums, clientAuthenticationTypeEnums } from '../common/authorizationEnums.js'
+import { toast } from 'react-toastify'
+import shortid from 'shortid'
+import { addToken } from '../../store/tokenData/tokenDataActions.js'
 import './endpoints.scss'
 
 const URI = require('urijs')
@@ -25,6 +28,8 @@ function TokenGenerator(props) {
   })
   const params = useParams();
 
+  const dispatch = useDispatch()
+
   const queryClient = useQueryClient()
 
   const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId;
@@ -44,45 +49,80 @@ function TokenGenerator(props) {
     clientSecret: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientSecret || '',
     scope: endpointStoredData?.authorizationData?.authorization?.oauth2?.scope || '',
     state: endpointStoredData?.authorizationData?.authorization?.oauth2?.state || '',
-    clientAuthentication: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientAuthentication || 'Send as Basic Auth header',
+    clientAuthentication: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientAuthentication || clientAuthenticationTypeEnums?.sendOnHeaders,
     codeMethod: endpointStoredData?.authorizationData?.authorization?.oauth2?.codeMethod || codeMethodTypesEnums.sh256,
     codeVerifier: endpointStoredData?.authorizationData?.authorization?.oauth2?.codeVerifier || '',
+    refreshTokenUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.refreshTokenUrl || '',
   })
 
   useEffect(() => {
     window.addEventListener('message', receiveMessage, false);
+    return () => {
+      window.removeEventListener('message', receiveMessage);
+    };
   }, [])
 
   function receiveMessage(event) {
     if (event?.data && event?.data?.techdocAuthenticationDetails) {
       console.log(event.data.techdocAuthenticationDetails)
-      getAuthenticationDetails(event?.data?.techdocAuthenticationDetails)
+      getAuthenticationDetails(event?.data?.techdocAuthenticationDetails, data)
     }
   }
 
-  const getAuthenticationDetails = async (authDetail) => {
+  const getAuthenticationDetails = async (authDetail, configurationDetails) => {
     const code = authDetail.code;
     const state = authDetail.state;
-    if (data.selectedGrantType === grantTypesEnums.authorizationCode || data.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
+    if (configurationDetails.selectedGrantType === grantTypesEnums.authorizationCode || configurationDetails.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
       try {
-        const accessTokenData = await endpointApiService.getAuth2AccessToken(data.accessTokenUrl, code, data)
+        const accessTokenData = await endpointApiService.getTokenAuthorizationCodeAndAuthorizationPKCE(configurationDetails.accessTokenUrl, code, configurationDetails)
         console.log(accessTokenData)
       }
       catch (error) {
         console.error(error)
+        return toast.error('could not get the access token')
       }
     }
-    else if (data.selectedGrantType === grantTypesEnums.implicit) {
+    else if (configurationDetails.selectedGrantType === grantTypesEnums.implicit) {
       const accessToken = authDetail.accessToken;
       console.log(accessToken, 'access token of implicit one')
-    }
-    else if (data.selectedGrantType === grantTypesEnums.passwordCredentials) {
-      
+      storeTokenInsideLocalState(accessToken)
     }
   }
 
-  async function makeRequest(e) {
-    e.preventDefault()
+  const getAcessTokenForPasswordAndClientGrantType = async () => {
+    try {
+      const responseData = await endpointApiService.getTokenPasswordAndClientGrantType(data.accessTokenUrl, data);
+      console.log(responseData, 'token from password and client grant type')
+      storeTokenInsideLocalState(responseData?.accessToken)
+    }
+    catch (error) {
+      console.error(error)
+      return toast.error('could not get the access token')
+    }
+  }
+
+  const storeTokenInsideLocalState = (tokenDetails) => {
+    if (!tokenDetails) return;
+    const accessTokenUniqueId = shortid.generate();
+    const storeTokenDetails = {
+      id: accessTokenUniqueId,
+      accessToken: tokenDetails?.accessToken || null,
+      tokenName: data?.tokenName || null,
+      grantType: data?.grantType || null,
+      endpointId: params?.endpointId || null,
+      refreshToken: tokenDetails?.refreshToken || null,
+      refreshTokenUrl: data?.refreshTokenUrl || null,
+      expiryTime: tokenDetails?.expiryTime || null,
+      scope: data?.scope || null,
+      clientId: data?.clientId || null,
+      clientSecret: data?.clientSecret || null,
+      state: tokenDetails?.state || null,
+      accessTokenUrl: data?.accessTokenUrl,
+    }
+    dispatch(addToken(storeTokenDetails))
+  }
+
+  async function makeRequest() {
     const grantType = data.selectedGrantType
     let requestApi = ''
     const paramsObject = makeParams(grantType)
@@ -90,17 +130,16 @@ function TokenGenerator(props) {
     if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
       requestApi = data.authUrl + '?' + params
     }
-
     if (grantType === grantTypesEnums.passwordCredentials || grantType === grantTypesEnums.clientCredentials) {
-      delete paramsObject.grantType
-      requestApi = data.accessTokenUrl
-      if (grantType === grantTypesEnums.passwordCredentials) {
-        paramsObject.grant_type = 'password'
-      } else if (grantType === grantTypesEnums.clientCredentials) {
-        paramsObject.grant_type = 'client_credentials'
-      }
+      return getAcessTokenForPasswordAndClientGrantType()
     }
-    await endpointApiService.authorize(requestApi, paramsObject, grantType, props, data)
+    if (grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
+      requestApi = requestApi + '&response_type=code'
+    } else {
+      requestApi = requestApi + '&response_type=token'
+    }
+    var options = "width=200,height=200,resizable=yes,scrollbars=yes,status=yes";
+    window.open(requestApi, '_blank', options)
   }
 
   function makeParams(grantType) {

@@ -1,10 +1,8 @@
 import http from '../../services/httpService'
 import httpService from '../../services/endpointHttpService'
-import indexedDbService from '../indexedDb/indexedDbService'
 import qs from 'qs'
 import { getOrgId } from '../common/utility'
 import { makeHttpRequestThroughAxios } from '../../services/coreRequestService'
-import { getProxyToken } from '../auth/authServiceV2'
 import { grantTypesEnums } from '../common/authorizationEnums'
 
 const apiUrlEndpoint = process.env.REACT_APP_API_URL
@@ -70,88 +68,9 @@ export function moveEndpoint(endpointId, body) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body)
 }
 
-export function updateEndpointOrder(
-  endpointsOrder
-  // sourceGroupId = null,
-  // destinationEndpointIds = null,
-  // destinationGroupId = null,
-  // endpointId = null
-) {
+export function updateEndpointOrder(endpointsOrder) {
   const apiUrl = getApiUrl()
-  return http.patch(`${apiUrl}/updateEndpointsOrder`, {
-    endpointsOrder
-    // sourceGroupId,
-    // destinationEndpointIds,
-    // destinationGroupId,
-    // endpointId
-  })
-}
-
-function makeParams(params, grantType, authData) {
-  let finalHeaders = {}
-  let finalParams = {}
-  if (authData.clientAuthentication === 'Send as Basic Auth header') {
-    if (grantType === 'passwordCredentials') {
-      finalHeaders = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        client_id: params.client_id,
-        client_secret: params.client_secret,
-        username: params.username,
-        password: params.password
-      }
-      finalParams = params
-      delete finalParams.client_id
-      delete finalParams.client_secret
-      delete finalParams.username
-      delete finalParams.password
-    } else {
-      finalHeaders = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        client_id: params.client_id,
-        client_secret: params.client_secret
-      }
-      finalParams = params
-      delete finalParams.client_id
-      delete finalParams.client_secret
-    }
-  } else if (authData.clientAuthentication === 'Send client credentials in body') {
-    finalHeaders = {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-    finalParams = params
-  }
-  const finalParamsandHeaders = []
-  finalParamsandHeaders[0] = finalParams
-  finalParamsandHeaders[1] = finalHeaders
-  return finalParamsandHeaders
-}
-
-export async function authorize(requestApi, params, grantType, props, authData) {
-  debugger
-  if (grantType === grantTypesEnums.passwordCredentials || grantType === grantTypesEnums.clientCredentials) {
-    const finalParamsandHeaders = makeParams(params, grantType, authData)
-    const finalParams = finalParamsandHeaders[0]
-    const finalHeaders = finalParamsandHeaders[1]
-    const { data: responseData } = await httpService.request({
-      url: requestApi,
-      method: 'POST',
-      data: qs.stringify(finalParams),
-      headers: finalHeaders
-    })
-    responseData.tokenName = authData.tokenName
-    if (responseData && responseData.access_token) {
-      if (props.groupId) await setResponse(props, responseData)
-      props.set_access_token(responseData.access_token)
-    }
-  } else {
-    if (grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
-      requestApi = requestApi + '&response_type=code'
-    } else {
-      requestApi = requestApi + '&response_type=token'
-    }
-    var options = "width=200,height=200,resizable=yes,scrollbars=yes,status=yes";
-    window.open(requestApi, '_blank', options)
-  }
+  return http.patch(`${apiUrl}/updateEndpointsOrder`, { endpointsOrder })
 }
 
 export async function setResponse(props, responseData) {
@@ -166,36 +85,59 @@ export function setAuthorizationType(endpointId, data) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/authorizationType`, data)
 }
 
-export async function getAuth2AccessToken(accessTokenURL, code, data) {
-  debugger
-  let body = {}
-  let headers = {}
+export async function getTokenAuthorizationCodeAndAuthorizationPKCE(accessTokenURL, code, data) {
+  let body = {
+    client_id: data.clientId,
+    redirect_uri: data.callbackUrl,
+    code: code,
+  }
+
+  let headers = { Accept: 'application/json' }
 
   if (data.selectedGrantType === grantTypesEnums.authorizationCode) {
-    headers = { Accept: 'application/json' }
-    body = {
-      client_id: data.clientId,
-      client_secret: data.clientSecret,
-      code: code,
-      redirect_uri: data.callbackUrl,
-    }
+    body.client_secret = data.clientSecret
   }
   else if (data.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
     headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
-    body = {
-      grant_type: 'authorization_code',
-      client_id: data.clientId,
-      redirect_uri: data.callbackUrl,
-      code: code,
-      code_verifier: data.codeVerifier,
-    }
+    body.grant_type = 'authorization_code'
+    body.code_verifier = data.codeVerifier
   }
 
   try {
     const { data: responseData } = await httpService.request({
       url: accessTokenURL,
       method: 'POST',
-      data: body,
+      data: new URLSearchParams(body),
+      headers: headers,
+    })
+    return responseData
+  }
+  catch (error) {
+    throw error
+  }
+}
+
+export async function getTokenPasswordAndClientGrantType(accessTokenURL, data) {
+  let body = {
+    client_id: data.clientId,
+    client_secret: data.clientSecret,
+    scope: data.scope,
+    grant_type: 'client_credentials',
+  }
+
+  let headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
+
+  if (data.selectedGrantType === grantTypesEnums.passwordCredentials) {
+    body.grant_type = 'password'
+    body.username = data.username
+    body.password = data.password
+  }
+
+  try {
+    const { data: responseData } = await httpService.request({
+      url: accessTokenURL,
+      method: 'POST',
+      data: new URLSearchParams(body),
       headers: headers,
     })
     return responseData
@@ -214,9 +156,9 @@ export default {
   getAllEndpoints,
   duplicateEndpoint,
   moveEndpoint,
-  authorize,
   setAuthorizationType,
   updateEndpointOrder,
   saveEndpoint,
-  getAuth2AccessToken
+  getTokenAuthorizationCodeAndAuthorizationPKCE,
+  getTokenPasswordAndClientGrantType,
 }

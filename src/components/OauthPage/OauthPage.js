@@ -20,7 +20,7 @@ export default function OauthPage() {
     }, 1300);
 
     return () => clearTimeout(closeWindowTimeout);
-  }, [code, state, accessToken]);
+  }, []);
 
   return (
     <div className='d-flex justify-content-center align-items-center h-100'>
