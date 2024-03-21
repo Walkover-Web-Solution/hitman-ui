@@ -61,8 +61,11 @@ class HostContainer extends Component {
     ) {
       this.setHosts()
     }
-    if (prevProps.updatedUri !== this.props.updatedUri) {
+    if (!_.isEqual(prevProps.updatedUri, this.props.updatedUri)) {
       this.setState({ datalistUri: this.props.updatedUri })
+    }
+    if (!_.isEqual(prevProps?.endpointContent?.host?.BASE_URL, this.props?.endpointContent?.host?.BASE_URL)) {
+      this.setState({ datalistHost: this.props?.endpointContent?.host?.BASE_URL })
     }
   }
 
