@@ -1018,7 +1018,6 @@ class DisplayEndpoint extends Component {
         obj[key] = updatedPathVariables[key]
         return obj
       }, {})
-      debugger
       const endpoint = {
         id: slug === 'isHistory' ? this.props?.match?.params?.historyId : this.props?.match?.params?.endpointId,
         uri: this.props?.endpointContent?.data.updatedUri,

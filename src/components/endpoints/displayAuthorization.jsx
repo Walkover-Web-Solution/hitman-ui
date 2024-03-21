@@ -20,6 +20,14 @@ const addAuthorizationDataTypes = {
   requestUrl: 'Request URL',
 }
 
+const options = {
+  refetchOnWindowFocus: false,
+  cacheTime: 5000000,
+  enabled: true,
+  staleTime: Infinity,
+  retry: 3
+}
+
 export default function Authorization(props) {
 
   const { activeTabId } = useSelector((state) => {
@@ -35,7 +43,7 @@ export default function Authorization(props) {
   const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId;
   const queryKey = ['endpoint', endpointId];
 
-  const endpointStoredData = useQuery(queryKey).data
+  const { data: endpointStoredData } = useQuery(queryKey, options);
 
   const [selectedAuthorizationType, setSelectedAuthorizationType] = useState(authorizationTypes[endpointStoredData?.authorizationData?.authorizationTypeSelected] || authorizationTypes.noAuth)
   const [addAuthorizationDataToForAuth2, setAddAuthorizationDataToForAuth2] = useState(addAuthorizationDataTypes[endpointStoredData?.authorizationData?.authorization?.oauth2?.addAuthorizationRequestTo] || addAuthorizationDataTypes.select)
@@ -72,7 +80,7 @@ export default function Authorization(props) {
     const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) : JSON.parse(localStorage.getItem(activeTabId)) || {};
     const dataToSave = cloneDeep(endpointStoredData);
     dataToSave.authorizationData.authorizationTypeSelected = key;
-    queryClient.setQueriesData(queryKey, dataToSave);
+    queryClient.setQueryData(queryKey, dataToSave, options);
     if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
     setSelectedAuthorizationType(authorizationTypes[key]);
   }
@@ -87,7 +95,7 @@ export default function Authorization(props) {
       dataToSave.authorizationData.authorization = { oauth2: {} }
       dataToSave.authorizationData.authorization.oauth2 = { ...dataToSave?.authorizationData?.authorization?.oauth2, addAuthorizationRequestTo: key }
     }
-    queryClient.setQueriesData(queryKey, dataToSave);
+    queryClient.setQueryData(queryKey, dataToSave, options);
     if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
     setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes[key]);
   }

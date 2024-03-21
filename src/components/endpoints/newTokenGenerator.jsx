@@ -3,8 +3,8 @@ import { Modal } from 'react-bootstrap'
 import endpointApiService from './endpointApiService'
 import { useParams } from 'react-router'
 import { useQuery, useQueryClient } from 'react-query'
-import './endpoints.scss'
 import { useSelector } from 'react-redux'
+import './endpoints.scss'
 
 const URI = require('urijs')
 
@@ -38,6 +38,14 @@ const codeMethodTypes = {
   plain: 'Plain',
 }
 
+const options = {
+  refetchOnWindowFocus: false,
+  cacheTime: 5000000,
+  enabled: true,
+  staleTime: Infinity,
+  retry: 3
+}
+
 function TokenGenerator(props) {
   const { activeTabId } = useSelector((state) => {
     return {
@@ -51,7 +59,7 @@ function TokenGenerator(props) {
   const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId;
   const queryKey = ['endpoint', endpointId];
 
-  const endpointStoredData = useQuery(queryKey).data
+  const { data: endpointStoredData } = useQuery(queryKey, options);
 
   const [data, setData] = useState({
     tokenName: endpointStoredData?.authorizationData?.authorization?.oauth2?.tokenName || 'Token Name',
