@@ -46,6 +46,10 @@ const withQuery = (WrappedComponent) => {
         retry: 2
       }
     )
+    debugger
+    if (props?.tabs?.tabs?.[pageId]?.isModified && props?.tabs?.tabs?.[pageId]?.type == 'page' && props?.tabs?.tabs?.[pageId]?.draft) {
+      data = props?.tabs?.tabs?.[pageId]?.draft
+    }
     return <WrappedComponent {...props} pageContent={data} pageContentLoading={data?.isLoading} pageContentError={error} />
   }
 }

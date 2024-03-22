@@ -7,7 +7,7 @@ import { onPageUpdated, updateContent, updatePage } from '../pages/redux/pagesAc
 import './page.scss'
 import { toast } from 'react-toastify'
 import * as _ from 'lodash'
-import { updateTab } from '../tabs/redux/tabsActions'
+import { updateTab, updateTabDraft } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
 
@@ -26,10 +26,15 @@ const withQuery = (WrappedComponent) => {
           enabled: true,
           staleTime: 600000
         })
-        dispatch(onPageUpdated(data))
         props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
       }
     })
+
+    // debugger
+    if (props?.tabs?.tabs?.[pageId]?.isModified && props?.tabs?.tabs?.[pageId]?.type == 'page' && props?.tabs?.tabs?.[pageId]?.draft) {
+      // debugger
+       pageContentData.data = props?.tabs?.tabs?.[pageId]?.draft
+    }
     return <WrappedComponent {...props} pageContentData={pageContentData.data} mutationFn={mutation} />
   }
 }
@@ -37,7 +42,8 @@ const withQuery = (WrappedComponent) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
-    update_tab: (id, data) => dispatch(updateTab(id, data))
+    update_tab: (id, data) => dispatch(updateTab(id, data)),
+    update_tab_draft:(pageId, data) => dispatch(updateTabDraft(pageId, data))
   }
 }
 
@@ -122,10 +128,22 @@ class EditPage extends Component {
     this.setState({ data }, () => {
       if (this.isModified()) {
         tabService.markTabAsModified(this.props.tab.id)
-        this.setUnsavedTabDataInIDB()
+        this.updateTabDraftData()
       }
     })
   }
+
+  updateTabDraftData() {
+    debugger
+    if (this.props.tab.id === this.props.tabs.activeTabId) {
+      clearTimeout(this.saveTimeOut)
+      this.saveTimeOut = setTimeout(() => {
+        this.props.update_tab_draft(this.props.tab.id, _.cloneDeep(this.state?.data?.contents))
+        // this.props.update_tab(this.props.tab.id, { state: _.cloneDeep(this.state) })
+      }, 1000)
+    }
+  }
+
 
   setUnsavedTabDataInIDB() {
     if (this.props.tab.id === this.props.tabs.activeTabId) {
@@ -160,6 +178,7 @@ class EditPage extends Component {
     delete editedPage['isPublished']
     this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
     tabService.markTabAsSaved(this.props.tab.id)
+    this.props.update_tab_draft(editedPage.id, null)
   }
 
   handleCancel() {

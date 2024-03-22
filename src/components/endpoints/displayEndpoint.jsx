@@ -19,7 +19,7 @@ import {
   setCurrentUserSSLMode
 } from '../common/utility'
 import tabService from '../tabs/tabService'
-import { closeTab, updateTab } from '../tabs/redux/tabsActions'
+import { closeTab, updateTab, updateTabDraft } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import CodeTemplate from './codeTemplate'
 import SaveAsSidebar from './saveAsSidebar'
@@ -67,6 +67,7 @@ import { getPublishedContentByIdAndType } from '../../services/generalApiService
 import Footer from '../main/Footer.jsx'
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
 import { statesEnum } from '../common/utility'
+import { store } from '../../store/store'
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -175,27 +176,32 @@ const getEndpointContent = async (props) => {
   let endpointId = props?.match?.params?.endpointId || currentIdToShow
   if (props?.match?.params?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
-    const data = isOnPublishedPage() ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
-    const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
-    return modifiedData
+    let data = isOnPublishedPage() ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
+    // showing data from draft if data is modified
+    if(props?.tabs[endpointId]?.isModified && props?.tabs[endpointId]?.type == 'endpoint' && props?.tabs[endpointId]?.draft){
+     return props?.tabs[endpointId]?.draft
+    }
+    return   utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
   } else {
     endpointId = props?.activeTabId
-    if (localStorage.getItem(endpointId)) {
-      const data = JSON.parse(localStorage.getItem(endpointId))
-      return data
+    // showing data from draft if data is modified
+    if (props?.tabs[endpointId]?.isModified && props?.tabs[endpointId]?.type == 'endpoint' && props?.tabs[endpointId]?.draft) {
+      return  props?.tabs[endpointId]?.draft
     } else {
-      localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)))
-      const data = _.cloneDeep(untitledEndpointData)
-      return data
+      return   _.cloneDeep(untitledEndpointData)
     }
   }
 }
 
 const fetchHistory = (historyId, props) => {
   const history = props?.historySnapshots[historyId]
-  const data = history?.endpoint
-  const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
-  return modifiedData
+  let data = history?.endpoint
+  let draftData = props?.tabs[historyId]?.draft;
+  // showing data from draft if data is modified
+  if(props?.tabs[historyId]?.isModified && draftData ){
+    return  draftData
+   }
+  return  utilityFunctions.modifyEndpointContent(_.cloneDeep(data), _.cloneDeep(untitledEndpointData))
 }
 
 const withQuery = (WrappedComponent) => {
@@ -231,12 +237,12 @@ const withQuery = (WrappedComponent) => {
     const setQueryUpdatedData = (data, callbackFn = null) => {
       let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
       const endpointId =
-        props?.match?.params.endpointId !== 'new' ? props?.match?.params?.endpointId || currentIdToShow : props?.activeTabId
-      if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
-        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
-        queryClient.setQueryData(queryKey, data)
-      }else{
-        queryClient.setQueryData(queryKey, data)
+        props?.match?.params.endpointId !== 'new' ? props?.match?.params?.endpointId || currentIdToShow || props?.match?.params?.historyId : props?.activeTabId
+      data = _.cloneDeep(data);
+      queryClient.setQueryData(queryKey, data)
+      // only update the data if it is different from default data
+      if( !_.isEqual(untitledEndpointData, data)){
+        store.dispatch(updateTabDraft(endpointId, data)) // updating draft data
       }
       if(callbackFn){
         callbackFn()
@@ -290,7 +296,8 @@ class DisplayEndpoint extends Component {
       docOptions: false,
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
-      endpointContentState: null
+      endpointContentState: null,
+      showEndpointFormModal:false
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -353,6 +360,7 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    console.log('this.state.dfgfdg == ', this.state.showEndpointFormModal)
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.extractEndpointName()
     }

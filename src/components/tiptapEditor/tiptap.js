@@ -14,6 +14,7 @@ import Text from '@tiptap/extension-text'
 import TextStyle from '@tiptap/extension-text-style'
 import Placeholder from '@tiptap/extension-placeholder'
 import { Color } from '@tiptap/extension-color'
+import { debounce } from 'lodash'; 
 
 export default function Tiptap({ initial, onChange, disabled, isInlineEditor, minHeight }) {
   const editor = useEditor({
@@ -51,6 +52,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
     content: initial,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
+      console.log('html', html)
       onChange(html)
     },
     editable: !disabled
