@@ -45,7 +45,7 @@ export default function PublishedVersionDropDown(props) {
   return (
     <DropdownButton
       key={props?.rootParentId}
-      className=''
+      className='version-dropdown'
       id={`dropdown-basic-button-${props?.rootParentId}`}
       onClick={(e) => e.stopPropagation()}
       title={pages?.[props?.rootParentId]?.child?.length === 1 ? props.defaultVersionName : props.selectedVersionName}

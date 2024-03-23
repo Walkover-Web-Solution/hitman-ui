@@ -74,21 +74,27 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 class PublicEndpoint extends Component {
-  state = {
-    publicCollectionId: '',
+  constructor() {
+ super()
+ this.state = {
+  publicCollectionId: '',
     collectionName: '',
     collectionTheme: null,
-    isNavBar: false,
-    isSticky: false,
-    likeActive: false,
-    dislikeActive: false,
-    review: {
-      feedback: {},
-      endpoint: {}
+   isNavBar: false,
+   isSticky: false,
+   likeActive: false,
+   dislikeActive: false,
+   review: {
+    feedback: {},
+    endpoint: {}
     },
     openReviewModal: false,
-    idToRenderState : null,
-    toggleSideBar: false,
+    idToRenderState: null,
+    }
+ this.iconRef = React.createRef()
+ this.hamburgerIconRef = React.createRef()
+ this.logoName = React.createRef()
+ this.closeIconRef = React.createRef()
   }
 
   async componentDidMount() {
@@ -337,12 +343,31 @@ class PublicEndpoint extends Component {
     this.setDislike()
   }
 
-  handleShowSideBar(){
-    this.setState({ toggleSideBar: !this.state.toggleSideBar })
+  handleShowSideBar() {
+    const splitPaneElement = document.querySelector('.split-sidebar-public');
+    const hamburgerElement = document.querySelector('#hamburgerIcon');
+    const logoElement = document.querySelector('#logoName');
+    const closeElement = document.querySelector('#closeIcon');
+    if (this.iconRef.current && splitPaneElement) {
+      if (this.iconRef.current.classList.contains('close-icon') && splitPaneElement.classList.contains('open')) {
+        this.iconRef.current.classList.remove('close-icon');
+        splitPaneElement.classList.remove('open');
+        closeElement.classList.add('icon-none');
+        hamburgerElement.classList.remove('icon-none');
+        logoElement.classList.remove('icon-none');
+      }
+      else {
+        this.iconRef.current.classList.add('close-icon');
+        splitPaneElement.classList.add('open');
+        hamburgerElement.classList.add('icon-none');
+        logoElement.classList.add('icon-none');
+        closeElement.classList.remove('icon-none');
+      }
+    }
   }
 
   render() {
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState ;
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
     let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 1  set collection data
@@ -360,26 +385,11 @@ class PublicEndpoint extends Component {
       var collectionName = this.props.collections[collectionId]?.name
       // var collectionTheme = this.props.collections[collectionId]?.theme
     }
-
+    let collectionKeys = Object.keys(this.props?.collections || {})
     const { isCTAandLinksPresent } = this.getCTALinks()
 
-    // class Toggle extends React.Component {
-    //   constructor(props) {
-    //     super(props);
-    //     this.state = {isToggleOn: true};
-    //     this.handleClick = this.handleClick.bind(this);
-    //   }
-
-    // handleClick() {
-    //   this.setState(prevState => ({
-    //     isToggleOn: !prevState.isToggleOn
-    //   }));
-    // }
-    const menuOpen = false;
     return (
       <>
-             {/* <button onClick={toggleShow}>{buttonText}</button> */}
-             
         {/* [info] part 1 style component */}
         <Style>
           {`
@@ -396,40 +406,60 @@ class PublicEndpoint extends Component {
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
-              <span className={'hamberger-icon' + (this.state.toggleSideBar ? ' close-icon' : '')}>
-                { !this.state.toggleSideBar && <MdDehaze className='fs-4 fw-bold' onClick={()=>{this.handleShowSideBar()}} /> }
-                { this.state.toggleSideBar && <MdClose onClick={()=>{this.handleShowSideBar()}} /> }
+        <span ref={this.iconRef} className={'hamberger-icon'}>
+          <MdDehaze id='hamburgerIcon' className='icon-active fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
+          <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
+          <span className='logo-name' id="logoName">
+            {this.props.collections[collectionKeys[0]]?.favicon ||
+              (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
+                <img
+                    className='hamberger-img'
+                    id='publicLogo'
+                    alt='public-logo'
+                    src={
+                      this.props.collections[collectionKeys[0]]?.favicon
+                        ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
+                        : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
+                    }
+                    // onError={() => { this.setState({ publicLogoError: true })}}
+                    width='20'
+                    height='20'
+                  />
+                ))}
+              <span className="icon-name">{this.props.collections[collectionId]?.name}</span>
 
-              </span>
+            </span>
+            {/* Original icons */}
+          </span>
           {/* [info] part 3 */}
-            <SplitPane split='vertical' className={'split-sidebar-public' + (this.state.toggleSideBar ? ' open' : '') }>
-              {/* [info] part 3 subpart 1 sidebar data left content */}
-              <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
-                {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
-              </div>
-              {/*  [info] part 3 subpart 1 sidebar data right content */}
-              <div
-                className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
-                style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}
-              >
-                {idToRender ? (
-                  <div
-                    onScroll={(e) => {
-                      if (e.target.scrollTop > 20) {
-                        this.setState({ isSticky: true })
-                      } else {
-                        this.setState({ isSticky: false })
-                      }
-                    }}
-                    className='display-component'
-                  >
-                    {type == 4 && (
-                      <DisplayEndpoint
-                        {...this.props}
-                        fetch_entity_name={this.fetchEntityName.bind(this)}
-                        publicCollectionTheme={this.state.collectionTheme}
-                      />
-                    )}
+          <SplitPane split='vertical' className={'split-sidebar-public'}>
+            {/* [info] part 3 subpart 1 sidebar data left content */}
+            <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
+              {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
+            </div>
+            {/*  [info] part 3 subpart 1 sidebar data right content */}
+            <div
+              className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
+              style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}
+            >
+              {idToRender ? (
+                <div
+                  onScroll={(e) => {
+                    if (e.target.scrollTop > 20) {
+                      this.setState({ isSticky: true })
+                    } else {
+                      this.setState({ isSticky: false })
+                    }
+                  }}
+                  className='display-component'
+                >
+                  {type == 4 && (
+                    <DisplayEndpoint
+                      {...this.props}
+                      fetch_entity_name={this.fetchEntityName.bind(this)}
+                      publicCollectionTheme={this.state.collectionTheme}
+                    />
+                  )}
 
                     {(type == 1 || type == 3) && (
                       <DisplayPage
@@ -439,11 +469,11 @@ class PublicEndpoint extends Component {
                       />
                     )}
 
-                    {!type && (
-                      <ERROR_404_PUBLISHED_PAGE
-                        error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
-                      />
-                    )}
+                  {!type && idToRender == 'undefined' && (
+                    <ERROR_404_PUBLISHED_PAGE
+                      error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
+                    />
+                  )}
 
                     {this.displayCTAandLink()}
                     {/* <div className='d-flex flex-row justify-content-start'>

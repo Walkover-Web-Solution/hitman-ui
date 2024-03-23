@@ -287,9 +287,15 @@ $border-color: rgba(227, 228, 230, 0.7);
 
   &.api-label-lg {
     font-size: 12px;
-    width: 60px;
+    width: 64px;
     height: 26px;
     line-height: 26px;
+    @media only screen and (max-width: 768px){
+      font-size: 14px;
+     }
+     @media only screen and (max-width: 568px){
+      font-size: 16px;
+     }
   }
 
   &.POST {
