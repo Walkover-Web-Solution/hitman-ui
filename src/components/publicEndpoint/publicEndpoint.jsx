@@ -75,25 +75,26 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 class PublicEndpoint extends Component {
   constructor() {
-    super()
-    this.state = {
-      publicCollectionId: '',
-      collectionName: '',
-      collectionTheme: null,
-      isNavBar: false,
-      isSticky: false,
-      likeActive: false,
-      dislikeActive: false,
-      review: {
-        feedback: {},
-        endpoint: {}
-      },
-      openReviewModal: false,
-      idToRenderState: null,
+ super()
+ this.state = {
+  publicCollectionId: '',
+    collectionName: '',
+    collectionTheme: null,
+   isNavBar: false,
+   isSticky: false,
+   likeActive: false,
+   dislikeActive: false,
+   review: {
+    feedback: {},
+    endpoint: {}
+    },
+    openReviewModal: false,
+    idToRenderState: null,
     }
-    this.iconRef = React.createRef()
-    this.hamburgerIconRef = React.createRef()
-    this.closeIconRef = React.createRef()
+ this.iconRef = React.createRef()
+ this.hamburgerIconRef = React.createRef()
+ this.logoName = React.createRef()
+ this.closeIconRef = React.createRef()
   }
 
 
@@ -346,18 +347,21 @@ class PublicEndpoint extends Component {
   handleShowSideBar() {
     const splitPaneElement = document.querySelector('.split-sidebar-public');
     const hamburgerElement = document.querySelector('#hamburgerIcon');
+    const logoElement = document.querySelector('#logoName');
     const closeElement = document.querySelector('#closeIcon');
     if (this.iconRef.current && splitPaneElement) {
       if (this.iconRef.current.classList.contains('close-icon') && splitPaneElement.classList.contains('open')) {
         this.iconRef.current.classList.remove('close-icon');
         splitPaneElement.classList.remove('open');
-        closeElement.classList.add('icon-none')
-        hamburgerElement.classList.remove('icon-none')
+        closeElement.classList.add('icon-none');
+        hamburgerElement.classList.remove('icon-none');
+        logoElement.classList.remove('icon-none');
       }
       else {
         this.iconRef.current.classList.add('close-icon');
         splitPaneElement.classList.add('open');
         hamburgerElement.classList.add('icon-none');
+        logoElement.classList.add('icon-none');
         closeElement.classList.remove('icon-none');
       }
     }
@@ -382,26 +386,11 @@ class PublicEndpoint extends Component {
       var collectionName = this.props.collections[collectionId]?.name
       // var collectionTheme = this.props.collections[collectionId]?.theme
     }
-
+    let collectionKeys = Object.keys(this.props?.collections || {})
     const { isCTAandLinksPresent } = this.getCTALinks()
 
-    // class Toggle extends React.Component {
-    //   constructor(props) {
-    //     super(props);
-    //     this.state = {isToggleOn: true};
-    //     this.handleClick = this.handleClick.bind(this);
-    //   }
-
-    // handleClick() {
-    //   this.setState(prevState => ({
-    //     isToggleOn: !prevState.isToggleOn
-    //   }));
-    // }
-    const menuOpen = false;
     return (
       <>
-        {/* <button onClick={toggleShow}>{buttonText}</button> */}
-
         {/* [info] part 1 style component */}
         <Style>
           {`
@@ -418,9 +407,30 @@ class PublicEndpoint extends Component {
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
-          <span ref={this.iconRef} className={'hamberger-icon'}>
-            <MdDehaze id='hamburgerIcon' className='fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
-            <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
+        <span ref={this.iconRef} className={'hamberger-icon'}>
+          <MdDehaze id='hamburgerIcon' className='icon-active fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
+          <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
+          <span className='logo-name' id="logoName">
+            {this.props.collections[collectionKeys[0]]?.favicon ||
+              (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
+                <img
+                    className='hamberger-img'
+                    id='publicLogo'
+                    alt='public-logo'
+                    src={
+                      this.props.collections[collectionKeys[0]]?.favicon
+                        ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
+                        : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
+                    }
+                    // onError={() => { this.setState({ publicLogoError: true })}}
+                    width='20'
+                    height='20'
+                  />
+                ))}
+              <span className="icon-name">{this.props.collections[collectionId]?.name}</span>
+
+            </span>
+            {/* Original icons */}
           </span>
           {/* [info] part 3 */}
           <SplitPane split='vertical' className={'split-sidebar-public'}>
