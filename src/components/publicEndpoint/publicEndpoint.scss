@@ -275,7 +275,6 @@ form.add-new-domain-form {
 .hm-right-content {
   margin: 0 auto;
   height: 100%;
-  overflow: auto;
   .mid-part {
     max-width: 48rem;
     width: 100%;
@@ -289,9 +288,6 @@ form.add-new-domain-form {
     }
   }
   .request-button {
-    position: absolute;
-    top: 0rem;
-    right: 1.5rem;
     .custom-theme-btn {
       color: white;
       background-color: $theme-color;
@@ -301,9 +297,11 @@ form.add-new-domain-form {
     }
   }
   .innerContainer {
+    height: 100vh;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    @media screen and (max-width:992px) {
+      height: 100%;
+    }
   }
   .doc-view {
     box-shadow: none;
@@ -314,25 +312,37 @@ form.add-new-domain-form {
     padding: 0 1.5rem;
     max-width: 52rem;
     min-width: 25rem;
+    height: 97vh;
+    .page-header {
+      line-break: anywhere;
+    }
     @media screen and (max-width: 564px){
       min-width: 15rem;
     }
     + .public-navbar {
-      // padding: 0.75rem 1.5rem !important;
       max-width: 100% !important;
     }
   }
   .hm-endpoint-container {
-    display: block;
     transition: 450ms;
-    height: 100%;
     overflow: auto;
     transition: all 0.3s ease-in;
     position: relative;
     max-width: 72.25%;
-    padding: 0 1.5rem;
     margin-left: 0;
     scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    max-width: 1160px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+    @media screen and (max-width: 1160px){
+     padding-top: 0;
+    }
+    @media screen and (max-width: 992px){
+      padding: 0;
+     }
     &::-webkit-scrollbar {
       display: none;
       width: 0px;
@@ -351,11 +361,9 @@ form.add-new-domain-form {
           margin-bottom: 0.5rem;
           max-width: 80%;
           min-height: 2.25rem;
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
           text-overflow: ellipsis !important;
           overflow: hidden !important;
+          white-space: nowrap;
         }
       }
 
@@ -385,6 +393,7 @@ form.add-new-domain-form {
   display: flex;
   color: #fff;
   align-items: center;
+  gap: 12px;
 }
 
 // .hm-sidebar-logo {
@@ -409,7 +418,6 @@ form.add-new-domain-form {
 }
 
 h4.hm-sidebar-title {
-  margin: 0 0 0 15px !important;
   flex-grow: 1;
   font-size: 20px !important;
   font-weight: 700 !important;
@@ -660,6 +668,7 @@ button.toggleButton {
   }
 }
 .hm-right-content {
+  height: 100vh;
   &.hasPublicNavbar {
     .hideCodeEditor {
       button.toggleButton {
@@ -696,7 +705,6 @@ button.toggleButton {
     .hm-endpoint-container {
       padding: 0;
       max-width: 52rem;
-      padding: 0 1.5rem;
     }
     + .public-navbar {
       margin: 0 auto;
@@ -704,16 +712,9 @@ button.toggleButton {
     }
   }
   .display-component {
-    height: 100%;
-    // overflow-x: hidden;
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: flex-end;
-    // padding-bottom: 2rem;
     @media screen and (max-width:1160px) {
       padding-top: 3rem;
     }
-    padding-top: 1.25rem;
   }
 }
 .pubCodeWrapper {
@@ -723,10 +724,6 @@ button.toggleButton {
   width: 28%;
   background: #333333;
   transition: 300ms;
-  height: 100vh;
-  position: absolute;
-  right: 0;
-  top: 0;
   .select-code-wrapper {
     flex-direction: row;
     height: 30px;
