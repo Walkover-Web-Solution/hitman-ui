@@ -33,4 +33,16 @@ const clientAuthenticationTypeEnums = {
     sendOnBody: 'Send client credentials in body',
 }
 
-export { grantTypesEnums, inputFieldsEnums, codeMethodTypesEnums, clientAuthenticationTypeEnums }
+const authorizationTypes = {
+    noAuth: 'No Auth',
+    basicAuth: 'Basic Auth',
+    oauth2: 'OAuth 2.0',
+}
+
+const addAuthorizationDataTypes = {
+    select: 'Select',
+    requestHeaders: 'Request Headers',
+    requestUrl: 'Request URL',
+}
+
+export { grantTypesEnums, inputFieldsEnums, codeMethodTypesEnums, clientAuthenticationTypeEnums, authorizationTypes, addAuthorizationDataTypes }

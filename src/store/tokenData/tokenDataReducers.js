@@ -12,6 +12,7 @@ const tokenDataReducer = (state = initialState, action) => {
             return { ...state }
 
         case tokenDataActionTypes.DELETE_TOKEN:
+            delete state.tokenDetails[action.payload.tokenId];
             return { ...state }
 
         case tokenDataActionTypes.REPLACE_TOKEN:

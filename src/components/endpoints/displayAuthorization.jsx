@@ -1,24 +1,11 @@
-import React, { Component, useEffect, useState } from 'react'
-import TokenGenerator from './newTokenGenerator'
-import AccessTokenManager from './displayTokenManager';
+import React, { useState } from 'react'
 import './endpoints.scss'
 import Auth2Configurations from './authConfiguration/auth2Configurations';
 import { useParams } from 'react-router';
 import { useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
-
-const authorizationTypes = {
-  noAuth: 'No Auth',
-  basicAuth: 'Basic Auth',
-  oauth2: 'OAuth 2.0',
-}
-
-const addAuthorizationDataTypes = {
-  select: 'Select',
-  requestHeaders: 'Request Headers',
-  requestUrl: 'Request URL',
-}
+import { authorizationTypes, addAuthorizationDataTypes } from '../common/authorizationEnums';
 
 const options = {
   refetchOnWindowFocus: false,
@@ -98,18 +85,6 @@ export default function Authorization(props) {
 
   return (
     <div className='authorization-panel'>
-      {/* {openManageTokenModel === true && (
-        <AccessTokenManager
-          {...this.props}
-          authResponses={this.authResponses}
-          show
-          onHide={() => this.closeManageTokenModel()}
-          title='MANAGE ACCESS TOKENS'
-          set_access_token={this.setAccessToken.bind(this)}
-          set_auth_responses={this.setAuthResponses.bind(this)}
-          accessToken={oauth2.accessToken}
-        />
-      )} */}
       <div className='authorization-selector-wrapper'>
         <div className='auth-selector-container'>
           <label>Type</label>
@@ -142,7 +117,7 @@ export default function Authorization(props) {
                 <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
                   {Object.keys(addAuthorizationDataTypes).map((key, index) => {
                     return (
-                      <button key={index} onClick={() => handleAddAuthorizationTo(key)} className='dropdown-item' >
+                      <button key={index} onClick={() => handleAddAuthorizationTo(key)} className='dropdown-item'>
                         {addAuthorizationDataTypes[key]}
                       </button>
                     )
@@ -188,7 +163,7 @@ export default function Authorization(props) {
           </form>
         </div>
       )}
-      {selectedAuthorizationType === authorizationTypes.oauth2 && <Auth2Configurations handleSaveEndpoint={props?.handleSaveEndpoint} />}
+      {selectedAuthorizationType === authorizationTypes.oauth2 && <Auth2Configurations {...props} addAuthorizationDataToForAuth2={addAuthorizationDataToForAuth2} handleSaveEndpoint={props?.handleSaveEndpoint} />}
     </div>
   )
 }

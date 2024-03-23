@@ -60,7 +60,7 @@ function TokenGenerator(props) {
     return () => {
       window.removeEventListener('message', receiveMessage);
     };
-  }, [])
+  }, [data])
 
   function receiveMessage(event) {
     if (event?.data && event?.data?.techdocAuthenticationDetails) {
@@ -75,7 +75,10 @@ function TokenGenerator(props) {
     if (configurationDetails.selectedGrantType === grantTypesEnums.authorizationCode || configurationDetails.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
       try {
         const accessTokenData = await endpointApiService.getTokenAuthorizationCodeAndAuthorizationPKCE(configurationDetails.accessTokenUrl, code, configurationDetails)
-        console.log(accessTokenData)
+        const dateTimeOfTokenGeneration = new Date();
+        dateTimeOfTokenGeneration.setSeconds(dateTimeOfTokenGeneration.getSeconds() - 20);
+        console.log({ ...accessTokenData, createdTime: dateTimeOfTokenGeneration })
+        storeTokenInsideLocalState({ ...accessTokenData, createdTime: dateTimeOfTokenGeneration, state })
       }
       catch (error) {
         console.error(error)
@@ -106,20 +109,22 @@ function TokenGenerator(props) {
     const accessTokenUniqueId = shortid.generate();
     const storeTokenDetails = {
       id: accessTokenUniqueId,
-      accessToken: tokenDetails?.accessToken || null,
+      accessToken: tokenDetails?.access_token || null,
       tokenName: data?.tokenName || null,
-      grantType: data?.grantType || null,
+      grantType: data?.selectedGrantType || null,
       endpointId: params?.endpointId || null,
-      refreshToken: tokenDetails?.refreshToken || null,
+      refreshToken: tokenDetails?.refresh_token || null,
       refreshTokenUrl: data?.refreshTokenUrl || null,
-      expiryTime: tokenDetails?.expiryTime || null,
+      expiryTime: tokenDetails?.expires_in || null,
       scope: data?.scope || null,
       clientId: data?.clientId || null,
       clientSecret: data?.clientSecret || null,
       state: tokenDetails?.state || null,
-      accessTokenUrl: data?.accessTokenUrl,
+      accessTokenUrl: data?.accessTokenUrl || null,
+      tokenType: tokenDetails?.token_type || null,
+      createdTime: tokenDetails.createdTime,
     }
-    dispatch(addToken(storeTokenDetails))
+    dispatch(addToken(storeTokenDetails)).then(() => toast.success('Token Added'))
   }
 
   async function makeRequest() {
@@ -209,6 +214,7 @@ function TokenGenerator(props) {
   }
 
   function handleSaveConfiguration() {
+    if (data.tokenName.length > 25) return toast.error('Token Name character limit is 50')
     const endpointDataToSend = endpointStoredData;
     if (!(endpointDataToSend?.authorizationData?.authorization?.oauth2)) {
       endpointDataToSend.authorizationData.authorization = { oauth2: {} }

@@ -90,27 +90,23 @@ export async function getTokenAuthorizationCodeAndAuthorizationPKCE(accessTokenU
     client_id: data.clientId,
     redirect_uri: data.callbackUrl,
     code: code,
+    grant_type: 'authorization_code',
+    client_secret: data.clientSecret
   }
 
-  let headers = { Accept: 'application/json' }
+  const headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
 
-  if (data.selectedGrantType === grantTypesEnums.authorizationCode) {
-    body.client_secret = data.clientSecret
-  }
-  else if (data.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
-    headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
-    body.grant_type = 'authorization_code'
+  if (data.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
     body.code_verifier = data.codeVerifier
   }
 
   try {
     const { data: responseData } = await httpService.request({
-      url: accessTokenURL,
+      url: `${process.env.REACT_APP_API_URL}/auth/token`,
       method: 'POST',
-      data: new URLSearchParams(body),
-      headers: headers,
+      data: { tokenBody: body, tokenHeaders: headers, accessTokenUrl: accessTokenURL },
     })
-    return responseData
+    return responseData.data
   }
   catch (error) {
     throw error
@@ -135,12 +131,11 @@ export async function getTokenPasswordAndClientGrantType(accessTokenURL, data) {
 
   try {
     const { data: responseData } = await httpService.request({
-      url: accessTokenURL,
+      url: `${process.env.REACT_APP_API_URL}/auth/token`,
       method: 'POST',
-      data: new URLSearchParams(body),
-      headers: headers,
+      data: { tokenBody: body, tokenHeaders: headers, accessTokenUrl: accessTokenURL },
     })
-    return responseData
+    return responseData.data
   }
   catch (error) {
     throw error

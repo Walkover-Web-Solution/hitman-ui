@@ -1465,6 +1465,7 @@ class DisplayEndpoint extends Component {
     const dummyData = this.props.endpointContent
     dummyData.originalParams = updatedParams
     this.props.setQueryUpdatedData(dummyData)
+    this.propsFromChild('Params', updatedParams)
   }
 
   setHeaders(value, title, authorizationFlag = undefined) {
