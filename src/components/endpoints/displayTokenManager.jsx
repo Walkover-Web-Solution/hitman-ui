@@ -25,6 +25,12 @@ function AccessTokenManager(props) {
     dispatch(deleteToken({ tokenId }));
   }
 
+  const handleUseTokenClick = () => {
+    props.setSelectedTokenId(selectedTokenId);
+    props.setSelectedTokenValue(tokenDetails?.[selectedTokenId]?.accessToken);
+    props.onHide();
+  }
+
   return (
     <Modal onHide={props?.onHide} show={props?.show} id='modal-display-token' size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered>
       <Modal.Header className='custom-collection-modal-container' closeButton>
@@ -49,7 +55,7 @@ function AccessTokenManager(props) {
             <div>
               <div className='d-flex justify-content-between align-items-center'>
                 <h6 className=''>Token Details</h6>
-                <button className='oauth2-token-details-list-item-button' type='button'>
+                <button onClick={handleUseTokenClick} className='oauth2-token-details-list-item-button' type='button'>
                   Use Token
                 </button>
               </div>
@@ -65,13 +71,13 @@ function AccessTokenManager(props) {
 function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
   return (
     <div className='h-100 mt-3'>
-      {Object.keys(tokenDetails[selectedTokenId]).map((key) => {
+      {Object.keys(tokenDetails?.[selectedTokenId] ?? {})?.map((key) => {
         return (
           <div className='d-flex justify-content-center align-items-center mt-1'>
             <div className='token-keys-container'>
               <span>{key}</span>
             </div>
-            <textarea disabled value={tokenDetails[selectedTokenId][key]} className='token-value-container'></textarea>
+            <textarea disabled value={tokenDetails[selectedTokenId][key] ?? ''} className='token-value-container'></textarea>
           </div>
         )
       })}

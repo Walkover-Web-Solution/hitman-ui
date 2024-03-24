@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import './endpoints.scss'
 import Auth2Configurations from './authConfiguration/auth2Configurations';
 import { useParams } from 'react-router';
 import { useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { authorizationTypes, addAuthorizationDataTypes } from '../common/authorizationEnums';
+import './endpoints.scss'
 
 const options = {
   refetchOnWindowFocus: false,
@@ -17,9 +17,10 @@ const options = {
 
 export default function Authorization(props) {
 
-  const { activeTabId } = useSelector((state) => {
+  const { activeTabId, tokenDetails } = useSelector((state) => {
     return {
       activeTabId: state.tabs.activeTabId,
+      tokenDetails: state.tokenData.tokenDetails || {}
     }
   })
 
@@ -36,6 +37,8 @@ export default function Authorization(props) {
   const [addAuthorizationDataToForAuth2, setAddAuthorizationDataToForAuth2] = useState(addAuthorizationDataTypes[endpointStoredData?.authorizationData?.authorization?.oauth2?.addAuthorizationRequestTo] || addAuthorizationDataTypes.select)
   const [basicAuthData, setBasicAuthData] = useState({ username: endpointStoredData?.authorizationData?.authorization?.basicAuth?.username || '', password: endpointStoredData?.authorizationData?.authorization?.basicAuth?.password || '' })
   const [showPassword, setShowPassword] = useState(false)
+  const [selectedTokenId, setSelectedTokenId] = useState(null);
+  const [selectedTokenValue, setSelectedTokenValue] = useState(tokenDetails?.[selectedTokenId]?.accessToken || '');
 
   function handleChange(e) {
     setBasicAuthData((prev) => { return { ...prev, [e.target.name]: e.target.value } })
@@ -74,13 +77,22 @@ export default function Authorization(props) {
       dataToSave.authorizationData.authorization = { oauth2: {} }
       dataToSave.authorizationData.authorization.oauth2 = { ...dataToSave?.authorizationData?.authorization?.oauth2, addAuthorizationRequestTo: key }
     }
-    queryClient.setQueryData(queryKey, dataToSave, options);
+    props.setQueryUpdatedData(dataToSave);
     if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
     setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes[key]);
   }
 
   function handleShowPassword() {
     setShowPassword(!showPassword)
+  }
+
+  const addAccessTokenInsideHeadersAndParams = (value) => {
+    if (addAuthorizationDataToForAuth2 === addAuthorizationDataTypes.requestHeaders) {
+      props.set_authorization_headers(value, 'Authorization.oauth_2')
+    }
+    else if (addAuthorizationDataToForAuth2 === addAuthorizationDataTypes.requestUrl) {
+      props.set_authoriztaion_params(value, 'access_token')
+    }
   }
 
   return (
@@ -163,7 +175,18 @@ export default function Authorization(props) {
           </form>
         </div>
       )}
-      {selectedAuthorizationType === authorizationTypes.oauth2 && <Auth2Configurations {...props} addAuthorizationDataToForAuth2={addAuthorizationDataToForAuth2} handleSaveEndpoint={props?.handleSaveEndpoint} />}
+      {selectedAuthorizationType === authorizationTypes.oauth2 &&
+        <Auth2Configurations
+          {...props}
+          addAccessTokenInsideHeadersAndParams={addAccessTokenInsideHeadersAndParams}
+          addAuthorizationDataToForAuth2={addAuthorizationDataToForAuth2}
+          handleSaveEndpoint={props?.handleSaveEndpoint}
+          setSelectedTokenId={setSelectedTokenId}
+          setSelectedTokenValue={setSelectedTokenValue}
+          selectedTokenValue={selectedTokenValue}
+          selectedTokenId={selectedTokenId}
+        />
+      }
     </div>
   )
 }

@@ -55,17 +55,23 @@ function TokenGenerator(props) {
     refreshTokenUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.refreshTokenUrl || '',
   })
 
+  const dataRef = useRef(data);
+
   useEffect(() => {
     window.addEventListener('message', receiveMessage, false);
     return () => {
       window.removeEventListener('message', receiveMessage);
     };
+  }, [])
+
+  useEffect(() => {
+    dataRef.current = data;
   }, [data])
 
   function receiveMessage(event) {
     if (event?.data && event?.data?.techdocAuthenticationDetails) {
       console.log(event.data.techdocAuthenticationDetails)
-      getAuthenticationDetails(event?.data?.techdocAuthenticationDetails, data)
+      getAuthenticationDetails(event?.data?.techdocAuthenticationDetails, dataRef.current)
     }
   }
 
@@ -73,34 +79,49 @@ function TokenGenerator(props) {
     const code = authDetail.code;
     const state = authDetail.state;
     if (configurationDetails.selectedGrantType === grantTypesEnums.authorizationCode || configurationDetails.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
+      let accessTokenData
       try {
-        const accessTokenData = await endpointApiService.getTokenAuthorizationCodeAndAuthorizationPKCE(configurationDetails.accessTokenUrl, code, configurationDetails)
-        const dateTimeOfTokenGeneration = new Date();
-        dateTimeOfTokenGeneration.setSeconds(dateTimeOfTokenGeneration.getSeconds() - 20);
-        console.log({ ...accessTokenData, createdTime: dateTimeOfTokenGeneration })
-        storeTokenInsideLocalState({ ...accessTokenData, createdTime: dateTimeOfTokenGeneration, state })
+        accessTokenData = await endpointApiService.getTokenAuthorizationCodeAndAuthorizationPKCE(configurationDetails.accessTokenUrl, code, configurationDetails)
       }
       catch (error) {
         console.error(error)
-        return toast.error('could not get the access token')
+        return toast.error('Access Token Not Found, Try Again!')
+      }
+      const dateTimeOfTokenGeneration = new Date();
+      dateTimeOfTokenGeneration.setSeconds(dateTimeOfTokenGeneration.getSeconds() - 20);
+      try {
+        storeTokenInsideLocalState({ ...accessTokenData, createdTime: dateTimeOfTokenGeneration, state })
+        return toast.success('Access Token Added!')
+      }
+      catch (error) {
+        console.error(error)
+        return toast.error('Access Token Not Found, Try Again!')
       }
     }
     else if (configurationDetails.selectedGrantType === grantTypesEnums.implicit) {
-      const accessToken = authDetail.accessToken;
+      if (!authDetail?.accessToken) return toast.error('could not get the access token')
+      const accessToken = authDetail?.accessToken;
       console.log(accessToken, 'access token of implicit one')
-      storeTokenInsideLocalState(accessToken)
+      try {
+        storeTokenInsideLocalState(accessToken)
+        return toast.success('Access Token Added!')
+      }
+      catch (error) {
+        console.error(error)
+        return toast.error('Access Token Not Found, Try Again!')
+      }
     }
   }
 
   const getAcessTokenForPasswordAndClientGrantType = async () => {
     try {
       const responseData = await endpointApiService.getTokenPasswordAndClientGrantType(data.accessTokenUrl, data);
-      console.log(responseData, 'token from password and client grant type')
       storeTokenInsideLocalState(responseData?.accessToken)
+      return toast.success('Access Token Added!')
     }
     catch (error) {
       console.error(error)
-      return toast.error('could not get the access token')
+      return toast.error('Access Token Not Found, Try Again!')
     }
   }
 
@@ -124,7 +145,12 @@ function TokenGenerator(props) {
       tokenType: tokenDetails?.token_type || null,
       createdTime: tokenDetails.createdTime,
     }
-    dispatch(addToken(storeTokenDetails)).then(() => toast.success('Token Added'))
+    try {
+      dispatch(addToken(storeTokenDetails))
+    }
+    catch (error) {
+      return toast.error(`Couldn't Save token. Try Again!`)
+    }
   }
 
   async function makeRequest() {

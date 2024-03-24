@@ -2776,6 +2776,7 @@ class DisplayEndpoint extends Component {
                             <div>
                               <Authorization
                                 {...this.props}
+                                setQueryUpdatedData={this.props.setQueryUpdatedData}
                                 title='Authorization'
                                 groupId={this.state.groupId}
                                 set_authorization_headers={this.setHeaders.bind(this)}

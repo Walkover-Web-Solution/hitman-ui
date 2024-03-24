@@ -1485,7 +1485,8 @@ table#custom-generic-table {
   min-width: 200px;
   overflow: scroll;
   word-wrap: break-word;
-  span{
+
+  span {
     font-size: 12px;
   }
 }
@@ -1495,8 +1496,10 @@ table#custom-generic-table {
   flex-grow: 1;
   border: none;
   outline: none;
-  height: fit-content;
   resize: none;
+  overflow-y: auto;
+  min-height: 10px;
+  max-height: auto;
   display: flex;
   align-items: center;
   background-color: white;

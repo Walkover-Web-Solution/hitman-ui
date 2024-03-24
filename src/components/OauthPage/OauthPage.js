@@ -17,7 +17,7 @@ export default function OauthPage() {
 
     const closeWindowTimeout = setTimeout(() => {
       window.close();
-    }, 1300);
+    });
 
     return () => clearTimeout(closeWindowTimeout);
   }, []);
