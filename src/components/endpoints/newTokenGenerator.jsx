@@ -101,7 +101,6 @@ function TokenGenerator(props) {
     else if (configurationDetails.selectedGrantType === grantTypesEnums.implicit) {
       if (!authDetail?.accessToken) return toast.error('could not get the access token')
       const accessToken = authDetail?.accessToken;
-      console.log(accessToken, 'access token of implicit one')
       try {
         storeTokenInsideLocalState({ accessToken })
         return toast.success('Access Token Added!')

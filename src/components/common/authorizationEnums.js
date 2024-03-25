@@ -21,6 +21,7 @@ const inputFieldsEnums = {
     scope: 'Scope',
     state: 'State',
     clientAuthentication: 'Client Authentication',
+    refreshTokenUrl: 'Refresh Token URL',
 }
 
 const codeMethodTypesEnums = {

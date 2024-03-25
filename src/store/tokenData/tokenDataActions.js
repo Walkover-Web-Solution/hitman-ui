@@ -14,9 +14,9 @@ export const deleteToken = (payload) => {
   }
 }
 
-export const replaceToken = (payload) => {
+export const updateToken = (payload) => {
   return {
-    type: tokenDataActionTypes.REPLACE_TOKEN,
+    type: tokenDataActionTypes.UPDATE_TOKEN,
     payload
   }
 }

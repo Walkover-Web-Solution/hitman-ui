@@ -1,25 +1,10 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import TokenGenerator from '../newTokenGenerator'
 import { useSelector } from 'react-redux'
 import AccessTokenManager from '../displayTokenManager'
 import './auth2Configurations.scss'
-import { useParams } from 'react-router'
-import { useQuery } from 'react-query'
-
-const options = {
-    refetchOnWindowFocus: false,
-    cacheTime: 5000000,
-    enabled: true,
-    staleTime: Infinity,
-    retry: 3
-}
 
 export default function Auth2Configurations(props) {
-
-    const params = useParams();
-
-    const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId;
-    const queryKey = ['endpoint', endpointId];
 
     const { tokenDetails, activeTabId } = useSelector((state) => {
         return {
@@ -27,8 +12,6 @@ export default function Auth2Configurations(props) {
             activeTabId: state.tabs.activeTabId,
         }
     })
-
-    const { data: endpointStoredData } = useQuery(queryKey, options);
 
     const [showTokenGenerator, setShowTokenGenerator] = useState(false);
     const [openManageTokenModel, setOpenManageTokenModel] = useState(false);

@@ -114,7 +114,6 @@ export async function getTokenAuthorizationCodeAndAuthorizationPKCE(accessTokenU
 }
 
 export async function getTokenPasswordAndClientGrantType(accessTokenURL, data) {
-  debugger
   let body = {
     client_id: data.clientId,
     client_secret: data.clientSecret,
@@ -143,6 +142,27 @@ export async function getTokenPasswordAndClientGrantType(accessTokenURL, data) {
   }
 }
 
+export async function getRefreshToken(singleTokenDetails) {
+  let body = {
+    client_id: singleTokenDetails.clientId,
+    client_secret: singleTokenDetails.clientSecret,
+    refresh_token: singleTokenDetails.refreshToken,
+    grant_type: 'refresh_token',
+  }
+
+  try {
+    const { data: responseData } = await httpService.request({
+      url: `${process.env.REACT_APP_API_URL}/auth/token`,
+      method: 'POST',
+      data: { tokenBody: body, tokenHeaders: {}, accessTokenUrl: singleTokenDetails?.refreshTokenUrl },
+    })
+    return responseData.data
+  }
+  catch (error) {
+    throw error
+  }
+}
+
 export default {
   getEndpoints,
   deleteEndpoint,
@@ -157,4 +177,5 @@ export default {
   saveEndpoint,
   getTokenAuthorizationCodeAndAuthorizationPKCE,
   getTokenPasswordAndClientGrantType,
+  getRefreshToken,
 }
