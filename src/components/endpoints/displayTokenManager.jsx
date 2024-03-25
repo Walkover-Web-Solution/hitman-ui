@@ -3,7 +3,9 @@ import { Modal, ListGroup, Row, Col } from 'react-bootstrap'
 import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteToken } from '../../store/tokenData/tokenDataActions';
-import './endpoints.scss'
+import './endpoints.scss';
+
+const tokenDetailsToShow = ['tokenName', 'accessToken', 'grantType', 'scope', 'clientId', 'clientSecret', 'accessTokenUrl', 'createdTime'];
 
 function AccessTokenManager(props) {
   const { tokenDetails } = useSelector((state) => {
@@ -71,11 +73,43 @@ function AccessTokenManager(props) {
 function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
   return (
     <div className='h-100 mt-3'>
-      {Object.keys(tokenDetails?.[selectedTokenId] ?? {})?.map((key) => {
+      {tokenDetailsToShow?.map((key) => {
+        let title = '';
+        switch (key) {
+          case 'tokenName':
+            title = 'Token Name'
+            break;
+          case 'accessToken':
+            title = 'Access Token'
+            break;
+          case 'clientId':
+            title = 'Client Id'
+            break;
+          case 'clientSecret':
+            title = 'Client Secret'
+            break;
+          case 'grantType':
+            title = 'Client Secret'
+            break;
+          case 'scope':
+            title = 'Scope'
+            break;
+          case 'scope':
+            title = 'Scope'
+            break;
+          case 'accessTokenUrl':
+            title = 'Access Token URL'
+            break;
+          case 'createdTime':
+            title = 'Created At'
+            break;
+          default:
+            break;
+        }
         return (
           <div className='d-flex justify-content-center align-items-center mt-1'>
             <div className='token-keys-container'>
-              <span>{key}</span>
+              <span>{title}</span>
             </div>
             <textarea disabled value={tokenDetails[selectedTokenId][key] ?? ''} className='token-value-container'></textarea>
           </div>
