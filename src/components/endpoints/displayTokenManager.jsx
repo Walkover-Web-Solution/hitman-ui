@@ -30,6 +30,7 @@ function AccessTokenManager(props) {
   const handleUseTokenClick = () => {
     props.setSelectedTokenId(selectedTokenId);
     props.setSelectedTokenValue(tokenDetails?.[selectedTokenId]?.accessToken);
+    props.addAccessTokenInsideHeadersAndParams(tokenDetails?.[selectedTokenId]?.accessToken, selectedTokenId)
     props.onHide();
   }
 

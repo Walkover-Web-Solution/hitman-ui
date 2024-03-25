@@ -37,7 +37,7 @@ export default function Authorization(props) {
   const [addAuthorizationDataToForAuth2, setAddAuthorizationDataToForAuth2] = useState(addAuthorizationDataTypes[endpointStoredData?.authorizationData?.authorization?.oauth2?.addAuthorizationRequestTo] || addAuthorizationDataTypes.select)
   const [basicAuthData, setBasicAuthData] = useState({ username: endpointStoredData?.authorizationData?.authorization?.basicAuth?.username || '', password: endpointStoredData?.authorizationData?.authorization?.basicAuth?.password || '' })
   const [showPassword, setShowPassword] = useState(false)
-  const [selectedTokenId, setSelectedTokenId] = useState(null);
+  const [selectedTokenId, setSelectedTokenId] = useState(endpointStoredData?.authorizationData?.authorization?.oauth2?.selectedTokenId || null);
   const [selectedTokenValue, setSelectedTokenValue] = useState(tokenDetails?.[selectedTokenId]?.accessToken || '');
 
   function handleChange(e) {
@@ -77,7 +77,6 @@ export default function Authorization(props) {
       dataToSave.authorizationData.authorization = { oauth2: {} }
       dataToSave.authorizationData.authorization.oauth2 = { ...dataToSave?.authorizationData?.authorization?.oauth2, addAuthorizationRequestTo: key }
     }
-    props.setQueryUpdatedData(dataToSave);
     if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
     if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestHeaders) {
       props.set_authorization_headers(selectedTokenValue, 'Authorization.oauth_2')
@@ -92,12 +91,12 @@ export default function Authorization(props) {
     setShowPassword(!showPassword)
   }
 
-  const addAccessTokenInsideHeadersAndParams = (value) => {
+  const addAccessTokenInsideHeadersAndParams = (value, tokenIdToSave) => {
     if (addAuthorizationDataToForAuth2 === addAuthorizationDataTypes.requestHeaders) {
-      props.set_authorization_headers(value, 'Authorization.oauth_2')
+      props.set_authorization_headers(value, 'Authorization.oauth_2', null, tokenIdToSave)
     }
     else if (addAuthorizationDataToForAuth2 === addAuthorizationDataTypes.requestUrl) {
-      props.set_authoriztaion_params(value, 'access_token')
+      props.set_authoriztaion_params(value, 'access_token', null, tokenIdToSave)
     }
   }
 

@@ -3,12 +3,32 @@ import TokenGenerator from '../newTokenGenerator'
 import { useSelector } from 'react-redux'
 import AccessTokenManager from '../displayTokenManager'
 import './auth2Configurations.scss'
+import { useParams } from 'react-router'
+import { useQuery } from 'react-query'
+
+const options = {
+    refetchOnWindowFocus: false,
+    cacheTime: 5000000,
+    enabled: true,
+    staleTime: Infinity,
+    retry: 3
+}
 
 export default function Auth2Configurations(props) {
 
-    const { tokenDetails } = useSelector((state) => {
-        return { tokenDetails: state.tokenData.tokenDetails || {} }
+    const params = useParams();
+
+    const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId;
+    const queryKey = ['endpoint', endpointId];
+
+    const { tokenDetails, activeTabId } = useSelector((state) => {
+        return {
+            tokenDetails: state.tokenData.tokenDetails || {},
+            activeTabId: state.tabs.activeTabId,
+        }
     })
+
+    const { data: endpointStoredData } = useQuery(queryKey, options);
 
     const [showTokenGenerator, setShowTokenGenerator] = useState(false);
     const [openManageTokenModel, setOpenManageTokenModel] = useState(false);
@@ -24,7 +44,7 @@ export default function Auth2Configurations(props) {
     const handleSelectToken = (tokenId) => {
         props.setSelectedTokenValue(tokenDetails?.[tokenId]?.accessToken || '')
         props.setSelectedTokenId(tokenId)
-        props.addAccessTokenInsideHeadersAndParams(tokenDetails?.[tokenId]?.accessToken)
+        props.addAccessTokenInsideHeadersAndParams(tokenDetails?.[tokenId]?.accessToken, tokenId)
     }
 
     const handleTokenValueChange = (e) => {
@@ -77,6 +97,7 @@ export default function Auth2Configurations(props) {
                 <AccessTokenManager
                     show
                     onHide={handleManageTokenClick}
+                    addAccessTokenInsideHeadersAndParams={props?.addAccessTokenInsideHeadersAndParams}
                     setSelectedTokenId={props?.setSelectedTokenId}
                     setSelectedTokenValue={props?.setSelectedTokenValue}
                 />

@@ -1437,7 +1437,8 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(tempData)
   }
 
-  setParams(value, title, authorizationFlag) {
+  setParams(value, title, authorizationFlag, tokenIdToSave) {
+    debugger
     const originalParams = this.props.endpointContent.originalParams
     const updatedParams = []
     const emptyParam = {
@@ -1464,11 +1465,18 @@ class DisplayEndpoint extends Component {
     updatedParams.push(emptyParam)
     const dummyData = this.props.endpointContent
     dummyData.originalParams = updatedParams
+    if (dummyData?.authorizationData?.authorization?.oauth2) {
+      dummyData.authorizationData.authorization.oauth2 = { ...dummyData?.authorizationData?.authorization?.oauth2, selectedTokenId: tokenIdToSave }
+    }
+    else {
+      dummyData.authorizationData.authorization = { oauth2: {} }
+      dummyData.authorizationData.authorization.oauth2 = { ...dummyData?.authorizationData?.authorization?.oauth2, selectedTokenId: tokenIdToSave }
+    }
     this.props.setQueryUpdatedData(dummyData)
     this.propsFromChild('Params', updatedParams)
   }
 
-  setHeaders(value, title, authorizationFlag = undefined) {
+  setHeaders(value, title, authorizationFlag = undefined, tokenIdToSave) {
     const originalHeaders = this.props.endpointContent.originalHeaders
     const updatedHeaders = []
     const emptyHeader = {
@@ -1508,9 +1516,15 @@ class DisplayEndpoint extends Component {
     if (title === 'content-type') {
       updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(value)
     }
-
     updatedHeaders.push(emptyHeader)
     const dummyData = this.props.endpointContent
+    if (dummyData?.authorizationData?.authorization?.oauth2) {
+      dummyData.authorizationData.authorization.oauth2 = { ...dummyData?.authorizationData?.authorization?.oauth2, selectedTokenId: tokenIdToSave }
+    }
+    else {
+      dummyData.authorizationData.authorization = { oauth2: {} }
+      dummyData.authorizationData.authorization.oauth2 = { ...dummyData?.authorizationData?.authorization?.oauth2, selectedTokenId: tokenIdToSave }
+    }
     dummyData.originalHeaders = updatedHeaders
     this.props.setQueryUpdatedData(dummyData)
   }
