@@ -79,6 +79,12 @@ export default function Authorization(props) {
     }
     props.setQueryUpdatedData(dataToSave);
     if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
+    if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestHeaders) {
+      props.set_authorization_headers(selectedTokenValue, 'Authorization.oauth_2')
+    }
+    else if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestUrl) {
+      props.set_authoriztaion_params(selectedTokenValue, 'access_token')
+    }
     setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes[key]);
   }
 

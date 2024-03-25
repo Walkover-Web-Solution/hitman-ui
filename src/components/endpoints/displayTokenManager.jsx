@@ -107,7 +107,7 @@ function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
             <div className='token-keys-container'>
               <span>{title}</span>
             </div>
-            <textarea disabled value={tokenDetails[selectedTokenId][key] ?? ''} className='token-value-container'></textarea>
+            <textarea disabled value={tokenDetails?.[selectedTokenId]?.[key] ?? ''} className='token-value-container'></textarea>
           </div>
         )
       })}
