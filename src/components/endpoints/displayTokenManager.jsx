@@ -71,41 +71,37 @@ function AccessTokenManager(props) {
 }
 
 function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
+
+  const getTitleValue = (key) => {
+    let title = '';
+    switch (key) {
+      case 'tokenName':
+        return title = 'Token Name'
+      case 'accessToken':
+        return title = 'Access Token'
+      case 'clientId':
+        return title = 'Client Id'
+      case 'clientSecret':
+        return title = 'Client Secret'
+      case 'grantType':
+        return title = 'Client Secret'
+      case 'scope':
+        return title = 'Scope'
+      case 'scope':
+        return title = 'Scope'
+      case 'accessTokenUrl':
+        return title = 'Access Token URL'
+      case 'createdTime':
+        return title = 'Created At'
+      default:
+        break;
+    }
+  }
+
   return (
     <div className='h-100 mt-3'>
       {tokenDetailsToShow?.map((key) => {
-        let title = '';
-        switch (key) {
-          case 'tokenName':
-            title = 'Token Name'
-            break;
-          case 'accessToken':
-            title = 'Access Token'
-            break;
-          case 'clientId':
-            title = 'Client Id'
-            break;
-          case 'clientSecret':
-            title = 'Client Secret'
-            break;
-          case 'grantType':
-            title = 'Client Secret'
-            break;
-          case 'scope':
-            title = 'Scope'
-            break;
-          case 'scope':
-            title = 'Scope'
-            break;
-          case 'accessTokenUrl':
-            title = 'Access Token URL'
-            break;
-          case 'createdTime':
-            title = 'Created At'
-            break;
-          default:
-            break;
-        }
+        const title = getTitleValue(key);
         return (
           <div className='d-flex justify-content-center align-items-center mt-1'>
             <div className='token-keys-container'>
