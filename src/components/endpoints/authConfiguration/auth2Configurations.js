@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import TokenGenerator from '../newTokenGenerator'
 import { useSelector } from 'react-redux'
 import AccessTokenManager from '../displayTokenManager'
@@ -81,12 +81,12 @@ export default function Auth2Configurations(props) {
                     setSelectedTokenValue={props?.setSelectedTokenValue}
                 />
             }
-            <TokenGenerator
+            {showTokenGenerator && <TokenGenerator
                 {...props}
                 onHide={handleGenerateToken}
                 show={showTokenGenerator}
                 title='Get new access token'
-            />
+            />}
         </>
     )
 }

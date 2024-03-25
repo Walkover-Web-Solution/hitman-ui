@@ -58,6 +58,12 @@ function TokenGenerator(props) {
   const dataRef = useRef(data);
 
   useEffect(() => {
+    function receiveMessage(event) {
+      if (event?.data && event?.data?.techdocAuthenticationDetails) {
+        getAuthenticationDetails(event?.data?.techdocAuthenticationDetails, dataRef.current)
+      }
+    }
+
     window.addEventListener('message', receiveMessage, false);
     return () => {
       window.removeEventListener('message', receiveMessage);
@@ -65,15 +71,9 @@ function TokenGenerator(props) {
   }, [])
 
   useEffect(() => {
-    dataRef.current = data;
+    dataRef.current = data
   }, [data])
 
-  function receiveMessage(event) {
-    if (event?.data && event?.data?.techdocAuthenticationDetails) {
-      console.log(event.data.techdocAuthenticationDetails)
-      getAuthenticationDetails(event?.data?.techdocAuthenticationDetails, dataRef.current)
-    }
-  }
 
   const getAuthenticationDetails = async (authDetail, configurationDetails) => {
     const code = authDetail.code;
@@ -103,7 +103,7 @@ function TokenGenerator(props) {
       const accessToken = authDetail?.accessToken;
       console.log(accessToken, 'access token of implicit one')
       try {
-        storeTokenInsideLocalState(accessToken)
+        storeTokenInsideLocalState({ accessToken })
         return toast.success('Access Token Added!')
       }
       catch (error) {
@@ -115,7 +115,7 @@ function TokenGenerator(props) {
 
   const getAcessTokenForPasswordAndClientGrantType = async () => {
     try {
-      const responseData = await endpointApiService.getTokenPasswordAndClientGrantType(data.accessTokenUrl, data);
+      const responseData = await endpointApiService.getTokenPasswordAndClientGrantType(data.accessTokenUrl, dataRef.current);
       storeTokenInsideLocalState(responseData?.accessToken)
       return toast.success('Access Token Added!')
     }
@@ -131,35 +131,30 @@ function TokenGenerator(props) {
     const storeTokenDetails = {
       id: accessTokenUniqueId,
       accessToken: tokenDetails?.access_token || null,
-      tokenName: data?.tokenName || null,
-      grantType: data?.selectedGrantType || null,
+      tokenName: dataRef.current?.tokenName || null,
+      grantType: dataRef.current?.selectedGrantType || null,
       endpointId: params?.endpointId || null,
       refreshToken: tokenDetails?.refresh_token || null,
-      refreshTokenUrl: data?.refreshTokenUrl || null,
+      refreshTokenUrl: dataRef.current?.refreshTokenUrl || null,
       expiryTime: tokenDetails?.expires_in || null,
-      scope: data?.scope || null,
-      clientId: data?.clientId || null,
-      clientSecret: data?.clientSecret || null,
+      scope: dataRef.current?.scope || null,
+      clientId: dataRef.current?.clientId || null,
+      clientSecret: dataRef.current?.clientSecret || null,
       state: tokenDetails?.state || null,
-      accessTokenUrl: data?.accessTokenUrl || null,
+      accessTokenUrl: dataRef.current?.accessTokenUrl || null,
       tokenType: tokenDetails?.token_type || null,
       createdTime: tokenDetails.createdTime,
     }
-    try {
-      dispatch(addToken(storeTokenDetails))
-    }
-    catch (error) {
-      return toast.error(`Couldn't Save token. Try Again!`)
-    }
+    dispatch(addToken(storeTokenDetails))
   }
 
   async function makeRequest() {
-    const grantType = data.selectedGrantType
+    const grantType = dataRef.current.selectedGrantType
     let requestApi = ''
     const paramsObject = makeParams(grantType)
     const params = URI.buildQuery(paramsObject)
     if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
-      requestApi = data.authUrl + '?' + params
+      requestApi = dataRef.current.authUrl + '?' + params
     }
     if (grantType === grantTypesEnums.passwordCredentials || grantType === grantTypesEnums.clientCredentials) {
       return getAcessTokenForPasswordAndClientGrantType()

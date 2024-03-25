@@ -114,6 +114,7 @@ export async function getTokenAuthorizationCodeAndAuthorizationPKCE(accessTokenU
 }
 
 export async function getTokenPasswordAndClientGrantType(accessTokenURL, data) {
+  debugger
   let body = {
     client_id: data.clientId,
     client_secret: data.clientSecret,
