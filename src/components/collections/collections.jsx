@@ -30,6 +30,8 @@ import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTags
 // import {ReactComponent as ImportVersion} from '../../assets/icons/importVersionSign.svg'
 // import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
 import { store } from '../../store/store'
+import { MdExpandMore } from "react-icons/md"
+
 
 const EMPTY_STRING = ''
 
@@ -347,7 +349,7 @@ class CollectionsComponent extends Component {
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
                   <span className='versionChovron'>
-                    <img src={ExpandIcon} alt='' />
+                  <MdExpandMore className='fs-4'/>
                   </span>
                   {collectionState === 'singleCollection' ? (
                     <div className='sidebar-accordion-item' onClick={() => this.openSelectedCollection(collectionId)}>
