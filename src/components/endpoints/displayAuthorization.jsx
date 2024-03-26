@@ -61,7 +61,12 @@ export default function Authorization(props) {
   const handleSelectAuthorizationType = (key) => {
     const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) : JSON.parse(localStorage.getItem(activeTabId)) || {};
     const dataToSave = cloneDeep(endpointStoredData);
-    dataToSave.authorizationData.authorizationTypeSelected = key;
+    if (dataToSave?.authorizationData) {
+      dataToSave.authorizationData.authorizationTypeSelected = key;
+    }
+    else {
+      dataToSave.authorizationData = { authorization: {}, authorizationTypeSelected: key }
+    }
     queryClient.setQueryData(queryKey, dataToSave, options);
     if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
     setSelectedAuthorizationType(authorizationTypes[key]);
