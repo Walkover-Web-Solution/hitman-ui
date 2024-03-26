@@ -1,12 +1,12 @@
 @import './variables.scss';
 
-.mainpublic-endpoint-main{
+.mainpublic-endpoint-main {
   .Pane1 {
     width: 330px !important;
     @media screen and (max-width:1400px) {
-      width: 250px !important;
+      width: 280px !important;
     }
-  }  
+  }
 }
 
 .top-right {
@@ -44,7 +44,6 @@
       &> {
         div {
           &:first-child {
-            // width: 100vw !important;
             transform: translateX(0) !important;
           }
         }
@@ -275,8 +274,16 @@ body .sidebar {
           .name-parent-page{
             overflow-wrap: anywhere;
             max-width: 240px !important;
-            @media (max-width: 1400px) and (min-width: 400px){
+            @media (max-width: 1400px) and (min-width: 400px) {
               max-width: 180px !important;
+            }
+
+            .text-truncate {
+              font-size: 14px;
+
+              @media screen and (max-width:768px) {
+                font-size: 16px;
+              }
             }
           }
 
@@ -290,6 +297,16 @@ body .sidebar {
 
         &:hover {
           background: $grey;
+
+          .version-dropdown {
+            .dropdown-toggle {
+              &::after {
+                background: $grey !important;
+                color: $grey !important;
+                border: outset $grey !important;
+              }
+            }
+          }
 
           .published-icon {
             opacity: 0;
@@ -399,6 +416,16 @@ body .sidebar {
 
       .selected {
         background-color: $grey;
+
+        .version-dropdown {
+          .dropdown-toggle {
+            &::after {
+              background: $grey !important;
+              color: $grey !important;
+              border: outset $grey !important;
+            }
+          }
+        }
       }
     }
 
@@ -585,6 +612,9 @@ input[type='text']:focus {
 
 .versionChovron svg {
   transition: all 0.3s ease-in;
+  height: 20px !important;
+  width: 20px !important;
+  color: rgb(177, 175, 175);
 }
 
 .sidebar-content:focus {
@@ -600,6 +630,16 @@ input[type='text']:focus {
 
   .api-label {
     margin-right: 5px;
+
+    @media screen and (max-width:768px) {
+      font-size: 12px;
+    }
+  }
+
+  .truncate {
+    @media screen and (max-width:768px) {
+      font-size: 16px;
+    }
   }
 }
 
@@ -756,17 +796,20 @@ input[type='text']:focus {
     border: 1px solid black;
   }
 }
-
+.icon-active {
+  display: none;
+  @media screen and (max-width:1160px) {
+    display: block;
+  }
+}
 @media screen and (max-width:1160px) {
-  .hamberger-icon {
+.hamberger-icon {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
-    display: none;
+    z-index:  1000;
     transition:  400ms;
-    display: block;
     width: 100%;
     background: white;
     padding: 10px 20px;
@@ -774,18 +817,42 @@ input[type='text']:focus {
       font-size: 20px;
       font-weight: 700 !important;
     }
-  
-    &.close-icon{
-      left: 218px !important;
+      &.close-icon {
+        left: 245px !important;
+        position: fixed;
+        background: transparent;
+        padding-left: 10px;
+      }
+    }
+
+    .logo-name {
       position: fixed;
-      background: transparent;
-      padding-left: 10px;
+      left: 60px;
+      top: 5px;
+      z-index: 1111;
+      display: flex;
+      align-items: center;
+
+      .icon-name {
+        font-weight: 700;
+        font-size: 20px;
+      }
+
+      .hamberger-img {
+        width: 34px;
+      }
+    }
+
+
+    .pubCodeWrapper {
+      top: 41px !important;
     }
   }
-  .pubCodeWrapper{
-    top: 41px !important;
-  }
+
+
+.close-bar {
+  position: fixed;
+  background: rgba($color: #000000, $alpha: 0.0);
+  width: 100%;
+  height: 100%;
 }
-
-
-

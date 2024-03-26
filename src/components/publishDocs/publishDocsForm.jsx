@@ -43,7 +43,7 @@ const publishDocFormEnum = {
   ],
   LABELS: {
     title: 'Title',
-    domain: 'Domain',
+    domain: 'Custom Domain',
     logoUrl: 'Logo URL',
     theme: 'Theme',
     cta: 'CTA',
@@ -413,7 +413,7 @@ class PublishDocForm extends Component {
 
     return (
       <div>
-        <span className='public-title mt-1 d-block'>Public Link</span>
+        <span className='public-title mt-1 d-block'>Preview Documentation</span>
         <OverlayTrigger
           overlay={
             <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled ? 'd-none' : ''}>

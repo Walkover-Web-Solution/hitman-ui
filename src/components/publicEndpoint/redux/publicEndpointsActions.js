@@ -3,7 +3,6 @@ import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'
 import endpointApiService from '../../endpoints/endpointApiService.js'
 import { toast } from 'react-toastify'
-
 import { SESSION_STORAGE_KEY } from '../../common/utility.js'
 
 export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) => {

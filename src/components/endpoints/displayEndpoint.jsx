@@ -939,6 +939,7 @@ class DisplayEndpoint extends Component {
     } else {
       this.setState({ preReqScriptError: result.error, loader: false })
     }
+    this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }
 
   runScript(code, environment, request, responseJson) {
@@ -2568,12 +2569,36 @@ class DisplayEndpoint extends Component {
   render() {
     if (this.props?.endpointContentLoading) {
       return (
-        <div className='custom-loading-container'>
-          <div className='loading-content'>
-            <button className='spinner-border' />
-            <p className='mt-3'>Loading</p>
+        <>
+          <div>
+            <div className='loading'>
+              <div className='box bg'></div>
+              <div className='d-flex align-items-center justify-content-between mt-3'>
+                <div>
+                  <div className='new bg rounded-1'></div>
+                  <div className='live bg mt-1'></div>
+                </div>
+                <div className='new bg rounded-1'></div>
+              </div>
+              <div className='d-flex align-items-center gap-3 mt-2'>
+                <div className='api-call bg rounded-1'></div>
+                <div className='bg send rounded-1'></div>
+              </div>
+              <div className='boxes mt-4 bg rounded-1'></div>
+              <div className='bulk-edit bg mt-2 rounded-1'></div>
+              <div className='path-var mt-2 bg rounded-1'></div>
+              <div className='bulk-edit bg mt-2 rounded-1'></div>
+              <div className='d-flex align-items-center justify-content-between mt-4'>
+                <div className='response bg rounded-1'></div>
+                <div className='d-flex align-items-center gap-2'>
+                  <div className='min-box bg rounded-1'></div>
+                  <div className='min-box bg rounded-1'></div>
+                </div>
+              </div>
+              <div className='hit-send bg mt-3 rounded-1'></div>
+            </div>
           </div>
-        </div>
+        </>
       )
     }
     this.endpointId = this.props.endpointId
@@ -2621,45 +2646,65 @@ class DisplayEndpoint extends Component {
                 <LoginSignupModal show onHide={() => this.closeLoginSignupModal()} title='Save Endpoint' />
               )}
               {getCurrentUser() ? (
-                <div className={this.isDashboardAndTestingView() ? 'hm-panel' : null}>
-                  <div className='d-flex justify-content-between'>
-                    {this.renderToggleView()}
-                    {this.renderDocViewOperations()}
-                  </div>
-                  <div className='position-relative top-part'>
-                    {this.state.showEndpointFormModal && (
-                      <SaveAsSidebar
-                        {...this.props}
-                        onHide={() => this.closeEndpointFormModal()}
-                        name={this.props.endpointContent.data.name}
-                        description={this.props.endpointContent.data.description}
-                        save_endpoint={this.handleSave.bind(this)}
-                        saveAsLoader={this.state.saveAsLoader}
-                        endpointContent={this.props?.endpointContent}
-                      />
-                    )}
-                    {this.isDashboardAndTestingView() && (
-                      <DisplayDescription
-                        {...this.props}
-                        endpoint={this.state.endpoint}
-                        data={this.state.data}
-                        old_description={this.state.oldDescription}
-                        props_from_parent={this.propsFromDescription.bind(this)}
-                        alterEndpointName={(name) => this.alterEndpointName(name)}
-                      />
-                    )}
-                    {this.renderSaveButton()}
-                  </div>
-                </div>
+                <>
+                  {isDashboardRoute(this.props) && (
+                    <div className='hm-panel'>
+                      <div className='d-flex justify-content-between'>
+                        {this.renderToggleView()}
+                        {this.renderDocViewOperations()}
+                      </div>
+                      <div className='position-relative top-part'>
+                        {this.state.showEndpointFormModal && (
+                          <SaveAsSidebar
+                            {...this.props}
+                            onHide={() => this.closeEndpointFormModal()}
+                            name={this.props.endpointContent.data.name}
+                            description={this.props.endpointContent.data.description}
+                            save_endpoint={this.handleSave.bind(this)}
+                            saveAsLoader={this.state.saveAsLoader}
+                            endpointContent={this.props?.endpointContent}
+                          />
+                        )}
+                        {this.isDashboardAndTestingView() && (
+                          <DisplayDescription
+                            {...this.props}
+                            endpoint={this.state.endpoint}
+                            data={this.state.data}
+                            old_description={this.state.oldDescription}
+                            props_from_parent={this.propsFromDescription.bind(this)}
+                            alterEndpointName={(name) => this.alterEndpointName(name)}
+                          />
+                        )}
+                        {this.renderSaveButton()}
+                      </div>
+                    </div>
+                  )}
+                </>
               ) : null}
               <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
                 <div className='endpoint-header'>
                   {this.isNotDashboardOrDocView() && (
-                    <div className='endpoint-name-container'>
+                    <div className='endpoint-name-container d-flex justify-content-between'>
                       {this.isNotDashboardOrDocView() && (
                         <>
-                       
-                        <h1 className='endpoint-title'>{this.props?.endpointContent?.data?.name || ''}</h1>
+                          <h1 className='endpoint-title'>{this.props?.endpointContent?.data?.name || ''}</h1>
+                          {!isDashboardRoute(this.props) && (
+                            <div className='request-button'>
+                              <button
+                                className={
+                                  this.state.loader
+                                    ? 'btn custom-theme-btn btn-lg buttonLoader'
+                                    : 'btn btn-lg custom-theme-btn px-md-4 px-3'
+                                }
+                                style={{ background: theme }}
+                                type='submit'
+                                id='send-request-button'
+                                onClick={() => this.handleSend()}
+                              >
+                                TRY
+                              </button>
+                            </div>
+                          )}
                         </>
                       )}
                     </div>
@@ -2855,19 +2900,7 @@ class DisplayEndpoint extends Component {
                       ) : (
                         this.renderDocView()
                       )}
-                      {!isDashboardRoute(this.props) && (
-                        <div className='request-button'>
-                          <button
-                            className={this.state.loader ? 'btn custom-theme-btn btn-lg buttonLoader' : 'btn btn-lg custom-theme-btn'}
-                            style={{ background: theme }}
-                            type='submit'
-                            id='send-request-button'
-                            onClick={() => this.handleSend()}
-                          >
-                            Try
-                          </button>
-                        </div>
-                      )}
+
                       {this.isDashboardAndTestingView() && this.renderScriptError()}
                       {this.displayResponse()}
                     </div>
@@ -2878,6 +2911,7 @@ class DisplayEndpoint extends Component {
                 )}
               </div>
               {/* <ApiDocReview {...this.props} /> */}
+              <span className='d-lg-inline d-none'>{isOnPublishedPage() && <Footer />}</span>
             </div>
 
             {this.isDashboardAndTestingView() ? (
@@ -2914,7 +2948,7 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
-          <span className='me-auto ms-auto mt-auto'>{isOnPublishedPage() && <Footer/>}</span>
+        <span className='d-lg-none d-inline'>{isOnPublishedPage() && <Footer />}</span>
       </div>
     ) : null
   }
