@@ -9,11 +9,21 @@ export default function OauthPage() {
   const state = queryParams.get('state') || '';
   const accessToken = queryParams.get('access_token') || '';
 
+  const fragment = location.hash.substring(1);
+
+  const fragmentParams = fragment.split('&').reduce((params, param) => {
+    const [key, value] = param.split('=');
+    params[key] = value;
+    return params;
+  }, {});
+
   useEffect(() => {
-    window.opener.postMessage(
-      { techdocAuthenticationDetails: { code, state, accessToken } },
-      window.location.origin
-    );
+    if (fragmentParams.access_token) {
+      window.opener.postMessage({ techdocAuthenticationDetails: { implicitDetails: fragmentParams } }, window.location.origin);
+    }
+    else if(code) {
+      window.opener.postMessage({ techdocAuthenticationDetails: { code, state } }, window.location.origin);
+    }
 
     const closeWindowTimeout = setTimeout(() => {
       window.close();
