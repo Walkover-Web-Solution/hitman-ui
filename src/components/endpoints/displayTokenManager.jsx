@@ -4,6 +4,7 @@ import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteToken } from '../../store/tokenData/tokenDataActions';
 import './endpoints.scss';
+import { grantTypesEnums } from '../common/authorizationEnums';
 
 const tokenDetailsToShow = ['tokenName', 'accessToken', 'grantType', 'scope', 'clientId', 'clientSecret', 'accessTokenUrl', 'createdTime'];
 
@@ -85,7 +86,7 @@ function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
       case 'clientSecret':
         return title = 'Client Secret'
       case 'grantType':
-        return title = 'Client Secret'
+        return title = 'Grant Type'
       case 'scope':
         return title = 'Scope'
       case 'scope':
@@ -99,16 +100,35 @@ function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
     }
   }
 
+  const formatDate = (dateToConvert) => {
+    if (!dateToConvert) return '';
+    const date = new Date(dateToConvert);
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthName = monthNames[date.getMonth()];
+    const day = date.getDate();
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const meridiem = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    const year = date.getFullYear();
+    const formattedDate = `${monthName} ${day}, ${year} ${hours}:${minutes} ${meridiem}`;
+    return formattedDate;
+  };
+
   return (
     <div className='h-100 mt-3'>
       {tokenDetailsToShow?.map((key) => {
         const title = getTitleValue(key);
+        let value = tokenDetails?.[selectedTokenId]?.[key] ?? '' 
+        if (key === 'createdTime') value = formatDate(value);
+        if (key === 'clientSecret' && tokenDetails?.[selectedTokenId]?.grantType === grantTypesEnums.implicit) return null;
+        if (key === 'accessTokenUrl' && tokenDetails?.[selectedTokenId]?.grantType === grantTypesEnums.implicit) return null;
         return (
           <div className='d-flex justify-content-center align-items-center mt-1'>
             <div className='token-keys-container'>
               <span>{title}</span>
             </div>
-            <textarea disabled value={tokenDetails?.[selectedTokenId]?.[key] ?? ''} className='token-value-container'></textarea>
+            <textarea disabled value={value} className='token-value-container'></textarea>
           </div>
         )
       })}

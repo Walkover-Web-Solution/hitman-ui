@@ -40,7 +40,7 @@ function TokenGenerator(props) {
   const [data, setData] = useState({
     tokenName: endpointStoredData?.authorizationData?.authorization?.oauth2?.tokenName || 'Token Name',
     selectedGrantType: endpointStoredData?.authorizationData?.authorization?.oauth2?.selectedGrantType || grantTypesEnums.authorizationCode,
-    callbackUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.callbackUrl || '',
+    callbackUrl: `${process.env.REACT_APP_UI_URL}/auth/redirect` || '',
     authUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.authUrl || '',
     username: endpointStoredData?.authorizationData?.authorization?.oauth2?.username || '',
     password: endpointStoredData?.authorizationData?.authorization?.oauth2?.password || '',
@@ -87,10 +87,9 @@ function TokenGenerator(props) {
         console.error(error)
         return toast.error('Access Token Not Found, Try Again!')
       }
-      const dateTimeOfTokenGeneration = new Date();
-      dateTimeOfTokenGeneration.setSeconds(dateTimeOfTokenGeneration.getSeconds() - 20);
+      const createdTime = getCurrentTimeOfTokenGeneration()
       try {
-        storeTokenInsideLocalState({ ...accessTokenData, createdTime: dateTimeOfTokenGeneration, state })
+        storeTokenInsideLocalState({ ...accessTokenData, createdTime, state })
         return toast.success('Access Token Added!')
       }
       catch (error) {
@@ -99,9 +98,10 @@ function TokenGenerator(props) {
       }
     }
     else if (configurationDetails.selectedGrantType === grantTypesEnums.implicit) {
-      if (!authDetail?.implicitDetails?.access_token) return toast.error('could not get the access token')
+      if (!authDetail?.implicitDetails?.access_token) return toast.error('could not get the access token');
+      const createdTime = getCurrentTimeOfTokenGeneration()
       try {
-        storeTokenInsideLocalState(authDetail?.implicitDetails)
+        storeTokenInsideLocalState({ ...authDetail?.implicitDetails, createdTime })
         return toast.success('Access Token Added!')
       }
       catch (error) {
@@ -111,10 +111,17 @@ function TokenGenerator(props) {
     }
   }
 
+  const getCurrentTimeOfTokenGeneration = () => {
+    const dateTimeOfTokenGeneration = new Date();
+    dateTimeOfTokenGeneration.setSeconds(dateTimeOfTokenGeneration.getSeconds() - 20);
+    return dateTimeOfTokenGeneration;
+  }
+
   const getAcessTokenForPasswordAndClientGrantType = async () => {
     try {
       const responseData = await endpointApiService.getTokenPasswordAndClientGrantType(data.accessTokenUrl, dataRef.current);
-      storeTokenInsideLocalState(responseData?.accessToken)
+      const createdTime = getCurrentTimeOfTokenGeneration()
+      storeTokenInsideLocalState({ ...responseData, createdTime })
       return toast.success('Access Token Added!')
     }
     catch (error) {
@@ -358,10 +365,11 @@ function TokenGenerator(props) {
         <label className='basic-auth-label'>{inputFieldsEnums[key]}</label>
         <input
           id='input'
-          className='token-generator-input-field'
+          className={`token-generator-input-field ${key === 'callbackUrl' && 'disable-callback'}`}
           name={key}
           value={data[key]}
           onChange={(e) => handleInputFieldChange(e, key)}
+          disabled={key === 'callbackUrl'}
         />
       </>
     )
