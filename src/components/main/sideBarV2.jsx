@@ -658,7 +658,7 @@ class SideBarV2 extends Component {
           ))}
         <h4 className='hm-sidebar-title'>
           {publishedCollectionTitle || collectionName || ''}
-          <span>API Documenation</span>
+          <span>API Documentation</span>
         </h4>
       </div>
     )
