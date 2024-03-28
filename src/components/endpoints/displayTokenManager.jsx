@@ -1,181 +1,139 @@
-import React, { Component } from 'react'
-import { Modal, ListGroup, Container, Row, Col } from 'react-bootstrap'
-import './endpoints.scss'
+import React, { useState } from 'react'
+import { Modal, ListGroup, Row, Col } from 'react-bootstrap'
+import { MdDelete } from "react-icons/md";
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteToken } from '../../store/tokenData/tokenDataActions';
+import './endpoints.scss';
+import { grantTypesEnums } from '../common/authorizationEnums';
 
-class AccessTokenManager extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      authResponses: [],
-      tokenIndex: 0
+const tokenDetailsToShow = ['tokenName', 'accessToken', 'grantType', 'scope', 'clientId', 'clientSecret', 'accessTokenUrl', 'createdTime'];
+
+function AccessTokenManager(props) {
+  const { tokenDetails } = useSelector((state) => {
+    return {
+      tokenDetails: state?.tokenData?.tokenDetails || {},
     }
+  })
 
-    this.authResponse = {
-      tokenName: 'Token Name',
-      access_token: 'Access Token',
-      token_type: 'Token Type',
-      expires_in: 'expires_in',
-      scope: 'scope'
+  const dispatch = useDispatch();
+
+  const [selectedTokenId, setSelectedTokenId] = useState(null);
+
+  const handleTokenClick = (tokenId) => {
+    setSelectedTokenId(tokenId)
+  }
+
+  const handleDeleteTokenClick = (e, tokenId) => {
+    e.stopPropagation()
+    dispatch(deleteToken({ tokenId }));
+  }
+
+  const handleUseTokenClick = () => {
+    props.setSelectedTokenId(selectedTokenId);
+    props.setSelectedTokenValue(tokenDetails?.[selectedTokenId]?.accessToken);
+    props.addAccessTokenInsideHeadersAndParams(tokenDetails?.[selectedTokenId]?.accessToken, selectedTokenId)
+    props.onHide();
+  }
+
+  return (
+    <Modal onHide={props?.onHide} show={props?.show} id='modal-display-token' size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered>
+      <Modal.Header className='custom-collection-modal-container' closeButton>
+        <Modal.Title id='contained-modal-title-vcenter'>Manage Access Tokens</Modal.Title>
+      </Modal.Header>
+      <Row className='p-0 m-0 content-container'>
+        <Col className='m-0 p-0' id='code-window-sidebar' sm={3}>
+          <ListGroup>
+            <p className='ml-3 mt-2 heading-token'>All Tokens</p>
+            {Object.keys(tokenDetails).map((tokenId, index) => (
+              <div onClick={() => handleTokenClick(tokenId)} className={`token-name-container ${selectedTokenId === tokenId && 'selected-token-state'}`} key={index}>
+                <ListGroup.Item className='tokens-list-item ml-2 d-flex justify-content-between align-items-center'>
+                  <p className='token-name'>{tokenDetails[tokenId].tokenName}</p>
+                  <MdDelete onClick={(e) => handleDeleteTokenClick(e, tokenId)} className='delete-token-icon' size={14} />
+                </ListGroup.Item>
+              </div>
+            ))}
+          </ListGroup>
+        </Col>
+        <Col className='mt-2 mb-2 token-details-field-container' sm={9}>
+          {selectedTokenId && <div>
+            <div>
+              <div className='d-flex justify-content-between align-items-center'>
+                <h6 className=''>Token Details</h6>
+                <button onClick={handleUseTokenClick} className='oauth2-token-details-list-item-button' type='button'>
+                  Use Token
+                </button>
+              </div>
+            </div>
+            <TokenDetailsComponent tokenDetails={tokenDetails} selectedTokenId={selectedTokenId} />
+          </div>}
+        </Col>
+      </Row>
+    </Modal>
+  )
+}
+
+function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
+
+  const getTitleValue = (key) => {
+    let title = '';
+    switch (key) {
+      case 'tokenName':
+        return title = 'Token Name'
+      case 'accessToken':
+        return title = 'Access Token'
+      case 'clientId':
+        return title = 'Client Id'
+      case 'clientSecret':
+        return title = 'Client Secret'
+      case 'grantType':
+        return title = 'Grant Type'
+      case 'scope':
+        return title = 'Scope'
+      case 'scope':
+        return title = 'Scope'
+      case 'accessTokenUrl':
+        return title = 'Access Token URL'
+      case 'createdTime':
+        return title = 'Created At'
+      default:
+        break;
     }
   }
 
-  componentDidMount() {
-    this.setState({ authResponses: this.props.authResponses })
-  }
+  const formatDate = (dateToConvert) => {
+    if (!dateToConvert) return '';
+    const date = new Date(dateToConvert);
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthName = monthNames[date.getMonth()];
+    const day = date.getDate();
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const meridiem = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    const year = date.getFullYear();
+    const formattedDate = `${monthName} ${day}, ${year} ${hours}:${minutes} ${meridiem}`;
+    return formattedDate;
+  };
 
-  selectTokenIndex(tokenIndex) {
-    this.selectEditToken('cancel')
-    this.setState({ tokenIndex })
-  }
-
-  setSelectedToken() {
-    const accessToken = this.props.authResponses[this.state.tokenIndex].access_token
-    this.props.set_access_token(accessToken)
-  }
-
-  selectEditToken(value) {
-    if (value === 'edit') this.setState({ editTokenName: true })
-    else this.setState({ editTokenName: false })
-  }
-
-  deleteToken(index) {
-    const authResponses = this.state.authResponses
-    const updatedAuthResponses = []
-    for (let i = 0; i < authResponses.length; i++) {
-      if (i === index) {
-        continue
-      } else {
-        updatedAuthResponses.push(authResponses[i])
-      }
-    }
-    if (this.props.accessToken === authResponses[index].access_token) {
-      if (updatedAuthResponses.length === 0) this.props.set_access_token('')
-      else this.props.set_access_token(updatedAuthResponses[0].access_token)
-    }
-    this.setState({ tokenIndex: 0, authResponses: updatedAuthResponses })
-    this.props.set_auth_responses(updatedAuthResponses)
-  }
-
-  updateTokenName(e) {
-    const authResponses = this.state.authResponses
-    authResponses[this.state.tokenIndex].tokenName = e.currentTarget.value
-    this.setState({ authResponses })
-    this.props.set_auth_responses(authResponses)
-  }
-
-  render() {
-    return (
-      <div>
-        <Modal
-          {...this.props}
-          id='modal-display-token'
-          size='lg'
-          animation={false}
-          aria-labelledby='contained-modal-title-vcenter'
-          centered
-        >
-          <Modal.Header className='custom-collection-modal-container' closeButton>
-            <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Container className='d-flex flex-column'>
-              <Row>
-                <Col id='code-window-sidebar' sm={3}>
-                  <ListGroup>
-                    <ListGroup.Item>All Tokens</ListGroup.Item>
-                    {this.state.authResponses.map((response, index) => (
-                      <div key={index}>
-                        <ListGroup.Item className='tokens-list-item'>
-                          <label
-                            onClick={() => {
-                              this.selectTokenIndex(index)
-                            }}
-                          >
-                            {response.tokenName}
-                          </label>
-                          <button className='btn delete-button' onClick={() => this.deleteToken(index)}>
-                            <i className='fas fa-trash' />
-                          </button>
-                        </ListGroup.Item>
-                      </div>
-                    ))}
-                  </ListGroup>
-                  <v1 />
-                </Col>
-                <Col sm={9}>
-                  <div>
-                    <div>
-                      <div className='token-detail-div'>
-                        <label className='custom-token-detais'>Token Details</label>
-
-                        <button className='oauth2-token-details-list-item-button' type='button' onClick={() => this.setSelectedToken()}>
-                          Use Token
-                        </button>
-                      </div>
-                    </div>
-
-                    <br />
-                    <div>
-                      <div className='oauth2-token-details-list'>
-                        {Object.keys(this.authResponse).map((property) => (
-                          <div key={property} className='oauth2-token-details-list-item'>
-                            <label className='oauth2-token-details-list-item-label'>{this.authResponse[property]}</label>
-                            <div className='oauth2-token-details-list-item-value'>
-                              {!this.state.editTokenName ? (
-                                this.state.authResponses[this.state.tokenIndex] ? (
-                                  this.state.authResponses[this.state.tokenIndex][property]
-                                ) : null
-                              ) : property !== 'tokenName' ? (
-                                this.state.authResponses[this.state.tokenIndex] ? (
-                                  this.state.authResponses[this.state.tokenIndex][property]
-                                ) : null
-                              ) : this.state.editTokenName !== true ? (
-                                this.state.authResponses[this.state.tokenIndex] ? (
-                                  this.state.authResponses[this.state.tokenIndex][property]
-                                ) : null
-                              ) : (
-                                <div>
-                                  <input
-                                    name='tokenName'
-                                    value={this.state.authResponses[this.state.tokenIndex].tokenName}
-                                    onChange={this.updateTokenName.bind(this)}
-                                  />
-                                  <button type='button' onClick={() => this.selectEditToken('')}>
-                                    Save
-                                  </button>
-                                </div>
-                              )}
-                              {this.authResponse[property] === 'Token Name' ? (
-                                this.state.editTokenName ? (
-                                  this.state.editTokenName === true ? null : (
-                                    <span>
-                                      <button className='display-token-edit-button' onClick={() => this.selectEditToken('edit')}>
-                                        <i className='fas fa-pen' />
-                                      </button>
-                                    </span>
-                                  )
-                                ) : (
-                                  <span>
-                                    <button className='display-token-edit-button' onClick={() => this.selectEditToken('edit')}>
-                                      <i className='fas fa-pen' />
-                                    </button>
-                                  </span>
-                                )
-                              ) : null}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </Col>
-              </Row>
-            </Container>
-          </Modal.Body>
-        </Modal>
-      </div>
-    )
-  }
+  return (
+    <div className='h-100 mt-3'>
+      {tokenDetailsToShow?.map((key) => {
+        const title = getTitleValue(key);
+        let value = tokenDetails?.[selectedTokenId]?.[key] ?? '' 
+        if (key === 'createdTime') value = formatDate(value);
+        if (key === 'clientSecret' && tokenDetails?.[selectedTokenId]?.grantType === grantTypesEnums.implicit) return null;
+        if (key === 'accessTokenUrl' && tokenDetails?.[selectedTokenId]?.grantType === grantTypesEnums.implicit) return null;
+        return (
+          <div className='d-flex justify-content-center align-items-center mt-1'>
+            <div className='token-keys-container'>
+              <span>{title}</span>
+            </div>
+            <textarea disabled value={value} className='token-value-container'></textarea>
+          </div>
+        )
+      })}
+    </div>
+  )
 }
 
 export default AccessTokenManager

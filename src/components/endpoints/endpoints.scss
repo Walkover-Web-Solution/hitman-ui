@@ -62,7 +62,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 
 #modal-display-token {
   .modal-content {
-    height: 500px;
+    min-height: 500px;
 
     .modal-body {
       padding: 0px;
@@ -87,19 +87,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 #code-window-sidebar {
-  // border-right: 1px solid rgb(197, 197, 197);
-  // box-shadow: 1px 0px #e8e8e8;
-  // padding: 0px;
-  // padding-left: 15px;
-  // padding-top: 15px;
-  // display: flex;
-  // justify-content: center;
-  // height: 100%;
-  // overflow: scroll;
-  padding: 5px;
-  border-top-right-radius: 4px;
-  border-top-left-radius: 4px;
-  margin-top: -1.75rem;
+  border-right: 1px solid rgb(197, 197, 197) !important;
 
   .list-group {
     width: 100%;
@@ -112,7 +100,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       border: none;
       color: #999;
       cursor: pointer;
-      padding: 5px 7px;
+      padding: 7px;
       font-size: 12px;
       font-weight: 400;
       text-transform: capitalize;
@@ -245,6 +233,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 .endpoint-container {
   .panel-endpoint-name-container {
     margin-bottom: 0px;
+
     .public-endpoint-name-input {
       display: flex;
       flex-direction: row;
@@ -258,6 +247,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       font-size: 25px;
       background-color: inherit;
     }
+
     .endpoint-description {
       float: left;
       margin-top: 5px;
@@ -279,12 +269,14 @@ $border-color: rgba(227, 228, 230, 0.7);
       }
     }
   }
+
   .endpoint-url-container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 10px 0;
     height: 60px;
+
     .uriContainerWrapper {
       span .dropdown-toggle {
         height: 36px;
@@ -293,19 +285,23 @@ $border-color: rgba(227, 228, 230, 0.7);
         border-top: 1px solid $theme-color;
         width: 30px;
       }
+
       .dropdown-menu.show {
         min-width: 130px;
       }
+
       .btn {
         height: 36px;
         width: 100px;
       }
     }
+
     .input-group-prepend {
       display: flex;
       flex-direction: row;
       justify-content: center;
       width: 100%;
+
       .endpoint-url-input {
         height: 36px;
         border: 1px solid #e0e0e0;
@@ -313,6 +309,7 @@ $border-color: rgba(227, 228, 230, 0.7);
         font-weight: 400;
         color: #000;
       }
+
       .dropdown {
         .dropdown-toggle {
           min-width: 78px;
@@ -325,6 +322,7 @@ $border-color: rgba(227, 228, 230, 0.7);
           border-top-right-radius: 0;
           border-bottom-right-radius: 0;
           transition: all 0.3s ease-in;
+
           &:focus {
             outline: none;
             background-color: $secondary-color;
@@ -372,6 +370,7 @@ $border-color: rgba(227, 228, 230, 0.7);
             }
           }
         }
+
         input {
           text-overflow: ellipsis;
           padding-right: 36px;
@@ -382,24 +381,30 @@ $border-color: rgba(227, 228, 230, 0.7);
         }
       }
     }
+
     #send-request-button {
       margin: 0 0 0 10px;
     }
+
     #save-endpoint-button {
       margin: 0 0 0 10px;
     }
+
     #api_save_btn {
       margin: 0 0 0 10px;
     }
+
     #api-send-button {
       margin: 0 0 0 10px;
     }
+
     #show-code-snippets-button {
       background-color: rgb(221, 221, 223);
       color: black;
       opacity: 0.7;
     }
   }
+
   .ssl-mode-toggle {
     display: block;
     font-size: 12px;
@@ -407,6 +412,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     color: $theme-color;
     width: fit-content;
     margin-bottom: 0.25rem;
+
     &::after {
       content: '';
       width: 0;
@@ -415,13 +421,16 @@ $border-color: rgba(227, 228, 230, 0.7);
       background: $theme-color;
       transition: all 0.3s ease-in;
     }
+
     &:hover {
       &::after {
         width: 100%;
       }
     }
+
     span {
       color: $alert-color;
+
       &.enabled {
         color: $success-color;
       }
@@ -436,6 +445,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     border-radius: $border-radius;
     overflow: hidden;
     margin-bottom: 0.75rem;
+
     .nav-item {
       .nav-link {
         padding: 0.35rem 0.75rem !important;
@@ -450,6 +460,7 @@ $border-color: rgba(227, 228, 230, 0.7);
         display: inline-flex;
         align-items: center;
         justify-content: center;
+
         &.active {
           color: #fff !important;
           background-color: $theme-color;
@@ -458,6 +469,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     }
   }
 }
+
 .hm-panel.endpoint-public-response-container {
   &:not(.public-doc) {
     .nav-item {
@@ -469,6 +481,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       }
     }
   }
+
   &.public-doc {
     .nav-item {
       .nav-link {
@@ -492,11 +505,13 @@ $border-color: rgba(227, 228, 230, 0.7);
   display: flex;
   flex-direction: column;
   margin: 0;
+
   .response-status {
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
     flex-wrap: wrap;
+
     .statusWrapper {
       display: flex;
       align-items: center;
@@ -518,6 +533,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   .response-viewer {
     display: flex;
     flex-direction: column;
+
     .response-tabs {
       width: 100%;
       display: flex;
@@ -659,6 +675,7 @@ table#custom-generic-table {
   .custom-checkbox {
     width: 3% !important;
   }
+
   th {
     height: 100%;
     font-size: 12px;
@@ -666,11 +683,13 @@ table#custom-generic-table {
     border-top: none;
     border: none;
   }
+
   td {
     height: 100%;
     padding: 3px !important;
     border: none;
   }
+
   tbody {
     input {
       height: 100%;
@@ -678,11 +697,13 @@ table#custom-generic-table {
       font-weight: 400;
       border-radius: 3px;
     }
+
     input:focus,
     input.form-control:focus {
       box-shadow: inset 0 -1px 0 rgb(255, 255, 255) !important;
       height: 100%;
     }
+
     input::placeholder {
       font-size: $font-medium !important;
       // font-weight: 300;
@@ -730,18 +751,22 @@ table#custom-generic-table {
   padding-left: 5px;
   color: $theme-color;
 }
+
 .response-status-value-error {
   @extend .response-status-value;
   color: $alert-color;
 }
+
 .response-status-value-success {
   @extend .response-status-value;
   color: $success-color;
 }
+
 .response-status-value-regular {
   @extend .response-status-value;
   color: $theme-color;
 }
+
 .__json-pretty__ {
   background-color: transparent !important;
   color: black !important;
@@ -945,6 +970,8 @@ table#custom-generic-table {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  padding: 10px;
+  text-overflow: ellipsis;
 
   label {
     margin: 0px;
@@ -978,17 +1005,12 @@ table#custom-generic-table {
 }
 
 .oauth2-token-details-list-item-button {
-  width: 110px;
   font-size: 13px;
-  margin: 8px;
-  margin-top: 0px;
   color: white;
   background: rgb(221, 77, 20);
-  height: 35px;
   border: none;
   border-radius: 3px;
-  float: right !important;
-  padding: 0 20px;
+  padding: 10px;
 }
 
 .token-detail-div {
@@ -1038,6 +1060,7 @@ table#custom-generic-table {
 
 #modal-new-token-generator {
   .modal-content {
+
     // height: 500px;
     .modal-body {
       padding: 0px;
@@ -1161,13 +1184,16 @@ table#custom-generic-table {
     margin-left: 5px;
     font-size: 12px;
   }
+
   .sample-response {
     background-color: $secondary-color;
     padding: 1rem 1.5rem;
     border-radius: $border-radius;
+
     .nav-tabs {
       margin: 10px 0 0 !important;
     }
+
     .tab-content {
       text-align: left;
       margin: 15px 0 0 0;
@@ -1192,6 +1218,7 @@ table#custom-generic-table {
 .sample-response {
   float: left;
   width: 100%;
+
   nav.nav.nav-tabs {
     border: 1px solid #e0e0e0;
     border-radius: 4px;
@@ -1272,6 +1299,7 @@ table#custom-generic-table {
     overflow: hidden;
     display: block;
     padding-left: 0;
+
     &:after {
       position: absolute;
       right: 0.5rem;
@@ -1323,7 +1351,8 @@ table#custom-generic-table {
 .end-point-name {
   overflow-wrap: anywhere;
   max-width: 180px;
-  @media (max-width: 1400px) and (min-width: 400px){
+
+  @media (max-width: 1400px) and (min-width: 400px) {
     max-width: 170px !important;
   }
 }
@@ -1355,11 +1384,14 @@ table#custom-generic-table {
   max-height: 500px;
   overflow: auto;
 }
+
 .icon-set {
   height: 14px;
+
   &:not(:last-child) {
     margin-right: 0.35rem;
   }
+
   .icon-bx {
     width: 1.01rem;
     height: 100%;
@@ -1367,6 +1399,7 @@ table#custom-generic-table {
     border-radius: 2px;
     position: relative;
     cursor: pointer;
+
     &::after {
       content: '';
       width: 100%;
@@ -1377,6 +1410,7 @@ table#custom-generic-table {
       bottom: 0;
     }
   }
+
   &:last-child {
     .icon-bx {
       &::after {
@@ -1386,12 +1420,91 @@ table#custom-generic-table {
       }
     }
   }
+
   &.active {
     .icon-bx {
       border-color: $theme-color;
+
       &::after {
         background-color: $theme-color;
       }
     }
   }
+}
+
+.code-method-dropdown {
+  width: 100% !important;
+}
+
+.heading-token {
+  font-size: 14px;
+  padding: 0px;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.token-name {
+  font-size: 12px;
+  padding: 0px;
+  margin: 0px;
+  font-weight: 400;
+  color: black;
+  max-width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.token-name-container {
+  &:hover {
+    background-color: #d7d4d451;
+
+    .delete-token-icon {
+      opacity: 1;
+    }
+  }
+}
+
+.selected-token-state {
+  background-color: #d7d4d451;
+}
+
+.delete-token-icon {
+  opacity: 0;
+}
+
+.token-details-field-container {
+  overflow: scroll;
+}
+
+.content-container {
+  min-height: 500px;
+}
+
+.token-keys-container {
+  min-width: 200px;
+  overflow: scroll;
+  word-wrap: break-word;
+
+  span {
+    font-size: 12px;
+  }
+}
+
+.token-value-container {
+  font-size: 12px;
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow-y: auto;
+  min-height: 10px;
+  max-height: auto;
+  display: flex;
+  align-items: center;
+  background-color: white;
+}
+
+.disable-callback {
+  color: rgb(155, 152, 152) !important;
 }
