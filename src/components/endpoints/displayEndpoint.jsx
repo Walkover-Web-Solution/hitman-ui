@@ -67,6 +67,9 @@ import { getPublishedContentByIdAndType } from '../../services/generalApiService
 import Footer from '../main/Footer.jsx'
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
 import { statesEnum } from '../common/utility'
+import { addAuthorizationDataTypes, authorizationTypes, grantTypesEnums } from '../common/authorizationEnums.js'
+import tokenDataActionTypes from '../../store/tokenData/tokenDataActionTypes.js'
+import { updateToken } from '../../store/tokenData/tokenDataActions.js'
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -94,7 +97,8 @@ const mapStateToProps = (state) => {
     cookies: state.cookies,
     responseView: state.responseView,
     activeTabId: state.tabs.activeTabId,
-    tabs: state?.tabs?.tabs
+    tabs: state?.tabs?.tabs,
+    tokenDetails: state?.tokenData?.tokenDetails,
   }
 }
 
@@ -112,7 +116,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_endpoint: (endpoint, callback) => dispatch(approveEndpoint(endpoint, callback)),
     set_response_view: (view) => dispatch(onToggle(view)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
-    unPublish_endpoint: (endpointId) => dispatch(draftEndpoint(endpointId))
+    unPublish_endpoint: (endpointId) => dispatch(draftEndpoint(endpointId)),
+    update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate))
     // set_chat_view : (view) => dispatch(onChatResponseToggle(view))
   }
 }
@@ -151,7 +156,6 @@ const untitledEndpointData = {
       description: ''
     }
   ],
-  authType: null,
   oldDescription: '',
   headers: [],
   publicBodyFlag: true,
@@ -166,12 +170,15 @@ const untitledEndpointData = {
   sslMode: getCurrentUserSSLMode(),
   currentView: 'testing',
   docViewData: [],
-  harObject: {}
+  harObject: {},
+  authorizationData: {
+    authorization: {},
+    authorizationTypeSelected: ''
+  }
 }
 
 const getEndpointContent = async (props) => {
   let currentIdToShow = isOnPublishedPage() ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
-
   let endpointId = props?.match?.params?.endpointId || currentIdToShow
   if (props?.match?.params?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
@@ -235,12 +242,12 @@ const withQuery = (WrappedComponent) => {
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(queryKey, data)
-      }else{
+      } else {
         queryClient.setQueryData(queryKey, data)
       }
-      if(callbackFn){
+      if (callbackFn) {
         callbackFn()
-      } 
+      }
     }
 
     return (
@@ -270,7 +277,10 @@ class DisplayEndpoint extends Component {
       endpoint: {},
       title: '',
       flagResponse: false,
-      authType: null,
+      authorizationData: {
+        authorization: {},
+        authorizationTypeSelected: '',
+      },
       oldDescription: '',
       publicBodyFlag: true,
       bodyDescription: {},
@@ -500,8 +510,8 @@ class DisplayEndpoint extends Component {
     const pathVariables = []
     let counter = 0;
     for (let i = 0; i < pathVariableKeys.length; i++) {
-      if (pathVariableKeys[i][0] === ':' && 
-      pathVariableKeysObject[pathVariableKeys[i]] === false
+      if (pathVariableKeys[i][0] === ':' &&
+        pathVariableKeysObject[pathVariableKeys[i]] === false
       ) {
         pathVariableKeysObject[pathVariableKeys[i]] = true
         let pathVariableKeyWithoutColon = pathVariableKeys[i].slice(1).trim();
@@ -642,16 +652,16 @@ class DisplayEndpoint extends Component {
         statusText: status[error.response.status],
         data: error.response.data
       }
-      dummyEndpointData.testResponse =  response
-      dummyEndpointData.flagResponse =  true
+      dummyEndpointData.testResponse = response
+      dummyEndpointData.flagResponse = true
       this.props.setQueryUpdatedData(dummyEndpointData);
     } else {
       const timeElapsed = new Date().getTime() - this.state.startTime
       const response = {
         data: error.message || 'ERROR:Server Connection Refused'
       }
-      dummyEndpointData.testResponse =  response
-      dummyEndpointData.flagResponse =  true
+      dummyEndpointData.testResponse = response
+      dummyEndpointData.flagResponse = true
       this.props.setQueryUpdatedData(dummyEndpointData);
       this.setState({ timeElapsed })
     }
@@ -706,8 +716,8 @@ class DisplayEndpoint extends Component {
     if (responseJson.status === 200) {
       const timeElapsed = new Date().getTime() - this.state.startTime
       const dummyEndpointData = this.props?.endpointContent;
-      dummyEndpointData.testResponse =  response
-      dummyEndpointData.flagResponse =  true
+      dummyEndpointData.testResponse = response
+      dummyEndpointData.flagResponse = true
       this.props.setQueryUpdatedData(dummyEndpointData);
       this.setState({ timeElapsed })
     }
@@ -723,9 +733,9 @@ class DisplayEndpoint extends Component {
     for (let i = 0; i < pathParameters.length; i++) {
       if (pathParameters[i][0] === ':' && pathParameters[i].slice(1).trim()) {
         if (
-                uniquePathparameters[pathParameters[i].slice(1)] 
-             || uniquePathparameters[pathParameters[i].slice(1)] === ''
-           ) {
+          uniquePathparameters[pathParameters[i].slice(1)]
+          || uniquePathparameters[pathParameters[i].slice(1)] === ''
+        ) {
           pathParameters[i] = uniquePathparameters[pathParameters[i].slice(1)]
         } else {
           pathParameters[i] = this.props.endpointContent.pathVariables[counter]?.value
@@ -760,7 +770,7 @@ class DisplayEndpoint extends Component {
       pathVariables: updatedPathVariables,
       BASE_URL: this.props.endpointContent.host.BASE_URL,
       bodyDescription: this.props.endpointContent.data.body.type === 'JSON' ? this.props.endpointContent.bodyDescription : {},
-      authorizationType: this.props.endpointContent.authType
+      authorizationData: this.props.endpointContent.authorizationData
     }
     const response = { ...this.state.response }
     const createdAt = new Date()
@@ -848,6 +858,19 @@ class DisplayEndpoint extends Component {
     return null
   }
 
+  checkTokenExpired(expirationTime, generatedDateTime) {
+    if (!expirationTime) return false;
+    const generatedTime = new Date(generatedDateTime).getTime();
+    const expirationDateTime = generatedTime + expirationTime;
+    const currentTime = new Date().getTime();
+    const isExpired = currentTime > expirationDateTime;
+
+    return isExpired;
+  }
+
+  getFreshToken(singleTokenDetail) {
+  }
+
   handleSend = async () => {
     const keyForRequest = shortid.generate()
     const runSendRequest = Axios.CancelToken.source()
@@ -922,6 +945,43 @@ class DisplayEndpoint extends Component {
       url = this.replaceVariables(url, environment)
       url = this.addhttps(url)
       headers = this.replaceVariablesInJson(headers, environment)
+      // Start of Regeneration of AUTH2.0 Token
+      let oauth2Data = this.props?.endpointContent?.authorizationData?.authorization?.oauth2
+      if (this.props?.endpointContent?.authorizationData?.authorizationTypeSelected === 'oauth2' && (this.props.tokenDetails[oauth2Data.selectedTokenId]?.grantType === grantTypesEnums.authorizationCode || this.props.tokenDetails[oauth2Data.selectedTokenId]?.grantType === grantTypesEnums.authorizationCodeWithPkce)) {
+        const generatedDateTime = this.props.tokenDetails[oauth2Data.selectedTokenId]?.createdTime;
+        const expirationTime = this.props.tokenDetails[oauth2Data.selectedTokenId]?.expiryTime;
+        const isTokenExpired = this.checkTokenExpired(expirationTime, generatedDateTime)
+        if (isTokenExpired && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshTokenUrl && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken) {
+          try {
+            const data = await endpointApiService.getRefreshToken(this.props.tokenDetails[oauth2Data.selectedTokenId])
+            if (data?.access_token) {
+              const dataToUpdate = {
+                tokenId: oauth2Data.selectedTokenId,
+                accessToken: data.access_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.accessToken,
+                refreshToken: data.refresh_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken,
+                expiryTime: data.expires_in || this.props.tokenDetails[oauth2Data.selectedTokenId]?.expiryTime,
+              }
+              this.props.update_token(dataToUpdate)
+              if (oauth2Data?.addAuthorizationRequestTo === addAuthorizationDataTypes.requestHeaders && headers?.Authorization) {
+                headers.Authorization = `Bearer ${data.access_token}`
+                this.setHeaders(data.access_token, 'Authorization.oauth_2')
+              }
+              else if (oauth2Data?.addAuthorizationRequestTo === addAuthorizationDataTypes.requestUrl) {
+                const urlObj = new URL(url);
+                const searchParams = new URLSearchParams(urlObj.search);
+                searchParams.set('access_token', data.access_token);
+                const newSearchParamsString = searchParams.toString();
+                url = urlObj.origin + urlObj.pathname + '?' + newSearchParamsString + urlObj.hash;
+                this.setParams(data.access_token, 'access_token')
+              }
+            }
+          }
+          catch (error) {
+            console.error('could not regenerate the token')
+          }
+        }
+      }
+      // End of Regeneration of AUTH2.0 Token
       const bodyType = this.props?.endpointContent?.data?.body?.type
       body = this.replaceVariablesInBody(body, bodyType, environment)
       requestOptions = { ...requestOptions, body, headers, url, bodyType }
@@ -1047,11 +1107,11 @@ class DisplayEndpoint extends Component {
         pathVariables: updatedPathVariables,
         BASE_URL: this.props?.endpointContent.host.BASE_URL || null,
         bodyDescription: this.props?.endpointContent?.data?.body?.type === 'JSON' ? bodyDescription : {},
-        authorizationType: this.props?.endpointContent.authType,
+        authorizationData: this.props?.endpointContent.authorizationData,
         notes: this.props?.endpointContent?.endpoint.notes,
         preScript: this.props?.endpointContent?.preScriptText,
         postScript: this.props?.endpointContent?.postScriptText,
-        docViewData: this.props?.endpointContent?.docViewData
+        docViewData: this.props?.endpointContent?.docViewData,
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
@@ -1177,7 +1237,7 @@ class DisplayEndpoint extends Component {
       const dummyData = this?.props?.endpointContent
       dummyData.pathVariables = [...value]
       this.setState({ endpointContentState: dummyData })
-       this.props.setQueryUpdatedData(dummyData, this.prepareHarObject.bind(this))
+      this.props.setQueryUpdatedData(dummyData, this.prepareHarObject.bind(this))
     }
 
     if (name === 'HostAndUri') this.setModifiedTabData()
@@ -1456,7 +1516,7 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(tempData)
   }
 
-  setParams(value, title, authorizationFlag) {
+  setParams(value, title, authorizationFlag, tokenIdToSave) {
     const originalParams = this.props.endpointContent.originalParams
     const updatedParams = []
     const emptyParam = {
@@ -1483,10 +1543,18 @@ class DisplayEndpoint extends Component {
     updatedParams.push(emptyParam)
     const dummyData = this.props.endpointContent
     dummyData.originalParams = updatedParams
+    if (dummyData?.authorizationData?.authorization?.oauth2) {
+      dummyData.authorizationData.authorization.oauth2 = { ...dummyData?.authorizationData?.authorization?.oauth2, selectedTokenId: tokenIdToSave }
+    }
+    else {
+      dummyData.authorizationData.authorization = { oauth2: {} }
+      dummyData.authorizationData.authorization.oauth2 = { ...dummyData?.authorizationData?.authorization?.oauth2, selectedTokenId: tokenIdToSave }
+    }
     this.props.setQueryUpdatedData(dummyData)
+    this.propsFromChild('Params', updatedParams)
   }
 
-  setHeaders(value, title, authorizationFlag = undefined) {
+  setHeaders(value, title, authorizationFlag = undefined, tokenIdToSave) {
     const originalHeaders = this.props.endpointContent.originalHeaders
     const updatedHeaders = []
     const emptyHeader = {
@@ -1526,9 +1594,15 @@ class DisplayEndpoint extends Component {
     if (title === 'content-type') {
       updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(value)
     }
-
     updatedHeaders.push(emptyHeader)
     const dummyData = this.props.endpointContent
+    if (dummyData?.authorizationData?.authorization?.oauth2) {
+      dummyData.authorizationData.authorization.oauth2 = { ...dummyData?.authorizationData?.authorization?.oauth2, selectedTokenId: tokenIdToSave }
+    }
+    else {
+      dummyData.authorizationData.authorization = { oauth2: {} }
+      dummyData.authorizationData.authorization.oauth2 = { ...dummyData?.authorizationData?.authorization?.oauth2, selectedTokenId: tokenIdToSave }
+    }
     dummyData.originalHeaders = updatedHeaders
     this.props.setQueryUpdatedData(dummyData)
   }
@@ -1643,18 +1717,13 @@ class DisplayEndpoint extends Component {
   }
 
   setAuthType(type, value) {
-    let authType = {}
-    if (type === '') {
-      authType = null
-    } else {
-      authType = {
-        type,
-        value
-      }
-    }
-    this.setState({ authType }, () => this.setModifiedTabData())
+    this.setModifiedTabData()
     const dummyData = this.props.endpointContent
-    dummyData.authType = authType
+    dummyData.authorizationData = {
+      ...dummyData.authorizationData,
+      authorizationTypeSelected: type,
+      authorization: { ...dummyData.authorizationData.authorization, [type]: value }
+    }
     this.props.setQueryUpdatedData(dummyData)
   }
 
@@ -2633,9 +2702,8 @@ class DisplayEndpoint extends Component {
         >
           <div className={`innerContainer flex-lg-row flex-column ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${
-                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-              }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+                }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
@@ -2847,13 +2915,15 @@ class DisplayEndpoint extends Component {
                             <div>
                               <Authorization
                                 {...this.props}
+                                setQueryUpdatedData={this.props.setQueryUpdatedData}
                                 title='Authorization'
                                 groupId={this.state.groupId}
                                 set_authorization_headers={this.setHeaders.bind(this)}
                                 set_authoriztaion_params={this.setParams.bind(this)}
                                 set_authoriztaion_type={this.setAuthType.bind(this)}
                                 accessToken={this.accessToken}
-                                authorizationType={this.props?.endpointContent?.authType}
+                                authorizationData={this.props?.endpointContent?.authorizationData}
+                                handleSaveEndpoint={this.handleSave.bind(this)}
                               />
                             </div>
                           </div>
