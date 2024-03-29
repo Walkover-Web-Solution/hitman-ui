@@ -154,7 +154,7 @@ function AuthServiceV2() {
       //   </Modal.Body>
       //   <Modal.Footer />
       // </Modal>
-      <h1>Loading...</h1>
+      <h1></h1>
     );
   };
 

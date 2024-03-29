@@ -438,7 +438,6 @@ class UserProfileV2 extends Component {
     // debugger
     this.toggleModal()
     const tabIdsToClose = this.props.tabs.tabsOrder
-    console.log(tabIdsToClose);
      if ((tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
       this.setState({ modalForTabs: false })
       this.removeFromLocalStorage(tabIdsToClose)

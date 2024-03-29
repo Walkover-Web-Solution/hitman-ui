@@ -10,11 +10,13 @@ export function getOrgUpdatedAt(orgId) {
 }
 
 export function updateOrgDataByOrgId(OrgId) {
+  // debugger
   const data = getOrgList()
   let currentOrganisation;
+
   const targetIndex = data.findIndex((obj) => obj.id === OrgId)
+  currentOrganisation = data[targetIndex]
   if (targetIndex > 0) {
-    currentOrganisation = data[targetIndex]
     ;[data[0], data[targetIndex]] = [data[targetIndex], data[0]]
   }
   window.localStorage.setItem(currentOrgKey, JSON.stringify(currentOrganisation))
@@ -24,7 +26,7 @@ export function updateOrgDataByOrgId(OrgId) {
 
 export async function switchOrg(orgId) {
   try {
-    await http.post(proxyUrl + '/switchCompany', { company_ref_id: orgId })
+    const rp = await http.post(proxyUrl + '/switchCompany', { company_ref_id: orgId })
     updateOrgDataByOrgId(orgId)
     redirectToDashboard(orgId)
   } catch (error) {
