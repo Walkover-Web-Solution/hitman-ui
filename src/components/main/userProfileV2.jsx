@@ -48,7 +48,8 @@ class UserProfileV2 extends Component {
       modalForTabs: 'false',
       tabsClosed: 'false',
       selectedOrg: '',
-      currentOrg: ''
+      currentOrg: '',
+      switchOrCreate: false
     }
   }
 
@@ -360,8 +361,13 @@ class UserProfileV2 extends Component {
       this.removeFromLocalStorage(tabIdsToClose)
       this.props.remove_history(history)
       // window.removeEventListener('beforeunload', this.handleBeforeUnload)
-      switchOrg(this.state.currentOrg.id)
+      if(this.state.switchOrCreate){
+        createOrg(this.state.orgName)
+      }else{
+        switchOrg(this.state.currentOrg.id)
+      }
     } else if (value === 'no') {
+      this.setState({orgName:""})
       this.setState({ modalForTabs: false, showModal: false })
       // window.addEventListener('beforeunload', this.handleBeforeUnload)
     }
@@ -372,6 +378,7 @@ class UserProfileV2 extends Component {
   }
 
   showModalForTabs() {
+    // debugger
     if (this.state.modalForTabs === 'false') {
       return null
     }
@@ -427,6 +434,23 @@ class UserProfileV2 extends Component {
     }
   }
 
+  async handleNewOrgClick() {
+    // debugger
+    this.toggleModal()
+    const tabIdsToClose = this.props.tabs.tabsOrder
+    console.log(tabIdsToClose);
+     if ((tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
+      this.setState({ modalForTabs: false })
+      this.removeFromLocalStorage(tabIdsToClose)
+      this.props.close_all_tabs(tabIdsToClose)
+      this.props.remove_history(this.props.historySnapshot)
+      await createOrg(this.state.orgName)
+    } else {
+      this.setState({ modalForTabs: true })
+    }
+    
+  }
+  
   renderOrgListDropdown() {
     const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
     const selectedOrg = organizations[0]
@@ -507,12 +531,15 @@ class UserProfileV2 extends Component {
   }
 
   handleAddOrg = async () => {
+    // debugger
     try {
       if (!this.validateName(this.state.orgName)) {
         toast.error('Only alphanumeric and underscores are allowed')
         return
       }
-      await createOrg(this.state.orgName)
+      await this.handleNewOrgClick();
+      this.setState({switchOrCreate:true})
+      // await createOrg(this.state.orgName)
     } catch (e) {
       toast.error('Something went wrong')
     }

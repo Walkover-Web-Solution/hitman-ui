@@ -9,6 +9,7 @@ const tokenKey = "token";
 const profileKey = "profile";
 export const orgKey = "organisation";
 export const orgListKey = "organisationList";
+export const currentOrgKey = "currentOrganisation";
 const uiURL = process.env.REACT_APP_UI_URL;
 const proxyUrl = process.env.REACT_APP_PROXY_URL;
 
@@ -77,6 +78,7 @@ function getCurrentUser() {
 
 function getCurrentOrg() {
   try {
+    // debugger;
     const org = window.localStorage.getItem(orgKey);
     return JSON.parse(org);
   } catch (ex) {
@@ -103,6 +105,7 @@ function AuthServiceV2() {
   const history = useHistory();
   const [show, setShow] = useState(true);
   const [orgList, setOrgList] = useState(null);
+  
 
   useEffect(async () => {
     try {
@@ -111,6 +114,13 @@ function AuthServiceV2() {
       if (proxyAuthToken) {
         await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
         setOrgList(getOrgList());
+      
+        const currentOrgId = JSON.parse(window.localStorage.getItem("currentOrganisation"))
+        if(currentOrgId){
+          switchOrg(currentOrgId?.id)
+        }else{
+          switchOrg(orgId)
+        }
       } else if (getOrgList()) {
         history.push(`/orgs/${orgId}/dashboard`);
       } else {
@@ -123,27 +133,28 @@ function AuthServiceV2() {
 
   const orgNames = () => {
     return (
-      <Modal show={show}>
-        <Modal.Header>
-          <Modal.Title>Select Organization</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="org-listing-container ">
-            <div className="org-listing-column d-flex flex-column">
-              {orgList?.map((org, key) => (
-                <button
-                  className="btn btn-primary mb-2 p-2"
-                  key={key}
-                  onClick={() => switchOrg(org.id)}
-                >
-                  {org.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer />
-      </Modal>
+      // <Modal show={show}>
+      //   <Modal.Header>
+      //     <Modal.Title>Select Organization</Modal.Title>
+      //   </Modal.Header>
+      //   <Modal.Body>
+      //     <div className="org-listing-container ">
+      //       <div className="org-listing-column d-flex flex-column">
+      //         {orgList?.map((org, key) => (
+      //           <button
+      //             className="btn btn-primary mb-2 p-2"
+      //             key={key}
+      //             onClick={() => switchOrg(org.id)}
+      //           >
+      //             {org.name}
+      //           </button>
+      //         ))}
+      //       </div>
+      //     </div>
+      //   </Modal.Body>
+      //   <Modal.Footer />
+      // </Modal>
+      <h1>Loading...</h1>
     );
   };
 
