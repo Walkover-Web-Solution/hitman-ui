@@ -78,7 +78,6 @@ function getCurrentUser() {
 
 function getCurrentOrg() {
   try {
-    // debugger;
     const org = window.localStorage.getItem(orgKey);
     return JSON.parse(org);
   } catch (ex) {

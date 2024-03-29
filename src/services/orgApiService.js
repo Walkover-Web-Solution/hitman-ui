@@ -10,7 +10,6 @@ export function getOrgUpdatedAt(orgId) {
 }
 
 export function updateOrgDataByOrgId(OrgId) {
-  // debugger
   const data = getOrgList()
   let currentOrganisation;
 

@@ -378,7 +378,6 @@ class UserProfileV2 extends Component {
   }
 
   showModalForTabs() {
-    // debugger
     if (this.state.modalForTabs === 'false') {
       return null
     }
@@ -435,7 +434,6 @@ class UserProfileV2 extends Component {
   }
 
   async handleNewOrgClick() {
-    // debugger
     this.toggleModal()
     const tabIdsToClose = this.props.tabs.tabsOrder
      if ((tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
@@ -530,7 +528,6 @@ class UserProfileV2 extends Component {
   }
 
   handleAddOrg = async () => {
-    // debugger
     try {
       if (!this.validateName(this.state.orgName)) {
         toast.error('Only alphanumeric and underscores are allowed')

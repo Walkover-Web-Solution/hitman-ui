@@ -517,7 +517,6 @@ export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = 
     proxyAuthToken = getProxyToken()
   }
   try {
-    // debugger
     const response = await fetch(proxyUrl + '/getDetails', {
       headers: {
         proxy_auth_token: proxyAuthToken
