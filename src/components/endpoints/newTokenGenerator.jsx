@@ -1,139 +1,195 @@
-import React, { Component } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import endpointApiService from './endpointApiService'
-import indexedDbService from '../indexedDb/indexedDbService'
+import { useParams } from 'react-router'
+import { useQuery, useQueryClient } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { grantTypesEnums, inputFieldsEnums, codeMethodTypesEnums, clientAuthenticationTypeEnums } from '../common/authorizationEnums.js'
+import { toast } from 'react-toastify'
+import shortid from 'shortid'
+import { addToken } from '../../store/tokenData/tokenDataActions.js'
 import './endpoints.scss'
+
 const URI = require('urijs')
 
-class TokenGenerator extends Component {
-  state = {
-    data: {
-      tokenName: 'Token Name',
-      grantType: 'authorizationCode',
-      callbackUrl: '',
-      authUrl: '',
-      username: '',
-      password: '',
-      accessTokenUrl: '',
-      client_id: '',
-      clientSecret: '',
-      scope: '',
-      state: '',
-      clientAuthentication: 'Send as Basic Auth header'
+const options = {
+  refetchOnWindowFocus: false,
+  cacheTime: 5000000,
+  enabled: true,
+  staleTime: Infinity,
+  retry: 3
+}
+
+function TokenGenerator(props) {
+  const { activeTabId } = useSelector((state) => {
+    return {
+      activeTabId: state.tabs.activeTabId,
     }
-  }
+  })
+  const params = useParams();
 
-  componentDidMount() {
-    this.fetchAuthorizationData()
-  }
+  const dispatch = useDispatch()
 
-  fetchAuthorizationData() {
-    if (this.props.groupId) {
-      const versionId = this.props.groups[this.props.groupId].versionId
-      const data = this.props.versions[versionId].authorizationData
-      if (data !== null && Object.keys(data).length !== 0) {
-        this.setState({ data })
+  const queryClient = useQueryClient()
+
+  const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId;
+  const queryKey = ['endpoint', endpointId];
+
+  const { data: endpointStoredData } = useQuery(queryKey, options);
+
+  const [data, setData] = useState({
+    tokenName: endpointStoredData?.authorizationData?.authorization?.oauth2?.tokenName || 'Token Name',
+    selectedGrantType: endpointStoredData?.authorizationData?.authorization?.oauth2?.selectedGrantType || grantTypesEnums.authorizationCode,
+    callbackUrl: `${process.env.REACT_APP_UI_URL}/auth/redirect` || '',
+    authUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.authUrl || '',
+    username: endpointStoredData?.authorizationData?.authorization?.oauth2?.username || '',
+    password: endpointStoredData?.authorizationData?.authorization?.oauth2?.password || '',
+    accessTokenUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.accessTokenUrl || '',
+    clientId: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientId || '',
+    clientSecret: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientSecret || '',
+    scope: endpointStoredData?.authorizationData?.authorization?.oauth2?.scope || '',
+    state: endpointStoredData?.authorizationData?.authorization?.oauth2?.state || '',
+    clientAuthentication: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientAuthentication || clientAuthenticationTypeEnums?.sendOnHeaders,
+    codeMethod: endpointStoredData?.authorizationData?.authorization?.oauth2?.codeMethod || codeMethodTypesEnums.sh256,
+    codeVerifier: endpointStoredData?.authorizationData?.authorization?.oauth2?.codeVerifier || '',
+    refreshTokenUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.refreshTokenUrl || '',
+  })
+
+  const dataRef = useRef(data);
+
+  useEffect(() => {
+    function receiveMessage(event) {
+      if (event?.data && event?.data?.techdocAuthenticationDetails) {
+        getAuthenticationDetails(event?.data?.techdocAuthenticationDetails, dataRef.current)
+      }
+    }
+
+    window.addEventListener('message', receiveMessage, false);
+    return () => {
+      window.removeEventListener('message', receiveMessage);
+    };
+  }, [])
+
+  useEffect(() => {
+    dataRef.current = data
+  }, [data])
+
+
+  const getAuthenticationDetails = async (authDetail, configurationDetails) => {
+    const code = authDetail.code;
+    const state = authDetail.state;
+    if (configurationDetails.selectedGrantType === grantTypesEnums.authorizationCode || configurationDetails.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
+      let accessTokenData
+      try {
+        accessTokenData = await endpointApiService.getTokenAuthorizationCodeAndAuthorizationPKCE(configurationDetails.accessTokenUrl, code, configurationDetails)
+      }
+      catch (error) {
+        console.error(error)
+        return toast.error('Access Token Not Found, Try Again!')
+      }
+      const createdTime = getCurrentTimeOfTokenGeneration()
+      try {
+        storeTokenInsideLocalState({ ...accessTokenData, createdTime, state })
+        return toast.success('Access Token Added!')
+      }
+      catch (error) {
+        console.error(error)
+        return toast.error('Access Token Not Found, Try Again!')
+      }
+    }
+    else if (configurationDetails.selectedGrantType === grantTypesEnums.implicit) {
+      if (!authDetail?.implicitDetails?.access_token) return toast.error('could not get the access token');
+      const createdTime = getCurrentTimeOfTokenGeneration()
+      try {
+        storeTokenInsideLocalState({ ...authDetail?.implicitDetails, createdTime })
+        return toast.success('Access Token Added!')
+      }
+      catch (error) {
+        console.error(error)
+        return toast.error('Access Token Not Found, Try Again!')
       }
     }
   }
 
-  grantTypes = {
-    authorizationCode: 'Authorization Code',
-    implicit: 'Implicit',
-    passwordCredentials: 'Password Credentials',
-    clientCredentials: 'Client Credentials'
+  const getCurrentTimeOfTokenGeneration = () => {
+    const dateTimeOfTokenGeneration = new Date();
+    dateTimeOfTokenGeneration.setSeconds(dateTimeOfTokenGeneration.getSeconds() - 20);
+    return dateTimeOfTokenGeneration;
   }
 
-  inputFields = {
-    tokenName: 'Token Name',
-    grantType: 'Grant Type',
-    callbackUrl: 'Callback URL',
-    authUrl: 'Auth URL',
-    accessTokenUrl: 'Access Token URL',
-    username: 'Username',
-    password: 'Password',
-    clientId: 'Client ID',
-    clientSecret: 'Client Secret',
-    scope: 'Scope',
-    state: 'State',
-    clientAuthentication: 'Client Authentication'
+  const getAcessTokenForPasswordAndClientGrantType = async () => {
+    try {
+      const responseData = await endpointApiService.getTokenPasswordAndClientGrantType(data.accessTokenUrl, dataRef.current);
+      const createdTime = getCurrentTimeOfTokenGeneration()
+      storeTokenInsideLocalState({ ...responseData, createdTime })
+      return toast.success('Access Token Added!')
+    }
+    catch (error) {
+      console.error(error)
+      return toast.error('Access Token Not Found, Try Again!')
+    }
   }
 
-  setGrantType(key) {
-    const data = this.state.data
-    data.grantType = key
-    this.setState({ data })
+  const storeTokenInsideLocalState = (tokenDetails) => {
+    if (!tokenDetails) return;
+    const accessTokenUniqueId = shortid.generate();
+    const storeTokenDetails = {
+      id: accessTokenUniqueId,
+      accessToken: tokenDetails?.access_token || null,
+      tokenName: dataRef.current?.tokenName || null,
+      grantType: dataRef.current?.selectedGrantType || null,
+      endpointId: params?.endpointId || null,
+      refreshToken: tokenDetails?.refresh_token || null,
+      refreshTokenUrl: dataRef.current?.refreshTokenUrl || null,
+      expiryTime: tokenDetails?.expires_in || null,
+      scope: dataRef.current?.scope || null,
+      clientId: dataRef.current?.clientId || null,
+      clientSecret: dataRef.current?.clientSecret || null,
+      state: tokenDetails?.state || null,
+      accessTokenUrl: dataRef.current?.accessTokenUrl || null,
+      tokenType: tokenDetails?.token_type || null,
+      createdTime: tokenDetails.createdTime,
+    }
+    dispatch(addToken(storeTokenDetails))
   }
 
-  handleChange(e) {
-    const data = { ...this.state.data }
-    data[e.currentTarget.name] = e.currentTarget.value
-    this.setState({ data })
-  }
-
-  async makeRequest() {
-    const grantType = this.state.data.grantType
+  async function makeRequest() {
+    const grantType = dataRef.current.selectedGrantType
     let requestApi = ''
-    const paramsObject = this.makeParams(grantType)
+    const paramsObject = makeParams(grantType)
     const params = URI.buildQuery(paramsObject)
-    if (grantType === 'implicit' || grantType === 'authorizationCode') {
-      // if (grantType === "implicit")
-      requestApi = this.state.data.authUrl + '?' + params
-      //  + "&response_type=token";
-      // else
-      //   requestApi =
-      //     this.state.data.authUrl + "?" + params + "&response_type=code";
+    if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
+      requestApi = dataRef.current.authUrl + '?' + params
     }
-
-    if (grantType === 'passwordCredentials' || grantType === 'clientCredentials') {
-      delete paramsObject.grantType
-      requestApi = this.state.data.accessTokenUrl
-      if (grantType === 'passwordCredentials') {
-        paramsObject.grant_type = 'password'
-      } else if (grantType === 'clientCredentials') {
-        paramsObject.grant_type = 'client_credentials'
-      }
+    if (grantType === grantTypesEnums.passwordCredentials || grantType === grantTypesEnums.clientCredentials) {
+      return getAcessTokenForPasswordAndClientGrantType()
     }
-
-    if (this.props.groupId) {
-      await this.props.set_authorization_data(this.props.groups[this.props.groupId].versionId, this.state.data)
+    if (grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
+      requestApi = requestApi + '&response_type=code'
+    } else {
+      requestApi = requestApi + '&response_type=token'
     }
-
-    if (this.props.groupId) {
-      // if (this.props.location.pathname.split("/")[3] !== "new") {
-      const data = {
-        type: 'oauth_2',
-        value: this.props.oauth_2
-      }
-      await this.props.set_authorization_type(this.props.location.pathname.split('/')[5], data)
-    }
-
-    await indexedDbService.getDataBase()
-    await indexedDbService.updateData('authData', this.state.data, 'currentAuthData')
-
-    await endpointApiService.authorize(requestApi, paramsObject, grantType, this.props, this.state.data)
-
-    this.props.onHide()
+    var options = "width=200,height=200,resizable=yes,scrollbars=yes,status=yes";
+    window.open(requestApi, '_blank', options)
   }
 
-  makeParams(grantType) {
+  function makeParams(grantType) {
     const params = {}
-    const data = { ...this.state.data }
     const keys = Object.keys(data)
     for (let i = 0; i < keys.length; i++) {
       switch (keys[i]) {
         case 'username':
-          if (grantType === 'passwordCredentials') {
+          if (grantType === grantTypesEnums.passwordCredentials) {
             params.username = data[keys[i]]
           }
           break
         case 'password':
-          if (grantType === 'passwordCredentials') {
+          if (grantType === grantTypesEnums.passwordCredentials) {
             params.password = data[keys[i]]
           }
           break
         case 'callbackUrl':
-          if (grantType === 'implicit' || grantType === 'authorizationCode') {
+          if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
             params.redirect_uri = data[keys[i]]
           }
           break
@@ -142,10 +198,8 @@ class TokenGenerator extends Component {
           break
         case 'clientSecret':
           if (
-            grantType === 'passwordCredentials' ||
-            grantType === 'clientCredentials'
-            // ||
-            // grantType === "authorizationCode"
+            grantType === grantTypesEnums.passwordCredentials ||
+            grantType === grantTypesEnums.clientCredentials
           ) {
             params.client_secret = data[keys[i]]
           }
@@ -154,8 +208,16 @@ class TokenGenerator extends Component {
           params[keys[i]] = data[keys[i]]
           break
         case 'state':
-          if (grantType === 'implicit' || grantType === 'authorizationCode') {
+          if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
             params[keys[i]] = data[keys[i]]
+          }
+        case 'codeMethod':
+          if (grantType === grantTypesEnums.authorizationCodeWithPkce) {
+            params['code_challenge_method'] = data[keys[i]];
+          }
+        case 'codeVerifier':
+          if (grantType === grantTypesEnums.authorizationCodeWithPkce) {
+            params['code_challenge'] = data[keys[i]];
           }
           break
         default:
@@ -165,19 +227,43 @@ class TokenGenerator extends Component {
     return params
   }
 
-  setClientAuthorization(e) {
-    const data = this.state.data
-    data.clientAuthentication = e.currentTarget.value
-    this.setState({ data })
+  function setClientAuthorization(e) {
+    setData((prev) => { return { ...prev, clientAuthentication: e.target.value } })
   }
 
-  renderInput(key) {
-    const grantType = this.state.data.grantType
+  function handleGrantTypeClick(key) {
+    setData((prev) => { return { ...prev, selectedGrantType: grantTypesEnums[key] } })
+  }
+
+  function handleInputFieldChange(e, key) {
+    setData((prev) => { return { ...prev, [key]: e.target.value } })
+  }
+
+  function handleSaveConfiguration() {
+    if (data.tokenName.length > 25) return toast.error('Token Name character limit is 50')
+    const endpointDataToSend = endpointStoredData;
+    if (!(endpointDataToSend?.authorizationData?.authorization?.oauth2)) {
+      endpointDataToSend.authorizationData.authorization = { oauth2: {} }
+    }
+    endpointDataToSend.authorizationData.authorization.oauth2 = { ...endpointDataToSend.authorizationData.authorization.oauth2, ...data }
+    queryClient.setQueryData(queryKey, endpointDataToSend)
+    if (params.endpointId === 'new') {
+      localStorage.setItem(activeTabId, JSON.stringify(endpointDataToSend));
+      props.handleSaveEndpoint(null, endpointDataToSend)
+      props.onHide();
+      return;
+    }
+    props.onHide();
+    props.handleSaveEndpoint(endpointId, endpointDataToSend)
+  }
+
+  function renderInput(key) {
+    const grantType = data.selectedGrantType
     switch (key) {
       case 'grantType':
         return (
           <>
-            <label className='basic-auth-label'>{this.inputFields[key]}</label>
+            <label className='basic-auth-label'>{inputFieldsEnums[key]}</label>
             <div className='dropdown basic-auth-input'>
               <button
                 className='btn dropdown-toggle new-token-generator-dropdown'
@@ -186,12 +272,12 @@ class TokenGenerator extends Component {
                 aria-haspopup='true'
                 aria-expanded='false'
               >
-                {this.grantTypes[grantType]}
+                {data.selectedGrantType}
               </button>
               <div className='dropdown-menu new-token-generator-dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                {Object.keys(this.grantTypes).map((key) => (
-                  <button key={key} onClick={() => this.setGrantType(key)} className='dropdown-item'>
-                    {this.grantTypes[key]}
+                {Object.keys(grantTypesEnums).map((key) => (
+                  <button key={key} className='dropdown-item' onClick={() => handleGrantTypeClick(key)}>
+                    {grantTypesEnums[key]}
                   </button>
                 ))}
               </div>
@@ -201,7 +287,7 @@ class TokenGenerator extends Component {
       case 'clientAuthentication':
         return (
           <>
-            <label className='basic-auth-label'>{this.inputFields[key]}</label>
+            <label className='basic-auth-label'>{inputFieldsEnums[key]}</label>
             <div className='dropdown basic-auth-input'>
               <button
                 className='btn dropdown-toggle new-token-generator-dropdown'
@@ -210,124 +296,140 @@ class TokenGenerator extends Component {
                 aria-haspopup='true'
                 aria-expanded='false'
               >
-                {this.state.data.clientAuthentication}
+                {data.clientAuthentication}
               </button>
               <div className='dropdown-menu new-token-generator-dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                <button value='Send as Basic Auth header' onClick={this.setClientAuthorization.bind(this)} className='dropdown-item'>
-                  Send as Basic Auth header
+                <button value={clientAuthenticationTypeEnums.sendOnHeaders} className='dropdown-item' onClick={setClientAuthorization}>
+                  {clientAuthenticationTypeEnums.sendOnHeaders}
                 </button>
-                <button value='Send client credentials in body' onClick={this.setClientAuthorization.bind(this)} className='dropdown-item'>
-                  Send client credentials in body
+                <button value={clientAuthenticationTypeEnums.sendOnBody} className='dropdown-item' onClick={setClientAuthorization}>
+                  {clientAuthenticationTypeEnums.sendOnBody}
                 </button>
               </div>
             </div>
           </>
         )
       case 'callbackUrl':
-        if (grantType === 'authorizationCode' || grantType === 'implicit') {
-          return this.fetchDefaultInputField(key)
+        if (grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCodeWithPkce) {
+          return fetchDefaultInputField(key)
         }
         break
       case 'authUrl':
-        if (grantType === 'authorizationCode' || grantType === 'implicit') {
-          return this.fetchDefaultInputField(key)
+        if (grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCodeWithPkce) {
+          return fetchDefaultInputField(key)
         }
         break
+      case 'codeMethod':
+        if (grantType === grantTypesEnums.authorizationCodeWithPkce) {
+          return codeMethodInputField(key)
+        }
+        return null;
+      case 'codeVerifier':
+        if (grantType === grantTypesEnums.authorizationCodeWithPkce) {
+          return fetchDefaultInputField(key)
+        }
+        return null;
       case 'state':
-        if (grantType === 'authorizationCode' || grantType === 'implicit') {
-          return this.fetchDefaultInputField(key)
+        if (grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCodeWithPkce) {
+          return fetchDefaultInputField(key)
         }
         break
       case 'username':
-        if (grantType === 'passwordCredentials') {
-          return this.fetchDefaultInputField(key)
+        if (grantType === grantTypesEnums.passwordCredentials) {
+          return fetchDefaultInputField(key)
         }
         break
       case 'password':
-        if (grantType === 'passwordCredentials') {
-          return this.fetchDefaultInputField(key)
+        if (grantType === grantTypesEnums.passwordCredentials) {
+          return fetchDefaultInputField(key)
         }
         break
       case 'accessTokenUrl':
-        if (grantType === 'implicit') {
+        if (grantType === grantTypesEnums.implicit) {
           return
         }
-        return this.fetchDefaultInputField(key)
+        return fetchDefaultInputField(key)
       case 'clientSecret':
-        if (grantType === 'implicit') {
+        if (grantType === grantTypesEnums.implicit) {
           return
         }
-        return this.fetchDefaultInputField(key)
+        return fetchDefaultInputField(key)
       default:
-        return this.fetchDefaultInputField(key)
+        return fetchDefaultInputField(key)
     }
   }
 
-  showPassword() {
-    if (this.state.showPassword && this.state.showPassword === true) {
-      this.setState({ showPassword: false })
-    } else {
-      this.setState({ showPassword: true })
-    }
-  }
-
-  fetchDefaultInputField(key) {
+  function fetchDefaultInputField(key) {
     return (
       <>
-        <label className='basic-auth-label'>{this.inputFields[key]}</label>
+        <label className='basic-auth-label'>{inputFieldsEnums[key]}</label>
         <input
           id='input'
-          type={key === 'password' ? (this.state.showPassword ? (this.state.showPassword === true ? null : 'password') : 'password') : null}
-          className='token-generator-input-field'
+          className={`token-generator-input-field ${key === 'callbackUrl' && 'disable-callback'}`}
           name={key}
-          value={this.state.data[key]}
-          onChange={this.handleChange.bind(this)}
+          value={data[key]}
+          onChange={(e) => handleInputFieldChange(e, key)}
+          disabled={key === 'callbackUrl'}
         />
-        {key === 'password' && (
-          <label className='mb-0 ml-3'>
-            <input className='mr-1' type='checkbox' onClick={() => this.showPassword()} />
-            Show Password
-          </label>
-        )}
       </>
     )
   }
 
-  render() {
+  function codeMethodInputField(key) {
     return (
-      <div>
-        <Modal
-          {...this.props}
-          id='modal-new-token-generator'
-          // id="modal-code-window"
-          size='lg'
-          animation={false}
-          aria-labelledby='contained-modal-title-vcenter'
-          centered
-        >
-          <Modal.Header className='custom-collection-modal-container' closeButton>
-            <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
-          </Modal.Header>
-
-          <Modal.Body className='new-token-generator-modal-body'>
-            {Object.keys(this.inputFields).map((key) => (
-              <div key={key} className='input-field-wrapper'>
-                {this.renderInput(key)}
-              </div>
+      <>
+        <label className='basic-auth-label'>{inputFieldsEnums[key]}</label>
+        <div className='dropdown basic-auth-input'>
+          <button
+            className='btn dropdown-toggle new-token-generator-dropdown'
+            id='dropdownMenuButton'
+            data-toggle='dropdown'
+            aria-haspopup='true'
+            aria-expanded='false'
+          >
+            {data.codeMethod}
+          </button>
+          <div className='dropdown-menu new-token-generator-dropdown-menu' aria-labelledby='dropdownMenuButton'>
+            {Object.keys(codeMethodTypesEnums).map((key) => (
+              <button key={key} className='dropdown-item' onClick={() => handleCodeMethodClick(codeMethodTypesEnums[key])}>
+                {codeMethodTypesEnums[key]}
+              </button>
             ))}
-            <div className='text-right'>
-              <button className='btn btn-secondary outline btn-lg' onClick={this.props.onHide}>
-                Cancel
-              </button>
-              <button className='btn btn-primary btn-lg ml-2' type='button' onClick={() => this.makeRequest()}>
-                Request Token
-              </button>
-            </div>
-          </Modal.Body>
-        </Modal>
-      </div>
+          </div>
+        </div>
+      </>
     )
   }
+
+  const handleCodeMethodClick = (value) => {
+    setData((prev) => { return { ...prev, codeMethod: value } })
+  }
+
+  const closeModal = () => {
+    props.onHide()
+  }
+
+  return (
+    <Modal onHide={closeModal} id='modal-new-token-generator' size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered show={props?.show}>
+
+      <Modal.Header className='custom-collection-modal-container' closeButton>
+        <Modal.Title id='contained-modal-title-vcenter'>{props?.title}</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body className='new-token-generator-modal-body'>
+
+        {Object.keys(inputFieldsEnums).map((key) => (
+          <div key={key} className='input-field-wrapper'>{renderInput(key)}</div>
+        ))}
+
+        <div className='text-right'>
+          <button className='btn btn-secondary outline btn-lg ml-2' onClick={handleSaveConfiguration}>Save</button>
+          <button className='btn btn-primary btn-lg ml-2' type='button' onClick={makeRequest}>Request Token</button>
+        </div>
+
+      </Modal.Body>
+    </Modal>
+  )
 }
 
 export default TokenGenerator
