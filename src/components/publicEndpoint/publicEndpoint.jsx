@@ -17,6 +17,7 @@ import { Modal } from 'react-bootstrap'
 import { addCollectionAndPages } from '../redux/generalActions'
 import generalApiService from '../../services/generalApiService'
 import { useQueryClient, useMutation } from 'react-query'
+import { MdDehaze, MdClose } from "react-icons/md";
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -73,21 +74,29 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 class PublicEndpoint extends Component {
-  state = {
-    publicCollectionId: '',
+  constructor() {
+ super()
+ this.state = {
+  publicCollectionId: '',
     collectionName: '',
     collectionTheme: null,
-    isNavBar: false,
-    isSticky: false,
-    likeActive: false,
-    dislikeActive: false,
-    review: {
-      feedback: {},
-      endpoint: {}
+   isNavBar: false,
+   isSticky: false,
+   likeActive: false,
+   dislikeActive: false,
+   review: {
+    feedback: {},
+    endpoint: {}
     },
     openReviewModal: false,
-    idToRenderState : null
+    idToRenderState: null,
+    }
+ this.iconRef = React.createRef()
+ this.hamburgerIconRef = React.createRef()
+ this.logoName = React.createRef()
+ this.closeIconRef = React.createRef()
   }
+
 
   async componentDidMount() {
     // [info] => part 1 scroll options
@@ -157,7 +166,8 @@ class PublicEndpoint extends Component {
     
   }
 
-  async componentDidUpdate() {
+  async componentDidUpdate(prevState) {
+
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     // before this display page or display endpoint gets called and data gets rendered
     if (!this.props.keyExistInReactQuery(currentIdToShow)) {
@@ -169,6 +179,7 @@ class PublicEndpoint extends Component {
       }
     }
   }
+
 
   setDataToReactQueryAndSessionStorage(response) {
     if (response) {
@@ -253,6 +264,7 @@ class PublicEndpoint extends Component {
 
   toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal })
 
+
   reviewModal() {
     return (
       <div onHide={() => this.props.onHide()} show top>
@@ -332,8 +344,31 @@ class PublicEndpoint extends Component {
     this.setDislike()
   }
 
+  handleShowSideBar() {
+    const splitPaneElement = document.querySelector('.split-sidebar-public');
+    const hamburgerElement = document.querySelector('#hamburgerIcon');
+    const logoElement = document.querySelector('#logoName');
+    const closeElement = document.querySelector('#closeIcon');
+    if (this.iconRef.current && splitPaneElement) {
+      if (this.iconRef.current.classList.contains('close-icon') && splitPaneElement.classList.contains('open')) {
+        this.iconRef.current.classList.remove('close-icon');
+        splitPaneElement.classList.remove('open');
+        closeElement.classList.add('icon-none');
+        hamburgerElement.classList.remove('icon-none');
+        logoElement.classList.remove('icon-none');
+      }
+      else {
+        this.iconRef.current.classList.add('close-icon');
+        splitPaneElement.classList.add('open');
+        hamburgerElement.classList.add('icon-none');
+        logoElement.classList.add('icon-none');
+        closeElement.classList.remove('icon-none');
+      }
+    }
+  }
+
   render() {
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState ;
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
     let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 1  set collection data
@@ -351,8 +386,9 @@ class PublicEndpoint extends Component {
       var collectionName = this.props.collections[collectionId]?.name
       // var collectionTheme = this.props.collections[collectionId]?.theme
     }
-
+    let collectionKeys = Object.keys(this.props?.collections || {})
     const { isCTAandLinksPresent } = this.getCTALinks()
+
     return (
       <>
         {/* [info] part 1 style component */}
@@ -371,8 +407,33 @@ class PublicEndpoint extends Component {
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
+        <span ref={this.iconRef} className={'hamberger-icon'}>
+          <MdDehaze id='hamburgerIcon' className='icon-active fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
+          <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
+          <span className='logo-name' id="logoName">
+            {this.props.collections[collectionKeys[0]]?.favicon ||
+              (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
+                <img
+                    className='hamberger-img'
+                    id='publicLogo'
+                    alt='public-logo'
+                    src={
+                      this.props.collections[collectionKeys[0]]?.favicon
+                        ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
+                        : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
+                    }
+                    // onError={() => { this.setState({ publicLogoError: true })}}
+                    width='20'
+                    height='20'
+                  />
+                ))}
+              <span className="icon-name">{this.props.collections[collectionId]?.name}</span>
+
+            </span>
+            {/* Original icons */}
+          </span>
           {/* [info] part 3 */}
-          <SplitPane split='vertical' className='split-sidebar'>
+          <SplitPane split='vertical' className={'split-sidebar-public'}>
             {/* [info] part 3 subpart 1 sidebar data left content */}
             <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
               {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
