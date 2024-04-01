@@ -31,7 +31,7 @@ const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
-    const { data, error } = useQuery(
+    const { data, isLoading, error } = useQuery(
       ['pageContent', pageId],
       async () => {
         return isOnPublishedPage()
@@ -46,7 +46,7 @@ const withQuery = (WrappedComponent) => {
         retry: 2
       }
     )
-    return <WrappedComponent {...props} pageContent={data} pageContentLoading={data?.isLoading} pageContentError={error} />
+    return <WrappedComponent {...props} pageContent={data} pageContentLoading={isLoading} pageContentError={error} />;
   }
 }
 
@@ -144,8 +144,8 @@ class DisplayPage extends Component {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div>
-          {isOnPublishedPage() && <h2>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
+        <div className='pt-3'> 
+          {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
           <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
         </div>
       )
@@ -158,14 +158,16 @@ class DisplayPage extends Component {
       this.fetchPage(pageId)
     }
     return isOnPublishedPage() ? (
-      <h3 className='page-heading-pub'>{this.state.data?.name || ''}</h3>
+      <>
+      { this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}
+      </>
     ) : (
       <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
     )
   }
 
   renderTiptapEditor(contents) {
-    return <Tiptap onChange={() => {}} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
+    return <Tiptap onChange={() => { }} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
   }
 
   handleRemovePublicPage(page) {
@@ -346,12 +348,25 @@ class DisplayPage extends Component {
   render() {
     if (this.props?.pageContentLoading) {
       return (
-        <div className='custom-loading-container'>
-          <div className='loading-content'>
-            <button className='spinner-border' />
-            <p className='mt-3'>Loading</p>
+        <>
+        <div className="container-loading p-4">
+                {!isOnPublishedPage() && (
+                <>
+                <div className="d-flex justify-content-end gap-5 mb-5 1806">
+                <div className="edit bg rounded-1 ms-5"></div>
+                  <div className="unpublish bg rounded-1 ms-5"></div>
+                <div className="publish bg rounded-1 ms-5"></div>
+            </div>
+                </>
+                )}
+            <div className="page bg rounded-1"></div>
+          <div className="details d-flex flex-column justify-content-between align-items-center mt-5">
+            <div className="page-box bg"></div>
+            <div className="page-footer text-center bg"></div>
+
           </div>
         </div>
+        </>
       )
     }
     return (

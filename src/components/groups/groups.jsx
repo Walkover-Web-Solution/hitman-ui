@@ -24,6 +24,8 @@ import { deletePage } from '../pages/redux/pagesActions.js'
 import SubPageForm from './subPageForm.jsx'
 import { ReactComponent as EditSign } from '../../assets/icons/editsign.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import { MdExpandMore } from "react-icons/md"
+
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
 
@@ -189,7 +191,7 @@ class Groups extends Component {
               onClick={() => this.toggleSubPageIds(subPageId)}
             >
               <span className='versionChovron'>
-                <img src={ExpandedIcon} alt='' />
+              <MdExpandMore className='fs-4'/>
               </span>
               <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
             </div>

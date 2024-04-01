@@ -279,7 +279,10 @@ class DisplayEndpoint extends Component {
       theme: '',
       loader: false,
       saveLoader: false,
-      codeEditorVisibility: true,
+      codeEditorVisibility: false,
+      isMobileView: false,
+      publicEndpointWidth: 0, 
+      publicEndpointHeight: 0 ,
       showCookiesModal: false,
       preReqScriptError: '',
       postReqScriptError: '',
@@ -290,7 +293,7 @@ class DisplayEndpoint extends Component {
       docOptions: false,
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
-      endpointContentState: null
+      endpointContentState: null,
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -298,6 +301,7 @@ class DisplayEndpoint extends Component {
   }
 
   async componentDidMount() {
+    this.isMobileView();
     if (this.props.endpointContent) {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
     }
@@ -309,7 +313,6 @@ class DisplayEndpoint extends Component {
         : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
-    if (window.innerWidth < '1400') this.setState({ codeEditorVisibility: false })
 
     const { endpointId } = this.props.match.params
     if (endpointId === 'new') this.setUnsavedTabDataInIDB()
@@ -345,7 +348,22 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  updateDimensions = () => {
+    this.setState({ publicEndpointWidth: window.innerWidth, publicEndpointHeight: window.innerHeight });
+    this.isMobileView()
+  };
+
+  isMobileView = () => {
+    if(window.innerWidth < 800){
+      this.setState({isMobileView : true, codeEditorVisibility: true})
+    }
+    else{
+      this.setState({isMobileView : false, codeEditorVisibility: false})
+    }
+  };
+
   componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
@@ -353,6 +371,10 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    window.addEventListener('resize', this.updateDimensions);
+    if (prevState.isMobileView !== this.state.isMobileView) {
+      this.isMobileView()
+    }
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.extractEndpointName()
     }
@@ -917,6 +939,7 @@ class DisplayEndpoint extends Component {
     } else {
       this.setState({ preReqScriptError: result.error, loader: false })
     }
+    this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }
 
   runScript(code, environment, request, responseJson) {
@@ -2545,12 +2568,36 @@ class DisplayEndpoint extends Component {
   render() {
     if (this.props?.endpointContentLoading) {
       return (
-        <div className='custom-loading-container'>
-          <div className='loading-content'>
-            <button className='spinner-border' />
-            <p className='mt-3'>Loading</p>
+        <>
+          <div>
+            <div className='loading'>
+              <div className='box bg'></div>
+              <div className='d-flex align-items-center justify-content-between mt-3'>
+                <div>
+                  <div className='new bg rounded-1'></div>
+                  <div className='live bg mt-1'></div>
+                </div>
+                <div className='new bg rounded-1'></div>
+              </div>
+              <div className='d-flex align-items-center gap-3 mt-2'>
+                <div className='api-call bg rounded-1'></div>
+                <div className='bg send rounded-1'></div>
+              </div>
+              <div className='boxes mt-4 bg rounded-1'></div>
+              <div className='bulk-edit bg mt-2 rounded-1'></div>
+              <div className='path-var mt-2 bg rounded-1'></div>
+              <div className='bulk-edit bg mt-2 rounded-1'></div>
+              <div className='d-flex align-items-center justify-content-between mt-4'>
+                <div className='response bg rounded-1'></div>
+                <div className='d-flex align-items-center gap-2'>
+                  <div className='min-box bg rounded-1'></div>
+                  <div className='min-box bg rounded-1'></div>
+                </div>
+              </div>
+              <div className='hit-send bg mt-3 rounded-1'></div>
+            </div>
           </div>
-        </div>
+        </>
       )
     }
     this.endpointId = this.props.endpointId
@@ -2583,7 +2630,7 @@ class DisplayEndpoint extends Component {
           onClick={this.closeChatBotModal}
           className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}
         >
-          <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
+          <div className={`innerContainer flex-lg-row flex-column ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
             <div
               className={`hm-endpoint-container mid-part endpoint-container ${
                 this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
@@ -2598,43 +2645,66 @@ class DisplayEndpoint extends Component {
                 <LoginSignupModal show onHide={() => this.closeLoginSignupModal()} title='Save Endpoint' />
               )}
               {getCurrentUser() ? (
-                <div className={this.isDashboardAndTestingView() ? 'hm-panel' : null}>
-                  <div className='d-flex justify-content-between'>
-                    {this.renderToggleView()}
-                    {this.renderDocViewOperations()}
-                  </div>
-                  <div className='position-relative top-part'>
-                    {this.state.showEndpointFormModal && (
-                      <SaveAsSidebar
-                        {...this.props}
-                        onHide={() => this.closeEndpointFormModal()}
-                        name={this.props.endpointContent.data.name}
-                        description={this.props.endpointContent.data.description}
-                        save_endpoint={this.handleSave.bind(this)}
-                        saveAsLoader={this.state.saveAsLoader}
-                        endpointContent={this.props?.endpointContent}
-                      />
-                    )}
-                    {this.isDashboardAndTestingView() && (
-                      <DisplayDescription
-                        {...this.props}
-                        endpoint={this.state.endpoint}
-                        data={this.state.data}
-                        old_description={this.state.oldDescription}
-                        props_from_parent={this.propsFromDescription.bind(this)}
-                        alterEndpointName={(name) => this.alterEndpointName(name)}
-                      />
-                    )}
-                    {this.renderSaveButton()}
-                  </div>
-                </div>
+                <>
+                  {isDashboardRoute(this.props) && (
+                    <div className='hm-panel'>
+                      <div className='d-flex justify-content-between'>
+                        {this.renderToggleView()}
+                        {this.renderDocViewOperations()}
+                      </div>
+                      <div className='position-relative top-part'>
+                        {this.state.showEndpointFormModal && (
+                          <SaveAsSidebar
+                            {...this.props}
+                            onHide={() => this.closeEndpointFormModal()}
+                            name={this.props.endpointContent.data.name}
+                            description={this.props.endpointContent.data.description}
+                            save_endpoint={this.handleSave.bind(this)}
+                            saveAsLoader={this.state.saveAsLoader}
+                            endpointContent={this.props?.endpointContent}
+                          />
+                        )}
+                        {this.isDashboardAndTestingView() && (
+                          <DisplayDescription
+                            {...this.props}
+                            endpoint={this.state.endpoint}
+                            data={this.state.data}
+                            old_description={this.state.oldDescription}
+                            props_from_parent={this.propsFromDescription.bind(this)}
+                            alterEndpointName={(name) => this.alterEndpointName(name)}
+                          />
+                        )}
+                        {this.renderSaveButton()}
+                      </div>
+                    </div>
+                  )}
+                </>
               ) : null}
               <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
                 <div className='endpoint-header'>
                   {this.isNotDashboardOrDocView() && (
-                    <div className='endpoint-name-container'>
+                    <div className='endpoint-name-container d-flex justify-content-between'>
                       {this.isNotDashboardOrDocView() && (
-                        <h1 className='endpoint-title'>{this.props?.endpointContent?.data?.name || ''}</h1>
+                        <>
+                          <h1 className='endpoint-title'>{this.props?.endpointContent?.data?.name || ''}</h1>
+                          {!isDashboardRoute(this.props) && (
+                            <div className='request-button'>
+                              <button
+                                className={
+                                  this.state.loader
+                                    ? 'btn custom-theme-btn btn-lg buttonLoader'
+                                    : 'btn btn-lg custom-theme-btn px-md-4 px-3'
+                                }
+                                style={{ background: theme }}
+                                type='submit'
+                                id='send-request-button'
+                                onClick={() => this.handleSend()}
+                              >
+                                TRY
+                              </button>
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   )}
@@ -2829,19 +2899,7 @@ class DisplayEndpoint extends Component {
                       ) : (
                         this.renderDocView()
                       )}
-                      {!isDashboardRoute(this.props) && (
-                        <div className='request-button'>
-                          <button
-                            className={this.state.loader ? 'btn custom-theme-btn btn-lg buttonLoader' : 'btn btn-lg custom-theme-btn'}
-                            style={{ background: theme }}
-                            type='submit'
-                            id='send-request-button'
-                            onClick={() => this.handleSend()}
-                          >
-                            Try
-                          </button>
-                        </div>
-                      )}
+
                       {this.isDashboardAndTestingView() && this.renderScriptError()}
                       {this.displayResponse()}
                     </div>
@@ -2852,8 +2910,9 @@ class DisplayEndpoint extends Component {
                 )}
               </div>
               {/* <ApiDocReview {...this.props} /> */}
-              {isOnPublishedPage() && <Footer />}
+              <span className='d-lg-inline d-none'>{isOnPublishedPage() && <Footer />}</span>
             </div>
+
             {this.isDashboardAndTestingView() ? (
               <div className='response-container-main position-relative'>
                 <div className='d-flex response-switcher'>
@@ -2865,18 +2924,18 @@ class DisplayEndpoint extends Component {
             ) : null}
             {this.isNotDashboardOrDocView() && this.props?.endpointContent?.harObject && isOnPublishedPage() && (
               <CodeTemplate
-                show
-                onHide={() => {
-                  this.setState({ showCodeTemplate: false })
-                }}
-                editorToggle={() => {
-                  this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
-                }}
-                harObject={this.props?.endpointContent?.harObject}
-                title='Generate Code Snippets'
-                publicCollectionTheme={this.props?.publicCollectionTheme}
+              show
+              onHide={() => {
+                this.setState({ showCodeTemplate: false })
+              }}
+              editorToggle={() => {
+                this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
+              }}
+              harObject={this.props?.endpointContent?.harObject}
+              title='Generate Code Snippets'
+              publicCollectionTheme={this.props?.publicCollectionTheme}
               />
-            )}
+              )}
           </div>
         </div>
         {this.isDashboardAndTestingView() && (
@@ -2888,6 +2947,7 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
+        <span className='d-lg-none d-inline'>{isOnPublishedPage() && <Footer />}</span>
       </div>
     ) : null
   }
