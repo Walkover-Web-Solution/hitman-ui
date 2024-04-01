@@ -9,12 +9,23 @@ export default function PublishedVersionDropDown(props) {
     }
   })
 
-  const [show, setShow] = useState([])
-
+  const [show, setShow] = useState([]);
+  const [title, setTitle] = useState('');
   useEffect(() => {
-    const data = showDropDown()
-    setShow(data)
-  }, [props?.rootParentId])
+    const { rootParentId, defaultVersionName, selectedVersionName } = props;
+
+    const data = showDropDown();
+    setShow(data);
+
+    const versionName = (name) => {
+        return name.length > 10 ? `${name.substring(0, 7)} ... ` : name;
+    };
+
+    const versionToDisplay = pages?.[rootParentId]?.child?.length === 1 ? defaultVersionName : selectedVersionName;
+
+    setTitle(versionName(versionToDisplay));
+}, [props.rootParentId, props.defaultVersionName, props.selectedVersionName, pages]);
+
 
   function checkIfVersionHasPublishedChild(versionId) {
     if (!pages?.[versionId]) return false
@@ -48,7 +59,7 @@ export default function PublishedVersionDropDown(props) {
       className='version-dropdown'
       id={`dropdown-basic-button-${props?.rootParentId}`}
       onClick={(e) => e.stopPropagation()}
-      title={pages?.[props?.rootParentId]?.child?.length === 1 ? props.defaultVersionName : props.selectedVersionName}
+      title={title}
     >
       {show.map((childId, index) => (
         <Dropdown.Item key={index} onClick={() => props.handleDropdownItemClick(childId, props?.rootParentId)}>
