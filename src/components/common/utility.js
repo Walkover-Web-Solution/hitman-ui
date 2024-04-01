@@ -32,6 +32,7 @@ export const SESSION_STORAGE_KEY = {
 const tokenKey = 'token'
 const profileKey = 'profile'
 const orgKey = 'organisation'
+const currentOrgKey = 'currentOrganisation'
 const orgListKey = 'organisationList'
 const proxyUrl = process.env.REACT_APP_PROXY_URL
 
@@ -585,6 +586,7 @@ export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = 
     window.localStorage.setItem(tokenKey, proxyAuthToken)
     window.localStorage.setItem(profileKey, JSON.stringify(userInfo))
     window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
+    window.localStorage.setItem(currentOrgKey, JSON.stringify(userInfo.currentCompany))
     window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
   } catch (e) {
     console.error('error ', e)

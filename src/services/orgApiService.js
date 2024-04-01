@@ -1,6 +1,6 @@
 import http from './httpService'
 import { redirectToDashboard, getDataFromProxyAndSetDataToLocalStorage } from '../components/common/utility'
-import { getOrgList, orgListKey, orgKey, getCurrentOrg } from '../components/auth/authServiceV2'
+import { getOrgList, orgListKey, orgKey, getCurrentOrg, currentOrgKey } from '../components/auth/authServiceV2'
 import { toast } from 'react-toastify'
 const apiBaseUrl = process.env.REACT_APP_API_URL
 const proxyUrl = process.env.REACT_APP_PROXY_URL
@@ -11,10 +11,14 @@ export function getOrgUpdatedAt(orgId) {
 
 export function updateOrgDataByOrgId(OrgId) {
   const data = getOrgList()
+  let currentOrganisation;
+
   const targetIndex = data.findIndex((obj) => obj.id === OrgId)
+  currentOrganisation = data[targetIndex]
   if (targetIndex > 0) {
     ;[data[0], data[targetIndex]] = [data[targetIndex], data[0]]
   }
+  window.localStorage.setItem(currentOrgKey, JSON.stringify(currentOrganisation))
   window.localStorage.setItem(orgListKey, JSON.stringify(data))
   window.localStorage.setItem(orgKey, JSON.stringify(data[0]))
 }
@@ -36,12 +40,12 @@ async function createOrganizationAndRunCode() {
 export async function createOrg(name) {
   try {
     const data = { company: { name: name } }
-    await http.post(proxyUrl + '/createCompany', data)
+    const newOrg = await http.post(proxyUrl + '/createCompany', data)
     const org = getCurrentOrg()
     updateOrgDataByOrgId(org.id)
     await getDataFromProxyAndSetDataToLocalStorage()
     await createOrganizationAndRunCode()
-    redirectToDashboard(org.id)
+    await switchOrg(newOrg.data.data.id)
   } catch (e) {
     toast.error(e?.response?.data?.message ? e?.response?.data?.message : "Something went wrong")
   }
