@@ -4,8 +4,8 @@ import http from "../../services/httpService";
 import { switchOrg } from "../../services/orgApiService";
 import { getDataFromProxyAndSetDataToLocalStorage } from "../common/utility";
 
-const tokenKey = "token";
-const profileKey = "profile";
+export const tokenKey = "token";
+export const profileKey = "profile";
 export const orgKey = "organisation";
 export const orgListKey = "organisationList";
 export const currentOrgKey = "currentOrganisation";
