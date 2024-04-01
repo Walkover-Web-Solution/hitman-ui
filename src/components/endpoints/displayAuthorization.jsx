@@ -1,410 +1,202 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
+import Auth2Configurations from './authConfiguration/auth2Configurations';
+import { useParams } from 'react-router';
+import { useQuery, useQueryClient } from 'react-query';
+import { useSelector } from 'react-redux';
+import { cloneDeep } from 'lodash';
+import { authorizationTypes, addAuthorizationDataTypes } from '../common/authorizationEnums';
 import './endpoints.scss'
-import TokenGenerator from './newTokenGenerator'
-import AccessTokenManager from './displayTokenManager'
 
-class Authorization extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      basicAuth: {
-        username: '',
-        password: ''
-      },
-      oauth_2: {
-        authorizationAddedTo: 'Request Headers',
-        accessToken: ''
-      },
-      authorizationType: 'noAuth'
-    }
-
-    this.authorizationTypes = {
-      noAuth: 'No Auth',
-      basicAuth: 'Basic Auth'
-      // oauth_2: 'OAuth 2.0'
-    }
-  }
-
-  componentDidMount() {
-    this.authResponses = []
-  }
-
-  componentDidUpdate() {
-    this.fetchAuthorizationResponse()
-  }
-
-  fetchAuthorizationResponse() {
-    if (
-      this.authResponses?.length === 0
-      // Object.keys(this.props.versions).length !== 0 &&
-      // Object.keys(this.props.groups).length !== 0 &&
-      // this.props.groupId !== undefined &&
-      // this.props.groupId !== null
-    ) {
-      // this.authResponses = this.props.versions[this.props.groups[this.props.groupId]?.versionId]?.authorizationResponse
-      if (this.authResponses === null) {
-        this.authResponses = []
-      }
-    }
-  }
-
-  setAuthorizationType(type) {
-    let value = {}
-    switch (type) {
-      case 'basicAuth':
-        value = {
-          username: '',
-          password: ''
-        }
-        this.setState({ authorizationType: 'basicAuth' })
-        this.props.set_authoriztaion_params('', 'access_token', 'authorizationFlag')
-        this.props.set_authorization_headers('', 'Authorization.basicAuth')
-        this.props.set_authoriztaion_type(type, value)
-        break
-      case 'noAuth':
-        this.setState({ authorizationType: 'noAuth' })
-        this.props.set_authoriztaion_params('', 'access_token', 'authorizationFlag')
-        this.props.set_authorization_headers('noAuth', 'Authorization.noAuth')
-        this.props.set_authoriztaion_type('', '')
-        break
-      case 'oauth_2':
-        this.props.set_authoriztaion_type(type, value)
-        value = this.state.oauth_2
-        this.setState({ authorizationType: 'oauth_2' })
-        if (this.state.oauth_2.accessToken !== '') {
-          if (this.state.oauth_2.authorizationAddedTo === 'Request Headers') {
-            this.props.set_authorization_headers(this.state.oauth_2.accessToken, 'Authorization.oauth_2')
-          } else {
-            this.props.set_authoriztaion_params(this.state.oauth_2.accessToken, 'access_token')
-          }
-        }
-        break
-      default:
-        break
-    }
-  }
-
-  handleChange(e) {
-    const basicAuth = { ...this.state.basicAuth }
-    if (e.currentTarget.name === 'username') {
-      basicAuth.username = e.currentTarget.value
-      this.generateEncodedValue(e.currentTarget.value, this.state.basicAuth.password)
-    } else if (e.currentTarget.name === 'password') {
-      basicAuth.password = e.currentTarget.value
-      this.generateEncodedValue(this.state.basicAuth.username, e.currentTarget.value)
-    }
-    this.setState({ basicAuth })
-  }
-
-  generateEncodedValue(username, password) {
-    const value = {
-      username,
-      password
-    }
-    this.props.set_authoriztaion_type('basicAuth', value)
-    const encodedValue = Buffer.from(username + ':' + password).toString('base64')
-    // const encodedValue = new Buffer(username + ':' + password).toString(
-    //   'base64'
-    // )
-    this.props.set_authorization_headers(encodedValue, 'Authorization.basicAuth')
-  }
-
-  setAuthorizationAddedTo(key) {
-    const oauth2 = { ...this.state.oauth_2 }
-    oauth2.authorizationAddedTo = key
-    this.setState({ oauth_2: oauth2 })
-    if (this.state.oauth_2.accessToken !== '') {
-      if (key === 'Request Headers') {
-        this.props.set_authorization_headers(this.state.oauth_2.accessToken, 'Authorization.oauth_2')
-        this.props.set_authoriztaion_params('', 'access_token', 'authorizationFlag')
-        this.props.set_authoriztaion_type('oauth_2', oauth2)
-      } else {
-        this.props.set_authorization_headers('', 'Authorization', 'authorizationFlag')
-        this.props.set_authoriztaion_params(this.state.oauth_2.accessToken, 'access_token')
-        this.props.set_authoriztaion_type('oauth_2', oauth2)
-      }
-    }
-  }
-
-  getNewAccessTokenModal() {
-    this.setState({ getNewAccessToken: true })
-  }
-
-  closeGetNewAccessTokenModal() {
-    this.setState({ getNewAccessToken: false })
-  }
-
-  openManageTokenModel() {
-    this.setState({ openManageTokenModel: true })
-  }
-
-  async closeManageTokenModel() {
-    const versionId = this.props.groups[this.props.groupId].versionId
-    this.props.set_authorization_responses(versionId, this.authResponses)
-    if (this.props.location.pathname.split('/')[5] !== 'new') {
-      const data = {
-        type: 'oauth_2',
-        value: this.state.oauth_2
-      }
-      this.props.set_authorization_type(this.props.location.pathname.split('/')[5], data)
-    }
-    this.setState({ openManageTokenModel: false })
-  }
-
-  selectAccessToken(index) {
-    const oauth2 = this.state.oauth_2
-    oauth2.accessToken = this.authResponses[index].access_token
-    this.setState({ oauth_2: oauth2 })
-    this.setHeadersandParams(this.authResponses[index].access_token, this.state.oauth_2.authorizationAddedTo)
-  }
-
-  setHeadersandParams(accessToken, authorizationAddedTo) {
-    if (accessToken === '') {
-      this.props.set_authoriztaion_params('', 'access_token', 'authorizationFlag')
-      this.props.set_authorization_headers('noAuth', 'Authorization')
-    } else {
-      if (authorizationAddedTo === 'Request Headers') {
-        this.props.set_authorization_headers(accessToken, 'Authorization.oauth_2')
-        this.props.set_authoriztaion_params('', 'access_token', 'authorizationFlag')
-      } else {
-        this.props.set_authoriztaion_params(accessToken, 'access_token')
-        this.props.set_authorization_headers('noAuth', 'Authorization')
-      }
-    }
-  }
-
-  setAccessToken(accessToken) {
-    const oauth2 = { ...this.state.oauth_2 }
-    oauth2.accessToken = accessToken
-    this.setState({ oauth_2: oauth2 })
-    this.setHeadersandParams(accessToken, oauth2.authorizationAddedTo)
-  }
-
-  setAuthResponses(authResponses) {
-    this.authResponses = authResponses
-    if (authResponses.length === 0) {
-      const oauth2 = this.state.oauth_2
-      oauth2.accessToken = ''
-      this.setState({ oauth_2: oauth2 })
-      this.closeManageTokenModel()
-    }
-  }
-
-  updateAccessToken(e) {
-    const accessToken = e.currentTarget.value
-    const oauth2 = this.state.oauth_2
-    oauth2.accessToken = accessToken
-    this.setState({ oauth_2: oauth2 })
-    this.setHeadersandParams(accessToken)
-  }
-
-  showPassword() {
-    if (this.state.showPassword && this.state.showPassword === true) {
-      this.setState({ showPassword: false })
-    } else {
-      this.setState({ showPassword: true })
-    }
-  }
-
-  render() {
-    if (this.props.authorizationType) {
-      const authType = this.props.authorizationType.type
-      if (authType !== this.state.authorizationType) {
-        this.setState({
-          authorizationType: authType
-        })
-        if (authType === 'basicAuth') {
-          this.setState({ basicAuth: this.props.authorizationType.value })
-        }
-        if (authType === 'oauth_2') {
-          this.setState({ oauth_2: this.props.authorizationType.value })
-        }
-        this.setHeadersandParams(this.props.authorizationType.value.accessToken, this.props.authorizationType.value.authorizationAddedTo)
-      }
-    }
-
-    return (
-      <div className='authorization-panel'>
-        {this.state.getNewAccessToken === true && (
-          <TokenGenerator
-            {...this.props}
-            oauth_2={this.state.oauth_2}
-            groupId={this.props.groupId}
-            show
-            onHide={() => this.closeGetNewAccessTokenModal()}
-            set_access_token={this.setAccessToken.bind(this)}
-            title='Get new access token'
-          />
-        )}
-        {this.state.openManageTokenModel === true && (
-          <AccessTokenManager
-            {...this.props}
-            authResponses={this.authResponses}
-            show
-            onHide={() => this.closeManageTokenModel()}
-            title='MANAGE ACCESS TOKENS'
-            set_access_token={this.setAccessToken.bind(this)}
-            set_auth_responses={this.setAuthResponses.bind(this)}
-            accessToken={this.state.oauth_2.accessToken}
-          />
-        )}
-        <div className='authorization-selector-wrapper'>
-          <div className='auth-selector-container'>
-            <label>Type</label>
-            <div className='dropdown'>
-              <button
-                className='btn dropdown-toggle outline-border'
-                id='dropdownMenuButton'
-                data-toggle='dropdown'
-                aria-haspopup='true'
-                aria-expanded='false'
-              >
-                {this.state.authorizationType === 'noAuth'
-                  ? this.authorizationTypes.noAuth
-                  : this.authorizationTypes[this.state.authorizationType]}
-              </button>
-              <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                {Object.keys(this.authorizationTypes).map((key) => (
-                  <button className='dropdown-item' onClick={() => this.setAuthorizationType(key)} key={key}>
-                    {this.authorizationTypes[key]}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <br />
-            {this.state.authorizationType === 'oauth_2' && (
-              <div>
-                <label>Add authorization data to</label>
-                <div className='dropdown'>
-                  <button
-                    className='btn dropdown-toggle outline-border'
-                    id='dropdownMenuButton'
-                    data-toggle='dropdown'
-                    aria-haspopup='true'
-                    aria-expanded='false'
-                  >
-                    {this.state.oauth_2.authorizationAddedTo}
-                  </button>
-                  <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                    <button className='dropdown-item' onClick={() => this.setAuthorizationAddedTo('Request Headers')}>
-                      Request Headers
-                    </button>
-                    <button className='dropdown-item' onClick={() => this.setAuthorizationAddedTo('Request URL')}>
-                      Request URL
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {this.state.authorizationType === 'noAuth' && (
-          <div className='authorization-editor-wrapper'>
-            <p> This request does not use any authorization.</p>
-          </div>
-        )}
-
-        {this.state.authorizationType === 'basicAuth' && (
-          <div className='authorization-editor-wrapper' id='authorization-form'>
-            <form className='form-group'>
-              <label className='mb-1'>Username</label>
-              <input
-                className='form-control'
-                name='username'
-                value={this.state.basicAuth.username}
-                onChange={this.handleChange.bind(this)}
-              />
-              <label htmlFor='password'>Password</label>
-              <div className='d-flex flex-row align-items-center'>
-                <input
-                  className='form-control'
-                  id='password'
-                  type={this.state.showPassword ? (this.state.showPassword === true ? null : 'password') : 'password'}
-                  name='password'
-                  value={this.state.basicAuth.password}
-                  onChange={this.handleChange.bind(this)}
-                />
-                <label className='mb-3 ml-3'>
-                  <input className='mr-1' type='checkbox' onClick={() => this.showPassword()} />
-                  Show Password
-                </label>
-              </div>
-              {/* <div className="input-field-wrapper">
-                <label>
-                  <button
-                    type="checkbox"
-                    value={
-                      this.state.showPassword
-                        ? this.state.showPassword === true
-                          ? true
-                          : false
-                        : false
-                    }
-                    onClick={() => this.showPassword()}
-                  ></button>
-                  Show Password
-                </label>
-              </div> */}
-            </form>
-          </div>
-        )}
-        {this.state.authorizationType === 'oauth_2' && (
-          <div className='authorization-editor-wrapper'>
-            <form>
-              <div className='input-field-wrapper form-group d-block mb-1'>
-                <div>
-                  <label className='basic-auth-label'>Access Token</label>
-                </div>
-                <div className='basic-auth-input'>
-                  <input
-                    value={this.state.oauth_2.accessToken}
-                    onChange={this.updateAccessToken.bind(this)}
-                    name='accessToken'
-                    className='form-control'
-                  />
-                  <div className='dropdown available-token-dropdown ml-2'>
-                    <button
-                      className='btn dropdown-toggle'
-                      id='dropdownMenuButton'
-                      data-toggle='dropdown'
-                      aria-haspopup='true'
-                      aria-expanded='false'
-                    >
-                      Availabale Tokens
-                    </button>
-                    <div className='dropdown-menu available-token-dropdown-menu' aria-labelledby='dropdownMenuButton'>
-                      {this.authResponses.map((response, index) => (
-                        <button key={index} type='button' className='dropdown-item' onClick={() => this.selectAccessToken(index)}>
-                          {response.tokenName}
-                        </button>
-                      ))}
-                      <button
-                        type='button'
-                        className='dropdown-item'
-                        onClick={() => (this.authResponses.length !== 0 ? this.openManageTokenModel() : null)}
-                      >
-                        {this.authResponses.length !== 0 ? 'Manage Tokens' : 'No Tokens Available'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className='input-field-wrapper d-block'>
-                <div className='basic-auth-label' />
-                <div className='basic-auth-input'>
-                  <button className='btn btn-outline orange' type='button' onClick={() => this.getNewAccessTokenModal()}>
-                    Get New Access Token
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        )}
-      </div>
-    )
-    return null
-  }
+const options = {
+  refetchOnWindowFocus: false,
+  cacheTime: 5000000,
+  enabled: true,
+  staleTime: Infinity,
+  retry: 3
 }
 
-export default Authorization
+export default function Authorization(props) {
+
+  const { activeTabId, tokenDetails } = useSelector((state) => {
+    return {
+      activeTabId: state.tabs.activeTabId,
+      tokenDetails: state.tokenData.tokenDetails || {}
+    }
+  })
+
+  const params = useParams();
+
+  const queryClient = useQueryClient()
+
+  const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId;
+  const queryKey = ['endpoint', endpointId];
+
+  const { data: endpointStoredData } = useQuery(queryKey, options);
+
+  const [selectedAuthorizationType, setSelectedAuthorizationType] = useState(authorizationTypes[endpointStoredData?.authorizationData?.authorizationTypeSelected] || authorizationTypes.noAuth)
+  const [addAuthorizationDataToForAuth2, setAddAuthorizationDataToForAuth2] = useState(addAuthorizationDataTypes[endpointStoredData?.authorizationData?.authorization?.oauth2?.addAuthorizationRequestTo] || addAuthorizationDataTypes.select)
+  const [basicAuthData, setBasicAuthData] = useState({ username: endpointStoredData?.authorizationData?.authorization?.basicAuth?.username || '', password: endpointStoredData?.authorizationData?.authorization?.basicAuth?.password || '' })
+  const [showPassword, setShowPassword] = useState(false)
+  const [selectedTokenId, setSelectedTokenId] = useState(endpointStoredData?.authorizationData?.authorization?.oauth2?.selectedTokenId || null);
+  const [selectedTokenValue, setSelectedTokenValue] = useState(tokenDetails?.[selectedTokenId]?.accessToken || '');
+
+  function handleChange(e) {
+    setBasicAuthData((prev) => { return { ...prev, [e.target.name]: e.target.value } })
+    if (e.target.name === 'username') {
+      props.set_authoriztaion_type('basicAuth', { username: e.target.value, password: basicAuthData.password })
+      generateEncodedValue(e.target.value, basicAuthData.password)
+    } else if (e.target.name === 'password') {
+      props.set_authoriztaion_type('basicAuth', { username: basicAuthData.password, password: e.target.value })
+      generateEncodedValue(basicAuthData.username, e.target.value)
+    }
+  }
+
+  function generateEncodedValue(username, password) {
+    const value = { username, password }
+    props.set_authoriztaion_type('basicAuth', value)
+    const encodedValue = btoa(`${username}:${password}`)
+    props.set_authorization_headers(encodedValue, 'Authorization.basicAuth')
+  }
+
+  const handleSelectAuthorizationType = (key) => {
+    const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) : JSON.parse(localStorage.getItem(activeTabId)) || {};
+    const dataToSave = cloneDeep(endpointStoredData);
+    if (dataToSave?.authorizationData) {
+      dataToSave.authorizationData.authorizationTypeSelected = key;
+    }
+    else {
+      dataToSave.authorizationData = { authorization: {}, authorizationTypeSelected: key }
+    }
+    queryClient.setQueryData(queryKey, dataToSave, options);
+    if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
+    setSelectedAuthorizationType(authorizationTypes[key]);
+  }
+
+  const handleAddAuthorizationTo = (key) => {
+    const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) : JSON.parse(localStorage.getItem(activeTabId)) || {};
+    let dataToSave = cloneDeep(endpointStoredData);
+    if (dataToSave?.authorizationData?.authorization?.oauth2) {
+      dataToSave.authorizationData.authorization.oauth2 = { ...dataToSave?.authorizationData?.authorization?.oauth2, addAuthorizationRequestTo: key }
+    }
+    else {
+      dataToSave.authorizationData.authorization = { oauth2: {} }
+      dataToSave.authorizationData.authorization.oauth2 = { ...dataToSave?.authorizationData?.authorization?.oauth2, addAuthorizationRequestTo: key }
+    }
+    if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
+    if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestHeaders) {
+      props.set_authorization_headers(selectedTokenValue, 'Authorization.oauth_2')
+    }
+    else if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestUrl) {
+      props.set_authoriztaion_params(selectedTokenValue, 'access_token')
+    }
+    setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes[key]);
+  }
+
+  function handleShowPassword() {
+    setShowPassword(!showPassword)
+  }
+
+  const addAccessTokenInsideHeadersAndParams = (value, tokenIdToSave) => {
+    if (addAuthorizationDataToForAuth2 === addAuthorizationDataTypes.requestHeaders) {
+      props.set_authorization_headers(value, 'Authorization.oauth_2', null, tokenIdToSave)
+    }
+    else if (addAuthorizationDataToForAuth2 === addAuthorizationDataTypes.requestUrl) {
+      props.set_authoriztaion_params(value, 'access_token', null, tokenIdToSave)
+    }
+  }
+
+  return (
+    <div className='authorization-panel'>
+      <div className='authorization-selector-wrapper'>
+        <div className='auth-selector-container'>
+          <label>Type</label>
+          <div className='dropdown'>
+            <button
+              className='btn dropdown-toggle outline-border'
+              id='dropdownMenuButton'
+              data-toggle='dropdown'
+              aria-haspopup='true'
+              aria-expanded='false'
+            >
+              {selectedAuthorizationType}
+            </button>
+            <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+              {Object.keys(authorizationTypes).map((key, index) => (
+                <button className='dropdown-item' onClick={() => handleSelectAuthorizationType(key)} key={index}>
+                  {authorizationTypes[key]}
+                </button>
+              ))}
+            </div>
+          </div>
+          <br />
+          {selectedAuthorizationType === authorizationTypes.oauth2 && (
+            <div>
+              <label>Add authorization data to</label>
+              <div className='dropdown'>
+                <button className='btn dropdown-toggle outline-border' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                  {addAuthorizationDataToForAuth2}
+                </button>
+                <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+                  {Object.keys(addAuthorizationDataTypes).map((key, index) => {
+                    return (
+                      <button key={index} onClick={() => handleAddAuthorizationTo(key)} className='dropdown-item'>
+                        {addAuthorizationDataTypes[key]}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {selectedAuthorizationType === authorizationTypes.noAuth && (
+        <div className='authorization-editor-wrapper'>
+          <p> This request does not use any authorization.</p>
+        </div>
+      )}
+
+      {selectedAuthorizationType === authorizationTypes.basicAuth && (
+        <div className='authorization-editor-wrapper' id='authorization-form'>
+          <form className='form-group'>
+            <label className='mb-1'>Username</label>
+            <input
+              className='form-control'
+              name='username'
+              value={basicAuthData.username}
+              onChange={handleChange}
+            />
+            <label htmlFor='password'>Password</label>
+            <div className='d-flex flex-row align-items-center'>
+              <input
+                className='form-control'
+                id='password'
+                type={showPassword ? (showPassword === true ? null : 'password') : 'password'}
+                name='password'
+                value={basicAuthData.password}
+                onChange={handleChange}
+              />
+              <label className='mb-3 ml-3'>
+                <input className='mr-1' type='checkbox' onClick={handleShowPassword} />
+                Show Password
+              </label>
+            </div>
+          </form>
+        </div>
+      )}
+      {selectedAuthorizationType === authorizationTypes.oauth2 &&
+        <Auth2Configurations
+          {...props}
+          addAccessTokenInsideHeadersAndParams={addAccessTokenInsideHeadersAndParams}
+          addAuthorizationDataToForAuth2={addAuthorizationDataToForAuth2}
+          handleSaveEndpoint={props?.handleSaveEndpoint}
+          setSelectedTokenId={setSelectedTokenId}
+          setSelectedTokenValue={setSelectedTokenValue}
+          selectedTokenValue={selectedTokenValue}
+          selectedTokenId={selectedTokenId}
+        />
+      }
+    </div>
+  )
+}
