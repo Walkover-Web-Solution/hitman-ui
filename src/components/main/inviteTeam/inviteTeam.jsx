@@ -140,32 +140,56 @@ function InviteTeam() {
             </tr>
           </thead>
           {loadingUsers ? (
-          <div className='custom-loading-container'>
-            <div className='loading-content'>
-              <button className='spinner-border' />
-              <p className='mt-3'>Loading</p>
+            <>
+            <div className="team">
+              <div className="d-flex align-items-center justify-content-between">
+                <div className="email bg"></div>
+                <div className="admin bg"></div>
+                <div className="edit bg"></div>
+              </div>
             </div>
-          </div>
-                ) : (
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.email}>
-                {/* <td>{user.name}</td> */}
-                <td>{user.email}</td>
-                <td>Admin</td>
-                <td>
-                  <button
-                    className='editButton'
-                    onClick={() => {
-                      /* logic to edit user */
-                    }}
-                  >
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+             <div className="team my-3">
+             <div className="d-flex align-items-center justify-content-between">
+               <div className="email bg"></div>
+               <div className="admin bg"></div>
+               <div className="edit bg"></div>
+             </div>
+           </div>
+           <div className="team">
+             <div className="d-flex align-items-center justify-content-between">
+               <div className="email bg"></div>
+               <div className="admin bg"></div>
+               <div className="edit bg"></div>
+             </div>
+           </div>
+           <div className="team my-3">
+             <div className="d-flex align-items-center justify-content-between">
+               <div className="email bg"></div>
+               <div className="admin bg"></div>
+               <div className="edit bg"></div>
+             </div>
+           </div>
+           </>
+          ) : (
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.email}>
+                  {/* <td>{user.name}</td> */}
+                  <td>{user.email}</td>
+                  <td>Admin</td>
+                  <td>
+                    {/* <button
+                      className='editButton'
+                      onClick={() => {
+                        
+                      }}
+                    >
+                      Edit
+                    </button> */}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           )}
         </table>
       </div>
