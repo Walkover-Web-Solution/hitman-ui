@@ -104,26 +104,22 @@ function AuthServiceV2() {
   const history = useHistory();
   const [show, setShow] = useState(true);
   const [orgList, setOrgList] = useState(null);
-  
 
   useEffect(async () => {
     try {
       const proxyAuthToken = query.get("proxy_auth_token");
       const orgId = query.get("company_ref_id") || getCurrentOrg()?.id || "";
+
       if (proxyAuthToken) {
         await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
         setOrgList(getOrgList());
-      
-        const currentOrgId = JSON.parse(window.localStorage.getItem("currentOrganisation"))
-        if(currentOrgId){
-          switchOrg(currentOrgId?.id)
-        }else{
-          switchOrg(orgId)
-        }
-      } else if (getOrgList()) {
-        history.push(`/orgs/${orgId}/dashboard`);
+
+        const storedCurrentOrgId = window.localStorage.getItem("currentOrganisation");
+        const currentOrgId = storedCurrentOrgId ? JSON.parse(storedCurrentOrgId).id : undefined;
+        switchOrg(currentOrgId || orgId);
       } else {
-        history.push("/logout");
+        const redirectPath = getOrgList() ? `/orgs/${orgId}/dashboard` : "/logout";
+        history.push(redirectPath);
       }
     } catch (err) {
       history.push("/logout");
