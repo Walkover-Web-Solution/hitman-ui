@@ -291,8 +291,8 @@ class DisplayEndpoint extends Component {
       saveLoader: false,
       codeEditorVisibility: false,
       isMobileView: false,
-      publicEndpointWidth: 0, 
-      publicEndpointHeight: 0 ,
+      publicEndpointWidth: 0,
+      publicEndpointHeight: 0,
       showCookiesModal: false,
       preReqScriptError: '',
       postReqScriptError: '',
@@ -364,11 +364,11 @@ class DisplayEndpoint extends Component {
   };
 
   isMobileView = () => {
-    if(window.innerWidth < 800){
-      this.setState({isMobileView : true, codeEditorVisibility: true})
+    if (window.innerWidth < 800) {
+      this.setState({ isMobileView: true, codeEditorVisibility: true })
     }
-    else{
-      this.setState({isMobileView : false, codeEditorVisibility: false})
+    else {
+      this.setState({ isMobileView: false, codeEditorVisibility: false })
     }
   };
 
@@ -947,9 +947,9 @@ class DisplayEndpoint extends Component {
       headers = this.replaceVariablesInJson(headers, environment)
       // Start of Regeneration of AUTH2.0 Token
       let oauth2Data = this.props?.endpointContent?.authorizationData?.authorization?.oauth2
-      if (this.props?.endpointContent?.authorizationData?.authorizationTypeSelected === 'oauth2' && (this.props.tokenDetails[oauth2Data.selectedTokenId]?.grantType === grantTypesEnums.authorizationCode || this.props.tokenDetails[oauth2Data.selectedTokenId]?.grantType === grantTypesEnums.authorizationCodeWithPkce)) {
-        const generatedDateTime = this.props.tokenDetails[oauth2Data.selectedTokenId]?.createdTime;
-        const expirationTime = this.props.tokenDetails[oauth2Data.selectedTokenId]?.expiryTime;
+      if (this.props?.endpointContent?.authorizationData?.authorizationTypeSelected === 'oauth2' && (this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCode || this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCodeWithPkce)) {
+        const generatedDateTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.createdTime;
+        const expirationTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.expiryTime;
         const isTokenExpired = this.checkTokenExpired(expirationTime, generatedDateTime)
         if (isTokenExpired && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshTokenUrl && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken) {
           try {
@@ -999,7 +999,9 @@ class DisplayEndpoint extends Component {
     } else {
       this.setState({ preReqScriptError: result.error, loader: false })
     }
-    this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    if (this.myRef?.current?.scrollIntoView) {
+      this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    }
   }
 
   runScript(code, environment, request, responseJson) {
@@ -2995,18 +2997,18 @@ class DisplayEndpoint extends Component {
             ) : null}
             {this.isNotDashboardOrDocView() && this.props?.endpointContent?.harObject && isOnPublishedPage() && (
               <CodeTemplate
-              show
-              onHide={() => {
-                this.setState({ showCodeTemplate: false })
-              }}
-              editorToggle={() => {
-                this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
-              }}
-              harObject={this.props?.endpointContent?.harObject}
-              title='Generate Code Snippets'
-              publicCollectionTheme={this.props?.publicCollectionTheme}
+                show
+                onHide={() => {
+                  this.setState({ showCodeTemplate: false })
+                }}
+                editorToggle={() => {
+                  this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
+                }}
+                harObject={this.props?.endpointContent?.harObject}
+                title='Generate Code Snippets'
+                publicCollectionTheme={this.props?.publicCollectionTheme}
               />
-              )}
+            )}
           </div>
         </div>
         {this.isDashboardAndTestingView() && (
