@@ -2702,7 +2702,7 @@ class DisplayEndpoint extends Component {
           onClick={this.closeChatBotModal}
           className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}
         >
-          <div className={`innerContainer flex-lg-row flex-column ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
+          <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
             <div
               className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
                 }`}
@@ -2983,7 +2983,7 @@ class DisplayEndpoint extends Component {
                 )}
               </div>
               {/* <ApiDocReview {...this.props} /> */}
-              <span className='d-lg-inline d-none'>{isOnPublishedPage() && <Footer />}</span>
+              <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>
             </div>
 
             {this.isDashboardAndTestingView() ? (
@@ -3020,7 +3020,7 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
-        <span className='d-lg-none d-inline'>{isOnPublishedPage() && <Footer />}</span>
+        <span className='footer-lower'>{isOnPublishedPage() && <Footer />}</span>
       </div>
     ) : null
   }
