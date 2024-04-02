@@ -40,6 +40,7 @@ import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
+import { TbLogin2 } from "react-icons/tb"
 
 const mapStateToProps = (state) => {
   return {
@@ -640,7 +641,7 @@ class SideBarV2 extends Component {
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
     const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
     return (
-      <div className='hm-sidebar-header'>
+      <div className='hm-sidebar-header d-flex justify-content-between align-items-center'>
         {this.props.collections[collectionKeys[0]]?.favicon ||
           (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
             <div className='hm-sidebar-logo'>
@@ -662,6 +663,11 @@ class SideBarV2 extends Component {
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documenation</span>
         </h4>
+        {isTechdocOwnDomain && (<a href="/login" target="_blank" className='login-button position-fixed d-flex gap-5 ps-5'>
+        <TbLogin2 className='text-black'/>
+<button type="button" class="btn btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Login to manage this docs">Login to manage this docs
+</button>
+        </a>)}
       </div>
     )
   }
