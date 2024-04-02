@@ -3252,8 +3252,7 @@ body .doc-secs-container {
   // position: relative;
   // overflow: auto; /* Add this line to enable scrolling */
   .page-display {
-    margin: 20rem;
-    max-width: 50rem;
+    width: calc(1600px - 50rem);
     float: unset !important;
     position: relative;
   }
