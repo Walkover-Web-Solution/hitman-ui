@@ -63,8 +63,8 @@ function selectTab(props, tabId) {
     if (!(tab?.type && tab?.id)) {
       return props.history.push({ pathname: `/orgs/${getOrgId()}/dashboard/endpoint/new` })
     }
-    props.history.push({
-      pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}`
+    return  props.history.push({
+      pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${(tab.isModified)?'/edit':''}`
     })
   }
   store.dispatch(setActiveTabId(tabId))
