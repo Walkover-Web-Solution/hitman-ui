@@ -87,7 +87,7 @@ class CodeTemplate extends Component {
                   {languages[key].name}
                 </button>
               ))}
-              <button className='codeTemplateButtonMore mr-2 d-flex justify-content-center align-items-center'>
+              <button className='codeTemplateButtonMore  d-flex justify-content-center align-items-center'>
               <Dropdown >
                 <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore' : 'dropdownMore'}>
                   {primaryLanguages.includes(this.selectedLanguage) ? (
