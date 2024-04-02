@@ -26,7 +26,7 @@
   // width: unset;
   min-width: 250px !important;
 
-  @media screen and (max-width: 1160px) {
+  @media screen and (max-width:767px) {
     position: fixed !important;
     z-index: 999;
     top: 0;
@@ -38,7 +38,7 @@
 
 }
 
-@media screen and (max-width: 1160px) {
+@media screen and (max-width:767px) {
   .split-sidebar-public {
     &.open {
       &> {
@@ -798,11 +798,11 @@ input[type='text']:focus {
 }
 .icon-active {
   display: none;
-  @media screen and (max-width:1160px) {
+  @media screen and (max-width:767px) {
     display: block;
   }
 }
-@media screen and (max-width:1160px) {
+@media screen and (max-width:767px) {
 .hamberger-icon {
     position: fixed;
     top: 0;
@@ -818,6 +818,7 @@ input[type='text']:focus {
       font-weight: 700 !important;
     }
       &.close-icon {
+        top: -10px;
         left: 245px !important;
         position: fixed;
         background: transparent;
@@ -852,7 +853,29 @@ input[type='text']:focus {
 
 .close-bar {
   position: fixed;
-  background: rgba($color: #000000, $alpha: 0.0);
+  background: rgba($color: #9e9c9c, $alpha: 0.0);
   width: 100%;
   height: 100%;
+}
+
+.login-button {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  border-top: 1px solid rgb(221, 205, 205);
+  width: 330px;
+  padding-left: 16px;
+  svg {
+    width: 27px;
+    height: 40px;
+    color: black;
+  }
+  button {
+    font-weight: 700 !important;
+    padding-left: 7px !important;
+    font-size: 15px;
+  }
+  @media screen and (max-width: 1400px) {
+    width: 280px;
+  }
 }

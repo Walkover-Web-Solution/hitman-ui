@@ -150,16 +150,7 @@ html body {
 
 .clear-both {
   clear: both;
-  width: 1000px;
-  @media screen and (max-width:1700px) {
-    width: 900px;
-  }
-  @media screen and (max-width:1600px) {
-    width: 700px;
-  }
-  @media screen and (max-width:1250px) {
-    width: 600px;
-  }
+  width: 95%;
   @media screen and (max-width:1160px) {
     width: 100%;
   }
@@ -3451,6 +3442,9 @@ body .doc-secs-container {
 .mid-part {
   width: 60%;
   padding: 1.25rem 1.25rem;
+  @media screen and (max-width: 1160px) {
+    padding: 0;
+  }
 }
 
 .response-container-main {
@@ -3711,9 +3705,10 @@ body .tox {
   }
 
 .pubCodeWrapper {
-  @media only screen and (max-width: 991px) {
+  @media only screen and (max-width: 1160px) {
     position: static !important;
     width: 100% !important;
+    min-width: 100% !important;
     height: 50vh !important;
     .closeEditor {
       transition: 450ms;
@@ -3902,5 +3897,17 @@ body .tox {
   .edit {
     width: 80px;
     height: 36px;
+  }
+}
+.footer-upper {
+  display: block;
+  @media screen and (max-width: 1160px) {
+    display: none;
+  }
+}
+.footer-lower {
+  display: none;
+  @media screen and (max-width: 1160px) {
+    display: block;
   }
 }
