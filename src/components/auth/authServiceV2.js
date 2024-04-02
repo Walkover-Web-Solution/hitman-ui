@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import http from "../../services/httpService";
-import { Modal } from "react-bootstrap";
 import { switchOrg } from "../../services/orgApiService";
 import { getDataFromProxyAndSetDataToLocalStorage } from "../common/utility";
 
-const tokenKey = "token";
-const profileKey = "profile";
+export const tokenKey = "token";
+export const profileKey = "profile";
 export const orgKey = "organisation";
 export const orgListKey = "organisationList";
+export const currentOrgKey = "currentOrganisation";
 const uiURL = process.env.REACT_APP_UI_URL;
 const proxyUrl = process.env.REACT_APP_PROXY_URL;
 
@@ -101,53 +101,28 @@ function getProxyToken() {
 function AuthServiceV2() {
   const query = useQuery();
   const history = useHistory();
-  const [show, setShow] = useState(true);
   const [orgList, setOrgList] = useState(null);
 
-  useEffect(async () => {
-    try {
-      const proxyAuthToken = query.get("proxy_auth_token");
-      const orgId = query.get("company_ref_id") || getCurrentOrg()?.id || "";
-      if (proxyAuthToken) {
-        await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
-        setOrgList(getOrgList());
-      } else if (getOrgList()) {
-        history.push(`/orgs/${orgId}/dashboard`);
-      } else {
+  useEffect(async() => {
+      try {
+        const proxyAuthToken = query.get("proxy_auth_token");
+        const orgId = query.get("company_ref_id") || getCurrentOrg()?.id || "";
+        if (proxyAuthToken) {
+          await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
+          setOrgList(getOrgList());
+          const storedCurrentOrgId = window.localStorage.getItem("currentOrganisation");
+          const currentOrgId = storedCurrentOrgId ? JSON.parse(storedCurrentOrgId).id : undefined;
+          switchOrg(currentOrgId || orgId);
+        } else {
+          const redirectPath = getOrgList() ? `/orgs/${orgId}/dashboard` : "/logout";
+          history.push(redirectPath);
+        }
+      } catch (err) {
         history.push("/logout");
       }
-    } catch (err) {
-      history.push("/logout");
-    }
   }, []);
 
-  const orgNames = () => {
-    return (
-      <Modal show={show}>
-        <Modal.Header>
-          <Modal.Title>Select Organization</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="org-listing-container ">
-            <div className="org-listing-column d-flex flex-column">
-              {orgList?.map((org, key) => (
-                <button
-                  className="btn btn-primary mb-2 p-2"
-                  key={key}
-                  onClick={() => switchOrg(org.id)}
-                >
-                  {org.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer />
-      </Modal>
-    );
-  };
-
-  return <>{orgList?.length ? orgNames() : null}</>;
+  return<></>;
 }
 
 export default AuthServiceV2;
