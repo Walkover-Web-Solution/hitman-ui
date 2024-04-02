@@ -784,6 +784,9 @@ button.is_active {
       &:focus {
         outline: none;
       }
+      &.active-class{
+        background: rgb(197, 197, 197);
+      }
     }
     > button {
       &:last-child {
