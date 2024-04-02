@@ -289,7 +289,10 @@ class DisplayEndpoint extends Component {
       theme: '',
       loader: false,
       saveLoader: false,
-      codeEditorVisibility: true,
+      codeEditorVisibility: false,
+      isMobileView: false,
+      publicEndpointWidth: 0,
+      publicEndpointHeight: 0,
       showCookiesModal: false,
       preReqScriptError: '',
       postReqScriptError: '',
@@ -354,6 +357,20 @@ class DisplayEndpoint extends Component {
       }
     }
   }
+
+  updateDimensions = () => {
+    this.setState({ publicEndpointWidth: window.innerWidth, publicEndpointHeight: window.innerHeight });
+    this.isMobileView()
+  };
+
+  isMobileView = () => {
+    if (window.innerWidth < 800) {
+      this.setState({ isMobileView: true, codeEditorVisibility: true })
+    }
+    else {
+      this.setState({ isMobileView: false, codeEditorVisibility: false })
+    }
+  };
 
   componentWillUnmount() {
     if (isElectron()) {
@@ -925,9 +942,9 @@ class DisplayEndpoint extends Component {
       headers = this.replaceVariablesInJson(headers, environment)
       // Start of Regeneration of AUTH2.0 Token
       let oauth2Data = this.props?.endpointContent?.authorizationData?.authorization?.oauth2
-      if (this.props?.endpointContent?.authorizationData?.authorizationTypeSelected === 'oauth2' && (this.props.tokenDetails[oauth2Data.selectedTokenId]?.grantType === grantTypesEnums.authorizationCode || this.props.tokenDetails[oauth2Data.selectedTokenId]?.grantType === grantTypesEnums.authorizationCodeWithPkce)) {
-        const generatedDateTime = this.props.tokenDetails[oauth2Data.selectedTokenId]?.createdTime;
-        const expirationTime = this.props.tokenDetails[oauth2Data.selectedTokenId]?.expiryTime;
+      if (this.props?.endpointContent?.authorizationData?.authorizationTypeSelected === 'oauth2' && (this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCode || this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCodeWithPkce)) {
+        const generatedDateTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.createdTime;
+        const expirationTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.expiryTime;
         const isTokenExpired = this.checkTokenExpired(expirationTime, generatedDateTime)
         if (isTokenExpired && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshTokenUrl && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken) {
           try {
@@ -976,6 +993,9 @@ class DisplayEndpoint extends Component {
       isDashboardRoute(this.props) && this.setData()
     } else {
       this.setState({ preReqScriptError: result.error, loader: false })
+    }
+    if (this.myRef?.current?.scrollIntoView) {
+      this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
     }
   }
 
