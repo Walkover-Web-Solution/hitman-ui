@@ -22,6 +22,7 @@ const VersionInput = (props) => {
   const onRename = (versionId) => {
     const versionChilds = pages?.[props?.parentPageId]?.child
     try {
+      if (versionNameInputRef.current.value.trim().length === 0) return toast.error('Name cannot be empty')
       versionChilds.forEach((element) => {
         if (versionId !== element && pages[element]?.name.trim().toLowerCase() === versionNameInputRef.current.value.trim().toLowerCase()) {
           throw new Error('StopIteration')
@@ -82,7 +83,7 @@ const AddVersion = (props) => {
   const newVersionNameInputRef = useRef()
 
   const addVersion = () => {
-    if (newVersionNameInputRef.current.value.trim().length === 0) return toast.error('Cannot Add Empty Value')
+    if (newVersionNameInputRef.current.value.trim().length === 0) return toast.error('Name cannot be empty')
     const versionChilds = pages?.[props?.parentPageId]?.child
     try {
       versionChilds.forEach((element) => {

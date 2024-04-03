@@ -462,8 +462,8 @@ class CollectionParentPages extends Component {
   versionDropDown(rootId) {
     return (
       <DropdownButton
+        className='version-dropdown'
         ref={this.versionDropDownRef}
-        className=''
         id='dropdown-basic-button'
         onClick={(e) => e.stopPropagation()}
         title={this.versionName()}
