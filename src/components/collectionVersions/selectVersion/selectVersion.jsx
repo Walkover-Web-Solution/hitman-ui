@@ -7,6 +7,7 @@ import { updatePage } from '../../pages/redux/pagesActions'
 import { addParentPageVersion } from '../redux/collectionVersionsActions'
 import { deletePage } from '../../pages/redux/pagesActions'
 import { onDefaultVersion } from '../../publishDocs/redux/publishDocsActions'
+import OutsideClickHandler from 'react-outside-click-handler';
 import './selectVersion.scss'
 import { toast } from 'react-toastify'
 
@@ -19,30 +20,52 @@ const VersionInput = (props) => {
   const dispatch = useDispatch()
 
   const onRename = (versionId) => {
+    const versionChilds = pages?.[props?.parentPageId]?.child
+    try {
+      if (versionNameInputRef.current.value.trim().length === 0) return toast.error('Name cannot be empty')
+      versionChilds.forEach((element) => {
+        if (versionId !== element && pages[element]?.name.trim().toLowerCase() === versionNameInputRef.current.value.trim().toLowerCase()) {
+          throw new Error('StopIteration')
+        }
+      })
+    } catch (error) {
+      return toast.error('Version Name already Exist!')
+    }
     dispatch(updatePage(null, { ...pages?.[versionId], name: versionNameInputRef.current.value }))
+    props.setShowEdit(null)
+  }
+
+  const handleEditClick = () => {
+    props.setShowEdit(props?.index)
+    setTimeout(() => { if (versionNameInputRef.current) versionNameInputRef.current.focus() }, 100);
+  }
+
+  const handleOutsideClickOfInputField = () => {
     props.setShowEdit(null)
   }
 
   return (
     <div className='d-flex justify-content-start align-items-center'>
       {props?.showEdit === props?.index ? (
-        <div className='d-flex justify-content-start align-items-center'>
-          <input
-            type='text'
-            className='form-control version-input col-form-label-sm'
-            aria-label='Small'
-            aria-describedby='inputGroup-sizing-sm'
-            defaultValue={pages?.[props?.singleChildId]?.name}
-            ref={versionNameInputRef}
-          ></input>
-          <Button id='publish_collection_btn' variant='btn btn-outline ml-2' onClick={() => onRename(props?.singleChildId)}>
-            Save
-          </Button>
-        </div>
+        <OutsideClickHandler onOutsideClick={handleOutsideClickOfInputField}>
+          <div className='d-flex justify-content-start align-items-center'>
+            <input
+              type='text'
+              className='form-control version-input col-form-label-sm'
+              aria-label='Small'
+              aria-describedby='inputGroup-sizing-sm'
+              defaultValue={pages?.[props?.singleChildId]?.name}
+              ref={versionNameInputRef}
+            ></input>
+            <Button id='publish_collection_btn' variant='btn btn-outline ml-2' onClick={() => onRename(props?.singleChildId)}>
+              Save
+            </Button>
+          </div>
+        </OutsideClickHandler>
       ) : (
         <div className='d-flex justify-content-start align-items-center'>
           <div className='version-title'>{pages?.[props?.singleChildId]?.name}</div>
-          <BiSolidPencil className='cursor-pointer ml-1' onClick={() => props?.setShowEdit(props?.index)} />
+          <BiSolidPencil size={14} className='cursor-pointer ml-1' onClick={handleEditClick} />
           {pages[props?.singleChildId]?.state === 1 && <span class='badge badge-primary ml-1'>Default</span>}
         </div>
       )}
@@ -60,11 +83,11 @@ const AddVersion = (props) => {
   const newVersionNameInputRef = useRef()
 
   const addVersion = () => {
-    if (newVersionNameInputRef.current.value.trim().length === 0) return toast.error('Cannot Add Empty Value')
+    if (newVersionNameInputRef.current.value.trim().length === 0) return toast.error('Name cannot be empty')
     const versionChilds = pages?.[props?.parentPageId]?.child
     try {
       versionChilds.forEach((element) => {
-        if (pages[element]?.name.trim() === newVersionNameInputRef.current.value.trim()) {
+        if (pages[element]?.name.trim().toLowerCase() === newVersionNameInputRef.current.value.trim().toLowerCase()) {
           throw new Error('StopIteration')
         }
       })
@@ -136,7 +159,7 @@ export default function SelectVersion(props) {
         return (
           <div>
             <div className='d-flex justify-content-between align-items-center mt-3'>
-              <VersionInput setShowEdit={setShowEdit} showEdit={showEdit} index={index} singleChildId={singleChildId} />
+              <VersionInput {...props} setShowEdit={setShowEdit} showEdit={showEdit} index={index} singleChildId={singleChildId} />
               <div>
                 {pages?.[singleChildId]?.state !== 1 && (
                   <Button

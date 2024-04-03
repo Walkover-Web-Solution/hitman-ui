@@ -98,9 +98,9 @@ class CollectionParentPages extends Component {
       isListVisible: false,
       publishVersion: ''
     }
-
     this.filterFlag = false
     this.eventkey = {}
+    this.versionDropDownRef = React.createRef();
   }
 
   componentDidMount() {
@@ -141,6 +141,38 @@ class CollectionParentPages extends Component {
     if (endpointId && prevEndpointId !== endpointId) {
       this.setParentPageForEntity(endpointId, 'endpoint')
     }
+
+    if (prevProps?.pages?.[this.props?.rootParentId]?.child !== this.props?.pages?.[this.props?.rootParentId]?.child) {
+      let check = this.checkIfSelectedVersionIdIsPresent()
+      if (!check) {
+        for (let index = 0; index < this.props?.pages?.[this.props?.rootParentId]?.child?.length; index++) {
+          const versionId = this.props?.pages?.[this.props?.rootParentId]?.child?.[index]
+          if (this.props?.pages?.[versionId]?.state === 1) {
+            this.setState({ selectedVersionId: versionId, selectedVersionName: this.props?.pages?.[versionId]?.name, defaultVersionId: versionId, defaultVersionName: this.props?.pages?.[versionId]?.name })
+            break;
+          }
+        }
+      }
+    }
+
+    if (this.props?.pages?.[this.state.selectedVersionId] && this.props?.pages?.[this.state.selectedVersionId]?.name !== prevState.selectedVersionName) {
+      if (prevState.selectedVersionId === prevState.defaultVersionId) {
+        this.setState({ selectedVersionName: this.props.pages?.[this.state.selectedVersionId]?.name, defaultVersionName: this.props.pages?.[this.state.selectedVersionId]?.name })
+      }
+      else {
+        this.setState({ selectedVersionName: this.props.pages?.[this.state.selectedVersionId]?.name })
+      }
+    }
+  }
+
+  checkIfSelectedVersionIdIsPresent() {
+    for (let index = 0; index < this.props?.pages?.[this.props?.rootParentId]?.child.length; index++) {
+      const elementId = this.props?.pages?.[this.props?.rootParentId]?.child?.[index];
+      if (elementId === this.state.selectedVersionId) {
+        return true
+      }
+    }
+    return false
   }
 
   findDefaultVersion = () => {
@@ -225,7 +257,7 @@ class CollectionParentPages extends Component {
 
   openShareParentPageForm(pageId) {
     this.setState({
-      showPageForm : {share: true},
+      showPageForm: { share: true },
       pageFormName: 'Share Parent Page',
       selectedPage: { ...this.props.pages[pageId] }
     })
@@ -295,13 +327,13 @@ class CollectionParentPages extends Component {
 
   openEditPageForm(pageId) {
     this.setState({
-      showPageForm : { edit: true},
+      showPageForm: { edit: true },
       selectedPage: pageId
     })
   }
 
   closePageForm() {
-    this.setState({ showPageForm: {share: false, addEndpoint: false, addPage: false} })
+    this.setState({ showPageForm: { share: false, addEndpoint: false, addPage: false } })
   }
 
   closeVersionForm() {
@@ -422,16 +454,19 @@ class CollectionParentPages extends Component {
       this.openDeleteVersionModal(id)
     }
   }
+  versionName() {
+    const versionName = this.state.defaultVersionName.length > 10 ? `${this.state.defaultVersionName.substring(0, 7)} ... ` : this.state.defaultVersionName;
+    return (this.props.pages?.[this.props.rootParentId]?.child?.length === 1) ? versionName : (this.state.selectedVersionName.length > 10 ? `${this.state.selectedVersionName.substring(0, 7)} ... ` : this.state.selectedVersionName);
+  }
 
   versionDropDown(rootId) {
     return (
       <DropdownButton
         className='version-dropdown'
+        ref={this.versionDropDownRef}
         id='dropdown-basic-button'
         onClick={(e) => e.stopPropagation()}
-        title={
-          this.props.pages?.[this.props.rootParentId]?.child?.length === 1 ? this.state.defaultVersionName : this.state.selectedVersionName
-        }
+        title={this.versionName()}
       >
         {this.props.pages[rootId].child.map((childId, index) => (
           <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
