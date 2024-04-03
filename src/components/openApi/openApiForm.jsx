@@ -117,9 +117,6 @@ class OpenApiForm extends Component {
 
   onFileChange(e) {
     const selectedFile = e.currentTarget.files[0]
-    if ( selectedFile === 'postman') {
-      console.log("inside selected file: " + selectedFile);
-    }
     if (selectedFile) {
       const uploadedFile = new FormData()
       uploadedFile.append('myFile', selectedFile, selectedFile.name)
