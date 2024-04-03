@@ -27,6 +27,11 @@ export default function MenuBar({ editor }) {
   const [showLink, setShowLink] = useState(false)
   const [showTable, setShowTable] = useState(false)
   const [showImage, setShowImage] = useState(false)
+  const [selectedLevel, setSelectedLevel] = useState(null)
+  const handleHeaderChange = (level) => {
+    editor.chain().focus().toggleHeading({ level }).run()
+    setSelectedLevel(level)
+  }
 
   if (!editor) {
     return null
@@ -140,62 +145,19 @@ export default function MenuBar({ editor }) {
         <FaHighlighter />
       </button>
       <Dropdown style={{ display: 'inline' }}>
-        <Dropdown.Toggle style={{ display: 'inline' }}>Paragraph</Dropdown.Toggle>
-
-        <Dropdown.Menu>
-          <Dropdown.Item>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-              className={editor.isActive('heading', { level: 1 }) ? 'active-class' : ''}
+      <Dropdown.Toggle style={{ display: 'inline' }}>{selectedLevel ? `H${selectedLevel}` : 'Paragraph'}</Dropdown.Toggle>
+      <Dropdown.Menu>
+        {[1, 2, 3, 4, 5, 6].map(level => (
+          <Dropdown.Item key={level} onClick={() => handleHeaderChange(level)}>
+            <button             
+              className={editor.isActive('heading', { level }) ? 'active-class' : ''}
             >
-              {' '}
-              H1
+              H{level}
             </button>
           </Dropdown.Item>
-          <Dropdown.Item>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-              className={editor.isActive('heading', { level: 2 }) ? 'active-class' : ''}
-            >
-              H2
-            </button>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-              className={editor.isActive('heading', { level: 3 }) ? 'active-class' : ''}
-            >
-              H3
-            </button>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            {' '}
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
-              className={editor.isActive('heading', { level: 4 }) ? 'active-class' : ''}
-            >
-              {' '}
-              H4
-            </button>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
-              className={editor.isActive('heading', { level: 5 }) ? 'active-class' : ''}
-            >
-              H5{' '}
-            </button>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
-              className={editor.isActive('heading', { level: 6 }) ? 'active-class' : ''}
-            >
-              H6
-            </button>
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
+        ))}
+      </Dropdown.Menu>
+   </Dropdown>
       <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={editor.isActive('bulletList') ? 'active-class' : ''}>
         <FaListUl />
       </button>
