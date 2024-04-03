@@ -167,6 +167,7 @@ class BodyContainer extends Component {
   }
 
   handleChangeBody(title, dataArray) {
+
     const data = { ...this.state.data }
     switch (title) {
       case 'formData':

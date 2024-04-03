@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { isDashboardRoute, isElectron, isDashboardAndTestingView } from '../common/utility'
+
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import shortid from 'shortid'
@@ -13,10 +14,11 @@ const autoCompleterDefaultProps = {
   trigger: ['{{']
 }
 
+
 class GenericTable extends Component {
   constructor(props) {
     super(props)
-    this.fileInputRef = React.createRef()
+
     this.state = {
       bulkEdit: false,
       uploadedFile: null,
@@ -24,8 +26,10 @@ class GenericTable extends Component {
       editButtonName: 'Bulk Edit',
       originalParams: [],
       originalHeaders: [],
-      theme: ''
+      theme: '',
+      fileInputs: []
     }
+    this.fileInputRefs = []
 
     this.checkboxFlags = []
     this.textAreaValue = ''
@@ -41,6 +45,7 @@ class GenericTable extends Component {
 
   componentDidMount() {
     this.setState({ optionalParams: false, theme: this.props.publicCollectionTheme })
+    this.fileInputRefs = this.props.dataArray.map(() => React.createRef())
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -52,7 +57,9 @@ class GenericTable extends Component {
 
   handleChange = (e, inpTarget = null) => {
     const target = inpTarget || e.currentTarget
+console.log(target,"target");
     let { dataArray, title, original_data: originalData } = this.props
+    console.log(dataArray,"data array");
     dataArray = JSON.parse(JSON.stringify(dataArray))
     const name = target.name.split('.')
     const value = target.value
@@ -77,8 +84,9 @@ class GenericTable extends Component {
     }
 
     if (title === 'formData' && name[1] === 'type') {
-      if (target.value === 'file') dataArray[name[0]].value = {}
-      else dataArray[name[0]].value = ''
+      console.log(title, name[1], "typppp");
+      if (target.value === 'file')  dataArray[name[0]].value = target?.result
+       else dataArray[name[0]].value = ''
     }
 
     if (dataArray[name[0]][name[1]].length !== 0 && !this.checkboxFlags[name[0]] && title !== 'Path Variables') {
@@ -87,7 +95,7 @@ class GenericTable extends Component {
 
     if (title !== 'Path Variables') {
       this.handleAdd(dataArray, title, dataArray[name[0]][name[1]], name[0])
-    }
+    }      
 
     if (title === 'Headers' || title === 'Params' || title === 'Path Variables') {
       this.props.props_from_parent(title, dataArray)
@@ -139,6 +147,8 @@ class GenericTable extends Component {
     }
   }
 
+
+
   handleAdd(dataArray, title, key, index) {
     index = parseInt(index) + 1
     if (key.length >= 1 && !dataArray[index]) {
@@ -153,7 +163,6 @@ class GenericTable extends Component {
       if (title === 'Params') this.props.props_from_parent('handleAddParam', dataArray)
     }
   }
-
   handleDelete(dataArray, index, title) {
     const newDataArray = []
     for (let i = 0; i < dataArray.length; i++) {
@@ -295,6 +304,7 @@ class GenericTable extends Component {
   renderTextOrFileInput(dataArray, index) {
     const { title } = this.props
     const key = `${index}.key`
+    const isFormData = title === 'formData'
     return (
       <div className='position-relative fileInput'>
         <TextField
@@ -308,11 +318,11 @@ class GenericTable extends Component {
           className='form-control'
           options={{ '{{': _.keys(this.props.environment.variables) }}
         />
-        {title === 'formData' && (
+        {isFormData && (
           <select
             className='transition cursor-pointer'
             name={index + '.type'}
-            value='text'
+            value={dataArray[index].type}
             onChange={(e) => {
               this.handleChange(e)
             }}
@@ -321,6 +331,7 @@ class GenericTable extends Component {
             <option value='file'>File</option>
           </select>
         )}
+        
       </div>
     )
   }
@@ -340,7 +351,7 @@ class GenericTable extends Component {
         }
       })
     } else {
-      this.fileInputRef.current.click()
+      this.fileInputRefs[index].current.click()
     }
   }
 
@@ -434,56 +445,90 @@ class GenericTable extends Component {
   }
 
   renderSelectFiles(dataArray, index) {
-    if (isElectron()) {
-      const { app } = window.require('electron').remote
-      const value = dataArray[index].value
-      const FILE_UPLOAD_DIRECTORY = app.getPath('userData') + '/fileUploads/'
-      const destPath = FILE_UPLOAD_DIRECTORY + value.id + '_' + value.name
-      const fs = window.require('fs')
-      const srcExist = fs.existsSync(value.srcPath)
-      const desExist = value.id ? fs.existsSync(destPath) : false
-      let name = ''
-      if (srcExist) name = value.name
-      if (!srcExist && desExist) name = value.id + '_' + value.name
-      if (name) {
-        return (
-          <div className='fileName selectFile d-flex align-items-center justify-content-between'>
-            {' '}
-            <span className='truncate'>{name}</span>
-            <button
-              className='align-items-center d-flex ml-2'
-              onClick={() => {
-                this.handleDeSelectFile(index)
-              }}
-            >
-              &times;
-            </button>
-          </div>
-        )
-      }
-    }
+    // if (isElectron()) {
+    //   const { app } = window.require('electron').remote
+    //   const value = dataArray[index].value
+    //   const FILE_UPLOAD_DIRECTORY = app.getPath('userData') + '/fileUploads/'
+    //   const destPath = FILE_UPLOAD_DIRECTORY + value.id + '_' + value.name
+    //   const fs = window.require('fs')
+    //   const srcExist = fs.existsSync(value.srcPath)
+    //   const desExist = value.id ? fs.existsSync(destPath) : false
+    //   let name = ''
+    //   if (srcExist) name = value.name
+    //   if (!srcExist && desExist) name = value.id + '_' + value.name
+    //   if (name) {
+    //     return (
+    //       <div className='fileName selectFile d-flex align-items-center justify-content-between'>
+    //         {' '}
+    //         <span className='truncate'>{name}</span>
+    //         <button
+    //           className='align-items-center d-flex ml-2'
+    //           onClick={() => {
+    //             this.handleDeSelectFile(index)
+    //           }}
+    //         >
+    //           &times;
+    //         </button>
+    //       </div>
+    //     )
+    //   }
+    // }
     return (
-        <div className='selectFile d-flex align-items-center'>
-          <button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button>
-          <input type='file' accept='.json' ref={this.fileInputRef} style={{ display: 'none' }} onChange={this.handleFileChange} />
-          {this.state.errors?.file && <div className='alert alert-danger'>{this.state.errors?.file}</div>}
-          {this.state.uploadedFile && <div>{this.state.selectedFileName}</div>}
-        </div>
+      <div className='selectFile d-flex align-items-center'>
+        <button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button>
+        <input
+          type='file'
+          accept='.json'
+          ref={this.fileInputRefs[index]}
+          style={{ display: 'none' }}
+          onChange={(e) => this.handleFileChange(e, index)}
+        />
+        {this.state.errors?.file && <div className='alert alert-danger'>{this.state.errors?.file}</div>}
+        {this.state.uploadedFile && <div>{this.state.selectedFileNames[index]}</div>}
+      </div>
+      
     )
   }
 
-  handleFileChange = (event) => {
+  handleFileChange = (event, index) => {
+    event.preventDefault()
     const selectedFile = event.currentTarget.files[0]
+    console.log(selectedFile,"selected file");
 
     if (selectedFile) {
       const uploadedFile = new FormData()
-      uploadedFile.append('myFile', selectedFile, selectedFile.name)
-      this.setState({ uploadedFile, errors: { ...this.state.error, file: null }, selectedFileName: selectedFile.name })
+      uploadedFile.append(`myFile`, selectedFile, selectedFile.name)
+      const selectedFileNames = { ...this.state.selectedFileNames }
+      selectedFileNames[index] = selectedFile.name
+      this.setState({
+        uploadedFile,
+        errors: { ...this.state.error, [`file${index}`]: null },
+        selectedFileNames
+      })
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const fileContent = e.target.result
+        this.handleFileContent(fileContent)
+      }
+      reader.readAsText(selectedFile)
     }
   }
 
-  handleSelectFile = () => {
-    this.fileInputRef.current.click()
+  handleFileContent = (fileContent) => {
+
+    const data = { ...this.state.data }
+    console.log(data,"data");
+    const jsonData = JSON.parse(fileContent)
+    data.data = jsonData
+    if (this._isMounted) {
+      this.setState({ data })
+    }
+    // this.props.set_body(this.state.selectedBodyType, jsonData)
+    
+  }
+
+  handleSelectFile = (index) => {
+    this.fileInputRefs[index].current.click()
   }
 
   handleDeSelectFile(index) {
