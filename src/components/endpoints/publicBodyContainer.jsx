@@ -156,7 +156,7 @@ class PublicBodyContainer extends Component {
 
   handleChangeBodyDescription = (data) => {
     try {
-      const body = JSON.stringify(JSON.parse(data), null, 2); 
+      const body = JSON.stringify(JSON.parse(data), null, 2);
       const bodyData = {
         bodyDescription: this.bodyDescription,
         body: body
@@ -166,7 +166,7 @@ class PublicBodyContainer extends Component {
       console.error("Error beautifying data:", e);
     }
   }
-  
+
   displayAddButton(name) {
     return (
       <div className='array-row-add-wrapper'>
@@ -211,12 +211,12 @@ class PublicBodyContainer extends Component {
         />
         <label
           className='description-input-field'
-          // value={obj.description}
-          // name={name + ".description"}
-          // type="text"
-          // placeholder="Description"
-          // onChange={this.handleDescriptionChange}
-          // disabled
+        // value={obj.description}
+        // name={name + ".description"}
+        // type="text"
+        // placeholder="Description"
+        // onChange={this.handleDescriptionChange}
+        // disabled
         >
           {obj.description}
         </label>
@@ -397,29 +397,30 @@ class PublicBodyContainer extends Component {
 
   render() {
     this.bodyDescription = this.props.body_description
+    if (this.props.body && this.props.body.type === 'none') return null;
     return (
       <>
         {this.props.body && this.props.body.type === 'multipart/form-data' && (
           <GenericTable
             {...this.props}
             title='formData'
-            dataArray={this.props.body.value}
+            dataArray={this.props.body?.['multipart/form-data']}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.original_body.value]}
+            original_data={[...this.props.body?.['multipart/form-data']]}
           />
         )}
 
-        {this.props.body && this.props.body.type === 'application/x-www-form-urlencoded' && (
+        {this.props.body?.['application/x-www-form-urlencoded'] && this.props.body.type === 'application/x-www-form-urlencoded' && (
           <GenericTable
             {...this.props}
             title='x-www-form-urlencoded'
-            dataArray={this.props.body.value}
+            dataArray={this.props.body?.['application/x-www-form-urlencoded']}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.original_body.value]}
+            original_data={[...this.props.body?.['application/x-www-form-urlencoded']]}
           />
         )}
 
-        {this.props.body &&
+        {this.props.body?.['multipart/form-data'] &&
           this.props.body.type !== 'multipart/form-data' &&
           this.props.body.type !== 'application/x-www-form-urlencoded' &&
           (this.props.body.type === 'JSON' ? (
@@ -449,7 +450,7 @@ class PublicBodyContainer extends Component {
                   className='custom-raw-editor'
                   mode='json'
                   theme='github'
-                  value={this.props.body.value}
+                  value={this.props.body?.raw?.value}
                   onChange={this.handleChangeBodyDescription.bind(this)}
                   setOptions={{
                     showLineNumbers: true
@@ -483,7 +484,7 @@ class PublicBodyContainer extends Component {
                 className='custom-raw-editor'
                 mode={this.props.body.type.toLowerCase()}
                 theme='github'
-                value={this.makeJson(this.props.body.value)}
+                value={this.makeJson(this.props.body?.raw?.value || '')}
                 onChange={(value) => this.props.set_body(this.props.body.type, value)}
                 setOptions={{
                   showLineNumbers: true

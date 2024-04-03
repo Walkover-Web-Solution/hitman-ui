@@ -121,7 +121,7 @@ const untitledEndpointData = {
   data: {
     name: 'Untitled',
     method: 'GET',
-    body: { type: 'none', value: '' },
+    body: { type: 'none' },
     uri: '',
     updatedUri: ''
   },
@@ -235,12 +235,12 @@ const withQuery = (WrappedComponent) => {
       if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
         localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
         queryClient.setQueryData(queryKey, data)
-      }else{
+      } else {
         queryClient.setQueryData(queryKey, data)
       }
-      if(callbackFn){
+      if (callbackFn) {
         callbackFn()
-      } 
+      }
     }
 
     return (
@@ -281,8 +281,8 @@ class DisplayEndpoint extends Component {
       saveLoader: false,
       codeEditorVisibility: false,
       isMobileView: false,
-      publicEndpointWidth: 0, 
-      publicEndpointHeight: 0 ,
+      publicEndpointWidth: 0,
+      publicEndpointHeight: 0,
       showCookiesModal: false,
       preReqScriptError: '',
       postReqScriptError: '',
@@ -354,11 +354,11 @@ class DisplayEndpoint extends Component {
   };
 
   isMobileView = () => {
-    if(window.innerWidth < 800){
-      this.setState({isMobileView : true, codeEditorVisibility: true})
+    if (window.innerWidth < 800) {
+      this.setState({ isMobileView: true, codeEditorVisibility: true })
     }
-    else{
-      this.setState({isMobileView : false, codeEditorVisibility: false})
+    else {
+      this.setState({ isMobileView: false, codeEditorVisibility: false })
     }
   };
 
@@ -500,8 +500,8 @@ class DisplayEndpoint extends Component {
     const pathVariables = []
     let counter = 0;
     for (let i = 0; i < pathVariableKeys.length; i++) {
-      if (pathVariableKeys[i][0] === ':' && 
-      pathVariableKeysObject[pathVariableKeys[i]] === false
+      if (pathVariableKeys[i][0] === ':' &&
+        pathVariableKeysObject[pathVariableKeys[i]] === false
       ) {
         pathVariableKeysObject[pathVariableKeys[i]] = true
         let pathVariableKeyWithoutColon = pathVariableKeys[i].slice(1).trim();
@@ -563,7 +563,7 @@ class DisplayEndpoint extends Component {
     if (customEnv) {
       envVars = customEnv
     }
-    str = str.toString()
+    str = str?.toString() || ''
     const regexp = /{{((\w|-)+)}}/g
     let match = regexp.exec(str)
     const variables = []
@@ -642,16 +642,16 @@ class DisplayEndpoint extends Component {
         statusText: status[error.response.status],
         data: error.response.data
       }
-      dummyEndpointData.testResponse =  response
-      dummyEndpointData.flagResponse =  true
+      dummyEndpointData.testResponse = response
+      dummyEndpointData.flagResponse = true
       this.props.setQueryUpdatedData(dummyEndpointData);
     } else {
       const timeElapsed = new Date().getTime() - this.state.startTime
       const response = {
         data: error.message || 'ERROR:Server Connection Refused'
       }
-      dummyEndpointData.testResponse =  response
-      dummyEndpointData.flagResponse =  true
+      dummyEndpointData.testResponse = response
+      dummyEndpointData.flagResponse = true
       this.props.setQueryUpdatedData(dummyEndpointData);
       this.setState({ timeElapsed })
     }
@@ -706,8 +706,8 @@ class DisplayEndpoint extends Component {
     if (responseJson.status === 200) {
       const timeElapsed = new Date().getTime() - this.state.startTime
       const dummyEndpointData = this.props?.endpointContent;
-      dummyEndpointData.testResponse =  response
-      dummyEndpointData.flagResponse =  true
+      dummyEndpointData.testResponse = response
+      dummyEndpointData.flagResponse = true
       this.props.setQueryUpdatedData(dummyEndpointData);
       this.setState({ timeElapsed })
     }
@@ -723,9 +723,9 @@ class DisplayEndpoint extends Component {
     for (let i = 0; i < pathParameters.length; i++) {
       if (pathParameters[i][0] === ':' && pathParameters[i].slice(1).trim()) {
         if (
-                uniquePathparameters[pathParameters[i].slice(1)] 
-             || uniquePathparameters[pathParameters[i].slice(1)] === ''
-           ) {
+          uniquePathparameters[pathParameters[i].slice(1)]
+          || uniquePathparameters[pathParameters[i].slice(1)] === ''
+        ) {
           pathParameters[i] = uniquePathparameters[pathParameters[i].slice(1)]
         } else {
           pathParameters[i] = this.props.endpointContent.pathVariables[counter]?.value
@@ -994,7 +994,7 @@ class DisplayEndpoint extends Component {
   prepareBodyForSaving(body) {
     const data = _.cloneDeep(body)
     if (data.type === 'multipart/form-data') {
-      data.value.forEach((item) => {
+      data['multipart/form-data'].forEach((item) => {
         if (item.type === 'file') item.value = {}
       })
     }
@@ -1004,7 +1004,7 @@ class DisplayEndpoint extends Component {
   prepareBodyForSending(body) {
     const data = _.cloneDeep(body)
     if (data.type === 'multipart/form-data') {
-      data.value.forEach((item) => {
+      data['multipart/form-data'].forEach((item) => {
         if (item.type === 'file') item.value.srcPath = ''
       })
     }
@@ -1047,7 +1047,6 @@ class DisplayEndpoint extends Component {
         pathVariables: updatedPathVariables,
         BASE_URL: this.props?.endpointContent.host.BASE_URL || null,
         bodyDescription: this.props?.endpointContent?.data?.body?.type === 'JSON' ? bodyDescription : {},
-        authorizationType: this.props?.endpointContent.authType,
         notes: this.props?.endpointContent?.endpoint.notes,
         preScript: this.props?.endpointContent?.preScriptText,
         postScript: this.props?.endpointContent?.postScriptText,
@@ -1176,7 +1175,7 @@ class DisplayEndpoint extends Component {
       const dummyData = this?.props?.endpointContent
       dummyData.pathVariables = [...value]
       this.setState({ endpointContentState: dummyData })
-       this.props.setQueryUpdatedData(dummyData, this.prepareHarObject.bind(this))
+      this.props.setQueryUpdatedData(dummyData, this.prepareHarObject.bind(this))
     }
 
     if (name === 'HostAndUri') this.setModifiedTabData()
@@ -1371,9 +1370,26 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(tempData)
   }
 
-  setBody(bodyType, body) {
-    const data = { ...this.props?.endpointContent.data }
-    data.body = { type: bodyType, value: body }
+  setBody(bodyType, body, rawType) {
+    let data = { ...this.props?.endpointContent.data }
+    switch (bodyType) {
+      case 'JSON':
+      case 'HTML':
+      case 'JavaScript':
+      case 'XML':
+      case 'TEXT':
+        data.body = { ...data.body, type: bodyType, raw: { rawType, value: body } }
+        break;
+      case 'application/x-www-form-urlencoded':
+      case 'multipart/form-data':
+        data.body = { ...data.body, type: bodyType, [bodyType]: body }
+        break;
+      case 'none':
+        data.body = { ...data.body, type: bodyType }
+        break;
+      default:
+        break;
+    }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
     this.setModifiedTabData()
     const tempData = this.props.endpointContent
@@ -1576,12 +1592,12 @@ class DisplayEndpoint extends Component {
 
   makeFormData(body) {
     const formData = {}
-    for (let i = 0; i < body.value.length; i++) {
-      if (body.value[i].key.length !== 0 && body.value[i].checked === 'true') {
-        if (!isElectron() && body.value[i].type === 'file') {
+    for (let i = 0; i < body.length; i++) {
+      if (body[i].key.length !== 0 && body[i].checked === 'true') {
+        if (!isElectron() && body[i].type === 'file') {
           continue
         }
-        formData[body.value[i].key] = body.value[i].value
+        formData[body[i].key] = body[i].value
       }
     }
     return formData
@@ -1591,24 +1607,24 @@ class DisplayEndpoint extends Component {
     let finalBodyValue = null
     switch (body.type) {
       case 'raw':
-        finalBodyValue = this.parseBody(body.value)
+        finalBodyValue = this.parseBody(body?.raw?.value || '')
         return { body: finalBodyValue, headers }
       case 'multipart/form-data': {
-        const formData = this.makeFormData(body)
+        const formData = this.makeFormData(body['multipart/form-data'])
         headers['content-type'] = 'multipart/form-data'
         return { body: formData, headers }
       }
       case 'application/x-www-form-urlencoded': {
         const urlEncodedData = {}
-        for (let i = 0; i < body.value.length; i++) {
-          if (body.value[i].key.length !== 0 && body.value[i].checked === 'true') {
-            urlEncodedData[body.value[i].key] = body.value[i].value
+        for (let i = 0; i < body?.['application/x-www-form-urlencoded'].length; i++) {
+          if (body?.['application/x-www-form-urlencoded'][i].key.length !== 0 && body?.['application/x-www-form-urlencoded'][i].checked === 'true') {
+            urlEncodedData[body?.['application/x-www-form-urlencoded'][i].key] = body?.['application/x-www-form-urlencoded'][i].value
           }
         }
         return { body: urlEncodedData, headers }
       }
       default:
-        return { body: body.value, headers }
+        return { body: body?.raw?.value, headers }
     }
   }
 
@@ -2153,13 +2169,8 @@ class DisplayEndpoint extends Component {
       <BodyContainer
         {...this.props}
         set_body={this.setBody.bind(this)}
-        set_body_description={this.setDescription.bind(this)}
         body={this.props.endpointContent?.data?.body || {}}
-        Body={this.props?.endpointContent?.data?.body || {}}
         endpoint_id={this.props.tab.id}
-        body_description={this.props?.endpointContent?.bodyDescription || ''}
-        field_description={this.props?.endpointContent?.fieldDescription || ''}
-        set_field_description={this.setFieldDescription.bind(this)}
       />
     )
   }
@@ -2632,9 +2643,8 @@ class DisplayEndpoint extends Component {
         >
           <div className={`innerContainer flex-lg-row flex-column ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${
-                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-              }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+                }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
@@ -2924,18 +2934,18 @@ class DisplayEndpoint extends Component {
             ) : null}
             {this.isNotDashboardOrDocView() && this.props?.endpointContent?.harObject && isOnPublishedPage() && (
               <CodeTemplate
-              show
-              onHide={() => {
-                this.setState({ showCodeTemplate: false })
-              }}
-              editorToggle={() => {
-                this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
-              }}
-              harObject={this.props?.endpointContent?.harObject}
-              title='Generate Code Snippets'
-              publicCollectionTheme={this.props?.publicCollectionTheme}
+                show
+                onHide={() => {
+                  this.setState({ showCodeTemplate: false })
+                }}
+                editorToggle={() => {
+                  this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
+                }}
+                harObject={this.props?.endpointContent?.harObject}
+                title='Generate Code Snippets'
+                publicCollectionTheme={this.props?.publicCollectionTheme}
               />
-              )}
+            )}
           </div>
         </div>
         {this.isDashboardAndTestingView() && (

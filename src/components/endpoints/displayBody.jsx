@@ -58,6 +58,7 @@ class BodyContainer extends Component {
 
   componentDidMount() {
     this._isMounted = true
+    this.setStateOfBody(this.props.body);
   }
 
   componentWillUnmount() {
@@ -65,44 +66,63 @@ class BodyContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
-    if (this.props?.body !== '' && !this.state?.selectedBodyType) {
-      let selectedBodyType = this.props.body.type
-      if (
-        selectedBodyType === 'JSON' ||
-        selectedBodyType === 'HTML' ||
-        selectedBodyType === 'JavaScript' ||
-        selectedBodyType === 'XML' ||
-        selectedBodyType === 'TEXT'
-      ) {
-        this.showRawBodyType = true
-        this.rawBodyType = selectedBodyType
-        selectedBodyType = 'raw'
-      }
-      const data = this.state.data
-      const type = selectedBodyType?.split('-') || []
-      data[type[type?.length > 1 ? type?.length - 1 : 0]] = this.props.body.value
-      if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
-        document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
-        this.setState({
-          selectedRawBodyType: this.rawBodyType ? this.rawBodyType : 'TEXT',
-          selectedBodyType,
-          data
-        })
-      }
+    if (prevProps.environment !== this.props.environment) {
+      this.loadEnvVarsSuggestions();
+    }
+
+    const { body: prevBody } = prevProps;
+    const { body: currentBody } = this.props;
+    const { data: prevData } = prevState;
+    const { data: currentData } = this.state;
+
+    if (
+      !_.isEqual(prevBody, currentBody) ||
+      !_.isEqual(prevData, currentData)
+    ) {
+      this.setStateOfBody(currentBody);
     }
   }
+
+  setStateOfBody(body) {
+    let selectedBodyType = body.type;
+    if (
+      selectedBodyType === 'JSON' ||
+      selectedBodyType === 'HTML' ||
+      selectedBodyType === 'JavaScript' ||
+      selectedBodyType === 'XML' ||
+      selectedBodyType === 'TEXT'
+    ) {
+      this.showRawBodyType = true;
+      this.rawBodyType = selectedBodyType;
+      selectedBodyType = 'raw';
+    }
+
+    const data = {
+      data: body?.['multipart/form-data'] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+      urlencoded: body?.['application/x-www-form-urlencoded'] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+      raw: body?.raw?.value || ''
+    };
+
+    this.rawBodyType = body?.raw?.rawType || 'TEXT';
+
+    this.setState({
+      selectedRawBodyType: body?.raw?.rawType || 'TEXT',
+      selectedBodyType,
+      data
+    });
+  }
+
 
   handleSelectBodyType(bodyType, bodyDescription) {
     switch (bodyType) {
       case 'multipart/form-data':
-        this.props.set_body(bodyType, this.state.data.data)
+        this.props.set_body(bodyType, this.state.data.data, this.state.selectedRawBodyType)
         break
       case 'application/x-www-form-urlencoded':
-        this.props.set_body(bodyType, this.state.data.urlencoded)
+        this.props.set_body(bodyType, this.state.data.urlencoded, this.state.selectedRawBodyType)
         break
       case 'none':
-        this.props.set_body(bodyType, null)
+        this.props.set_body(bodyType, null, this.state.selectedRawBodyType)
         break
       default:
         break
@@ -115,7 +135,7 @@ class BodyContainer extends Component {
           selectedBodyType: prevState.selectedRawBodyType
         }))
       }
-      this.props.set_body(this.state.selectedRawBodyType, this.state.data[bodyType])
+      this.props.set_body(this.state.selectedRawBodyType, this.state.data.raw, this.state.selectedRawBodyType || 'TEXT')
     } else {
       this.flag = false
       if (document.getElementById(`toggle-raw-${this.props.endpoint_id}`)) {
@@ -130,7 +150,7 @@ class BodyContainer extends Component {
             selectedRawBodyType: this.state.selectedRawBodyType
           })
         }
-        this.props.set_body(this.state.selectedRawBodyType, this.state.data[bodyType])
+        this.props.set_body(this.state.selectedRawBodyType, this.state.data[bodyType], this.state.selectedRawBodyType || 'TEXT')
       } else {
         this.showRawBodyType = false
         if (this._isMounted) {
@@ -163,7 +183,7 @@ class BodyContainer extends Component {
     if (this._isMounted) {
       this.setState({ data })
     }
-    this.props.set_body(this.state.selectedRawBodyType, value)
+    this.props.set_body(this.state.selectedRawBodyType, value, this.state.selectedRawBodyType || 'TEXT')
   }
 
   handleChangeBody(title, dataArray) {
@@ -174,14 +194,14 @@ class BodyContainer extends Component {
         if (this._isMounted) {
           this.setState({ data })
         }
-        this.props.set_body(this.state.selectedBodyType, dataArray)
+        this.props.set_body(this.state.selectedBodyType, dataArray, this.state.selectedRawBodyType || 'TEXT')
         break
       case 'x-www-form-urlencoded':
         data.urlencoded = dataArray
         if (this._isMounted) {
           this.setState({ data })
         }
-        this.props.set_body(this.state.selectedBodyType, dataArray)
+        this.props.set_body(this.state.selectedBodyType, dataArray, this.state.selectedRawBodyType || 'TEXT')
         break
       default:
         break
@@ -208,7 +228,7 @@ class BodyContainer extends Component {
         selectedBodyType: this.state.selectedBodyType === 'raw' ? 'raw' : rawBodyType
       })
     }
-    this.props.set_body(rawBodyType, this.state.data.raw)
+    this.props.set_body(rawBodyType, this.state.data.raw, rawBodyType)
   }
 
   renderBody() {
@@ -272,7 +292,7 @@ class BodyContainer extends Component {
   }
 
   matchCurrentBodyType(bodyType) {
-    if (this.props.Body && this.props.Body.type + '-' + this.props.endpoint_id === bodyType) return true
+    if (this.props.body && this.props.body.type + '-' + this.props.endpoint_id === bodyType) return true
     return false
   }
 
@@ -306,7 +326,7 @@ class BodyContainer extends Component {
                 name={`body-select-${this.props.endpoint_id}`}
                 id={`raw-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('raw')}
-                onChange={() => {}}
+                onChange={() => { }}
                 className='custom-radio-input'
                 checked={this.state.selectedBodyType === 'raw'}
               />
@@ -319,7 +339,7 @@ class BodyContainer extends Component {
                 name={`body-select-${this.props.endpoint_id}`}
                 id={`multipart/form-data-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('multipart/form-data')}
-                onChange={() => {}}
+                onChange={() => { }}
                 className='custom-radio-input'
                 checked={this.matchCurrentBodyType(`multipart/form-data-${this.props.endpoint_id}`)}
               />
@@ -333,7 +353,7 @@ class BodyContainer extends Component {
                 id={`application/x-www-form-urlencoded-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('application/x-www-form-urlencoded')}
                 className='custom-radio-input'
-                onChange={() => {}}
+                onChange={() => { }}
                 checked={this.matchCurrentBodyType(`application/x-www-form-urlencoded-${this.props.endpoint_id}`)}
               />
               <span>x-www-form-urlencoded</span>
