@@ -75,7 +75,6 @@ function AccessTokenManager(props) {
 function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
 
   const getTitleValue = (key) => {
-    let title = '';
     switch (key) {
       case 'tokenName':
         return title = 'Token Name'
