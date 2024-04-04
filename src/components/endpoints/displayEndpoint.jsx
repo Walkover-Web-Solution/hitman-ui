@@ -67,8 +67,7 @@ import { getPublishedContentByIdAndType } from '../../services/generalApiService
 import Footer from '../main/Footer.jsx'
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
 import { statesEnum } from '../common/utility'
-import { addAuthorizationDataTypes, authorizationTypes, grantTypesEnums } from '../common/authorizationEnums.js'
-import tokenDataActionTypes from '../../store/tokenData/tokenDataActionTypes.js'
+import { addAuthorizationDataTypes, grantTypesEnums } from '../common/authorizationEnums.js'
 import { updateToken } from '../../store/tokenData/tokenDataActions.js'
 const shortid = require('shortid')
 const status = require('http-status')
@@ -573,7 +572,7 @@ class DisplayEndpoint extends Component {
     if (customEnv) {
       envVars = customEnv
     }
-    str = str.toString()
+    str = str?.toString()
     const regexp = /{{((\w|-)+)}}/g
     let match = regexp.exec(str)
     const variables = []
@@ -2916,14 +2915,9 @@ class DisplayEndpoint extends Component {
                             <div>
                               <Authorization
                                 {...this.props}
-                                setQueryUpdatedData={this.props.setQueryUpdatedData}
-                                title='Authorization'
-                                groupId={this.state.groupId}
                                 set_authorization_headers={this.setHeaders.bind(this)}
                                 set_authoriztaion_params={this.setParams.bind(this)}
                                 set_authoriztaion_type={this.setAuthType.bind(this)}
-                                accessToken={this.accessToken}
-                                authorizationData={this.props?.endpointContent?.authorizationData}
                                 handleSaveEndpoint={this.handleSave.bind(this)}
                               />
                             </div>
