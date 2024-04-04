@@ -74,7 +74,6 @@ class OpenApiForm extends Component {
     let errors = {}
     let FileError = null
     errors = this.validate({ type: this.state.importType }, { type: Joi.string().required() })
-    if (this.state.importType === 'postman') {
       const schema = {
         type: Joi.string().required(),
         website: Joi.string()
@@ -87,7 +86,7 @@ class OpenApiForm extends Component {
           })
       }
       errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
-    }
+   
     if (this.state.uploadedFile === null) {
       FileError = 'JSON file Should not be set empty'
     }
@@ -115,10 +114,10 @@ class OpenApiForm extends Component {
       <React.Fragment>
         <div className='form-group'>
           <div id='select-json-wrapper'>
-            <label>Select JSON File</label>
+            <label>Select File</label>
             <span className='customFileChooser'>
-              <input type='file' accept='.json' onChange={this.onFileChange.bind(this)} />
-              Choose JSON file
+              <input type='file' accept={this.state.importType === 'openapi' ? '.json, .yaml' : '.json'} onChange={this.onFileChange.bind(this)}/>
+              Choose file
             </span>
             {this.state.errors?.file && <div className='alert alert-danger'>{this.state.errors?.file}</div>}
           </div>
@@ -165,8 +164,8 @@ class OpenApiForm extends Component {
           }}
         >
           <option value=''>Select</option>
-          {/* <option value='openAPI'>Socket Doc</option> */}
           <option value='postman'>Postman</option>
+          <option value='openapi'>OpenApi</option>
         </select>
         {this.state.errors?.type && <div className='alert alert-danger'>{this.state.errors?.type}</div>}
       </div>
@@ -192,11 +191,10 @@ class OpenApiForm extends Component {
 
   renderImportForm() {
     return (
-      <form>
+      <form className='mb-2'>
         <div className='row'>
           <div className='col-6'>
             {this.renderInputType()}
-            {this.state.importType === 'postman' && this.renderWebsiteInput()}
           </div>
           <div className='col-6'>{this.renderJSONFileSelector()}</div>
         </div>
