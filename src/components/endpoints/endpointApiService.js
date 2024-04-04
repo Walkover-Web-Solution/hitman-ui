@@ -80,11 +80,6 @@ export async function setResponse(props, responseData) {
   await props.set_authorization_responses(versionId, authResponses)
 }
 
-export function setAuthorizationType(endpointId, data) {
-  const apiUrl = getApiUrl()
-  return http.patch(`${apiUrl}/endpoints/${endpointId}/authorizationType`, data)
-}
-
 export async function getTokenAuthorizationCodeAndAuthorizationPKCE(accessTokenURL, code, data) {
   let body = {
     client_id: data.clientId,
@@ -172,7 +167,6 @@ export default {
   getAllEndpoints,
   duplicateEndpoint,
   moveEndpoint,
-  setAuthorizationType,
   updateEndpointOrder,
   saveEndpoint,
   getTokenAuthorizationCodeAndAuthorizationPKCE,

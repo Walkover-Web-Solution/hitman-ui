@@ -6,10 +6,9 @@ import './auth2Configurations.scss'
 
 export default function Auth2Configurations(props) {
 
-    const { tokenDetails, activeTabId } = useSelector((state) => {
+    const { tokenDetails } = useSelector((state) => {
         return {
-            tokenDetails: state.tokenData.tokenDetails || {},
-            activeTabId: state.tabs.activeTabId,
+            tokenDetails: state.tokenData.tokenDetails || {}
         }
     })
 
