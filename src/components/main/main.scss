@@ -3036,6 +3036,7 @@ ul.react-autoComplete-input {
     .page-title{
       text-overflow: ellipsis;
       overflow: hidden;
+      width: 94%;
     }
   }
 }
@@ -3215,7 +3216,7 @@ body .doc-secs-container {
 }
 .response-switcher {
   position: absolute;
-  right: 1.25rem;
+  right: 4.25rem;
   top: 1.4rem;
 }
 .mid-part {
@@ -3321,8 +3322,7 @@ body .doc-secs-container {
   // position: relative;
   // overflow: auto; /* Add this line to enable scrolling */
   .page-display {
-    margin: 20rem;
-    max-width: 50rem;
+    width: calc(1600px - 50rem);
     float: unset !important;
     position: relative;
   }

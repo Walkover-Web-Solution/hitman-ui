@@ -27,6 +27,11 @@ export default function MenuBar({ editor }) {
   const [showLink, setShowLink] = useState(false)
   const [showTable, setShowTable] = useState(false)
   const [showImage, setShowImage] = useState(false)
+  const [selectedLevel, setSelectedLevel] = useState(null)
+  const handleHeaderChange = (level) => {
+    editor.chain().focus().toggleHeading({ level }).run()
+    setSelectedLevel(level)
+  }
 
   if (!editor) {
     return null
@@ -111,23 +116,23 @@ export default function MenuBar({ editor }) {
   return (
     <div className='menuBar custom-editor'>
       {showModal()}
-      <button onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'is-active' : ''}>
+      <button onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'active-tool' : ''}>
         <FaBold />
       </button>
-      <button onClick={() => editor.chain().focus().toggleItalic().run()} className={editor.isActive('italic') ? 'is-active' : ''}>
+      <button onClick={() => editor.chain().focus().toggleItalic().run()} className={editor.isActive('italic') ? 'active-tool' : ''}>
         <FaItalic />
       </button>
-      <button onClick={() => editor.chain().focus().toggleStrike().run()} className={editor.isActive('strike') ? 'is-active' : ''}>
+      <button onClick={() => editor.chain().focus().toggleStrike().run()} className={editor.isActive('strike') ? 'active-tool' : ''}>
         <FaStrikethrough />
       </button>
-      <button onClick={() => editor.chain().focus().toggleCode().run()} className={editor.isActive('code') ? 'is-active' : ''}>
+      <button onClick={() => editor.chain().focus().toggleCode().run()} className={editor.isActive('code') ? 'active-tool' : ''}>
         <FaCode />
       </button>
 
       <button
         type='button'
         onClick={() => editor.chain().focus().toggleUnderline().run()}
-        className={editor.isActive('underline') ? 'is_active' : ''}
+        className={editor.isActive('underline') ? 'active-tool' : ''}
       >
         <FaUnderline />
       </button>
@@ -135,77 +140,34 @@ export default function MenuBar({ editor }) {
       <button
         type='button'
         onClick={() => editor.chain().focus().toggleHighlight().run()}
-        className={editor.isActive('highlight') ? 'is_active' : ''}
+        className={editor.isActive('highlight') ? 'active-tool' : ''}
       >
         <FaHighlighter />
       </button>
       <Dropdown style={{ display: 'inline' }}>
-        <Dropdown.Toggle style={{ display: 'inline' }}>Paragraph</Dropdown.Toggle>
-
-        <Dropdown.Menu>
-          <Dropdown.Item>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-              className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
+      <Dropdown.Toggle className='active-tool' style={{ display: 'inline' }}>{selectedLevel ? `H${selectedLevel}` : 'Paragraph'}</Dropdown.Toggle>
+      <Dropdown.Menu>
+        {[1, 2, 3, 4, 5, 6].map(level => (
+          <Dropdown.Item key={level} onClick={() => handleHeaderChange(level)}>
+            <button             
+              className={editor.isActive('heading', { level }) ? 'active-tool' : ''}
             >
-              {' '}
-              H1
+              H{level}
             </button>
           </Dropdown.Item>
-          <Dropdown.Item>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-              className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
-            >
-              H2
-            </button>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-              className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
-            >
-              H3
-            </button>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            {' '}
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
-              className={editor.isActive('heading', { level: 4 }) ? 'is-active' : ''}
-            >
-              {' '}
-              H4
-            </button>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
-              className={editor.isActive('heading', { level: 5 }) ? 'is-active' : ''}
-            >
-              H5{' '}
-            </button>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <button
-              onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
-              className={editor.isActive('heading', { level: 6 }) ? 'is-active' : ''}
-            >
-              H6
-            </button>
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-      <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={editor.isActive('bulletList') ? 'is-active' : ''}>
+        ))}
+      </Dropdown.Menu>
+   </Dropdown>
+      <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={editor.isActive('bulletList') ? 'active-tool' : ''}>
         <FaListUl />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={editor.isActive('orderedList') ? 'is-active' : ''}
+        className={editor.isActive('orderedList') ? 'active-tool' : ''}
       >
         <FaListOl />
       </button>
-      <button onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive('codeBlock') ? 'is-active' : ''}>
+      <button onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive('codeBlock') ? 'active-tool' : ''}>
         <BiCodeBlock />
       </button>
       <Dropdown>
