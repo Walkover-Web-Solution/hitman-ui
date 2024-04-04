@@ -67,6 +67,7 @@ import { getPublishedContentByIdAndType } from '../../services/generalApiService
 import Footer from '../main/Footer.jsx'
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
 import { statesEnum } from '../common/utility'
+import { authorizationTypesEnums, bodyTypesEnums } from '../common/authorizationTypesEnums.js'
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -121,7 +122,12 @@ const untitledEndpointData = {
   data: {
     name: 'Untitled',
     method: 'GET',
-    body: { type: 'none' },
+    body: {
+      type: authorizationTypesEnums['none'],
+      [authorizationTypesEnums['raw']]: { rawType: bodyTypesEnums.TEXT, value: '' },
+      [authorizationTypesEnums['application/x-www-form-urlencoded']]: [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+      [authorizationTypesEnums['multipart/form-data']]: [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }]
+    },
     uri: '',
     updatedUri: ''
   },
@@ -606,15 +612,15 @@ class DisplayEndpoint extends Component {
 
   replaceVariablesInBody(body, bodyType, customEnv) {
     switch (bodyType) {
-      case 'multipart/form-data':
-      case 'application/x-www-form-urlencoded':
+      case authorizationTypesEnums['multipart/form-data']:
+      case authorizationTypesEnums['application/x-www-form-urlencoded']:
         body = this.replaceVariablesInJson(body, customEnv)
         break
-      case 'TEXT':
-      case 'JSON':
-      case 'HTML':
-      case 'XML':
-      case 'JavaScript':
+      case bodyTypesEnums.TEXT:
+      case bodyTypesEnums.JSON:
+      case bodyTypesEnums.HTML:
+      case bodyTypesEnums.XML:
+      case bodyTypesEnums.JavaScript:
         body = this.replaceVariables(body, customEnv)
         break
       default:
@@ -741,7 +747,7 @@ class DisplayEndpoint extends Component {
 
   setData = async () => {
     let body = this.props?.endpointContent?.data?.body
-    if (this.props?.endpointContent?.data?.body?.type === 'raw') {
+    if (this.props?.endpointContent?.data?.body?.type === authorizationTypesEnums['raw']) {
       body.value = this.parseBody(body.value)
     }
     body = this.prepareBodyForSending(body)
@@ -759,7 +765,7 @@ class DisplayEndpoint extends Component {
       params: updatedParams,
       pathVariables: updatedPathVariables,
       BASE_URL: this.props.endpointContent.host.BASE_URL,
-      bodyDescription: this.props.endpointContent.data.body.type === 'JSON' ? this.props.endpointContent.bodyDescription : {},
+      bodyDescription: this.props.endpointContent.data.body.type === bodyTypesEnums.JSON ? this.props.endpointContent.bodyDescription : {},
       authorizationType: this.props.endpointContent.authType
     }
     const response = { ...this.state.response }
@@ -993,8 +999,8 @@ class DisplayEndpoint extends Component {
 
   prepareBodyForSaving(body) {
     const data = _.cloneDeep(body)
-    if (data.type === 'multipart/form-data') {
-      data['multipart/form-data'].forEach((item) => {
+    if (data.type === authorizationTypesEnums['multipart/form-data']) {
+      data[authorizationTypesEnums['multipart/form-data']].forEach((item) => {
         if (item.type === 'file') item.value = {}
       })
     }
@@ -1003,8 +1009,8 @@ class DisplayEndpoint extends Component {
 
   prepareBodyForSending(body) {
     const data = _.cloneDeep(body)
-    if (data.type === 'multipart/form-data') {
-      data['multipart/form-data'].forEach((item) => {
+    if (data.type === authorizationTypesEnums['multipart/form-data']) {
+      data[authorizationTypesEnums['multipart/form-data']].forEach((item) => {
         if (item.type === 'file') item.value.srcPath = ''
       })
     }
@@ -1026,7 +1032,7 @@ class DisplayEndpoint extends Component {
         body_description: this.props?.endpointContent.bodyDescription,
         body: body.value
       })
-      if (this.props?.endpointContent?.data?.body.type === 'raw') {
+      if (this.props?.endpointContent?.data?.body.type === authorizationTypesEnums['raw']) {
         body.value = this.parseBody(body.value)
       }
       const headersData = this.doSubmitHeader('save')
@@ -1046,7 +1052,7 @@ class DisplayEndpoint extends Component {
         params: updatedParams,
         pathVariables: updatedPathVariables,
         BASE_URL: this.props?.endpointContent.host.BASE_URL || null,
-        bodyDescription: this.props?.endpointContent?.data?.body?.type === 'JSON' ? bodyDescription : {},
+        bodyDescription: this.props?.endpointContent?.data?.body?.type === bodyTypesEnums.JSON ? bodyDescription : {},
         notes: this.props?.endpointContent?.endpoint.notes,
         preScript: this.props?.endpointContent?.preScriptText,
         postScript: this.props?.endpointContent?.postScriptText,
@@ -1183,7 +1189,7 @@ class DisplayEndpoint extends Component {
 
   setPublicBody(body) {
     const data = { ...this.props?.endpointContent?.data }
-    data.body = { type: data?.body?.type ?? 'none', value: body }
+    data.body = { type: data?.body?.type ?? authorizationTypesEnums['none'], value: body }
     const tempData = this.props?.endpointContent
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
@@ -1286,7 +1292,7 @@ class DisplayEndpoint extends Component {
     const params = []
     let paramsFlag = false
     let postData = {}
-    if ((body.type === 'application/x-www-form-urlencoded' || body.type === 'multipart/form-data') && body.value) {
+    if ((body.type === authorizationTypesEnums['application/x-www-form-urlencoded'] || body.type === authorizationTypesEnums['multipart/form-data']) && body.value) {
       paramsFlag = true
       for (let i = 0; i < body.value.length; i++) {
         if (body.value[i].checked === 'true' && body.value[i].key !== '') {
@@ -1330,7 +1336,7 @@ class DisplayEndpoint extends Component {
       httpVersion: 'HTTP/1.1',
       cookies: [],
       headers: this.makeHeaders(originalHeaders || {}),
-      postData: body && body.type !== 'none' ? await this.makePostData(body) : null,
+      postData: body && body.type !== authorizationTypesEnums['none'] ? await this.makePostData(body) : null,
       queryString: this.makeParams(originalParams)
     }
     if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
@@ -1372,23 +1378,14 @@ class DisplayEndpoint extends Component {
 
   setBody(bodyType, body, rawType) {
     let data = { ...this.props?.endpointContent.data }
-    switch (bodyType) {
-      case 'JSON':
-      case 'HTML':
-      case 'JavaScript':
-      case 'XML':
-      case 'TEXT':
-        data.body = { ...data.body, type: bodyType, raw: { rawType, value: body } }
-        break;
-      case 'application/x-www-form-urlencoded':
-      case 'multipart/form-data':
-        data.body = { ...data.body, type: bodyType, [bodyType]: body }
-        break;
-      case 'none':
-        data.body = { ...data.body, type: bodyType }
-        break;
-      default:
-        break;
+    if (bodyType === bodyTypesEnums.JSON || bodyType === bodyTypesEnums.HTML || bodyType === bodyTypesEnums.JavaScript || bodyType === bodyTypesEnums.XML || bodyType === bodyTypesEnums.TEXT) {
+      data.body = { ...data.body, type: bodyType, [authorizationTypesEnums['raw']]: { rawType, value: body } }
+    }
+    else if (bodyType === authorizationTypesEnums['application/x-www-form-urlencoded'] || bodyType === authorizationTypesEnums['multipart/form-data']) {
+      data.body = { ...data.body, type: bodyType, [bodyType]: body }
+    }
+    else if (bodyType === authorizationTypesEnums['none']) {
+      data.body = { ...data.body, type: bodyType }
     }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
     this.setModifiedTabData()
@@ -1550,19 +1547,19 @@ class DisplayEndpoint extends Component {
 
   identifyBodyType(bodyType) {
     switch (bodyType) {
-      case 'application/x-www-form-urlencoded':
-        return 'application/x-www-form-urlencoded'
-      case 'multipart/form-data':
-        return 'multipart/form-data'
-      case 'TEXT':
+      case authorizationTypesEnums['application/x-www-form-urlencoded']:
+        return authorizationTypesEnums['application/x-www-form-urlencoded']
+      case authorizationTypesEnums['multipart/form-data']:
+        return authorizationTypesEnums['multipart/form-data']
+      case bodyTypesEnums.TEXT:
         return 'text/plain'
-      case 'JSON':
+      case bodyTypesEnums.JSON:
         return 'application/JSON'
-      case 'HTML':
+      case bodyTypesEnums.HTML:
         return 'text/HTML'
-      case 'XML':
+      case bodyTypesEnums.XML:
         return 'application/XML'
-      case 'JavaScript':
+      case bodyTypesEnums.JavaScript:
         return 'application/JavaScript'
       default:
         break
@@ -1606,19 +1603,19 @@ class DisplayEndpoint extends Component {
   formatBody(body, headers) {
     let finalBodyValue = null
     switch (body.type) {
-      case 'raw':
+      case authorizationTypesEnums['raw']:
         finalBodyValue = this.parseBody(body?.raw?.value || '')
         return { body: finalBodyValue, headers }
-      case 'multipart/form-data': {
-        const formData = this.makeFormData(body['multipart/form-data'])
-        headers['content-type'] = 'multipart/form-data'
+      case authorizationTypesEnums['multipart/form-data']: {
+        const formData = this.makeFormData(body[authorizationTypesEnums['multipart/form-data']])
+        headers['content-type'] = authorizationTypesEnums['multipart/form-data']
         return { body: formData, headers }
       }
-      case 'application/x-www-form-urlencoded': {
+      case authorizationTypesEnums['application/x-www-form-urlencoded']: {
         const urlEncodedData = {}
-        for (let i = 0; i < body?.['application/x-www-form-urlencoded'].length; i++) {
-          if (body?.['application/x-www-form-urlencoded'][i].key.length !== 0 && body?.['application/x-www-form-urlencoded'][i].checked === 'true') {
-            urlEncodedData[body?.['application/x-www-form-urlencoded'][i].key] = body?.['application/x-www-form-urlencoded'][i].value
+        for (let i = 0; i < body?.[authorizationTypesEnums['application/x-www-form-urlencoded']].length; i++) {
+          if (body?.[authorizationTypesEnums['application/x-www-form-urlencoded']][i].key.length !== 0 && body?.[authorizationTypesEnums['application/x-www-form-urlencoded']][i].checked === 'true') {
+            urlEncodedData[body?.[authorizationTypesEnums['application/x-www-form-urlencoded']][i].key] = body?.[authorizationTypesEnums['application/x-www-form-urlencoded']][i].value
           }
         }
         return { body: urlEncodedData, headers }

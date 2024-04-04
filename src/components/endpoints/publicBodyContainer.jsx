@@ -6,6 +6,7 @@ import AceEditor from 'react-ace'
 import { willHighlight } from './highlightChangesHelper'
 import './publicEndpoint.scss'
 import { Badge, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { authorizationTypesEnums, bodyTypesEnums } from '../common/authorizationTypesEnums'
 
 class PublicBodyContainer extends Component {
   state = {
@@ -15,10 +16,10 @@ class PublicBodyContainer extends Component {
   handleChangeBody(title, dataArray) {
     switch (title) {
       case 'formData':
-        this.props.set_body('multipart/form-data', dataArray)
+        this.props.set_body(authorizationTypesEnums['multipart/form-data'], dataArray)
         break
       case 'x-www-form-urlencoded':
-        this.props.set_body('application/x-www-form-urlencoded', dataArray)
+        this.props.set_body(authorizationTypesEnums['application/x-www-form-urlencoded'], dataArray)
         break
       default:
         break
@@ -400,30 +401,30 @@ class PublicBodyContainer extends Component {
     if (this.props.body && this.props.body.type === 'none') return null;
     return (
       <>
-        {this.props.body && this.props.body.type === 'multipart/form-data' && (
+        {this.props.body && this.props.body.type === authorizationTypesEnums['multipart/form-data'] && (
           <GenericTable
             {...this.props}
             title='formData'
-            dataArray={this.props.body?.['multipart/form-data']}
+            dataArray={this.props.body?.[authorizationTypesEnums['multipart/form-data']]}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.body?.['multipart/form-data']]}
+            original_data={[...this.props.body?.[authorizationTypesEnums['multipart/form-data']]]}
           />
         )}
 
-        {this.props.body?.['application/x-www-form-urlencoded'] && this.props.body.type === 'application/x-www-form-urlencoded' && (
+        {this.props.body?.[authorizationTypesEnums['application/x-www-form-urlencoded']] && this.props.body.type === authorizationTypesEnums['application/x-www-form-urlencoded'] && (
           <GenericTable
             {...this.props}
             title='x-www-form-urlencoded'
-            dataArray={this.props.body?.['application/x-www-form-urlencoded']}
+            dataArray={this.props.body?.[authorizationTypesEnums['application/x-www-form-urlencoded']]}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.body?.['application/x-www-form-urlencoded']]}
+            original_data={[...this.props.body?.[authorizationTypesEnums['application/x-www-form-urlencoded']]]}
           />
         )}
 
-        {this.props.body?.['multipart/form-data'] &&
-          this.props.body.type !== 'multipart/form-data' &&
-          this.props.body.type !== 'application/x-www-form-urlencoded' &&
-          (this.props.body.type === 'JSON' ? (
+        {this.props.body?.[authorizationTypesEnums['multipart/form-data']] &&
+          this.props.body.type !== authorizationTypesEnums['multipart/form-data'] &&
+          this.props.body.type !== authorizationTypesEnums['application/x-www-form-urlencoded'] &&
+          (this.props.body.type === bodyTypesEnums.JSON ? (
             <div className='hm-public-table'>
               <div className='public-generic-table-title-container'>
                 Body <small className='text-muted'>({this.props.body.type})</small>{' '}

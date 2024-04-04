@@ -5,6 +5,7 @@ import qs from 'qs'
 import { getOrgId } from '../common/utility'
 import { makeHttpRequestThroughAxios } from '../../services/coreRequestService'
 import { getProxyToken } from '../auth/authServiceV2'
+import { authorizationTypesEnums } from '../common/authorizationTypesEnums'
 
 const apiUrlEndpoint = process.env.REACT_APP_API_URL
 
@@ -92,7 +93,7 @@ function makeParams(params, grantType, authData) {
   if (authData.clientAuthentication === 'Send as Basic Auth header') {
     if (grantType === 'passwordCredentials') {
       finalHeaders = {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': authorizationTypesEnums['application/x-www-form-urlencoded'],
         client_id: params.client_id,
         client_secret: params.client_secret,
         username: params.username,
@@ -105,7 +106,7 @@ function makeParams(params, grantType, authData) {
       delete finalParams.password
     } else {
       finalHeaders = {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': authorizationTypesEnums['application/x-www-form-urlencoded'],
         client_id: params.client_id,
         client_secret: params.client_secret
       }
@@ -115,7 +116,7 @@ function makeParams(params, grantType, authData) {
     }
   } else if (authData.clientAuthentication === 'Send client credentials in body') {
     finalHeaders = {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': authorizationTypesEnums['application/x-www-form-urlencoded']
     }
     finalParams = params
   }

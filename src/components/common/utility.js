@@ -10,6 +10,7 @@ import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
 import { openInNewTab } from '../tabs/redux/tabsActions'
+import { authorizationTypesEnums, bodyTypesEnums } from './authorizationTypesEnums'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
@@ -542,7 +543,34 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   const untitled = cloneDeep(untitledData)
   untitled.data.name = endpoint.name
   untitled.data.method = endpoint.requestType
-  untitled.data.body = endpoint.body
+
+  // This code will help in storing the old endpoint body data to new endpoint body data architecture (so we do not lost the old data saved inside the DB).
+  const bodyType = endpoint.body.type;
+  if ([bodyTypesEnums.JSON, bodyTypesEnums.HTML, bodyTypesEnums.JavaScript, bodyTypesEnums.XML, bodyTypesEnums.TEXT].includes(bodyType) && endpoint.body.raw) {
+    untitled.data.body = endpoint.body;
+    delete endpoint.body?.value;
+  } else if ([bodyTypesEnums.JSON, bodyTypesEnums.HTML, bodyTypesEnums.JavaScript, bodyTypesEnums.XML, bodyTypesEnums.TEXT].includes(bodyType)) {
+    untitled.data.body = { ...untitled.data.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } };
+    delete endpoint.body?.value;
+  } else if (bodyType === authorizationTypesEnums['application/x-www-form-urlencoded'] || bodyType === authorizationTypesEnums['multipart/form-data']) {
+    if (endpoint.body[bodyType]) {
+      untitled.data.body = endpoint.body;
+      delete endpoint.body?.value;
+    } else {
+      untitled.data.body = { ...untitled.data.body, type: bodyType, [bodyType]: endpoint.body?.value || [] };
+      delete endpoint.body?.value;
+    }
+  } else if (bodyType === authorizationTypesEnums['none']) {
+    if (endpoint.body?.[authorizationTypesEnums['application/x-www-form-urlencoded']] || endpoint.body?.[authorizationTypesEnums['multipart/form-data']] || endpoint.body?.[authorizationTypesEnums['raw']]) {
+      untitled.data.body = endpoint.body;
+      delete endpoint.body?.value;
+    }
+    else {
+      delete endpoint.body?.value;
+      untitled.data.body = { ...untitled.data.body, ...endpoint.body }
+    }
+  } // ends here
+
   untitled.data.uri = endpoint.uri
   untitled.data.updatedUri = endpoint.uri
   untitled.authType = endpoint.authorizationType
