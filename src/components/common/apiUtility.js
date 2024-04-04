@@ -4,7 +4,7 @@ export async function getParseCurlData(curl) {
         method: 'POST', 
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoia2V5TzJXekJsN1RWIiwib3JnX2lkIjoidktseE9EMWVoWjlTIiwiY29tcGFueV9pZCI6InNiWW5YZkF4VVhQNCIsInZpYXNvY2tldF90b2tlbiI6dHJ1ZSwiaWF0IjoxNzEwMjIyNTU1fQ.UqOQ5bEhoFYylxR9I3N-fRGd5jtzTD0VtIJ7VAxxUS0' 
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzE4NiIsIm9yZ19pZCI6IjQwMDkiLCJjb21wYW55X2lkIjoiNDAwOSIsInZpYXNvY2tldF90b2tlbiI6dHJ1ZSwiaWF0IjoxNzExOTY3NjQxfQ.Vi1NEAQlC1ng3m40cs6cGxg32FDqH90wxZCPLMJFn1Y' 
         },
         body: JSON.stringify({ curl }) 
     });
