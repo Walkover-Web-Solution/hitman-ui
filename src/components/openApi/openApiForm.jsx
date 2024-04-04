@@ -74,7 +74,6 @@ class OpenApiForm extends Component {
     let errors = {}
     let FileError = null
     errors = this.validate({ type: this.state.importType }, { type: Joi.string().required() })
-    if (this.state.importType === 'postman') {
       const schema = {
         type: Joi.string().required(),
         website: Joi.string()
@@ -87,21 +86,6 @@ class OpenApiForm extends Component {
           })
       }
       errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
-    }
-    else{
-        const schema = {
-          type: Joi.string().required(),
-          website: Joi.string()
-            .regex(URL_VALIDATION_REGEX, { name: 'URL' })
-            .trim()
-            .required()
-            .label('Website')
-            .error(() => {
-              return { message: 'Website must be a valid URL' }
-            })
-        }
-        errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
-    }
     if (this.state.uploadedFile === null) {
       FileError = 'JSON file Should not be set empty'
     }
