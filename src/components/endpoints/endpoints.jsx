@@ -348,6 +348,7 @@ class Endpoints extends Component {
           </div>
           
         </div>
+        <button>
                     <button
               tabIndex={-1}
               className={isSelected}
@@ -359,7 +360,7 @@ class Endpoints extends Component {
               }
             >
               {this.displayEndpointName(endpointId)}
-
+              </button>
               <div className='d-flex align-items-center'>
                 {isDashboardRoute(this.props, true) &&
                   !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
@@ -368,7 +369,7 @@ class Endpoints extends Component {
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
               </div>
-            </button>
+              </button>
       </>
     )
   }

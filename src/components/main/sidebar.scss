@@ -10,7 +10,7 @@
 }
 
 .top-right {
-  right: 0;
+  right: 48px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 99;
@@ -865,6 +865,8 @@ input[type='text']:focus {
   border-top: 1px solid rgb(221, 205, 205);
   width: 330px;
   padding-left: 16px;
+  background: #f7f6f3;
+  z-index: 9;
   svg {
     width: 27px;
     height: 40px;
