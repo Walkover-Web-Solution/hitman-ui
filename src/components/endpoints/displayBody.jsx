@@ -112,7 +112,6 @@ class BodyContainer extends Component {
     });
   }
 
-
   handleSelectBodyType(bodyType, bodyDescription) {
     switch (bodyType) {
       case 'multipart/form-data':
