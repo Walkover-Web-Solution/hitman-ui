@@ -260,7 +260,7 @@ form.add-new-domain-form {
   border-right: 1px solid rgba(66, 9, 9, 0.02);
   min-width: 230px;
   max-width: 330px;
-
+  padding-bottom: 42px;
   // nav.public-endpoint-sidebar {
   //   width: 250px;
   // }
@@ -299,8 +299,17 @@ form.add-new-domain-form {
   .innerContainer {
     height: 100vh;
     display: flex;
-    @media screen and (max-width:992px) {
+    @media screen and (max-width:1160px) {
+      flex-direction: column !important;
+      padding: 24px;
       height: 100%;
+    }
+    @media screen and (max-width:992px) {
+      padding: 0px;
+      padding-top: 24px;
+    }
+    @media screen and (max-width:767px) {
+      padding-top: 0;
     }
   }
   .doc-view {
@@ -338,7 +347,7 @@ form.add-new-domain-form {
     justify-content: space-between;
     padding: 24px;
     @media screen and (max-width: 1160px){
-     padding-top: 0;
+     padding: 0;
     }
     @media screen and (max-width: 992px){
       padding: 0;
@@ -409,6 +418,12 @@ form.add-new-domain-form {
 //   justify-content: center;
 //   background: #fff;
 // }
+.hm-sidebar-title{
+  width: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 .hm-sidebar-logo img {
   // width: 100%;
   width: 100%;
@@ -712,7 +727,7 @@ button.toggleButton {
     }
   }
   .display-component {
-    @media screen and (max-width:1160px) {
+    @media screen and (max-width:767px) {
       padding-top: 3rem;
     }
   }
@@ -721,7 +736,8 @@ button.toggleButton {
   z-index: 199;
   padding: 15px;
   padding-top: 35px;
-  width: 28%;
+  width: 432px;
+  min-width: 432px;
   background: #333333;
   transition: 300ms;
   .select-code-wrapper {
