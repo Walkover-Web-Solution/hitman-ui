@@ -304,6 +304,7 @@ class DisplayEndpoint extends Component {
     this.uri = React.createRef()
     this.paramKey = React.createRef()
     this.setCurrentReponseView()
+    this.rawBodyTypes = Object.keys(bodyTypesEnums);
   }
 
   async componentDidMount() {
@@ -611,20 +612,11 @@ class DisplayEndpoint extends Component {
   }
 
   replaceVariablesInBody(body, bodyType, customEnv) {
-    switch (bodyType) {
-      case authorizationTypesEnums['multipart/form-data']:
-      case authorizationTypesEnums['application/x-www-form-urlencoded']:
-        body = this.replaceVariablesInJson(body, customEnv)
-        break
-      case bodyTypesEnums.TEXT:
-      case bodyTypesEnums.JSON:
-      case bodyTypesEnums.HTML:
-      case bodyTypesEnums.XML:
-      case bodyTypesEnums.JavaScript:
-        body = this.replaceVariables(body, customEnv)
-        break
-      default:
-        break
+    if (bodyType === authorizationTypesEnums['multipart/form-data'] || bodyType === authorizationTypesEnums['application/x-www-form-urlencoded']) {
+      body = this.replaceVariablesInJson(body, customEnv)
+    }
+    else if (this.rawBodyType?.includes(bodyType)) {
+      body = this.replaceVariables(body, customEnv)
     }
     return body
   }

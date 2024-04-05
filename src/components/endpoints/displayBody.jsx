@@ -48,7 +48,7 @@ class BodyContainer extends Component {
       suggestions: []
     }
 
-    this.rawBodyTypes = [bodyTypesEnums.TEXT, bodyTypesEnums.HTML, bodyTypesEnums.JSON, bodyTypesEnums.XML, bodyTypesEnums.JavaScript]
+    this.rawBodyTypes = Object.keys(bodyTypesEnums);
 
     addCompleter({
       getCompletions: function (editor, session, pos, prefix, callback) {
@@ -87,16 +87,13 @@ class BodyContainer extends Component {
 
   setStateOfBody(body) {
     let selectedBodyType = body.type;
-    if (
-      selectedBodyType === bodyTypesEnums.JSON ||
-      selectedBodyType === bodyTypesEnums.HTML ||
-      selectedBodyType === bodyTypesEnums.JavaScript ||
-      selectedBodyType === bodyTypesEnums.XML ||
-      selectedBodyType === bodyTypesEnums.TEXT
-    ) {
+    if (this.rawBodyType?.includes(selectedBodyType)) {
       this.showRawBodyType = true;
       this.rawBodyType = selectedBodyType;
       selectedBodyType = authorizationTypesEnums['raw'];
+    }
+    else {
+      this.showRawBodyType = false;
     }
 
     const data = {
