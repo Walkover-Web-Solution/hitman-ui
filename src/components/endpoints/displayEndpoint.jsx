@@ -2049,7 +2049,7 @@ class DisplayEndpoint extends Component {
         match={this.props.match}
         isInlineEditor
         disabled={!isDashboardRoute(this.props)}
-        key={index}
+        key={`${item.type}-${index}`}
       />
     )
   }
