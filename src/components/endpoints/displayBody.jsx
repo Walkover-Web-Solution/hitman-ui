@@ -91,6 +91,8 @@ class BodyContainer extends Component {
       this.showRawBodyType = true;
       this.rawBodyType = selectedBodyType;
       selectedBodyType = authorizationTypesEnums['raw'];
+    }else{
+      this.showRawBodyType = false;
     }
     else {
       this.showRawBodyType = false;
