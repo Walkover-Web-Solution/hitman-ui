@@ -1,5 +1,5 @@
 import { store } from '../../store/store'
-import { addNewTab, closeAllTabs, closeTab, replaceTabForUntitled, setActiveTabId, updateTab } from '../tabs/redux/tabsActions'
+import { addNewTab, closeAllTabs, closeTab, replaceTabForUntitled, setActiveTabId, updateTab, updateTabDraft } from '../tabs/redux/tabsActions'
 import tabStatusTypes from './tabStatusTypes'
 import { getCurrentUser } from '../auth/authServiceV2'
 import { getOrgId } from '../common/utility'
@@ -63,8 +63,8 @@ function selectTab(props, tabId) {
     if (!(tab?.type && tab?.id)) {
       return props.history.push({ pathname: `/orgs/${getOrgId()}/dashboard/endpoint/new` })
     }
-    props.history.push({
-      pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}`
+    return props.history.push({
+      pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${(tab.isModified)?'/edit':''}`
     })
   }
   store.dispatch(setActiveTabId(tabId))
@@ -104,6 +104,10 @@ function replaceTabWithNew(newTabId) {
   store.dispatch(replaceTabForUntitled(newTabId))
 }
 
+function updateDraftData(pageId, data) {
+  store.dispatch(updateTabDraft(pageId, data))
+}
+
 export default {
   newTab,
   removeTab,
@@ -115,5 +119,6 @@ export default {
   unmarkTabAsModified,
   markTabAsSaved,
   markTabAsDeleted,
-  replaceTabWithNew
+  replaceTabWithNew,
+  updateDraftData
 }
