@@ -32,6 +32,7 @@ export const SESSION_STORAGE_KEY = {
 const tokenKey = 'token'
 const profileKey = 'profile'
 const orgKey = 'organisation'
+const currentOrgKey = 'currentOrganisation'
 const orgListKey = 'organisationList'
 const proxyUrl = process.env.REACT_APP_PROXY_URL
 
