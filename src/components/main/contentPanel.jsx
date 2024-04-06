@@ -51,7 +51,7 @@ const mapDispatchToProps = (dispatch) => {
 class ContentPanel extends Component {
   constructor(props) {
     super(props)
-    this.state = { saveEndpointFlag: false }
+    this.state = { saveEndpointFlag: false, savePageFlag: false }
   }
 
   async componentDidMount() {
@@ -154,7 +154,7 @@ class ContentPanel extends Component {
           this.props.history.push({
             pathname:
               tab.type !== 'collection'
-                ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
+                ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' :tabId}${(tab.isModified)?'/edit':''}`
                 : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
           })
         }

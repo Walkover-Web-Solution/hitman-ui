@@ -45,7 +45,7 @@ export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, 
         }
       })
       .catch((error) => {
-        dispatch(onEndpointAddedError(error.response ? error.response.data : error, newEndpoint, requestId))
+        console.log('error in saving the endpoint');
         if (customCallback) {
           customCallback({ closeForm: false, stopLoader: true })
         }
