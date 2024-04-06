@@ -566,6 +566,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
     }
     delete endpoint.body?.value;
   } // ends here
+  delete endpoint.body?.value;
 
   untitled.data.uri = endpoint.uri
   untitled.data.updatedUri = endpoint.uri
@@ -604,6 +605,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.host['BASE_URL'] = endpoint.BASE_URL
   untitled.testResponse = {}
   untitled.flagResponse = false;
+  untitled.bodyDescription = endpointData.bodyDescription
   return { ...untitled }
 }
 

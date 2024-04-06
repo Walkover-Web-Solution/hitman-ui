@@ -1044,7 +1044,7 @@ class DisplayEndpoint extends Component {
         params: updatedParams,
         pathVariables: updatedPathVariables,
         BASE_URL: this.props?.endpointContent.host.BASE_URL || null,
-        bodyDescription: this.props?.endpointContent?.data?.body?.type === bodyTypesEnums.JSON ? bodyDescription : {},
+        bodyDescription: this.props?.endpointContent?.bodyDescription,
         notes: this.props?.endpointContent?.endpoint.notes,
         preScript: this.props?.endpointContent?.preScriptText,
         postScript: this.props?.endpointContent?.postScriptText,
@@ -1370,7 +1370,7 @@ class DisplayEndpoint extends Component {
 
   setBody(bodyType, body, rawType) {
     let data = { ...this.props?.endpointContent.data }
-    if (bodyType === bodyTypesEnums.JSON || bodyType === bodyTypesEnums.HTML || bodyType === bodyTypesEnums.JavaScript || bodyType === bodyTypesEnums.XML || bodyType === bodyTypesEnums.TEXT) {
+    if (this.rawBodyTypes.includes(bodyType)) {
       data.body = { ...data.body, type: bodyType, [authorizationTypesEnums['raw']]: { rawType, value: body } }
     }
     else if (bodyType === authorizationTypesEnums['application/x-www-form-urlencoded'] || bodyType === authorizationTypesEnums['multipart/form-data']) {
@@ -2160,6 +2160,8 @@ class DisplayEndpoint extends Component {
         set_body={this.setBody.bind(this)}
         body={this.props.endpointContent?.data?.body || {}}
         endpoint_id={this.props.tab.id}
+        set_body_description={this.setDescription.bind(this)}
+        body_description={this.props?.endpointContent?.bodyDescription || ''}
       />
     )
   }

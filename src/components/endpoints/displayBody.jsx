@@ -87,7 +87,7 @@ class BodyContainer extends Component {
 
   setStateOfBody(body) {
     let selectedBodyType = body.type;
-    if (this.rawBodyType?.includes(selectedBodyType)) {
+    if (this.rawBodyTypes?.includes(selectedBodyType)) {
       this.showRawBodyType = true;
       this.rawBodyType = selectedBodyType;
       selectedBodyType = authorizationTypesEnums['raw'];
@@ -103,6 +103,10 @@ class BodyContainer extends Component {
     };
 
     this.rawBodyType = body?.raw?.rawType || bodyTypesEnums.TEXT;
+
+    if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
+      document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
+    }
 
     this.setState({
       selectedRawBodyType: body?.raw?.rawType || bodyTypesEnums.TEXT,
