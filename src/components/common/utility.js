@@ -9,7 +9,7 @@ import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
-import { openInNewTab } from '../tabs/redux/tabsActions'
+import {orgListKey, orgKey, profileKey,tokenKey } from '../auth/authServiceV2'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
@@ -29,10 +29,6 @@ export const SESSION_STORAGE_KEY = {
   UNIQUE_TAB_ID: 'uniqueTabId'
 }
 
-const tokenKey = 'token'
-const profileKey = 'profile'
-const orgKey = 'organisation'
-const orgListKey = 'organisationList'
 const proxyUrl = process.env.REACT_APP_PROXY_URL
 
 export function sentryIntegration() {
@@ -219,7 +215,7 @@ export function toTitleCase(str) {
 export function getOrgId() {
   // const path = history.location.pathname
   // if (path) { return path } else {
-  let orgList = window.localStorage.getItem('organisationList')
+  let orgList = window.localStorage.getItem(orgListKey)
   orgList = JSON.parse(orgList)
   return orgList?.[0]?.id
   // }
@@ -474,7 +470,7 @@ export function validateEmail(email) {
 }
 
 export function getUserProfile() {
-  let user = window.localStorage.getItem('profile')
+  let user = window.localStorage.getItem(profileKey)
   try {
     user = JSON.parse(user)
     return user
