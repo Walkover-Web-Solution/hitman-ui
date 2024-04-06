@@ -332,24 +332,19 @@ class Endpoints extends Component {
     const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
     return (
       <>
-        <div
-          key={endpointId}
-          draggable={!isUserOnPublishedPage}
-          onDragOver={this.props.handleOnDragOver}
-          onDragStart={() => this.props.onDragStart(endpointId)}
-          onDrop={(e) => this.props.onDrop(e, endpointId)}
-          onDragEnter={(e) => this.props.onDragEnter(e, endpointId)}
-          onDragEnd={(e) => this.props.onDragEnd(e)}
-          style={this.props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
+        <div 
+        key={endpointId} 
+        draggable={!isUserOnPublishedPage}
+        onDragOver={this.props.handleOnDragOver}
+        onDragStart={() => this.props.onDragStart(endpointId)}
+        onDrop={(e) => this.props.onDrop(e, endpointId)}
+        onDragEnter = {(e) => this.props.onDragEnter(e, endpointId)}
+        onDragEnd = {(e) => this.props.onDragEnd(e)}
+        style={this.props.draggingOverId === endpointId ? { borderTop:'3px solid red'}: null}
         >
           <div className={this.props?.endpoints[endpointId]?.state} />
-          <div className='sidebar-toggle d-flex justify-content-between' onClick={(e)=>{e.stopPropagation()}}>
-
-          </div>
-          
-        </div>
-        <button>
-                    <button
+          <div className='sidebar-toggle d-flex justify-content-between'>
+            <button
               tabIndex={-1}
               className={isSelected}
               onClick={() => {
@@ -360,7 +355,6 @@ class Endpoints extends Component {
               }
             >
               {this.displayEndpointName(endpointId)}
-              </button>
               <div className='d-flex align-items-center'>
                 {isDashboardRoute(this.props, true) &&
                   !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
@@ -369,7 +363,9 @@ class Endpoints extends Component {
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
               </div>
-              </button>
+            </button>
+          </div>
+        </div>
       </>
     )
   }
