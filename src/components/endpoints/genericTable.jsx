@@ -52,6 +52,7 @@ class GenericTable extends Component {
     const target = inpTarget || e.currentTarget
     let { dataArray, title, original_data: originalData } = this.props
     dataArray = JSON.parse(JSON.stringify(dataArray))
+
     const name = target.name.split('.')
     const value = target.value
     if (name[1] === 'checkbox') {
@@ -253,7 +254,7 @@ class GenericTable extends Component {
               <input
                 disabled={originalData[index].checked === 'false' ? null : 'disabled'}
                 name={index + '.checkbox'}
-                value = {dataArray[index].checked}
+                value={dataArray[index].checked}
                 checked={dataArray[index].checked === 'true'}
                 type='checkbox'
                 className='Checkbox'
@@ -273,7 +274,7 @@ class GenericTable extends Component {
           <div className='d-flex align-items-center'>
             <input
               name={index + '.value'}
-              value = {dataArray[index].type === 'file' ? '' : dataArray[index].value}
+              value={dataArray[index].type === 'file' ? '' : dataArray[index].value}
               key={index + this.state.randomId}
               onChange={this.handleChange}
               type='text'
@@ -299,7 +300,7 @@ class GenericTable extends Component {
           {...autoCompleterDefaultProps}
           name={key}
           key={key}
-          value = {dataArray[index].key}
+          value={dataArray[index].key}
           onChange={(e) => this.handleChange(e, { name: key, value: e })}
           type='text'
           placeholder='Key'
@@ -310,7 +311,7 @@ class GenericTable extends Component {
           <select
             className='transition cursor-pointer'
             name={index + '.type'}
-            value = 'text'
+            value='text'
             onChange={(e) => {
               this.handleChange(e)
             }}
@@ -368,7 +369,7 @@ class GenericTable extends Component {
               <input
                 disabled={isDashboardRoute(this.props, true) || originalData[index].checked === 'false' ? null : 'disabled'}
                 name={index + '.checkbox'}
-                value = {dataArray[index].checked}
+                value={dataArray[index].checked}
                 checked={dataArray[index].checked === 'true'}
                 type='checkbox'
                 className='Checkbox'
@@ -390,7 +391,7 @@ class GenericTable extends Component {
                 {...autoCompleterDefaultProps}
                 name={valueKey}
                 key={valueKey}
-                value = {dataArray[index].type !== 'file' ? dataArray[index].value : ''}
+                value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
                 onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
                 className='form-control'
                 placeholder={dataArray[index].checked === 'notApplicable' ? 'Value' : `Enter ${dataArray[index].key}`}
@@ -407,7 +408,7 @@ class GenericTable extends Component {
               <input
                 disabled={isDashboardRoute(this.props) ? null : 'disabled'}
                 name={index + '.description'}
-                value = {dataArray[index].description}
+                value={dataArray[index].description}
                 onChange={this.handleChange}
                 type='text'
                 placeholder='Description'
@@ -533,7 +534,7 @@ class GenericTable extends Component {
   }
 
   render() {
-    const { dataArray, original_data: originalData, title } = this.props
+    const { dataArray, original_data: originalData, title, type, index } = this.props
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
         if (dataArray[index].key === '') {
@@ -542,12 +543,18 @@ class GenericTable extends Component {
       }
     }
     const isDocView = !isDashboardRoute(this.props) || !isDashboardAndTestingView(this.props, this.props.currentView)
+    const specificPrefix = '/:'
+    const urlRegex = new RegExp(`^${specificPrefix}`)
+    const url =this.props?.endpointContent?.host?.BASE_URL + this.props?.endpointContent?.data?.updatedUri
+
     this.autoFillBulkEdit()
     return (
-      // "generic-table-container"
-      // table-bordered
       <div className='hm-public-table position-relative mb-2'>
-        {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) ? <div>{title}</div> : null}
+        {title === 'Path Variables' &&
+        isDashboardAndTestingView(this.props, this.props.currentView) &&
+        (url.indexOf('/:') !== -1) ? (
+          <div>{title}</div>
+        ) : null}
         <div className={isDocView ? 'public-generic-table-title-container' : 'generic-table-title-container'}>
           {isDocView && dataArray.length > 0 ? (
             <span>
@@ -556,7 +563,11 @@ class GenericTable extends Component {
           ) : null}
         </div>
 
-        {!this.state.bulkEdit && dataArray.length > 0 ? (
+        {!this.state.bulkEdit &&
+          dataArray.length > 0 &&
+          (title === 'Path Variables' && (url.indexOf('/:') !== -1)) ||
+        (title !== 'Path Variables' &&
+          ((url.indexOf('/:') !== -1) || !(url.indexOf('/:') !== -1))) ? (
           <div className='headParaWraper'>
             <table className='table' id='custom-generic-table'>
               {isDashboardRoute(this.props) ? (
@@ -600,7 +611,7 @@ class GenericTable extends Component {
               name='contents'
               id='contents'
               rows='9'
-              value= {this.textAreaValue}
+              value={this.textAreaValue}
               onChange={this.handleBulkChange}
               placeholder={
                 'Rows are separated by new lines \\nKeys and values are separated by : \\nPrepend // to any row you want to add but keep disabled'

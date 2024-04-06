@@ -91,7 +91,13 @@ class SubPageForm extends Form {
                     true,
                     false,
                     false,
+                    <>
+                    <span className="error-text">
                     '*URL name can only contain alphanumeric values and reserved keywords like - _ . ~'
+                    </span>
+                    <br/>
+                    <span className="error-text"> Failure to comply will result in automatic modification.</span>
+                    </>
                   )}
                 </div>
               </div>

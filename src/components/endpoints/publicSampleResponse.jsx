@@ -47,7 +47,7 @@ class PublicSampleResponse extends Component {
               {this.props.sample_response_array.map((sampleResponse, key) => (
                 <Tab
                 key={key}
-                  eventKey={sampleResponse.title}
+                  eventKey={key}
                   title={
                     getHighlightsData(this.props, 'sampleResponse', sampleResponse.title) ? (
                       <span>

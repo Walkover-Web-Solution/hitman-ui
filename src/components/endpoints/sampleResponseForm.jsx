@@ -111,7 +111,7 @@ class SampleResponseForm extends Form {
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput('title', 'Title: ', 'Enter Title ', false, false, false)}
+            {this.renderInput('title', 'Title: ', 'Enter Title ', false, true, false)}
             {this.renderInput('status', 'Status: ', 'Enter Status ', false, false, false)}
             {this.renderInput('description', 'Description: ', 'Enter Descripton')}
             {this.renderAceEditor('body', 'Body: ')}

@@ -115,8 +115,14 @@ class Form extends Component {
     this.setState({ data })
   }
 
-  renderInput(name, urlName, label, placeholder, mandatory = false, isURLInput = false, note = '') {
+  renderInput(name, urlName, label, placeholder, mandatory, isURLInput = false, note = '') {
     const { data, errors } = this.state
+    if (mandatory && !data[name]) {
+      errors[name] = 'Title is required'; // Set an error message if title is empty
+    }else{
+      delete errors[name]; 
+    }
+  
     return (
       <Input
         ref={this.inputRef}
