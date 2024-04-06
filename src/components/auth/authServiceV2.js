@@ -111,8 +111,13 @@ function AuthServiceV2() {
           await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
           setOrgList(getOrgList());
           const storedCurrentOrgId = window.localStorage.getItem("currentOrganisation");
-          const currentOrgId = storedCurrentOrgId ? JSON.parse(storedCurrentOrgId).id : undefined;
-          switchOrg(currentOrgId || orgId);
+          let currentOrgId;
+          if(storedCurrentOrgId == null || storedCurrentOrgId == "undefined"){
+            currentOrgId = orgId;
+          }else{
+            currentOrgId = JSON.parse(storedCurrentOrgId).id
+          }
+          switchOrg(currentOrgId);
         } else {
           const redirectPath = getOrgList() ? `/orgs/${orgId}/dashboard` : "/logout";
           history.push(redirectPath);

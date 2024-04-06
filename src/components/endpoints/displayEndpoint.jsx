@@ -177,10 +177,12 @@ const untitledEndpointData = {
   }
 }
 
-const updateTabDraftData = (endpointId, data) => {  
-  _.debounce(() => {
-    tabService.updateDraftData(endpointId, _.cloneDeep(data))
-  }, 1000)()
+const debouncedUpdateDraftData = _.debounce((endpointId, data) => {
+  tabService.updateDraftData(endpointId, _.cloneDeep(data));
+}, 1000);
+
+const updateTabDraftData = (endpointId, data) => {
+  debouncedUpdateDraftData(endpointId, data);
 }
 
 const getEndpointContent = async (props) => {
