@@ -131,14 +131,7 @@ const untitledEndpointData = {
     uri: '',
     updatedUri: ''
   },
-  pathVariables: [
-    {
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: ''
-    }
-  ],
+  pathVariables: [],
   environment: {},
   endpoint: {},
   originalHeaders: [
@@ -171,7 +164,14 @@ const untitledEndpointData = {
   host: {},
   sslMode: getCurrentUserSSLMode(),
   currentView: 'testing',
-  docViewData: [],
+  docViewData: [
+    { type: 'host' },
+    { type: 'body' },
+    { type: 'params' },
+    { type: 'pathVariables' },
+    { type: 'headers' },
+    { type: 'sampleResponse' }
+  ],
   harObject: {}
 }
 
@@ -256,6 +256,7 @@ const withQuery = (WrappedComponent) => {
         endpointContentLoading={data?.isLoading}
         currentEndpointId={endpointId}
         setQueryUpdatedData={setQueryUpdatedData}
+        untitledEndpointData = {untitledEndpointData}
       />
     )
   }
@@ -437,6 +438,8 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
+    if(!e?.currentTarget?.value) return ;
+
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
@@ -446,7 +449,7 @@ class DisplayEndpoint extends Component {
       const values = []
       const description = []
       let originalParams = this.props?.endpointContent?.originalParams || {}
-      const updatedUri = e.currentTarget.value.split('?')[1]
+      const updatedUri = e.currentTarget.value?.split('?')[1]
       let path = new URI(e.currentTarget.value)
       path = path.pathname()
       const pathVariableKeys = path.split('/')
@@ -2297,12 +2300,14 @@ class DisplayEndpoint extends Component {
                 this.props?.environment?.variables?.BASE_URL?.initialValue ||
                 ''
               }
-              updatedUri={this.props?.endpointContent?.data?.updatedUri}
+              updatedUri={_.cloneDeep(this.props?.endpointContent?.data?.updatedUri)}
               set_base_url={this.setBaseUrl.bind(this)}
               // customHost={this.props?.endpointContent?.host.BASE_URL || ''}
               endpointId={this.props?.match?.params?.endpointId}
               set_host_uri={this.setHostUri.bind(this)}
               props_from_parent={this.propsFromChild.bind(this)}
+              setQueryUpdatedData = {this.props.setQueryUpdatedData.bind(this)}
+              untitledEndpointData = { _.cloneDeep(this.props.untitledEndpointData)}
             />
           </div>
           {this.props?.highlights?.uri ? <i className='fas fa-circle' /> : null}
