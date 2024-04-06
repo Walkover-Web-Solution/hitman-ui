@@ -75,7 +75,7 @@ function AccessTokenManager(props) {
 function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
 
   const getTitleValue = (key) => {
-    let title = '';
+    let title = ''
     switch (key) {
       case 'tokenName':
         return title = 'Token Name'
@@ -119,7 +119,7 @@ function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
     <div className='h-100 mt-3'>
       {tokenDetailsToShow?.map((key) => {
         const title = getTitleValue(key);
-        let value = tokenDetails?.[selectedTokenId]?.[key] ?? '' 
+        let value = tokenDetails?.[selectedTokenId]?.[key] ?? ''
         if (key === 'createdTime') value = formatDate(value);
         if (key === 'clientSecret' && tokenDetails?.[selectedTokenId]?.grantType === grantTypesEnums.implicit) return null;
         if (key === 'accessTokenUrl' && tokenDetails?.[selectedTokenId]?.grantType === grantTypesEnums.implicit) return null;

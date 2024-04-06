@@ -67,8 +67,7 @@ import { getPublishedContentByIdAndType } from '../../services/generalApiService
 import Footer from '../main/Footer.jsx'
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
 import { statesEnum } from '../common/utility'
-import { addAuthorizationDataTypes, authorizationTypes, grantTypesEnums } from '../common/authorizationEnums.js'
-import tokenDataActionTypes from '../../store/tokenData/tokenDataActionTypes.js'
+import { addAuthorizationDataTypes, grantTypesEnums } from '../common/authorizationEnums.js'
 import { updateToken } from '../../store/tokenData/tokenDataActions.js'
 const shortid = require('shortid')
 const status = require('http-status')
@@ -597,7 +596,7 @@ class DisplayEndpoint extends Component {
     if (customEnv) {
       envVars = customEnv
     }
-    str = str.toString()
+    str = str?.toString()
     const regexp = /{{((\w|-)+)}}/g
     let match = regexp.exec(str)
     const variables = []
@@ -892,7 +891,43 @@ class DisplayEndpoint extends Component {
     return isExpired;
   }
 
-  getFreshToken(singleTokenDetail) {
+  async getRefreshToken(headers, url) {
+    let oauth2Data = this.props?.endpointContent?.authorizationData?.authorization?.oauth2
+    if (this.props?.endpointContent?.authorizationData?.authorizationTypeSelected === 'oauth2' && (this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCode || this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCodeWithPkce)) {
+      const generatedDateTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.createdTime;
+      const expirationTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.expiryTime;
+      const isTokenExpired = this.checkTokenExpired(expirationTime, generatedDateTime)
+      if (isTokenExpired && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshTokenUrl && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken) {
+        try {
+          const data = await endpointApiService.getRefreshToken(this.props.tokenDetails[oauth2Data.selectedTokenId])
+          if (data?.access_token) {
+            const dataToUpdate = {
+              tokenId: oauth2Data.selectedTokenId,
+              accessToken: data.access_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.accessToken,
+              refreshToken: data.refresh_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken,
+              expiryTime: data.expires_in || this.props.tokenDetails[oauth2Data.selectedTokenId]?.expiryTime,
+            }
+            this.props.update_token(dataToUpdate)
+            if (oauth2Data?.addAuthorizationRequestTo === addAuthorizationDataTypes.requestHeaders && headers?.Authorization) {
+              headers.Authorization = `Bearer ${data.access_token}`
+              this.setHeaders(data.access_token, 'Authorization.oauth_2')
+            }
+            else if (oauth2Data?.addAuthorizationRequestTo === addAuthorizationDataTypes.requestUrl) {
+              const urlObj = new URL(url);
+              const searchParams = new URLSearchParams(urlObj.search);
+              searchParams.set('access_token', data.access_token);
+              const newSearchParamsString = searchParams.toString();
+              url = urlObj.origin + urlObj.pathname + '?' + newSearchParamsString + urlObj.hash;
+              this.setParams(data.access_token, 'access_token')
+            }
+          }
+        }
+        catch (error) {
+          console.error('could not refresh the token')
+        }
+      }
+    }
+    return { newHeaders: headers, newUrl: url }
   }
 
   handleSend = async () => {
@@ -969,43 +1004,9 @@ class DisplayEndpoint extends Component {
       url = this.replaceVariables(url, environment)
       url = this.addhttps(url)
       headers = this.replaceVariablesInJson(headers, environment)
-      // Start of Regeneration of AUTH2.0 Token
-      let oauth2Data = this.props?.endpointContent?.authorizationData?.authorization?.oauth2
-      if (this.props?.endpointContent?.authorizationData?.authorizationTypeSelected === 'oauth2' && (this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCode || this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCodeWithPkce)) {
-        const generatedDateTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.createdTime;
-        const expirationTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.expiryTime;
-        const isTokenExpired = this.checkTokenExpired(expirationTime, generatedDateTime)
-        if (isTokenExpired && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshTokenUrl && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken) {
-          try {
-            const data = await endpointApiService.getRefreshToken(this.props.tokenDetails[oauth2Data.selectedTokenId])
-            if (data?.access_token) {
-              const dataToUpdate = {
-                tokenId: oauth2Data.selectedTokenId,
-                accessToken: data.access_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.accessToken,
-                refreshToken: data.refresh_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken,
-                expiryTime: data.expires_in || this.props.tokenDetails[oauth2Data.selectedTokenId]?.expiryTime,
-              }
-              this.props.update_token(dataToUpdate)
-              if (oauth2Data?.addAuthorizationRequestTo === addAuthorizationDataTypes.requestHeaders && headers?.Authorization) {
-                headers.Authorization = `Bearer ${data.access_token}`
-                this.setHeaders(data.access_token, 'Authorization.oauth_2')
-              }
-              else if (oauth2Data?.addAuthorizationRequestTo === addAuthorizationDataTypes.requestUrl) {
-                const urlObj = new URL(url);
-                const searchParams = new URLSearchParams(urlObj.search);
-                searchParams.set('access_token', data.access_token);
-                const newSearchParamsString = searchParams.toString();
-                url = urlObj.origin + urlObj.pathname + '?' + newSearchParamsString + urlObj.hash;
-                this.setParams(data.access_token, 'access_token')
-              }
-            }
-          }
-          catch (error) {
-            console.error('could not regenerate the token')
-          }
-        }
-      }
-      // End of Regeneration of AUTH2.0 Token
+      const { newHeaders, newUrl } = this.getRefreshToken(headers, url)
+      headers = newHeaders
+      url = newUrl
       const bodyType = this.props?.endpointContent?.data?.body?.type
       body = this.replaceVariablesInBody(body, bodyType, environment)
       requestOptions = { ...requestOptions, body, headers, url, bodyType }
@@ -2943,14 +2944,9 @@ class DisplayEndpoint extends Component {
                             <div>
                               <Authorization
                                 {...this.props}
-                                setQueryUpdatedData={this.props.setQueryUpdatedData}
-                                title='Authorization'
-                                groupId={this.state.groupId}
                                 set_authorization_headers={this.setHeaders.bind(this)}
                                 set_authoriztaion_params={this.setParams.bind(this)}
                                 set_authoriztaion_type={this.setAuthType.bind(this)}
-                                accessToken={this.accessToken}
-                                authorizationData={this.props?.endpointContent?.authorizationData}
                                 handleSaveEndpoint={this.handleSave.bind(this)}
                               />
                             </div>

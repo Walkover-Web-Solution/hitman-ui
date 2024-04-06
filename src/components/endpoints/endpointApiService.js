@@ -9,7 +9,7 @@ const apiUrlEndpoint = process.env.REACT_APP_API_URL
 
 function getApiUrl() {
   const orgId = getOrgId()
-  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+  return apiUrlEndpoint + `/orgs/${orgId}`
 }
 
 function endpointUrlForCollection(pageId) {
@@ -80,11 +80,6 @@ export async function setResponse(props, responseData) {
   await props.set_authorization_responses(versionId, authResponses)
 }
 
-export function setAuthorizationType(endpointId, data) {
-  const apiUrl = getApiUrl()
-  return http.patch(`${apiUrl}/endpoints/${endpointId}/authorizationType`, data)
-}
-
 export async function getTokenAuthorizationCodeAndAuthorizationPKCE(accessTokenURL, code, data) {
   let body = {
     client_id: data.clientId,
@@ -102,7 +97,7 @@ export async function getTokenAuthorizationCodeAndAuthorizationPKCE(accessTokenU
 
   try {
     const { data: responseData } = await httpService.request({
-      url: `${process.env.REACT_APP_API_URL}/auth/token`,
+      url: `${apiUrlEndpoint}/auth/token`,
       method: 'POST',
       data: { tokenBody: body, tokenHeaders: headers, accessTokenUrl: accessTokenURL },
     })
@@ -131,7 +126,7 @@ export async function getTokenPasswordAndClientGrantType(accessTokenURL, data) {
 
   try {
     const { data: responseData } = await httpService.request({
-      url: `${process.env.REACT_APP_API_URL}/auth/token`,
+      url: `${apiUrlEndpoint}/auth/token`,
       method: 'POST',
       data: { tokenBody: body, tokenHeaders: headers, accessTokenUrl: accessTokenURL },
     })
@@ -152,7 +147,7 @@ export async function getRefreshToken(singleTokenDetails) {
 
   try {
     const { data: responseData } = await httpService.request({
-      url: `${process.env.REACT_APP_API_URL}/auth/token`,
+      url: `${apiUrlEndpoint}/auth/token`,
       method: 'POST',
       data: { tokenBody: body, tokenHeaders: {}, accessTokenUrl: singleTokenDetails?.refreshTokenUrl },
     })
@@ -172,7 +167,6 @@ export default {
   getAllEndpoints,
   duplicateEndpoint,
   moveEndpoint,
-  setAuthorizationType,
   updateEndpointOrder,
   saveEndpoint,
   getTokenAuthorizationCodeAndAuthorizationPKCE,
