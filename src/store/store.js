@@ -13,6 +13,7 @@ import publishDocsReducer from '../components/publishDocs/redux/publishDocsReduc
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import clientDataReducer from './clientData/clientDataReducer'
+import tokenDataReducer from './tokenData/tokenDataReducers'
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -27,7 +28,8 @@ const rootReducer = combineReducers({
   modals: modalsReducer,
   responseView: toggleResponseReducer,
   feedbacks: publishDocsReducer,
-  clientData: clientDataReducer
+  clientData: clientDataReducer,
+  tokenData: tokenDataReducer,
 })
 
 const persistConfig = {

@@ -866,7 +866,6 @@ class PublishDocs extends Component {
     const { selectedEndpointId } = this.state
     let result = {
       BASE_URL: null,
-      authorizationType: null,
       body: {
         isChanged: null,
         type: null,
@@ -902,7 +901,6 @@ class PublishDocs extends Component {
         delete currentChanges.publishedEndpoint
         result = {
           BASE_URL: !isEqual(originalEndpoint.BASE_URL, currentChanges.BASE_URL),
-          authorizationType: null,
           body: {
             isChanged: !isEqual(originalEndpoint.body, currentChanges.body),
             type: !isEqual(originalEndpoint.body.type, currentChanges.body.type),
