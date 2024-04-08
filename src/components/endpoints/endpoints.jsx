@@ -19,7 +19,6 @@ import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.
 import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 import endpointService from './endpointService'
-import { bodyTypesEnums } from '../common/bodyTypeEnums'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -382,7 +381,7 @@ class Endpoints extends Component {
       uri: '',
       name: '',
       requestType: 'GET',
-      body: { type: bodyTypesEnums['none'], value: null },
+      body: { type: 'none', value: null },
       headers: {},
       params: {},
       pathVariables: {},

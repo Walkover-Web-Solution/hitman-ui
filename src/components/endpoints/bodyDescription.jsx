@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import './publicEndpoint.scss'
 import DisplayBodyDescription from './displayBodyDescription'
 import bodyDescriptionService from './bodyDescriptionService'
-import { rawTypesEnums } from '../common/bodyTypeEnums'
 
 class BodyDescription extends Component {
   constructor(props) {
@@ -25,7 +24,7 @@ class BodyDescription extends Component {
   render() {
     return (
       <div>
-        {this.props.body_type === rawTypesEnums.JSON && (
+        {this.props.body_type === 'JSON' && (
           <div>
             <DisplayBodyDescription body_description={this.props.body_description} {...this.props} />
           </div>

@@ -21,7 +21,6 @@ import PublishDocsConfirmModal from './publishDocsConfirmModal'
 import { moveToNextStep } from '../../services/widgetService'
 import { openExternalLink, sensitiveInfoFound } from '../common/utility'
 import { publishData } from '../modals/redux/modalsActions'
-import { bodyTypesEnums } from '../common/bodyTypeEnums'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -906,7 +905,7 @@ class PublishDocs extends Component {
             isChanged: !isEqual(originalEndpoint.body, currentChanges.body),
             type: !isEqual(originalEndpoint.body.type, currentChanges.body.type),
             value:
-              currentChanges.body.type === bodyTypesEnums['multipart/form-data'] || currentChanges.body.type === bodyTypesEnums['application/x-www-form-urlencoded']
+              currentChanges.body.type === 'multipart/form-data' || currentChanges.body.type === 'application/x-www-form-urlencoded'
                 ? makeHighlightsData(originalEndpoint.body.value, currentChanges.body.value, 'body')
                 : !isEqual(originalEndpoint.body.value, currentChanges.body.value)
           },

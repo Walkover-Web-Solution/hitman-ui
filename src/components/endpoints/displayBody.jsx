@@ -14,7 +14,6 @@ import './endpoints.scss'
 import GenericTable from './genericTable'
 import { isSavedEndpoint } from '../common/utility'
 import _ from 'lodash'
-import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
 
 class BodyContainer extends Component {
   _isMounted = false // Add a flag to track if the component is mounted
@@ -44,12 +43,11 @@ class BodyContainer extends Component {
         ]
       },
       endpointId: null,
-      selectedRawBodyType: rawTypesEnums.TEXT,
+      selectedRawBodyType: 'TEXT',
       suggestions: []
     }
 
-    this.rawBodyTypes = Object.keys(rawTypesEnums);
-
+    this.rawBodyTypes = ['TEXT', 'HTML', 'JSON', 'XML', 'JavaScript']
     addCompleter({
       getCompletions: function (editor, session, pos, prefix, callback) {
         callback(null, [...this.state.suggestions])
@@ -60,7 +58,6 @@ class BodyContainer extends Component {
 
   componentDidMount() {
     this._isMounted = true
-    this.setStateOfBody(this.props.body);
   }
 
   componentWillUnmount() {
@@ -68,82 +65,79 @@ class BodyContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.environment !== this.props.environment) {
-      this.loadEnvVarsSuggestions();
+    if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
+    if (this.props?.body !== '' && !this.state?.selectedBodyType) {
+      let selectedBodyType = this.props.body.type
+      if (
+        selectedBodyType === 'JSON' ||
+        selectedBodyType === 'HTML' ||
+        selectedBodyType === 'JavaScript' ||
+        selectedBodyType === 'XML' ||
+        selectedBodyType === 'TEXT'
+      ) {
+        this.showRawBodyType = true
+        this.rawBodyType = selectedBodyType
+        selectedBodyType = 'raw'
+      }
+      const data = this.state.data
+      const type = selectedBodyType?.split('-') || []
+      data[type[type?.length > 1 ? type?.length - 1 : 0]] = this.props.body.value
+      if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
+        document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
+        this.setState({
+          selectedRawBodyType: this.rawBodyType ? this.rawBodyType : 'TEXT',
+          selectedBodyType,
+          data
+        })
+      }
     }
-
-    const { body: prevBody } = prevProps;
-    const { body: currentBody } = this.props;
-    const { data: prevData } = prevState;
-    const { data: currentData } = this.state;
-
-    if (
-      !_.isEqual(prevBody, currentBody) ||
-      !_.isEqual(prevData, currentData)
-    ) {
-      this.setStateOfBody(currentBody);
-    }
-  }
-
-  setStateOfBody(body) {
-    let selectedBodyType = body.type;
-    if (this.rawBodyTypes?.includes(selectedBodyType)) {
-      this.showRawBodyType = true;
-      this.rawBodyType = selectedBodyType;
-      selectedBodyType = bodyTypesEnums['raw'];
-    }
-    else {
-      this.showRawBodyType = false;
-    }
-
-    const data = {
-      data: body?.[bodyTypesEnums['multipart/form-data']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
-      urlencoded: body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
-      raw: body?.raw?.value || ''
-    };
-
-    this.rawBodyType = body?.raw?.rawType || rawTypesEnums.TEXT;
-
-    if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
-      document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
-    }
-
-    this.setState({
-      selectedRawBodyType: body?.raw?.rawType || rawTypesEnums.TEXT,
-      selectedBodyType,
-      data
-    });
   }
 
   handleSelectBodyType(bodyType, bodyDescription) {
     switch (bodyType) {
-      case bodyTypesEnums['multipart/form-data']:
-        this.props.set_body(bodyType, this.state.data.data, this.state.selectedRawBodyType)
+      case 'multipart/form-data':
+        this.props.set_body(bodyType, this.state.data.data)
         break
-      case bodyTypesEnums['application/x-www-form-urlencoded']:
-        this.props.set_body(bodyType, this.state.data.urlencoded, this.state.selectedRawBodyType)
+      case 'application/x-www-form-urlencoded':
+        this.props.set_body(bodyType, this.state.data.urlencoded)
         break
-      case bodyTypesEnums['none']:
-        this.props.set_body(bodyType, null, this.state.selectedRawBodyType)
+      case 'none':
+        this.props.set_body(bodyType, null)
         break
       default:
         break
     }
-    if (bodyType === bodyTypesEnums['raw'] && bodyDescription) {
+    if (bodyType === 'raw' && bodyDescription) {
       this.flag = true
       this.showRawBodyType = true
-      this.props.set_body(this.state.selectedRawBodyType, this.state.data.raw, this.state.selectedRawBodyType || 'TEXT')
+      if (this._isMounted) {
+        this.setState((prevState) => ({
+          selectedBodyType: prevState.selectedRawBodyType
+        }))
+      }
+      this.props.set_body(this.state.selectedRawBodyType, this.state.data[bodyType])
     } else {
       this.flag = false
       if (document.getElementById(`toggle-raw-${this.props.endpoint_id}`)) {
         document.getElementById(`toggle-raw-${this.props.endpoint_id}`).className = 'btn btn-secondary active'
         document.getElementById(`toggle-body-description-${this.props.endpoint_id}`).className = 'btn btn-secondary '
       }
-      if (bodyType === bodyTypesEnums['raw']) {
+      if (bodyType === 'raw') {
         this.showRawBodyType = true
-        this.props.set_body(this.state.selectedRawBodyType, this.state.data[bodyType], this.state.selectedRawBodyType || 'TEXT')
+        if (this._isMounted) {
+          this.setState({
+            selectedBodyType: 'raw', // Set selectedBodyType to 'raw'
+            selectedRawBodyType: this.state.selectedRawBodyType
+          })
+        }
+        this.props.set_body(this.state.selectedRawBodyType, this.state.data[bodyType])
       } else {
         this.showRawBodyType = false
+        if (this._isMounted) {
+          this.setState({
+            selectedBodyType: bodyType
+          })
+        }
       }
     }
   }
@@ -169,7 +163,7 @@ class BodyContainer extends Component {
     if (this._isMounted) {
       this.setState({ data })
     }
-    this.props.set_body(this.state.selectedRawBodyType, value, this.state.selectedRawBodyType || 'TEXT')
+    this.props.set_body(this.state.selectedRawBodyType, value)
   }
 
   handleChangeBody(title, dataArray) {
@@ -177,11 +171,17 @@ class BodyContainer extends Component {
     switch (title) {
       case 'formData':
         data.data = dataArray
-        this.props.set_body(this.state.selectedBodyType, dataArray, this.state.selectedRawBodyType || 'TEXT')
+        if (this._isMounted) {
+          this.setState({ data })
+        }
+        this.props.set_body(this.state.selectedBodyType, dataArray)
         break
       case 'x-www-form-urlencoded':
         data.urlencoded = dataArray
-        this.props.set_body(this.state.selectedBodyType, dataArray, this.state.selectedRawBodyType || 'TEXT')
+        if (this._isMounted) {
+          this.setState({ data })
+        }
+        this.props.set_body(this.state.selectedBodyType, dataArray)
         break
       default:
         break
@@ -202,7 +202,13 @@ class BodyContainer extends Component {
   }
 
   setRawBodyType(rawBodyType) {
-    this.props.set_body(rawBodyType, this.state.data.raw, rawBodyType)
+    if (this._isMounted) {
+      this.setState({
+        selectedRawBodyType: rawBodyType,
+        selectedBodyType: this.state.selectedBodyType === 'raw' ? 'raw' : rawBodyType
+      })
+    }
+    this.props.set_body(rawBodyType, this.state.data.raw)
   }
 
   renderBody() {
@@ -210,7 +216,7 @@ class BodyContainer extends Component {
       return <BodyDescription {...this.props} body={this.state.data.raw} body_type={this.state.selectedRawBodyType} />
     } else if (this.state.selectedBodyType) {
       switch (this.state.selectedBodyType) {
-        case bodyTypesEnums['multipart/form-data']:
+        case 'multipart/form-data':
           return (
             <GenericTable
               {...this.props}
@@ -221,7 +227,7 @@ class BodyContainer extends Component {
               count='1'
             />
           )
-        case bodyTypesEnums['application/x-www-form-urlencoded']:
+        case 'application/x-www-form-urlencoded':
           return (
             <GenericTable
               {...this.props}
@@ -233,7 +239,7 @@ class BodyContainer extends Component {
             />
           )
 
-        case bodyTypesEnums['none']:
+        case 'none':
           return
         default:
           return (
@@ -243,7 +249,7 @@ class BodyContainer extends Component {
                 className='custom-raw-editor'
                 mode={this.state.selectedRawBodyType.toLowerCase()}
                 theme='github'
-                value={this.state.selectedRawBodyType === rawTypesEnums.JSON ? this.makeJson(this.state.data.raw) : this.state.data.raw}
+                value={this.state.selectedRawBodyType === 'JSON' ? this.makeJson(this.state.data.raw) : this.state.data.raw}
                 onChange={this.handleChange.bind(this)}
                 setOptions={{
                   showLineNumbers: true
@@ -266,7 +272,7 @@ class BodyContainer extends Component {
   }
 
   matchCurrentBodyType(bodyType) {
-    if (this.props.body && this.props.body.type + '-' + this.props.endpoint_id === bodyType) return true
+    if (this.props.Body && this.props.Body.type + '-' + this.props.endpoint_id === bodyType) return true
     return false
   }
 
@@ -285,9 +291,9 @@ class BodyContainer extends Component {
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
-                id={`${bodyTypesEnums['none']}-${this.props.endpoint_id}`}
+                id={`none-${this.props.endpoint_id}`}
                 defaultChecked={!this.state.selectedBodyType}
-                onClick={() => this.handleSelectBodyType(bodyTypesEnums['none'])}
+                onClick={() => this.handleSelectBodyType('none')}
                 className='custom-radio-input'
               />
               <span>none</span>
@@ -299,10 +305,10 @@ class BodyContainer extends Component {
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
                 id={`raw-${this.props.endpoint_id}`}
-                onClick={() => this.handleSelectBodyType(bodyTypesEnums['raw'])}
-                onChange={() => { }}
+                onClick={() => this.handleSelectBodyType('raw')}
+                onChange={() => {}}
                 className='custom-radio-input'
-                checked={this.state.selectedBodyType === bodyTypesEnums['raw']}
+                checked={this.state.selectedBodyType === 'raw'}
               />
               <span>raw</span>
               <span className='checkmark' />
@@ -311,11 +317,11 @@ class BodyContainer extends Component {
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
-                id={`${bodyTypesEnums['multipart/form-data']}-${this.props.endpoint_id}`}
-                onClick={() => this.handleSelectBodyType(bodyTypesEnums['multipart/form-data'])}
-                onChange={() => { }}
+                id={`multipart/form-data-${this.props.endpoint_id}`}
+                onClick={() => this.handleSelectBodyType('multipart/form-data')}
+                onChange={() => {}}
                 className='custom-radio-input'
-                checked={this.matchCurrentBodyType(`${bodyTypesEnums['multipart/form-data']}-${this.props.endpoint_id}`)}
+                checked={this.matchCurrentBodyType(`multipart/form-data-${this.props.endpoint_id}`)}
               />
               <span>form-data</span>
               <span className='checkmark' />
@@ -324,11 +330,11 @@ class BodyContainer extends Component {
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
-                id={`${bodyTypesEnums['application/x-www-form-urlencoded']}-${this.props.endpoint_id}`}
-                onClick={() => this.handleSelectBodyType(bodyTypesEnums['application/x-www-form-urlencoded'])}
+                id={`application/x-www-form-urlencoded-${this.props.endpoint_id}`}
+                onClick={() => this.handleSelectBodyType('application/x-www-form-urlencoded')}
                 className='custom-radio-input'
-                onChange={() => { }}
-                checked={this.matchCurrentBodyType(`${bodyTypesEnums['application/x-www-form-urlencoded']}-${this.props.endpoint_id}`)}
+                onChange={() => {}}
+                checked={this.matchCurrentBodyType(`application/x-www-form-urlencoded-${this.props.endpoint_id}`)}
               />
               <span>x-www-form-urlencoded</span>
               <span className='checkmark' />
@@ -367,8 +373,8 @@ class BodyContainer extends Component {
             )}
           </form>
           {isSavedEndpoint(this.props) &&
-            this.state.selectedRawBodyType === rawTypesEnums.JSON &&
-            (this.state.selectedBodyType === bodyTypesEnums['raw'] || this.state.selectedBodyType === rawTypesEnums.JSON) && (
+            this.state.selectedRawBodyType === 'JSON' &&
+            (this.state.selectedBodyType === 'raw' || this.state.selectedBodyType === 'JSON') && (
               <div className='btn-group btn-group-toggle customBtnGroup mb-4' data-toggle='buttons' style={{ float: 'right' }}>
                 <label className='btn btn-secondary active' id={`toggle-raw-${this.props.endpoint_id}`}>
                   <input
@@ -377,7 +383,7 @@ class BodyContainer extends Component {
                     id='option1'
                     autoComplete='off'
                     defaultChecked
-                    onClick={() => this.handleSelectBodyType(bodyTypesEnums['raw'])}
+                    onClick={() => this.handleSelectBodyType('raw')}
                   />
                   Raw
                 </label>
@@ -387,7 +393,7 @@ class BodyContainer extends Component {
                     name='options'
                     id='option2'
                     autoComplete='off'
-                    onClick={() => this.handleSelectBodyType(bodyTypesEnums['raw'], 'bodyDescription')}
+                    onClick={() => this.handleSelectBodyType('raw', 'bodyDescription')}
                   />
                   Body Description
                 </label>
