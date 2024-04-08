@@ -661,7 +661,7 @@ class SideBarV2 extends Component {
           ))}
         <h4 className='hm-sidebar-title'>
           {publishedCollectionTitle || collectionName || ''}
-          <span>API Documenation</span>
+          <span>API Documentation</span>
         </h4>
         {isTechdocOwnDomain() && (<a href="/login" target="_blank" className='login-button position-fixed d-flex gap-5 ps-5'>
         <TbLogin2 className='text-black'/>

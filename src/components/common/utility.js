@@ -32,61 +32,6 @@ export const SESSION_STORAGE_KEY = {
 
 const proxyUrl = process.env.REACT_APP_PROXY_URL
 
-const untitledEndpointData = {
-  data: {
-    name: 'Untitled',
-    method: 'GET',
-    body: { type: 'none', value: '' },
-    uri: '',
-    updatedUri: ''
-  },
-  pathVariables: [
-    {
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: ''
-    }
-  ],
-  environment: {},
-  endpoint: {},
-  originalHeaders: [
-    {
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: ''
-    }
-  ],
-  originalParams: [
-    {
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: ''
-    }
-  ],
-  authorizationData: {
-    authorization: {},
-    authorizationTypeSelected: ''
-  },
-  oldDescription: '',
-  headers: {},
-  publicBodyFlag: true,
-  params: {},
-  bodyDescription: {},
-  fieldDescription: {},
-  sampleResponseArray: [],
-  theme: '',
-  preScriptText: '',
-  postScriptText: '',
-  host: {},
-  sslMode: getCurrentUserSSLMode(),
-  currentView: 'testing',
-  docViewData: [],
-  harObject: {}
-}
-
 export function sentryIntegration() {
   Sentry.init({
     dsn: 'https://86101cad854954725647e4b1b405ba9b@o4506399919243264.ingest.sentry.io/4506399921143808',
@@ -588,7 +533,7 @@ export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = 
   }
 }
 
-const modifyEndpointContent = (endpointData, untitledData = untitledEndpointData) => {
+const modifyEndpointContent = (endpointData, untitledData) => {
   const endpoint = cloneDeep(endpointData)
   const untitled = cloneDeep(untitledData)
   untitled.data.name = endpoint.name

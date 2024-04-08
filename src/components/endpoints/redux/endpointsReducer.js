@@ -3,23 +3,12 @@ import { toast } from 'react-toastify'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
-import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 const initialState = {}
 
 function endpointsReducer(state = initialState, action) {
   let endpoints = {}
   switch (action.type) {
-    case endpointsActionTypes.SET_AUTHORIZATION_TYPE_REQUEST:
-      state[action.endpointId].authorizationType = action.authData
-      return {
-        ...state
-      }
-
-    case endpointsActionTypes.SET_AUTHORIZATION_TYPE_ERROR:
-      state[action.versionId].authorizationType = action.originalAuthType
-      return state
-
     case endpointsActionTypes.MOVE_ENDPOINT_REQUEST:
       endpoints = { ...state }
       endpoints[action.endpointId].groupId = action.destinationGroupId
