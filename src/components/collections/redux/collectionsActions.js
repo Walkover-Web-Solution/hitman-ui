@@ -268,7 +268,7 @@ export const importApi = (collection, importType, website, customCallback, defau
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          toast.error('Something went wrong')
+          toast.error(error.response ? error.response.data : error)
           dispatch(onCollectionImportedError(error.response ? error.response.data : error))
           if (customCallback) customCallback({ success: false })
         })
@@ -276,11 +276,13 @@ export const importApi = (collection, importType, website, customCallback, defau
       openApiService
         .importApi(collection, defaultView)
         .then((response) => {
-          dispatch(saveImportedVersion(response.data))
+          dispatch(onCollectionImported(response?.data))
+          toast.success('Collection imported successfully')
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          dispatch(onVersionsFetchedError(error.response ? error.response.data : error))
+          toast.error(error.response ? error.response.data : error)
+          dispatch(onCollectionImportedError(error?.response ? error?.response?.data : error))
           if (customCallback) customCallback({ success: false })
         })
     }
