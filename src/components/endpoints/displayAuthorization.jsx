@@ -3,9 +3,10 @@ import Auth2Configurations from './authConfiguration/auth2Configurations';
 import { useParams } from 'react-router';
 import { useQuery, useQueryClient } from 'react-query';
 import { useSelector } from 'react-redux';
-import { cloneDeep } from 'lodash';
+import _, { cloneDeep } from 'lodash';
 import { authorizationTypes, addAuthorizationDataTypes } from '../common/authorizationEnums';
 import './endpoints.scss'
+import tabService from '../tabs/tabService';
 
 const options = {
   refetchOnWindowFocus: false,
@@ -17,10 +18,11 @@ const options = {
 
 export default function Authorization(props) {
 
-  const { activeTabId, tokenDetails } = useSelector((state) => {
+  const { activeTabId, tokenDetails, tabs } = useSelector((state) => {
     return {
       activeTabId: state.tabs.activeTabId,
-      tokenDetails: state.tokenData.tokenDetails || {}
+      tokenDetails: state.tokenData.tokenDetails || {},
+      tabs : state.tabs
     }
   })
 
@@ -59,7 +61,7 @@ export default function Authorization(props) {
   }
 
   const handleSelectAuthorizationType = (key) => {
-    const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) : JSON.parse(localStorage.getItem(activeTabId)) || {};
+    const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) : tabs.tabs?.[activeTabId]?.draft || {};
     const dataToSave = cloneDeep(endpointStoredData);
     if (dataToSave?.authorizationData) {
       dataToSave.authorizationData.authorizationTypeSelected = key;
@@ -68,12 +70,12 @@ export default function Authorization(props) {
       dataToSave.authorizationData = { authorization: {}, authorizationTypeSelected: key }
     }
     queryClient.setQueryData(queryKey, dataToSave, options);
-    if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
+    tabService.updateDraftData(endpointId, _.cloneDeep(dataToSave));
     setSelectedAuthorizationType(authorizationTypes[key]);
   }
 
   const handleAddAuthorizationTo = (key) => {
-    const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) : JSON.parse(localStorage.getItem(activeTabId)) || {};
+    const endpointStoredData = params.endpointId !== 'new' ? queryClient.getQueryData(queryKey) :  tabs.tabs?.[activeTabId]?.draft || {};
     let dataToSave = cloneDeep(endpointStoredData);
     if (dataToSave?.authorizationData?.authorization?.oauth2) {
       dataToSave.authorizationData.authorization.oauth2 = { ...dataToSave?.authorizationData?.authorization?.oauth2, addAuthorizationRequestTo: key }
@@ -82,7 +84,8 @@ export default function Authorization(props) {
       dataToSave.authorizationData.authorization = { oauth2: {} }
       dataToSave.authorizationData.authorization.oauth2 = { ...dataToSave?.authorizationData?.authorization?.oauth2, addAuthorizationRequestTo: key }
     }
-    if (params.endpointId === 'new') localStorage.setItem(activeTabId, JSON.stringify(dataToSave));
+    queryClient.setQueryData(queryKey, dataToSave, options);
+    tabService.updateDraftData(endpointId, _.cloneDeep(dataToSave));
     if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestHeaders) {
       props.set_authorization_headers(selectedTokenValue, 'Authorization.oauth_2')
     }
