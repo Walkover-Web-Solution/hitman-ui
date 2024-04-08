@@ -240,7 +240,7 @@ function TokenGenerator(props) {
   }
 
   function handleSaveConfiguration() {
-    if (data.tokenName.length > 25) return toast.error('Token Name character limit is 50')
+    if (data.tokenName.length > 25) return toast.error('Token Name character limit is 25')
     const endpointDataToSend = endpointStoredData;
     if (!(endpointDataToSend?.authorizationData?.authorization?.oauth2)) {
       endpointDataToSend.authorizationData.authorization = { oauth2: {} }
