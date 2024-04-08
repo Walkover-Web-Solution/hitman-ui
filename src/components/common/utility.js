@@ -9,8 +9,8 @@ import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
 import { openInNewTab } from '../tabs/redux/tabsActions'
-import {orgListKey, orgKey, currentOrgKey, profileKey,tokenKey } from '../auth/authServiceV2'
-
+import {orgListKey, orgKey, profileKey,tokenKey } from '../auth/authServiceV2'
+import { bodyTypesEnums, rawTypesEnums } from './bodyTypeEnums'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
@@ -581,7 +581,6 @@ export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = 
     window.localStorage.setItem(tokenKey, proxyAuthToken)
     window.localStorage.setItem(profileKey, JSON.stringify(userInfo))
     window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
-    window.localStorage.setItem(currentOrgKey, JSON.stringify(userInfo.currentCompany))
     window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
   } catch (e) {
     console.error('error ', e)
@@ -594,7 +593,31 @@ const modifyEndpointContent = (endpointData, untitledData = untitledEndpointData
   const untitled = cloneDeep(untitledData)
   untitled.data.name = endpoint.name
   untitled.data.method = endpoint.requestType
-  untitled.data.body = endpoint.body
+
+  // This code will help in storing the old endpoint body data to new endpoint body data architecture (so we do not lost the old data saved inside the DB).
+  // TODO - Below code should be removed later.
+  const bodyType = endpoint.body.type;
+  if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) && endpoint.body.raw) {
+    untitled.data.body = endpoint.body;
+  } else if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)) {
+    untitled.data.body = { ...untitled.data.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } };
+  } else if (bodyType === bodyTypesEnums['application/x-www-form-urlencoded'] || bodyType === bodyTypesEnums['multipart/form-data']) {
+    if (endpoint.body[bodyType]) {
+      untitled.data.body = endpoint.body;
+    } else {
+      untitled.data.body = { ...untitled.data.body, type: bodyType, [bodyType]: endpoint.body?.value || [] };
+    }
+  } else if (bodyType === bodyTypesEnums['none']) {
+    if (endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || endpoint.body?.[bodyTypesEnums['multipart/form-data']] || endpoint.body?.[bodyTypesEnums['raw']]) {
+      untitled.data.body = endpoint.body;
+    }
+    else {
+      untitled.data.body = { ...untitled.data.body, ...endpoint.body }
+    }
+    delete endpoint.body?.value;
+  } // ends here
+  delete endpoint.body?.value;
+
   untitled.data.uri = endpoint.uri
   untitled.data.updatedUri = endpoint.uri
   untitled.authorizationData = endpoint?.authorizationData || untitled.authorizationData;
@@ -631,6 +654,7 @@ const modifyEndpointContent = (endpointData, untitledData = untitledEndpointData
   untitled.host['BASE_URL'] = endpoint.BASE_URL
   untitled.testResponse = {}
   untitled.flagResponse = false;
+  untitled.bodyDescription = endpointData.bodyDescription
   return { ...untitled }
 }
 

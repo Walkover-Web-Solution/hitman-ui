@@ -4,6 +4,8 @@ import qs from 'qs'
 import { getOrgId } from '../common/utility'
 import { makeHttpRequestThroughAxios } from '../../services/coreRequestService'
 import { grantTypesEnums } from '../common/authorizationEnums'
+import { getProxyToken } from '../auth/authServiceV2'
+import { bodyTypesEnums } from '../common/bodyTypeEnums'
 
 const apiUrlEndpoint = process.env.REACT_APP_API_URL
 

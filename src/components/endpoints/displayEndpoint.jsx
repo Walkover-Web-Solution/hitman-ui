@@ -70,6 +70,7 @@ import { statesEnum } from '../common/utility'
 import { addAuthorizationDataTypes, authorizationTypes, grantTypesEnums } from '../common/authorizationEnums.js'
 import tokenDataActionTypes from '../../store/tokenData/tokenDataActionTypes.js'
 import { updateToken } from '../../store/tokenData/tokenDataActions.js'
+import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -126,18 +127,16 @@ const untitledEndpointData = {
   data: {
     name: 'Untitled',
     method: 'GET',
-    body: { type: 'none', value: '' },
+    body: {
+      type: bodyTypesEnums['none'],
+      [bodyTypesEnums['raw']]: { rawType: rawTypesEnums.TEXT, value: '' },
+      [bodyTypesEnums['application/x-www-form-urlencoded']]: [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+      [bodyTypesEnums['multipart/form-data']]: [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }]
+    },
     uri: '',
     updatedUri: ''
   },
-  pathVariables: [
-    {
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: ''
-    }
-  ],
+  pathVariables: [],
   environment: {},
   endpoint: {},
   originalHeaders: [
@@ -169,7 +168,14 @@ const untitledEndpointData = {
   host: {},
   sslMode: getCurrentUserSSLMode(),
   currentView: 'testing',
-  docViewData: [],
+  docViewData: [
+    { type: 'host' },
+    { type: 'body' },
+    { type: 'params' },
+    { type: 'pathVariables' },
+    { type: 'headers' },
+    { type: 'sampleResponse' }
+  ],
   harObject: {},
   authorizationData: {
     authorization: {},
@@ -280,6 +286,7 @@ const withQuery = (WrappedComponent) => {
         currentEndpointId={endpointId}
         setQueryUpdatedData={setQueryUpdatedData}
         getDataFromReactQuery = {getDataFromReactQuery}
+        untitledEndpointData = {untitledEndpointData}
       />
     )
   }
@@ -332,6 +339,7 @@ class DisplayEndpoint extends Component {
     this.uri = React.createRef()
     this.paramKey = React.createRef()
     this.setCurrentReponseView()
+    this.rawBodyTypes = Object.keys(rawTypesEnums);
   }
 
   async componentDidMount() {
@@ -464,6 +472,8 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
+    if(!e?.currentTarget?.value) return ;
+
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
@@ -473,7 +483,7 @@ class DisplayEndpoint extends Component {
       const values = []
       const description = []
       let originalParams = this.props?.endpointContent?.originalParams || {}
-      const updatedUri = e.currentTarget.value.split('?')[1]
+      const updatedUri = e.currentTarget.value?.split('?')[1]
       let path = new URI(e.currentTarget.value)
       path = path.pathname()
       const pathVariableKeys = path.split('/')
@@ -597,7 +607,7 @@ class DisplayEndpoint extends Component {
     if (customEnv) {
       envVars = customEnv
     }
-    str = str.toString()
+    str = str?.toString() || ''
     const regexp = /{{((\w|-)+)}}/g
     let match = regexp.exec(str)
     const variables = []
@@ -639,20 +649,11 @@ class DisplayEndpoint extends Component {
   }
 
   replaceVariablesInBody(body, bodyType, customEnv) {
-    switch (bodyType) {
-      case 'multipart/form-data':
-      case 'application/x-www-form-urlencoded':
-        body = this.replaceVariablesInJson(body, customEnv)
-        break
-      case 'TEXT':
-      case 'JSON':
-      case 'HTML':
-      case 'XML':
-      case 'JavaScript':
-        body = this.replaceVariables(body, customEnv)
-        break
-      default:
-        break
+    if (bodyType === bodyTypesEnums['multipart/form-data'] || bodyType === bodyTypesEnums['application/x-www-form-urlencoded']) {
+      body = this.replaceVariablesInJson(body, customEnv)
+    }
+    else if (this.rawBodyType?.includes(bodyType)) {
+      body = this.replaceVariables(body, customEnv)
     }
     return body
   }
@@ -775,7 +776,7 @@ class DisplayEndpoint extends Component {
 
   setData = async () => {
     let body = this.props?.endpointContent?.data?.body
-    if (this.props?.endpointContent?.data?.body?.type === 'raw') {
+    if (this.props?.endpointContent?.data?.body?.type === bodyTypesEnums['raw']) {
       body.value = this.parseBody(body.value)
     }
     body = this.prepareBodyForSending(body)
@@ -793,7 +794,7 @@ class DisplayEndpoint extends Component {
       params: updatedParams,
       pathVariables: updatedPathVariables,
       BASE_URL: this.props.endpointContent.host.BASE_URL,
-      bodyDescription: this.props.endpointContent.data.body.type === 'JSON' ? this.props.endpointContent.bodyDescription : {},
+      bodyDescription: this.props.endpointContent.data.body.type === rawTypesEnums.JSON ? this.props.endpointContent.bodyDescription : {},
       authorizationData: this.props.endpointContent.authorizationData
     }
     const response = { ...this.state.response }
@@ -1079,8 +1080,8 @@ class DisplayEndpoint extends Component {
 
   prepareBodyForSaving(body) {
     const data = _.cloneDeep(body)
-    if (data?.type === 'multipart/form-data') {
-      data.value.forEach((item) => {
+    if (data.type === bodyTypesEnums['multipart/form-data']) {
+      data[bodyTypesEnums['multipart/form-data']].forEach((item) => {
         if (item.type === 'file') item.value = {}
       })
     }
@@ -1089,8 +1090,8 @@ class DisplayEndpoint extends Component {
 
   prepareBodyForSending(body) {
     const data = _.cloneDeep(body)
-    if (data?.type === 'multipart/form-data') {
-      data.value.forEach((item) => {
+    if (data.type === bodyTypesEnums['multipart/form-data']) {
+      data[bodyTypesEnums['multipart/form-data']].forEach((item) => {
         if (item.type === 'file') item.value.srcPath = ''
       })
     }
@@ -1115,7 +1116,7 @@ class DisplayEndpoint extends Component {
         body_description: endpointContent?.bodyDescription,
         body: body.value
       })
-      if (endpointContent?.data?.body.type === 'raw') {
+      if (this.props?.endpointContent?.data?.body.type === bodyTypesEnums['raw']) {
         body.value = this.parseBody(body.value)
       }
       const headersData = this.doSubmitHeader('save')
@@ -1135,7 +1136,7 @@ class DisplayEndpoint extends Component {
         params: updatedParams,
         pathVariables: updatedPathVariables,
         BASE_URL: endpointContent.host.BASE_URL || null,
-        bodyDescription: endpointContent?.data?.body?.type === 'JSON' ? bodyDescription : {},
+        bodyDescription: endpointContent?.bodyDescription,
         authorizationData: endpointContent.authorizationData,
         notes: endpointContent?.endpoint.notes,
         preScript: endpointContent?.preScriptText,
@@ -1273,7 +1274,7 @@ class DisplayEndpoint extends Component {
 
   setPublicBody(body) {
     const data = { ...this.props?.endpointContent?.data }
-    data.body = { type: data?.body?.type ?? 'none', value: body }
+    data.body = { type: data?.body?.type ?? bodyTypesEnums['none'], value: body }
     const tempData = this.props?.endpointContent
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
@@ -1376,7 +1377,7 @@ class DisplayEndpoint extends Component {
     const params = []
     let paramsFlag = false
     let postData = {}
-    if ((body.type === 'application/x-www-form-urlencoded' || body.type === 'multipart/form-data') && body.value) {
+    if ((body.type === bodyTypesEnums['application/x-www-form-urlencoded'] || body.type === bodyTypesEnums['multipart/form-data']) && body.value) {
       paramsFlag = true
       for (let i = 0; i < body.value.length; i++) {
         if (body.value[i].checked === 'true' && body.value[i].key !== '') {
@@ -1420,7 +1421,7 @@ class DisplayEndpoint extends Component {
       httpVersion: 'HTTP/1.1',
       cookies: [],
       headers: this.makeHeaders(originalHeaders || {}),
-      postData: body && body.type !== 'none' ? await this.makePostData(body) : null,
+      postData: body && body.type !== bodyTypesEnums['none'] ? await this.makePostData(body) : null,
       queryString: this.makeParams(originalParams)
     }
     if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
@@ -1460,9 +1461,17 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(tempData)
   }
 
-  setBody(bodyType, body) {
-    const data = { ...this.props?.endpointContent.data }
-    data.body = { type: bodyType, value: body }
+  setBody(bodyType, body, rawType) {
+    let data = { ...this.props?.endpointContent.data }
+    if (this.rawBodyTypes.includes(bodyType)) {
+      data.body = { ...data.body, type: bodyType, [bodyTypesEnums['raw']]: { rawType, value: body } }
+    }
+    else if (bodyType === bodyTypesEnums['application/x-www-form-urlencoded'] || bodyType === bodyTypesEnums['multipart/form-data']) {
+      data.body = { ...data.body, type: bodyType, [bodyType]: body }
+    }
+    else if (bodyType === bodyTypesEnums['none']) {
+      data.body = { ...data.body, type: bodyType }
+    }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
     this.setModifiedTabData()
     const tempData = this.props.endpointContent
@@ -1637,19 +1646,19 @@ class DisplayEndpoint extends Component {
 
   identifyBodyType(bodyType) {
     switch (bodyType) {
-      case 'application/x-www-form-urlencoded':
-        return 'application/x-www-form-urlencoded'
-      case 'multipart/form-data':
-        return 'multipart/form-data'
-      case 'TEXT':
+      case bodyTypesEnums['application/x-www-form-urlencoded']:
+        return bodyTypesEnums['application/x-www-form-urlencoded']
+      case bodyTypesEnums['multipart/form-data']:
+        return bodyTypesEnums['multipart/form-data']
+      case rawTypesEnums.TEXT:
         return 'text/plain'
-      case 'JSON':
+      case rawTypesEnums.JSON:
         return 'application/JSON'
-      case 'HTML':
+      case rawTypesEnums.HTML:
         return 'text/HTML'
-      case 'XML':
+      case rawTypesEnums.XML:
         return 'application/XML'
-      case 'JavaScript':
+      case rawTypesEnums.JavaScript:
         return 'application/JavaScript'
       default:
         break
@@ -1679,12 +1688,12 @@ class DisplayEndpoint extends Component {
 
   makeFormData(body) {
     const formData = {}
-    for (let i = 0; i < body.value.length; i++) {
-      if (body.value[i].key.length !== 0 && body.value[i].checked === 'true') {
-        if (!isElectron() && body.value[i].type === 'file') {
+    for (let i = 0; i < body.length; i++) {
+      if (body[i].key.length !== 0 && body[i].checked === 'true') {
+        if (!isElectron() && body[i].type === 'file') {
           continue
         }
-        formData[body.value[i].key] = body.value[i].value
+        formData[body[i].key] = body[i].value
       }
     }
     return formData
@@ -1693,25 +1702,25 @@ class DisplayEndpoint extends Component {
   formatBody(body, headers) {
     let finalBodyValue = null
     switch (body.type) {
-      case 'raw':
-        finalBodyValue = this.parseBody(body.value)
+      case bodyTypesEnums['raw']:
+        finalBodyValue = this.parseBody(body?.raw?.value || '')
         return { body: finalBodyValue, headers }
-      case 'multipart/form-data': {
-        const formData = this.makeFormData(body)
-        headers['content-type'] = 'multipart/form-data'
+      case bodyTypesEnums['multipart/form-data']: {
+        const formData = this.makeFormData(body[bodyTypesEnums['multipart/form-data']])
+        headers['content-type'] = bodyTypesEnums['multipart/form-data']
         return { body: formData, headers }
       }
-      case 'application/x-www-form-urlencoded': {
+      case bodyTypesEnums['application/x-www-form-urlencoded']: {
         const urlEncodedData = {}
-        for (let i = 0; i < body.value.length; i++) {
-          if (body.value[i].key.length !== 0 && body.value[i].checked === 'true') {
-            urlEncodedData[body.value[i].key] = body.value[i].value
+        for (let i = 0; i < body?.[bodyTypesEnums['application/x-www-form-urlencoded']].length; i++) {
+          if (body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].key.length !== 0 && body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].checked === 'true') {
+            urlEncodedData[body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].key] = body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].value
           }
         }
         return { body: urlEncodedData, headers }
       }
       default:
-        return { body: body.value, headers }
+        return { body: body?.raw?.value, headers }
     }
   }
 
@@ -2251,13 +2260,10 @@ class DisplayEndpoint extends Component {
       <BodyContainer
         {...this.props}
         set_body={this.setBody.bind(this)}
-        set_body_description={this.setDescription.bind(this)}
         body={this.props.endpointContent?.data?.body || {}}
-        Body={this.props?.endpointContent?.data?.body || {}}
         endpoint_id={this.props.tab.id}
+        set_body_description={this.setDescription.bind(this)}
         body_description={this.props?.endpointContent?.bodyDescription || ''}
-        field_description={this.props?.endpointContent?.fieldDescription || ''}
-        set_field_description={this.setFieldDescription.bind(this)}
       />
     )
   }
@@ -2393,12 +2399,14 @@ class DisplayEndpoint extends Component {
                 this.props?.environment?.variables?.BASE_URL?.initialValue ||
                 ''
               }
-              updatedUri={this.props?.endpointContent?.data?.updatedUri}
+              updatedUri={_.cloneDeep(this.props?.endpointContent?.data?.updatedUri)}
               set_base_url={this.setBaseUrl.bind(this)}
               // customHost={this.props?.endpointContent?.host.BASE_URL || ''}
               endpointId={this.props?.match?.params?.endpointId}
               set_host_uri={this.setHostUri.bind(this)}
               props_from_parent={this.propsFromChild.bind(this)}
+              setQueryUpdatedData = {this.props.setQueryUpdatedData.bind(this)}
+              untitledEndpointData = { _.cloneDeep(this.props.untitledEndpointData)}
             />
           </div>
           {this.props?.highlights?.uri ? <i className='fas fa-circle' /> : null}
