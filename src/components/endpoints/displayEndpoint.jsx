@@ -169,33 +169,48 @@ const untitledEndpointData = {
   harObject: {}
 }
 
-const getEndpointContent = async (props) => {
-  let currentIdToShow = isOnPublishedPage() ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
+const debouncedUpdateDraftData = _.debounce((endpointId, data) => {
+  tabService.updateDraftData(endpointId, _.cloneDeep(data));
+}, 1000);
 
-  let endpointId = props?.match?.params?.endpointId || currentIdToShow
+const updateTabDraftData = (endpointId, data) => {
+  debouncedUpdateDraftData(endpointId, data);
+}
+
+const getEndpointContent = async (props) => {
+  let isUserOnPublishedPage = isOnPublishedPage()
+  let currentIdToShow = isUserOnPublishedPage ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
+
+  let endpointId = isUserOnPublishedPage
+      ? currentIdToShow
+      : props?.match?.params.endpointId !== 'new'
+        ? props?.match?.params?.endpointId
+        : props?.activeTabId
+      
+  const tabId = props?.tabs[endpointId]
+  // showing data from draft if data is modified
+  if (!isUserOnPublishedPage && tabId?.isModified && tabId?.type == 'endpoint' && tabId?.draft) {
+    return tabId?.draft
+  }
+
   if (props?.match?.params?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
-    const data = isOnPublishedPage() ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
-    const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
-    return modifiedData
-  } else {
-    endpointId = props?.activeTabId
-    if (localStorage.getItem(endpointId)) {
-      const data = JSON.parse(localStorage.getItem(endpointId))
-      return data
-    } else {
-      localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(untitledEndpointData)))
-      const data = _.cloneDeep(untitledEndpointData)
-      return data
-    }
+    let data = isUserOnPublishedPage ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
+    return utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
   }
+
+  return _.cloneDeep(untitledEndpointData)
 }
 
 const fetchHistory = (historyId, props) => {
   const history = props?.historySnapshots[historyId]
-  const data = history?.endpoint
-  const modifiedData = utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
-  return modifiedData
+  let data = history?.endpoint
+  let draftData = props?.tabs[historyId]?.draft
+  // showing data from draft if data is modified
+  if (props?.tabs[historyId]?.isModified && draftData) {
+    return draftData
+  }
+  return utilityFunctions.modifyEndpointContent(_.cloneDeep(data), _.cloneDeep(untitledEndpointData))
 }
 
 const withQuery = (WrappedComponent) => {
@@ -231,16 +246,22 @@ const withQuery = (WrappedComponent) => {
     const setQueryUpdatedData = (data, callbackFn = null) => {
       let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
       const endpointId =
-        props?.match?.params.endpointId !== 'new' ? props?.match?.params?.endpointId || currentIdToShow : props?.activeTabId
-      if (props?.tabs?.[endpointId] && !props?.pages?.[endpointId]) {
-        localStorage.setItem(endpointId, JSON.stringify(_.cloneDeep(data)))
-        queryClient.setQueryData(queryKey, data)
-      }else{
-        queryClient.setQueryData(queryKey, data)
+        props?.match?.params.endpointId !== 'new'
+          ? props?.match?.params?.endpointId || currentIdToShow || props?.match?.params?.historyId
+          : props?.activeTabId
+      data = _.cloneDeep(data)
+      queryClient.setQueryData(queryKey, data)
+      // only update the data if it is different from default data
+      if (!_.isEqual(untitledEndpointData, data)) {
+        updateTabDraftData(endpointId, data)
       }
       if(callbackFn){
         callbackFn()
       } 
+    }
+
+    const getDataFromReactQuery = (id) => {
+      return queryClient.getQueryData(id)
     }
 
     return (
@@ -250,6 +271,7 @@ const withQuery = (WrappedComponent) => {
         endpointContentLoading={data?.isLoading}
         currentEndpointId={endpointId}
         setQueryUpdatedData={setQueryUpdatedData}
+        getDataFromReactQuery = {getDataFromReactQuery}
       />
     )
   }
@@ -294,6 +316,7 @@ class DisplayEndpoint extends Component {
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
       endpointContentState: null,
+      showEndpointFormModal:false
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -993,7 +1016,7 @@ class DisplayEndpoint extends Component {
 
   prepareBodyForSaving(body) {
     const data = _.cloneDeep(body)
-    if (data.type === 'multipart/form-data') {
+    if (data?.type === 'multipart/form-data') {
       data.value.forEach((item) => {
         if (item.type === 'file') item.value = {}
       })
@@ -1003,7 +1026,7 @@ class DisplayEndpoint extends Component {
 
   prepareBodyForSending(body) {
     const data = _.cloneDeep(body)
-    if (data.type === 'multipart/form-data') {
+    if (data?.type === 'multipart/form-data') {
       data.value.forEach((item) => {
         if (item.type === 'file') item.value.srcPath = ''
       })
@@ -1013,20 +1036,23 @@ class DisplayEndpoint extends Component {
 
   handleSave = async (id, endpointObject, slug) => {
     const { endpointName, endpointDescription } = endpointObject || {}
+    let currentTabId = this.props.tab.id;
+    let parentId = id;
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
       })
     }
-    if ((this.props?.match?.params?.endpointId === 'new' && !id) || (this.props?.match?.params?.historyId && slug !== 'isHistory')) {
+    if ((currentTabId && !this.props.pages[currentTabId] && !this.state.showEndpointFormModal) || (this.props?.match?.params?.historyId && slug !== 'isHistory')) {
       this.openEndpointFormModal()
     } else {
-      const body = this.prepareBodyForSaving(this.props?.endpointContent?.data?.body)
+      let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId]) 
+      const body = this.prepareBodyForSaving(endpointContent?.data?.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
-        body_description: this.props?.endpointContent.bodyDescription,
+        body_description: endpointContent?.bodyDescription,
         body: body.value
       })
-      if (this.props?.endpointContent?.data?.body.type === 'raw') {
+      if (endpointContent?.data?.body.type === 'raw') {
         body.value = this.parseBody(body.value)
       }
       const headersData = this.doSubmitHeader('save')
@@ -1037,31 +1063,31 @@ class DisplayEndpoint extends Component {
         return obj
       }, {})
       const endpoint = {
-        id: slug === 'isHistory' ? this.props?.match?.params?.historyId : this.props?.match?.params?.endpointId,
-        uri: this.props?.endpointContent?.data.updatedUri,
-        name: this.state.saveAsFlag ? endpointName : this.props?.endpointContent?.data?.name,
-        requestType: this.props?.endpointContent?.data?.method,
+        id: slug === 'isHistory' ? this.props?.match?.params?.historyId : currentTabId,
+        uri: endpointContent?.data.updatedUri,
+        name: this.state.saveAsFlag ? endpointName : endpointContent?.data?.name,
+        requestType: endpointContent?.data?.method,
         body: body,
         headers: headersData,
         params: updatedParams,
         pathVariables: updatedPathVariables,
-        BASE_URL: this.props?.endpointContent.host.BASE_URL || null,
-        bodyDescription: this.props?.endpointContent?.data?.body?.type === 'JSON' ? bodyDescription : {},
-        authorizationType: this.props?.endpointContent.authType,
-        notes: this.props?.endpointContent?.endpoint.notes,
-        preScript: this.props?.endpointContent?.preScriptText,
-        postScript: this.props?.endpointContent?.postScriptText,
-        docViewData: this.props?.endpointContent?.docViewData
+        BASE_URL: endpointContent.host.BASE_URL || null,
+        bodyDescription: endpointContent?.data?.body?.type === 'JSON' ? bodyDescription : {},
+        authorizationType: endpointContent.authType,
+        notes: endpointContent?.endpoint.notes,
+        preScript: endpointContent?.preScriptText,
+        postScript: endpointContent?.postScriptText,
+        docViewData: endpointContent?.docViewData
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
-      else if (this.props.location.pathname.split('/')[5] === 'new') {
-        endpoint.requestId = this.props.tab.id
+      else if (currentTabId && !this.props.pages[currentTabId]) {
+        endpoint.requestId = currentTabId
         endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
         this.props.add_endpoint(
           endpoint,
-          id,
+          parentId,
           ({ closeForm, stopLoader }) => {
             if (closeForm) this.closeEndpointFormModal()
             if (stopLoader) this.setState({ saveAsLoader: false })
@@ -1078,7 +1104,7 @@ class DisplayEndpoint extends Component {
           this.setState({ saveAsLoader: true })
           this.props.add_endpoint(
             endpoint,
-            id,
+            parentId,
             ({ closeForm, stopLoader }) => {
               if (closeForm) this.closeEndpointFormModal()
               if (stopLoader) this.setState({ saveAsLoader: false })
@@ -1095,13 +1121,13 @@ class DisplayEndpoint extends Component {
           this.props.update_endpoint(
             {
               ...endpoint,
-              id: this.props.currentEndpointId
+              id:currentTabId
             },
             () => {
               this.setState({ saveLoader: false })
             }
           )
-          tabService.markTabAsSaved(this.props.tab.id)
+          tabService.markTabAsSaved(currentTabId)
         }
       }
     }

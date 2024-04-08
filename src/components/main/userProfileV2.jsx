@@ -338,9 +338,9 @@ class UserProfileV2 extends Component {
   }
 
   handleLogout() {
-    this.removeFromLocalStorage(this.props.tabs.tabsOrder)
-    this.props.close_all_tabs(this.props.tabs.tabsOrder)
-    this.props.remove_history(this.props.historySnapshot)
+    // this.removeFromLocalStorage(this.props.tabs.tabsOrder)
+    // this.props.close_all_tabs(this.props.tabs.tabsOrder)
+    // this.props.remove_history(this.props.historySnapshot)
     this.props.history.push({
       pathname: '/logout'
     })

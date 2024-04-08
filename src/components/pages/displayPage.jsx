@@ -31,7 +31,7 @@ const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
-    const { data, isLoading, error } = useQuery(
+    let { data, error } = useQuery(
       ['pageContent', pageId],
       async () => {
         return isOnPublishedPage()
@@ -46,7 +46,11 @@ const withQuery = (WrappedComponent) => {
         retry: 2
       }
     )
-    return <WrappedComponent {...props} pageContent={data} pageContentLoading={isLoading} pageContentError={error} />;
+    const tabId = props?.tabs?.tabs?.[pageId]
+    if (tabId?.isModified && tabId?.type == 'page' && tabId?.draft) {
+      data = tabId?.draft
+    }
+    return <WrappedComponent {...props} pageContent={data} pageContentLoading={data?.isLoading} pageContentError={error} />
   }
 }
 
@@ -62,7 +66,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 const mapStateToProps = (state) => {
   return {
-    pages: state.pages
+    pages: state.pages,
+    tabs: state.tabs,
   }
 }
 

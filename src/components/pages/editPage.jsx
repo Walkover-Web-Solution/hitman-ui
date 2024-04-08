@@ -3,7 +3,7 @@ import { connect, useDispatch } from 'react-redux'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { withRouter } from 'react-router-dom'
 import WarningModal from '../common/warningModal'
-import { onPageUpdated, updateContent, updatePage } from '../pages/redux/pagesActions'
+import { updateContent, updatePage } from '../pages/redux/pagesActions'
 import './page.scss'
 import { toast } from 'react-toastify'
 import * as _ from 'lodash'
@@ -13,7 +13,6 @@ import Tiptap from '../tiptapEditor/tiptap'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    const dispatch = useDispatch()
     const queryClient = useQueryClient()
     const pageId = props.match.params.pageId
     const orgId = props.match.params.orgId
@@ -26,10 +25,14 @@ const withQuery = (WrappedComponent) => {
           enabled: true,
           staleTime: 600000
         })
-        dispatch(onPageUpdated(data))
         props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
       }
     })
+    const tabId = props?.tabs?.tabs?.[pageId]
+    //if tab is Modified then show the data from the tab
+    if (tabId?.isModified && tabId?.type == 'page' && tabId?.draft) {
+      pageContentData.data = tabId?.draft
+    }
     return <WrappedComponent {...props} pageContentData={pageContentData.data} mutationFn={mutation} />
   }
 }
@@ -52,7 +55,7 @@ class EditPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: { id: null, versionId: null, name: '', contents: '', state: '' },
+      data: { id: null, name: '', contents: '', state: '' },
       showEditor: false
     }
     this.name = React.createRef()
@@ -64,17 +67,18 @@ class EditPage extends Component {
     const { pages } = this.props
     const page = pages[pageId]
     if (page) {
-      const { id, versionId, name, contents, isPublished, state } = page
+      const { id, name, contents, isPublished, state } = page
       data = {
         id,
-        versionId,
         name,
         contents,
         isPublished,
         state
       }
+      let updatedData = _.cloneDeep(data)
+      updatedData.contents = this.props?.pageContentData
 
-      this.setState({ data, originalData: data, draftDataSet: true })
+      this.setState({ data: updatedData, originalData: data, draftDataSet: true })
     }
   }
 
@@ -107,7 +111,9 @@ class EditPage extends Component {
 
     if (tab && pageId) {
       if (tab.isModified && !draftDataSet) {
-        await this.setState({ ...tab.state, draftDataSet: true })
+        let data = this.state.data
+        data.contents = this.props.pageContentData
+        this.setState({ ...tab.state, draftDataSet: true, data: data })
       } else if (pageId !== 'new' && pages[tab.id] && !this.state.originalData?.id) {
         await this.fetchPage(tab.id)
       }
@@ -116,15 +122,24 @@ class EditPage extends Component {
 
   handleChange = (value) => {
     const data = { ...this.state.data }
-
     data.contents = value
+    let tabId = this.props.tab.id
 
     this.setState({ data }, () => {
-      if (this.isModified()) {
+      if (!this.props.tabs[tabId]?.activeTabId) {
         tabService.markTabAsModified(this.props.tab.id)
-        this.setUnsavedTabDataInIDB()
       }
+      this.updateTabDraftData(value)
     })
+  }
+
+  updateTabDraftData(value) {
+    if (this.props.tab.id === this.props.tabs.activeTabId) {
+      clearTimeout(this.saveTimeOut)
+      this.saveTimeOut = setTimeout(() => {
+        tabService.updateDraftData(this.props.tab.id, _.cloneDeep(value))
+      }, 1000)
+    }
   }
 
   setUnsavedTabDataInIDB() {
@@ -139,13 +154,14 @@ class EditPage extends Component {
   handleNameChange = (e) => {
     const data = { ...this.state.data }
     const newPageName = e.currentTarget.value
+
     if (newPageName !== this.state.originalData.name) {
       data.name = newPageName
       this.setState({ data }, () => {
-        if (this.isModified()) {
+        if (!this.isModified()) {
           tabService.markTabAsModified(this.props.tab.id)
-          this.setUnsavedTabDataInIDB()
         }
+        this.setUnsavedTabDataInIDB()
       })
     }
   }
@@ -160,6 +176,7 @@ class EditPage extends Component {
     delete editedPage['isPublished']
     this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
     tabService.markTabAsSaved(this.props.tab.id)
+    tabService.updateDraftData(editedPage?.id, null)
   }
 
   handleCancel() {
@@ -174,11 +191,8 @@ class EditPage extends Component {
   }
 
   isModified() {
-    if (!this.state.isAlreadyModified) {
-      this.setState({ isAlreadyModified: true })
-      return true
-    }
-    return false
+    let tabId = this.props.tab.id
+    return this.props.tabs[tabId]?.activeTabId
   }
 
   renderTiptapEditor(item, index) {
