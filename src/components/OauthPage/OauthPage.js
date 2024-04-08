@@ -7,7 +7,6 @@ export default function OauthPage() {
   const queryParams = new URLSearchParams(location.search);
   const code = queryParams.get('code') || '';
   const state = queryParams.get('state') || '';
-  const accessToken = queryParams.get('access_token') || '';
 
   const fragment = location.hash.substring(1);
 

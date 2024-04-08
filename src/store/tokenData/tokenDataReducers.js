@@ -18,7 +18,7 @@ const tokenDataReducer = (state = initialState, action) => {
         case tokenDataActionTypes.UPDATE_TOKEN:
             state.tokenDetails[action.payload.tokenId].refreshToken = action?.payload?.refreshToken || null;
             state.tokenDetails[action.payload.tokenId].expiryTime = action?.payload?.expiryTime || null;
-            state.tokenDetails[action.payload.tokenId].refreshToken = action?.payload?.accessToken || '';
+            state.tokenDetails[action.payload.tokenId].accessToken = action?.payload?.accessToken || '';
             return { ...state }
 
         default:
