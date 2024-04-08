@@ -118,6 +118,7 @@ class HostContainer extends Component {
 
       // setting path variables
       let path = new URI(parsedData.raw_url)
+      let queryParams = path.query(true);
       path = path.pathname()
       const pathVariableKeys = path.split('/').filter(part => part.startsWith(':')).map(key => key.slice(1));
       for(let i = 0;i < pathVariableKeys.length ;i++){
@@ -193,10 +194,10 @@ class HostContainer extends Component {
       untitledEndpointData.originalHeaders.push(...untitledEndpointData.originalHeaders.splice(0, 1));  
       
       // setting query params
-      for(let key in parsedData?.queries){
+      for(let key in queryParams){
         let eachDataOriginal = {
           checked : "true",
-          value: parsedData.queries[key],
+          value: queryParams[key],
           description: "",
           key : key
         }

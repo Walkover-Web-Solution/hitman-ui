@@ -46,7 +46,7 @@ export default function Auth2Configurations(props) {
                             <input onChange={handleTokenValueChange} value={props?.selectedTokenValue ?? ''} name='accessToken' className='form-control' />
                             <div className='dropdown available-token-dropdown ml-2'>
                                 <button className='btn dropdown-toggle' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' >
-                                    {props?.selectedTokenId && tokenDetails[props?.selectedTokenId]?.tokenName ? tokenDetails[props?.selectedTokenId]?.tokenName : 'Availabale Tokens'}
+                                    {props?.selectedTokenId && tokenDetails[props?.selectedTokenId]?.tokenName ? tokenDetails[props?.selectedTokenId]?.tokenName : 'Available Tokens'}
                                 </button>
                                 <div className='dropdown-menu dropdown-menu-token available-token-dropdown-menu' aria-labelledby='dropdownMenuButton'>
                                     {Object.keys(tokenDetails).map((tokenId, index) => (
