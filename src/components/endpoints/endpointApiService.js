@@ -1,16 +1,15 @@
 import http from '../../services/httpService'
 import httpService from '../../services/endpointHttpService'
-import indexedDbService from '../indexedDb/indexedDbService'
 import qs from 'qs'
 import { getOrgId } from '../common/utility'
 import { makeHttpRequestThroughAxios } from '../../services/coreRequestService'
-import { getProxyToken } from '../auth/authServiceV2'
+import { grantTypesEnums } from '../common/authorizationEnums'
 
 const apiUrlEndpoint = process.env.REACT_APP_API_URL
 
 function getApiUrl() {
   const orgId = getOrgId()
-  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+  return apiUrlEndpoint + `/orgs/${orgId}`
 }
 
 function endpointUrlForCollection(pageId) {
@@ -69,113 +68,9 @@ export function moveEndpoint(endpointId, body) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body)
 }
 
-export function updateEndpointOrder(
-  endpointsOrder
-  // sourceGroupId = null,
-  // destinationEndpointIds = null,
-  // destinationGroupId = null,
-  // endpointId = null
-) {
+export function updateEndpointOrder(endpointsOrder) {
   const apiUrl = getApiUrl()
-  return http.patch(`${apiUrl}/updateEndpointsOrder`, {
-    endpointsOrder
-    // sourceGroupId,
-    // destinationEndpointIds,
-    // destinationGroupId,
-    // endpointId
-  })
-}
-
-function makeParams(params, grantType, authData) {
-  let finalHeaders = {}
-  let finalParams = {}
-  if (authData.clientAuthentication === 'Send as Basic Auth header') {
-    if (grantType === 'passwordCredentials') {
-      finalHeaders = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        client_id: params.client_id,
-        client_secret: params.client_secret,
-        username: params.username,
-        password: params.password
-      }
-      finalParams = params
-      delete finalParams.client_id
-      delete finalParams.client_secret
-      delete finalParams.username
-      delete finalParams.password
-    } else {
-      finalHeaders = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        client_id: params.client_id,
-        client_secret: params.client_secret
-      }
-      finalParams = params
-      delete finalParams.client_id
-      delete finalParams.client_secret
-    }
-  } else if (authData.clientAuthentication === 'Send client credentials in body') {
-    finalHeaders = {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-    finalParams = params
-  }
-  const finalParamsandHeaders = []
-  finalParamsandHeaders[0] = finalParams
-  finalParamsandHeaders[1] = finalHeaders
-  return finalParamsandHeaders
-}
-
-export async function authorize(requestApi, params, grantType, props, authData) {
-  if (grantType === 'passwordCredentials' || grantType === 'clientCredentials' || grantType === 'auth_code') {
-    const finalParamsandHeaders = makeParams(params, grantType, authData)
-    const finalParams = finalParamsandHeaders[0]
-    const finalHeaders = finalParamsandHeaders[1]
-    if (grantType === 'auth_code') params.grant_type = 'authorization_code'
-    const { data: responseData } = await httpService.request({
-      url: requestApi,
-      method: 'POST',
-      data: qs.stringify(finalParams),
-      headers: finalHeaders
-    })
-    responseData.tokenName = authData.tokenName
-    if (grantType === 'auth_code') {
-      await indexedDbService.getDataBase()
-      await indexedDbService.updateData('responseData', responseData, 'currentResponse')
-      const response = await indexedDbService.getValue('responseData', 'currentResponse')
-      const timer = setInterval(async function () {
-        if (response) {
-          clearInterval(timer)
-          window.close()
-        }
-      }, 1000)
-    } else {
-      if (responseData && responseData.access_token) {
-        if (props.groupId) await setResponse(props, responseData)
-        props.set_access_token(responseData.access_token)
-      }
-    }
-  } else {
-    if (grantType === 'authorizationCode') {
-      requestApi = requestApi + '&response_type=code'
-    } else {
-      requestApi = requestApi + '&response_type=token'
-    }
-    const openWindow = window.open(requestApi, 'windowName', 'width=400,height=600')
-
-    const timer = setInterval(async function () {
-      if (openWindow.closed) {
-        clearInterval(timer)
-        await indexedDbService.getDataBase()
-        const responseData = await indexedDbService.getValue('responseData', 'currentResponse')
-        await indexedDbService.deleteData('responseData', 'currentResponse')
-        if (responseData && responseData.access_token) {
-          responseData.tokenName = authData.tokenName
-          if (props.groupId) await setResponse(props, responseData)
-          props.set_access_token(responseData.access_token)
-        }
-      }
-    }, 1000)
-  }
+  return http.patch(`${apiUrl}/updateEndpointsOrder`, { endpointsOrder })
 }
 
 export async function setResponse(props, responseData) {
@@ -185,9 +80,82 @@ export async function setResponse(props, responseData) {
   await props.set_authorization_responses(versionId, authResponses)
 }
 
-export function setAuthorizationType(endpointId, data) {
-  const apiUrl = getApiUrl()
-  return http.patch(`${apiUrl}/endpoints/${endpointId}/authorizationType`, data)
+export async function getTokenAuthorizationCodeAndAuthorizationPKCE(accessTokenURL, code, data) {
+  let body = {
+    client_id: data.clientId,
+    redirect_uri: data.callbackUrl,
+    code: code,
+    grant_type: 'authorization_code',
+    client_secret: data.clientSecret
+  }
+
+  const headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
+
+  if (data.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
+    body.code_verifier = data.codeVerifier
+  }
+
+  try {
+    const { data: responseData } = await httpService.request({
+      url: `${apiUrlEndpoint}/auth/token`,
+      method: 'POST',
+      data: { tokenBody: body, tokenHeaders: headers, accessTokenUrl: accessTokenURL },
+    })
+    return responseData.data
+  }
+  catch (error) {
+    throw error
+  }
+}
+
+export async function getTokenPasswordAndClientGrantType(accessTokenURL, data) {
+  let body = {
+    client_id: data.clientId,
+    client_secret: data.clientSecret,
+    scope: data.scope,
+    grant_type: 'client_credentials',
+  }
+
+  let headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
+
+  if (data.selectedGrantType === grantTypesEnums.passwordCredentials) {
+    body.grant_type = 'password'
+    body.username = data.username
+    body.password = data.password
+  }
+
+  try {
+    const { data: responseData } = await httpService.request({
+      url: `${apiUrlEndpoint}/auth/token`,
+      method: 'POST',
+      data: { tokenBody: body, tokenHeaders: headers, accessTokenUrl: accessTokenURL },
+    })
+    return responseData.data
+  }
+  catch (error) {
+    throw error
+  }
+}
+
+export async function getRefreshToken(singleTokenDetails) {
+  let body = {
+    client_id: singleTokenDetails.clientId,
+    client_secret: singleTokenDetails.clientSecret,
+    refresh_token: singleTokenDetails.refreshToken,
+    grant_type: 'refresh_token',
+  }
+
+  try {
+    const { data: responseData } = await httpService.request({
+      url: `${apiUrlEndpoint}/auth/token`,
+      method: 'POST',
+      data: { tokenBody: body, tokenHeaders: {}, accessTokenUrl: singleTokenDetails?.refreshTokenUrl },
+    })
+    return responseData.data
+  }
+  catch (error) {
+    throw error
+  }
 }
 
 export default {
@@ -199,8 +167,9 @@ export default {
   getAllEndpoints,
   duplicateEndpoint,
   moveEndpoint,
-  authorize,
-  setAuthorizationType,
   updateEndpointOrder,
-  saveEndpoint
+  saveEndpoint,
+  getTokenAuthorizationCodeAndAuthorizationPKCE,
+  getTokenPasswordAndClientGrantType,
+  getRefreshToken,
 }

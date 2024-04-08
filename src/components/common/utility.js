@@ -541,9 +541,8 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.data.body = endpoint.body
   untitled.data.uri = endpoint.uri
   untitled.data.updatedUri = endpoint.uri
-  untitled.authType = endpoint.authorizationType
-  let headersData = []
-  headersData = Object.keys(endpoint.headers).map((key) => {
+  untitled.authorizationData = endpoint?.authorizationData || untitled.authorizationData;
+  const headersData = Object.keys(endpoint.headers).map((key) => {
     return { key, ...endpoint.headers[key] }
   })
   const paramsData = Object.keys(endpoint.params).map((key) => {

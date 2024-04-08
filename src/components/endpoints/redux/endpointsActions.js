@@ -127,37 +127,6 @@ export const moveEndpoint = (endpointId, sourceGroupId, destinationGroupId) => {
   }
 }
 
-export const setAuthorizationType = (endpointId, authData) => {
-  const originalAuthType = store.getState().endpoints[endpointId].authorizationType
-  return (dispatch) => {
-    dispatch(setAuthorizationTypeRequest(endpointId, authData))
-    endpointApiService
-      .setAuthorizationType(endpointId, authData)
-      .then(() => {})
-      .catch((error) => {
-        dispatch(onAuthorizationTypeError(error.response ? error.response.data : error, endpointId, originalAuthType))
-        toast.error(error)
-      })
-  }
-}
-
-export const setAuthorizationTypeRequest = (endpointId, authData) => {
-  return {
-    type: endpointsActionTypes.SET_AUTHORIZATION_TYPE_REQUEST,
-    endpointId,
-    authData
-  }
-}
-
-export const onAuthorizationTypeError = (error, endpointId, originalAuthType) => {
-  return {
-    type: endpointsActionTypes.SET_AUTHORIZATION_TYPE_ERROR,
-    error,
-    endpointId,
-    originalAuthType
-  }
-}
-
 export const moveEndpointRequest = (endpointId, sourceGroupId, destinationGroupId) => {
   return {
     type: endpointsActionTypes.MOVE_ENDPOINT_REQUEST,

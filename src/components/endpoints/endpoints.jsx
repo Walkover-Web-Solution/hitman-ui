@@ -387,7 +387,6 @@ class Endpoints extends Component {
       pathVariables: {},
       BASE_URL: null,
       bodyDescription: {},
-      authorizationType: null
     }
     return (
       <>
