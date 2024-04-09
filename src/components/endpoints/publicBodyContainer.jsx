@@ -156,7 +156,7 @@ class PublicBodyContainer extends Component {
 
   handleChangeBodyDescription = (data) => {
     try {
-      const body = JSON.stringify(JSON.parse(data), null, 2); 
+      const body = data;
       const bodyData = {
         bodyDescription: this.bodyDescription,
         body: body
