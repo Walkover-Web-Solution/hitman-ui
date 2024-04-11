@@ -9,8 +9,7 @@ import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
-import { openInNewTab } from '../tabs/redux/tabsActions'
-import {orgListKey, orgKey, currentOrgKey, profileKey,tokenKey } from '../auth/authServiceV2'
+import {orgListKey, orgKey, profileKey,tokenKey } from '../auth/authServiceV2'
 import { bodyTypesEnums, rawTypesEnums } from './bodyTypeEnums'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
@@ -528,7 +527,6 @@ export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = 
     window.localStorage.setItem(tokenKey, proxyAuthToken)
     window.localStorage.setItem(profileKey, JSON.stringify(userInfo))
     window.localStorage.setItem(orgKey, JSON.stringify(userInfo.c_companies[0]))
-    window.localStorage.setItem(currentOrgKey, JSON.stringify(userInfo.currentCompany))
     window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
   } catch (e) {
     console.error('error ', e)

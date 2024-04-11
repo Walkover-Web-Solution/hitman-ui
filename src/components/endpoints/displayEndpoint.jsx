@@ -256,13 +256,43 @@ const withQuery = (WrappedComponent) => {
       retry: 3
     })
 
+    const setOldDataToNewDataForBody = (data) =>  {
+      let endpoint = _.cloneDeep(data.data);
+      const bodyType = endpoint.body.type;
+      const untitled = _.cloneDeep(untitledEndpointData.data);
+
+      if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) && endpoint.body.raw) {
+        untitled.body = endpoint.body;
+      } else if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)) {
+        untitled.body = { ...untitled.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } };
+      } else if (bodyType === bodyTypesEnums['application/x-www-form-urlencoded'] || bodyType === bodyTypesEnums['multipart/form-data']) {
+        if (endpoint.body[bodyType]) {
+          untitled.body = endpoint.body;
+        } else {
+          untitled.body = { ...untitled.body, type: bodyType, [bodyType]: endpoint.body?.value || [] };
+        }
+      } else if (bodyType === bodyTypesEnums['none']) {
+        if (endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || endpoint.body?.[bodyTypesEnums['multipart/form-data']] || endpoint.body?.[bodyTypesEnums['raw']]) {
+          untitled.body = endpoint.body;
+        }
+        else {
+          untitled.body = { ...untitled.body, ...endpoint.body }
+        }
+      } 
+      delete endpoint.body?.value;
+
+      untitled.uri = endpoint.uri
+      untitled.updatedUri = endpoint.uri
+      untitled.method = endpoint.method;
+      untitled.name = endpoint.name;
+      return _.cloneDeep(untitled);
+    }
+
     const setQueryUpdatedData = (data, callbackFn = null) => {
       let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
       const endpointId =
-        props?.match?.params.endpointId !== 'new'
-          ? props?.match?.params?.endpointId || currentIdToShow || props?.match?.params?.historyId
-          : props?.activeTabId
-      data = _.cloneDeep(data)
+        props?.match?.params.endpointId !== 'new' ? props?.match?.params?.endpointId || currentIdToShow : props?.activeTabId
+        data.data  =  setOldDataToNewDataForBody(data);
       queryClient.setQueryData(queryKey, data)
       // only update the data if it is different from default data
       if (!_.isEqual(untitledEndpointData, data)) {
@@ -748,24 +778,23 @@ class DisplayEndpoint extends Component {
   }
 
   setPathVariableValues() {
-    let uri = new URI(this.props?.endpointContent?.data?.updatedUri || '')
-    uri = uri.pathname()
-    const pathParameters = uri.split('/')
-    let path = ''
-    let counter = 0
-    const uniquePathparameters = {}
+    let uri = new URI(this.props?.endpointContent?.data?.updatedUri || '');
+    uri = uri.pathname();
+    const pathParameters = uri.split('/');
+    let path = '';
+    const pathVariablesMap = {};
+  
+    this.props.endpointContent.pathVariables.forEach(variable => {
+      pathVariablesMap[variable.key] = variable.value;
+    });
+  
     for (let i = 0; i < pathParameters.length; i++) {
-      if (pathParameters[i][0] === ':' && pathParameters[i].slice(1).trim()) {
-        if (
-          uniquePathparameters[pathParameters[i].slice(1)]
-          || uniquePathparameters[pathParameters[i].slice(1)] === ''
-        ) {
-          pathParameters[i] = uniquePathparameters[pathParameters[i].slice(1)]
+      if (pathParameters[i][0] === ':') {
+        const pathVariableKey = pathParameters[i].slice(1).trim()
+        if (pathVariablesMap.hasOwnProperty(pathVariableKey) && pathVariablesMap[pathVariableKey] !== '') {
+          pathParameters[i] = pathVariablesMap[pathVariableKey];
         } else {
-          pathParameters[i] = this.props.endpointContent.pathVariables[counter]?.value
-          uniquePathparameters[this.props.endpointContent.pathVariables[counter]?.key] =
-            this.props?.endpointContent?.pathVariables[counter]?.value
-          counter++
+          pathParameters[i] = ':' + pathVariableKey;
         }
       }
     }
@@ -894,40 +923,40 @@ class DisplayEndpoint extends Component {
 
   async getRefreshToken(headers, url) {
     let oauth2Data = this.props?.endpointContent?.authorizationData?.authorization?.oauth2
-    if (this.props?.endpointContent?.authorizationData?.authorizationTypeSelected === 'oauth2' && (this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCode || this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCodeWithPkce)) {
-      const generatedDateTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.createdTime;
-      const expirationTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.expiryTime;
-      const isTokenExpired = this.checkTokenExpired(expirationTime, generatedDateTime)
-      if (isTokenExpired && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshTokenUrl && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken) {
-        try {
-          const data = await endpointApiService.getRefreshToken(this.props.tokenDetails[oauth2Data.selectedTokenId])
-          if (data?.access_token) {
-            const dataToUpdate = {
-              tokenId: oauth2Data.selectedTokenId,
-              accessToken: data.access_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.accessToken,
-              refreshToken: data.refresh_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken,
-              expiryTime: data.expires_in || this.props.tokenDetails[oauth2Data.selectedTokenId]?.expiryTime,
-            }
-            this.props.update_token(dataToUpdate)
-            if (oauth2Data?.addAuthorizationRequestTo === addAuthorizationDataTypes.requestHeaders && headers?.Authorization) {
-              headers.Authorization = `Bearer ${data.access_token}`
-              this.setHeaders(data.access_token, 'Authorization.oauth_2')
-            }
-            else if (oauth2Data?.addAuthorizationRequestTo === addAuthorizationDataTypes.requestUrl) {
-              const urlObj = new URL(url);
-              const searchParams = new URLSearchParams(urlObj.search);
-              searchParams.set('access_token', data.access_token);
-              const newSearchParamsString = searchParams.toString();
-              url = urlObj.origin + urlObj.pathname + '?' + newSearchParamsString + urlObj.hash;
-              this.setParams(data.access_token, 'access_token')
-            }
-          }
-        }
-        catch (error) {
-          console.error('could not refresh the token')
-        }
-      }
-    }
+       if (this.props?.endpointContent?.authorizationData?.authorizationTypeSelected === 'oauth2' && (this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCode || this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.grantType === grantTypesEnums.authorizationCodeWithPkce)) {
+         const generatedDateTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.createdTime;
+         const expirationTime = this.props.tokenDetails?.[oauth2Data?.selectedTokenId]?.expiryTime;
+         const isTokenExpired = this.checkTokenExpired(expirationTime, generatedDateTime)
+         if (isTokenExpired && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshTokenUrl && this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken) {
+           try {
+             const data = await endpointApiService.getRefreshToken(this.props.tokenDetails[oauth2Data.selectedTokenId])
+             if (data?.access_token) {
+               const dataToUpdate = {
+                 tokenId: oauth2Data.selectedTokenId,
+                 accessToken: data.access_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.accessToken,
+                 refreshToken: data.refresh_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken,
+                 expiryTime: data.expires_in || this.props.tokenDetails[oauth2Data.selectedTokenId]?.expiryTime,
+               }
+               this.props.update_token(dataToUpdate)
+               if (oauth2Data?.addAuthorizationRequestTo === addAuthorizationDataTypes.requestHeaders && headers?.Authorization) {
+                 headers.Authorization = `Bearer ${data.access_token}`
+                 this.setHeaders(data.access_token, 'Authorization.oauth_2')
+               }
+               else if (oauth2Data?.addAuthorizationRequestTo === addAuthorizationDataTypes.requestUrl) {
+                 const urlObj = new URL(url);
+                 const searchParams = new URLSearchParams(urlObj.search);
+                 searchParams.set('access_token', data.access_token);
+                 const newSearchParamsString = searchParams.toString();
+                 url = urlObj.origin + urlObj.pathname + '?' + newSearchParamsString + urlObj.hash;
+                 this.setParams(data.access_token, 'access_token')
+               }
+             }
+           }
+           catch (error) {
+             console.error('could not regenerate the token')
+           }
+         }
+       }
     return { newHeaders: headers, newUrl: url }
   }
 
@@ -1005,9 +1034,10 @@ class DisplayEndpoint extends Component {
       url = this.replaceVariables(url, environment)
       url = this.addhttps(url)
       headers = this.replaceVariablesInJson(headers, environment)
-      const { newHeaders, newUrl } = this.getRefreshToken(headers, url)
-      headers = newHeaders
-      url = newUrl
+       // Start of Regeneration of AUTH2.0 Token
+       const { newHeaders, newUrl } = await this.getRefreshToken(headers, url)
+       headers = newHeaders
+       url = newUrl
       const bodyType = this.props?.endpointContent?.data?.body?.type
       body = this.replaceVariablesInBody(body, bodyType, environment)
       requestOptions = { ...requestOptions, body, headers, url, bodyType }
@@ -1137,7 +1167,7 @@ class DisplayEndpoint extends Component {
         params: updatedParams,
         pathVariables: updatedPathVariables,
         BASE_URL: endpointContent.host.BASE_URL || null,
-        bodyDescription: endpointContent?.data?.body?.type === 'JSON' ? bodyDescription : {},
+        bodyDescription: endpointContent?.bodyDescription,
         authorizationData: endpointContent.authorizationData,
         notes: endpointContent?.endpoint.notes,
         preScript: endpointContent?.preScriptText,
@@ -1378,28 +1408,29 @@ class DisplayEndpoint extends Component {
     const params = []
     let paramsFlag = false
     let postData = {}
-    if ((body.type === bodyTypesEnums['application/x-www-form-urlencoded'] || body.type === bodyTypesEnums['multipart/form-data']) && body.value) {
+    if ((body.type === bodyTypesEnums['application/x-www-form-urlencoded'] || body.type === bodyTypesEnums['multipart/form-data'])) {
       paramsFlag = true
-      for (let i = 0; i < body.value.length; i++) {
-        if (body.value[i].checked === 'true' && body.value[i].key !== '') {
+      let data = body[body.type]
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].checked === 'true' && data[i].key !== '') {
           params.push({
-            name: body.value[i].key,
-            value: body.value[i].value,
+            name: data[i].key,
+            value: data[i].value,
             fileName: null,
             contentType: null
           })
         }
       }
       postData = {
-        mimeType: body.type,
+        mimeType: body?.type,
         params: params,
         comment: ''
       }
     } else {
       postData = {
-        mimeType: body.type,
+        mimeType: body?.type,
         params: params,
-        text: paramsFlag === false ? body.value : '',
+        text: paramsFlag === false ? body?.raw?.value : '',
         comment: ''
       }
     }
