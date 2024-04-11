@@ -2,6 +2,7 @@ const querystring = require('querystring')
 const FormData = require('form-data')
 const axios = require('axios')
 const https = require('https')
+const { bodyTypesEnums } = require('../src/components/common/bodyTypeEnums')
 const HITMAN_AGENT = 'Hitman/1.0.0'
 const cancelTokenMap = new Map()
 
@@ -21,7 +22,7 @@ async function makeHttpRequestThroughAxios(
     cancelToken: createCancelToken(keyForRequest),
     httpsAgent
   }
-  if (headers['content-type'] === 'multipart/form-data') {
+  if (headers['content-type'] === bodyTypesEnums['multipart/form-data']) {
     const bodyFormData = new FormData()
     for (const [key, value] of Object.entries(data)) {
       if (typeof value === 'object') {
@@ -46,7 +47,7 @@ async function makeHttpRequestThroughAxios(
     }
     options.data = bodyFormData
     options.headers = { ...headers, ...bodyFormData.getHeaders() }
-  } else if (headers['content-type'] === 'application/x-www-form-urlencoded') {
+  } else if (headers['content-type'] === bodyTypesEnums['application/x-www-form-urlencoded']) {
     options.data = querystring.stringify(data)
   }
   return new Promise((resolve, reject) => {
