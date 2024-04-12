@@ -282,7 +282,7 @@ const withQuery = (WrappedComponent) => {
       delete endpoint.body?.value;
 
       untitled.uri = endpoint.uri
-      untitled.updatedUri = endpoint.uri
+      untitled.updatedUri = endpoint.updatedUri
       untitled.method = endpoint.method;
       untitled.name = endpoint.name;
       return _.cloneDeep(untitled);
