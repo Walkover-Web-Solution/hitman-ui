@@ -8,8 +8,10 @@ import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ReactComponent as CopyIcon } from '../../assets/icons/copyIcon.svg'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
-const HTTPSnippet = require('httpsnippet')
+import { isOnPublishedPage } from '../common/utility'
+import { IoCodeSlash } from "react-icons/io5";
 
+const HTTPSnippet = require('httpsnippet')
 class CodeTemplate extends Component {
   constructor(props) {
     super(props)
@@ -17,6 +19,11 @@ class CodeTemplate extends Component {
       theme: ''
     }
     this.selectedLanguage = 'shell'
+    this.iconRef = React.createRef()
+    this.OutlineArrowRef = React.createRef()
+    this.pubCodesRef = React.createRef()
+    this.iconNoneRef = React.createRef()
+    this.closeIconRef = React.createRef()
   }
 
   makeCodeSnippet() {
@@ -64,11 +71,38 @@ class CodeTemplate extends Component {
       this.makeCodeTemplate(this.selectedLanguage)
     }
   }
+  handleShowSideBar() {
+    const pubCodeElement = document.querySelector('.pubCodes');
+    const hamburgerElement = document.querySelector('#OutlineArrow');
+    if (this.iconRef.current && pubCodeElement) {
+      if (this.iconRef.current.classList.contains('close-icons')) {
+        this.iconRef.current.classList.remove('close-icons');
+        this.pubCodesRef.current.classList.remove('open');
+        pubCodeElement.classList.remove('close-icon');
+        hamburgerElement.classList.remove('icon-none');
+        // this.iconNoneRef.current.classList.add('open-close');
+        this.closeIconRef.current.classList.remove('close-pubcodes');
+      }
+      else {
+        this.iconRef.current.classList.add('close-icons');
+        this.pubCodesRef.current.classList.add('open');
+        pubCodeElement.classList.add('open');
+        hamburgerElement.classList.add('icon-none');
+        // this.iconNoneRef.current.classList.add('none-icons');
+        this.closeIconRef.current.classList.add('close-pubcodes');
+      }
+    }
+  }
 
-
+ 
   render() {
     return (
-      <div className='pubCodeWrapper'>
+      <>
+      <span ref={this.iconRef} className={`${isOnPublishedPage() ? "none-icons" : 'Outline-arrow'}`}> 
+       <IoCodeSlash id='OutlineArrow' className={'open-close'} onClick={() => { this.handleShowSideBar() }}/> </span>
+      <span ref={this.closeIconRef} onClick={() => { this.handleShowSideBar() }} className='none-icons'>X</span>
+     
+      <div span ref={this.pubCodesRef} className={`${isOnPublishedPage() ? "pubCodeWrapper " : 'pubCodes'}`}>
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
             <div className='code-heading mb-3 d-flex justify-content-center'>
@@ -150,6 +184,7 @@ class CodeTemplate extends Component {
           </Col>
         </div>
       </div>
+      </>
     )
   }
 }

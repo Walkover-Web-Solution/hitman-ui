@@ -173,12 +173,14 @@ class Groups extends Component {
 
   renderBody(subPageId) {
     let isUserOnPublishedPage = isOnPublishedPage()
+    let isuserONTechdocOwnDomain = isTechdocOwnDomain()
     const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isUserOnPublishedPage
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === subPageId ? 'selected' : ''
+    const isSelected = isUserOnPublishedPage && isuserONTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId ? 'selected' : ''
     return (
       <>
         <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
-          <button tabIndex={-1} className={`${expanded ? 'expanded' : ''} ${isSelected}`}>
+          <button tabIndex={-1} className={`${expanded ? 'expanded' : ''}`}>
+          <div className={`active-selected  ${isSelected ? ' selected' : ''}`}>
             <div
               draggable={!isUserOnPublishedPage}
               onDragOver={this.props.handleOnDragOver}
@@ -187,13 +189,14 @@ class Groups extends Component {
               onDragEnter={(e) => this.props.onDragEnter(e, subPageId)}
               onDragEnd={(e) => this.props.onDragEnd(e)}
               style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
-              className='d-flex align-items-center cl-name name-sub-page '
+              className={`d-flex align-items-center justify-content-center cl-name name-sub-page`}
               onClick={() => this.toggleSubPageIds(subPageId)}
             >
               <span className='versionChovron'>
               <MdExpandMore className='fs-4'/>
               </span>
               <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
+            </div>
             </div>
             {
               // [info] options not to show on publihsed page

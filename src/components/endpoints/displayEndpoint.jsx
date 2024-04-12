@@ -2922,7 +2922,7 @@ class DisplayEndpoint extends Component {
                 {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
               </div>
             ) : null}
-            {this.isNotDashboardOrDocView() && this.props?.endpointContent?.harObject && isOnPublishedPage() && (
+            {this.props?.endpointContent?.harObject  && (
               <CodeTemplate
               show
               onHide={() => {

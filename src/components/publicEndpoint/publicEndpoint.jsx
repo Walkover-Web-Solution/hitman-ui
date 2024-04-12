@@ -485,11 +485,19 @@ class PublicEndpoint extends Component {
                 </div>
               ) : (
                 <>
-                  <div className='custom-loading-container'>
-                    <div className='loading-content'>
-                      <button className='spinner-border' />
-                      <p className='mt-3'>Loading</p>
-                    </div>
+                <div className='custom-loading-container'>
+                  <div className="loader">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  </div>
+                  <div className="info">
+                   <label for="showInfo">
+                   </label>
+                  <input type="checkbox" id="showInfo"/>
+                  </div>
                   </div>
                 </>
               )}
