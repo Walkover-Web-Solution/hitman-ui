@@ -115,7 +115,7 @@ class Form extends Component {
     this.setState({ data })
   }
 
-  renderInput(name, urlName, label, placeholder, mandatory = false, isURLInput = false, note = '') {
+  renderInput(name, urlName, label, placeholder, mandatory = false, isURLInput = false, note ) {
     const { data, errors } = this.state
     return (
       <Input

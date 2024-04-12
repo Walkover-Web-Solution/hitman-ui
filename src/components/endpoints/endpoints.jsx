@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
+import { Modal } from 'react-bootstrap'
+import Form from '../common/form'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, onEnter } from '../common/utility'
 import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
@@ -18,6 +20,7 @@ import { ReactComponent as Approved } from '../../assets/icons/approvedSign.svg'
 import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.svg'
 import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
+import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
 import endpointService from './endpointService'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
@@ -52,7 +55,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-class Endpoints extends Component {
+class Endpoints extends Form {
   constructor(props) {
     super(props)
     this.state = {
@@ -72,7 +75,18 @@ class Endpoints extends Component {
     if (this.props.theme) {
       this.setState({ theme: this.props.theme })
     }
-    const { endpointId } = this.props.match.params
+    // const { endpointId } = this.props.match.params
+    // const subPage = this.props?.pages?.[this.props?.selectedPage]
+    const endpoint = this.props?.endpoints?.[this.props?.selectedEndpoint]
+
+    // if (this.props.title === ADD_GROUP_MODAL_NAME) return
+    let data = {}
+    if ( this.props.selectedEndpoint) {
+      const name = endpoint?.name
+      const urlName = endpoint?.urlName
+      data = { name, urlName }
+    }
+    this.setState({ data })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -87,6 +101,15 @@ class Endpoints extends Component {
 
   handleDuplicate(endpoint) {
     this.props.duplicate_endpoint(endpoint)
+  }
+
+  openRedirectUrlModal(selectedEndpoint) {
+    this.setState({
+      showEndpointForm: { share: true},
+      selectedEndpoint: {
+        ...this.props.endpoints[selectedEndpoint]
+      }
+    })
   }
 
   openEditEndpointForm(selectedEndpoint) {
@@ -300,7 +323,9 @@ class Endpoints extends Component {
           </div>
           {this.displayDeleteOpt(endpointId)}
           {this.displayDuplicateOpt(endpointId)}
-          {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
+          <div className='dropdown-item' onClick={() => this.openRedirectUrlModal(endpointId)}>
+            <ShareIcon /> Redirect URL
+          </div>
         </div>
       </div>
     )
@@ -312,6 +337,27 @@ class Endpoints extends Component {
           {...this.props}
           title='Rename'
           show={this.state.showEndpointForm.edit}
+          onCancel={() => {
+            this.setState({ showEndpointForm: false })
+          }}
+          onHide={() => {
+            this.setState({ showEndpointForm: false })
+          }}
+          selectedEndpoint={this.props?.endpointId}
+          pageType={4}
+          isEndpoint={true}
+        />
+      )
+    )
+  }
+
+  showRedirectUrlModal() {
+    return(
+      this.state.showEndpointForm.share && (
+        <SubPageForm
+          {...this.props}
+          title='Redirect URL'
+          show={this.state.showEndpointForm.share}
           onCancel={() => {
             this.setState({ showEndpointForm: false })
           }}
@@ -453,6 +499,7 @@ class Endpoints extends Component {
     return (
       <>
         {this.showEditEndpointModal()}
+        {this.showRedirectUrlModal()}
         {this.state.showEndpointForm.delete &&
           endpointService.showDeleteEndpointModal(
             this.props,
@@ -463,6 +510,7 @@ class Endpoints extends Component {
             this.state.selectedEndpoint
           )}
         {this.displayUserEndpoints(this?.props?.endpointId)}
+       
       </>
     )
   }

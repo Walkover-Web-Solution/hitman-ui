@@ -3,7 +3,7 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import Form from '../common/form'
-import { onEnter, toTitleCase, ADD_GROUP_MODAL_NAME } from '../common/utility'
+import { onEnter, toTitleCase, ADD_GROUP_MODAL_NAME, getOnlyUrlPathById } from '../common/utility'
 import { updatePage } from '../pages/redux/pagesActions'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -61,6 +61,13 @@ class SubPageForm extends Form {
 
   render() {
     const nameTitle = this.props.isEndpoint ? 'Endpoint Name' : 'Page Name'
+    const redirectUrl = ' Enter URL'
+    const tagLine = getOnlyUrlPathById(
+      this.props?.match?.params?.pageId || this.props?.match?.params?.endpointId,
+      this.props.pages,
+      'internal'
+    )
+    if (this.props.title === 'Rename') {
     return (
       <div
         onKeyPress={(e) => {
@@ -107,6 +114,36 @@ class SubPageForm extends Form {
         </Modal>
       </div>
     )
+  }
+  else if(this.props.title === 'Redirect URL')  {
+    return(
+      <Modal
+          show={this.props.show}
+          onHide={this.props.onHide}
+          size='lg'
+          centered
+          animation={false}
+          aria-labelledby='contained-modal-title-vcenter'
+        >
+          <Modal.Header className='custom-collection-modal-container' closeButton>
+            <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <form onSubmit={this.handleSubmit}>
+              <div className='row'>
+                <div>
+                  {this.renderInput(this.props.title, 'Name', redirectUrl, true, false, false, tagLine)}
+                </div>
+                </div>
+                <div className='text-left'>
+                {this.renderButton('Submit')}
+                </div>
+            </form>
+          </Modal.Body>
+        </Modal>
+
+    )
+  }
   }
 }
 

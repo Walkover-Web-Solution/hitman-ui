@@ -14,9 +14,7 @@ import { reorderEndpoint } from '../endpoints/redux/endpointsActions'
 import ShareGroupForm from '../groups/shareGroupForm'
 import './groups.scss'
 import groupsService from './groupsService'
-import AddEntity from '../main/addEntity/addEntity'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
-import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
@@ -25,9 +23,7 @@ import SubPageForm from './subPageForm.jsx'
 import { ReactComponent as EditSign } from '../../assets/icons/editsign.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { MdExpandMore } from "react-icons/md"
-
-// import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
-// import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
+import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -116,9 +112,36 @@ class Groups extends Component {
     )
   }
 
+  showRedirectUrlPageModal() {
+    return (
+      this.state.showSubPageForm.share && (
+        <SubPageForm
+          {...this.props}
+          title='Redirect URL'
+          show={this.state.showSubPageForm.share}
+          onCancel={() => {
+            this.setState({ showSubPageForm: false })
+          }}
+          onHide={() => {
+            this.setState({ showSubPageForm: false })
+          }}
+          selectedPage={this.props?.rootParentId}
+          pageType={3}
+        />
+      )
+    )
+  }
+
   openEditSubPageForm(selectedGroup) {
     this.setState({
       showSubPageForm :{edit: true},
+      selectedGroup
+    })
+  }
+
+  openRedirectUrlPageForm(selectedGroup) {
+    this.setState({
+      showSubPageForm :{share: true},
       selectedGroup
     })
   }
@@ -217,14 +240,9 @@ class Groups extends Component {
                     >
                       <DeleteIcon /> Delete
                     </div>
-                    {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[subPageId])}>
-                      <Duplicate/> {' '}
-                      Duplicate
-                    </div> */}
-                    {/* <div className='dropdown-item' onClick={() => this.openShareSubPageForm(subPageId)}>
-                        <ShareIcon/> {' '}
-                        Share
-                      </div> */}
+                    <div className='dropdown-item' onClick={() => this.openRedirectUrlPageForm(this.props.pages[subPageId])}>
+                      <ShareIcon /> Redirect URL
+                    </div>
                   </div>
                 </div>
               ) : null
@@ -268,6 +286,7 @@ class Groups extends Component {
         {this.showShareSubPageForm()}
         {this.showAddPageEndpointModal()}
         {this.showEditPageModal()}
+        {this.showRedirectUrlPageModal()}
         {this.state.showDeleteModal &&
           groupsService.showDeleteGroupModal(
             this.props,

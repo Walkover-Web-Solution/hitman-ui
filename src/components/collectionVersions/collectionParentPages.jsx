@@ -30,6 +30,7 @@ import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg
 import { toast } from 'react-toastify'
 import SubPageForm from '../groups/subPageForm'
 import { ReactComponent as Rename } from '../../assets/icons/renameSign.svg'
+import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
 import SelectVersion from './selectVersion/selectVersion'
 import CustomModal from '../customModal/customModal'
 import { MdOutlineSettings } from 'react-icons/md'
@@ -325,9 +326,36 @@ class CollectionParentPages extends Component {
     )
   }
 
+  showRedirectUrlPageModal() {
+    return (
+      this.state.showPageForm.share && (
+        <SubPageForm
+          {...this.props}
+          title='Redirect URL'
+          show={this.state.showPageForm.share}
+          onCancel={() => {
+            this.setState({ showPageForm: false })
+          }}
+          onHide={() => {
+            this.setState({ showPageForm: false })
+          }}
+          selectedPage={this.props?.rootParentId}
+          pageType={1}
+        />
+      )
+    )
+  }
+
   openEditPageForm(pageId) {
     this.setState({
       showPageForm: { edit: true },
+      selectedPage: pageId
+    })
+  }
+
+  openRedirectUrlModal(pageId) {
+    this.setState({
+      showPageForm: { share: true },
       selectedPage: pageId
     })
   }
@@ -559,6 +587,14 @@ class CollectionParentPages extends Component {
                           Manage Version
                         </span>
                       </div>
+                      <div
+                        className='dropdown-item'
+                        onClick={() => {
+                          this.openRedirectUrlModal(pageId)
+                        }}
+                      >
+                      <ShareIcon /> Redirect URL
+                      </div>  
                     </div>
                   </div>
                 ) : null
@@ -768,6 +804,7 @@ class CollectionParentPages extends Component {
 
         {this.state.showVersionForm && this.openManageVersionModal()}
         {this.showEditPageModal()}
+        {this.showRedirectUrlPageModal()}
         {/* {this.state.showVersionForm &&
           collectionVersionsService.showVersionForm(
             this.props,

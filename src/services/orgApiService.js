@@ -50,7 +50,23 @@ export async function createOrg(name) {
     toast.error(e?.response?.data?.message ? e?.response?.data?.message : "Something went wrong")
   }
 }
-
+export async function inviteWithRetry (name, email, maxRetries = 2, delayMs = 500) {
+  let retries = 0;
+  while (retries < maxRetries) {
+    try {
+      const response = await inviteMembers(name, email);
+      if (response === true) {
+        return true;
+      }
+    } catch (error) {
+      console.error('Error sending invitation:', error);
+    }
+    // Exponential backoff with jitter
+    await new Promise((resolve) => setTimeout(resolve, delayMs * (2 ** retries) + Math.random() * delayMs));
+    retries++;
+  }
+  return false;
+};
 export async function inviteMembers(name, email) {
   try {
     const data = {

@@ -47,10 +47,17 @@ function PublishSidebar(props) {
   const [flattenData, setFlattenData] = useState([{ name: '', id: 0, children: [], parent: null }])
   const [allSelectedIds, setAllSelectedIds] = useState([])
   const [defaultExpandedIds, setDefaultExpandedIds] = useState([])
+  const [publishedPageIds, setPublishedPageIds] = useState([]);
 
   useEffect(() => {
     getModifiedData()
+    fetchPublishedPageIds();
   }, [params.collectionId])
+
+  const fetchPublishedPageIds = () => {
+    const fetchedPublishedPageIds = []; 
+    setPublishedPageIds(fetchedPublishedPageIds);
+  };
 
   const getModifiedData = () => {
     const data1 = modifyDataForBulkPublish(collections, pages, params.collectionId)
@@ -121,6 +128,7 @@ function PublishSidebar(props) {
     )
   }
 
+
   return (
     <div>
       <div onClick={() => props.closePublishSidebar()} style={darkBackgroundStyle}></div>
@@ -151,6 +159,9 @@ function PublishSidebar(props) {
               handleExpand
             }) => {
               const requestType = element.metadata?.actualId ? pages?.[element.metadata?.actualId]?.requestType : null
+              const pageId = element.metadata?.actualId;
+              const isPagePublished = publishedPageIds.includes(pageId);
+              const initialCheckboxState = pages[pageId]?.isPublished  ? 'all' : 'none';
               return (
                 <div
                   {...getNodeProps({ onClick: handleExpand })}
@@ -158,8 +169,9 @@ function PublishSidebar(props) {
                 >
                   <CheckBoxIcon
                     className='checkbox-icon'
+                    
                     onClick={(e) => handleOnClick(e, handleSelect)}
-                    variant={isHalfSelected ? 'some' : isSelected ? 'all' : 'none'}
+                    variant={isHalfSelected ? 'some' : isSelected ? 'all' : initialCheckboxState}
                   />
                   <span className='name element-name'>
                     {element.name}
@@ -170,6 +182,7 @@ function PublishSidebar(props) {
                     )}
                   </span>
                   {isBranch && <ArrowIcon isOpen={isExpanded} />}
+                  {/* {pages[pageId]?.isPublished && <FaCheckSquare color='green' />} */}
                 </div>
               )
             }}
