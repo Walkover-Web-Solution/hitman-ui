@@ -57,8 +57,8 @@ class PublicBodyContainer extends Component {
   }
 
   setBody(data) {
-    this.props.set_body_description(data.bodyDescription)
-    this.props.set_public_body(data.body)
+    this.props.set_body_description(data?.bodyDescription)
+    this.props.set_public_body(data?.body)
   }
 
   handleAddDelete(pkeys, bodyDescription, body, title) {
@@ -403,9 +403,9 @@ class PublicBodyContainer extends Component {
           <GenericTable
             {...this.props}
             title='formData'
-            dataArray={this.props.body.value}
+            dataArray={this.props?.body?.value}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.original_body.value]}
+            original_data={[...this.props?.original_body?.value]}
           />
         )}
 
@@ -413,9 +413,9 @@ class PublicBodyContainer extends Component {
           <GenericTable
             {...this.props}
             title='x-www-form-urlencoded'
-            dataArray={this.props.body.value}
+            dataArray={this.props?.body?.value}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.original_body.value]}
+            original_data={[...this.props?.original_body?.value]}
           />
         )}
 
@@ -484,7 +484,7 @@ class PublicBodyContainer extends Component {
                 mode={this.props.body.type.toLowerCase()}
                 theme='github'
                 value={this.makeJson(this.props.body.value)}
-                onChange={(value) => this.props.set_body(this.props.body.type, value)}
+                onChange={(value) => this.props.set_body(this.props?.body?.type, value)}
                 setOptions={{
                   showLineNumbers: true
                 }}

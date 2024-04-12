@@ -167,21 +167,21 @@ class BodyContainer extends Component {
   }
 
   handleChangeBody(title, dataArray) {
-    const data = { ...this.state.data }
+    const data = { ...this.state?.data }
     switch (title) {
       case 'formData':
         data.data = dataArray
         if (this._isMounted) {
           this.setState({ data })
         }
-        this.props.set_body(this.state.selectedBodyType, dataArray)
+        this.props.set_body(this.state?.selectedBodyType, dataArray)
         break
       case 'x-www-form-urlencoded':
         data.urlencoded = dataArray
         if (this._isMounted) {
           this.setState({ data })
         }
-        this.props.set_body(this.state.selectedBodyType, dataArray)
+        this.props.set_body(this.state?.selectedBodyType, dataArray)
         break
       default:
         break
@@ -212,18 +212,18 @@ class BodyContainer extends Component {
   }
 
   renderBody() {
-    if (this.state.selectedBodyType && this.flag) {
-      return <BodyDescription {...this.props} body={this.state.data.raw} body_type={this.state.selectedRawBodyType} />
-    } else if (this.state.selectedBodyType) {
-      switch (this.state.selectedBodyType) {
+    if (this.state?.selectedBodyType && this.flag) {
+      return <BodyDescription {...this.props} body={this.state?.data?.raw} body_type={this.state?.selectedRawBodyType} />
+    } else if (this.state?.selectedBodyType) {
+      switch (this.state?.selectedBodyType) {
         case 'multipart/form-data':
           return (
             <GenericTable
               {...this.props}
               title='formData'
-              dataArray={[...this.state.data.data]}
+              dataArray={[...this.state?.data?.data]}
               handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.state.data.data]}
+              original_data={[...this.state?.data?.data]}
               count='1'
             />
           )
@@ -232,9 +232,9 @@ class BodyContainer extends Component {
             <GenericTable
               {...this.props}
               title='x-www-form-urlencoded'
-              dataArray={[...this.state.data.urlencoded]}
+              dataArray={[...this.state?.data?.urlencoded]}
               handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.state.data.urlencoded]}
+              original_data={[...this.state?.data?.urlencoded]}
               count='2'
             />
           )

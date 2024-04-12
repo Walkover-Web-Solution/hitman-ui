@@ -1,5 +1,7 @@
 import generalActionsTypes from './generalActionTypes'
 import generalApiService from '../../services/generalApiService'
+import { isOnPublishedPage } from '../common/utility'
+import publishReducerActionTypes from '../../store/publishReducer/publishReducerActionTypes'
 
 export const addCollectionAndPages = (orgId, queryParams = null) => {
   return (dispatch) => {
@@ -17,10 +19,12 @@ export const addCollectionAndPages = (orgId, queryParams = null) => {
       .then((response) => {
         dispatch({ type: generalActionsTypes.ADD_COLLECTIONS, data: response.data.collections })
         dispatch({ type: generalActionsTypes.ADD_PAGES, data: response.data.pages })
+        dispatch({ type: publishReducerActionTypes.ADD_PUBLIC_ENVIRONMENTS, data: response?.data?.environment })
       })
       .catch((error) => {
         dispatch({ type: generalActionsTypes.ADD_COLLECTIONS, data: {} })
         dispatch({ type: generalActionsTypes.ADD_PAGES, data: {} })
+        dispatch({ type: publishReducerActionTypes.ADD_PUBLIC_ENVIRONMENTS, data: {} })
         console.error(error)
       })
   }

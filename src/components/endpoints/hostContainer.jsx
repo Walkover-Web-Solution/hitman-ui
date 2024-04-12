@@ -6,6 +6,12 @@ import './endpoints.scss'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
+const autoCompleterDefaultProps = {
+  Component: 'input',
+  autoComplete: 'off',
+  trigger: ['{{']
+}
+
 const hostContainerEnum = {
   hosts: {
     // customHost: { key: 'customHost', label: 'Custom Host' },
@@ -172,6 +178,7 @@ class HostContainer extends Component {
   }
 
   setHosts() {
+    
     const { versionHost, environmentHost } = this.props
     this.setState({ versionHost, environmentHost }, () => {
       this.setHostAndUri()
@@ -183,6 +190,7 @@ class HostContainer extends Component {
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
         <input
+          {...autoCompleterDefaultProps}
           id='host-container-input'
           className='form-control'
           // value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}  ? to resolve later
@@ -190,6 +198,7 @@ class HostContainer extends Component {
           name={`${endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={(e) => this.handleInputHostChange(e)}
+          options={{ '{{': _.keys(this.props.environment.variables) }}
           autoComplete='off'
           onFocus={() =>
             this.setState({ showDatalist: true }, () => {
@@ -223,9 +232,6 @@ class HostContainer extends Component {
   }
 
   render() {
-    if (isDashboardRoute(this.props) && this.state.groupId && this.props.tab.status === tabStatusTypes.DELETED) {
-      this.setState({ groupId: null })
-    }
     if (isDashboardRoute(this.props)) {
       return this.renderHostDatalist()
     } else {

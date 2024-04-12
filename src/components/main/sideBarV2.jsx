@@ -665,8 +665,8 @@ class SideBarV2 extends Component {
         </h4>
         {isTechdocOwnDomain()  && (<a href="/login" target="_blank" className='login-button position-fixed d-flex gap-5 ps-5'>
         <TbLogin2 className='text-black'/>
-<button type="button" class="btn btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Login to manage this docs">Login to manage this docs
-</button>
+        <button type="button" className="btn btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Login to manage this docs">Login to manage this docs
+        </button>
         </a>)}
       </div>
     )

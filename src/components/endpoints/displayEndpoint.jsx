@@ -98,6 +98,8 @@ const mapStateToProps = (state) => {
     activeTabId: state.tabs.activeTabId,
     tabs: state?.tabs?.tabs,
     tokenDetails: state?.tokenData?.tokenDetails,
+    currentPublicEnvironment: state.public.currentEnvironmentId,
+    publicEnvironment: state.public.environments
   }
 }
 
@@ -326,7 +328,10 @@ class DisplayEndpoint extends Component {
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
       endpointContentState: null,
-      showEndpointFormModal:false
+      showEndpointFormModal:false,
+      data: {
+        publicEnv: ''
+      }
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -334,6 +339,7 @@ class DisplayEndpoint extends Component {
   }
 
   async componentDidMount() {
+    
     this.isMobileView();
     if (this.props.endpointContent) {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
@@ -602,7 +608,7 @@ class DisplayEndpoint extends Component {
     const variables = []
     if (match === null) return str
 
-    if (isDashboardRoute(this.props)) {
+    
       if (!envVars) return str.replace(regexp, '')
 
       do {
@@ -620,7 +626,7 @@ class DisplayEndpoint extends Component {
           str = str.replace(strToReplace, '')
         }
       }
-    }
+    
     return str
   }
 
@@ -747,24 +753,23 @@ class DisplayEndpoint extends Component {
   }
 
   setPathVariableValues() {
-    let uri = new URI(this.props?.endpointContent?.data?.updatedUri || '')
-    uri = uri.pathname()
-    const pathParameters = uri.split('/')
-    let path = ''
-    let counter = 0
-    const uniquePathparameters = {}
+    let uri = new URI(this.props?.endpointContent?.data?.updatedUri || '');
+    uri = uri.pathname();
+    const pathParameters = uri.split('/');
+    let path = '';
+    const pathVariablesMap = {};
+  
+    this.props.endpointContent.pathVariables.forEach(variable => {
+      pathVariablesMap[variable.key] = variable.value;
+    });
+  
     for (let i = 0; i < pathParameters.length; i++) {
-      if (pathParameters[i][0] === ':' && pathParameters[i].slice(1).trim()) {
-        if (
-          uniquePathparameters[pathParameters[i].slice(1)]
-          || uniquePathparameters[pathParameters[i].slice(1)] === ''
-        ) {
-          pathParameters[i] = uniquePathparameters[pathParameters[i].slice(1)]
+      if (pathParameters[i][0] === ':') {
+        const pathVariableKey = pathParameters[i].slice(1).trim()
+        if (pathVariablesMap.hasOwnProperty(pathVariableKey) && pathVariablesMap[pathVariableKey] !== '') {
+          pathParameters[i] = pathVariablesMap[pathVariableKey];
         } else {
-          pathParameters[i] = this.props.endpointContent.pathVariables[counter]?.value
-          uniquePathparameters[this.props.endpointContent.pathVariables[counter]?.key] =
-            this.props?.endpointContent?.pathVariables[counter]?.value
-          counter++
+          pathParameters[i] = ':' + pathVariableKey;
         }
       }
     }
@@ -1495,11 +1500,11 @@ class DisplayEndpoint extends Component {
   }
 
   setBody(bodyType, body) {
-    const data = { ...this.props?.endpointContent.data }
+    const data = { ...this.props?.endpointContent?.data }
     data.body = { type: bodyType, value: body }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
     this.setModifiedTabData()
-    const tempData = this.props.endpointContent
+    const tempData = this.props?.endpointContent
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
   }
@@ -2697,6 +2702,12 @@ class DisplayEndpoint extends Component {
     return JSON.parse(window.localStorage.getItem('right'))
   }
 
+  handleChangePublicEnv = (e) => {
+    const data = { ...this.state.data }
+    data[e.currentTarget.name] = e.currentTarget.value
+    this.setState({ data })
+  }
+
   render() {
     if (this.props?.endpointContentLoading) {
       return (
@@ -2745,6 +2756,9 @@ class DisplayEndpoint extends Component {
 
     const { theme, codeEditorVisibility } = this.state
     const { responseView } = this.props
+    const environments = this.props?.publicEnvironment?.[this.props?.currentPublicEnvironment]
+    const {publicEnv} = this?.state?.data
+    const defaultValue = environments && environments.id ? environments.id : null;
     return (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView) ||
       !isDashboardRoute(this.props) ||
       !isSavedEndpoint(this.props) ? (
@@ -2813,13 +2827,28 @@ class DisplayEndpoint extends Component {
               ) : null}
               <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
                 <div className='endpoint-header'>
+                  
                   {this.isNotDashboardOrDocView() && (
                     <div className='endpoint-name-container d-flex justify-content-between'>
                       {this.isNotDashboardOrDocView() && (
                         <>
                           <h1 className='endpoint-title'>{this.props?.endpointContent?.data?.name || ''}</h1>
                           {!isDashboardRoute(this.props) && (
-                            <div className='request-button'>
+                            <div className='request-button d-flex align-item-center mb-2'>
+                              {environments && <div className='form-group'>
+                                <select
+                                  className='form-control'
+                                  value={publicEnv || defaultValue}
+                                  onChange={(e) => this.handleChangePublicEnv({ currentTarget: { name: 'publicEnv', value: e.target.value } })}
+                                >
+                                  {environments && environments.id && (
+                                    <option value={environments.id}>
+                                      {environments.name}
+                                    </option>
+                                  )}
+                                  <option value=''>No Environment</option>
+                                </select>
+                              </div>}
                               <button
                                 className={
                                   this.state.loader

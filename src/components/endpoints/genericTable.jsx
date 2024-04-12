@@ -6,11 +6,26 @@ import shortid from 'shortid'
 import _ from 'lodash'
 import TextField from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
+import { connect } from 'react-redux'
+import { updatePublicEnvironment } from '../../store/publishReducer/publishReducerActions'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
   autoComplete: 'off',
   trigger: ['{{']
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    update_public_environment: (environmentId, variableName, currentValue) => dispatch(updatePublicEnvironment(environmentId, variableName, currentValue)),
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    currentPublicEnvironment : state?.public?.currentEnvironmentId,
+    environments: state?.public?.environments
+  }
 }
 
 class GenericTable extends Component {
@@ -52,8 +67,21 @@ class GenericTable extends Component {
     const target = inpTarget || e.currentTarget
     let { dataArray, title, original_data: originalData } = this.props
     dataArray = JSON.parse(JSON.stringify(dataArray))
+    // debugger
     const name = target.name.split('.')
-    const value = target.value
+    let value = target.value.trim()
+    if (value.startsWith('{{') && !value.endsWith('}}')) {
+      value += '}}'; 
+    }
+
+    if (name[1] === 'value' ) {
+      const templateString = dataArray[0].value
+      const variableName = templateString.replace(/{{|}}/g, '');
+      if (!isDashboardRoute(this.props)) {
+      this.props.update_public_environment(this.props.currentEnvironmentId, variableName, value);
+    }
+    }
+
     if (name[1] === 'checkbox') {
       this.checkboxFlags[name[0]] = true
       if (dataArray[name[0]].checked === 'true') {
@@ -241,10 +269,21 @@ class GenericTable extends Component {
     }
     return count
   }
+  getValueFromEnvironment(key) {
+    const  environment  = this.props?.environments?.[this.props?.currentPublicEnvironment];
+    const variableName = key.replace(/{{|}}/g, '');
+    if (environment && environment?.variables && environment?.variables[variableName]) {
+      return environment?.variables[variableName]?.initialValue;
+    }
+    return null;
+}
 
   renderPublicTableRow(dataArray, index, originalData, title) {
     dataArray = this.sortData(dataArray)
     originalData = this.sortData(originalData)
+    const variableValue = this.getValueFromEnvironment(dataArray[index]?.value);
+    const displayValue = dataArray[index].type === 'file' ? '' : (variableValue !== null ? variableValue : dataArray[index].value);
+    console.log(displayValue)
     return (
       <tr key={index} id='generic-table-row' className={getHighlightsData(this.props, title, [dataArray[index].key]) ? 'active' : ''}>
         <td className='custom-td' id='generic-table-key-cell'>
@@ -273,7 +312,7 @@ class GenericTable extends Component {
           <div className='d-flex align-items-center'>
             <input
               name={index + '.value'}
-              value = {dataArray[index].type === 'file' ? '' : dataArray[index].value}
+              value = {displayValue}
               key={index + this.state.randomId}
               onChange={this.handleChange}
               type='text'
@@ -621,4 +660,4 @@ class GenericTable extends Component {
   }
 }
 
-export default GenericTable
+export default connect(mapStateToProps, mapDispatchToProps)(GenericTable)
