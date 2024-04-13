@@ -9,16 +9,52 @@ import { Badge, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
 
 class PublicBodyContainer extends Component {
-  state = {
-    showBodyCodeEditor: true
+  constructor(props) {
+    super(props)
+    this.state = {
+      showBodyCodeEditor: true,
+      data: {
+        data: [
+          {
+            checked: 'notApplicable',
+            key: '',
+            value: '',
+            description: '',
+            type: 'text'
+          }
+        ],
+        urlencoded: [
+          {
+            checked: 'notApplicable',
+            key: '',
+            value: '',
+            description: '',
+            type: 'text'
+          }
+        ]
+      },
+    }
+  }
+
+  componentDidMount() {
+    const data = {
+      data: this.props?.body?.[bodyTypesEnums['multipart/form-data']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+      urlencoded: this.props?.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+    }
+    this.setState({ data });
   }
 
   handleChangeBody(title, dataArray) {
+    const data = this.state.data
     switch (title) {
       case 'formData':
+        data.data = dataArray
+        this.setState({ data })
         this.props.set_body(bodyTypesEnums['multipart/form-data'], dataArray)
         break
       case 'x-www-form-urlencoded':
+        data.urlencoded = dataArray
+        this.setState({ data })
         this.props.set_body(bodyTypesEnums['application/x-www-form-urlencoded'], dataArray)
         break
       default:
@@ -157,7 +193,7 @@ class PublicBodyContainer extends Component {
 
   handleChangeBodyDescription = (data) => {
     try {
-      const body = JSON.stringify(JSON.parse(data), null, 2);
+      const body = data;
       const bodyData = {
         bodyDescription: this.bodyDescription,
         body: body
@@ -405,9 +441,9 @@ class PublicBodyContainer extends Component {
           <GenericTable
             {...this.props}
             title='formData'
-            dataArray={this.props.body?.[bodyTypesEnums['multipart/form-data']]}
+            dataArray={this.state.data.data}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.body?.[bodyTypesEnums['multipart/form-data']]]}
+            original_data={this.state.data.data}
           />
         )}
 
@@ -415,9 +451,9 @@ class PublicBodyContainer extends Component {
           <GenericTable
             {...this.props}
             title='x-www-form-urlencoded'
-            dataArray={this.props.body?.[bodyTypesEnums['application/x-www-form-urlencoded']]}
+            dataArray={this.state.data.urlencoded}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.body?.[bodyTypesEnums['application/x-www-form-urlencoded']]]}
+            original_data={this.state.data.urlencoded}
           />
         )}
 

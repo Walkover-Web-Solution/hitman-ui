@@ -316,7 +316,7 @@ class HostContainer extends Component {
           // value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}  ? to resolve later
           value={(this.state?.datalistHost ?? '') + (this.state?.datalistUri ?? '') ?? ''}
           name={`${endpointId}_hosts`}
-          placeholder='Enter Request URL'
+          placeholder='Enter Request URL or paste text'
           onChange={(e) => this.handleInputHostChange(e)}
           autoComplete='off'
           onFocus={() =>

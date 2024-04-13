@@ -115,6 +115,36 @@ class BodyContainer extends Component {
     });
   }
 
+  setStateOfBody(body) {
+    let selectedBodyType = body.type;
+    if (this.rawBodyTypes?.includes(selectedBodyType)) {
+      this.showRawBodyType = true;
+      this.rawBodyType = selectedBodyType;
+      selectedBodyType = bodyTypesEnums['raw'];
+    }
+    else {
+      this.showRawBodyType = false;
+    }
+
+    const data = {
+      data: body?.[bodyTypesEnums['multipart/form-data']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+      urlencoded: body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+      raw: body?.raw?.value || ''
+    };
+
+    this.rawBodyType = body?.raw?.rawType || rawTypesEnums.TEXT;
+
+    if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
+      document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
+    }
+
+    this.setState({
+      selectedRawBodyType: body?.raw?.rawType || rawTypesEnums.TEXT,
+      selectedBodyType,
+      data
+    });
+  }
+
   handleSelectBodyType(bodyType, bodyDescription) {
     switch (bodyType) {
       case bodyTypesEnums['multipart/form-data']:
@@ -173,14 +203,16 @@ class BodyContainer extends Component {
   }
 
   handleChangeBody(title, dataArray) {
-    const data = { ...this.state.data }
+    const data = this.state.data
     switch (title) {
       case 'formData':
         data.data = dataArray
+        this.setState({ data })
         this.props.set_body(this.state.selectedBodyType, dataArray, this.state.selectedRawBodyType || 'TEXT')
         break
       case 'x-www-form-urlencoded':
         data.urlencoded = dataArray
+        this.setState({ data })
         this.props.set_body(this.state.selectedBodyType, dataArray, this.state.selectedRawBodyType || 'TEXT')
         break
       default:
@@ -215,9 +247,9 @@ class BodyContainer extends Component {
             <GenericTable
               {...this.props}
               title='formData'
-              dataArray={[...this.state.data.data]}
+              dataArray={this.state.data.data}
               handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.state.data.data]}
+              original_data={this.state.data.data}
               count='1'
             />
           )
@@ -226,9 +258,9 @@ class BodyContainer extends Component {
             <GenericTable
               {...this.props}
               title='x-www-form-urlencoded'
-              dataArray={[...this.state.data.urlencoded]}
+              dataArray={this.state.data.urlencoded}
               handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.state.data.urlencoded]}
+              original_data={this.state.data.urlencoded}
               count='2'
             />
           )
