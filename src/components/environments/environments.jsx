@@ -190,11 +190,10 @@ class Environments extends Component {
   }
 
   render() {
-    let env = isDashboardRoute(this.props)
-      ? this.props.environment.environments[this.props.environment.currentEnvironmentId]
-      : this.state.publicCollectionEnvironmentId != null
-        ? this.props.environment.environments[this.state.publicCollectionEnvironmentId]
-        : null
+    let env = this.props?.environment?.environments[this.props?.environment?.currentEnvironmentId]
+   
+    //     ? this.props?.environment?.environments[this.state?.publicCollectionEnvironmentId]
+    //     : null
     if (
       isDashboardRoute(this.props) &&
       this.props.location.Environment === 'setCollectionEnvironment' &&

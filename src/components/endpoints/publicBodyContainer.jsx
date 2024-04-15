@@ -94,8 +94,8 @@ class PublicBodyContainer extends Component {
   }
 
   setBody(data) {
-    this.props.set_body_description(data.bodyDescription)
-    this.props.set_public_body(data.body)
+    this.props.set_body_description(data?.bodyDescription)
+    this.props.set_public_body(data?.body)
   }
 
   handleAddDelete(pkeys, bodyDescription, body, title) {

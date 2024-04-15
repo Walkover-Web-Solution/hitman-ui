@@ -10,6 +10,12 @@ import { getParseCurlData } from '../common/apiUtility'
 import URI, { unicode } from 'urijs'
 import { toast } from 'react-toastify'
 
+const autoCompleterDefaultProps = {
+  Component: 'input',
+  autoComplete: 'off',
+  trigger: ['{{']
+}
+
 const hostContainerEnum = {
   hosts: {
     // customHost: { key: 'customHost', label: 'Custom Host' },
@@ -26,7 +32,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     modals: state.modals,
-    tabs: state?.tabs
+    tabs: state?.tabs,
+    currentPublicEnvironment : state?.public?.currentEnvironmentId,
+    environments: state?.public?.environments
   }
 }
 class HostContainer extends Component {
@@ -300,6 +308,7 @@ class HostContainer extends Component {
   }
 
   setHosts() {
+    
     const { versionHost, environmentHost } = this.props
     this.setState({ versionHost, environmentHost }, () => {
       this.setHostAndUri()
@@ -311,6 +320,7 @@ class HostContainer extends Component {
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
         <input
+          {...autoCompleterDefaultProps}
           id='host-container-input'
           className='form-control'
           // value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}  ? to resolve later
@@ -318,6 +328,7 @@ class HostContainer extends Component {
           name={`${endpointId}_hosts`}
           placeholder='Enter Request URL'
           onChange={(e) => this.handleInputHostChange(e)}
+          options={{ '{{': _.keys(this.props.environment.variables) }}
           autoComplete='off'
           onFocus={() =>
             this.setState({ showDatalist: true }, () => {
@@ -339,21 +350,33 @@ class HostContainer extends Component {
       </div>
     )
   }
-
+  
+  substituteVariables = (urlTemplate, variables) => {
+   return urlTemplate.replace(/\{\{(\w+)\}\}/g, (match, variableName) => {
+     return variables?.[variableName] ? variables?.[variableName]?.initialValue : match;
+   });
+ };
   renderPublicHost() {
+    const { environments, currentPublicEnvironment } = this.props;
+    const currentEnvironment = environments?.[currentPublicEnvironment];
+  
+    const variables  = currentEnvironment?.variables;
+    const baseUrl = this.props.endpointContent?.host?.BASE_URL ?? '';
+    const updatedUri = this.props.endpointContent?.data?.updatedUri ?? '';
+  
+    const fullUrl = this.substituteVariables(baseUrl + updatedUri, variables);
+  
     return (
       <input
         disabled
-        className='form-control'
-        value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}
+        className="form-control"
+        value={fullUrl}
       />
-    )
+    );
   }
+   
 
   render() {
-    if (isDashboardRoute(this.props) && this.state.groupId && this.props.tab.status === tabStatusTypes.DELETED) {
-      this.setState({ groupId: null })
-    }
     if (isDashboardRoute(this.props)) {
       return this.renderHostDatalist()
     } else {

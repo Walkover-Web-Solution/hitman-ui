@@ -1,8 +1,8 @@
 import publishReducerActionTypes from './publishReducerActionTypes'
 
-export const addInPublishedDataActions = (payload) => {
+export const updatePublicEnvironment = (environmentId, variableName, currentValue) => {
   return {
-    type: publishReducerActionTypes.ADD_FOR_PUBLISHED,
-    payload
+    type: publishReducerActionTypes.UPDATE_PUBLIC_ENVIRONMENTS,
+    payload: { environmentId, variableName, currentValue }
   }
 }

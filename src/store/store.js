@@ -14,6 +14,7 @@ import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import clientDataReducer from './clientData/clientDataReducer'
 import tokenDataReducer from './tokenData/tokenDataReducers'
+import publishReducer from './publishReducer/publishReducer'
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   feedbacks: publishDocsReducer,
   clientData: clientDataReducer,
   tokenData: tokenDataReducer,
+  public: publishReducer
 })
 
 const persistConfig = {

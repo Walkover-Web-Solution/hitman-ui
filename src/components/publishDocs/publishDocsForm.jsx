@@ -44,6 +44,7 @@ const publishDocFormEnum = {
   LABELS: {
     title: 'Title',
     domain: 'Custom Domain',
+    publicEnv: 'Environment',
     logoUrl: 'Logo URL',
     theme: 'Theme',
     cta: 'CTA',
@@ -62,7 +63,8 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   return {
     isPublishSliderOpen: state.modals.publishData,
-    collections: state.collections
+    collections: state.collections,
+    environments: state.environment.environments
   }
 }
 
@@ -71,6 +73,7 @@ class PublishDocForm extends Component {
     data: {
       title: '',
       domain: '',
+      publicEnv: '',
       logoUrl: '',
       theme: ''
     },
@@ -91,30 +94,33 @@ class PublishDocForm extends Component {
   setSelectedCollection() {
     const collectionId = this.props.selected_collection_id
     let collection = {}
-    let title, logoUrl, domain, theme, cta, links, favicon
+    let title, logoUrl, domain,publicEnv, theme, cta, links, favicon
     if (this.props.collections) {
       collection = this.props.collections[collectionId]
       if (collection && Object.keys(collection).length > 0) {
         title = collection?.docProperties?.defaultTitle || collection?.name || publishDocFormEnum.NULL_STRING
         logoUrl = collection?.docProperties?.defaultLogoUrl || publishDocFormEnum.NULL_STRING
         domain = collection?.customDomain || publishDocFormEnum.NULL_STRING
+        publicEnv = collection?.publicEnv;
         theme = collection?.theme || publishDocFormEnum.NULL_STRING
         cta = collection?.docProperties?.cta || publishDocFormEnum.INITIAL_CTA
         links = collection?.docProperties?.links || publishDocFormEnum.INITIAL_LINKS
         favicon = collection?.favicon || publishDocFormEnum.NULL_STRING
-        const data = { title, logoUrl, domain, theme }
+        const data = { title, logoUrl, domain, theme, publicEnv }
         this.setState({ data, cta, links, binaryFile: favicon })
       }
     }
   }
 
-  handleChange = (e, isURLInput = false) => {
-    const data = { ...this.state.data }
-    data[e.currentTarget.name] = e.currentTarget.value
-    if (isURLInput) {
-      data[e.currentTarget.name] = handleChangeInUrlField(data[e.currentTarget.name])
+  handleChange = (e) => {
+    const { name, value } = e.currentTarget;
+    const data = { ...this.state.data };
+    if (name === 'publicEnv' && value === '') {
+      data[name] = null; 
+    } else {
+      data[name] = value; 
     }
-    this.setState({ data })
+    this.setState({ data });
   }
 
   handleBlur = (e, isURLInput = false) => {
@@ -144,6 +150,7 @@ class PublishDocForm extends Component {
       .error(() => {
         return { message: 'Domain must be valid' }
       }),
+    publicEnv:  Joi.string().min(12).max(12).allow(null).optional(),
     logoUrl: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.logoUrl),
     theme: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.theme)
   }
@@ -167,6 +174,7 @@ class PublishDocForm extends Component {
     collection.customDomain = customDomain.length !== 0 ? customDomain : null
     collection.theme = data.theme
     collection.favicon = this.state.binaryFile
+    collection.publicEnv = data.publicEnv
     collection.docProperties = {
       versionHosts: {},
       defaultTitle: data.title.trim(),
@@ -363,7 +371,7 @@ class PublishDocForm extends Component {
           className='form-control'
           name={name}
           value={data[name]}
-          onChange={(e) => this.handleChange(e, isURLInput)}
+          onChange={(e) => this.handleChange(e)}
           onBlur={(e) => this.handleBlur(e, isURLInput)}
         />
         {name === 'domain' && (
@@ -512,6 +520,28 @@ class PublishDocForm extends Component {
     )
   }
 
+  renderEnvironmentDropdown() {
+    var environments = this.props?.environments;
+    const { publicEnv } = this.state?.data;
+    return (
+      <div className='form-group'>
+        <label>Environment</label>
+        <select
+          className='form-control'
+          value={publicEnv}
+          onChange={(e) => this.handleChange({ currentTarget: { name: 'publicEnv', value: e.target.value } })}
+        >
+          <option value=''>Select Environment</option>
+          {Object.keys(environments).map((envId) => (
+          <option key={envId} value={envId}>
+            {environments[envId].name}
+          </option>
+        ))}
+        </select>
+      </div>
+    );
+  }
+
   render() {
     const publishCheck = (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished()
     return (
@@ -525,6 +555,7 @@ class PublishDocForm extends Component {
           <div className='small-input mt-2'>
             {this.renderInput('title', true, false, 'brand name')}
             {this.renderInput('domain', false, false, 'docs.example.com')}
+            {this.renderEnvironmentDropdown()}
           </div>
           <div className='d-flex favicon'>
             <div className='form-group'>
