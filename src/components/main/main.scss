@@ -2504,11 +2504,11 @@ main.mainpublic-endpoint-main .for-public-view {
   }
   .techdoc-svg {
     display: flex;
-    // @media screen and (max-width:768px) {
-    //   padding: 10px;
-    //   margin-left: -34px;
-    //   margin-right: -33px;
-    // }
+    @media screen and (max-width:768px) {
+      padding: 10px;
+      margin-left: -34px;
+      margin-right: -33px;
+    }
   }
 }
 .mainpublic-endpoint-main .footerWrapper {

@@ -11,6 +11,8 @@ import Plus from '../../assets/icons/plus.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { IoIosSettings } from "react-icons/io"
+import { SiPowerpages } from "react-icons/si"
 
 const mapStateToProps = (state) => {
   return {
@@ -159,13 +161,19 @@ class CustomTabs extends Component {
             return (
               <>
                 {this.props.pages[tabId].name}
+                {/* <span>div</span> */}
                 {/* <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.number}</span> */}
               </>
             )
           } else {
             return (
               <>
+              <div className='d-flex flex-column align-items-center'>
+                <span className='d-flex'>
+                <SiPowerpages className='d-none' />
                 {page.name}
+                </span>
+            </div>
                 {/* <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.name}</span> */}
               </>
             )
@@ -177,16 +185,19 @@ class CustomTabs extends Component {
         if (this.props.location.pathname.split('/')[6] === 'settings') {
           return (
             <>
-              {collectionName}
+              <span className='d-flex'>
+                <IoIosSettings className='d-none pe-2' />
+                {collectionName}
+              </span>
               <span className='sub-label'>settings</span>
             </>
           )
         } else {
           return (
-            <>
-              {collectionName}
-              <span className='sub-label'>Feedback</span>
-            </>
+                <>
+                  {collectionName}
+                  <span className='sub-label'>Feedback</span>
+                </>
           )
         }
       }

@@ -744,12 +744,12 @@ button.toggleButton {
   position: fixed;
   right: 16px;
   top: 42px;
-  border-left: 1px solid #a9a7a7;
+  border-left: 1px solid #a9a7a754;
   height: 100%;
   padding-left: 10px;
   .open-close {
-   
-    font-size: 18px;
+    padding-top: 10px;
+    font-size: 30px;
     font-weight: 700;
   }
   &.close-icons {

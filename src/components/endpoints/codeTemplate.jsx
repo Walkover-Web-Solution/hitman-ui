@@ -108,7 +108,7 @@ class CodeTemplate extends Component {
             <div className='code-heading mb-3 d-flex justify-content-center'>
               <span>Sample code</span>
             </div>
-            <div className='select-code-wrapper d-flex mb-3 img'>
+            <div className={`${isOnPublishedPage() ? "select-code-wrapper d-flex mb-3 img" : 'none-icons'}`}>
               {primaryLanguages.map((key) => (
                 <button
                   key={key}
@@ -147,6 +147,31 @@ class CodeTemplate extends Component {
               </Dropdown>
               </button>
             </div>
+            <button className={`${isOnPublishedPage() ? "none-icons" : 'codeTemplateButtonMore mr-2 d-flex justify-content-center align-items-center'}`}>
+              <Dropdown >
+                <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore' : 'dropdownMore'}>
+                  {primaryLanguages.includes(this.selectedLanguage) ? (
+                    <span>More</span>
+                  ) : (
+                    <span>{languages[this.selectedLanguage].name}</span>
+                  )}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {secondaryLanguages.map((key) => (
+                    <Dropdown.Item
+                      key={key}
+                      className={key === this.selectedLanguage ? 'active mb-2 mt-2' : 'mb-2 mt-2'}
+                      onClick={() => {
+                        this.makeCodeTemplate(key)
+                      }}
+                    >
+                      <img src={languages[key].imagePath} alt={languages[key].name} className='mr-2' />
+                      {languages[key].name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+              </button>
           </Col>
           <Col className='editor-body-wrapper' xs={12}>
             <div id='code-window-body' className='copy-button'>
