@@ -9,7 +9,6 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ReactComponent as CopyIcon } from '../../assets/icons/copyIcon.svg'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
 import { isOnPublishedPage } from '../common/utility'
-import { IoCodeSlash } from "react-icons/io5";
 
 const HTTPSnippet = require('httpsnippet')
 class CodeTemplate extends Component {
@@ -19,11 +18,6 @@ class CodeTemplate extends Component {
       theme: ''
     }
     this.selectedLanguage = 'shell'
-    this.iconRef = React.createRef()
-    this.OutlineArrowRef = React.createRef()
-    this.pubCodesRef = React.createRef()
-    this.iconNoneRef = React.createRef()
-    this.closeIconRef = React.createRef()
   }
 
   makeCodeSnippet() {
@@ -71,44 +65,17 @@ class CodeTemplate extends Component {
       this.makeCodeTemplate(this.selectedLanguage)
     }
   }
-  handleShowSideBar() {
-    const pubCodeElement = document.querySelector('.pubCodes');
-    const hamburgerElement = document.querySelector('#OutlineArrow');
-    if (this.iconRef.current && pubCodeElement) {
-      if (this.iconRef.current.classList.contains('close-icons')) {
-        this.iconRef.current.classList.remove('close-icons');
-        this.pubCodesRef.current.classList.remove('open');
-        pubCodeElement.classList.remove('close-icon');
-        hamburgerElement.classList.remove('icon-none');
-        // this.iconNoneRef.current.classList.add('open-close');
-        this.closeIconRef.current.classList.remove('close-pubcodes');
-      }
-      else {
-        this.iconRef.current.classList.add('close-icons');
-        this.pubCodesRef.current.classList.add('open');
-        pubCodeElement.classList.add('open');
-        hamburgerElement.classList.add('icon-none');
-        // this.iconNoneRef.current.classList.add('none-icons');
-        this.closeIconRef.current.classList.add('close-pubcodes');
-      }
-    }
-  }
-
  
   render() {
     return (
       <>
-      <span ref={this.iconRef} className={`${isOnPublishedPage() ? "none-icons" : 'Outline-arrow'}`}> 
-       <IoCodeSlash id='OutlineArrow' className={'open-close'} onClick={() => { this.handleShowSideBar() }}/> </span>
-      <span ref={this.closeIconRef} onClick={() => { this.handleShowSideBar() }} className='none-icons'>X</span>
-     
-      <div span ref={this.pubCodesRef} className={`${isOnPublishedPage() ? "pubCodeWrapper " : 'pubCodes'}`}>
+        <div className="pubCodeWrapper ">
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
             <div className='code-heading mb-3 d-flex justify-content-center'>
               <span>Sample code</span>
             </div>
-            <div className={`${isOnPublishedPage() ? "select-code-wrapper d-flex mb-3 img" : 'none-icons'}`}>
+            <div className="select-code-wrapper d-flex mb-3 img">
               {primaryLanguages.map((key) => (
                 <button
                   key={key}
@@ -147,31 +114,6 @@ class CodeTemplate extends Component {
               </Dropdown>
               </button>
             </div>
-            <button className={`${isOnPublishedPage() ? "none-icons" : 'codeTemplateButtonMore mr-2 d-flex justify-content-center align-items-center'}`}>
-              <Dropdown >
-                <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore' : 'dropdownMore'}>
-                  {primaryLanguages.includes(this.selectedLanguage) ? (
-                    <span>More</span>
-                  ) : (
-                    <span>{languages[this.selectedLanguage].name}</span>
-                  )}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {secondaryLanguages.map((key) => (
-                    <Dropdown.Item
-                      key={key}
-                      className={key === this.selectedLanguage ? 'active mb-2 mt-2' : 'mb-2 mt-2'}
-                      onClick={() => {
-                        this.makeCodeTemplate(key)
-                      }}
-                    >
-                      <img src={languages[key].imagePath} alt={languages[key].name} className='mr-2' />
-                      {languages[key].name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-              </button>
           </Col>
           <Col className='editor-body-wrapper' xs={12}>
             <div id='code-window-body' className='copy-button'>
