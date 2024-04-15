@@ -6,19 +6,56 @@ import AceEditor from 'react-ace'
 import { willHighlight } from './highlightChangesHelper'
 import './publicEndpoint.scss'
 import { Badge, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
 
 class PublicBodyContainer extends Component {
-  state = {
-    showBodyCodeEditor: true
+  constructor(props) {
+    super(props)
+    this.state = {
+      showBodyCodeEditor: true,
+      data: {
+        data: [
+          {
+            checked: 'notApplicable',
+            key: '',
+            value: '',
+            description: '',
+            type: 'text'
+          }
+        ],
+        urlencoded: [
+          {
+            checked: 'notApplicable',
+            key: '',
+            value: '',
+            description: '',
+            type: 'text'
+          }
+        ]
+      },
+    }
+  }
+
+  componentDidMount() {
+    const data = {
+      data: this.props?.body?.[bodyTypesEnums['multipart/form-data']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+      urlencoded: this.props?.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+    }
+    this.setState({ data });
   }
 
   handleChangeBody(title, dataArray) {
+    const data = this.state.data
     switch (title) {
       case 'formData':
-        this.props.set_body('multipart/form-data', dataArray)
+        data.data = dataArray
+        this.setState({ data })
+        this.props.set_body(bodyTypesEnums['multipart/form-data'], dataArray)
         break
       case 'x-www-form-urlencoded':
-        this.props.set_body('application/x-www-form-urlencoded', dataArray)
+        data.urlencoded = dataArray
+        this.setState({ data })
+        this.props.set_body(bodyTypesEnums['application/x-www-form-urlencoded'], dataArray)
         break
       default:
         break
@@ -166,7 +203,7 @@ class PublicBodyContainer extends Component {
       console.error("Error beautifying data:", e);
     }
   }
-  
+
   displayAddButton(name) {
     return (
       <div className='array-row-add-wrapper'>
@@ -211,12 +248,12 @@ class PublicBodyContainer extends Component {
         />
         <label
           className='description-input-field'
-          // value={obj.description}
-          // name={name + ".description"}
-          // type="text"
-          // placeholder="Description"
-          // onChange={this.handleDescriptionChange}
-          // disabled
+        // value={obj.description}
+        // name={name + ".description"}
+        // type="text"
+        // placeholder="Description"
+        // onChange={this.handleDescriptionChange}
+        // disabled
         >
           {obj.description}
         </label>
@@ -397,32 +434,33 @@ class PublicBodyContainer extends Component {
 
   render() {
     this.bodyDescription = this.props.body_description
+    if (this.props.body && this.props.body.type === 'none') return null;
     return (
       <>
-        {this.props.body && this.props.body.type === 'multipart/form-data' && (
+        {this.props.body && this.props.body.type === bodyTypesEnums['multipart/form-data'] && (
           <GenericTable
             {...this.props}
             title='formData'
-            dataArray={this.props.body.value}
+            dataArray={this.state.data.data}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.original_body.value]}
+            original_data={this.state.data.data}
           />
         )}
 
-        {this.props.body && this.props.body.type === 'application/x-www-form-urlencoded' && (
+        {this.props.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] && this.props.body.type === bodyTypesEnums['application/x-www-form-urlencoded'] && (
           <GenericTable
             {...this.props}
             title='x-www-form-urlencoded'
-            dataArray={this.props.body.value}
+            dataArray={this.state.data.urlencoded}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.original_body.value]}
+            original_data={this.state.data.urlencoded}
           />
         )}
 
-        {this.props.body &&
-          this.props.body.type !== 'multipart/form-data' &&
-          this.props.body.type !== 'application/x-www-form-urlencoded' &&
-          (this.props.body.type === 'JSON' ? (
+        {this.props.body?.[bodyTypesEnums['multipart/form-data']] &&
+          this.props.body.type !== bodyTypesEnums['multipart/form-data'] &&
+          this.props.body.type !== bodyTypesEnums['application/x-www-form-urlencoded'] &&
+          (this.props.body.type === rawTypesEnums.JSON ? (
             <div className='hm-public-table'>
               <div className='public-generic-table-title-container'>
                 Body <small className='text-muted'>({this.props.body.type})</small>{' '}
@@ -449,7 +487,7 @@ class PublicBodyContainer extends Component {
                   className='custom-raw-editor'
                   mode='json'
                   theme='github'
-                  value={this.props.body.value}
+                  value={this.props.body?.raw?.value}
                   onChange={this.handleChangeBodyDescription.bind(this)}
                   setOptions={{
                     showLineNumbers: true
@@ -483,7 +521,7 @@ class PublicBodyContainer extends Component {
                 className='custom-raw-editor'
                 mode={this.props.body.type.toLowerCase()}
                 theme='github'
-                value={this.makeJson(this.props.body.value)}
+                value={this.makeJson(this.props.body?.raw?.value || '')}
                 onChange={(value) => this.props.set_body(this.props.body.type, value)}
                 setOptions={{
                   showLineNumbers: true
