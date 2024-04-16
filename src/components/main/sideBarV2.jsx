@@ -40,7 +40,7 @@ import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
-import { TbLogin2 } from "react-icons/tb"
+import { TbLogin2 } from 'react-icons/tb'
 
 const mapStateToProps = (state) => {
   return {
@@ -149,12 +149,11 @@ class SideBarV2 extends Component {
       document.addEventListener('keydown', this.preventDefaultBehavior.bind(this), false)
     }
     document.addEventListener('keydown', this.handleShortcutKeys)
-
   }
   handleShortcutKeys = (event) => {
     if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
-      event.preventDefault(); 
-      this.inputRef.focus(); 
+      event.preventDefault()
+      this.inputRef.focus()
     }
   }
 
@@ -635,39 +634,42 @@ class SideBarV2 extends Component {
     )
   }
 
-
   renderCollectionName() {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
     const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
     return (
       <div className='hm-sidebar-header d-flex justify-content-between align-items-center'>
-        {this.props.collections[collectionKeys[0]]?.favicon ||
-          (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
-            <div className='hm-sidebar-logo'>
-              <img
-                id='publicLogo'
-                alt='public-logo'
-                src={
-                  this.props.collections[collectionKeys[0]]?.favicon
-                    ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
-                    : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
-                }
-                // onError={() => { this.setState({ publicLogoError: true })}}
-                width='60'
-                height='60'
-              />
-            </div>
-          ))}
+        
+          <img
+          alt='Logo'
+          src={
+            this.props.collections[collectionKeys[0]]?.favicon
+              ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
+              : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
+          }
+          width='40'
+          height='40'
+        />
+          
         <h4 className='hm-sidebar-title'>
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documenation</span>
         </h4>
-        {isTechdocOwnDomain() && (<a href="/login" target="_blank" className='login-button position-fixed d-flex gap-5 ps-5'>
-        <TbLogin2 className='text-black'/>
-<button type="button" className="btn btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Login to manage this docs">Login to manage this docs
-</button>
-        </a>)}
+        {isTechdocOwnDomain() && (
+          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5'>
+            <TbLogin2 className='text-black' />
+            <button
+              type='button'
+              class='btn btn-lg'
+              data-bs-toggle='tooltip'
+              data-bs-placement='top'
+              data-bs-title='Login to manage this docs'
+            >
+              Login to manage this docs
+            </button>
+          </a>
+        )}
       </div>
     )
   }
@@ -802,23 +804,23 @@ class SideBarV2 extends Component {
   render() {
     return (
       <>
-      <nav className={this.getSidebarInteractionClass()}>
-        {this.showAddEntitySelectionModal()}
-        {this.showAddEntityModal()}
-        {this.showDeleteEntityModal()}
-        {this.state.showVersionForm &&
-          collectionVersionsService.showVersionForm(
-            this.props,
-            this.closeVersionForm.bind(this),
-            this.state.selectedCollection.id,
-            ADD_VERSION_MODAL_NAME
-          )}
-        <div className='primary-sidebar'>
-          {/* [info] for publishedPage only this part is important */}
+        <nav className={this.getSidebarInteractionClass()}>
+          {this.showAddEntitySelectionModal()}
+          {this.showAddEntityModal()}
+          {this.showDeleteEntityModal()}
+          {this.state.showVersionForm &&
+            collectionVersionsService.showVersionForm(
+              this.props,
+              this.closeVersionForm.bind(this),
+              this.state.selectedCollection.id,
+              ADD_VERSION_MODAL_NAME
+            )}
+          <div className='primary-sidebar'>
+            {/* [info] for publishedPage only this part is important */}
 
-          {this.renderDashboardSidebar()}
-        </div>
-      </nav>
+            {this.renderDashboardSidebar()}
+          </div>
+        </nav>
       </>
     )
   }
