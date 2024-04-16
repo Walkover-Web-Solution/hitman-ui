@@ -115,6 +115,37 @@ class BodyContainer extends Component {
     });
   }
 
+  setStateOfBody(body) {
+    let selectedBodyType = body.type;
+    if (this.rawBodyTypes?.includes(selectedBodyType)) {
+      this.showRawBodyType = true;
+      this.rawBodyType = selectedBodyType;
+      selectedBodyType = bodyTypesEnums['raw'];
+    }
+    else {
+      this.showRawBodyType = false;
+    }
+
+    const data = {
+      data: body?.[bodyTypesEnums['multipart/form-data']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+      urlencoded: body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
+      raw: body?.raw?.value || ''
+    };
+
+    this.rawBodyType = body?.raw?.rawType || rawTypesEnums.TEXT;
+
+    if (document.getElementById(selectedBodyType + '-' + this.props.endpoint_id)) {
+      document.getElementById(selectedBodyType + '-' + this.props.endpoint_id).checked = true
+    }
+
+    this.setState({
+      selectedRawBodyType: body?.raw?.rawType || rawTypesEnums.TEXT,
+      selectedBodyType,
+      data
+    });
+  }
+
+
   handleSelectBodyType(bodyType, bodyDescription) {
     switch (bodyType) {
       case bodyTypesEnums['multipart/form-data']:
@@ -164,7 +195,7 @@ class BodyContainer extends Component {
 
   handleChange(value) {
     this.alteredBody = true
-    const data = { ...this.state.data }
+    const data = this.state.data
     data.raw = value
     if (this._isMounted) {
       this.setState({ data })
