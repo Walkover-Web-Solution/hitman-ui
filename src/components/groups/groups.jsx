@@ -175,7 +175,7 @@ class Groups extends Component {
     let isUserOnPublishedPage = isOnPublishedPage()
     let isuserONTechdocOwnDomain = isTechdocOwnDomain()
     const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isUserOnPublishedPage
-    const isSelected = isUserOnPublishedPage && isuserONTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId ? 'selected' : ''
+    const isSelected = (isUserOnPublishedPage && isuserONTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId) ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === subPageId ? 'selected' : '')
     return (
       <>
         <div className='sidebar-accordion accordion pl-3' id='child-accordion'>

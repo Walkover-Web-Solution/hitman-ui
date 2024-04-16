@@ -447,7 +447,7 @@ class CollectionParentPages extends Component {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const publishData = this.props.modals.publishData
     const rootId = pageId
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === pageId ? 'selected' : '')
     return (
       <>
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>

@@ -207,7 +207,7 @@ class Endpoints extends Component {
 
   displayEndpointName(endpointId) {
     let isUserOnPublishedPage = isOnPublishedPage()
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
     return (
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
