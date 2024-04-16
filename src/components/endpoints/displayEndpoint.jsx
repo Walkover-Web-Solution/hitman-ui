@@ -3006,6 +3006,7 @@ class DisplayEndpoint extends Component {
                                 type='Pre-Script'
                                 handleScriptChange={this.handleScriptChange.bind(this)}
                                 scriptText={this.props?.endpointContent?.preScriptText}
+                                endpointContent={this.props?.endpointContent}
                               />
                             </div>
                           </div>
@@ -3020,6 +3021,7 @@ class DisplayEndpoint extends Component {
                                 type='Post-Script'
                                 handleScriptChange={this.handleScriptChange.bind(this)}
                                 scriptText={this.props?.endpointContent?.postScriptText}
+                                endpointContent={this.props?.endpointContent}
                               />
                             </div>
                           </div>

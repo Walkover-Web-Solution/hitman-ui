@@ -10,8 +10,12 @@ import SampleResponseForm from './sampleResponseForm'
 import { Overlay, Spinner, Tooltip } from 'react-bootstrap'
 import TestResults from './testResults'
 import addtosample from '../../assets/icons/addToSamplesign.svg'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons'
+import { result } from 'lodash'
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
+const vm = require('vm')
 
 class DisplayResponse extends Component {
   state = {
@@ -24,11 +28,14 @@ class DisplayResponse extends Component {
     showSampleResponseForm: { add: false, delete: false, edit: false },
     theme: '',
     showCopyMessage: false,
-    selectedResponseTab: 'body'
+    selectedResponseTab: 'body',
+    isOpen: false,
+    output:null
   }
 
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
+    console.log(props.endpointContent.preScriptText, props, 1234567890)
     this.copyDivRef = createRef()
   }
 
@@ -198,6 +205,24 @@ class DisplayResponse extends Component {
                 </a>
               </li>
             )}
+            <li
+              className='nav-item'
+              onClick={() => {
+                this.setState({ selectedResponseTab: 'console' })
+              }}
+            >
+              <a
+                className={this.state.selectedResponseTab === 'console' ? 'nav-link active' : 'nav-link'}
+                style={this.state.selectedResponseTab === 'console' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                id='pills-console-tab'
+                data-toggle='pill'
+                aria-selected='false'
+                href='#pills-console-tab'
+                role='tab1'
+              >
+                Console
+              </a>
+            </li>
           </ul>
         </div>
       </>
@@ -236,6 +261,83 @@ class DisplayResponse extends Component {
         </div>
       )
     }
+  }
+
+  displayConsole() {
+    return this.props?.endpointContent.preScriptText || this.props?.endpointContent.postScriptText ? (
+      <div className='test-results-container px-2'>{this.renderConsole()}</div>
+    ) : (
+      this.renderBlank()
+    )
+  }
+  toggleDropdown = () => {
+    this.setState({ isOpen: !this.state.isOpen })
+  }
+  executeCode(code) {
+      const sandbox = {
+        console: {
+          log: (...args) => {
+              console.log(...args); // Output to the actual console
+              sandbox._consoleLogs.push(args.join(' ')); // Capture log messages
+          }
+      },
+      _consoleLogs: [] 
+      }
+      try{
+        vm.runInNewContext(code, sandbox)
+        return sandbox._consoleLogs
+      } catch (err) {
+        return err.name +":" + " " + err.message;
+    }
+      
+  }
+
+  renderConsole() {
+
+    const { isOpen } = this.state
+    
+
+    return (
+      <div>
+        <div class='dropdown-data'>
+          <FontAwesomeIcon icon={isOpen ? faCaretDown : faCaretRight} className='dropdown-icon' onClick={this.toggleDropdown} />
+          {this.props?.endpointContent?.data?.method}
+          {'  '}
+          {this.props?.endpointContent?.harObject?.url}
+          <div class={`dropdown-content ${isOpen ? 'show' : ''}`}>
+            <div class='dropdown-data'>
+              <FontAwesomeIcon icon={faCaretRight} /> Response Headers
+              <div class={`dropdown-content ${isOpen ? 'show' : ''}`}>
+                <a href='#'>{this.renderTableData()}</a>
+              </div>
+            </div>
+            <div class='dropdown-data'>
+              <FontAwesomeIcon icon={faCaretRight} /> Request Headers
+              <div class={`dropdown-content ${isOpen ? 'show' : ''}`}>
+                <a href='#'>Option A</a>
+              </div>
+            </div>
+            <div class='dropdown-data'>
+              <FontAwesomeIcon icon={faCaretRight} /> Body
+              <div class={`dropdown-content ${isOpen ? 'show' : ''}`}>
+                <a href='#'>{this.props.tab.id}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>{this.executeCode( this.props?.endpointContent.preScriptText)}</div>
+        <div>{this.executeCode( this.props?.endpointContent.postScriptText)}</div>
+      </div>
+    )
+  }
+
+  renderBlank() {
+    return (
+      <div className='px-3 py-5 text-center'>
+        <div>No logs yet.</div>
+        <small>Send a request to view its detail in the console</small>
+      </div>
+    )
   }
 
   renderLoader() {
@@ -398,6 +500,7 @@ class DisplayResponse extends Component {
                 {this.state.selectedResponseTab === 'testResults' && isDashboardRoute(this.props) && this.props.tests && (
                   <TestResults tests={this.props.tests} />
                 )}
+                {this.state.selectedResponseTab === 'console' && this.displayConsole()}
               </div>
             </div>
           ) : (

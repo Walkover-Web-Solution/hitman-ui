@@ -62,6 +62,7 @@ class SubPageForm extends Form {
   render() {
     const nameTitle = this.props.isEndpoint ? 'Endpoint Name' : 'Page Name'
     const redirectUrl = ' Enter URL'
+    const pageSlug = 'Page Slug'
     const tagLine = getOnlyUrlPathById(
       this.props?.match?.params?.pageId || this.props?.match?.params?.endpointId,
       this.props.pages,
@@ -94,11 +95,11 @@ class SubPageForm extends Form {
                   {this.renderInput(
                     'urlName',
                     'URL Name',
-                    'URL Name',
+                    pageSlug,
                     true,
                     false,
                     false,
-                    '*URL name can only contain alphanumeric values and reserved keywords like - _ . ~'
+                    '*Page slug can only contain alphanumeric values and reserved keywords like - _ . ~'
                   )}
                 </div>
               </div>
