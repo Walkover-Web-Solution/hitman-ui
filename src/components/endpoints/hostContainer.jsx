@@ -9,6 +9,7 @@ import _, { cloneDeep } from 'lodash'
 import { getParseCurlData } from '../common/apiUtility'
 import URI, { unicode } from 'urijs'
 import { toast } from 'react-toastify'
+import { contentTypesEnums } from '../common/bodyTypeEnums'
 
 const hostContainerEnum = {
   hosts: {
@@ -137,11 +138,11 @@ class HostContainer extends Component {
       try {
         parsedData.data = JSON.parse(parsedData.data)
       } catch (e) {}
-      if(parsedData.headers?.['Content-Type']?.toLowerCase().includes('application/json') ||  parsedData.headers?.['content-type']?.toLowerCase().includes('application/json')){
-        untitledEndpointData.data.body.type = 'JSON';
-        untitledEndpointData.data.body.raw.rawType = 'JSON';
-        untitledEndpointData.data.body.raw.value = JSON.stringify(parsedData.data);
-
+      const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase();
+      if(contentType === 'application/json'){
+        untitledEndpointData.data.body.type = contentTypesEnums[contentType];
+        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType];
+        untitledEndpointData.data.body.raw.value = typeof(parsedData.data)=== 'object' ? JSON.stringify(parsedData.data) : parsedData.data;
         // setting body description
         untitledEndpointData.bodyDescription = {
             "payload": {
@@ -158,7 +159,14 @@ class HostContainer extends Component {
             "description": ""
           }
         }
-      }else {
+      }
+       // setting data for all the rawTypes defined except JSON
+      else if(contentType && contentTypesEnums[contentType]) {
+        untitledEndpointData.data.body.type = contentTypesEnums[contentType];
+        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType];
+        untitledEndpointData.data.body.raw.value = typeof(parsedData.data)=== 'object' ? JSON.stringify(parsedData.data) : parsedData.data;
+      }
+      else{
         // setting data for 'multipart/form-data' or url-encodeded
         if(!parsedData.headers){
           parsedData.headers = {}
