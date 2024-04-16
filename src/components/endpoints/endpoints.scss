@@ -1521,12 +1521,16 @@ table#custom-generic-table {
 
 .dropdown-content {
   display: none ;
-  position: absolute;
-  background-color: #f9f9f9;
+  // position: absolute;
+  // background-color: #f9f9f9;
   min-width: 160px;
   z-index: 1;
 }
-.dropdown-content.show {
+.dropdown-content-option {
+  display: none;
+  padding-left: 12px;
+}
+.show {
   display: block; /* Display dropdown content when .show class is applied */
 }
 .dropdown:hover .dropdown-content {
@@ -1539,5 +1543,5 @@ table#custom-generic-table {
   display: block;
 }
 .dropdown-content a:hover {
-  background-color: #ddd;
+  // background-color: #ddd;
 }

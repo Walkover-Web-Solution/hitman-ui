@@ -640,15 +640,18 @@ class SideBarV2 extends Component {
     const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
     return (
       <div className='hm-sidebar-header d-flex justify-content-between align-items-center'>
-        <img
+        
+          <img
+          alt='Logo'
           src={
             this.props.collections[collectionKeys[0]]?.favicon
               ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
               : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
           }
-          width="40" height="40"
+          width='40'
+          height='40'
         />
-
+          
         <h4 className='hm-sidebar-title'>
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documentation</span>
