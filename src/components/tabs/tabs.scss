@@ -93,7 +93,7 @@
               display: none;
             }
             &:hover {
-              background-color: $light-grey !important;
+              background-color: unset !important;
             }
           }
         }
@@ -263,7 +263,7 @@
   border: 0.5px solid #e6dbd4;
   align-items: center;
   max-width: 300px;
-  min-width: 220px;
+  // min-width: 220px;
   box-shadow: -5px 5px 12px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   min-height: 50px;
@@ -275,6 +275,9 @@
   justify-content: center;
   flex-wrap: wrap;
   flex-direction: column;
+  overflow: scroll;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   .group-name {
     font-size: $font-medium;
     line-height: 12px;
@@ -288,6 +291,11 @@
     font-size: 12px;
     line-height: 12px;
     text-align: left;
+    padding-left: 4px;
+  }
+  span {
+    padding-left: 17px;
+    font-size: 12px;
   }
   .arrow-top {
     position: relative;
