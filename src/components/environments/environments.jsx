@@ -19,6 +19,8 @@ import { ReactComponent as EyeIcon } from '../../assets/icons/eye.svg'
 import { ReactComponent as EyeDisabledIcon } from '../../assets/icons/eyeDisabled.svg'
 import { ReactComponent as NoEnvVariablesImage } from '../../assets/icons/noEnvVariables.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
+import { isOnPublishedPage } from '../common/utility'
+import { IoCodeSlash } from "react-icons/io5";
 
 const mapStateToProps = (state) => {
   return {
@@ -40,14 +42,26 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class Environments extends Component {
-  state = {
-    currentEnvironmentId: null,
-    environmentFormName: null,
-    showEnvironmentForm: false,
-    showEnvironmentModal: false,
-    environmentToBeEdited: {},
-    publicEnvironmentName: 'Select Environment'
-  }
+  constructor(props) {
+    super(props)
+    this.state = {
+      theme: ''
+    }
+  // state = {
+  //   currentEnvironmentId: null,
+  //   environmentFormName: null,
+  //   showEnvironmentForm: false,
+  //   showEnvironmentModal: false,
+  //   environmentToBeEdited: {},
+  //   publicEnvironmentName: 'Select Environment'
+  // }
+  this.selectedLanguage = 'shell'
+  this.iconRef = React.createRef()
+  this.OutlineArrowRef = React.createRef()
+  // this.pubCodesRef = React.createRef()
+  // this.iconNoneRef = React.createRef()
+  this.closeIconRef = React.createRef()
+}
 
   async componentDidMount() {
     if (!navigator.onLine) {
@@ -188,7 +202,28 @@ class Environments extends Component {
       </div>
     )
   }
-
+  handleShowSideBar() {
+    const pubCodeElement = document.querySelector('.pubCodes');
+    const hamburgerElement = document.querySelector('#OutlineArrow');
+    if (this.iconRef.current && pubCodeElement) {
+      if (this.iconRef.current.classList.contains('close-icons')) {
+        this.iconRef.current.classList.remove('close-icons');
+        // this.pubCodesRef.current.classList.remove('open');
+        pubCodeElement.classList.remove('close-icon');
+        hamburgerElement.classList.remove('icon-none');
+        // this.iconNoneRef.current.classList.add('open-close');
+        this.closeIconRef.current.classList.remove('close-pubcodes');
+      }
+      else {
+        this.iconRef.current.classList.add('close-icons');
+        // this.pubCodesRef.current.classList.add('open');
+        pubCodeElement.classList.add('open');
+        hamburgerElement.classList.add('icon-none');
+        // this.iconNoneRef.current.classList.add('none-icons');
+        this.closeIconRef.current.classList.add('close-pubcodes');
+      }
+    }
+  }
   render() {
     let env = isDashboardRoute(this.props)
       ? this.props.environment.environments[this.props.environment.currentEnvironmentId]
@@ -273,6 +308,7 @@ class Environments extends Component {
             )}
 
             {isDashboardRoute(this.props) && (
+              <>
               <div className='select-environment-dropdown border-radius-right-none'>
                 <Dropdown className=''>
                   <Dropdown.Toggle variant='default' id='dropdown-basic'>
@@ -301,6 +337,10 @@ class Environments extends Component {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
+               <span ref={this.iconRef} className={`${isOnPublishedPage() ? "none-icons" : 'Outline-arrow'}`}> 
+               <IoCodeSlash id='OutlineArrow' className={'open-close'} onClick={() => { this.handleShowSideBar() }}/> </span>
+              <span ref={this.closeIconRef} onClick={() => { this.handleShowSideBar() }} className='none-icons'>X</span>
+              </>
             )}
           </div>
         )

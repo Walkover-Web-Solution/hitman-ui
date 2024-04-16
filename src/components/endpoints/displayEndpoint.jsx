@@ -2938,7 +2938,7 @@ class DisplayEndpoint extends Component {
               )}
           </div>
         </div>
-        {this.isDashboardAndTestingView() && (
+        {this.isNotDashboardOrDocView() && this.props?.endpointContent?.harObject && isOnPublishedPage() && (
           <div>
             {this.state.showAskAiSlider && <ChatbotsideBar {...this.props} onHide={() => this.closeChatBotModal()} />}
             <div />

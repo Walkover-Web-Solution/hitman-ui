@@ -245,6 +245,9 @@ body .sidebar {
         justify-content: center;
       }
       button {
+        &.selected {
+          background: $grey;
+        }  
         .active-selected {
           width: 100%;
           margin-left: 10px;
