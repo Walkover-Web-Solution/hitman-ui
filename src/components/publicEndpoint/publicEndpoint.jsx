@@ -486,18 +486,7 @@ class PublicEndpoint extends Component {
               ) : (
                 <>
                 <div className='custom-loading-container'>
-                  <div className="loader">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  </div>
-                  <div className="info">
-                   <label for="showInfo">
-                   </label>
-                  <input type="checkbox" id="showInfo"/>
-                  </div>
+                <progress class="pure-material-progress-linear w-25"/>
                   </div>
                 </>
               )}

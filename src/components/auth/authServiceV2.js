@@ -147,7 +147,9 @@ function AuthServiceV2() {
     );
   };
 
-  return <>{orgList?.length ? orgNames() : null}</>;
+  return <>{orgList?.length ? orgNames() : <div className='custom-loading-container'>
+  <progress class="pure-material-progress-linear w-25"/>
+    </div>}</>;
 }
 
 export default AuthServiceV2;
