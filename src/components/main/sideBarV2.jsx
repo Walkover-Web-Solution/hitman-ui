@@ -41,6 +41,7 @@ import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from "react-icons/tb"
+import { MdDelete, MdDeleteForever, MdDeleteOutline, MdDeleteSweep } from 'react-icons/md'
 
 const mapStateToProps = (state) => {
   return {
@@ -705,14 +706,19 @@ class SideBarV2 extends Component {
         <div className='d-flex align-items-center justify-content-between mb-2'>
           <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span>
           {filter === '' && (
-            <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}>
-              <Plus />
-            </div>
+            <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported}>
+            <MdDeleteOutline onClick={this.handleMdDeleteClick.bind(this)} />
+            <Plus onClick={this.handleAdd.bind(this)} />
+          </div>
           )}
         </div>
       )
     )
   }
+   handleMdDeleteClick(){
+    const currentOrgId = getCurrentOrg().id; // Assuming getCurrentOrg() returns the current organization
+    this.props.history.push(`/orgs/${currentOrgId}/trash`);
+  };
 
   handleAdd() {
     if (this.collectionId) {
