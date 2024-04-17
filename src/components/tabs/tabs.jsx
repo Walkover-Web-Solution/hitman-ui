@@ -169,7 +169,7 @@ class CustomTabs extends Component {
             )
           } else {
             return (
-              <div className='d-flex'>
+              <div className='d-flex align-items-center'>
                 <HiMiniDocumentText className='mr-1' size={16} />
                 <span>{page.name}</span>
               </div>
@@ -182,16 +182,16 @@ class CustomTabs extends Component {
         if (this.props.location.pathname.split('/')[6] === 'settings') {
           return (
             <>
-              <span className='d-flex'>
-                <IoIosSettings size={16} className='setting-icons mr-1' />
+              <span className='d-flex align-items-center'>
+                <IoIosSettings size={18} className='setting-icons mr-1' />
                 <span>{collectionName}</span>
               </span>
             </>
           )
         } else {
           return (
-            <div className='d-flex'>
-              <IoIosSettings size={16} className='setting-icons mr-1' />
+            <div className='d-flex align-items-center'>
+              <IoIosSettings size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
           )
@@ -281,7 +281,7 @@ class CustomTabs extends Component {
         return (
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[this.props.pages?.[tabId]?.parentId]?.name}</div> */}
-              <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{this.props.pages[tabId]?.name}</div>
+            <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{this.props.pages[tabId]?.name}</div>
           </div>
         )
       }
