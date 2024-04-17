@@ -168,7 +168,12 @@ class CustomTabs extends Component {
           } else {
             return (
               <>
+                 <div className='d-flex flex-column align-items-center'>
+                <span className='d-flex'>
+                <SiPagekit className='d-none' />
                 {page.name}
+                </span>
+            </div>
                 {/* <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.name}</span> */}
               </>
             )
@@ -180,15 +185,19 @@ class CustomTabs extends Component {
         if (this.props.location.pathname.split('/')[6] === 'settings') {
           return (
             <>
-              {collectionName}
+             <span className='d-flex'>
+                <IoIosSettings className='d-none pe-2' />
+                {collectionName}
+              </span>
+              <span className='sub-label'>settings</span>
             </>
           )
         } else {
           return (
                 <>
                   {collectionName}
-                  <span className='sub-label'>Feedback</span>
-                </>
+                  <span className='sub-label'>Feedback</span>               
+               </>
           )
         }
       }
@@ -276,11 +285,7 @@ class CustomTabs extends Component {
         return (
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[this.props.pages?.[tabId]?.parentId]?.name}</div> */}
-            <div className='d-flex'>
-              <SiPagekit />
               <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{this.props.pages[tabId]?.name}</div>
-            </div>
-            <span>page</span>
           </div>
         )
       }
@@ -307,11 +312,7 @@ class CustomTabs extends Component {
             <div className='page-name'>{this.props.collections[tabId]?.name }</div>
           </div>
            <div className='hover-div' style={styles}>
-           <div className='d-flex'>
-             <IoIosSettings />
              <div className='page-name'>{this.props.collections[tabId]?.name }</div>
-           </div>
-           <span>setting</span>
          </div>
          </>
         )

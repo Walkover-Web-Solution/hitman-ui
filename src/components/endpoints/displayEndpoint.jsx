@@ -67,6 +67,7 @@ import { getPublishedContentByIdAndType } from '../../services/generalApiService
 import Footer from '../main/Footer.jsx'
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
 import { statesEnum } from '../common/utility'
+import { FaSave } from "react-icons/fa";
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -2527,6 +2528,8 @@ class DisplayEndpoint extends Component {
                 type='button'
                 onClick={() => this.handleSave()}
               >
+                <FaSave />
+                {' '}
                 Save
               </button>
               {getCurrentUser() ? (

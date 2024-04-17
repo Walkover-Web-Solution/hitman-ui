@@ -337,9 +337,6 @@ class Environments extends Component {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-               <span ref={this.iconRef} className={`${isOnPublishedPage() ? "none-icons" : 'Outline-arrow'}`}> 
-               <IoCodeSlash id='OutlineArrow' className={'open-close'} onClick={() => { this.handleShowSideBar() }}/> </span>
-              <span ref={this.closeIconRef} onClick={() => { this.handleShowSideBar() }} className='none-icons'>X</span>
               </>
             )}
           </div>
