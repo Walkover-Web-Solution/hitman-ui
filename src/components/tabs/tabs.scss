@@ -96,13 +96,7 @@
             }
             svg {
               display: block;
-              width: 16px;
-              height: 16px;
               color: #00000080 ;
-              transform: translate(-2px, -2px);
-              &.setting-icons {
-                transform: translate( -2px , -1px) !important;
-              }
             }
             &:hover {
               background-color: unset !important;
