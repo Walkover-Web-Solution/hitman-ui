@@ -30,10 +30,10 @@ class DisplayResponse extends Component {
     showCopyMessage: false,
     selectedResponseTab: 'body',
     isOpen: false,
-    output:null,
+    output: null,
     isShow: false,
     Open: false,
-    Show: false,
+    Show: false
   }
 
   constructor(props) {
@@ -252,7 +252,7 @@ class DisplayResponse extends Component {
     const headerContentKeys = Object.keys(headerContent)
     return headerContentKeys.map((key, index) => {
       const value = headerContent[key]
-      return(
+      return (
         <tr key={key}>
           <th className='text-nowrap' scope='row'>
             {key}
@@ -282,33 +282,72 @@ class DisplayResponse extends Component {
   }
 
   displayConsole() {
-    return this.props?.endpointContent.preScriptText || this.props?.endpointContent.postScriptText ? (
-      <div className='test-results-container px-2'>{this.renderConsole()}</div>
-    ) : (
-      this.renderBlank()
+    const { isOpen } = this.state
+    const { isShow } = this.state
+    const { Show } = this.state
+    const { Open } = this.state
+    return (
+      <div>
+        <div className='dropdown-data'>
+          <FontAwesomeIcon icon={isOpen ? faCaretDown : faCaretRight} className='dropdown-icon' onClick={this.toggleDropdown} />
+          {'  '}
+          {this.props?.endpointContent?.data?.method}
+          {'  '}
+          {this.props?.endpointContent?.harObject?.url}
+          <div className={`dropdown-content pt-2 ${isOpen ? 'show' : ''}`}>
+            <div className='dropdown-data'>
+              <FontAwesomeIcon icon={isShow ? faCaretDown : faCaretRight} onClick={this.toggleDropdownHeaders} /> Response Headers
+              <div className={`dropdown-content ${isOpen ? 'show' : ''}`}>
+                <span href='#' className={`dropdown-content-option ${isShow ? 'show' : ''}`}>
+                  {this.renderTableData()}
+                </span>
+              </div>
+            </div>
+            <div className='dropdown-data'>
+              <FontAwesomeIcon icon={Show ? faCaretDown : faCaretRight} onClick={this.toggleDropdownRequest} /> Request Headers
+              <div className={`dropdown-content ${isOpen ? 'show' : ''}`}>
+                <span href='#' className={` dropdown-content-option ${Show ? 'show' : ''}`}></span>
+              </div>
+            </div>
+            <div className='dropdown-data'>
+              <FontAwesomeIcon icon={Open ? faCaretDown : faCaretRight} onClick={this.toggleDropdownBody} /> Body
+              <div className={`dropdown-content ${isOpen ? 'show' : ''}`}>
+                <span href='#' className={` dropdown-content-option ${Open ? 'show' : ''}`}>
+                  {this.props.tab.id}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {this.props?.endpointContent.preScriptText || this.props?.endpointContent.postScriptText ? (
+          <div className='test-results-container px-2'>{this.renderConsole()}</div>
+        ) : null}
+      </div>
     )
   }
+
   toggleDropdown = () => {
     this.setState({ isOpen: !this.state.isOpen })
   }
+
   executeCode(code) {
-      const sandbox = {
-        console: {
-          log: (...args) => {
-              console.log(...args); // Output to the actual console
-              sandbox._consoleLogs.push(args.join(' ')); // Capture log messages
-          }
+    const sandbox = {
+      console: {
+        log: (...args) => {
+          console.log(...args) // Output to the actual console
+          sandbox._consoleLogs.push(args.join(' ')) // Capture log messages
+        }
       },
-      _consoleLogs: [] 
-      }
-      try{
-        vm.runInNewContext(code, sandbox)
-        return sandbox._consoleLogs
-      } catch (err) {
-        return err.name +":" + " " + err.message;
+      _consoleLogs: []
+    }
+    try {
+      vm.runInNewContext(code, sandbox)
+      return sandbox._consoleLogs
+    } catch (err) {
+      return err.name + ':' + ' ' + err.message
     }
   }
-      
+
   toggleDropdownBody = () => {
     this.setState({ Open: !this.state.Open })
   }
@@ -320,40 +359,10 @@ class DisplayResponse extends Component {
   }
 
   renderConsole() {
-
-    const { isOpen } = this.state
-    const { isShow } = this.state
-    const { Show } = this.state
-    const { Open } = this.state
     return (
-      <div className='dropdown-data'>
-        <FontAwesomeIcon icon={isOpen ? faCaretDown : faCaretRight} className='dropdown-icon' onClick={this.toggleDropdown} />
-        {'  '}
-        {this.props?.endpointContent?.data?.method}
-        {'  '}
-        {this.props?.endpointContent?.harObject?.url}
-        <div className={`dropdown-content pt-2 ${isOpen ? 'show' : ''}`} >
-          <div className='dropdown-data'>
-          <FontAwesomeIcon icon={isShow  ? faCaretDown : faCaretRight} onClick={this.toggleDropdownHeaders} />  Response Headers
-            <div className={`dropdown-content ${isOpen ? 'show' : ''}`} >
-              <span href='#' className={`dropdown-content-option ${isShow ? 'show' : ''}`}>{this.renderTableData()}</span>
-            </div>
-          </div>
-          <div className='dropdown-data'>
-          <FontAwesomeIcon icon={Show ? faCaretDown : faCaretRight} onClick={this.toggleDropdownRequest}/> Request Headers
-            <div className={`dropdown-content ${isOpen ? 'show' : ''}`}>
-              <span href='#' className={` dropdown-content-option ${Show ? 'show' : ''}`}></span>
-            </div>
-          </div>
-          <div className='dropdown-data'>
-          <FontAwesomeIcon icon={Open ? faCaretDown : faCaretRight} onClick={this.toggleDropdownBody}/> Body
-            <div className={`dropdown-content ${isOpen ? 'show' : ''}`}>
-              <span href='#' className={` dropdown-content-option ${Open ? 'show' : ''}`}>{this.props.tab.id}</span>
-            </div>
-          </div>
-        </div>
-        <div className='pt-2'>{this.executeCode( this.props?.endpointContent.preScriptText)}</div>
-        <div className='pt-2'>{this.executeCode( this.props?.endpointContent.postScriptText)}</div>
+      <div>
+        <div className='pt-2'>{this.executeCode(this.props?.endpointContent.preScriptText)}</div>
+        <div className='pt-2'>{this.executeCode(this.props?.endpointContent.postScriptText)}</div>
       </div>
     )
   }
