@@ -40,6 +40,9 @@
           .close {
             opacity: 1;
           }
+          svg {
+            color: #f2994ab0 !important;
+          }
         }
         .nav-link {
           padding: 0 1rem 0 0;
@@ -72,7 +75,9 @@
                 display: block;
                 padding-left: 19px;
               }
-              
+              svg {
+                color: #f2994ab0 !important;
+              }
             }
           }
           .btn {
@@ -93,7 +98,11 @@
               display: block;
               width: 16px;
               height: 16px;
-              color: rgb(146, 143, 143) !important;
+              color: #00000080 ;
+              transform: translate(-2px, -2px);
+              &.setting-icons {
+                transform: translate( -2px , -1px) !important;
+              }
             }
             &:hover {
               background-color: unset !important;

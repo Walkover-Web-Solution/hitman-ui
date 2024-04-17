@@ -183,8 +183,8 @@ class CustomTabs extends Component {
         if (this.props.location.pathname.split('/')[6] === 'settings') {
           return (
             <>
-             <span className='d-flex'>
-                <IoIosSettings />
+             <span className='d-flex align-items-center'>
+                <IoIosSettings className='setting-icons'/>
                 {collectionName}
               </span>
             </>
@@ -193,7 +193,7 @@ class CustomTabs extends Component {
           return (
                 <>
                  <span className='d-flex'>
-                <IoIosSettings className='d-block' />
+                <IoIosSettings className='setting-icons' />
                 {collectionName}
               </span>             
                </>
