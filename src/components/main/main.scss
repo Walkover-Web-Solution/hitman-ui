@@ -47,18 +47,17 @@ html body {
       font-size: 16px !important;
      }
       &::after {
-        border: outset #f7f6f3 !important;
-        content: '' !important;
-        transform: rotate(45deg) !important;
-        position: relative;
-        top: -2px;
-        color: gray;
-        background-color: #f7f6f3 !important ;
+        content: "" !important;
+        top: 0 !important;
+        transform: rotate(363deg) !important;
+        border-top: 0.3em solid !important;
+        border-right: 0.3em solid transparent !important;
+        border-bottom: 0 !important;
+        border-left: 0.3em solid transparent !important;
+    }
       }
     }
-  }
-// }
-
+  
 .dropdown {
   font-size: $font-normal !important;
   font-weight: 400;
@@ -1273,7 +1272,6 @@ button.editBtn {
   padding: 0;
   // border: 0.5px solid #e6dbd4;
   border-radius: 4px;
-  margin-bottom: 10px;
 }
 
 body .btn {
@@ -1803,6 +1801,10 @@ html body div#sokt-sso-modal {
 
 .buttonLoader {
   position: relative;
+}
+.save-icon {
+  width: 20px;
+  height: 20px;
 }
 
 @keyframes buttonLoader {
@@ -2518,7 +2520,8 @@ main.mainpublic-endpoint-main .for-public-view {
     font-size: 12px !important;
     }
   }
-  .techdoc-svg{
+  .techdoc-svg {
+    display: flex;
     @media screen and (max-width:768px) {
       padding: 10px;
       margin-left: -34px;
@@ -2875,7 +2878,7 @@ div#steve-parent-accordion {
   h5 {
     font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 18px;
+    margin-bottom: 9px;
   }
   li {
     margin-bottom: 5px;
@@ -3676,3 +3679,31 @@ body .tox {
 .cur-pointer {
   cursor: pointer !important;
 }
+ .linkWrapper {
+  position: relative;
+  &::before{
+    content: '';
+    display: block;
+    border-left: 1px solid rgb(227 227 227 / 79%);
+    height: 97%;
+    position: absolute;
+    top: -3px;
+    left: 26px;
+  }
+ }
+ .expanded {
+  #collection-collapse {
+    position: relative;
+    padding-left: 6px;
+    &::before{
+      content: '';
+      display: block;
+      border-left: 1px solid rgb(227 227 227 / 79%);
+      height: 97%;
+      position: absolute;
+      top: 0;
+      left: 16px;
+    }
+   }
+ }
+ 

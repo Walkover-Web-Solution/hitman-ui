@@ -480,9 +480,9 @@ class PublicEndpoint extends Component {
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
                     </div> */}
-                    {this.state.openReviewModal && this.reviewModal()}
-                  </div>
-                ) : (
+                  {this.state.openReviewModal && this.reviewModal()}
+                </div>
+              ) : (
                   <>
                     <div className='custom-loading-container'>
                       <div className='loading-content'>

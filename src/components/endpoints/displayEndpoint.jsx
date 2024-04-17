@@ -70,6 +70,7 @@ import { statesEnum } from '../common/utility'
 import { addAuthorizationDataTypes, grantTypesEnums } from '../common/authorizationEnums.js'
 import { updateToken } from '../../store/tokenData/tokenDataActions.js'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
+import { LiaSaveSolid } from "react-icons/lia"
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -2664,6 +2665,8 @@ class DisplayEndpoint extends Component {
                 type='button'
                 onClick={() => this.handleSave()}
               >
+                <LiaSaveSolid className='save-icon'/>
+                {' '}
                 Save
               </button>
               {getCurrentUser() ? (

@@ -13,7 +13,6 @@ import { RiCloseLine } from "react-icons/ri";
 import { RxCopy } from "react-icons/rx";
 
 const HTTPSnippet = require('httpsnippet')
-
 class CodeTemplate extends Component {
   constructor(props) {
     super(props)
@@ -21,6 +20,11 @@ class CodeTemplate extends Component {
       theme: ''
     }
     this.selectedLanguage = 'shell'
+    this.iconRef = React.createRef()
+    this.OutlineArrowRef = React.createRef()
+    this.pubCodesRef = React.createRef()
+    this.iconNoneRef = React.createRef()
+    this.closeIconRef = React.createRef()
   }
 
   makeCodeSnippet() {
@@ -89,7 +93,7 @@ class CodeTemplate extends Component {
                 <RiCloseLine color='black' className='cur-pointer' onClick={this.handleCloseClick} />
               </div>}
             </div>
-            <div className='select-code-wrapper d-flex mb-3 img'>
+            <div className="select-code-wrapper d-flex mb-3 img">
               {primaryLanguages.map((key) => (
                 <button
                   key={key}
