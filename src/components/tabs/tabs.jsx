@@ -68,24 +68,24 @@ class CustomTabs extends Component {
     const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0;
 
     if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
-        switch (e.key) {
-            case 't':
-                e.preventDefault();
-                this.handleOpenNextTab();
-                break;
-            case 'w':
-                e.preventDefault();
-                this.handleCloseTabs([activeTabId]);
-                break;
-            case 'n': 
-              e.preventDefault();
-              this.handleAddTab();
-                break;
-            default:
-                break;
-        }
+      switch (e.key) {
+        case 't':
+          e.preventDefault();
+          this.handleOpenNextTab();
+          break;
+        case 'w':
+          e.preventDefault();
+          this.handleCloseTabs([activeTabId]);
+          break;
+        case 'n':
+          e.preventDefault();
+          this.handleAddTab();
+          break;
+        default:
+          break;
+      }
     }
-}
+  }
 
   openTabAtIndex(index) {
     const { tabsOrder } = this.props.tabs
@@ -167,13 +167,10 @@ class CustomTabs extends Component {
             )
           } else {
             return (
-              <>
-                 <div className='d-flex align-items-center'>
-                <HiMiniDocumentText />
-                {page.name}
-            </div>
-                {/* <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.name}</span> */}
-              </>
+              <div className='d-flex align-items-center'>
+                <HiMiniDocumentText className='mr-1' size={16} />
+                <span>{page.name}</span>
+              </div>
             )
           }
         }
@@ -183,20 +180,18 @@ class CustomTabs extends Component {
         if (this.props.location.pathname.split('/')[6] === 'settings') {
           return (
             <>
-             <span className='d-flex align-items-center'>
-                <IoIosSettings className='setting-icons'/>
-                {collectionName}
+              <span className='d-flex align-items-center'>
+                <IoIosSettings size={18} className='setting-icons mr-1' />
+                <span>{collectionName}</span>
               </span>
             </>
           )
         } else {
           return (
-                <>
-                 <span className='d-flex'>
-                <IoIosSettings className='setting-icons' />
-                {collectionName}
-              </span>             
-               </>
+            <div className='d-flex align-items-center'>
+              <IoIosSettings size={18} className='setting-icons mr-1' />
+              <span>{collectionName}</span>
+            </div>
           )
         }
       }
@@ -284,7 +279,7 @@ class CustomTabs extends Component {
         return (
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[this.props.pages?.[tabId]?.parentId]?.name}</div> */}
-              <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{this.props.pages[tabId]?.name}</div>
+            <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{this.props.pages[tabId]?.name}</div>
           </div>
         )
       }
@@ -305,16 +300,16 @@ class CustomTabs extends Component {
         )
       }
     } else if (tab.type === 'collection') {
-        return (
-          <>
+      return (
+        <>
           <div className='hover-div' style={styles}>
-            <div className='page-name'>{this.props.collections[tabId]?.name }</div>
+            <div className='page-name'>{this.props.collections[tabId]?.name}</div>
           </div>
-           <div className='hover-div' style={styles}>
-             <div className='page-name'>{this.props.collections[tabId]?.name }</div>
-         </div>
-         </>
-        )
+          <div className='hover-div' style={styles}>
+            <div className='page-name'>{this.props.collections[tabId]?.name}</div>
+          </div>
+        </>
+      )
       // }
     }
   }
