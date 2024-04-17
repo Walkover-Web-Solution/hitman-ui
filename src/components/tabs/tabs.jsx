@@ -11,6 +11,8 @@ import Plus from '../../assets/icons/plus.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { IoIosSettings } from "react-icons/io"
+import { HiMiniDocumentText } from "react-icons/hi2";
 
 const mapStateToProps = (state) => {
   return {
@@ -159,13 +161,17 @@ class CustomTabs extends Component {
             return (
               <>
                 {this.props.pages[tabId].name}
+                {/* <span>div</span> */}
                 {/* <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.number}</span> */}
               </>
             )
           } else {
             return (
               <>
+                 <div className='d-flex align-items-center'>
+                <HiMiniDocumentText />
                 {page.name}
+            </div>
                 {/* <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.name}</span> */}
               </>
             )
@@ -177,16 +183,20 @@ class CustomTabs extends Component {
         if (this.props.location.pathname.split('/')[6] === 'settings') {
           return (
             <>
-              {collectionName}
-              <span className='sub-label'>settings</span>
+             <span className='d-flex'>
+                <IoIosSettings />
+                {collectionName}
+              </span>
             </>
           )
         } else {
           return (
-            <>
-              {collectionName}
-              <span className='sub-label'>Feedback</span>
-            </>
+                <>
+                 <span className='d-flex'>
+                <IoIosSettings className='d-block' />
+                {collectionName}
+              </span>             
+               </>
           )
         }
       }
@@ -274,7 +284,7 @@ class CustomTabs extends Component {
         return (
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[this.props.pages?.[tabId]?.parentId]?.name}</div> */}
-            <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{this.props.pages[tabId]?.name}</div>
+              <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{this.props.pages[tabId]?.name}</div>
           </div>
         )
       }
@@ -293,13 +303,19 @@ class CustomTabs extends Component {
             </div>
           </div>
         )
-      } else {
-        return (
-          <div className='hover-div' style={styles}>
-            <div className='page-name'>{this.props.pages[tabId]?.name || 'Untitled'}</div>
-          </div>
-        )
       }
+    } else if (tab.type === 'collection') {
+        return (
+          <>
+          <div className='hover-div' style={styles}>
+            <div className='page-name'>{this.props.collections[tabId]?.name }</div>
+          </div>
+           <div className='hover-div' style={styles}>
+             <div className='page-name'>{this.props.collections[tabId]?.name }</div>
+         </div>
+         </>
+        )
+      // }
     }
   }
 

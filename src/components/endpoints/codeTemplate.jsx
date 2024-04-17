@@ -8,8 +8,8 @@ import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ReactComponent as CopyIcon } from '../../assets/icons/copyIcon.svg'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
-const HTTPSnippet = require('httpsnippet')
 
+const HTTPSnippet = require('httpsnippet')
 class CodeTemplate extends Component {
   constructor(props) {
     super(props)
@@ -17,6 +17,11 @@ class CodeTemplate extends Component {
       theme: ''
     }
     this.selectedLanguage = 'shell'
+    this.iconRef = React.createRef()
+    this.OutlineArrowRef = React.createRef()
+    this.pubCodesRef = React.createRef()
+    this.iconNoneRef = React.createRef()
+    this.closeIconRef = React.createRef()
   }
 
   makeCodeSnippet() {
@@ -65,16 +70,17 @@ class CodeTemplate extends Component {
     }
   }
 
-
+ 
   render() {
     return (
-      <div className='pubCodeWrapper'>
+      <>
+      <div className="pubCodeWrapper">
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
             <div className='code-heading mb-3 d-flex justify-content-center'>
               <span>Sample code</span>
             </div>
-            <div className='select-code-wrapper d-flex mb-3 img'>
+            <div className="select-code-wrapper d-flex mb-3 img">
               {primaryLanguages.map((key) => (
                 <button
                   key={key}
@@ -150,6 +156,7 @@ class CodeTemplate extends Component {
           </Col>
         </div>
       </div>
+      </>
     )
   }
 }

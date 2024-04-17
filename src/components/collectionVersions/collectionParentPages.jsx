@@ -482,14 +482,15 @@ class CollectionParentPages extends Component {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const publishData = this.props.modals.publishData
     const rootId = pageId
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === pageId ? 'selected' : '')
     return (
       <>
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
           <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
             <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''} ${isSelected}`}>
+          <div className={`active-select  ${isSelected ? ' selected' : ''}`}>
               <div
-                className='d-flex align-items-center cl-name'
+                className={`d-flex align-items-center cl-name ` }
                 onClick={() => {
                   this.toggleParentPageIds(this.props.rootParentId)
                 }}
@@ -521,6 +522,7 @@ class CollectionParentPages extends Component {
                     )}
                   </div>
                 </div>
+              </div>
               </div>
 
               {
@@ -567,7 +569,7 @@ class CollectionParentPages extends Component {
             {expanded ? (
               <div className='version-collapse'>
                 <Card.Body>
-                  <div className='linkWrapper versionPages pl-4'>
+                  <div className='linkWrapper versionPages'>
                     <CombinedCollections
                       {...this.props}
                       page_id={pageId}
