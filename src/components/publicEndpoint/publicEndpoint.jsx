@@ -75,26 +75,26 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 class PublicEndpoint extends Component {
   constructor() {
- super()
- this.state = {
-  publicCollectionId: '',
-    collectionName: '',
-    collectionTheme: null,
-   isNavBar: false,
-   isSticky: false,
-   likeActive: false,
-   dislikeActive: false,
-   review: {
-    feedback: {},
-    endpoint: {}
-    },
-    openReviewModal: false,
-    idToRenderState: null,
+    super()
+    this.state = {
+      publicCollectionId: '',
+      collectionName: '',
+      collectionTheme: null,
+      isNavBar: false,
+      isSticky: false,
+      likeActive: false,
+      dislikeActive: false,
+      review: {
+        feedback: {},
+        endpoint: {}
+      },
+      openReviewModal: false,
+      idToRenderState: null,
     }
- this.iconRef = React.createRef()
- this.hamburgerIconRef = React.createRef()
- this.logoName = React.createRef()
- this.closeIconRef = React.createRef()
+    this.iconRef = React.createRef()
+    this.hamburgerIconRef = React.createRef()
+    this.logoName = React.createRef()
+    this.closeIconRef = React.createRef()
   }
 
   async componentDidMount() {
@@ -131,7 +131,7 @@ class PublicEndpoint extends Component {
       // internal case here collectionId will be there always
       queryParamApi2.collectionId = collectionId
       queryParamApi2.path = url.pathname.slice(3) // ignoring '/p/' in pathName
-      this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true})
+      this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true })
     } else if (!isTechdocOwnDomain()) {
       // external case
       queryParamApi2.custom_domain = window.location.hostname // setting hostname
@@ -155,14 +155,14 @@ class PublicEndpoint extends Component {
     // Remove the last '&' character
     queryParamsString = queryParamsString.slice(0, -1)
 
-    try{
+    try {
       const response = await generalApiService.getPublishedContentByPath(queryParamsString)
       this.setDataToReactQueryAndSessionStorage(response)
-    }catch(e){
+    } catch (e) {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, 'undefined')
       this.setState({ idToRenderState: 'undefined' })
     }
-    
+
   }
 
   async componentDidUpdate(prevState) {
@@ -406,13 +406,13 @@ class PublicEndpoint extends Component {
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
-        <span ref={this.iconRef} className={'hamberger-icon'}>
-          <MdDehaze id='hamburgerIcon' className='icon-active fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
-          <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
-          <span className='logo-name' id="logoName">
-            {this.props.collections[collectionKeys[0]]?.favicon ||
-              (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
-                <img
+          <span ref={this.iconRef} className={'hamberger-icon'}>
+            <MdDehaze id='hamburgerIcon' className='icon-active fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
+            <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
+            <span className='logo-name' id="logoName">
+              {this.props.collections[collectionKeys[0]]?.favicon ||
+                (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
+                  <img
                     className='hamberger-img'
                     id='publicLogo'
                     alt='public-logo'
@@ -434,7 +434,7 @@ class PublicEndpoint extends Component {
           {/* [info] part 3 */}
           <SplitPane split='vertical' className={'split-sidebar-public'}>
             {/* [info] part 3 subpart 1 sidebar data left content */}
-            <div className={'hm-sidebar' + ( isTechdocOwnDomain() ? ' pb-5' : '')} style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
+            <div className={'hm-sidebar' + (isTechdocOwnDomain() ? ' pb-5' : '')} style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
               {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
             </div>
             {/*  [info] part 3 subpart 1 sidebar data right content */}
@@ -461,13 +461,13 @@ class PublicEndpoint extends Component {
                     />
                   )}
 
-                    {(type == 1 || type == 3) && (
-                      <DisplayPage
-                        {...this.props}
-                        fetch_entity_name={this.fetchEntityName.bind(this)}
-                        publicCollectionTheme={this.state.collectionTheme}
-                      />
-                    )}
+                  {(type == 1 || type == 3) && (
+                    <DisplayPage
+                      {...this.props}
+                      fetch_entity_name={this.fetchEntityName.bind(this)}
+                      publicCollectionTheme={this.state.collectionTheme}
+                    />
+                  )}
 
                   {!type && idToRender == 'undefined' && (
                     <ERROR_404_PUBLISHED_PAGE
@@ -475,25 +475,20 @@ class PublicEndpoint extends Component {
                     />
                   )}
 
-                    {this.displayCTAandLink()}
-                    {/* <div className='d-flex flex-row justify-content-start'>
+                  {this.displayCTAandLink()}
+                  {/* <div className='d-flex flex-row justify-content-start'>
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
                     </div> */}
-                    {this.state.openReviewModal && this.reviewModal()}
-                  </div>
-                ) : (
-                  <>
-                    <div className='custom-loading-container'>
-                      <div className='loading-content'>
-                        <button className='spinner-border' />
-                        <p className='mt-3'>Loading</p>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </SplitPane>
+                  {this.state.openReviewModal && this.reviewModal()}
+                </div>
+              ) : (
+                <div className='custom-loading-container'>
+                  <progress class="pure-material-progress-linear w-25" />
+                </div>
+              )}
+            </div>
+          </SplitPane>
         </main>
       </>
     )

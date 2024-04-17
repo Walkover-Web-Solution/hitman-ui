@@ -207,6 +207,8 @@ class Endpoints extends Component {
   }
 
   displayEndpointName(endpointId) {
+    let isUserOnPublishedPage = isOnPublishedPage()
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
     return (
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
@@ -222,7 +224,7 @@ class Endpoints extends Component {
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         ) : (
-          <div className='sidebar-accordion-item'>
+          <div className={`sidebar-accordion-item side-bar ${isSelected ? 'Selected' : ''}`}>
             <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
               {this.props.endpoints[endpointId].requestType}
             </div>
@@ -330,7 +332,7 @@ class Endpoints extends Component {
   displaySingleEndpoint(endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     let isUserOnPublishedPage = isOnPublishedPage()
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
+    // const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
     return (
       <>
         <div 
@@ -348,7 +350,6 @@ class Endpoints extends Component {
             <button>
             <button
               tabIndex={-1}
-              className={isSelected}
               onClick={() => {
                 this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
               }}

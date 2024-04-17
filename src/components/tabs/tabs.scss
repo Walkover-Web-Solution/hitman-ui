@@ -40,6 +40,9 @@
           .close {
             opacity: 1;
           }
+          svg {
+            color: #f2994ab0 !important;
+          }
         }
         .nav-link {
           padding: 0 1rem 0 0;
@@ -70,6 +73,10 @@
             .btn {
               .sub-label {
                 display: block;
+                padding-left: 19px;
+              }
+              svg {
+                color: #f2994ab0 !important;
               }
             }
           }
@@ -86,6 +93,19 @@
             .sub-label {
               font-size: $font-small;
               display: none;
+            }
+            svg {
+              display: block;
+              width: 16px;
+              height: 16px;
+              color: #00000080 ;
+              transform: translate(-2px, -2px);
+              &.setting-icons {
+                transform: translate( -2px , -1px) !important;
+              }
+            }
+            &:hover {
+              background-color: unset !important;
             }
           }
         }
@@ -255,7 +275,7 @@
   border: 0.5px solid #e6dbd4;
   align-items: center;
   max-width: 300px;
-  min-width: 220px;
+  // min-width: 220px;
   box-shadow: -5px 5px 12px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   min-height: 50px;
@@ -267,6 +287,9 @@
   justify-content: center;
   flex-wrap: wrap;
   flex-direction: column;
+  overflow: scroll;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   .group-name {
     font-size: $font-medium;
     line-height: 12px;
@@ -280,6 +303,11 @@
     font-size: 12px;
     line-height: 12px;
     text-align: left;
+    padding-left: 4px;
+  }
+  span {
+    padding-left: 17px;
+    font-size: 12px;
   }
   .arrow-top {
     position: relative;
