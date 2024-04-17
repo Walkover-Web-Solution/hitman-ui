@@ -41,14 +41,26 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 class Environments extends Component {
-  state = {
-    currentEnvironmentId: null,
-    environmentFormName: null,
-    showEnvironmentForm: false,
-    showEnvironmentModal: false,
-    environmentToBeEdited: {},
-    publicEnvironmentName: 'Select Environment'
-  }
+  constructor(props) {
+    super(props)
+    this.state = {
+      theme: ''
+    }
+  // state = {
+  //   currentEnvironmentId: null,
+  //   environmentFormName: null,
+  //   showEnvironmentForm: false,
+  //   showEnvironmentModal: false,
+  //   environmentToBeEdited: {},
+  //   publicEnvironmentName: 'Select Environment'
+  // }
+  this.selectedLanguage = 'shell'
+  this.iconRef = React.createRef()
+  this.OutlineArrowRef = React.createRef()
+  // this.pubCodesRef = React.createRef()
+  // this.iconNoneRef = React.createRef()
+  this.closeIconRef = React.createRef()
+}
 
 
   async componentDidMount() {
