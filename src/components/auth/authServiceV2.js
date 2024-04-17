@@ -127,7 +127,11 @@ function AuthServiceV2() {
       }
   }, []);
 
-  return<></>;
+  return (
+    <div className='custom-loading-container'>
+      <progress className="pure-material-progress-linear w-25"/>
+    </div>
+  );
 }
 
 export default AuthServiceV2;
