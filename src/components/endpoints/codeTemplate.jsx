@@ -17,6 +17,11 @@ class CodeTemplate extends Component {
       theme: ''
     }
     this.selectedLanguage = 'shell'
+    this.iconRef = React.createRef()
+    this.OutlineArrowRef = React.createRef()
+    this.pubCodesRef = React.createRef()
+    this.iconNoneRef = React.createRef()
+    this.closeIconRef = React.createRef()
   }
 
   makeCodeSnippet() {

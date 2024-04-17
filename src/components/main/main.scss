@@ -3720,6 +3720,25 @@ body .tox {
     display: block;
   }
 }
+
+.code-curl-icon {
+  border-left: 1px solid rgb(235, 219, 219);
+  padding-left: 12px;
+  cursor: pointer;
+}
+
+.col-white {
+  color: white !important;
+}
+
+.col-black {
+  color: black !important;
+}
+
+.cur-pointer {
+  cursor: pointer !important;
+}
+
  .linkWrapper {
   position: relative;
   &::before{
