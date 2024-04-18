@@ -17,6 +17,7 @@ import { result } from 'lodash'
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
 const vm = require('vm')
 
+
 class DisplayResponse extends Component {
   state = {
     rawResponse: false,
@@ -33,7 +34,7 @@ class DisplayResponse extends Component {
     output: null,
     isShow: false,
     Open: false,
-    Show: false
+    Show: false,
   }
 
   constructor(props) {
@@ -248,19 +249,20 @@ class DisplayResponse extends Component {
     })
   }
   renderResponseHeader() {
-    const headerContent = this.props.endpointContent.originalHeaders
-    const headerContentKeys = Object.keys(headerContent)
-    return headerContentKeys.map((key, index) => {
-      const value = headerContent[key]
-      return (
-        <tr key={key}>
-          <th className='text-nowrap' scope='row'>
-            {key}
-          </th>
-          <td className='text-break'>{value}</td>
-        </tr>
-      )
-    })
+    const { originalHeaders } = this.props.endpointContent
+    return (
+      <div>
+        {originalHeaders.map((header, index) => (
+          <div key={index}>
+            {Object.entries(header).map(([key, value]) => (
+              <div key={key}>
+                <strong>{key}:</strong> {JSON.stringify(value)}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    )
   }
 
   displayHeader() {
@@ -286,6 +288,7 @@ class DisplayResponse extends Component {
     const { isShow } = this.state
     const { Show } = this.state
     const { Open } = this.state
+
     return (
       <div>
         <div className='dropdown-data'>
@@ -306,20 +309,20 @@ class DisplayResponse extends Component {
             <div className='dropdown-data'>
               <FontAwesomeIcon icon={Show ? faCaretDown : faCaretRight} onClick={this.toggleDropdownRequest} /> Request Headers
               <div className={`dropdown-content ${isOpen ? 'show' : ''}`}>
-                <span href='#' className={` dropdown-content-option ${Show ? 'show' : ''}`}></span>
+                <span href='#' className={` dropdown-content-option ${Show ? 'show' : ''}`}>{this.renderResponseHeader()}</span>
               </div>
             </div>
             <div className='dropdown-data'>
               <FontAwesomeIcon icon={Open ? faCaretDown : faCaretRight} onClick={this.toggleDropdownBody} /> Body
               <div className={`dropdown-content ${isOpen ? 'show' : ''}`}>
                 <span href='#' className={` dropdown-content-option ${Open ? 'show' : ''}`}>
-                  {this.props.tab.id}
+                  {JSON.stringify(this.props.response.data)}
                 </span>
               </div>
             </div>
           </div>
         </div>
-        {this.props?.endpointContent.preScriptText || this.props?.endpointContent.postScriptText ? (
+        {this.props.sendButtonClicked ? (
           <div className='test-results-container px-2'>{this.renderConsole()}</div>
         ) : null}
       </div>
@@ -364,7 +367,7 @@ class DisplayResponse extends Component {
         <div className='pt-2'>{this.executeCode(this.props?.endpointContent.preScriptText)}</div>
         <div className='pt-2'>{this.executeCode(this.props?.endpointContent.postScriptText)}</div>
       </div>
-    )
+    ) 
   }
 
   renderBlank() {
