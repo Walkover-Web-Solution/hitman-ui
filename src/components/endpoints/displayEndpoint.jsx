@@ -1115,7 +1115,7 @@ class DisplayEndpoint extends Component {
   prepareBodyForSaving(body) {
     const data = _.cloneDeep(body)
     if (data?.type === 'multipart/form-data') {
-      data?.value?.forEach((item) => {
+      data.value.forEach((item) => {
         if (item.type === 'file') item.value = {}
       })
     }
@@ -1125,7 +1125,7 @@ class DisplayEndpoint extends Component {
   prepareBodyForSending(body) {
     const data = _.cloneDeep(body)
     if (data?.type === 'multipart/form-data') {
-      data?.value?.forEach((item) => {
+      data.value.forEach((item) => {
         if (item.type === 'file') item.value.srcPath = ''
       })
     }
