@@ -8,6 +8,7 @@ import { onParentPageAdded } from '../../pages/redux/pagesActions'
 import { toast } from 'react-toastify'
 import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { getCurrentOrg } from '../../auth/authServiceV2'
 
 export const fetchCollections = (orgId) => {
   return (dispatch) => {
@@ -49,13 +50,16 @@ export const fetchCollection = (collectionId) => {
   }
 }
 
-export const addCollection = (newCollection, openSelectedCollection, customCallback) => {
+export const addCollection = (newCollection, openSelectedCollection, customCallback, history) => {
   newCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     collectionsApiService
       .saveCollection(newCollection)
       .then((response) => {
         dispatch(onCollectionAdded(response.data))
+        const orgId = getCurrentOrg()?.id
+          const collectionId = response?.data?.id
+          history.push(`/orgs/${orgId}/dashboard/collection/${collectionId}/settings`)
         const inivisiblePageData = {
           page: {
             id: response.data.rootParentId,
@@ -65,6 +69,10 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           }
         }
         dispatch(onParentPageAdded(inivisiblePageData))
+        const org = getCurrentOrg()?.id
+          const collection = response?.data?.id
+          history.push(`/orgs/${org}/dashboard/collection/${collection}/settings`)
+        
         toast.success("Collection added successfully")
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
@@ -257,14 +265,18 @@ export const addCustomDomain = (collectionId, domain) => {
   }
 }
 
-export const importApi = (collection, importType, website, customCallback, defaultView) => {
+export const importApi = (collection, importType, website, customCallback, defaultView, history) => {
   collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
+  
   return (dispatch) => {
     if (importType === 'postman') {
       openApiService
         .importPostmanCollection(collection, website, defaultView)
         .then((response) => {
           dispatch(onCollectionImported(response.data))
+          const orgId = getCurrentOrg()?.id
+          const collectionId = response?.data?.collection?.id
+          history.push(`/orgs/${orgId}/dashboard/collection/${collectionId}/settings`)
           toast.success('Collection imported successfully')
           if (customCallback) customCallback({ success: true })
         })
@@ -278,6 +290,9 @@ export const importApi = (collection, importType, website, customCallback, defau
         .importApi(collection, defaultView)
         .then((response) => {
           dispatch(onCollectionImported(response?.data))
+          const orgId = getCurrentOrg()?.id
+          const collectionId = response?.data?.collection?.id
+          history.push(`/orgs/${orgId}/dashboard/collection/${collectionId}/settings`)
           toast.success('Collection imported successfully')
           if (customCallback) customCallback({ success: true })
         })

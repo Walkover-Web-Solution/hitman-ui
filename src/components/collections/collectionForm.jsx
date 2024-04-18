@@ -19,8 +19,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_collection: (newCollection, openSelectedCollection, callback) =>
-      dispatch(addCollection(newCollection, openSelectedCollection, callback)),
+    add_collection: (newCollection, openSelectedCollection, callback,history) =>
+      dispatch(addCollection(newCollection, openSelectedCollection, callback,history)),
     update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback))
   }
 }
@@ -103,7 +103,7 @@ class CollectionForm extends Form {
     this.props.add_collection(
       { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
       null,
-      this.redirectToCollection.bind(this)
+      this.redirectToCollection.bind(this), this.props.history
     )
     this.setState({
       data: {
