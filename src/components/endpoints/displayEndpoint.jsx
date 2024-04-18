@@ -1440,12 +1440,10 @@ class DisplayEndpoint extends Component {
   async prepareHarObject() {
     const BASE_URL = this.props?.endpointContent?.host?.BASE_URL || ''
     const uri = new URI(this.props?.endpointContent?.data?.updatedUri || '')
-    let queryparams = uri.search()
-    queryparams = queryparams.replace(/\[([^)]+)\]/g, (match, p1) => {
-      return '[' + encodeURIComponent(p1) + ']';
-  });
+    const queryparams = uri.search()
+    const encodedQueryParams = encodeURIComponent(queryparams)
     const path = this.setPathVariableValues()
-    let url = BASE_URL + path + queryparams
+    let url = BASE_URL + path + encodedQueryParams
     // url = this.replaceVariables(url)
     const method = this.props?.endpointContent?.data?.method || ''
     const body = this.props?.endpointContent?.data?.body || {}
