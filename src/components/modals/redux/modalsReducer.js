@@ -1,6 +1,6 @@
 import modalsActionTypes from './modalsActionTypes'
 
-const initialState = { activeModal: null, modalData: null, installPrompt: null, publishData: false }
+const initialState = { activeModal: null, modalData: null, installPrompt: null, publishData: false, curlSlider: false }
 
 function modalsReducer(state = initialState, action) {
   switch (action.type) {
@@ -15,6 +15,9 @@ function modalsReducer(state = initialState, action) {
 
     case modalsActionTypes.ON_PUBLISH_DOC:
       return { ...state, publishData: action.payload }
+
+    case modalsActionTypes.ON_CURL_SLIDER_OPEN:
+      return { ...state, curlSlider: action.payload }
 
     default:
       return state
