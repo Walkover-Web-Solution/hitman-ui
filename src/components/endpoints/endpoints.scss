@@ -1510,3 +1510,116 @@ table#custom-generic-table {
 .disable-callback {
   color: rgb(155, 152, 152) !important;
 }
+
+.pubCodeWrapper {
+  z-index: 199;
+  padding: 15px;
+  padding-top: 35px;
+  width: 432px;
+  min-width: 432px;
+  background: #333333;
+  transition: 300ms;
+  .select-code-wrapper {
+    flex-direction: row;
+    height: 30px;
+    button {
+      height: 38px;
+    }
+    .codeTemplateButtonMore{
+      height: 38px !important;
+      z-index: 1000;
+      width: 100px !important;
+      .dropdownMore{
+      border: none !important;
+      }
+      .btn-primary {
+        &.active {
+          background-color: transparent !important;
+        }
+        &:focus {
+          background-color: transparent !important;
+          color: white !important;
+        }
+        &:hover {
+          color: white;
+        } 
+      }
+    }
+  }
+  .inner-editor {
+    height: 100%;
+    .editor-body-wrapper {
+      height: calc(100% - 6rem);
+      .ace-editor-wrapper {
+        height: 100%;
+        min-width: 0;
+        div#ace-editor {
+          height: 100% !important;
+        }
+      }
+      padding: 0px;
+    }
+  }
+}
+
+.show-curl-endpoint {
+  position: fixed;
+  height: 97vh;
+  right: 0px;
+  top: 40px;
+  background-color: #f7f6f3 !important;
+  color: black !important;
+  width: 379px !important;
+  min-width: unset !important;
+  .select-code-wrapper {
+    button {
+      color: black;
+      border-color: #343a40 !important;
+      // &::after {
+      //   content: "";
+      //   color: black;
+      // }
+      &:hover {
+        color: white !important;
+        background-color: #343a40 !important;
+      }
+      span {
+        // color: black;
+        &:hover {
+          color: white !important;
+          background-color: #343a40 !important;
+        }
+      }
+      &.active {
+        color: white !important;
+        background-color: black !important;
+      }
+    }
+    .codeTemplateButtonMore {
+      .dropdown {
+        button {
+          color: black !important;
+          &:hover {
+            color: white !important;
+            background-color: #343a40 !important;
+          }
+          &.active {
+            color: white !important;
+            background-color: black !important;
+          }
+          &.btn {
+            &.btn-primary {
+              &.active {
+                background-color: black !important;
+              }
+              &:focus {
+                background-color: black !important;
+                color: white !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

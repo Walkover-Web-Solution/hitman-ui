@@ -143,6 +143,8 @@ class HostContainer extends Component {
         untitledEndpointData.data.body.type = contentTypesEnums[contentType];
         untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType];
         untitledEndpointData.data.body.raw.value = typeof(parsedData.data)=== 'object' ? JSON.stringify(parsedData.data) : parsedData.data;
+
+
         // setting body description
         untitledEndpointData.bodyDescription = {
             "payload": {
@@ -324,7 +326,7 @@ class HostContainer extends Component {
           // value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}  ? to resolve later
           value={(this.state?.datalistHost ?? '') + (this.state?.datalistUri ?? '') ?? ''}
           name={`${endpointId}_hosts`}
-          placeholder='Enter Request URL'
+          placeholder='Enter URL or paste cURL'
           onChange={(e) => this.handleInputHostChange(e)}
           autoComplete='off'
           onFocus={() =>

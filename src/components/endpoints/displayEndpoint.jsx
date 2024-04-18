@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
+import { SESSION_STORAGE_KEY, isDashboardAndTestingView, isOnPublishedPage, trimString } from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -47,7 +47,7 @@ import { updateEnvironment } from '../environments/redux/environmentsActions'
 import { run, initialize } from '../../services/sandboxservice'
 import Script from './script/script'
 import * as _ from 'lodash'
-import { openModal } from '../modals/redux/modalsActions'
+import { openModal, updateStateOfCurlSlider } from '../modals/redux/modalsActions'
 import Axios from 'axios'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
@@ -99,6 +99,7 @@ const mapStateToProps = (state) => {
     activeTabId: state.tabs.activeTabId,
     tabs: state?.tabs?.tabs,
     tokenDetails: state?.tokenData?.tokenDetails,
+    curlSlider: state.modals?.curlSlider || false
   }
 }
 
@@ -117,7 +118,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     set_response_view: (view) => dispatch(onToggle(view)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     unPublish_endpoint: (endpointId) => dispatch(draftEndpoint(endpointId)),
-    update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate))
+    update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate)),
+    update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload)),
     // set_chat_view : (view) => dispatch(onChatResponseToggle(view))
   }
 }
@@ -278,11 +280,11 @@ const withQuery = (WrappedComponent) => {
         else {
           untitled.body = { ...untitled.body, ...endpoint.body }
         }
-      } 
+      }
       delete endpoint.body?.value;
 
       untitled.uri = endpoint.uri
-      untitled.updatedUri = endpoint.uri
+      untitled.updatedUri = endpoint.updatedUri
       untitled.method = endpoint.method;
       untitled.name = endpoint.name;
       return _.cloneDeep(untitled);
@@ -451,17 +453,15 @@ class DisplayEndpoint extends Component {
     }
     if (this.props.endpointId !== prevProps.endpointId) {
     }
-    if (!isDashboardRoute(this.props)) {
-      if (
-        this.props?.endpointContent &&
-        (!_.isEqual(this.state?.endpointContentState?.data, this.props?.endpointContent?.data) ||
-          !_.isEqual(this.state?.endpointContentState?.originalParams, this.props?.endpointContent?.originalParams) ||
-          !_.isEqual(this.state?.endpointContentState?.originalHeaders, this.props?.endpointContent?.originalHeaders) ||
-          !_.isEqual(this.state?.endpointContentState?.pathVariables, this.props?.endpointContent?.pathVariables) ||
-          !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
-      ) {
-        this.prepareHarObject()
-      }
+    if (
+      this.props?.endpointContent &&
+      (!_.isEqual(this.state?.endpointContentState?.data, this.props?.endpointContent?.data) ||
+        !_.isEqual(this.state?.endpointContentState?.originalParams, this.props?.endpointContent?.originalParams) ||
+        !_.isEqual(this.state?.endpointContentState?.originalHeaders, this.props?.endpointContent?.originalHeaders) ||
+        !_.isEqual(this.state?.endpointContentState?.pathVariables, this.props?.endpointContent?.pathVariables) ||
+        !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
+    ) {
+      this.prepareHarObject()
     }
     if (this.state.endpoint.id !== prevState.endpoint.id && !this.props.location.pathname.includes('history')) {
       this.setState({ flagResponse: false })
@@ -501,7 +501,7 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
-    if(!e?.currentTarget?.value) return ;
+    if (!e?.currentTarget?.value) return;
 
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
@@ -1440,10 +1440,13 @@ class DisplayEndpoint extends Component {
   async prepareHarObject() {
     const BASE_URL = this.props?.endpointContent?.host?.BASE_URL || ''
     const uri = new URI(this.props?.endpointContent?.data?.updatedUri || '')
-    const queryparams = uri.search()
+    let queryparams = uri.search()
+    queryparams = queryparams.replace(/\[([^)]+)\]/g, (match, p1) => {
+      return '[' + encodeURIComponent(p1) + ']';
+  });
     const path = this.setPathVariableValues()
     let url = BASE_URL + path + queryparams
-    url = this.replaceVariables(url)
+    // url = this.replaceVariables(url)
     const method = this.props?.endpointContent?.data?.method || ''
     const body = this.props?.endpointContent?.data?.body || {}
     const { originalHeaders, originalParams } = this.props?.endpointContent || {}
@@ -2703,6 +2706,39 @@ class DisplayEndpoint extends Component {
     return JSON.parse(window.localStorage.getItem('right'))
   }
 
+  renderCodeTemplate() {
+    if (this.isDashboardAndTestingView(this.props, 'testing') && this.props.curlSlider && this.props.match.params.endpointId && this.props?.endpointContent?.harObject) {
+      return (
+        <CodeTemplate
+          show
+          {...this.props}
+          onHide={() => { this.setState({ showCodeTemplate: false }) }}
+          editorToggle={() => { this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility }) }}
+          harObject={this.props?.endpointContent?.harObject}
+          title='Generate Code Snippets'
+          showClosebtn={true}
+          publicCollectionTheme={this.props?.publicCollectionTheme}
+          updateCurlSlider={this.props.update_curl_slider}
+          theme={'light'}
+        />
+      )
+    }
+    if (isOnPublishedPage(this.props) && this.props?.endpointContent?.harObject) {
+      return (
+        <CodeTemplate
+          show
+          {...this.props}
+          onHide={() => { this.setState({ showCodeTemplate: false }) }}
+          editorToggle={() => { this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility }) }}
+          harObject={this.props?.endpointContent?.harObject}
+          title='Generate Code Snippets'
+          publicCollectionTheme={this.props?.publicCollectionTheme}
+          updateCurlSlider={this.props.update_curl_slider}
+        />
+      )
+    }
+  }
+
   render() {
     if (this.props?.endpointContentLoading) {
       return (
@@ -3056,20 +3092,7 @@ class DisplayEndpoint extends Component {
                 {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
               </div>
             ) : null}
-            {this.isNotDashboardOrDocView() && this.props?.endpointContent?.harObject && isOnPublishedPage() && (
-              <CodeTemplate
-                show
-                onHide={() => {
-                  this.setState({ showCodeTemplate: false })
-                }}
-                editorToggle={() => {
-                  this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility })
-                }}
-                harObject={this.props?.endpointContent?.harObject}
-                title='Generate Code Snippets'
-                publicCollectionTheme={this.props?.publicCollectionTheme}
-              />
-            )}
+            {this.renderCodeTemplate()}
           </div>
         </div>
         {this.isDashboardAndTestingView() && (

@@ -23,6 +23,9 @@ import './main.scss'
 import { getCurrentUser } from '../auth/authServiceV2'
 import LoginSignupModal from './loginSignupModal'
 import Environments from '../environments/environments'
+import { IoCodeSlashOutline } from 'react-icons/io5'
+import { updateStateOfCurlSlider } from '../modals/redux/modalsActions.js'
+
 const mapStateToProps = (state) => {
   return {
     endpoints: state.pages,
@@ -31,7 +34,8 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     tabs: state.tabs,
-    historySnapshots: state.history
+    historySnapshots: state.history,
+    curlSlider: state.modals?.curlSlider || false
   }
 }
 
@@ -44,7 +48,8 @@ const mapDispatchToProps = (dispatch) => {
     set_active_tab_id: (tabId) => dispatch(setActiveTabId(tabId)),
     set_tabs_order: (tabsOrder) => dispatch(setTabsOrder(tabsOrder)),
     fetch_tabs_from_redux: (tabsOrder) => dispatch(fetchTabsFromRedux(tabsOrder)),
-    replace_tab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab))
+    replace_tab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab)),
+    update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload)),
   }
 }
 
@@ -154,7 +159,7 @@ class ContentPanel extends Component {
           this.props.history.push({
             pathname:
               tab.type !== 'collection'
-                ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' :tabId}${(tab.isModified)?'/edit':''}`
+                ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${(tab.isModified) ? '/edit' : ''}`
                 : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
           })
         }
@@ -180,6 +185,10 @@ class ContentPanel extends Component {
     this.setState({ showLoginSignupModal: false })
   }
 
+  handleCodeCurlClick() {
+    this.props.update_curl_slider(!this.props.curlSlider)
+  }
+
   render() {
     const { activeTabId } = this.props.tabs
     return (
@@ -197,6 +206,13 @@ class ContentPanel extends Component {
                     handle_save_page={this.handleSavePage.bind(this)}
                   />
                   <Environments {...this.props} />
+                  {this.props.match.params.endpointId
+                    && (
+                      <div className='d-flex justify-content-center align-items-center code-curl-icon' onClick={() => this.handleCodeCurlClick()}>
+                        <IoCodeSlashOutline type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" className='mr-3' size={18} />
+                      </div>
+                    )}
+
                 </div>
               </div>
             </>

@@ -5,9 +5,13 @@ import 'ace-builds'
 import AceEditor from 'react-ace'
 import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/theme-tomorrow_night'
+import 'ace-builds/src-noconflict/theme-github'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ReactComponent as CopyIcon } from '../../assets/icons/copyIcon.svg'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
+import { RiCloseLine } from "react-icons/ri";
+import { RxCopy } from "react-icons/rx";
+
 const HTTPSnippet = require('httpsnippet')
 
 class CodeTemplate extends Component {
@@ -43,7 +47,7 @@ class CodeTemplate extends Component {
       const snippet = this.makeCodeSnippet()
       codeSnippet = snippet.convert(selectedLanguage)
       codeSnippet = decodeURIComponent(codeSnippet)
-      codeSnippet = codeSnippet.replace('///' , '//')
+      codeSnippet = codeSnippet.replace('///', '//')
     } catch (error) {
       console.error(error)
     }
@@ -65,20 +69,48 @@ class CodeTemplate extends Component {
     }
   }
 
+  handleCloseClick = () => {
+    this.props.updateCurlSlider(false)
+  }
+
+  getClassForLanguages = (key) => {
+    if (key === this.selectedLanguage) {
+      let commonClass = 'active mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center'
+      if (this.props.theme === 'light') {
+        return commonClass + " " + ''
+      }
+      else {
+        return commonClass + " " + 'col-white'
+      }
+    }
+    else {
+      let commonClass = 'mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center'
+      if (this.props.theme === 'light') {
+        return commonClass + " " + 'col-black'
+      }
+      else {
+        return commonClass + " " + 'col-white'
+      }
+    }
+  }
+
 
   render() {
     return (
-      <div className='pubCodeWrapper '>
+      <div className={(this.props.match.params.endpointId) ? "show-curl-endpoint pubCodeWrapper" : "pubCodeWrapper"}>
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
-            <div className='code-heading mb-3 d-flex justify-content-center'>
-              <span>Sample code</span>
+            <div className='code-heading mb-3 d-flex justify-content-center align-items-center'>
+              <span className={this.props.theme === 'light' ? 'col-black' : 'col-white'}>Sample code</span>
+              {this.props.showClosebtn && <div className='d-flex justify-content-end flex-grow-1'>
+                <RiCloseLine color='black' className='cur-pointer' onClick={this.handleCloseClick} />
+              </div>}
             </div>
             <div className='select-code-wrapper d-flex mb-3 img'>
               {primaryLanguages.map((key) => (
                 <button
                   key={key}
-                  className={key === this.selectedLanguage ? 'active mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center' : ' mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center'}
+                  className={`${(this.props.match.params.endpointId) ? "btn btn-outline-dark" : ""}  ${this.getClassForLanguages(key)}`}
                   onClick={() => {
                     this.makeCodeTemplate(key)
                   }}
@@ -87,30 +119,30 @@ class CodeTemplate extends Component {
                   {languages[key].name}
                 </button>
               ))}
-              <button className='codeTemplateButtonMore mr-2 d-flex justify-content-center align-items-center'>
-              <Dropdown >
-                <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore' : 'dropdownMore'}>
-                  {primaryLanguages.includes(this.selectedLanguage) ? (
-                    <span>More</span>
-                  ) : (
-                    <span>{languages[this.selectedLanguage].name}</span>
-                  )}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {secondaryLanguages.map((key) => (
-                    <Dropdown.Item
-                      key={key}
-                      className={key === this.selectedLanguage ? 'active mb-2 mt-2' : 'mb-2 mt-2'}
-                      onClick={() => {
-                        this.makeCodeTemplate(key)
-                      }}
-                    >
-                      <img src={languages[key].imagePath} alt={languages[key].name} className='mr-2' />
-                      {languages[key].name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
+              <button className='codeTemplateButtonMore  d-flex justify-content-center align-items-center p-0'>
+                <Dropdown >
+                  <Dropdown.Toggle className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore mr-0' : 'dropdownMore mr-0'}>
+                    {primaryLanguages.includes(this.selectedLanguage) ? (
+                      <span>More</span>
+                    ) : (
+                      <span>{languages[this.selectedLanguage].name}</span>
+                    )}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    {secondaryLanguages.map((key) => (
+                      <Dropdown.Item
+                        key={key}
+                        className={key === this.selectedLanguage ? 'active mb-2 mt-2' : 'mb-2 mt-2'}
+                        onClick={() => {
+                          this.makeCodeTemplate(key)
+                        }}
+                      >
+                        <img src={languages[key].imagePath} alt={languages[key].name} className='mr-2' />
+                        {languages[key].name}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
               </button>
             </div>
           </Col>
@@ -127,13 +159,13 @@ class CodeTemplate extends Component {
                 }
                 className='copy-to-clipboard'
               >
-                <button>{this.state.copied ? <span className='text-success'>Copied! </span> : <CopyIcon />}</button>
+                <button>{this.state.copied ? <span className='text-success'>Copied! </span> : <RxCopy className='cur-pointer' color={this.props.theme ===  'light' ? 'black' : "white"} />}</button>
               </CopyToClipboard>
             </div>{' '}
             <div className='ace-editor-wrapper'>
               <AceEditor
                 mode={languages[this.selectedLanguage].mode}
-                theme='tomorrow_night'
+                theme={this.props.theme === 'light' ? 'kuroir' : "tomorrow_night"}
                 highlightActiveLine={false}
                 focus={false}
                 value={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
@@ -141,6 +173,7 @@ class CodeTemplate extends Component {
                 editorProps={{
                   $blockScrolling: false
                 }}
+                showGutter={false}
                 onLoad={(editor) => {
                   editor.getSession().setUseWrapMode(true)
                   editor.setShowPrintMargin(false)
