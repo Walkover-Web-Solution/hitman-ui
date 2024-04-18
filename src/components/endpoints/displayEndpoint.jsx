@@ -2662,7 +2662,7 @@ class DisplayEndpoint extends Component {
           this.props.location.pathname.split('/')[5] !== 'new' ? (
             <Dropdown as={ButtonGroup}>
               <button id='api_save_btn' className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader d-flex align-items-center' : 'btn btn-outline orange d-flex align-items-center'} type='button' onClick={() => this.handleSave()}>
-                <LiaSaveSolid size={16} className='mr-1' />
+                <LiaSaveSolid size={18} className='mr-1' />
                 <span>Save</span>
               </button>
               {getCurrentUser() ? (
