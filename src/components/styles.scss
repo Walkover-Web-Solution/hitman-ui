@@ -843,3 +843,43 @@ button.is_active {
 .basic .tree-node {
   cursor: pointer;
 }
+
+.POST-TAB {
+  color: green;
+  font-size: 10px;
+  font-weight: 800;
+  opacity: 0.7;
+  display: inline-block;
+}
+
+.GET-TAB {
+  color: rgb(255, 123, 0);
+  font-size: 10px;
+  font-weight: 800;
+  opacity: 0.7;
+  display: inline-block;
+}
+
+.PUT-TAB {
+  color: #cca027;
+  font-size: 10px;
+  font-weight: 800;
+  opacity: 0.7;
+  display: inline-block;
+}
+
+.PATCH-TAB {
+  color: #ce6529;
+  font-size: 10px;
+  font-weight: 800;
+  opacity: 0.7;
+  display: inline-block;
+}
+
+.DELETE-TAB {
+  color: #d13755;
+  font-size: 10px;
+  font-weight: 800;
+  opacity: 0.7;
+  display: inline-block;
+}

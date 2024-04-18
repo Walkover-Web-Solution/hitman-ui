@@ -2659,15 +2659,9 @@ class DisplayEndpoint extends Component {
         {this.isDashboardAndTestingView() ? (
           this.props.location.pathname.split('/')[5] !== 'new' ? (
             <Dropdown as={ButtonGroup}>
-              <button
-                id='api_save_btn'
-                className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
-                type='button'
-                onClick={() => this.handleSave()}
-              >
-                <LiaSaveSolid className='save-icon'/>
-                {' '}
-                Save
+              <button id='api_save_btn' className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader d-flex align-items-center' : 'btn btn-outline orange d-flex align-items-center'} type='button' onClick={() => this.handleSave()}>
+                <LiaSaveSolid size={18} className='mr-1' />
+                <span>Save</span>
               </button>
               {getCurrentUser() ? (
                 <>
