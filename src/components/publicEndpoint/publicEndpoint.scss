@@ -803,7 +803,7 @@ button.toggleButton {
 }
 .copy-button {
   position: absolute;
-  top: 0%;
-  right: 1%;
+  top: -1px;
+  right: 0;
   z-index: 100;
 }

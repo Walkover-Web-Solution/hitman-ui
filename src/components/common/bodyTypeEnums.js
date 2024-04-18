@@ -15,8 +15,9 @@ export const rawTypesEnums = {
 
 export const contentTypesEnums = {
     'text/plain': 'TEXT',
-    'text/xml': 'XML',
+    'application/xml': 'XML',
     'text/html': 'HTML',
     'text/javascript': 'JavaScript',
-    'application/json' : 'JSON'
+    'application/json' : 'JSON',
+    'image/jpeg' : 'TEXT'
 }

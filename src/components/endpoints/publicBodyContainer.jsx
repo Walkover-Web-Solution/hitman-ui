@@ -263,9 +263,6 @@ class PublicBodyContainer extends Component {
                     $blockScrolling: false
                   }}
                   onLoad={(editor) => {
-                    if (window.innerWidth > 425) {
-                      editor.focus();
-                    }
                     editor.getSession().setUseWrapMode(true)
                     editor.setShowPrintMargin(false)
                   }}
