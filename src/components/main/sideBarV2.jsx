@@ -40,7 +40,8 @@ import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
-import { TbLogin2 } from "react-icons/tb"
+import { TbLogin2 } from 'react-icons/tb'
+import { updateDragDrop, updateDragDropV2 } from '../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -93,11 +94,15 @@ class SideBarV2 extends Component {
       totalEndpointsCount: 0,
       showInviteTeam: false,
       search: false,
-      endpoints: ''
+      endpoints: '',
+      draggingOverId: null,
+      draggedIdSelected: null
     }
     this.inputRef = createRef()
     this.sidebarRef = createRef()
     // this.handleClickOutside = this.handleClickOutside.bind(this)
+    // this.onDragStart = this.onDragStart.bind(this);
+    // this.getAllChildOfPage = this.getAllChildOfPage.bind(this) // Binding the method to the instance
   }
 
   // handleClickOutside(event) {
@@ -149,12 +154,11 @@ class SideBarV2 extends Component {
       document.addEventListener('keydown', this.preventDefaultBehavior.bind(this), false)
     }
     document.addEventListener('keydown', this.handleShortcutKeys)
-
   }
   handleShortcutKeys = (event) => {
     if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
-      event.preventDefault(); 
-      this.inputRef.focus(); 
+      event.preventDefault()
+      this.inputRef.focus()
     }
   }
 
@@ -415,6 +419,66 @@ class SideBarV2 extends Component {
     )
   }
 
+  getAllChildIds = async (pageId) => {
+    let pageObject = this.props.pages?.[pageId];
+    let childIds = []
+    if (pageObject?.child && pageObject?.child?.length > 0) {
+      for (const childId of pageObject.child) {
+        childIds.push(childId);
+        childIds = childIds.concat(await this.getAllChildIds(childId));
+    }
+    }
+    return childIds
+  }
+
+  handleOnDragOver(e) {
+    e.preventDefault()
+  }
+
+  onDragEnter(e, draggingOverId) {
+    e.preventDefault()
+
+    // setDraggingOverId(draggingOverId);
+    // this.setState({ draggingOverId })
+  }
+  onDragEnd(e) {
+    e.preventDefault()
+    // setDraggingOverId(null)
+    // this.setState({ draggingOverId: null })
+  }
+
+  onDragStart = async (draggedId) => {
+    this.setState({ draggedIdSelected: draggedId })
+  }
+
+  onDrop = async (e, droppedOnId) => {
+    let pageIds = []
+    e.preventDefault()
+    // console.log(12345,this.props.pages[this.state.draggedIdSelected]?.name);
+    // console.log(54321,this.props.pages[droppedOnId]?.name);
+
+    // setDraggingOverId(null);
+    // this.setState({ draggingOverId: null })
+
+    // if (this.state.draggingOverId === droppedOnId) return
+
+    let draggedIdParent = this.props.pages?.[this.state.draggedIdSelected].parentId
+    let droppedOnIdParent = this.props.pages?.[droppedOnId]?.parentId
+
+    //now I want all ids of child of all draggedId
+    const draggedIdChilds = await this.getAllChildIds(this.state.draggedIdSelected)
+    
+    pageIds.push(...draggedIdChilds, draggedIdParent, droppedOnIdParent);
+    console.log(45545,pageIds);
+
+    // // if both data is not from same parent then stop the user
+    // if (draggedIdParent?.parentId != droppedOnIdParent?.parentId) {
+    //   this.store.dispatch(updateDragDropV2(this.state.draggingOverId, droppedOnId, draggedIdParent, droppedOnIdParent))
+    // } else {
+    //   this.store.dispatch(updateDragDrop(this.state.draggingOverId, droppedOnId))
+    // }
+  }
+
   renderHistoryItem(history) {
     return (
       Object.keys(history).length !== 0 && (
@@ -508,6 +572,11 @@ class SideBarV2 extends Component {
     return (
       <Collections
         {...this.props}
+        handleOnDragOver={this.handleOnDragOver}
+        onDragEnter={this.onDragEnter}
+        onDragEnd={this.onDragEnd}
+        onDragStart={this.onDragStart}
+        onDrop={this.onDrop}
         collectionsToRender={collectionsToRender}
         selectedCollectionId={this.state.selectedCollectionId}
         empty_filter={this.emptyFilter.bind(this)}
@@ -635,7 +704,6 @@ class SideBarV2 extends Component {
     )
   }
 
-
   renderCollectionName() {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
@@ -663,11 +731,20 @@ class SideBarV2 extends Component {
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documentation</span>
         </h4>
-        {isTechdocOwnDomain()  && (<a href="/login" target="_blank" className='login-button position-fixed d-flex gap-5 ps-5'>
-        <TbLogin2 className='text-black'/>
-<button type="button" class="btn btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Login to manage this docs">Login to manage this docs
-</button>
-        </a>)}
+        {isTechdocOwnDomain() && (
+          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5'>
+            <TbLogin2 className='text-black' />
+            <button
+              type='button'
+              class='btn btn-lg'
+              data-bs-toggle='tooltip'
+              data-bs-placement='top'
+              data-bs-title='Login to manage this docs'
+            >
+              Login to manage this docs
+            </button>
+          </a>
+        )}
       </div>
     )
   }
@@ -802,23 +879,23 @@ class SideBarV2 extends Component {
   render() {
     return (
       <>
-      <nav className={this.getSidebarInteractionClass()}>
-        {this.showAddEntitySelectionModal()}
-        {this.showAddEntityModal()}
-        {this.showDeleteEntityModal()}
-        {this.state.showVersionForm &&
-          collectionVersionsService.showVersionForm(
-            this.props,
-            this.closeVersionForm.bind(this),
-            this.state.selectedCollection.id,
-            ADD_VERSION_MODAL_NAME
-          )}
-        <div className='primary-sidebar'>
-          {/* [info] for publishedPage only this part is important */}
+        <nav className={this.getSidebarInteractionClass()}>
+          {this.showAddEntitySelectionModal()}
+          {this.showAddEntityModal()}
+          {this.showDeleteEntityModal()}
+          {this.state.showVersionForm &&
+            collectionVersionsService.showVersionForm(
+              this.props,
+              this.closeVersionForm.bind(this),
+              this.state.selectedCollection.id,
+              ADD_VERSION_MODAL_NAME
+            )}
+          <div className='primary-sidebar'>
+            {/* [info] for publishedPage only this part is important */}
 
-          {this.renderDashboardSidebar()}
-        </div>
-      </nav>
+            {this.renderDashboardSidebar()}
+          </div>
+        </nav>
       </>
     )
   }
