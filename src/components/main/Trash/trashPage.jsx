@@ -73,7 +73,7 @@ const TrashPage = () => {
                 onMouseEnter={() => setHoverIndex(index)}
                 onMouseLeave={() => setHoverIndex(null)}>
               <td>{collection.name}</td>
-              <td>{moment(collection.updatedAt).fromNow()}</td>
+              <td>{moment(collection.deletedAt).fromNow()}</td>
               <td className="restore-action">
           {hoverIndex === index && <MdSettingsBackupRestore className="react-icon" onClick={() => handleRestore(collection.id)}/>}
         </td>
