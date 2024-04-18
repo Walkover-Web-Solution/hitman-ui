@@ -139,17 +139,17 @@ class CustomTabs extends Component {
           const endpoint = this.props.pages[tabId]
           if (tab.previewMode) {
             return (
-              <>
-                {this.props.pages[tabId]?.name}
-                <span className='sub-label'>{this.props.groups[endpoint.groupId]?.name}</span>
-              </>
+              <div>
+                <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{this.props.tabState[tabId]?.draft?.data?.method}</div>
+                <span>{this.props.pages[tabId]?.name}</span>
+              </div>
             )
           } else {
             return (
-              <>
-                {this.props.pages[tabId]?.name}
-                <span className='sub-label'>{this.props.groups[endpoint.groupId]?.name}</span>
-              </>
+              <div>
+                <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{this.props.tabState[tabId]?.draft?.data?.method}</div>
+                <span>{this.props.pages[tabId]?.name}</span>
+              </div>
             )
           }
         } else {
@@ -161,11 +161,10 @@ class CustomTabs extends Component {
           const page = this.props.pages[tabId]
           if (tab.previewMode) {
             return (
-              <>
-                {this.props.pages[tabId].name}
-                {/* <span>div</span> */}
-                {/* <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.number}</span> */}
-              </>
+              <div className='d-flex align-items-center'>
+                <HiMiniDocumentText className='mr-1' size={16} />
+                <span>{page.name}</span>
+              </div>
             )
           } else {
             return (
@@ -292,9 +291,8 @@ class CustomTabs extends Component {
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[tabId]?.name}</div> */}
             <div className='d-flex align-items-center'>
-              <div className={`api-label ${this.props.pages[tabId]?.requestType} request-type-bgcolor ml-4 mt-1 arrow-top`}>
-                {' '}
-                {this.props.pages[tabId]?.requestType}{' '}
+              <div className={`api-label ${this.props.tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
+                {this.props.tabState[tabId]?.draft?.data?.method}{' '}
               </div>
               <div className='endpoint-name ml-1'>{this.props.pages[tabId].name}</div>
             </div>
