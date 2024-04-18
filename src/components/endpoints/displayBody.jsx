@@ -221,9 +221,9 @@ class BodyContainer extends Component {
             <GenericTable
               {...this.props}
               title='formData'
-              dataArray={[...this.state.data.data]}
+              dataArray={this.state.data.data || []}
               handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.state.data.data]}
+              original_data={this.state.data.data || []}
               count='1'
             />
           )
@@ -232,9 +232,9 @@ class BodyContainer extends Component {
             <GenericTable
               {...this.props}
               title='x-www-form-urlencoded'
-              dataArray={[...this.state.data.urlencoded]}
+              dataArray={this.state.data.urlencoded || []}
               handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.state.data.urlencoded]}
+              original_data={this.state.data.urlencoded || []}
               count='2'
             />
           )
