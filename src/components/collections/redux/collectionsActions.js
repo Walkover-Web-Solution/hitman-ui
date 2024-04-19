@@ -8,6 +8,8 @@ import { onParentPageAdded } from '../../pages/redux/pagesActions'
 import { toast } from 'react-toastify'
 import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { getCurrentOrg } from '../../auth/authServiceV2'
+
 
 export const fetchCollections = (orgId) => {
   return (dispatch) => {
@@ -22,6 +24,7 @@ export const fetchCollections = (orgId) => {
   }
 }
 
+
 export const onCollectionsFetched = (collections) => {
   return {
     type: collectionsActionTypes.ON_COLLECTIONS_FETCHED,
@@ -29,12 +32,14 @@ export const onCollectionsFetched = (collections) => {
   }
 }
 
+
 export const onCollectionsFetchedError = (error) => {
   return {
     type: collectionsActionTypes.ON_COLLECTIONS_FETCHED_ERROR,
     error
   }
 }
+
 
 export const fetchCollection = (collectionId) => {
   return (dispatch) => {
@@ -49,13 +54,17 @@ export const fetchCollection = (collectionId) => {
   }
 }
 
-export const addCollection = (newCollection, openSelectedCollection, customCallback) => {
+
+export const addCollection = (newCollection, openSelectedCollection, customCallback, history) => {
   newCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     collectionsApiService
       .saveCollection(newCollection)
       .then((response) => {
         dispatch(onCollectionAdded(response.data))
+        const orgId = getCurrentOrg()?.id
+          const collectionId = response?.data?.id
+          history.push(`/orgs/${orgId}/dashboard/collection/${collectionId}/settings`)
         const inivisiblePageData = {
           page: {
             id: response.data.rootParentId,
@@ -65,6 +74,10 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           }
         }
         dispatch(onParentPageAdded(inivisiblePageData))
+        const org = getCurrentOrg()?.id
+          const collection = response?.data?.id
+          history.push(`/orgs/${org}/dashboard/collection/${collection}/settings`)
+       
         toast.success("Collection added successfully")
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
@@ -82,12 +95,14 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
   }
 }
 
+
 export const addCollectionRequest = (newCollection) => {
   return {
     type: collectionsActionTypes.ADD_COLLECTION_REQUEST,
     newCollection
   }
 }
+
 
 export const onCollectionAdded = (response) => {
   return {
@@ -96,6 +111,7 @@ export const onCollectionAdded = (response) => {
   }
 }
 
+
 export const onCollectionAddedError = (error, newCollection) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_ADDED_ERROR,
@@ -103,6 +119,7 @@ export const onCollectionAddedError = (error, newCollection) => {
     error
   }
 }
+
 
 export const updateCollection = (editedCollection, stopLoader, customCallback) => {
   return (dispatch) => {
@@ -133,12 +150,14 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
   }
 }
 
+
 export const updateCollectionRequest = (editedCollection) => {
   return {
     type: collectionsActionTypes.UPDATE_COLLECTION_REQUEST,
     editedCollection
   }
 }
+
 
 export const onCollectionUpdated = (response) => {
   return {
@@ -147,6 +166,7 @@ export const onCollectionUpdated = (response) => {
   }
 }
 
+
 export const onCollectionUpdatedError = (error, originalCollection) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_UPDATED_ERROR,
@@ -154,6 +174,7 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
     originalCollection
   }
 }
+
 
 export const deleteCollection = (collection, props) => {
   collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
@@ -167,6 +188,7 @@ export const deleteCollection = (collection, props) => {
             dispatch(deleteCollectionRequest(collection))
             dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
             dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
+
 
             // after deletion operation
             operationsAfterDeletion(data)
@@ -183,12 +205,14 @@ export const deleteCollection = (collection, props) => {
   }
 }
 
+
 export const deleteCollectionRequest = (collection) => {
   return {
     type: collectionsActionTypes.DELETE_COLLECTION_REQUEST,
     collection
   }
 }
+
 
 export const onCollectionDeleted = (payload) => {
   return {
@@ -197,6 +221,7 @@ export const onCollectionDeleted = (payload) => {
   }
 }
 
+
 export const onCollectionDeletedError = (error, collection) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DELETED_ERROR,
@@ -204,6 +229,7 @@ export const onCollectionDeletedError = (error, collection) => {
     collection
   }
 }
+
 
 // To do later
 export const duplicateCollection = (collection) => {
@@ -233,6 +259,7 @@ export const onCollectionDuplicatedError = (error) => {
   }
 }
 
+
 export const addCustomDomain = (collectionId, domain) => {
   return (dispatch) => {
     const collection = { ...store.getState().collections[collectionId] }
@@ -243,6 +270,7 @@ export const addCustomDomain = (collectionId, domain) => {
       domain
     })
     dispatch(updateCollectionRequest({ ...collection }))
+
 
     const id = collection.id
     delete collection.id
@@ -257,14 +285,19 @@ export const addCustomDomain = (collectionId, domain) => {
   }
 }
 
-export const importApi = (collection, importType, website, customCallback, defaultView) => {
+
+export const importApi = (collection, importType, website, customCallback, defaultView, history) => {
   collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
+ 
   return (dispatch) => {
     if (importType === 'postman') {
       openApiService
         .importPostmanCollection(collection, website, defaultView)
         .then((response) => {
           dispatch(onCollectionImported(response.data))
+          const orgId = getCurrentOrg()?.id
+          const collectionId = response?.data?.collection?.id
+          history.push(`/orgs/${orgId}/dashboard/collection/${collectionId}/settings`)
           toast.success('Collection imported successfully')
           if (customCallback) customCallback({ success: true })
         })
@@ -278,6 +311,9 @@ export const importApi = (collection, importType, website, customCallback, defau
         .importApi(collection, defaultView)
         .then((response) => {
           dispatch(onCollectionImported(response?.data))
+          const orgId = getCurrentOrg()?.id
+          const collectionId = response?.data?.collection?.id
+          history.push(`/orgs/${orgId}/dashboard/collection/${collectionId}/settings`)
           toast.success('Collection imported successfully')
           if (customCallback) customCallback({ success: true })
         })
@@ -290,12 +326,14 @@ export const importApi = (collection, importType, website, customCallback, defau
   }
 }
 
+
 export const saveImportedVersion = (response) => {
   return {
     type: versionActionTypes.IMPORT_VERSION,
     response
   }
 }
+
 
 export const onVersionsFetchedError = (error) => {
   return {
