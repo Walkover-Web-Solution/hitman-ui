@@ -291,16 +291,22 @@ export const updateNameOfPages = (payload) => {
   }
 }
 
-export const updateDragDrop = (draggedId, droppedOnId) => {
+export const updateDragDrop = (draggedId, droppedOnId, pageIds) => {
   let uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     pageApiService
-      .dragAndDropApi({ draggedId, droppedOnId, uniqueTabId })
+      .dragAndDropApi({ draggedId, droppedOnId, uniqueTabId, pageIds })
       .then((response) => {
-        dispatch({
-          type: pagesActionTypes.ON_DRAG_DROP,
-          payload: response.data
-        })
+        console.log(23456,response);
+        if (response.statusText == 'OK') {
+          dispatch({
+            type: pagesActionTypes.ON_DRAG_DROP,
+            payload: response.data
+          })
+          toast.success("Moved succesfully")
+        } else {
+          toast.error("there is some error")
+        }
       })
       .catch((error) => {
         console.error('Error occurred during drag and drop:', error)
@@ -309,19 +315,19 @@ export const updateDragDrop = (draggedId, droppedOnId) => {
 }
 
 
-export const updateDragDropV2 = (draggedId, droppedOnId, draggedIdParentId, droppedOnIdParentId) =>{
-  let uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
-  return (dispatch) => {
-    pageApiService
-      .dragAndDropApiV2({ draggedId, droppedOnId, uniqueTabId, draggedIdParentId, droppedOnIdParentId })
-      .then((response) => {
-        dispatch({
-          type: pagesActionTypes.ON_DRAG_DROP,
-          payload: response.data
-        })
-      })
-      .catch((error) => {
-        console.error('Error occurred during drag and drop:', error)
-      })  
-  }
-}
+// export const updateDragDropV2 = (draggedId, droppedOnId, draggedIdParentId, droppedOnIdParentId) =>{
+//   let uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
+//   return (dispatch) => {
+//     pageApiService
+//       .dragAndDropApiV2({ draggedId, droppedOnId, uniqueTabId, draggedIdParentId, droppedOnIdParentId })
+//       .then((response) => {
+//         dispatch({
+//           type: pagesActionTypes.ON_DRAG_DROP,
+//           payload: response.data
+//         })
+//       })
+//       .catch((error) => {
+//         console.error('Error occurred during drag and drop:', error)
+//       })
+//   }
+// }

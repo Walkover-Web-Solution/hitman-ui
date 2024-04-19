@@ -41,7 +41,7 @@ import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from 'react-icons/tb'
-import { updateDragDrop, updateDragDropV2 } from '../pages/redux/pagesActions'
+import { updateDragDrop } from '../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -61,7 +61,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    open_modal: (modal, data) => dispatch(openModal(modal, data))
+    open_modal: (modal, data) => dispatch(openModal(modal, data)),
+    update_drag_and_drop: (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
   }
 }
 
@@ -420,13 +421,13 @@ class SideBarV2 extends Component {
   }
 
   getAllChildIds = async (pageId) => {
-    let pageObject = this.props.pages?.[pageId];
+    let pageObject = this.props.pages?.[pageId]
     let childIds = []
     if (pageObject?.child && pageObject?.child?.length > 0) {
       for (const childId of pageObject.child) {
-        childIds.push(childId);
-        childIds = childIds.concat(await this.getAllChildIds(childId));
-    }
+        childIds.push(childId)
+        childIds = childIds.concat(await this.getAllChildIds(childId))
+      }
     }
     return childIds
   }
@@ -460,22 +461,26 @@ class SideBarV2 extends Component {
     // setDraggingOverId(null);
     // this.setState({ draggingOverId: null })
 
-    // if (this.state.draggingOverId === droppedOnId) return
+    if (this.state.draggedIdSelected === droppedOnId) return
 
     let draggedIdParent = this.props.pages?.[this.state.draggedIdSelected].parentId
     let droppedOnIdParent = this.props.pages?.[droppedOnId]?.parentId
 
+    console.log(6767676, draggedIdParent, droppedOnIdParent);
+
     //now I want all ids of child of all draggedId
     const draggedIdChilds = await this.getAllChildIds(this.state.draggedIdSelected)
-    
-    pageIds.push(...draggedIdChilds, draggedIdParent, droppedOnIdParent);
-    console.log(45545,pageIds);
+
+    pageIds.push(...draggedIdChilds, draggedIdParent, droppedOnIdParent)
+
+    this.props.update_drag_and_drop(this.state?.draggedIdSelected, droppedOnId, pageIds)
+
+    // this.store?.dispatch(updateDragDrop(this.state?.draggedIdSelected, droppedOnId, pageIds))
 
     // // if both data is not from same parent then stop the user
-    // if (draggedIdParent?.parentId != droppedOnIdParent?.parentId) {
+    // if (draggedIdParent != droppedOnIdParent) {
     //   this.store.dispatch(updateDragDropV2(this.state.draggingOverId, droppedOnId, draggedIdParent, droppedOnIdParent))
     // } else {
-    //   this.store.dispatch(updateDragDrop(this.state.draggingOverId, droppedOnId))
     // }
   }
 
