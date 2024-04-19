@@ -46,8 +46,7 @@ class CodeTemplate extends Component {
     try {
       const snippet = this.makeCodeSnippet()
       codeSnippet = snippet.convert(selectedLanguage)
-      codeSnippet = decodeURIComponent(codeSnippet)
-      codeSnippet = codeSnippet.replace('///', '//')
+      codeSnippet = decodeURI(codeSnippet)
     } catch (error) {
       console.error(error)
     }
@@ -74,26 +73,10 @@ class CodeTemplate extends Component {
   }
 
   getClassForLanguages = (key) => {
-    if (key === this.selectedLanguage) {
-      let commonClass = 'active mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center'
-      if (this.props.theme === 'light') {
-        return commonClass + " " + ''
-      }
-      else {
-        return commonClass + " " + 'col-white'
-      }
-    }
-    else {
-      let commonClass = 'mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center'
-      if (this.props.theme === 'light') {
-        return commonClass + " " + 'col-black'
-      }
-      else {
-        return commonClass + " " + 'col-white'
-      }
-    }
+    const commonClass = 'mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center';
+    let classToReturn = key === this.selectedLanguage ? 'active ' + commonClass : commonClass;
+    return this.props.theme !== 'light' ? classToReturn + ' col-white' : classToReturn;
   }
-
 
   render() {
     return (
