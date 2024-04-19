@@ -814,7 +814,6 @@ label.data-type {
 }
 
 .editor-body-wrapper {
-  border: 2px solid #4f4f4f;
   border-radius: 4px;
 }
 
@@ -827,6 +826,7 @@ label.data-type {
 }
 
 .ace-editor-wrapper {
+  border: none;
   .ace-github {
     background: #252d30;
     color: #ffe05a;
@@ -2140,6 +2140,12 @@ button[name='cta-1'] {
 
 .ace-editor-wrapper {
   min-width: 300px;
+  .ace_editor {
+    width: 350px !important;
+    .ace_content {
+      top: 16px !important;
+    }
+  }
 }
 
 .main-table-wrapper {
@@ -3634,4 +3640,22 @@ body .tox {
   @media screen and (max-width: 1160px) {
     display: block;
   }
+}
+
+.code-curl-icon {
+  border-left: 1px solid rgb(235, 219, 219);
+  padding-left: 12px;
+  cursor: pointer;
+}
+
+.col-white {
+  color: white !important;
+}
+
+.col-black {
+  color: black !important;
+}
+
+.cur-pointer {
+  cursor: pointer !important;
 }
