@@ -10,7 +10,6 @@ import { moveToNextStep } from '../../services/widgetService'
 import { defaultViewTypes } from './defaultViewModal/defaultViewModal'
 
 
-
 const mapStateToProps = (state) => {
   return {
     collections: state.collections
@@ -19,8 +18,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_collection: (newCollection, openSelectedCollection, callback,history) =>
-      dispatch(addCollection(newCollection, openSelectedCollection, callback,history)),
+    add_collection: (newCollection, openSelectedCollection, callback) =>
+      dispatch(addCollection(newCollection, openSelectedCollection, callback)),
     update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback))
   }
 }
@@ -202,5 +201,4 @@ class CollectionForm extends Form {
     return this.props.showOnlyForm ? this.renderForm() : this.renderInModal()
   }
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(CollectionForm)

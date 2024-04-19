@@ -17,8 +17,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_api: (openApiObject, importType, website, callback, view,history) =>
-      dispatch(importApi(openApiObject, importType, website, callback, view,history))
+    import_api: (openApiObject, importType, website, callback, view) =>
+      dispatch(importApi(openApiObject, importType, website, callback, view))
   }
 }
 
@@ -64,7 +64,7 @@ class OpenApiForm extends Component {
 
   importApi(defaultView) {
     const uploadedFile = this.state.uploadedFile
-    this.props.import_api(uploadedFile, this.state.importType, this.state.website, null, defaultView,this.props.history)
+    this.props.import_api(uploadedFile, this.state.importType, this.state.website, null, defaultView)
     // moveToNextStep(1)
     this.props.onHide()
   }
@@ -86,6 +86,7 @@ class OpenApiForm extends Component {
           })
       }
       errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
+   
     if (this.state.uploadedFile === null) {
       FileError = 'JSON file Should not be set empty'
     }
