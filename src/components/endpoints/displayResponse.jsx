@@ -10,9 +10,6 @@ import SampleResponseForm from './sampleResponseForm'
 import { Overlay, Spinner, Tooltip } from 'react-bootstrap'
 import TestResults from './testResults'
 import addtosample from '../../assets/icons/addToSamplesign.svg'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons'
-import { result } from 'lodash'
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa'
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
