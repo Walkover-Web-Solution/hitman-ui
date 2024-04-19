@@ -44,7 +44,7 @@ function tabsReducer(state = initialState, action) {
         ...action.payload.data
       }
       return tabs
-
+        
     case tabsActionTypes.UPDATE_TAB_DRAFT:
       tabs = { ...state }
       tabs.tabs[action.payload.tabId].draft = action?.payload?.draft

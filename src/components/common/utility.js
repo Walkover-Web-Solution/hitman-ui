@@ -793,6 +793,24 @@ function addItsParent(flattenData, singleId, dataToPublishSet) {
     parentId = flattenData?.[parentId]?.parent
   }
 }
+const vm = require('vm')
+export  const executeData= (data) => {
+  const sandbox = {
+    console: {
+      log: (...args) => {
+        console.log(...args) // Output to the actual console
+        sandbox._consoleLogs.push(args.join(' ')) // Capture log messages
+      }
+    },
+    _consoleLogs: []
+  }
+  try {
+    vm.runInNewContext(data, sandbox)
+    return sandbox._consoleLogs
+  } catch (err) {
+    return err.name + ':' + ' ' + err.message
+  }
+}
 
 export default {
   isDashboardRoute,

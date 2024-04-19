@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
+import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString, executeData } from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -118,6 +118,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     unPublish_endpoint: (endpointId) => dispatch(draftEndpoint(endpointId)),
     update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate))
+
     // set_chat_view : (view) => dispatch(onChatResponseToggle(view))
   }
 }
@@ -722,6 +723,7 @@ class DisplayEndpoint extends Component {
   }
 
   async handleApiCall({ url: api, body, headers: header, bodyType, method, cancelToken, keyForRequest }) {
+    const postScriptExecution = executeData(this.props?.endpointContent?.postScriptText)
     let responseJson = {}
     try {
       if (isElectron()) {
@@ -738,7 +740,7 @@ class DisplayEndpoint extends Component {
         /** request creation was successfull */
         const currentEnvironment = this.props.environment
         const request = { url: api, body, headers: header, method }
-        const code = this.props?.endpointContent?.postScriptText
+        const code = (this.props?.endpointContent?.postScriptText)
 
         this.processResponse(responseJson)
 
@@ -1044,6 +1046,7 @@ class DisplayEndpoint extends Component {
       /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
       /** Handle Request Call */
+       const preScriptExecution= executeData(this.props?.endpointContent?.preScriptText)
       await this.handleApiCall(requestOptions)
       this.setState({
         loader: false,

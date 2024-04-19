@@ -285,6 +285,8 @@ class DisplayResponse extends Component {
     const { isShow } = this.state
     const { Show } = this.state
     const { Open } = this.state
+    const Base_url = this.props?.endpointContent?.host?.BASE_URL ? this.props?.endpointContent?.host?.BASE_URL : null
+    const uri = this.props?.endpointContent?.data?.updatedUri ? this.props?.endpointContent?.data?.updatedUri:null
 
     return (
       <div>
@@ -299,7 +301,7 @@ class DisplayResponse extends Component {
           {'  '}
           {this.props?.endpointContent?.data?.method}
           {'  '}
-          {(this.props?.endpointContent?.host?.BASE_URL) + (this.props?.endpointContent?.data?.updatedUri)} 
+          {Base_url + uri}
           <div className={`dropdown-content pt-2 ${isOpen ? 'show' : ''}`}>
             <div className='dropdown-data'>
               <React.Fragment>
@@ -348,7 +350,7 @@ class DisplayResponse extends Component {
             </div>
           </div>
         </div>
-        {this.props?.endpointContent.preScriptText || this.props?.endpointContent.postScriptText ? <div className='test-results-container px-2'>{this.renderConsole()}</div> : null}
+        <div className='test-results-container px-2'>{this.renderConsole()}</div>
       </div>
     )
   }
@@ -356,7 +358,7 @@ class DisplayResponse extends Component {
   toggleDropdown = () => {
     this.setState({ isOpen: !this.state.isOpen })
   }
-  
+
   toggleDropdownBody = () => {
     this.setState({ Open: !this.state.Open })
   }
@@ -367,30 +369,11 @@ class DisplayResponse extends Component {
     this.setState({ Show: !this.state.Show })
   }
 
-
-  executeCode(code) {
-    const sandbox = {
-      console: {
-        log: (...args) => {
-          console.log(...args) // Output to the actual console
-          sandbox._consoleLogs.push(args.join(' ')) // Capture log messages
-        }
-      },
-      _consoleLogs: []
-    }
-    try {
-      vm.runInNewContext(code, sandbox)
-      return sandbox._consoleLogs
-    } catch (err) {
-      return err.name + ':' + ' ' + err.message
-    }
-  }
-
   renderConsole() {
     return (
       <div>
-        <div className='pt-2'>{this.executeCode(this.props?.endpointContent.preScriptText)}</div>
-        <div className='pt-2'>{this.executeCode(this.props?.endpointContent.postScriptText)}</div>
+        <div className='pt-2'>{this.props?.endpointContent.preScriptExecution}</div>
+        <div className='pt-2'>{this.props?.endpointContent.postScriptExecution}</div>
       </div>
     )
   }
