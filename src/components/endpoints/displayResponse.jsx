@@ -302,7 +302,7 @@ class DisplayResponse extends Component {
           {'  '}
           {this.props?.endpointContent?.data?.method}
           {'  '}
-          {this.props?.endpointContent?.harObject?.url}
+          {(this.props?.endpointContent?.host?.BASE_URL) + (this.props?.endpointContent?.data?.updatedUri)} 
           <div className={`dropdown-content pt-2 ${isOpen ? 'show' : ''}`}>
             <div className='dropdown-data'>
               <React.Fragment>
@@ -351,7 +351,7 @@ class DisplayResponse extends Component {
             </div>
           </div>
         </div>
-        {this.props.sendButtonClicked ? <div className='test-results-container px-2'>{this.renderConsole()}</div> : null}
+        {this.props?.endpointContent.preScriptText || this.props?.endpointContent.postScriptText ? <div className='test-results-container px-2'>{this.renderConsole()}</div> : null}
       </div>
     )
   }
