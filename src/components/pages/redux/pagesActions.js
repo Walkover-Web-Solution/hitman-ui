@@ -297,15 +297,15 @@ export const updateDragDrop = (draggedId, droppedOnId, pageIds) => {
     pageApiService
       .dragAndDropApi({ draggedId, droppedOnId, uniqueTabId, pageIds })
       .then((response) => {
-        console.log(23456,response);
-        if (response.statusText == 'OK') {
+        console.log(23456,response.data);
+        if (response.status == 200) {
           dispatch({
             type: pagesActionTypes.ON_DRAG_DROP,
             payload: response.data
           })
           toast.success("Moved succesfully")
-        } else {
-          toast.error("there is some error")
+        } else if(response.status == 201) {
+          toast.error(response?.data)
         }
       })
       .catch((error) => {
