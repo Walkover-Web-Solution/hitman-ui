@@ -21,8 +21,8 @@ export function getCollections(orgId) {
 export function getAllDeletedCollections(orgId) {
   return http.get(apiUrl + `/orgs/${orgId}/deletedCollections`)
 }
-export function restoreCollection(orgId) {
-  return http.post(apiUrl + `/orgs/${orgId}/restoreCollection`)
+export function restoreCollection(orgId, data) {
+  return http.put(apiUrl + `/orgs/${orgId}/restore`,{data})
 }
 
 export function getAllPublicCollections() {
