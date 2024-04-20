@@ -13,8 +13,7 @@ import './trash.scss';
 
 const TrashPage = () => {
   const [collections, setCollections] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); 
-  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [hoverIndex, setHoverIndex] = useState(null);
   const history = useHistory();
   let orgId = getCurrentOrg()?.id;
@@ -24,21 +23,14 @@ const TrashPage = () => {
       setIsLoading(true);
       try {
         const response = await getAllDeletedCollections(orgId);
-        if (response) {
-          setCollections(response?.data);
-        } else {
-          throw new Error('Failed to fetch data');
-        }
+        setCollections(response?.data);
       } catch (error) {
         console.error('Error fetching data:', error);
-        setError('Failed to fetch data');
       } finally {
         setIsLoading(false);
       }
     }
-    if (orgId) {
-      fetchData();
-    }
+    fetchData();
   }, [orgId]);
 
   const handleBack = () => {
@@ -56,7 +48,6 @@ const TrashPage = () => {
         throw new Error('Restoration failed');
       }
     } catch (error) {
-      console.error('Error restoring collection:', error);
       toast.error('Failed to restore collection');
     }
   };
@@ -72,10 +63,6 @@ const TrashPage = () => {
     );
   }
 
-  if (error) {
-    return <div>Error: {error}</div>; 
-  }
-
   return (
     <Container>
       <div className="back-to-workspace mb-4 d-flex align-items-center" onClick={handleBack}>
@@ -83,7 +70,7 @@ const TrashPage = () => {
         <span>Back to workspace</span>
       </div>
       <h3>Trash</h3>
-      {collections.length > 0 ? (
+      {collections?.length > 0 ? (
         <>
           <p>Collections you delete will show up here. You can restore them.</p>
           <Table bordered hover>
@@ -116,8 +103,8 @@ const TrashPage = () => {
         </>
       ) : (
         <div className="text-center mt-5">
-          <img src={trashImage} alt="Trash" width={180}/>
-          <p>Your trash is empty.</p>
+          <img src={trashImage} alt="Trash" width={180} className='mb-2'/>
+          <p>Collections you delete will show up here.</p>
         </div>
       )}
     </Container>
