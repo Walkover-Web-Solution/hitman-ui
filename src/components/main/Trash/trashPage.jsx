@@ -13,22 +13,27 @@ import './trash.scss';
 
 const TrashPage = () => {
   const [collections, setCollections] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // State to track loading state
+  const [error, setError] = useState(null); // State to track error
   const [hoverIndex, setHoverIndex] = useState(null);
   const history = useHistory();
-  const orgId = getCurrentOrg()?.id;
+  let orgId = getCurrentOrg()?.id;
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true); // Set loading state to true when starting API call
       try {
         const response = await getAllDeletedCollections(orgId);
         if (response) {
-          setCollections(response.data);
+          setCollections(response?.data);
         } else {
           throw new Error('Failed to fetch data');
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        toast.error('Failed to fetch data');
+        setError('Failed to fetch data'); // Set error state if API call fails
+      } finally {
+        setIsLoading(false); // Set loading state to false when API call completes
       }
     }
     if (orgId) {
@@ -56,11 +61,26 @@ const TrashPage = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className='custom-loading-container'>
+        <div className='loading-content'>
+          <button className='spinner-border' />
+          <p className='mt-3'>Loading</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>; // Display error message if API call fails
+  }
+
   return (
     <Container>
-      <div className="back-to-workspace" onClick={handleBack}>
-        <BiArrowBack />
-        <button className="mb-4">Back to workspace</button>
+      <div className="back-to-workspace mb-4 d-flex align-items-center" onClick={handleBack}>
+        <BiArrowBack className='mr-2'/>
+        <span>Back to workspace</span>
       </div>
       <h3>Trash</h3>
       {collections.length > 0 ? (
@@ -96,7 +116,7 @@ const TrashPage = () => {
         </>
       ) : (
         <div className="text-center mt-5">
-          <img src={trashImage} alt="Trash" />
+          <img src={trashImage} alt="Trash" width={180}/>
           <p>Your trash is empty.</p>
         </div>
       )}
