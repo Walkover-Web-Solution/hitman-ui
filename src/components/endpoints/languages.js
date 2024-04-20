@@ -17,7 +17,7 @@ import objectivec from '../../assets/icons/objectivec.svg'
 import r from '../../assets/icons/r.svg'
 
 const primaryLanguages = ['shell', 'node', 'php', 'python']
-let secondaryLanguages = ['c', 'csharp', 'clojure', 'go', 'http', 'java', 'javascript', 'objc', 'ocaml', 'r', 'ruby', 'swift']
+const secondaryLanguages = ['c', 'csharp', 'clojure', 'go', 'http', 'java', 'javascript', 'objc', 'ocaml', 'r', 'ruby', 'swift']
 const languages = {
   node: {
     name: 'Node',

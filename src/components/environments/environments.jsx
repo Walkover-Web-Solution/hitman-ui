@@ -40,28 +40,16 @@ const mapDispatchToProps = (dispatch) => {
     set_response_view: (view) => dispatch(onToggle(view))
   }
 }
-
 class Environments extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      theme: ''
-    }
-  // state = {
-  //   currentEnvironmentId: null,
-  //   environmentFormName: null,
-  //   showEnvironmentForm: false,
-  //   showEnvironmentModal: false,
-  //   environmentToBeEdited: {},
-  //   publicEnvironmentName: 'Select Environment'
-  // }
-  this.selectedLanguage = 'shell'
-  this.iconRef = React.createRef()
-  this.OutlineArrowRef = React.createRef()
-  // this.pubCodesRef = React.createRef()
-  // this.iconNoneRef = React.createRef()
-  this.closeIconRef = React.createRef()
-}
+  state = {
+    currentEnvironmentId: null,
+    environmentFormName: null,
+    showEnvironmentForm: false,
+    showEnvironmentModal: false,
+    environmentToBeEdited: {},
+    publicEnvironmentName: 'Select Environment'
+  }
+
 
   async componentDidMount() {
     if (!navigator.onLine) {
@@ -202,28 +190,7 @@ class Environments extends Component {
       </div>
     )
   }
-  handleShowSideBar() {
-    const pubCodeElement = document.querySelector('.pubCodes');
-    const hamburgerElement = document.querySelector('#OutlineArrow');
-    if (this.iconRef.current && pubCodeElement) {
-      if (this.iconRef.current.classList.contains('close-icons')) {
-        this.iconRef.current.classList.remove('close-icons');
-        // this.pubCodesRef.current.classList.remove('open');
-        pubCodeElement.classList.remove('close-icon');
-        hamburgerElement.classList.remove('icon-none');
-        // this.iconNoneRef.current.classList.add('open-close');
-        this.closeIconRef.current.classList.remove('close-pubcodes');
-      }
-      else {
-        this.iconRef.current.classList.add('close-icons');
-        // this.pubCodesRef.current.classList.add('open');
-        pubCodeElement.classList.add('open');
-        hamburgerElement.classList.add('icon-none');
-        // this.iconNoneRef.current.classList.add('none-icons');
-        this.closeIconRef.current.classList.add('close-pubcodes');
-      }
-    }
-  }
+ 
   render() {
     let env = isDashboardRoute(this.props)
       ? this.props.environment.environments[this.props.environment.currentEnvironmentId]

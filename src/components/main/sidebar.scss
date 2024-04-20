@@ -19,7 +19,6 @@
 .split-sidebar>div:first-child {
   max-width: 330px !important;
   min-width: 300px;
-  // width: unset;
 }
 
 .split-sidebar-public>div:first-child {
@@ -32,7 +31,6 @@
     z-index: 999;
     top: 0;
     left: 0;
-    // width: 0 !important;
     transform: translateX(-100%);
     transition: 400ms ease;
   }
@@ -177,7 +175,6 @@ body .sidebar {
       .additional-dropdown {
         button {
           margin: 5px;
-          // padding: 8px 16px;
           color: white;
           border: none;
           cursor: pointer;
@@ -203,7 +200,6 @@ body .sidebar {
         }
 
         li button {
-          // padding: 8px 16px;
           background-color: #f0f0f0;
           color: #333;
           border: none;
@@ -365,7 +361,6 @@ body .sidebar {
         border: none;
         background: transparent;
         color: $text-color;
-        // padding: 0 0.8rem 0 0.65rem;
         position: relative;
         transition: all 0.3s ease-in;
         height: 1.5rem;
