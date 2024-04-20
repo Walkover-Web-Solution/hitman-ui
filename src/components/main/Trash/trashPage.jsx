@@ -13,15 +13,15 @@ import './trash.scss';
 
 const TrashPage = () => {
   const [collections, setCollections] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // State to track loading state
-  const [error, setError] = useState(null); // State to track error
+  const [isLoading, setIsLoading] = useState(true); 
+  const [error, setError] = useState(null);
   const [hoverIndex, setHoverIndex] = useState(null);
   const history = useHistory();
   let orgId = getCurrentOrg()?.id;
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true); // Set loading state to true when starting API call
+      setIsLoading(true);
       try {
         const response = await getAllDeletedCollections(orgId);
         if (response) {
@@ -31,9 +31,9 @@ const TrashPage = () => {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        setError('Failed to fetch data'); // Set error state if API call fails
+        setError('Failed to fetch data');
       } finally {
-        setIsLoading(false); // Set loading state to false when API call completes
+        setIsLoading(false);
       }
     }
     if (orgId) {
@@ -73,7 +73,7 @@ const TrashPage = () => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>; // Display error message if API call fails
+    return <div>Error: {error}</div>; 
   }
 
   return (
