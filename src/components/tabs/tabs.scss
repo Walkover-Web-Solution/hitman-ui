@@ -182,6 +182,10 @@
         height: 42px;
         border: 1px solid $outline-color;
         border-top: 0;
+        svg {
+          width: 23px;
+          height: 23px;
+        }
       }
     }
 
@@ -207,6 +211,15 @@
   .btn {
     width: 2.5rem;
     padding: 0;
+    svg {
+      padding: 4px;
+      border-radius: 3px 3px;
+      height: 24px;
+      width: 24px;
+      &:hover {
+        background-color: #d6d2d2;
+      }
+    }
   }
 }
 

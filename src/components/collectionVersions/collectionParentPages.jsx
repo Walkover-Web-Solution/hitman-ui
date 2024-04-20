@@ -35,6 +35,7 @@ import CustomModal from '../customModal/customModal'
 import { MdOutlineSettings } from 'react-icons/md'
 import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
 import { MdExpandMore } from "react-icons/md"
+import  IconButtons  from '../common/iconButton'
 
 const mapStateToProps = (state) => {
   return {
@@ -487,7 +488,7 @@ class CollectionParentPages extends Component {
       <>
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
           <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-            <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''} ${isSelected}`}>
+            <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''}`}>
           <div className={`active-select  ${isSelected ? ' selected' : ''}`}>
               <div
                 className={`d-flex align-items-center cl-name ` }
@@ -523,17 +524,17 @@ class CollectionParentPages extends Component {
                   </div>
                 </div>
               </div>
-              </div>
+             
 
               {
                 // [info] options not to show on publihsed page
                 isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
                   <div className='sidebar-item-action d-flex align-items-center'>
                     <div
-                      className='mr-1 d-flex align-items-center'
+                      className='d-flex align-items-center'
                       onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
                     >
-                      <Plus />
+                      <IconButtons><Plus /></IconButtons>
                     </div>
                     <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                       <i className='uil uil-ellipsis-v' />
@@ -565,6 +566,7 @@ class CollectionParentPages extends Component {
                   </div>
                 ) : null
               }
+              </div>
             </button>
             {expanded ? (
               <div className='version-collapse'>

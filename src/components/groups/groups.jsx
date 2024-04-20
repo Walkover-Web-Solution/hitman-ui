@@ -25,6 +25,7 @@ import SubPageForm from './subPageForm.jsx'
 import { ReactComponent as EditSign } from '../../assets/icons/editsign.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { MdExpandMore } from "react-icons/md"
+import  IconButtons  from '../common/iconButton'
 
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
@@ -197,13 +198,13 @@ class Groups extends Component {
               </span>
               <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
             </div>
-            </div>
+            
             {
               // [info] options not to show on publihsed page
               isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
                 <div className='sidebar-item-action d-flex align-items-center'>
-                  <div onClick={() => this.openAddSubPageModal(subPageId)} className='mr-1 d-flex align-items-center'>
-                    <Plus />
+                  <div onClick={() => this.openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
+                    <IconButtons><Plus /></IconButtons>
                   </div>
                   <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                     <i className='uil uil-ellipsis-v' />
@@ -232,6 +233,7 @@ class Groups extends Component {
                 </div>
               ) : null
             }
+            </div>
           </button>
           {expanded ? (
             <div className='linkWrapper versionPages'>

@@ -38,23 +38,32 @@ html body {
 .float-left {
   float: left;
 }
-.version-dropdown{
-    .dropdown-toggle{
-     font-size: 14px !important;
-     @media screen and (max-width:768px) {
+.version-dropdown {
+  .dropdown-toggle {
+    font-size: 14px !important;
+    padding: 5px;
+    margin-left: 4px;
+    border: 1px solid transparent !important;
+    @media screen and (max-width:768px) {
       font-size: 16px !important;
-     }
-      &::after {
-        content: "" !important;
-        top: 0 !important;
-        transform: rotate(363deg) !important;
-        border-top: 0.3em solid !important;
-        border-right: 0.3em solid transparent !important;
-        border-bottom: 0 !important;
-        border-left: 0.3em solid transparent !important;
     }
-      }
+
+    &::after {
+      content: "" !important;
+      top: 0 !important;
+      transform: rotate(363deg) !important;
+      border-top: 4.8px solid !important;
+      border-right: 4.8px solid transparent !important;
+      border-bottom: 0 !important;
+      border-left: 4.8px solid transparent !important;
     }
+
+    &:hover {
+      border-color: rgba(128, 128, 128, 0.363) !important;
+    }
+  }
+
+}
   
 .dropdown {
   font-size: $font-normal !important;
@@ -113,9 +122,20 @@ html body {
   color: $theme-color;
 }
 .page-title {
+  padding: 0 4px;
+  border-radius: 2px;
+  width: max-content;
   font-size: 1.75rem;
   font-weight: 600;
+  border: 1px solid transparent !important;
   color: $text-color-dark;
+  &:hover {
+    border-color: rgba(128, 128, 128, 0.356) !important;
+    background-color: white !important;
+  }
+  &:focus-visible{
+    outline: 1px solid rgba(128, 128, 128, 0.356) !important;
+  }
 }
 .published {
   color: $success-color;
@@ -130,10 +150,7 @@ html body {
 }
 .clear-both {
   clear: both;
-  width: 95%;
-  @media screen and (max-width:1160px) {
-    width: 100%;
-  }
+  width: 100%;
 }
 
 .hover {
@@ -3027,9 +3044,24 @@ ul.react-autoComplete-input {
 .top-part {
   .page-title-name {
     padding-right: 7rem;
+    input {
+      font-size: 20px;
+      width: max-content;
+    }
     .page-title{
       text-overflow: ellipsis;
       overflow: hidden;
+      border: 1px solid transparent !important;
+      width: max-content;
+      font-size: 20px;
+      border-radius: 2px;
+      &:hover {
+        border-color: rgba(128, 128, 128, 0.356) !important;
+        background-color: white !important;
+      }
+      &:focus-visible{
+        outline: 1px solid rgba(128, 128, 128, 0.356) !important;
+      }
     }
   }
 }

@@ -116,6 +116,12 @@ body .sidebar {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease-in;
+    svg {
+      border-radius: 5px 5px;
+      &:hover {
+        background-color: #dfdcd5;
+      }
+    }
   }
   .fade {
     transition: opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1) !important;
@@ -251,6 +257,7 @@ body .sidebar {
         .active-selected {
           width: 100%;
           margin-left: 10px;
+          margin-top: 4px;
           &.selected {
             background: $grey;
           }         
@@ -277,7 +284,7 @@ body .sidebar {
             .text-truncate {
               font-size: 14px;
               padding-left: 0 !important;
-              max-width: 130px;
+              max-width: 115px;
               @media screen and (max-width:768px) {
                 font-size: 16px;
               }
@@ -291,12 +298,17 @@ body .sidebar {
         }
         .sidebar-item-action-btn {
           cursor: pointer;
+          padding: 2px;
+          border-radius: 50px 50px;
           transition: all 0.3s ease-in;
           i {
             display: flex;
             height: 12px;
             width: 0.5rem;
             justify-content: center;
+          }
+          &:hover {
+            background-color: rgba(128, 128, 128, 0.178);
           }
         }
         .sidebar-item-action {
@@ -554,11 +566,17 @@ input[type='text']:focus {
   }
 }
 
-.versionChovron svg {
-  transition: all 0.3s ease-in;
-  height: 20px !important;
-  width: 20px !important;
-  color: #808080;
+.versionChovron {
+  svg {
+    transition: all 0.3s ease-in;
+    height: 20px !important;
+    width: 20px !important;
+    color: #808080;
+    border-radius: 5px 5px;
+    &:hover {
+      background-color: #dfdcd5;
+    }
+  }
 }
 
 .sidebar-content:focus {
@@ -585,7 +603,7 @@ input[type='text']:focus {
     }
   }
 }
-.sidebar-accordion-item , .active-selected , .active-select , button{
+.side-bar , .active-selected , .active-select , button{
   &:hover {
     background: $grey;
   }
@@ -617,8 +635,10 @@ input[type='text']:focus {
 //   #collection-collapse {
     .card-body {
       button {
+        margin-bottom: 2px;
         .side-bar {
           padding-left: 6px !important;
+          width: 100%;
         }
       }
     }

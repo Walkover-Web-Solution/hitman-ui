@@ -215,37 +215,30 @@ class EndpointBreadCrumb extends Component {
       <div className='endpoint-header'>
         <div className='panel-endpoint-name-container'>
           <div className='page-title-name'>
-            <input
+            {/* <input
               ref={this.nameInputRef}
               className={['endpoint-name-input form-control', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
-              name='enpoint-title'
+             
               style={{ width: 'auto', textTransform: 'capitalize' }}
-              onChange={this.handleInputChange.bind(this)}
-              value={this.props?.isEndpoint && (this.props?.endpointContent?.data?.name || '')}
               onBlur={() => {
                 this.handleInputBlur()
               }}
               maxLength='50'
-            />
+            /> */}
             <h3
+             name='enpoint-title'
+             ref={this.nameInputRef}
               style={{ textTransform: 'capitalize' }}
-              className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
+              className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
+              onChange={this.handleInputChange.bind(this)}
+              value={this.props?.isEndpoint && (this.props?.endpointContent?.data?.name || '')}
+              spellcheck="true" placeholder="Untitled" data-content-editable-leaf="true" contenteditable="true"
             >
               {this.props?.isEndpoint
                 ? this.props?.pages?.[this.props?.match?.params?.endpointId]?.name ||
                   this.props?.history?.[this.props?.match?.params?.historyId]?.endpoint?.name ||
                   this.props?.endpointContent?.data?.name
                 : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
-              {this.props?.isEndpoint && (
-                <EditIcon
-                  className='fa fa-pencil-square-o ml-2 cursor-pointer '
-                  onClick={() => {
-                    this.setState({ nameEditable: true }, () => {
-                      this.nameInputRef.current.focus()
-                    })
-                  }}
-                />
-              )}
             </h3>
           </div>
           {this.props.location.pathname.split('/')[5] !== 'new' && (

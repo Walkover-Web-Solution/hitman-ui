@@ -41,6 +41,7 @@ import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from "react-icons/tb"
+import IconButton from '../common/iconButton'
 
 const mapStateToProps = (state) => {
   return {
@@ -706,7 +707,7 @@ class SideBarV2 extends Component {
           <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span>
           {filter === '' && (
             <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}>
-              <Plus />
+              <IconButton><Plus /></IconButton>
             </div>
           )}
         </div>

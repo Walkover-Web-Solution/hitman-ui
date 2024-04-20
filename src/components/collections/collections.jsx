@@ -31,6 +31,7 @@ import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTags
 // import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
 import { store } from '../../store/store'
 import { MdExpandMore } from "react-icons/md"
+import  IconButtons  from '../common/iconButton'
 
 
 const EMPTY_STRING = ''
@@ -365,9 +366,9 @@ class CollectionsComponent extends Component {
               //  [info] options not to show on publihsed page
               isOnDashboardPage && (
                 <div className='d-flex align-items-center'>
-                  <div className='sidebar-item-action d-flex align-items-center'>
-                    <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
-                      <Plus />
+                  <div className='sidebar-item-action  d-flex align-items-center'>
+                    <div className='d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
+                      <IconButtons><Plus /></IconButtons>
                     </div>
                     <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                       <i className='uil uil-ellipsis-v' />

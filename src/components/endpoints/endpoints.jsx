@@ -223,7 +223,7 @@ class Endpoints extends Component {
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         ) : (
-          <div className={`sidebar-accordion-item side-bar ${isSelected ? 'Selected' : ''}`}>
+          <div className="sidebar-accordion-item" >
             <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
               {this.props.endpoints[endpointId].requestType}
             </div>
@@ -331,7 +331,7 @@ class Endpoints extends Component {
   displaySingleEndpoint(endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     let isUserOnPublishedPage = isOnPublishedPage()
-    // const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
     return (
       <>
         <div 
@@ -345,8 +345,9 @@ class Endpoints extends Component {
         style={this.props.draggingOverId === endpointId ? { borderTop:'3px solid red'}: null}
         >
           <div className={this.props?.endpoints[endpointId]?.state} />
-          <div className='sidebar-toggle d-flex justify-content-between'>
+          <div className='sidebar-toggle d-flex justify-content-between mt-1'>
             <button>
+            <div className={`side-bar ${isSelected ? 'Selected' : ''}`}>
             <button
               tabIndex={-1}
               onClick={() => {
@@ -356,7 +357,9 @@ class Endpoints extends Component {
                 this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
               }
             >
+              
               {this.displayEndpointName(endpointId)}
+              
             </button>
               <div className='d-flex align-items-center'>
                 {isDashboardRoute(this.props, true) &&
@@ -365,6 +368,7 @@ class Endpoints extends Component {
                 {/* <div className='ml-1 published-icon transition'>
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
+              </div>
               </div>
               </button>
           </div>

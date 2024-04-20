@@ -13,6 +13,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { IoIosSettings } from "react-icons/io"
 import { HiMiniDocumentText } from "react-icons/hi2";
+import IconButton from '../common/iconButton'
 
 const mapStateToProps = (state) => {
   return {
@@ -457,7 +458,7 @@ class CustomTabs extends Component {
           ) : null}
           <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
             <button className='btn' onClick={() => this.handleAddTab()}>
-              <img src={Plus} alt='' />
+              <IconButton><img className='p-1' src={Plus} alt='' /></IconButton>
             </button>
           </Nav.Item>
           <div className='d-flex'>
@@ -466,7 +467,7 @@ class CustomTabs extends Component {
             </Nav.Item>
             <Nav.Item className='' id='history-tab-button'>
               <button onClick={this.handleHistoryClick} className='px-2' style={{ outline: 'none' }}>
-                <HistoryIcon />{' '}
+                <IconButton><HistoryIcon className='p-1' /></IconButton>{' '}
               </button>
             </Nav.Item>
             {this.state.showHistoryContainer && (
