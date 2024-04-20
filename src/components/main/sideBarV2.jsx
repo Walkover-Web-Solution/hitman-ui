@@ -40,7 +40,8 @@ import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
-import { TbLogin2 } from "react-icons/tb"
+import { TbLogin2 } from 'react-icons/tb'
+import { updateDragDrop } from '../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -60,7 +61,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    open_modal: (modal, data) => dispatch(openModal(modal, data))
+    open_modal: (modal, data) => dispatch(openModal(modal, data)),
+    update_drag_and_drop: (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
   }
 }
 
@@ -93,7 +95,9 @@ class SideBarV2 extends Component {
       totalEndpointsCount: 0,
       showInviteTeam: false,
       search: false,
-      endpoints: ''
+      endpoints: '',
+      draggingOverId: null,
+      draggedIdSelected: null
     }
     this.inputRef = createRef()
     this.sidebarRef = createRef()
@@ -415,6 +419,54 @@ class SideBarV2 extends Component {
     )
   }
 
+  getAllChildIds = async (pageId) => {
+    let pageObject = this.props.pages?.[pageId]
+    let childIds = []
+    if (pageObject?.child && pageObject?.child?.length > 0) {
+      for (const childId of pageObject.child) {
+        childIds.push(childId)
+        childIds = childIds.concat(await this.getAllChildIds(childId))
+      }
+    }
+    return childIds
+  }
+
+  handleOnDragOver(e) {
+    e.preventDefault()
+  }
+
+  onDragEnter(e, draggingOverId) {
+    e.preventDefault()
+
+    // setDraggingOverId(draggingOverId);
+    // this.setState({ draggingOverId })
+  }
+  onDragEnd(e) {
+    e.preventDefault()
+    // setDraggingOverId(null)
+    // this.setState({ draggingOverId: null })
+  }
+
+  onDragStart = async (draggedId) => {
+    this.setState({ draggedIdSelected: draggedId })
+  }
+
+  onDrop = async (e, droppedOnId) => {
+    let pageIds = []
+    e.preventDefault()
+
+    if (this.state.draggedIdSelected === droppedOnId) return
+
+    let draggedIdParent = this.props.pages?.[this.state.draggedIdSelected].parentId
+    let droppedOnIdParent = this.props.pages?.[droppedOnId]?.parentId
+
+    const draggedIdChilds = await this.getAllChildIds(this.state.draggedIdSelected)
+
+    pageIds.push(...draggedIdChilds, draggedIdParent, droppedOnIdParent)
+
+    this.props.update_drag_and_drop(this.state?.draggedIdSelected, droppedOnId, pageIds)
+  }
+
   renderHistoryItem(history) {
     return (
       Object.keys(history).length !== 0 && (
@@ -508,6 +560,11 @@ class SideBarV2 extends Component {
     return (
       <Collections
         {...this.props}
+        handleOnDragOver={this.handleOnDragOver}
+        onDragEnter={this.onDragEnter}
+        onDragEnd={this.onDragEnd}
+        onDragStart={this.onDragStart}
+        onDrop={this.onDrop}
         collectionsToRender={collectionsToRender}
         selectedCollectionId={this.state.selectedCollectionId}
         empty_filter={this.emptyFilter.bind(this)}
@@ -635,7 +692,6 @@ class SideBarV2 extends Component {
     )
   }
 
-
   renderCollectionName() {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
@@ -663,11 +719,20 @@ class SideBarV2 extends Component {
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documentation</span>
         </h4>
-        {isTechdocOwnDomain()  && (<a href="/login" target="_blank" className='login-button position-fixed d-flex gap-5 ps-5'>
-        <TbLogin2 className='text-black'/>
-<button type="button" class="btn btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Login to manage this docs">Login to manage this docs
-</button>
-        </a>)}
+        {isTechdocOwnDomain() && (
+          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5'>
+            <TbLogin2 className='text-black' />
+            <button
+              type='button'
+              class='btn btn-lg'
+              data-bs-toggle='tooltip'
+              data-bs-placement='top'
+              data-bs-title='Login to manage this docs'
+            >
+              Login to manage this docs
+            </button>
+          </a>
+        )}
       </div>
     )
   }

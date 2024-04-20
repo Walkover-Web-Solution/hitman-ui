@@ -500,7 +500,7 @@ class CollectionParentPages extends Component {
                   </span>
                   <div
                     className='d-flex justify-content-between align-items-center name-parent-page'
-                    draggable={!isUserOnPublishedPage}
+                    draggable={true}
                     onDragOver={this.props.handleOnDragOver}
                     onDragStart={() => this.props.onDragStart(pageId)}
                     onDrop={(e) => this.props.onDrop(e, pageId)}
