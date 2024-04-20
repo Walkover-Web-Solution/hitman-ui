@@ -48,7 +48,7 @@ export function updatePageOrder(pagesOrder) {
 
 export function dragAndDropApi(body) {
   const apiUrl = getApiUrl()
-  return http.post(`${apiUrl}/dragAndDrop`, body)
+  return http.post(`${apiUrl}/dragAndDropV2`, body)
 }
 
 export default {

@@ -102,6 +102,8 @@ class SideBarV2 extends Component {
     this.inputRef = createRef()
     this.sidebarRef = createRef()
     // this.handleClickOutside = this.handleClickOutside.bind(this)
+    // this.onDragStart = this.onDragStart.bind(this);
+    // this.getAllChildOfPage = this.getAllChildOfPage.bind(this) // Binding the method to the instance
   }
 
   // handleClickOutside(event) {
@@ -153,12 +155,11 @@ class SideBarV2 extends Component {
       document.addEventListener('keydown', this.preventDefaultBehavior.bind(this), false)
     }
     document.addEventListener('keydown', this.handleShortcutKeys)
-
   }
   handleShortcutKeys = (event) => {
     if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
-      event.preventDefault(); 
-      this.inputRef.focus(); 
+      event.preventDefault()
+      this.inputRef.focus()
     }
   }
 
@@ -454,17 +455,33 @@ class SideBarV2 extends Component {
   onDrop = async (e, droppedOnId) => {
     let pageIds = []
     e.preventDefault()
+    // console.log(12345,this.props.pages[this.state.draggedIdSelected]?.name);
+    // console.log(54321,this.props.pages[droppedOnId]?.name);
+
+    // setDraggingOverId(null);
+    // this.setState({ draggingOverId: null })
 
     if (this.state.draggedIdSelected === droppedOnId) return
 
     let draggedIdParent = this.props.pages?.[this.state.draggedIdSelected].parentId
     let droppedOnIdParent = this.props.pages?.[droppedOnId]?.parentId
 
+    console.log(6767676, draggedIdParent, droppedOnIdParent);
+
+    //now I want all ids of child of all draggedId
     const draggedIdChilds = await this.getAllChildIds(this.state.draggedIdSelected)
 
     pageIds.push(...draggedIdChilds, draggedIdParent, droppedOnIdParent)
 
     this.props.update_drag_and_drop(this.state?.draggedIdSelected, droppedOnId, pageIds)
+
+    // this.store?.dispatch(updateDragDrop(this.state?.draggedIdSelected, droppedOnId, pageIds))
+
+    // // if both data is not from same parent then stop the user
+    // if (draggedIdParent != droppedOnIdParent) {
+    //   this.store.dispatch(updateDragDropV2(this.state.draggingOverId, droppedOnId, draggedIdParent, droppedOnIdParent))
+    // } else {
+    // }
   }
 
   renderHistoryItem(history) {
@@ -867,23 +884,23 @@ class SideBarV2 extends Component {
   render() {
     return (
       <>
-      <nav className={this.getSidebarInteractionClass()}>
-        {this.showAddEntitySelectionModal()}
-        {this.showAddEntityModal()}
-        {this.showDeleteEntityModal()}
-        {this.state.showVersionForm &&
-          collectionVersionsService.showVersionForm(
-            this.props,
-            this.closeVersionForm.bind(this),
-            this.state.selectedCollection.id,
-            ADD_VERSION_MODAL_NAME
-          )}
-        <div className='primary-sidebar'>
-          {/* [info] for publishedPage only this part is important */}
+        <nav className={this.getSidebarInteractionClass()}>
+          {this.showAddEntitySelectionModal()}
+          {this.showAddEntityModal()}
+          {this.showDeleteEntityModal()}
+          {this.state.showVersionForm &&
+            collectionVersionsService.showVersionForm(
+              this.props,
+              this.closeVersionForm.bind(this),
+              this.state.selectedCollection.id,
+              ADD_VERSION_MODAL_NAME
+            )}
+          <div className='primary-sidebar'>
+            {/* [info] for publishedPage only this part is important */}
 
-          {this.renderDashboardSidebar()}
-        </div>
-      </nav>
+            {this.renderDashboardSidebar()}
+          </div>
+        </nav>
       </>
     )
   }
