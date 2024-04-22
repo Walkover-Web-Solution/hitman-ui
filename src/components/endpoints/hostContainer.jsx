@@ -279,7 +279,7 @@ class HostContainer extends Component {
   }
 
   splitUrlHelper(e) {
-    const value = e?.target?.value || e?.url
+    const value = e?.target?.value || e?.url || ''
     const hostName = this.checkExistingHosts(value)
     let uri = ''
     const data = {

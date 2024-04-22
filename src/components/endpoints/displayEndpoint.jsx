@@ -501,8 +501,7 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
-    if (!e?.currentTarget?.value) return;
-
+    // if(!e?.target?.value) return;
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
