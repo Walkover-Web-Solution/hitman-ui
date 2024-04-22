@@ -34,8 +34,18 @@ export const installModal = (event) => {
   }
 }
 
+export const updateStateOfCurlSlider = (payload) => {
+  return (dispatch) => {
+    dispatch({
+      type: modalsActionTypes.ON_CURL_SLIDER_OPEN,
+      payload
+    })
+  }
+}
+
 export default {
   openModal,
   closeModal,
-  installModal
+  installModal,
+  updateStateOfCurlSlider,
 }
