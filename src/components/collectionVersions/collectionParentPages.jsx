@@ -558,8 +558,7 @@ class CollectionParentPages extends Component {
                         }}
                       >
                         <MdOutlineSettings size={20} color='#f2994a' />
-                        <span data-toggle='modal' data-target='#exampleModalCenter'>
-                          Manage Version
+                        <span data-toggle='modal' data-target='#exampleModalCenter'> Manage Version
                         </span>
                       </div>
                     </div>

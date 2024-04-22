@@ -85,7 +85,7 @@ html body {
   .dropdown-menu {
     border-radius: $border-radius;
     border: none;
-    padding: 0;
+    padding: 4px;
     box-shadow:
       0 3px 5px 0px rgba(0, 0, 0, 0.03),
       0 0 20px 0px rgba(0, 0, 0, 0.08);
@@ -101,6 +101,9 @@ html body {
       // padding: 0.35rem 1rem;
       transition: all 0.3s ease-in;
       font-size: $font-normal;
+      &:hover {
+        background-color: rgba(128, 128, 128, 0.123);
+      }
     }
   }
 }
@@ -3697,5 +3700,12 @@ body .tox {
       left: 16px;
     }
    }
+ }
+ .tab-options-drop-down {
+  .dropdown-item {
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.123);
+    }
+  }
  }
  

@@ -60,6 +60,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 .environment-container {
   flex-direction: row-reverse;
   border-left: 1px solid #e6dbd4;
+
   .environment-buttons {
     display: flex;
     flex-direction: row;
@@ -69,29 +70,47 @@ $border-color: rgba(227, 228, 230, 0.7);
     background-color: inherit;
     align-items: center;
   }
+
   .select-environment-dropdown {
     height: 42px;
+
     .dropdown {
       width: 100%;
+
       .btn {
         height: 42px;
         background-color: inherit;
         border: none;
+        padding-right: 0;
+
+        &::after {
+          content: "";
+          all: unset !important;
+        }
+
         span {
           width: 6.65rem;
           text-align: left;
         }
       }
-      .dropdown-menu .dropdown-item {
-        font-size: 14px;
-        text-align: left;
-        padding-left: 20px;
-        &.dropdown-item.addEnv {
-          border-bottom: 1px solid #e0e0e0;
-          padding: 8px 0px 8px 8px;
-        }
-        svg {
-          margin: 0px;
+
+      .dropdown-menu {
+        padding: 4px;
+        .dropdown-item {
+          font-size: 14px;
+          text-align: left;
+          padding-left: 20px;
+
+          &.dropdown-item.addEnv {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 8px 0px 8px 8px;
+          }
+          &:hover {
+            background-color: rgba(128, 128, 128, 0.123);
+          }
+          svg {
+            margin: 0px;
+          }
         }
       }
     }

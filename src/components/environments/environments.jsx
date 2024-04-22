@@ -19,8 +19,8 @@ import { ReactComponent as EyeIcon } from '../../assets/icons/eye.svg'
 import { ReactComponent as EyeDisabledIcon } from '../../assets/icons/eyeDisabled.svg'
 import { ReactComponent as NoEnvVariablesImage } from '../../assets/icons/noEnvVariables.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
-import { isOnPublishedPage } from '../common/utility'
-import { IoCodeSlash } from "react-icons/io5";
+import IconButton from '../common/iconButton'
+import { IoIosArrowDown } from "react-icons/io"
 
 const mapStateToProps = (state) => {
   return {
@@ -303,7 +303,7 @@ class Environments extends Component {
                 }
                 className={`environment-buttons addEniButton ${env ? 'hover' : ''}`}
               >
-                {env ? <EyeIcon className='cursor-pointer' /> : <EyeDisabledIcon />}
+                <IconButton>{env ? <EyeIcon className='cursor-pointer m-1' /> : <EyeDisabledIcon className='m-1'/>}</IconButton>
               </div>
             )}
 
@@ -312,11 +312,12 @@ class Environments extends Component {
               <div className='select-environment-dropdown border-radius-right-none'>
                 <Dropdown className=''>
                   <Dropdown.Toggle variant='default' id='dropdown-basic'>
-                    <span className='truncate mr-1'>
+                    <span className='truncate'>
                       {this.props.environment.environments[this.props.environment.currentEnvironmentId]
                         ? this.props.environment.environments[this.props.environment.currentEnvironmentId].name
                         : 'No Environment'}
                     </span>
+                    <IconButton><IoIosArrowDown className='m-1'/></IconButton>
                   </Dropdown.Toggle>
                   <Dropdown.Menu alignRight>
                     <Dropdown.Item onClick={() => this.handleEnv(null)} key='no-environment'>

@@ -332,9 +332,17 @@ body .sidebar {
           }
           .dropdown-menu {
             box-shadow: 0px 18px 46px -14px #e5e5e5;
+            padding: 4px !important;
             .dropdown-item {
               font-size: 14px;
               padding: 0.25rem 1rem;
+              border-radius: 3px 3px;
+              svg {
+                filter: grayscale(1);
+              }
+              &:hover {
+                background-color: rgba(128, 128, 128, 0.123);
+              }
             }
           }
         }
@@ -344,7 +352,7 @@ body .sidebar {
         border: none;
         background: transparent;
         color: $text-color;
-        // padding: 0 0.8rem 0 0.65rem;
+        padding-right: 0;
         position: relative;
         transition: all 0.3s ease-in;
         height: 1.5rem;
@@ -852,9 +860,15 @@ input[type='text']:focus {
     font-weight: 700 !important;
     padding-left: 7px !important;
     font-size: 15px;
+    &:hover {
+      background-color: unset !important;
+    }
   }
   @media screen and (max-width: 1400px) {
     width: 280px;
+  }
+  &:hover {
+    background-color: #d6d2d28f;
   }
 }
 .hm-sidebar-outer-block {
@@ -870,6 +884,7 @@ input[type='text']:focus {
   button {
     .side-bar {
       padding-left: 10px;
+      width: 100%;
     }
   }
 }

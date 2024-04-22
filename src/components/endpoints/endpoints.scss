@@ -328,6 +328,14 @@ $border-color: rgba(227, 228, 230, 0.7);
             background-color: $secondary-color;
           }
         }
+        .dropdown-menu {
+          padding: 4px;
+          .dropdown-item {
+            &:hover {
+              background-color: rgba(128, 128, 128, 0.123);
+            }
+          }
+        }
       }
 
       .host-field-container {
@@ -848,13 +856,23 @@ table#custom-generic-table {
         height: 36px;
       }
 
-      .dropdown-menu.show {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
+      .dropdown-menu {
+        padding: 4px;
 
-        .btn {
-          padding-top: 3px;
+        .show {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+
+          .btn {
+            padding-top: 3px;
+          }
+        }
+
+        .dropdown-item {
+          &:hover {
+            background-color: rgba(128, 128, 128, 0.123);
+          }
         }
       }
     }

@@ -465,7 +465,7 @@ class PublishDocForm extends Component {
     return (
       <div>
         <Button
-          className={this.state.loader ? 'buttonLoader m-1' : 'm-1'}
+          className={this.state.loader ? 'buttonLoader m-1' : 'm-1 p-1'}
           disabled={!this.state.data.title.trim()}
           onClick={() => this.saveCollectionDetails()}
           variant='btn btn-outline'
@@ -483,7 +483,7 @@ class PublishDocForm extends Component {
           disabled={!disableCondition}
           id='publish_collection_btn'
           variant='btn btn-outline'
-          className='m-1'
+          className='m-1 p-1'
           onClick={() => this.redirectUser()}
         >
           Bulk Publish
@@ -491,7 +491,7 @@ class PublishDocForm extends Component {
         {/* </OverlayTrigger> */}
         <>
           {publishCheck ? (
-            <Button variant='btn btn-outline-danger' className='m-1' onClick={() => this.props.unPublishCollection()}>
+            <Button variant='btn btn-outline-danger' className='m-1 p-1' onClick={() => this.props.unPublishCollection()}>
               Unpublish Doc
             </Button>
           ) : (

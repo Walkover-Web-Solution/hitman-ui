@@ -18,6 +18,7 @@ import { connect } from 'react-redux'
 import { closeAllTabs } from '../tabs/redux/tabsActions'
 import { onHistoryRemoved } from '../history/redux/historyAction'
 import { ReactComponent as Users } from '../../assets/icons/users.svg'
+import IconButton from '../common/iconButton'
 
 const mapStateToProps = (state) => {
   return {
@@ -86,7 +87,7 @@ class UserProfileV2 extends Component {
           {/* {getNotificationCount && getNotificationCount() > 0 &&
             <span className='user-notification-badge'>{getNotificationCount()}</span>} */}
         </div>
-        <img ref={ref1} src={lightArrow} alt='settings-gear' className='transition cursor-pointer' />
+        <IconButton><img ref={ref1} src={lightArrow} alt='settings-gear' className='transition cursor-pointer' /></IconButton>
       </div>
     )
   }
