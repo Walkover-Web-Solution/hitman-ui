@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Table, Button } from 'react-bootstrap';
+import { Container, Table, Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { BiArrowBack } from 'react-icons/bi';
 import { MdSettingsBackupRestore } from 'react-icons/md';
@@ -14,9 +14,9 @@ import './trash.scss';
 const TrashPage = () => {
   const [collections, setCollections] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [hoverIndex, setHoverIndex] = useState(null);
+  const [editableRow, setEditableRow] = useState({ id: null, name: "" });
   const history = useHistory();
-  let orgId = getCurrentOrg()?.id;
+  const orgId = getCurrentOrg()?.id;
 
   useEffect(() => {
     async function fetchData() {
@@ -41,14 +41,33 @@ const TrashPage = () => {
     try {
       const data = { name: collectionName, collectionId, deletedAt: null };
       const response = await restoreCollection(orgId, data);
-      if (response.success) {
+      if (response.status === 200) {
         setCollections(prevCollections => prevCollections.filter(c => c.id !== collectionId));
         toast.success('Collection restored successfully');
-      } else {
-        throw new Error('Restoration failed');
       }
     } catch (error) {
-      toast.error('Failed to restore collection');
+      if (error?.response?.data === 'Collection Name Must be Unique') setEditableRow({ id: collectionId, name: collectionName });
+      toast.error(error?.response?.data);
+    }
+  };
+
+  const handleChangeName = (event) => {
+    setEditableRow(prev => ({ ...prev, name: event.target.value }));
+  };
+
+  const handleSaveEdit = async (collectionId) => {
+    try {
+      const data = { name: editableRow.name, collectionId, deletedAt: null };
+      const response = await restoreCollection(orgId, data);
+      if (response.status === 200) {
+        setCollections(prevCollections => prevCollections.filter(c => c.id !== collectionId));
+        toast.success('Collection restored successfully');
+        setEditableRow({ id: null, name: "" });
+      } else {
+        throw new Error('Restoration with new name failed');
+      }
+    } catch (error) {
+      toast.error('Failed to restore collection with new name');
     }
   };
 
@@ -65,7 +84,7 @@ const TrashPage = () => {
 
   return (
     <Container>
-      <div className="back-to-workspace mb-4 d-flex align-items-center" onClick={handleBack}>
+      <div className="back-to-workspace mb-4 d-flex align-items-center" onClick={handleBack} style={{cursor: 'pointer'}}>
         <BiArrowBack className='mr-2'/>
         <span>Back to workspace</span>
       </div>
@@ -82,14 +101,24 @@ const TrashPage = () => {
               </tr>
             </thead>
             <tbody>
-              {collections.map((collection, index) => (
-                <tr key={collection.id}
-                    onMouseEnter={() => setHoverIndex(index)}
-                    onMouseLeave={() => setHoverIndex(null)}>
-                  <td>{collection.name}</td>
+              {collections.map((collection) => (
+                <tr key={collection.id}>
+                  <td>
+                    {editableRow.id === collection.id ? (
+                      <Form.Control
+                        type="text"
+                        value={editableRow.name}
+                        onChange={handleChangeName}
+                      />
+                    ) : (
+                      collection.name
+                    )}
+                  </td>
                   <td>{moment(collection.deletedAt).fromNow()}</td>
                   <td className="restore-action">
-                    {hoverIndex === index && (
+                    {editableRow.id === collection.id ? (
+                      <Button onClick={() => handleSaveEdit(collection.id)}>Save</Button>
+                    ) : (
                       <MdSettingsBackupRestore
                         className="react-icon"
                         onClick={() => handleRestore(collection.id, collection.name)}
@@ -104,7 +133,7 @@ const TrashPage = () => {
       ) : (
         <div className="text-center mt-5">
           <img src={trashImage} alt="Trash" width={180} className='mb-2'/>
-          <p>Collections you delete will show up here.</p>
+          <p>Your trash is empty.</p>
         </div>
       )}
     </Container>
