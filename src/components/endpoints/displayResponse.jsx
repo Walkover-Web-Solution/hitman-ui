@@ -11,9 +11,16 @@ import { Overlay, Spinner, Tooltip } from 'react-bootstrap'
 import TestResults from './testResults'
 import addtosample from '../../assets/icons/addToSamplesign.svg'
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa'
+import { connect } from 'react-redux'
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
-const vm = require('vm')
+
+
+const mapStateToProps = (state) => {
+  return {
+    tabs: state?.tabs?.tabs,
+  }
+}
 
 class DisplayResponse extends Component {
   state = {
@@ -36,7 +43,6 @@ class DisplayResponse extends Component {
 
   constructor(props) {
     super(props)
-    console.log(this.props.endpointContent.originalHeaders, 1234567890)
     this.copyDivRef = createRef()
   }
 
@@ -286,7 +292,7 @@ class DisplayResponse extends Component {
     const { Show } = this.state
     const { Open } = this.state
     const Base_url = this.props?.endpointContent?.host?.BASE_URL ? this.props?.endpointContent?.host?.BASE_URL : null
-    const uri = this.props?.endpointContent?.data?.updatedUri ? this.props?.endpointContent?.data?.updatedUri:null
+    const uri = this.props?.endpointContent?.data?.updatedUri ? this.props?.endpointContent?.data?.updatedUri : null
 
     return (
       <div>
@@ -370,10 +376,38 @@ class DisplayResponse extends Component {
   }
 
   renderConsole() {
+    const checkWhetherJsonOrNot = (data) =>{
+      try{
+        if(JSON.parse(data)) return true
+        return false
+      }
+      catch(error){
+        return false
+      }
+    }
+
+    function RenderConsoleComponent(props) {
+      return (props?.data.map((singleConsole, index) => {
+        const isJson = checkWhetherJsonOrNot(singleConsole)
+        if (isJson) {
+          return <>
+            <JSONPretty theme={JSONPrettyMon} data={JSON.parse(singleConsole)} />
+            <br />
+          </>
+        }
+        return <>
+          <span key={index}>{singleConsole}</span>
+          <br />
+        </>
+      }))
+    }
+
     return (
-      <div>
-        <div className='pt-2'>{this.props?.endpointContent.preScriptExecution}</div>
-        <div className='pt-2'>{this.props?.endpointContent.postScriptExecution}</div>
+      <div className='w-100'>
+        <h4>Pre-Script Execution</h4>
+        <div className=''>{<RenderConsoleComponent data={this.props.tabs?.[this.props.activeTabId]?.preScriptExecutedData || []} />}</div>
+        <h4>Post-Script Execution</h4>
+        <div className=''>{<RenderConsoleComponent data={this.props.tabs?.[this.props.activeTabId]?.postScriptExecutedData || []} />}</div>
       </div>
     )
   }
@@ -568,4 +602,4 @@ class DisplayResponse extends Component {
   }
 }
 
-export default DisplayResponse
+export default connect(mapStateToProps, null)(DisplayResponse)

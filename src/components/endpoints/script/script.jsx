@@ -9,7 +9,6 @@ import { Snippets, preReqSnippets, postReqSnippets } from './snippets'
 export class Script extends Component {
   constructor(props) {
     super(props)
-console.log(props)
     this.state = {
       selectedRawBodyType: 'javascript',
       scriptEditorText: props.scriptText || '',

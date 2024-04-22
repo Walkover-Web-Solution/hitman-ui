@@ -19,7 +19,7 @@ import {
   setCurrentUserSSLMode
 } from '../common/utility'
 import tabService from '../tabs/tabService'
-import { closeTab, updateTab } from '../tabs/redux/tabsActions'
+import { closeTab, updatePostPreScriptExecutedData, updateTab, updateTabDraft } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import CodeTemplate from './codeTemplate'
 import SaveAsSidebar from './saveAsSidebar'
@@ -117,9 +117,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     set_response_view: (view) => dispatch(onToggle(view)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     unPublish_endpoint: (endpointId) => dispatch(draftEndpoint(endpointId)),
-    update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate))
-
-    // set_chat_view : (view) => dispatch(onChatResponseToggle(view))
+    update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate)),
+    update_pre_post_script: (tabId, executionData) => dispatch(updatePostPreScriptExecutedData(tabId, executionData))
   }
 }
 
@@ -723,7 +722,6 @@ class DisplayEndpoint extends Component {
   }
 
   async handleApiCall({ url: api, body, headers: header, bodyType, method, cancelToken, keyForRequest }) {
-    const postScriptExecution = executeData(this.props?.endpointContent?.postScriptText)
     let responseJson = {}
     try {
       if (isElectron()) {
@@ -963,6 +961,7 @@ class DisplayEndpoint extends Component {
   }
 
   handleSend = async () => {
+    const currentEndpointId = (this.props.currentEndpointId !== 'new') ? this.props.activeTabId : this.props.currentEndpointId
     const keyForRequest = shortid.generate()
     const runSendRequest = Axios.CancelToken.source()
     const startTime = new Date().getTime()
@@ -1005,6 +1004,7 @@ class DisplayEndpoint extends Component {
     }
 
     /** Prepare Body & Modify Headers */
+
     let { body, headers } = this.formatBody(this.props?.endpointContent?.data.body, headerJson)
 
     /** Add Cookie in Headers */
@@ -1022,9 +1022,11 @@ class DisplayEndpoint extends Component {
     const currentEnvironment = this.props.environment
 
     const code = this.props.endpointContent.preScriptText
-
+    const preScriptExecution = await executeData(this.props?.endpointContent?.preScriptText)
     /** Run Pre Request Script */
     const result = this.runScript(code, currentEnvironment, requestOptions)
+    const postScriptExecution = await executeData(this.props?.endpointContent?.postScriptText)
+    this.props.update_pre_post_script(currentEndpointId, {preScriptExecution, postScriptExecution});
     if (result.success) {
       let {
         environment,
@@ -1046,7 +1048,6 @@ class DisplayEndpoint extends Component {
       /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
       /** Handle Request Call */
-       const preScriptExecution= executeData(this.props?.endpointContent?.preScriptText)
       await this.handleApiCall(requestOptions)
       this.setState({
         loader: false,

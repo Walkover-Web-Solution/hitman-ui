@@ -101,6 +101,12 @@ function tabsReducer(state = initialState, action) {
       const newOrder = state.tabsOrder.filter((item) => item !== action.payload.currentActiveTabId)
       tabs = { ...state, tabsOrder: newOrder, activeTabId: action.payload.newTabId, tabs: newTabs }
       return tabs
+      
+    case tabsActionTypes.UPDATE_PRE_POST_SCRIPT:
+      tabs = { ...state }
+      tabs.tabs[action.payload.tabId].postScriptExecutedData = action.payload.executedData.postScriptExecution
+      tabs.tabs[action.payload.tabId].preScriptExecutedData = action.payload.executedData.preScriptExecution
+      return tabs
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_TABS:
       return { ...action.data }
