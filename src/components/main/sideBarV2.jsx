@@ -153,12 +153,11 @@ class SideBarV2 extends Component {
       document.addEventListener('keydown', this.preventDefaultBehavior.bind(this), false)
     }
     document.addEventListener('keydown', this.handleShortcutKeys)
-
   }
   handleShortcutKeys = (event) => {
     if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
-      event.preventDefault(); 
-      this.inputRef.focus(); 
+      event.preventDefault()
+      this.inputRef.focus()
     }
   }
 
@@ -431,20 +430,18 @@ class SideBarV2 extends Component {
     return childIds
   }
 
-  handleOnDragOver(e) {
+  handleOnDragOver = async (e) => {
     e.preventDefault()
   }
 
-  onDragEnter(e, draggingOverId) {
+  onDragEnter = async (e, draggingOverId) => {
     e.preventDefault()
-
-    // setDraggingOverId(draggingOverId);
-    // this.setState({ draggingOverId })
+    this.setState({ draggingOverId })
   }
-  onDragEnd(e) {
+
+  onDragEnd = async (e) => {
     e.preventDefault()
-    // setDraggingOverId(null)
-    // this.setState({ draggingOverId: null })
+    this.setState({ draggingOverId: null })
   }
 
   onDragStart = async (draggedId) => {
@@ -454,11 +451,6 @@ class SideBarV2 extends Component {
   onDrop = async (e, droppedOnId) => {
     let pageIds = []
     e.preventDefault()
-    // console.log(12345,this.props.pages[this.state.draggedIdSelected]?.name);
-    // console.log(54321,this.props.pages[droppedOnId]?.name);
-
-    // setDraggingOverId(null);
-    // this.setState({ draggingOverId: null })
 
     if (this.state.draggedIdSelected === droppedOnId) return
 
@@ -471,14 +463,6 @@ class SideBarV2 extends Component {
     pageIds.push(...draggedIdChilds, draggedIdParent, droppedOnIdParent)
 
     this.props.update_drag_and_drop(this.state?.draggedIdSelected, droppedOnId, pageIds)
-
-    // this.store?.dispatch(updateDragDrop(this.state?.draggedIdSelected, droppedOnId, pageIds))
-
-    // // if both data is not from same parent then stop the user
-    // if (draggedIdParent != droppedOnIdParent) {
-    //   this.store.dispatch(updateDragDropV2(this.state.draggingOverId, droppedOnId, draggedIdParent, droppedOnIdParent))
-    // } else {
-    // }
   }
 
   renderHistoryItem(history) {
@@ -579,6 +563,7 @@ class SideBarV2 extends Component {
         onDragEnd={this.onDragEnd}
         onDragStart={this.onDragStart}
         onDrop={this.onDrop}
+        draggingOverId={this.state.draggingOverId}
         collectionsToRender={collectionsToRender}
         selectedCollectionId={this.state.selectedCollectionId}
         empty_filter={this.emptyFilter.bind(this)}
