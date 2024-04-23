@@ -18,6 +18,12 @@ function collectionUrl(id) {
 export function getCollections(orgId) {
   return http.get(apiUrl + `/orgs/${orgId}/collections`)
 }
+export function getAllDeletedCollections(orgId) {
+  return http.get(apiUrl + `/orgs/${orgId}/deletedCollections`)
+}
+export function restoreCollection(orgId, data) {
+  return http.put(apiUrl + `/orgs/${orgId}/restore`,{data})
+}
 
 export function getAllPublicCollections() {
   const orgId = getOrgId()
@@ -62,11 +68,13 @@ export function importCollection(collectionId) {
 export default {
   getCollections,
   getCollection,
+  getAllDeletedCollections,
   saveCollection,
   updateCollection,
   deleteCollection,
   duplicateCollection,
   getAllPublicCollections,
   getCollectionsByCustomDomain,
-  importCollection
+  importCollection,
+  restoreCollection
 }

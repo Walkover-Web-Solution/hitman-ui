@@ -19,6 +19,7 @@ import { installModal } from './components/modals/redux/modalsActions'
 import { initConn, resetConn } from './services/webSocket/webSocketService.js'
 import shortid from 'shortid'
 import OauthPage from './components/OauthPage/OauthPage.js'
+import TrashPage from './components/main/Trash/trashPage.jsx'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -159,6 +160,7 @@ class App extends Component {
           <ProtectedRouteV2 path='/orgs/:orgId/dashboard/page/:pageId' component={MainV2} />
           <ProtectedRouteV2 path='/orgs/:orgId/dashboard/history/:historyId' component={MainV2} />
           <Route path='/orgs/:orgId/invite' component={InviteTeam} />
+          <ProtectedRouteV2 path='/orgs/:orgId/trash' component={TrashPage} />
 
           {/* Not Logged in Dashboard Route */}
           <Route path='/dashboard/' component={MainV2} />
