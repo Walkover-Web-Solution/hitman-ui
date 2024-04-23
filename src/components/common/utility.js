@@ -319,16 +319,6 @@ export function isValidDomain() {
   return domainsList.includes(currentDomain) && path !== 'p'
 }
 
-export function addAnalyticsScripts() {
-  if (isValidDomain() && process.env.REACT_APP_ENV === 'production') {
-    Object.keys(scripts).forEach((script) => {
-      script !== 'gtmBody'
-        ? (document.getElementsByTagName('head')[0].innerHTML += scripts[script])
-        : (document.getElementsByTagName('body')[0].innerHTML += scripts[script])
-    })
-  }
-}
-
 export function isNotDashboardOrDocView(props, view) {
   return !isDashboardRoute(props) || view === 'doc'
 }
@@ -811,7 +801,6 @@ export default {
   handleBlurInUrlField,
   formatBytes,
   isValidDomain,
-  addAnalyticsScripts,
   DEFAULT_URL,
   isNotDashboardOrDocView,
   isDashboardAndTestingView,

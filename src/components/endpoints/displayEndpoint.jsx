@@ -35,7 +35,6 @@ import HostContainer from './hostContainer'
 import PublicBodyContainer from './publicBodyContainer'
 import { addEndpoint } from './redux/endpointsActions'
 import { addHistory } from '../history/redux/historyAction'
-import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
 import LoginSignupModal from '../main/loginSignupModal'
 import PublicSampleResponse from './publicSampleResponse'
@@ -49,7 +48,7 @@ import Script from './script/script'
 import * as _ from 'lodash'
 import { openModal, updateStateOfCurlSlider } from '../modals/redux/modalsActions'
 import Axios from 'axios'
-import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
+import { SortableHandle, SortableContainer, SortableElement } from 'react-18-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import { pendingEndpoint, approveEndpoint, rejectEndpoint, draftEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
@@ -1752,35 +1751,6 @@ class DisplayEndpoint extends Component {
       }
       default:
         return { body: body?.raw?.value, headers }
-    }
-  }
-
-  async setAccessToken() {
-    const url = window.location.href
-    const hashVariables = isElectron() ? url.split('#')[2] : url.split('#')[1]
-    const response = URI.parseQuery('?' + hashVariables)
-    if (hashVariables) {
-      await indexedDbService.getDataBase()
-      await indexedDbService.updateData('responseData', response, 'currentResponse')
-      const responseData = await indexedDbService.getValue('responseData', 'currentResponse')
-      const timer = setInterval(async function () {
-        if (responseData) {
-          clearInterval(timer)
-          window.close()
-        }
-      }, 1000)
-    }
-    if (url.split('?')[1]) {
-      await indexedDbService.getDataBase()
-      const authData = await indexedDbService.getValue('authData', 'currentAuthData')
-      const resposneAuthCode = URI.parseQuery('?' + url.split('?')[1])
-      const code = resposneAuthCode.code
-      const paramsObject = {}
-      paramsObject.code = code
-      paramsObject.client_id = authData.clientId
-      paramsObject.client_secret = authData.clientSecret
-      paramsObject.redirect_uri = authData.callbackUrl
-      await endpointApiService.authorize(authData.accessTokenUrl, paramsObject, 'auth_code', this.props, authData)
     }
   }
 
