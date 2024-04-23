@@ -16,8 +16,6 @@ import {
   isOnPublishedPage
 } from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
-import PublishColelctionInfo from './publishCollectionInfo'
-import { ReactComponent as ArrowIcon } from '../../assets/icons/Vector.svg'
 import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
@@ -25,9 +23,7 @@ import NoFound, { ReactComponent as NoCollectionsIcon } from '../../assets/icons
 // import { ReactComponent as PlusIcon } from '../../assets/icons/plus_orange.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
 // import { ReactComponent as DownloadIcon } from '../../assets/icons/download.svg'
-import { ReactComponent as Users } from '../../assets/icons/users.svg'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
-import CloseIcon from '../../assets/icons/x.svg'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
@@ -705,9 +701,9 @@ class SideBarV2 extends Component {
         <div className='d-flex align-items-center justify-content-between mb-2'>
           <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span>
           {filter === '' && (
-            <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}>
-              <Plus />
-            </div>
+           <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}>
+           <Plus />
+         </div>
           )}
         </div>
       )
