@@ -701,9 +701,9 @@ class SideBarV2 extends Component {
         <div className='d-flex align-items-center justify-content-between mb-2'>
           <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span>
           {filter === '' && (
-            <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported}>
-            <Plus onClick={this.handleAdd.bind(this)} />
-          </div>
+           <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}>
+           <Plus />
+         </div>
           )}
         </div>
       )
