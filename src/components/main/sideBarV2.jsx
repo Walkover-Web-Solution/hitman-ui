@@ -678,7 +678,8 @@ class SideBarV2 extends Component {
     var isOnDashboardPage = isDashboardRoute(this.props)
     return (
       <>
-        <div className='plr-3'>
+        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
+        <div className='plr-3 pt-2'>
           {isOnPublishedPage() && this.renderCollectionName()}
           {this.renderSearch()}
           {/* {this.renderDownloadDesktopApp()} */}
@@ -688,7 +689,6 @@ class SideBarV2 extends Component {
           {this.state.data.filter !== '' && this.renderSearchList()}
           {this.state.data.filter === '' && this.renderSidebarContent()}
         </div>
-        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
       </>
     )
   }
@@ -703,11 +703,12 @@ class SideBarV2 extends Component {
       : 'Add/Import Collection'
     return (
       getCurrentUser() && (
-        <div className='d-flex align-items-center justify-content-between mb-2'>
-          <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span>
+        <div className='d-flex align-items-center justify-content-end mb-2'>
+          {/* <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span> */}
           {filter === '' && (
             <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}>
-              <IconButton><Plus /></IconButton>
+              <button className='mr-2'>Import</button>
+              <button>New Create</button>
             </div>
           )}
         </div>

@@ -292,7 +292,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 
       .btn {
         height: 36px;
-        width: 100px;
+        width: 70px;
       }
     }
 
@@ -1525,4 +1525,9 @@ table#custom-generic-table {
 
 .disable-callback {
   color: rgb(155, 152, 152) !important;
+}
+.save-endpoint {
+  .btn {
+    font-size: 12px;
+  }
 }

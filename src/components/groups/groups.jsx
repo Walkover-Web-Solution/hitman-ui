@@ -26,6 +26,7 @@ import { ReactComponent as EditSign } from '../../assets/icons/editsign.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
+import { FiPlus } from "react-icons/fi"
 
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
@@ -204,17 +205,17 @@ class Groups extends Component {
               isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
                 <div className='sidebar-item-action d-flex align-items-center'>
                   <div onClick={() => this.openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
-                    <IconButtons><Plus /></IconButtons>
+                    <IconButtons><FiPlus /></IconButtons>
                   </div>
                   <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <i className='uil uil-ellipsis-v' />
+                  <IconButtons><i className='uil uil-ellipsis-v' /></IconButtons>
                   </div>
                   <div className='dropdown-menu dropdown-menu-right'>
-                    <div className='dropdown-item' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
+                    <div className='dropdown-item d-flex' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
                       <EditSign /> Rename
                     </div>
                     <div
-                      className='dropdown-item'
+                      className='dropdown-item text-danger d-flex'
                       onClick={() => {
                         this.openDeleteSubPageModal(subPageId)
                       }}

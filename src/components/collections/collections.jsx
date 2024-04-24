@@ -32,6 +32,7 @@ import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTags
 import { store } from '../../store/store'
 import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
+import { FiPlus } from "react-icons/fi"
 
 
 const EMPTY_STRING = ''
@@ -368,19 +369,32 @@ class CollectionsComponent extends Component {
                 <div className='d-flex align-items-center'>
                   <div className='sidebar-item-action  d-flex align-items-center'>
                     <div className='d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
-                      <IconButtons><Plus /></IconButtons>
+                      <IconButtons><FiPlus /></IconButtons>
                     </div>
                     <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                      <i className='uil uil-ellipsis-v' />
+                    <IconButtons><i className='uil uil-ellipsis-v' /></IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
                       {!this.props.collections[collectionId]?.importedFromMarketPlace && (
                         <>
-                          <div className='dropdown-item' onClick={() => this.openEditCollectionForm(collectionId)}>
+                          <div className='dropdown-item d-flex' onClick={() => this.openEditCollectionForm(collectionId)}>
                             <EditIcon /> Rename
                           </div>
+                          {this.props.collections[collectionId].isPublic && (
+                            <div className='dropdown-item d-flex' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
+                              <GoToDocs /> Go to API Documentation
+                            </div>
+                          )}
+                           <div
+                            className='dropdown-item d-flex'
+                            onClick={() => {
+                              this.TagManagerModal(collectionId)
+                            }}
+                          >
+                            <AddGoogleTag /> Add Google Tag Manager
+                          </div>
                           <div
-                            className='dropdown-item'
+                            className='dropdown-item text-danger d-flex'
                             onClick={() => {
                               this.openDeleteCollectionModal(collectionId)
                             }}
@@ -391,11 +405,7 @@ class CollectionsComponent extends Component {
                          <Duplicate/> {' '}
                         Duplicate
                       </div> */}
-                          {this.props.collections[collectionId].isPublic && (
-                            <div className='dropdown-item' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
-                              <GoToDocs /> Go to API Documentation
-                            </div>
-                          )}
+                          
                           {/* {
                   isAdmin()
                     ? (
@@ -415,14 +425,7 @@ class CollectionsComponent extends Component {
                     : null
                 } */}
 
-                          <div
-                            className='dropdown-item'
-                            onClick={() => {
-                              this.TagManagerModal(collectionId)
-                            }}
-                          >
-                            <AddGoogleTag /> Add Google Tag Manager
-                          </div>
+                         
                         </>
                       )}
                       {this.props.collections[collectionId]?.importedFromMarketPlace && (

@@ -19,6 +19,7 @@ import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.
 import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 import endpointService from './endpointService'
+import  IconButtons  from '../common/iconButton'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -236,7 +237,7 @@ class Endpoints extends Component {
 
   displayDeleteOpt(endpointId) {
     return (
-      <div className='dropdown-item' onClick={() => this.openDeleteEndpointModal(endpointId)}>
+      <div className='dropdown-item text-danger d-flex' onClick={() => this.openDeleteEndpointModal(endpointId)}>
       <DeleteIcon /> Delete
     </div>
     )
@@ -244,9 +245,8 @@ class Endpoints extends Component {
 
   displayDuplicateOpt(endpointId) {
     return (
-      <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.endpoints[endpointId])}>
-        <Duplicate />
-        Duplicate
+      <div className='dropdown-item d-flex' onClick={() => this.handleDuplicate(this.props.endpoints[endpointId])}>
+        <Duplicate /> Duplicate
       </div>
     )
   }
@@ -293,15 +293,15 @@ class Endpoints extends Component {
     return (
       <div className='sidebar-item-action'>
         <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-          <i className='uil uil-ellipsis-v' />
+        <IconButtons><i className='uil uil-ellipsis-v' /></IconButtons>
         </div>
 
         <div className='dropdown-menu dropdown-menu-right'>
-          <div className='dropdown-item' onClick={() => this.openEditEndpointForm(endpointId)}>
+          <div className='dropdown-item d-flex' onClick={() => this.openEditEndpointForm(endpointId)}>
             <RenamedItem /> Rename
           </div>
-          {this.displayDeleteOpt(endpointId)}
           {this.displayDuplicateOpt(endpointId)}
+          {this.displayDeleteOpt(endpointId)}
           {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
         </div>
       </div>

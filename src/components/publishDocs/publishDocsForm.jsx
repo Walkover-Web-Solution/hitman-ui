@@ -518,7 +518,10 @@ class PublishDocForm extends Component {
       <>
         <div className={this.props.onTab && 'publish-on-tab'}>
           <div className='d-flex justify-content-between align-item-center'>
-            <h3 className='page-title mb-0'>Manage Public Doc</h3>
+            <div className='d-flex'>
+              <h3 className='page-title mb-0'>Manage Public Doc</h3>
+              <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
+            </div>
             {this.renderActionButtons(publishCheck)}
           </div>
           {publishCheck && this.renderPublicUrl()}

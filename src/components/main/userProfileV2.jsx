@@ -19,6 +19,7 @@ import { closeAllTabs } from '../tabs/redux/tabsActions'
 import { onHistoryRemoved } from '../history/redux/historyAction'
 import { ReactComponent as Users } from '../../assets/icons/users.svg'
 import IconButton from '../common/iconButton'
+import { IoIosArrowDown } from "react-icons/io"
 
 const mapStateToProps = (state) => {
   return {
@@ -81,13 +82,13 @@ class UserProfileV2 extends Component {
           onClick(e)
         }}
       >
-        <div className='d-flex align-items-center position-relative'>
+        <div ref={ref1} className='d-flex align-items-center position-relative'>
           <Avatar className='mr-2' color='#343a40' name={this.getCurrentOrg()?.name} size={30} round='4px' />
           {this.renderOrgName()}
           {/* {getNotificationCount && getNotificationCount() > 0 &&
             <span className='user-notification-badge'>{getNotificationCount()}</span>} */}
         </div>
-        <IconButton><img ref={ref1} src={lightArrow} alt='settings-gear' className='transition cursor-pointer' /></IconButton>
+        <IconButton><IoIosArrowDown  src={lightArrow} alt='settings-gear' className='transition cursor-pointer text-dark' /></IconButton>
       </div>
     )
   }

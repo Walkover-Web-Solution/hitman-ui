@@ -13,7 +13,8 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { IoIosSettings } from "react-icons/io"
 import { HiMiniDocumentText } from "react-icons/hi2";
-import IconButton from '../common/iconButton'
+import  IconButtons  from '../common/iconButton'
+import { IoMdClose } from "react-icons/io";
 
 const mapStateToProps = (state) => {
   return {
@@ -458,7 +459,7 @@ class CustomTabs extends Component {
           ) : null}
           <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
             <button className='btn' onClick={() => this.handleAddTab()}>
-              <IconButton><img className='p-1' src={Plus} alt='' /></IconButton>
+              <img className='p-1' src={Plus} alt='' />
             </button>
           </Nav.Item>
           <div className='d-flex'>
@@ -467,16 +468,16 @@ class CustomTabs extends Component {
             </Nav.Item>
             <Nav.Item className='' id='history-tab-button'>
               <button onClick={this.handleHistoryClick} className='px-2' style={{ outline: 'none' }}>
-                <IconButton><HistoryIcon className='p-1' /></IconButton>{' '}
+                <HistoryIcon className='p-1' />{' '}
               </button>
             </Nav.Item>
             {this.state.showHistoryContainer && (
               <div style={sideBar}>
                 <div style={Heading}>
                   History
-                  <button style={closeButton} onClick={this.handleHistoryClick} aria-label='Close'>
-                    <span aria-hidden='true'>×</span>
-                  </button>
+                  <div style={closeButton} onClick={this.handleHistoryClick} aria-label='Close'>
+                  <IconButtons><IoMdClose /></IconButtons>
+                  </div>
                 </div>
                 <History {...this.props} />
               </div>

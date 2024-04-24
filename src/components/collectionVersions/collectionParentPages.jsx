@@ -36,6 +36,7 @@ import { MdOutlineSettings } from 'react-icons/md'
 import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
 import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
+import { FiPlus } from "react-icons/fi";
 
 const mapStateToProps = (state) => {
   return {
@@ -534,25 +535,17 @@ class CollectionParentPages extends Component {
                       className='d-flex align-items-center'
                       onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
                     >
-                      <IconButtons><Plus /></IconButtons>
+                      <IconButtons><FiPlus /></IconButtons>
                     </div>
                     <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                      <i className='uil uil-ellipsis-v' />
+                    <IconButtons><i className='uil uil-ellipsis-v' /></IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
-                      <div className='dropdown-item' onClick={() => this.openEditPageForm(pageId)}>
+                      <div className='dropdown-item d-flex' onClick={() => this.openEditPageForm(pageId)}>
                         <Rename /> Rename
-                      </div>
+                      </div>                     
                       <div
-                        className='dropdown-item'
-                        onClick={() => {
-                          this.openDeletePageModal(pageId)
-                        }}
-                      >
-                        <DeleteIcon /> Delete
-                      </div>
-                      <div
-                        className='dropdown-item'
+                        className='dropdown-item d-flex'
                         onClick={() => {
                           this.manageVersion(true)
                         }}
@@ -560,6 +553,14 @@ class CollectionParentPages extends Component {
                         <MdOutlineSettings size={20} color='#f2994a' />
                         <span data-toggle='modal' data-target='#exampleModalCenter'> Manage Version
                         </span>
+                      </div>
+                      <div
+                        className='dropdown-item text-danger d-flex'
+                        onClick={() => {
+                          this.openDeletePageModal(pageId)
+                        }}
+                      >
+                        <DeleteIcon /> Delete
                       </div>
                     </div>
                   </div>

@@ -42,6 +42,7 @@ html body {
   .dropdown-toggle {
     font-size: 14px !important;
     padding: 5px;
+    padding-right: 4px !important;
     margin-left: 4px;
     border: 1px solid transparent !important;
     @media screen and (max-width:768px) {
@@ -99,7 +100,6 @@ html body {
       -webkit-display: flex;
       align-items: center;
       // padding: 0.35rem 1rem;
-      transition: all 0.3s ease-in;
       font-size: $font-normal;
       &:hover {
         background-color: rgba(128, 128, 128, 0.123);
@@ -1252,7 +1252,7 @@ button.editBtn {
 }
 
 .dropdown-menu .dropdown-item svg {
-  margin-right: 5px;
+  margin-right: 8px;
 }
 
 .publish-button {
@@ -3469,11 +3469,18 @@ body .tox {
     @media (max-width: 1400px) and (min-width: 400px){
       max-width: 120px !important;
     }
+  .page-title-name {
+
+    .endpoint-title,
+    .page-title {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      &:hover{
+        border-color: transparent !important; 
+       background-color: unset !important;
+      }
+    }
   }
-  .endpoint-title,
-  .page-title {
-    text-overflow: ellipsis;
-    overflow: hidden;
   }
 .pubCodeWrapper {
   @media only screen and (max-width: 1160px) {
@@ -3489,6 +3496,10 @@ body .tox {
 .page-title {
   text-overflow: ellipsis;
   overflow: hidden;
+  &:hover {
+    border-color: rgba(128, 128, 128, 0.356) !important;
+    background-color: white !important;
+  }
 }
 }
 .hamburger-for-sidebar{
@@ -3706,6 +3717,16 @@ body .tox {
     &:hover {
       background-color: rgba(128, 128, 128, 0.123);
     }
+  }
+ }
+ .custom-collection-modal-container {
+  button {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    border-radius: 3px 3px;
+      &:hover {
+        background-color:rgba(128, 128, 128, 0.205);
+      }
   }
  }
  

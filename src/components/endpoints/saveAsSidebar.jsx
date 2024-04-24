@@ -7,6 +7,7 @@ import _ from 'lodash'
 import ShowCaseSaveAsModal from './showCaseSaveAsModal/showCaseSaveAsModal'
 import Input from '../common/input'
 import { trimString } from '../common/utility'
+import  IconButtons  from '../common/iconButton'
 
 const mapStateToProps = (state) => {
   return {
@@ -131,7 +132,7 @@ class SaveAsSidebar extends Form {
                 this.props.onHide()
               }}
             >
-              <span aria-hidden='true'>×</span>
+              <IconButtons><span aria-hidden='true'>×</span></IconButtons>
             </button>
           </div>
           <div className='drawer-body'>
