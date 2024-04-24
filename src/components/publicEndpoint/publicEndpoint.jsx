@@ -384,7 +384,7 @@ class PublicEndpoint extends Component {
       setTitle(docTitle)
       setFavicon(docFaviconLink)
       var collectionName = this.props.collections[collectionId]?.name
-      // var collectionTheme = this.props.collections[collectionId]?.theme
+      var collectionTheme = this.props.collections[collectionId]?.theme
     }
     let collectionKeys = Object.keys(this.props?.collections || {})
     const { isCTAandLinksPresent } = this.getCTALinks()
@@ -396,7 +396,7 @@ class PublicEndpoint extends Component {
           {`
           .link {
             &:hover {
-              color: ${this.state.collectionTheme};
+              color: ${collectionTheme};
             }
   
           }
@@ -441,7 +441,7 @@ class PublicEndpoint extends Component {
             {/*  [info] part 3 subpart 1 sidebar data right content */}
             <div
               className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
-              style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.01') }}
+              style={{ backgroundColor: hexToRgb(collectionTheme, '0.01') }}
             >
               {idToRender ? (
                 <div
@@ -458,7 +458,7 @@ class PublicEndpoint extends Component {
                     <DisplayEndpoint
                       {...this.props}
                       fetch_entity_name={this.fetchEntityName.bind(this)}
-                      publicCollectionTheme={this.state.collectionTheme}
+                      publicCollectionTheme={collectionTheme}
                     />
                   )}
 
@@ -466,7 +466,7 @@ class PublicEndpoint extends Component {
                     <DisplayPage
                       {...this.props}
                       fetch_entity_name={this.fetchEntityName.bind(this)}
-                      publicCollectionTheme={this.state.collectionTheme}
+                      publicCollectionTheme={collectionTheme}
                     />
                   )}
 
