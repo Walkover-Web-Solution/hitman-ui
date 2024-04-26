@@ -705,12 +705,6 @@ class SideBarV2 extends Component {
       getCurrentUser() && (
         <div className='d-flex align-items-center justify-content-end mb-2'>
           {/* <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span> */}
-          {filter === '' && (
-            <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}>
-              <button className='mr-2'>Import</button>
-              <button>New Create</button>
-            </div>
-          )}
         </div>
       )
     )

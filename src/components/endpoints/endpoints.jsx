@@ -20,6 +20,7 @@ import { ReactComponent as CancelRequest } from '../../assets/icons/cancelReques
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 import endpointService from './endpointService'
 import  IconButtons  from '../common/iconButton'
+import { BsThreeDots } from "react-icons/bs"
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -292,8 +293,8 @@ class Endpoints extends Component {
   displayEndpointOptions(endpointId) {
     return (
       <div className='sidebar-item-action'>
-        <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-        <IconButtons><i className='uil uil-ellipsis-v' /></IconButtons>
+        <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+        <IconButtons><BsThreeDots /></IconButtons>
         </div>
 
         <div className='dropdown-menu dropdown-menu-right'>
@@ -347,7 +348,7 @@ class Endpoints extends Component {
           <div className={this.props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between mt-1'>
             <button>
-            <div className={`side-bar ${isSelected ? 'Selected' : ''}`}>
+            <div className={`side-bar d-flex ${isSelected ? 'Selected' : ''}`}>
             <button
               tabIndex={-1}
               onClick={() => {

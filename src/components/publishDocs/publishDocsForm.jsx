@@ -465,7 +465,7 @@ class PublishDocForm extends Component {
     return (
       <div>
         <Button
-          className={this.state.loader ? 'buttonLoader m-1' : 'm-1 p-1'}
+          className={this.state.loader ? 'buttonLoader m-1 btn-sm fs-4' : 'm-1 btn-sm fs-4'}
           disabled={!this.state.data.title.trim()}
           onClick={() => this.saveCollectionDetails()}
           variant='btn btn-outline'
@@ -483,7 +483,7 @@ class PublishDocForm extends Component {
           disabled={!disableCondition}
           id='publish_collection_btn'
           variant='btn btn-outline'
-          className='m-1 p-1'
+          className='m-1 btn-sm fs-4'
           onClick={() => this.redirectUser()}
         >
           Bulk Publish
@@ -491,14 +491,14 @@ class PublishDocForm extends Component {
         {/* </OverlayTrigger> */}
         <>
           {publishCheck ? (
-            <Button variant='btn btn-outline-danger' className='m-1 p-1' onClick={() => this.props.unPublishCollection()}>
+            <Button variant='btn btn-outline-danger btn-sm fs-4' className='m-1 btn-sm fs-4' onClick={() => this.props.unPublishCollection()}>
               Unpublish Doc
             </Button>
           ) : (
             isNotPublished && (
               <Button
                 id='publish_collection_btn'
-                className='m-1'
+                className='m-1 btn-sm fs-4'
                 onClick={() => this.publishCollection(selectedCollection)}
                 disabled={!selectedCollection?.docProperties?.defaultTitle}
                 variant='btn btn-outline'
@@ -518,7 +518,7 @@ class PublishDocForm extends Component {
       <>
         <div className={this.props.onTab && 'publish-on-tab'}>
           <div className='d-flex justify-content-between align-item-center'>
-            <div className='d-flex'>
+            <div className='d-flex align-items-center'>
               <h3 className='page-title mb-0'>Manage Public Doc</h3>
               <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
             </div>

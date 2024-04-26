@@ -252,7 +252,7 @@ class DisplayPage extends Component {
             </button>
           )}
           <button
-            className='btn btn-secondary outline ml-2 orange'
+            className='btn btn-primary btn-sm fs-4'
             onClick={() => {
               this.handleEdit(this.state.data)
             }}

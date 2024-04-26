@@ -3,6 +3,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
 @import './variables.scss';
 
+.fs-1 {
+  font-size: $font-extra-large !important;
+}
+.fs-2 {
+  font-size: $font-large-l !important;
+}
+.fs-3 {
+  font-size: $font-medium-m !important;
+}
+.fs-4 {
+  font-size: $font-small-s !important;
+}
+.fs-5 {
+  font-size: $font-extra-small !important;
+}
+
 .mobile-warning {
   position: sticky;
   z-index: 1200;
@@ -48,11 +64,13 @@ html body {
     @media screen and (max-width:768px) {
       font-size: 16px !important;
     }
-
+    &:active {
+      color: black !important;
+    }
     &::after {
       content: "" !important;
       top: 0 !important;
-      transform: rotate(363deg) !important;
+      transform: rotate(362deg) !important;
       border-top: 4.8px solid !important;
       border-right: 4.8px solid transparent !important;
       border-bottom: 0 !important;
@@ -63,7 +81,17 @@ html body {
       border-color: rgba(128, 128, 128, 0.363) !important;
     }
   }
-
+.dropdown-menu {
+  max-width: 260px;
+  left: -10px !important;
+  a {
+    max-width: 180px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block !important;
+  }
+}
 }
   
 .dropdown {
@@ -86,7 +114,7 @@ html body {
   .dropdown-menu {
     border-radius: $border-radius;
     border: none;
-    padding: 4px;
+    padding: 6px;
     box-shadow:
       0 3px 5px 0px rgba(0, 0, 0, 0.03),
       0 0 20px 0px rgba(0, 0, 0, 0.08);
@@ -130,11 +158,11 @@ html body {
   width: max-content;
   font-size: 1.75rem;
   font-weight: 600;
-  border: 1px solid transparent !important;
+  border: 1px solid transparent;
   color: $text-color-dark;
   &:hover {
-    border-color: rgba(128, 128, 128, 0.356) !important;
-    background-color: white !important;
+    border-color: rgba(128, 128, 128, 0.356);
+    background-color: white;
   }
   &:focus-visible{
     outline: 1px solid rgba(128, 128, 128, 0.356) !important;
@@ -2894,6 +2922,11 @@ div#steve-parent-accordion {
 
 .no-header button.close {
   top: 1.4rem;
+  width: 20px;
+  border-radius: 3px 3px;
+    &:hover {
+      background-color: #d6d2d28f !important;
+    }
 }
 
 .fileInput {
@@ -3475,10 +3508,6 @@ body .tox {
     .page-title {
       text-overflow: ellipsis;
       overflow: hidden;
-      &:hover{
-        border-color: transparent !important; 
-       background-color: unset !important;
-      }
     }
   }
   }

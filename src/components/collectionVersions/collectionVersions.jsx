@@ -18,7 +18,8 @@ import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { ReactComponent as ShareIcon } from '../../assets/icons/sharesign.svg'
-import { FiPlus } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi"
+import { BsThreeDots } from "react-icons/bs"
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 
 const mapStateToProps = (state) => {
@@ -279,8 +280,8 @@ class CollectionVersions extends Component {
                 <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(versionId)}>
                 <IconButtons><FiPlus /></IconButtons>
                 </div>
-                <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                <IconButtons><i className='uil uil-ellipsis-v' /></IconButtons>
+                <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                <IconButtons><BsThreeDots /></IconButtons>
                 </div>
                 <div className='dropdown-menu dropdown-menu-right'>
                   <div className='dropdown-item d-flex' onClick={() => this.openEditVersionForm(versionId)}>

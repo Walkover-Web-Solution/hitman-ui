@@ -14,7 +14,7 @@ import { withRouter } from 'react-router-dom'
 import { IoIosSettings } from "react-icons/io"
 import { HiMiniDocumentText } from "react-icons/hi2";
 import  IconButtons  from '../common/iconButton'
-import { IoMdClose } from "react-icons/io";
+import { GrFormClose } from "react-icons/gr"
 
 const mapStateToProps = (state) => {
   return {
@@ -438,7 +438,7 @@ class CustomTabs extends Component {
                     </button>
                   </Nav.Link>
                   <button className='btn close' onClick={() => this.handleCloseTabs([tabId])}>
-                    <i className='uil uil-multiply' />
+                    <IconButtons><i className='uil uil-multiply' /></IconButtons>
                   </button>
                 </Nav.Item>
                 {this.state.showPreview && tabId === this.state.previewId && this.renderHoverTab(tabId, this.tabRef)}
@@ -475,8 +475,8 @@ class CustomTabs extends Component {
               <div style={sideBar}>
                 <div style={Heading}>
                   History
-                  <div style={closeButton} onClick={this.handleHistoryClick} aria-label='Close'>
-                  <IconButtons><IoMdClose /></IconButtons>
+                  <div className='d-flex' style={closeButton} onClick={this.handleHistoryClick} aria-label='Close'>
+                  <IconButtons><GrFormClose /></IconButtons>
                   </div>
                 </div>
                 <History {...this.props} />

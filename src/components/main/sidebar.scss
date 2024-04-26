@@ -297,7 +297,6 @@ body .sidebar {
         }
         .sidebar-item-action-btn {
           cursor: pointer;
-          transition: all 0.3s ease-in;
           i {
             display: flex;
             height: 12px;
@@ -306,15 +305,10 @@ body .sidebar {
           }
         }
         .sidebar-item-action {
-          position: absolute;
-          right: 0rem;
           padding: 0 0.7rem;
-          top: 50%;
-          transform: translateY(-50%);
           z-index: 19;
           > div {
             &:not(.dropdown-menu) {
-              transition: all 0.3s ease-in;
               opacity: 0;
               visibility: hidden;
             }
@@ -348,7 +342,6 @@ body .sidebar {
         color: $text-color;
         padding-right: 0;
         position: relative;
-        transition: all 0.3s ease-in;
         height: 1.5rem;
         text-align: left;
         justify-content: space-between;
@@ -441,6 +434,10 @@ body .sidebar {
         margin-bottom: -0.35rem;
         font-size: $font-normal;
         display: block;
+        width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .profile-details-label-light {
         font-size: $font-normal;
@@ -884,11 +881,12 @@ input[type='text']:focus {
 }
 .add-button {
   button {
-    border-radius: 3px 3px;
-    border: 1px solid gray;
-    background-color: transparent;
-    &:hover {
-      background-color: rgba(128, 128, 128, 0.185);
-    }
+    font-size: 12px;
+    background-color: rgba(128, 128, 128, 0.103);
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-weight: 500 !important;
+    color: rgb(80, 77, 77);
+    box-shadow: 2px 2px;
   }
 }

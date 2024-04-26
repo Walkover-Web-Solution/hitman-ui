@@ -33,7 +33,7 @@ import { store } from '../../store/store'
 import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
-
+import { BsThreeDots } from "react-icons/bs"
 
 const EMPTY_STRING = ''
 
@@ -371,8 +371,8 @@ class CollectionsComponent extends Component {
                     <div className='d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
                       <IconButtons><FiPlus /></IconButtons>
                     </div>
-                    <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <IconButtons><i className='uil uil-ellipsis-v' /></IconButtons>
+                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <IconButtons><BsThreeDots /></IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
                       {!this.props.collections[collectionId]?.importedFromMarketPlace && (

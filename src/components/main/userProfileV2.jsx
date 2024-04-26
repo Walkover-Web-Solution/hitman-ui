@@ -77,18 +77,21 @@ class UserProfileV2 extends Component {
     return (
       <div
         className='menu-trigger-box d-flex align-items-center justify-content-between w-100'
-        onClick={(e) => {
+      >
+        <div ref={ref1} className='d-flex position-relative' onClick={(e) => {
           e.preventDefault()
           onClick(e)
-        }}
-      >
-        <div ref={ref1} className='d-flex align-items-center position-relative'>
-          <Avatar className='mr-2' color='#343a40' name={this.getCurrentOrg()?.name} size={30} round='4px' />
+        }}>
+          <Avatar className='mr-2' color='#343a40' name={this.getCurrentOrg()?.name} size={22} round='4px' />
           {this.renderOrgName()}
           {/* {getNotificationCount && getNotificationCount() > 0 &&
             <span className='user-notification-badge'>{getNotificationCount()}</span>} */}
+          <IconButton><IoIosArrowDown src={lightArrow} alt='settings-gear' className='transition cursor-pointer text-dark' /></IconButton>
         </div>
-        <IconButton><IoIosArrowDown  src={lightArrow} alt='settings-gear' className='transition cursor-pointer text-dark' /></IconButton>
+        <div className='add-button d-flex align-items-center'>
+          <button className='mr-1 px-1 btn btn-light'>New</button>
+          <button className='btn btn-light px-1'>Import</button>
+        </div>
       </div>
     )
   }

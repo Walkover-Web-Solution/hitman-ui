@@ -36,7 +36,8 @@ import { MdOutlineSettings } from 'react-icons/md'
 import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
 import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
-import { FiPlus } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi"
+import { BsThreeDots } from "react-icons/bs"
 
 const mapStateToProps = (state) => {
   return {
@@ -490,7 +491,7 @@ class CollectionParentPages extends Component {
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
           <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
             <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''}`}>
-          <div className={`active-select  ${isSelected ? ' selected' : ''}`}>
+          <div className={`active-select d-flex align-items-center justify-content-between ${isSelected ? ' selected' : ''}`}>
               <div
                 className={`d-flex align-items-center cl-name ` }
                 onClick={() => {
@@ -537,8 +538,8 @@ class CollectionParentPages extends Component {
                     >
                       <IconButtons><FiPlus /></IconButtons>
                     </div>
-                    <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <IconButtons><i className='uil uil-ellipsis-v' /></IconButtons>
+                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <IconButtons><BsThreeDots /></IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
                       <div className='dropdown-item d-flex' onClick={() => this.openEditPageForm(pageId)}>

@@ -27,6 +27,7 @@ import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg
 import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
+import { BsThreeDots } from "react-icons/bs"
 
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
@@ -182,7 +183,7 @@ class Groups extends Component {
       <>
         <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
           <button tabIndex={-1} className={`${expanded ? 'expanded' : ''}`}>
-          <div className={`active-selected  ${isSelected ? ' selected' : ''}`}>
+          <div className={`active-selected d-flex justify-content-between align-items-center ${isSelected ? ' selected' : ''}`}>
             <div
               draggable={!isUserOnPublishedPage}
               onDragOver={this.props.handleOnDragOver}
@@ -207,8 +208,8 @@ class Groups extends Component {
                   <div onClick={() => this.openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
                     <IconButtons><FiPlus /></IconButtons>
                   </div>
-                  <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                  <IconButtons><i className='uil uil-ellipsis-v' /></IconButtons>
+                  <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                  <IconButtons><BsThreeDots /></IconButtons>
                   </div>
                   <div className='dropdown-menu dropdown-menu-right'>
                     <div className='dropdown-item d-flex' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
