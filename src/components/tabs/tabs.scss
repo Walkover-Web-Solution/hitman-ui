@@ -364,6 +364,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: none !important;
 }
 .tab-width {
   width: 115px;
