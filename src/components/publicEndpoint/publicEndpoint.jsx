@@ -411,8 +411,7 @@ class PublicEndpoint extends Component {
           <MdDehaze id='hamburgerIcon' className='icon-active fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
           <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
           <span className='logo-name' id="logoName">
-            {this.props.collections[collectionKeys[0]]?.favicon ||
-              (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
+            {this.props.collections[collectionKeys[0]]?.favicon && (
                 <img
                     className='hamberger-img'
                     id='publicLogo'
@@ -426,7 +425,7 @@ class PublicEndpoint extends Component {
                     width='20'
                     height='20'
                   />
-                ))}
+                )}
               <span className="icon-name">{this.props.collections[collectionId]?.name}</span>
 
             </span>

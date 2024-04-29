@@ -538,10 +538,10 @@ class PublishDocForm extends Component {
           </div>
 
           <div className='color-picker'>{this.renderColorPicker()}</div>
-          <div className='cta-buton'>
+          {/* <div className='cta-buton'>
             {this.renderCTAButtons()}
             {this.renderLinkButtons()}
-          </div>
+          </div> */}
         </div>
         {this.state.openPublishSidebar && this.openPublishSidebar()}
       </>

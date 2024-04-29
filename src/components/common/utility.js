@@ -601,6 +601,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.testResponse = {}
   untitled.flagResponse = false;
   untitled.bodyDescription = endpointData.bodyDescription
+  untitled.updatedAt = endpointData.updatedAt
   return { ...untitled }
 }
 

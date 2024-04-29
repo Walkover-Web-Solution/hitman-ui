@@ -181,7 +181,8 @@ const untitledEndpointData = {
   authorizationData: {
     authorization: {},
     authorizationTypeSelected: ''
-  }
+  },
+  updatedAt: ''
 }
 
 const debouncedUpdateDraftData = _.debounce((endpointId, data) => {
@@ -3065,6 +3066,7 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
+              <span>{isOnPublishedPage() && this.props?.endpointContent?.updatedAt && `Modified at ${moment(this.props?.endpointContent?.updatedAt).fromNow()}`}</span>
               </div>
               {/* <ApiDocReview {...this.props} /> */}
               <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>

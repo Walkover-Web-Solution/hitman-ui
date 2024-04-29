@@ -26,6 +26,7 @@ import { getPublishedContentByIdAndType } from '../../services/generalApiService
 import { useQuery } from 'react-query'
 import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
+import moment from 'moment'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -76,7 +77,7 @@ class DisplayPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
+      data: { id: null, name: '', contents: ''},
       page: null,
       requestKey: null
     }
@@ -87,8 +88,8 @@ class DisplayPage extends Component {
     const { pages } = store.getState()
     const page = pages[pageId]
     if (page) {
-      const { id, versionId, groupId, name, contents } = page
-      data = { id, versionId, groupId, name, contents }
+      const { id,  name, contents} = page
+      data = { id,  name, contents}
       if (this._isMounted) {
         this.setState({ data, page })
       }
@@ -121,7 +122,7 @@ class DisplayPage extends Component {
     }
     if (this.props.pageId && prevProps !== this.props) {
       if (this._isMounted) {
-        this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
+        this.setState({ data: this.props.pages[this.props.pageId] || { id: null, name: '', contents: '' } })
       }
     }
     // if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
@@ -151,7 +152,8 @@ class DisplayPage extends Component {
       return (
         <div className='pt-3'> 
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
-          <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
+          <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent?.contents === null ? '' : this.props.pageContent?.contents)}</div>
+        <span>{this.props.pageContent?.updatedAt && `Modified at ${moment(this.props.pageContent?.updatedAt).fromNow()}`} </span>
         </div>
       )
     }
