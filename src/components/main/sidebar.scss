@@ -420,12 +420,21 @@ body .sidebar {
       padding: 0.45rem 1rem 0;
       .profile-details {
         // border-bottom: 1px solid #e6dbd4;
-        padding: 0.5rem 0 0.25rem;
+        // padding: 0.5rem 0 0.25rem;
       }
       .profile-listing-container .dropdown-item {
         padding: 0.25rem 1rem;
+        span {
+          font-size: $font-small-s;
+        }
         img {
           margin-right: 0.65rem;
+          width: 14px;
+        }
+        .invite-user {
+          svg {
+           width: 14px;
+          }
         }
       }
       .org-name {
@@ -457,6 +466,11 @@ body .sidebar {
         justify-content: center;
         align-items: center;
         line-height: 1;
+      }
+      .dropdown {
+        .dropdown-menu {
+          width: 100%;
+        }
       }
     }
   }

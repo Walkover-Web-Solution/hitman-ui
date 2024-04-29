@@ -78,7 +78,7 @@ class UserProfileV2 extends Component {
       <div
         className='menu-trigger-box d-flex align-items-center justify-content-between w-100'
       >
-        <div ref={ref1} className='d-flex position-relative' onClick={(e) => {
+        <div ref={ref1} className='d-flex position-relative cursor-pointer' onClick={(e) => {
           e.preventDefault()
           onClick(e)
         }}>
@@ -119,7 +119,7 @@ class UserProfileV2 extends Component {
   renderUserDetails() {
     const { name, email } = this.getUserDetails()
     return (
-      <div className='profile-details plr-3 d-flex align-items-center' onClick={() => {}}>
+      <div className='profile-details border-bottom plr-3 d-flex align-items-center' onClick={() => {}}>
         <div className='user-icon mr-2'>
           <img src={User} alt='user' />
         </div>
@@ -134,12 +134,12 @@ class UserProfileV2 extends Component {
   renderInviteTeam() {
     return (
       <div
-        className='mb-2 cursor-pointer'
+        className='invite-user cursor-pointer'
         onClick={() => {
           this.openAccountAndSettings()
         }}
       >
-        <Users className='mr-2' />
+        <Users className='mr-2' size={14}/>
         <span>Invite User</span>
       </div>
     )
@@ -336,7 +336,7 @@ class UserProfileV2 extends Component {
           this.handleLogout()
         }}
       >
-        <img src={Power} className='mr-2' alt='power-icon' />
+        <img src={Power} className='mr-2' size={14} alt='power-icon' />
         <span className='mr-2'>Logout</span>
       </div>          
     )
@@ -561,7 +561,6 @@ class UserProfileV2 extends Component {
                 {/* <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item> */}
                 {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
                 <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
-                <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
                 {/* <Dropdown.Divider /> */}
                 <Dropdown.Item>
                   {/* <div className='profile-menu'> */}
@@ -585,6 +584,7 @@ class UserProfileV2 extends Component {
                   />
                   {/* </div> */}
                 </Dropdown.Item>
+                <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
               </div>
             </Dropdown.Menu>
           </Dropdown>
