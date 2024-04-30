@@ -8,7 +8,7 @@ import Power from '../../assets/icons/power.svg'
 import File from '../../assets/icons/file.svg'
 import { products } from '../common/constants'
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
-import { getCurrentUser } from '../auth/authServiceV2'
+import { getCurrentOrg, getCurrentUser } from '../auth/authServiceV2'
 import GenericModal from './GenericModal'
 import { switchOrg, createOrg } from '../../services/orgApiService'
 import './userProfile.scss'
@@ -18,6 +18,7 @@ import { connect } from 'react-redux'
 import { closeAllTabs } from '../tabs/redux/tabsActions'
 import { onHistoryRemoved } from '../history/redux/historyAction'
 import { ReactComponent as Users } from '../../assets/icons/users.svg'
+import { MdDeleteOutline } from 'react-icons/md'
 
 const mapStateToProps = (state) => {
   return {
@@ -377,6 +378,25 @@ class UserProfileV2 extends Component {
     this.setState({ modalForTabs: false, showModal: false })
   }
 
+  handleTrashClick(){
+    const currentOrgId = getCurrentOrg().id; // Assuming getCurrentOrg() returns the current organization
+    this.props.history.push(`/orgs/${currentOrgId}/trash`);
+  };
+
+  renderTrash() {
+    return (
+      <div
+        className='profile-details'
+        onClick={() => {
+          this.handleTrashClick()
+        }}
+      >
+        <MdDeleteOutline className='mr-2'/>
+        <span className='mr-2'>Trash</span>
+      </div>          
+    )
+  }
+
   showModalForTabs() {
     if (this.state.modalForTabs === 'false') {
       return null
@@ -580,6 +600,7 @@ class UserProfileV2 extends Component {
                   />
                   {/* </div> */}
                 </Dropdown.Item>
+                <Dropdown.Item>{this.renderTrash()}</Dropdown.Item>
               </div>
             </Dropdown.Menu>
           </Dropdown>
