@@ -5,7 +5,6 @@ import { store } from '../../store/store'
 import Joi from 'joi-browser'
 import { getProxyToken } from '../auth/authServiceV2'
 import history from '../../history'
-import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
@@ -317,17 +316,6 @@ export function isValidDomain() {
   const currentDomain = window.location.href.split('/')[2]
   const path = window.location.href.split('/')[3]
   return domainsList.includes(currentDomain) && path !== 'p'
-}
-
-export function addAnalyticsScripts() {
-  if (isValidDomain() && process.env.REACT_APP_ENV === 'production') {
-    Object.keys(scripts).forEach((script) => {
-      script !== 'gtmBody'
-        ? (document.getElementsByTagName('head')[0].innerHTML += scripts[script])
-        : (document.getElementsByTagName('body')[0].innerHTML += scripts[script])
-    })
-    initAmplitude()
-  }
 }
 
 export function isNotDashboardOrDocView(props, view) {
@@ -802,7 +790,6 @@ export default {
   handleBlurInUrlField,
   formatBytes,
   isValidDomain,
-  addAnalyticsScripts,
   DEFAULT_URL,
   isNotDashboardOrDocView,
   isDashboardAndTestingView,
