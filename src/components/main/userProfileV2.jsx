@@ -460,8 +460,8 @@ class UserProfileV2 extends Component {
       <div className='org-listing-container '>
         <div className='org-listing-column d-flex flex-column'>
           {organizations.map((org, key) => (
-            <Button
-              className={`mb-2 p-2 ${org === selectedOrg ? 'active' : ''} `}
+            <button
+              className={`mb-2 p-2 btn btn-secondary ${org === selectedOrg ? 'active' : ''} `}
               id='publish_collection_btn'
               // variant= 'btn btn-outline'
               key={key}
@@ -470,7 +470,7 @@ class UserProfileV2 extends Component {
               }}
             >
               {org.name}
-            </Button>
+            </button>
           ))}
         </div>
       </div>

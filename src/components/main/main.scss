@@ -1177,6 +1177,9 @@ button.btn.btn-secondary {
         button {
           padding: 0;
           border: 0;
+          padding-left: 4px;
+          padding-right: 4px;
+          border-radius: 3px;
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
@@ -1185,6 +1188,9 @@ button.btn.btn-secondary {
           z-index: 5;
           &:focus {
             outline: none;
+          }
+          &:hover {
+            background-color: rgba(128, 128, 128, 0.137);
           }
         }
       }
@@ -3757,5 +3763,8 @@ body .tox {
         background-color:rgba(128, 128, 128, 0.205);
       }
   }
+ }
+ .enpoint-title {
+  width: fit-content;
  }
  

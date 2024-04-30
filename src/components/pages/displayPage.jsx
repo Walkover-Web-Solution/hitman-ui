@@ -151,9 +151,7 @@ class DisplayPage extends Component {
       return (
         <div className='pt-3'> 
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
-          <div className='pageText doc-view'  onClick={() => {
-              this.handleEdit(this.state.data)
-            }}>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
+          <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
         </div>
       )
     }

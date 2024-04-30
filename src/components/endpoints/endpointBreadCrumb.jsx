@@ -225,21 +225,18 @@ class EndpointBreadCrumb extends Component {
               }}
               maxLength='50'
             /> */}
-            <h3
+            <input
              name='enpoint-title'
              ref={this.nameInputRef}
               style={{ textTransform: 'capitalize' }}
               className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
               onChange={this.handleInputChange.bind(this)}
-              value={this.props?.isEndpoint && (this.props?.endpointContent?.data?.name || '')}
-              spellcheck="true" placeholder="Untitled" data-content-editable-leaf="true" contenteditable="true"
-            >
-              {this.props?.isEndpoint
+              value={this.props?.isEndpoint
                 ? this.props?.pages?.[this.props?.match?.params?.endpointId]?.name ||
                   this.props?.history?.[this.props?.match?.params?.historyId]?.endpoint?.name ||
                   this.props?.endpointContent?.data?.name
                 : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
-            </h3>
+            />
           </div>
           {this.props.location.pathname.split('/')[5] !== 'new' && (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>

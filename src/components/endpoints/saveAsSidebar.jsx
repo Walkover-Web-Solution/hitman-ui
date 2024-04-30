@@ -127,7 +127,7 @@ class SaveAsSidebar extends Form {
           <div className='custom-collection-modal-container modal-header align-items-center'>
             <div className='modal-title h4'>{this.props.location.pathname.split('/')[5] !== 'new' ? 'Save As' : 'Save'}</div>
             <button
-              className='close'
+              className='close py-0'
               onClick={() => {
                 this.props.onHide()
               }}

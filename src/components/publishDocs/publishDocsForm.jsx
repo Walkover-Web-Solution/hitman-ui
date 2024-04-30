@@ -413,7 +413,10 @@ class PublishDocForm extends Component {
 
     return (
       <div>
+        <div className='d-flex align-items-center'>
         <span className='public-title mt-1 d-block'>Preview Documentation</span>
+        <div className='api-label POST request-type-bgcolor ml-2'> published </div>
+        </div>
         <OverlayTrigger
           overlay={
             <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled ? 'd-none' : ''}>
@@ -520,7 +523,6 @@ class PublishDocForm extends Component {
           <div className='d-flex justify-content-between align-item-center'>
             <div className='d-flex align-items-center'>
               <h3 className='page-title mb-0'>Manage Public Doc</h3>
-              <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
             </div>
             {this.renderActionButtons(publishCheck)}
           </div>

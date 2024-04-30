@@ -58,7 +58,7 @@ export default function Auth2Configurations(props) {
                                         <button onClick={handleManageTokenClick} type='button' className='dropdown-item manage-token-title' >
                                             Manage Tokens
                                         </button> :
-                                        <button type='button' className='dropdown-item' >
+                                        <button type='button' className='dropdown-item p-1' >
                                             No Tokens Available
                                         </button>
                                     }
