@@ -473,6 +473,18 @@ button.btn {
   box-shadow: none !important;
 }
 
+.custom-raw-editor-public {
+  width: 100% !important;
+  height: 250px !important;
+  border-radius: 4px;
+  .ace_gutter {
+    background: unset !important;
+    border-right: 1px solid rgba(128, 128, 128, 0.163);
+  }
+  .ace_scroller {
+    background: unset !important;
+  }
+}
 .custom-raw-editor {
   width: 100% !important;
   height: 250px !important;

@@ -843,6 +843,7 @@ label.data-type {
 
     .ace_gutter {
       display: none !important;
+    background: unset !important;
     }
   }
 }
@@ -854,6 +855,7 @@ label.data-type {
 
   .ace-github .ace_gutter {
     display: none;
+    background: unset !important;
   }
 
   .ace_scroller {

@@ -26,6 +26,7 @@ import { getPublishedContentByIdAndType } from '../../services/generalApiService
 import { useQuery } from 'react-query'
 import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
+import moment from 'moment'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -152,6 +153,7 @@ class DisplayPage extends Component {
         <div className='pt-3'> 
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
           <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
+          <span>Modified at {moment(this.props?.pages?.[this.props?.pageId]?.updatedAt).fromNow()}</span>
         </div>
       )
     }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
+import { SESSION_STORAGE_KEY, hexToRgb, isOnPublishedPage, trimString } from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -2283,6 +2283,7 @@ class DisplayEndpoint extends Component {
           public_body_flag={this.props?.endpointContent?.publicBodyFlag}
           set_public_body={this.setPublicBody.bind(this)}
           body_description={this.props?.endpointContent?.bodyDescription}
+          publicCollectionTheme={this.props?.publicCollectionTheme}
         />
       )
     )
@@ -3035,6 +3036,7 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
+              <span>{isOnPublishedPage() && this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt && `Modified at ${moment(this.props?.endpointContent?.updatedAt).fromNow()}`}</span>
               </div>
               {/* <ApiDocReview {...this.props} /> */}
               <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>
