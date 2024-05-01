@@ -6,6 +6,7 @@ import { getDataFromProxyAndSetDataToLocalStorage } from "../common/utility";
 
 export const tokenKey = "token";
 export const profileKey = "profile";
+export const orgKey = "organisation";
 export const orgListKey = "organisationList";
 export const currentOrgKey = "currentOrganisation";
 const uiURL = process.env.REACT_APP_UI_URL;
@@ -44,6 +45,7 @@ function logout(redirectUrl = "/login") {
 function localStorageCleanUp() {
   window.localStorage.removeItem(tokenKey);
   window.localStorage.removeItem(profileKey);
+  window.localStorage.removeItem(orgKey);
   window.localStorage.removeItem(orgListKey);
 }
 
@@ -75,7 +77,7 @@ function getCurrentUser() {
 
 function getCurrentOrg() {
   try {
-    const org = window.localStorage.getItem(currentOrgKey);
+    const org = window.localStorage.getItem(orgKey);
     return JSON.parse(org);
   } catch (ex) {
     return null;

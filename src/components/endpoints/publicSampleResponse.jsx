@@ -4,7 +4,6 @@ import JSONPretty from 'react-json-pretty'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import { Style } from 'react-style-tag'
-import { hexToRgb } from '../common/utility'
 
 class PublicSampleResponse extends Component {
   state = {
@@ -43,7 +42,7 @@ class PublicSampleResponse extends Component {
           <h3 className='heading-2'>
             <span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span>
           </h3>
-          <div className='sample-response mb-3' style={{ backgroundColor: hexToRgb(this.state?.theme, '0.05')}}>
+          <div className='sample-response mb-3'>
             <Tabs id='uncontrolled-tab-example'>
               {this.props.sample_response_array.map((sampleResponse, key) => (
                 <Tab

@@ -39,8 +39,8 @@ const TrashPage = () => {
 
   const handleRestore = async (collectionId, collectionName) => {
     try {
-      const data = { name: collectionName};
-      const response = await restoreCollection(orgId, data, collectionId);
+      const data = { name: collectionName, collectionId, deletedAt: null };
+      const response = await restoreCollection(orgId, data);
       if (response.status === 200) {
         setCollections(prevCollections => prevCollections.filter(c => c.id !== collectionId));
         toast.success('Collection restored successfully');
@@ -57,8 +57,8 @@ const TrashPage = () => {
 
   const handleSaveEdit = async (collectionId) => {
     try {
-      const data = { name: editableRow.name};
-      const response = await restoreCollection(orgId, data, collectionId);
+      const data = { name: editableRow.name, collectionId, deletedAt: null };
+      const response = await restoreCollection(orgId, data);
       if (response.status === 200) {
         setCollections(prevCollections => prevCollections.filter(c => c.id !== collectionId));
         toast.success('Collection restored successfully');

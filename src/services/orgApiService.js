@@ -1,6 +1,6 @@
 import http from './httpService'
 import { redirectToDashboard, getDataFromProxyAndSetDataToLocalStorage } from '../components/common/utility'
-import { getOrgList, orgListKey, getCurrentOrg, currentOrgKey } from '../components/auth/authServiceV2'
+import { getOrgList, orgListKey, orgKey, getCurrentOrg, currentOrgKey } from '../components/auth/authServiceV2'
 import { toast } from 'react-toastify'
 const apiBaseUrl = process.env.REACT_APP_API_URL
 const proxyUrl = process.env.REACT_APP_PROXY_URL
@@ -15,8 +15,12 @@ export function updateOrgDataByOrgId(OrgId) {
 
   const targetIndex = data.findIndex((obj) => obj.id === OrgId)
   currentOrganisation = data[targetIndex]
+  if (targetIndex > 0) {
+    ;[data[0], data[targetIndex]] = [data[targetIndex], data[0]]
+  }
   window.localStorage.setItem(currentOrgKey, JSON.stringify(currentOrganisation))
   window.localStorage.setItem(orgListKey, JSON.stringify(data))
+  window.localStorage.setItem(orgKey, JSON.stringify(data[0]))
 }
 
 export async function switchOrg(orgId) {

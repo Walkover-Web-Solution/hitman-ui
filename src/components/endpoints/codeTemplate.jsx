@@ -7,6 +7,7 @@ import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import 'ace-builds/src-noconflict/theme-github'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { ReactComponent as CopyIcon } from '../../assets/icons/copyIcon.svg'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
 import { RiCloseLine } from "react-icons/ri";
 import { RxCopy } from "react-icons/rx";
@@ -44,11 +45,7 @@ class CodeTemplate extends Component {
     let codeSnippet = ''
     try {
       const snippet = this.makeCodeSnippet()
-      if (selectedLanguage === 'axiosNode') {
-        codeSnippet = snippet.convert('node', 'axios');
-      } else {
-        codeSnippet = snippet.convert(selectedLanguage);
-      }
+      codeSnippet = snippet.convert(selectedLanguage)
       codeSnippet = decodeURI(codeSnippet)
     } catch (error) {
       console.error(error)
