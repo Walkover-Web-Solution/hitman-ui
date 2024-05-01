@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { SESSION_STORAGE_KEY, isDashboardAndTestingView, isOnPublishedPage, trimString } from '../common/utility'
+import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString, executeData } from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -19,7 +19,7 @@ import {
   setCurrentUserSSLMode
 } from '../common/utility'
 import tabService from '../tabs/tabService'
-import { closeTab, updateTab } from '../tabs/redux/tabsActions'
+import { closeTab, updatePostPreScriptExecutedData, updateTab, updateTabDraft } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import CodeTemplate from './codeTemplate'
 import SaveAsSidebar from './saveAsSidebar'
@@ -120,6 +120,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate)),
     update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload)),
     // set_chat_view : (view) => dispatch(onChatResponseToggle(view))
+    update_pre_post_script: (tabId, executionData) => dispatch(updatePostPreScriptExecutedData(tabId, executionData))
   }
 }
 
@@ -736,7 +737,7 @@ class DisplayEndpoint extends Component {
         /** request creation was successfull */
         const currentEnvironment = this.props.environment
         const request = { url: api, body, headers: header, method }
-        const code = this.props?.endpointContent?.postScriptText
+        const code = (this.props?.endpointContent?.postScriptText)
 
         this.processResponse(responseJson)
 
@@ -959,6 +960,7 @@ class DisplayEndpoint extends Component {
   }
 
   handleSend = async () => {
+    const currentEndpointId = (this.props.currentEndpointId !== 'new') ? this.props.activeTabId : this.props.currentEndpointId
     const keyForRequest = shortid.generate()
     const runSendRequest = Axios.CancelToken.source()
     const startTime = new Date().getTime()
@@ -1001,6 +1003,7 @@ class DisplayEndpoint extends Component {
     }
 
     /** Prepare Body & Modify Headers */
+
     let { body, headers } = this.formatBody(this.props?.endpointContent?.data.body, headerJson)
 
     /** Add Cookie in Headers */
@@ -1018,9 +1021,12 @@ class DisplayEndpoint extends Component {
     const currentEnvironment = this.props.environment
 
     const code = this.props.endpointContent.preScriptText
-
+    let preScriptExecution, postScriptExecution
+    if(!isOnPublishedPage()) preScriptExecution = await executeData(this.props?.endpointContent?.preScriptText)
     /** Run Pre Request Script */
     const result = this.runScript(code, currentEnvironment, requestOptions)
+    if(!isOnPublishedPage()) postScriptExecution = await executeData(this.props?.endpointContent?.postScriptText)
+    this.props.update_pre_post_script(currentEndpointId, {preScriptExecution, postScriptExecution});
     if (result.success) {
       let {
         environment,
@@ -3005,6 +3011,7 @@ class DisplayEndpoint extends Component {
                                 type='Pre-Script'
                                 handleScriptChange={this.handleScriptChange.bind(this)}
                                 scriptText={this.props?.endpointContent?.preScriptText}
+                                endpointContent={this.props?.endpointContent}
                               />
                             </div>
                           </div>
@@ -3019,6 +3026,7 @@ class DisplayEndpoint extends Component {
                                 type='Post-Script'
                                 handleScriptChange={this.handleScriptChange.bind(this)}
                                 scriptText={this.props?.endpointContent?.postScriptText}
+                                endpointContent={this.props?.endpointContent}
                               />
                             </div>
                           </div>

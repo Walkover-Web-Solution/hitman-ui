@@ -65,7 +65,6 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           }
         }
         dispatch(onParentPageAdded(inivisiblePageData))
-        toast.success("Collection added successfully")
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
         }
@@ -162,7 +161,7 @@ export const deleteCollection = (collection, props) => {
       .deleteCollection(collection.id, collection)
       .then((res) => {
         const rootParentPageId = collection.rootParentId
-        deleteAllPagesAndTabsAndReactQueryData(rootParentPageId, collection.id)
+        deleteAllPagesAndTabsAndReactQueryData(rootParentPageId)
           .then((data) => {
             dispatch(deleteCollectionRequest(collection))
             dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
@@ -269,7 +268,7 @@ export const importApi = (collection, importType, website, customCallback, defau
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          toast.error('Collection not imported')
+          toast.error(error.response ? error.response.data : error)
           dispatch(onCollectionImportedError(error.response ? error.response.data : error))
           if (customCallback) customCallback({ success: false })
         })
@@ -282,7 +281,7 @@ export const importApi = (collection, importType, website, customCallback, defau
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          toast.error('Collection not imported')
+          toast.error(error.response ? error.response.data : error)
           dispatch(onCollectionImportedError(error?.response ? error?.response?.data : error))
           if (customCallback) customCallback({ success: false })
         })

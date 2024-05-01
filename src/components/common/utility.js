@@ -15,6 +15,7 @@ export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
 export const DEFAULT_URL = 'https://'
+const vm = require('vm')
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 export const statesEnum = {
@@ -781,6 +782,36 @@ function addItsParent(flattenData, singleId, dataToPublishSet) {
     dataToPublishSet.add(parentId)
     parentId = flattenData?.[parentId]?.parent
   }
+}
+
+export const executeData = (data) => {
+  return new Promise((resolve, reject) => {
+    const sandbox = {
+      console: {
+        log: (...args) => {
+          const formattedArgs = args.map(arg => {
+            if (typeof arg === 'object') {
+              try {
+                return JSON.stringify(arg);
+              } catch (error) {
+                return 'Circular structure in object';
+              }
+            } else {
+              return arg;
+            }
+          });
+          sandbox._consoleLogs.push(formattedArgs.join(' ')); // Capture log messages
+        }
+      },
+      _consoleLogs: []
+    };
+    try {
+      vm.runInNewContext(data, sandbox);
+      resolve(sandbox._consoleLogs);
+    } catch (err) {
+      reject(err.name + ':' + ' ' + err.message);
+    }
+  });
 }
 
 export default {
