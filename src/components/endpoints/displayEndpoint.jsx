@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
+import { SESSION_STORAGE_KEY, hexToRgb, isOnPublishedPage, trimString } from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -2283,6 +2283,7 @@ class DisplayEndpoint extends Component {
           public_body_flag={this.props?.endpointContent?.publicBodyFlag}
           set_public_body={this.setPublicBody.bind(this)}
           body_description={this.props?.endpointContent?.bodyDescription}
+          publicCollectionTheme={this.props?.publicCollectionTheme}
         />
       )
     )
@@ -2386,8 +2387,8 @@ class DisplayEndpoint extends Component {
       <div>
         {/* do not remove this code */}
         {/* <h3 className='heading-2'>Endpoint Name</h3> */}
-        <div className='hm-endpoint-header'>
-          <div className='input-group'>
+        <div className='hm-endpoint-header' >
+          <div className='input-group' >
             <div className='input-group-prepend'>
               <span className={`api-label api-label-lg input-group-text ${this.props?.endpointContent?.data?.method}`}>
                 {this.props?.endpointContent?.data?.method}
@@ -2691,7 +2692,7 @@ class DisplayEndpoint extends Component {
       if (this.isDashboardAndTestingView(this.props, 'testing')) {
         return <CodeTemplate {...commonProps} showClosebtn={true} theme={'light'} />;
       } else {
-        return <CodeTemplate {...commonProps} />;
+        return <CodeTemplate {...commonProps} theme={this.state.theme}/>;
       }
     }
   }
@@ -3035,6 +3036,7 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
+              <span>{isOnPublishedPage() && this.props?.endpoint?.[this.props?.endpointId]?.updatedAt && `Modified at ${moment(this.props?.endpointContent?.updatedAt).fromNow()}`}</span>
               </div>
               {/* <ApiDocReview {...this.props} /> */}
               <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>

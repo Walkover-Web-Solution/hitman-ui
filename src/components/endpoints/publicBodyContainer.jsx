@@ -7,12 +7,14 @@ import { willHighlight } from './highlightChangesHelper'
 import './publicEndpoint.scss'
 import { Badge, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
+import { hexToRgb } from '../common/utility'
 
 class PublicBodyContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
       showBodyCodeEditor: true,
+      theme: this.props.publicCollectionTheme,
       data: {
         data: [
           {
@@ -253,7 +255,8 @@ class PublicBodyContainer extends Component {
                 <AceEditor
                   className='custom-raw-editor'
                   mode='json'
-                  theme='github'
+                  style={{ backgroundColor: hexToRgb(this.state.theme, '0.05') }}
+                  // theme='github'
                   value={this.props.body?.raw?.value}
                   onChange={this.handleChangeBodyDescription.bind(this)}
                   setOptions={{
@@ -268,7 +271,7 @@ class PublicBodyContainer extends Component {
                   }}
                 />
               ) : (
-                <div className='body-description-container'>
+                <div className='body-description-container' style={{ backgroundColor: hexToRgb(this.state?.theme, '0.05')}}>
                   {/* Previous Body Description Layout */}
                   {/* {this.displayObject(this.bodyDescription, 'body_description')} */}
                   {this.displayBodyDecription(undefined, this.bodyDescription)}

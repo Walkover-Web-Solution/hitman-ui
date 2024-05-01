@@ -139,7 +139,7 @@ class HostContainer extends Component {
         parsedData.data = JSON.parse(parsedData.data)
       } catch (e) {}
       const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase();
-      if(contentType === 'application/json'){
+      if(contentType.includes('application/json')){
         untitledEndpointData.data.body.type = contentTypesEnums[contentType];
         untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType];
         untitledEndpointData.data.body.raw.value = typeof(parsedData.data)=== 'object' ? JSON.stringify(parsedData.data) : parsedData.data;

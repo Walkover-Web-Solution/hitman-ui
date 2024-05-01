@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { isDashboardRoute, isElectron, isDashboardAndTestingView } from '../common/utility'
+import { isDashboardRoute, isElectron, isDashboardAndTestingView, hexToRgb } from '../common/utility'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import shortid from 'shortid'
@@ -557,7 +557,7 @@ class GenericTable extends Component {
         </div>
 
         {!this.state.bulkEdit && dataArray.length > 0 ? (
-          <div className='headParaWraper'>
+          <div className='headParaWraper' style={{ backgroundColor: hexToRgb(this.state?.theme, '0.05') }}>
             <table className='table' id='custom-generic-table'>
               {isDashboardRoute(this.props) ? (
                 <thead>
