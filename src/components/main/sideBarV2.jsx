@@ -13,7 +13,8 @@ import {
   SESSION_STORAGE_KEY,
   getUrlPathById,
   isTechdocOwnDomain,
-  isOnPublishedPage
+  isOnPublishedPage,
+  hexToRgb
 } from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
@@ -638,31 +639,30 @@ class SideBarV2 extends Component {
     const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
     return (
       <div className='hm-sidebar-header d-flex justify-content-between align-items-center'>
-        {this.props.collections[collectionKeys[0]]?.favicon ||
-          (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
+        {this.props.collections?.[collectionKeys[0]]?.favicon  && (
             <div className='hm-sidebar-logo'>
               <img
                 id='publicLogo'
                 alt='public-logo'
                 src={
-                  this.props.collections[collectionKeys[0]]?.favicon
-                    ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
-                    : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
+                  this.props.collections?.[collectionKeys[0]]?.favicon
+                    ? `data:image/png;base64,${this.props?.collections?.[collectionKeys[0]]?.favicon}`
+                    : this.props.collections?.[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
                 }
                 // onError={() => { this.setState({ publicLogoError: true })}}
                 width='60'
                 height='60'
               />
             </div>
-          ))}
+          )}
         <h4 className='hm-sidebar-title'>
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documentation</span>
         </h4>
-        {isTechdocOwnDomain()  && (<a href="/login" target="_blank" className='login-button position-fixed d-flex gap-5 ps-5'>
+        {isTechdocOwnDomain()  && (<a href="/login" target="_blank" className='login-button position-fixed d-flex gap-5 ps-5' style={{ backgroundColor: hexToRgb(this.props.collections?.[collectionKeys[0]]?.theme, '0.05') }}>
         <TbLogin2 className='text-black'/>
-<button type="button" className="btn btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Login to manage this docs">Login to manage this docs
-</button>
+          <button type="button" className="btn btn-lg" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Login to manage this docs">Login to manage this docs
+          </button>
         </a>)}
       </div>
     )

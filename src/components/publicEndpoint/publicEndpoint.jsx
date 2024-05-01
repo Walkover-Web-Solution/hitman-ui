@@ -411,8 +411,7 @@ class PublicEndpoint extends Component {
           <MdDehaze id='hamburgerIcon' className='icon-active fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
           <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
           <span className='logo-name' id="logoName">
-            {this.props.collections[collectionKeys[0]]?.favicon ||
-              (this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
+            {this.props.collections[collectionKeys[0]]?.favicon && (
                 <img
                     className='hamberger-img'
                     id='publicLogo'
@@ -426,8 +425,8 @@ class PublicEndpoint extends Component {
                     width='20'
                     height='20'
                   />
-                ))}
-              <span className="icon-name">{this.props.collections[collectionId]?.name}</span>
+                )}
+              {/* <span className="icon-name">{this.props.collections[collectionId]?.name}</span> */}
 
             </span>
             {/* Original icons */}
@@ -435,13 +434,13 @@ class PublicEndpoint extends Component {
           {/* [info] part 3 */}
           <SplitPane split='vertical' className={'split-sidebar-public'}>
             {/* [info] part 3 subpart 1 sidebar data left content */}
-            <div className={'hm-sidebar' + ( isTechdocOwnDomain() ? ' pb-5' : '')} style={{ backgroundColor: hexToRgb(this.state?.collectionTheme, '0.03') }}>
+            <div className={'hm-sidebar' + ( isTechdocOwnDomain() ? ' pb-5' : '')} style={{ backgroundColor: hexToRgb(collectionTheme, '0.05') }}>
               {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
             </div>
             {/*  [info] part 3 subpart 1 sidebar data right content */}
             <div
               className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
-              style={{ backgroundColor: hexToRgb(collectionTheme, '0.01') }}
+              style={{ backgroundColor: hexToRgb(collectionTheme, '0.05') }}
             >
               {idToRender ? (
                 <div
