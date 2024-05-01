@@ -4,7 +4,7 @@ import React, { Component, createRef } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import JSONPretty from 'react-json-pretty'
 import './endpoints.scss'
-import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
+import { hexToRgb, isDashboardRoute, isSavedEndpoint } from '../common/utility'
 import { getCurrentUser } from '../auth/authServiceV2'
 import SampleResponseForm from './sampleResponseForm'
 import { Overlay, Spinner, Tooltip } from 'react-bootstrap'
@@ -268,7 +268,7 @@ class DisplayResponse extends Component {
   render() {
     const { theme } = this.state
     return (
-      <div className='endpoint-response-container overflow-auto mt-4'>
+      <div className='endpoint-response-container overflow-auto mt-4' style={{ backgroundColor: hexToRgb(this.state?.theme, '0.04')}}>
         {this.props.loader ? (
           this.renderLoader()
         ) : this.props.flagResponse ? (
