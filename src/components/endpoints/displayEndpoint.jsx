@@ -1022,10 +1022,11 @@ class DisplayEndpoint extends Component {
     const currentEnvironment = this.props.environment
 
     const code = this.props.endpointContent.preScriptText
-    const preScriptExecution = await executeData(this.props?.endpointContent?.preScriptText)
+    let preScriptExecution, postScriptExecution
+    if(!isOnPublishedPage()) preScriptExecution = await executeData(this.props?.endpointContent?.preScriptText)
     /** Run Pre Request Script */
     const result = this.runScript(code, currentEnvironment, requestOptions)
-    const postScriptExecution = await executeData(this.props?.endpointContent?.postScriptText)
+    if(!isOnPublishedPage()) postScriptExecution = await executeData(this.props?.endpointContent?.postScriptText)
     this.props.update_pre_post_script(currentEndpointId, {preScriptExecution, postScriptExecution});
     if (result.success) {
       let {

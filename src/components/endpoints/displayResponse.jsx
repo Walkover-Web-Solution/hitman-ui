@@ -194,42 +194,44 @@ class DisplayResponse extends Component {
               </a>
             </li>
             {isDashboardRoute(this.props) && (
-              <li
-                className='nav-item'
-                onClick={() => {
-                  this.setState({ selectedResponseTab: 'testResults' })
-                }}
-              >
-                <a
-                  className={this.state.selectedResponseTab === 'testResults' ? 'nav-link active' : 'nav-link'}
-                  id='pills-testResults-tab'
-                  data-toggle='pill'
-                  aria-selected='false'
-                  href='#pills-testResults-tab'
-                  role='tab2'
+              <>
+                <li
+                  className='nav-item'
+                  onClick={() => {
+                    this.setState({ selectedResponseTab: 'testResults' })
+                  }}
                 >
-                  Test Results <TestResultsPreview />
-                </a>
-              </li>
+                  <a
+                    className={this.state.selectedResponseTab === 'testResults' ? 'nav-link active' : 'nav-link'}
+                    id='pills-testResults-tab'
+                    data-toggle='pill'
+                    aria-selected='false'
+                    href='#pills-testResults-tab'
+                    role='tab2'
+                  >
+                    Test Results <TestResultsPreview />
+                  </a>
+                </li>
+                <li
+                  className='nav-item'
+                  onClick={() => {
+                    this.setState({ selectedResponseTab: 'console' })
+                  }}
+                >
+                  <a
+                    className={this.state.selectedResponseTab === 'console' ? 'nav-link active' : 'nav-link'}
+                    style={this.state.selectedResponseTab === 'console' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                    id='pills-console-tab'
+                    data-toggle='pill'
+                    aria-selected='false'
+                    href='#pills-console-tab'
+                    role='tab1'
+                  >
+                    Console
+                  </a>
+                </li>
+              </>
             )}
-            <li
-              className='nav-item'
-              onClick={() => {
-                this.setState({ selectedResponseTab: 'console' })
-              }}
-            >
-              <a
-                className={this.state.selectedResponseTab === 'console' ? 'nav-link active' : 'nav-link'}
-                style={this.state.selectedResponseTab === 'console' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
-                id='pills-console-tab'
-                data-toggle='pill'
-                aria-selected='false'
-                href='#pills-console-tab'
-                role='tab1'
-              >
-                Console
-              </a>
-            </li>
           </ul>
         </div>
       </>
