@@ -20,6 +20,8 @@ import { onHistoryRemoved } from '../history/redux/historyAction'
 import { ReactComponent as Users } from '../../assets/icons/users.svg'
 import IconButton from '../common/iconButton'
 import { IoIosArrowDown } from "react-icons/io"
+import OpenApiForm from '../openApi/openApiForm'
+import CollectionForm from '../collections/collectionForm'
 
 const mapStateToProps = (state) => {
   return {
@@ -51,8 +53,12 @@ class UserProfileV2 extends Component {
       tabsClosed: 'false',
       selectedOrg: '',
       currentOrg: '',
-      switchOrCreate: false
+      switchOrCreate: false,
+      showImportModal: false,
+      showNewCollectionModal: false,
     }
+    this.handleAddNewClick = this.handleAddNewClick.bind(this);
+    this.handleImportClick = this.handleImportClick.bind(this);
   }
 
   componentDidMount() {
@@ -72,6 +78,14 @@ class UserProfileV2 extends Component {
     this.setState({ showModal: !this.state.showModal })
   }
 
+  handleAddNewClick() {
+    this.setState({ showNewCollectionModal: !this.state.showNewCollectionModal })
+  }
+  
+  handleImportClick() {
+    this.setState({ showImportModal: !this.state.showImportModal })
+  }
+
   renderAvatarWithOrg(onClick, ref1) {
     // const { getNotificationCount } = this.getNotificationCount()
     return (
@@ -89,9 +103,11 @@ class UserProfileV2 extends Component {
           <IconButton><IoIosArrowDown src={lightArrow} alt='settings-gear' className='transition cursor-pointer text-dark' /></IconButton>
         </div>
         <div className='add-button d-flex align-items-center'>
-          <button className='mr-1 px-1 btn btn-light'>New</button>
-          <button className='btn btn-light px-1'>Import</button>
+          <button className='mr-1 px-1 btn btn-light' onClick={this.handleAddNewClick}>New</button>
+          <button className='btn btn-light px-1' onClick={this.handleImportClick}>Import</button>
         </div>
+        <OpenApiForm show={this.state.showImportModal}  onHide={() => { this.handleImportClick() }} />
+        <CollectionForm {...this.props} show={this.state.showNewCollectionModal} title='Add new Collection' onHide={() => { this.handleAddNewClick() }} />
       </div>
     )
   }
@@ -119,7 +135,7 @@ class UserProfileV2 extends Component {
   renderUserDetails() {
     const { name, email } = this.getUserDetails()
     return (
-      <div className='profile-details border-bottom plr-3 d-flex align-items-center' onClick={() => {}}>
+      <div className='profile-details border-bottom plr-3 d-flex align-items-center' onClick={() => { }}>
         <div className='user-icon mr-2'>
           <img src={User} alt='user' />
         </div>
@@ -139,7 +155,7 @@ class UserProfileV2 extends Component {
           this.openAccountAndSettings()
         }}
       >
-        <Users className='mr-2' size={14}/>
+        <Users className='mr-2' size={14} />
         <span>Invite User</span>
       </div>
     )
@@ -338,7 +354,7 @@ class UserProfileV2 extends Component {
       >
         <img src={Power} className='mr-2' size={14} alt='power-icon' />
         <span className='mr-2'>Logout</span>
-      </div>          
+      </div>
     )
   }
 
@@ -366,13 +382,13 @@ class UserProfileV2 extends Component {
       this.removeFromLocalStorage(tabIdsToClose)
       this.props.remove_history(history)
       // window.removeEventListener('beforeunload', this.handleBeforeUnload)
-      if(this.state.switchOrCreate){
+      if (this.state.switchOrCreate) {
         createOrg(this.state.orgName)
-      }else{
+      } else {
         switchOrg(this.state.currentOrg.id)
       }
     } else if (value === 'no') {
-      this.setState({orgName:""})
+      this.setState({ orgName: "" })
       this.setState({ modalForTabs: false, showModal: false })
       // window.addEventListener('beforeunload', this.handleBeforeUnload)
     }
@@ -387,7 +403,7 @@ class UserProfileV2 extends Component {
       return null
     }
     return (
-      <Modal show={this.state.modalForTabs} onHide={()=>{this.handleClose()}} className='mt-4'>
+      <Modal show={this.state.modalForTabs} onHide={() => { this.handleClose() }} className='mt-4'>
         <Modal.Header
           closeButton
           onClick={() => {
@@ -441,7 +457,7 @@ class UserProfileV2 extends Component {
   async handleNewOrgClick() {
     this.toggleModal()
     const tabIdsToClose = this.props.tabs.tabsOrder
-     if ((tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
+    if ((tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
       this.setState({ modalForTabs: false })
       this.removeFromLocalStorage(tabIdsToClose)
       this.props.close_all_tabs(tabIdsToClose)
@@ -450,9 +466,9 @@ class UserProfileV2 extends Component {
     } else {
       this.setState({ modalForTabs: true })
     }
-    
+
   }
-  
+
   renderOrgListDropdown() {
     const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
     const selectedOrg = organizations[0]
@@ -539,7 +555,7 @@ class UserProfileV2 extends Component {
         return
       }
       await this.handleNewOrgClick();
-      this.setState({switchOrCreate:true})
+      this.setState({ switchOrCreate: true })
       // await createOrg(this.state.orgName)
     } catch (e) {
       toast.error('Something went wrong')
