@@ -60,6 +60,7 @@ export class Script extends Component {
     scriptEditorText.substring( editor.session.getDocument().positionToIndex(nextLinePosition));
 
   this.setState({ scriptEditorText: updatedScriptText });
+  this.props.handleScriptChange(updatedScriptText, this.props.type)
   const endOfInsertedSnippetPosition = {
     row: nextLinePosition.row + snippetText.split('\n').length - 2, // Adjust for the newline character
     column: snippetText.split('\n')[snippetText.split('\n').length - 2].length // Column position of the end of the last line of the snippet

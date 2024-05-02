@@ -720,7 +720,8 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApiCall({ url: api, body, headers: header, bodyType, method, cancelToken, keyForRequest }) {
+  async handleApiCall({ url: api, body, headers: header, bodyType, method, cancelToken, keyForRequest}, preScriptExecution) {
+    const currentEndpointId = (this.props.currentEndpointId !== 'new') ? this.props.activeTabId : this.props.currentEndpointId
     let responseJson = {}
     try {
       if (isElectron()) {
@@ -743,6 +744,7 @@ class DisplayEndpoint extends Component {
 
         /** Run Post-Request Script */
         const result = this.runScript(code, currentEnvironment, request, responseJson)
+        this.props.update_pre_post_script(currentEndpointId, { preScriptExecution, postScriptExecution:result.data.consoleOutput });
         if (!result.success) {
           this.setState({ postReqScriptError: result.error })
         } else {
@@ -960,7 +962,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleSend = async () => {
-    const currentEndpointId = (this.props.currentEndpointId !== 'new') ? this.props.activeTabId : this.props.currentEndpointId
     const keyForRequest = shortid.generate()
     const runSendRequest = Axios.CancelToken.source()
     const startTime = new Date().getTime()
@@ -1019,14 +1020,11 @@ class DisplayEndpoint extends Component {
     requestOptions = { url, body, headers, method, cancelToken, keyForRequest }
 
     const currentEnvironment = this.props.environment
-
     const code = this.props.endpointContent.preScriptText
-    let preScriptExecution, postScriptExecution
-    if(!isOnPublishedPage()) preScriptExecution = await executeData(this.props?.endpointContent?.preScriptText)
+  
     /** Run Pre Request Script */
     const result = this.runScript(code, currentEnvironment, requestOptions)
-    if(!isOnPublishedPage()) postScriptExecution = await executeData(this.props?.endpointContent?.postScriptText)
-    this.props.update_pre_post_script(currentEndpointId, {preScriptExecution, postScriptExecution});
+    let preScriptExecution = result.data.consoleOutput
     if (result.success) {
       let {
         environment,
@@ -1048,7 +1046,7 @@ class DisplayEndpoint extends Component {
       /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
       /** Handle Request Call */
-      await this.handleApiCall(requestOptions)
+      await this.handleApiCall(requestOptions, preScriptExecution)
       this.setState({
         loader: false,
         runSendRequest: null,

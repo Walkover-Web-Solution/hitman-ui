@@ -784,36 +784,6 @@ function addItsParent(flattenData, singleId, dataToPublishSet) {
   }
 }
 
-export const executeData = (data) => {
-  return new Promise((resolve, reject) => {
-    const sandbox = {
-      console: {
-        log: (...args) => {
-          const formattedArgs = args.map(arg => {
-            if (typeof arg === 'object') {
-              try {
-                return JSON.stringify(arg);
-              } catch (error) {
-                return 'Circular structure in object';
-              }
-            } else {
-              return arg;
-            }
-          });
-          sandbox._consoleLogs.push(formattedArgs.join(' ')); // Capture log messages
-        }
-      },
-      _consoleLogs: []
-    };
-    try {
-      vm.runInNewContext(data, sandbox);
-      resolve(sandbox._consoleLogs);
-    } catch (err) {
-      reject(err.name + ':' + ' ' + err.message);
-    }
-  });
-}
-
 export default {
   isDashboardRoute,
   isElectron,
