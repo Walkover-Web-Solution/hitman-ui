@@ -3035,6 +3035,7 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
+              <span className='mb-2 d-inline-block'>{isOnPublishedPage() && this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt && `Modified at ${moment(this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt).fromNow()}`}</span>
               </div>
               {/* <ApiDocReview {...this.props} /> */}
               <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>
