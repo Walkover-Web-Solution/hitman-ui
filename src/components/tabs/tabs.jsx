@@ -15,6 +15,7 @@ import { IoIosSettings } from "react-icons/io"
 import { HiMiniDocumentText } from "react-icons/hi2";
 import  IconButtons  from '../common/iconButton'
 import { GrFormClose } from "react-icons/gr"
+import { LuHistory } from "react-icons/lu";
 
 const mapStateToProps = (state) => {
   return {
@@ -116,17 +117,21 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <>
+              <div className='d-flex mr-2'>
+              <LuHistory />
                 {this.props.historySnapshots[tabId].endpoint.name}
-                <span className='sub-label'>History</span>
+                </div>
               </>
             )
           } else {
             return (
               <>
-                {this.props.historySnapshots[tabId].endpoint.name ||
-                  this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri ||
-                  'Random Trigger'}
-                <span className='sub-label'>History</span>
+                <div className='d-flex'>
+                  <LuHistory className='mr-1' size={16}/>
+                  {this.props.historySnapshots[tabId].endpoint.name ||
+                    this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri ||
+                    'Random Trigger'}
+                </div>
               </>
             )
           }
@@ -153,7 +158,7 @@ class CustomTabs extends Component {
             )
           }
         } else {
-          return <>{tab.state?.data?.name || 'Untitled'}</>
+          return <>{tab.state?.data?.name || 'Untitled'}</>        
         }
 
       case 'page':
@@ -280,7 +285,7 @@ class CustomTabs extends Component {
         return (
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[this.props.pages?.[tabId]?.parentId]?.name}</div> */}
-            <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{this.props.pages[tabId]?.name}</div>
+            <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>Page</div>
           </div>
         )
       }
@@ -303,14 +308,25 @@ class CustomTabs extends Component {
       return (
         <>
           <div className='hover-div' style={styles}>
-            <div className='page-name'>{this.props.collections[tabId]?.name}</div>
+            <div className='page-name'>Setting</div>
           </div>
           <div className='hover-div' style={styles}>
-            <div className='page-name'>{this.props.collections[tabId]?.name}</div>
+            <div className='page-name'>Setting</div>
           </div>
         </>
       )
-      // }
+    }
+    else if (tab.type === 'history') {
+      return (
+        <>
+          <div className='hover-div' style={styles}>
+            <div className='page-name'>history</div>
+          </div>
+          <div className='hover-div' style={styles}>
+            <div className='page-name'>history</div>
+          </div>
+        </>
+      )
     }
   }
 

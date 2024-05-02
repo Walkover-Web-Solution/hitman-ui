@@ -156,7 +156,7 @@ class CollectionForm extends Form {
 
   renderSaveButton() {
     return (
-      <button className='btn btn-primary' onClick={() => this.saveCollection(defaultViewTypes.TESTING, 'edit')}>
+      <button className='btn btn-primary btn-sm fs-4' onClick={() => this.saveCollection(defaultViewTypes.TESTING, 'edit')}>
         Save
       </button>
     )
