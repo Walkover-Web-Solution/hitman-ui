@@ -75,7 +75,7 @@ class TabOptions extends Component {
         <Dropdown.Toggle bsPrefix='dropdown' variant='default' id='dropdown-basic'>
           <MoreVerticalIcon />
         </Dropdown.Toggle>
-        <Dropdown.Menu className='tab-options-drop-down'>{this.renderMenuOptions()}</Dropdown.Menu>
+        <Dropdown.Menu className='tab-options-drop-down p-1'>{this.renderMenuOptions()}</Dropdown.Menu>
       </Dropdown>
     )
   }

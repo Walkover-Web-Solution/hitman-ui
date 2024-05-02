@@ -24,7 +24,7 @@
 
 .split-sidebar-public>div:first-child {
   max-width: 330px !important;
-  // width: unset;
+  width: unset;
   min-width: 250px !important;
   // background-color: $secondary-color;
 
@@ -76,7 +76,6 @@
 body .sidebar {
   height: 100%;
   // background-color: $secondary-color;
-  padding: 0.75rem 0 0.45rem;
 
   .switch-products {
     .dropdown-toggle {
@@ -130,6 +129,12 @@ body .sidebar {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease-in;
+    svg {
+      border-radius: 5px 5px;
+      &:hover {
+        background-color: #dfdcd5;
+      }
+    }
   }
 
   .fade {
@@ -271,7 +276,28 @@ body .sidebar {
       }
 
       button {
-        >div.cl-name {
+        &.selected {
+          background: $grey;
+        }  
+        .active-selected {
+          width: 100%;
+          margin-left: 10px;
+          margin-top: 4px;
+          &.selected {
+            background: $grey;
+          }         
+          &:hover {
+            background: $grey !important;
+        }}
+        .active-select{
+          width: 100%;
+          &.selected {
+            background: $grey;
+          }         
+          &:hover {
+            background: $grey;
+        }
+        .cl-name {
           width: 100%;
           .name-parent-page{
             overflow-wrap: anywhere;
@@ -282,34 +308,15 @@ body .sidebar {
 
             .text-truncate {
               font-size: 14px;
-
+              padding-left: 0 !important;
+              max-width: 115px;
               @media screen and (max-width:768px) {
                 font-size: 16px;
               }
             }
-          }
-
-        }
-
-        &.expanded {
-          .versionChovron {
-            transform: rotate(0);
-          }
-        }
-
-        &:hover {
-          background: $grey;
-
-          .version-dropdown {
-            .dropdown-toggle {
-              &::after {
-                background: $grey !important;
-                color: $grey !important;
-                border: outset $grey !important;
-              }
-            }
-          }
-
+          }        
+       
+      }
           .published-icon {
             opacity: 0;
           }
@@ -317,8 +324,6 @@ body .sidebar {
 
         .sidebar-item-action-btn {
           cursor: pointer;
-          transition: all 0.3s ease-in;
-
           i {
             display: flex;
             height: 12px;
@@ -328,16 +333,11 @@ body .sidebar {
         }
 
         .sidebar-item-action {
-          position: absolute;
-          right: 0rem;
           padding: 0 0.7rem;
-          top: 50%;
-          transform: translateY(-50%);
           z-index: 19;
 
           >div {
             &:not(.dropdown-menu) {
-              transition: all 0.3s ease-in;
               opacity: 0;
               visibility: hidden;
             }
@@ -351,10 +351,17 @@ body .sidebar {
 
           .dropdown-menu {
             box-shadow: 0px 18px 46px -14px #e5e5e5;
-
+            padding: 6px !important;
             .dropdown-item {
               font-size: 14px;
               padding: 0.25rem 1rem;
+              border-radius: 3px 3px;
+              svg {
+                filter: grayscale(1);
+              }
+              &:hover {
+                background-color: rgba(128, 128, 128, 0.123);
+              }
             }
           }
         }
@@ -365,13 +372,13 @@ body .sidebar {
         border: none;
         background: transparent;
         color: $text-color;
-        padding: 0 0.8rem 0 0.65rem;
+        padding-right: 0;
         position: relative;
-        transition: all 0.3s ease-in;
         height: 1.5rem;
         text-align: left;
         justify-content: space-between;
-
+        margin-top: 1px;
+        margin-bottom: 1px;
         &:active,
         &:focus {
           outline: none;
@@ -396,39 +403,33 @@ body .sidebar {
             background-color: $grey;
           }
         }
-
-        .sidebar-toggle {
-          transition: all 0.3s ease-in;
+        &.sidebar-hower{
 
           &:hover {
-            background: #ebebeb;
-            border-color: #f1eee5;
-
-            .sidebar-item-action-btn {
-              visibility: visible;
-              opacity: 1;
+            background: $grey;
+          
+          .sidebar-toggle {
+            transition: all 0.3s ease-in;
+            &:hover {
+              background: #ebebeb;
+              border-color: #f1eee5;
+              .sidebar-item-action-btn {
+                visibility: visible;
+                opacity: 1;
+              }
             }
+            i {
+              color: #000;
+           }
           }
-
-          i {
-            color: #000;
+         }
+        }
+        &.expanded {
+          .versionChovron {
+            transform: rotate(0);
           }
         }
-      }
-
-      .selected {
-        background-color: $grey;
-
-        .version-dropdown {
-          .dropdown-toggle {
-            &::after {
-              background: $grey !important;
-              color: $grey !important;
-              border: outset $grey !important;
-            }
-          }
-        }
-      }
+      }     
     }
 
     .sidebar-content::-webkit-scrollbar {
@@ -458,18 +459,25 @@ body .sidebar {
       display: block;
       flex: 0 0 auto;
       border-top: 1px solid #dcdcdc;
-      padding: 0.45rem 1rem 0;
-
+      padding: 9px 16px 0;
       .profile-details {
         // border-bottom: 1px solid #e6dbd4;
-        padding: 0.5rem 0 0.25rem;
+        // padding: 0.5rem 0 0.25rem;
       }
 
       .profile-listing-container .dropdown-item {
         padding: 0.25rem 1rem;
-
+        span {
+          font-size: $font-small-s;
+        }
         img {
           margin-right: 0.65rem;
+          width: 14px;
+        }
+        .invite-user {
+          svg {
+           width: 14px;
+          }
         }
       }
 
@@ -479,6 +487,10 @@ body .sidebar {
         margin-bottom: -0.35rem;
         font-size: $font-normal;
         display: block;
+        width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .profile-details-label-light {
@@ -500,6 +512,11 @@ body .sidebar {
         justify-content: center;
         align-items: center;
         line-height: 1;
+      }
+      .dropdown {
+        .dropdown-menu {
+          width: 100%;
+        }
       }
     }
   }
@@ -612,11 +629,17 @@ input[type='text']:focus {
   }
 }
 
-.versionChovron svg {
-  transition: all 0.3s ease-in;
-  height: 20px !important;
-  width: 20px !important;
-  color: #808080;
+.versionChovron {
+  svg {
+    transition: all 0.3s ease-in;
+    height: 20px !important;
+    width: 20px !important;
+    color: #808080;
+    border-radius: 5px 5px;
+    &:hover {
+      background-color: #d6d2d28f;
+    }
+  }
 }
 
 .sidebar-content:focus {
@@ -625,7 +648,6 @@ input[type='text']:focus {
 }
 
 .sidebar-accordion-item {
-  padding: 0px;
   display: flex;
   align-items: center;
   width: 100%;
@@ -644,8 +666,16 @@ input[type='text']:focus {
     }
   }
 }
+.side-bar , .active-selected , .active-select , button{
+  &:hover {
+    background: $grey;
+  }
 
-.sidebar-accordion .sidebar-accordion-item>i {
+  &.Selected {
+    background: $grey;
+  }
+}
+.sidebar-accordion .sidebar-accordion-item > i {
   display: inline-block;
   width: 30px;
 }
@@ -664,7 +694,19 @@ input[type='text']:focus {
   transform: rotate(-90deg);
   transition: 200ms;
 }
-
+// .expanded {
+//   #collection-collapse {
+    .card-body {
+      button {
+        margin-bottom: 2px;
+        .side-bar {
+          padding-left: 6px !important;
+          width: 100%;
+        }
+      }
+    }
+//   }
+// }
 .secondary-sidebar {
   font-size: 14px;
   color: #999;
@@ -699,7 +741,6 @@ input[type='text']:focus {
     padding: 0;
     border: 0.5px solid #e6dbd4;
     border-radius: 4px;
-    margin-bottom: 10px;
   }
 
   button {
@@ -733,7 +774,7 @@ input[type='text']:focus {
 }
 
 .versionBoldHeading .active .versionChovron {
-  transform: rotate(360deg);
+  transform: rotate(-90deg);
   transition: 300ms;
 }
 
@@ -765,7 +806,7 @@ input[type='text']:focus {
 }
 
 .linkWrapper button {
-  padding-left: 7px;
+  padding-left: 7px !important;
 }
 
 .sidebar-add-btn {
@@ -878,8 +919,42 @@ input[type='text']:focus {
     font-weight: 700 !important;
     padding-left: 7px !important;
     font-size: 15px;
+    &:hover {
+      background-color: unset !important;
+    }
   }
   @media screen and (max-width: 1400px) {
     width: 280px;
+  }
+  &:hover {
+    background-color: #d6d2d28f;
+  }
+}
+.hm-sidebar-outer-block {
+  .linkWrapper {
+    button {
+      .side-bar {
+        margin-left: 24px;
+      }
+    }
+  }
+}
+.sidebar-accordion {
+  button {
+    .side-bar {
+      padding-left: 10px;
+      width: 100%;
+    }
+  }
+}
+.add-button {
+  button {
+    font-size: 12px;
+    background-color: rgba(128, 128, 128, 0.103);
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-weight: 500 !important;
+    color: rgb(80, 77, 77);
+    box-shadow: 2px 2px;
   }
 }

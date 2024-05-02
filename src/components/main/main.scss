@@ -3,6 +3,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
 @import './variables.scss';
 
+.fs-1 {
+  font-size: $font-extra-large !important;
+}
+.fs-2 {
+  font-size: $font-large-l !important;
+}
+.fs-3 {
+  font-size: $font-medium-m !important;
+}
+.fs-4 {
+  font-size: $font-small-s !important;
+}
+.fs-5 {
+  font-size: $font-extra-small !important;
+}
+
 .mobile-warning {
   position: sticky;
   z-index: 1200;
@@ -42,27 +58,46 @@ html body {
 .float-left {
   float: left;
 }
-
-.version-dropdown{
-
-    .dropdown-toggle{
-     font-size: 14px !important;
-     @media screen and (max-width:768px) {
+.version-dropdown {
+  .dropdown-toggle {
+    font-size: 14px !important;
+    padding: 5px;
+    padding-right: 4px !important;
+    margin-left: 4px;
+    border: 1px solid transparent !important;
+    @media screen and (max-width:768px) {
       font-size: 16px !important;
-     }
-      &::after {
-        border: outset #f7f6f3 !important;
-        content: '' !important;
-        transform: rotate(45deg) !important;
-        position: relative;
-        top: -2px;
-        color: gray;
-        background-color: #f7f6f3 !important ;
-      }
+    }
+    &:active {
+      color: black !important;
+    }
+    &::after {
+      content: "" !important;
+      top: 0 !important;
+      transform: rotate(362deg) !important;
+      border-top: 4.8px solid !important;
+      border-right: 4.8px solid transparent !important;
+      border-bottom: 0 !important;
+      border-left: 4.8px solid transparent !important;
+    }
+
+    &:hover {
+      border-color: rgba(128, 128, 128, 0.363) !important;
     }
   }
-// }
-
+.dropdown-menu {
+  max-width: 260px;
+  left: -36px !important;
+  a {
+    max-width: 180px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block !important;
+  }
+}
+}
+  
 .dropdown {
   font-size: $font-normal !important;
   font-weight: 400;
@@ -86,7 +121,7 @@ html body {
   .dropdown-menu {
     border-radius: $border-radius;
     border: none;
-    padding: 0;
+    padding: 6px;
     box-shadow:
       0 3px 5px 0px rgba(0, 0, 0, 0.03),
       0 0 20px 0px rgba(0, 0, 0, 0.08);
@@ -101,8 +136,10 @@ html body {
       -webkit-display: flex;
       align-items: center;
       // padding: 0.35rem 1rem;
-      transition: all 0.3s ease-in;
       font-size: $font-normal;
+      &:hover {
+        background-color: rgba(128, 128, 128, 0.123);
+      }
     }
   }
 }
@@ -129,9 +166,20 @@ html body {
 }
 
 .page-title {
+  padding: 0 2px;
+  border-radius: 2px;
+  width: max-content;
   font-size: 1.75rem;
   font-weight: 600;
+  border: 1px solid transparent;
   color: $text-color-dark;
+  &:hover {
+    border-color: rgba(128, 128, 128, 0.356);
+    background-color: white;
+  }
+  &:focus-visible{
+    outline: 1px solid rgba(128, 128, 128, 0.356) !important;
+  }
 }
 
 .published {
@@ -150,10 +198,7 @@ html body {
 
 .clear-both {
   clear: both;
-  width: 95%;
-  @media screen and (max-width:1160px) {
-    width: 100%;
-  }
+  width: 100%;
 }
 
 .hover {
@@ -196,7 +241,7 @@ html body {
   }
 
   .main {
-    background-color: $light-grey;
+    background-color: white;
   }
 }
 
@@ -1197,6 +1242,9 @@ button.btn.btn-secondary {
         button {
           padding: 0;
           border: 0;
+          padding-left: 4px;
+          padding-right: 4px;
+          border-radius: 3px;
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
@@ -1206,6 +1254,9 @@ button.btn.btn-secondary {
 
           &:focus {
             outline: none;
+          }
+          &:hover {
+            background-color: #d6d2d28f;
           }
         }
       }
@@ -1305,7 +1356,7 @@ button.editBtn {
 }
 
 .dropdown-menu .dropdown-item svg {
-  margin-right: 5px;
+  margin-right: 8px;
 }
 
 .publish-button {
@@ -1335,7 +1386,6 @@ button.editBtn {
   padding: 0;
   // border: 0.5px solid #e6dbd4;
   border-radius: 4px;
-  margin-bottom: 10px;
 }
 
 body .btn {
@@ -2635,6 +2685,7 @@ main.mainpublic-endpoint-main .for-public-view {
   }
 
   .techdoc-svg {
+    display: flex;
     @media screen and (max-width:768px) {
       padding: 10px;
       margin-left: -34px;
@@ -3038,7 +3089,7 @@ div#steve-parent-accordion {
   h5 {
     font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 18px;
+    margin-bottom: 9px;
   }
 
   li {
@@ -3050,6 +3101,11 @@ div#steve-parent-accordion {
 
 .no-header button.close {
   top: 1.4rem;
+  width: 20px;
+  border-radius: 3px 3px;
+    &:hover {
+      background-color: #d6d2d28f !important;
+    }
 }
 
 .fileInput {
@@ -3223,11 +3279,24 @@ ul.react-autoComplete-input {
 .top-part {
   .page-title-name {
     padding-right: 7rem;
-
-    .page-title {
+    input {
+      font-size: 20px;
+      width: max-content;
+    }
+    .page-title{
       text-overflow: ellipsis;
       overflow: hidden;
-      width: 94%;
+      border: 1px solid transparent !important;
+      width: max-content;
+      font-size: 20px;
+      border-radius: 2px;
+      &:hover {
+        border-color: rgba(128, 128, 128, 0.356) !important;
+        background-color: white !important;
+      }
+      &:focus-visible{
+        outline: 1px solid rgba(128, 128, 128, 0.356) !important;
+      }
     }
   }
 }
@@ -3700,16 +3769,17 @@ body .tox {
 .name-sub-page {
   overflow-wrap: anywhere;
   max-width: 180px !important;
+    @media (max-width: 1400px) and (min-width: 400px){
+      max-width: 120px !important;
+    }
+  .page-title-name {
 
-  @media (max-width: 1400px) and (min-width: 400px) {
-    max-width: 120px !important;
+    .endpoint-title,
+    .page-title {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
   }
-}
-
-.endpoint-title,
-  .page-title {
-    text-overflow: ellipsis;
-    overflow: hidden;
   }
 
 .pubCodeWrapper {
@@ -3726,6 +3796,10 @@ body .tox {
 .page-title {
   text-overflow: ellipsis;
   overflow: hidden;
+  &:hover {
+    border-color: rgba(128, 128, 128, 0.356) !important;
+    background-color: white !important;
+  }
 }
 }
 .hamburger-for-sidebar{
@@ -3943,3 +4017,51 @@ body .tox {
     font-size: 20px;
   }
 }
+ .linkWrapper {
+  position: relative;
+  &::before{
+    content: '';
+    display: block;
+    border-left: 1px solid rgb(227 227 227 / 79%);
+    height: 97%;
+    position: absolute;
+    top: -3px;
+    left: 26px;
+  }
+ }
+ .expanded {
+  #collection-collapse {
+    position: relative;
+    padding-left: 6px;
+    &::before{
+      content: '';
+      display: block;
+      border-left: 1px solid rgb(227 227 227 / 79%);
+      height: 97%;
+      position: absolute;
+      top: 0;
+      left: 16px;
+    }
+   }
+ }
+ .tab-options-drop-down {
+  .dropdown-item {
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.123);
+    }
+  }
+ }
+ .custom-collection-modal-container {
+  button {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    border-radius: 3px 3px;
+      &:hover {
+        background-color:#d6d2d28f;
+      }
+  }
+ }
+ .enpoint-title {
+  width: fit-content;
+ }
+ 

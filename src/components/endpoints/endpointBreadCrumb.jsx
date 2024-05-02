@@ -219,10 +219,10 @@ class EndpointBreadCrumb extends Component {
       <div className='endpoint-header'>
         <div className='panel-endpoint-name-container'>
           <div className='page-title-name'>
-            <input
+            {/* <input
               ref={this.nameInputRef}
               className={['endpoint-name-input form-control', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
-              name='enpoint-title'
+             
               style={{ width: 'auto', textTransform: 'capitalize' }}
               onChange={(e) => this.handleInputChange(e)}
               value={this.state.endpointTitle}
@@ -230,31 +230,23 @@ class EndpointBreadCrumb extends Component {
                 this.handleInputBlur()
               }}
               maxLength='50'
-            />
-            <h3
+            /> */}
+            <input
+             name='enpoint-title'
+             ref={this.nameInputRef}
               style={{ textTransform: 'capitalize' }}
-              className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
-            >
-              {this.props?.isEndpoint
+              className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
+              onChange={this.handleInputChange.bind(this)}
+              value={this.props?.isEndpoint
                 ? this.props?.pages?.[this.props?.match?.params?.endpointId]?.name ||
                   this.props?.history?.[this.props?.match?.params?.historyId]?.endpoint?.name ||
                   this.props?.endpointContent?.data?.name
                 : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
-              {this.props?.isEndpoint && (
-                <EditIcon
-                  className='fa fa-pencil-square-o ml-2 cursor-pointer '
-                  onClick={() => {
-                    this.setState({ nameEditable: true }, () => {
-                      this.nameInputRef.current.focus()
-                    })
-                  }}
-                />
-              )}
-            </h3>
+            />
           </div>
           {this.props.location.pathname.split('/')[5] !== 'new' && (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
-              {this.collectionName && <span className='collection-name-path'>{`${this.collectionName}/`}</span>}
+              {this.collectionName && <span className='collection-name-path px-1'>{`${this.collectionName}/`}</span>}
               {
                 <span>
                   {getOnlyUrlPathById(

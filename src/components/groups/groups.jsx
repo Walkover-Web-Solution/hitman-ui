@@ -25,6 +25,9 @@ import SubPageForm from './subPageForm.jsx'
 import { ReactComponent as EditSign } from '../../assets/icons/editsign.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { MdExpandMore } from "react-icons/md"
+import  IconButtons  from '../common/iconButton'
+import { FiPlus } from "react-icons/fi"
+import { BsThreeDots } from "react-icons/bs"
 
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
@@ -173,12 +176,14 @@ class Groups extends Component {
 
   renderBody(subPageId) {
     let isUserOnPublishedPage = isOnPublishedPage()
+    let isuserONTechdocOwnDomain = isTechdocOwnDomain()
     const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isUserOnPublishedPage
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === subPageId ? 'selected' : ''
+    const isSelected = (isUserOnPublishedPage && isuserONTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId) ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === subPageId ? 'selected' : '')
     return (
       <>
         <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
-          <button tabIndex={-1} className={`${expanded ? 'expanded' : ''} ${isSelected}`}>
+          <button tabIndex={-1} className={`${expanded ? 'expanded' : ''}`}>
+          <div className={`active-selected d-flex justify-content-between align-items-center ${isSelected ? ' selected' : ''}`}>
             <div
               draggable={!isUserOnPublishedPage}
               onDragOver={this.props.handleOnDragOver}
@@ -187,7 +192,7 @@ class Groups extends Component {
               onDragEnter={(e) => this.props.onDragEnter(e, subPageId)}
               onDragEnd={(e) => this.props.onDragEnd(e)}
               style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
-              className='d-flex align-items-center cl-name name-sub-page '
+              className={`d-flex align-items-center justify-content-center cl-name name-sub-page`}
               onClick={() => this.toggleSubPageIds(subPageId)}
             >
               <span className='versionChovron'>
@@ -195,22 +200,23 @@ class Groups extends Component {
               </span>
               <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
             </div>
+            
             {
               // [info] options not to show on publihsed page
               isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
                 <div className='sidebar-item-action d-flex align-items-center'>
-                  <div onClick={() => this.openAddSubPageModal(subPageId)} className='mr-1 d-flex align-items-center'>
-                    <Plus />
+                  <div onClick={() => this.openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
+                    <IconButtons><FiPlus /></IconButtons>
                   </div>
-                  <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <i className='uil uil-ellipsis-v' />
+                  <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                  <IconButtons><BsThreeDots /></IconButtons>
                   </div>
                   <div className='dropdown-menu dropdown-menu-right'>
-                    <div className='dropdown-item' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
+                    <div className='dropdown-item d-flex' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
                       <EditSign /> Rename
                     </div>
                     <div
-                      className='dropdown-item'
+                      className='dropdown-item text-danger d-flex'
                       onClick={() => {
                         this.openDeleteSubPageModal(subPageId)
                       }}
@@ -229,6 +235,7 @@ class Groups extends Component {
                 </div>
               ) : null
             }
+            </div>
           </button>
           {expanded ? (
             <div className='linkWrapper versionPages'>

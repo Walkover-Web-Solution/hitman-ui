@@ -69,6 +69,7 @@ import { statesEnum } from '../common/utility'
 import { addAuthorizationDataTypes, grantTypesEnums } from '../common/authorizationEnums.js'
 import { updateToken } from '../../store/tokenData/tokenDataActions.js'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
+import { LiaSaveSolid } from "react-icons/lia"
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -2474,7 +2475,7 @@ class DisplayEndpoint extends Component {
           )}
           <button
             id='api_save_btn'
-            className={this.state.saveLoader ? 'ml-2 btn btn-outline orange buttonLoader' : 'ml-2 btn btn-outline orange'}
+            className={this.state.saveLoader ? 'ml-2 btn btn-outline orange buttonLoader btn-sm fs-4' : 'ml-2 btn btn-outline orange btn-sm fs-4'}
             type='button'
             onClick={() => this.handleSave()}
           >
@@ -2631,10 +2632,12 @@ class DisplayEndpoint extends Component {
             <Dropdown as={ButtonGroup}>
               <button
                 id='api_save_btn'
-                className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
+                className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader btn-sm' : 'btn btn-outline orange btn-sm'}
                 type='button'
                 onClick={() => this.handleSave()}
               >
+                <LiaSaveSolid className='save-icon'/>
+                {' '}
                 Save
               </button>
               {getCurrentUser() ? (
@@ -2656,7 +2659,7 @@ class DisplayEndpoint extends Component {
             </Dropdown>
           ) : (
             <button
-              className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
+              className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader btn-sm fs-4' : 'btn btn-outline orange btn-sm fs-4'}
               type='button'
               id='save-endpoint-button'
               onClick={() => this.handleSave()}

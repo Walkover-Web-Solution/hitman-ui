@@ -11,8 +11,8 @@ import { languages, primaryLanguages, secondaryLanguages } from './languages'
 import { RiCloseLine } from "react-icons/ri";
 import { RxCopy } from "react-icons/rx";
 
-const HTTPSnippet = require('httpsnippet')
 
+const HTTPSnippet = require('httpsnippet')
 class CodeTemplate extends Component {
   constructor(props) {
     super(props)
@@ -20,6 +20,11 @@ class CodeTemplate extends Component {
       theme: ''
     }
     this.selectedLanguage = 'shell'
+    this.iconRef = React.createRef()
+    this.OutlineArrowRef = React.createRef()
+    this.pubCodesRef = React.createRef()
+    this.iconNoneRef = React.createRef()
+    this.closeIconRef = React.createRef()
   }
 
   makeCodeSnippet() {
@@ -92,7 +97,7 @@ class CodeTemplate extends Component {
                 <RiCloseLine color='black' className='cur-pointer' onClick={this.handleCloseClick} />
               </div>}
             </div>
-            <div className='select-code-wrapper d-flex mb-3 img'>
+            <div className="select-code-wrapper d-flex mb-3 img">
               {primaryLanguages.map((key) => (
                 <button
                   key={key}
@@ -145,7 +150,7 @@ class CodeTemplate extends Component {
                 }
                 className='copy-to-clipboard'
               >
-                <button>{this.state.copied ? <span className='text-success'>Copied! </span> : <RxCopy className='cur-pointer' color={this.props.theme ===  'light' ? 'black' : "white"} />}</button>
+                <button>{this.state.copied ? <span className='text-success'>Copied! </span> : <RxCopy className='cur-pointer' color={this.props.theme === 'light' ? 'black' : "white"} />}</button>
               </CopyToClipboard>
             </div>{' '}
             <div className='ace-editor-wrapper'>

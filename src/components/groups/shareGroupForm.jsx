@@ -54,7 +54,7 @@ class ShareGroupForm extends Form {
                 <button>Copy</button>
               </CopyToClipboard>
             }
-            <button className='btn btn-secondary outline btn-lg ml-2' onClick={this.props.onHide}>
+            <button className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={this.props.onHide}>
               Cancel
             </button>
           </form>
