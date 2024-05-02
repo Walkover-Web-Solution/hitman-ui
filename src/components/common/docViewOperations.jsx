@@ -29,7 +29,7 @@ export function PublishEntityButton(props) {
   return (
     <button
       className={
-        'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange ' : 'btn btn-secondary outline ml-2 orange')
+        'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange btn-sm fs-4' : 'btn btn-secondary outline ml-2 orange btn-sm fs-4')
       }
       type='button'
       onClick={() => props.open_publish_confirmation_modal()}
@@ -52,7 +52,7 @@ export function UnPublishEntityButton(props) {
   return (
     <button
       className={
-        'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange ' : 'btn btn-secondary outline ml-2 orange')
+        'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange btn-sm fs-4' : 'btn btn-secondary outline ml-2 orange btn-sm fs-4')
       }
       type='button'
       onClick={handleClick}

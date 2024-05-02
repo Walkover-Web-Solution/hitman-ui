@@ -216,7 +216,7 @@ class EditPage extends Component {
       <div>
         <form onSubmit={this.handleSubmit}>
           <div className='d-flex flex-row justify-content-end mb-2'>
-            <button onSubmit={this.handleSubmit} type='submit' className='btn btn-primary btn-extra-lg mr-2 btn-width'>
+            <button onSubmit={this.handleSubmit} type='submit' className='btn btn-primary btn-sm fs-4 mr-2'>
               Save
             </button>
             <button
@@ -224,7 +224,7 @@ class EditPage extends Component {
                 this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel()
               }}
               type='button'
-              className='btn btn-secondary outline btn-extra-lg btn-width'
+              className='btn btn-secondary outline btn-sm fs-4'
             >
               Cancel
             </button>

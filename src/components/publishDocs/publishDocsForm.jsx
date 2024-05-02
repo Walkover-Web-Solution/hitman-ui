@@ -413,7 +413,10 @@ class PublishDocForm extends Component {
 
     return (
       <div>
+        <div className='d-flex align-items-center'>
         <span className='public-title mt-1 d-block'>Preview Documentation</span>
+        <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
+        </div>
         <OverlayTrigger
           overlay={
             <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled ? 'd-none' : ''}>
@@ -465,7 +468,7 @@ class PublishDocForm extends Component {
     return (
       <div>
         <Button
-          className={this.state.loader ? 'buttonLoader m-1' : 'm-1'}
+          className={this.state.loader ? 'buttonLoader m-1 btn-sm fs-4' : 'm-1 btn-sm fs-4'}
           disabled={!this.state.data.title.trim()}
           onClick={() => this.saveCollectionDetails()}
           variant='btn btn-outline'
@@ -483,7 +486,7 @@ class PublishDocForm extends Component {
           disabled={!disableCondition}
           id='publish_collection_btn'
           variant='btn btn-outline'
-          className='m-1'
+          className='m-1 btn-sm fs-4'
           onClick={() => this.redirectUser()}
         >
           Bulk Publish
@@ -491,14 +494,14 @@ class PublishDocForm extends Component {
         {/* </OverlayTrigger> */}
         <>
           {publishCheck ? (
-            <Button variant='btn btn-outline-danger' className='m-1' onClick={() => this.props.unPublishCollection()}>
+            <Button variant='btn btn-outline-danger btn-sm fs-4' className='m-1 btn-sm fs-4' onClick={() => this.props.unPublishCollection()}>
               Unpublish Doc
             </Button>
           ) : (
             isNotPublished && (
               <Button
                 id='publish_collection_btn'
-                className='m-1'
+                className='m-1 btn-sm fs-4'
                 onClick={() => this.publishCollection(selectedCollection)}
                 disabled={!selectedCollection?.docProperties?.defaultTitle}
                 variant='btn btn-outline'
@@ -518,7 +521,9 @@ class PublishDocForm extends Component {
       <>
         <div className={this.props.onTab && 'publish-on-tab'}>
           <div className='d-flex justify-content-between align-item-center'>
-            <h3 className='page-title mb-0'>Manage Public Doc</h3>
+            <div className='d-flex align-items-center'>
+              <h3 className='page-title mb-0'>Manage Public Doc</h3>
+            </div>
             {this.renderActionButtons(publishCheck)}
           </div>
           {publishCheck && this.renderPublicUrl()}

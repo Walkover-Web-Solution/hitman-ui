@@ -149,7 +149,7 @@ class DisplayPage extends Component {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className='pt-3'> 
+        <div className='pt-3 px-1'> 
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
           <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
         </div>
@@ -252,7 +252,7 @@ class DisplayPage extends Component {
             </button>
           )}
           <button
-            className='btn btn-secondary outline ml-2 orange'
+            className='btn btn-primary btn-sm fs-4'
             onClick={() => {
               this.handleEdit(this.state.data)
             }}
