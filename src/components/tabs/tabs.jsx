@@ -361,6 +361,15 @@ class CustomTabs extends Component {
       width: '24%',
       float: 'right'
     }
+    const history = {
+      position: 'fixed',
+      background: '#f7f6f3',
+      top: '40px',
+      right: '0px',
+      height: '95vh',
+      width: '24%',
+      float: 'right'
+    }
     const Heading = {
       display: 'flex',
       justifyContent: 'space-between',
@@ -436,10 +445,10 @@ class CustomTabs extends Component {
                     >
                       {this.renderTabName(tabId)}
                     </button>
-                  </Nav.Link>
-                  <button className='btn close' onClick={() => this.handleCloseTabs([tabId])}>
+                  <button className=' close' onClick={() => this.handleCloseTabs([tabId])}>
                     <IconButtons><i className='uil uil-multiply' /></IconButtons>
                   </button>
+                  </Nav.Link>
                 </Nav.Item>
                 {this.state.showPreview && tabId === this.state.previewId && this.renderHoverTab(tabId, this.tabRef)}
               </div>
@@ -472,7 +481,7 @@ class CustomTabs extends Component {
               </button>
             </Nav.Item>
             {this.state.showHistoryContainer && (
-              <div style={sideBar}>
+              <div style={history}>
                 <div style={Heading}>
                   History
                   <div className='d-flex' style={closeButton} onClick={this.handleHistoryClick} aria-label='Close'>

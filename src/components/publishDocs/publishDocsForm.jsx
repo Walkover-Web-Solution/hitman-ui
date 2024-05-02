@@ -415,7 +415,7 @@ class PublishDocForm extends Component {
       <div>
         <div className='d-flex align-items-center'>
         <span className='public-title mt-1 d-block'>Preview Documentation</span>
-        <div className='api-label POST request-type-bgcolor ml-2'> published </div>
+        <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
         </div>
         <OverlayTrigger
           overlay={

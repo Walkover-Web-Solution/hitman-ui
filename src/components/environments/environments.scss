@@ -89,13 +89,13 @@ $border-color: rgba(227, 228, 230, 0.7);
         }
 
         span {
-          width: 6.65rem;
+          max-width: 6.65rem;
           text-align: left;
         }
       }
 
       .dropdown-menu {
-        padding: 4px;
+        padding: 6px;
         .dropdown-item {
           font-size: 14px;
           text-align: left;

@@ -34,16 +34,7 @@
       .nav-item {
         height: 42px;
         position: relative;
-        color: $text-color;
-        &:hover {
-          color: $theme-color;
-          .close {
-            opacity: 1;
-          }
-          svg {
-            color: #f2994ab0 !important;
-          }
-        }
+        color: $text-color;    
         .nav-link {
           padding: 0 1rem 0 0;
           height: 100%;
@@ -56,7 +47,7 @@
           min-width: 5.625rem;
           max-width: 9.25rem;
           &.active {
-            background-color: $light-grey;
+            background-color: $light-grey !important;
             border-bottom: 0;
             color: $theme-color;
             position: relative;
@@ -70,6 +61,10 @@
               bottom: 0;
               z-index: 1;
             }
+            .close {
+              opacity: 1;
+              background-color: $light-grey;
+            }
             .btn {
               .sub-label {
                 display: block;
@@ -78,6 +73,12 @@
               svg {
                 color: #f2994ab0 !important;
               }
+            }
+          }
+          &:hover {
+            background-color: $secondary-color;
+            .close {
+              opacity: 1;
             }
           }
           .btn {
@@ -100,32 +101,34 @@
             }
             &:hover {
               background-color: unset !important;
+
+            }
+          }
+          > .close {
+            position: absolute;
+            right: 1px;
+            padding: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            width: 30px;
+            display: flex;
+            justify-content: center;
+            background-color: $secondary-color;
+            i {
+              font-size: $font-small;
+              &::before {
+                content: '\e9b3';
+                margin-left: unset !important;
+                margin-right: unset !important;
+                margin: .2em !important;
+              }
             }
           }
         }
-        > .close {
-          position: absolute;
-          right: 0.35rem;
-          padding: 0;
-          top: 50%;
-          transform: translateY(-50%);
-          display: flex;
-          align-items: center;
-          opacity: 0;
-          width: 30px;
-          display: flex;
-          justify-content: end;
-          background-color: $secondary-color;
-          i {
-            font-size: $font-small;
-            &::before {
-              content: '\e9b3';
-              margin-left: unset !important;
-              margin-right: unset !important;
-              margin: .2em !important;
-            }
-          }
-        }
+        
         .modified-dot-icon {
           position: absolute;
           right: 0.5rem;

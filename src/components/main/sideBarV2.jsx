@@ -557,7 +557,7 @@ class SideBarV2 extends Component {
 
   renderSearch() {
     return (
-      <div tabIndex={0} className='d-flex align-items-center mb-2 search-container'>
+      <div tabIndex={0} className='d-flex align-items-center my-1 search-container'>
         <SearchIcon className='mr-2' />
         <input
           ref={(element) => {
@@ -703,7 +703,7 @@ class SideBarV2 extends Component {
       : 'Add/Import Collection'
     return (
       getCurrentUser() && (
-        <div className='d-flex align-items-center justify-content-end mb-2'>
+        <div className='d-flex align-items-center justify-content-end'>
           {/* <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span> */}
         </div>
       )

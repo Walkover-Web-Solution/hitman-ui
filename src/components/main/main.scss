@@ -83,7 +83,7 @@ html body {
   }
 .dropdown-menu {
   max-width: 260px;
-  left: -10px !important;
+  left: -36px !important;
   a {
     max-width: 180px;
     white-space: nowrap;
@@ -153,7 +153,7 @@ html body {
   color: $theme-color;
 }
 .page-title {
-  padding: 0 4px;
+  padding: 0 2px;
   border-radius: 2px;
   width: max-content;
   font-size: 1.75rem;
@@ -1190,7 +1190,7 @@ button.btn.btn-secondary {
             outline: none;
           }
           &:hover {
-            background-color: rgba(128, 128, 128, 0.137);
+            background-color: #d6d2d28f;
           }
         }
       }
@@ -3760,7 +3760,7 @@ body .tox {
     padding-right: 4px !important;
     border-radius: 3px 3px;
       &:hover {
-        background-color:rgba(128, 128, 128, 0.205);
+        background-color:#d6d2d28f;
       }
   }
  }
