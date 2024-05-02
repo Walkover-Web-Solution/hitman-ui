@@ -106,9 +106,9 @@ class UserProfileV2 extends Component {
         <div className='add-button d-flex align-items-center'>
           <button className='mr-1 px-1 btn btn-light' onClick={this.handleAddNewClick}>New</button>
           <button className='btn btn-light px-1' onClick={this.handleImportClick}>Import</button>
-        </div>
         <OpenApiForm show={this.state.showImportModal}  onHide={() => { this.handleImportClick() }} />
         <CollectionForm {...this.props} show={this.state.showNewCollectionModal} title='Add new Collection' onHide={() => { this.handleAddNewClick() }} />
+        </div>
       </div>
     )
   }
@@ -130,7 +130,7 @@ class UserProfileV2 extends Component {
   renderUserDetails() {
     const { name, email } = this.getUserDetails()
     return (
-      <div className='profile-details border-bottom plr-3 d-flex align-items-center' onClick={() => { }}>
+      <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center' onClick={() => { }}>
         <div className='user-icon mr-2'>
           <img src={User} alt='user' />
         </div>

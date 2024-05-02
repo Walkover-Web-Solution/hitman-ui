@@ -2632,11 +2632,11 @@ class DisplayEndpoint extends Component {
             <Dropdown as={ButtonGroup}>
               <button
                 id='api_save_btn'
-                className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader btn-sm' : 'btn btn-outline orange btn-sm'}
+                className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader btn-sm d-flex align-items-center' : 'btn btn-outline orange btn-sm d-flex align-items-center'}
                 type='button'
                 onClick={() => this.handleSave()}
               >
-                <LiaSaveSolid className='save-icon'/>
+                <LiaSaveSolid className='save-icon' size={16}/>
                 {' '}
                 Save
               </button>
@@ -2651,6 +2651,7 @@ class DisplayEndpoint extends Component {
                         })
                       }
                     >
+                <LiaSaveSolid className='save-icon' size={16}/>
                       Save As
                     </Dropdown.Item>
                   </Dropdown.Menu>
@@ -2659,7 +2660,7 @@ class DisplayEndpoint extends Component {
             </Dropdown>
           ) : (
             <button
-              className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader btn-sm fs-4' : 'btn btn-outline orange btn-sm fs-4'}
+              className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader btn-sm fs-4 d-flex align-items-center' : 'btn btn-outline orange btn-sm fs-4 d-flex align-items-center'}
               type='button'
               id='save-endpoint-button'
               onClick={() => this.handleSave()}
