@@ -51,7 +51,7 @@ const withQuery = (WrappedComponent) => {
     if (tabId?.isModified && tabId?.type == 'page' && tabId?.draft) {
       data = tabId?.draft
     }
-    return <WrappedComponent {...props} pageContent={data} pageContentLoading={data?.isLoading} pageContentError={error} />
+    return <WrappedComponent {...props} pageContent={data} currentPageId={pageId} pageContentLoading={data?.isLoading} pageContentError={error} />
   }
 }
 
@@ -153,7 +153,7 @@ class DisplayPage extends Component {
         <div className='pt-3'> 
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
           <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
-          <span>Modified at {moment(this.props?.pages?.[this.props?.pageId]?.updatedAt).fromNow()}</span>
+          <span>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
         </div>
       )
     }
