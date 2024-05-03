@@ -2635,9 +2635,8 @@ class DisplayEndpoint extends Component {
                 type='button'
                 onClick={() => this.handleSave()}
               >
-                <LiaSaveSolid className='save-icon' size={16}/>
-                {' '}
-                Save
+                <LiaSaveSolid className='save-icon mr-1' size={16}/>
+                <span>Save</span>
               </button>
               {getCurrentUser() ? (
                 <>
@@ -2650,7 +2649,6 @@ class DisplayEndpoint extends Component {
                         })
                       }
                     >
-                <LiaSaveSolid className='save-icon' size={16}/>
                       Save As
                     </Dropdown.Item>
                   </Dropdown.Menu>

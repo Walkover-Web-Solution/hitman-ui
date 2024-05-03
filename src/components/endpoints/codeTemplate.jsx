@@ -11,6 +11,7 @@ import { ReactComponent as CopyIcon } from '../../assets/icons/copyIcon.svg'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
 import { RiCloseLine } from "react-icons/ri";
 import { RxCopy } from "react-icons/rx";
+import IconButton from '../common/iconButton'
 
 
 const HTTPSnippet = require('httpsnippet')
@@ -91,7 +92,9 @@ class CodeTemplate extends Component {
             <div className='code-heading mb-3 d-flex justify-content-center align-items-center'>
               <span className={this.props.theme === 'light' ? 'col-black' : 'col-white'}>Sample code</span>
               {this.props.showClosebtn && <div className='d-flex justify-content-end flex-grow-1'>
-                <RiCloseLine color='black' className='cur-pointer' onClick={this.handleCloseClick} />
+                <IconButton>
+                  <RiCloseLine color='black' className='cur-pointer' onClick={this.handleCloseClick} />
+                </IconButton>
               </div>}
             </div>
             <div className="select-code-wrapper d-flex mb-3 img">
@@ -145,9 +148,9 @@ class CodeTemplate extends Component {
                     }, 2000)
                   })
                 }
-                className='copy-to-clipboard'
+                className='copy-to-clipboard mt-1'
               >
-                <button>{this.state.copied ? <span className='text-success'>Copied! </span> : <RxCopy className='cur-pointer' color={this.props.theme === 'light' ? 'black' : "white"} />}</button>
+                <button >{this.state.copied ? <span className='text-success'>Copied! </span> : <IconButton><RxCopy className='cur-pointer' color={this.props.theme === 'light' ? 'black' : "white"} /></IconButton>}</button>
               </CopyToClipboard>
             </div>{' '}
             <div className='ace-editor-wrapper'>

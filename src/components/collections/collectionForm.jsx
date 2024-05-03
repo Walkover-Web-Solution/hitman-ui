@@ -79,13 +79,14 @@ class CollectionForm extends Form {
   }
 
   redirectToCollection(collection) {
+    debugger
     const { viewLoader } = this.state
     if (!collection.data) {
       console.error('collection.data is undefined')
       return // or handle this case appropriately
     }
     const { id: collectionId } = collection.data
-    if (collection.success && viewLoader.doc && !this.props.setDropdownList) {
+    if (collection.success) {
       const { orgId } = this.props.match.params
       this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
     }
