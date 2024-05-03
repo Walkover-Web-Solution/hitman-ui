@@ -20,6 +20,8 @@ import { ReactComponent as CancelRequest } from '../../assets/icons/cancelReques
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 import endpointService from './endpointService'
 import { bodyTypesEnums } from '../common/bodyTypeEnums'
+import  IconButtons  from '../common/iconButton'
+import { BsThreeDots } from "react-icons/bs"
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -207,6 +209,8 @@ class Endpoints extends Component {
   }
 
   displayEndpointName(endpointId) {
+    let isUserOnPublishedPage = isOnPublishedPage()
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
     return (
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
@@ -222,7 +226,7 @@ class Endpoints extends Component {
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         ) : (
-          <div className='sidebar-accordion-item'>
+          <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`}>
             <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
               {this.props.endpoints[endpointId].requestType}
             </div>
@@ -235,7 +239,7 @@ class Endpoints extends Component {
 
   displayDeleteOpt(endpointId) {
     return (
-      <div className='dropdown-item' onClick={() => this.openDeleteEndpointModal(endpointId)}>
+      <div className='dropdown-item text-danger d-flex' onClick={() => this.openDeleteEndpointModal(endpointId)}>
       <DeleteIcon /> Delete
     </div>
     )
@@ -243,9 +247,8 @@ class Endpoints extends Component {
 
   displayDuplicateOpt(endpointId) {
     return (
-      <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.endpoints[endpointId])}>
-        <Duplicate />
-        Duplicate
+      <div className='dropdown-item d-flex' onClick={() => this.handleDuplicate(this.props.endpoints[endpointId])}>
+        <Duplicate /> Duplicate
       </div>
     )
   }
@@ -291,16 +294,16 @@ class Endpoints extends Component {
   displayEndpointOptions(endpointId) {
     return (
       <div className='sidebar-item-action'>
-        <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-          <i className='uil uil-ellipsis-v' />
+        <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+        <IconButtons><BsThreeDots /></IconButtons>
         </div>
 
         <div className='dropdown-menu dropdown-menu-right'>
-          <div className='dropdown-item' onClick={() => this.openEditEndpointForm(endpointId)}>
+          <div className='dropdown-item d-flex' onClick={() => this.openEditEndpointForm(endpointId)}>
             <RenamedItem /> Rename
           </div>
-          {this.displayDeleteOpt(endpointId)}
           {this.displayDuplicateOpt(endpointId)}
+          {this.displayDeleteOpt(endpointId)}
           {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
         </div>
       </div>
@@ -330,7 +333,7 @@ class Endpoints extends Component {
   displaySingleEndpoint(endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     let isUserOnPublishedPage = isOnPublishedPage()
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : ''
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
     return (
       <>
         <div 
@@ -344,11 +347,11 @@ class Endpoints extends Component {
         style={this.props.draggingOverId === endpointId ? { borderTop:'3px solid red'}: null}
         >
           <div className={this.props?.endpoints[endpointId]?.state} />
-          <div className='sidebar-toggle d-flex justify-content-between'>
+          <div className='sidebar-toggle d-flex justify-content-between mt-1'>
             <button>
+            <div className={`side-bar d-flex ${isSelected ? 'Selected' : ''}`}>
             <button
               tabIndex={-1}
-              className={isSelected}
               onClick={() => {
                 this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
               }}
@@ -356,7 +359,9 @@ class Endpoints extends Component {
                 this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
               }
             >
+              
               {this.displayEndpointName(endpointId)}
+              
             </button>
               <div className='d-flex align-items-center'>
                 {isDashboardRoute(this.props, true) &&
@@ -365,6 +370,7 @@ class Endpoints extends Component {
                 {/* <div className='ml-1 published-icon transition'>
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
+              </div>
               </div>
               </button>
           </div>

@@ -19,6 +19,8 @@ import { ReactComponent as EyeIcon } from '../../assets/icons/eye.svg'
 import { ReactComponent as EyeDisabledIcon } from '../../assets/icons/eyeDisabled.svg'
 import { ReactComponent as NoEnvVariablesImage } from '../../assets/icons/noEnvVariables.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
+import IconButton from '../common/iconButton'
+import { IoIosArrowDown } from "react-icons/io"
 
 const mapStateToProps = (state) => {
   return {
@@ -40,6 +42,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class Environments extends Component {
+
   state = {
     currentEnvironmentId: null,
     environmentFormName: null,
@@ -48,6 +51,7 @@ class Environments extends Component {
     environmentToBeEdited: {},
     publicEnvironmentName: 'Select Environment'
   }
+
 
   async componentDidMount() {
     if (!navigator.onLine) {
@@ -188,7 +192,6 @@ class Environments extends Component {
       </div>
     )
   }
-
   render() {
     let env = isDashboardRoute(this.props)
       ? this.props.environment.environments[this.props.environment.currentEnvironmentId]
@@ -268,19 +271,21 @@ class Environments extends Component {
                 }
                 className={`environment-buttons addEniButton ${env ? 'hover' : ''}`}
               >
-                {env ? <EyeIcon className='cursor-pointer' /> : <EyeDisabledIcon />}
+                <IconButton>{env ? <EyeIcon className='cursor-pointer m-1' /> : <EyeDisabledIcon className='m-1'/>}</IconButton>
               </div>
             )}
 
             {isDashboardRoute(this.props) && (
+              <>
               <div className='select-environment-dropdown border-radius-right-none'>
                 <Dropdown className=''>
                   <Dropdown.Toggle variant='default' id='dropdown-basic'>
-                    <span className='truncate mr-1'>
+                    <span className='truncate'>
                       {this.props.environment.environments[this.props.environment.currentEnvironmentId]
                         ? this.props.environment.environments[this.props.environment.currentEnvironmentId].name
                         : 'No Environment'}
                     </span>
+                    <IconButton><IoIosArrowDown className='m-1'/></IconButton>
                   </Dropdown.Toggle>
                   <Dropdown.Menu alignRight>
                     <Dropdown.Item onClick={() => this.handleEnv(null)} key='no-environment'>
@@ -301,6 +306,7 @@ class Environments extends Component {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
+              </>
             )}
           </div>
         )

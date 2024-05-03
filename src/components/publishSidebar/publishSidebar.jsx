@@ -10,7 +10,7 @@ import { bulkPublish } from './redux/bulkPublishAction'
 import { toast } from 'react-toastify'
 import './checkBoxTreeView.scss'
 import './publishSidebar.scss'
-
+import { Button } from 'react-bootstrap'
 const saveAsSidebarStyle = {
   position: 'fixed',
   background: '#F8F8F8',
@@ -111,12 +111,12 @@ function PublishSidebar(props) {
   function RenderFooter() {
     return (
       <div className='d-flex'>
-        <button className='btn btn-primary justify-content-center api-save-btn' onClick={sendPublishRequest}>
+        <Button variant='btn btn-outline' className='m-1 btn-sm fs-4' onClick={sendPublishRequest}>
           Publish
-        </button>
-        <button className='ml-2 btn btn-secondary justify-content-center api-cancel-btn' onClick={() => props.closePublishSidebar()}>
+        </Button>
+        <Button variant='btn btn-outline' className='m-1 btn-sm fs-4' onClick={() => props.closePublishSidebar()}>
           Cancel
-        </button>
+        </Button>
       </div>
     )
   }

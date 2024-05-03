@@ -278,11 +278,11 @@ class EnvironmentVariables extends Component {
                 <hr />
                 <div>
                   <div className='text-left'>
-                    <button className='btn btn-primary btn-lg mr-2' id='add_env_save_btn'>
+                    <button className='btn btn-primary btn-sm fs-4 mr-2' id='add_env_save_btn'>
                       Save
                     </button>
 
-                    <button className='btn btn-secondary outline btn-lg' onClick={this.props.onHide}>
+                    <button className='btn btn-secondary outline btn-sm fs-4' onClick={this.props.onHide}>
                       Cancel
                     </button>
                   </div>

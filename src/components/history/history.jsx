@@ -87,7 +87,7 @@ class History extends Component {
       Object.keys(history).length !== 0 && (
         <Dropdown.Item
           key={history.id}
-          className='btn d-flex align-items-center mb-2'
+          className='btn d-flex align-items-center mb-2 pt-2'
           onClick={() => {
             this.openHistorySnapshot(history.id)
           }}
@@ -173,7 +173,7 @@ class History extends Component {
         </li>
       </ul>
     ))
-    return <div className='mt-3 dropdown-menu-center'>{dropdowns}</div>
+    return <div className='mt-3 dropdown-menu-center px-2'>{dropdowns}</div>
   }
 
   render() {

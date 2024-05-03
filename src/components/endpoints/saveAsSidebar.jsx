@@ -7,6 +7,8 @@ import _ from 'lodash'
 import ShowCaseSaveAsModal from './showCaseSaveAsModal/showCaseSaveAsModal'
 import Input from '../common/input'
 import { trimString } from '../common/utility'
+import  IconButtons  from '../common/iconButton'
+import { MdOutlineClose } from "react-icons/md";
 
 const mapStateToProps = (state) => {
   return {
@@ -125,14 +127,9 @@ class SaveAsSidebar extends Form {
         >
           <div className='custom-collection-modal-container modal-header align-items-center'>
             <div className='modal-title h4'>{this.props.location.pathname.split('/')[5] !== 'new' ? 'Save As' : 'Save'}</div>
-            <button
-              className='close'
-              onClick={() => {
+            <IconButtons><MdOutlineClose className='fs-2'  onClick={() => {
                 this.props.onHide()
-              }}
-            >
-              <span aria-hidden='true'>×</span>
-            </button>
+              }}/></IconButtons>
           </div>
           <div className='drawer-body'>
             <form className='desc-box form-parent' onSubmit={this.handleSubmit}>

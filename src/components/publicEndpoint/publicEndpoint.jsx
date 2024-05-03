@@ -484,11 +484,8 @@ class PublicEndpoint extends Component {
                 </div>
               ) : (
                 <>
-                  <div className='custom-loading-container'>
-                    <div className='loading-content'>
-                      <button className='spinner-border' />
-                      <p className='mt-3'>Loading</p>
-                    </div>
+                <div className='custom-loading-container'>
+                <progress class="pure-material-progress-linear w-25"/>
                   </div>
                 </>
               )}
