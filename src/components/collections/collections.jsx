@@ -7,7 +7,7 @@ import shortId from 'shortid'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
 import { isDashboardRoute, openExternalLink, getParentIds, isOnPublishedPage } from '../common/utility'
 import collectionsService from './collectionsService'
-import { addCollection, deleteCollection, duplicateCollection, updateCollection, addCustomDomain } from './redux/collectionsActions'
+import { addCollection, deleteCollection, duplicateCollection, updateCollection, addCustomDomain, moveCollection } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
 import TagManager from 'react-gtm-module'
@@ -30,8 +30,9 @@ import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTags
 // import {ReactComponent as ImportVersion} from '../../assets/icons/importVersionSign.svg'
 // import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
 import { store } from '../../store/store'
-import { MdExpandMore } from "react-icons/md"
-
+import { MdExpandMore } from 'react-icons/md'
+import generalApiService from '../../services/generalApiService'
+import { toast } from 'react-toastify'
 
 const EMPTY_STRING = ''
 
@@ -49,6 +50,7 @@ const mapDispatchToProps = (dispatch) => {
     add_collection: (newCollection) => dispatch(addCollection(newCollection)),
     update_collection: (editedCollection) => dispatch(updateCollection(editedCollection)),
     delete_collection: (collection, props) => dispatch(deleteCollection(collection, props)),
+    move_collection: (collection) => dispatch(moveCollection(collection)),
     duplicate_collection: (collection) => dispatch(duplicateCollection(collection)),
     add_custom_domain: (collectionId, domain) => dispatch(addCustomDomain(collectionId, domain)),
     add_new_tab: () => dispatch(addNewTab()),
@@ -67,7 +69,10 @@ class CollectionsComponent extends Component {
       defaultPublicLogo: hitmanLogo,
       publicLogoError: false,
       showRemoveModal: false,
-      selectedCollectionIds: []
+      selectedCollectionIds: [],
+      showOrgModal: false,
+      moveCollection: null,
+      orgs: JSON.parse(window.localStorage.getItem('organisationList'))
     }
     this.names = {}
   }
@@ -144,6 +149,29 @@ class CollectionsComponent extends Component {
 
   async handleDuplicateCollection(collectionCopy) {
     this.props.duplicate_collection(collectionCopy)
+  }
+
+  async handleOrgModalOpen(collection) {
+    this.setState({ showOrgModal: true })
+    this.setState({ moveCollection: collection })
+  }
+
+  async handleMoveCollection(moveToOrgId) {
+    this.setState({ showOrgModal: false })
+    generalApiService
+      .moveCollectionsAndPages(moveToOrgId, this.state.moveCollection)
+      .then((response) => {
+        this.props.move_collection(response.data)
+
+        toast.success("collection Moved Succesfully")
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  async handleOrgModalClose() {
+    this.setState({ showOrgModal: false })
   }
 
   async handleGoToDocs(collection) {
@@ -395,6 +423,10 @@ class CollectionsComponent extends Component {
                               <GoToDocs /> Go to API Documentation
                             </div>
                           )}
+                          <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
+                            {' '}
+                            Move
+                          </div>
                           {/* {
                   isAdmin()
                     ? (
@@ -560,6 +592,17 @@ class CollectionsComponent extends Component {
     if (isDashboardRoute(this.props, true)) {
       return (
         <div>
+          {this.state.showOrgModal && (
+            <div>
+              <div>
+                {this.state.orgs.map((org, index) => (
+                  <button onClick={() => this.handleMoveCollection(org.id)} key={org.id}>
+                    {org.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           {this.state.showPublishDocsModal &&
             this.showPublishDocsModal(() =>
               this.setState({

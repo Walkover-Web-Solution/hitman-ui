@@ -95,6 +95,12 @@ function collectionsReducer(state = initialState, action) {
         ...state,
         [action.collection.id]: action.collection
       }
+      case collectionsActionTypes.MOVE_COLLECTION:
+        const { id } = action.payload;
+        const updatedCollections = { ...state };
+        delete updatedCollections[id];
+      
+        return state.collections = updatedCollections;
 
     case collectionsActionTypes.ON_COLLECTION_DUPLICATED: {
       collections = { ...state }
