@@ -23,6 +23,8 @@ import IconButton from '../common/iconButton'
 import { IoIosArrowDown } from "react-icons/io"
 import OpenApiForm from '../openApi/openApiForm'
 import CollectionForm from '../collections/collectionForm'
+import { MdSwitchLeft } from "react-icons/md"
+import { FaUser } from "react-icons/fa"
 
 const mapStateToProps = (state) => {
   return {
@@ -136,9 +138,9 @@ class UserProfileV2 extends Component {
   renderUserDetails() {
     const { name, email } = this.getUserDetails()
     return (
-      <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center' onClick={() => { }}>
+      <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center py-1' onClick={() => { }}>
         <div className='user-icon mr-2'>
-          <img src={User} alt='user' />
+        <FaUser size={16} />
         </div>
         <div className='profile-details-user-name'>
           {/* <span className='org-name'>{name}</span> */}
@@ -156,8 +158,8 @@ class UserProfileV2 extends Component {
           this.openAccountAndSettings()
         }}
       >
-        <Users className='mr-2' size={14} />
-        <span>Invite User</span>
+        <Users className='mr-2' size={17} />
+        <span> Invite User</span>
       </div>
     )
   }
@@ -354,7 +356,7 @@ class UserProfileV2 extends Component {
         }}
       >
         <img src={Power} className='mr-2' size={14} alt='power-icon' />
-        <span className='mr-2'>Logout</span>
+        <span className='mr-2'> Logout</span>
       </div>
     )
   }
@@ -412,7 +414,7 @@ class UserProfileV2 extends Component {
           this.handleTrashClick()
         }}
       >
-        <MdDeleteOutline className='mr-2'/>
+        <MdDeleteOutline className='mr-2' size={17}/>
         <span className='mr-2'>Trash</span>
       </div>          
     )
@@ -591,17 +593,18 @@ class UserProfileV2 extends Component {
               as={React.forwardRef(({ children, onClick }, ref1) => this.renderAvatarWithOrg(onClick, ref1))}
               id='dropdown-custom-components'
             />
-            <Dropdown.Menu>
+            <Dropdown.Menu className='p-0'>
               {this.renderUserDetails()}
               <div className='profile-listing-container'>
                 {/* <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item> */}
                 {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
+                <div className='px-2 pb-2'>
                 <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
                 {/* <Dropdown.Divider /> */}
                 <Dropdown.Item>
                   {/* <div className='profile-menu'> */}
                   <span className='profile-details' onClick={this.toggleModal} type='button'>
-                    <img className='user-icon mr-2' src={SwitchRight} alt='icon' />
+                  <MdSwitchLeft size={18} />
                     Switch Organization
                   </span>
                   <GenericModal
@@ -622,6 +625,7 @@ class UserProfileV2 extends Component {
                 </Dropdown.Item>
                 <Dropdown.Item>{this.renderTrash()}</Dropdown.Item>
                 <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
+                </div>
               </div>
             </Dropdown.Menu>
           </Dropdown>

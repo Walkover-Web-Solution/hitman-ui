@@ -226,7 +226,7 @@ class Endpoints extends Component {
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         ) : (
-          <div className={`sidebar-accordion-item side-bar ${isSelected ? 'Selected' : ''}`}>
+          <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`}>
             <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
               {this.props.endpoints[endpointId].requestType}
             </div>
