@@ -12,6 +12,7 @@
   .tabs-container {
     width: 100%;
     position: relative;
+    padding-right: 10px;
     background-color: $secondary-color;
     .navs-container {
       width: calc(100% - 190px);
