@@ -25,6 +25,7 @@ import LoginSignupModal from './loginSignupModal'
 import Environments from '../environments/environments'
 import { IoCodeSlashOutline } from 'react-icons/io5'
 import { updateStateOfCurlSlider } from '../modals/redux/modalsActions.js'
+import IconButton from '../common/iconButton.jsx'
 
 const mapStateToProps = (state) => {
   return {
@@ -209,8 +210,10 @@ class ContentPanel extends Component {
                   {this.props.match.params.endpointId
                     && (
                       <div className='d-flex justify-content-center align-items-center code-curl-icon' onClick={() => this.handleCodeCurlClick()}>
-                        <IoCodeSlashOutline type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" className='mr-3' size={18} />
-                      </div>
+                     <IconButton>
+                       <IoCodeSlashOutline type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" size={18} />
+                     </IconButton>
+                    </div>
                     )}
 
                 </div>
