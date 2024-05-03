@@ -82,7 +82,7 @@ class UserProfileV2 extends Component {
         }}
       >
         <div className='d-flex align-items-center position-relative'>
-          <Avatar className='mr-2' color='#343a40' name={this.getCurrentOrg()?.name} size={30} round='4px' />
+          <Avatar className='mr-2' color='#343a40' name={getCurrentOrg()?.name} size={30} round='4px' />
           {this.renderOrgName()}
           {/* {getNotificationCount && getNotificationCount() > 0 &&
             <span className='user-notification-badge'>{getNotificationCount()}</span>} */}
@@ -96,7 +96,7 @@ class UserProfileV2 extends Component {
     const { name } = this.getUserDetails()
     return (
       <div>
-        <div className='org-name'>{this.getCurrentOrg()?.name || null}</div>
+        <div className='org-name'>{getCurrentOrg()?.name || null}</div>
         {/* <span className='profile-details-label-light'>{name}</span> */}
         {/* {
                 this.getNotificationCount() > 0 &&
@@ -104,12 +104,6 @@ class UserProfileV2 extends Component {
             } */}
       </div>
     )
-  }
-
-  getCurrentOrg() {
-    const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
-    // const filteredOrgsArray = this.getAllOrgs(organizations)
-    return organizations[0]
   }
 
   renderUserDetails() {
@@ -143,7 +137,7 @@ class UserProfileV2 extends Component {
 
   openAccountAndSettings = () => {
     const { history } = this.props
-    const orgId = this.getCurrentOrg()?.id
+    const orgId = getCurrentOrg()?.id
     history.push({ pathname: `/orgs/${orgId}/invite` })
   }
 
@@ -379,7 +373,7 @@ class UserProfileV2 extends Component {
   }
 
   handleTrashClick(){
-    const currentOrgId = getCurrentOrg().id; // Assuming getCurrentOrg() returns the current organization
+    const currentOrgId = getCurrentOrg().id;
     this.props.history.push(`/orgs/${currentOrgId}/trash`);
   };
 
