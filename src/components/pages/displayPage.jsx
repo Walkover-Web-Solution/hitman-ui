@@ -26,6 +26,7 @@ import { getPublishedContentByIdAndType } from '../../services/generalApiService
 import { useQuery } from 'react-query'
 import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
+import moment from 'moment'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
