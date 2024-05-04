@@ -65,6 +65,7 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           }
         }
         dispatch(onParentPageAdded(inivisiblePageData))
+        toast.success("Collection added successfully")
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
         }
@@ -161,7 +162,7 @@ export const deleteCollection = (collection, props) => {
       .deleteCollection(collection.id, collection)
       .then((res) => {
         const rootParentPageId = collection.rootParentId
-        deleteAllPagesAndTabsAndReactQueryData(rootParentPageId)
+        deleteAllPagesAndTabsAndReactQueryData(rootParentPageId, collection.id)
           .then((data) => {
             dispatch(deleteCollectionRequest(collection))
             dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })

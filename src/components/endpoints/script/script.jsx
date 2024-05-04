@@ -65,13 +65,6 @@ export class Script extends Component {
     row: nextLinePosition.row + snippetText.split('\n').length - 2, // Adjust for the newline character
     column: snippetText.split('\n')[snippetText.split('\n').length - 2].length // Column position of the end of the last line of the snippet
   };
-    // const position = { ...this.scriptEditor.editor.getCursorPosition() }
-    // const newPosition = {
-    //   row: position.row + 1,
-    //   column: 0
-    // }
-    // this.scriptEditor.editor.session.insert(newPosition, snippet?.value + '\n')
-    // this.scriptEditor.editor.scrollToLine(newPosition.row)
     editor.gotoLine(endOfInsertedSnippetPosition.row + 1, endOfInsertedSnippetPosition.column);
     editor.scrollToLine(endOfInsertedSnippetPosition.row);
     editor.focus();

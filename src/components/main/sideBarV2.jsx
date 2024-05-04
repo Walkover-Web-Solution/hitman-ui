@@ -637,21 +637,22 @@ class SideBarV2 extends Component {
     return (
       <div className='hm-sidebar-header d-flex justify-content-between align-items-center'>
         
-          <img
-          alt='Logo'
-          src={
-            this.props.collections[collectionKeys[0]]?.favicon
-              ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
-              : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
-          }
-          width='40'
-          height='40'
-        />
-          
-        <h4 className='hm-sidebar-title'>
-          {publishedCollectionTitle || collectionName || ''}
-          <span>API Documentation</span>
-        </h4>
+        {(this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl && (
+            <div className='hm-sidebar-logo'>
+              <img
+                id='publicLogo'
+                alt='public-logo'
+                src={
+                  this.props.collections[collectionKeys[0]]?.favicon
+                    ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
+                    : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
+                }
+                // onError={() => { this.setState({ publicLogoError: true })}}
+                width='60'
+                height='60'
+              />
+            </div>
+          ))}
         {isTechdocOwnDomain() && (
           <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5'>
             <TbLogin2 className='text-black' />

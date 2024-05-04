@@ -102,8 +102,7 @@ class CollectionForm extends Form {
     this.props.add_collection(
       { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
       null,
-      this.redirectToCollection.bind(this), this.props.history
-    )
+      this.redirectToCollection.bind(this))
     this.setState({
       data: {
         name: '',
