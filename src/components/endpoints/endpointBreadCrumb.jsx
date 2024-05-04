@@ -172,30 +172,26 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    this.setState({endpointTitle:e.target.value})
+    if (this.props?.isEndpoint) {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = e.currentTarget.value
+      this.props.setQueryUpdatedData(tempData)
+      this.props.update_name({ id: this.props?.match?.params?.endpointId, name: e.currentTarget.value })
+    }
   }
 
   handleInputBlur() {
-    const { match, isEndpoint, endpointContent, setQueryUpdatedData, update_name, pages } = this.props;
-    const endpointId = match?.params?.endpointId;
-    const trimmedName = trimString(endpointContent?.data?.name);
-  
-    if (isEndpoint) {
-      const tempData = { ...endpointContent, data: { ...endpointContent.data, name: this.state.endpointTitle } };
-      setQueryUpdatedData(tempData);
-      update_name({ id: endpointId, name: this.state.endpointTitle });
+    this.setState({ nameEditable: false })
+    if (this.props?.match?.params?.endpointId !== 'new' && trimString(this.props?.endpointContent?.data?.name).length === 0) {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = this.props?.pages?.[this.props?.match?.params?.endpointId]?.name
+      this.props.setQueryUpdatedData(tempData)
+    } else if (this.props?.match?.params?.endpointId === 'new' && !this.props?.endpointContent?.data?.name) {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = 'Untitled'
+      this.props.setQueryUpdatedData(tempData)
     }
-  
-    if (endpointId !== 'new' && trimmedName.length === 0) {
-      const newName = pages?.[endpointId]?.name;
-      setQueryUpdatedData({ ...endpointContent, data: { ...endpointContent.data, name: newName } });
-    } else if (endpointId === 'new' && !endpointContent?.data?.name) {
-      setQueryUpdatedData({ ...endpointContent, data: { ...endpointContent.data, name: 'Untitled' } });
-    }
-  
-    this.setState({ nameEditable: false });
   }
-  
 
   setEndpointData() {
     this.endpointId = this.props?.match?.params.endpointId
@@ -219,38 +215,18 @@ class EndpointBreadCrumb extends Component {
       <div className='endpoint-header'>
         <div className='panel-endpoint-name-container'>
           <div className='page-title-name'>
-            <input
-              ref={this.nameInputRef}
-              className={['endpoint-name-input form-control', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
-              name='enpoint-title'
-              style={{ width: 'auto', textTransform: 'capitalize' }}
-              onChange={(e) => this.handleInputChange(e)}
-              value={this.state.endpointTitle}
-              onBlur={() => {
-                this.handleInputBlur()
-              }}
-              maxLength='50'
-            />
-            <h3
+          <input
+             name='enpoint-title'
+             ref={this.nameInputRef}
               style={{ textTransform: 'capitalize' }}
-              className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
-            >
-              {this.props?.isEndpoint
+              className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
+              onChange={this.handleInputChange.bind(this)}
+              value={this.props?.isEndpoint
                 ? this.props?.pages?.[this.props?.match?.params?.endpointId]?.name ||
                   this.props?.history?.[this.props?.match?.params?.historyId]?.endpoint?.name ||
                   this.props?.endpointContent?.data?.name
                 : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
-              {this.props?.isEndpoint && (
-                <EditIcon
-                  className='fa fa-pencil-square-o ml-2 cursor-pointer '
-                  onClick={() => {
-                    this.setState({ nameEditable: true }, () => {
-                      this.nameInputRef.current.focus()
-                    })
-                  }}
-                />
-              )}
-            </h3>
+            />
           </div>
           {this.props.location.pathname.split('/')[5] !== 'new' && (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>

@@ -31,7 +31,9 @@ import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTags
 // import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
 import { store } from '../../store/store'
 import { MdExpandMore } from "react-icons/md"
-
+import  IconButtons  from '../common/iconButton'
+import { FiPlus } from "react-icons/fi"
+import { BsThreeDots } from "react-icons/bs"
 
 const EMPTY_STRING = ''
 
@@ -344,7 +346,7 @@ class CollectionsComponent extends Component {
     return (
       <React.Fragment key={collectionId}>
         <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
-          <button tabIndex={-1} variant='default' className={expanded ? 'expanded' : ''}>
+          <button tabIndex={-1} variant='default' className={`sidebar-hower ${expanded ? 'expanded' : ''}`}>
             <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
@@ -365,21 +367,34 @@ class CollectionsComponent extends Component {
               //  [info] options not to show on publihsed page
               isOnDashboardPage && (
                 <div className='d-flex align-items-center'>
-                  <div className='sidebar-item-action d-flex align-items-center'>
-                    <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
-                      <Plus />
+                  <div className='sidebar-item-action  d-flex align-items-center'>
+                    <div className='d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
+                      <IconButtons><FiPlus /></IconButtons>
                     </div>
-                    <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                      <i className='uil uil-ellipsis-v' />
+                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <IconButtons><BsThreeDots /></IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
                       {!this.props.collections[collectionId]?.importedFromMarketPlace && (
                         <>
-                          <div className='dropdown-item' onClick={() => this.openEditCollectionForm(collectionId)}>
+                          <div className='dropdown-item d-flex' onClick={() => this.openEditCollectionForm(collectionId)}>
                             <EditIcon /> Rename
                           </div>
+                          {this.props.collections[collectionId].isPublic && (
+                            <div className='dropdown-item d-flex' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
+                              <GoToDocs /> Go to API Documentation
+                            </div>
+                          )}
+                           <div
+                            className='dropdown-item d-flex'
+                            onClick={() => {
+                              this.TagManagerModal(collectionId)
+                            }}
+                          >
+                            <AddGoogleTag /> Add Google Tag Manager
+                          </div>
                           <div
-                            className='dropdown-item'
+                            className='dropdown-item text-danger d-flex'
                             onClick={() => {
                               this.openDeleteCollectionModal(collectionId)
                             }}
@@ -390,11 +405,7 @@ class CollectionsComponent extends Component {
                          <Duplicate/> {' '}
                         Duplicate
                       </div> */}
-                          {this.props.collections[collectionId].isPublic && (
-                            <div className='dropdown-item' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
-                              <GoToDocs /> Go to API Documentation
-                            </div>
-                          )}
+                          
                           {/* {
                   isAdmin()
                     ? (
@@ -414,14 +425,7 @@ class CollectionsComponent extends Component {
                     : null
                 } */}
 
-                          <div
-                            className='dropdown-item'
-                            onClick={() => {
-                              this.TagManagerModal(collectionId)
-                            }}
-                          >
-                            <AddGoogleTag /> Add Google Tag Manager
-                          </div>
+                         
                         </>
                       )}
                       {this.props.collections[collectionId]?.importedFromMarketPlace && (

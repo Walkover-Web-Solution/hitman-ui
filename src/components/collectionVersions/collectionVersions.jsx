@@ -18,6 +18,8 @@ import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { ReactComponent as ShareIcon } from '../../assets/icons/sharesign.svg'
+import { FiPlus } from "react-icons/fi"
+import { BsThreeDots } from "react-icons/bs"
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 
 const mapStateToProps = (state) => {
@@ -276,17 +278,17 @@ class CollectionVersions extends Component {
             {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action d-flex align-items-center'>
                 <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(versionId)}>
-                  <Plus />
+                <IconButtons><FiPlus /></IconButtons>
                 </div>
-                <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                  <i className='uil uil-ellipsis-v' />
+                <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                <IconButtons><BsThreeDots /></IconButtons>
                 </div>
                 <div className='dropdown-menu dropdown-menu-right'>
-                  <div className='dropdown-item' onClick={() => this.openEditVersionForm(versionId)}>
+                  <div className='dropdown-item d-flex' onClick={() => this.openEditVersionForm(versionId)}>
                     <EditIcon /> Edit
                   </div>
                   <div
-                    className='dropdown-item'
+                    className='dropdown-item text-danger d-flex'
                     onClick={() => {
                       this.openDeleteVersionModal(versionId)
                     }}

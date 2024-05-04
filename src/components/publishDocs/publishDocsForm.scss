@@ -93,18 +93,19 @@
     max-width: 18rem;
   }
   .cta-buton {
-    .form-group > div input:first-child {
+    .form-group>div input:first-child {
       max-width: 12rem;
     }
   }
-  .publish {
-  // .publish_collection_btn , .unpublish_doc_btn, .bulk_publish {
-  //   position: absolute;
-  //   right: 10rem;
-  // }
+  .page-title {
+    border: unset !important;
+    &:hover {
+      background-color: unset !important;
+      border: unset !important;
+      border-color: unset !important;
+    }
+  }
 }
-}
-
 .doc-title {
   font-style: normal;
   font-weight: 600;
