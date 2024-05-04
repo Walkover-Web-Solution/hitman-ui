@@ -129,7 +129,7 @@ class OpenApiForm extends Component {
 
   renderButtonGroup() {
     return (
-      <div className='text-left mt-4'>
+      <div className='text-left mt-2'>
         <button
           id='add_collection_import_btn'
           className='btn btn-primary btn-lg mr-2'
@@ -143,9 +143,6 @@ class OpenApiForm extends Component {
           }}
         >
           Import
-        </button>
-        <button className='btn btn-secondary outline btn-lg' onClick={(e) => this.handleCancel(e)}>
-          Back
         </button>
       </div>
     )

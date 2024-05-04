@@ -355,13 +355,13 @@ class PublicEndpoint extends Component {
         splitPaneElement.classList.remove('open');
         closeElement.classList.add('icon-none');
         hamburgerElement.classList.remove('icon-none');
-        logoElement.classList.remove('icon-none');
+        // logoElement.classList.remove('icon-none');
       }
       else {
         this.iconRef.current.classList.add('close-icon');
         splitPaneElement.classList.add('open');
         hamburgerElement.classList.add('icon-none');
-        logoElement.classList.add('icon-none');
+        // logoElement.classList.add('icon-none');
         closeElement.classList.remove('icon-none');
       }
     }
@@ -410,8 +410,8 @@ class PublicEndpoint extends Component {
         <span ref={this.iconRef} className={'hamberger-icon'}>
           <MdDehaze id='hamburgerIcon' className='icon-active fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
           <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
-          <span className='logo-name' id="logoName">
-            {this.props.collections[collectionKeys[0]]?.favicon && (
+          {/* <span className='logo-name' id="logoName"> 
+             {this.props.collections[collectionKeys[0]]?.favicon && (
                 <img
                     className='hamberger-img'
                     id='publicLogo'
@@ -425,10 +425,10 @@ class PublicEndpoint extends Component {
                     width='20'
                     height='20'
                   />
-                )}
+                 )} */}
               {/* <span className="icon-name">{this.props.collections[collectionId]?.name}</span> */}
 
-            </span>
+            {/* </span> */}
             {/* Original icons */}
           </span>
           {/* [info] part 3 */}

@@ -2663,7 +2663,8 @@ class DisplayEndpoint extends Component {
               id='save-endpoint-button'
               onClick={() => this.handleSave()}
             >
-              Save
+              <LiaSaveSolid className='save-icon mr-1' size={16}/>
+              <span>Save</span>
             </button>
           )
         ) : null}
