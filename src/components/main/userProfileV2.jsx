@@ -487,13 +487,13 @@ class UserProfileV2 extends Component {
 
   renderOrgListDropdown() {
     const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
-    const selectedOrg = organizations[0]
+    const selectedOrg = getCurrentOrg()
     return (
       <div className='org-listing-container '>
         <div className='org-listing-column d-flex flex-column'>
           {organizations.map((org, key) => (
             <button
-              className={`mb-2 p-2 btn btn-secondary ${org === selectedOrg ? 'active' : ''} `}
+              className={`mb-2 p-2 btn btn-secondary ${org?.id === selectedOrg?.id ? 'active' : ''} `}
               id='publish_collection_btn'
               // variant= 'btn btn-outline'
               key={key}

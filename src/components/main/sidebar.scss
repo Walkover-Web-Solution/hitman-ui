@@ -26,7 +26,7 @@
   max-width: 330px !important;
   width: unset;
   min-width: 250px !important;
-  background-color: white;
+  // background-color: $secondary-color;
 
   @media screen and (max-width:767px) {
     position: fixed !important;
