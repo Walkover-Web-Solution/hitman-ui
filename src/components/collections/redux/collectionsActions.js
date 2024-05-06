@@ -50,13 +50,15 @@ export const fetchCollection = (collectionId) => {
 }
 
 export const addCollection = (newCollection, openSelectedCollection, customCallback) => {
+  let inivisiblePageData, responseData
   newCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     collectionsApiService
       .saveCollection(newCollection)
       .then((response) => {
+        responseData = response
         dispatch(onCollectionAdded(response.data))
-        const inivisiblePageData = {
+        inivisiblePageData = {
           page: {
             id: response.data.rootParentId,
             type: 0,
@@ -64,21 +66,28 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
             collectionId: response.data.id
           }
         }
-        dispatch(onParentPageAdded(inivisiblePageData))
-        toast.success("Collection added successfully")
-        if (openSelectedCollection) {
-          openSelectedCollection(response.data.id)
-        }
-        if (customCallback) {
-          customCallback({ success: true, data: response.data })
-        }
       })
       .catch((error) => {
         dispatch(onCollectionAddedError(error.response ? error.response.data : error, newCollection))
         if (customCallback) {
           customCallback({ success: false })
         }
+        return;
       })
+
+    try {
+      dispatch(onParentPageAdded(inivisiblePageData))
+      toast.success("Collection added successfully")
+      if (openSelectedCollection) {
+        openSelectedCollection(responseData.data.id)
+      }
+      if (customCallback) {
+        customCallback({ success: true, data: responseData.data })
+      }
+    }
+    catch (error) {
+      console.log(error)
+    }
   }
 }
 
@@ -108,7 +117,6 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
   return (dispatch) => {
     editedCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
     const originalCollection = store.getState().collections[editedCollection.id]
-    dispatch(updateCollectionRequest({ ...originalCollection, ...editedCollection }))
     const id = editedCollection.id
     delete editedCollection.id
     delete editedCollection.requestId
@@ -117,6 +125,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
       .updateCollection(id, editedCollection)
       .then((response) => {
         dispatch(onCollectionUpdated(response.data))
+        dispatch(updateCollectionRequest({ ...originalCollection, ...editedCollection }))
         toast.success('Updated successfully')
         if (stopLoader) {
           stopLoader()

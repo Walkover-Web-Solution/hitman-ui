@@ -12,7 +12,7 @@ export default function ShowCaseSaveAsModal(props) {
     }
   })
 
-  const [pathData, setPathData] = useState(['organisation'])
+  const [pathData, setPathData] = useState(['currentOrganisation'])
 
   const getName = (id) => {
     const type = pages?.[id]?.type
@@ -66,7 +66,7 @@ export default function ShowCaseSaveAsModal(props) {
             <div className='d-flex justify-content-start align-items-center'>
               {index !== 0 && <span className='ml-1'>/</span>}
               <div onClick={() => handleGoBack(index)} className='ml-1 tab-line'>
-                {index === 0 ? JSON.parse(localStorage.getItem(singleId)).name : getName(singleId)}
+                {index === 0 ? JSON.parse(localStorage.getItem(singleId))?.name : getName(singleId)}
               </div>
             </div>
           )
