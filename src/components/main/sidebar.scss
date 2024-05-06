@@ -17,11 +17,10 @@
 }
 
 .split-sidebar>div:first-child {
-  max-width: 330px !important;
-  min-width: 250px !important;
+  min-width: 330px !important;
+  max-width: 400px !important;
   background-color: $secondary-color;
 }
-
 .split-sidebar-public>div:first-child {
   max-width: 330px !important;
   width: unset;
@@ -291,6 +290,8 @@ body .sidebar {
         }}
         .active-select{
           width: 100%;
+          margin-top: 4px;
+          height: 1.5rem;
           &.selected {
             background: $grey;
           }         
@@ -487,7 +488,7 @@ body .sidebar {
         margin-bottom: -0.35rem;
         font-size: $font-normal;
         display: block;
-        width: 100px;
+        max-width: 100px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -666,7 +667,7 @@ input[type='text']:focus {
     }
   }
 }
-.side-bar , .active-selected , .active-select , button{
+.side-bar , .active-selected , .active-select {
   &:hover {
     background: $grey;
   }
