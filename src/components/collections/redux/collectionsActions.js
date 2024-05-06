@@ -269,7 +269,7 @@ export const importApi = (collection, importType, website, customCallback, defau
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          toast.error('Collection not imported')
+          toast.error(error.response ? error.response.data : error)
           dispatch(onCollectionImportedError(error.response ? error.response.data : error))
           if (customCallback) customCallback({ success: false })
         })
@@ -282,7 +282,7 @@ export const importApi = (collection, importType, website, customCallback, defau
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
-          toast.error('Collection not imported')
+          toast.error(error.response ? error.response.data : error)
           dispatch(onCollectionImportedError(error?.response ? error?.response?.data : error))
           if (customCallback) customCallback({ success: false })
         })
