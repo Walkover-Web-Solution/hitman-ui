@@ -9,13 +9,16 @@ import { Snippets, preReqSnippets, postReqSnippets } from './snippets'
 export class Script extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       selectedRawBodyType: 'javascript',
-      scriptEditorText: ''
+      scriptEditorText: props.scriptText || '',
+      preScriptText: '',
+      postScriptText:''
+     
     }
     this.scriptEditor = ''
     this.scriptFetched = false
+    this.scriptEditorRef = React.createRef()
   }
 
   componentDidMount() {
@@ -25,8 +28,8 @@ export class Script extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.scriptText && !this.scriptFetched) {
-      this.setState({ scriptEditorText: this.props.scriptText })
+    if (this.props.scriptText && !this.scriptFetched && this.props.scriptText !== prevProps.scriptText) {
+      this.setState({ scriptEditorText: this.props.scriptText || '' })
       this.scriptFetched = true
     }
   }
@@ -41,14 +44,32 @@ export class Script extends Component {
   }
 
   insertSnippet(snippet) {
-    const position = { ...this.scriptEditor.editor.getCursorPosition() }
-    const newPosition = {
-      row: position.row + 1,
+    const { scriptEditorText } = this.state;
+    const editor = this.scriptEditorRef.current.editor;
+    const cursorPosition = editor.getCursorPosition();
+    const currentRow = cursorPosition.row;
+    const nextLinePosition = {
+      row: currentRow + 1,
       column: 0
-    }
-    this.scriptEditor.editor.session.insert(newPosition, snippet?.value + '\n')
-    this.scriptEditor.editor.scrollToLine(newPosition.row)
-  }
+    };
+
+    const snippetText = `${snippet?.value}\n`;
+    const updatedScriptText =
+    scriptEditorText.substring(0,  editor.session.getDocument().positionToIndex(nextLinePosition)) +
+    snippetText +
+    scriptEditorText.substring( editor.session.getDocument().positionToIndex(nextLinePosition));
+
+  this.setState({ scriptEditorText: updatedScriptText });
+  this.props.handleScriptChange(updatedScriptText, this.props.type)
+  const endOfInsertedSnippetPosition = {
+    row: nextLinePosition.row + snippetText.split('\n').length - 2, // Adjust for the newline character
+    column: snippetText.split('\n')[snippetText.split('\n').length - 2].length // Column position of the end of the last line of the snippet
+  };
+    editor.gotoLine(endOfInsertedSnippetPosition.row + 1, endOfInsertedSnippetPosition.column);
+    editor.scrollToLine(endOfInsertedSnippetPosition.row);
+    editor.focus();
+  };
+
 
   renderScriptEditor() {
     return (
@@ -56,7 +77,7 @@ export class Script extends Component {
         {' '}
         <AceEditor
           className='custom-raw-editor'
-          mode={this.state.selectedRawBodyType.toLowerCase()}
+          mode='javascript'
           theme='github'
           value={this.state.scriptEditorText}
           onChange={this.handleChange.bind(this)}
@@ -66,13 +87,11 @@ export class Script extends Component {
           editorProps={{
             $blockScrolling: false
           }}
+          ref={this.scriptEditorRef}
           onLoad={(editor) => {
             editor.focus()
             editor.getSession().setUseWrapMode(true)
             editor.setShowPrintMargin(false)
-          }}
-          ref={(e) => {
-            this.scriptEditor = e
           }}
         />
       </div>
@@ -81,12 +100,15 @@ export class Script extends Component {
 
   snippetsList() {
     let snippets
+    let text
     switch (this.props.type) {
       case 'Pre-Script':
         snippets = preReqSnippets
+        text = "Pre-Script are written in Javascript, and are run before the response is recieved."
         break
       case 'Post-Script':
         snippets = postReqSnippets
+        text = "Post-Script are written in Javascript, and are run after the response is recieved."
         break
       default:
         snippets = []
@@ -95,6 +117,7 @@ export class Script extends Component {
     return (
       <div className='snippets col-4'>
         <h4>Snippets</h4>
+        <p>{text}</p>
         {snippets.map((snippet, index) => (
           <div key={index} onClick={() => this.insertSnippet(Snippets[snippet])}>
             {Snippets[snippet].key}
@@ -112,6 +135,8 @@ export class Script extends Component {
       </div>
     )
   }
-}
+ 
+}                                                                                                                                                                             
+
 
 export default Script
