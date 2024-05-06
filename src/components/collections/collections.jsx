@@ -26,6 +26,7 @@ import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg
 import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
 import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
 import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTagsign.svg'
+import { RiShareForward2Line } from "react-icons/ri";
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ImportVersion} from '../../assets/icons/importVersionSign.svg'
 // import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
@@ -423,10 +424,6 @@ class CollectionsComponent extends Component {
                               <GoToDocs /> Go to API Documentation
                             </div>
                           )}
-                          <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
-                            {' '}
-                            Move
-                          </div>
                           {/* {
                   isAdmin()
                     ? (
@@ -454,6 +451,12 @@ class CollectionsComponent extends Component {
                           >
                             <AddGoogleTag /> Add Google Tag Manager
                           </div>
+
+                          {this.props.collections[collectionId].isPublic && (
+                            <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
+                              <RiShareForward2Line size={16} /> Move
+                            </div>
+                          )}
                         </>
                       )}
                       {this.props.collections[collectionId]?.importedFromMarketPlace && (
