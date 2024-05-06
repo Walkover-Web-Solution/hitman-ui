@@ -3,7 +3,7 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import Form from '../common/form'
-import { onEnter, toTitleCase, ADD_GROUP_MODAL_NAME } from '../common/utility'
+import { onEnter, ADD_GROUP_MODAL_NAME, validate, getOnlyUrlPathById } from '../common/utility'
 import { updatePage } from '../pages/redux/pagesActions'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -61,6 +61,14 @@ class SubPageForm extends Form {
 
   render() {
     const nameTitle = this.props.isEndpoint ? 'Endpoint Name' : 'Page Name'
+    const redirectUrl = ' Enter URL'
+    const pageSlug = 'Page Slug'
+    const tagLine = getOnlyUrlPathById(
+      this.props?.match?.params?.pageId || this.props?.match?.params?.endpointId,
+      this.props.pages,
+      'internal'
+    )
+    if (this.props.title === 'Rename') {
     return (
       <div
         onKeyPress={(e) => {
@@ -87,11 +95,11 @@ class SubPageForm extends Form {
                   {this.renderInput(
                     'urlName',
                     'URL Name',
-                    'URL Name',
+                    pageSlug,
                     true,
                     false,
                     false,
-                    '*URL name can only contain alphanumeric values and reserved keywords like - _ . ~'
+                    '*Page slug can only contain alphanumeric values and reserved keywords like - _ . ~'
                   )}
                 </div>
               </div>
@@ -108,6 +116,7 @@ class SubPageForm extends Form {
       </div>
     )
   }
+}
 }
 
 export default connect(null, mapDispatchToProps)(SubPageForm)
