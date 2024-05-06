@@ -595,9 +595,9 @@ class UserProfileV2 extends Component {
                 <div className='px-2 pb-2'>
                 <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
                 {/* <Dropdown.Divider /> */}
-                <Dropdown.Item>
+                <Dropdown.Item  onClick={this.toggleModal}>
                   {/* <div className='profile-menu'> */}
-                  <span className='profile-details' onClick={this.toggleModal} type='button'>
+                  <span className='profile-details' type='button'>
                   <MdSwitchLeft size={18} />
                     Switch Organization
                   </span>
