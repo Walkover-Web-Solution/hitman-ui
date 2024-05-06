@@ -430,8 +430,6 @@ class UserProfileV2 extends Component {
   }
 
   handleOrgClick(org, selectedOrg) {
-    console.log(org,selectedOrg)
-    // debugger
     this.toggleModal()
     const tabIdsToClose = this.props.tabs.tabsOrder
     this.setState({ selectedOrg: selectedOrg, currentOrg: org })
