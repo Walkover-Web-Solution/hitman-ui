@@ -4,11 +4,8 @@ import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import Groups from '../groups/groups'
 import Endpoints from '../endpoints/endpoints'
 import { toast } from 'react-toastify'
-import { updateDragDrop } from '../pages/redux/pagesActions'
 
 function CombinedCollections(props) {
-  const [draggingOverId, setDraggingOverId] = useState(null);
-  const [draggedIdSelected, setDraggedIdSelected] = useState(null);
   const dispatch = useDispatch()
 
   const { childIds, pages } = useSelector((state) => {
@@ -18,40 +15,6 @@ function CombinedCollections(props) {
     }
   })
 
-  const handleOnDragOver = (e)  =>  {
-    e.preventDefault()
-  }
-
-  const onDragEnter = (e, draggingOverId) => {
-    e.preventDefault();
-    setDraggingOverId(draggingOverId);
-  }
-  const onDragEnd = (e) => {
-    e.preventDefault()
-    setDraggingOverId(null)
-  }
-
-  const onDragStart = (draggedIdSelected) => {
-    setDraggedIdSelected(draggedIdSelected);
-  }
-
-  const onDrop = (e, droppedOnId) => {
-    e.preventDefault()
-    setDraggingOverId(null);
-
-    if (draggedIdSelected === droppedOnId) return ;
-
-    let draggedIdParentId = pages?.[draggedIdSelected]?.parentId
-    let droppedOnIdParentId = pages?.[droppedOnId]?.parentId
-
-    // if both data is not from same parent then stop the user 
-    if(draggedIdParentId != droppedOnIdParentId){
-      toast.error("Reordering is allowed inside the same parent")        
-      return ;
-    }
-
-    dispatch(updateDragDrop(draggedIdSelected,  droppedOnId))
-  }
   
   return (
     <div>
@@ -60,12 +23,12 @@ function CombinedCollections(props) {
         const commonProps = {
           key: singleId,
           ...props,
-          handleOnDragOver: handleOnDragOver,
-          onDragStart: onDragStart,
-          onDrop: onDrop,
-          onDragEnter: onDragEnter,
-          draggingOverId: draggingOverId,
-          onDragEnd:onDragEnd
+          handleOnDragOver: props.handleOnDragOver,
+          onDragStart: props.onDragStart,
+          onDrop: props.onDrop,
+          onDragEnter: props.onDragEnter,
+          draggingOverId: props.draggingOverId,
+          onDragEnd: props.onDragEnd
         }
         switch (type) {
           case 1:
