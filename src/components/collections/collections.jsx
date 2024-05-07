@@ -7,18 +7,15 @@ import shortId from 'shortid'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
 import { isDashboardRoute, openExternalLink, getParentIds, isOnPublishedPage } from '../common/utility'
 import collectionsService from './collectionsService'
-import { addCollection, deleteCollection, duplicateCollection, updateCollection, addCustomDomain, moveCollection } from './redux/collectionsActions'
+import { addCollection, deleteCollection, duplicateCollection, updateCollection, addCustomDomain } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
-import PublishCollectionInfo from '../main/publishCollectionInfo'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
-import ExpandIcon from '../../assets/icons/expand-arrow.svg'
-import { addNewTab, updateTab } from '../tabs/redux/tabsActions'
-import CollectionParentPages from '../collectionVersions/collectionParentPages'
+import { addNewTab } from '../tabs/redux/tabsActions'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
@@ -27,15 +24,9 @@ import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
 import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
 import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTagsign.svg'
 import { RiShareForward2Line } from "react-icons/ri";
-// import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
-// import {ReactComponent as ImportVersion} from '../../assets/icons/importVersionSign.svg'
-// import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
-import { store } from '../../store/store'
 import { MdExpandMore } from 'react-icons/md'
-import generalApiService from '../../services/generalApiService'
-import { toast } from 'react-toastify'
+import MoveModal from '../common/moveModal/moveModal'
 
-const EMPTY_STRING = ''
 
 const mapStateToProps = (state) => {
   return {
@@ -51,7 +42,6 @@ const mapDispatchToProps = (dispatch) => {
     add_collection: (newCollection) => dispatch(addCollection(newCollection)),
     update_collection: (editedCollection) => dispatch(updateCollection(editedCollection)),
     delete_collection: (collection, props) => dispatch(deleteCollection(collection, props)),
-    move_collection: (collection) => dispatch(moveCollection(collection)),
     duplicate_collection: (collection) => dispatch(duplicateCollection(collection)),
     add_custom_domain: (collectionId, domain) => dispatch(addCustomDomain(collectionId, domain)),
     add_new_tab: () => dispatch(addNewTab()),
@@ -62,6 +52,7 @@ const mapDispatchToProps = (dispatch) => {
 class CollectionsComponent extends Component {
   constructor(props) {
     super(props)
+    this.handleOrgModalClose = this.handleOrgModalClose.bind(this);
     this.state = {
       showCollectionForm: false,
       collectionFormName: '',
@@ -155,30 +146,13 @@ class CollectionsComponent extends Component {
   async handleOrgModalOpen(collection) {
     this.setState({ showOrgModal: true })
     this.setState({ moveCollection: collection })
-    return (
-      collectionsService.showMoveCollectionModal()
-    )
   }
 
-  async handleMoveCollection(moveToOrgId) {
-    this.setState({ showOrgModal: false })
-    generalApiService
-      .moveCollectionsAndPages(moveToOrgId, this.state.moveCollection)
-      .then((response) => {
-        this.props.move_collection(response.data)
-
-        toast.success("collection Moved Succesfully")
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }
-
-  async handleOrgModalClose() {
+  handleOrgModalClose() {
     this.setState({ showOrgModal: false })
   }
 
-  async handleGoToDocs(collection) {
+  handleGoToDocs(collection) {
     const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p?collectionId=${collection.id}`
     openExternalLink(publicDocsUrl)
   }
@@ -455,11 +429,11 @@ class CollectionsComponent extends Component {
                             <AddGoogleTag /> Add Google Tag Manager
                           </div>
 
-                          {!this.props.collections[collectionId].isPublic && (
+                          {/* {!this.props.collections[collectionId].isPublic && ( */}
                             <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
                               <RiShareForward2Line size={16} /> Move
                             </div>
-                          )}
+                          {/* )} */}
                         </>
                       )}
                       {this.props.collections[collectionId]?.importedFromMarketPlace && (
@@ -628,6 +602,7 @@ class CollectionsComponent extends Component {
               {this.showImportVersionForm()}
               {this.openTagManagerModal()}
               {this.showDeleteCollectionModal()}
+              {this.state.showOrgModal && <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />}
             </div>
           </div>
           {this.props.collectionsToRender.length > 0 ? (

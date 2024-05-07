@@ -1,7 +1,7 @@
 import React from 'react'
 import CollectionForm from './collectionForm'
 import DeleteModal from '../common/deleteModal'
-import MoveModal from '../common/moveModal'
+import MoveModal from '../common/moveModal/moveModal'
 
 function showCollectionForm(props, onHide, title, selectedCollection) {
   return <CollectionForm {...props} show onHide={onHide} title={title} edited_collection={selectedCollection} />
