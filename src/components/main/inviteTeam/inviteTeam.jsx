@@ -80,15 +80,15 @@ function InviteTeam() {
 
   const handleSendInvite = async (e) => {
     e.preventDefault()
-    if (!validateEmail(email)) {
-      toast.error('Invalid email format')
-      return
-    }
-
+    setLoading(true)
+    
     try {
-      setLoading(true)
+      if (!validateEmail(email)) {
+        toast.error('Invalid email format')
+        return
+      }
       const response = await inviteMembers(name, email)
-      if (response === true) {
+      if (response.status === 'success') {
         setUsers((prevUsers) => [{ name, email }, ...prevUsers])
         handleCloseModal()
       }

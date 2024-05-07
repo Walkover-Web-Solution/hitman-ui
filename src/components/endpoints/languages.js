@@ -3,7 +3,6 @@ import c from '../../assets/icons/c.svg'
 import http from '../../assets/icons/http.svg'
 import js from '../../assets/icons/js.svg'
 import java from '../../assets/icons/java.svg'
-import json from '../../assets/icons/json.svg'
 import shell from '../../assets/icons/shell.svg'
 import node from '../../assets/icons/node.svg'
 import php from '../../assets/icons/php.svg'
@@ -16,7 +15,7 @@ import ocaml from '../../assets/icons/ocaml.svg'
 import objectivec from '../../assets/icons/objectivec.svg'
 import r from '../../assets/icons/r.svg'
 
-const primaryLanguages = ['shell', 'node', 'php', 'python']
+const primaryLanguages = ['shell', 'axiosNode', 'php', 'python','node']
 const secondaryLanguages = ['c', 'csharp', 'clojure', 'go', 'http', 'java', 'javascript', 'objc', 'ocaml', 'r', 'ruby', 'swift']
 const languages = {
   node: {
@@ -98,6 +97,11 @@ const languages = {
     name: 'ocaml',
     mode: 'ocaml',
     imagePath: ocaml
+  },
+  axiosNode: {
+    name: 'Axios',
+    mode: 'javascript',
+    imagePath: node
   }
 }
 
