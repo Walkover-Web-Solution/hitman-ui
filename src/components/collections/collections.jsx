@@ -155,6 +155,9 @@ class CollectionsComponent extends Component {
   async handleOrgModalOpen(collection) {
     this.setState({ showOrgModal: true })
     this.setState({ moveCollection: collection })
+    return (
+      collectionsService.showMoveCollectionModal()
+    )
   }
 
   async handleMoveCollection(moveToOrgId) {
@@ -452,7 +455,7 @@ class CollectionsComponent extends Component {
                             <AddGoogleTag /> Add Google Tag Manager
                           </div>
 
-                          {this.props.collections[collectionId].isPublic && (
+                          {!this.props.collections[collectionId].isPublic && (
                             <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
                               <RiShareForward2Line size={16} /> Move
                             </div>
@@ -595,7 +598,7 @@ class CollectionsComponent extends Component {
     if (isDashboardRoute(this.props, true)) {
       return (
         <div>
-          {this.state.showOrgModal && (
+          {/* {this.state.showOrgModal && (
             <div>
               <div>
                 {this.state.orgs.map((org, index) => (
@@ -605,7 +608,7 @@ class CollectionsComponent extends Component {
                 ))}
               </div>
             </div>
-          )}
+          )} */}
           {this.state.showPublishDocsModal &&
             this.showPublishDocsModal(() =>
               this.setState({
