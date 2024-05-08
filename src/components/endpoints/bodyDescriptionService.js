@@ -30,59 +30,66 @@ function updateBodyDescription(body, isFirstTime, msg) {
   return bodyDescription
 }
 function generateBodyDescription(data, isFirstRun) {
-  try{
-  if (!data) {
-    return null;
-  }
-
-  let description;
-  let propertyKeys;
-
-  if (Array.isArray(data)) {
-    description = [];
-    propertyKeys = data.map((_, index) => index.toString());
-  } else {
-    description = {};
-    propertyKeys = Object.keys(data);
-  }
-
-  // Iterate over each property or index
-  propertyKeys.forEach((key) => {
-    const element = Array.isArray(data) ? data[parseInt(key)] : data[key];
-
-    if (typeof element === 'string' || typeof element === 'number' || typeof element === 'boolean') {
-      description[key] = {
-        value: isFirstRun ? element : null,
-        type: typeof element,
-        description: ''
-      };
-    } else if (Array.isArray(element)) {
-      const nestedDescription = generateBodyDescription(element, isFirstRun);
-      description[key] = {
-        value: nestedDescription,
-        type: 'array',
-        description: '',
-      };
-
-      // Set default value for arrays on first run
-      if (isFirstRun && nestedDescription.length > 0) {
-        description[key]['default'] = nestedDescription[0];
-      }
-    } else if (typeof element === 'object') {
-      // Recursively handle objects
-      description[key] = {
-        value: generateBodyDescription(element, isFirstRun),
-        type: 'object',
-        description: ''
-      };
+  try {
+    if (!data) {
+      return null
     }
-  });
 
-  return description;
-}catch (error) {
-  console.error("Error generating body description:", error);
-  return null;
-}
+    let description
+    let propertyKeys
+
+    if (Array.isArray(data)) {
+      description = []
+      propertyKeys = data.map((_, index) => index.toString())
+    } else {
+      description = {}
+      propertyKeys = Object.keys(data)
+    } 
+
+    // Iterate over each property or index
+    propertyKeys.forEach((key) => {
+      const element = Array.isArray(data) ? data[parseInt(key)] : data[key]
+
+      if (typeof element === 'string' || typeof element === 'number' || typeof element === 'boolean') {
+        description[key] = {
+          value: isFirstRun ? element : null,
+          type: typeof element,
+          description: ''
+        }
+      } else if (Array.isArray(element)) {
+        const nestedDescription = generateBodyDescription(element, isFirstRun)
+        description[key] = {
+          value: nestedDescription,
+          type: 'array',
+          description: ''
+        }
+
+        // Set default value for arrays on first run
+        if (isFirstRun && nestedDescription.length > 0) {
+          description[key]['default'] = nestedDescription[0]
+        }
+      } else if (typeof element === 'object') {
+        // Recursively handle objects
+        description[key] = {
+          value: generateBodyDescription(element, isFirstRun),
+          type: 'object',
+          description: ''
+        }
+      } else {
+        // Handle unexpected types with a default fallback
+        description[key] = {
+          value: null,
+          type: 'unknown',
+          description: 'Unexpected type'
+        }
+      }
+    })
+
+    return description
+  } catch (error) {
+    console.error('Error generating body description:', error)
+    return null
+  }
 }
 
 function preserveDefaultValue(bodyDescription) {
