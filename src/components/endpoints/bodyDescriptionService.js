@@ -29,55 +29,60 @@ function updateBodyDescription(body, isFirstTime, msg) {
   }
   return bodyDescription
 }
-
-function generateBodyDescription(body, isFirstTime) {
-  let bodyDescription = null
-  let keys = []
-  if (!body) {
-    return null
+function generateBodyDescription(data, isFirstRun) {
+  try{
+  if (!data) {
+    return null;
   }
-  if (Array.isArray(body)) {
-    bodyDescription = []
-    keys = ['0']
+
+  let description;
+  let propertyKeys;
+
+  if (Array.isArray(data)) {
+    description = [];
+    propertyKeys = data.map((_, index) => index.toString());
   } else {
-    bodyDescription = {}
-    keys = Object.keys(body)
+    description = {};
+    propertyKeys = Object.keys(data);
   }
 
-  for (let i = 0; i < keys.length; i++) {
-    const value = body[keys[i]]
-    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-      if (isFirstTime) {
-        bodyDescription[keys[i]] = {
-          value,
-          type: typeof value,
-          description: ''
-        }
-      } else {
-        bodyDescription[keys[i]] = {
-          value: null,
-          type: typeof value,
-          description: ''
-        }
+  // Iterate over each property or index
+  propertyKeys.forEach((key) => {
+    const element = Array.isArray(data) ? data[parseInt(key)] : data[key];
+
+    if (typeof element === 'string' || typeof element === 'number' || typeof element === 'boolean') {
+      description[key] = {
+        value: isFirstRun ? element : null,
+        type: typeof element,
+        description: ''
+      };
+    } else if (Array.isArray(element)) {
+      const nestedDescription = generateBodyDescription(element, isFirstRun);
+      description[key] = {
+        value: nestedDescription,
+        type: 'array',
+        description: '',
+      };
+
+      // Set default value for arrays on first run
+      if (isFirstRun && nestedDescription.length > 0) {
+        description[key]['default'] = nestedDescription[0];
       }
-    } else {
-      if (Array.isArray(value)) {
-        bodyDescription[keys[i]] = {
-          value: generateBodyDescription(value, isFirstTime),
-          type: 'array',
-          description: '',
-          default: generateBodyDescription(value, isFirstTime)[0]
-        }
-      } else {
-        bodyDescription[keys[i]] = {
-          value: generateBodyDescription(value, isFirstTime),
-          type: 'object',
-          description: ''
-        }
-      }
+    } else if (typeof element === 'object') {
+      // Recursively handle objects
+      description[key] = {
+        value: generateBodyDescription(element, isFirstRun),
+        type: 'object',
+        description: ''
+      };
     }
-  }
-  return bodyDescription
+  });
+
+  return description;
+}catch (error) {
+  console.error("Error generating body description:", error);
+  return null;
+}
 }
 
 function preserveDefaultValue(bodyDescription) {
