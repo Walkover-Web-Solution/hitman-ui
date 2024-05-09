@@ -66,8 +66,6 @@ class CollectionsComponent extends Component {
       showRemoveModal: false,
       selectedCollectionIds: [],
       showOrgModal: false,
-      moveCollection: null,
-      orgs: JSON.parse(window.localStorage.getItem('organisationList'))
     }
     this.names = {}
   }
@@ -584,17 +582,6 @@ class CollectionsComponent extends Component {
     if (isDashboardRoute(this.props, true)) {
       return (
         <div>
-          {/* {this.state.showOrgModal && (
-            <div>
-              <div>
-                {this.state.orgs.map((org, index) => (
-                  <button onClick={() => this.handleMoveCollection(org.id)} key={org.id}>
-                    {org.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )} */}
           {this.state.showPublishDocsModal &&
             this.showPublishDocsModal(() =>
               this.setState({
