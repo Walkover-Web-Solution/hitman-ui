@@ -78,16 +78,16 @@ class CodeTemplate extends Component {
   getClassForLanguages = (key) => {
     const commonClass = 'mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center';
     let classToReturn = key === this.selectedLanguage ? 'active ' + commonClass : commonClass;
-    return this.props.theme !== 'light' ? classToReturn + ' col-white' : classToReturn;
+    return this.props.theme !== 'light' ? classToReturn + ' ' : classToReturn;
   }
-
+ 
   render() {
     return (
       <div className={(this.props.match.params.endpointId) ? "show-curl-endpoint pubCodeWrapper" : "pubCodeWrapper"}>
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
             <div className='code-heading mb-3 d-flex justify-content-center align-items-center'>
-              <span className={this.props.theme === 'light' ? 'col-black' : 'col-white'}>Sample code</span>
+              <span className={this.props.theme === 'light' ? 'col-black' : 'col-black'}>Sample code</span>
               {this.props.showClosebtn && <div className='d-flex justify-content-end flex-grow-1'>
                 <RiCloseLine color='black' className='cur-pointer' onClick={this.handleCloseClick} />
               </div>}

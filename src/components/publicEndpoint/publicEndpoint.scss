@@ -733,11 +733,9 @@ button.toggleButton {
 }
 .pubCodeWrapper {
   z-index: 199;
-  padding: 15px;
   padding-top: 35px;
   width: 432px;
   min-width: 432px;
-  // background: #333333;
   transition: 300ms;
   .select-code-wrapper {
     flex-direction: row;
@@ -802,7 +800,7 @@ button.toggleButton {
 }
 .copy-button {
   position: absolute;
-  top: -1px;
-  right: 0;
+  top: 17px;
+  right: 15px;
   z-index: 100;
 }
