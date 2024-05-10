@@ -34,6 +34,7 @@ import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
+import { RiFolder2Fill } from "react-icons/ri";
 
 const EMPTY_STRING = ''
 
@@ -351,7 +352,8 @@ class CollectionsComponent extends Component {
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
                   <span className='versionChovron'>
-                  <MdExpandMore className='fs-4'/>
+                  <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
+                  <RiFolder2Fill size={13}  className='collection-icons d-inline mb-1 ml-1'/>
                   </span>
                   {collectionState === 'singleCollection' ? (
                     <div className='sidebar-accordion-item' onClick={() => this.openSelectedCollection(collectionId)}>

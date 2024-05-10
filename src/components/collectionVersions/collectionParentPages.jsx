@@ -38,6 +38,7 @@ import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
+import { IoMdDocument } from "react-icons/io"
 
 const mapStateToProps = (state) => {
   return {
@@ -500,7 +501,8 @@ class CollectionParentPages extends Component {
               >
                 <div className='d-flex align-items-center cl-name'>
                   <span className='versionChovron'>
-                  <MdExpandMore className='fs-4'/>
+                  <MdExpandMore size={13} className='collection-icons-arrow d-none '/>
+                  <IoMdDocument size={13} className='collection-icons d-inline  ml-1 mb-1'/>
                   </span>
                   <div
                     className='d-flex justify-content-between align-items-center name-parent-page'

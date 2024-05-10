@@ -28,6 +28,8 @@ import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
+import { IoMdDocument } from "react-icons/io"
+
 
 // import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
 // import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
@@ -196,9 +198,10 @@ class Groups extends Component {
               onClick={() => this.toggleSubPageIds(subPageId)}
             >
               <span className='versionChovron'>
-              <MdExpandMore className='fs-4'/>
+              <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
+                  <IoMdDocument size={13} className='collection-icons d-inline mb-1 ml-1 '/>
               </span>
-              <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
+              <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{this.props.pages[subPageId]?.name}</div>
             </div>
             
             {
