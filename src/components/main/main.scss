@@ -1211,6 +1211,9 @@ button.btn.btn-secondary {
 .modal {
   .modal-dialog {
     margin: 4rem auto;
+    &.modal-lg {
+      max-width: 500px;
+    }
 
     &.modal-sm {
       min-width: 35rem;
@@ -1223,7 +1226,7 @@ button.btn.btn-secondary {
       .modal-header {
         position: relative;
         border: none;
-        padding: 1.5rem;
+        padding: 12px;
         border-bottom: 1px solid #e5e5e5;
 
         &.not-loggedin {
@@ -1262,7 +1265,7 @@ button.btn.btn-secondary {
       }
 
       .modal-body {
-        padding: 1.5rem;
+        padding: 12px;
       }
     }
   }

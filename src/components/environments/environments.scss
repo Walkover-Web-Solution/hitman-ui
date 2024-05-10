@@ -27,7 +27,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 .custom-table-container {
-  height: 300px;
+  max-height: 300px;
   overflow: auto;
 
   thead th {
@@ -36,24 +36,36 @@ $border-color: rgba(227, 228, 230, 0.7);
     font-weight: 400;
     padding: 10px !important;
     color: #333333;
+    height: 38px !important;
   }
 
   tbody td {
     &.custom-td {
       padding: 0 10px !important;
       border: none;
+      .form-control {
+        height: 38px !important;
+    }
     }
 
     input.form-control {
       height: 36px;
       border: 1px solid #e0e0e0 !important;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 400;
       color: #000;
       border-radius: 4px;
       margin-bottom: 10px;
       box-shadow: none !important;
     }
+  }
+}
+.custom-environment-modal-container {
+  .custom-table-footer {
+    padding: 12px;
+  }
+  .modal-body {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
 }
 
