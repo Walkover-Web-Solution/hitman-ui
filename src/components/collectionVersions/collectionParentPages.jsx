@@ -354,14 +354,7 @@ class CollectionParentPages extends Component {
       selectedParentPageIndex: e.currentTarget.value
     })
   }
-
-  toggleParentPageIds(id) {
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-    this.props.update_isExpand_for_pages({
-      value: !isExpanded,
-      id: id
-    })
-
+  handleRedirect(id){
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
@@ -373,6 +366,25 @@ class CollectionParentPages extends Component {
       this.props.history.push(pathName)
     }
   }
+
+  handleToggle(e,id) {
+    e.stopPropagation();
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
+    this.props.update_isExpand_for_pages({
+      value: !isExpanded,
+      id: id
+    })
+  }
+
+  // toggleParentPageIds(id) {
+  //   const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
+  //   this.props.update_isExpand_for_pages({
+  //     value: !isExpanded,
+  //     id: id
+  //   })
+
+    
+  // }
 
   // renderVersion(rootId) {
   //   const versionToRender = this.props.pages[rootId].child;
@@ -494,12 +506,15 @@ class CollectionParentPages extends Component {
           <div className={`active-select d-flex align-items-center justify-content-between ${isSelected ? ' selected' : ''}`}>
               <div
                 className={`d-flex align-items-center cl-name ` }
-                onClick={() => {
-                  this.toggleParentPageIds(this.props.rootParentId)
+                onClick={(e) => {
+                  this.handleRedirect(this.props.rootParentId)
+                  if(!expanded){
+                  this.handleToggle(e,this.props.rootParentId)
+                  }
                 }}
               >
                 <div className='d-flex align-items-center cl-name'>
-                  <span className='versionChovron'>
+                  <span className='versionChovron' onClick={(e) => this.handleToggle(e, this.props.rootParentId)}>
                   <MdExpandMore className='fs-4'/>
                   </span>
                   <div
