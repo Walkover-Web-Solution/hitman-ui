@@ -1534,49 +1534,71 @@ table#custom-generic-table {
 
 .pubCodeWrapper {
   z-index: 199;
-  padding: 15px;
   padding-top: 35px;
   width: 432px;
   min-width: 432px;
-  background: #333333;
+  border-left: 1px solid rgba(128, 128, 128, 0.219);
+  border-right: 1px solid rgba(128, 128, 128, 0.219);
+  border-bottom: 1px solid rgba(128, 128, 128, 0.219);
   transition: 300ms;
 
   .select-code-wrapper {
-    flex-direction: row;
-    height: 30px;
-
     button {
-      height: 38px;
-    }
+      color: black;
+      border: 1px solid transparent !important;
 
-    .codeTemplateButtonMore {
-      height: 38px !important;
-      z-index: 1000;
-      width: 100px !important;
-
-      .dropdownMore {
-        border: none !important;
+      &:hover {
+        border-color: gray !important;
       }
 
-      .btn-primary {
-        &.active {
-          background-color: transparent !important;
-        }
+      &.active {
+        color: black !important;
+      }
+    }
 
-        &:focus {
-          background-color: transparent !important;
-          color: white !important;
+    .dropdown {
+      button {
+        border: 1px solid transparent !important;
+        color: black !important;
+        height: 30px !important;
+
+        &::after {
+          all: unset !important;
         }
 
         &:hover {
-          color: white;
+          border-color: gray !important;
+        }
+
+        &.active {
+          border: revert !important;
+        }
+
+        &.btn {
+          &.btn-primary {
+            &.active {
+              background-color: transparent !important;
+              border-color: 2px solid black !important;
+            }
+
+            &:focus {
+              background-color: transparent !important;
+            }
+          }
         }
       }
     }
+
   }
 
   .inner-editor {
     height: 100%;
+
+    #code-window-sidebar {
+      border-bottom: 1px solid rgba(128, 128, 128, 0.219);
+      border-top: 1px solid rgba(128, 128, 128, 0.219);
+      padding: 15px;
+    }
 
     .editor-body-wrapper {
       height: calc(100% - 6rem);
@@ -1584,11 +1606,16 @@ table#custom-generic-table {
       .ace-editor-wrapper {
         height: 100%;
         min-width: 0;
+        padding: 15px;
 
         div#ace-editor {
           height: 100% !important;
-          width: 400px !important;
+          border-radius: 10px;
         }
+      }
+
+      .ace_content {
+        padding-top: 0 !important;
       }
 
       padding: 0px;
@@ -1635,7 +1662,7 @@ table#custom-generic-table {
       }
     }
 
-    .codeTemplateButtonMore {
+
       .dropdown {
         button {
           color: black !important;
@@ -1664,7 +1691,7 @@ table#custom-generic-table {
           }
         }
       }
-    }
+
   }
 }
 
