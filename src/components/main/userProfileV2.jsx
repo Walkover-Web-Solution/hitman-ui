@@ -396,7 +396,7 @@ class UserProfileV2 extends Component {
   }
 
   handleTrashClick(){
-    const currentOrgId = getCurrentOrg().id;
+    const currentOrgId = getCurrentOrg()?.id;
     this.props.history.push(`/orgs/${currentOrgId}/trash`);
   };
 

@@ -14,11 +14,8 @@ import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
-import PublishCollectionInfo from '../main/publishCollectionInfo'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
-import ExpandIcon from '../../assets/icons/expand-arrow.svg'
-import { addNewTab, updateTab } from '../tabs/redux/tabsActions'
-import CollectionParentPages from '../collectionVersions/collectionParentPages'
+import { addNewTab } from '../tabs/redux/tabsActions'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
@@ -26,16 +23,13 @@ import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg
 import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
 import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
 import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTagsign.svg'
-// import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
-// import {ReactComponent as ImportVersion} from '../../assets/icons/importVersionSign.svg'
-// import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
-import { store } from '../../store/store'
-import { MdExpandMore } from "react-icons/md"
+import { RiShareForward2Line } from "react-icons/ri";
+import { MdExpandMore } from 'react-icons/md'
+import MoveModal from '../common/moveModal/moveModal'
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
 
-const EMPTY_STRING = ''
 
 const mapStateToProps = (state) => {
   return {
@@ -61,6 +55,7 @@ const mapDispatchToProps = (dispatch) => {
 class CollectionsComponent extends Component {
   constructor(props) {
     super(props)
+    this.handleOrgModalClose = this.handleOrgModalClose.bind(this);
     this.state = {
       showCollectionForm: false,
       collectionFormName: '',
@@ -69,7 +64,8 @@ class CollectionsComponent extends Component {
       defaultPublicLogo: hitmanLogo,
       publicLogoError: false,
       showRemoveModal: false,
-      selectedCollectionIds: []
+      selectedCollectionIds: [],
+      showOrgModal: false,
     }
     this.names = {}
   }
@@ -148,7 +144,16 @@ class CollectionsComponent extends Component {
     this.props.duplicate_collection(collectionCopy)
   }
 
-  async handleGoToDocs(collection) {
+  async handleOrgModalOpen(collection) {
+    this.setState({ showOrgModal: true })
+    this.setState({ moveCollection: collection })
+  }
+
+  handleOrgModalClose() {
+    this.setState({ showOrgModal: false })
+  }
+
+  handleGoToDocs(collection) {
     const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p?collectionId=${collection.id}`
     openExternalLink(publicDocsUrl)
   }
@@ -401,31 +406,12 @@ class CollectionsComponent extends Component {
                           >
                             <DeleteIcon /> Delete
                           </div>
-                          {/* <div className='dropdown-item' onClick={() => this.handleDuplicateCollection(this.props.collections[collectionId])}>
-                         <Duplicate/> {' '}
-                        Duplicate
-                      </div> */}
-                          
-                          {/* {
-                  isAdmin()
-                    ? (
-                      <div
-                        className='dropdown-item'
-                        onClick={() => {
-                          this.openPublishDocs(this.props.collections[collectionId])
-                        }}
-                      >
-                        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                          <path d='M12 12.5L9.25 10L6.5 12.5' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          <path d='M9.25 11.75L9.25 17' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                          <path fill-rule='evenodd' clip-rule='evenodd' d='M4.5 0.75C3.90326 0.75 3.33097 0.987053 2.90901 1.40901C2.48705 1.83097 2.25 2.40326 2.25 3V13.9393C2.25 14.5361 2.48705 15.1084 2.90901 15.5303C3.33097 15.9523 3.90326 16.1893 4.5 16.1893H6V14.6893H4.5C4.30109 14.6893 4.11032 14.6103 3.96967 14.4697C3.82902 14.329 3.75 14.1383 3.75 13.9393V3C3.75 2.80109 3.82902 2.61032 3.96967 2.46967C4.11032 2.32902 4.30109 2.25 4.5 2.25H9.43934L14.25 7.06066V13.9393C14.25 14.1383 14.171 14.329 14.0303 14.4697C13.8897 14.6103 13.6989 14.6893 13.5 14.6893H12V16.1893H13.5C14.0967 16.1893 14.669 15.9523 15.091 15.5303C15.5129 15.1084 15.75 14.5361 15.75 13.9393V6.75C15.75 6.55109 15.671 6.36032 15.5303 6.21967L10.2803 0.96967C10.1397 0.829018 9.94891 0.75 9.75 0.75H4.5Z' fill='#E98A36' />
-                        </svg>  Publish Docs
-                      </div>
-                      )
-                    : null
-                } */}
 
-                         
+                          {/* {!this.props.collections[collectionId].isPublic && ( */}
+                            <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
+                              <RiShareForward2Line size={16} color='grey' /> Move
+                            </div>
+                          {/* )} */}
                         </>
                       )}
                       {this.props.collections[collectionId]?.importedFromMarketPlace && (
@@ -583,6 +569,7 @@ class CollectionsComponent extends Component {
               {this.showImportVersionForm()}
               {this.openTagManagerModal()}
               {this.showDeleteCollectionModal()}
+              {this.state.showOrgModal && <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />}
             </div>
           </div>
           {this.props.collectionsToRender.length > 0 ? (

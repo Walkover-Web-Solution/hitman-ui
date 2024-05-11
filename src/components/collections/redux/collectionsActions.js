@@ -205,6 +205,13 @@ export const onCollectionDeletedError = (error, collection) => {
   }
 }
 
+export const moveCollection = (collection) => {
+  return {
+    type: collectionsActionTypes.MOVE_COLLECTION,
+    payload:collection
+  }
+}
+
 // To do later
 export const duplicateCollection = (collection) => {
   return (dispatch) => {
