@@ -1253,8 +1253,12 @@ button.btn.btn-secondary {
           transform: translateY(-50%);
           right: 1rem;
           margin: 0 !important;
+          opacity: unset;
           z-index: 5;
-
+          span {
+            font-weight: 400;
+            color: black;
+          }
           &:focus {
             outline: none;
           }

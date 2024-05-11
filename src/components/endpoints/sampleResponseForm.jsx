@@ -116,7 +116,7 @@ class SampleResponseForm extends Form {
             {this.renderInput('description', 'Description: ', 'Enter Descripton')}
             {this.renderAceEditor('body', 'Body: ')}
             <div className='text-right mt-2 mb-2'>
-              <button className='btn btn-secondary outline btn-lg mr-2' onClick={this.props.onHide}>
+              <button className='btn btn-secondary outline btn-sm fs-4 mr-2' onClick={this.props.onHide}>
                 Cancel
               </button>
               {this.renderButton('Submit')}
