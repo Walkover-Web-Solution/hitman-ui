@@ -409,7 +409,7 @@ class CollectionsComponent extends Component {
 
                           {/* {!this.props.collections[collectionId].isPublic && ( */}
                             <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
-                              <RiShareForward2Line size={16} /> Move
+                              <RiShareForward2Line size={16} color='grey' /> Move
                             </div>
                           {/* )} */}
                         </>
