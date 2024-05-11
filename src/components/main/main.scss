@@ -1228,7 +1228,10 @@ button.btn.btn-secondary {
         border: none;
         padding: 12px;
         border-bottom: 1px solid #e5e5e5;
-
+        &.no-header {
+        border-bottom: unset !important;
+        padding: 15px !important;
+        }
         &.not-loggedin {
           padding: 1rem 1rem 1.35rem 1rem;
         }
