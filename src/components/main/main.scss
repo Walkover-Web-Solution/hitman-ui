@@ -1211,7 +1211,10 @@ button.btn.btn-secondary {
 .modal {
   .modal-dialog {
     // width: fit-content !important;
-    margin: 4rem auto;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin: auto;
     &.modal-lg {
       max-width: 500px;
     }
