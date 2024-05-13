@@ -161,6 +161,7 @@ class EnvironmentVariables extends Component {
           animation={false}
           aria-labelledby='contained-modal-title-vcenter'
           centered
+          className='custom-environment'
         >
           <form onSubmit={this.handleSubmit}>
             <div className='custom-environment-modal-container'>

@@ -60,6 +60,11 @@ $border-color: rgba(227, 228, 230, 0.7);
     }
   }
 }
+.custom-environment {
+  :first-child {
+    max-width: 800px !important;
+  }
+}
 .custom-environment-modal-container {
   .custom-table-footer {
     padding: 12px;

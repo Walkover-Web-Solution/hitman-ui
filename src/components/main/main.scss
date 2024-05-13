@@ -1210,10 +1210,10 @@ button.btn.btn-secondary {
 
 .modal {
   .modal-dialog {
-    width: fit-content !important;
+    // width: fit-content !important;
     margin: 4rem auto;
     &.modal-lg {
-      max-width: 800px;
+      max-width: 500px;
     }
 
     &.modal-sm {
