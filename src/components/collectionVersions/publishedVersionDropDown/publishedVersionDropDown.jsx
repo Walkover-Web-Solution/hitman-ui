@@ -53,6 +53,11 @@ export default function PublishedVersionDropDown(props) {
 
   if (show?.length === 0) return null
 
+  if (show.length === 1 && pages[show[0]]?.isPublished) {
+    return <div className='version-dropdown' id={`dropdown-basic-button-${props?.rootParentId}`}>{title}</div>;
+  }
+
+
   return (
     <DropdownButton
       key={props?.rootParentId}

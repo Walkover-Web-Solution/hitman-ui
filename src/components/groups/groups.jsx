@@ -193,9 +193,14 @@ class Groups extends Component {
               onDragEnd={(e) => this.props.onDragEnd(e)}
               style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
               className={`d-flex align-items-center justify-content-center cl-name name-sub-page`}
-              onClick={() => this.toggleSubPageIds(subPageId)}
+              onClick={(e) => {
+                this.handleRedirect(subPageId)
+                  if(!expanded){
+                  this.handleToggle(e,subPageId)
+                  }
+              }}
             >
-              <span className='versionChovron'>
+              <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
               <MdExpandMore className='fs-4'/>
               </span>
               <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
@@ -249,14 +254,7 @@ class Groups extends Component {
       </>
     )
   }
-
-  toggleSubPageIds(id) {
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-    this.props.update_isExpand_for_subPages({
-      value: !isExpanded,
-      id: id
-    })
-
+  handleRedirect(id){
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
@@ -268,6 +266,34 @@ class Groups extends Component {
       this.props.history.push(pathName)
     }
   }
+
+  handleToggle(e,id) {
+    e.stopPropagation();
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
+    this.props.update_isExpand_for_subPages({
+      value: !isExpanded,
+      id: id
+    })
+  }
+
+  // toggleSubPageIds(id) {
+  //   const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
+  //   this.props.update_isExpand_for_subPages({
+  //     value: !isExpanded,
+  //     id: id
+  //   })
+
+  //   if (isDashboardRoute(this.props)) {
+  //     this.props.history.push({
+  //       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
+  //     })
+  //   } else {
+  //     sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
+  //     let pathName = getUrlPathById(id, this.props.pages)
+  //     pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+  //     this.props.history.push(pathName)
+  //   }
+  // }
 
   render() {
     return (

@@ -29,6 +29,7 @@ import MoveModal from '../common/moveModal/moveModal'
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
+import { store } from '../../store/store'
 
 
 const mapStateToProps = (state) => {
@@ -305,15 +306,14 @@ class CollectionsComponent extends Component {
       value: !isExpanded,
       id
     })
-    this.openPublishSettings(id)
   }
 
   async openPublishSettings(collectionId) {
     if (collectionId) {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
-    const activeTab = this.props.tabs.activeTabId
-    // store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
+    // const activeTab = this.props.tabs.activeTabId
+    // // store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
   }
 
   openAddPageEndpointModal(collectionId) {
@@ -352,11 +352,16 @@ class CollectionsComponent extends Component {
       <React.Fragment key={collectionId}>
         <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
           <button tabIndex={-1} variant='default' className={`sidebar-hower ${expanded ? 'expanded' : ''}`}>
-            <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
+            <div className='inner-container' onClick={() =>{
+              this.openPublishSettings(collectionId)
+              if(!expanded){
+                this.toggleSelectedColelctionIds(collectionId)
+              }
+            }}>
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
-                  <span className='versionChovron'>
-                  <MdExpandMore className='fs-4'/>
+                  <span className='versionChovron' onClick={(e) => this.toggleSelectedColelctionIds(collectionId)}>
+                    <MdExpandMore className='fs-4' />
                   </span>
                   {collectionState === 'singleCollection' ? (
                     <div className='sidebar-accordion-item' onClick={() => this.openSelectedCollection(collectionId)}>
@@ -374,10 +379,14 @@ class CollectionsComponent extends Component {
                 <div className='d-flex align-items-center'>
                   <div className='sidebar-item-action  d-flex align-items-center'>
                     <div className='d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
-                      <IconButtons><FiPlus /></IconButtons>
+                      <IconButtons>
+                        <FiPlus />
+                      </IconButtons>
                     </div>
                     <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <IconButtons><BsThreeDots /></IconButtons>
+                      <IconButtons>
+                        <BsThreeDots />
+                      </IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
                       {!this.props.collections[collectionId]?.importedFromMarketPlace && (
@@ -390,7 +399,7 @@ class CollectionsComponent extends Component {
                               <GoToDocs /> Go to API Documentation
                             </div>
                           )}
-                           <div
+                          <div
                             className='dropdown-item d-flex'
                             onClick={() => {
                               this.TagManagerModal(collectionId)
@@ -406,12 +415,9 @@ class CollectionsComponent extends Component {
                           >
                             <DeleteIcon /> Delete
                           </div>
-
-                          {/* {!this.props.collections[collectionId].isPublic && ( */}
                             <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
                               <RiShareForward2Line size={16} color='grey' /> Move
                             </div>
-                          {/* )} */}
                         </>
                       )}
                       {this.props.collections[collectionId]?.importedFromMarketPlace && (
