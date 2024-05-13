@@ -91,11 +91,14 @@ class PublicBodyContainer extends Component {
   }
 
   displayBodyDecription(parentPath = '', object) {
+    // Check if the object is null or undefined and return early if true.
     if (!object) {
-      return null
+      return null;
     }
+
+     // Function to display a legend for the types of values in the object.
     const displayLegend = () => {
-      const types = ['string', 'number', 'boolean', 'array', 'object']
+      const types = ['string', 'number', 'boolean', 'array', 'object'];
       return (
         <div className='d-flex flex-row-reverse'>
           {types.map((type, index) => (
@@ -104,100 +107,81 @@ class PublicBodyContainer extends Component {
             </small>
           ))}
         </div>
-      )
-    }
+      );
+    };
 
+    // Renders a badge for the type of the value.
     const renderType = (type) => {
       return (
         <Badge className={`body-desc-type ${type}`} style={{ cursor: 'default' }}>
           {type.charAt(0)}
         </Badge>
-      )
-    }
+      );
+    };
 
-    const renderObject = (parentPath, object) => {
-      if (!object) return null
-      if (parentPath) parentPath = parentPath + '.'
-      return Object.entries(object).map((res, index) =>
-        parentPath === '' ? (
-          <div key={index}>{renderItem(parentPath, res)}</div>
-        ) : (
-          <div key={index} className='ml-2 pl-2' style={{ borderLeft: '1px solid rgb(0,0,0,0.1)' }}>
-            {renderItem(parentPath, res)}
-          </div>
-        )
-      )
-    }
-
-    const renderArray = (parentPath, Array) => {
+    // Renders an item in the object, including its type and description.
+    const renderItem = (parentPath, key, value) => {
+      const path = parentPath ? `${parentPath}.${key}` : key;
       return (
-        <>
-          {Array.type === 'object' ? <div>{renderObject(parentPath + '[]', Array.value)}</div> : null}
-          {Array.type === 'array' ? <div>{renderItem(parentPath + '[]', ['', Array])}</div> : null}
-        </>
-      )
-    }
+        <div key={path} className='py-1'>
+          {renderType(value.type)}
+          <strong className='pl-1' style={{ cursor: 'default' }}>
+            {key}
+          </strong>
+          <span>{value.description ? ` : ${value.description}` : ''}</span>
+        </div>
+      );
+    };
 
-    const renderItem = (parentPath, [key, value]) => {
-      const CustomTooltip = ({ children, message }) => {
-        return (
-          <OverlayTrigger
-            placement='top'
-            delay={{ show: 250, hide: 250 }}
-            overlay={<Tooltip style={{ fontFamily: 'monospace' }}>{`${message}`}</Tooltip>}
-          >
-            {children}
-          </OverlayTrigger>
-        )
-      }
-      const defaultItem = (parentPath, [key, value]) => {
-        const path = parentPath + key
-        const keyTitle = path.split('.')[path.split('.').length - 1]
-        return (
-          <div className='py-1'>
-            {renderType(value.type)}
-            <CustomTooltip message={path}>
+    // Recursively renders objects, handling nested structures.
+    const renderObject = (parentPath, obj) => {
+      return Object.entries(obj).map(([key, value]) => {
+        const newPath = parentPath ? `${parentPath}.${key}` : key;
+        if (['object', 'array'].includes(value.type)) {
+          return (
+            <div key={newPath} className='ml-2 pl-2' style={{ borderLeft: '1px solid rgb(0,0,0,0.1)' }}>
               <strong className='pl-1' style={{ cursor: 'default' }}>
-                {keyTitle}
+                {value.type === 'object' ? <Badge className="body-desc-type object">O</Badge> : null}
+                {value.type === 'array' ? <Badge className="body-desc-type array">A</Badge> : null} {key}
               </strong>
-            </CustomTooltip>
-            <span>{value.description ? ` : ${value.description}` : ''}</span>
-          </div>
-        )
-      }
-      switch (value.type) {
-        case 'string':
-          return defaultItem(parentPath, [key, value])
-        case 'number':
-          return defaultItem(parentPath, [key, value])
-        case 'boolean':
-          return defaultItem(parentPath, [key, value])
-        case 'array':
+              {value.type === 'object' ? renderObject(newPath, value.value) : null}
+              {value.type === 'array' ? renderArray(newPath, value.value) : null}
+            </div>
+          );
+        } else {
+          return renderItem(newPath, key, value);
+        }
+      });
+    };
+
+    // Recursively renders arrays, handling nested structures.
+    const renderArray = (parentPath, arr) => {
+      return arr.map((item, index) => {
+        const newPath = `${parentPath}[${index}]`;
+        if (['object', 'array'].includes(item.type)) {
           return (
-            <>
-              {defaultItem(parentPath, [key, value])}
-              {renderArray(parentPath + key, value.default)}
-            </>
-          )
-        case 'object':
-          return (
-            <>
-              {defaultItem(parentPath, [key, value])}
-              {renderObject(parentPath + key, value.value)}
-            </>
-          )
-        default:
-          return null
-      }
-    }
+            <div key={newPath} className='ml-2 pl-2' style={{ borderLeft: '1px solid rgb(0,0,0,0.1)' }}>
+              <strong className='pl-1' style={{ cursor: 'default' }}>
+                {item.type === 'object' ? <Badge className="body-desc-type object">O</Badge> : null}
+                {item.type === 'array' ? <Badge className="body-desc-type array">A</Badge> : null} Item {index}
+              </strong>
+              {item.type === 'object' ? renderObject(newPath, item.value) : null}
+              {item.type === 'array' ? renderArray(newPath, item.value) : null}
+            </div>
+          );
+        } else {
+          return renderItem(newPath, index.toString(), item);
+        }
+      });
+    };
 
     return (
       <div className='public'>
-        {renderObject(parentPath, object)}
+        {renderObject('', object)}
         <hr />
         {displayLegend()}
       </div>
-    )
+    );
   }
 
   render() {

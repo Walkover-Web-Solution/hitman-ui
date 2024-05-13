@@ -28,10 +28,6 @@ import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
-
-// import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
-// import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
-
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
@@ -193,9 +189,14 @@ class Groups extends Component {
               onDragEnd={(e) => this.props.onDragEnd(e)}
               style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
               className={`d-flex align-items-center justify-content-center cl-name name-sub-page`}
-              onClick={() => this.toggleSubPageIds(subPageId)}
+              onClick={(e) => {
+                this.handleRedirect(subPageId)
+                  if(!expanded){
+                  this.handleToggle(e,subPageId)
+                  }
+              }}
             >
-              <span className='versionChovron'>
+              <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
               <MdExpandMore className='fs-4'/>
               </span>
               <div className='sidebar-accordion-item d-inline text-truncate'>{this.props.pages[subPageId]?.name}</div>
@@ -223,14 +224,7 @@ class Groups extends Component {
                     >
                       <DeleteIcon /> Delete
                     </div>
-                    {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[subPageId])}>
-                      <Duplicate/> {' '}
-                      Duplicate
-                    </div> */}
-                    {/* <div className='dropdown-item' onClick={() => this.openShareSubPageForm(subPageId)}>
-                        <ShareIcon/> {' '}
-                        Share
-                      </div> */}
+                  
                   </div>
                 </div>
               ) : null
@@ -249,14 +243,7 @@ class Groups extends Component {
       </>
     )
   }
-
-  toggleSubPageIds(id) {
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-    this.props.update_isExpand_for_subPages({
-      value: !isExpanded,
-      id: id
-    })
-
+  handleRedirect(id){
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
@@ -267,6 +254,15 @@ class Groups extends Component {
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
       this.props.history.push(pathName)
     }
+  }
+
+  handleToggle(e,id) {
+    e.stopPropagation();
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
+    this.props.update_isExpand_for_subPages({
+      value: !isExpanded,
+      id: id
+    })
   }
 
   render() {
