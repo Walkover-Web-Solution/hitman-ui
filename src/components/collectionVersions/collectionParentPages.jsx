@@ -376,27 +376,6 @@ class CollectionParentPages extends Component {
     })
   }
 
-  // toggleParentPageIds(id) {
-  //   const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-  //   this.props.update_isExpand_for_pages({
-  //     value: !isExpanded,
-  //     id: id
-  //   })
-
-    
-  // }
-
-  // renderVersion(rootId) {
-  //   const versionToRender = this.props.pages[rootId].child;
-  //   return (
-  //     <div>
-  //       {versionToRender.map((childId, index) => {
-  //         const childPage = this.props.pages[childId];
-  //         return <p key={index}>{childPage.name}</p>;
-  //       })}
-  //     </div>
-  //   );
-  // }
   handleDropdownItemClick(id, rootId) {
     const selectedVersionName = this.props?.pages[id]?.name
     const defaultVersionId = this.state.defaultVersionId
@@ -788,13 +767,6 @@ class CollectionParentPages extends Component {
 
         {this.state.showVersionForm && this.openManageVersionModal()}
         {this.showEditPageModal()}
-        {/* {this.state.showVersionForm &&
-          collectionVersionsService.showVersionForm(
-            this.props,
-            this.closeVersionForm.bind(this),
-            this.props.rootParentId,
-            ADD_VERSION_MODAL_NAME
-          )} */}
 
         {this.state.showDeleteVersion &&
           pageService.showDeletePageModal(
@@ -815,8 +787,6 @@ class CollectionParentPages extends Component {
             this.state.selectedPage
           )}
         {this.renderBody(this.props.rootParentId)}
-
-        {/* <div className='pl-4'>{this.renderForm(versionsCount)}</div> */}
       </>
     )
   }

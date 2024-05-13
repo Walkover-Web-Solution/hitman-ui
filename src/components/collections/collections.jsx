@@ -107,27 +107,6 @@ class CollectionsComponent extends Component {
     }
   }
 
-  // async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
-  //   const groups = { ...this.state.groups }
-  //   const endpoints = { ...this.state.endpoints }
-  //   const originalEndpoints = { ...this.state.endpoints }
-  //   const originalGroups = { ...this.state.groups }
-  //   const endpoint = endpoints[endpointId]
-  //   endpoint.groupId = destinationGroupId
-  //   endpoints[endpointId] = endpoint
-  //   groups[sourceGroupId].endpointsOrder = groups[
-  //     sourceGroupId
-  //   ].endpointsOrder.filter((gId) => gId !== endpointId.toString())
-  //   groups[destinationGroupId].endpointsOrder.push(endpointId)
-  //   this.setState({ endpoints, groups })
-  //   try {
-  //     delete endpoint.id
-  //     await endpointApiService.updateEndpoint(endpointId, endpoint)
-  //   } catch (error) {
-  //     this.setState({ endpoints: originalEndpoints, groups: originalGroups })
-  //   }
-  // }
-
   async handleAddCollection(newCollection) {
     newCollection.requestId = shortId.generate()
     this.props.add_collection(newCollection)
@@ -257,37 +236,6 @@ class CollectionsComponent extends Component {
     return this.props.collections && this.props.endpoints && this.props.pages
   }
 
-  // findEndpointCount (collectionId) {
-  //   if (this.dataFetched()) {
-  //     const pageIds = Object.keys(this.props.pages).filter(
-  //       (pId) => this.props.pageIds[pId].collectionId === collectionId
-  //     )
-  //     const groupIds = Object.keys(this.props.groups)
-  //     const groupsArray = []
-  //     for (let i = 0; i < groupIds.length; i++) {
-  //       const groupId = groupIds[i]
-  //       const group = this.props.groups[groupId]
-
-  //       if (pageIds.includes(group.versionId)) {
-  //         groupsArray.push(groupId)
-  //       }
-  //     }
-
-  //     const endpointIds = Object.keys(this.props.endpoints)
-  //     const endpointsArray = []
-
-  //     for (let i = 0; i < endpointIds.length; i++) {
-  //       const endpointId = endpointIds[i]
-  //       const endpoint = this.props.endpoints[endpointId]
-
-  //       if (groupsArray.includes(endpoint.groupId)) {
-  //         endpointsArray.push(endpointId)
-  //       }
-  //     }
-  //     return endpointsArray.length
-  //   }
-  // }
-
   removeImporedPublicCollection(collectionId) {
     if (this.state.openSelectedCollection === true) {
       this.setState({ openSelectedCollection: false })
@@ -312,8 +260,6 @@ class CollectionsComponent extends Component {
     if (collectionId) {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
-    // const activeTab = this.props.tabs.activeTabId
-    // // store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
   }
 
   openAddPageEndpointModal(collectionId) {
@@ -431,15 +377,7 @@ class CollectionsComponent extends Component {
                           <div> Remove Public Collection </div>
                         </div>
                       )}
-                      {/* <div
-                    className="dropdown-item"
-                    onClick={() => {
-                      this.navigateToMembersModule(collectionId);
-                    }}
-                  >
-                    <ShareBold/>
-                    Share
-                  </div> */}
+                      
                     </div>
                   </div>
                   <div className='theme-color d-flex transition counts ml-1 f-12'>
@@ -458,14 +396,6 @@ class CollectionsComponent extends Component {
           {expanded ? (
             <div id='collection-collapse'>
               <Card.Body>
-                {isOnDashboardPage && (
-                  // <PublishCollectionInfo
-                  //   {...this.props}
-                  //   collectionId={collectionId}
-                  //   getTotalEndpointsCount={this.props.getTotalEndpointsCount.bind(this)}
-                  // />
-                  <></>
-                )}
 
                 {
                   <CombinedCollections

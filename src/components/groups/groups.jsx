@@ -28,10 +28,6 @@ import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
-
-// import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
-// import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
-
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
@@ -228,14 +224,7 @@ class Groups extends Component {
                     >
                       <DeleteIcon /> Delete
                     </div>
-                    {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[subPageId])}>
-                      <Duplicate/> {' '}
-                      Duplicate
-                    </div> */}
-                    {/* <div className='dropdown-item' onClick={() => this.openShareSubPageForm(subPageId)}>
-                        <ShareIcon/> {' '}
-                        Share
-                      </div> */}
+                  
                   </div>
                 </div>
               ) : null
@@ -275,25 +264,6 @@ class Groups extends Component {
       id: id
     })
   }
-
-  // toggleSubPageIds(id) {
-  //   const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-  //   this.props.update_isExpand_for_subPages({
-  //     value: !isExpanded,
-  //     id: id
-  //   })
-
-  //   if (isDashboardRoute(this.props)) {
-  //     this.props.history.push({
-  //       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
-  //     })
-  //   } else {
-  //     sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
-  //     let pathName = getUrlPathById(id, this.props.pages)
-  //     pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-  //     this.props.history.push(pathName)
-  //   }
-  // }
 
   render() {
     return (
