@@ -164,10 +164,10 @@ class EnvironmentVariables extends Component {
         >
           <form onSubmit={this.handleSubmit}>
             <div className='custom-environment-modal-container'>
-              <Modal.Header className='custom-collection-modal-container' closeButton>
+              <Modal.Header className='custom-collection-modal-container p-3' closeButton>
                 <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
               </Modal.Header>
-              <Modal.Body>
+              <Modal.Body className='p-3'>
                 <div className='form-group mb-0'>
                   <label htmlFor='custom-environment-input'>
                     Environment Name<span className='mx-1 alert alert-danger'>*</span>
@@ -276,7 +276,7 @@ class EnvironmentVariables extends Component {
                   </Table>
                 </div>
               </Modal.Body>
-                <div className='custom-table-footer'>
+                <div className='custom-table-footer p-3'>
                   <div className='text-left'>
                     <button className='btn btn-primary btn-sm fs-4 mr-2' id='add_env_save_btn'>
                       Save
