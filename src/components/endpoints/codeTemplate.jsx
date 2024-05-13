@@ -9,19 +9,9 @@ import 'ace-builds/src-noconflict/theme-github'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
 import { RiCloseLine } from "react-icons/ri";
-import { RxCopy } from "react-icons/rx";
+import { RxCopy } from "react-icons/rx"
 import { BsThreeDotsVertical } from "react-icons/bs"
-export function hexToRgb(hex, opacity) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  if (result) {
-    const r = parseInt(result[1], 16)
-    const g = parseInt(result[2], 16)
-    const b = parseInt(result[3], 16)
-    return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')' // return 23,14,45 -> reformat if needed
-  }
-  return null
-}
-
+import { hexToRgb } from '../common/utility'
 const HTTPSnippet = require('httpsnippet')
 
 class CodeTemplate extends Component {
@@ -117,7 +107,6 @@ class CodeTemplate extends Component {
                   {languages[key].name}
                 </button>
               ))}
-              {/* <button className='codeTemplateButtonMore  d-flex justify-content-center align-items-center p-0'> */}
                 <Dropdown >
                   <Dropdown.Toggle className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore mr-0' : 'dropdownMore mr-0'}>
                     {primaryLanguages.includes(this.selectedLanguage) ? (
@@ -142,7 +131,6 @@ class CodeTemplate extends Component {
                     ))}
                   </Dropdown.Menu>
                 </Dropdown>
-              {/* </button> */}
             </div>
           </Col>
           <Col className='editor-body-wrapper' xs={12}>

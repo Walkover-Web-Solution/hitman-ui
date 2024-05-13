@@ -840,7 +840,18 @@ label.data-type {
     border: 0px;
     line-height: 1.2;
     font-size: 14px;
-
+    .ace_scroller  {
+      .ace_content {
+        top: 20px !important;
+        .ace_text-layer {
+          left: 6px !important;
+          right: 6px !important;
+          .ace_line_group {
+            position: unset !important;
+          }
+        }
+      }
+    }
     .ace_gutter {
       display: none !important;
     background: unset !important;
@@ -2144,9 +2155,6 @@ button[name='cta-1'] {
   min-width: 300px;
   .ace_editor {
     width: 350px !important;
-    .ace_content {
-      top: 16px !important;
-    }
   }
 }
 
