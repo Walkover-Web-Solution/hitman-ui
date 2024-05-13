@@ -4065,6 +4065,11 @@ body .tox {
     }
   }
  }
+ .custom-collection {
+  :first-child {
+    max-width: 800px !important;
+  }
+ }
  .custom-collection-modal-container {
   button {
     padding-left: 4px !important;

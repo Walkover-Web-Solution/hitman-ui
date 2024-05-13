@@ -105,11 +105,12 @@ class SampleResponseForm extends Form {
         animation={false}
         aria-labelledby='contained-modal-title-vcenter'
         centered
+        className='custom-collection'
       >
-        <Modal.Header className='custom-collection-modal-container' closeButton>
+        <Modal.Header className='custom-collection-modal-container p-3' closeButton>
           <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className='p-3'>
           <form onSubmit={this.handleSubmit}>
             {this.renderInput('title', 'Title: ', 'Enter Title ', false, false, false)}
             {this.renderInput('status', 'Status: ', 'Enter Status ', false, false, false)}
