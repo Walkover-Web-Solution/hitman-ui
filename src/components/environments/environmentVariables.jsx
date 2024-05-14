@@ -161,14 +161,15 @@ class EnvironmentVariables extends Component {
           animation={false}
           aria-labelledby='contained-modal-title-vcenter'
           centered
+          className='custom-environment'
         >
           <form onSubmit={this.handleSubmit}>
             <div className='custom-environment-modal-container'>
-              <Modal.Header className='custom-collection-modal-container' closeButton>
+              <Modal.Header className='custom-collection-modal-container p-3' closeButton>
                 <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
               </Modal.Header>
-              <Modal.Body>
-                <div className='form-group'>
+              <Modal.Body className='p-3'>
+                <div className='form-group mb-0'>
                   <label htmlFor='custom-environment-input'>
                     Environment Name<span className='mx-1 alert alert-danger'>*</span>
                   </label>
@@ -187,7 +188,7 @@ class EnvironmentVariables extends Component {
                   {this.state.errors?.name && <div className='alert alert-danger'>{this.state.errors?.name}</div>}
                 </div>
                 <div className='custom-table-container env-table'>
-                  <Table size='sm'>
+                  <Table size='sm' className='my-1'>
                     <thead>
                       <tr>
                         <th className='custom-td'>Variable</th>
@@ -275,8 +276,8 @@ class EnvironmentVariables extends Component {
                     </tbody>
                   </Table>
                 </div>
-                <hr />
-                <div>
+              </Modal.Body>
+                <div className='custom-table-footer p-3'>
                   <div className='text-left'>
                     <button className='btn btn-primary btn-sm fs-4 mr-2' id='add_env_save_btn'>
                       Save
@@ -287,7 +288,6 @@ class EnvironmentVariables extends Component {
                     </button>
                   </div>
                 </div>
-              </Modal.Body>
             </div>
           </form>
         </Modal>

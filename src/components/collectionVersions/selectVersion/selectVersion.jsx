@@ -57,7 +57,7 @@ const VersionInput = (props) => {
               defaultValue={pages?.[props?.singleChildId]?.name}
               ref={versionNameInputRef}
             ></input>
-            <Button id='publish_collection_btn' variant='btn btn-outline ml-2' onClick={() => onRename(props?.singleChildId)}>
+            <Button id='publish_collection_btn' variant='btn btn-outline btn-sm fs-4 ml-2' onClick={() => onRename(props?.singleChildId)}>
               Save
             </Button>
           </div>
@@ -108,7 +108,7 @@ const AddVersion = (props) => {
   }
 
   return (
-    <div className='d-flex justify-content-start'>
+    <div className='version-modal-footer d-flex justify-content-start'>
       <input
         placeholder='Add New Version'
         type='text'
@@ -118,7 +118,7 @@ const AddVersion = (props) => {
         ref={newVersionNameInputRef}
         onKeyDown={handleKeyDown}
       ></input>
-      <Button onClick={addVersion} id='publish_collection_btn' className='btn-sm' variant='btn btn-outline ml-2'>
+      <Button onClick={addVersion} id='publish_collection_btn' className='btn-sm fs-4' variant='btn btn-outline ml-2'>
         Add
       </Button>
     </div>
@@ -152,19 +152,19 @@ export default function SelectVersion(props) {
   const [showEdit, setShowEdit] = useState(null)
 
   return (
-    <div className='p-4 version-modal-container'>
-      <h4>Manage Versions</h4>
-      <hr />
+    <div className='version-modal-container'>
+      <h4 className='version-modal-header mb-0'>Manage Versions</h4>
+      <div className='version-modal-body'>
       {pages[props?.parentPageId]?.child?.map((singleChildId, index) => {
         return (
           <div>
-            <div className='d-flex justify-content-between align-items-center mt-3'>
+            <div className='d-flex justify-content-between align-items-center'>
               <VersionInput {...props} setShowEdit={setShowEdit} showEdit={showEdit} index={index} singleChildId={singleChildId} />
               <div>
                 {pages?.[singleChildId]?.state !== 1 && (
                   <Button
                     variant='btn btn-outline ml-1'
-                    className='btn-sm'
+                    className='btn-sm fs-4'
                     onClick={() => {
                       handleDefaultVersion(singleChildId)
                     }}
@@ -186,7 +186,7 @@ export default function SelectVersion(props) {
           </div>
         )
       })}
-      <hr />
+      </div>
       <AddVersion {...props} />
     </div>
   )
