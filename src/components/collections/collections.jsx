@@ -29,7 +29,6 @@ import MoveModal from '../common/moveModal/moveModal'
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
-import { store } from '../../store/store'
 
 
 const mapStateToProps = (state) => {
@@ -248,7 +247,8 @@ class CollectionsComponent extends Component {
     })
   }
 
-  toggleSelectedColelctionIds(id) {
+  toggleSelectedColelctionIds(e,id) {
+    e.stopPropagation()
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_collection({
       value: !isExpanded,
@@ -298,15 +298,15 @@ class CollectionsComponent extends Component {
       <React.Fragment key={collectionId}>
         <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
           <button tabIndex={-1} variant='default' className={`sidebar-hower ${expanded ? 'expanded' : ''}`}>
-            <div className='inner-container' onClick={() =>{
+            <div className='inner-container' onClick={(e) =>{
               this.openPublishSettings(collectionId)
               if(!expanded){
-                this.toggleSelectedColelctionIds(collectionId)
+                this.toggleSelectedColelctionIds(e,collectionId)
               }
             }}>
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
-                  <span className='versionChovron' onClick={(e) => this.toggleSelectedColelctionIds(collectionId)}>
+                  <span className='versionChovron' onClick={(e) => this.toggleSelectedColelctionIds(e,collectionId)}>
                     <MdExpandMore className='fs-4' />
                   </span>
                   {collectionState === 'singleCollection' ? (
@@ -385,10 +385,8 @@ class CollectionsComponent extends Component {
                       <div className='marketplace-icon mr-1'> M </div>
                     ) : null}
                     <span className={this.props.collections[collectionId].isPublic ? 'published' : ''}>
-                      {/* {this.findEndpointCount(collectionId) === 0 ? '' : this.findEndpointCount(collectionId)} */}
                     </span>
                   </div>
-                  {/* <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span> */}
                 </div>
               )
             }
