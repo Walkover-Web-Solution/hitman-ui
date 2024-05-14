@@ -79,10 +79,14 @@ html body {
       border-right: 4.8px solid transparent !important;
       border-bottom: 0 !important;
       border-left: 4.8px solid transparent !important;
+      display: none !important;
     }
 
     &:hover {
       border-color: rgba(128, 128, 128, 0.363) !important;
+&::after {
+  display: block !important;
+}
     }
   }
 .dropdown-menu {
