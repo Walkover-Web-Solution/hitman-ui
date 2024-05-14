@@ -50,7 +50,7 @@ class TagManagerModal extends Form {
                 {this.renderInput('gtmId', 'GTM-ID', 'GTM-ID', true)}
                 <div className='text-left mt-2 mb-2'>
                   {this.renderButton('Submit')}
-                  <button className='btn btn-secondary outline btn-lg ml-2' onClick={this.props.onHide}>
+                  <button className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={this.props.onHide}>
                     Cancel
                   </button>
                 </div>

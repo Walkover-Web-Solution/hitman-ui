@@ -11,6 +11,11 @@ import Plus from '../../assets/icons/plus.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { IoIosSettings } from "react-icons/io"
+import { HiMiniDocumentText } from "react-icons/hi2";
+import  IconButtons  from '../common/iconButton'
+import { GrFormClose } from "react-icons/gr"
+import { LuHistory } from "react-icons/lu";
 
 const mapStateToProps = (state) => {
   return {
@@ -66,24 +71,24 @@ class CustomTabs extends Component {
     const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0;
 
     if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
-        switch (e.key) {
-            case 't':
-                e.preventDefault();
-                this.handleOpenNextTab();
-                break;
-            case 'w':
-                e.preventDefault();
-                this.handleCloseTabs([activeTabId]);
-                break;
-            case 'n': 
-              e.preventDefault();
-              this.handleAddTab();
-                break;
-            default:
-                break;
-        }
+      switch (e.key) {
+        case 't':
+          e.preventDefault();
+          this.handleOpenNextTab();
+          break;
+        case 'w':
+          e.preventDefault();
+          this.handleCloseTabs([activeTabId]);
+          break;
+        case 'n':
+          e.preventDefault();
+          this.handleAddTab();
+          break;
+        default:
+          break;
+      }
     }
-}
+  }
 
   openTabAtIndex(index) {
     const { tabsOrder } = this.props.tabs
@@ -112,17 +117,21 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <>
+              <div className='d-flex mr-2'>
+              <LuHistory />
                 {this.props.historySnapshots[tabId].endpoint.name}
-                <span className='sub-label'>History</span>
+                </div>
               </>
             )
           } else {
             return (
               <>
-                {this.props.historySnapshots[tabId].endpoint.name ||
-                  this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri ||
-                  'Random Trigger'}
-                <span className='sub-label'>History</span>
+                <div className='d-flex'>
+                  <LuHistory className='mr-1' size={16}/>
+                  {this.props.historySnapshots[tabId].endpoint.name ||
+                    this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri ||
+                    'Random Trigger'}
+                </div>
               </>
             )
           }
@@ -135,21 +144,21 @@ class CustomTabs extends Component {
           const endpoint = this.props.pages[tabId]
           if (tab.previewMode) {
             return (
-              <>
-                {this.props.pages[tabId]?.name}
-                <span className='sub-label'>{this.props.groups[endpoint.groupId]?.name}</span>
-              </>
+              <div>
+                <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{this.props.tabState[tabId]?.draft?.data?.method}</div>
+                <span>{this.props.pages[tabId]?.name}</span>
+              </div>
             )
           } else {
             return (
-              <>
-                {this.props.pages[tabId]?.name}
-                <span className='sub-label'>{this.props.groups[endpoint.groupId]?.name}</span>
-              </>
+              <div>
+                <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{this.props.tabState[tabId]?.draft?.data?.method}</div>
+                <span>{this.props.pages[tabId]?.name}</span>
+              </div>
             )
           }
         } else {
-          return <>{tab.state?.data?.name || 'Untitled'}</>
+          return <>{tab.state?.data?.name || 'Untitled'}</>        
         }
 
       case 'page':
@@ -157,17 +166,17 @@ class CustomTabs extends Component {
           const page = this.props.pages[tabId]
           if (tab.previewMode) {
             return (
-              <>
-                {this.props.pages[tabId].name}
-                {/* <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.number}</span> */}
-              </>
+              <div className='d-flex align-items-center'>
+                <HiMiniDocumentText className='mr-1' size={16} />
+                <span>{page.name}</span>
+              </div>
             )
           } else {
             return (
-              <>
-                {page.name}
-                {/* <span className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.name}</span> */}
-              </>
+              <div className='d-flex align-items-center'>
+                <HiMiniDocumentText className='mr-1' size={16} />
+                <span>{page.name}</span>
+              </div>
             )
           }
         }
@@ -177,16 +186,18 @@ class CustomTabs extends Component {
         if (this.props.location.pathname.split('/')[6] === 'settings') {
           return (
             <>
-              {collectionName}
-              <span className='sub-label'>settings</span>
+              <span className='d-flex align-items-center'>
+                <IoIosSettings size={18} className='setting-icons mr-1' />
+                <span>{collectionName}</span>
+              </span>
             </>
           )
         } else {
           return (
-            <>
-              {collectionName}
-              <span className='sub-label'>Feedback</span>
-            </>
+            <div className='d-flex align-items-center'>
+              <IoIosSettings size={18} className='setting-icons mr-1' />
+              <span>{collectionName}</span>
+            </div>
           )
         }
       }
@@ -274,7 +285,7 @@ class CustomTabs extends Component {
         return (
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[this.props.pages?.[tabId]?.parentId]?.name}</div> */}
-            <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{this.props.pages[tabId]?.name}</div>
+            <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>Page</div>
           </div>
         )
       }
@@ -285,21 +296,37 @@ class CustomTabs extends Component {
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[tabId]?.name}</div> */}
             <div className='d-flex align-items-center'>
-              <div className={`api-label ${this.props.pages[tabId]?.requestType} request-type-bgcolor ml-4 mt-1 arrow-top`}>
-                {' '}
-                {this.props.pages[tabId]?.requestType}{' '}
+              <div className={`api-label ${this.props.tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
+                {this.props.tabState[tabId]?.draft?.data?.method}{' '}
               </div>
               <div className='endpoint-name ml-1'>{this.props.pages[tabId].name}</div>
             </div>
           </div>
         )
-      } else {
-        return (
-          <div className='hover-div' style={styles}>
-            <div className='page-name'>{this.props.pages[tabId]?.name || 'Untitled'}</div>
-          </div>
-        )
       }
+    } else if (tab.type === 'collection') {
+      return (
+        <>
+          <div className='hover-div' style={styles}>
+            <div className='page-name'>Setting</div>
+          </div>
+          <div className='hover-div' style={styles}>
+            <div className='page-name'>Setting</div>
+          </div>
+        </>
+      )
+    }
+    else if (tab.type === 'history') {
+      return (
+        <>
+          <div className='hover-div' style={styles}>
+            <div className='page-name'>history</div>
+          </div>
+          <div className='hover-div' style={styles}>
+            <div className='page-name'>history</div>
+          </div>
+        </>
+      )
     }
   }
 
@@ -342,6 +369,15 @@ class CustomTabs extends Component {
     const sideBar = {
       position: 'fixed',
       background: 'white',
+      top: '40px',
+      right: '0px',
+      height: '95vh',
+      width: '24%',
+      float: 'right'
+    }
+    const history = {
+      position: 'fixed',
+      background: '#f7f6f3',
       top: '40px',
       right: '0px',
       height: '95vh',
@@ -423,10 +459,10 @@ class CustomTabs extends Component {
                     >
                       {this.renderTabName(tabId)}
                     </button>
-                  </Nav.Link>
-                  <button className='btn close' onClick={() => this.handleCloseTabs([tabId])}>
-                    <i className='uil uil-multiply' />
+                  <button className=' close' onClick={() => this.handleCloseTabs([tabId])}>
+                    <IconButtons><i className='uil uil-multiply' /></IconButtons>
                   </button>
+                  </Nav.Link>
                 </Nav.Item>
                 {this.state.showPreview && tabId === this.state.previewId && this.renderHoverTab(tabId, this.tabRef)}
               </div>
@@ -446,7 +482,7 @@ class CustomTabs extends Component {
           ) : null}
           <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
             <button className='btn' onClick={() => this.handleAddTab()}>
-              <img src={Plus} alt='' />
+              <img className='p-1' src={Plus} alt='' />
             </button>
           </Nav.Item>
           <div className='d-flex'>
@@ -455,16 +491,16 @@ class CustomTabs extends Component {
             </Nav.Item>
             <Nav.Item className='' id='history-tab-button'>
               <button onClick={this.handleHistoryClick} className='px-2' style={{ outline: 'none' }}>
-                <HistoryIcon />{' '}
+                <HistoryIcon className='p-1' />{' '}
               </button>
             </Nav.Item>
             {this.state.showHistoryContainer && (
-              <div style={sideBar}>
+              <div style={history}>
                 <div style={Heading}>
                   History
-                  <button style={closeButton} onClick={this.handleHistoryClick} aria-label='Close'>
-                    <span aria-hidden='true'>×</span>
-                  </button>
+                  <div className='d-flex' style={closeButton} onClick={this.handleHistoryClick} aria-label='Close'>
+                  <IconButtons><GrFormClose /></IconButtons>
+                  </div>
                 </div>
                 <History {...this.props} />
               </div>

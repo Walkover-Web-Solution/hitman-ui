@@ -38,6 +38,7 @@ import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from "react-icons/tb"
+import IconButton from '../common/iconButton'
 
 const mapStateToProps = (state) => {
   return {
@@ -553,7 +554,7 @@ class SideBarV2 extends Component {
 
   renderSearch() {
     return (
-      <div tabIndex={0} className='d-flex align-items-center mb-2 search-container'>
+      <div tabIndex={0} className='d-flex align-items-center my-1 search-container'>
         <SearchIcon className='mr-2' />
         <input
           ref={(element) => {
@@ -673,7 +674,8 @@ class SideBarV2 extends Component {
     var isOnDashboardPage = isDashboardRoute(this.props)
     return (
       <>
-        <div className='plr-3'>
+        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
+        <div className='plr-3 pt-2'>
           {isOnPublishedPage() && this.renderCollectionName()}
           {this.renderSearch()}
           {/* {this.renderDownloadDesktopApp()} */}
@@ -683,7 +685,6 @@ class SideBarV2 extends Component {
           {this.state.data.filter !== '' && this.renderSearchList()}
           {this.state.data.filter === '' && this.renderSidebarContent()}
         </div>
-        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
       </>
     )
   }
@@ -698,13 +699,8 @@ class SideBarV2 extends Component {
       : 'Add/Import Collection'
     return (
       getCurrentUser() && (
-        <div className='d-flex align-items-center justify-content-between mb-2'>
-          <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span>
-          {filter === '' && (
-           <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}>
-           <Plus />
-         </div>
-          )}
+        <div className='d-flex align-items-center justify-content-end'>
+          {/* <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span> */}
         </div>
       )
     )

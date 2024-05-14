@@ -2,7 +2,7 @@
 
 @media (min-width: 1401px) {
   body .split-sidebar > div:first-child {
-    min-width: 330px !important;
+    // min-width: 330px !important;
   }
 }
 
@@ -82,7 +82,11 @@
     padding: 0 6px;
   }
 }
-
+@media (max-width: 778px) {
+  .response-switcher {
+    display: none !important;
+  }
+}
 @media (max-width: 1199px) {
   .pub-inner {
     width: 100%;
@@ -93,9 +97,7 @@
   .pub-illustrator {
     display: none;
   }
-  .response-switcher {
-    display: none !important;
-  }
+  
   .response-bottom {
     .response-container-main {
       width: 100%;
