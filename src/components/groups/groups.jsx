@@ -191,9 +191,14 @@ class Groups extends Component {
               onDragEnd={(e) => this.props.onDragEnd(e)}
               style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
               className={`d-flex align-items-center justify-content-center cl-name name-sub-page`}
-              onClick={() => this.toggleSubPageIds(subPageId)}
+              onClick={(e) => {
+                this.handleRedirect(subPageId)
+                  if(!expanded){
+                  this.handleToggle(e,subPageId)
+                  }
+              }}
             >
-              <span className='versionChovron'>
+             <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
               <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
                   <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 '/>
               </span>
@@ -222,14 +227,6 @@ class Groups extends Component {
                     >
                       <DeleteIcon /> Delete
                     </div>
-                    {/* <div className='dropdown-item' onClick={() => this.handleDuplicate(this.props.groups[subPageId])}>
-                      <Duplicate/> {' '}
-                      Duplicate
-                    </div> */}
-                    {/* <div className='dropdown-item' onClick={() => this.openShareSubPageForm(subPageId)}>
-                        <ShareIcon/> {' '}
-                        Share
-                      </div> */}
                   </div>
                 </div>
               ) : null
@@ -243,19 +240,11 @@ class Groups extends Component {
               </Card.Body>
             </div>
           ) : null}
-          {/* </Card> */}
         </div>
       </>
     )
   }
-
-  toggleSubPageIds(id) {
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-    this.props.update_isExpand_for_subPages({
-      value: !isExpanded,
-      id: id
-    })
-
+  handleRedirect(id){
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
@@ -266,6 +255,15 @@ class Groups extends Component {
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
       this.props.history.push(pathName)
     }
+  }
+
+  handleToggle(e,id) {
+    e.stopPropagation();
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
+    this.props.update_isExpand_for_subPages({
+      value: !isExpanded,
+      id: id
+    })
   }
 
   render() {

@@ -493,7 +493,7 @@ class UserProfileV2 extends Component {
         <div className='org-listing-column d-flex flex-column'>
           {organizations.map((org, key) => (
             <button
-              className={`mb-2 p-2 btn btn-secondary ${org === selectedOrg ? 'active' : ''} `}
+              className={`mb-2 p-2 btn btn-secondary ${org?.id === selectedOrg?.id ? 'active' : ''} `}
               id='publish_collection_btn'
               // variant= 'btn btn-outline'
               key={key}
@@ -585,7 +585,7 @@ class UserProfileV2 extends Component {
                 <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
                 <Dropdown.Item>
                   {/* <div className='profile-menu'> */}
-                  <span className='profile-details' onClick={this.toggleModal} type='button'>
+                  <span className='profile-details d-block' onClick={this.toggleModal} type='button'>
                   <MdSwitchLeft size={18} />
                     Switch Organization
                   </span>

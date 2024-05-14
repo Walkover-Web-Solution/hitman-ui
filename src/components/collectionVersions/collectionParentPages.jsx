@@ -355,14 +355,7 @@ class CollectionParentPages extends Component {
       selectedParentPageIndex: e.currentTarget.value
     })
   }
-
-  toggleParentPageIds(id) {
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-    this.props.update_isExpand_for_pages({
-      value: !isExpanded,
-      id: id
-    })
-
+  handleRedirect(id){
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
@@ -375,17 +368,15 @@ class CollectionParentPages extends Component {
     }
   }
 
-  // renderVersion(rootId) {
-  //   const versionToRender = this.props.pages[rootId].child;
-  //   return (
-  //     <div>
-  //       {versionToRender.map((childId, index) => {
-  //         const childPage = this.props.pages[childId];
-  //         return <p key={index}>{childPage.name}</p>;
-  //       })}
-  //     </div>
-  //   );
-  // }
+  handleToggle(e,id) {
+    e.stopPropagation();
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
+    this.props.update_isExpand_for_pages({
+      value: !isExpanded,
+      id: id
+    })
+  }
+
   handleDropdownItemClick(id, rootId) {
     const selectedVersionName = this.props?.pages[id]?.name
     const defaultVersionId = this.state.defaultVersionId
@@ -495,12 +486,15 @@ class CollectionParentPages extends Component {
           <div className={`active-select d-flex align-items-center justify-content-between ${isSelected ? ' selected' : ''}`}>
               <div
                 className={`d-flex align-items-center cl-name ` }
-                onClick={() => {
-                  this.toggleParentPageIds(this.props.rootParentId)
+                onClick={(e) => {
+                  this.handleRedirect(this.props.rootParentId)
+                  if(!expanded){
+                  this.handleToggle(e,this.props.rootParentId)
+                  }
                 }}
               >
                 <div className='d-flex align-items-center cl-name'>
-                <span className='versionChovron'>
+                <span className='versionChovron' onClick={(e) => this.handleToggle(e, this.props.rootParentId)}>
                   <MdExpandMore size={13} className='collection-icons-arrow d-none '/>
                   <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1'/>
                   </span>
@@ -775,13 +769,6 @@ class CollectionParentPages extends Component {
 
         {this.state.showVersionForm && this.openManageVersionModal()}
         {this.showEditPageModal()}
-        {/* {this.state.showVersionForm &&
-          collectionVersionsService.showVersionForm(
-            this.props,
-            this.closeVersionForm.bind(this),
-            this.props.rootParentId,
-            ADD_VERSION_MODAL_NAME
-          )} */}
 
         {this.state.showDeleteVersion &&
           pageService.showDeletePageModal(
@@ -802,8 +789,6 @@ class CollectionParentPages extends Component {
             this.state.selectedPage
           )}
         {this.renderBody(this.props.rootParentId)}
-
-        {/* <div className='pl-4'>{this.renderForm(versionsCount)}</div> */}
       </>
     )
   }
