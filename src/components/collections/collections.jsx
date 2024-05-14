@@ -30,7 +30,7 @@ import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
 import { store } from '../../store/store'
-import { RiFolder2Fill } from "react-icons/ri";
+import { LuFolder } from "react-icons/lu";
 
 
 const mapStateToProps = (state) => {
@@ -307,9 +307,9 @@ class CollectionsComponent extends Component {
             }}>
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
-                  <span className='versionChovron'>
+                <span className='versionChovron' onClick={(e) => this.toggleSelectedColelctionIds(collectionId)}>
                   <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
-                  <RiFolder2Fill size={13}  className='collection-icons d-inline mb-1 ml-1'/>
+                  <LuFolder size={13}  className='collection-icons d-inline ml-1'/>
                   </span>
                   {collectionState === 'singleCollection' ? (
                     <div className='sidebar-accordion-item' onClick={() => this.openSelectedCollection(collectionId)}>

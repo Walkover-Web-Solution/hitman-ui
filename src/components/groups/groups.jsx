@@ -28,7 +28,7 @@ import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
-import { IoMdDocument } from "react-icons/io"
+import { IoDocumentTextOutline } from "react-icons/io5";
 
 const mapStateToProps = (state) => {
   return {
@@ -198,9 +198,9 @@ class Groups extends Component {
                   }
               }}
             >
-              <span className='versionChovron'>
+              <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
               <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
-                  <IoMdDocument size={13} className='collection-icons d-inline mb-1 ml-1 '/>
+                  <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 '/>
               </span>
               <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{this.props.pages[subPageId]?.name}</div>
             </div>
