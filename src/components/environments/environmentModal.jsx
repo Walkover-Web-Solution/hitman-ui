@@ -90,11 +90,11 @@ class EnvironmentModal extends Component {
               : this.renderManageEnvironmentModal()}
           </ListGroup>
           <div>
-            <div className='custom-button-wrapper text-right mt-3'>
+            {/* <div className='custom-button-wrapper text-right mt-3'>
               <button className='btn btn-secondary outline btn-lg' onClick={() => this.handleCancel(this.props)}>
                 Cancel
               </button>
-            </div>
+            </div> */}
           </div>
         </Modal.Body>
       </Modal>

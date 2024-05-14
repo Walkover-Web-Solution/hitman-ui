@@ -13,11 +13,11 @@ function ConfirmationModal(props) {
       </Modal.Header>
       <Modal.Body id='custom-delete-modal-body'>
         <div className='text-left mt-4 mb-2'>
-          <button id='custom-delete-modal-delete' className='btn btn-primary btn-lg' onClick={() => handleSave()}>
+          <button id='custom-delete-modal-delete' className='btn btn-primary btn-sm fs-4' onClick={() => handleSave()}>
             {props.submitButton || 'Yes'}
           </button>
 
-          <button id='custom-delete-modal-cancel' className='btn btn-danger btn-lg ml-2' onClick={() => props.onHide()}>
+          <button id='custom-delete-modal-cancel' className='btn btn-danger btn-sm fs-4 ml-2' onClick={() => props.onHide()}>
             {props.rejectButton || 'No'}
           </button>
         </div>

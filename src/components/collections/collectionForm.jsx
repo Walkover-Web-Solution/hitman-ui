@@ -78,13 +78,14 @@ class CollectionForm extends Form {
   }
 
   redirectToCollection(collection) {
+    debugger
     const { viewLoader } = this.state
     if (!collection.data) {
       console.error('collection.data is undefined')
       return // or handle this case appropriately
     }
     const { id: collectionId } = collection.data
-    if (collection.success && viewLoader.doc && !this.props.setDropdownList) {
+    if (collection.success) {
       const { orgId } = this.props.match.params
       this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
     }
@@ -150,7 +151,7 @@ class CollectionForm extends Form {
 
   renderSaveButton() {
     return (
-      <button className='btn btn-primary' onClick={() => this.saveCollection(defaultViewTypes.TESTING, 'edit')}>
+      <button className='btn btn-primary btn-sm fs-4' onClick={() => this.saveCollection(defaultViewTypes.TESTING, 'edit')}>
         Save
       </button>
     )

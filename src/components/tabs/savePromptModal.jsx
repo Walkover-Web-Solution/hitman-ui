@@ -93,7 +93,7 @@ class SavePromptModal extends Component {
               Don't Save
             </button>
 
-            <button id='custom-delete-modal-cancel' className='btn btn-secondary outline btn-lg ml-2' onClick={this.props.onHide}>
+            <button id='custom-delete-modal-cancel' className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={this.props.onHide}>
               Cancel
             </button>
           </div>

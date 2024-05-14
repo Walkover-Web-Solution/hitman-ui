@@ -379,7 +379,7 @@ SplitPane.propTypes = {
 
 SplitPane.defaultProps = {
   allowResize: true,
-  minSize: 50,
+  maxSize: 380,
   primary: 'first',
   split: 'vertical',
   paneClassName: '',

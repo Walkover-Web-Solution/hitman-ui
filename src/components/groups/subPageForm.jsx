@@ -98,7 +98,7 @@ class SubPageForm extends Form {
 
               <div className='text-left'>
                 {this.renderButton('Submit')}
-                <button className='btn btn-secondary outline btn-lg ml-2' onClick={this.props.onHide}>
+                <button className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={this.props.onHide}>
                   Cancel
                 </button>
               </div>

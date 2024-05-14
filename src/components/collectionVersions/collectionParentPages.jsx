@@ -35,6 +35,9 @@ import CustomModal from '../customModal/customModal'
 import { MdOutlineSettings } from 'react-icons/md'
 import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
 import { MdExpandMore } from "react-icons/md"
+import  IconButtons  from '../common/iconButton'
+import { FiPlus } from "react-icons/fi"
+import { BsThreeDots } from "react-icons/bs"
 
 const mapStateToProps = (state) => {
   return {
@@ -482,14 +485,15 @@ class CollectionParentPages extends Component {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const publishData = this.props.modals.publishData
     const rootId = pageId
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : ''
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === pageId ? 'selected' : '')
     return (
       <>
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
           <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-            <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''} ${isSelected}`}>
+            <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''}`}>
+          <div className={`active-select d-flex align-items-center justify-content-between ${isSelected ? ' selected' : ''}`}>
               <div
-                className='d-flex align-items-center cl-name'
+                className={`d-flex align-items-center cl-name ` }
                 onClick={() => {
                   this.toggleParentPageIds(this.props.rootParentId)
                 }}
@@ -522,52 +526,53 @@ class CollectionParentPages extends Component {
                   </div>
                 </div>
               </div>
+             
 
               {
                 // [info] options not to show on publihsed page
                 isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
                   <div className='sidebar-item-action d-flex align-items-center'>
                     <div
-                      className='mr-1 d-flex align-items-center'
+                      className='d-flex align-items-center'
                       onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
                     >
-                      <Plus />
+                      <IconButtons><FiPlus /></IconButtons>
                     </div>
-                    <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                      <i className='uil uil-ellipsis-v' />
+                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <IconButtons><BsThreeDots /></IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
-                      <div className='dropdown-item' onClick={() => this.openEditPageForm(pageId)}>
+                      <div className='dropdown-item d-flex' onClick={() => this.openEditPageForm(pageId)}>
                         <Rename /> Rename
+                      </div>                     
+                      <div
+                        className='dropdown-item d-flex'
+                        onClick={() => {
+                          this.manageVersion(true)
+                        }}
+                      >
+                        <MdOutlineSettings size={20} color='#f2994a' />
+                        <span data-toggle='modal' data-target='#exampleModalCenter'> Manage Version
+                        </span>
                       </div>
                       <div
-                        className='dropdown-item'
+                        className='dropdown-item text-danger d-flex'
                         onClick={() => {
                           this.openDeletePageModal(pageId)
                         }}
                       >
                         <DeleteIcon /> Delete
                       </div>
-                      <div
-                        className='dropdown-item'
-                        onClick={() => {
-                          this.manageVersion(true)
-                        }}
-                      >
-                        <MdOutlineSettings size={20} color='#f2994a' />
-                        <span data-toggle='modal' data-target='#exampleModalCenter'>
-                          Manage Version
-                        </span>
-                      </div>
                     </div>
                   </div>
                 ) : null
               }
+              </div>
             </button>
             {expanded ? (
               <div className='version-collapse'>
                 <Card.Body>
-                  <div className='linkWrapper versionPages pl-4'>
+                  <div className='linkWrapper versionPages'>
                     <CombinedCollections
                       {...this.props}
                       page_id={pageId}
