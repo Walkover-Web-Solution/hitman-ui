@@ -499,7 +499,7 @@ class CollectionParentPages extends Component {
                 }}
               >
                 <div className='d-flex align-items-center cl-name'>
-                  <span className='versionChovron'>
+                 <span className='versionChovron' onClick={(e) => this.handleToggle(e, this.props.rootParentId)}>
                   <MdExpandMore className='fs-4'/>
                   </span>
                   <div

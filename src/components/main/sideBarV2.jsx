@@ -147,7 +147,9 @@ class SideBarV2 extends Component {
       document.addEventListener('keydown', this.preventDefaultBehavior.bind(this), false)
     }
     document.addEventListener('keydown', this.handleShortcutKeys)
-
+    if (isOnPublishedPage()) {
+      this.inputRef.current.focus();
+    }
   }
   handleShortcutKeys = (event) => {
     if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
@@ -557,9 +559,7 @@ class SideBarV2 extends Component {
       <div tabIndex={0} className='d-flex align-items-center my-1 search-container'>
         <SearchIcon className='mr-2' />
         <input
-          ref={(element) => {
-            this.inputRef = element
-          }}
+          ref={this.inputRef}
           value={this.state.data.filter}
           className='search-input'
           placeholder='Type / to search'

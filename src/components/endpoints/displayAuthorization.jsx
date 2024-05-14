@@ -88,9 +88,12 @@ export default function Authorization(props) {
     tabService.updateDraftData(endpointId, _.cloneDeep(dataToSave));
     if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestHeaders) {
       props.set_authorization_headers(selectedTokenValue, 'Authorization.oauth_2')
+      props.delete_params()
+    
     }
     else if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestUrl) {
       props.set_authoriztaion_params(selectedTokenValue, 'access_token')
+      props.delete_headers()
     }
     setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes[key]);
   }

@@ -125,7 +125,7 @@ class CollectionForm extends Form {
 
   async doSubmit(defaultView) {
     const body = this.state.data
-    body.name = toTitleCase(body.name.trim())
+    body.name = (body.name.trim())
     if (this.props.title === 'Edit Collection') {
       this.onEditCollectionSubmit(defaultView)
     }

@@ -145,7 +145,8 @@ const untitledEndpointData = {
       checked: 'notApplicable',
       key: '',
       value: '',
-      description: ''
+      description: '',
+      type: '',
     }
   ],
   originalParams: [
@@ -153,7 +154,8 @@ const untitledEndpointData = {
       checked: 'notApplicable',
       key: '',
       value: '',
-      description: ''
+      description: '',
+      type:'',
     }
   ],
   oldDescription: '',
@@ -510,6 +512,7 @@ class DisplayEndpoint extends Component {
       const keys = []
       const values = []
       const description = []
+      const type = []
       let originalParams = this.props?.endpointContent?.originalParams || {}
       const updatedUri = e.currentTarget.value?.split('?')[1]
       let path = new URI(e.currentTarget.value)
@@ -537,7 +540,7 @@ class DisplayEndpoint extends Component {
           }
         }
       }
-      originalParams = this.makeOriginalParams(keys, values, description)
+      originalParams = this.makeOriginalParams(keys, values, description, type)
       tempData.originalParams = originalParams
     }
     tempData.data = data
@@ -601,7 +604,7 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(dummyData)
   }
 
-  makeOriginalParams(keys, values, description) {
+  makeOriginalParams(keys, values, description,type) {
     const originalParams = []
     for (let i = 0; i < this.props?.endpointContent?.originalParams?.length; i++) {
       if (this.props?.endpointContent?.originalParams[i].checked === 'false') {
@@ -609,7 +612,8 @@ class DisplayEndpoint extends Component {
           checked: this.props?.endpointContent?.originalParams[i].checked,
           key: this.props?.endpointContent?.originalParams[i].key,
           value: this.props?.endpointContent?.originalParams[i].value,
-          description: this.props?.endpointContent?.originalParams[i].description
+          description: this.props?.endpointContent?.originalParams[i].description,
+          type: this.props?.endpointContent?.originalParams[i].type,
         })
       }
     }
@@ -618,14 +622,16 @@ class DisplayEndpoint extends Component {
         checked: 'true',
         key: keys[i],
         value: values[i],
-        description: description[i]
+        description: description[i],
+        type: type[i]
       })
     }
     originalParams.push({
       checked: 'notApplicable',
       key: '',
       value: '',
-      description: ''
+      description: '',
+      type:''
     })
     return originalParams
   }
@@ -1351,7 +1357,8 @@ class DisplayEndpoint extends Component {
         updatedParams[originalParams[i].key] = {
           checked: originalParams[i].checked,
           value: originalParams[i].value,
-          description: originalParams[i].description
+          description: originalParams[i].description,
+          type: originalParams[i].type
         }
       }
     }
@@ -1380,7 +1387,8 @@ class DisplayEndpoint extends Component {
         processedHeaders.push({
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
-          comment: headers[Object.keys(headers)[i]].description === null ? '' : headers[Object.keys(headers)[i]].description
+          comment: headers[Object.keys(headers)[i]].description === null ? '' : headers[Object.keys(headers)[i]].description,
+          type: headers[Object.keys(headers)[i]].type,
         })
       }
     }
@@ -1395,7 +1403,8 @@ class DisplayEndpoint extends Component {
           processedParams.push({
             name: params[Object.keys(params)[i]].key,
             value: params[Object.keys(params)[i]].value,
-            comment: params[Object.keys(params)[i]].description
+            comment: params[Object.keys(params)[i]].description,
+            type: params[Object.keys(params)[i]].type,
           })
         }
       }
@@ -1591,7 +1600,8 @@ class DisplayEndpoint extends Component {
       checked: 'notApplicable',
       key: '',
       value: '',
-      description: ''
+      description: '',
+      type: 'enable'
     }
     for (let i = 0; i < originalParams.length; i++) {
       if (originalParams[i].key === title || originalParams[i].key === '') {
@@ -1605,7 +1615,8 @@ class DisplayEndpoint extends Component {
         checked: 'true',
         key: title,
         value: value,
-        description: ''
+        description: '',
+        type: 'disable'
       })
     }
     updatedParams.push(emptyParam)
@@ -1629,7 +1640,8 @@ class DisplayEndpoint extends Component {
       checked: 'notApplicable',
       key: '',
       value: '',
-      description: ''
+      description: '',
+      type: 'enable',
     }
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
@@ -1656,7 +1668,8 @@ class DisplayEndpoint extends Component {
         checked: 'true',
         key: title === 'content-type' ? 'content-type' : 'Authorization',
         value: title.split('.')[0] === 'Authorization' ? (title.split('.')[1] === 'oauth_2' ? 'Bearer ' + value : 'Basic ' + value) : '',
-        description: ''
+        description: '',
+        type: 'disable'
       })
     }
     if (title === 'content-type') {
@@ -1673,6 +1686,52 @@ class DisplayEndpoint extends Component {
     }
     dummyData.originalHeaders = updatedHeaders
     this.props.setQueryUpdatedData(dummyData)
+  }
+
+  deleteHeader() {
+    const originalHeaders = this.props.endpointContent.originalHeaders
+    const updatedHeaders = []
+    const emptyHeader = {
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: '',
+      type: 'enable',
+    }
+    for(let i = 0; i < originalHeaders.length; i++){
+      if( originalHeaders[i].key === 'content-type' && originalHeaders[i].type === 'disable'){
+        continue
+      }
+      else{
+        updatedHeaders.push(originalHeaders[i])
+      }
+    }
+    updatedHeaders.push(emptyHeader)
+    const dummyData = this.props.endpointContent
+    dummyData.originalHeaders = updatedHeaders
+  }
+
+  deleteParams() {
+    const originalParams = this.props.endpointContent.originalParams
+    const updatedParams = []
+    const emptyParam = {
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: '',
+      type: 'enable'
+    }
+    for (let i = 0; i < originalParams.length; i++){
+      if(originalParams[i].key === 'access_token' && originalParams[i].type === 'disable'){
+        continue
+      }
+      else{
+        updatedParams.push(originalParams[i])
+      }
+    }
+    updatedParams.push(emptyParam)
+    const dummyData = this.props.endpointContent
+    dummyData.originalParams = updatedParams
   }
 
   identifyBodyType(bodyType) {
@@ -2984,6 +3043,8 @@ class DisplayEndpoint extends Component {
                                 set_authoriztaion_params={this.setParams.bind(this)}
                                 set_authoriztaion_type={this.setAuthType.bind(this)}
                                 handleSaveEndpoint={this.handleSave.bind(this)}
+                                delete_headers ={this.deleteHeader.bind(this)}
+                                delete_params ={this.deleteParams.bind(this)}
                               />
                             </div>
                           </div>
