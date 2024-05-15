@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import './endpoints.scss'
 import { inviteMember } from '../../services/chatbotService'
 import { getCurrentUser } from '../auth/authServiceV2'
-
+import { RiCloseLine } from "react-icons/ri"
 const mapStateToProps = (state) => {
   return {
     // Include only the Redux state props you need
@@ -79,7 +79,7 @@ class chatbotsideBar extends Component {
               }}
               aria-label='Close' // Accessibility label for screen readers
             >
-              <span aria-hidden='true'>×</span>
+              <button className='btn'><RiCloseLine size={17} /></button>
             </button>
           </div>
           <div style={inputContainerStyle}>

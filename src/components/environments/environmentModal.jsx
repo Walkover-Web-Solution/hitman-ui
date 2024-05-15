@@ -84,7 +84,7 @@ class EnvironmentModal extends Component {
           <Modal.Title id='contained-modal-title-vcenter'>Manage Environments</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ListGroup className='custom-environment-list-container'>
+          <ListGroup className='custom-environment-list-container h-auto'>
             {Object.keys(this.props.environment.environments).length === 0
               ? this.renderNoEnvironmentModule()
               : this.renderManageEnvironmentModal()}

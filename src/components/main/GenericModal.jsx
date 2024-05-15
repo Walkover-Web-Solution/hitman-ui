@@ -45,7 +45,7 @@ function GenericModal({
         <Modal.Body>
           {showInputGroup && (
             <>
-              <InputGroup className='mb-3'>
+              <InputGroup className='mb-2'>
                 <Form.Control
                   ref={inputRef}
                   placeholder='Enter User Name'
@@ -57,7 +57,7 @@ function GenericModal({
                   onKeyPress={handleKeyPress}
                 />
               </InputGroup>
-              <InputGroup className='mb-3'>
+              <InputGroup>
                 <Form.Control
                   placeholder='Enter User Email'
                   type='email'
@@ -71,22 +71,23 @@ function GenericModal({
               </InputGroup>
 
               {/* show loading in invite org */}
+             
               {loading ? (
-                <div class='spinner-border spinner-border-sm text-success p-2' role='status'>
-                  <span class='sr-only'>Please Wait...</span>
-                </div>
-              ) : (
-                <button className='btn btn-primary' type='submit' onClick={handleSendInvite}>
-                  Send
-                </button>
-              )}
+                      <div class='spinner-border spinner-border-sm text-success p-2' role='status'>
+                        <span class='sr-only'>Please Wait...</span>
+                      </div>
+                    ) : (
+                      <button className='btn btn-primary btn-sm mt-2 fs-4' type='submit' onClick={handleSendInvite}>
+                        Send
+                      </button>
+                    )}
             </>
           )}
           {modalBody}
         </Modal.Body>
         {/* for create organization */}
-        <Modal.Footer>
           {showInput && (
+        <Modal.Footer>
             <>
               <div className='m-2 d-grid gap-2 col-6 mx-auto create-org'>
                 {/* <div className='d-flex justify-content-center'> */}
@@ -122,8 +123,8 @@ function GenericModal({
                 </>
               )}
             </>
-          )}
         </Modal.Footer>
+          )}
       </Modal>
     </div>
   )
