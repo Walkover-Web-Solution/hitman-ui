@@ -1154,6 +1154,15 @@ button.btn.btn-secondary {
 }
 .modal {
   .modal-dialog {
+    // width: fit-content !important;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin: auto;
+    &.modal-lg {
+      max-width: 500px;
+    }
+
     &.modal-sm {
       min-width: 35rem;
     }
@@ -1163,8 +1172,12 @@ button.btn.btn-secondary {
       .modal-header {
         position: relative;
         border: none;
-        padding: 1.5rem;
+        padding: 12px;
         border-bottom: 1px solid #e5e5e5;
+        &.no-header {
+        border-bottom: unset !important;
+        padding: 15px !important;
+        }
         &.not-loggedin {
           padding: 1rem 1rem 1.35rem 1rem;
         }
@@ -1187,7 +1200,12 @@ button.btn.btn-secondary {
           transform: translateY(-50%);
           right: 1rem;
           margin: 0 !important;
+          opacity: unset;
           z-index: 5;
+          span {
+            font-weight: 400;
+            color: black;
+          }
           &:focus {
             outline: none;
           }
@@ -1197,7 +1215,7 @@ button.btn.btn-secondary {
         }
       }
       .modal-body {
-        padding: 1.5rem;
+        padding: 12px;
       }
     }
   }
@@ -3780,6 +3798,11 @@ body .tox {
     &:hover {
       background-color: rgba(128, 128, 128, 0.123);
     }
+  }
+ }
+ .custom-collection {
+  :first-child {
+    max-width: 800px !important;
   }
  }
  .custom-collection-modal-container {

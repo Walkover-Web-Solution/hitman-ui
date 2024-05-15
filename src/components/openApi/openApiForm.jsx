@@ -132,7 +132,7 @@ class OpenApiForm extends Component {
       <div className='text-left mt-2'>
         <button
           id='add_collection_import_btn'
-          className='btn btn-primary btn-lg mr-2'
+          className='btn btn-primary btn-sm fs-4 mr-2'
           onClick={(e) => {
             e.preventDefault()
             this.handleSubmit(e)
@@ -189,11 +189,11 @@ class OpenApiForm extends Component {
   renderImportForm() {
     return (
       <form className='mb-2'>
-        <div className='row'>
-          <div className='col-6'>
+        <div className=''>
+          <div>
             {this.renderInputType()}
           </div>
-          <div className='col-6'>{this.renderJSONFileSelector()}</div>
+          <div>{this.renderJSONFileSelector()}</div>
         </div>
       </form>
     )

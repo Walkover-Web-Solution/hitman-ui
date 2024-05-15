@@ -111,7 +111,7 @@ function InviteTeam() {
         <h1 className='title'>Manage Team</h1>
       </nav>
       <div className='container'>
-        <button className='inviteButton' onClick={handleInviteClick}>
+        <button className='btn btn-primary btn-sm fs-4 inviteButton' onClick={handleInviteClick}>
           + Add Member
         </button>
         <GenericModal

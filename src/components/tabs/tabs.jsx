@@ -382,7 +382,8 @@ class CustomTabs extends Component {
       right: '0px',
       height: '95vh',
       width: '24%',
-      float: 'right'
+      float: 'right',
+      'z-index': '9999'
     }
     const Heading = {
       display: 'flex',
