@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react'
+import { useEditor, EditorContent, BubbleMenu, FloatingMenu, ReactNodeViewRenderer } from '@tiptap/react'
 import Underline from '@tiptap/extension-underline'
 import StarterKit from '@tiptap/starter-kit'
 import MenuBar from './menubar'
@@ -13,7 +13,14 @@ import TableHeader from '@tiptap/extension-table-header'
 import Text from '@tiptap/extension-text'
 import TextStyle from '@tiptap/extension-text-style'
 import Placeholder from '@tiptap/extension-placeholder'
-import { Color } from '@tiptap/extension-color'
+import Color from '@tiptap/extension-color'
+import Document from '@tiptap/extension-document'
+import Paragraph from '@tiptap/extension-paragraph'
+import TaskItem from '@tiptap/extension-task-item'
+import TaskList from '@tiptap/extension-task-list'
+import Mention from '@tiptap/extension-mention'
+import suggestion from './mentionList/suggestion'
+import { isOnPublishedPage } from '../common/utility'
 
 export default function Tiptap({ initial, onChange, disabled, isInlineEditor, minHeight }) {
   const editor = useEditor({
@@ -28,8 +35,21 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
       Highlight,
       Image,
       TextStyle,
-      Color,
+      Color.configure({
+        types: ['textStyle'],
+      }),
+      Mention.configure({
+        HTMLAttributes: {
+          class: 'mention',
+        },
+        suggestion,
+      }),
       Text,
+      Paragraph,
+      TaskList,
+      TaskItem.configure({
+        nested: true,
+      }),
       Placeholder.configure({
         placeholder: 'Write your text here …'
       }),

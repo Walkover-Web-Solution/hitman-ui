@@ -15,7 +15,7 @@ import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
 import ApiDocReview from '../apiDocReview/apiDocReview'
-import { isAdmin } from '../auth/authServiceV2'
+import { getProxyToken, isAdmin } from '../auth/authServiceV2'
 import { approvePage, pendingPage, rejectPage, draftPage } from '../publicEndpoint/redux/publicEndpointsActions'
 import ConfirmationModal from '../common/confirmationModal'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
@@ -97,6 +97,7 @@ class DisplayPage extends Component {
   }
 
   async componentDidMount() {
+    window.SendDataToInterface({ bridgeName: 'page', threadId: '134', variables: {Proxy_auth_token : getProxyToken(), content : this.props.pageContent}});
     this._isMounted = true
     this.extractPageName()
     if (!this.props?.location?.page) {

@@ -10,6 +10,8 @@ import * as _ from 'lodash'
 import { updateTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
+import { getProxyToken } from '../auth/authServiceV2'
+import { optimiseContent } from '../common/apiUtility'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -83,6 +85,7 @@ class EditPage extends Component {
   }
 
   async componentDidMount() {
+    window.SendDataToInterface({ bridgeName: 'page', threadId: '134', variables: {Proxy_auth_token : getProxyToken(), content : this.props.pageContentData}});
     await this.setPageData()
     this.setState({ showEditor: true })
   }
@@ -266,6 +269,7 @@ class EditPage extends Component {
           </div>
 
           <div>{this.renderTiptapEditor()}</div>
+          <button onClick={() => {optimiseContent(this.props?.pageContentData)}}>Optimise</button>
         </div>
       </div>
     )

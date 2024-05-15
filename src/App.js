@@ -12,7 +12,7 @@ import { SESSION_STORAGE_KEY, getOrgId, isDashboardRoute, isElectron, isOnPublis
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import Cookies from 'universal-cookie'
-import AuthServiceV2 from './components/auth/authServiceV2'
+import AuthServiceV2, { getProxyToken } from './components/auth/authServiceV2'
 import InviteTeam from './components/main/inviteTeam/inviteTeam'
 import { connect } from 'react-redux'
 import { installModal } from './components/modals/redux/modalsActions'
@@ -59,6 +59,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    window.SendDataToInterface({ bridgeName: 'root', threadId: '4334', variables: {Proxy_auth_token : getProxyToken()}});
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault()
       this.props.install_modal(e)

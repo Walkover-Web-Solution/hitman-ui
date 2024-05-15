@@ -18,6 +18,7 @@ import {
   FaCode,
   FaHighlighter
 } from 'react-icons/fa'
+import { RiTaskLine } from "react-icons/ri";
 
 export default function MenuBar({ editor }) {
   const [linkUrl, setLinkUrl] = useState('')
@@ -27,6 +28,7 @@ export default function MenuBar({ editor }) {
   const [showLink, setShowLink] = useState(false)
   const [showTable, setShowTable] = useState(false)
   const [showImage, setShowImage] = useState(false)
+  const [color, setColor] = useState("");
 
   if (!editor) {
     return null
@@ -105,7 +107,8 @@ export default function MenuBar({ editor }) {
   }
 
   function handleTextColor(color) {
-    editor.chain().focus().setColor(color.hex).run()
+    setColor(color.hex); 
+    editor.chain().focus().setColor(color.hex).run();
   }
 
   return (
@@ -123,6 +126,11 @@ export default function MenuBar({ editor }) {
       <button onClick={() => editor.chain().focus().toggleCode().run()} className={editor.isActive('code') ? 'is-active' : ''}>
         <FaCode />
       </button>
+
+      {/* <button onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive('codeBlock') ? 'is-active' : ''}>
+      code block
+    </button> */}
+
 
       <button
         type='button'
@@ -213,7 +221,7 @@ export default function MenuBar({ editor }) {
           <BiFontColor />
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          <SketchPicker onChangeComplete={handleTextColor} />
+          <SketchPicker  color={color} onChangeComplete={handleTextColor} />
         </Dropdown.Menu>
       </Dropdown>
       <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
@@ -266,6 +274,12 @@ export default function MenuBar({ editor }) {
       </Dropdown>
       <button onClick={() => setShowImage(true)}>
         <FaImage />
+      </button>
+      <button
+        onClick={() =>  editor.chain().focus().toggleTaskList().run()}
+        className={editor.isActive('taskList') ? 'is-active' : ''}
+      >
+        <RiTaskLine />
       </button>
     </div>
   )

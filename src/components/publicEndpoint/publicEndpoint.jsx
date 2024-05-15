@@ -17,7 +17,7 @@ import { Modal } from 'react-bootstrap'
 import { addCollectionAndPages } from '../redux/generalActions'
 import generalApiService from '../../services/generalApiService'
 import { useQueryClient, useMutation } from 'react-query'
-import { MdDehaze, MdClose } from "react-icons/md";
+import { MdDehaze, MdClose, MdThumbUp, MdThumbDown } from "react-icons/md";
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -476,10 +476,10 @@ class PublicEndpoint extends Component {
                   )}
 
                   {this.displayCTAandLink()}
-                  {/* <div className='d-flex flex-row justify-content-start'>
-                      <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
-                      <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
-                    </div> */}
+                  <div className='d-flex flex-row justify-content-start'>
+                      <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={MdThumbUp} alt='' /></button>
+                      <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={MdThumbDown} alt='' /></button>
+                    </div>
                   {this.state.openReviewModal && this.reviewModal()}
                 </div>
               ) : (

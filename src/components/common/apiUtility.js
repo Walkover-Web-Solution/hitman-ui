@@ -1,3 +1,5 @@
+import { getProxyToken } from "../auth/authServiceV2";
+
 export async function getParseCurlData(curl) {
     let viaSocketUrl = 'https://flow-api.viasocket.com/utility/parse-curl';
     const response = await fetch(viaSocketUrl, {
@@ -14,4 +16,25 @@ export async function getParseCurlData(curl) {
     }
 
     return response.json(); 
+}
+export async function optimiseContent(content) {
+    let viaSocketUrl = 'https://routes.msg91.com/api/proxy/1258584/29gjrmh24/api/v1/model/chat/completion';
+    const response = await fetch(viaSocketUrl, { 
+        method: 'POST',
+        headers: {
+            'Authorization': getProxyToken(),
+            'Content-Type': 'application/JSON',
+            'pauthkey': '50926e908423a176e6328ba778fdc39b'
+        },
+        body: JSON.stringify({
+            bridge_id: "663a2124f7309038cddec133",
+            user: "Optimize this content",
+            variables: { content: content }
+        }),
+    })
+    // if (!response.ok) {
+    //     throw new Error(`HTTP error! Status: ${response.status}`);
+    // }
+    
+    console.log(response)
 }
