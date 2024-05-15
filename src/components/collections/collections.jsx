@@ -34,6 +34,8 @@ import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
+// import { store } from '../../store/store'
+import { LuFolder } from "react-icons/lu";
 
 const EMPTY_STRING = ''
 
@@ -350,8 +352,9 @@ class CollectionsComponent extends Component {
             <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
-                  <span className='versionChovron'>
-                  <MdExpandMore className='fs-4'/>
+                <span className='versionChovron'>
+                  <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
+                  <LuFolder size={13}  className='collection-icons d-inline ml-1'/>
                   </span>
                   {collectionState === 'singleCollection' ? (
                     <div className='sidebar-accordion-item' onClick={() => this.openSelectedCollection(collectionId)}>
