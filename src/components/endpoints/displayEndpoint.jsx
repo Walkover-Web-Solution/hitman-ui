@@ -424,7 +424,6 @@ class DisplayEndpoint extends Component {
   handleKeyDown = (event) => {
     const activeTabId = this.props.activeTabId;
     const status = this.props.tabs?.[activeTabId]?.status;
-    console.log(activeTabId, status);
     if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
       this.handleSend();
     } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) { 
