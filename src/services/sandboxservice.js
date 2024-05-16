@@ -149,20 +149,46 @@ class HitmanSandbox {
 }
 
 export function run(code, sandbox) {
-  const hm = sandbox
-  const context = { hm, console: console, expect: chai.expect, _, moment }
+  const consoleOutput = []; // Array to store console outputs
+  const context = {
+    hm: sandbox,
+    console: {
+      log: (...args) => {
+        const formattedArgs = args.map(arg => {
+          if (typeof arg === 'object' && arg !== null) {
+            try {
+              return JSON.stringify(arg);
+            } catch (error) {
+              return 'Circular structure in object';
+            }
+          } else if (typeof arg === 'undefined') {
+            return 'undefined';
+          } else {
+            return arg.toString(); // Handle other types directly
+          }
+        });
+        consoleOutput.push(formattedArgs.join(' ')); // Capture log messages
+      }
+    },
+    expect: chai.expect,
+    _: _,
+    moment: moment
+  };
+
   try {
-    const script = new vm.Script(code)
-    script.runInNewContext(context)
-    sandbox.environment.updateCallback()
-    const environment = context.hm.environment.getEnvironment()
-    const request = context.hm.request.getRequest()
-    const tests = context.hm.testcases
-    return { success: true, data: { environment, request, tests } }
+    const script = new vm.Script(code);
+    script.runInNewContext(context);
+    sandbox.environment.updateCallback();
+    const environment = context.hm.environment.getEnvironment();
+    const request = context.hm.request.getRequest();
+    const tests = context.hm.testcases;
+    return { success: true, data: { environment, request, tests, consoleOutput } }; // Include consoleOutput in the returned data
   } catch (error) {
-    return { success: false, error: error.message }
+    return { success: false, error: error.message };
   }
 }
+
+
 
 export function initialize({ request, environment, response }) {
   if (environment) environment = new Environment(environment.value, environment.callback)
