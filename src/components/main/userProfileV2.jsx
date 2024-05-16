@@ -597,7 +597,7 @@ class UserProfileV2 extends Component {
                 {/* <Dropdown.Divider /> */}
                 <Dropdown.Item >
                   {/* <div className='profile-menu'> */}
-                  <span className='profile-details' type='button' onClick={this.toggleModal}>
+                  <span className='profile-details w-100 h-100' type='button' onClick={this.toggleModal}>
                   <MdSwitchLeft size={18} />
                     Switch Organization
                   </span>
