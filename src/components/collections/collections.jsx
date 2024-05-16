@@ -14,7 +14,6 @@ import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
-import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import { addNewTab } from '../tabs/redux/tabsActions'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
@@ -29,7 +28,6 @@ import MoveModal from '../common/moveModal/moveModal'
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
-import { store } from '../../store/store'
 import { LuFolder } from "react-icons/lu";
 
 
@@ -249,7 +247,8 @@ class CollectionsComponent extends Component {
     })
   }
 
-  toggleSelectedColelctionIds(id) {
+  toggleSelectedColelctionIds(e,id) {
+    e.stopPropagation()
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_collection({
       value: !isExpanded,
@@ -299,15 +298,15 @@ class CollectionsComponent extends Component {
       <React.Fragment key={collectionId}>
         <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
           <button tabIndex={-1} variant='default' className={`sidebar-hower ${expanded ? 'expanded' : ''}`}>
-            <div className='inner-container' onClick={() =>{
+            <div className='inner-container' onClick={(e) =>{
               this.openPublishSettings(collectionId)
               if(!expanded){
-                this.toggleSelectedColelctionIds(collectionId)
+                this.toggleSelectedColelctionIds(e,collectionId)
               }
             }}>
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
-                <span className='versionChovron' onClick={(e) => this.toggleSelectedColelctionIds(collectionId)}>
+                <span className='versionChovron' onClick={(e) => this.toggleSelectedColelctionIds(e,collectionId)}>
                   <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
                   <LuFolder size={13}  className='collection-icons d-inline ml-1'/>
                   </span>

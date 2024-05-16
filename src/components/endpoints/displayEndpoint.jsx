@@ -390,7 +390,7 @@ class DisplayEndpoint extends Component {
 
     const { endpointId } = this.props.match.params
     if (endpointId === 'new') this.setUnsavedTabDataInIDB()
-
+    document.addEventListener('keydown', this.handleKeyDown);
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
@@ -421,7 +421,23 @@ class DisplayEndpoint extends Component {
       }
     }
   }
-
+  handleKeyDown = (event) => {
+    const activeTabId = this.props.activeTabId;
+    const status = this.props.tabs?.[activeTabId]?.status;
+    console.log(activeTabId, status);
+    if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
+      this.handleSend();
+    } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) { 
+      event.preventDefault();
+      if (status === 'NEW') {
+        this.setState({ saveAsFlag: true }, () => {
+          this.openEndpointFormModal();
+        });
+      } else {
+        this.handleSave();
+      }
+    }
+  }
   updateDimensions = () => {
     this.setState({ publicEndpointWidth: window.innerWidth, publicEndpointHeight: window.innerHeight });
     this.isMobileView()
@@ -438,6 +454,7 @@ class DisplayEndpoint extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions);
+    document.removeEventListener('keydown', this.handleKeyDown);
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
