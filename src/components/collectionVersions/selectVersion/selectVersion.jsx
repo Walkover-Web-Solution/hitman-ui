@@ -10,6 +10,7 @@ import { onDefaultVersion } from '../../publishDocs/redux/publishDocsActions'
 import OutsideClickHandler from 'react-outside-click-handler';
 import './selectVersion.scss'
 import { toast } from 'react-toastify'
+import { getOrgId } from '../../common/utility'
 
 const VersionInput = (props) => {
   const { pages } = useSelector((state) => {
@@ -141,11 +142,10 @@ export default function SelectVersion(props) {
   }
 
   const handleDefaultVersion = async (versionId) => {
-    var orgList = localStorage.getItem('organisation')
-    orgList = JSON.parse(orgList)
+    const orgId = getOrgId()
     const defaultVersionData = findDefaultVersion()
     const versionData = { oldVersionId: defaultVersionData.id, newVersionId: versionId }
-    dispatch(onDefaultVersion(orgList.id, versionData))
+    dispatch(onDefaultVersion(orgId, versionData))
   }
 
   const [showEdit, setShowEdit] = useState(null)

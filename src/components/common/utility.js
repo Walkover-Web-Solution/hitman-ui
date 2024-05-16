@@ -211,12 +211,9 @@ export function toTitleCase(str) {
 }
 
 export function getOrgId() {
-  // const path = history.location.pathname
-  // if (path) { return path } else {
-  let orgList = window.localStorage.getItem(orgListKey)
+  let orgList = window.localStorage.getItem('currentOrganisation')
   orgList = JSON.parse(orgList)
-  return orgList?.[0]?.id
-  // }
+  return orgList?.id
 }
 
 export function getParentIds(id, type, data) {

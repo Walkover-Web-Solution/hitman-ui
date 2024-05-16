@@ -14,11 +14,7 @@ import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
-import PublishCollectionInfo from '../main/publishCollectionInfo'
-import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
-import ExpandIcon from '../../assets/icons/expand-arrow.svg'
 import { addNewTab, updateTab } from '../tabs/redux/tabsActions'
-import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
@@ -26,15 +22,11 @@ import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg
 import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
 import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
 import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTagsign.svg'
-// import {ReactComponent as Duplicate} from '../../assets/icons/duplicateSign.svg'
-// import {ReactComponent as ImportVersion} from '../../assets/icons/importVersionSign.svg'
 // import {ReactComponent as ShareBold} from '../../assets/icons/shareBoldSign.svg'
-import { store } from '../../store/store'
 import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
-// import { store } from '../../store/store'
 import { LuFolder } from "react-icons/lu";
 
 const EMPTY_STRING = ''
@@ -296,7 +288,8 @@ class CollectionsComponent extends Component {
     })
   }
 
-  toggleSelectedColelctionIds(id) {
+  toggleSelectedColelctionIds(e,id) {
+    e.stopPropagation()
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_collection({
       value: !isExpanded,
@@ -349,10 +342,15 @@ class CollectionsComponent extends Component {
       <React.Fragment key={collectionId}>
         <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
           <button tabIndex={-1} variant='default' className={`sidebar-hower ${expanded ? 'expanded' : ''}`}>
-            <div className='inner-container' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
+            <div className='inner-container' onClick={(e) =>{
+              this.openPublishSettings(collectionId)
+              if(!expanded){
+                this.toggleSelectedColelctionIds(e,collectionId)
+              }
+            }}>
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
-                <span className='versionChovron'>
+                <span className='versionChovron' onClick={(e) => this.toggleSelectedColelctionIds(e,collectionId)}>
                   <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
                   <LuFolder size={13}  className='collection-icons d-inline ml-1'/>
                   </span>

@@ -73,22 +73,8 @@ class App extends Component {
         })
       })
     }
-
-    if (this.props.location.pathname.split('/')?.[1] === 'orgs') {
-      const orgId = this.props.location.pathname.split('/')?.[2]
-      if (orgId) {
-        this.changeSelectedOrg(orgId)
-      }
-    }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const prevOrgId = getOrgId()
-    const currentOrgId = this.props.location.pathname.split('/')?.[2]
-    if (currentOrgId && prevOrgId !== currentOrgId) {
-      this.changeSelectedOrg(currentOrgId)
-    }
-  }
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.handleBeforeUnload)
@@ -124,7 +110,7 @@ class App extends Component {
         }
       })
       if (flag === 1) {
-        window.localStorage.setItem('organisation', JSON.stringify(organisation))
+        window.localStorage.setItem('currentOrganisation', JSON.stringify(organisation))
       }
     }
   }
