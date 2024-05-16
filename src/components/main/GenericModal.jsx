@@ -54,7 +54,7 @@ function GenericModal({
                   aria-describedby='basic-addon2'
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyPress}
                 />
               </InputGroup>
               <InputGroup className='mb-3'>
@@ -65,7 +65,7 @@ function GenericModal({
                   aria-describedby='basic-addon2'
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyPress}
                   isInvalid={email && !validateEmail(email)}
                 />
               </InputGroup>
@@ -107,7 +107,7 @@ function GenericModal({
                       aria-describedby='basic-addon2'
                       value={orgName}
                       onChange={(e) => setName(e.target.value)}
-                      onKeyPress={(e) => {
+                      onKeyDown={(e) => {
                         handleKeyPress(e)
                       }}
                       isInvalid={orgName && !validateName(orgName)}

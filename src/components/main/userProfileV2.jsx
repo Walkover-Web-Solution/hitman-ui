@@ -527,15 +527,6 @@ class UserProfileV2 extends Component {
     this.setState({ orgFilter })
   }
 
-  getItemCount(orgCount) {
-    const showFlag = this.state.moreFlag
-    if (orgCount > 5 && !showFlag) {
-      return 5
-    } else {
-      return orgCount
-    }
-  }
-
   setShowFlag() {
     let orgFilter = this.state.orgFilter
     const moreFlag = !this.state.moreFlag
@@ -590,14 +581,11 @@ class UserProfileV2 extends Component {
             <Dropdown.Menu className='p-0'>
               {this.renderUserDetails()}
               <div className='profile-listing-container'>
-                {/* <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item> */}
-                {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
                 <div className='px-2 pb-2'>
                 <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
-                {/* <Dropdown.Divider /> */}
-                <Dropdown.Item  onClick={this.toggleModal}>
+                <Dropdown.Item>
                   {/* <div className='profile-menu'> */}
-                  <span className='profile-details' type='button'>
+                  <span className='profile-details' onClick={this.toggleModal} type='button'>
                   <MdSwitchLeft size={18} />
                     Switch Organization
                   </span>
@@ -615,7 +603,6 @@ class UserProfileV2 extends Component {
                     showInput
                     handleAddOrg={this.handleAddOrg}
                   />
-                  {/* </div> */}
                 </Dropdown.Item>
                 <Dropdown.Item>{this.renderTrash()}</Dropdown.Item>
                 <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>

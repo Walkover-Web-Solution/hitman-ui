@@ -12,7 +12,7 @@ export default function ShowCaseSaveAsModal(props) {
     }
   })
 
-  const [pathData, setPathData] = useState(['organisation'])
+  const [pathData, setPathData] = useState(['currentOrganisation'])
 
   const getName = (id) => {
     const type = pages?.[id]?.type
