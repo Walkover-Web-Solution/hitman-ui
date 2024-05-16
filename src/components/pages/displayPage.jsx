@@ -69,6 +69,7 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     tabs: state.tabs,
+    users: state.users
   }
 }
 
@@ -158,6 +159,23 @@ class DisplayPage extends Component {
       )
     }
   }
+
+  renderPageUserData() {
+    const { pages, currentPageId, users } = this.props;
+    const updatedById = pages?.[currentPageId]?.updatedBy;
+
+    // Find the user by ID
+    const user = users.users?.find(user => user.id === updatedById);
+
+    return (
+        <div className='page-user-data mt-2'>
+            updated by:<span>{" "}</span>
+            <span className='page-user-data-name'>
+                {user ? user.name : 'Unknown'}
+            </span>
+        </div>
+    );
+}
 
   renderPageName() {
     const pageId = this.props?.match?.params.pageId
@@ -383,6 +401,7 @@ class DisplayPage extends Component {
         {this.renderPublishPageOperations()}
         {this.renderPageName()}
         {this.checkPageRejected()}
+        {this.renderPageUserData()}
         {/* <ApiDocReview {...this.props} /> */}
         {isOnPublishedPage() && <Footer />}
       </div>

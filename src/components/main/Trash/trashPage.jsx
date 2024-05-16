@@ -3,6 +3,7 @@ import { Container, Table, Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { BiArrowBack } from 'react-icons/bi';
 import { MdSettingsBackupRestore } from 'react-icons/md';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import trashImage from '../../../assets/icons/trash.webp';
@@ -17,8 +18,10 @@ const TrashPage = () => {
   const [editableRow, setEditableRow] = useState({ id: null, name: "" });
   const history = useHistory();
   const orgId = getCurrentOrg()?.id;
+  const users = useSelector((state) => state.users.users);
 
   useEffect(() => {
+    console.log(users);
     async function fetchData() {
       setIsLoading(true);
       try {
@@ -71,6 +74,11 @@ const TrashPage = () => {
     }
   };
 
+  const findUserNameById = (id) => {
+    const user = users.find(user => user.id === id);
+    return user ? user.name : 'Unknown';
+};
+
   if (isLoading) {
     return (
       <div className='custom-loading-container'>
@@ -97,6 +105,7 @@ const TrashPage = () => {
               <tr>
                 <th>Name</th>
                 <th>Deleted</th>
+                <th>Deleted By</th>
                 <th>Restore</th>
               </tr>
             </thead>
@@ -115,6 +124,9 @@ const TrashPage = () => {
                     )}
                   </td>
                   <td>{moment(collection.deletedAt).fromNow()}</td>
+                  <td>
+                  {findUserNameById(collection.updatedBy)}
+                  </td>
                   <td className="restore-action">
                     {editableRow.id === collection.id ? (
                       <Button onClick={() => handleSaveEdit(collection.id)}>Save</Button>

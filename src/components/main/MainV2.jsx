@@ -17,6 +17,7 @@ import NoCollectionIcon from '../../assets/icons/collection.svg'
 import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 import { addCollectionAndPages } from '../redux/generalActions'
 import SplitPane from '../splitPane/splitPane'
+import axios from 'axios'
 
 const mapStateToProps = (state) => {
   return {
@@ -30,7 +31,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
-    add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId))
+    add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId)),
+    addUser: (userData) => dispatch({ type: 'ADD_USER_DATA', data: userData }),
   }
 }
 
@@ -58,6 +60,14 @@ class MainV2 extends Component {
     if (!token) {
       this.setState({ loading: false })
       return
+    }
+
+    const response = await axios.get(`${process.env.REACT_APP_PROXY_URL}/getUsers?itemsPerPage=100`, {
+      headers: { proxy_auth_token: token }
+    })
+
+    if(response){
+      this.props.addUser(response.data?.data?.data)
     }
     /** Token Exists */
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {

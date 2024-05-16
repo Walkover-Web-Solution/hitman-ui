@@ -56,7 +56,7 @@ export async function inviteMembers(name, email) {
       }
     }
     const res = await http.post(proxyUrl + '/addUser', data)
-    if (res.status !== 201) {
+    if (res.status !== 200) {
       throw new (res?.message ? res.message : 'Please enter message correctly')()
     }
     toast.success('User added successfully')
