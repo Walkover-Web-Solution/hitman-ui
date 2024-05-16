@@ -410,7 +410,7 @@ function TokenGenerator(props) {
   }
 
   return (
-    <Modal onHide={closeModal} id='modal-new-token-generator' size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered show={props?.show}>
+    <Modal className='new-token-generator' onHide={closeModal} id='modal-new-token-generator' size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered show={props?.show}>
 
       <Modal.Header className='custom-collection-modal-container' closeButton>
         <Modal.Title id='contained-modal-title-vcenter'>{props?.title}</Modal.Title>
@@ -424,7 +424,7 @@ function TokenGenerator(props) {
 
         <div className='text-right'>
           <button className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={handleSaveConfiguration}>Save</button>
-          <button className='btn btn-primary btn-lg ml-2' type='button' onClick={makeRequest}>Request Token</button>
+          <button className='btn btn-primary btn-sm fs-4 ml-2' type='button' onClick={makeRequest}>Request Token</button>
         </div>
 
       </Modal.Body>
