@@ -41,7 +41,7 @@ export async function createOrg(name) {
     updateOrgDataByOrgId(org.id)
     await getDataFromProxyAndSetDataToLocalStorage()
     await createOrganizationAndRunCode()
-    await switchOrg(newOrg.data.data.id)
+    await switchOrg(newOrg?.data?.data?.id)
   } catch (e) {
     toast.error(e?.response?.data?.message ? e?.response?.data?.message : "Something went wrong")
   }

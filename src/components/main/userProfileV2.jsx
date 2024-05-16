@@ -493,7 +493,7 @@ class UserProfileV2 extends Component {
         <div className='org-listing-column d-flex flex-column'>
           {organizations.map((org, key) => (
             <button
-              className={`mb-2 p-2 btn btn-secondary ${org === selectedOrg ? 'active' : ''} `}
+              className={`mb-2 p-2 btn btn-secondary ${org?.id === selectedOrg?.id ? 'active' : ''} `}
               id='publish_collection_btn'
               // variant= 'btn btn-outline'
               key={key}
@@ -525,15 +525,6 @@ class UserProfileV2 extends Component {
 
   setOrgFilter(orgFilter) {
     this.setState({ orgFilter })
-  }
-
-  getItemCount(orgCount) {
-    const showFlag = this.state.moreFlag
-    if (orgCount > 5 && !showFlag) {
-      return 5
-    } else {
-      return orgCount
-    }
   }
 
   setShowFlag() {
@@ -590,14 +581,11 @@ class UserProfileV2 extends Component {
             <Dropdown.Menu className='p-0'>
               {this.renderUserDetails()}
               <div className='profile-listing-container'>
-                {/* <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item> */}
-                {/* <Dropdown.Item>{this.renderBilling()} </Dropdown.Item> */}
                 <div className='px-2 pb-2'>
                 <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
-                {/* <Dropdown.Divider /> */}
-                <Dropdown.Item  onClick={this.toggleModal}>
+                <Dropdown.Item>
                   {/* <div className='profile-menu'> */}
-                  <span className='profile-details' type='button'>
+                  <span className='profile-details d-block' onClick={this.toggleModal} type='button'>
                   <MdSwitchLeft size={18} />
                     Switch Organization
                   </span>
@@ -615,7 +603,6 @@ class UserProfileV2 extends Component {
                     showInput
                     handleAddOrg={this.handleAddOrg}
                   />
-                  {/* </div> */}
                 </Dropdown.Item>
                 <Dropdown.Item>{this.renderTrash()}</Dropdown.Item>
                 <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
