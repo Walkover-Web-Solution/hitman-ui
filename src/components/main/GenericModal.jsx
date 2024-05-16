@@ -45,7 +45,7 @@ function GenericModal({
         <Modal.Body>
           {showInputGroup && (
             <>
-              <InputGroup className='mb-2'>
+              <InputGroup className='mb-3'>
                 <Form.Control
                   ref={inputRef}
                   placeholder='Enter User Name'
@@ -57,7 +57,7 @@ function GenericModal({
                   onKeyPress={handleKeyPress}
                 />
               </InputGroup>
-              <InputGroup>
+              <InputGroup className='mb-3'>
                 <Form.Control
                   placeholder='Enter User Email'
                   type='email'
@@ -71,22 +71,21 @@ function GenericModal({
               </InputGroup>
 
               {/* show loading in invite org */}
-             
+              {loading ? (
+                <div class='spinner-border spinner-border-sm text-success p-2' role='status'>
+                  <span class='sr-only'>Please Wait...</span>
+                </div>
+              ) : (
+                <button className='btn btn-primary' type='submit' onClick={handleSendInvite}>
+                  Send
+                </button>
+              )}
             </>
           )}
           {modalBody}
         </Modal.Body>
         {/* for create organization */}
-        <Modal.Footer className='d-flex justify-content-start'>
-        {loading ? (
-                <div class='spinner-border spinner-border-sm text-success p-2' role='status'>
-                  <span class='sr-only'>Please Wait...</span>
-                </div>
-              ) : (
-                <button className='btn btn-primary btn-sm fs-4' type='submit' onClick={handleSendInvite}>
-                  Send
-                </button>
-              )}
+        <Modal.Footer>
           {showInput && (
             <>
               <div className='m-2 d-grid gap-2 col-6 mx-auto create-org'>

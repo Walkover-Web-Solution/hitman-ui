@@ -431,7 +431,7 @@ class UserProfileV2 extends Component {
         <Modal.Body style={{ fontWeight: '500' }}>If you switch organization all the tabs and history will be deleted!</Modal.Body>
         <Modal.Footer>
           <button
-            className='btn btn-danger btn-lg mr-2'
+            className='btn btn-danger btn-sm fs-4 mr-2'
             onClick={() => {
               this.handleTabsandHistory('yes')
             }}
@@ -439,7 +439,7 @@ class UserProfileV2 extends Component {
             Yes
           </button>
           <Button
-            className='btn btn-secondary outline btn-lg'
+            className='btn btn-secondary outline btn-sm fs-4'
             variant='secondary'
             onClick={() => {
               this.handleTabsandHistory('no')
@@ -595,9 +595,9 @@ class UserProfileV2 extends Component {
                 <div className='px-2 pb-2'>
                 <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
                 {/* <Dropdown.Divider /> */}
-                <Dropdown.Item  onClick={this.toggleModal}>
+                <Dropdown.Item >
                   {/* <div className='profile-menu'> */}
-                  <span className='profile-details' type='button'>
+                  <span className='profile-details' type='button' onClick={this.toggleModal}>
                   <MdSwitchLeft size={18} />
                     Switch Organization
                   </span>
