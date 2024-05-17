@@ -377,9 +377,9 @@ class DisplayResponse extends Component {
     return (
       <div className='w-100'>
         <h4>Pre-Script Execution</h4>
-        <div className=''>{<RenderConsoleComponent data={this.props.tabs?.[this.props.activeTabId]?.preScriptExecutedData || []} />}</div>
+        <div className=''>{<RenderConsoleComponent data={this.props.tabs?.[this.props?.activeTabId]?.preScriptExecutedData || []} />}</div>
         <h4>Post-Script Execution</h4>
-        <div className=''>{<RenderConsoleComponent data={this.props.tabs?.[this.props.activeTabId]?.postScriptExecutedData || []} />}</div>
+        <div className=''>{<RenderConsoleComponent data={this.props.tabs?.[this.props?.activeTabId]?.postScriptExecutedData || []} />}</div>
       </div>
     )
   }
