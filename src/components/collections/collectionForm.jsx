@@ -103,7 +103,8 @@ class CollectionForm extends Form {
     this.props.add_collection(
       { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
       null,
-      this.redirectToCollection.bind(this))
+      this.redirectToCollection.bind(this)
+    )
     this.setState({
       data: {
         name: '',
@@ -196,4 +197,5 @@ class CollectionForm extends Form {
     return this.props.showOnlyForm ? this.renderForm() : this.renderInModal()
   }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(CollectionForm)

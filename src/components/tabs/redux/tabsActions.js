@@ -85,12 +85,6 @@ export const updateTabDraft = (tabId, draft) => {
   }
 }
 
-export const updatePostPreScriptExecutedData = (tabId, executedData) => {
-  return (dispatch) => {
-    dispatch({ type: tabsActionTypes.UPDATE_PRE_POST_SCRIPT, payload: { tabId, executedData } })
-  }
-}
-
 export const setActiveTabId = (tabId) => {
   return async (dispatch) => {
     dispatch({

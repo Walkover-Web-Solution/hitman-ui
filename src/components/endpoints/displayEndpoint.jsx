@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString, executeData } from '../common/utility'
+import { SESSION_STORAGE_KEY, hexToRgb, isOnPublishedPage, trimString } from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -19,7 +19,7 @@ import {
   setCurrentUserSSLMode
 } from '../common/utility'
 import tabService from '../tabs/tabService'
-import { closeTab, updatePostPreScriptExecutedData, updateTab, updateTabDraft } from '../tabs/redux/tabsActions'
+import { closeTab, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import CodeTemplate from './codeTemplate'
 import SaveAsSidebar from './saveAsSidebar'
@@ -121,7 +121,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate)),
     update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload)),
     // set_chat_view : (view) => dispatch(onChatResponseToggle(view))
-    update_pre_post_script: (tabId, executionData) => dispatch(updatePostPreScriptExecutedData(tabId, executionData))
   }
 }
 
@@ -198,11 +197,11 @@ const getEndpointContent = async (props) => {
   let currentIdToShow = isUserOnPublishedPage ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
 
   let endpointId = isUserOnPublishedPage
-    ? currentIdToShow
-    : props?.match?.params.endpointId !== 'new'
-      ? props?.match?.params?.endpointId
-      : props?.activeTabId
-
+      ? currentIdToShow
+      : props?.match?.params.endpointId !== 'new'
+        ? props?.match?.params?.endpointId
+        : props?.activeTabId
+      
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
   if (!isUserOnPublishedPage && tabId?.isModified && tabId?.type == 'endpoint' && tabId?.draft) {
@@ -738,8 +737,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApiCall({ url: api, body, headers: header, bodyType, method, cancelToken, keyForRequest }, preScriptExecution) {
-    const currentEndpointId = (this.props.currentEndpointId !== 'new') ? this.props.activeTabId : this.props.currentEndpointId
+  async handleApiCall({ url: api, body, headers: header, bodyType, method, cancelToken, keyForRequest }) {
     let responseJson = {}
     try {
       if (isElectron()) {
@@ -763,11 +761,9 @@ class DisplayEndpoint extends Component {
         /** Run Post-Request Script */
         const result = this.runScript(code, currentEnvironment, request, responseJson)
         if (!result.success) {
-          this.props.update_pre_post_script(currentEndpointId, { preScriptExecution, postScriptExecution: [] });
           this.setState({ postReqScriptError: result.error })
         } else {
           this.setState({ tests: [...this.state.tests, ...result.data.tests] })
-          this.props.update_pre_post_script(currentEndpointId, { preScriptExecution, postScriptExecution: result.data.consoleOutput });
         }
       } else {
         /** error occured while creating the request */
@@ -1023,7 +1019,6 @@ class DisplayEndpoint extends Component {
     }
 
     /** Prepare Body & Modify Headers */
-
     let { body, headers } = this.formatBody(this.props?.endpointContent?.data.body, headerJson)
 
     /** Add Cookie in Headers */
@@ -1039,6 +1034,7 @@ class DisplayEndpoint extends Component {
     requestOptions = { url, body, headers, method, cancelToken, keyForRequest }
 
     const currentEnvironment = this.props.environment
+
     const code = this.props.endpointContent.preScriptText
 
     /** Run Pre Request Script */
@@ -1064,7 +1060,7 @@ class DisplayEndpoint extends Component {
       /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
       /** Handle Request Call */
-      await this.handleApiCall(requestOptions, result?.data?.consoleOutput)
+      await this.handleApiCall(requestOptions)
       this.setState({
         loader: false,
         runSendRequest: null,
@@ -3030,7 +3026,6 @@ class DisplayEndpoint extends Component {
                                 type='Pre-Script'
                                 handleScriptChange={this.handleScriptChange.bind(this)}
                                 scriptText={this.props?.endpointContent?.preScriptText}
-                                endpointContent={this.props?.endpointContent}
                               />
                             </div>
                           </div>
@@ -3045,7 +3040,6 @@ class DisplayEndpoint extends Component {
                                 type='Post-Script'
                                 handleScriptChange={this.handleScriptChange.bind(this)}
                                 scriptText={this.props?.endpointContent?.postScriptText}
-                                endpointContent={this.props?.endpointContent}
                               />
                             </div>
                           </div>
