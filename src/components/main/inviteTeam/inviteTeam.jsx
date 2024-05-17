@@ -6,39 +6,23 @@ import { getCurrentOrg, getProxyToken } from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
 import { inviteMembers } from '../../../services/orgApiService'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 function InviteTeam() {
-  const [users, setUsers] = useState([])
+  const dispatch = useDispatch();
+  // const [Users, setUsers] = useState([])
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const history = useHistory()
   const inputRef = useRef(null)
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const { tabs } = useSelector((state) => {
+  const { tabs, users } = useSelector((state) => {
     return {
       tabs: state.tabs,
-      pages: state.pages
+      users: state.users.users
     }
   })
-  useEffect(() => {
-    fetchUsers()
-  }, [])
-
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get('https://routes.msg91.com/api/c/getUsers?itemsPerPage=100', {
-        headers: { proxy_auth_token: getProxyToken() }
-      })
-      setUsers(response?.data?.data?.data)
-    } catch (error) {
-      toast.error('Error fetching users: ' + error.message)
-    }finally {
-      setLoadingUsers(false);
-    }
-  }
 
   useEffect(() => {
     if (showModal) {
@@ -88,11 +72,10 @@ function InviteTeam() {
         return
       }
       const response = await inviteMembers(name, email)
-      if (response.status === 'success') {
-        setUsers((prevUsers) => [{ name, email }, ...prevUsers])
+      if (response.status == 200) {
+        dispatch({type: 'ADD_NEW_USER', data: response.data?.data});
         handleCloseModal()
-      }
-      else{
+      } else {
         handleCloseModal()
       }
     } catch (error) {
@@ -139,38 +122,6 @@ function InviteTeam() {
               <th>Action</th>
             </tr>
           </thead>
-          {loadingUsers ? (
-            <>
-            <div className="team">
-              <div className="d-flex align-items-center justify-content-between">
-                <div className="email bg"></div>
-                <div className="admin bg"></div>
-                <div className="edit bg"></div>
-              </div>
-            </div>
-             <div className="team my-3">
-             <div className="d-flex align-items-center justify-content-between">
-               <div className="email bg"></div>
-               <div className="admin bg"></div>
-               <div className="edit bg"></div>
-             </div>
-           </div>
-           <div className="team">
-             <div className="d-flex align-items-center justify-content-between">
-               <div className="email bg"></div>
-               <div className="admin bg"></div>
-               <div className="edit bg"></div>
-             </div>
-           </div>
-           <div className="team my-3">
-             <div className="d-flex align-items-center justify-content-between">
-               <div className="email bg"></div>
-               <div className="admin bg"></div>
-               <div className="edit bg"></div>
-             </div>
-           </div>
-           </>
-          ) : (
             <tbody>
               {users.map((user) => (
                 <tr key={user.email}>
@@ -190,7 +141,6 @@ function InviteTeam() {
                 </tr>
               ))}
             </tbody>
-          )}
         </table>
       </div>
     </>

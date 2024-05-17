@@ -99,7 +99,8 @@ const mapStateToProps = (state) => {
     activeTabId: state.tabs.activeTabId,
     tabs: state?.tabs?.tabs,
     tokenDetails: state?.tokenData?.tokenDetails,
-    curlSlider: state.modals?.curlSlider || false
+    curlSlider: state.modals?.curlSlider || false,
+    users: state.users
   }
 }
 
@@ -2721,6 +2722,23 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  renderEndpointUserData() {
+    const { pages, currentEndpointId, users } = this.props;
+    const updatedById = pages?.[currentEndpointId]?.updatedBy;
+
+    // Find the user by ID
+    const user = users.users?.find(user => user.id === updatedById);
+
+    return (
+        <div className='page-user-data mt-2'>
+            <b>Updated by:</b><span>{" "}</span>
+            <span className='page-user-data-name'>
+                {user ? user.name : 'Unknown'}
+            </span>
+        </div>
+    );
+}
+
   render() {
     if (this.props?.endpointContentLoading) {
       return (
@@ -3062,7 +3080,8 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
-              <span className='mb-2 d-inline-block'>{isOnPublishedPage() && this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt && `Modified at ${moment(this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt).fromNow()}`}</span>
+                {this.renderEndpointUserData()}
+              <span className='mb-2 d-inline-block'>{isOnPublishedPage() && this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt && `Last Modified ${moment(this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt).fromNow()}`}</span>
               </div>
               {/* <ApiDocReview {...this.props} /> */}
               <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>

@@ -69,6 +69,7 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     tabs: state.tabs,
+    users: state.users
   }
 }
 
@@ -153,11 +154,29 @@ class DisplayPage extends Component {
         <div className='pt-3 px-1'> 
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
           <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
-          <span>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
+          {this.renderPageUserData()}
+          <span>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Last Modified ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
         </div>
       )
     }
   }
+
+  renderPageUserData() {
+    const { pages, currentPageId, users } = this.props;
+    const updatedById = pages?.[currentPageId]?.updatedBy;
+
+    // Find the user by ID
+    const user = users.users?.find(user => user.id === updatedById);
+
+    return (
+        <div className='page-user-data mt-2'>
+            <b>Updated by:</b><span>{" "}</span>
+            <span className='page-user-data-name'>
+                {user ? user.name : 'Unknown'}
+            </span>
+        </div>
+    );
+}
 
   renderPageName() {
     const pageId = this.props?.match?.params.pageId
