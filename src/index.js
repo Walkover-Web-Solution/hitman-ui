@@ -12,7 +12,7 @@ import { store, persistor } from './store/store'
 import history from './history.js'
 import { sentryIntegration } from './components/common/utility'
 import { PersistGate } from 'redux-persist/integration/react'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { createRoot } from 'react-dom/client'
 
