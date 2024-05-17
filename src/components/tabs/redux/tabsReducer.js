@@ -104,8 +104,8 @@ function tabsReducer(state = initialState, action) {
       
     case tabsActionTypes.UPDATE_PRE_POST_SCRIPT:
       tabs = { ...state }
-      tabs.tabs[action.payload.tabId].postScriptExecutedData = action.payload.executedData.postScriptExecution
-      tabs.tabs[action.payload.tabId].preScriptExecutedData = action.payload.executedData.preScriptExecution
+      tabs.tabs[action.payload.tabId].postScriptExecutedData = action.payload?.executedData?.postScriptExecution || ''
+      tabs.tabs[action.payload.tabId].preScriptExecutedData = action.payload?.executedData?.preScriptExecution || ''
       return tabs
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_TABS:
