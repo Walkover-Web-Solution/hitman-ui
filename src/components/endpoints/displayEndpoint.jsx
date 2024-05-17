@@ -2710,7 +2710,7 @@ class DisplayEndpoint extends Component {
 
     return (
         <div className='page-user-data mt-2'>
-            updated by:<span>{" "}</span>
+            <b>Updated by:</b><span>{" "}</span>
             <span className='page-user-data-name'>
                 {user ? user.name : 'Unknown'}
             </span>
@@ -3058,7 +3058,7 @@ class DisplayEndpoint extends Component {
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
                 {this.renderEndpointUserData()}
-              <span className='mb-2 d-inline-block'>{isOnPublishedPage() && this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt && `Modified at ${moment(this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt).fromNow()}`}</span>
+              <span className='mb-2 d-inline-block'>{isOnPublishedPage() && this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt && `Last Modified ${moment(this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt).fromNow()}`}</span>
               </div>
               {/* <ApiDocReview {...this.props} /> */}
               <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>

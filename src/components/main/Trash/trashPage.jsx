@@ -21,7 +21,6 @@ const TrashPage = () => {
   const users = useSelector((state) => state.users.users);
 
   useEffect(() => {
-    console.log(users);
     async function fetchData() {
       setIsLoading(true);
       try {

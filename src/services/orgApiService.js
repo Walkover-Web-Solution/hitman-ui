@@ -60,7 +60,7 @@ export async function inviteMembers(name, email) {
       throw new (res?.message ? res.message : 'Please enter message correctly')()
     }
     toast.success('User added successfully')
-    return true
+    return res
   } catch (e) {
     if (e.response.status !== 418) {
       toast.error(e?.response?.data?.message ? e?.response?.data?.message : 'Something went wrong')
