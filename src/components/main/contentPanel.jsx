@@ -67,6 +67,7 @@ class ContentPanel extends Component {
   componentDidUpdate() {
     const { endpointId, pageId, historyId, collectionId } = this.props.match.params
     if (this.props.tabs.loaded && endpointId && endpointId !== 'new') {
+      // debugger
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
           this.props.set_active_tab_id(endpointId)

@@ -44,7 +44,7 @@ function tabsReducer(state = initialState, action) {
         ...action.payload.data
       }
       return tabs
-        
+
     case tabsActionTypes.UPDATE_TAB_DRAFT:
       tabs = { ...state }
       tabs.tabs[action.payload.tabId].draft = action?.payload?.draft
@@ -87,6 +87,7 @@ function tabsReducer(state = initialState, action) {
       return tabs
 
     case tabsActionTypes.REPLACE_TAB_ID:
+      debugger
       const data = {
         id: action.payload.newTabId,
         type: 'endpoint',
@@ -96,12 +97,16 @@ function tabsReducer(state = initialState, action) {
         state: {}
       }
       const newTabs = state.tabs
-      newTabs[action.payload?.newTabId] = data
+      newTabs[action.payload?.newTabId] = {...newTabs[action.payload.currentActiveTabId], id: action.payload.newTabId}
+      newTabs[action.payload.newTabId].draft.id = action.payload.newTabId
       delete newTabs[action.payload.currentActiveTabId]
-      const newOrder = state.tabsOrder.filter((item) => item !== action.payload.currentActiveTabId)
+      const newOrder = state.tabsOrder.map((item) => {
+        if(item === action.payload.currentActiveTabId) return action.payload.newTabId
+        return item
+      })
       tabs = { ...state, tabsOrder: newOrder, activeTabId: action.payload.newTabId, tabs: newTabs }
       return tabs
-      
+
     case tabsActionTypes.UPDATE_PRE_POST_SCRIPT:
       tabs = { ...state }
       tabs.tabs[action.payload.tabId].postScriptExecutedData = action.payload?.executedData?.postScriptExecution || ''
