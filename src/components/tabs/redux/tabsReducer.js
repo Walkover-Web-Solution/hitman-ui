@@ -44,7 +44,7 @@ function tabsReducer(state = initialState, action) {
         ...action.payload.data
       }
       return tabs
-
+        
     case tabsActionTypes.UPDATE_TAB_DRAFT:
       tabs = { ...state }
       tabs.tabs[action.payload.tabId].draft = action?.payload?.draft
@@ -100,6 +100,12 @@ function tabsReducer(state = initialState, action) {
       delete newTabs[action.payload.currentActiveTabId]
       const newOrder = state.tabsOrder.filter((item) => item !== action.payload.currentActiveTabId)
       tabs = { ...state, tabsOrder: newOrder, activeTabId: action.payload.newTabId, tabs: newTabs }
+      return tabs
+      
+    case tabsActionTypes.UPDATE_PRE_POST_SCRIPT:
+      tabs = { ...state }
+      tabs.tabs[action.payload.tabId].postScriptExecutedData = action.payload?.executedData?.postScriptExecution || ''
+      tabs.tabs[action.payload.tabId].preScriptExecutedData = action.payload?.executedData?.preScriptExecution || ''
       return tabs
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_TABS:
