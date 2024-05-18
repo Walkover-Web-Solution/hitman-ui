@@ -87,6 +87,7 @@ function tabsReducer(state = initialState, action) {
       return tabs
 
     case tabsActionTypes.REPLACE_TAB_ID:
+      debugger
       const data = {
         id: action.payload.newTabId,
         type: 'endpoint',
@@ -98,7 +99,10 @@ function tabsReducer(state = initialState, action) {
       const newTabs = state.tabs
       newTabs[action.payload?.newTabId] = data
       delete newTabs[action.payload.currentActiveTabId]
-      const newOrder = state.tabsOrder.filter((item) => item !== action.payload.currentActiveTabId)
+      const newOrder = state.tabsOrder.map((item) => {
+        if(item === action.payload.currentActiveTabId) return action.payload.newTabId
+        else return item
+      })
       tabs = { ...state, tabsOrder: newOrder, activeTabId: action.payload.newTabId, tabs: newTabs }
       return tabs
       
