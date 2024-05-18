@@ -10,8 +10,17 @@ import SampleResponseForm from './sampleResponseForm'
 import { Overlay, Spinner, Tooltip } from 'react-bootstrap'
 import TestResults from './testResults'
 import addtosample from '../../assets/icons/addToSamplesign.svg'
-
+import { IoMdArrowDropdown } from "react-icons/io";
+import { IoMdArrowDropright } from "react-icons/io";
+import { connect } from 'react-redux'
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
+
+
+const mapStateToProps = (state) => {
+  return {
+    tabs: state?.tabs?.tabs,
+  }
+}
 
 class DisplayResponse extends Component {
   state = {
@@ -24,11 +33,16 @@ class DisplayResponse extends Component {
     showSampleResponseForm: { add: false, delete: false, edit: false },
     theme: '',
     showCopyMessage: false,
-    selectedResponseTab: 'body'
+    selectedResponseTab: 'body',
+    isOpen: false,
+    output: null,
+    isShow: false,
+    Open: false,
+    Show: false
   }
 
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.copyDivRef = createRef()
   }
 
@@ -180,23 +194,43 @@ class DisplayResponse extends Component {
               </a>
             </li>
             {isDashboardRoute(this.props) && (
-              <li
-                className='nav-item'
-                onClick={() => {
-                  this.setState({ selectedResponseTab: 'testResults' })
-                }}
-              >
-                <a
-                  className={this.state.selectedResponseTab === 'testResults' ? 'nav-link active' : 'nav-link'}
-                  id='pills-testResults-tab'
-                  data-toggle='pill'
-                  aria-selected='false'
-                  href='#pills-testResults-tab'
-                  role='tab2'
+              <>
+                <li
+                  className='nav-item'
+                  onClick={() => {
+                    this.setState({ selectedResponseTab: 'testResults' })
+                  }}
                 >
-                  Test Results <TestResultsPreview />
-                </a>
-              </li>
+                  <a
+                    className={this.state.selectedResponseTab === 'testResults' ? 'nav-link active' : 'nav-link'}
+                    id='pills-testResults-tab'
+                    data-toggle='pill'
+                    aria-selected='false'
+                    href='#pills-testResults-tab'
+                    role='tab2'
+                  >
+                    Test Results <TestResultsPreview />
+                  </a>
+                </li>
+                <li
+                  className='nav-item'
+                  onClick={() => {
+                    this.setState({ selectedResponseTab: 'console' })
+                  }}
+                >
+                  <a
+                    className={this.state.selectedResponseTab === 'console' ? 'nav-link active' : 'nav-link'}
+                    style={this.state.selectedResponseTab === 'console' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                    id='pills-console-tab'
+                    data-toggle='pill'
+                    aria-selected='false'
+                    href='#pills-console-tab'
+                    role='tab1'
+                  >
+                    Console
+                  </a>
+                </li>
+              </>
             )}
           </ul>
         </div>
@@ -219,6 +253,22 @@ class DisplayResponse extends Component {
       )
     })
   }
+  renderResponseHeader() {
+    const { originalHeaders } = this.props.endpointContent
+    return (
+      <div>
+        {originalHeaders.map((header, index) => (
+          <div key={index}>
+            {Object.entries(header).map(([key, value]) => (
+              <div key={key}>
+                <strong>{key}:</strong> {JSON.stringify(value)}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   displayHeader() {
     if (this.props.response.headers) {
@@ -236,6 +286,111 @@ class DisplayResponse extends Component {
         </div>
       )
     }
+  }
+
+  displayConsole() {
+    const { isOpen } = this.state
+    const { isShow } = this.state
+    const { Show } = this.state
+    const { Open } = this.state
+    const Base_url = this.props?.endpointContent?.host?.BASE_URL ? this.props?.endpointContent?.host?.BASE_URL : null
+    const uri = this.props?.endpointContent?.data?.updatedUri ? this.props?.endpointContent?.data?.updatedUri : null
+
+    return (
+      <div>
+        <div className='dropdown-data'>
+          {isOpen ? <IoMdArrowDropdown size={18} className='dropdown-icon' onClick={this.toggleDropdown} /> : <IoMdArrowDropright size={18} className='dropdown-icon' onClick={this.toggleDropdown} />}
+          {this.props?.endpointContent?.data?.method}
+          {'  '}
+          {Base_url + uri}
+          <div className={`dropdown-content pt-2 ${isOpen ? 'show' : ''}`}>
+            <div className='dropdown-data'>
+              {isShow ? <IoMdArrowDropdown size={18} onClick={this.toggleDropdownHeaders} /> : <IoMdArrowDropright size={18} onClick={this.toggleDropdownHeaders} />} Response Headers
+              <div className={`dropdown-content ${isOpen ? 'show' : ''}`} >
+                <span href='#' className={`dropdown-content-option ${isShow ? 'show' : ''}`}>{this.renderTableData()}</span>
+              </div>
+            </div>
+            <div className='dropdown-data'>
+              {Show ? <IoMdArrowDropdown size={18} onClick={this.toggleDropdownRequest} /> : <IoMdArrowDropright size={18} onClick={this.toggleDropdownRequest} />} Request Headers
+              <div className={`dropdown-content ${isOpen ? 'show' : ''}`}>
+                <span href='#' className={` dropdown-content-option ${Show ? 'show' : ''}`}>
+                  {this.renderResponseHeader()}
+                </span>
+              </div>
+            </div>
+            <div className='dropdown-data'>
+              {Open ? <IoMdArrowDropdown size={18} onClick={this.toggleDropdownBody} /> : <IoMdArrowDropright size={18} onClick={this.toggleDropdownBody} />} Body
+              <div className={`dropdown-content ${isOpen ? 'show' : ''}`}>
+                <span href='#' className={` dropdown-content-option ${Open ? 'show' : ''}`}>
+                  {JSON.stringify(this.props.response.data)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='test-results-container px-2'>{this.renderConsole()}</div>
+      </div>
+    )
+  }
+
+  toggleDropdown = () => {
+    this.setState({ isOpen: !this.state.isOpen })
+  }
+
+  toggleDropdownBody = () => {
+    this.setState({ Open: !this.state.Open })
+  }
+  toggleDropdownHeaders = () => {
+    this.setState({ isShow: !this.state.isShow })
+  }
+  toggleDropdownRequest = () => {
+    this.setState({ Show: !this.state.Show })
+  }
+
+  renderConsole() {
+    const checkWhetherJsonOrNot = (data) =>{
+      try{
+        if(JSON.parse(data)) return true
+        return false
+      }
+      catch(error){
+        return false
+      }
+    }
+
+    function RenderConsoleComponent(props) {
+      return (props?.data.map((singleConsole, index) => {
+        const isJson = checkWhetherJsonOrNot(singleConsole)
+        if (isJson) {
+          return <>
+            <JSONPretty theme={JSONPrettyMon} data={JSON.parse(singleConsole)} />
+            <br />
+          </>
+        }
+        return <>
+          <span key={index}>{singleConsole}</span>
+          <br />
+        </>
+      }))
+    }
+
+    return (
+      <div className='w-100'>
+        <h4>Pre-Script Execution</h4>
+        <div className=''>{<RenderConsoleComponent data={this.props.tabs?.[this.props?.activeTabId]?.preScriptExecutedData || []} />}</div>
+        <h4>Post-Script Execution</h4>
+        <div className=''>{<RenderConsoleComponent data={this.props.tabs?.[this.props?.activeTabId]?.postScriptExecutedData || []} />}</div>
+      </div>
+    )
+  }
+
+  renderBlank() {
+    return (
+      <div className='px-3 py-5 text-center'>
+        <div>No logs yet.</div>
+        <small>Send a request to view its detail in the console</small>
+      </div>
+    )
   }
 
   renderLoader() {
@@ -398,6 +553,7 @@ class DisplayResponse extends Component {
                 {this.state.selectedResponseTab === 'testResults' && isDashboardRoute(this.props) && this.props.tests && (
                   <TestResults tests={this.props.tests} />
                 )}
+                {this.state.selectedResponseTab === 'console' && this.displayConsole()}
               </div>
             </div>
           ) : (
@@ -418,4 +574,4 @@ class DisplayResponse extends Component {
   }
 }
 
-export default DisplayResponse
+export default connect(mapStateToProps, null)(DisplayResponse)

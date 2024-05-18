@@ -147,12 +147,11 @@ class SideBarV2 extends Component {
       document.addEventListener('keydown', this.preventDefaultBehavior.bind(this), false)
     }
     document.addEventListener('keydown', this.handleShortcutKeys)
-
   }
   handleShortcutKeys = (event) => {
     if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
-      event.preventDefault(); 
-      this.inputRef.focus(); 
+      event.preventDefault()
+      this.inputRef.focus()
     }
   }
 
@@ -633,7 +632,6 @@ class SideBarV2 extends Component {
     )
   }
 
-
   renderCollectionName() {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
@@ -794,23 +792,23 @@ class SideBarV2 extends Component {
   render() {
     return (
       <>
-      <nav className={this.getSidebarInteractionClass()}>
-        {this.showAddEntitySelectionModal()}
-        {this.showAddEntityModal()}
-        {this.showDeleteEntityModal()}
-        {this.state.showVersionForm &&
-          collectionVersionsService.showVersionForm(
-            this.props,
-            this.closeVersionForm.bind(this),
-            this.state.selectedCollection.id,
-            ADD_VERSION_MODAL_NAME
-          )}
-        <div className='primary-sidebar'>
-          {/* [info] for publishedPage only this part is important */}
+        <nav className={this.getSidebarInteractionClass()}>
+          {this.showAddEntitySelectionModal()}
+          {this.showAddEntityModal()}
+          {this.showDeleteEntityModal()}
+          {this.state.showVersionForm &&
+            collectionVersionsService.showVersionForm(
+              this.props,
+              this.closeVersionForm.bind(this),
+              this.state.selectedCollection.id,
+              ADD_VERSION_MODAL_NAME
+            )}
+          <div className='primary-sidebar'>
+            {/* [info] for publishedPage only this part is important */}
 
-          {this.renderDashboardSidebar()}
-        </div>
-      </nav>
+            {this.renderDashboardSidebar()}
+          </div>
+        </nav>
       </>
     )
   }
