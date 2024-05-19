@@ -87,7 +87,6 @@ function tabsReducer(state = initialState, action) {
       return tabs
 
     case tabsActionTypes.REPLACE_TAB_ID:
-      debugger
       const data = {
         id: action.payload.newTabId,
         type: 'endpoint',

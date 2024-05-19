@@ -194,14 +194,14 @@ const updateTabDraftData = (endpointId, data) => {
   debouncedUpdateDraftData(endpointId, data);
 }
 
-const getEndpointContent = async (props, params) => {
+const getEndpointContent = async (props) => {
   let isUserOnPublishedPage = isOnPublishedPage()
   let currentIdToShow = isUserOnPublishedPage ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
 
   let endpointId = isUserOnPublishedPage
     ? currentIdToShow
-    : params.endpointId !== 'new'
-      ? params?.endpointId
+    : props?.match?.params.endpointId !== 'new'
+      ? props?.match?.params?.endpointId
       : props?.activeTabId
 
   const tabId = props?.tabs[endpointId]
@@ -249,13 +249,12 @@ const fetchHistory = (historyId, props) => {
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    const params = useParams()
     const queryClient = useQueryClient()
     let currentIdToShow = isOnPublishedPage() ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
     let endpointId = isOnPublishedPage()
       ? currentIdToShow
-      : params?.endpointId !== 'new'
-        ? params?.endpointId
+      : props?.match?.params?.endpointId !== 'new'
+        ? props?.match?.params?.endpointId
         : props?.activeTabId
     const historyId = props?.match?.params?.historyId
 
@@ -267,7 +266,7 @@ const withQuery = (WrappedComponent) => {
       }
     } else {
       queryKey = ['endpoint', endpointId]
-      fetchFunction = () => getEndpointContent(props, params)
+      fetchFunction = () => getEndpointContent(props)
     }
 
     const data = useQuery(queryKey, fetchFunction, {
