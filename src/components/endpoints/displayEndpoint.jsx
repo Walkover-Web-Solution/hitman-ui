@@ -1093,6 +1093,7 @@ class DisplayEndpoint extends Component {
         })
         /** Add to History */
         isDashboardRoute(this.props) && this.setData()
+        return;
       } else {
         this.setState({ preReqScriptError: result.error, loader: false })
       }
