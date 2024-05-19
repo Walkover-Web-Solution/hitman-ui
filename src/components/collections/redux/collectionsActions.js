@@ -1,7 +1,6 @@
 import { store } from '../../../store/store'
 import collectionsApiService from '../collectionsApiService'
 import collectionsActionTypes from './collectionsActionTypes'
-import tabService from '../../tabs/tabService'
 import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import { onParentPageAdded } from '../../pages/redux/pagesActions'

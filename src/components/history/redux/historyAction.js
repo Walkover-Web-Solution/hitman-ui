@@ -8,9 +8,6 @@ export const fetchHistoryFromLocal = () => {
       dispatch(onHistoryDataFetched(parsedResponse))
     } catch (error) {
       console.error(error)
-      // dispatch(onHistoryDataFetchError(
-      //   error.response ? error.response.data : error
-      // ))
     }
   }
 }
@@ -22,9 +19,6 @@ export const addHistory = (historyData) => {
       localStorage.setItem('history', JSON.stringify(historyData))
     } catch (error) {
       console.error(error)
-      // dispatch(onHistoryAddedError(
-      //   error.response ? error.response.data : error
-      // ))
     }
   }
 }
