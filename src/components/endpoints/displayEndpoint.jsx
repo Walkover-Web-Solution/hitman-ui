@@ -209,7 +209,25 @@ const getEndpointContent = async (props) => {
     return tabId?.draft
   }
 
-  if (props?.match?.params?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
+ const extractParams = (pattern, pathname) => {
+    const patternParts = pattern.split('/');
+    const pathParts = pathname.split('/');
+
+    const params = {};
+    patternParts.forEach((part, index) => {
+      if (part.startsWith(':')) {
+        const key = part.slice(1);
+        params[key] = pathParts[index];
+      }
+    });
+
+    return params;
+  };
+
+  // Update the state with the extracted params
+  const extractedParams = extractParams('/orgs/:orgId/dashboard/endpoint/:endpointId', window.location.pathname);
+
+  if (extractedParams?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
     let data = isUserOnPublishedPage ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
     return utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
@@ -1042,43 +1060,39 @@ class DisplayEndpoint extends Component {
     const currentEnvironment = this.props.environment
     const code = this.props.endpointContent.preScriptText
     /** Run Pre Request Script */
-    // if(!isUserOnPublishedPage)
-    let result;
-    if (!isOnPublishedPage()) {
-      result = this.runScript(code, currentEnvironment, requestOptions)
-      if (result.success) {
-        let {
-          environment,
-          request: { url, headers },
-          tests
-        } = result.data
-        this.setState({ tests })
-        /** Replace Environemnt Variables */
-        url = this.replaceVariables(url, environment)
-        url = this.addhttps(url)
-        headers = this.replaceVariablesInJson(headers, environment)
-        // Start of Regeneration of AUTH2.0 Token
-        const { newHeaders, newUrl } = await this.getRefreshToken(headers, url)
-        headers = newHeaders
-        url = newUrl
-        const bodyType = this.props?.endpointContent?.data?.body?.type
-        body = this.replaceVariablesInBody(body, bodyType, environment)
-        requestOptions = { ...requestOptions, body, headers, url, bodyType }
-        /** Steve Onboarding Step 5 Completed */
-        moveToNextStep(5)
-        /** Handle Request Call */
-        await this.handleApiCall(requestOptions, result?.data?.consoleOutput || '')
-        this.setState({
-          loader: false,
-          runSendRequest: null,
-          requestKey: null
-        })
-        /** Add to History */
-        isDashboardRoute(this.props) && this.setData()
-        return;
-      } else {
-        this.setState({ preReqScriptError: result.error, loader: false })
-      }
+    const result = this.runScript(code, currentEnvironment, requestOptions)
+    if (result.success) {
+      let {
+        environment,
+        request: { url, headers },
+        tests
+      } = result.data
+      this.setState({ tests })
+      /** Replace Environemnt Variables */
+      url = this.replaceVariables(url, environment)
+      url = this.addhttps(url)
+      headers = this.replaceVariablesInJson(headers, environment)
+      // Start of Regeneration of AUTH2.0 Token
+      const { newHeaders, newUrl } = await this.getRefreshToken(headers, url)
+      headers = newHeaders
+      url = newUrl
+      const bodyType = this.props?.endpointContent?.data?.body?.type
+      body = this.replaceVariablesInBody(body, bodyType, environment)
+      requestOptions = { ...requestOptions, body, headers, url, bodyType }
+      /** Steve Onboarding Step 5 Completed */
+      moveToNextStep(5)
+      /** Handle Request Call */
+      await this.handleApiCall(requestOptions, result?.data?.consoleOutput)
+      this.setState({
+        loader: false,
+        runSendRequest: null,
+        requestKey: null
+      })
+      /** Add to History */
+      isDashboardRoute(this.props) && this.setData()
+      return;
+    } else {
+      this.setState({ preReqScriptError: result.error, loader: false })
     }
 
     try {

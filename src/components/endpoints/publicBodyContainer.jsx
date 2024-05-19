@@ -116,8 +116,8 @@ class PublicBodyContainer extends Component {
         <Badge className={`body-desc-type ${type}`} style={{ cursor: 'default' }}>
           {type.charAt(0)}
         </Badge>
-      );
-    };
+      )
+    }
 
     // Renders an item in the object, including its type and description.
     const renderItem = (parentPath, key, value) => {

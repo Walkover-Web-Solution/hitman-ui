@@ -9,7 +9,7 @@ import { Modal, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { addNewTab } from '../../tabs/redux/tabsActions'
-import { onEnter, toTitleCase } from '../../common/utility'
+import { onEnter, toTitleCase, validate } from '../../common/utility'
 import Form from '../../common/form'
 import { addPage } from '../../pages/redux/pagesActions'
 export const defaultViewTypes = {
@@ -40,7 +40,7 @@ export class DefaultViewModal extends Form {
     }
 
     this.schema = {
-      name: Joi.string().required().label('Page name'),
+      name: Joi.string().min(1).max(100).required().label('Name'),
       contents: Joi.string().allow(null, ''),
       state: Joi.valid(0, 1, 2, 3)
     }
@@ -59,6 +59,11 @@ export class DefaultViewModal extends Form {
   }
 
   async doSubmit() {
+    const errors = validate({ name: this.state.data.name }, this.schema)
+    if (errors) {
+      this.setState({ errors })
+      return null
+    }
     if (!this.state.selectedCollection && this.props.addEntity) {
       this.setState({ versionRequired: true })
       return
@@ -68,7 +73,7 @@ export class DefaultViewModal extends Form {
     let { name } = { ...this.state?.data }
     name = toTitleCase(name)
     if (this.props.title === 'Add Parent Page' || this.props.addEntity) {
-      const rootParentId = collections?.rootParentId
+    const rootParentId = collections?.rootParentId
       const data = { ...this.state.data, name }
       const newPage = {
         ...data,
@@ -78,8 +83,9 @@ export class DefaultViewModal extends Form {
       }
       this.props.add_page(rootParentId, newPage)
     }
+  
     if (this.props?.title === 'Add Page' || this.props?.title === 'Add Sub Page' || this.props?.addEntity) {
-      const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
+    const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
       const ParentId = selectedId
       const data = { ...this.state.data }
       const newPage = {
@@ -90,17 +96,14 @@ export class DefaultViewModal extends Form {
         state: 0
       }
       this.props.add_page(ParentId, newPage)
-    }
-  }
+      }}
   renderCollectionDetailsForm() {
     return (
       <div className='mt-5'>
-        {/* <div className='d-flex gap-5 justify-content-center mt-5'> */}
-        {this.renderInput('name', 'Name', this.props.title, 'Page name', false, false, '*name accepts min 1 & max 20 characters')}
+        {this.renderInput('name', 'Name', this.props.title, 'Page name', false, false, '*name accepts min 1 & max 100 characters')}
         <div className='text-left mt-4 mx-2'>
           <Button onClick={this.handleSubmit}>Submit</Button>
         </div>
-        {/* </div> */}
       </div>
     )
   }
