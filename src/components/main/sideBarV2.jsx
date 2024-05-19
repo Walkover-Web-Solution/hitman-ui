@@ -147,7 +147,11 @@ class SideBarV2 extends Component {
       document.addEventListener('keydown', this.preventDefaultBehavior.bind(this), false)
     }
     document.addEventListener('keydown', this.handleShortcutKeys)
+    if (isOnPublishedPage()) {
+      this.inputRef.focus();
+    }
   }
+
   handleShortcutKeys = (event) => {
     if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
       event.preventDefault()

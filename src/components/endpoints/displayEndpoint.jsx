@@ -209,7 +209,25 @@ const getEndpointContent = async (props) => {
     return tabId?.draft
   }
 
-  if (props?.match?.params?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
+ const extractParams = (pattern, pathname) => {
+    const patternParts = pattern.split('/');
+    const pathParts = pathname.split('/');
+
+    const params = {};
+    patternParts.forEach((part, index) => {
+      if (part.startsWith(':')) {
+        const key = part.slice(1);
+        params[key] = pathParts[index];
+      }
+    });
+
+    return params;
+  };
+
+  // Update the state with the extracted params
+  const extractedParams = extractParams('/orgs/:orgId/dashboard/endpoint/:endpointId', window.location.pathname);
+
+  if (extractedParams?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
     let data = isUserOnPublishedPage ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
     return utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
@@ -1055,6 +1073,7 @@ class DisplayEndpoint extends Component {
       })
       /** Add to History */
       isDashboardRoute(this.props) && this.setData()
+      return;
     } else {
       this.setState({ preReqScriptError: result.error, loader: false })
     }
