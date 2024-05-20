@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { deleteCollectionRequest } from '../../collections/redux/collectionsActions';
 import './moveModal.scss'
-import { deleteAllPagesAndTabsAndReactQueryData } from '../utility';
+import { deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../utility';
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes';
 
 const MoveModal = (props) => {
@@ -33,6 +33,7 @@ const MoveModal = (props) => {
           dispatch(deleteCollectionRequest(response.data))
           dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data?.pages })
           dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
+          operationsAfterDeletion(data)
         })
         setLoader(false)
         toast.success("Collection Moved Succesfully")
