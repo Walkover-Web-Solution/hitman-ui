@@ -4,8 +4,10 @@ import { FiUsers } from "react-icons/fi";
 import generalApiService from '../../../services/generalApiService';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { moveCollection } from '../../collections/redux/collectionsActions';
+import { deleteCollectionRequest } from '../../collections/redux/collectionsActions';
 import './moveModal.scss'
+import { deleteAllPagesAndTabsAndReactQueryData } from '../utility';
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes';
 
 const MoveModal = (props) => {
 
@@ -25,7 +27,13 @@ const MoveModal = (props) => {
     generalApiService
       .moveCollectionsAndPages(selectedOrganization, props.moveCollection)
       .then((response) => {
-        dispatch(moveCollection(response.data))
+        const rootParentPageId = props.moveCollection.rootParentId
+        deleteAllPagesAndTabsAndReactQueryData(rootParentPageId, response.data.id)
+        .then((data)=>{
+          dispatch(deleteCollectionRequest(response.data))
+          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data?.pages })
+          dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_TABS, data: data.tabs })
+        })
         setLoader(false)
         toast.success("Collection Moved Succesfully")
         props.onHide();
