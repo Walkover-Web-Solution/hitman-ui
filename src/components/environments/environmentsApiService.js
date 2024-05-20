@@ -30,10 +30,15 @@ export function deleteEnvironment(environmentId) {
   return http.delete(`${environmentUrl(environmentId)}`)
 }
 
+export function importPostmanEnvironment(environment, website, defaultView) {
+  return http.post(`${apiUrl}/import/postmanEnvironment?website=${website}&view=${defaultView}`, environment)
+}
+
 export default {
   getEnvironments,
   getEnvironment,
   saveEnvironment,
   updateEnvironment,
-  deleteEnvironment
+  deleteEnvironment,
+  importPostmanEnvironment
 }

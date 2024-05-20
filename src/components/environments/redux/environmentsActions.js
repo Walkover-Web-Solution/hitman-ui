@@ -41,6 +41,18 @@ export const addEnvironment = (newEnvironment) => {
       })
   }
 }
+export const importEnvironment = (newEnvironment) => {
+  return (dispatch) => {
+    environmentsApiService
+      .importPostmanEnvironment(newEnvironment)
+      .then((response) => {
+        dispatch(OnEnvironmentImported(response.data, newEnvironment))
+      })
+      .catch((error) => {
+        dispatch(OnEnvironmentImportedError(error.response ? error.response.data : error, newEnvironment))
+      })
+  }
+}
 
 export const updateEnvironment = (editedEnvironment) => {
   return (dispatch) => {
@@ -156,5 +168,20 @@ export const OnEnvironmentDeletedError = (error, environment) => {
     type: environmentsActionTypes.ON_ENVIRONMENT_DELETED_ERROR,
     error,
     environment
+  }
+}
+
+export const OnEnvironmentImported = (response) => {
+  return {
+    type: environmentsActionTypes.ON_ENVIRONMENT_IMPORTED,
+    response
+  }
+}
+
+export const OnEnvironmentImportedError = (error, newEnvironment) => {
+  return {
+    type: environmentsActionTypes.ON_ENVIRONMENT_IMPORTED_ERROR,
+    newEnvironment,
+    error
   }
 }

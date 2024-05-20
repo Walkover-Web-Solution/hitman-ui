@@ -300,6 +300,9 @@ class Environments extends Component {
                     <Dropdown.Item className='dropdown-item' onClick={() => this.handleEnvironmentModal('Add new Environment')}>
                       Add Environment
                     </Dropdown.Item>
+                    <Dropdown.Item className='dropdown-item' onClick={() => this.handleEnvironmentModal('Import Environment')}>
+                      Import Environment
+                    </Dropdown.Item>
                     <Dropdown.Item className='dropdown-item' onClick={() => this.handleEnvironmentModal('Environment modal')}>
                       Manage Environment
                     </Dropdown.Item>
