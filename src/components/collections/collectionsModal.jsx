@@ -3,12 +3,10 @@ import CollectionForm from './collectionForm'
 import OpenApiForm from '../openApi/openApiForm'
 import { Modal } from 'react-bootstrap'
 import './collectionsModal.scss'
-import MarketplaceModal from './marketplaceModal/marketplaceModal'
 
 const collectionsModalEnum = {
   IMPORT: 'import',
-  NEW: 'new',
-  MARKETPLACE: 'marketplace'
+  NEW: 'new'
 }
 
 const choices = {
@@ -27,14 +25,6 @@ const choices = {
     modalSize: 'sm',
     id: 'add_collection_create_new_btn'
   }
-  /*   ,
-  [collectionsModalEnum.MARKETPLACE]: {
-    key: collectionsModalEnum.MARKETPLACE,
-    label: 'Marketplace',
-    modalTitle: 'Import Collection From Marketplace',
-    modalSize: 'xl',
-    disabled: false
-  } */
 }
 
 class CollectionsModal extends Component {
@@ -72,7 +62,6 @@ class CollectionsModal extends Component {
         return this.renderImportForm()
       case collectionsModalEnum.NEW:
         return this.renderAddCollectionForm()
-      // case collectionsModalEnum.MARKETPLACE: return this.renderMarketplace()
       default:
         return null
     }
@@ -102,20 +91,6 @@ class CollectionsModal extends Component {
     return (
       <OpenApiForm
         showOnlyForm
-        onCancel={() => {
-          this.removeSelection()
-        }}
-        onHide={() => {
-          this.props.onHide()
-        }}
-      />
-    )
-  }
-
-  renderMarketplace() {
-    return (
-      <MarketplaceModal
-        showOnlyContent
         onCancel={() => {
           this.removeSelection()
         }}

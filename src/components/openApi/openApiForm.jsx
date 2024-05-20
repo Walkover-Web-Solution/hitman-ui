@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import Joi from 'joi-browser'
 import { URL_VALIDATION_REGEX } from '../common/constants'
 import './openApi.scss'
-import { moveToNextStep } from '../../services/widgetService'
 import { defaultViewTypes } from '../collections/defaultViewModal/defaultViewModal'
 
 const mapStateToProps = (state) => {
@@ -65,7 +64,6 @@ class OpenApiForm extends Component {
   importApi(defaultView) {
     const uploadedFile = this.state.uploadedFile
     this.props.import_api(uploadedFile, this.state.importType, this.state.website, null, defaultView)
-    // moveToNextStep(1)
     this.props.onHide()
   }
 

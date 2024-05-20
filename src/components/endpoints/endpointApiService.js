@@ -70,11 +70,6 @@ export function moveEndpoint(endpointId, body) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body)
 }
 
-export function updateEndpointOrder(endpointsOrder) {
-  const apiUrl = getApiUrl()
-  return http.patch(`${apiUrl}/updateEndpointsOrder`, { endpointsOrder })
-}
-
 export async function setResponse(props, responseData) {
   const versionId = props.groups[props.groupId].versionId
   const authResponses = props.versions[versionId].authorizationResponse
@@ -169,7 +164,6 @@ export default {
   getAllEndpoints,
   duplicateEndpoint,
   moveEndpoint,
-  updateEndpointOrder,
   saveEndpoint,
   getTokenAuthorizationCodeAndAuthorizationPKCE,
   getTokenPasswordAndClientGrantType,

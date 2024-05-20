@@ -7,7 +7,7 @@ import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
-import { deleteEndpoint, duplicateEndpoint, updateEndpointOrder, addEndpoint } from './redux/endpointsActions'
+import { deleteEndpoint, duplicateEndpoint, addEndpoint } from './redux/endpointsActions'
 // import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
@@ -22,6 +22,7 @@ import endpointService from './endpointService'
 import { bodyTypesEnums } from '../common/bodyTypeEnums'
 import  IconButtons  from '../common/iconButton'
 import { BsThreeDots } from "react-icons/bs"
+import '../../../src/components/styles.scss'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -43,7 +44,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     delete_endpoint: (endpoint) => dispatch(deleteEndpoint(endpoint)),
     duplicate_endpoint: (endpoint) => dispatch(duplicateEndpoint(endpoint)),
-    update_endpoints_order: (endpointIds, groupId) => dispatch(updateEndpointOrder(endpointIds, groupId)),
     pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
     approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
     draft_endpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
