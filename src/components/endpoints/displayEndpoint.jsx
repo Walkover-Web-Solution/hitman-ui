@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString, executeData } from '../common/utility'
+import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString, executeData, isTechdocOwnDomain } from '../common/utility'
 import {
   isDashboardRoute,
   isElectron,
@@ -70,6 +70,7 @@ import { addAuthorizationDataTypes, grantTypesEnums } from '../common/authorizat
 import { updateToken } from '../../store/tokenData/tokenDataActions.js'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
 import { LiaSaveSolid } from "react-icons/lia"
+import { useParams } from 'react-router'
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -209,8 +210,25 @@ const getEndpointContent = async (props) => {
   if (!isUserOnPublishedPage && tabId?.isModified && tabId?.type == 'endpoint' && tabId?.draft) {
     return tabId?.draft
   }
+  const extractParams = (pattern, pathname) => {
+    const patternParts = pattern.split('/');
+    const pathParts = pathname.split('/');
 
-  if (props?.match?.params?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
+    const params = {};
+    patternParts.forEach((part, index) => {
+      if (part.startsWith(':')) {
+        const key = part.slice(1);
+        params[key] = pathParts[index];
+      }
+    });
+
+    return params;
+  };
+
+  // Update the state with the extracted params
+  const extractedParams = extractParams('/orgs/:orgId/dashboard/endpoint/:endpointId', window.location.pathname);
+
+  if (extractedParams?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
     let data = isUserOnPublishedPage ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
     return utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
@@ -236,7 +254,7 @@ const withQuery = (WrappedComponent) => {
     let currentIdToShow = isOnPublishedPage() ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
     let endpointId = isOnPublishedPage()
       ? currentIdToShow
-      : props?.match?.params.endpointId !== 'new'
+      : props?.match?.params?.endpointId !== 'new'
         ? props?.match?.params?.endpointId
         : props?.activeTabId
     const historyId = props?.match?.params?.historyId
@@ -425,10 +443,9 @@ class DisplayEndpoint extends Component {
   handleKeyDown = (event) => {
     const activeTabId = this.props.activeTabId;
     const status = this.props.tabs?.[activeTabId]?.status;
-    console.log(activeTabId, status);
     if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
       this.handleSend();
-    } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) { 
+    } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) {
       event.preventDefault();
       if (status === 'NEW') {
         this.setState({ saveAsFlag: true }, () => {
@@ -762,13 +779,15 @@ class DisplayEndpoint extends Component {
         this.processResponse(responseJson)
 
         /** Run Post-Request Script */
-        const result = this.runScript(code, currentEnvironment, request, responseJson)
-        if (!result.success) {
-          this.props.update_pre_post_script(currentEndpointId, { preScriptExecution, postScriptExecution: [] });
-          this.setState({ postReqScriptError: result.error })
-        } else {
-          this.setState({ tests: [...this.state.tests, ...result.data.tests] })
-          this.props.update_pre_post_script(currentEndpointId, { preScriptExecution, postScriptExecution: result.data.consoleOutput });
+        if (!isOnPublishedPage()) {
+          const result = this.runScript(code, currentEnvironment, request, responseJson)
+          if (!result.success) {
+            this.props.update_pre_post_script(currentEndpointId, { preScriptExecution, postScriptExecution: [] });
+            this.setState({ postReqScriptError: result.error })
+          } else {
+            this.setState({ tests: [...this.state.tests, ...result.data.tests] })
+            this.props.update_pre_post_script(currentEndpointId, { preScriptExecution, postScriptExecution: result.data.consoleOutput });
+          }
         }
       } else {
         /** error occured while creating the request */
@@ -1041,41 +1060,54 @@ class DisplayEndpoint extends Component {
 
     const currentEnvironment = this.props.environment
     const code = this.props.endpointContent.preScriptText
-
     /** Run Pre Request Script */
-    const result = this.runScript(code, currentEnvironment, requestOptions)
-    if (result.success) {
-      let {
-        environment,
-        request: { url, headers },
-        tests
-      } = result.data
-      this.setState({ tests })
-      /** Replace Environemnt Variables */
-      url = this.replaceVariables(url, environment)
-      url = this.addhttps(url)
-      headers = this.replaceVariablesInJson(headers, environment)
-      // Start of Regeneration of AUTH2.0 Token
-      const { newHeaders, newUrl } = await this.getRefreshToken(headers, url)
-      headers = newHeaders
-      url = newUrl
-      const bodyType = this.props?.endpointContent?.data?.body?.type
-      body = this.replaceVariablesInBody(body, bodyType, environment)
-      requestOptions = { ...requestOptions, body, headers, url, bodyType }
-      /** Steve Onboarding Step 5 Completed */
-      moveToNextStep(5)
-      /** Handle Request Call */
-      await this.handleApiCall(requestOptions, result?.data?.consoleOutput)
-      this.setState({
-        loader: false,
-        runSendRequest: null,
-        requestKey: null
-      })
-      /** Add to History */
-      isDashboardRoute(this.props) && this.setData()
-    } else {
-      this.setState({ preReqScriptError: result.error, loader: false })
+    // if(!isUserOnPublishedPage)
+    let result;
+    if (!isOnPublishedPage()) {
+      result = this.runScript(code, currentEnvironment, requestOptions)
+      if (result.success) {
+        let {
+          environment,
+          request: { url, headers },
+          tests
+        } = result.data
+        this.setState({ tests })
+        /** Replace Environemnt Variables */
+        url = this.replaceVariables(url, environment)
+        url = this.addhttps(url)
+        headers = this.replaceVariablesInJson(headers, environment)
+        // Start of Regeneration of AUTH2.0 Token
+        const { newHeaders, newUrl } = await this.getRefreshToken(headers, url)
+        headers = newHeaders
+        url = newUrl
+        const bodyType = this.props?.endpointContent?.data?.body?.type
+        body = this.replaceVariablesInBody(body, bodyType, environment)
+        requestOptions = { ...requestOptions, body, headers, url, bodyType }
+        /** Steve Onboarding Step 5 Completed */
+        moveToNextStep(5)
+        /** Handle Request Call */
+        await this.handleApiCall(requestOptions, result?.data?.consoleOutput || '')
+        this.setState({
+          loader: false,
+          runSendRequest: null,
+          requestKey: null
+        })
+        /** Add to History */
+        isDashboardRoute(this.props) && this.setData()
+        return;
+      } else {
+        this.setState({ preReqScriptError: result.error, loader: false })
+      }
     }
+
+    try {
+      await this.handleApiCall(requestOptions, result?.data?.consoleOutput || '')
+    }
+    catch (error) {
+      console.error(error)
+    }
+    this.setState({ loader: false })
+
     if (this.myRef?.current?.scrollIntoView) {
       this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
     }
@@ -2658,7 +2690,7 @@ class DisplayEndpoint extends Component {
                 type='button'
                 onClick={() => this.handleSave()}
               >
-                <LiaSaveSolid className='save-icon mr-1' size={16}/>
+                <LiaSaveSolid className='save-icon mr-1' size={16} />
                 <span>Save</span>
               </button>
               {getCurrentUser() ? (
@@ -2685,7 +2717,7 @@ class DisplayEndpoint extends Component {
               id='save-endpoint-button'
               onClick={() => this.handleSave()}
             >
-              <LiaSaveSolid className='save-icon mr-1' size={16}/>
+              <LiaSaveSolid className='save-icon mr-1' size={16} />
               <span>Save</span>
             </button>
           )
@@ -3080,8 +3112,7 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
-                {this.renderEndpointUserData()}
-              <span className='mb-2 d-inline-block'>{isOnPublishedPage() && this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt && `Last Modified ${moment(this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt).fromNow()}`}</span>
+                <span className='mb-2 d-inline-block'>{isOnPublishedPage() && this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt && `Modified at ${moment(this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt).fromNow()}`}</span>
               </div>
               {/* <ApiDocReview {...this.props} /> */}
               <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>

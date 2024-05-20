@@ -4,19 +4,14 @@ import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import {
   isDashboardRoute,
-  getParentIds,
   getUrlPathById,
   isTechdocOwnDomain,
   SESSION_STORAGE_KEY,
   isOnPublishedPage
 } from '../common/utility'
-import { reorderEndpoint } from '../endpoints/redux/endpointsActions'
 import ShareGroupForm from '../groups/shareGroupForm'
 import './groups.scss'
 import groupsService from './groupsService'
-import AddEntity from '../main/addEntity/addEntity'
-import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
-import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
@@ -40,8 +35,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    reorder_endpoint: (sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, endpointId) =>
-      dispatch(reorderEndpoint(sourceEndpointIds, groupId, destinationEndpointIds, destinationGroupId, endpointId)),
     update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
     delete_page: (page) => dispatch(deletePage(page))

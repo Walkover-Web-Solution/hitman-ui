@@ -8,7 +8,6 @@ import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
 import { isDesktop } from 'react-device-detect'
 import OnlineSatus from '../onlineStatus/onlineStatus'
-import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
@@ -84,7 +83,6 @@ class MainV2 extends Component {
         const orgName = getOrgList()[0]?.name
         if (isValidDomain()) {
           loadWidget()
-          loadfeedioWidget()
           // loadHelloWidget() commenting to hide helloWidget
         }
         await this.fetchAll()

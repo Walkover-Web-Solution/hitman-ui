@@ -5,7 +5,6 @@ import Logout from './components/auth/logout'
 import collectionsApiService from './components/collections/collectionsApiService'
 import NotFound from './components/common/notFound'
 import MainV2 from './components/main/MainV2'
-import PublicView from './components/main/publicView'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import { ToastContainer } from 'react-toastify'
 import { SESSION_STORAGE_KEY, getOrgId, isDashboardRoute, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility'
@@ -38,32 +37,15 @@ class App extends Component {
   constructor(props) {
     super(props)
     const currentOrgId = getOrgId() ?? props.location.pathname.split('/')?.[2]
-    if (currentOrgId && !isOnPublishedPage()) {
-      initConn(currentOrgId)
-    }
+    if (currentOrgId && !isOnPublishedPage()) {initConn(currentOrgId)}
     sessionStorage.setItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID, shortid.generate())
   }
-  async redirectToClientDomain() {
-    const isDesktop = process.env.REACT_APP_IS_DESKTOP
-    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
-    const currentDomain = window.location.href.split('/')[2]
-    if (!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p' && !isDesktop) {
-      const { data: clientCollection } = await collectionsApiService.getCollectionsByCustomDomain(currentDomain)
-      if (Object.keys(clientCollection) && Object.keys(clientCollection)[0]) {
-        const clientCollectionId = Object.keys(clientCollection)[0]
-        this.props.history.push({ pathname: `/p/${clientCollectionId}` })
-      } else {
-        this.props.history.push({ pathname: '/p/error' })
-      }
-    }
-  }
-
+  
   componentDidMount() {
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault()
       this.props.install_modal(e)
     })
-    // window.addEventListener('beforeunload', this.handleBeforeUnload)
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
@@ -77,42 +59,7 @@ class App extends Component {
 
 
   componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.handleBeforeUnload)
     resetConn(getOrgId())
-  }
-
-  handleBeforeUnload = (e) => {
-    const tabsOrderArray = this.props?.tabsOrder
-    let unsavedChanges = false
-    for (let i = 0; i < tabsOrderArray.length; i++) {
-      if (this.props.tabs?.[tabsOrderArray[i]]?.isModified === true) {
-        unsavedChanges = true
-        break
-      }
-    }
-    if (unsavedChanges && window.location.pathname.includes('/dashboard')) {
-      const message = 'Changes that you made may not be saved.'
-      e.returnValue = message
-      return message
-    }
-  }
-
-  changeSelectedOrg(orgId) {
-    let orgList = window.localStorage.getItem('organisationList')
-    orgList = JSON.parse(orgList)
-    let flag = 0
-    let organisation
-    if (orgList) {
-      orgList.forEach((org, index) => {
-        if (orgId === org.id) {
-          flag = 1
-          organisation = org
-        }
-      })
-      if (flag === 1) {
-        window.localStorage.setItem('currentOrganisation', JSON.stringify(organisation))
-      }
-    }
   }
 
   render = () => {
@@ -160,7 +107,6 @@ class App extends Component {
           <Route path='/logout' component={Logout} />
           <Route path='/' component={AuthServiceV2} />
 
-          <Route path='/marketPlace' component={PublicView} />
           <Route path='/'>
             <Redirect to='/dashboard' />
           </Route>

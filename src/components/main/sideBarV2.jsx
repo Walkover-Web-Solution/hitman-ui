@@ -21,9 +21,7 @@ import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
 import NoFound, { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
-// import { ReactComponent as PlusIcon } from '../../assets/icons/plus_orange.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
-// import { ReactComponent as DownloadIcon } from '../../assets/icons/download.svg'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
@@ -31,14 +29,12 @@ import './sidebar.scss'
 import AddEntitySelectionModal from './addEntityModal'
 import PageForm from '../pages/pageForm'
 import CollectionModal from '../collections/collectionsModal'
-// import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
 import DeleteSidebarEntityModal from './sidebar/deleteEntityModal'
 import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from "react-icons/tb"
-import IconButton from '../common/iconButton'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
@@ -151,7 +147,11 @@ class SideBarV2 extends Component {
       document.addEventListener('keydown', this.preventDefaultBehavior.bind(this), false)
     }
     document.addEventListener('keydown', this.handleShortcutKeys)
+    if (isOnPublishedPage()) {
+      this.inputRef.current.focus();
+    }
   }
+
   handleShortcutKeys = (event) => {
     if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
       event.preventDefault()
@@ -613,9 +613,7 @@ class SideBarV2 extends Component {
       <div tabIndex={0} className='d-flex align-items-center my-1 search-container'>
         <SearchIcon className='mr-2' />
         <input
-          ref={(element) => {
-            this.inputRef = element
-          }}
+          ref={this.inputRef}
           value={this.state.data.filter}
           className='search-input'
           placeholder='Type / to search'
