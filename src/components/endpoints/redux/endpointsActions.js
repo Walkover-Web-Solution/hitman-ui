@@ -21,7 +21,8 @@ export const formatResponseToSend = (response) => {
     isPublished: response.data.isPublished,
     type: response.data.type || 4,
     versionId: response.data.versionId || null,
-    collectionId: response.data.collectionId
+    collectionId: response.data.collectionId,
+    protocolType: response.data.protocolType,
   }
 }
 

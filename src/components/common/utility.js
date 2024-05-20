@@ -525,26 +525,32 @@ const modifyEndpointContent = (endpointData, untitledData) => {
 
   // This code will help in storing the old endpoint body data to new endpoint body data architecture (so we do not lost the old data saved inside the DB).
   // TODO - Below code should be removed later.
-  const bodyType = endpoint.body.type;
-  if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) && endpoint.body.raw) {
-    untitled.data.body = endpoint.body;
-  } else if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)) {
-    untitled.data.body = { ...untitled.data.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } };
-  } else if (bodyType === bodyTypesEnums['application/x-www-form-urlencoded'] || bodyType === bodyTypesEnums['multipart/form-data']) {
-    if (endpoint.body[bodyType]) {
+  if (endpoint.protocolType === 1) {
+    const bodyType = endpoint.body?.type || '';
+    if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) && endpoint.body.raw) {
       untitled.data.body = endpoint.body;
-    } else {
-      untitled.data.body = { ...untitled.data.body, type: bodyType, [bodyType]: endpoint.body?.value || [] };
-    }
-  } else if (bodyType === bodyTypesEnums['none']) {
-    if (endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || endpoint.body?.[bodyTypesEnums['multipart/form-data']] || endpoint.body?.[bodyTypesEnums['raw']]) {
-      untitled.data.body = endpoint.body;
-    }
-    else {
-      untitled.data.body = { ...untitled.data.body, ...endpoint.body }
-    }
-    delete endpoint.body?.value;
-  } // ends here
+    } else if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)) {
+      untitled.data.body = { ...untitled.data.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } };
+    } else if (bodyType === bodyTypesEnums['application/x-www-form-urlencoded'] || bodyType === bodyTypesEnums['multipart/form-data']) {
+      if (endpoint.body[bodyType]) {
+        untitled.data.body = endpoint.body;
+      } else {
+        untitled.data.body = { ...untitled.data.body, type: bodyType, [bodyType]: endpoint.body?.value || [] };
+      }
+    } else if (bodyType === bodyTypesEnums['none']) {
+      if (endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || endpoint.body?.[bodyTypesEnums['multipart/form-data']] || endpoint.body?.[bodyTypesEnums['raw']]) {
+        untitled.data.body = endpoint.body;
+      }
+      else {
+        untitled.data.body = { ...untitled.data.body, ...endpoint.body }
+      }
+      delete endpoint.body?.value;
+    } // ends here
+  }
+  else if (endpoint.protocolType === 2) {
+    untitled.protocolType = 2
+    untitled.data.body = { query: endpoint.body.query, variables: endpoint.body.variables }
+  }
   delete endpoint.body?.value;
 
   untitled.data.uri = endpoint.uri

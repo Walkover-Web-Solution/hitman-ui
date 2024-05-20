@@ -354,6 +354,9 @@ class CollectionsComponent extends Component {
                           >
                             <AddGoogleTag /> Add Google Tag Manager
                           </div>
+                          <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
+                            <RiShareForward2Line size={16} color='grey' /> Move
+                          </div>
                           <div
                             className='dropdown-item text-danger d-flex'
                             onClick={() => {
@@ -362,9 +365,6 @@ class CollectionsComponent extends Component {
                           >
                             <DeleteIcon /> Delete
                           </div>
-                            <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
-                              <RiShareForward2Line size={16} color='grey' /> Move
-                            </div>
                         </>
                       )}
                       {this.props.collections[collectionId]?.importedFromMarketPlace && (
