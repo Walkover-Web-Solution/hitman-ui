@@ -230,7 +230,7 @@ class EndpointBreadCrumb extends Component {
           aria-haspopup='true'
           aria-expanded='false'
         >
-          {this.state.protocols[(this.props.endpointContent.protocolType - 1)].icon}
+          {this.state.protocols[(this.props?.endpointContent?.protocolType - 1)].icon}
         </button>
         <div className='dropdown-menu protocol-dropdown' aria-labelledby='dropdownMenuButton'>
           {this.state.protocols.map((protocolDetails, index) => (

@@ -1053,7 +1053,15 @@ class DisplayEndpoint extends Component {
       headers = data.headers
     }
     else if (this.props?.endpointContent?.protocolType === 2) {
-      body = this.props?.endpointContent?.data.body
+      let variables
+      try {
+        variables = JSON.parse(this.props?.endpointContent?.data?.body?.variables || '')
+      }
+      catch (error) {
+        variables = {}
+        console.error(error)
+      }
+      body = { query: this.props?.endpointContent?.data?.body?.query || '', variables }
       headers = headerJson
     }
 
