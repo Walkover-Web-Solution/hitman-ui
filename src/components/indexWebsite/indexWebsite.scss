@@ -1,0 +1,16 @@
+.navigation {
+  .nav-menu {
+    gap: 20px;
+  }
+}
+.web {
+  &_tagline {
+    font-size: 22px;
+  }
+  &_h1{
+    font-size: 80px;
+  }
+  &_text-primary{
+    color:#f2994a;
+  }
+}
