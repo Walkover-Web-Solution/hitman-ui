@@ -72,23 +72,4 @@ export const onVersionAddedError = (error, newVersion) => {
     error
   }
 }
-// To do later
-export const duplicateVersion = (version) => {
-  return (dispatch) => {
-    collectionVersionsApiService
-      .duplicateVersion(version.id)
-      .then((response) => {
-        dispatch(onVersionDuplicated(response.data))
-      })
-      .catch((error) => {
-        toast.error(error)
-      })
-  }
-}
-// To do later
-export const onVersionDuplicated = (response) => {
-  return {
-    type: versionActionTypes.ON_VERSION_DUPLICATED,
-    response
-  }
-}
+

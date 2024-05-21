@@ -4,7 +4,6 @@ import Avatar from 'react-avatar'
 import lightArrow from '../../assets/icons/new-arrow.svg'
 import Power from '../../assets/icons/power.svg'
 import File from '../../assets/icons/file.svg'
-import { products } from '../common/constants'
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
 import { getCurrentOrg, getCurrentUser } from '../auth/authServiceV2'
 import GenericModal from './GenericModal'
@@ -295,15 +294,11 @@ class UserProfileV2 extends Component {
   }
 
   openAccountAndSettings() {
-    const { productName, history, organizationId, location } = this.props
-    if (productName !== products.EBL) {
-      this.openOptions('/manage/users')
-    } else {
+    const {history, organizationId, location } = this.props
       history.push({
         pathname: `/orgs/${organizationId}/manage`,
         search: location.search
       })
-    }
   }
 
   renderBilling() {
@@ -326,9 +321,6 @@ class UserProfileV2 extends Component {
     const { orgId } = match.params
     if (orgId) {
       let url = `${currProductUrl}/orgs/${orgId}${path}?product=hitman`
-      if (path !== '/products') {
-        url += `&redirect_uri=${currProductUrl}`
-      }
       if (!handleOpenLink) {
         window.open(url, '_blank')
       } else {

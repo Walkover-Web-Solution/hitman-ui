@@ -3,7 +3,6 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import collectionsApiService from './components/collections/collectionsApiService'
-import NotFound from './components/common/notFound'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import { ToastContainer } from 'react-toastify'
@@ -99,7 +98,6 @@ class App extends Component {
           <Route path='/dashboard/' component={MainV2} />
 
           {/*  Public Page Routes */}
-          <Route path='/p/error' component={NotFound} />
           <Route path='/p' component={Public} />
 
           {/* React App Auth Routes */}
