@@ -2753,31 +2753,35 @@ class DisplayEndpoint extends Component {
       }
     }
   }
-
   renderEndpointUserData(isOnPublishedPage) {
-    const { pages, currentEndpointId, users, endpoints } = this.props;
-    const updatedById = pages?.[currentEndpointId]?.updatedBy;
-    
-    const lastModified = endpoints?.[currentEndpointId]?.updatedAt 
-                         ? moment(endpoints[currentEndpointId].updatedAt).fromNow()
-                         : 'Unknown time';
+    const { pages, currentEndpointId, users } = this.props;
+    const updatedById = pages?.[currentEndpointId]?.updatedBy;  
+    const lastModified = pages?.[currentEndpointId]?.updatedAt 
+                         ? moment(pages[currentEndpointId].updatedAt).fromNow()
+                         : null;
 
     const user = users?.users?.find(user => user.id === updatedById);
 
     if (isOnPublishedPage) {
         return (
             <div>
-                Modified At<span> </span>{lastModified}
+                {lastModified && <>Modified At <span>{lastModified}</span></>}
             </div>
         );
     } else {
         return (
             <div className='page-user-data mt-2'>
-              <b>Updated by:</b><span> </span>
-              {user?.name}
-              <br />
-              <b>Modified At:</b><span> </span>
-              {lastModified}
+              {lastModified ? (
+                <div>
+                  Updated by<span> </span>
+                  {user?.name}
+                  <br />
+                  Modified At<span> </span>
+                  {lastModified}
+                </div>
+              ) : (
+                <span></span>
+              )}
             </div>
         );
     }
@@ -3124,9 +3128,9 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
-                <span className='mb-2 d-inline-block'>{isOnPublishedPage() ? this.renderEndpointUserData(true) : this.renderEndpointUserData(false)}</span>
               </div>
               {/* <ApiDocReview {...this.props} /> */}
+              <span className='pl-3'>{isOnPublishedPage() && this.renderEndpointUserData(true)}</span>
               <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>
             </div>
 
@@ -3151,6 +3155,7 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
+        <span className='pl-3 ml-1 mb-2 d-inline-block'>{!isOnPublishedPage() && this.renderEndpointUserData(false)}</span>
         <span className='footer-lower'>{isOnPublishedPage() && <Footer />}</span>
       </div>
     ) : null

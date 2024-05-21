@@ -154,28 +154,45 @@ class DisplayPage extends Component {
         <div className='pt-3 px-1'> 
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
           <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
-          {this.renderPageUserData()}
-          <span>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Last Modified ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
+          <span className='mb-2 d-inline-block'>{isOnPublishedPage() ? this.renderPageUserData(true) : this.renderPageUserData(false)}</span>
         </div>
       )
     }
   }
 
-  renderPageUserData() {
-    const { pages, currentPageId, users } = this.props;
-    const updatedById = pages?.[currentPageId]?.updatedBy;
+  
+renderPageUserData(isOnPublishedPage) {
+  const { pages, currentPageId, users } = this.props;
+  const updatedById = pages?.[currentPageId]?.updatedBy;  
+  const lastModified = pages?.[currentPageId]?.updatedAt 
+                       ? moment(pages[currentPageId].updatedAt).fromNow()
+                       : null;
 
-    // Find the user by ID
-    const user = users.users?.find(user => user.id === updatedById);
+  const user = users?.users?.find(user => user.id === updatedById);
 
-    return (
-        <div className='page-user-data mt-2'>
-            <b>Updated by:</b><span>{" "}</span>
-            <span className='page-user-data-name'>
-                {user ? user.name : 'Unknown'}
-            </span>
-        </div>
-    );
+  if (isOnPublishedPage) {
+      return (
+          <div>
+              {lastModified && <>Modified At <span>{lastModified}</span></>}
+          </div>
+      );
+  } else {
+      return (
+          <div className='page-user-data mt-2'>
+            {lastModified ? (
+              <div>
+                Updated by:<span> </span>
+                {user?.name}
+                <br />
+                Modified At:<span> </span>
+                {lastModified}
+              </div>
+            ) : (
+              <span></span>
+            )}
+          </div>
+      );
+  }
 }
 
   renderPageName() {
