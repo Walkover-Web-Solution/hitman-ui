@@ -3130,8 +3130,8 @@ class DisplayEndpoint extends Component {
                 )}
               </div>
               {/* <ApiDocReview {...this.props} /> */}
-              <span className='pl-3'>{isOnPublishedPage() && this.renderEndpointUserData(true)}</span>
-              <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>
+              
+              <span className='footer-upper'>{isOnPublishedPage() && <><span className='pl-3'>{isOnPublishedPage() && this.renderEndpointUserData(true)}</span><Footer /></>}</span>
             </div>
 
             {this.isDashboardAndTestingView() ? (
@@ -3156,7 +3156,7 @@ class DisplayEndpoint extends Component {
           </div>
         )}
         <span className='pl-3 ml-1 mb-2 d-inline-block'>{!isOnPublishedPage() && this.renderEndpointUserData(false)}</span>
-        <span className='footer-lower'>{isOnPublishedPage() && <Footer />}</span>
+        <span className='footer-lower ml-2 ml-sm-4 '>{isOnPublishedPage() && <><span className='pl-3'>{isOnPublishedPage() && this.renderEndpointUserData(true)}</span><Footer /></>}</span>
       </div>
     ) : null
   }
