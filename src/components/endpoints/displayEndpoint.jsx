@@ -866,7 +866,8 @@ class DisplayEndpoint extends Component {
       pathVariables: updatedPathVariables,
       BASE_URL: this.props.endpointContent.host.BASE_URL,
       bodyDescription: this.props.endpointContent.data.body.type === rawTypesEnums.JSON ? this.props.endpointContent.bodyDescription : {},
-      authorizationData: this.props.endpointContent.authorizationData
+      authorizationData: this.props.endpointContent.authorizationData,
+      protocolType: this.props?.endpointContent.protocolType,
     }
     const response = { ...this.state.response }
     const createdAt = new Date()
