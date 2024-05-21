@@ -410,26 +410,6 @@ class PublicEndpoint extends Component {
         <span ref={this.iconRef} className={'hamberger-icon'}>
           <MdDehaze id='hamburgerIcon' className='icon-active fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
           <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
-          {/* <span className='logo-name' id="logoName"> 
-             {this.props.collections[collectionKeys[0]]?.favicon && (
-                <img
-                    className='hamberger-img'
-                    id='publicLogo'
-                    alt='public-logo'
-                    src={
-                      this.props.collections[collectionKeys[0]]?.favicon
-                        ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
-                        : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
-                    }
-                    // onError={() => { this.setState({ publicLogoError: true })}}
-                    width='20'
-                    height='20'
-                  />
-                 )} */}
-              {/* <span className="icon-name">{this.props.collections[collectionId]?.name}</span> */}
-
-            {/* </span> */}
-            {/* Original icons */}
           </span>
           {/* [info] part 3 */}
           <SplitPane split='vertical' className={'split-sidebar-public'}>
