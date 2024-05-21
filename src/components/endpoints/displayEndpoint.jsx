@@ -2476,11 +2476,11 @@ class DisplayEndpoint extends Component {
         {/* <h3 className='heading-2'>Endpoint Name</h3> */}
         <div className='hm-endpoint-header'>
           <div className='input-group'>
-            <div className='input-group-prepend'>
+            {this.props?.endpointContent?.protocolType === 1 && <div className='input-group-prepend'>
               <span className={`api-label api-label-lg input-group-text ${this.props?.endpointContent?.data?.method}`}>
                 {this.props?.endpointContent?.data?.method}
               </span>
-            </div>
+            </div>}
             <HostContainer
               {...this.props}
               environmentHost={
