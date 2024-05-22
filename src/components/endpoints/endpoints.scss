@@ -4,6 +4,9 @@
 $border-color: rgba(227, 228, 230, 0.7);
 
 #code-window-body {
+  display: flex;
+  justify-content: flex-end;
+
   .code-heading {
     font-size: 18px;
     font-weight: 600;
@@ -13,7 +16,6 @@ $border-color: rgba(227, 228, 230, 0.7);
     border: none;
     background: transparent;
     color: #fff;
-    float: right;
     outline: none;
 
     .fa-check {
@@ -1602,7 +1604,7 @@ table#custom-generic-table {
     }
 
     .editor-body-wrapper {
-      height: calc(100% - 6rem);
+      height: 100%;
 
       .ace-editor-wrapper {
         height: 100%;
@@ -1610,9 +1612,9 @@ table#custom-generic-table {
         padding: 15px;
 
         div#ace-editor {
-          height: 100% !important;
-          border-radius: 10px;
-          width: 397px !important;
+          min-height: 200px !important;
+          border-radius: 0px 0px 4px 4px ;
+          width: 100% !important;
         }
       }
 
