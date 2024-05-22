@@ -366,7 +366,7 @@ class GenericTable extends Component {
           {dataArray[index].checked === 'notApplicable' ? null : (
             <label className='customCheckbox'>
               <input
-                disabled={isDashboardRoute(this.props, true) || originalData[index].checked === 'false' ? null : 'disabled'}
+                disabled={isDashboardRoute(this.props, true) || originalData[index].checked === 'false' || originalData[index].type!= 'enable' ? null : 'disabled'}
                 name={index + '.checkbox'}
                 value = {dataArray[index].checked}
                 checked={dataArray[index].checked === 'true'}

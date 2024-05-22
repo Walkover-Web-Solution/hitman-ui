@@ -473,55 +473,13 @@ class DisplayResponse extends Component {
               {this.showAddForm()}
               <div className='response-viewer'>
                 <div className='response-tabs'>
-                  {/* {isDashboardRoute(this.props) && (
-                        <ul className='nav nav-tabs' id='myTab' role='tablist'>
-                          <li className='nav-item'>
-                            <a
-                              className='nav-link active'
-                              id='home-tab'
-                              data-toggle='tab'
-                              href='#home'
-                              role='tab'
-                              aria-controls='home'
-                              aria-selected='true'
-                            >
-                              Pretty
-                            </a>
-                          </li>
-                          <li className='nav-item'>
-                            <a
-                              className='nav-link'
-                              id='profile-tab'
-                              data-toggle='tab'
-                              href='#profile'
-                              role='tab'
-                              aria-controls='profile'
-                              aria-selected='false'
-                            >
-                              Raw
-                            </a>
-                          </li>
-                          <li className='nav-item'>
-                            <a
-                              className='nav-link'
-                              id='contact-tab'
-                              data-toggle='tab'
-                              href='#contact'
-                              role='tab'
-                              aria-controls='contact'
-                              aria-selected='false'
-                            >
-                              Preview
-                            </a>
-                          </li>
-                        </ul>)} */}
+                  
                 </div>
                 {this.props.response.status && this.displayBodyAndHeaderResponse()}
                 {this.state.selectedResponseTab === 'body' && (
                   <>
                     {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
                       <div
-                        // style={{ float: "right" }}
                         className='add-to-sample-response'
                       >
                         <div className='adddescLink' onClick={() => this.addSampleResponse(this.props.response)}>
@@ -563,7 +521,6 @@ class DisplayResponse extends Component {
           <div>
             <div className='empty-response'>Response</div>
             <div className='empty-response-container'>
-              {/* <img src={image} height="100px" width="100px" alt="" /> */}
               <EmptyResponseImg />
               <p className='mt-0'>Hit Send to trigger the API call</p>
             </div>
