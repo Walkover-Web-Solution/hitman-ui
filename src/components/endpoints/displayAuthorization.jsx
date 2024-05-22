@@ -125,10 +125,18 @@ export default function Authorization(props) {
     tabService.updateDraftData(endpointId, _.cloneDeep(dataToSave))
     if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestHeaders) {
       props.set_authorization_headers(selectedTokenValue, 'Authorization.oauth_2')
-    } else if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestUrl) {
-      props.set_authoriztaion_params(selectedTokenValue, 'access_token')
+      props.delete_params()
     }
-    setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes[key])
+    else if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestUrl) {
+      props.set_authoriztaion_params(selectedTokenValue, 'access_token')
+      props.delete_headers()
+    }
+    else{
+      props.delete_headers()
+      props.delete_params()
+    }
+    setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes[key]);
+   
   }
 
   function handleShowPassword() {
