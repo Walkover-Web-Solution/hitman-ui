@@ -328,6 +328,7 @@ class GenericTable extends Component {
           type='text'
           placeholder='Key'
           className='form-control'
+          disabled={dataArray[index]?.type === 'disable' ? true : false}
           options={{ '{{': _.keys(this.props.environment.variables) }}
         />
         {title === 'formData' && (
@@ -418,6 +419,7 @@ class GenericTable extends Component {
                 onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
                 className='form-control'
                 placeholder={dataArray[index].checked === 'notApplicable' ? 'Value' : `Enter ${dataArray[index].key}`}
+                disabled={dataArray[index]?.type === 'disable' ? true : false}
                 options={{ '{{': _.keys(this.props.environment.variables) }}
                 type={dataArray[index].type}
               />
