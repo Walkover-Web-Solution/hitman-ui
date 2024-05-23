@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
     add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId)),
-    addUser: (userData) => dispatch(addUserData(userData))
+    add_user: (userData) => dispatch(addUserData(userData))
   }
 }
 
@@ -64,7 +64,7 @@ class MainV2 extends Component {
     const users = await getUserData(token);
 
     if(users){
-      this.props.addUser(users)
+      this.props.add_user(users)
     }
     /** Token Exists */
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {

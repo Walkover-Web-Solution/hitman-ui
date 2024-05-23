@@ -18,7 +18,7 @@ const TrashPage = () => {
   const [editableRow, setEditableRow] = useState({ id: null, name: "" });
   const history = useHistory();
   const orgId = getCurrentOrg()?.id;
-  const users = useSelector((state) => state.users.users);
+  const users = useSelector((state) => state.users);
 
   useEffect(() => {
     async function fetchData() {
