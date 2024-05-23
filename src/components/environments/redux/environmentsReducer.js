@@ -94,6 +94,11 @@ function environmentsReducer(state = initialState, action) {
         }
       }
 
+      case environmentsActionTypes.ON_ENVIRONMENT_IMPORTED:
+        environments = { ...state.environments }
+        environments[action.response.id] = action.response
+        return { ...state, environments }
+
     default:
       return state
   }

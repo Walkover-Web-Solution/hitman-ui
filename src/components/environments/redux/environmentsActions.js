@@ -46,7 +46,8 @@ export const importEnvironment = (newEnvironment) => {
     environmentsApiService
       .importPostmanEnvironment(newEnvironment)
       .then((response) => {
-        dispatch(OnEnvironmentImported(response.data, newEnvironment))
+        console.log(response)
+        dispatch(OnEnvironmentImported(response))
       })
       .catch((error) => {
         dispatch(OnEnvironmentImportedError(error.response ? error.response.data : error, newEnvironment))
