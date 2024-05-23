@@ -157,7 +157,7 @@ class CodeTemplate extends Component {
               <div id='code-window-body' className={!isOnPublishedPage() ? 'copy-button-light' : 'copy-button-dark'}>
                 <CopyToClipboard
                   text={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
-                  onCopy={() => this.setState({ copied: true }, () => setTimeout(() => this.setState({ copied: false }), 600))}
+                  onCopy={() => this.setState({ copied: true }, () => setTimeout(() => this.setState({ copied: false }), 1000))}
                   className='copy-to-clipboard mt-1'
                 >
                   <button >{this.state.copied ? <IconButton> <RiCheckboxMultipleLine color={this.props.theme === 'light' ? 'black' : "white"} /> </IconButton> : <IconButton><RiCheckboxMultipleBlankLine className='cur-pointer' color={this.props.theme === 'light' ? 'black' : "white"} /></IconButton>}</button>
