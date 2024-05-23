@@ -7,9 +7,10 @@ import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
 import { inviteMembers } from '../../../services/orgApiService'
 import { useSelector, useDispatch } from 'react-redux'
+import { addNewUserData } from '../../auth/redux/userAction'
 
 function InviteTeam() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   // const [Users, setUsers] = useState([])
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
@@ -20,7 +21,7 @@ function InviteTeam() {
   const { tabs, users } = useSelector((state) => {
     return {
       tabs: state.tabs,
-      users: state.users.users
+      users: state.users
     }
   })
 
@@ -65,15 +66,14 @@ function InviteTeam() {
   const handleSendInvite = async (e) => {
     e.preventDefault()
     setLoading(true)
-    
     try {
       if (!validateEmail(email)) {
         toast.error('Invalid email format')
         return
       }
       const response = await inviteMembers(name, email)
-      if (response.status == 200) {
-        dispatch({type: 'ADD_NEW_USER', data: response.data?.data});
+      if (response.status) {
+        dispatch(addNewUserData(response.data?.data))
         handleCloseModal()
       } else {
         handleCloseModal()
@@ -122,25 +122,15 @@ function InviteTeam() {
               <th>Action</th>
             </tr>
           </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.email}>
-                  {/* <td>{user.name}</td> */}
-                  <td>{user.email}</td>
-                  <td>Admin</td>
-                  <td>
-                    {/* <button
-                      className='editButton'
-                      onClick={() => {
-                        
-                      }}
-                    >
-                      Edit
-                    </button> */}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+          <tbody>
+            {Object.entries(users).map(([key, user]) => (
+              <tr key={key}>
+                <td>{user.email}</td>
+                <td>Admin</td> {/* Assuming role is always 'Admin' */}
+                <td>{/* Add your edit button here */}</td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </>

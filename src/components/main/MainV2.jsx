@@ -13,10 +13,10 @@ import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
-import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
+import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 import { addCollectionAndPages } from '../redux/generalActions'
 import SplitPane from '../splitPane/splitPane'
-import axios from 'axios'
+import { addUserData } from '../auth/redux/userAction'
 
 const mapStateToProps = (state) => {
   return {
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
     add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId)),
-    addUser: (userData) => dispatch({ type: 'ADD_USER_DATA', data: userData }),
+    addUser: (userData) => dispatch(addUserData(userData))
   }
 }
 
@@ -61,12 +61,10 @@ class MainV2 extends Component {
       return
     }
 
-    const response = await axios.get(`${process.env.REACT_APP_PROXY_URL}/getUsers?itemsPerPage=100`, {
-      headers: { proxy_auth_token: token }
-    })
+    const users = await getUserData(token);
 
-    if(response){
-      this.props.addUser(response.data?.data?.data)
+    if(users){
+      this.props.addUser(users)
     }
     /** Token Exists */
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {

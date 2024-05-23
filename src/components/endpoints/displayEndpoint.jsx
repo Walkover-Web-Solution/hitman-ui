@@ -1733,7 +1733,7 @@ class DisplayEndpoint extends Component {
     switch (bodyType) {
       case bodyTypesEnums['application/x-www-form-urlencoded']:
         return bodyTypesEnums['application/x-www-form-urlencoded']
-      case bodyTypesEnums['multipart/form-data']:
+      case bodyTypesEnums['application/json']:
         return bodyTypesEnums['multipart/form-data']
       case rawTypesEnums.TEXT:
         return 'text/plain'
