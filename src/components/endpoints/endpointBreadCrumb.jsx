@@ -40,7 +40,6 @@ class EndpointBreadCrumb extends Component {
       versionName: null,
       collectionName: null,
       isPagePublished: false,
-      protocolIndex: 0,
       protocols: [{ type: 'HTTP', icon: <MdHttp color='green' size={16} /> }, { type: 'GraphQL', icon: <GrGraphQl color='rgb(170, 51, 106)' size={14} /> }]
     }
   }
