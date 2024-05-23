@@ -1048,12 +1048,12 @@ class DisplayEndpoint extends Component {
 
     /** Prepare Body & Modify Headers */
     let body, headers
-    if (this.props?.endpointContent?.protocolType === 1) {
+    if (this.checkProtocolType(1)) {
       const data = this.formatBody(this.props?.endpointContent?.data.body, headerJson)
       body = data.body
       headers = data.headers
     }
-    else if (this.props?.endpointContent?.protocolType === 2) {
+    else if (this.checkProtocolType(2)) {
       let variables
       try {
         variables = JSON.parse(this.props?.endpointContent?.data?.body?.variables || '')
@@ -1072,7 +1072,7 @@ class DisplayEndpoint extends Component {
       headers.cookie = cookiesString.trim()
     }
 
-    const method = this.props?.endpointContent?.protocolType === 1 ? this.props?.endpointContent?.data?.method : "POST"
+    const method = this.checkProtocolType(1) ? this.props?.endpointContent?.data?.method : "POST"
     /** Set Request Options */
     let requestOptions = null
     const cancelToken = runSendRequest.token
@@ -1220,7 +1220,7 @@ class DisplayEndpoint extends Component {
         body_description: endpointContent?.bodyDescription,
         body: body.value
       })
-      if (this.props?.endpointContent?.protocolType === 1 && this.props?.endpointContent?.data?.body.type === bodyTypesEnums['raw']) {
+      if (this.checkProtocolType(1) && this.props?.endpointContent?.data?.body.type === bodyTypesEnums['raw']) {
         body.value = this.parseBody(body.value)
       }
       const headersData = this.doSubmitHeader('save')
@@ -1967,6 +1967,11 @@ class DisplayEndpoint extends Component {
     // this.props.set_chat_view(this.state.showAskAiSlider)
   }
 
+  checkProtocolType(protocolType = 1) {
+    if (this.props.endpointContent.protocolType === protocolType) return true
+    return false
+  }
+
   displayResponseAndSampleResponse() {
     return (
       <>
@@ -2278,8 +2283,8 @@ class DisplayEndpoint extends Component {
         else return <div className='mb-3'>{this.renderHeaders()}</div>
       }
       case 'params': {
-        if (!isDashboardRoute(this.props) && this.props?.endpointContent?.protocolType === 1) return this.renderPublicParams()
-        else if (isDashboardRoute(this.props) && this.props?.endpointContent?.protocolType === 1) return <div className='mb-3'>{this.renderParams()}</div>
+        if (!isDashboardRoute(this.props) && this.checkProtocolType(1)) return this.renderPublicParams()
+        else if (isDashboardRoute(this.props) && this.checkProtocolType(1)) return <div className='mb-3'>{this.renderParams()}</div>
         return null;
       }
       case 'pathVariables': {
@@ -2477,7 +2482,7 @@ class DisplayEndpoint extends Component {
         {/* <h3 className='heading-2'>Endpoint Name</h3> */}
         <div className='hm-endpoint-header'>
           <div className='input-group'>
-            {this.props?.endpointContent?.protocolType === 1 && <div className='input-group-prepend'>
+            {this.checkProtocolType(1) && <div className='input-group-prepend'>
               <span className={`api-label api-label-lg input-group-text ${this.props?.endpointContent?.data?.method}`}>
                 {this.props?.endpointContent?.data?.method}
               </span>
@@ -2509,7 +2514,7 @@ class DisplayEndpoint extends Component {
   renderHost() {
     return (
       <div className='input-group-prepend'>
-        {this.props.endpointContent.protocolType === 1 && <div className='dropdown'>
+        {this.checkProtocolType(1) && <div className='dropdown'>
           <button
             className={`api-label ${this.props?.endpointContent?.data?.method} dropdown-toggle`}
             type='button'
@@ -2958,7 +2963,7 @@ class DisplayEndpoint extends Component {
                         <div className='d-flex justify-content-between align-items-center'>
                           <div className='headers-params-wrapper custom-tabs'>
                             <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
-                              {this.props.endpointContent.protocolType === 1 && <li className='nav-item'>
+                              {this.checkProtocolType(1) && <li className='nav-item'>
                                 <a
                                   className={this.setAuthorizationTab ? 'nav-link ' : 'nav-link active'}
                                   id='pills-params-tab'
@@ -2971,7 +2976,7 @@ class DisplayEndpoint extends Component {
                                   Params
                                 </a>
                               </li>}
-                              {this.props.endpointContent.protocolType === 2 && <li className='nav-item'>
+                              {this.checkProtocolType(2) && <li className='nav-item'>
                                 <a
                                   className={this.setAuthorizationTab ? 'nav-link ' : 'nav-link active'}
                                   id='pills-query-tab'
@@ -3010,7 +3015,7 @@ class DisplayEndpoint extends Component {
                                   Headers
                                 </a>
                               </li>
-                              {this.props.endpointContent.protocolType === 1 && <li className='nav-item'>
+                              {this.checkProtocolType(1) && <li className='nav-item'>
                                 <a
                                   className='nav-link'
                                   id='pills-body-tab'
@@ -3049,7 +3054,7 @@ class DisplayEndpoint extends Component {
                                   Post-Script
                                 </a>
                               </li>
-                              {this.props.endpointContent.protocolType === 1 && <li className='nav-item cookie-tab'>
+                              {this.checkProtocolType(1) && <li className='nav-item cookie-tab'>
                                 {getCurrentUser() && (
                                   <a className='nav-link' onClick={() => this.setState({ showCookiesModal: true })}>
                                     Cookies
@@ -3062,7 +3067,7 @@ class DisplayEndpoint extends Component {
                       ) : null}
                       {this.isDashboardAndTestingView() ? (
                         <div className='tab-content' id='pills-tabContent'>
-                          {this.props.endpointContent.protocolType === 1 && <div
+                          {this.checkProtocolType(1) && <div
                             className={this.setAuthorizationTab ? 'tab-pane fade' : 'tab-pane fade show active'}
                             id={`params-${this.props.tab.id}`}
                             role='tabpanel'
@@ -3071,7 +3076,7 @@ class DisplayEndpoint extends Component {
                             {this.renderParams()}
                             <div>{this.renderPathVariables()}</div>
                           </div>}
-                          {this.props.endpointContent.protocolType === 2 && <div
+                          {this.checkProtocolType(2) && <div
                             className={this.setAuthorizationTab ? 'tab-pane fade' : 'tab-pane fade show active'}
                             id={`query-${this.props.tab.id}`}
                             role='tabpanel'
@@ -3103,7 +3108,7 @@ class DisplayEndpoint extends Component {
                           >
                             <div>{this.renderHeaders()}</div>
                           </div>
-                          {this.props.endpointContent.protocolType === 1 && <div className='tab-pane fade' id={`body-${this.props.tab.id}`} role='tabpanel' aria-labelledby='pills-body-tab'>
+                          {this.checkProtocolType(1) && <div className='tab-pane fade' id={`body-${this.props.tab.id}`} role='tabpanel' aria-labelledby='pills-body-tab'>
                             {this.renderBodyContainer()}
                           </div>}
                           <div

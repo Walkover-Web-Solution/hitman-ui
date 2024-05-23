@@ -108,7 +108,6 @@ export default function QueryTab(props) {
                         onChange={(value) => handleEditorChange(value, 'query')}
                         value={props?.endpointContent?.data?.body?.query}
                         onLoad={(editor) => {
-                            editor.focus();
                             editor.getSession().setUseWrapMode(true);
                             editor.setShowPrintMargin(false);
                         }}
@@ -128,7 +127,6 @@ export default function QueryTab(props) {
                         value={props?.endpointContent?.data?.body?.variables}
                         onChange={(value) => handleEditorChange(value, 'variables')}
                         onLoad={(editor) => {
-                            editor.focus();
                             editor.getSession().setUseWrapMode(true);
                             editor.setShowPrintMargin(false);
                         }}

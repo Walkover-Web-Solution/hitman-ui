@@ -230,7 +230,7 @@ class EndpointBreadCrumb extends Component {
           aria-haspopup='true'
           aria-expanded='false'
         >
-          {this.state.protocols[(this.props?.endpointContent?.protocolType - 1)].icon}
+          {this.state.protocols[(this.props?.endpointContent?.protocolType - 1)]?.icon}
         </button>
         <div className='dropdown-menu protocol-dropdown' aria-labelledby='dropdownMenuButton'>
           {this.state.protocols.map((protocolDetails, index) => (
@@ -252,9 +252,9 @@ class EndpointBreadCrumb extends Component {
           <div className='page-title-name d-flex align-items-center'>
             {this.props?.match?.params?.endpointId === 'new' && this.switchProtocolTypeDropdown()}
             {(this.props?.match?.params?.endpointId != 'new' && this.props?.endpointContent?.protocolType === 1 && this.state?.protocols?.[0]?.icon) && 
-            <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols[0].icon}</button>}
+            <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[0]?.icon}</button>}
             {(this.props?.match?.params?.endpointId != 'new' && this.props?.endpointContent?.protocolType === 2 && this.state?.protocols?.[1]?.icon) && 
-            <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols[1].icon}</button>}
+            <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[1]?.icon}</button>}
             <input
               name='enpoint-title'
               ref={this.nameInputRef}
