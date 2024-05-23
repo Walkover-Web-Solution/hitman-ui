@@ -293,6 +293,12 @@ class GenericTable extends Component {
   renderTextOrFileInput(dataArray, index) {
     const { title } = this.props
     const key = `${index}.key`
+
+    const handleAutoComplete = (selectedValue) => {
+      const trimmedValue = selectedValue.trim(); 
+      const updatedValue = `${trimmedValue}}}`; 
+      this.handleChange({ currentTarget: { name: key, value: updatedValue } });
+    };
     return (
       <div className='position-relative fileInput'>
         <TextField
@@ -301,6 +307,7 @@ class GenericTable extends Component {
           key={key}
           value = {dataArray[index].key}
           onChange={(e) => this.handleChange(e, { name: key, value: e })}
+          onSelect={(selectedValue) => handleAutoComplete(selectedValue)} 
           type='text'
           placeholder='Key'
           className='form-control'
