@@ -151,12 +151,6 @@ main.main.ml-sm-auto.col-lg-10 {
     justify-content: space-between;
     align-items: center;
 
-    .copy-to-clipboard {
-      padding: 0px;
-      padding-left: 10px;
-      opacity: 0.7;
-    }
-
     .delete-button {
       padding: 5px;
       opacity: 0.7;
@@ -742,15 +736,23 @@ button.toggleButton {
   }
   .inner-editor {
     height: 100%;
+    
     .editor-body-wrapper {
       height: calc(100% - 6rem);
+
       .ace-editor-wrapper {
         height: 100%;
         min-width: 0;
+        padding: 15px;
+
         div#ace-editor {
-          height: 100% !important;
+          min-height: 200px !important;
+          border-radius: 0px 0px 4px 4px ;
+          width: 100% !important;
+          max-height: 97%;
         }
       }
+
       padding: 0px;
     }
   }
@@ -786,11 +788,13 @@ button.toggleButton {
      }
   }
 }
-.copy-button {
-  position: absolute;
-  top: 17px;
-  right: 15px;
-  z-index: 100;
+.copy-button-light{
+  border-radius: 4px 4px 0px 0px;
+  background-color: #E8E9E8;
+}
+.copy-button-dark{
+  border-radius: 4px 4px 0px 0px;
+  background-color: #222222;
 }
 $loader-size: 100px;
 $loader-dot-size: ($loader-size / 5); //20

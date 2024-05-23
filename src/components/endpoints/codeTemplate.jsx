@@ -9,10 +9,11 @@ import 'ace-builds/src-noconflict/theme-github'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
 import { RiCloseLine } from "react-icons/ri";
-import { RxCopy } from "react-icons/rx"
+import { RiCheckboxMultipleLine } from "react-icons/ri";
+import { RiCheckboxMultipleBlankLine } from "react-icons/ri";
 import IconButton from '../common/iconButton'
 import { BsThreeDotsVertical } from "react-icons/bs"
-import { hexToRgb } from '../common/utility'
+import { hexToRgb, isOnPublishedPage } from '../common/utility'
 const HTTPSnippet = require('httpsnippet')
 class CodeTemplate extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class CodeTemplate extends Component {
     this.pubCodesRef = React.createRef()
     this.iconNoneRef = React.createRef()
     this.closeIconRef = React.createRef()
+    this.codeTemplateRef = React.createRef()
   }
 
   makeCodeSnippet() {
@@ -75,6 +77,9 @@ class CodeTemplate extends Component {
     if (this.props.harObject !== prevProps.harObject) {
       this.makeCodeTemplate(this.selectedLanguage)
     }
+    if (prevState.codeSnippet !== this.state.codeSnippet) {
+      this.adjustEditorHeight();
+    }
   }
 
   handleCloseClick = () => {
@@ -87,7 +92,14 @@ class CodeTemplate extends Component {
     return this.props.theme !== 'light' ? classToReturn + ' ' : classToReturn;
   }
 
- 
+  adjustEditorHeight = () => {
+    if (this.codeTemplateRef.current) {
+      const editor = this.codeTemplateRef.current.editor;
+      const newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth();
+      this.setState({ editorHeight: `${newHeight}px` });
+    }
+  }
+
   render() {
     return (
       <div className={(this.props.match.params.endpointId) ? "show-curl-endpoint pubCodeWrapper" : "pubCodeWrapper"} style={{ backgroundColor: hexToRgb(this.state?.theme, '0.04') }}>
@@ -141,23 +153,19 @@ class CodeTemplate extends Component {
             </div>
           </Col>
           <Col className='editor-body-wrapper' xs={12}>
-            <div id='code-window-body' className='copy-button'>
-              <CopyToClipboard
-                text={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
-                onCopy={() =>
-                  this.setState({ copied: true }, () => {
-                    setTimeout(() => {
-                      this.setState({ copied: false })
-                    }, 2000)
-                  })
-                }
-                className='copy-to-clipboard mt-1'
-              >
-                <button >{this.state.copied ? <span className='text-success'>Copied! </span> : <IconButton><RxCopy className='cur-pointer' color={this.props.theme === 'light' ? 'black' : "white"} /></IconButton>}</button>
-              </CopyToClipboard>
-            </div>{' '}
             <div className='ace-editor-wrapper'>
+              <div id='code-window-body' className={!isOnPublishedPage() ? 'copy-button-light' : 'copy-button-dark'}>
+                <CopyToClipboard
+                  text={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
+                  onCopy={() => this.setState({ copied: true }, () => setTimeout(() => this.setState({ copied: false }), 1000))}
+                  className='copy-to-clipboard mt-1'
+                >
+                  <button >{this.state.copied ? <IconButton> <RiCheckboxMultipleLine color={this.props.theme === 'light' ? 'black' : "white"} /> </IconButton> : <IconButton><RiCheckboxMultipleBlankLine className='cur-pointer' color={this.props.theme === 'light' ? 'black' : "white"} /></IconButton>}</button>
+                </CopyToClipboard>
+              </div>
               <AceEditor
+                height={this.state.editorHeight}
+                ref={this.codeTemplateRef}
                 mode={languages[this.selectedLanguage].mode}
                 theme={this.props.theme === 'light' ? 'kuroir' : "tomorrow_night"}
                 highlightActiveLine={false}
