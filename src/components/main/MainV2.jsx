@@ -13,9 +13,10 @@ import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
-import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
+import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 import { addCollectionAndPages } from '../redux/generalActions'
 import SplitPane from '../splitPane/splitPane'
+import { addUserData } from '../auth/redux/userAction'
 
 const mapStateToProps = (state) => {
   return {
@@ -29,7 +30,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
-    add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId))
+    add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId)),
+    add_user: (userData) => dispatch(addUserData(userData))
   }
 }
 
@@ -57,6 +59,12 @@ class MainV2 extends Component {
     if (!token) {
       this.setState({ loading: false })
       return
+    }
+
+    const users = await getUserData(token);
+
+    if(users){
+      this.props.add_user(users)
     }
     /** Token Exists */
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {

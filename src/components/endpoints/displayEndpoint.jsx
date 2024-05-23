@@ -100,7 +100,8 @@ const mapStateToProps = (state) => {
     activeTabId: state.tabs.activeTabId,
     tabs: state?.tabs?.tabs,
     tokenDetails: state?.tokenData?.tokenDetails,
-    curlSlider: state.modals?.curlSlider || false
+    curlSlider: state.modals?.curlSlider || false,
+    users: state.users
   }
 }
 
@@ -1737,7 +1738,7 @@ class DisplayEndpoint extends Component {
       case rawTypesEnums.TEXT:
         return 'text/plain'
       case rawTypesEnums.JSON:
-        return 'application/JSON'
+        return 'application/json'
       case rawTypesEnums.HTML:
         return 'text/HTML'
       case rawTypesEnums.XML:
@@ -2752,6 +2753,39 @@ class DisplayEndpoint extends Component {
       }
     }
   }
+  renderEndpointUserData(isOnPublishedPage) {
+    const { pages, currentEndpointId, users } = this.props;
+    const updatedById = pages?.[currentEndpointId]?.updatedBy;  
+    const lastModified = pages?.[currentEndpointId]?.updatedAt 
+                         ? moment(pages[currentEndpointId].updatedAt).fromNow()
+                         : null;
+
+    const user = users?.users?.find(user => user.id === updatedById);
+
+    if (isOnPublishedPage) {
+        return (
+            <div>
+                {lastModified && <>Modified At <span>{lastModified}</span></>}
+            </div>
+        );
+    } else {
+        return (
+            <div className='page-user-data mt-2'>
+              {lastModified ? (
+                <div>
+                  Updated by<span> </span>
+                  {user?.name}
+                  <br />
+                  Modified At<span> </span>
+                  {lastModified}
+                </div>
+              ) : (
+                <span></span>
+              )}
+            </div>
+        );
+    }
+}
 
   render() {
     if (this.props?.endpointContentLoading) {
@@ -3094,10 +3128,10 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
-                <span className='mb-2 d-inline-block'>{isOnPublishedPage() && this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt && `Modified at ${moment(this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt).fromNow()}`}</span>
               </div>
               {/* <ApiDocReview {...this.props} /> */}
-              <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>
+              
+              <span className='footer-upper'>{isOnPublishedPage() && <><span className='pl-3'>{isOnPublishedPage() && this.renderEndpointUserData(true)}</span><Footer /></>}</span>
             </div>
 
             {this.isDashboardAndTestingView() ? (
@@ -3121,7 +3155,8 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
-        <span className='footer-lower'>{isOnPublishedPage() && <Footer />}</span>
+        <span className='pl-3 ml-1 mb-2 d-inline-block'>{!isOnPublishedPage() && this.renderEndpointUserData(false)}</span>
+        <span className='footer-lower ml-2 ml-sm-4 '>{isOnPublishedPage() && <><span className='pl-3'>{isOnPublishedPage() && this.renderEndpointUserData(true)}</span><Footer /></>}</span>
       </div>
     ) : null
   }

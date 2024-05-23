@@ -69,6 +69,7 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     tabs: state.tabs,
+    users: state.users
   }
 }
 
@@ -153,11 +154,46 @@ class DisplayPage extends Component {
         <div className='pt-3 px-1'> 
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
           <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
-          <span>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
+          <span className='mb-2 d-inline-block'>{isOnPublishedPage() ? this.renderPageUserData(true) : this.renderPageUserData(false)}</span>
         </div>
       )
     }
   }
+
+  
+renderPageUserData(isOnPublishedPage) {
+  const { pages, currentPageId, users } = this.props;
+  const updatedById = pages?.[currentPageId]?.updatedBy;  
+  const lastModified = pages?.[currentPageId]?.updatedAt 
+                       ? moment(pages[currentPageId].updatedAt).fromNow()
+                       : null;
+
+  const user = users?.users?.find(user => user.id === updatedById);
+
+  if (isOnPublishedPage) {
+      return (
+          <div>
+              {lastModified && <>Modified At <span>{lastModified}</span></>}
+          </div>
+      );
+  } else {
+      return (
+          <div className='page-user-data mt-2'>
+            {lastModified ? (
+              <div>
+                Updated by:<span> </span>
+                {user?.name}
+                <br />
+                Modified At:<span> </span>
+                {lastModified}
+              </div>
+            ) : (
+              <span></span>
+            )}
+          </div>
+      );
+  }
+}
 
   renderPageName() {
     const pageId = this.props?.match?.params.pageId
