@@ -53,7 +53,15 @@ class GenericTable extends Component {
     let { dataArray, title, original_data: originalData } = this.props
     dataArray = JSON.parse(JSON.stringify(dataArray))
     const name = target.name.split('.')
-    const value = target.value
+    let value = target.value.trim()
+    const ans = value.concat('}}')
+    if((title === 'Headers' || title ==='Params' || title === 'formData') && (name[1] === 'value' || name[1] === 'key') ){
+      if(value === '{{BASE_URL')
+      {
+        value = ans
+      }
+
+    }
     if (name[1] === 'checkbox') {
       this.checkboxFlags[name[0]] = true
       if (dataArray[name[0]].checked === 'true') {
@@ -401,7 +409,7 @@ class GenericTable extends Component {
                 onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
                 className='form-control'
                 placeholder={dataArray[index].checked === 'notApplicable' ? 'Value' : `Enter ${dataArray[index].key}`}
-                options={{ '{{': _.keys(this.props.environment.variables) }}
+                options={{ '{{': _.keys(this.props.environment.variables)}}
                 type={dataArray[index].type}
               />
             </div>
