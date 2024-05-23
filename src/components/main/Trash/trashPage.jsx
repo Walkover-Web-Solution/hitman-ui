@@ -122,9 +122,9 @@ const TrashPage = () => {
                       collection.name
                     )}
                   </td>
-                  <td>{moment(collection.deletedAt).fromNow()}</td>
+                  <td>{moment(collection?.deletedAt).fromNow()}</td>
                   <td>
-                  {findUserNameById(collection.updatedBy)}
+                  {findUserNameById(collection?.updatedBy)}
                   </td>
                   <td className="restore-action">
                     {editableRow.id === collection.id ? (

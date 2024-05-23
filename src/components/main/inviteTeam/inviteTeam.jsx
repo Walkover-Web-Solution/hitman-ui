@@ -11,7 +11,6 @@ import { addNewUserData } from '../../auth/redux/userAction'
 
 function InviteTeam() {
   const dispatch = useDispatch()
-  // const [Users, setUsers] = useState([])
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -72,11 +71,11 @@ function InviteTeam() {
         return
       }
       const response = await inviteMembers(name, email)
-      if (response.status) {
-        dispatch(addNewUserData(response.data?.data))
+      if (response?.data?.status == "success") {
+        dispatch(addNewUserData(response?.data?.data))
         handleCloseModal()
       } else {
-        handleCloseModal()
+        toast.error(response?.data?.message)
       }
     } catch (error) {
       toast.error('Cannot proceed at the moment. Please try again later')

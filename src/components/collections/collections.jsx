@@ -44,7 +44,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     add_collection: (newCollection) => dispatch(addCollection(newCollection)),
     update_collection: (editedCollection) => dispatch(updateCollection(editedCollection)),
-    delete_collection: (collection, props) => dispatch(deleteCollection(collection)),
+    delete_collection: (collection) => dispatch(deleteCollection(collection)),
     duplicate_collection: (collection) => dispatch(duplicateCollection(collection)),
     add_custom_domain: (collectionId, domain) => dispatch(addCustomDomain(collectionId, domain)),
     add_new_tab: () => dispatch(addNewTab()),
