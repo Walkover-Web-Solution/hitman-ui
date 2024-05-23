@@ -1767,23 +1767,15 @@ class DisplayEndpoint extends Component {
   deleteHeader() {
     const originalHeaders = this.props.endpointContent.originalHeaders
     const updatedHeaders = []
-    const emptyHeader = {
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: '',
-      type: 'enable',
-    }
     for(let i = 0; i < originalHeaders.length; i++){
-      if( originalHeaders[i].key === 'content-type' && originalHeaders[i].type === 'disable'){
-        continue
+      if( originalHeaders[i].key === 'Authorization' && originalHeaders[i].type === 'disable'){
+        continue;
       }
       else{
         updatedHeaders.push(originalHeaders[i])
       }
     }
-    const dummyData = this.props.endpointContent
-    dummyData.originalHeaders = updatedHeaders
+    this.propsFromChild('Headers', updatedHeaders)
   }
 
   deleteParams() {
