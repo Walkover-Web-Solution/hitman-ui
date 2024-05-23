@@ -4,7 +4,6 @@ export const ADD_NEW_USER = 'ADD_NEW_USER';
 const initialState = [];
 
 const userReducer = (state = initialState, action) => {
-    // if (action.type == ADD_NEW_USER) debugger
     switch (action.type) {
         case ADD_USER_DATA:
             return action.data
