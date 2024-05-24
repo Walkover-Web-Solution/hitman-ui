@@ -748,7 +748,6 @@ button.toggleButton {
 
         div#ace-editor {
           min-height: 200px !important;
-          border-radius: 0px 0px 4px 4px ;
           width: 100% !important;
           max-height: 97%;
         }
@@ -795,6 +794,16 @@ button.toggleButton {
 }
 .copy-button-dark{
   border-radius: 4px 4px 0px 0px;
+  background-color: #222222;
+}
+.empty-div-light{
+  padding: 10px;
+  border-radius: 0px 0px 4px 4px;
+  background-color: #E8E9E8;
+}
+.empty-div-dark{
+  padding: 10px;
+  border-radius: 0px 0px 4px 4px;
   background-color: #222222;
 }
 $loader-size: 100px;

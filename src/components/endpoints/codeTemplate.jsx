@@ -181,6 +181,7 @@ class CodeTemplate extends Component {
                   editor.setShowPrintMargin(false)
                 }}
               />
+              <div id='code-window-body' className={!isOnPublishedPage() ? 'empty-div-light' : 'empty-div-dark'}></div>
             </div>
           </Col>
         </div>
