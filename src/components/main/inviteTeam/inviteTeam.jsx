@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
-import axios from 'axios'
 import './inviteTeam.scss'
-import { getCurrentOrg, getProxyToken } from '../../auth/authServiceV2'
+import { getCurrentOrg } from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
 import { inviteMembers } from '../../../services/orgApiService'
@@ -17,11 +16,8 @@ function InviteTeam() {
   const [showModal, setShowModal] = useState(false)
   const history = useHistory()
   const inputRef = useRef(null)
-  const { tabs, users } = useSelector((state) => {
-    return {
-      tabs: state.tabs,
-      users: state.users
-    }
+  const { users } = useSelector((state) => {
+  return {users: state.users}
   })
 
   useEffect(() => {
@@ -32,19 +28,7 @@ function InviteTeam() {
 
   const handleBack = () => {
     const orgId = getCurrentOrg()?.id
-    const activeTab = tabs.activeTabId
-    const type = tabs.tabs[activeTab].type
-    const status = tabs.tabs[activeTab].status
-
-    if (type === 'endpoint' || status === 'NEW') {
-      history.push(`/orgs/${orgId}/dashboard/endpoint/${activeTab}`)
-    } else if (type === 'history') {
-      history.push(`/orgs/${orgId}/dashboard/history/${activeTab}`)
-    } else if (type === 'collection') {
-      history.push(`/orgs/${orgId}/dashboard/collection/${activeTab}/settings`)
-    } else {
-      history.push(`/orgs/${orgId}/dashboard/page/${activeTab}`)
-    }
+      history.push(`/orgs/${orgId}/dashboard`)
   }
 
   const handleInviteClick = () => setShowModal(true)
@@ -74,8 +58,6 @@ function InviteTeam() {
       if (response?.data?.status == "success") {
         dispatch(addNewUserData(response?.data?.data))
         handleCloseModal()
-      } else {
-        toast.error(response?.data?.message)
       }
     } catch (error) {
       toast.error('Cannot proceed at the moment. Please try again later')

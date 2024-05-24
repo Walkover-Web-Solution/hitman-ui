@@ -24,6 +24,7 @@ import  IconButtons  from '../common/iconButton'
 import { BsThreeDots } from "react-icons/bs"
 import { GrGraphQl } from 'react-icons/gr'
 import '../../../src/components/styles.scss'
+import { importPostmanEnvironment } from '../environments/environmentsApiService'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -52,7 +53,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    import_postman_environment: (openApiObject, importType, website, callback, view) =>
+    dispatch(importPostmanEnvironment(openApiObject, importType, website, callback, view))
   }
 }
 

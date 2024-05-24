@@ -3,7 +3,6 @@ import { Card, Dropdown, Accordion, DropdownButton, Button } from 'react-bootstr
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import ShareVersionForm from './shareVersionForm'
-import collectionVersionsService from './collectionVersionsService'
 import {
   isDashboardRoute,
   getParentIds,
@@ -15,9 +14,7 @@ import {
 } from '../common/utility'
 import './collectionVersions.scss'
 import AddEntity from '../main/addEntity/addEntity'
-import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
-import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 import { deletePage, duplicatePage } from '../pages/redux/pagesActions'
 import { approvePage, draftPage, pendingPage, rejectPage } from '../publicEndpoint/publicPageService'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
@@ -218,7 +215,7 @@ class CollectionParentPages extends Component {
     this.props.duplicate_page(page)
   }
   closeCollectionForm() {
-    this.setState({ showCollectionForm: false, showImportVersionForm: false })
+    this.setState({ showCollectionForm: false})
   }
   openAddVersionForm(page) {
     this.setState({

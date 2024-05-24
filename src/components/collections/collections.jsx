@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 import shortId from 'shortid'
-import ImportVersionForm from '../collectionVersions/importVersionForm'
-import { isDashboardRoute, openExternalLink, getParentIds, isOnPublishedPage } from '../common/utility'
+import { isDashboardRoute, openExternalLink, isOnPublishedPage } from '../common/utility'
 import collectionsService from './collectionsService'
 import { addCollection, deleteCollection, duplicateCollection, updateCollection, addCustomDomain } from './redux/collectionsActions'
 import './collections.scss'
@@ -71,39 +70,7 @@ class CollectionsComponent extends Component {
   }
 
   closeCollectionForm() {
-    this.setState({ showCollectionForm: false, showImportVersionForm: false })
-  }
-
-  componentDidMount() {
-    const { pageId, endpointId } = this.props.match.params
-
-    if (pageId) this.setCollectionForEntity(pageId, 'page')
-
-    if (endpointId) this.setCollectionForEntity(endpointId, 'endpoint')
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { pageId, endpointId } = this.props.match.params
-    const { pageId: prevPageId, endpointId: prevEndpointId } = prevProps.match.params
-
-    if (pageId && prevPageId !== pageId) this.setCollectionForEntity(pageId, 'page')
-
-    if (endpointId && prevEndpointId !== endpointId) this.setCollectionForEntity(endpointId, 'endpoint')
-  }
-
-  setCollectionForEntity(id, type) {
-    const { collectionId } = getParentIds(id, type, this.props)
-  }
-
-  setSelectedCollectionId(id, value) {
-    if (id && this.state.selectedCollectionIds[id] !== value) {
-      this.setState({
-        selectedCollectionIds: {
-          ...this.state.selectedCollectionIds,
-          [id]: value
-        }
-      })
-    }
+    this.setState({ showCollectionForm: false})
   }
 
   async handleAddCollection(newCollection) {
@@ -113,10 +80,6 @@ class CollectionsComponent extends Component {
 
   async handleUpdateCollection(editedCollection) {
     this.props.update_collection(editedCollection)
-  }
-
-  async handleDeleteGroup(deletedGroupId) {
-    this.props.delete_group(deletedGroupId)
   }
 
   async handleDuplicateCollection(collectionCopy) {
@@ -157,30 +120,6 @@ class CollectionsComponent extends Component {
         ...this.props.collections[collectionId]
       }
     })
-  }
-
-  openImportVersionForm(collectionId) {
-    this.setState({
-      showImportVersionForm: true,
-      collectionFormName: 'Import Version',
-      selectedCollection: {
-        ...this.props.collections[collectionId]
-      }
-    })
-  }
-
-  showImportVersionForm() {
-    return (
-      this.state.showImportVersionForm && (
-        <ImportVersionForm
-          {...this.props}
-          show={this.state.showImportVersionForm}
-          onHide={() => this.closeCollectionForm()}
-          title={this.state.collectionFormName}
-          selected_collection={this.state.selectedCollection}
-        />
-      )
-    )
   }
 
   handlePublicCollectionDescription(collection) {
@@ -509,7 +448,6 @@ class CollectionsComponent extends Component {
                   this.state.collectionFormName,
                   this.state.selectedCollection
                 )}
-              {this.showImportVersionForm()}
               {this.openTagManagerModal()}
               {this.showDeleteCollectionModal()}
               {this.state.showOrgModal && <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />}
