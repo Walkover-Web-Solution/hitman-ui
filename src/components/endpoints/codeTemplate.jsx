@@ -9,10 +9,11 @@ import 'ace-builds/src-noconflict/theme-github'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
 import { RiCloseLine } from "react-icons/ri";
-import { RxCopy } from "react-icons/rx";
+import { RiCheckboxMultipleLine } from "react-icons/ri";
+import { RiCheckboxMultipleBlankLine } from "react-icons/ri";
 import IconButton from '../common/iconButton'
-
-
+import { BsThreeDotsVertical } from "react-icons/bs"
+import { hexToRgb, isOnPublishedPage } from '../common/utility'
 const HTTPSnippet = require('httpsnippet')
 class CodeTemplate extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class CodeTemplate extends Component {
     this.pubCodesRef = React.createRef()
     this.iconNoneRef = React.createRef()
     this.closeIconRef = React.createRef()
+    this.codeTemplateRef = React.createRef()
   }
 
   makeCodeSnippet() {
@@ -75,6 +77,9 @@ class CodeTemplate extends Component {
     if (this.props.harObject !== prevProps.harObject) {
       this.makeCodeTemplate(this.selectedLanguage)
     }
+    if (prevState.codeSnippet !== this.state.codeSnippet) {
+      this.adjustEditorHeight();
+    }
   }
 
   handleCloseClick = () => {
@@ -84,23 +89,31 @@ class CodeTemplate extends Component {
   getClassForLanguages = (key) => {
     const commonClass = 'mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center';
     let classToReturn = key === this.selectedLanguage ? 'active ' + commonClass : commonClass;
-    return this.props.theme !== 'light' ? classToReturn + ' col-white' : classToReturn;
+    return this.props.theme !== 'light' ? classToReturn + ' ' : classToReturn;
+  }
+
+  adjustEditorHeight = () => {
+    if (this.codeTemplateRef.current) {
+      const editor = this.codeTemplateRef.current.editor;
+      const newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth();
+      this.setState({ editorHeight: `${newHeight}px` });
+    }
   }
 
   render() {
     return (
-      <div className={(this.props.match.params.endpointId) ? "show-curl-endpoint pubCodeWrapper" : "pubCodeWrapper"}>
+      <div className={(this.props.match.params.endpointId) ? "show-curl-endpoint pubCodeWrapper" : "pubCodeWrapper"} style={{ backgroundColor: hexToRgb(this.state?.theme, '0.04') }}>
         <div className='inner-editor'>
           <Col id='code-window-sidebar' xs={12} className=''>
-            <div className='code-heading mb-3 d-flex justify-content-center align-items-center'>
-              <span className={this.props.theme === 'light' ? 'col-black' : 'col-white'}>Sample code</span>
+            <div className='code-heading mb-3 d-flex align-items-center'>
+              <span className={this.props.theme === 'light' ? 'col-black' : 'col-black'}>Sample code</span>
               {this.props.showClosebtn && <div className='d-flex justify-content-end flex-grow-1'>
                 <IconButton>
                   <RiCloseLine color='black' className='cur-pointer' onClick={this.handleCloseClick} />
                 </IconButton>
               </div>}
             </div>
-            <div className="select-code-wrapper d-flex mb-3 img">
+            <div className='select-code-wrapper d-flex align-items-center mb-3 img'>
               {primaryLanguages.map((key) => (
                 <button
                   key={key}
@@ -109,15 +122,15 @@ class CodeTemplate extends Component {
                     this.makeCodeTemplate(key)
                   }}
                 >
-                  <img src={languages[key].imagePath} alt={languages[key].name} />
+                  <img src={languages[key].imagePath} alt={languages[key].name} width={15} />
                   {languages[key].name}
                 </button>
               ))}
-              <button className='codeTemplateButtonMore  d-flex justify-content-center align-items-center p-0'>
                 <Dropdown >
                   <Dropdown.Toggle className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore mr-0' : 'dropdownMore mr-0'}>
                     {primaryLanguages.includes(this.selectedLanguage) ? (
-                      <span>More</span>
+                      <span><BsThreeDotsVertical />
+                      </span>
                     ) : (
                       <span>{languages[this.selectedLanguage].name}</span>
                     )}
@@ -137,27 +150,22 @@ class CodeTemplate extends Component {
                     ))}
                   </Dropdown.Menu>
                 </Dropdown>
-              </button>
             </div>
           </Col>
           <Col className='editor-body-wrapper' xs={12}>
-            <div id='code-window-body' className='copy-button'>
-              <CopyToClipboard
-                text={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
-                onCopy={() =>
-                  this.setState({ copied: true }, () => {
-                    setTimeout(() => {
-                      this.setState({ copied: false })
-                    }, 2000)
-                  })
-                }
-                className='copy-to-clipboard mt-1'
-              >
-                <button >{this.state.copied ? <span className='text-success'>Copied! </span> : <IconButton><RxCopy className='cur-pointer' color={this.props.theme === 'light' ? 'black' : "white"} /></IconButton>}</button>
-              </CopyToClipboard>
-            </div>{' '}
             <div className='ace-editor-wrapper'>
+              <div id='code-window-body' className={!isOnPublishedPage() ? 'copy-button-light' : 'copy-button-dark'}>
+                <CopyToClipboard
+                  text={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
+                  onCopy={() => this.setState({ copied: true }, () => setTimeout(() => this.setState({ copied: false }), 1000))}
+                  className='copy-to-clipboard mt-1'
+                >
+                  <button >{this.state.copied ? <IconButton> <RiCheckboxMultipleLine color={this.props.theme === 'light' ? 'black' : "white"} /> </IconButton> : <IconButton><RiCheckboxMultipleBlankLine className='cur-pointer' color={this.props.theme === 'light' ? 'black' : "white"} /></IconButton>}</button>
+                </CopyToClipboard>
+              </div>
               <AceEditor
+                height={this.state.editorHeight}
+                ref={this.codeTemplateRef}
                 mode={languages[this.selectedLanguage].mode}
                 theme={this.props.theme === 'light' ? 'kuroir' : "tomorrow_night"}
                 highlightActiveLine={false}
@@ -173,6 +181,7 @@ class CodeTemplate extends Component {
                   editor.setShowPrintMargin(false)
                 }}
               />
+              <div id='code-window-body' className={!isOnPublishedPage() ? 'empty-div-light' : 'empty-div-dark'}></div>
             </div>
           </Col>
         </div>
