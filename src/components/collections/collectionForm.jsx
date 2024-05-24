@@ -95,8 +95,7 @@ class CollectionForm extends Form {
     const requestId = shortid.generate()
     const defaultDocProperties = {
       defaultLogoUrl: '',
-      defaultTitle: '',
-      versionHosts: {}
+      defaultTitle: ''
     }
     this.props.add_collection(
       { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },

@@ -17,12 +17,7 @@ function InviteTeam() {
   const history = useHistory()
   const inputRef = useRef(null)
   const [loadingUsers, setLoadingUsers] = useState(true);
-  const { tabs } = useSelector((state) => {
-    return {
-      tabs: state.tabs,
-      pages: state.pages
-    }
-  })
+
   useEffect(() => {
     fetchUsers()
   }, [])
@@ -48,19 +43,7 @@ function InviteTeam() {
 
   const handleBack = () => {
     const orgId = getCurrentOrg()?.id
-    const activeTab = tabs.activeTabId
-    const type = tabs.tabs[activeTab].type
-    const status = tabs.tabs[activeTab].status
-
-    if (type === 'endpoint' || status === 'NEW') {
-      history.push(`/orgs/${orgId}/dashboard/endpoint/${activeTab}`)
-    } else if (type === 'history') {
-      history.push(`/orgs/${orgId}/dashboard/history/${activeTab}`)
-    } else if (type === 'collection') {
-      history.push(`/orgs/${orgId}/dashboard/collection/${activeTab}/settings`)
-    } else {
-      history.push(`/orgs/${orgId}/dashboard/page/${activeTab}`)
-    }
+      history.push(`/orgs/${orgId}/dashboard`)
   }
 
   const handleInviteClick = () => setShowModal(true)

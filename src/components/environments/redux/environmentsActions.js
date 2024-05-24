@@ -1,6 +1,7 @@
 import environmentsApiService from '../environmentsApiService'
 import environmentsActionTypes from './environmentsActionTypes'
 import { store } from '../../../store/store'
+import { toast } from 'react-toastify'
 
 export const fetchEnvironments = () => {
   return (dispatch) => {
@@ -41,16 +42,18 @@ export const addEnvironment = (newEnvironment) => {
       })
   }
 }
-export const importEnvironment = (newEnvironment) => {
+
+export const importEnvironment = (newEnvironment,onClose) => {
   return (dispatch) => {
     environmentsApiService
       .importPostmanEnvironment(newEnvironment)
       .then((response) => {
-        console.log(response)
-        dispatch(OnEnvironmentImported(response))
+        dispatch(OnEnvironmentImported(response.data))
+        toast.success('Environment Imported Successfully')
+        onClose()
       })
       .catch((error) => {
-        dispatch(OnEnvironmentImportedError(error.response ? error.response.data : error, newEnvironment))
+        toast.error(error.response.data)
       })
   }
 }
@@ -179,10 +182,3 @@ export const OnEnvironmentImported = (response) => {
   }
 }
 
-export const OnEnvironmentImportedError = (error, newEnvironment) => {
-  return {
-    type: environmentsActionTypes.ON_ENVIRONMENT_IMPORTED_ERROR,
-    newEnvironment,
-    error
-  }
-}

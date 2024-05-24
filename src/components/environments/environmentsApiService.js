@@ -31,8 +31,7 @@ export function deleteEnvironment(environmentId) {
 }
 
 export function importPostmanEnvironment(environment) {
-  return http.post(`${apiUrl}/import/postmanEnvironment`, environment,
-  {headers: { 'Content-Type': 'multipart/form-data' }})
+  return http.post(`${apiUrl}/import/postmanEnvironment`, environment)
 }
 
 export default {

@@ -2,7 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { importEnvironment } from './redux/environmentsActions';
 import { useDispatch } from 'react-redux';
-// import './dragAndDropUploader.scss'; // Add some basic styling
+import { CiImport } from "react-icons/ci";
+import './dragAndDropUploader.scss'; 
 
 const DragAndDropUploader = ({ onClose }) => {
   const [file, setFile] = useState(null);
@@ -18,7 +19,7 @@ const DragAndDropUploader = ({ onClose }) => {
   const handleImport = () => {
     const uploadedFile = new FormData()
     uploadedFile.append('myFile', file, fileName)
-    dispatch(importEnvironment(uploadedFile))
+    dispatch(importEnvironment(uploadedFile,onClose))
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -27,11 +28,16 @@ const DragAndDropUploader = ({ onClose }) => {
     <div className="drag-and-drop-uploader">
       <div {...getRootProps()} className={`dropzone ${isDragActive ? 'active' : ''}`}>
         <input {...getInputProps()} />
-        {isDragActive ? (
-          <p>Drop the file here ...</p>
-        ) : (
-          <p>Drag 'n' drop a file here, or click to select a file</p>
-        )}
+        <div className="upload-icon">
+          <CiImport size={50} />
+        </div>
+        <div className="upload-text">
+          {isDragActive ? (
+            <p>Drop the file here ...</p>
+          ) : (
+            <p>Drop anywhere to import<br />or select <span className="file-link">files</span> or <span className="file-link">folders</span></p>
+          )}
+        </div>
       </div>
       {fileName && (
         <div className="file-info">
