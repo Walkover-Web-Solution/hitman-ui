@@ -333,6 +333,18 @@ $border-color: rgba(227, 228, 230, 0.7);
             background-color: $secondary-color;
           }
         }
+
+        .dropdown-none {
+          min-width: 78px;
+          background: #fff;
+          border: 1px solid $outline-color;
+          font-size: $font-normal;
+          height: 2.25rem;
+          font-weight: normal;
+          border-right: 0;
+          border-top-right-radius: 0;
+        }
+
         .dropdown-menu {
           padding: 6px;
           .dropdown-item {
@@ -1746,4 +1758,10 @@ table#custom-generic-table {
 
 .dropdown-content a:hover {
   // background-color: #ddd;
+}
+
+.graphql-protocol-container {
+  color: plum;
+  border: 1px solid rgba(128, 128, 128, 0.452);
+  padding: 10px;
 }

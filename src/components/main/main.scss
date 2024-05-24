@@ -3533,7 +3533,7 @@ body .doc-secs-container {
 }
 
 .mid-part {
-  width: 60%;
+  width: 90%;
   padding: 1.25rem 1.25rem;
   @media screen and (max-width: 1160px) {
     padding: 0;
@@ -3556,7 +3556,7 @@ body .doc-secs-container {
 
 .response-bottom {
   .response-container-main {
-    width: 60%;
+    width: 90%;
     padding: 1.25rem 1.25rem;
     h4 {
       height: 3.25rem;
@@ -3599,7 +3599,7 @@ body .doc-secs-container {
 }
 
 .endpoint-public-response-container pre {
-  max-width: 50rem;
+  max-width: 100%;
 }
 
 .custom-loading-container {
@@ -4088,4 +4088,12 @@ body .tox {
 
 .danger-color {
    color: #eb5757;
+}
+
+.graphql-icon {
+  color: rgb(170, 51, 106) !important;
+}
+
+.cursor-text {
+  cursor: text !important;
 }

@@ -113,6 +113,11 @@ function tabsReducer(state = initialState, action) {
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_TABS:
       return { ...action.data }
+
+    case tabsActionTypes.SET_INTROSPECTION_SCHEMA:
+      tabs = { ...state }
+      tabs.tabs[action.payload.tabId].introspectionSchemaData = action.payload?.schemaData || null
+      return tabs
     default:
       return state
   }

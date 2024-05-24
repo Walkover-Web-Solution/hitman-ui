@@ -11,6 +11,7 @@ import { toast } from 'react-toastify'
 import './checkBoxTreeView.scss'
 import './publishSidebar.scss'
 import { Button } from 'react-bootstrap'
+import { GrGraphQl } from 'react-icons/gr'
 const saveAsSidebarStyle = {
   position: 'fixed',
   background: '#F8F8F8',
@@ -163,10 +164,13 @@ function PublishSidebar(props) {
                   />
                   <span className='name element-name'>
                     {element.name}
-                    {requestType && (
-                      <div className={`api-label lg-label ${requestType}`}>
+                    {requestType && pages?.[element.metadata?.actualId]?.protocolType === 1 && (
+                      <div className={`api-label lg-label ml-2 ${requestType}`}>
                         <div className='endpoint-request-div'>{requestType}</div>
                       </div>
+                    )}
+                    {pages?.[element.metadata?.actualId]?.protocolType === 2 && (
+                      <GrGraphQl className='ml-2 graphql-icon' size={14} />
                     )}
                   </span>
                   {isBranch && <ArrowIcon isOpen={isExpanded} />}
