@@ -48,6 +48,7 @@ export async function createOrg(name) {
 }
 
 export async function inviteMembers(name, email) {
+  try{
     const data = {
       user: {
         name: name,
@@ -57,4 +58,8 @@ export async function inviteMembers(name, email) {
     const res = await http.post(proxyUrl + '/addUser', data)
     toast.success('User added successfully')
     return res
+  } catch (e) {
+    console.log(e)
+    toast.error('Cannot proceed at the moment. Please try again later')
+  }
 }

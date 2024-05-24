@@ -60,7 +60,6 @@ function InviteTeam() {
         handleCloseModal()
       }
     } catch (error) {
-      console.log(error)
       toast.error('Cannot proceed at the moment. Please try again later')
     } finally {
       setLoading(false)
