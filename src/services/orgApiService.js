@@ -59,7 +59,7 @@ export async function inviteMembers(name, email) {
     toast.success('User added successfully')
     return res
   } catch (e) {
-    console.log(e)
+    console.error(e)
     toast.error('Cannot proceed at the moment. Please try again later')
   }
 }
