@@ -3,7 +3,7 @@ import { Card, Dropdown, Accordion, DropdownButton, Button } from 'react-bootstr
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import ShareVersionForm from './shareVersionForm'
-import collectionVersionsService from './collectionVersionsService'
+// import collectionVersionsService from './collectionVersionsService'
 import {
   isDashboardRoute,
   getParentIds,
@@ -218,7 +218,7 @@ class CollectionParentPages extends Component {
     this.props.duplicate_page(page)
   }
   closeCollectionForm() {
-    this.setState({ showCollectionForm: false, showImportVersionForm: false })
+    this.setState({ showCollectionForm: false})
   }
   openAddVersionForm(page) {
     this.setState({

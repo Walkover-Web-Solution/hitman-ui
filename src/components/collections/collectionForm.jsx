@@ -2,13 +2,12 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import Joi from 'joi-browser'
 import Form from '../common/form'
-import { toTitleCase, onEnter, validate } from '../common/utility'
+import { onEnter, validate } from '../common/utility'
 import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { addCollection, updateCollection } from './redux/collectionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import { defaultViewTypes } from './defaultViewModal/defaultViewModal'
-
 
 const mapStateToProps = (state) => {
   return {
@@ -96,8 +95,7 @@ class CollectionForm extends Form {
     const requestId = shortid.generate()
     const defaultDocProperties = {
       defaultLogoUrl: '',
-      defaultTitle: '',
-      versionHosts: {}
+      defaultTitle: ''
     }
     this.props.add_collection(
       { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },

@@ -48,7 +48,6 @@ export async function createOrg(name) {
 }
 
 export async function inviteMembers(name, email) {
-  try {
     const data = {
       user: {
         name: name,
@@ -56,17 +55,6 @@ export async function inviteMembers(name, email) {
       }
     }
     const res = await http.post(proxyUrl + '/addUser', data)
-    if (res.status !== 201) {
-      throw new (res?.message ? res.message : 'Please enter message correctly')()
-    }
     toast.success('User added successfully')
     return res
-  } catch (e) {
-    if (e.response.status !== 418) {
-      toast.error(e?.response?.data?.message ? e?.response?.data?.message : 'Something went wrong')
-    } else {
-      toast.error('Not Registered user')
-    }
-    return false
-  }
 }

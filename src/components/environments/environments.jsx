@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import { Dropdown } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import shortId from 'shortid'
-import EnvironmentModal from './environmentModal'
-import './environments.scss'
-import environmentsService from './environmentsService.js'
-import { isDashboardRoute } from '../common/utility'
-import collectionsApiService from '../collections/collectionsApiService'
+import React, { Component } from 'react';
+import { Dropdown } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import shortId from 'shortid';
+import EnvironmentModal from './environmentModal';
+import './environments.scss';
+import environmentsService from './environmentsService.js';
+import { isDashboardRoute } from '../common/utility';
+import collectionsApiService from '../collections/collectionsApiService';
 import {
   addEnvironment,
   deleteEnvironment,
@@ -14,20 +14,21 @@ import {
   fetchEnvironmentsFromLocalStorage,
   setEnvironmentId,
   updateEnvironment
-} from './redux/environmentsActions'
-import { ReactComponent as EyeIcon } from '../../assets/icons/eye.svg'
-import { ReactComponent as EyeDisabledIcon } from '../../assets/icons/eyeDisabled.svg'
-import { ReactComponent as NoEnvVariablesImage } from '../../assets/icons/noEnvVariables.svg'
-import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
-import IconButton from '../common/iconButton'
-import { IoIosArrowDown } from "react-icons/io"
+} from './redux/environmentsActions';
+import { ReactComponent as EyeIcon } from '../../assets/icons/eye.svg';
+import { ReactComponent as EyeDisabledIcon } from '../../assets/icons/eyeDisabled.svg';
+import { ReactComponent as NoEnvVariablesImage } from '../../assets/icons/noEnvVariables.svg';
+import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions';
+import IconButton from '../common/iconButton';
+import { IoIosArrowDown } from "react-icons/io";
+import ImportEnvironmentModal from './ImportEnvironmentModal';
 
 const mapStateToProps = (state) => {
   return {
     environment: state.environment,
     responseView: state.responseView
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -38,20 +39,19 @@ const mapDispatchToProps = (dispatch) => {
     delete_environment: (deletedEnvironment) => dispatch(deleteEnvironment(deletedEnvironment)),
     set_environment_id: (environmentId) => dispatch(setEnvironmentId(environmentId)),
     set_response_view: (view) => dispatch(onToggle(view))
-  }
-}
+  };
+};
 
 class Environments extends Component {
-
   state = {
     currentEnvironmentId: null,
     environmentFormName: null,
     showEnvironmentForm: false,
     showEnvironmentModal: false,
     environmentToBeEdited: {},
-    publicEnvironmentName: 'Select Environment'
-  }
-
+    publicEnvironmentName: 'Select Environment',
+    showImportModal: false
+  };
 
   async componentDidMount() {
     if (!navigator.onLine) {
@@ -101,8 +101,8 @@ class Environments extends Component {
   }
 
   async handleAdd(newEnvironment) {
-    newEnvironment.requestId = shortId.generate()
-    this.props.add_environment(newEnvironment)
+    newEnvironment.requestId = shortId.generate();
+    this.props.add_environment(newEnvironment);
   }
 
   openDeleteEnvironmentModal(environmentId) {
@@ -111,63 +111,21 @@ class Environments extends Component {
       selectedEnvironment: {
         ...this.props.environment.environments[environmentId]
       }
-    })
+    });
   }
 
   closeDeleteEnvironmentModal() {
-    this.setState({ showDeleteModal: false })
+    this.setState({ showDeleteModal: false });
   }
 
   async fetchCollection(collectionId) {
-    const collection = await collectionsApiService.getCollection(collectionId)
+    const collection = await collectionsApiService.getCollection(collectionId);
     if (collection.data.environment != null) {
       this.setState({
         publicCollectionEnvironmentId: collection.data.environment.id,
         originalEnvironmentReplica: collection.data.environment
       })
     }
-  }
-
-  renderEnvironment(env) {
-    return (
-      <div>
-        <div className='px-3'>
-          {env.name}
-          <button className='editBtn' onClick={() => this.handleEnvironmentModal('Edit Environment', env)}>
-            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-              <path d='M9 15H15.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-              <path
-                d='M12.375 2.62517C12.6734 2.3268 13.078 2.15918 13.5 2.15918C13.7089 2.15918 13.9158 2.20033 14.1088 2.28029C14.3019 2.36024 14.4773 2.47743 14.625 2.62517C14.7727 2.77291 14.8899 2.9483 14.9699 3.14132C15.0498 3.33435 15.091 3.54124 15.091 3.75017C15.091 3.9591 15.0498 4.16599 14.9699 4.35902C14.8899 4.55204 14.7727 4.72743 14.625 4.87517L5.25 14.2502L2.25 15.0002L3 12.0002L12.375 2.62517Z'
-                stroke='#E98A36'
-                strokeWidth='1.5'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>
-          </button>
-        </div>
-        <Dropdown.Divider />
-        <div className='env-header'>
-          <p className='custom-left-pane'>VARIABLE</p>
-          <p className='custom-middle-pane'>INITIAL VALUE</p>
-          <p className='custom-right-pane'>CURRENT VALUE</p>
-        </div>
-        {Object.keys(env.variables).map((v) => (
-          <div key={v} className='env-body'>
-            <p className='custom-left-box'>
-              {' '}
-              <span className='text-truncate max-90'> {v} </span>{' '}
-            </p>
-            <p className='custom-middle-box'>
-              <span className='text-truncate max-90'>{env?.variables[v]?.initialValue || 'None'}</span>
-            </p>
-            <p className='custom-right-box'>
-              <span className='text-truncate max-90'> {env?.variables[v]?.currentValue || 'None'} </span>
-            </p>
-          </div>
-        ))}
-      </div>
-    )
   }
 
   renderEnvWithoutVariables(env) {
@@ -192,6 +150,7 @@ class Environments extends Component {
       </div>
     )
   }
+
   render() {
     let env = isDashboardRoute(this.props)
       ? this.props.environment.environments[this.props.environment.currentEnvironmentId]
@@ -271,45 +230,55 @@ class Environments extends Component {
                 }
                 className={`environment-buttons addEniButton ${env ? 'hover' : ''}`}
               >
-                <IconButton>{env ? <EyeIcon className='cursor-pointer m-1' /> : <EyeDisabledIcon className='m-1'/>}</IconButton>
+                <IconButton>{env ? <EyeIcon className='cursor-pointer m-1' /> : <EyeDisabledIcon className='m-1' />}</IconButton>
               </div>
             )}
 
             {isDashboardRoute(this.props) && (
               <>
-              <div className='select-environment-dropdown border-radius-right-none'>
-                <Dropdown className=''>
-                  <Dropdown.Toggle variant='default' id='dropdown-basic'>
-                    <span className='truncate'>
-                      {this.props.environment.environments[this.props.environment.currentEnvironmentId]
-                        ? this.props.environment.environments[this.props.environment.currentEnvironmentId].name
-                        : 'No Environment'}
-                    </span>
-                    <IconButton><IoIosArrowDown className='m-1'/></IconButton>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu alignRight>
-                    <Dropdown.Item onClick={() => this.handleEnv(null)} key='no-environment'>
-                      No Environment
-                    </Dropdown.Item>
-                    {Object.keys(this.props.environment.environments).map((environmentId) => (
-                      <Dropdown.Item onClick={() => this.handleEnv(environmentId)} key={environmentId}>
-                        {this.props.environment.environments[environmentId].name}
+                <div className='select-environment-dropdown border-radius-right-none'>
+                  <Dropdown className=''>
+                    <Dropdown.Toggle variant='default' id='dropdown-basic'>
+                      <span className='truncate'>
+                        {this.props.environment.environments[this.props.environment.currentEnvironmentId]
+                          ? this.props.environment.environments[this.props.environment.currentEnvironmentId].name
+                          : 'No Environment'}
+                      </span>
+                      <IconButton>
+                        <IoIosArrowDown className='m-1' />
+                      </IconButton>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu alignRight>
+                      <Dropdown.Item onClick={() => this.handleEnv(null)} key='no-environment'>
+                        No Environment
                       </Dropdown.Item>
-                    ))}
-                    <Dropdown.Divider />
-                    <Dropdown.Item className='dropdown-item' onClick={() => this.handleEnvironmentModal('Add new Environment')}>
-                      Add Environment
-                    </Dropdown.Item>
-                    <Dropdown.Item className='dropdown-item' onClick={() => this.handleEnvironmentModal('Environment modal')}>
-                      Manage Environment
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
+                      {Object.keys(this.props.environment.environments).map((environmentId) => (
+                        <Dropdown.Item onClick={() => this.handleEnv(environmentId)} key={environmentId}>
+                          {this.props.environment.environments[environmentId].name}
+                        </Dropdown.Item>
+                      ))}
+                      <Dropdown.Divider />
+                      <Dropdown.Item className='dropdown-item' onClick={() => this.handleEnvironmentModal('Add new Environment')}>
+                        Add Environment
+                      </Dropdown.Item>
+                      <Dropdown.Item className='dropdown-item' onClick={() => this.setState({ showImportModal: true })}>
+                        Import Environment
+                      </Dropdown.Item>
+                      <Dropdown.Item className='dropdown-item' onClick={() => this.handleEnvironmentModal('Environment modal')}>
+                        Manage Environment
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
               </>
             )}
+
+            <ImportEnvironmentModal
+              show={this.state.showImportModal}
+              onClose={() => this.setState({ showImportModal: false })}
+            />
           </div>
-        )
+        );
       }
       if (!isDashboardRoute(this.props)) {
         if (env === undefined && this.state.publicCollectionEnvironmentId != null) {
@@ -348,16 +317,12 @@ class Environments extends Component {
                         {' '}
                         <p className='custom-middle-pane'>VARIABLE</p>
                         <p className='custom-right-box'>DEFAULT VALUE</p>
-                        {/* <p className="custom-right-pane">CURRENT VALUE</p> */}
                       </div>
                       {env &&
                         Object.keys(env.variables).map((v) => (
                           <div key={v}>
                             <p className='custom-middle-box'>{v}</p>
                             <p className='custom-right-box'>{env.variables[v].initialValue || 'None'}</p>
-                            {/* <p className="custom-right-box">
-                              {env.variables[v].currentValue || "None"}
-                            </p> */}
                           </div>
                         ))}
                     </Dropdown.Menu>
@@ -382,4 +347,4 @@ class Environments extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Environments)
+export default connect(mapStateToProps, mapDispatchToProps)(Environments);

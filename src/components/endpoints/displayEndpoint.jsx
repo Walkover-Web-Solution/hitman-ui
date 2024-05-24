@@ -2799,7 +2799,7 @@ class DisplayEndpoint extends Component {
                          ? moment(pages[currentEndpointId].updatedAt).fromNow()
                          : null;
 
-    const user = users?.users?.find(user => user.id === updatedById);
+    const user = users?.find(user => user.id === updatedById);
 
     if (isOnPublishedPage) {
         return (
