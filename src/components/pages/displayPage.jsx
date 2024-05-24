@@ -96,6 +96,9 @@ class DisplayPage extends Component {
     }
   }
 
+
+  
+
   async componentDidMount() {
     this._isMounted = true
     this.extractPageName()
