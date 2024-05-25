@@ -6,7 +6,6 @@ import { getCurrentOrg, getProxyToken } from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
 import { inviteMembers } from '../../../services/orgApiService'
-import { useSelector } from 'react-redux'
 
 function InviteTeam() {
   const [users, setUsers] = useState([])
