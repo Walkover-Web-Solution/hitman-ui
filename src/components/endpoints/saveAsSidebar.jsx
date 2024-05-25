@@ -116,7 +116,6 @@ class SaveAsSidebar extends Form {
     }
 
     return (
-      <div>
         <div
           tabIndex={-1}
           ref={(e) => {
@@ -148,7 +147,6 @@ class SaveAsSidebar extends Form {
             />
           </div>
         </div>
-      </div>
     )
   }
 }

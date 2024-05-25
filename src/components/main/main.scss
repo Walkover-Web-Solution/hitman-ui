@@ -3344,7 +3344,6 @@ body .doc-secs-container {
       .custom-tabs {
         position: relative;
         top: -1.75rem;
-        max-width: 50%;
         .nav-tabs {
           margin-top: 0;
           margin-bottom: 0;
@@ -3826,4 +3825,19 @@ body .tox {
 
 .danger-color {
    color: #eb5757;
+}
+.Script-content {
+  &.active {
+    display: flex !important;
+  }
+  .Script-button {
+    width: 100px;
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.089) !important;
+    }
+    &.active {
+      color: #e98a36 !important;
+      background-color: rgba(128, 128, 128, 0.089) !important;
+    }
+  }
 }
