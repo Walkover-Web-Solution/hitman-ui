@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect , useState  } from 'react'
 import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react'
 import Underline from '@tiptap/extension-underline'
 import StarterKit from '@tiptap/starter-kit'
@@ -6,7 +6,7 @@ import MenuBar from './menubar'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
-import Table from '@tiptap/extension-table'
+import Table, { createColGroup } from '@tiptap/extension-table'
 import TableRow from '@tiptap/extension-table-row'
 import TableCell from '@tiptap/extension-table-cell'
 import TableHeader from '@tiptap/extension-table-header'
@@ -19,7 +19,8 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: minHeight ? 'textEditor minHeight' : 'textEditor'
+        class: minHeight ? 'textEditor minHeight' : 'textEditor',
+        id: "headingTop"
       }
     },
     extensions: [
@@ -55,15 +56,27 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
     },
     editable: !disabled
   })
+  const [headings, setHeadings] = useState([]);
 
   useEffect(() => {
-    // Cleanup function
+    const div = document.getElementById('headingTop');
+    console.log(div,"div from tiptap")
+    if (div) {
+      const h2Elements = div.querySelectorAll('h2');
+      console.log(h2Elements,"hw")
+      h2Elements.forEach((h2, index) => {
+        h2.id = `heading${index + 1}`;
+      });
+      const data = Array.from(h2Elements).map(h2 => h2.innerHTML);
+      setHeadings(data);
+    }
+
     return () => {
       if (editor && editor.destroy) {
-        editor.destroy()
+        editor.destroy();
       }
-    }
-  }, [editor])
+    };
+  }, [editor, setHeadings]);
 
   return (
     <div className={`textEditorContainer ${!isInlineEditor ? 'editor' : ''}`}>
@@ -78,7 +91,8 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
         </FloatingMenu>
       )}
       {!isInlineEditor && <MenuBar editor={editor} key={editor} />}
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor}  className='ww' />
+      
     </div>
   )
 }
