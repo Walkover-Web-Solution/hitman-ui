@@ -18,7 +18,7 @@ class LoginV2 extends Component {
   checkIfUserAlreadyLogin() {
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
       this.props.history.push(
-        `/org/${getCurrentOrg().id}/dashboard`,
+        `/orgs/${getCurrentOrg().id}/dashboard`,
       );
     }
     else this.loadScript();

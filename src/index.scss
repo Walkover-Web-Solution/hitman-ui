@@ -51,3 +51,11 @@ body .content-header .tabs-container .nav .nav-item .nav-link.active ~ .btn {
   border: none !important;
   box-shadow: none !important;
 }
+
+@font-face {
+  font-family: american;
+  src: url(./assets/fonts/american-typ.ttf);
+}
+.font-american{
+  font-family: american!important;
+}
