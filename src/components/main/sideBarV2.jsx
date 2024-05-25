@@ -7,14 +7,12 @@ import Collections from '../collections/collections'
 import './main.scss'
 import {
   isDashboardRoute,
-  ADD_VERSION_MODAL_NAME,
   isElectron,
   getOnlyUrlPathById,
   SESSION_STORAGE_KEY,
   getUrlPathById,
   isTechdocOwnDomain,
-  isOnPublishedPage,
-  hexToRgb
+  isOnPublishedPage
 } from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
@@ -22,8 +20,6 @@ import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
 import NoFound, { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
-import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
-import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
 import AddEntitySelectionModal from './addEntityModal'
@@ -759,14 +755,6 @@ class SideBarV2 extends Component {
   }
 
   showAddEntityModal() {
-    if (this.state.entity === 'version') {
-      return collectionVersionsService.showParentPageForm(
-        this.props,
-        this.closeAddEntityModal.bind(this),
-        this.pageId,
-        ADD_VERSION_MODAL_NAME
-      )
-    }
     if (this.state.entity === 'page') {
       return (
         <PageForm
@@ -794,13 +782,6 @@ class SideBarV2 extends Component {
           {this.showAddEntitySelectionModal()}
           {this.showAddEntityModal()}
           {this.showDeleteEntityModal()}
-          {this.state.showVersionForm &&
-            collectionVersionsService.showVersionForm(
-              this.props,
-              this.closeVersionForm.bind(this),
-              this.state.selectedCollection.id,
-              ADD_VERSION_MODAL_NAME
-            )}
           <div className='primary-sidebar'>
             {/* [info] for publishedPage only this part is important */}
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { CustomPicker, TwitterPicker } from 'react-color'
 
-const colors = ['#f2994a', '#686EFF', '#7DCCEE', '#27AE60', '#F0BD3B', '#DD755E']
+const colors = ['#f2994a', '#7DCCEE', '#27AE60', '#F0BD3B', '#DD755E', '#333333']
 
 class CustomColorPicker extends React.Component {
   constructor(props) {

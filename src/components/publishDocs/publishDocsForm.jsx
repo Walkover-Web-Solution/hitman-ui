@@ -168,11 +168,8 @@ class PublishDocForm extends Component {
     collection.theme = data.theme
     collection.favicon = this.state.binaryFile
     collection.docProperties = {
-      versionHosts: {},
       defaultTitle: data.title.trim(),
-      defaultLogoUrl: data.logoUrl.trim(),
-      cta,
-      links
+      defaultLogoUrl: data.logoUrl.trim()
     }
     delete collection.isPublic
     let errors = this.validate({ ...this.state.data })
