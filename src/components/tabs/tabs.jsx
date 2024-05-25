@@ -13,9 +13,10 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { IoIosSettings } from "react-icons/io"
 import { HiMiniDocumentText } from "react-icons/hi2";
-import  IconButtons  from '../common/iconButton'
+import IconButtons from '../common/iconButton'
 import { GrFormClose } from "react-icons/gr"
 import { LuHistory } from "react-icons/lu";
+import { GrGraphQl } from "react-icons/gr";
 
 const mapStateToProps = (state) => {
   return {
@@ -117,9 +118,9 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <>
-              <div className='d-flex mr-2'>
-              <LuHistory />
-                {this.props.historySnapshots[tabId].endpoint.name}
+                <div className='d-flex mr-2'>
+                  <LuHistory />
+                  {this.props.historySnapshots[tabId].endpoint.name}
                 </div>
               </>
             )
@@ -127,7 +128,7 @@ class CustomTabs extends Component {
             return (
               <>
                 <div className='d-flex'>
-                  <LuHistory className='mr-1' size={16}/>
+                  <LuHistory className='mr-1' size={16} />
                   {this.props.historySnapshots[tabId].endpoint.name ||
                     this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri ||
                     'Random Trigger'}
@@ -144,21 +145,30 @@ class CustomTabs extends Component {
           const endpoint = this.props.pages[tabId]
           if (tab.previewMode) {
             return (
-              <div>
-                <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{this.props.tabState[tabId]?.draft?.data?.method}</div>
+              <div className='d-flex justify-content-center align-items-center'>
+                {endpoint.protocolType === 1 && <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{this.props.tabState[tabId]?.draft?.data?.method}</div>}
+                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
                 <span>{this.props.pages[tabId]?.name}</span>
               </div>
             )
           } else {
             return (
-              <div>
-                <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{this.props.tabState[tabId]?.draft?.data?.method}</div>
+              <div className='d-flex justify-content-center align-items-center'>
+                {endpoint.protocolType === 1 && <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{this.props.tabState[tabId]?.draft?.data?.method}</div>}
+                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
                 <span>{this.props.pages[tabId]?.name}</span>
               </div>
             )
           }
         } else {
-          return <>{tab.state?.data?.name || 'Untitled'}</>        
+          const endpoint = this.props?.tabState?.[tabId]
+          return (
+            <div className='d-flex align-items-center'>
+              {endpoint?.draft?.protocolType === 1 && <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>}
+              {endpoint?.draft?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
+              {tab.state?.data?.name || 'Untitled'}
+            </div>
+          )
         }
 
       case 'page':
@@ -296,9 +306,10 @@ class CustomTabs extends Component {
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[tabId]?.name}</div> */}
             <div className='d-flex align-items-center'>
-              <div className={`api-label ${this.props.tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
+              {endpoint.protocolType === 1 && <div className={`api-label ${this.props.tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
                 {this.props.tabState[tabId]?.draft?.data?.method}{' '}
-              </div>
+              </div>}
+              {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
               <div className='endpoint-name ml-1'>{this.props.pages[tabId].name}</div>
             </div>
           </div>
@@ -460,9 +471,9 @@ class CustomTabs extends Component {
                     >
                       {this.renderTabName(tabId)}
                     </button>
-                  <button className=' close' onClick={() => this.handleCloseTabs([tabId])}>
-                    <IconButtons><i className='uil uil-multiply' /></IconButtons>
-                  </button>
+                    <button className=' close' onClick={() => this.handleCloseTabs([tabId])}>
+                      <IconButtons><i className='uil uil-multiply' /></IconButtons>
+                    </button>
                   </Nav.Link>
                 </Nav.Item>
                 {this.state.showPreview && tabId === this.state.previewId && this.renderHoverTab(tabId, this.tabRef)}
@@ -500,7 +511,7 @@ class CustomTabs extends Component {
                 <div style={Heading}>
                   History
                   <div className='d-flex' style={closeButton} onClick={this.handleHistoryClick} aria-label='Close'>
-                  <IconButtons><GrFormClose /></IconButtons>
+                    <IconButtons><GrFormClose /></IconButtons>
                   </div>
                 </div>
                 <History {...this.props} />

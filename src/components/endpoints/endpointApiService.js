@@ -4,6 +4,9 @@ import qs from 'qs'
 import { getOrgId } from '../common/utility'
 import { makeHttpRequestThroughAxios } from '../../services/coreRequestService'
 import { grantTypesEnums } from '../common/authorizationEnums'
+import { getProxyToken } from '../auth/authServiceV2'
+import { bodyTypesEnums } from '../common/bodyTypeEnums'
+import { introspectionQuery } from './commonIntrospectionQuery'
 
 const apiUrlEndpoint = process.env.REACT_APP_API_URL
 
@@ -145,6 +148,20 @@ export async function getRefreshToken(singleTokenDetails) {
       url: `${apiUrlEndpoint}/auth/token`,
       method: 'POST',
       data: { tokenBody: body, tokenHeaders: {}, accessTokenUrl: singleTokenDetails?.refreshTokenUrl },
+    })
+    return responseData.data
+  }
+  catch (error) {
+    throw error
+  }
+}
+
+export async function getSchemaThroughIntrospectionQuery(graphQlAPI) {
+  try {
+    const { data: responseData } = await httpService.request({
+      url: graphQlAPI,
+      method: 'POST',
+      data: { query: introspectionQuery },
     })
     return responseData.data
   }

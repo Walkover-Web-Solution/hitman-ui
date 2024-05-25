@@ -140,3 +140,7 @@ export const replaceTabForUntitled = (newTabId, currentActiveTabId) => {
     dispatch({ type: tabsActionTypes.REPLACE_TAB_ID, payload: { newTabId, currentActiveTabId } })
   }
 }
+
+export const setIntrospectionSchema = (tabId, schemaData) => {
+  return { type: tabsActionTypes.SET_INTROSPECTION_SCHEMA, payload: { schemaData, tabId } }
+}

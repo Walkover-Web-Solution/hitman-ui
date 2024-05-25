@@ -27,6 +27,7 @@ import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
 import { LuFolder } from "react-icons/lu";
+import { RiShareForward2Line } from "react-icons/ri";
 
 const mapStateToProps = (state) => {
   return {
@@ -341,6 +342,9 @@ class CollectionsComponent extends Component {
                             }}
                           >
                             <AddGoogleTag /> Add Google Tag Manager
+                          </div>
+                          <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
+                            <RiShareForward2Line size={16} color='grey' /> Move
                           </div>
                           <div
                             className='dropdown-item text-danger d-flex'
