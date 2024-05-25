@@ -75,14 +75,14 @@ export default function ShowCaseSaveAsModal(props) {
       <div className='showcase_modal_container'>
         <RenderData data={pathData} setPathData={setPathData} />
         <div className='mt-5 d-flex align-items-center justify-content-end pb-2 pr-1'>
-          <button onClick={handleSave} className={`btn btn-primary mr-2 ${getDisable()}`}>
+          <button onClick={handleSave} className={`btn btn-primary mr-2 btn-sm ${getDisable()}`}>
             Save
           </button>
           <button
             onClick={() => {
               props.onHide()
             }}
-            className='btn btn-secondary outline  api-cancel-btn'
+            className='btn btn-secondary outline  api-cancel-btn btn-sm'
           >
             Cancel
           </button>

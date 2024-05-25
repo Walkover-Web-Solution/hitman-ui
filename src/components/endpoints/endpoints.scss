@@ -500,7 +500,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     .nav-item {
       .nav-link {
         &:hover {
-          color: #fff !important;
+          color: #fff ;
           background-color: $theme-color;
         }
       }
@@ -513,6 +513,27 @@ $border-color: rgba(227, 228, 230, 0.7);
         &:hover {
           opacity: 0.6;
         }
+      }
+    }
+  }
+}
+.body-button {
+  .nav-item {
+    .nav-link {
+      border-bottom: 2px solid transparent;
+      color: black !important;
+      border-radius: 0 !important;
+      &.active {
+        background-color: unset !important;
+        color: black;
+        border-color: #f2994a !important;
+
+      }
+      &:hover {
+        background-color: unset !important;
+        color: black !important;
+        border-color: #f2994a !important;
+        transition: border 1s;
       }
     }
   }
