@@ -4100,3 +4100,18 @@ body .tox {
 .cursor-text {
   cursor: text !important;
 }
+.Script-content {
+  &.active {
+    display: flex !important;
+  }
+  .Script-button {
+    width: 100px;
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.089) !important;
+    }
+    &.active {
+      color: #e98a36 !important;
+      background-color: rgba(128, 128, 128, 0.089) !important;
+    }
+  }
+}

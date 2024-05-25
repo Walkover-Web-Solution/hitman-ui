@@ -14,6 +14,15 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { IoMdArrowDropright } from "react-icons/io";
 import { connect } from 'react-redux'
 import {background} from '../backgroundColor.js'
+import 'ace-builds'
+import 'ace-builds/src-noconflict/mode-html'
+import 'ace-builds/src-noconflict/mode-java'
+import 'ace-builds/src-noconflict/mode-javascript'
+import 'ace-builds/src-noconflict/mode-json'
+import 'ace-builds/src-noconflict/mode-xml'
+import 'ace-builds/src-noconflict/theme-github'
+import 'ace-builds/webpack-resolver'
+import AceEditor from 'react-ace'
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
@@ -23,6 +32,7 @@ const mapStateToProps = (state) => {
     tabs: state?.tabs?.tabs,
   }
 }
+
 
 class DisplayResponse extends Component {
   state = {
@@ -40,12 +50,20 @@ class DisplayResponse extends Component {
     output: null,
     isShow: false,
     Open: false,
-    Show: false
+    Show: false,
+    selectedBodyTab: 'pretty',
+    data: {}
   }
 
   constructor(props) {
     super(props)
     this.copyDivRef = createRef()
+    this.myRef = React.createRef();
+  }
+  handleAceEditorChange = (value) => {
+    const data = { ...this.state.data }
+    data.body = value
+    this.setState({ data })
   }
 
   responseTime() {
@@ -149,6 +167,8 @@ class DisplayResponse extends Component {
   }
 
   displayBodyAndHeaderResponse() {
+    const { data, errors } = this.state
+    
     const TestResultsPreview = () => {
       const tests = this.props.tests
       if (!tests) return null
@@ -169,12 +189,7 @@ class DisplayResponse extends Component {
       <>
         <div className='custom-tabs' ref={this.myRef}>
           <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
-            <li
-              className='nav-item'
-              onClick={() => {
-                this.setState({ selectedResponseTab: 'body' })
-              }}
-            >
+            <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'body' }) }}>
               <a
                 className={this.state.selectedResponseTab === 'body' ? 'nav-link active' : 'nav-link'}
                 style={this.state.selectedResponseTab === 'body' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
@@ -187,12 +202,7 @@ class DisplayResponse extends Component {
                 Body
               </a>
             </li>
-            <li
-              className='nav-item'
-              onClick={() => {
-                this.setState({ selectedResponseTab: 'header' })
-              }}
-            >
+            <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'header' }) }}>
               <a
                 className={this.state.selectedResponseTab === 'header' ? 'nav-link active' : 'nav-link'}
                 style={this.state.selectedResponseTab === 'header' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
@@ -207,12 +217,7 @@ class DisplayResponse extends Component {
             </li>
             {isDashboardRoute(this.props) && (
               <>
-                <li
-                  className='nav-item'
-                  onClick={() => {
-                    this.setState({ selectedResponseTab: 'testResults' })
-                  }}
-                >
+                <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'testResults' }) }}>
                   <a
                     className={this.state.selectedResponseTab === 'testResults' ? 'nav-link active' : 'nav-link'}
                     id='pills-testResults-tab'
@@ -224,12 +229,7 @@ class DisplayResponse extends Component {
                     Test Results <TestResultsPreview />
                   </a>
                 </li>
-                <li
-                  className='nav-item'
-                  onClick={() => {
-                    this.setState({ selectedResponseTab: 'console' })
-                  }}
-                >
+                <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'console' }) }}>
                   <a
                     className={this.state.selectedResponseTab === 'console' ? 'nav-link active' : 'nav-link'}
                     style={this.state.selectedResponseTab === 'console' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
@@ -245,9 +245,84 @@ class DisplayResponse extends Component {
               </>
             )}
           </ul>
+
+          {/* Content Area */}
+          <div className='tab-content ml-0'>
+            {this.state.selectedResponseTab === 'body' && (
+              <div>
+                <ul className='nav nav-pills body-button'>
+                  <li className='nav-item' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
+                    <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-2 py-1 fs-4' : 'nav-link px-2 py-1 fs-4'} href='#pretty'>Pretty</a>
+                  </li>
+                  <li className='nav-item' onClick={() => this.setState({ selectedBodyTab: 'raw' })}>
+                    <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'} href='#raw'>Raw</a>
+                  </li>
+                  <li className='nav-item' onClick={() => this.setState({ selectedBodyTab: 'preview' })}>
+                    <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'} href='#preview'>Preview</a>
+                  </li>
+                </ul>
+                <div className='tab-content'>
+                  {this.state.selectedBodyTab === 'pretty' && <div> 
+                  <AceEditor
+          style={{ border: '1px solid rgb(206 213 218)' }}
+          className='custom-raw-editor'
+          mode='json'
+          theme='github'
+          value={JSON.stringify(this.props.response.data)}
+          onChange={this.handleAceEditorChange}
+          setOptions={{
+            showLineNumbers: true
+          }}
+          editorProps={{
+            $blockScrolling: false
+          }}
+          onLoad={(editor) => {
+            editor.focus()
+            editor.getSession().setUseWrapMode(true)
+            editor.setShowPrintMargin(false)
+          }}
+        />
+              </div>}
+                  {this.state.selectedBodyTab === 'raw' && <div> <>
+                    {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
+                      <div
+                        // style={{ float: "right" }}
+                        className='add-to-sample-response'
+                      >
+                        <div className='adddescLink' onClick={() => this.addSampleResponse(this.props.response)}>
+                          <img src={addtosample} /> Add to Sample Response
+                        </div>
+                      </div>
+                    ) : null}
+                    {isDashboardRoute(this.props) && (
+                      <div className='tab-content' id='myTabContent'>
+                        <div className='tab-pane fade show active' id='home' role='tabpanel' aria-labelledby='home-tab'>
+                          <JSONPretty theme={JSONPrettyMon} data={this.props.response.data} />
+                        </div>
+                        <div className='tab-pane fade' id='profile' role='tabpanel' aria-labelledby='profile-tab'>
+                          {JSON.stringify(this.props.response.data)}
+                        </div>
+                        <div className='tab-pane fade' id='contact' role='tabpanel' aria-labelledby='contact-tab'>
+                          Feature coming soon... Stay tuned
+                        </div>
+                      </div>
+                    )}
+                    {!isDashboardRoute(this.props) && (
+                      <div className='tab-content'>
+                        <JSONPretty theme={JSONPrettyMon} data={this.props.response.data} />
+                      </div>
+                    )}
+                  </></div>}
+                  {this.state.selectedBodyTab === 'preview' && <div>
+                   <a value={JSON.stringify(this.props.response.data)}></a>
+                    </div>}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </>
-    )
+    );
   }
 
   renderTableData() {
@@ -529,38 +604,6 @@ class DisplayResponse extends Component {
                         </ul>)} */}
                 </div>
                 {this.props.response.status && this.displayBodyAndHeaderResponse()}
-                {this.state.selectedResponseTab === 'body' && (
-                  <>
-                    {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
-                      <div
-                        // style={{ float: "right" }}
-                        className='add-to-sample-response'
-                      >
-                        <div className='adddescLink' onClick={() => this.addSampleResponse(this.props.response)}>
-                          <img src={addtosample} /> Add to Sample Response
-                        </div>
-                      </div>
-                    ) : null}
-                    {isDashboardRoute(this.props) && (
-                      <div className='tab-content' id='myTabContent'>
-                        <div className='tab-pane fade show active' id='home' role='tabpanel' aria-labelledby='home-tab'>
-                          <JSONPretty theme={JSONPrettyMon} data={this.props.response.data} />
-                        </div>
-                        <div className='tab-pane fade' id='profile' role='tabpanel' aria-labelledby='profile-tab'>
-                          {JSON.stringify(this.props.response.data)}
-                        </div>
-                        <div className='tab-pane fade' id='contact' role='tabpanel' aria-labelledby='contact-tab'>
-                          Feature coming soon... Stay tuned
-                        </div>
-                      </div>
-                    )}
-                    {!isDashboardRoute(this.props) && (
-                      <div className='tab-content'>
-                        <JSONPretty theme={JSONPrettyMon} data={this.props.response.data} />
-                      </div>
-                    )}
-                  </>
-                )}
                 {this.state.selectedResponseTab === 'header' && this.props.response.headers && this.displayHeader()}
                 {this.state.selectedResponseTab === 'testResults' && isDashboardRoute(this.props) && this.props.tests && (
                   <TestResults tests={this.props.tests} />
