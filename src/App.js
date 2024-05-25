@@ -88,6 +88,7 @@ class App extends Component {
       <>
         <ToastContainer />
         <Switch>
+          <Route exact path='/' component={IndexWebsite} />
           {/* Error Page Routes */}
           <Route path='/404_PAGE' component={ERROR_404_PAGE} />
           <Route path='/403_PAGE' component={ERROR_403_PAGE} />
@@ -114,10 +115,8 @@ class App extends Component {
           {/* React App Auth Routes */}
           <Route path='/login' component={LoginV2} />
           <Route path='/logout' component={Logout} />
-          {/* <Route path='/' component={AuthServiceV2} /> */}
-          <Route path='/' component={IndexWebsite}/>
-          {/* 
- <Route path='/'>
+          <Route exact path='/proxy/auth' component={AuthServiceV2} />
+          {/* <Route path='/proxy/auth'>
             <Redirect to='/dashboard' />
           </Route> */}
         </Switch>

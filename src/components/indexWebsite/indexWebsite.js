@@ -12,9 +12,16 @@ import { MdAccessTimeFilled, MdGroups, MdRocketLaunch, MdApi } from 'react-icons
 
 import heroImg from '../../assets/web/hero_img.png'
 import content from './indexWebsite.json'
+import { useHistory } from 'react-router'
 
 export default function IndexWebsite() {
-  console.log('🚀 ~ Content:', content)
+
+  const history = useHistory()
+
+  const handleGetStarted = () => {
+    history.push('/login')
+  }
+
   return (
     <>
       <div>
@@ -23,12 +30,8 @@ export default function IndexWebsite() {
           <div className='navigation d-flex justify-content-between container'>
             <Logo className='web_logo' />
             <div className='d-flex align-items-center nav-menu'>
-              <a href='/login'>
-                <button className='btn btn-secondary md-btn-lg btn-sm'>Login</button>
-              </a>
-              <a href='/signin'>
-                <button className='btn btn-primary md-btn-lg btn-sm'>Signup</button>
-              </a>
+              <button onClick={handleGetStarted} className='btn btn-secondary md-btn-lg btn-sm'>Login</button>
+              <button onClick={handleGetStarted} className='btn btn-primary md-btn-lg btn-sm'>Signup</button>
             </div>
           </div>
           {/* navbar */}
@@ -42,7 +45,7 @@ export default function IndexWebsite() {
                 Faster with TechDoc
               </h1>
               <p className='web_tagline'>The Ultimate Free Solution for Your API Needs!</p>
-              <button className='btn btn-primary btn-lg'>Get Started for free</button>
+              <button onClick={handleGetStarted} className='btn btn-primary btn-lg'>Get Started for free</button>
             </div>
             <img src={heroImg} alt='Hero Image' /> {/* Use the imported image */}
           </div>
@@ -138,18 +141,18 @@ export default function IndexWebsite() {
           </div>
         </div>
         <div className='container'>
-        <div className='d-flex flex-md-row flex-column  justify-content-between align-items-center'>
-          <Logo className='web_logo' />
-          {/* <ul className='web_list d-flex flex-column'>
+          <div className='d-flex flex-md-row flex-column  justify-content-between align-items-center'>
+            <Logo className='web_logo' />
+            {/* <ul className='web_list d-flex flex-column'>
             <li>
               <a href='https://walkover.in' target='_blank' className='text-dark'>About Us</a>
             </li>
          
           </ul> */}
-          <p className='m-0'>© 2024 TechDoc. All rights reserved.</p>
+            <p className='m-0'>© 2024 TechDoc. All rights reserved.</p>
+          </div>
         </div>
-        </div>
-    
+
       </div>
     </>
   )
