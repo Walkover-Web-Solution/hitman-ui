@@ -1,5 +1,5 @@
 import 'ace-builds'
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import GenericTable from './genericTable'
 import jQuery from 'jquery'
 import AceEditor from 'react-ace'
@@ -35,6 +35,8 @@ class PublicBodyContainer extends Component {
         ]
       },
     }
+    this.queryRef = createRef();
+    this.variablesRef = createRef();
   }
 
   componentDidMount() {
@@ -96,7 +98,7 @@ class PublicBodyContainer extends Component {
       return null;
     }
 
-     // Function to display a legend for the types of values in the object.
+    // Function to display a legend for the types of values in the object.
     const displayLegend = () => {
       const types = ['string', 'number', 'boolean', 'array', 'object'];
       return (
@@ -184,8 +186,80 @@ class PublicBodyContainer extends Component {
     );
   }
 
+  handleSetQueryData() {
+    this.props.setQueryTabBody({ query: this.queryRef.current.editor.getValue(), variables: this.variablesRef.current.editor.getValue() })
+  }
+
+  graphqlBody() {
+    const editorOptions = {
+      markers: false,
+      showGutter: false,
+    };
+    return (
+      <div className='hm-public-table'>
+        {this.props.endpointContent?.data?.body?.query && <div className="mt-3">
+          <div className='public-generic-table-title-container'>
+            Query
+          </div>
+          <AceEditor
+            ref={this.queryRef}
+            className={`${isOnPublishedPage() ? "custom-raw-editor-public" : "custom-raw-editor"}`}
+            mode={'json'}
+            theme='github'
+            style={{ backgroundColor: hexToRgb(this.props.publicCollectionTheme, '0.04') }}
+            value={this.props.endpointContent?.data?.body?.query || ''}
+            onChange={this.handleSetQueryData.bind(this)}
+            setOptions={{
+              showLineNumbers: true
+            }}
+            editorProps={{
+              $blockScrolling: false
+            }}
+            onLoad={(editor) => {
+              editor.focus()
+              editor.getSession().setUseWrapMode(true)
+              editor.setShowPrintMargin(false)
+            }}
+            enableLiveAutocompletion
+            enableBasicAutocompletion
+            {...editorOptions}
+          />
+        </div>}
+        {this.props.endpointContent?.data?.body?.variables && <div className='mt-3'>
+          <div className='public-generic-table-title-container'>
+            Variables
+          </div>
+          <AceEditor
+            ref={this.variablesRef}
+            className={`${isOnPublishedPage() ? "custom-raw-editor-public" : "custom-raw-editor"}`}
+            mode={'json'}
+            theme='github'
+            style={{ backgroundColor: hexToRgb(this.props.publicCollectionTheme, '0.04') }}
+            value={this.props.endpointContent?.data?.body?.variables || ''}
+            onChange={this.handleSetQueryData.bind(this)}
+            setOptions={{
+              showLineNumbers: true
+            }}
+            editorProps={{
+              $blockScrolling: false
+            }}
+            onLoad={(editor) => {
+              editor.focus()
+              editor.getSession().setUseWrapMode(true)
+              editor.setShowPrintMargin(false)
+            }}
+            enableLiveAutocompletion
+            enableBasicAutocompletion
+            {...editorOptions}
+          />
+        </div>}
+      </div>
+    )
+  }
+
   render() {
     this.bodyDescription = this.props.body_description
+    if (this.props.body && this.props.endpointContent?.protocolType === 2) return this.graphqlBody();
     if (this.props.body && this.props.body.type === 'none') return null;
     return (
       <>
@@ -254,7 +328,7 @@ class PublicBodyContainer extends Component {
                   }}
                 />
               ) : (
-                <div className='body-description-container' style={{ backgroundColor: hexToRgb(this.props.publicCollectionTheme, '0.04')}}>
+                <div className='body-description-container' style={{ backgroundColor: hexToRgb(this.props.publicCollectionTheme, '0.04') }}>
                   {/* Previous Body Description Layout */}
                   {/* {this.displayObject(this.bodyDescription, 'body_description')} */}
                   {this.displayBodyDecription(undefined, this.bodyDescription)}

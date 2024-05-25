@@ -7,7 +7,7 @@ import 'ace-builds/src-noconflict/mode-xml'
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/webpack-resolver'
 import { addCompleter } from 'ace-builds/src-noconflict/ext-language_tools'
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import AceEditor from 'react-ace'
 import BodyDescription from './bodyDescription'
 import './endpoints.scss'
@@ -45,10 +45,11 @@ class BodyContainer extends Component {
       },
       endpointId: null,
       selectedRawBodyType: rawTypesEnums.TEXT,
-      suggestions: []
+      suggestions: [],
     }
-
     this.rawBodyTypes = Object.keys(rawTypesEnums);
+    this.queryRef = createRef();
+    this.variablesRef = createRef();
 
     addCompleter({
       getCompletions: function (editor, session, pos, prefix, callback) {
@@ -191,7 +192,12 @@ class BodyContainer extends Component {
     }
   }
 
+  handleChangeGraphqlQuery() {
+    this.props.setQueryTabBody({ query: this.queryRef.current.editor.getValue(), variables: this.variablesRef.current.editor.getValue() })
+  }
+
   makeJson(body) {
+    if (typeof body === 'string') return body
     if (!this.alteredBody) {
       try {
         const parsedBody = JSON.stringify(JSON.parse(body), null, 2)
@@ -273,14 +279,9 @@ class BodyContainer extends Component {
     return false
   }
 
-  render() {
-    if (this.props.location.pathname.split('/')[5] !== this.endpointId) {
-      this.endpointId = this.props.location.pathname.split('/')[5]
-      this.alteredBody = false
-    }
-
+  endpointBody() {
     return (
-      <div className='body-wrapper'>
+      <React.Fragment>
         <span style={{ fontWeight: 600 }}>Body</span>
         <div className='button-panel-wrapper'>
           <form className='body-select d-flex align-items-center mb-4'>
@@ -398,6 +399,82 @@ class BodyContainer extends Component {
             )}
         </div>
         <div className='body-container'>{this.renderBody()}</div>
+      </React.Fragment>
+    )
+  }
+
+  graphqlBody() {
+    const editorOptions = {
+      markers: false,
+      showGutter: false,
+    };
+    return (
+      <div>
+        {this.props.endpointContent?.data?.body?.query && <div className="mt-2">
+          <span style={{ fontWeight: 600 }}>Query</span>
+          <AceEditor
+            ref={this.queryRef}
+            className='custom-raw-editor'
+            mode={'javascript'}
+            theme='github'
+            value={this.props.endpointContent?.data?.body?.query || ''}
+            onChange={this.handleChangeGraphqlQuery.bind(this)}
+            setOptions={{
+              showLineNumbers: true
+            }}
+            editorProps={{
+              $blockScrolling: false
+            }}
+            onLoad={(editor) => {
+              editor.focus()
+              editor.getSession().setUseWrapMode(true)
+              editor.setShowPrintMargin(false)
+            }}
+            enableLiveAutocompletion
+            enableBasicAutocompletion
+            {...editorOptions}
+          />
+        </div>}
+        {this.props.endpointContent?.data?.body?.variables && <div className='mt-2'>
+          <span className='mt-4 pt-2' style={{ fontWeight: 600 }}>Variables</span>
+          <AceEditor
+            ref={this.variablesRef}
+            className='custom-raw-editor'
+            mode={'json'}
+            theme='github'
+            value={this.props.endpointContent?.data?.body?.variables || ''}
+            onChange={this.handleChangeGraphqlQuery.bind(this)}
+            setOptions={{
+              showLineNumbers: true
+            }}
+            editorProps={{
+              $blockScrolling: false
+            }}
+            onLoad={(editor) => {
+              editor.focus()
+              editor.getSession().setUseWrapMode(true)
+              editor.setShowPrintMargin(false)
+            }}
+            enableLiveAutocompletion
+            enableBasicAutocompletion
+            {...editorOptions}
+
+          />
+        </div>}
+      </div>
+    )
+  }
+
+  render() {
+    if (this.props.location.pathname.split('/')[5] !== this.endpointId) {
+      this.endpointId = this.props.location.pathname.split('/')[5]
+      this.alteredBody = false
+    }
+
+    return (
+      <div className='body-wrapper'>
+        {this.props.endpointContent?.protocolType === 1 && this.endpointBody()}
+        {this.props.endpointContent?.protocolType === 2 && this.graphqlBody()}
       </div>
     )
   }

@@ -3,6 +3,7 @@ import moment from 'moment'
 import { connect } from 'react-redux'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import { Dropdown } from 'react-bootstrap'
+import { GrGraphQl } from 'react-icons/gr'
 import './history.scss'
 
 function compareByCreatedAt(a, b) {
@@ -92,9 +93,11 @@ class History extends Component {
             this.openHistorySnapshot(history.id)
           }}
         >
-          <div className={`api-label lg-label ${history?.endpoint?.requestType}`}>
+          {history?.endpoint?.protocolType === 1 && <div className={`api-label lg-label ${history?.endpoint?.requestType}`}>
             <div className='endpoint-request-div'>{history?.endpoint?.requestType}</div>
-          </div>
+          </div>}
+          {history?.endpoint?.protocolType === 2 && <GrGraphQl className='ml-2 graphql-icon' size={14} />
+          }
           <div className='ml-3'>
             <div className='sideBarListWrapper'>
               <div className='text-left'>

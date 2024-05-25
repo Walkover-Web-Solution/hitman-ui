@@ -4,6 +4,9 @@ import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
 import { getOnlyUrlPathById, isElectron, trimString } from '../common/utility'
 import { onPageUpdated, updateNameOfPages } from '../pages/redux/pagesActions'
+import { MdHttp } from "react-icons/md";
+import { GrGraphQl } from "react-icons/gr";
+import { updateTab } from '../tabs/redux/tabsActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -20,7 +23,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    update_name: (payload) => dispatch(updateNameOfPages(payload))
+    update_name: (payload) => dispatch(updateNameOfPages(payload)),
+    update_tab: (id, data) => dispatch(updateTab(id, data)),
   }
 }
 
@@ -35,7 +39,8 @@ class EndpointBreadCrumb extends Component {
       groupName: null,
       versionName: null,
       collectionName: null,
-      isPagePublished: false
+      isPagePublished: false,
+      protocols: [{ type: 'HTTP', icon: <MdHttp color='green' size={16} /> }, { type: 'GraphQL', icon: <GrGraphQl color='rgb(170, 51, 106)' size={14} /> }]
     }
   }
 
@@ -209,22 +214,56 @@ class EndpointBreadCrumb extends Component {
     return title && <span className='ml-1 mr-1'>/</span>
   }
 
+  handleProtocolTypeClick(index) {
+    this.props.setQueryUpdatedData({ ...this.props.endpointContent, protocolType: index + 1 })
+    this.props.update_tab(this.props?.match?.params.endpointId === 'new' && this.props.activeTabId, { isModified: true })
+  }
+
+  switchProtocolTypeDropdown() {
+    return (
+      <div className='dropdown'>
+        <button
+          className='protocol-selected-type mr-2'
+          id='dropdownMenuButton'
+          data-toggle='dropdown'
+          aria-haspopup='true'
+          aria-expanded='false'
+        >
+          {this.state.protocols[(this.props?.endpointContent?.protocolType - 1)]?.icon}
+        </button>
+        <div className='dropdown-menu protocol-dropdown' aria-labelledby='dropdownMenuButton'>
+          {this.state.protocols.map((protocolDetails, index) => (
+            <button className='dropdown-item' key={index} onClick={() => this.handleProtocolTypeClick(index)}>
+              {protocolDetails.icon}
+              <span className='protocol-type-text'>{protocolDetails.type}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   render() {
     this.props.isEndpoint ? this.setEndpointData() : this.setPageData()
     return (
       <div className='endpoint-header'>
         <div className='panel-endpoint-name-container'>
-          <div className='page-title-name'>
-          <input
-             name='enpoint-title'
-             ref={this.nameInputRef}
+          <div className='page-title-name d-flex align-items-center'>
+            {this.props?.match?.params?.endpointId === 'new' && this.switchProtocolTypeDropdown()}
+            {(this.props?.match?.params?.endpointId != 'new' && this.props?.endpointContent?.protocolType === 1 && this.state?.protocols?.[0]?.icon) && 
+            <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[0]?.icon}</button>}
+            {(this.props?.match?.params?.endpointId != 'new' && this.props?.endpointContent?.protocolType === 2 && this.state?.protocols?.[1]?.icon) && 
+            <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[1]?.icon}</button>}
+            <input
+              name='enpoint-title'
+              ref={this.nameInputRef}
               style={{ textTransform: 'capitalize' }}
               className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
               onChange={this.handleInputChange.bind(this)}
               value={this.props?.isEndpoint
                 ? this.props?.pages?.[this.props?.match?.params?.endpointId]?.name ||
-                  this.props?.history?.[this.props?.match?.params?.historyId]?.endpoint?.name ||
-                  this.props?.endpointContent?.data?.name
+                this.props?.history?.[this.props?.match?.params?.historyId]?.endpoint?.name ||
+                this.props?.endpointContent?.data?.name
                 : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
             />
           </div>

@@ -22,6 +22,7 @@ import endpointService from './endpointService'
 import { bodyTypesEnums } from '../common/bodyTypeEnums'
 import  IconButtons  from '../common/iconButton'
 import { BsThreeDots } from "react-icons/bs"
+import { GrGraphQl } from 'react-icons/gr'
 import '../../../src/components/styles.scss'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
@@ -220,16 +221,17 @@ class Endpoints extends Component {
               checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
               onChange={this.handleCheckboxChange}
             />
-            <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
+            {this.props.endpointContent.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
               {this.props.endpoints[endpointId].requestType}
-            </div>
+            </div>}
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         ) : (
           <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`}>
-            <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
+            {this.props?.endpoints[endpointId]?.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
               {this.props.endpoints[endpointId].requestType}
-            </div>
+            </div>}
+            {this.props?.endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         )}
