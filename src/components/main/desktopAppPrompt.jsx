@@ -1,38 +1,38 @@
-import React, { useState } from 'react'
-import { Modal } from 'react-bootstrap'
-import { closeModal } from '../modals/redux/modalsActions'
-import { connect } from 'react-redux'
-import { DESKTOP_APP_DOWNLOAD } from '../modals/modalTypes'
-import { toast } from 'react-toastify'
+import React, { useState } from "react"
+import { Modal } from "react-bootstrap"
+import { closeModal } from "../modals/redux/modalsActions"
+import { connect } from "react-redux"
+import { DESKTOP_APP_DOWNLOAD } from "../modals/modalTypes"
+import { toast } from "react-toastify"
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    close_modal: () => dispatch(closeModal())
+    close_modal: () => dispatch(closeModal()),
   }
 }
 
 const mapStateToProps = (state) => {
   return {
     modals: state.modals,
-    tabs: state.tabs
+    tabs: state.tabs,
   }
 }
 
 function DesktopAppDownloadModal(props) {
   const [isAppInstalled, setIsAppInstalled] = useState(false)
-  const shouldShowModal = !window.matchMedia('(display-mode: standalone)').matches
+  const shouldShowModal = !window.matchMedia("(display-mode: standalone)").matches
   const handleDownloadClick = () => {
     if (props.modals.installPrompt) {
       props.modals.installPrompt.prompt()
       props.modals.installPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the install prompt')
+        if (choiceResult.outcome === "accepted") {
+          console.log("User accepted the install prompt")
         } else {
-          console.log('User dismissed the install prompt')
+          console.log("User dismissed the install prompt")
         }
       })
     } else {
-      toast.success('App is installed already')
+      toast.success("App is installed already")
       setIsAppInstalled(true)
     }
   }
@@ -42,7 +42,7 @@ function DesktopAppDownloadModal(props) {
   const onHide = () => {
     const { orgId } = props.match.params
     props.history.replace({
-      pathname: `/orgs/${orgId}/dashboard/`
+      pathname: `/orgs/${orgId}/dashboard/`,
     })
     props.close_modal()
   }

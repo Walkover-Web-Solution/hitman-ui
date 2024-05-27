@@ -1,6 +1,6 @@
-import http from '../../services/httpService'
-import httpService from '../../services/endpointHttpService'
-import { getOrgId } from '../common/utility'
+import http from "../../services/httpService"
+import httpService from "../../services/endpointHttpService"
+import { getOrgId } from "../common/utility"
 
 const apiUrl = process.env.REACT_APP_API_URL
 const orgId = getOrgId()
@@ -22,8 +22,8 @@ export function getAllDeletedCollections(orgId) {
   return http.get(apiUrl + `/orgs/${orgId}/deletedCollections`)
 }
 
-export function restoreCollection(orgId, data,collectionId) {
-  return http.put(apiUrl + `/orgs/${orgId}/restore/${collectionId}`,{data})
+export function restoreCollection(orgId, data, collectionId) {
+  return http.put(apiUrl + `/orgs/${orgId}/restore/${collectionId}`, { data })
 }
 
 export function getCollectionsByCustomDomain(domain) {
@@ -61,5 +61,5 @@ export default {
   deleteCollection,
   duplicateCollection,
   getCollectionsByCustomDomain,
-  restoreCollection
+  restoreCollection,
 }

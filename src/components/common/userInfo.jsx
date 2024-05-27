@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import { getCurrentUser } from '../auth/authServiceV2'
-import { Link } from 'react-router-dom'
+import React, { Component } from "react"
+import { getCurrentUser } from "../auth/authServiceV2"
+import { Link } from "react-router-dom"
 
 class UserInfo extends Component {
   constructor(props) {
     super(props)
-    this.state = { user: { name: '', email: '' } }
+    this.state = { user: { name: "", email: "" } }
   }
 
   componentDidMount() {
@@ -20,14 +20,7 @@ class UserInfo extends Component {
     return (
       <div className='btn-grp' id='user-menu'>
         <div className='dropdown user-dropdown'>
-          <button
-            className='user-dropdown-btn'
-            type='button'
-            id='dropdownMenuButton'
-            data-toggle='dropdown'
-            aria-haspopup='true'
-            aria-expanded='false'
-          >
+          <button className='user-dropdown-btn' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
             <div className='user-info'>
               <div className='user-avatar'>
                 <i className='uil uil-user' />

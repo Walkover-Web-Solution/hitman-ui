@@ -1,6 +1,6 @@
-import toggleResponseActionTypes from './toggleResponseActionTypes'
+import toggleResponseActionTypes from "./toggleResponseActionTypes"
 
-const initialState = 'bottom'
+const initialState = "bottom"
 
 function toggleResponseReducer(state = initialState, action) {
   const { type, payload } = action

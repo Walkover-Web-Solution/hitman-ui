@@ -73,5 +73,5 @@ export default {
   extractGroupsFromVersions,
   extractGroupsFromVersionId,
   extractPagesFromVersions,
-  extractEndpointsFromGroups
+  extractEndpointsFromGroups,
 }

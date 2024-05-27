@@ -1,29 +1,14 @@
-import React, { useState } from 'react'
-import { Dropdown, Modal } from 'react-bootstrap'
-import { SketchPicker } from 'react-color'
-import { BiCodeBlock, BiFontColor } from 'react-icons/bi'
-import {
-  FaBold,
-  FaImage,
-  FaTable,
-  FaItalic,
-  FaListOl,
-  FaListUl,
-  FaRedo,
-  FaStrikethrough,
-  FaUnderline,
-  FaUndo,
-  FaLink,
-  FaRulerHorizontal,
-  FaCode,
-  FaHighlighter
-} from 'react-icons/fa'
+import React, { useState } from "react"
+import { Dropdown, Modal } from "react-bootstrap"
+import { SketchPicker } from "react-color"
+import { BiCodeBlock, BiFontColor } from "react-icons/bi"
+import { FaBold, FaImage, FaTable, FaItalic, FaListOl, FaListUl, FaRedo, FaStrikethrough, FaUnderline, FaUndo, FaLink, FaRulerHorizontal, FaCode, FaHighlighter } from "react-icons/fa"
 
 export default function MenuBar({ editor }) {
-  const [linkUrl, setLinkUrl] = useState('')
-  const [ImageUrl, setImageUrl] = useState('')
-  const [row, setRow] = useState('3')
-  const [column, setColumn] = useState('3')
+  const [linkUrl, setLinkUrl] = useState("")
+  const [ImageUrl, setImageUrl] = useState("")
+  const [row, setRow] = useState("3")
+  const [column, setColumn] = useState("3")
   const [showLink, setShowLink] = useState(false)
   const [showTable, setShowTable] = useState(false)
   const [showImage, setShowImage] = useState(false)
@@ -46,21 +31,16 @@ export default function MenuBar({ editor }) {
       <Modal show={showImage || showLink || showTable} onHide={onHide}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {showImage && 'Set Image URL'}
-            {showLink && 'Set Link'}
-            {showTable && 'Add Number of rows and columns'}
+            {showImage && "Set Image URL"}
+            {showLink && "Set Link"}
+            {showTable && "Add Number of rows and columns"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {(showImage || showLink) && (
             <div className='form-group'>
               <label>URL</label>
-              <input
-                type='text'
-                className='form-control'
-                value={showImage ? ImageUrl : linkUrl}
-                onChange={(e) => (showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value))}
-              />
+              <input type='text' className='form-control' value={showImage ? ImageUrl : linkUrl} onChange={(e) => (showImage ? setImageUrl(e.target.value) : setLinkUrl(e.target.value))} />
             </div>
           )}
           {showTable && (
@@ -82,7 +62,7 @@ export default function MenuBar({ editor }) {
         </Modal.Body>
         <Modal.Footer>
           <button className='btn btn-secondary outline mr-2' onClick={onHide}>
-            {' '}
+            {" "}
             Close
           </button>
           <button
@@ -93,7 +73,7 @@ export default function MenuBar({ editor }) {
                 setShowTable(false)
               }
               if (showLink && linkUrl) {
-                editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run()
+                editor.chain().focus().extendMarkRange("link").setLink({ href: linkUrl }).run()
                 setShowLink(false)
               }
               if (showImage && ImageUrl) {
@@ -116,58 +96,45 @@ export default function MenuBar({ editor }) {
   return (
     <div className='menuBar custom-editor'>
       {showModal()}
-      <button onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'active-tool' : ''}>
+      <button onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive("bold") ? "active-tool" : ""}>
         <FaBold />
       </button>
-      <button onClick={() => editor.chain().focus().toggleItalic().run()} className={editor.isActive('italic') ? 'active-tool' : ''}>
+      <button onClick={() => editor.chain().focus().toggleItalic().run()} className={editor.isActive("italic") ? "active-tool" : ""}>
         <FaItalic />
       </button>
-      <button onClick={() => editor.chain().focus().toggleStrike().run()} className={editor.isActive('strike') ? 'active-tool' : ''}>
+      <button onClick={() => editor.chain().focus().toggleStrike().run()} className={editor.isActive("strike") ? "active-tool" : ""}>
         <FaStrikethrough />
       </button>
-      <button onClick={() => editor.chain().focus().toggleCode().run()} className={editor.isActive('code') ? 'active-tool' : ''}>
+      <button onClick={() => editor.chain().focus().toggleCode().run()} className={editor.isActive("code") ? "active-tool" : ""}>
         <FaCode />
       </button>
 
-      <button
-        type='button'
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
-        className={editor.isActive('underline') ? 'active-tool' : ''}
-      >
+      <button type='button' onClick={() => editor.chain().focus().toggleUnderline().run()} className={editor.isActive("underline") ? "active-tool" : ""}>
         <FaUnderline />
       </button>
 
-      <button
-        type='button'
-        onClick={() => editor.chain().focus().toggleHighlight().run()}
-        className={editor.isActive('highlight') ? 'active-tool' : ''}
-      >
+      <button type='button' onClick={() => editor.chain().focus().toggleHighlight().run()} className={editor.isActive("highlight") ? "active-tool" : ""}>
         <FaHighlighter />
       </button>
-      <Dropdown style={{ display: 'inline' }}>
-      <Dropdown.Toggle className='active-tool' style={{ display: 'inline' }}>{selectedLevel ? `H${selectedLevel}` : 'Paragraph'}</Dropdown.Toggle>
-      <Dropdown.Menu>
-        {[1, 2, 3, 4, 5, 6].map(level => (
-          <Dropdown.Item key={level} onClick={() => handleHeaderChange(level)}>
-            <button             
-              className={editor.isActive('heading', { level }) ? 'active-tool' : ''}
-            >
-              H{level}
-            </button>
-          </Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
-   </Dropdown>
-      <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={editor.isActive('bulletList') ? 'active-tool' : ''}>
+      <Dropdown style={{ display: "inline" }}>
+        <Dropdown.Toggle className='active-tool' style={{ display: "inline" }}>
+          {selectedLevel ? `H${selectedLevel}` : "Paragraph"}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          {[1, 2, 3, 4, 5, 6].map((level) => (
+            <Dropdown.Item key={level} onClick={() => handleHeaderChange(level)}>
+              <button className={editor.isActive("heading", { level }) ? "active-tool" : ""}>H{level}</button>
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
+      <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={editor.isActive("bulletList") ? "active-tool" : ""}>
         <FaListUl />
       </button>
-      <button
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={editor.isActive('orderedList') ? 'active-tool' : ''}
-      >
+      <button onClick={() => editor.chain().focus().toggleOrderedList().run()} className={editor.isActive("orderedList") ? "active-tool" : ""}>
         <FaListOl />
       </button>
-      <button onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive('codeBlock') ? 'active-tool' : ''}>
+      <button onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive("codeBlock") ? "active-tool" : ""}>
         <BiCodeBlock />
       </button>
       <Dropdown>
@@ -191,8 +158,8 @@ export default function MenuBar({ editor }) {
       <button onClick={() => setShowLink(true)}>
         <FaLink />
       </button>
-      <Dropdown style={{ display: 'inline' }}>
-        <Dropdown.Toggle style={{ display: 'inline' }}>
+      <Dropdown style={{ display: "inline" }}>
+        <Dropdown.Toggle style={{ display: "inline" }}>
           <FaTable />
         </Dropdown.Toggle>
         <Dropdown.Menu>

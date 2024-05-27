@@ -1,15 +1,15 @@
-import React from 'react'
-import { CustomPicker, TwitterPicker } from 'react-color'
+import React from "react"
+import { CustomPicker, TwitterPicker } from "react-color"
 
-const colors = ['#f2994a', '#7DCCEE', '#27AE60', '#F0BD3B', '#DD755E', '#333333']
+const colors = ["#f2994a", "#7DCCEE", "#27AE60", "#F0BD3B", "#DD755E", "#333333"]
 
 class CustomColorPicker extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       data: {
-        theme: ''
-      }
+        theme: "",
+      },
     }
   }
 
@@ -31,7 +31,7 @@ class CustomColorPicker extends React.Component {
 
   toggleColorOption() {
     this.setState({
-      openColorPicker: !this.state.openColorPicker
+      openColorPicker: !this.state.openColorPicker,
     })
   }
 
@@ -39,7 +39,7 @@ class CustomColorPicker extends React.Component {
     const data = { ...this.state.data }
     data.theme = color.hex
     this.setState({
-      data
+      data,
     })
     this.props.set_theme(color.hex)
   }
@@ -47,22 +47,16 @@ class CustomColorPicker extends React.Component {
   render() {
     const customColor = {
       backgroundColor: this.state.data.theme,
-      height: '40px',
-      width: '40px',
-      borderRadius: '4px',
-      margin: '0px 20px'
+      height: "40px",
+      width: "40px",
+      borderRadius: "4px",
+      margin: "0px 20px",
     }
     return (
       <>
         <div className='d-flex align-items-center'>
           <div>
-            <TwitterPicker
-              triangle='hide'
-              colors={colors}
-              color={this.state.data.theme}
-              onChangeComplete={this.handleChangeComplete}
-              width='400px'
-            />
+            <TwitterPicker triangle='hide' colors={colors} color={this.state.data.theme} onChangeComplete={this.handleChangeComplete} width='400px' />
           </div>
           <div style={customColor} />
         </div>

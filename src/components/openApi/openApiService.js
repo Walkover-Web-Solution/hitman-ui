@@ -1,5 +1,5 @@
-import http from '../../services/httpService'
-import { getOrgId } from '../common/utility'
+import http from "../../services/httpService"
+import { getOrgId } from "../common/utility"
 
 function getApiUrl() {
   const orgId = getOrgId()
@@ -18,5 +18,5 @@ export function importPostmanCollection(collection, website, defaultView) {
 
 export default {
   importApi,
-  importPostmanCollection
+  importPostmanCollection,
 }

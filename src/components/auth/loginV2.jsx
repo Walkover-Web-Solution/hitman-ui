@@ -12,16 +12,13 @@ class LoginV2 extends Component {
   };
 
   componentDidMount() {
-    this.checkIfUserAlreadyLogin()
+    this.checkIfUserAlreadyLogin();
   }
 
   checkIfUserAlreadyLogin() {
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
-      this.props.history.push(
-        `/orgs/${getCurrentOrg().id}/dashboard`,
-      );
-    }
-    else this.loadScript();
+      this.props.history.push(`/orgs/${getCurrentOrg().id}/dashboard`);
+    } else this.loadScript();
   }
 
   loadScript() {

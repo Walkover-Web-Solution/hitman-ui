@@ -1,6 +1,6 @@
-import cookiesApiService from '../cookiesApiService'
-import cookiesActionTypes from './cookiesActionTypes'
-import { store } from '../../../store/store'
+import cookiesApiService from "../cookiesApiService"
+import cookiesActionTypes from "./cookiesActionTypes"
+import { store } from "../../../store/store"
 
 export const fetchAllCookies = () => {
   return (dispatch) => {
@@ -8,7 +8,7 @@ export const fetchAllCookies = () => {
       .getAllCookies()
       .then((response) => {
         dispatch(onCookiesFetched(response.data))
-        window.localStorage.setItem('cookies', JSON.stringify(response.data))
+        window.localStorage.setItem("cookies", JSON.stringify(response.data))
       })
       .catch((error) => {
         dispatch(onCookiesFetchedError(error.response ? error.response.data : error))
@@ -20,7 +20,7 @@ export const fetchAllCookiesFromLocalStorage = () => {
   return (dispatch) => {
     let cookies
     try {
-      cookies = JSON.parse(window.localStorage.getItem('cookies'))
+      cookies = JSON.parse(window.localStorage.getItem("cookies"))
       dispatch(onCookiesFetched(cookies))
     } catch (err) {
       dispatch(onCookiesFetchedError(err))
@@ -31,14 +31,14 @@ export const fetchAllCookiesFromLocalStorage = () => {
 export const onCookiesFetched = (cookies) => {
   return {
     type: cookiesActionTypes.ON_COOKIES_FETCHED,
-    cookies
+    cookies,
   }
 }
 
 export const onCookiesFetchedError = (error) => {
   return {
     type: cookiesActionTypes.ON_COOKIES_FETCHED_ERROR,
-    error
+    error,
   }
 }
 
@@ -59,14 +59,14 @@ export const addCookieDomain = (data) => {
 export const addDomainRequest = (newDomain) => {
   return {
     type: cookiesActionTypes.ADD_DOMAIN_REQUEST,
-    newDomain
+    newDomain,
   }
 }
 
 export const onDomainAdded = (domain) => {
   return {
     type: cookiesActionTypes.ON_DOMAIN_ADDED,
-    domain
+    domain,
   }
 }
 
@@ -74,7 +74,7 @@ export const onDomainAddedError = (error, domain) => {
   return {
     type: cookiesActionTypes.ON_DOMAIN_ADDED_ERROR,
     domain,
-    error
+    error,
   }
 }
 
@@ -99,14 +99,14 @@ export const updateCookies = (data) => {
 export const updateCookieRequest = (cookiesData) => {
   return {
     type: cookiesActionTypes.ON_COOKIES_UPDATE_REQUEST,
-    cookiesData
+    cookiesData,
   }
 }
 
 export const onCookiesUpdated = (updatedData) => {
   return {
     type: cookiesActionTypes.ON_COOKIES_UPDATED,
-    updatedData
+    updatedData,
   }
 }
 
@@ -114,7 +114,7 @@ export const onCookiesUpdateError = (error, originalData) => {
   return {
     type: cookiesActionTypes.ON_COOKIES_UPDATE_ERROR,
     originalData,
-    error
+    error,
   }
 }
 
@@ -135,14 +135,14 @@ export const deleteDomain = (data) => {
 export const deleteDomainRequest = (domain) => {
   return {
     type: cookiesActionTypes.ON_DOMAIN_DELETE_REQUEST,
-    domain
+    domain,
   }
 }
 
 export const onDomainDeleted = (domain) => {
   return {
     type: cookiesActionTypes.ON_DOMAIN_DELETED,
-    domain
+    domain,
   }
 }
 
@@ -150,6 +150,6 @@ export const onDomainDeleteError = (error, domain) => {
   return {
     type: cookiesActionTypes.ON_DOMAIN_DELETE_ERROR,
     domain,
-    error
+    error,
   }
 }

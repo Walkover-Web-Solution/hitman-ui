@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import './onlineStatus.scss'
+import React, { useEffect, useState } from "react"
+import "./onlineStatus.scss"
 
 export default function OnlineSatus(props) {
   const [online, isOnline] = useState(navigator.onLine)
@@ -23,23 +23,23 @@ export default function OnlineSatus(props) {
   }
 
   useEffect(() => {
-    window.addEventListener('offline', setOffline)
-    window.addEventListener('online', setOnline)
+    window.addEventListener("offline", setOffline)
+    window.addEventListener("online", setOnline)
 
     return () => {
-      window.removeEventListener('offline', setOffline)
-      window.removeEventListener('online', setOnline)
+      window.removeEventListener("offline", setOffline)
+      window.removeEventListener("online", setOnline)
     }
   }, [])
 
   return (
-    <div className={['online-status', showStatus ? 'show' : 'hide'].join(' ')}>
+    <div className={["online-status", showStatus ? "show" : "hide"].join(" ")}>
       <div>
-        <span className={`online-status-${online}`}>{online ? 'You are online now.' : 'You are offline.'}</span>
+        <span className={`online-status-${online}`}>{online ? "You are online now." : "You are offline."}</span>
         <br />
         {needToUpdate && (
           <small className='text-muted'>
-            {' '}
+            {" "}
             While you were gone, there was change in the databse. <br />
             please sync to see changes.
           </small>

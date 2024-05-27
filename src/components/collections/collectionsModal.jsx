@@ -1,35 +1,35 @@
-import React, { Component } from 'react'
-import CollectionForm from './collectionForm'
-import OpenApiForm from '../openApi/openApiForm'
-import { Modal } from 'react-bootstrap'
-import './collectionsModal.scss'
+import React, { Component } from "react"
+import CollectionForm from "./collectionForm"
+import OpenApiForm from "../openApi/openApiForm"
+import { Modal } from "react-bootstrap"
+import "./collectionsModal.scss"
 
 const collectionsModalEnum = {
-  IMPORT: 'import',
-  NEW: 'new'
+  IMPORT: "import",
+  NEW: "new",
 }
 
 const choices = {
   [collectionsModalEnum.IMPORT]: {
     key: collectionsModalEnum.IMPORT,
-    label: 'Import',
-    modalTitle: 'Import Collection',
-    modalSize: 'sm',
-    disabled: false
+    label: "Import",
+    modalTitle: "Import Collection",
+    modalSize: "sm",
+    disabled: false,
   },
   [collectionsModalEnum.NEW]: {
     key: collectionsModalEnum.NEW,
-    label: 'Create New',
+    label: "Create New",
     disabled: false,
-    modalTitle: 'Create New Collection',
-    modalSize: 'sm',
-    id: 'add_collection_create_new_btn'
-  }
+    modalTitle: "Create New Collection",
+    modalSize: "sm",
+    id: "add_collection_create_new_btn",
+  },
 }
 
 class CollectionsModal extends Component {
   state = {
-    choiceSelected: null
+    choiceSelected: null,
   }
 
   selectChoice(choice) {
@@ -40,11 +40,7 @@ class CollectionsModal extends Component {
     return (
       <div className='d-flex justify-content-center'>
         {Object.values(choices).map((choice) => (
-          <div
-            key={choice.key}
-            className={['add-collection-item', choice.disabled ? 'disabled' : ''].join(' ')}
-            onClick={() => (choice.disabled ? {} : this.selectChoice(choice.key))}
-          >
+          <div key={choice.key} className={["add-collection-item", choice.disabled ? "disabled" : ""].join(" ")} onClick={() => (choice.disabled ? {} : this.selectChoice(choice.key))}>
             <div>
               <span>{choice.label}</span>
               <br />
@@ -106,13 +102,13 @@ class CollectionsModal extends Component {
     const selectedChoice = choices[this.state.choiceSelected]
 
     /** Set Default values */
-    let dialogClassName = 'collection-choice-modal'
-    let modalSize = 'sm'
+    let dialogClassName = "collection-choice-modal"
+    let modalSize = "sm"
     let modalTitle = this.props.title
     let modalBody = this.renderChoices()
 
     if (selectedChoice) {
-      dialogClassName = ''
+      dialogClassName = ""
       modalSize = selectedChoice.modalSize
       modalTitle = selectedChoice.modalTitle
       modalBody = this.renderSelectedForm()

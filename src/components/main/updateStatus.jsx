@@ -1,60 +1,60 @@
-import React, { Component } from 'react'
-import './updateStatus.scss'
-import ProgressBar from 'react-bootstrap/ProgressBar'
-import { Spinner } from 'react-bootstrap'
-import { isElectron, formatBytes } from '../common/utility'
+import React, { Component } from "react"
+import "./updateStatus.scss"
+import ProgressBar from "react-bootstrap/ProgressBar"
+import { Spinner } from "react-bootstrap"
+import { isElectron, formatBytes } from "../common/utility"
 
 const type = {
-  UPDATE_AVAILABLE: 'UPDATE_AVAILABLE',
-  DOWNLOAD_PROGRESS: 'DOWNLOAD_PROGRESS',
-  UPDATE_DOWNLOADED: 'UPDATE_DOWNLOADED',
-  ERROR: 'ERROR',
-  CHECKING_FOR_UPDATES: 'CHECKING_FOR_UPDATES',
-  UPDATE_NOT_AVAILABLE: 'UPDATE_NOT_AVAILABLE'
+  UPDATE_AVAILABLE: "UPDATE_AVAILABLE",
+  DOWNLOAD_PROGRESS: "DOWNLOAD_PROGRESS",
+  UPDATE_DOWNLOADED: "UPDATE_DOWNLOADED",
+  ERROR: "ERROR",
+  CHECKING_FOR_UPDATES: "CHECKING_FOR_UPDATES",
+  UPDATE_NOT_AVAILABLE: "UPDATE_NOT_AVAILABLE",
 }
 
 class UpdateStatus extends Component {
   state = {
     data: null,
-    message: '',
+    message: "",
     updateStatusDisplay: false,
     progressBar: false,
     closeButton: false,
-    showSpinner: false
+    showSpinner: false,
   }
 
   componentDidMount() {
     if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.on('app-update-channel', this.handleAutoUpdateEvents.bind(this))
+      const { ipcRenderer } = window.require("electron")
+      ipcRenderer.on("app-update-channel", this.handleAutoUpdateEvents.bind(this))
     }
   }
 
   handleAutoUpdateEvents(event, text) {
-    let message = ''
+    let message = ""
     switch (text.type) {
       case type.UPDATE_AVAILABLE:
-        message = 'Update Available'
+        message = "Update Available"
         this.setState({ message, updateStatusDisplay: true, showSpinner: false })
         break
       case type.DOWNLOAD_PROGRESS:
-        message = 'An Update is downloading'
+        message = "An Update is downloading"
         this.setState({ message, progressBar: true, data: text.data, updateStatusDisplay: true, showSpinner: false })
         break
       case type.UPDATE_DOWNLOADED:
-        message = 'Update downloaded. Restart app to install.'
+        message = "Update downloaded. Restart app to install."
         this.setState({ message, closeButton: true, updateStatusDisplay: true, progressBar: false, showSpinner: false })
         break
       case type.ERROR:
-        message = 'Somthing went wrong, while trying to update'
+        message = "Somthing went wrong, while trying to update"
         this.setState({ message, showSpinner: false, updateStatusDisplay: true, closeButton: true })
         break
       case type.CHECKING_FOR_UPDATES:
-        message = 'Checking For Updates'
+        message = "Checking For Updates"
         this.setState({ message, updateStatusDisplay: true, showSpinner: true })
         break
       case type.UPDATE_NOT_AVAILABLE:
-        message = 'Already Up to Date'
+        message = "Already Up to Date"
         this.setState({ message, updateStatusDisplay: false, showSpinner: false })
         break
       default:

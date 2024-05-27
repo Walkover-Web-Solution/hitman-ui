@@ -1,9 +1,9 @@
-import collectionsActionTypes from './collectionsActionTypes'
-import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
-import { toast } from 'react-toastify'
-import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
-import generalActionsTypes from '../../redux/generalActionTypes'
-import { onParentPageAdded } from '../../pages/redux/pagesActions'
+import collectionsActionTypes from "./collectionsActionTypes"
+import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes"
+import { toast } from "react-toastify"
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes"
+import generalActionsTypes from "../../redux/generalActionTypes"
+import { onParentPageAdded } from "../../pages/redux/pagesActions"
 
 const initialState = {}
 
@@ -14,7 +14,7 @@ function collectionsReducer(state = initialState, action) {
       if (action.response.collection) {
         return {
           ...state,
-          [action.response.collection.id]: action.response.collection
+          [action.response.collection.id]: action.response.collection,
         }
       }
       return { ...state }
@@ -40,7 +40,7 @@ function collectionsReducer(state = initialState, action) {
     case collectionsActionTypes.ADD_COLLECTION_REQUEST:
       return {
         ...state,
-        [action.newCollection.requestId]: action.newCollection
+        [action.newCollection.requestId]: action.newCollection,
       }
 
     case collectionsActionTypes.ON_COLLECTION_ADDED: {
@@ -60,24 +60,24 @@ function collectionsReducer(state = initialState, action) {
     case collectionsActionTypes.UPDATE_COLLECTION_REQUEST:
       return {
         ...state,
-        [action.editedCollection.id]: action.editedCollection
+        [action.editedCollection.id]: action.editedCollection,
       }
 
     case collectionsActionTypes.ON_COLLECTION_UPDATED:
       const updatedCollection = {
         ...state[action.response.id],
-        ...action.response
+        ...action.response,
       }
       return {
         ...state,
-        [action.response.id]: updatedCollection
+        [action.response.id]: updatedCollection,
       }
 
     case collectionsActionTypes.ON_COLLECTION_UPDATED_ERROR:
       toast.error(action.error)
       return {
         ...state,
-        [action.originalCollection.id]: action.originalCollection
+        [action.originalCollection.id]: action.originalCollection,
       }
 
     case collectionsActionTypes.DELETE_COLLECTION_REQUEST:
@@ -93,14 +93,14 @@ function collectionsReducer(state = initialState, action) {
       if (action.error?.status === 404) return state
       return {
         ...state,
-        [action.collection.id]: action.collection
+        [action.collection.id]: action.collection,
       }
-      case collectionsActionTypes.MOVE_COLLECTION:
-        const { id } = action.payload;
-        const updatedCollections = { ...state };
-        delete updatedCollections[id];
-      
-        return state.collections = updatedCollections;
+    case collectionsActionTypes.MOVE_COLLECTION:
+      const { id } = action.payload
+      const updatedCollections = { ...state }
+      delete updatedCollections[id]
+
+      return (state.collections = updatedCollections)
 
     case collectionsActionTypes.ON_COLLECTION_DUPLICATED: {
       collections = { ...state }
@@ -126,7 +126,7 @@ function collectionsReducer(state = initialState, action) {
     case collectionsActionTypes.IMPORT_COLLECTION_REQUEST:
       return {
         ...state,
-        [action.collection.id]: action.collection
+        [action.collection.id]: action.collection,
       }
 
     case collectionsActionTypes.ON_COLLECTION_IMPORTED:
@@ -134,8 +134,8 @@ function collectionsReducer(state = initialState, action) {
         ...state,
         [action.collection.id]: {
           ...state[action.collection.id],
-          ...action.collection
-        }
+          ...action.collection,
+        },
       }
 
     case collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR:

@@ -1,8 +1,8 @@
-import collectionVersionsApiService from '../collectionVersionsApiService'
-import versionActionTypes from './collectionVersionsActionTypes'
-import { toast } from 'react-toastify'
-import pagesActionTypes from '../../pages/redux/pagesActionTypes'
-import { SESSION_STORAGE_KEY } from '../../common/utility'
+import collectionVersionsApiService from "../collectionVersionsApiService"
+import versionActionTypes from "./collectionVersionsActionTypes"
+import { toast } from "react-toastify"
+import pagesActionTypes from "../../pages/redux/pagesActionTypes"
+import { SESSION_STORAGE_KEY } from "../../common/utility"
 
 export const updateVersion = (editedVersion) => {
   return (dispatch) => {
@@ -22,14 +22,14 @@ export const updateVersion = (editedVersion) => {
 export const updateVersionRequest = (editedVersion) => {
   return {
     type: versionActionTypes.UPDATE_VERSION_REQUEST,
-    editedVersion
+    editedVersion,
   }
 }
 
 export const onVersionUpdated = (response) => {
   return {
     type: versionActionTypes.ON_VERSION_UPDATED,
-    response
+    response,
   }
 }
 
@@ -37,7 +37,7 @@ export const onVersionUpdatedError = (error, originalVersion) => {
   return {
     type: versionActionTypes.ON_VERSION_UPDATED_ERROR,
     error,
-    originalVersion
+    originalVersion,
   }
 }
 
@@ -61,7 +61,7 @@ export const addParentPageVersion = (newVersion, pageId, customCallback) => {
 export const onParentPageVersionAdded = (response) => {
   return {
     type: pagesActionTypes.ON_PARENTPAGE_VERSION_ADDED,
-    response
+    response,
   }
 }
 
@@ -69,7 +69,6 @@ export const onVersionAddedError = (error, newVersion) => {
   return {
     type: versionActionTypes.ON_VERSION_ADDED_ERROR,
     newVersion,
-    error
+    error,
   }
 }
-

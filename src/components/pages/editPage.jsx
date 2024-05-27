@@ -1,36 +1,36 @@
-import React, { Component } from 'react'
-import { connect, useDispatch } from 'react-redux'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { withRouter } from 'react-router-dom'
-import WarningModal from '../common/warningModal'
-import { updateContent, updatePage } from '../pages/redux/pagesActions'
-import './page.scss'
-import { toast } from 'react-toastify'
-import * as _ from 'lodash'
-import { updateTab } from '../tabs/redux/tabsActions'
-import tabService from '../tabs/tabService'
-import Tiptap from '../tiptapEditor/tiptap'
+import React, { Component } from "react"
+import { connect, useDispatch } from "react-redux"
+import { useMutation, useQuery, useQueryClient } from "react-query"
+import { withRouter } from "react-router-dom"
+import WarningModal from "../common/warningModal"
+import { updateContent, updatePage } from "../pages/redux/pagesActions"
+import "./page.scss"
+import { toast } from "react-toastify"
+import * as _ from "lodash"
+import { updateTab } from "../tabs/redux/tabsActions"
+import tabService from "../tabs/tabService"
+import Tiptap from "../tiptapEditor/tiptap"
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
     const pageId = props.match.params.pageId
     const orgId = props.match.params.orgId
-    const pageContentData = useQuery(['pageContent', pageId])
+    const pageContentData = useQuery(["pageContent", pageId])
     const mutation = useMutation(updateContent, {
       onSuccess: (data) => {
-        queryClient.setQueryData(['pageContent', pageId], data?.contents || '', {
+        queryClient.setQueryData(["pageContent", pageId], data?.contents || "", {
           refetchOnWindowFocus: false,
           cacheTime: 5000000,
           enabled: true,
-          staleTime: 600000
+          staleTime: 600000,
         })
         props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
-      }
+      },
     })
     const tabId = props?.tabs?.tabs?.[pageId]
     //if tab is Modified then show the data from the tab
-    if (tabId?.isModified && tabId?.type == 'page' && tabId?.draft) {
+    if (tabId?.isModified && tabId?.type == "page" && tabId?.draft) {
       pageContentData.data = tabId?.draft
     }
     return <WrappedComponent {...props} pageContentData={pageContentData.data} mutationFn={mutation} />
@@ -40,14 +40,14 @@ const withQuery = (WrappedComponent) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
-    update_tab: (id, data) => dispatch(updateTab(id, data))
+    update_tab: (id, data) => dispatch(updateTab(id, data)),
   }
 }
 
 const mapStateToProps = (state) => {
   return {
     tabs: state.tabs,
-    pages: state.pages
+    pages: state.pages,
   }
 }
 
@@ -55,8 +55,8 @@ class EditPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: { id: null, name: '', contents: '', state: '' },
-      showEditor: false
+      data: { id: null, name: "", contents: "", state: "" },
+      showEditor: false,
     }
     this.name = React.createRef()
     this.contents = React.createRef()
@@ -73,7 +73,7 @@ class EditPage extends Component {
         name,
         contents,
         isPublished,
-        state
+        state,
       }
       let updatedData = _.cloneDeep(data)
       updatedData.contents = this.props?.pageContentData
@@ -104,8 +104,8 @@ class EditPage extends Component {
       tab,
       pages,
       match: {
-        params: { pageId }
-      }
+        params: { pageId },
+      },
     } = this.props
     const { draftDataSet } = this.state
 
@@ -114,7 +114,7 @@ class EditPage extends Component {
         let data = this.state.data
         data.contents = this.props.pageContentData
         this.setState({ ...tab.state, draftDataSet: true, data: data })
-      } else if (pageId !== 'new' && pages[tab.id] && !this.state.originalData?.id) {
+      } else if (pageId !== "new" && pages[tab.id] && !this.state.originalData?.id) {
         await this.fetchPage(tab.id)
       }
     }
@@ -169,11 +169,11 @@ class EditPage extends Component {
   handleSubmit = (e) => {
     if (e) e.preventDefault()
     const editedPage = { ...this.state.data }
-    if (editedPage.name.trim() === '') {
-      toast.error('Page name cannot be empty.')
+    if (editedPage.name.trim() === "") {
+      toast.error("Page name cannot be empty.")
       return
     }
-    delete editedPage['isPublished']
+    delete editedPage["isPublished"]
     this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
     tabService.markTabAsSaved(this.props.tab.id)
     tabService.updateDraftData(editedPage?.id, null)
@@ -185,7 +185,7 @@ class EditPage extends Component {
       // Redirect to displayPage Route Component
       tabService.unmarkTabAsModified(this.props.tab.id)
       this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${pageId}`
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${pageId}`,
       })
     }
   }
@@ -196,19 +196,7 @@ class EditPage extends Component {
   }
 
   renderTiptapEditor(item, index) {
-    return (
-      this.state.showEditor && (
-        <Tiptap
-          onChange={this.handleChange}
-          initial={this.props?.pageContentData}
-          match={this.props.match}
-          isInlineEditor={false}
-          disabled={false}
-          minHeight
-          key={index}
-        />
-      )
-    )
+    return this.state.showEditor && <Tiptap onChange={this.handleChange} initial={this.props?.pageContentData} match={this.props.match} isInlineEditor={false} disabled={false} minHeight key={index} />
   }
 
   renderEditPageOperations() {
@@ -254,15 +242,7 @@ class EditPage extends Component {
               <label htmlFor='name'>Page Name</label>
               {this.renderEditPageOperations()}
             </div>
-            <input
-              name='name'
-              id='name'
-              value={this.state.data.name}
-              onChange={this.handleNameChange}
-              type='text'
-              className='form-control'
-              placeholder='Page Name'
-            />
+            <input name='name' id='name' value={this.state.data.name} onChange={this.handleNameChange} type='text' className='form-control' placeholder='Page Name' />
           </div>
 
           <div>{this.renderTiptapEditor()}</div>

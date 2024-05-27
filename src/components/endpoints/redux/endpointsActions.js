@@ -1,13 +1,13 @@
-import { toast } from 'react-toastify'
-import { store } from '../../../store/store'
-import endpointApiService from '../endpointApiService'
-import endpointsActionTypes from './endpointsActionTypes'
-import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
-import shortid from 'shortid'
-import pagesActionTypes from '../../pages/redux/pagesActionTypes'
-import { addChildInParent } from '../../pages/redux/pagesActions'
-import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
-import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { toast } from "react-toastify"
+import { store } from "../../../store/store"
+import endpointApiService from "../endpointApiService"
+import endpointsActionTypes from "./endpointsActionTypes"
+import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from "../../common/utility"
+import shortid from "shortid"
+import pagesActionTypes from "../../pages/redux/pagesActionTypes"
+import { addChildInParent } from "../../pages/redux/pagesActions"
+import { replaceTabForUntitled } from "../../tabs/redux/tabsActions"
+import bulkPublishActionTypes from "../../publishSidebar/redux/bulkPublishActionTypes"
 
 export const formatResponseToSend = (response) => {
   return {
@@ -38,7 +38,7 @@ export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, 
         const responseToSend = formatResponseToSend(response)
         const data = await dispatch(addChildInParent(responseToSend))
         history.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
-        if (props?.match?.params?.endpointId === 'new') {
+        if (props?.match?.params?.endpointId === "new") {
           dispatch(replaceTabForUntitled(data.payload.id, prevCurrentTabId))
         }
         if (customCallback) {
@@ -46,7 +46,7 @@ export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, 
         }
       })
       .catch((error) => {
-        console.log('error in saving the endpoint');
+        console.log("error in saving the endpoint")
         if (customCallback) {
           customCallback({ closeForm: false, stopLoader: true })
         }
@@ -92,10 +92,10 @@ export const deleteEndpoint = (endpoint) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
-            toast.success('Endpoint Deleted Successfully')
+            toast.success("Endpoint Deleted Successfully")
           })
           .catch((error) => {
-            console.error('Can not delete endpoint', error)
+            console.error("Can not delete endpoint", error)
           })
       })
       .catch((error) => {
@@ -133,14 +133,14 @@ export const moveEndpointRequest = (endpointId, sourceGroupId, destinationGroupI
     type: endpointsActionTypes.MOVE_ENDPOINT_REQUEST,
     endpointId,
     sourceGroupId,
-    destinationGroupId
+    destinationGroupId,
   }
 }
 
 export const moveEndpointSuccess = (response) => {
   return {
     type: endpointsActionTypes.MOVE_ENDPOINT_SUCCESS,
-    response
+    response,
   }
 }
 
@@ -149,7 +149,7 @@ export const onEndpointAddedError = (error, newEndpoint, requestId) => {
     type: endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR,
     newEndpoint,
     error,
-    requestId
+    requestId,
   }
 }
 
@@ -157,21 +157,21 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR,
     error,
-    originalEndpoint
+    originalEndpoint,
   }
 }
 
 export const deleteEndpointRequest = (endpoint) => {
   return {
     type: pagesActionTypes.DELETE_ENDPOINT_REQUEST,
-    endpoint
+    endpoint,
   }
 }
 
 export const onEndpointDeleted = (response) => {
   return {
     type: pagesActionTypes.ON_ENDPOINT_DELETED,
-    response
+    response,
   }
 }
 
@@ -179,16 +179,13 @@ export const onEndpointDeletedError = (error, endpoint) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_DELETED_ERROR,
     error,
-    endpoint
+    endpoint,
   }
 }
 
 export const onEndpointDuplicated = (response) => {
   return {
     type: pagesActionTypes.ON_ENDPOINT_DUPLICATED,
-    response
+    response,
   }
 }
-
-
-

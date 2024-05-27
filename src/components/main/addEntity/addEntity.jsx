@@ -1,43 +1,42 @@
-import React, { Component } from 'react'
-import Joi from 'joi-browser'
-import './addEntity.scss'
-import { toTitleCase } from '../../common/utility'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { ReactComponent as HelpIcon } from '../../../assets/icons/helpcircle.svg'
-import { moveToNextStep } from '../../../services/widgetService'
+import React, { Component } from "react"
+import Joi from "joi-browser"
+import "./addEntity.scss"
+import { toTitleCase } from "../../common/utility"
+import { OverlayTrigger, Tooltip } from "react-bootstrap"
+import { ReactComponent as HelpIcon } from "../../../assets/icons/helpcircle.svg"
+import { moveToNextStep } from "../../../services/widgetService"
 
 const entityENUM = {
   endpoint: {
-    key: 'endpoint',
-    message: 'Add the API endpoint details from right section.',
-    tooltip: ''
+    key: "endpoint",
+    message: "Add the API endpoint details from right section.",
+    tooltip: "",
   },
   version: {
-    key: 'version',
-    message: 'Add your Page.',
-    tooltip:
-      'Versioning helps in maintaining API changes without breaking existing implementations. This gives consumers more choices without having to upgrade to the latest version'
+    key: "version",
+    message: "Add your Page.",
+    tooltip: "Versioning helps in maintaining API changes without breaking existing implementations. This gives consumers more choices without having to upgrade to the latest version",
   },
   page: {
-    key: 'page', // rootpage
-    message: 'No page added.',
-    tooltip: 'Page help categorize APIs'
+    key: "page", // rootpage
+    message: "No page added.",
+    tooltip: "Page help categorize APIs",
   },
   group: {
-    key: 'group',
-    message: 'No group added.',
-    tooltip: 'Groups help categorize APIs'
-  }
+    key: "group",
+    message: "No group added.",
+    tooltip: "Groups help categorize APIs",
+  },
 }
 
 export class AddEntity extends Component {
   state = {
-    entityName: '',
-    errors: {}
+    entityName: "",
+    errors: {},
   }
 
   schema = {
-    entityName: Joi.string().required().min(2).max(30).trim().label(`${this.props.type} name`)
+    entityName: Joi.string().required().min(2).max(30).trim().label(`${this.props.type} name`),
   }
 
   validate() {
@@ -55,7 +54,7 @@ export class AddEntity extends Component {
 
   handleSubmit(e) {
     e.preventDefault()
-    if (this.props.type && this.props.type === 'endpoint') {
+    if (this.props.type && this.props.type === "endpoint") {
       const endpoint = this.props.endpoint
       const errors = this.validate()
       if (errors) {
@@ -79,10 +78,10 @@ export class AddEntity extends Component {
         className='quick-add-endpoint'
       >
         <p>{entityENUM[this.props.type].message}</p>
-        {this.props.type && this.props.type === 'endpoint' && (
+        {this.props.type && this.props.type === "endpoint" && (
           <div>
             <input
-              name={this.props.type || 'name'}
+              name={this.props.type || "name"}
               placeholder={this.props.placeholder}
               className='entity-input'
               value={this.state.entityName}
@@ -95,7 +94,7 @@ export class AddEntity extends Component {
         )}
         <div className='d-flex align-items-center'>
           <button type='submit' className='entity-submit-btn'>{`Add ${this.props.type}`}</button>
-          {this.props.type && this.props.type !== 'endpoint' && this.renderToolTip(this.props.type)}
+          {this.props.type && this.props.type !== "endpoint" && this.renderToolTip(this.props.type)}
         </div>
       </form>
     )
@@ -113,7 +112,7 @@ export class AddEntity extends Component {
   renderToolTip(type) {
     return (
       <>
-        {this.props.type !== 'endpoint' && (
+        {this.props.type !== "endpoint" && (
           <OverlayTrigger placement='right' overlay={<Tooltip> {entityENUM[this.props.type].tooltip} </Tooltip>}>
             <HelpIcon />
           </OverlayTrigger>

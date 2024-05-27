@@ -1,31 +1,22 @@
-import React, { Component } from 'react'
-import { Tab, Nav, Dropdown } from 'react-bootstrap'
+import React, { Component } from "react"
+import { Tab, Nav, Dropdown } from "react-bootstrap"
 
-import { connect } from 'react-redux'
-import 'react-tabs/style/react-tabs.css'
+import { connect } from "react-redux"
+import "react-tabs/style/react-tabs.css"
 
-import History from '../history/history.jsx'
-import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
-import {
-  addNewTab,
-  closeTab,
-  fetchTabsFromRedux,
-  openInNewTab,
-  replaceTab,
-  setActiveTabId,
-  setTabsOrder,
-  updateTab
-} from '../tabs/redux/tabsActions'
-import TabContent from '../tabs/tabContent'
-import CustomTabs from '../tabs/tabs'
-import tabStatusTypes from '../tabs/tabStatusTypes'
-import './main.scss'
-import { getCurrentUser } from '../auth/authServiceV2'
-import LoginSignupModal from './loginSignupModal'
-import Environments from '../environments/environments'
-import { IoCodeSlashOutline } from 'react-icons/io5'
-import { updateStateOfCurlSlider } from '../modals/redux/modalsActions.js'
-import IconButton from '../common/iconButton.jsx'
+import History from "../history/history.jsx"
+import { ReactComponent as HistoryIcon } from "../../assets/icons/historyIcon.svg"
+import { addNewTab, closeTab, fetchTabsFromRedux, openInNewTab, replaceTab, setActiveTabId, setTabsOrder, updateTab } from "../tabs/redux/tabsActions"
+import TabContent from "../tabs/tabContent"
+import CustomTabs from "../tabs/tabs"
+import tabStatusTypes from "../tabs/tabStatusTypes"
+import "./main.scss"
+import { getCurrentUser } from "../auth/authServiceV2"
+import LoginSignupModal from "./loginSignupModal"
+import Environments from "../environments/environments"
+import { IoCodeSlashOutline } from "react-icons/io5"
+import { updateStateOfCurlSlider } from "../modals/redux/modalsActions.js"
+import IconButton from "../common/iconButton.jsx"
 
 const mapStateToProps = (state) => {
   return {
@@ -36,7 +27,7 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     tabs: state.tabs,
     historySnapshots: state.history,
-    curlSlider: state.modals?.curlSlider || false
+    curlSlider: state.modals?.curlSlider || false,
   }
 }
 
@@ -66,7 +57,7 @@ class ContentPanel extends Component {
 
   componentDidUpdate() {
     const { endpointId, pageId, historyId, collectionId } = this.props.match.params
-    if (this.props.tabs.loaded && endpointId && endpointId !== 'new') {
+    if (this.props.tabs.loaded && endpointId && endpointId !== "new") {
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
           this.props.set_active_tab_id(endpointId)
@@ -75,11 +66,11 @@ class ContentPanel extends Component {
         if (this.props.endpoints && this.props.endpoints[endpointId]) {
           this.props.open_in_new_tab({
             id: endpointId,
-            type: 'endpoint',
+            type: "endpoint",
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
-            state: {}
+            state: {},
           })
         }
       }
@@ -94,11 +85,11 @@ class ContentPanel extends Component {
         if (this.props.pages && this.props.pages[pageId]) {
           this.props.open_in_new_tab({
             id: pageId,
-            type: 'page',
+            type: "page",
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
-            state: {}
+            state: {},
           })
         }
       }
@@ -112,11 +103,11 @@ class ContentPanel extends Component {
       } else if (this.props.historySnapshots && this.props.historySnapshots[historyId]) {
         this.props.open_in_new_tab({
           id: historyId,
-          type: 'history',
+          type: "history",
           status: tabStatusTypes.SAVED,
           previewMode: false,
           isModified: false,
-          state: {}
+          state: {},
         })
       }
     }
@@ -128,23 +119,23 @@ class ContentPanel extends Component {
         }
       } else if (this.props.collections && this.props.collections[collectionId]) {
         let pageType
-        if (this.props.location.pathname.split('/')[6] === 'settings') {
-          pageType = 'SETTINGS'
+        if (this.props.location.pathname.split("/")[6] === "settings") {
+          pageType = "SETTINGS"
         } else {
-          pageType = 'FEEDBACK'
+          pageType = "FEEDBACK"
         }
         this.props.open_in_new_tab({
           id: collectionId,
-          type: 'collection',
+          type: "collection",
           status: tabStatusTypes.SAVED,
           previewMode: false,
           isModified: false,
-          state: { pageType }
+          state: { pageType },
         })
       }
     }
 
-    if (this.props.tabs.loaded && this.props.match.path === '/orgs/:orgId/dashboard/') {
+    if (this.props.tabs.loaded && this.props.match.path === "/orgs/:orgId/dashboard/") {
       const { orgId } = this.props.match.params
       if (this.props.tabs?.tabsOrder?.length) {
         const { tabs, activeTabId, tabsOrder } = this.props.tabs
@@ -158,10 +149,7 @@ class ContentPanel extends Component {
         const collectionLength = Object.keys(this.props.collections).length
         if (collectionLength > 0) {
           this.props.history.push({
-            pathname:
-              tab.type !== 'collection'
-                ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${(tab.isModified) ? '/edit' : ''}`
-                : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+            pathname: tab.type !== "collection" ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === "NEW" ? "new" : tabId}${tab.isModified ? "/edit" : ""}` : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`,
           })
         }
       } else {
@@ -201,21 +189,15 @@ class ContentPanel extends Component {
             <>
               <div className='content-header'>
                 <div className='tabs-container d-flex justify-content-between'>
-                  <CustomTabs
-                    {...this.props}
-                    handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
-                    handle_save_page={this.handleSavePage.bind(this)}
-                  />
+                  <CustomTabs {...this.props} handle_save_endpoint={this.handleSaveEndpoint.bind(this)} handle_save_page={this.handleSavePage.bind(this)} />
                   <Environments {...this.props} />
-                  {this.props.match.params.endpointId
-                    && (
-                      <div className='d-flex justify-content-center align-items-center code-curl-icon' onClick={() => this.handleCodeCurlClick()}>
-                     <IconButton>
-                       <IoCodeSlashOutline type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" size={18} />
-                     </IconButton>
+                  {this.props.match.params.endpointId && (
+                    <div className='d-flex justify-content-center align-items-center code-curl-icon' onClick={() => this.handleCodeCurlClick()}>
+                      <IconButton>
+                        <IoCodeSlashOutline type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasRight' aria-controls='offcanvasRight' size={18} />
+                      </IconButton>
                     </div>
-                    )}
-
+                  )}
                 </div>
               </div>
             </>
@@ -258,14 +240,7 @@ class ContentPanel extends Component {
             </div>
           )}
           <div className='main-content'>
-            <TabContent
-              {...this.props}
-              handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
-              handle_save_page={this.handleSavePage.bind(this)}
-              save_endpoint_flag={this.state.saveEndpointFlag}
-              save_page_flag={this.state.savePageFlag}
-              selected_tab_id={this.state.selectedTabId}
-            />
+            <TabContent {...this.props} handle_save_endpoint={this.handleSaveEndpoint.bind(this)} handle_save_page={this.handleSavePage.bind(this)} save_endpoint_flag={this.state.saveEndpointFlag} save_page_flag={this.state.savePageFlag} selected_tab_id={this.state.selectedTabId} />
           </div>
         </Tab.Container>
       </main>

@@ -1,11 +1,11 @@
-import shortid from 'shortid'
-import { store } from '../../../store/store'
-import tabStatusTypes from '../tabStatusTypes'
-import tabsActionTypes from './tabsActionTypes'
-import history from '../../../history'
-import { getOrgId, isElectron } from '../../common/utility'
-import { openModal } from '../../modals/redux/modalsActions'
-import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
+import shortid from "shortid"
+import { store } from "../../../store/store"
+import tabStatusTypes from "../tabStatusTypes"
+import tabsActionTypes from "./tabsActionTypes"
+import history from "../../../history"
+import { getOrgId, isElectron } from "../../common/utility"
+import { openModal } from "../../modals/redux/modalsActions"
+import { DESKTOP_APP_DOWNLOAD } from "../../modals/modalTypes"
 
 export const fetchTabsFromRedux = () => {
   return async (dispatch) => {
@@ -13,13 +13,13 @@ export const fetchTabsFromRedux = () => {
     const tabsList = state.tabs.tabs
     const tabsMetadata = {
       activeTabId: state.tabs.activeTabId,
-      tabsOrder: state.tabs.tabsOrder
+      tabsOrder: state.tabs.tabsOrder,
     }
 
     dispatch({
       type: tabsActionTypes.FETCH_TABS_FROM_REDUX,
       tabsList,
-      tabsMetadata
+      tabsMetadata,
     })
   }
 }
@@ -40,12 +40,12 @@ export const addNewTab = () => {
       type: tabsActionTypes.ADD_NEW_TAB,
       newTab: {
         id,
-        type: 'endpoint',
+        type: "endpoint",
         status: tabStatusTypes.NEW,
         previewMode: false,
         isModified: false,
-        state: {}
-      }
+        state: {},
+      },
     })
     dispatch(setActiveTabId(id))
     history.push({ pathname: `/orgs/${orgId}/dashboard/endpoint/new` })
@@ -95,7 +95,7 @@ export const setActiveTabId = (tabId) => {
   return async (dispatch) => {
     dispatch({
       type: tabsActionTypes.SET_ACTIVE_TAB_ID,
-      tabId
+      tabId,
     })
   }
 }
@@ -104,7 +104,7 @@ export const setTabsOrder = (tabsOrder) => {
   return async (dispatch) => {
     dispatch({
       type: tabsActionTypes.SET_TABS_ORDER,
-      tabsOrder
+      tabsOrder,
     })
   }
 }
@@ -120,11 +120,11 @@ export const replaceTab = (oldTabId, newTab) => {
     dispatch({
       type: tabsActionTypes.REPLACE_TAB,
       oldTabId,
-      newTab
+      newTab,
     })
     dispatch({
       type: tabsActionTypes.SET_TABS_ORDER,
-      tabsOrder
+      tabsOrder,
     })
   }
 }

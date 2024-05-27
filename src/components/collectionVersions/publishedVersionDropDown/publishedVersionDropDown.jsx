@@ -1,31 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import { Dropdown, DropdownButton } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from "react"
+import { Dropdown, DropdownButton } from "react-bootstrap"
+import { useSelector } from "react-redux"
 
 export default function PublishedVersionDropDown(props) {
   const { pages } = useSelector((state) => {
     return {
-      pages: state.pages
+      pages: state.pages,
     }
   })
 
-  const [show, setShow] = useState([]);
-  const [title, setTitle] = useState('');
+  const [show, setShow] = useState([])
+  const [title, setTitle] = useState("")
   useEffect(() => {
-    const { rootParentId, defaultVersionName, selectedVersionName } = props;
+    const { rootParentId, defaultVersionName, selectedVersionName } = props
 
-    const data = showDropDown();
-    setShow(data);
+    const data = showDropDown()
+    setShow(data)
 
     const versionName = (name) => {
-        return name.length > 10 ? `${name.substring(0, 7)} ... ` : name;
-    };
+      return name.length > 10 ? `${name.substring(0, 7)} ... ` : name
+    }
 
-    const versionToDisplay = pages?.[rootParentId]?.child?.length === 1 ? defaultVersionName : selectedVersionName;
+    const versionToDisplay = pages?.[rootParentId]?.child?.length === 1 ? defaultVersionName : selectedVersionName
 
-    setTitle(versionName(versionToDisplay));
-}, [props.rootParentId, props.defaultVersionName, props.selectedVersionName, pages]);
-
+    setTitle(versionName(versionToDisplay))
+  }, [props.rootParentId, props.defaultVersionName, props.selectedVersionName, pages])
 
   function checkIfVersionHasPublishedChild(versionId) {
     if (!pages?.[versionId]) return false
@@ -44,25 +43,18 @@ export default function PublishedVersionDropDown(props) {
       const value = checkIfVersionHasPublishedChild(versionId)
       if (pages?.[versionId] && pages?.[versionId]?.isPublished && value) {
         return versionId
-      }
-      else if(pages?.[versionId]?.state === 1){
-        return  versionId
+      } else if (pages?.[versionId]?.state === 1) {
+        return versionId
       }
     })
   }
 
   if (show?.length <= 1 && pages[show[0]]?.isPublished) {
-    return null;
+    return null
   }
 
   return (
-    <DropdownButton
-      key={props?.rootParentId}
-      className='version-dropdown'
-      id={`dropdown-basic-button-${props?.rootParentId}`}
-      onClick={(e) => e.stopPropagation()}
-      title={title}
-    >
+    <DropdownButton key={props?.rootParentId} className='version-dropdown' id={`dropdown-basic-button-${props?.rootParentId}`} onClick={(e) => e.stopPropagation()} title={title}>
       {show.map((childId, index) => (
         <Dropdown.Item key={index} onClick={() => props.handleDropdownItemClick(childId, props?.rootParentId)}>
           {pages[childId]?.name}

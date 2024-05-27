@@ -1,4 +1,4 @@
-import historyActionTyes from './historyActionTypes'
+import historyActionTyes from "./historyActionTypes"
 
 const initialState = {}
 

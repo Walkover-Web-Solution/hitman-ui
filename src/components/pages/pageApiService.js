@@ -1,5 +1,5 @@
-import http from '../../services/httpService'
-import { getOrgId } from '../common/utility'
+import http from "../../services/httpService"
+import { getOrgId } from "../common/utility"
 
 const apiBaseUrl = process.env.REACT_APP_API_URL
 
@@ -42,7 +42,7 @@ export function duplicatePage(pageId) {
 export function updatePageOrder(pagesOrder) {
   const apiUrl = getApiUrl()
   return http.patch(`${apiUrl}/updatePagesOrder`, {
-    pagesOrder: pagesOrder
+    pagesOrder: pagesOrder,
   })
 }
 
@@ -58,5 +58,5 @@ export default {
   getAllPages,
   updatePageOrder,
   saveCollectionPage,
-  dragAndDropApi
+  dragAndDropApi,
 }

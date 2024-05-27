@@ -1,7 +1,7 @@
-import environmentsApiService from '../environmentsApiService'
-import environmentsActionTypes from './environmentsActionTypes'
-import { store } from '../../../store/store'
-import { toast } from 'react-toastify'
+import environmentsApiService from "../environmentsApiService"
+import environmentsActionTypes from "./environmentsActionTypes"
+import { store } from "../../../store/store"
+import { toast } from "react-toastify"
 
 export const fetchEnvironments = () => {
   return (dispatch) => {
@@ -9,7 +9,7 @@ export const fetchEnvironments = () => {
       .getEnvironments()
       .then((response) => {
         dispatch(OnEnvironmentsFetched(response.data))
-        window.localStorage.setItem('environments', JSON.stringify(response.data))
+        window.localStorage.setItem("environments", JSON.stringify(response.data))
       })
       .catch((error) => {
         dispatch(OnEnvironmentsFetchedError(error.response ? error.response.data : error))
@@ -21,7 +21,7 @@ export const fetchEnvironmentsFromLocalStorage = () => {
   return (dispatch) => {
     let environments
     try {
-      environments = JSON.parse(window.localStorage.getItem('cookies'))
+      environments = JSON.parse(window.localStorage.getItem("cookies"))
       dispatch(OnEnvironmentsFetched(environments))
     } catch (err) {
       dispatch(OnEnvironmentsFetchedError(err))
@@ -44,13 +44,13 @@ export const addEnvironment = (newEnvironment) => {
   }
 }
 
-export const importEnvironment = (newEnvironment,onClose) => {
+export const importEnvironment = (newEnvironment, onClose) => {
   return (dispatch) => {
     environmentsApiService
       .importPostmanEnvironment(newEnvironment)
       .then((response) => {
         dispatch(OnEnvironmentImported(response.data))
-        toast.success('Environment Imported Successfully')
+        toast.success("Environment Imported Successfully")
         onClose()
       })
       .catch((error) => {
@@ -95,35 +95,35 @@ export const deleteEnvironment = (environment) => {
 export const setEnvironmentId = (currentEnvironmentId) => {
   return {
     type: environmentsActionTypes.SET_ENVIRONMENT_ID,
-    currentEnvironmentId
+    currentEnvironmentId,
   }
 }
 
 export const OnEnvironmentsFetched = (environments) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENTS_FETCHED,
-    environments
+    environments,
   }
 }
 
 export const OnEnvironmentsFetchedError = (error) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENTS_FETCHED_ERROR,
-    error
+    error,
   }
 }
 
 export const addEnvironmentRequest = (newEnvironment) => {
   return {
     type: environmentsActionTypes.ADD_ENVIRONMENT_REQUEST,
-    newEnvironment
+    newEnvironment,
   }
 }
 
 export const OnEnvironmentAdded = (response) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_ADDED,
-    response
+    response,
   }
 }
 
@@ -131,21 +131,21 @@ export const OnEnvironmentAddedError = (error, newEnvironment) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_ADDED_ERROR,
     newEnvironment,
-    error
+    error,
   }
 }
 
 export const updateEnvironmentRequest = (editedEnvironment) => {
   return {
     type: environmentsActionTypes.UPDATE_ENVIRONMENT_REQUEST,
-    editedEnvironment
+    editedEnvironment,
   }
 }
 
 export const OnEnvironmentUpdated = (response) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_UPDATED,
-    response
+    response,
   }
 }
 
@@ -153,20 +153,20 @@ export const OnEnvironmentUpdatedError = (error, originalEnvironment) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_UPDATED_ERROR,
     error,
-    originalEnvironment
+    originalEnvironment,
   }
 }
 
 export const deleteEnvironmentRequest = (environment) => {
   return {
     type: environmentsActionTypes.DELETE_ENVIRONMENT_REQUEST,
-    environment
+    environment,
   }
 }
 
 export const OnEnvironmentDeleted = () => {
   return {
-    type: environmentsActionTypes.ON_ENVIRONMENT_DELETED
+    type: environmentsActionTypes.ON_ENVIRONMENT_DELETED,
   }
 }
 
@@ -174,14 +174,13 @@ export const OnEnvironmentDeletedError = (error, environment) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_DELETED_ERROR,
     error,
-    environment
+    environment,
   }
 }
 
 export const OnEnvironmentImported = (response) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENT_IMPORTED,
-    response
+    response,
   }
 }
-

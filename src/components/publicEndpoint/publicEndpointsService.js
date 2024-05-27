@@ -1,5 +1,5 @@
-import http from '../../services/httpService'
-import { getOrgId } from '../common/utility'
+import http from "../../services/httpService"
+import { getOrgId } from "../common/utility"
 
 const apiUrlPublic = process.env.REACT_APP_API_URL
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
@@ -11,9 +11,9 @@ export function fetchAll(collectionIdentifier, domain) {
   return http.get(`${apiUrlPublic}/public/${collectionIdentifier}?domain=${domain}`)
 }
 
-export function approveEndpoint(endpointId,uniqueTabId) {
+export function approveEndpoint(endpointId, uniqueTabId) {
   const apiUrl = getApiUrl()
-  return http.patch(`${apiUrl}/endpoints/${endpointId}/approved`,uniqueTabId)
+  return http.patch(`${apiUrl}/endpoints/${endpointId}/approved`, uniqueTabId)
 }
 
 export function pendingEndpoint(endpoint) {
@@ -36,5 +36,5 @@ export default {
   approveEndpoint,
   pendingEndpoint,
   draftEndpoint,
-  rejectEndpoint
+  rejectEndpoint,
 }

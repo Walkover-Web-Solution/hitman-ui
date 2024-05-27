@@ -1,6 +1,6 @@
-import React from 'react';
-import { Modal } from 'react-bootstrap';
-import DragAndDropUploader from './DragAndDropUploader';
+import React from "react"
+import { Modal } from "react-bootstrap"
+import DragAndDropUploader from "./DragAndDropUploader"
 
 const ImportEnvironmentModal = ({ show, onClose }) => {
   return (
@@ -12,7 +12,7 @@ const ImportEnvironmentModal = ({ show, onClose }) => {
         <DragAndDropUploader onClose={onClose} />
       </Modal.Body>
     </Modal>
-  );
-};
+  )
+}
 
-export default ImportEnvironmentModal;
+export default ImportEnvironmentModal

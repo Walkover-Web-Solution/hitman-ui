@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
-import RenderData from './renderData/renderData'
-import './showCaseSaveAsModal.scss'
+import React, { useState } from "react"
+import { useSelector } from "react-redux"
+import RenderData from "./renderData/renderData"
+import "./showCaseSaveAsModal.scss"
 
 export default function ShowCaseSaveAsModal(props) {
   const { pages, collections, activeTabId } = useSelector((state) => {
     return {
       pages: state.pages,
       collections: state.collections,
-      activeTabId: state.tabs.activeTabId
+      activeTabId: state.tabs.activeTabId,
     }
   })
 
-  const [pathData, setPathData] = useState(['currentOrganisation'])
+  const [pathData, setPathData] = useState(["currentOrganisation"])
 
   const getName = (id) => {
     const type = pages?.[id]?.type
@@ -30,17 +30,17 @@ export default function ShowCaseSaveAsModal(props) {
       tempPathData.splice(index + 1)
       setPathData([...tempPathData])
     } else {
-      console.error('Invalid index provided.')
+      console.error("Invalid index provided.")
     }
   }
 
   const getDisable = () => {
     if (pathData.length === 1) {
-      return 'disable-save-btn'
+      return "disable-save-btn"
     } else {
       const currentId = pathData[pathData.length - 1]
-      if (pages?.[currentId]?.type === 1) return 'disable-save-btn'
-      else return ''
+      if (pages?.[currentId]?.type === 1) return "disable-save-btn"
+      else return ""
     }
   }
 
@@ -49,10 +49,10 @@ export default function ShowCaseSaveAsModal(props) {
     props.save_endpoint(
       currentId,
       {
-        endpointName: props?.name || '',
-        endpointDescription: props?.description || ''
+        endpointName: props?.name || "",
+        endpointDescription: props?.description || "",
       },
-      'isHistory'
+      "isHistory",
     )
     props.onHide()
   }
@@ -66,7 +66,7 @@ export default function ShowCaseSaveAsModal(props) {
             <div className='d-flex justify-content-start align-items-center'>
               {index !== 0 && <span className='ml-1'>/</span>}
               <div onClick={() => handleGoBack(index)} className='ml-1 tab-line'>
-              {index === 0 ? JSON.parse(localStorage.getItem(singleId))?.name : getName(singleId)}
+                {index === 0 ? JSON.parse(localStorage.getItem(singleId))?.name : getName(singleId)}
               </div>
             </div>
           )

@@ -1,7 +1,7 @@
-const vm = require('vm')
-const _ = require('lodash')
-const moment = require('moment')
-const chai = require('chai')
+const vm = require("vm")
+const _ = require("lodash")
+const moment = require("moment")
+const chai = require("chai")
 
 class Environment {
   constructor(env, setCallback) {
@@ -51,8 +51,8 @@ class Environment {
     const environment = {}
     for (const [key, value] of Object.entries(this.environment)) {
       environment[key] = {
-        initialValue: '',
-        currentValue: value
+        initialValue: "",
+        currentValue: value,
       }
     }
     return environment
@@ -72,7 +72,7 @@ class Request {
       url: this.url,
       headers: this.headers.getHeaders(),
       method: this.method,
-      body: this.body
+      body: this.body,
     }
   }
 }
@@ -90,7 +90,7 @@ class Response {
       status: this.status,
       headers: this.headers.getHeaders(),
       statusText: this.statusText,
-      body: this.body
+      body: this.body,
     }
   }
 }
@@ -102,7 +102,7 @@ class HeaderList {
 
   headers = {}
 
-  add(key, value = '') {
+  add(key, value = "") {
     if (key) {
       const trimmedKey = key.toString().trim()
       if (trimmedKey.length) this.headers[trimmedKey] = value
@@ -141,54 +141,52 @@ class HitmanSandbox {
     testName = String(testName)
     try {
       if (callback) callback()
-      this.testcases.push({ testName, success: true, status: 'Pass' })
+      this.testcases.push({ testName, success: true, status: "Pass" })
     } catch (err) {
-      this.testcases.push({ testName, success: false, msg: err.message, status: 'Fail' })
+      this.testcases.push({ testName, success: false, msg: err.message, status: "Fail" })
     }
   }
 }
 
 export function run(code, sandbox) {
-  const consoleOutput = []; // Array to store console outputs
+  const consoleOutput = [] // Array to store console outputs
   const context = {
     hm: sandbox,
     console: {
       log: (...args) => {
-        const formattedArgs = args.map(arg => {
-          if (typeof arg === 'object' && arg !== null) {
+        const formattedArgs = args.map((arg) => {
+          if (typeof arg === "object" && arg !== null) {
             try {
-              return JSON.stringify(arg);
+              return JSON.stringify(arg)
             } catch (error) {
-              return 'Circular structure in object';
+              return "Circular structure in object"
             }
-          } else if (typeof arg === 'undefined') {
-            return 'undefined';
+          } else if (typeof arg === "undefined") {
+            return "undefined"
           } else {
-            return arg.toString(); // Handle other types directly
+            return arg.toString() // Handle other types directly
           }
-        });
-        consoleOutput.push(formattedArgs.join(' ')); // Capture log messages
-      }
+        })
+        consoleOutput.push(formattedArgs.join(" ")) // Capture log messages
+      },
     },
     expect: chai.expect,
     _: _,
-    moment: moment
-  };
+    moment: moment,
+  }
 
   try {
-    const script = new vm.Script(code);
-    script.runInNewContext(context);
-    sandbox.environment.updateCallback();
-    const environment = context.hm.environment.getEnvironment();
-    const request = context.hm.request.getRequest();
-    const tests = context.hm.testcases;
-    return { success: true, data: { environment, request, tests, consoleOutput } }; // Include consoleOutput in the returned data
+    const script = new vm.Script(code)
+    script.runInNewContext(context)
+    sandbox.environment.updateCallback()
+    const environment = context.hm.environment.getEnvironment()
+    const request = context.hm.request.getRequest()
+    const tests = context.hm.testcases
+    return { success: true, data: { environment, request, tests, consoleOutput } } // Include consoleOutput in the returned data
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false, error: error.message }
   }
 }
-
-
 
 export function initialize({ request, environment, response }) {
   if (environment) environment = new Environment(environment.value, environment.callback)
@@ -199,5 +197,5 @@ export function initialize({ request, environment, response }) {
 
 export default {
   run,
-  initialize
+  initialize,
 }

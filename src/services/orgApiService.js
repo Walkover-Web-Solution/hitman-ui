@@ -1,7 +1,7 @@
-import http from './httpService'
-import { redirectToDashboard, getDataFromProxyAndSetDataToLocalStorage } from '../components/common/utility'
-import { getOrgList, orgListKey, getCurrentOrg, currentOrgKey } from '../components/auth/authServiceV2'
-import { toast } from 'react-toastify'
+import http from "./httpService"
+import { redirectToDashboard, getDataFromProxyAndSetDataToLocalStorage } from "../components/common/utility"
+import { getOrgList, orgListKey, getCurrentOrg, currentOrgKey } from "../components/auth/authServiceV2"
+import { toast } from "react-toastify"
 const apiBaseUrl = process.env.REACT_APP_API_URL
 const proxyUrl = process.env.REACT_APP_PROXY_URL
 
@@ -11,7 +11,7 @@ export function getOrgUpdatedAt(orgId) {
 
 export function updateOrgDataByOrgId(OrgId) {
   const data = getOrgList()
-  let currentOrganisation;
+  let currentOrganisation
 
   const targetIndex = data.findIndex((obj) => obj.id === OrgId)
   currentOrganisation = data[targetIndex]
@@ -21,22 +21,22 @@ export function updateOrgDataByOrgId(OrgId) {
 
 export async function switchOrg(orgId) {
   try {
-    await http.post(proxyUrl + '/switchCompany', { company_ref_id: orgId })
+    await http.post(proxyUrl + "/switchCompany", { company_ref_id: orgId })
     updateOrgDataByOrgId(orgId)
     redirectToDashboard(orgId)
   } catch (error) {
-    console.error('Error while calling switchCompany API:', error)
+    console.error("Error while calling switchCompany API:", error)
   }
 }
 
 async function createOrganizationAndRunCode() {
-  toast.success('Organization Successfully Created')
+  toast.success("Organization Successfully Created")
 }
 
 export async function createOrg(name) {
   try {
     const data = { company: { name: name } }
-    const newOrg = await http.post(proxyUrl + '/createCompany', data)
+    const newOrg = await http.post(proxyUrl + "/createCompany", data)
     const org = getCurrentOrg()
     updateOrgDataByOrgId(org.id)
     await getDataFromProxyAndSetDataToLocalStorage()
@@ -48,18 +48,18 @@ export async function createOrg(name) {
 }
 
 export async function inviteMembers(name, email) {
-  try{
+  try {
     const data = {
       user: {
         name: name,
-        email: email
-      }
+        email: email,
+      },
     }
-    const res = await http.post(proxyUrl + '/addUser', data)
-    toast.success('User added successfully')
+    const res = await http.post(proxyUrl + "/addUser", data)
+    toast.success("User added successfully")
     return res
   } catch (e) {
     console.error(e)
-    toast.error('Cannot proceed at the moment. Please try again later')
+    toast.error("Cannot proceed at the moment. Please try again later")
   }
 }

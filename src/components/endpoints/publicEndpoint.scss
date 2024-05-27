@@ -1,5 +1,5 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
-@import '../main/variables.scss';
+@import "../main/variables.scss";
 
 $border-color: rgba(227, 228, 230, 0.7);
 .public-generic-table-container {
@@ -42,7 +42,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       padding: 12px 30px;
       .user-details-heading {
         &:after {
-          content: '\f0d8'; // UP caret
+          content: "\f0d8"; // UP caret
         }
       }
     }

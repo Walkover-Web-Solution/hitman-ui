@@ -1,14 +1,14 @@
-import React, { Component } from 'react'
-import './publicEndpoint.scss'
-import DisplayBodyDescription from './displayBodyDescription'
-import bodyDescriptionService from './bodyDescriptionService'
-import { rawTypesEnums } from '../common/bodyTypeEnums'
+import React, { Component } from "react"
+import "./publicEndpoint.scss"
+import DisplayBodyDescription from "./displayBodyDescription"
+import bodyDescriptionService from "./bodyDescriptionService"
+import { rawTypesEnums } from "../common/bodyTypeEnums"
 
 class BodyDescription extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      bodyDescription: null
+      bodyDescription: null,
     }
   }
 
@@ -16,9 +16,9 @@ class BodyDescription extends Component {
     if (bodyDescriptionService.parseBody(this.props.body)) {
       bodyDescriptionService.handleUpdate(false, this.props)
     } else {
-      if (this.props.body === '') {
-        bodyDescriptionService.handleUpdate(true, this.props, 'Empty json body')
-      } else bodyDescriptionService.handleUpdate(true, this.props, 'Please Enter Valid JSON')
+      if (this.props.body === "") {
+        bodyDescriptionService.handleUpdate(true, this.props, "Empty json body")
+      } else bodyDescriptionService.handleUpdate(true, this.props, "Please Enter Valid JSON")
     }
   }
 

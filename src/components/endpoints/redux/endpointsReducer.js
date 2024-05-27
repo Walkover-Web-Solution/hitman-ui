@@ -1,8 +1,8 @@
-import endpointsActionTypes from './endpointsActionTypes'
-import { toast } from 'react-toastify'
-import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
-import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
-import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
+import endpointsActionTypes from "./endpointsActionTypes"
+import { toast } from "react-toastify"
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes"
+import collectionActionTypes from "../../collections/redux/collectionsActionTypes"
+import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes"
 
 const initialState = {}
 
@@ -18,7 +18,7 @@ function endpointsReducer(state = initialState, action) {
       toast.error(action.error)
       return {
         ...state,
-        [action.originalEndpoint.id]: action.originalEndpoint
+        [action.originalEndpoint.id]: action.originalEndpoint,
       }
     case versionActionTypes.ON_VERSION_DUPLICATED:
       return { ...state, ...action.response.endpoints }

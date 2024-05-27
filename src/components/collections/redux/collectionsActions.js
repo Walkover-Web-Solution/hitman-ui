@@ -1,12 +1,12 @@
-import { store } from '../../../store/store'
-import collectionsApiService from '../collectionsApiService'
-import collectionsActionTypes from './collectionsActionTypes'
-import openApiService from '../../openApi/openApiService'
-import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
-import { onParentPageAdded } from '../../pages/redux/pagesActions'
-import { toast } from 'react-toastify'
-import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
-import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { store } from "../../../store/store"
+import collectionsApiService from "../collectionsApiService"
+import collectionsActionTypes from "./collectionsActionTypes"
+import openApiService from "../../openApi/openApiService"
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes"
+import { onParentPageAdded } from "../../pages/redux/pagesActions"
+import { toast } from "react-toastify"
+import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from "../../common/utility"
+import bulkPublishActionTypes from "../../publishSidebar/redux/bulkPublishActionTypes"
 
 export const fetchCollections = (orgId) => {
   return (dispatch) => {
@@ -24,14 +24,14 @@ export const fetchCollections = (orgId) => {
 export const onCollectionsFetched = (collections) => {
   return {
     type: collectionsActionTypes.ON_COLLECTIONS_FETCHED,
-    collections
+    collections,
   }
 }
 
 export const onCollectionsFetchedError = (error) => {
   return {
     type: collectionsActionTypes.ON_COLLECTIONS_FETCHED_ERROR,
-    error
+    error,
   }
 }
 
@@ -60,8 +60,8 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
             id: response.data.rootParentId,
             type: 0,
             child: [],
-            collectionId: response.data.id
-          }
+            collectionId: response.data.id,
+          },
         }
         dispatch(onParentPageAdded(inivisiblePageData))
         toast.success("Collection added successfully")
@@ -84,14 +84,14 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
 export const addCollectionRequest = (newCollection) => {
   return {
     type: collectionsActionTypes.ADD_COLLECTION_REQUEST,
-    newCollection
+    newCollection,
   }
 }
 
 export const onCollectionAdded = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_ADDED,
-    response
+    response,
   }
 }
 
@@ -99,7 +99,7 @@ export const onCollectionAddedError = (error, newCollection) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_ADDED_ERROR,
     newCollection,
-    error
+    error,
   }
 }
 
@@ -116,7 +116,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
       .updateCollection(id, editedCollection)
       .then((response) => {
         dispatch(onCollectionUpdated(response.data))
-        toast.success('Updated successfully')
+        toast.success("Updated successfully")
         if (stopLoader) {
           stopLoader()
         }
@@ -135,14 +135,14 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
 export const updateCollectionRequest = (editedCollection) => {
   return {
     type: collectionsActionTypes.UPDATE_COLLECTION_REQUEST,
-    editedCollection
+    editedCollection,
   }
 }
 
 export const onCollectionUpdated = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_UPDATED,
-    response
+    response,
   }
 }
 
@@ -150,7 +150,7 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_UPDATED_ERROR,
     error,
-    originalCollection
+    originalCollection,
   }
 }
 
@@ -169,14 +169,14 @@ export const deleteCollection = (collection) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
-            toast.success('Collection deleted successfully')
+            toast.success("Collection deleted successfully")
           })
           .catch((error) => {
-            console.error('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)
+            console.error("error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ", error)
           })
       })
       .catch((error) => {
-        console.error('error', error)
+        console.error("error", error)
         dispatch(onCollectionDeletedError(error.response, collection))
       })
   }
@@ -185,14 +185,14 @@ export const deleteCollection = (collection) => {
 export const deleteCollectionRequest = (collection) => {
   return {
     type: collectionsActionTypes.DELETE_COLLECTION_REQUEST,
-    collection
+    collection,
   }
 }
 
 export const onCollectionDeleted = (payload) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DELETED,
-    payload
+    payload,
   }
 }
 
@@ -200,14 +200,14 @@ export const onCollectionDeletedError = (error, collection) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DELETED_ERROR,
     error,
-    collection
+    collection,
   }
 }
 
 export const moveCollection = (collection) => {
   return {
     type: collectionsActionTypes.MOVE_COLLECTION,
-    payload:collection
+    payload: collection,
   }
 }
 
@@ -228,14 +228,14 @@ export const duplicateCollection = (collection) => {
 export const onCollectionDuplicated = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DUPLICATED,
-    response
+    response,
   }
 }
 // To do later
 export const onCollectionDuplicatedError = (error) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR,
-    error
+    error,
   }
 }
 
@@ -246,7 +246,7 @@ export const addCustomDomain = (collectionId, domain) => {
       collection.docProperties.domainsList = []
     }
     collection.docProperties.domainsList.push({
-      domain
+      domain,
     })
     dispatch(updateCollectionRequest({ ...collection }))
 
@@ -266,12 +266,12 @@ export const addCustomDomain = (collectionId, domain) => {
 export const importApi = (collection, importType, website, customCallback, defaultView) => {
   collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
-    if (importType === 'postman') {
+    if (importType === "postman") {
       openApiService
         .importPostmanCollection(collection, website, defaultView)
         .then((response) => {
           dispatch(onCollectionImported(response.data))
-          toast.success('Collection imported successfully')
+          toast.success("Collection imported successfully")
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
@@ -284,7 +284,7 @@ export const importApi = (collection, importType, website, customCallback, defau
         .importApi(collection, defaultView)
         .then((response) => {
           dispatch(onCollectionImported(response?.data))
-          toast.success('Collection imported successfully')
+          toast.success("Collection imported successfully")
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
@@ -299,14 +299,14 @@ export const importApi = (collection, importType, website, customCallback, defau
 export const saveImportedVersion = (response) => {
   return {
     type: versionActionTypes.IMPORT_VERSION,
-    response
+    response,
   }
 }
 
 export const onVersionsFetchedError = (error) => {
   return {
     type: versionActionTypes.ON_VERSIONS_FETCHED_ERROR,
-    error
+    error,
   }
 }
 // To do later
@@ -329,7 +329,7 @@ export const importCollection = (collection, customCallback) => {
 export const importCollectionRequest = (collection) => {
   return {
     type: collectionsActionTypes.IMPORT_COLLECTION_REQUEST,
-    collection
+    collection,
   }
 }
 // To do later
@@ -337,7 +337,7 @@ export const onCollectionImported = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_IMPORTED,
     collection: response.collection,
-    pages: response.pages
+    pages: response.pages,
   }
 }
 // To do later
@@ -345,6 +345,6 @@ export const onCollectionImportedError = (error, collection) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR,
     collection,
-    error
+    error,
   }
 }

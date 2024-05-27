@@ -1,23 +1,23 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { Route, Switch } from 'react-router-dom'
-import 'react-toastify/dist/ReactToastify.css'
-import DisplayEndpoint from '../endpoints/displayEndpoint'
-import DisplayPage from '../pages/displayPage'
-import SideBarV2 from '../main/sideBarV2'
-import { ERROR_404_PUBLISHED_PAGE } from '../../components/errorPages'
-import '../collections/collections.scss'
-import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
-import './publicEndpoint.scss'
-import SplitPane from '../splitPane/splitPane.js'
-import '../collectionVersions/collectionVersions.scss'
-import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
-import { Style } from 'react-style-tag'
-import { Modal } from 'react-bootstrap'
-import { addCollectionAndPages } from '../redux/generalActions'
-import generalApiService from '../../services/generalApiService'
-import { useQueryClient, useMutation } from 'react-query'
-import { MdDehaze, MdClose } from "react-icons/md";
+import React, { Component } from "react"
+import { connect } from "react-redux"
+import { Route, Switch } from "react-router-dom"
+import "react-toastify/dist/ReactToastify.css"
+import DisplayEndpoint from "../endpoints/displayEndpoint"
+import DisplayPage from "../pages/displayPage"
+import SideBarV2 from "../main/sideBarV2"
+import { ERROR_404_PUBLISHED_PAGE } from "../../components/errorPages"
+import "../collections/collections.scss"
+import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js"
+import "./publicEndpoint.scss"
+import SplitPane from "../splitPane/splitPane.js"
+import "../collectionVersions/collectionVersions.scss"
+import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY } from "../common/utility"
+import { Style } from "react-style-tag"
+import { Modal } from "react-bootstrap"
+import { addCollectionAndPages } from "../redux/generalActions"
+import generalApiService from "../../services/generalApiService"
+import { useQueryClient, useMutation } from "react-query"
+import { MdDehaze, MdClose } from "react-icons/md"
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -38,21 +38,14 @@ const withQuery = (WrappedComponent) => {
       },
       {
         onSuccess: (data) => {
-          queryClient.setQueryData([data.type, data.id], data?.content || '', {
+          queryClient.setQueryData([data.type, data.id], data?.content || "", {
             staleTime: Number.MAX_SAFE_INTEGER, // Set staleTime to a large value
-            retry: 2
+            retry: 2,
           })
-        }
-      }
+        },
+      },
     )
-    return (
-      <WrappedComponent
-        {...props}
-        setQueryUpdatedData={setQueryUpdatedData}
-        mutationFn={mutation}
-        keyExistInReactQuery={keyExistInReactQuery}
-      />
-    )
+    return <WrappedComponent {...props} setQueryUpdatedData={setQueryUpdatedData} mutationFn={mutation} keyExistInReactQuery={keyExistInReactQuery} />
   }
 }
 
@@ -61,46 +54,44 @@ const mapStateToProps = (state) => {
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetch_all_public_endpoints: (collectionIdentifier, domain) =>
-      dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain)),
-    add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams))
+    fetch_all_public_endpoints: (collectionIdentifier, domain) => dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain)),
+    add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams)),
   }
 }
 
 class PublicEndpoint extends Component {
   constructor() {
- super()
- this.state = {
-  publicCollectionId: '',
-    collectionName: '',
-    collectionTheme: null,
-   isNavBar: false,
-   isSticky: false,
-   likeActive: false,
-   dislikeActive: false,
-   review: {
-    feedback: {},
-    endpoint: {}
-    },
-    openReviewModal: false,
-    idToRenderState: null,
+    super()
+    this.state = {
+      publicCollectionId: "",
+      collectionName: "",
+      collectionTheme: null,
+      isNavBar: false,
+      isSticky: false,
+      likeActive: false,
+      dislikeActive: false,
+      review: {
+        feedback: {},
+        endpoint: {},
+      },
+      openReviewModal: false,
+      idToRenderState: null,
     }
- this.iconRef = React.createRef()
- this.hamburgerIconRef = React.createRef()
- this.logoName = React.createRef()
- this.closeIconRef = React.createRef()
+    this.iconRef = React.createRef()
+    this.hamburgerIconRef = React.createRef()
+    this.logoName = React.createRef()
+    this.closeIconRef = React.createRef()
   }
-
 
   async componentDidMount() {
     // [info] => part 1 scroll options
-    window.addEventListener('scroll', () => {
+    window.addEventListener("scroll", () => {
       let sticky = false
       if (window.scrollY > 20) {
         sticky = true
@@ -116,8 +107,8 @@ class PublicEndpoint extends Component {
     }
 
     // even if user copy paste other published collection with collection Id in the params change it
-    if (queryParams?.has('collectionId')) {
-      var collectionId = queryParams.get('collectionId')
+    if (queryParams?.has("collectionId")) {
+      var collectionId = queryParams.get("collectionId")
       sessionStorage.setItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID, collectionId)
     } else if (sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID) != null) {
       var collectionId = sessionStorage.getItem(SESSION_STORAGE_KEY.PUBLIC_COLLECTION_ID)
@@ -132,7 +123,7 @@ class PublicEndpoint extends Component {
       // internal case here collectionId will be there always
       queryParamApi2.collectionId = collectionId
       queryParamApi2.path = url.pathname.slice(3) // ignoring '/p/' in pathName
-      this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true})
+      this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true })
     } else if (!isTechdocOwnDomain()) {
       // external case
       queryParamApi2.custom_domain = window.location.hostname // setting hostname
@@ -141,11 +132,11 @@ class PublicEndpoint extends Component {
     }
 
     // setting version if present
-    if (queryParams?.has('version')) {
-      queryParamApi2.versionName = queryParams.get('version')
+    if (queryParams?.has("version")) {
+      queryParamApi2.versionName = queryParams.get("version")
     }
 
-    let queryParamsString = '?'
+    let queryParamsString = "?"
     for (let key in queryParamApi2) {
       if (queryParamApi2.hasOwnProperty(key)) {
         // Check if the property belongs to the object (not inherited)
@@ -156,18 +147,16 @@ class PublicEndpoint extends Component {
     // Remove the last '&' character
     queryParamsString = queryParamsString.slice(0, -1)
 
-    try{
+    try {
       const response = await generalApiService.getPublishedContentByPath(queryParamsString)
       this.setDataToReactQueryAndSessionStorage(response)
-    }catch(e){
-      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, 'undefined')
-      this.setState({ idToRenderState: 'undefined' })
+    } catch (e) {
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, "undefined")
+      this.setState({ idToRenderState: "undefined" })
     }
-    
   }
 
   async componentDidUpdate(prevState) {
-
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     // before this display page or display endpoint gets called and data gets rendered
     if (!this.props.keyExistInReactQuery(currentIdToShow)) {
@@ -179,7 +168,6 @@ class PublicEndpoint extends Component {
       }
     }
   }
-
 
   setDataToReactQueryAndSessionStorage(response) {
     if (response) {
@@ -195,7 +183,7 @@ class PublicEndpoint extends Component {
   }
 
   openLink(link) {
-    window.open(`${link}`, '_blank')
+    window.open(`${link}`, "_blank")
   }
 
   getCTALinks() {
@@ -211,7 +199,7 @@ class PublicEndpoint extends Component {
     const { cta, links, isCTAandLinksPresent } = this.getCTALinks()
     return (
       <>
-        <div className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'public-navbar d-flex'}>
+        <div className={this.state.isSticky ? "d-flex public-navbar stickyNav" : "public-navbar d-flex"}>
           {/* <div className='entityTitle'>
             {this.state.currentEntityName}
           </div> */}
@@ -236,7 +224,7 @@ class PublicEndpoint extends Component {
                     style={{
                       backgroundColor: this.state.collectionTheme,
                       borderColor: this.state.collectionTheme,
-                      color: this.state.collectionTheme
+                      color: this.state.collectionTheme,
                     }}
                     name={`cta-${index}`}
                     onClick={() => {
@@ -258,12 +246,11 @@ class PublicEndpoint extends Component {
     if (entityName) {
       this.setState({ currentEntityName: entityName })
     } else {
-      this.setState({ currentEntityName: '' })
+      this.setState({ currentEntityName: "" })
     }
   }
 
   toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal })
-
 
   reviewModal() {
     return (
@@ -288,11 +275,7 @@ class PublicEndpoint extends Component {
             </Modal.Body>
 
             <Modal.Footer>
-              <button
-                className='btn btn-custom-dark'
-                onClick={() => this.subscribeToExtendedLog()}
-                onHide={() => this.setState({ showExtendedLog: false })}
-              >
+              <button className='btn btn-custom-dark' onClick={() => this.subscribeToExtendedLog()} onHide={() => this.setState({ showExtendedLog: false })}>
                 Subscribe For Extended Log
               </button>
             </Modal.Footer>
@@ -310,9 +293,9 @@ class PublicEndpoint extends Component {
       const review = { ...this.state.review.endpoint }
       review.endpoint = this.props.match.params
       if (this.state.dislikeActive) {
-        review.feedback = 'disliked'
+        review.feedback = "disliked"
       }
-      window.localStorage.setItem('review', JSON.stringify(review))
+      window.localStorage.setItem("review", JSON.stringify(review))
     })
     this.toggleReviewModal()
   }
@@ -322,9 +305,9 @@ class PublicEndpoint extends Component {
       const review = { ...this.state.review }
       review.endpoint = this.props.match.params
       if (this.state.likeActive) {
-        review.feedback = 'liked'
+        review.feedback = "liked"
       }
-      window.localStorage.setItem('review', JSON.stringify(review))
+      window.localStorage.setItem("review", JSON.stringify(review))
     })
   }
 
@@ -345,30 +328,29 @@ class PublicEndpoint extends Component {
   }
 
   handleShowSideBar() {
-    const splitPaneElement = document.querySelector('.split-sidebar-public');
-    const hamburgerElement = document.querySelector('#hamburgerIcon');
-    const logoElement = document.querySelector('#logoName');
-    const closeElement = document.querySelector('#closeIcon');
+    const splitPaneElement = document.querySelector(".split-sidebar-public")
+    const hamburgerElement = document.querySelector("#hamburgerIcon")
+    const logoElement = document.querySelector("#logoName")
+    const closeElement = document.querySelector("#closeIcon")
     if (this.iconRef.current && splitPaneElement) {
-      if (this.iconRef.current.classList.contains('close-icon') && splitPaneElement.classList.contains('open')) {
-        this.iconRef.current.classList.remove('close-icon');
-        splitPaneElement.classList.remove('open');
-        closeElement.classList.add('icon-none');
-        hamburgerElement.classList.remove('icon-none');
+      if (this.iconRef.current.classList.contains("close-icon") && splitPaneElement.classList.contains("open")) {
+        this.iconRef.current.classList.remove("close-icon")
+        splitPaneElement.classList.remove("open")
+        closeElement.classList.add("icon-none")
+        hamburgerElement.classList.remove("icon-none")
         // logoElement.classList.remove('icon-none');
-      }
-      else {
-        this.iconRef.current.classList.add('close-icon');
-        splitPaneElement.classList.add('open');
-        hamburgerElement.classList.add('icon-none');
+      } else {
+        this.iconRef.current.classList.add("close-icon")
+        splitPaneElement.classList.add("open")
+        hamburgerElement.classList.add("icon-none")
         // logoElement.classList.add('icon-none');
-        closeElement.classList.remove('icon-none');
+        closeElement.classList.remove("icon-none")
       }
     }
   }
 
   render() {
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
     let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 1  set collection data
@@ -377,9 +359,7 @@ class PublicEndpoint extends Component {
     // [info] part 2 seems not necessary
     // TODO later
     if (collectionId) {
-      const docFaviconLink = this.props.collections[collectionId]?.favicon
-        ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
-        : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
+      const docFaviconLink = this.props.collections[collectionId]?.favicon ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}` : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
       const docTitle = this.props.collections[collectionId]?.docProperties?.defaultTitle
       setTitle(docTitle)
       setFavicon(docFaviconLink)
@@ -403,14 +383,23 @@ class PublicEndpoint extends Component {
         `}
         </Style>
         <nav className='public-endpoint-navbar'></nav>
-        <main
-          role='main'
-          className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
-        >
-        <span ref={this.iconRef} className={'hamberger-icon'}>
-          <MdDehaze id='hamburgerIcon' className='icon-active fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
-          <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
-          {/* <span className='logo-name' id="logoName"> 
+        <main role='main' className={this.state.isSticky ? "mainpublic-endpoint-main hm-wrapper stickyCode" : "mainpublic-endpoint-main hm-wrapper"}>
+          <span ref={this.iconRef} className={"hamberger-icon"}>
+            <MdDehaze
+              id='hamburgerIcon'
+              className='icon-active fs-4 fw-bold'
+              onClick={() => {
+                this.handleShowSideBar()
+              }}
+            />
+            <MdClose
+              id='closeIcon'
+              className='icon-none'
+              onClick={() => {
+                this.handleShowSideBar()
+              }}
+            />
+            {/* <span className='logo-name' id="logoName"> 
              {this.props.collections[collectionKeys[0]]?.favicon && (
                 <img
                     className='hamberger-img'
@@ -426,20 +415,20 @@ class PublicEndpoint extends Component {
                     height='20'
                   />
                  )} */}
-              {/* <span className="icon-name">{this.props.collections[collectionId]?.name}</span> */}
+            {/* <span className="icon-name">{this.props.collections[collectionId]?.name}</span> */}
 
             {/* </span> */}
             {/* Original icons */}
           </span>
           {/* [info] part 3 */}
-          <SplitPane split='vertical' className={'split-sidebar-public'}>
+          <SplitPane split='vertical' className={"split-sidebar-public"}>
             {/* [info] part 3 subpart 1 sidebar data left content */}
-            <div className={'hm-sidebar' + ( isTechdocOwnDomain() ? ' pb-5' : '')} style={{ backgroundColor: hexToRgb(collectionTheme, '0.04') }}>
+            <div className={"hm-sidebar" + (isTechdocOwnDomain() ? " pb-5" : "")} style={{ backgroundColor: hexToRgb(collectionTheme, "0.04") }}>
               {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
             </div>
             {/*  [info] part 3 subpart 1 sidebar data right content */}
             <div
-              className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
+              className={isCTAandLinksPresent ? "hm-right-content hasPublicNavbar" : "hm-right-content"}
               // style={{ backgroundColor: hexToRgb(collectionTheme, '0.05') }}
             >
               {idToRender ? (
@@ -453,27 +442,11 @@ class PublicEndpoint extends Component {
                   }}
                   className='display-component'
                 >
-                  {type == 4 && (
-                    <DisplayEndpoint
-                      {...this.props}
-                      fetch_entity_name={this.fetchEntityName.bind(this)}
-                      publicCollectionTheme={collectionTheme}
-                    />
-                  )}
+                  {type == 4 && <DisplayEndpoint {...this.props} fetch_entity_name={this.fetchEntityName.bind(this)} publicCollectionTheme={collectionTheme} />}
 
-                  {(type == 1 || type == 3) && (
-                    <DisplayPage
-                      {...this.props}
-                      fetch_entity_name={this.fetchEntityName.bind(this)}
-                      publicCollectionTheme={collectionTheme}
-                    />
-                  )}
+                  {(type == 1 || type == 3) && <DisplayPage {...this.props} fetch_entity_name={this.fetchEntityName.bind(this)} publicCollectionTheme={collectionTheme} />}
 
-                  {!type && idToRender == 'undefined' && (
-                    <ERROR_404_PUBLISHED_PAGE
-                      error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : 'Collection is not published'}
-                    />
-                  )}
+                  {!type && idToRender == "undefined" && <ERROR_404_PUBLISHED_PAGE error_msg={Object.keys(this.props?.pages)?.length > 1 ? null : "Collection is not published"} />}
 
                   {this.displayCTAandLink()}
                   {/* <div className='d-flex flex-row justify-content-start'>
@@ -484,8 +457,8 @@ class PublicEndpoint extends Component {
                 </div>
               ) : (
                 <>
-                <div className='custom-loading-container'>
-                <progress class="pure-material-progress-linear w-25"/>
+                  <div className='custom-loading-container'>
+                    <progress class='pure-material-progress-linear w-25' />
                   </div>
                 </>
               )}

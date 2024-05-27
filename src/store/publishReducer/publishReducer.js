@@ -1,8 +1,8 @@
-import publishReducerActionTypes from './publishReducerActionTypes'
+import publishReducerActionTypes from "./publishReducerActionTypes"
 
 const initialState = {
   forPublish: [],
-  forUnPublished: []
+  forUnPublished: [],
 }
 
 const publishReducer = (state = initialState, action) => {

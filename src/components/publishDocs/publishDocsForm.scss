@@ -1,5 +1,5 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
-@import '../main/variables.scss';
+@import "../main/variables.scss";
 
 .uploadBox {
   cursor: pointer;
@@ -93,7 +93,7 @@
     max-width: 18rem;
   }
   .cta-buton {
-    .form-group>div input:first-child {
+    .form-group > div input:first-child {
       max-width: 12rem;
     }
   }
@@ -119,9 +119,9 @@
   font-weight: 500;
 }
 
-.text-disable{
+.text-disable {
   color: #3b7837;
-  &:hover{
+  &:hover {
     text-decoration: underline;
   }
 }

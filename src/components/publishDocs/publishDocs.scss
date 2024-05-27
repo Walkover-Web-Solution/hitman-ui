@@ -1,5 +1,5 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
-@import '../main/variables.scss';
+@import "../main/variables.scss";
 .publish-docs-container {
   display: flex;
   flex-direction: column;
@@ -42,7 +42,7 @@
 .hosted-doc-heading {
   display: flex;
   justify-content: space-between;
-  font-family: 'proxima-nova', sans-serif;
+  font-family: "proxima-nova", sans-serif;
   font-style: normal;
   font-weight: 600;
   margin-bottom: 15px;
@@ -124,7 +124,7 @@
   }
 
   .contacts {
-    font-family: 'proxima-nova', sans-serif;
+    font-family: "proxima-nova", sans-serif;
     font-style: normal;
     font-weight: 600;
     font-size: 16px;
@@ -134,7 +134,7 @@
   }
 
   .list-contacts {
-    font-family: 'proxima-nova', sans-serif;
+    font-family: "proxima-nova", sans-serif;
     font-size: 18px;
     font-style: normal;
     font-weight: 600;
@@ -155,7 +155,7 @@
     }
 
     .default {
-      font-family: 'proxima-nova', sans-serif;
+      font-family: "proxima-nova", sans-serif;
       font-style: normal;
       font-weight: normal;
       font-size: 14px;
@@ -166,7 +166,7 @@
 }
 
 .title {
-  font-family: 'proxima-nova', sans-serif;
+  font-family: "proxima-nova", sans-serif;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -275,7 +275,7 @@ span.tag {
     height: 100%;
     top: 0;
     position: absolute;
-    content: '';
+    content: "";
     left: 20px;
     width: 2px;
     background: #e0e0e0;

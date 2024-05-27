@@ -1,24 +1,24 @@
-import React from 'react'
-import { Modal, Spinner } from 'react-bootstrap'
-import Joi from 'joi-browser'
-import Form from '../../common/form'
-import { toTitleCase, onEnter, DEFAULT_URL } from '../../common/utility'
-import shortid from 'shortid'
-import { connect } from 'react-redux'
-import { moveToNextStep } from '../../../services/widgetService'
-import { URL_VALIDATION_REGEX } from '../../common/constants'
-import DefaultViewModal from '../../collections/defaultViewModal/defaultViewModal'
-import { addPage } from '../../pages/redux/pagesActions'
+import React from "react"
+import { Modal, Spinner } from "react-bootstrap"
+import Joi from "joi-browser"
+import Form from "../../common/form"
+import { toTitleCase, onEnter, DEFAULT_URL } from "../../common/utility"
+import shortid from "shortid"
+import { connect } from "react-redux"
+import { moveToNextStep } from "../../../services/widgetService"
+import { URL_VALIDATION_REGEX } from "../../common/constants"
+import DefaultViewModal from "../../collections/defaultViewModal/defaultViewModal"
+import { addPage } from "../../pages/redux/pagesActions"
 
 const mapStateToProps = (state) => {
   return {
-    collections: state.collections
+    collections: state.collections,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage))
+    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage)),
   }
 }
 
@@ -27,20 +27,20 @@ class PageEndpointForm extends Form {
     super(props)
     this.state = {
       data: {
-        name: ''
+        name: "",
       },
-      collectionId: '',
+      collectionId: "",
       errors: {},
       show: true,
       step: 1,
       viewLoader: {
         testing: false,
-        doc: false
+        doc: false,
       },
-      updating: false
+      updating: false,
     }
     this.schema = {
-      name: Joi.string().required().label('Page name')
+      name: Joi.string().required().label("Page name"),
     }
   }
 
@@ -55,20 +55,14 @@ class PageEndpointForm extends Form {
       ...data,
       requestId: shortid.generate(),
       versionId: this.props.pageType === 1 ? shortid.generate() : null,
-      pageType: this.props.pageType
+      pageType: this.props.pageType,
     }
     this.props.add_page(rootParentId, newPage)
     moveToNextStep(1)
   }
 
   renderDefaultViewForm() {
-    return (
-      <DefaultViewModal
-        viewLoader={this.state.viewLoader}
-        saveCollection={this.saveCollection.bind(this)}
-        onHide={() => this.props.onHide()}
-      />
-    )
+    return <DefaultViewModal viewLoader={this.state.viewLoader} saveCollection={this.saveCollection.bind(this)} onHide={() => this.props.onHide()} />
   }
 
   renderForm() {
@@ -88,14 +82,7 @@ class PageEndpointForm extends Form {
           onEnter(e, this.handleKeyPress.bind(this))
         }}
       >
-        <Modal
-          size='sm'
-          animation={false}
-          aria-labelledby='contained-modal-title-vcenter'
-          centered
-          onHide={this.props.onHide}
-          show={this.props.show}
-        >
+        <Modal size='sm' animation={false} aria-labelledby='contained-modal-title-vcenter' centered onHide={this.props.onHide} show={this.props.show}>
           <div>
             <Modal.Header className='custom-collection-modal-container' closeButton>
               <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>

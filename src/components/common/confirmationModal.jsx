@@ -1,5 +1,5 @@
-import React from 'react'
-import { Modal } from 'react-bootstrap'
+import React from "react"
+import { Modal } from "react-bootstrap"
 
 function ConfirmationModal(props) {
   function handleSave() {
@@ -14,11 +14,11 @@ function ConfirmationModal(props) {
       <Modal.Body id='custom-delete-modal-body'>
         <div className='text-left mt-4 mb-2'>
           <button id='custom-delete-modal-delete' className='btn btn-primary btn-sm fs-4' onClick={() => handleSave()}>
-            {props.submitButton || 'Yes'}
+            {props.submitButton || "Yes"}
           </button>
 
           <button id='custom-delete-modal-cancel' className='btn btn-danger btn-sm fs-4 ml-2' onClick={() => props.onHide()}>
-            {props.rejectButton || 'No'}
+            {props.rejectButton || "No"}
           </button>
         </div>
       </Modal.Body>

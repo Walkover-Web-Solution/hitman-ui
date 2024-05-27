@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
-import './publishDocsConfirmModal.scss'
+import React, { Component } from "react"
+import { Modal } from "react-bootstrap"
+import "./publishDocsConfirmModal.scss"
 
 class PublishDocsConfirmModal extends Component {
   state = {}
@@ -9,7 +9,7 @@ class PublishDocsConfirmModal extends Component {
     if (collectionId) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collectionId}`
+        search: `?collectionId=${collectionId}`,
       })
     }
     this.props.onHide()
@@ -31,7 +31,7 @@ class PublishDocsConfirmModal extends Component {
           <Modal.Body>
             <ul>
               <li>Publish the endpoints you wish to make public.</li>
-              <li>{' Publish the collection, once you are finished with the above step.'}</li>
+              <li>{" Publish the collection, once you are finished with the above step."}</li>
             </ul>
 
             <button

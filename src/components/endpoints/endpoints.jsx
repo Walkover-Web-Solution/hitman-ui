@@ -1,44 +1,44 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
-import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
-import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
-import tabService from '../tabs/tabService'
-import tabStatusTypes from '../tabs/tabStatusTypes'
-import './endpoints.scss'
-import { deleteEndpoint, duplicateEndpoint, addEndpoint } from './redux/endpointsActions'
+import React, { Component } from "react"
+import { withRouter } from "react-router-dom"
+import { connect } from "react-redux"
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from "../common/utility"
+import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from "../publicEndpoint/redux/publicEndpointsActions"
+import { closeTab, openInNewTab } from "../tabs/redux/tabsActions"
+import tabService from "../tabs/tabService"
+import tabStatusTypes from "../tabs/tabStatusTypes"
+import "./endpoints.scss"
+import { deleteEndpoint, duplicateEndpoint, addEndpoint } from "./redux/endpointsActions"
 // import GlobeIcon from '../../assets/icons/globe-icon.svg'
-import AddEntity from '../main/addEntity/addEntity'
-import { updataForIsPublished } from '../../store/clientData/clientDataActions'
-import SubPageForm from '../groups/subPageForm'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import { ReactComponent as Duplicate } from '../../assets/icons/duplicateSign.svg'
-import { ReactComponent as Approved } from '../../assets/icons/approvedSign.svg'
-import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.svg'
-import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
-import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
-import endpointService from './endpointService'
-import { bodyTypesEnums } from '../common/bodyTypeEnums'
-import  IconButtons  from '../common/iconButton'
+import AddEntity from "../main/addEntity/addEntity"
+import { updataForIsPublished } from "../../store/clientData/clientDataActions"
+import SubPageForm from "../groups/subPageForm"
+import { ReactComponent as DeleteIcon } from "../../assets/icons/delete-icon.svg"
+import { ReactComponent as Duplicate } from "../../assets/icons/duplicateSign.svg"
+import { ReactComponent as Approved } from "../../assets/icons/approvedSign.svg"
+import { ReactComponent as MakePublic } from "../../assets/icons/makePublicSign.svg"
+import { ReactComponent as CancelRequest } from "../../assets/icons/cancelRequest.svg"
+import { ReactComponent as RenamedItem } from "../../assets/icons/renameSign.svg"
+import endpointService from "./endpointService"
+import { bodyTypesEnums } from "../common/bodyTypeEnums"
+import IconButtons from "../common/iconButton"
 import { BsThreeDots } from "react-icons/bs"
-import { GrGraphQl } from 'react-icons/gr'
-import '../../../src/components/styles.scss'
-import { importPostmanEnvironment } from '../environments/environmentsApiService'
+import { GrGraphQl } from "react-icons/gr"
+import "../../../src/components/styles.scss"
+import { importPostmanEnvironment } from "../environments/environmentsApiService"
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
   PENDING_STATE: 0,
   REJECT_STATE: 3,
   APPROVED_STATE: 2,
-  DRAFT_STATE: 1
+  DRAFT_STATE: 1,
 }
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.pages,
     tabs: state.tabs,
-    clientData: state.clientData
+    clientData: state.clientData,
   }
 }
 
@@ -54,8 +54,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
-    import_postman_environment: (openApiObject, importType, website, callback, view) =>
-    dispatch(importPostmanEnvironment(openApiObject, importType, website, callback, view))
+    import_postman_environment: (openApiObject, importType, website, callback, view) => dispatch(importPostmanEnvironment(openApiObject, importType, website, callback, view)),
   }
 }
 
@@ -63,15 +62,15 @@ class Endpoints extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      endpointState: 'Make Public',
-      theme: '',
+      endpointState: "Make Public",
+      theme: "",
       checkboxChecked: false,
       showEndpointForm: {
         addPage: false,
         edit: false,
         share: false,
         delete: false,
-      }
+      },
     }
   }
 
@@ -98,20 +97,20 @@ class Endpoints extends Component {
 
   openEditEndpointForm(selectedEndpoint) {
     this.setState({
-      showEndpointForm: { edit: true},
+      showEndpointForm: { edit: true },
       selectedEndpoint: {
-        ...this.props.endpoints[selectedEndpoint]
-      }
+        ...this.props.endpoints[selectedEndpoint],
+      },
     })
   }
 
   openDeleteEndpointModal(endpointId) {
     this.setState({
       showEndpointForm: { delete: true },
-      selectedEndpoint: { ...this.props.endpoints[endpointId] }
+      selectedEndpoint: { ...this.props.endpoints[endpointId] },
     })
   }
-  
+
   closeDeleteEndpointModal() {
     this.setState({ showEndpointForm: { delete: false } })
   }
@@ -142,21 +141,21 @@ class Endpoints extends Component {
         if (previewTabId) this.props.close_tab(previewTabId)
         this.props.open_in_new_tab({
           id: endpoint.id,
-          type: 'endpoint',
+          type: "endpoint",
           status: tabStatusTypes.SAVED,
           previewMode,
           isModified: false,
-          state: {}
+          state: {},
         })
       } else if (this.props.tabs.tabs[endpoint.id].previewMode === true && previewMode === false) {
         tabService.disablePreviewMode(endpoint.id)
       }
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${endpoint.id}`,
-        title: 'update endpoint',
+        title: "update endpoint",
         endpoint: endpoint,
         groupId: groupId,
-        collectionId
+        collectionId,
       })
     } else {
       let id = endpoint?.id
@@ -170,10 +169,7 @@ class Endpoints extends Component {
   extractEndpoints() {
     const endpoints = {}
     for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
-      if (
-        this.props.endpoints[Object.keys(this.props.endpoints)[i]].parentId &&
-        this.props.endpoints[Object.keys(this.props.endpoints)[i]].parentId === this.props.parent_id
-      ) {
+      if (this.props.endpoints[Object.keys(this.props.endpoints)[i]].parentId && this.props.endpoints[Object.keys(this.props.endpoints)[i]].parentId === this.props.parent_id) {
         endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[Object.keys(this.props.endpoints)[i]]
       }
     }
@@ -184,7 +180,7 @@ class Endpoints extends Component {
   handleCheckboxChange = () => {
     this.props.setIsCheckForParenPage({
       id: this.props?.endpointId,
-      isChecked: !this.props?.clientData?.[this?.props?.endpointId]?.checkedForPublished
+      isChecked: !this.props?.clientData?.[this?.props?.endpointId]?.checkedForPublished,
     })
   }
 
@@ -214,26 +210,18 @@ class Endpoints extends Component {
 
   displayEndpointName(endpointId) {
     let isUserOnPublishedPage = isOnPublishedPage()
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem("currentPublishIdToShow") === endpointId ? "selected" : isDashboardRoute && this.props.match.params.endpointId === endpointId ? "selected" : ""
     return (
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
           <div className='sidebar-accordion-item'>
-            <input
-              type='checkbox'
-              checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
-              onChange={this.handleCheckboxChange}
-            />
-            {this.props.endpointContent.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
-              {this.props.endpoints[endpointId].requestType}
-            </div>}
+            <input type='checkbox' checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false} onChange={this.handleCheckboxChange} />
+            {this.props.endpointContent.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>{this.props.endpoints[endpointId].requestType}</div>}
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         ) : (
-          <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`}>
-            {this.props?.endpoints[endpointId]?.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
-              {this.props.endpoints[endpointId].requestType}
-            </div>}
+          <div className={`sidebar-accordion-item ${isSelected ? "Selected" : ""}`}>
+            {this.props?.endpoints[endpointId]?.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>{this.props.endpoints[endpointId].requestType}</div>}
             {this.props?.endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
@@ -245,8 +233,8 @@ class Endpoints extends Component {
   displayDeleteOpt(endpointId) {
     return (
       <div className='dropdown-item text-danger d-flex' onClick={() => this.openDeleteEndpointModal(endpointId)}>
-      <DeleteIcon /> Delete
-    </div>
+        <DeleteIcon /> Delete
+      </div>
     )
   }
 
@@ -300,7 +288,9 @@ class Endpoints extends Component {
     return (
       <div className='sidebar-item-action'>
         <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-        <IconButtons><BsThreeDots /></IconButtons>
+          <IconButtons>
+            <BsThreeDots />
+          </IconButtons>
         </div>
 
         <div className='dropdown-menu dropdown-menu-right'>
@@ -336,48 +326,42 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint(endpointId) {
-    const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
+    const idToCheck = this.props.location.pathname.split("/")[4] === "endpoint" ? this.props.location.pathname.split("/")[5] : null
     let isUserOnPublishedPage = isOnPublishedPage()
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem("currentPublishIdToShow") === endpointId ? "selected" : isDashboardRoute && this.props.match.params.endpointId === endpointId ? "selected" : ""
     return (
       <>
-        <div 
-        key={endpointId} 
-        draggable={!isUserOnPublishedPage}
-        onDragOver={this.props.handleOnDragOver}
-        onDragStart={() => this.props.onDragStart(endpointId)}
-        onDrop={(e) => this.props.onDrop(e, endpointId)}
-        onDragEnter = {(e) => this.props.onDragEnter(e, endpointId)}
-        onDragEnd = {(e) => this.props.onDragEnd(e)}
-        style={this.props.draggingOverId === endpointId ? { borderTop:'3px solid red'}: null}
+        <div
+          key={endpointId}
+          draggable={!isUserOnPublishedPage}
+          onDragOver={this.props.handleOnDragOver}
+          onDragStart={() => this.props.onDragStart(endpointId)}
+          onDrop={(e) => this.props.onDrop(e, endpointId)}
+          onDragEnter={(e) => this.props.onDragEnter(e, endpointId)}
+          onDragEnd={(e) => this.props.onDragEnd(e)}
+          style={this.props.draggingOverId === endpointId ? { borderTop: "3px solid red" } : null}
         >
           <div className={this.props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between mt-1'>
             <button>
-            <div className={`side-bar d-flex ${isSelected ? 'Selected' : ''}`}>
-            <button
-              tabIndex={-1}
-              onClick={() => {
-                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
-              }}
-              onDoubleClick={() =>
-                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
-              }
-            >
-              
-              {this.displayEndpointName(endpointId)}
-              
-            </button>
-              <div className='d-flex align-items-center'>
-                {isDashboardRoute(this.props, true) &&
-                  !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
-                  this.displayEndpointOptions(endpointId)}
-                {/* <div className='ml-1 published-icon transition'>
+              <div className={`side-bar d-flex ${isSelected ? "Selected" : ""}`}>
+                <button
+                  tabIndex={-1}
+                  onClick={() => {
+                    this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
+                  }}
+                  onDoubleClick={() => this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)}
+                >
+                  {this.displayEndpointName(endpointId)}
+                </button>
+                <div className='d-flex align-items-center'>
+                  {isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
+                  {/* <div className='ml-1 published-icon transition'>
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
+                </div>
               </div>
-              </div>
-              </button>
+            </button>
           </div>
         </div>
       </>
@@ -390,23 +374,17 @@ class Endpoints extends Component {
 
   renderForm() {
     const endpoint = {
-      uri: '',
-      name: '',
-      requestType: 'GET',
-      body: { type: bodyTypesEnums['none'], value: null },
+      uri: "",
+      name: "",
+      requestType: "GET",
+      body: { type: bodyTypesEnums["none"], value: null },
       headers: {},
       params: {},
       pathVariables: {},
       BASE_URL: null,
       bodyDescription: {},
     }
-    return (
-      <>
-        {isDashboardRoute(this.props, true) && (
-          <AddEntity placeholder='API Endpoint Name' type='endpoint' endpoint={endpoint} addEndpoint={this.addEndpoint.bind(this)} />
-        )}
-      </>
-    )
+    return <>{isDashboardRoute(this.props, true) && <AddEntity placeholder='API Endpoint Name' type='endpoint' endpoint={endpoint} addEndpoint={this.addEndpoint.bind(this)} />}</>
   }
 
   displayUserEndpoints(endpointId) {
@@ -422,9 +400,7 @@ class Endpoints extends Component {
   }
 
   filterEndpointIdsByGroup() {
-    const endpointIds = Object.keys(this.props.endpoints).filter(
-      (eId) => this.props.endpoints[eId].parentId && this.props.endpoints[eId].parentId === this.props.parent_id
-    )
+    const endpointIds = Object.keys(this.props.endpoints).filter((eId) => this.props.endpoints[eId].parentId && this.props.endpoints[eId].parentId === this.props.parent_id)
     return endpointIds
   }
 
@@ -465,15 +441,7 @@ class Endpoints extends Component {
     return (
       <>
         {this.showEditEndpointModal()}
-        {this.state.showEndpointForm.delete &&
-          endpointService.showDeleteEndpointModal(
-            this.props,
-            this.handleDelete.bind(this),
-            this.closeDeleteEndpointModal.bind(this),
-            'Delete Endpoint',
-            `Are you sure you want to delete this endpoint?`,
-            this.state.selectedEndpoint
-          )}
+        {this.state.showEndpointForm.delete && endpointService.showDeleteEndpointModal(this.props, this.handleDelete.bind(this), this.closeDeleteEndpointModal.bind(this), "Delete Endpoint", `Are you sure you want to delete this endpoint?`, this.state.selectedEndpoint)}
         {this.displayUserEndpoints(this?.props?.endpointId)}
       </>
     )

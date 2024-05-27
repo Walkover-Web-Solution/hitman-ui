@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import './endpoints.scss'
-import { inviteMember } from '../../services/chatbotService'
-import { getCurrentUser } from '../auth/authServiceV2'
+import React, { Component } from "react"
+import { connect } from "react-redux"
+import "./endpoints.scss"
+import { inviteMember } from "../../services/chatbotService"
+import { getCurrentUser } from "../auth/authServiceV2"
 import { RiCloseLine } from "react-icons/ri"
 const mapStateToProps = (state) => {
   return {
@@ -12,7 +12,7 @@ const mapStateToProps = (state) => {
 
 class chatbotsideBar extends Component {
   state = {
-    inputValue: ''
+    inputValue: "",
   }
 
   handleInputChange = (e) => {
@@ -33,38 +33,38 @@ class chatbotsideBar extends Component {
 
   render() {
     const saveAsSidebarStyle = {
-      position: 'fixed',
-      background: 'white',
-      top: '40px',
-      right: '0px',
-      height: '95vh',
-      width: '24%',
-      float: 'right'
+      position: "fixed",
+      background: "white",
+      top: "40px",
+      right: "0px",
+      height: "95vh",
+      width: "24%",
+      float: "right",
     }
 
     const inputContainerStyle = {
-      display: 'flex',
-      position: 'absolute',
-      bottom: '0',
-      width: '100%',
-      padding: '10px',
-      borderTop: '1px ',
-      backgroundColor: 'white'
+      display: "flex",
+      position: "absolute",
+      bottom: "0",
+      width: "100%",
+      padding: "10px",
+      borderTop: "1px ",
+      backgroundColor: "white",
     }
 
     const headerStyle = {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '10px',
-      borderBottom: '0.5px solid #ddd'
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "10px",
+      borderBottom: "0.5px solid #ddd",
     }
 
     const closeButtonStyle = {
-      background: 'none',
-      border: 'none',
-      fontSize: '1.5em',
-      cursor: 'pointer'
+      background: "none",
+      border: "none",
+      fontSize: "1.5em",
+      cursor: "pointer",
     }
 
     return (
@@ -79,18 +79,13 @@ class chatbotsideBar extends Component {
               }}
               aria-label='Close' // Accessibility label for screen readers
             >
-              <button className='btn'><RiCloseLine size={17} /></button>
+              <button className='btn'>
+                <RiCloseLine size={17} />
+              </button>
             </button>
           </div>
           <div style={inputContainerStyle}>
-            <input
-              type='text'
-              value={this.state.inputValue}
-              onChange={this.handleInputChange}
-              onKeyDown={this.handleOnkeyDown}
-              className='form-control'
-              placeholder='Enter your chat here'
-            />
+            <input type='text' value={this.state.inputValue} onChange={this.handleInputChange} onKeyDown={this.handleOnkeyDown} className='form-control' placeholder='Enter your chat here' />
             <button onClick={this.handleSubmit} className='send-icon'>
               <i className='fa fa-paper-plane' aria-hidden='true' />
             </button>

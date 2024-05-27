@@ -1,30 +1,30 @@
-import React, { Component } from 'react'
-import { Button, Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { makeHighlightsData } from '../endpoints/highlightChangesHelper'
-import { connect } from 'react-redux'
-import { updateCollection } from '../collections/redux/collectionsActions'
-import { updateEndpoint } from '../endpoints/redux/endpointsActions'
-import extractCollectionInfoService from './extractCollectionInfoService'
-import DisplayEndpoint from '../endpoints/displayEndpoint'
-import { approveEndpoint, rejectEndpoint, approvePage, rejectPage } from '../publicEndpoint/redux/publicEndpointsActions'
-import PublishDocsForm from './publishDocsForm'
-import DisplayPage from '../pages/displayPage'
-import { updatePage, updatePageOrder } from '../pages/redux/pagesActions'
-import './publishDocs.scss'
-import WarningModal from '../common/warningModal'
-import Footer from '../main/Footer'
-import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
-import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
-import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
-import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
-import PublishDocsConfirmModal from './publishDocsConfirmModal'
-import { moveToNextStep } from '../../services/widgetService'
-import { openExternalLink, sensitiveInfoFound } from '../common/utility'
-import { publishData } from '../modals/redux/modalsActions'
-import { bodyTypesEnums } from '../common/bodyTypeEnums'
-const isEqual = require('react-fast-compare')
+import React, { Component } from "react"
+import { Button, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap"
+import { makeHighlightsData } from "../endpoints/highlightChangesHelper"
+import { connect } from "react-redux"
+import { updateCollection } from "../collections/redux/collectionsActions"
+import { updateEndpoint } from "../endpoints/redux/endpointsActions"
+import extractCollectionInfoService from "./extractCollectionInfoService"
+import DisplayEndpoint from "../endpoints/displayEndpoint"
+import { approveEndpoint, rejectEndpoint, approvePage, rejectPage } from "../publicEndpoint/redux/publicEndpointsActions"
+import PublishDocsForm from "./publishDocsForm"
+import DisplayPage from "../pages/displayPage"
+import { updatePage, updatePageOrder } from "../pages/redux/pagesActions"
+import "./publishDocs.scss"
+import WarningModal from "../common/warningModal"
+import Footer from "../main/Footer"
+import { SortableHandle, SortableContainer, SortableElement } from "react-sortable-hoc"
+import { ReactComponent as DragHandleIcon } from "../../assets/icons/drag-handle.svg"
+import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg"
+import { ReactComponent as ExternalLinks } from "../../assets/icons/externalLinks.svg"
+import PublishDocsConfirmModal from "./publishDocsConfirmModal"
+import { moveToNextStep } from "../../services/widgetService"
+import { openExternalLink, sensitiveInfoFound } from "../common/utility"
+import { publishData } from "../modals/redux/modalsActions"
+import { bodyTypesEnums } from "../common/bodyTypeEnums"
+const isEqual = require("react-fast-compare")
 
-const URI = require('urijs')
+const URI = require("urijs")
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const publishDocsEnum = {
@@ -32,7 +32,7 @@ const publishDocsEnum = {
   REJECT_STATE: 3,
   APPROVED_STATE: 2,
   DRAFT_STATE: 1,
-  EMPTY_STRING: ''
+  EMPTY_STRING: "",
 }
 const DragHandle = SortableHandle(() => (
   <span className='dragIcon mr-2'>
@@ -51,14 +51,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     update_endpoints_order: (endpointIds, groupId) => dispatch(updateEndpointOrder(endpointIds, groupId)),
     set_page_ids: (pageIds) => dispatch(updatePageOrder(pageIds)),
-    update_page: (editedPage) => dispatch(updatePage(ownProps.history, editedPage, 'publishDocs')),
+    update_page: (editedPage) => dispatch(updatePage(ownProps.history, editedPage, "publishDocs")),
     update_endpoint: (editedEndpoint) => dispatch(updateEndpoint(editedEndpoint)),
     update_collection: (editedCollection) => dispatch(updateCollection(editedCollection)),
     approve_endpoint: (endpoint, publishLoaderHandler) => dispatch(approveEndpoint(endpoint, publishLoaderHandler)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     reject_page: (page) => dispatch(rejectPage(page)),
-    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
   }
 }
 
@@ -68,7 +68,7 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     groups: state.groups,
-    endpoints: state.pages
+    endpoints: state.pages,
   }
 }
 
@@ -82,7 +82,7 @@ class PublishDocs extends Component {
       openPageSettingsSidebar: false,
       publishLoader: false,
       publishPageLoader: false,
-      showPublishDocConfirmModal: false
+      showPublishDocConfirmModal: false,
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -90,25 +90,20 @@ class PublishDocs extends Component {
 
   componentDidMount() {
     const collectionInfo = this.extractCollectionInfo()
-    const items = this.getInitialItems(
-      Object.keys(collectionInfo.versions)[0],
-      collectionInfo.groups,
-      collectionInfo.endpoints,
-      collectionInfo.pages
-    )
+    const items = this.getInitialItems(Object.keys(collectionInfo.versions)[0], collectionInfo.groups, collectionInfo.endpoints, collectionInfo.pages)
 
     this.setState({
       selectedCollectionId: URI.parseQuery(this.props.location.search).collectionId,
       selectedVersionId: Object.keys(collectionInfo.versions)[0],
       selectedGroupId: items?.selectedGroupId || null,
       selectedEndpointId: items?.selectedEndpointId || null,
-      selectedPageId: items?.selectedPageId || null
+      selectedPageId: items?.selectedPageId || null,
     })
   }
 
   handleClickOutside(event) {
     if (this.state.openPageSettingsSidebar && this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
-      document.removeEventListener('mousedown', this.handleClickOutside)
+      document.removeEventListener("mousedown", this.handleClickOutside)
       this.setState({ openPageSettingsSidebar: false })
     }
     // this.props.ON_PUBLISH_DOC(false)
@@ -123,22 +118,14 @@ class PublishDocs extends Component {
     }
     if (prevProps !== this.props) {
       const collectionInfo = this.extractCollectionInfo()
-      if (
-        !(this.state.selectedEndpointId || this.state.selectedPageId) ||
-        this.state.selectedCollectionId !== URI.parseQuery(this.props.location.search).collectionId
-      ) {
-        const items = this.getInitialItems(
-          Object.keys(collectionInfo.versions)[0],
-          collectionInfo.groups,
-          collectionInfo.endpoints,
-          collectionInfo.pages
-        )
+      if (!(this.state.selectedEndpointId || this.state.selectedPageId) || this.state.selectedCollectionId !== URI.parseQuery(this.props.location.search).collectionId) {
+        const items = this.getInitialItems(Object.keys(collectionInfo.versions)[0], collectionInfo.groups, collectionInfo.endpoints, collectionInfo.pages)
         this.setState({
           selectedCollectionId: URI.parseQuery(this.props.location.search).collectionId,
           selectedVersionId: Object.keys(collectionInfo.versions)[0],
           selectedGroupId: items?.selectedGroupId || null,
           selectedEndpointId: items?.selectedEndpointId || null,
-          selectedPageId: items?.selectedPageId || null
+          selectedPageId: items?.selectedPageId || null,
         })
       }
     }
@@ -152,44 +139,31 @@ class PublishDocs extends Component {
       if (groups[Object.keys(groups)[i]].versionId?.toString() === versionId?.toString()) {
         const groupId = groups[Object.keys(groups)[i]].id
         for (let i = 0; i < Object.keys(endpoints).length; i++) {
-          if (
-            endpoints[Object.keys(endpoints)[i]].groupId?.toString() === groupId?.toString() &&
-            (endpoints[Object.keys(endpoints)[i]].isPublished === true ||
-              endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE) &&
-            endpointId?.toString() !== Object.keys(endpoints)[i]?.toString()
-          ) {
+          if (endpoints[Object.keys(endpoints)[i]].groupId?.toString() === groupId?.toString() && (endpoints[Object.keys(endpoints)[i]].isPublished === true || endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE) && endpointId?.toString() !== Object.keys(endpoints)[i]?.toString()) {
             const items = {
               selectedGroupId: groupId,
               selectedEndpointId: Object.keys(endpoints)[i],
-              selectedPageId: null
+              selectedPageId: null,
             }
             return items
           }
         }
         for (let i = 0; i < Object.keys(pages).length; i++) {
-          if (
-            pages[Object.keys(pages)[i]].versionId?.toString() === versionId?.toString() &&
-            (pages[Object.keys(pages)[i]].isPublished === true || pages[Object.keys(pages)[i]].state === publishDocsEnum.PENDING_STATE) &&
-            pageId?.toString() !== Object.keys(pages)[i]?.toString()
-          ) {
+          if (pages[Object.keys(pages)[i]].versionId?.toString() === versionId?.toString() && (pages[Object.keys(pages)[i]].isPublished === true || pages[Object.keys(pages)[i]].state === publishDocsEnum.PENDING_STATE) && pageId?.toString() !== Object.keys(pages)[i]?.toString()) {
             const items = {
               selectedGroupId: null,
               selectedEndpointId: null,
-              selectedPageId: Object.keys(pages)[i]
+              selectedPageId: Object.keys(pages)[i],
             }
             return items
           }
         }
         for (let i = 0; i < Object.keys(pages).length; i++) {
-          if (
-            pages[Object.keys(pages)[i]].groupId?.toString() === groupId?.toString() &&
-            (pages[Object.keys(pages)[i]].isPublished === true || pages[Object.keys(pages)[i]].state === publishDocsEnum.PENDING_STATE) &&
-            pageId?.toString() !== Object.keys(pages)[i]?.toString()
-          ) {
+          if (pages[Object.keys(pages)[i]].groupId?.toString() === groupId?.toString() && (pages[Object.keys(pages)[i]].isPublished === true || pages[Object.keys(pages)[i]].state === publishDocsEnum.PENDING_STATE) && pageId?.toString() !== Object.keys(pages)[i]?.toString()) {
             const items = {
               selectedGroupId: groupId,
               selectedEndpointId: null,
-              selectedPageId: Object.keys(pages)[i]
+              selectedPageId: Object.keys(pages)[i],
             }
             return items
           }
@@ -197,7 +171,7 @@ class PublishDocs extends Component {
         const items = {
           selectedGroupId: null,
           selectedEndpointId: null,
-          selectedPageId: null
+          selectedPageId: null,
         }
         return items
       }
@@ -214,7 +188,7 @@ class PublishDocs extends Component {
       versions,
       groups,
       pages,
-      endpoints
+      endpoints,
     })
     return { versions, groups, pages, endpoints }
   }
@@ -222,7 +196,7 @@ class PublishDocs extends Component {
   setSelectedCollection(collection) {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-      search: `?collectionId=${collection?.id}`
+      search: `?collectionId=${collection?.id}`,
     })
   }
 
@@ -230,7 +204,7 @@ class PublishDocs extends Component {
     this.setState({
       selectedGroupId: groupId,
       selectedEndpointId: endpointId,
-      selectedPageId: false
+      selectedPageId: false,
     })
   }
 
@@ -240,7 +214,7 @@ class PublishDocs extends Component {
       selectedVersionId: e.currentTarget.value,
       selectedGroupId: items?.selectedGroupId || null,
       selectedEndpointId: items?.selectedEndpointId || null,
-      selectedPageId: items?.selectedPageId || null
+      selectedPageId: items?.selectedPageId || null,
     })
   }
 
@@ -257,17 +231,11 @@ class PublishDocs extends Component {
     if (this.state.endpoints[endpointId].isPublished) {
       //
     } else {
-      const items = this.getInitialItems(
-        this.state.selectedVersionId,
-        this.state.groups,
-        this.state.endpoints,
-        this.state.pages,
-        endpointId
-      )
+      const items = this.getInitialItems(this.state.selectedVersionId, this.state.groups, this.state.endpoints, this.state.pages, endpointId)
       this.setState({
         selectedGroupId: items?.selectedGroupId || null,
         selectedEndpointId: items?.selectedEndpointId || null,
-        selectedPageId: items?.selectedPageId || null
+        selectedPageId: items?.selectedPageId || null,
       })
     }
     this.props.reject_endpoint(this.props.endpoints[endpointId])
@@ -277,7 +245,7 @@ class PublishDocs extends Component {
     this.setState({
       selectedGroupId: groupId,
       selectedEndpointId: false,
-      selectedPageId: pageId
+      selectedPageId: pageId,
     })
   }
 
@@ -291,18 +259,11 @@ class PublishDocs extends Component {
     if (this.state.pages[pageId].isPublished) {
       //
     } else {
-      const items = this.getInitialItems(
-        this.state.selectedVersionId,
-        this.state.groups,
-        this.state.endpoints,
-        this.state.pages,
-        null,
-        pageId
-      )
+      const items = this.getInitialItems(this.state.selectedVersionId, this.state.groups, this.state.endpoints, this.state.pages, null, pageId)
       this.setState({
         selectedGroupId: items?.selectedGroupId || null,
         selectedEndpointId: items?.selectedEndpointId || null,
-        selectedPageId: items?.selectedPageId || null
+        selectedPageId: items?.selectedPageId || null,
       })
     }
   }
@@ -318,11 +279,7 @@ class PublishDocs extends Component {
   filterEndpoints(groupId) {
     const endpoints = {}
     for (let i = 0; i < Object.keys(this.state.endpoints).length; i++) {
-      if (
-        (this.state.endpoints[Object.keys(this.state.endpoints)[i]].isPublished === true ||
-          this.state.endpoints[Object.keys(this.state.endpoints)[i]].state === publishDocsEnum.PENDING_STATE) &&
-        this.state.endpoints[Object.keys(this.state.endpoints)[i]].groupId === groupId
-      ) {
+      if ((this.state.endpoints[Object.keys(this.state.endpoints)[i]].isPublished === true || this.state.endpoints[Object.keys(this.state.endpoints)[i]].state === publishDocsEnum.PENDING_STATE) && this.state.endpoints[Object.keys(this.state.endpoints)[i]].groupId === groupId) {
         endpoints[Object.keys(this.state.endpoints)[i]] = this.state.endpoints[Object.keys(this.state.endpoints)[i]]
       }
     }
@@ -334,16 +291,13 @@ class PublishDocs extends Component {
         lockAxis='y'
         useDragHandle
         onSortEnd={({ oldIndex, newIndex }) => {
-          this.onSortEnd(oldIndex, newIndex, sortedEndpoints, 'endpoints')
+          this.onSortEnd(oldIndex, newIndex, sortedEndpoints, "endpoints")
         }}
       >
         <div className='pages-inner'>
           {sortedEndpoints.map((endpoint, index) => (
             <SortableItem key={endpoint.id} index={index}>
-              <div
-                onClick={() => this.openEndpoint(groupId, endpoint.id)}
-                className={this.state.selectedEndpointId === endpoint.id ? 'groupListing active' : 'groupListing'}
-              >
+              <div onClick={() => this.openEndpoint(groupId, endpoint.id)} className={this.state.selectedEndpointId === endpoint.id ? "groupListing active" : "groupListing"}>
                 <DragHandle />
                 <span className='endpointNameWrapper'>{endpoints[endpoint.id]?.name}</span>
                 {this.displayState(endpoints[endpoint.id])}
@@ -368,11 +322,7 @@ class PublishDocs extends Component {
     if (groupId) {
       if (this.state.pages) {
         for (let i = 0; i < Object.keys(this.state.pages).length; i++) {
-          if (
-            (this.state.pages[Object.keys(this.state.pages)[i]].isPublished === true ||
-              this.state.pages[Object.keys(this.state.pages)[i]].state === publishDocsEnum.PENDING_STATE) &&
-            this.state.pages[Object.keys(this.state.pages)[i]].groupId === groupId
-          ) {
+          if ((this.state.pages[Object.keys(this.state.pages)[i]].isPublished === true || this.state.pages[Object.keys(this.state.pages)[i]].state === publishDocsEnum.PENDING_STATE) && this.state.pages[Object.keys(this.state.pages)[i]].groupId === groupId) {
             pages[Object.keys(this.state.pages)[i]] = this.state.pages[Object.keys(this.state.pages)[i]]
           }
         }
@@ -384,16 +334,13 @@ class PublishDocs extends Component {
             lockAxis='y'
             useDragHandle
             onSortEnd={({ oldIndex, newIndex }) => {
-              this.onSortEnd(oldIndex, newIndex, sortedPages, 'pages')
+              this.onSortEnd(oldIndex, newIndex, sortedPages, "pages")
             }}
           >
             <div className='pages-inner'>
               {sortedPages.map((page, index) => (
                 <SortableItem key={page.id} index={index}>
-                  <div
-                    onClick={() => this.openPage('', page.id)}
-                    className={this.state.selectedPageId === page.id ? 'groupListing active' : 'groupListing'}
-                  >
+                  <div onClick={() => this.openPage("", page.id)} className={this.state.selectedPageId === page.id ? "groupListing active" : "groupListing"}>
                     <DragHandle />
                     {this.state.pages[page.id]?.name}
                     {this.displayState(pages[page.id])}
@@ -407,12 +354,7 @@ class PublishDocs extends Component {
     } else {
       if (this.state.pages) {
         for (let i = 0; i < Object.keys(this.state.pages).length; i++) {
-          if (
-            (this.state.pages[Object.keys(this.state.pages)[i]].isPublished === true ||
-              this.state.pages[Object.keys(this.state.pages)[i]].state === publishDocsEnum.PENDING_STATE) &&
-            this.state.pages[Object.keys(this.state.pages)[i]].groupId === null &&
-            this.state.pages[Object.keys(this.state.pages)[i]].versionId === this.state.selectedVersionId
-          ) {
+          if ((this.state.pages[Object.keys(this.state.pages)[i]].isPublished === true || this.state.pages[Object.keys(this.state.pages)[i]].state === publishDocsEnum.PENDING_STATE) && this.state.pages[Object.keys(this.state.pages)[i]].groupId === null && this.state.pages[Object.keys(this.state.pages)[i]].versionId === this.state.selectedVersionId) {
             pages[Object.keys(this.state.pages)[i]] = this.state.pages[Object.keys(this.state.pages)[i]]
           }
         }
@@ -425,16 +367,13 @@ class PublishDocs extends Component {
             lockAxis='y'
             useDragHandle
             onSortEnd={({ oldIndex, newIndex }) => {
-              this.onSortEnd(oldIndex, newIndex, sortedPages, 'pages')
+              this.onSortEnd(oldIndex, newIndex, sortedPages, "pages")
             }}
           >
             <div className='pages-inner-wrapper'>
               {sortedPages.map((page, index) => (
                 <SortableItem key={page.id} index={index}>
-                  <div
-                    onClick={() => this.openPage('', page.id)}
-                    className={this.state.selectedPageId === page.id ? 'groupListing active' : 'groupListing'}
-                  >
+                  <div onClick={() => this.openPage("", page.id)} className={this.state.selectedPageId === page.id ? "groupListing active" : "groupListing"}>
                     <DragHandle />
                     {this.state.pages[page.id]?.name}
                     {this.displayState(pages[page.id])}
@@ -455,10 +394,10 @@ class PublishDocs extends Component {
         item.id !== sortedData[oldIndex].id && newData.push(item.id)
       })
       newData.splice(newIndex, 0, sortedData[oldIndex].id)
-      if (type === 'pages') {
+      if (type === "pages") {
         this.props.set_page_ids(newData)
       }
-      if (type === 'endpoints') {
+      if (type === "endpoints") {
         this.props.update_endpoints_order(newData)
       }
     }
@@ -568,7 +507,7 @@ class PublishDocs extends Component {
               {this.props.collections[id]?.name}
               {this.collectionHasChanges(id) && <i className='fas fa-circle' />}
             </Dropdown.Item>
-          )
+          ),
       )
     }
   }
@@ -597,12 +536,8 @@ class PublishDocs extends Component {
     const versionGroups = extractCollectionInfoService.extractGroupsFromVersionId(versionId, this.props)
     const endpointsToCheck = extractCollectionInfoService.extractEndpointsFromGroups(versionGroups, this.props)
     const pagesToCheck = extractCollectionInfoService.extractPagesFromVersions({ [versionId]: versionId }, this.props)
-    const filteredEndpoints = Object.values(endpointsToCheck).filter(
-      (endpoint) => endpoint.state === publishDocsEnum.PENDING_STATE || endpoint.isPublished
-    )
-    const filteredPages = Object.values(pagesToCheck).filter(
-      (page) => (page.state === publishDocsEnum.PENDING_STATE || page.isPublished) && page.groupId
-    )
+    const filteredEndpoints = Object.values(endpointsToCheck).filter((endpoint) => endpoint.state === publishDocsEnum.PENDING_STATE || endpoint.isPublished)
+    const filteredPages = Object.values(pagesToCheck).filter((page) => (page.state === publishDocsEnum.PENDING_STATE || page.isPublished) && page.groupId)
     const publicGroupIds = new Set()
     filteredEndpoints.forEach((endpoint) => {
       publicGroupIds.add(endpoint.groupId)
@@ -628,7 +563,7 @@ class PublishDocs extends Component {
           <SortableList
             lockAxis='y'
             onSortEnd={({ oldIndex, newIndex }) => {
-              this.onSortEnd(oldIndex, newIndex, sortedGroups, 'groups')
+              this.onSortEnd(oldIndex, newIndex, sortedGroups, "groups")
             }}
           >
             <div>
@@ -658,7 +593,7 @@ class PublishDocs extends Component {
         <div>
           <div className='d-flex justify-content-between mx-2 mb-3'>
             <div>
-              {' '}
+              {" "}
               <div className='contacts mb-2'>{this.props.groups[this.state.selectedGroupId]?.name}</div>
               <div className='list-contacts'>{endpointName}</div>
             </div>
@@ -673,24 +608,9 @@ class PublishDocs extends Component {
   checkEndpointState() {
     if (this.state.selectedEndpointId && this.state.endpoints[this.state.selectedEndpointId]) {
       if (this.state.endpoints[this.state.selectedEndpointId]?.state === publishDocsEnum.REJECT_STATE) {
-        return (
-          <DisplayEndpoint
-            rejectedEndpointId={this.state.selectedEndpointId}
-            endpointId={this.state.selectedEndpointId}
-            groupId={this.state.selectedGroupId}
-            {...this.props}
-          />
-        )
+        return <DisplayEndpoint rejectedEndpointId={this.state.selectedEndpointId} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
       } else {
-        return (
-          <DisplayEndpoint
-            rejected={false}
-            endpointId={this.state.selectedEndpointId}
-            groupId={this.state.selectedGroupId}
-            {...this.props}
-            highlights={this.setChangeHighlighting() || null}
-          />
-        )
+        return <DisplayEndpoint rejected={false} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} highlights={this.setChangeHighlighting() || null} />
       }
     }
   }
@@ -702,13 +622,13 @@ class PublishDocs extends Component {
       isPublished: false,
       publishedEndpoint: {},
       state: 1,
-      position: null
+      position: null,
     })
     const items = this.getInitialItems(this.state.selectedVersionId, this.state.groups, this.state.endpoints, this.state.pages, endpointId)
     this.setState({
       selectedGroupId: items?.selectedGroupId || null,
       selectedEndpointId: items?.selectedEndpointId || null,
-      selectedPageId: items?.selectedPageId || null
+      selectedPageId: items?.selectedPageId || null,
     })
   }
 
@@ -723,19 +643,15 @@ class PublishDocs extends Component {
     this.setState({
       selectedGroupId: items?.selectedGroupId || null,
       selectedEndpointId: items?.selectedEndpointId || null,
-      selectedPageId: items?.selectedPageId || null
+      selectedPageId: items?.selectedPageId || null,
     })
   }
 
   publishButtonEndpoint() {
     return (
-      <div className={!this.state.publishLoader ? 'publish-button' : 'publish-button buttonLoader'}>
-        {' '}
-        <Button
-          variant='success'
-          id='publish_endpoint_btn'
-          onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}
-        >
+      <div className={!this.state.publishLoader ? "publish-button" : "publish-button buttonLoader"}>
+        {" "}
+        <Button variant='success' id='publish_endpoint_btn' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>
           PUBLISH
         </Button>
       </div>
@@ -743,10 +659,7 @@ class PublishDocs extends Component {
   }
 
   endpointPublishAndReject() {
-    if (
-      this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.APPROVED_STATE &&
-      this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE
-    ) {
+    if (this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.APPROVED_STATE && this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE) {
       return (
         <>
           {!this.state.publishLoader && (
@@ -761,12 +674,8 @@ class PublishDocs extends Component {
       return (
         <>
           <div className='publish-button'>
-            {' '}
-            <Button
-              variant='success'
-              id='unpublish_endpoint_btn'
-              onClick={() => this.handleRemovePublicEndpoint(this.state.selectedEndpointId)}
-            >
+            {" "}
+            <Button variant='success' id='unpublish_endpoint_btn' onClick={() => this.handleRemovePublicEndpoint(this.state.selectedEndpointId)}>
               Unpublish Endpoint
             </Button>
           </div>
@@ -777,8 +686,8 @@ class PublishDocs extends Component {
 
   pagePublishButton() {
     return (
-      <div className={!this.state.publishPageLoader ? 'publish-button' : 'publish-button buttonLoader'}>
-        {' '}
+      <div className={!this.state.publishPageLoader ? "publish-button" : "publish-button buttonLoader"}>
+        {" "}
         <Button variant='success' onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>
           PUBLISH
         </Button>
@@ -787,10 +696,7 @@ class PublishDocs extends Component {
   }
 
   pagePublishAndReject() {
-    if (
-      this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.APPROVED_STATE &&
-      this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.REJECT_STATE
-    ) {
+    if (this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.APPROVED_STATE && this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.REJECT_STATE) {
       return (
         <>
           {!this.state.publishPageLoader && (
@@ -805,7 +711,7 @@ class PublishDocs extends Component {
       return (
         <>
           <div className='publish-button'>
-            {' '}
+            {" "}
             <Button variant='success' onClick={() => this.handleRemovePublicPage(this.state.selectedPageId)}>
               Unpublish Page
             </Button>
@@ -870,28 +776,28 @@ class PublishDocs extends Component {
       body: {
         isChanged: null,
         type: null,
-        value: null
+        value: null,
       },
       bodyDescription: null,
       headers: {
         isChanged: null,
-        items: {}
+        items: {},
       },
       name: null,
       params: {
         isChanged: null,
-        items: {}
+        items: {},
       },
       pathVariables: {
         isChanged: null,
-        items: {}
+        items: {},
       },
       requestType: null,
       sampleResponse: {
         isChanged: null,
-        items: {}
+        items: {},
       },
-      uri: null
+      uri: null,
     }
     if (selectedEndpointId && this.state.endpoints[selectedEndpointId]) {
       const endpoint = this.state.endpoints[selectedEndpointId]
@@ -905,19 +811,16 @@ class PublishDocs extends Component {
           body: {
             isChanged: !isEqual(originalEndpoint.body, currentChanges.body),
             type: !isEqual(originalEndpoint.body.type, currentChanges.body.type),
-            value:
-              currentChanges.body.type === bodyTypesEnums['multipart/form-data'] || currentChanges.body.type === bodyTypesEnums['application/x-www-form-urlencoded']
-                ? makeHighlightsData(originalEndpoint.body.value, currentChanges.body.value, 'body')
-                : !isEqual(originalEndpoint.body.value, currentChanges.body.value)
+            value: currentChanges.body.type === bodyTypesEnums["multipart/form-data"] || currentChanges.body.type === bodyTypesEnums["application/x-www-form-urlencoded"] ? makeHighlightsData(originalEndpoint.body.value, currentChanges.body.value, "body") : !isEqual(originalEndpoint.body.value, currentChanges.body.value),
           },
           bodyDescription: null,
-          headers: makeHighlightsData(originalEndpoint.headers, currentChanges.headers, 'headers'),
+          headers: makeHighlightsData(originalEndpoint.headers, currentChanges.headers, "headers"),
           name: !isEqual(originalEndpoint.name, currentChanges.name),
-          params: makeHighlightsData(originalEndpoint.params, currentChanges.params, 'params'),
-          pathVariables: makeHighlightsData(originalEndpoint.pathVariables, currentChanges.pathVariables, 'pathVariables'),
+          params: makeHighlightsData(originalEndpoint.params, currentChanges.params, "params"),
+          pathVariables: makeHighlightsData(originalEndpoint.pathVariables, currentChanges.pathVariables, "pathVariables"),
           requestType: !isEqual(originalEndpoint.requestType, currentChanges.requestType),
-          sampleResponse: makeHighlightsData(originalEndpoint.sampleResponse, currentChanges.sampleResponse, 'sampleResponse'),
-          uri: !isEqual(originalEndpoint.uri, currentChanges.uri)
+          sampleResponse: makeHighlightsData(originalEndpoint.sampleResponse, currentChanges.sampleResponse, "sampleResponse"),
+          uri: !isEqual(originalEndpoint.uri, currentChanges.uri),
         }
         return result
       }
@@ -973,7 +876,7 @@ class PublishDocs extends Component {
           className='pageSettingsButton'
           onClick={() => {
             this.setState({ openPageSettingsSidebar: !this.state.openPageSettingsSidebar }, () => {
-              document.addEventListener('mousedown', this.handleClickOutside)
+              document.addEventListener("mousedown", this.handleClickOutside)
             })
           }}
         >
@@ -984,7 +887,7 @@ class PublishDocs extends Component {
   }
 
   renderExternalLinkButton() {
-    const url = process.env.REACT_APP_PUBLIC_UI_URL + '/p/' + this.state.selectedCollectionId
+    const url = process.env.REACT_APP_PUBLIC_UI_URL + "/p/" + this.state.selectedCollectionId
     if (this.isCollectionPublished()) {
       return (
         <OverlayTrigger placement='right' overlay={<Tooltip> Go To Docs </Tooltip>}>
@@ -1006,7 +909,7 @@ class PublishDocs extends Component {
   renderHostedAPIDetials() {
     return (
       <>
-        {this.renderHostedApiHeading('Public API Documentation')}
+        {this.renderHostedApiHeading("Public API Documentation")}
         <div className='hosted-doc-wrapper'>
           <div className='d-flex align-items-center my-3'>
             {this.rednerHostedAPIDropdown()}
@@ -1037,7 +940,7 @@ class PublishDocs extends Component {
     return (
       <>
         <div className='publish-api-doc d-block'>
-          {this.renderHostedApiHeading('Publish API Doc')}
+          {this.renderHostedApiHeading("Publish API Doc")}
           <div className='publish-api-doc-container my-3'>
             <div className='form-group'>{this.rednerHostedAPIDropdown()}</div>
             <div className='pub-inner'>
@@ -1062,49 +965,22 @@ class PublishDocs extends Component {
                   d='M55.0622 333.644H322.153C320.716 326.143 319.44 318.562 321.674 311.46C325.903 298.213 341.145 290.791 345.215 277.545C348.806 265.734 342.422 253.285 335.24 243.151C328.058 233.016 319.679 222.802 318.642 210.513C317.764 199.979 322.632 189.844 328.138 180.827C333.644 171.81 340.028 163.032 342.901 152.897C345.774 142.762 344.257 130.393 335.958 123.77C326.143 115.87 311.859 119.062 299.649 122.014C287.44 124.967 272.358 126.403 264.298 116.748C259.191 110.523 258.871 101.745 255.52 94.4036C248.817 79.8002 230.303 73.3364 214.582 76.5284C198.862 79.8002 185.695 90.7328 175.401 103.022C165.106 115.311 156.887 129.356 146.513 141.565C137.735 151.939 124.967 161.755 111.8 158.643C99.9098 155.77 91.9298 143.241 79.88 141.406C71.2616 140.129 62.4836 144.997 57.2966 152.019C52.1096 159.042 50.0348 167.899 49.2368 176.598C47.2418 199.181 53.546 222.483 66.8726 240.837C73.895 250.572 83.2316 261.984 78.4436 272.916C72.2192 287.041 47.7206 285.764 42.9326 300.447C41.0972 306.193 43.0922 312.417 45.6458 317.844C48.2792 323.509 51.4712 328.696 55.0622 333.644Z'
                   fill='url(#paint0_linear)'
                 />
-                <path
-                  d='M164.388 105.416C159.52 113.795 154.573 123.052 150.503 131.75C147.63 129.835 145.077 127.6 142.603 125.206C140.049 126.723 137.575 128.319 135.022 129.835C140.767 133.665 146.832 137.097 153.296 139.411C157.126 128.478 160.558 116.428 164.388 105.416Z'
-                  fill='#002B66'
-                />
-                <path
-                  d='M97.915 296.936V120.658C97.915 112.678 104.379 106.294 112.279 106.294H321.834C329.814 106.294 336.198 112.758 336.198 120.658V296.936C336.198 304.916 329.734 311.3 321.834 311.3H112.279C104.299 311.3 97.915 304.916 97.915 296.936Z'
-                  fill='url(#paint1_linear)'
-                />
-                <path
-                  d='M332.607 295.26V252.887V164.229V121.855C332.607 115.232 327.739 109.805 321.834 109.805H112.279C106.294 109.805 101.506 115.232 101.506 121.855V295.26C101.506 301.884 106.374 307.31 112.279 307.31H321.834C327.739 307.31 332.607 301.884 332.607 295.26Z'
-                  fill='white'
-                />
+                <path d='M164.388 105.416C159.52 113.795 154.573 123.052 150.503 131.75C147.63 129.835 145.077 127.6 142.603 125.206C140.049 126.723 137.575 128.319 135.022 129.835C140.767 133.665 146.832 137.097 153.296 139.411C157.126 128.478 160.558 116.428 164.388 105.416Z' fill='#002B66' />
+                <path d='M97.915 296.936V120.658C97.915 112.678 104.379 106.294 112.279 106.294H321.834C329.814 106.294 336.198 112.758 336.198 120.658V296.936C336.198 304.916 329.734 311.3 321.834 311.3H112.279C104.299 311.3 97.915 304.916 97.915 296.936Z' fill='url(#paint1_linear)' />
+                <path d='M332.607 295.26V252.887V164.229V121.855C332.607 115.232 327.739 109.805 321.834 109.805H112.279C106.294 109.805 101.506 115.232 101.506 121.855V295.26C101.506 301.884 106.374 307.31 112.279 307.31H321.834C327.739 307.31 332.607 301.884 332.607 295.26Z' fill='white' />
                 <g opacity='0.1'>
-                  <path
-                    opacity='0.1'
-                    d='M291.43 151.86L112.678 330.612C115.152 332.527 118.184 333.724 121.536 333.724H145.715L291.43 188.009V151.86Z'
-                    fill='white'
-                  />
-                  <path
-                    opacity='0.1'
-                    d='M107.172 318.402L291.43 134.144V109.725C291.43 101.745 284.966 95.3613 277.066 95.3613H258.074L107.252 246.183V318.402H107.172Z'
-                    fill='white'
-                  />
+                  <path opacity='0.1' d='M291.43 151.86L112.678 330.612C115.152 332.527 118.184 333.724 121.536 333.724H145.715L291.43 188.009V151.86Z' fill='white' />
+                  <path opacity='0.1' d='M107.172 318.402L291.43 134.144V109.725C291.43 101.745 284.966 95.3613 277.066 95.3613H258.074L107.252 246.183V318.402H107.172Z' fill='white' />
                 </g>
-                <path
-                  opacity='0.45'
-                  d='M124.01 307.31H112.758C106.374 307.31 101.187 302.123 101.187 295.739V121.536C101.187 115.072 106.374 109.885 112.838 109.885H123.93V307.31H124.01Z'
-                  fill='#D3D3D3'
-                />
+                <path opacity='0.45' d='M124.01 307.31H112.758C106.374 307.31 101.187 302.123 101.187 295.739V121.536C101.187 115.072 106.374 109.885 112.838 109.885H123.93V307.31H124.01Z' fill='#D3D3D3' />
                 <path d='M62.0049 322.791L65.2767 314.971L71.5011 318.641L66.3141 325.345L62.0049 322.791Z' fill='#F2D2C2' />
                 <path d='M99.5906 328.058L97.9946 318.163H108.129L106.613 328.058H99.5906Z' fill='#F2D2C2' />
-                <path
-                  d='M63.3615 231.5C64.3191 234.213 65.2767 237.246 64.2393 239.879C65.0373 241.315 63.9999 243.55 62.7231 244.507C61.4463 245.465 59.4513 245.305 58.2543 244.188C57.3765 243.31 57.0573 242.034 56.8977 240.757C56.5785 237.405 57.5361 233.894 59.5311 231.261C59.5311 230.383 59.9301 229.425 60.8079 229.425C61.6857 229.345 63.1221 230.702 63.3615 231.5Z'
-                  fill='#F2D2C2'
-                />
+                <path d='M63.3615 231.5C64.3191 234.213 65.2767 237.246 64.2393 239.879C65.0373 241.315 63.9999 243.55 62.7231 244.507C61.4463 245.465 59.4513 245.305 58.2543 244.188C57.3765 243.31 57.0573 242.034 56.8977 240.757C56.5785 237.405 57.5361 233.894 59.5311 231.261C59.5311 230.383 59.9301 229.425 60.8079 229.425C61.6857 229.345 63.1221 230.702 63.3615 231.5Z' fill='#F2D2C2' />
                 <path
                   d='M90.8127 162.952C89.5359 161.116 89.6955 158.643 90.6531 156.648C91.6107 154.653 93.2865 153.136 94.9623 151.78C96.6381 150.423 98.4735 149.146 99.9897 147.55C102.703 144.598 103.98 140.448 103.581 136.458C103.341 134.463 102.623 132.468 101.107 131.271C98.6331 129.436 94.8825 130.314 92.6481 132.388C90.3339 134.463 89.1369 137.416 87.8601 140.209C86.5833 143.002 85.0671 145.954 82.4337 147.63C80.8377 148.668 78.9225 149.146 77.3265 150.184C73.8951 152.338 72.3789 157.047 73.8153 160.797C72.3789 162.234 72.0597 164.628 72.8577 166.463C73.6557 168.298 75.2517 169.735 77.0871 170.613C80.5185 172.368 84.7479 172.448 88.2591 171.012C87.5409 169.256 87.9399 166.543 89.3763 165.346C90.0945 164.707 90.8925 163.909 90.8127 162.952Z'
                   fill='url(#paint2_linear)'
                 />
-                <path
-                  d='M126.164 139.571C125.127 137.975 125.606 135.581 127.122 134.463C126.723 132.628 128.079 130.154 129.995 129.915C131.192 129.755 132.548 130.394 132.947 131.511C133.187 132.149 133.027 132.947 132.788 133.586C131.99 136.458 130.473 139.092 128.399 141.167C127.68 140.768 126.563 140.289 126.164 139.571Z'
-                  fill='#F2D2C2'
-                />
+                <path d='M126.164 139.571C125.127 137.975 125.606 135.581 127.122 134.463C126.723 132.628 128.079 130.154 129.995 129.915C131.192 129.755 132.548 130.394 132.947 131.511C133.187 132.149 133.027 132.947 132.788 133.586C131.99 136.458 130.473 139.092 128.399 141.167C127.68 140.768 126.563 140.289 126.164 139.571Z' fill='#F2D2C2' />
                 <path
                   d='M64.2394 234.214C65.995 221.047 72.2992 208.438 81.8752 199.181C84.349 196.787 87.0622 194.553 89.2966 191.999C91.531 189.446 93.3664 186.254 93.6856 182.822C93.8452 181.067 93.6058 179.311 92.6482 177.875C91.6906 176.438 89.935 175.401 88.2592 175.64C82.9126 176.359 78.5236 180.349 75.0124 184.418C64.1596 197.266 58.2544 214.104 58.5736 230.942C60.4888 232.618 61.8454 233.575 64.2394 234.214Z'
                   fill='#FFB227'
@@ -1126,37 +1002,17 @@ class PublishDocs extends Component {
                   d='M99.6705 250.812C99.2715 248.418 98.1543 246.104 96.8775 244.029C93.1269 237.804 85.3863 229.824 78.9225 226.233C78.6033 226.393 78.2841 226.553 78.0447 226.632C74.5335 232.458 76.0497 242.114 77.0073 249.216C77.2467 249.615 77.4063 249.934 77.6457 250.333C81.2367 256.557 85.9449 262.143 89.1369 268.527C91.1319 272.517 92.6481 277.066 92.8077 281.535C95.6007 273.315 97.3563 264.777 97.9947 256.158C98.1543 253.844 100.149 253.286 99.6705 250.812Z'
                   fill='black'
                 />
-                <path
-                  d='M101.745 225.914C109.326 256.797 111.64 288.876 108.608 320.557H98.2341C95.3613 308.986 92.7279 296.218 92.8875 284.248C92.9673 276.826 94.1643 269.325 92.3289 262.223C90.6531 255.839 86.6631 250.413 83.3913 244.747C80.1195 239.081 77.3265 232.537 78.5235 226.074C86.1843 224.158 94.0845 224.079 101.745 225.914Z'
-                  fill='url(#paint5_linear)'
-                />
+                <path d='M101.745 225.914C109.326 256.797 111.64 288.876 108.608 320.557H98.2341C95.3613 308.986 92.7279 296.218 92.8875 284.248C92.9673 276.826 94.1643 269.325 92.3289 262.223C90.6531 255.839 86.6631 250.413 83.3913 244.747C80.1195 239.081 77.3265 232.537 78.5235 226.074C86.1843 224.158 94.0845 224.079 101.745 225.914Z' fill='url(#paint5_linear)' />
                 <path
                   opacity='0.2'
                   d='M103.022 231.5C102.862 230.862 102.783 230.303 102.623 229.665C102.463 229.106 102.384 228.627 102.224 228.069C99.8301 227.35 97.9149 226.233 94.9623 225.515C93.2067 225.116 91.4511 224.797 89.6955 224.637C87.3813 224.637 85.1469 224.877 82.8327 225.196C80.7579 225.834 78.8427 226.951 77.1669 228.388C77.0871 228.627 77.0073 228.867 76.8477 229.106C76.8477 229.106 76.8477 229.106 76.8477 229.186C76.6881 229.585 76.6083 229.984 76.4487 230.383V230.463C76.3689 230.862 76.2093 231.34 76.1295 231.739V231.819C75.8901 233.176 75.7305 234.612 75.7305 236.049V236.128C75.7305 236.607 75.7305 237.086 75.7305 237.565C75.7305 237.645 75.7305 237.645 75.7305 237.724C75.7305 238.203 75.7305 238.682 75.8103 239.161V239.241C75.8901 240.198 75.9699 241.236 76.0497 242.193V242.273C76.1295 242.752 76.1295 243.231 76.2093 243.63C76.2093 243.709 76.2093 243.709 76.2093 243.789C76.2891 244.268 76.2891 244.667 76.3689 245.146C76.3689 245.226 76.3689 245.305 76.3689 245.385C76.4487 245.784 76.4487 246.263 76.5285 246.662C76.5285 246.742 76.5285 246.822 76.5285 246.901C76.5285 247.141 76.6083 247.38 76.6083 247.699C87.1419 245.784 96.7179 239.879 103.022 231.5Z'
                   fill='black'
                 />
-                <path
-                  d='M74.1346 237.884C82.9924 240.438 95.8402 233.176 104.459 229.984C103.74 220.807 101.745 211.311 101.027 202.134C100.309 192.239 99.2716 181.705 93.0472 173.964C90.4936 170.852 84.748 172.608 81.7156 175.241C78.6832 177.875 77.0074 181.705 75.7306 185.535C70.8628 200.697 69.9052 222.722 74.1346 237.884Z'
-                  fill='url(#paint6_linear)'
-                />
-                <path
-                  opacity='0.2'
-                  d='M101.027 202.214C100.389 193.515 99.511 184.259 95.0422 176.917C93.2068 177.396 91.3714 178.194 89.6956 179.151C86.2642 181.146 83.3914 184.259 79.96 186.094C85.945 192.797 93.127 198.463 101.107 202.613C101.027 202.533 101.027 202.373 101.027 202.214Z'
-                  fill='black'
-                />
-                <path
-                  d='M85.7055 162.553C84.9873 166.623 84.5883 170.693 84.5085 174.842C86.5035 175.401 88.7379 176.119 90.733 175.72C91.3714 171.57 91.531 167.181 91.2916 162.952C89.3764 162.314 87.7804 162.314 85.7055 162.553Z'
-                  fill='#F2D2C2'
-                />
-                <path
-                  opacity='0.2'
-                  d='M84.8276 169.416C86.7428 170.772 88.8974 171.889 91.1318 172.608C91.451 169.655 91.451 166.623 91.3712 163.67C91.1318 163.351 90.8924 163.032 90.5732 162.712C90.5732 162.712 90.4934 162.712 90.4934 162.633C88.8974 162.234 87.461 162.234 85.7054 162.393C85.3064 164.787 85.067 167.101 84.8276 169.416Z'
-                  fill='black'
-                />
-                <path
-                  d='M85.9448 154.573C90.4934 157.047 94.1642 161.276 95.9198 166.144C94.8824 168.059 93.047 169.495 90.9722 170.134C87.9398 171.091 84.4286 170.613 81.875 168.618C79.3214 166.702 78.0447 163.191 78.8427 160.159C79.5609 157.126 83.072 153.057 85.9448 154.573Z'
-                  fill='#F2D2C2'
-                />
+                <path d='M74.1346 237.884C82.9924 240.438 95.8402 233.176 104.459 229.984C103.74 220.807 101.745 211.311 101.027 202.134C100.309 192.239 99.2716 181.705 93.0472 173.964C90.4936 170.852 84.748 172.608 81.7156 175.241C78.6832 177.875 77.0074 181.705 75.7306 185.535C70.8628 200.697 69.9052 222.722 74.1346 237.884Z' fill='url(#paint6_linear)' />
+                <path opacity='0.2' d='M101.027 202.214C100.389 193.515 99.511 184.259 95.0422 176.917C93.2068 177.396 91.3714 178.194 89.6956 179.151C86.2642 181.146 83.3914 184.259 79.96 186.094C85.945 192.797 93.127 198.463 101.107 202.613C101.027 202.533 101.027 202.373 101.027 202.214Z' fill='black' />
+                <path d='M85.7055 162.553C84.9873 166.623 84.5883 170.693 84.5085 174.842C86.5035 175.401 88.7379 176.119 90.733 175.72C91.3714 171.57 91.531 167.181 91.2916 162.952C89.3764 162.314 87.7804 162.314 85.7055 162.553Z' fill='#F2D2C2' />
+                <path opacity='0.2' d='M84.8276 169.416C86.7428 170.772 88.8974 171.889 91.1318 172.608C91.451 169.655 91.451 166.623 91.3712 163.67C91.1318 163.351 90.8924 163.032 90.5732 162.712C90.5732 162.712 90.4934 162.712 90.4934 162.633C88.8974 162.234 87.461 162.234 85.7054 162.393C85.3064 164.787 85.067 167.101 84.8276 169.416Z' fill='black' />
+                <path d='M85.9448 154.573C90.4934 157.047 94.1642 161.276 95.9198 166.144C94.8824 168.059 93.047 169.495 90.9722 170.134C87.9398 171.091 84.4286 170.613 81.875 168.618C79.3214 166.702 78.0447 163.191 78.8427 160.159C79.5609 157.126 83.072 153.057 85.9448 154.573Z' fill='#F2D2C2' />
                 <path
                   d='M129.755 139.89C127.281 149.386 124.249 158.723 119.621 167.341C114.912 175.959 108.449 183.7 100.149 188.807C97.5159 190.403 94.7229 191.76 91.6905 192.159C88.6581 192.558 85.3863 191.999 83.0721 190.084C80.7579 188.169 77.8851 183.78 79.6407 181.306C81.8751 178.194 85.7853 176.917 89.2965 175.56C105.815 169.017 119.301 155.132 125.366 138.374L129.755 139.89Z'
                   fill='url(#paint7_linear)'
@@ -1165,131 +1021,38 @@ class PublishDocs extends Component {
                   d='M90.6532 156.089C90.733 156.488 90.5734 156.967 90.2542 157.286C89.935 157.605 89.6159 157.845 89.2169 158.084C87.2219 159.281 84.8279 159.999 82.4339 160.079C83.2319 161.196 83.3914 162.872 83.0722 164.149C83.7904 164.787 84.4288 165.506 85.147 166.144C84.5086 165.745 83.4712 165.506 82.753 165.186C82.354 165.027 81.7954 164.867 81.3964 165.186C81.157 165.426 81.0772 165.825 81.157 166.144C81.2368 166.463 81.4762 166.703 81.7954 166.942C82.5136 167.66 83.4713 168.139 84.5086 168.378C84.8279 169.336 84.748 170.373 84.5884 171.411C81.8752 170.772 78.4438 169.416 77.0074 167.022C76.0498 165.346 76.0498 163.351 76.1296 161.436C76.369 158.723 76.9276 155.85 78.6034 153.695C80.2792 151.541 83.2318 150.184 85.8652 151.062C87.94 151.94 90.2542 153.935 90.6532 156.089Z'
                   fill='url(#paint8_linear)'
                 />
-                <path
-                  d='M108.129 322.871H97.9949C97.0373 322.871 96.2393 322.073 96.2393 321.115V319.998C96.2393 319.041 97.0373 318.243 97.9949 318.243H108.129C109.087 318.243 109.885 319.041 109.885 319.998V321.195C109.885 322.073 109.087 322.871 108.129 322.871Z'
-                  fill='#005898'
-                />
-                <path
-                  d='M108.129 322.871H97.9949C97.0373 322.871 96.2393 322.073 96.2393 321.115V319.998C96.2393 319.041 97.0373 318.243 97.9949 318.243H108.129C109.087 318.243 109.885 319.041 109.885 319.998V321.195C109.885 322.073 109.087 322.871 108.129 322.871Z'
-                  fill='url(#paint9_linear)'
-                />
-                <path
-                  d='M72.1396 320.477L63.4414 315.29C62.5636 314.811 62.3242 313.694 62.803 312.896L63.3616 311.859C63.8404 310.981 64.9576 310.742 65.7556 311.22L74.4538 316.407C75.3316 316.886 75.571 318.003 75.0922 318.801L74.5336 319.839C74.0548 320.637 73.0174 320.956 72.1396 320.477Z'
-                  fill='#005898'
-                />
-                <path
-                  d='M72.1396 320.477L63.4414 315.29C62.5636 314.811 62.3242 313.694 62.803 312.896L63.3616 311.859C63.8404 310.981 64.9576 310.742 65.7556 311.22L74.4538 316.407C75.3316 316.886 75.571 318.003 75.0922 318.801L74.5336 319.839C74.0548 320.637 73.0174 320.956 72.1396 320.477Z'
-                  fill='url(#paint10_linear)'
-                />
-                <path
-                  d='M99.1918 328.617L97.3564 331.809C96.8776 332.607 97.4362 333.644 98.3938 333.644H112.279C113.556 333.644 113.955 331.969 112.838 331.33L106.853 328.138C106.693 328.058 106.454 327.979 106.294 327.979H100.229C99.8302 328.058 99.4312 328.298 99.1918 328.617Z'
-                  fill='black'
-                />
+                <path d='M108.129 322.871H97.9949C97.0373 322.871 96.2393 322.073 96.2393 321.115V319.998C96.2393 319.041 97.0373 318.243 97.9949 318.243H108.129C109.087 318.243 109.885 319.041 109.885 319.998V321.195C109.885 322.073 109.087 322.871 108.129 322.871Z' fill='#005898' />
+                <path d='M108.129 322.871H97.9949C97.0373 322.871 96.2393 322.073 96.2393 321.115V319.998C96.2393 319.041 97.0373 318.243 97.9949 318.243H108.129C109.087 318.243 109.885 319.041 109.885 319.998V321.195C109.885 322.073 109.087 322.871 108.129 322.871Z' fill='url(#paint9_linear)' />
+                <path d='M72.1396 320.477L63.4414 315.29C62.5636 314.811 62.3242 313.694 62.803 312.896L63.3616 311.859C63.8404 310.981 64.9576 310.742 65.7556 311.22L74.4538 316.407C75.3316 316.886 75.571 318.003 75.0922 318.801L74.5336 319.839C74.0548 320.637 73.0174 320.956 72.1396 320.477Z' fill='#005898' />
+                <path d='M72.1396 320.477L63.4414 315.29C62.5636 314.811 62.3242 313.694 62.803 312.896L63.3616 311.859C63.8404 310.981 64.9576 310.742 65.7556 311.22L74.4538 316.407C75.3316 316.886 75.571 318.003 75.0922 318.801L74.5336 319.839C74.0548 320.637 73.0174 320.956 72.1396 320.477Z' fill='url(#paint10_linear)' />
+                <path d='M99.1918 328.617L97.3564 331.809C96.8776 332.607 97.4362 333.644 98.3938 333.644H112.279C113.556 333.644 113.955 331.969 112.838 331.33L106.853 328.138C106.693 328.058 106.454 327.979 106.294 327.979H100.229C99.8302 328.058 99.4312 328.298 99.1918 328.617Z' fill='black' />
                 <path
                   d='M68.7081 329.016L66.4737 325.584C66.3939 325.425 66.2343 325.265 66.0747 325.185L62.5635 323.11C62.2443 322.871 61.7655 322.871 61.4463 323.031L58.8129 324.228C57.9351 324.627 57.8553 325.903 58.7331 326.382L66.7131 331.011L66.7929 331.09L67.4313 331.569C67.5909 331.729 67.8303 331.809 67.9899 331.809L68.7879 331.888C70.0647 332.048 70.6233 330.372 69.5859 329.654L69.1071 329.335C68.9475 329.255 68.8677 329.175 68.7081 329.016Z'
                   fill='black'
                 />
-                <path
-                  d='M337.793 101.186C339.424 101.186 340.746 99.8645 340.746 98.2338C340.746 96.6032 339.424 95.2812 337.793 95.2812C336.163 95.2812 334.841 96.6032 334.841 98.2338C334.841 99.8645 336.163 101.186 337.793 101.186Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M160.877 62.9623C160.877 64.3189 159.76 65.5159 158.323 65.5159C156.887 65.5159 155.77 64.3987 155.77 62.9623C155.77 61.6057 156.887 60.4087 158.323 60.4087C159.76 60.4087 160.877 61.5259 160.877 62.9623Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M83.7103 52.6679C83.7103 53.5457 82.9921 54.2639 82.1143 54.2639C81.2365 54.2639 80.5183 53.5457 80.5183 52.6679C80.5183 51.7901 81.2365 51.0719 82.1143 51.0719C82.9921 50.9921 83.7103 51.7901 83.7103 52.6679Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M81.9548 109.885C81.9548 110.842 81.1568 111.64 80.1992 111.64C79.2416 111.64 78.4436 110.842 78.4436 109.885C78.4436 108.927 79.2416 108.129 80.1992 108.129C81.1568 108.049 81.9548 108.847 81.9548 109.885Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M40.5385 147.391C40.5385 149.306 38.9425 150.902 37.0273 150.902C35.1121 150.902 33.5161 149.306 33.5161 147.391C33.5161 145.475 35.1121 143.879 37.0273 143.879C39.0223 143.879 40.5385 145.396 40.5385 147.391Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M250.971 62.8027C250.971 63.8401 250.173 64.6381 249.136 64.6381C248.098 64.6381 247.3 63.8401 247.3 62.8027C247.3 61.7653 248.098 60.9673 249.136 60.9673C250.173 60.9673 250.971 61.8451 250.971 62.8027Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M309.385 64.0796C309.864 65.516 310.981 66.6332 312.337 67.0322C310.901 67.511 309.784 68.6282 309.385 69.9848C308.906 68.5484 307.789 67.4312 306.432 67.0322C307.869 66.6332 308.986 65.516 309.385 64.0796Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M349.684 305.395C350.163 306.831 351.28 307.948 352.636 308.347C351.2 308.826 350.083 309.943 349.684 311.3C349.205 309.863 348.088 308.746 346.731 308.347C348.168 307.868 349.285 306.831 349.684 305.395Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M358.94 168.059C359.419 169.495 360.536 170.613 361.893 171.012C360.457 171.49 359.339 172.608 358.94 173.964C358.462 172.528 357.344 171.411 355.988 171.012C357.424 170.533 358.541 169.416 358.94 168.059Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M274.592 80.0396C275.071 81.476 276.188 82.5931 277.545 82.9921C276.108 83.4709 274.991 84.5881 274.592 85.9447C274.113 84.5083 272.996 83.3911 271.639 82.9921C272.996 82.5931 274.113 81.476 274.592 80.0396Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M196.069 37.9849C196.548 39.4213 197.665 40.5385 199.021 40.9375C197.585 41.4163 196.468 42.5335 196.069 43.8901C195.59 42.4537 194.473 41.3365 193.116 40.9375C194.553 40.4587 195.67 39.3415 196.069 37.9849Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M40.5385 68.229C41.0173 69.6654 42.1345 70.7826 43.4911 71.1816C42.0547 71.6604 40.9375 72.7776 40.5385 74.1342C40.0597 72.6978 38.9425 71.5806 37.5859 71.1816C39.0223 70.7826 40.1395 69.6654 40.5385 68.229Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M124.009 60.1694C124.488 61.6058 125.605 62.723 126.962 63.122C125.525 63.6008 124.408 64.718 124.009 66.0746C123.53 64.6382 122.413 63.521 121.057 63.122C122.493 62.723 123.61 61.6058 124.009 60.1694Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  d='M36.5485 208.757C37.0273 210.193 38.1445 211.31 39.5011 211.709C38.0647 212.188 36.9475 213.305 36.5485 214.662C36.0697 213.226 34.9525 212.108 33.5959 211.709C35.0323 211.31 36.1495 210.193 36.5485 208.757Z'
-                  fill='#F6E1D5'
-                />
-                <path
-                  opacity='0.35'
-                  d='M200.936 334.761C305.474 334.761 390.222 333.484 390.222 331.968C390.222 330.452 305.474 329.175 200.936 329.175C96.3985 329.175 11.6509 330.452 11.6509 331.968C11.6509 333.484 96.4783 334.761 200.936 334.761Z'
-                  fill='#9A6F5D'
-                />
-                <path
-                  opacity='0.45'
-                  d='M163.191 293.983H139.969C136.937 293.983 134.463 291.509 134.463 288.477V130.473C134.463 127.441 136.937 124.967 139.969 124.967H163.191C166.224 124.967 168.697 127.441 168.697 130.473V288.477C168.697 291.509 166.224 293.983 163.191 293.983Z'
-                  fill='#D3D3D3'
-                />
-                <path
-                  opacity='0.45'
-                  d='M176.438 132.628V127.122C176.438 125.925 177.396 125.047 178.513 125.047H296.776C297.973 125.047 298.851 126.004 298.851 127.122V132.628C298.851 133.825 297.894 134.703 296.776 134.703H178.513C177.396 134.782 176.438 133.825 176.438 132.628Z'
-                  fill='#D3D3D3'
-                />
-                <path
-                  opacity='0.45'
-                  d='M176.438 151.54V146.034C176.438 144.837 177.396 143.959 178.513 143.959H275.47C276.667 143.959 277.545 144.917 277.545 146.034V151.54C277.545 152.737 276.587 153.615 275.47 153.615H178.513C177.396 153.615 176.438 152.658 176.438 151.54Z'
-                  fill='#D3D3D3'
-                />
-                <path
-                  opacity='0.45'
-                  d='M176.438 179.71V174.204C176.438 173.007 177.396 172.129 178.513 172.129H266.851C268.048 172.129 268.926 173.087 268.926 174.204V179.71C268.926 180.907 267.969 181.785 266.851 181.785H178.513C177.396 181.785 176.438 180.827 176.438 179.71Z'
-                  fill='#D3D3D3'
-                />
-                <path
-                  opacity='0.45'
-                  d='M176.438 205.405V199.899C176.438 198.702 177.396 197.824 178.513 197.824H280.417C281.614 197.824 282.492 198.782 282.492 199.899V205.405C282.492 206.602 281.535 207.48 280.417 207.48H178.513C177.396 207.48 176.438 206.602 176.438 205.405Z'
-                  fill='#D3D3D3'
-                />
-                <path
-                  opacity='0.45'
-                  d='M176.438 224.797V219.291C176.438 218.094 177.396 217.216 178.513 217.216H294.303C295.5 217.216 296.377 218.173 296.377 219.291V224.797C296.377 225.994 295.42 226.872 294.303 226.872H178.513C177.396 226.872 176.438 225.914 176.438 224.797Z'
-                  fill='#D3D3D3'
-                />
-                <path
-                  opacity='0.45'
-                  d='M176.438 244.108V238.602C176.438 237.405 177.396 236.527 178.513 236.527H266.851C268.048 236.527 268.926 237.485 268.926 238.602V244.108C268.926 245.305 267.969 246.183 266.851 246.183H178.513C177.396 246.263 176.438 245.305 176.438 244.108Z'
-                  fill='#D3D3D3'
-                />
-                <path
-                  opacity='0.45'
-                  d='M176.438 290.472V277.385C176.438 276.188 177.396 275.31 178.513 275.31H228.308C229.505 275.31 230.383 276.268 230.383 277.385V290.472C230.383 291.669 229.425 292.547 228.308 292.547H178.513C177.396 292.547 176.438 291.589 176.438 290.472Z'
-                  fill='#088B00'
-                />
+                <path d='M337.793 101.186C339.424 101.186 340.746 99.8645 340.746 98.2338C340.746 96.6032 339.424 95.2812 337.793 95.2812C336.163 95.2812 334.841 96.6032 334.841 98.2338C334.841 99.8645 336.163 101.186 337.793 101.186Z' fill='#F6E1D5' />
+                <path d='M160.877 62.9623C160.877 64.3189 159.76 65.5159 158.323 65.5159C156.887 65.5159 155.77 64.3987 155.77 62.9623C155.77 61.6057 156.887 60.4087 158.323 60.4087C159.76 60.4087 160.877 61.5259 160.877 62.9623Z' fill='#F6E1D5' />
+                <path d='M83.7103 52.6679C83.7103 53.5457 82.9921 54.2639 82.1143 54.2639C81.2365 54.2639 80.5183 53.5457 80.5183 52.6679C80.5183 51.7901 81.2365 51.0719 82.1143 51.0719C82.9921 50.9921 83.7103 51.7901 83.7103 52.6679Z' fill='#F6E1D5' />
+                <path d='M81.9548 109.885C81.9548 110.842 81.1568 111.64 80.1992 111.64C79.2416 111.64 78.4436 110.842 78.4436 109.885C78.4436 108.927 79.2416 108.129 80.1992 108.129C81.1568 108.049 81.9548 108.847 81.9548 109.885Z' fill='#F6E1D5' />
+                <path d='M40.5385 147.391C40.5385 149.306 38.9425 150.902 37.0273 150.902C35.1121 150.902 33.5161 149.306 33.5161 147.391C33.5161 145.475 35.1121 143.879 37.0273 143.879C39.0223 143.879 40.5385 145.396 40.5385 147.391Z' fill='#F6E1D5' />
+                <path d='M250.971 62.8027C250.971 63.8401 250.173 64.6381 249.136 64.6381C248.098 64.6381 247.3 63.8401 247.3 62.8027C247.3 61.7653 248.098 60.9673 249.136 60.9673C250.173 60.9673 250.971 61.8451 250.971 62.8027Z' fill='#F6E1D5' />
+                <path d='M309.385 64.0796C309.864 65.516 310.981 66.6332 312.337 67.0322C310.901 67.511 309.784 68.6282 309.385 69.9848C308.906 68.5484 307.789 67.4312 306.432 67.0322C307.869 66.6332 308.986 65.516 309.385 64.0796Z' fill='#F6E1D5' />
+                <path d='M349.684 305.395C350.163 306.831 351.28 307.948 352.636 308.347C351.2 308.826 350.083 309.943 349.684 311.3C349.205 309.863 348.088 308.746 346.731 308.347C348.168 307.868 349.285 306.831 349.684 305.395Z' fill='#F6E1D5' />
+                <path d='M358.94 168.059C359.419 169.495 360.536 170.613 361.893 171.012C360.457 171.49 359.339 172.608 358.94 173.964C358.462 172.528 357.344 171.411 355.988 171.012C357.424 170.533 358.541 169.416 358.94 168.059Z' fill='#F6E1D5' />
+                <path d='M274.592 80.0396C275.071 81.476 276.188 82.5931 277.545 82.9921C276.108 83.4709 274.991 84.5881 274.592 85.9447C274.113 84.5083 272.996 83.3911 271.639 82.9921C272.996 82.5931 274.113 81.476 274.592 80.0396Z' fill='#F6E1D5' />
+                <path d='M196.069 37.9849C196.548 39.4213 197.665 40.5385 199.021 40.9375C197.585 41.4163 196.468 42.5335 196.069 43.8901C195.59 42.4537 194.473 41.3365 193.116 40.9375C194.553 40.4587 195.67 39.3415 196.069 37.9849Z' fill='#F6E1D5' />
+                <path d='M40.5385 68.229C41.0173 69.6654 42.1345 70.7826 43.4911 71.1816C42.0547 71.6604 40.9375 72.7776 40.5385 74.1342C40.0597 72.6978 38.9425 71.5806 37.5859 71.1816C39.0223 70.7826 40.1395 69.6654 40.5385 68.229Z' fill='#F6E1D5' />
+                <path d='M124.009 60.1694C124.488 61.6058 125.605 62.723 126.962 63.122C125.525 63.6008 124.408 64.718 124.009 66.0746C123.53 64.6382 122.413 63.521 121.057 63.122C122.493 62.723 123.61 61.6058 124.009 60.1694Z' fill='#F6E1D5' />
+                <path d='M36.5485 208.757C37.0273 210.193 38.1445 211.31 39.5011 211.709C38.0647 212.188 36.9475 213.305 36.5485 214.662C36.0697 213.226 34.9525 212.108 33.5959 211.709C35.0323 211.31 36.1495 210.193 36.5485 208.757Z' fill='#F6E1D5' />
+                <path opacity='0.35' d='M200.936 334.761C305.474 334.761 390.222 333.484 390.222 331.968C390.222 330.452 305.474 329.175 200.936 329.175C96.3985 329.175 11.6509 330.452 11.6509 331.968C11.6509 333.484 96.4783 334.761 200.936 334.761Z' fill='#9A6F5D' />
+                <path opacity='0.45' d='M163.191 293.983H139.969C136.937 293.983 134.463 291.509 134.463 288.477V130.473C134.463 127.441 136.937 124.967 139.969 124.967H163.191C166.224 124.967 168.697 127.441 168.697 130.473V288.477C168.697 291.509 166.224 293.983 163.191 293.983Z' fill='#D3D3D3' />
+                <path opacity='0.45' d='M176.438 132.628V127.122C176.438 125.925 177.396 125.047 178.513 125.047H296.776C297.973 125.047 298.851 126.004 298.851 127.122V132.628C298.851 133.825 297.894 134.703 296.776 134.703H178.513C177.396 134.782 176.438 133.825 176.438 132.628Z' fill='#D3D3D3' />
+                <path opacity='0.45' d='M176.438 151.54V146.034C176.438 144.837 177.396 143.959 178.513 143.959H275.47C276.667 143.959 277.545 144.917 277.545 146.034V151.54C277.545 152.737 276.587 153.615 275.47 153.615H178.513C177.396 153.615 176.438 152.658 176.438 151.54Z' fill='#D3D3D3' />
+                <path opacity='0.45' d='M176.438 179.71V174.204C176.438 173.007 177.396 172.129 178.513 172.129H266.851C268.048 172.129 268.926 173.087 268.926 174.204V179.71C268.926 180.907 267.969 181.785 266.851 181.785H178.513C177.396 181.785 176.438 180.827 176.438 179.71Z' fill='#D3D3D3' />
+                <path opacity='0.45' d='M176.438 205.405V199.899C176.438 198.702 177.396 197.824 178.513 197.824H280.417C281.614 197.824 282.492 198.782 282.492 199.899V205.405C282.492 206.602 281.535 207.48 280.417 207.48H178.513C177.396 207.48 176.438 206.602 176.438 205.405Z' fill='#D3D3D3' />
+                <path opacity='0.45' d='M176.438 224.797V219.291C176.438 218.094 177.396 217.216 178.513 217.216H294.303C295.5 217.216 296.377 218.173 296.377 219.291V224.797C296.377 225.994 295.42 226.872 294.303 226.872H178.513C177.396 226.872 176.438 225.914 176.438 224.797Z' fill='#D3D3D3' />
+                <path opacity='0.45' d='M176.438 244.108V238.602C176.438 237.405 177.396 236.527 178.513 236.527H266.851C268.048 236.527 268.926 237.485 268.926 238.602V244.108C268.926 245.305 267.969 246.183 266.851 246.183H178.513C177.396 246.263 176.438 245.305 176.438 244.108Z' fill='#D3D3D3' />
+                <path opacity='0.45' d='M176.438 290.472V277.385C176.438 276.188 177.396 275.31 178.513 275.31H228.308C229.505 275.31 230.383 276.268 230.383 277.385V290.472C230.383 291.669 229.425 292.547 228.308 292.547H178.513C177.396 292.547 176.438 291.589 176.438 290.472Z' fill='#088B00' />
                 <defs>
                   <linearGradient id='paint0_linear' x1='42.2783' y1='204.677' x2='346.322' y2='204.677' gradientUnits='userSpaceOnUse'>
                     <stop stop-color='#E6B46C' stop-opacity='0.7' />
@@ -1364,7 +1127,7 @@ class PublishDocs extends Component {
           <label className='hostes-label'>Collection</label>
           <Dropdown>
             <Dropdown.Toggle variant='' id='dropdown-basic' className='custom-toggle'>
-              {this.props.collections[collectionId]?.name || ''}
+              {this.props.collections[collectionId]?.name || ""}
             </Dropdown.Toggle>
             <Dropdown.Menu>{this.showCollections()}</Dropdown.Menu>
           </Dropdown>
@@ -1402,11 +1165,7 @@ class PublishDocs extends Component {
         {this.showPublishDocConfirmationModal()}
         <div className='publish-docs-wrapper'>
           <div className='content-panel'>
-            <div className='hosted-APIs'>
-              {this.state.selectedCollectionId &&
-                this.props.collections[this.state.selectedCollectionId] &&
-                (!this.checkDocProperties(collectionId) ? this.renderFullPageDocForm() : this.renderHostedAPIDetials())}
-            </div>
+            <div className='hosted-APIs'>{this.state.selectedCollectionId && this.props.collections[this.state.selectedCollectionId] && (!this.checkDocProperties(collectionId) ? this.renderFullPageDocForm() : this.renderHostedAPIDetials())}</div>
           </div>
         </div>
         <Footer />

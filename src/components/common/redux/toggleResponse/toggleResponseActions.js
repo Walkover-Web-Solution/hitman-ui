@@ -1,4 +1,4 @@
-import toggleResponseActionTypes from './toggleResponseActionTypes'
+import toggleResponseActionTypes from "./toggleResponseActionTypes"
 
 export const onResponseToggle = (type) => {
   return (dispatch) => {
@@ -8,7 +8,7 @@ export const onResponseToggle = (type) => {
 export const onToggle = (payload) => {
   return {
     type: toggleResponseActionTypes.ON_RESPONSE_TOGGLE,
-    payload
+    payload,
   }
 }
 // export const onChatResponseToggle = (type) => {

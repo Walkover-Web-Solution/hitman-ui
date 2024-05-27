@@ -1,5 +1,5 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
-@import './main/variables.scss';
+@import "./main/variables.scss";
 
 $border-color: rgba(227, 228, 230, 0.7);
 
@@ -290,12 +290,12 @@ $border-color: rgba(227, 228, 230, 0.7);
     width: 64px;
     height: 26px;
     line-height: 26px;
-    @media only screen and (max-width: 768px){
+    @media only screen and (max-width: 768px) {
       font-size: 14px;
-     }
-     @media only screen and (max-width: 568px){
+    }
+    @media only screen and (max-width: 568px) {
       font-size: 16px;
-     }
+    }
   }
 
   &.POST {
@@ -461,8 +461,8 @@ main.main.ml-sm-auto.col-lg-10 {
 //   }
 // }
 // :disabled {
-  // cursor: not-allowed;
-  //background-color: #e9ecef;
+// cursor: not-allowed;
+//background-color: #e9ecef;
 // }
 
 button.btn.btn-default {
@@ -509,16 +509,16 @@ button.btn.custom-body-type-button {
   .primary-sidebar {
     width: 100%;
   }
-  .enableSearch .search-box > input[type='text'] {
+  .enableSearch .search-box > input[type="text"] {
     padding: 0 1rem;
     background-image: none !important;
   }
-  .search-box > input[type='text'] {
+  .search-box > input[type="text"] {
     padding-left: 2.5rem;
-    background: url('../assets/icons/search.svg') no-repeat 0.75rem center !important;
+    background: url("../assets/icons/search.svg") no-repeat 0.75rem center !important;
   }
-  .versionsAvailable.versionWrapper:not(.enableSearch) .search-box > input[type='text'] {
-    background: url('../assets/icons/searchIcon.svg') no-repeat center !important;
+  .versionsAvailable.versionWrapper:not(.enableSearch) .search-box > input[type="text"] {
+    background: url("../assets/icons/searchIcon.svg") no-repeat center !important;
     padding: 0 1rem;
     cursor: pointer;
     &::placeholder {
@@ -641,10 +641,10 @@ button.btn.custom-body-type-button {
   justify-content: space-between;
   z-index: 2;
 
-  @media only screen and (max-width: 1600px){
+  @media only screen and (max-width: 1600px) {
     flex-wrap: wrap;
     justify-content: center;
-   }
+  }
 }
 .fixed-menu-bar {
   position: fixed;
@@ -713,7 +713,7 @@ button.is_active {
     .selectedCell:after {
       z-index: 2;
       position: absolute;
-      content: '';
+      content: "";
       left: 0;
       right: 0;
       top: 0;
@@ -796,7 +796,7 @@ button.is_active {
       &:focus {
         outline: none;
       }
-      &.active-tool{
+      &.active-tool {
         background: rgb(197, 197, 197);
       }
     }
@@ -822,7 +822,6 @@ button.is_active {
     }
   }
 }
-
 
 .basic.tree {
   list-style: none;

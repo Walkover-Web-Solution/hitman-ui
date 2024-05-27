@@ -1,19 +1,19 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { toast } from 'react-toastify'
-import { isAdmin } from '../auth/authServiceV2'
-import './publicCollectionInfo.scss'
-import SettingIcon from '../../assets/icons/SettingIcon.png'
-import FileIcon from '../../assets/icons/file.svg'
-import DocIcon from '../../assets/icons/twitch.svg'
-import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
-import { ReactComponent as HelpIcon } from '../../assets/icons/helpcircle.svg'
-import PublishSidebar from '../publishSidebar/publishSidebar'
-import { openExternalLink, msgText } from '../common/utility'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { store } from '../../store/store'
-import { updateTab } from '../tabs/redux/tabsActions'
-import _ from 'lodash'
+import React, { Component } from "react"
+import { connect } from "react-redux"
+import { toast } from "react-toastify"
+import { isAdmin } from "../auth/authServiceV2"
+import "./publicCollectionInfo.scss"
+import SettingIcon from "../../assets/icons/SettingIcon.png"
+import FileIcon from "../../assets/icons/file.svg"
+import DocIcon from "../../assets/icons/twitch.svg"
+import { ReactComponent as ExternalLinks } from "../../assets/icons/externalLinks.svg"
+import { ReactComponent as HelpIcon } from "../../assets/icons/helpcircle.svg"
+import PublishSidebar from "../publishSidebar/publishSidebar"
+import { openExternalLink, msgText } from "../common/utility"
+import { OverlayTrigger, Tooltip } from "react-bootstrap"
+import { store } from "../../store/store"
+import { updateTab } from "../tabs/redux/tabsActions"
+import _ from "lodash"
 
 const mapStateToProps = (state) => {
   return {
@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     modals: state.endpoints,
     isPublishSliderOpen: state.modals.publishData,
-    tabs: state.tabs
+    tabs: state.tabs,
   }
 }
 
@@ -44,7 +44,7 @@ class PublishCollectionInfo extends Component {
       totalPageCount: 0,
       totalEndpointCount: 0,
       livePageCount: 0,
-      liveEndpointCount: 0
+      liveEndpointCount: 0,
     }
   }
 
@@ -53,18 +53,13 @@ class PublishCollectionInfo extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      this.props.endpoints !== prevProps.endpoints ||
-      this.props.pages !== prevProps.pages ||
-      this.props.versions !== prevProps.versions ||
-      this.props.groups !== prevProps.groups
-    ) {
+    if (this.props.endpoints !== prevProps.endpoints || this.props.pages !== prevProps.pages || this.props.versions !== prevProps.versions || this.props.groups !== prevProps.groups) {
       // this.getPublicEntityCount()
     }
   }
 
   renderPublicUrl() {
-    const url = defaultDomain + '/p?collectionId=' + this.props.collectionId
+    const url = defaultDomain + "/p?collectionId=" + this.props.collectionId
     const { versions, groups, endpoints, collectionId } = this.props
     const targetVersionIds = _.values(versions)
       .filter((version) => version.collectionId === collectionId)
@@ -76,16 +71,16 @@ class PublishCollectionInfo extends Component {
     return (
       <OverlayTrigger
         overlay={
-          <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled && 'd-none'}>
+          <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled && "d-none"}>
             Atleast one endpoint/page is to be published to enable this link.
           </Tooltip>
         }
       >
         <button onClick={() => isDisabled && openExternalLink(url)}>
           {/* <button onClick={() => openExternalLink(url)}> */}
-          <div className={`sidebar-public-url text-center d-flex align-items-center${!isDisabled && ' text-link'}`}>
+          <div className={`sidebar-public-url text-center d-flex align-items-center${!isDisabled && " text-link"}`}>
             <span className='icon d-flex mr-1'>
-              {' '}
+              {" "}
               <ExternalLinks />
             </span>
             <div className='text-truncate'>{url}</div>
@@ -109,7 +104,7 @@ class PublishCollectionInfo extends Component {
           <img className='mr-1' src={SettingIcon} alt='' />
           <span>Manage Public Doc</span>
         </div>
-        {this.renderInfoText('Add an endpoint first')}
+        {this.renderInfoText("Add an endpoint first")}
       </button>
     )
   }
@@ -168,7 +163,7 @@ class PublishCollectionInfo extends Component {
 
       for (const pageId of Object.keys(pages)) {
         const groupId = pages[pageId]?.groupId
-        let versionId = ''
+        let versionId = ""
         if (groupId) versionId = groups[groupId]?.versionId
         else versionId = pages[pageId]?.versionId
         const pageCollectionId = versions[versionId]?.collectionId
@@ -259,7 +254,7 @@ class PublishCollectionInfo extends Component {
           <img className='ml-2 pl-1 mr-1' src={FileIcon} alt='' />
           <span className='truncate'>Publish API Documentation</span>
         </div>
-        {this.renderInfoText('Add an endpoint to publish')}
+        {this.renderInfoText("Add an endpoint to publish")}
       </button>
     )
   }
@@ -278,7 +273,7 @@ class PublishCollectionInfo extends Component {
   }
 
   showAccessDeniedToast() {
-    const message = 'You do not have access to the Public API Doc Settings, please contact workplace Admin'
+    const message = "You do not have access to the Public API Doc Settings, please contact workplace Admin"
     toast.error(message)
   }
 
@@ -292,7 +287,7 @@ class PublishCollectionInfo extends Component {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
     const activeTab = this.props.tabs.activeTabId
-    store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
+    store.dispatch(updateTab(activeTab, { state: { pageType: "SETTINGS" } }))
   }
 
   closePublishSidebar() {
@@ -300,17 +295,7 @@ class PublishCollectionInfo extends Component {
   }
 
   openPublishSidebar() {
-    return (
-      <>
-        {this.props.isPublishSliderOpen && (
-          <PublishSidebar
-            {...this.props}
-            closePublishSidebar={this.closePublishSidebar.bind(this)}
-            openPublishSettings={this.openPublishSettings.bind(this)}
-          />
-        )}
-      </>
-    )
+    return <>{this.props.isPublishSliderOpen && <PublishSidebar {...this.props} closePublishSidebar={this.closePublishSidebar.bind(this)} openPublishSettings={this.openPublishSettings.bind(this)} />}</>
   }
 
   render() {

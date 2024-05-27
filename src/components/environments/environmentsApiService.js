@@ -1,4 +1,4 @@
-import http from '../../services/httpService'
+import http from "../../services/httpService"
 
 const apiUrl = process.env.REACT_APP_API_URL
 
@@ -40,5 +40,5 @@ export default {
   saveEnvironment,
   updateEnvironment,
   deleteEnvironment,
-  importPostmanEnvironment
+  importPostmanEnvironment,
 }

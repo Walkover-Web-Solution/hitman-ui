@@ -1,6 +1,6 @@
-import jQuery from 'jquery'
+import jQuery from "jquery"
 
-let originalBodyDescription = ''
+let originalBodyDescription = ""
 const parseBody = (rawBody) => {
   let body = {}
   try {
@@ -44,50 +44,50 @@ function generateBodyDescription(data, isFirstRun) {
     } else {
       description = {}
       propertyKeys = Object.keys(data)
-    } 
+    }
 
     // Iterate over each property or index
     propertyKeys.forEach((key) => {
       const element = Array.isArray(data) ? data[parseInt(key)] : data[key]
 
-      if (typeof element === 'string' || typeof element === 'number' || typeof element === 'boolean') {
+      if (typeof element === "string" || typeof element === "number" || typeof element === "boolean") {
         description[key] = {
           value: isFirstRun ? element : null,
           type: typeof element,
-          description: ''
+          description: "",
         }
       } else if (Array.isArray(element)) {
         const nestedDescription = generateBodyDescription(element, isFirstRun)
         description[key] = {
           value: nestedDescription,
-          type: 'array',
-          description: ''
+          type: "array",
+          description: "",
         }
 
         // Set default value for arrays on first run
         if (isFirstRun && nestedDescription.length > 0) {
-          description[key]['default'] = nestedDescription[0]
+          description[key]["default"] = nestedDescription[0]
         }
-      } else if (typeof element === 'object') {
+      } else if (typeof element === "object") {
         // Recursively handle objects
         description[key] = {
           value: generateBodyDescription(element, isFirstRun),
-          type: 'object',
-          description: ''
+          type: "object",
+          description: "",
         }
       } else {
         // Handle unexpected types with a default fallback
         description[key] = {
           value: null,
-          type: 'unknown',
-          description: 'Unexpected type'
+          type: "unknown",
+          description: "Unexpected type",
         }
       }
     })
 
     return description
   } catch (error) {
-    console.error('Error generating body description:', error)
+    console.error("Error generating body description:", error)
     return null
   }
 }
@@ -105,33 +105,21 @@ function compareDefaultValue(updatedBodyDescription, originalBodyDescription) {
   if (!updatedBodyDescription) return
   const updatedKeys = Object.keys(updatedBodyDescription)
   for (let i = 0; i < updatedKeys.length; i++) {
-    if (
-      originalBodyDescription?.[updatedKeys?.[i]] &&
-      updatedBodyDescription[updatedKeys[i]].type === originalBodyDescription[updatedKeys[i]].type
-    ) {
+    if (originalBodyDescription?.[updatedKeys?.[i]] && updatedBodyDescription[updatedKeys[i]].type === originalBodyDescription[updatedKeys[i]].type) {
       switch (updatedBodyDescription[updatedKeys[i]].type) {
-        case 'string':
-        case 'number':
-        case 'boolean':
+        case "string":
+        case "number":
+        case "boolean":
           updatedBodyDescription[updatedKeys[i]].value = originalBodyDescription[updatedKeys[i]].value
           updatedBodyDescription[updatedKeys[i]].description = originalBodyDescription[updatedKeys[i]].description
           break
-        case 'array':
-          updatedBodyDescription[updatedKeys[i]].value = compareDefaultValue(
-            updatedBodyDescription[updatedKeys[i]].value,
-            originalBodyDescription[updatedKeys[i]].value
-          )
-          updatedBodyDescription[updatedKeys[i]].default = compareDefaultValue(
-            updatedBodyDescription[updatedKeys[i]].value,
-            originalBodyDescription[updatedKeys[i]].value
-          )[0]
+        case "array":
+          updatedBodyDescription[updatedKeys[i]].value = compareDefaultValue(updatedBodyDescription[updatedKeys[i]].value, originalBodyDescription[updatedKeys[i]].value)
+          updatedBodyDescription[updatedKeys[i]].default = compareDefaultValue(updatedBodyDescription[updatedKeys[i]].value, originalBodyDescription[updatedKeys[i]].value)[0]
           updatedBodyDescription[updatedKeys[i]].description = originalBodyDescription[updatedKeys[i]].description
           break
-        case 'object':
-          updatedBodyDescription[updatedKeys[i]].value = compareDefaultValue(
-            updatedBodyDescription[updatedKeys[i]].value,
-            originalBodyDescription[updatedKeys[i]].value
-          )
+        case "object":
+          updatedBodyDescription[updatedKeys[i]].value = compareDefaultValue(updatedBodyDescription[updatedKeys[i]].value, originalBodyDescription[updatedKeys[i]].value)
           updatedBodyDescription[updatedKeys[i]].description = originalBodyDescription[updatedKeys[i]].description
           break
         default:
@@ -144,5 +132,5 @@ function compareDefaultValue(updatedBodyDescription, originalBodyDescription) {
 
 export default {
   parseBody,
-  handleUpdate
+  handleUpdate,
 }

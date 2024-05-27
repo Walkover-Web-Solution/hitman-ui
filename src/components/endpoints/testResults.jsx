@@ -1,14 +1,10 @@
-import React, { Component } from 'react'
-import './testResults.scss'
+import React, { Component } from "react"
+import "./testResults.scss"
 
 class TestResults extends Component {
   state = {}
   render() {
-    return this.props.tests.length > 0 ? (
-      <div className='test-results-container px-2'>{this.props.tests.map((test, index) => this.renderTestResult(test, index))}</div>
-    ) : (
-      this.renderEmpty()
-    )
+    return this.props.tests.length > 0 ? <div className='test-results-container px-2'>{this.props.tests.map((test, index) => this.renderTestResult(test, index))}</div> : this.renderEmpty()
   }
 
   renderTestResult(testcase, index) {

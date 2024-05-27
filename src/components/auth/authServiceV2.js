@@ -20,13 +20,16 @@ function isAdmin() {
   return { is_admin: true };
 }
 
-async function getUserData(token){
-  const response = await axios.get(`${process.env.REACT_APP_PROXY_URL}/getUsers?itemsPerPage=100`, {
-    headers: { proxy_auth_token: token }
-  })
+async function getUserData(token) {
+  const response = await axios.get(
+    `${process.env.REACT_APP_PROXY_URL}/getUsers?itemsPerPage=100`,
+    {
+      headers: { proxy_auth_token: token },
+    },
+  );
 
-  if(!response){
-    console.log("No User found")
+  if (!response) {
+    console.log("No User found");
   }
   return response.data?.data?.data;
 }
@@ -121,7 +124,9 @@ function AuthServiceV2() {
         if (proxyAuthToken) {
           await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
           setOrgList(getOrgList());
-          const storedCurrentOrgId = window.localStorage.getItem("currentOrganisation");
+          const storedCurrentOrgId = window.localStorage.getItem(
+            "currentOrganisation",
+          );
           let currentOrgId;
           if (storedCurrentOrgId == null || storedCurrentOrgId == "undefined") {
             currentOrgId = orgId;
@@ -130,20 +135,22 @@ function AuthServiceV2() {
           }
           switchOrg(currentOrgId);
         } else {
-          const redirectPath = getOrgList() ? `/orgs/${orgId}/dashboard` : "/logout";
+          const redirectPath = getOrgList()
+            ? `/orgs/${orgId}/dashboard`
+            : "/logout";
           history.push(redirectPath);
         }
       } catch (err) {
         history.push("/logout");
       }
     };
-  
+
     fetchData();
   }, []);
 
   return (
-    <div className='custom-loading-container'>
-      <progress className="pure-material-progress-linear w-25"/>
+    <div className="custom-loading-container">
+      <progress className="pure-material-progress-linear w-25" />
     </div>
   );
 }

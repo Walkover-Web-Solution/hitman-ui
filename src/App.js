@@ -1,35 +1,28 @@
-import React, { Component } from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
-import LoginV2 from './components/auth/loginV2'
-import Logout from './components/auth/logout'
-import collectionsApiService from './components/collections/collectionsApiService'
-import MainV2 from './components/main/MainV2'
-import Public from './components/publicEndpoint/publicEndpoint.jsx'
-import { ToastContainer } from 'react-toastify'
-import {
-  SESSION_STORAGE_KEY,
-  getOrgId,
-  isDashboardRoute,
-  isElectron,
-  isOnPublishedPage,
-  isTechdocOwnDomain
-} from './components/common/utility'
-import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
-import ProtectedRouteV2 from './components/common/protectedRouteV2'
-import Cookies from 'universal-cookie'
-import AuthServiceV2 from './components/auth/authServiceV2'
-import InviteTeam from './components/main/inviteTeam/inviteTeam'
-import { connect } from 'react-redux'
-import { installModal } from './components/modals/redux/modalsActions'
-import { initConn, resetConn } from './services/webSocket/webSocketService.js'
-import shortid from 'shortid'
-import OauthPage from './components/OauthPage/OauthPage.js'
-import TrashPage from './components/main/Trash/trashPage.jsx'
-import IndexWebsite from './components/indexWebsite/indexWebsite.js'
+import React, { Component } from "react"
+import { Route, Switch, Redirect } from "react-router-dom"
+import LoginV2 from "./components/auth/loginV2"
+import Logout from "./components/auth/logout"
+import collectionsApiService from "./components/collections/collectionsApiService"
+import MainV2 from "./components/main/MainV2"
+import Public from "./components/publicEndpoint/publicEndpoint.jsx"
+import { ToastContainer } from "react-toastify"
+import { SESSION_STORAGE_KEY, getOrgId, isDashboardRoute, isElectron, isOnPublishedPage, isTechdocOwnDomain } from "./components/common/utility"
+import { ERROR_403_PAGE, ERROR_404_PAGE } from "./components/errorPages"
+import ProtectedRouteV2 from "./components/common/protectedRouteV2"
+import Cookies from "universal-cookie"
+import AuthServiceV2 from "./components/auth/authServiceV2"
+import InviteTeam from "./components/main/inviteTeam/inviteTeam"
+import { connect } from "react-redux"
+import { installModal } from "./components/modals/redux/modalsActions"
+import { initConn, resetConn } from "./services/webSocket/webSocketService.js"
+import shortid from "shortid"
+import OauthPage from "./components/OauthPage/OauthPage.js"
+import TrashPage from "./components/main/Trash/trashPage.jsx"
+import IndexWebsite from "./components/indexWebsite/indexWebsite.js"
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    install_modal: (event) => dispatch(installModal(event))
+    install_modal: (event) => dispatch(installModal(event)),
   }
 }
 
@@ -37,13 +30,13 @@ const mapStateToProps = (state) => {
   return {
     modals: state.modals,
     tabs: state.tabs.tabs,
-    tabsOrder: state.tabs.tabsOrder
+    tabsOrder: state.tabs.tabsOrder,
   }
 }
 class App extends Component {
   constructor(props) {
     super(props)
-    const currentOrgId = getOrgId() ?? props.location.pathname.split('/')?.[2]
+    const currentOrgId = getOrgId() ?? props.location.pathname.split("/")?.[2]
     if (currentOrgId && !isOnPublishedPage()) {
       initConn(currentOrgId)
     }
@@ -51,16 +44,16 @@ class App extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('beforeinstallprompt', (e) => {
+    window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault()
       this.props.install_modal(e)
     })
     if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.on('token-transfer-channel', (event, data) => {
+      const { ipcRenderer } = window.require("electron")
+      ipcRenderer.on("token-transfer-channel", (event, data) => {
         this.props.history.push({
-          pathname: '/login',
-          search: `?sokt-auth-token=${data}`
+          pathname: "/login",
+          search: `?sokt-auth-token=${data}`,
         })
       })
     }

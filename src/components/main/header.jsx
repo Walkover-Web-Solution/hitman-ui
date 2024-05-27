@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import Environments from '../environments/environments'
-import { isElectron, openExternalLink, getProfileName, getOrgId, redirectToDashboard } from '../common/utility'
-import authService, { getCurrentUser } from '../auth/authService'
-import { Header as GenericHeader } from 'viasocket-shared-plugins'
-import { connect } from 'react-redux'
-import BackIcon from '../../assets/icons/back-arrow.svg'
+import React, { Component } from "react"
+import Environments from "../environments/environments"
+import { isElectron, openExternalLink, getProfileName, getOrgId, redirectToDashboard } from "../common/utility"
+import authService, { getCurrentUser } from "../auth/authService"
+import { Header as GenericHeader } from "viasocket-shared-plugins"
+import { connect } from "react-redux"
+import BackIcon from "../../assets/icons/back-arrow.svg"
 
-import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
+import HostedApiIcon from "../../assets/icons/hostedApiIcon.svg"
 
 const mapStateToProps = (state) => {
   return {
@@ -14,13 +14,13 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     groups: state.groups,
     pages: state.pages,
-    versions: state.versions
+    versions: state.versions,
   }
 }
 
 /* Internal Login Routes */
-const LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/login'
-const BROWSER_LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/browser-login'
+const LOGIN_ROUTE = process.env.REACT_APP_UI_URL + "/login"
+const BROWSER_LOGIN_ROUTE = process.env.REACT_APP_UI_URL + "/browser-login"
 
 /** Desktop App Download URL */
 const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
@@ -31,15 +31,7 @@ const LoginButton = () => {
       Login/SignUp
     </div>
   ) : (
-    <div
-      id='sokt-sso'
-      data-redirect-uri={LOGIN_ROUTE}
-      data-source='hitman'
-      data-token-key='sokt-auth-token'
-      data-view='button'
-      data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-      signup_uri={LOGIN_ROUTE + '?signup=true'}
-    />
+    <div id='sokt-sso' data-redirect-uri={LOGIN_ROUTE} data-source='hitman' data-token-key='sokt-auth-token' data-view='button' data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png' signup_uri={LOGIN_ROUTE + "?signup=true"} />
   )
 }
 
@@ -69,7 +61,7 @@ class Header extends Component {
   setProfile() {
     const profile = {}
     const currentUser = authService.getCurrentUser()
-    const name = getProfileName(currentUser)?.split(' ')
+    const name = getProfileName(currentUser)?.split(" ")
     profile.first_name = name?.[0]
     profile.last_name = name?.[1]
     profile.email = currentUser.email
@@ -82,13 +74,13 @@ class Header extends Component {
     if (collection?.id) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`
+        search: `?collectionId=${collection.id}`,
       })
     } else {
       const collection = this.props.collections[Object.keys(this.props.collections)[0]]
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`
+        search: `?collectionId=${collection.id}`,
       })
     }
   }
@@ -100,12 +92,8 @@ class Header extends Component {
   // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
   getPublicCollections() {
     if (this.dataFetched()) {
-      const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
-        (eId) => this.props.endpoints[eId].state === 0 || (this.props.endpoints[eId].state === 1 && this.props.endpoints[eId].isPublished)
-      )
-      const pendingPageIds = Object.keys(this.props.pages).filter(
-        (pId) => this.props.pages[pId].state === 0 || (this.props.pages[pId].state === 1 && this.props.pages[pId].isPublished)
-      )
+      const pendingEndpointIds = Object.keys(this.props.endpoints).filter((eId) => this.props.endpoints[eId].state === 0 || (this.props.endpoints[eId].state === 1 && this.props.endpoints[eId].isPublished))
+      const pendingPageIds = Object.keys(this.props.pages).filter((pId) => this.props.pages[pId].state === 0 || (this.props.pages[pId].state === 1 && this.props.pages[pId].isPublished))
       const endpointCollections = this.findPendingEndpointsCollections(pendingEndpointIds)
       const pageCollections = this.findPendingPagesCollections(pendingPageIds)
       const allCollections = [...new Set([...endpointCollections, ...pageCollections])]
@@ -188,14 +176,14 @@ class Header extends Component {
 
   handleGoBack() {
     this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard`
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard`,
     })
   }
 
   renderNavTitle() {
     return (
       <>
-        {this.props.location.pathname.split('/')?.[4] === 'publish' && (
+        {this.props.location.pathname.split("/")?.[4] === "publish" && (
           <div className='back-btn'>
             <div className='d-flex align-items-center black-hover h-100 p-3 transition' onClick={() => this.handleGoBack()}>
               <img className='mr-1' src={BackIcon} alt='' /> <span>API Dashboard</span>
@@ -211,7 +199,7 @@ class Header extends Component {
   }
 
   renderLoginButton() {
-    return getCurrentUser() ? '' : <LoginButton />
+    return getCurrentUser() ? "" : <LoginButton />
   }
 
   renderProfileOption() {
@@ -243,7 +231,7 @@ class Header extends Component {
   updateProfile() {
     // Setting demo form false for local storage
     const { profile } = this.state
-    const profileKey = 'profile'
+    const profileKey = "profile"
     this.setState({ profile: { ...profile, show_demo_form: false } })
     window.localStorage.setItem(profileKey, JSON.stringify(this.state.profile))
   }
@@ -254,7 +242,7 @@ class Header extends Component {
       HITMAN: process.env.REACT_APP_UI_URL,
       CONTENTBASE: process.env.REACT_APP_CONTENTBASE_URL,
       EBL: process.env.REACT_APP_VIASOCKET_URL,
-      HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL
+      HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL,
     }
     return (
       <>
@@ -266,7 +254,7 @@ class Header extends Component {
           showCommunityButton={false}
           getNotificationCount={() => this.getNotificationCount()}
           project_name=''
-          organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []}
+          organizations={JSON.parse(window.localStorage.getItem("organisationList")) || []}
           organizationId={getOrgId()}
           productName='hitman'
           renderNavTitle={() => this.renderNavTitle()}

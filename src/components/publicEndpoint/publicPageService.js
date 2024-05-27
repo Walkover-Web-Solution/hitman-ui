@@ -1,5 +1,5 @@
-import http from '../../services/httpService'
-import { getOrgId } from '../common/utility'
+import http from "../../services/httpService"
+import { getOrgId } from "../common/utility"
 
 function getApiUrl() {
   const orgId = getOrgId()
@@ -30,5 +30,5 @@ export default {
   approvePage,
   pendingPage,
   draftPage,
-  rejectPage
+  rejectPage,
 }

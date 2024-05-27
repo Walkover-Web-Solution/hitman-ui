@@ -1,11 +1,11 @@
-import tabsActionTypes from './tabsActionTypes'
-import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import tabsActionTypes from "./tabsActionTypes"
+import bulkPublishActionTypes from "../../publishSidebar/redux/bulkPublishActionTypes"
 
 const initialState = {
   tabs: {},
   loaded: false,
   activeTabId: null,
-  tabsOrder: []
+  tabsOrder: [],
 }
 
 function tabsReducer(state = initialState, action) {
@@ -15,7 +15,7 @@ function tabsReducer(state = initialState, action) {
       tabs = {
         ...state,
         tabs: { ...state.tabs, [action.newTab.id]: action.newTab },
-        tabsOrder: [...state.tabsOrder, action.newTab.id]
+        tabsOrder: [...state.tabsOrder, action.newTab.id],
       }
 
       return tabs
@@ -29,7 +29,7 @@ function tabsReducer(state = initialState, action) {
 
     case tabsActionTypes.CLOSE_TAB:
       tabs = {
-        ...state
+        ...state,
       }
       delete tabs.tabs[action.tabId]
       tabs.tabsOrder = tabs.tabsOrder.filter((t) => t !== action.tabId)
@@ -37,14 +37,14 @@ function tabsReducer(state = initialState, action) {
 
     case tabsActionTypes.UPDATE_TAB:
       tabs = {
-        ...state
+        ...state,
       }
       tabs.tabs[action.payload.tabId] = {
         ...tabs.tabs[action.payload.tabId],
-        ...action.payload.data
+        ...action.payload.data,
       }
       return tabs
-        
+
     case tabsActionTypes.UPDATE_TAB_DRAFT:
       tabs = { ...state }
       tabs.tabs[action.payload.tabId].draft = action?.payload?.draft
@@ -59,7 +59,7 @@ function tabsReducer(state = initialState, action) {
         tabs: { ...state.tabs, ...action.tabsList },
         loaded: true,
         tabsOrder: [...state.tabsOrder],
-        activeTabId: action.tabsMetadata.activeTabId ? action.tabsMetadata.activeTabId : state.activeTabId
+        activeTabId: action.tabsMetadata.activeTabId ? action.tabsMetadata.activeTabId : state.activeTabId,
       }
       action.tabsMetadata.tabsOrder.forEach((t) => {
         if (!tabs.tabsOrder.includes(t)) {
@@ -70,7 +70,7 @@ function tabsReducer(state = initialState, action) {
 
     case tabsActionTypes.REPLACE_TAB: {
       tabs = {
-        ...state
+        ...state,
       }
       delete tabs.tabs[action.oldTabId]
       tabs.tabs[action.newTab.id] = action.newTab
@@ -89,26 +89,26 @@ function tabsReducer(state = initialState, action) {
     case tabsActionTypes.REPLACE_TAB_ID:
       const data = {
         id: action.payload.newTabId,
-        type: 'endpoint',
-        status: 'SAVED',
+        type: "endpoint",
+        status: "SAVED",
         previewMode: true,
         isModified: false,
-        state: {}
+        state: {},
       }
       const newTabs = state.tabs
       newTabs[action.payload?.newTabId] = data
       delete newTabs[action.payload.currentActiveTabId]
       const newOrder = state.tabsOrder.map((item) => {
-        if(item === action.payload.currentActiveTabId) return action.payload.newTabId
+        if (item === action.payload.currentActiveTabId) return action.payload.newTabId
         else return item
       })
       tabs = { ...state, tabsOrder: newOrder, activeTabId: action.payload.newTabId, tabs: newTabs }
       return tabs
-      
+
     case tabsActionTypes.UPDATE_PRE_POST_SCRIPT:
       tabs = { ...state }
-      tabs.tabs[action.payload.tabId].postScriptExecutedData = action.payload?.executedData?.postScriptExecution || ''
-      tabs.tabs[action.payload.tabId].preScriptExecutedData = action.payload?.executedData?.preScriptExecution || ''
+      tabs.tabs[action.payload.tabId].postScriptExecutedData = action.payload?.executedData?.postScriptExecution || ""
+      tabs.tabs[action.payload.tabId].preScriptExecutedData = action.payload?.executedData?.preScriptExecution || ""
       return tabs
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_TABS:

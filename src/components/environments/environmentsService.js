@@ -1,6 +1,6 @@
-import React from 'react'
-import EnvironmentVariables from './environmentVariables'
-import DeleteModal from '../common/deleteModal'
+import React from "react"
+import EnvironmentVariables from "./environmentVariables"
+import DeleteModal from "../common/deleteModal"
 
 function showEnvironmentForm(props, onHide, title, environment) {
   return <EnvironmentVariables {...props} show onHide={onHide} title={title} environment={environment} />
@@ -12,5 +12,5 @@ function showDeleteEnvironmentModal(props, onHide, title, message, selectedEnvir
 
 export default {
   showEnvironmentForm,
-  showDeleteEnvironmentModal
+  showDeleteEnvironmentModal,
 }
