@@ -1,11 +1,11 @@
-import { toast } from 'react-toastify'
-import { store } from '../../../store/store'
-import pageApiService from '../pageApiService'
-import pagesActionTypes from './pagesActionTypes'
-import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
-import endpointApiService from '../../endpoints/endpointApiService'
-import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
-import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { toast } from "react-toastify"
+import { store } from "../../../store/store"
+import pageApiService from "../pageApiService"
+import pagesActionTypes from "./pagesActionTypes"
+import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from "../../common/utility"
+import endpointApiService from "../../endpoints/endpointApiService"
+import endpointsActionTypes from "../../endpoints/redux/endpointsActionTypes"
+import bulkPublishActionTypes from "../../publishSidebar/redux/bulkPublishActionTypes"
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -161,7 +161,7 @@ export const deletePage = (page) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
-            toast.success('Deleted succesfully')
+            toast.success("Deleted succesfully")
           })
           .catch((error) => {
             console.errro(error)
@@ -303,7 +303,7 @@ export const updateDragDrop = (draggedId, droppedOnId) => {
         })
       })
       .catch((error) => {
-        console.error('Error occurred during drag and drop:', error)
+        console.error("Error occurred during drag and drop:", error)
       })
   }
 }

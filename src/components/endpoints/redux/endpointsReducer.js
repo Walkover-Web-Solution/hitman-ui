@@ -1,8 +1,8 @@
-import endpointsActionTypes from './endpointsActionTypes'
-import { toast } from 'react-toastify'
-import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
-import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
-import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
+import endpointsActionTypes from "./endpointsActionTypes"
+import { toast } from "react-toastify"
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes"
+import collectionActionTypes from "../../collections/redux/collectionsActionTypes"
+import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes"
 
 const initialState = {}
 

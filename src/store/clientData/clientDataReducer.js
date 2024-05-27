@@ -1,7 +1,7 @@
-import clientDataActionTypes from './clientDataActionTypes'
+import clientDataActionTypes from "./clientDataActionTypes"
 
 const initialState = {
-  collectionToPublish: '',
+  collectionToPublish: "",
   publishDataForCollections: {}
 }
 
@@ -17,10 +17,10 @@ const clientDataReducer = (state = initialState, action) => {
       if (state?.[action?.payload?.rootId]) {
         state[action?.payload?.rootId] = {
           ...state[action?.payload?.rootId],
-          selectedVersionId: action?.payload?.value || '',
-          defaultVersionId: action?.payload?.defaultVersionId || '',
-          defaultVersionName: action?.payload?.defaultVersionName || '',
-          selectedVersionName: action?.payload?.selectedVersionName || ''
+          selectedVersionId: action?.payload?.value || "",
+          defaultVersionId: action?.payload?.defaultVersionId || "",
+          defaultVersionName: action?.payload?.defaultVersionName || "",
+          selectedVersionName: action?.payload?.selectedVersionName || ""
         }
       } else state[action?.payload?.id] = { defaultVersion: action?.payload?.value }
       return { ...state }
@@ -31,7 +31,7 @@ const clientDataReducer = (state = initialState, action) => {
       return { ...state }
 
     case clientDataActionTypes.SET_COLLECTION_ID_FOR_PUBLISH:
-      state['collectionToPublish'] = action.payload.collectionId
+      state["collectionToPublish"] = action.payload.collectionId
       return { ...state }
     default:
       return state

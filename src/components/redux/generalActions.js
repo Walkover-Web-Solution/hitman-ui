@@ -1,5 +1,5 @@
-import generalActionsTypes from './generalActionTypes'
-import generalApiService from '../../services/generalApiService'
+import generalActionsTypes from "./generalActionTypes"
+import generalApiService from "../../services/generalApiService"
 
 export const addCollectionAndPages = (orgId, queryParams = null) => {
   return (dispatch) => {
@@ -7,10 +7,10 @@ export const addCollectionAndPages = (orgId, queryParams = null) => {
     // setting query params value
     for (let key in queryParams) {
       queryParamsString += `${key}=${queryParams[key]}`
-      queryParamsString +='&'
-    } 
-    if (queryParamsString.slice(-1) === '&') {
-      queryParamsString = queryParamsString.slice(0, -1);
+      queryParamsString += "&"
+    }
+    if (queryParamsString.slice(-1) === "&") {
+      queryParamsString = queryParamsString.slice(0, -1)
     }
     generalApiService
       .getCollectionsAndPages(orgId, queryParamsString)

@@ -1,4 +1,4 @@
-@import '../main/variables.scss';
+@import "../main/variables.scss";
 
 main.main.ml-sm-auto.col-lg-10 {
   display: flex;
@@ -292,16 +292,16 @@ form.add-new-domain-form {
   .innerContainer {
     height: 100vh;
     display: flex;
-    @media screen and (max-width:1160px) {
+    @media screen and (max-width: 1160px) {
       flex-direction: column !important;
       padding: 24px;
       height: 100%;
     }
-    @media screen and (max-width:992px) {
+    @media screen and (max-width: 992px) {
       padding: 0px;
       padding-top: 24px;
     }
-    @media screen and (max-width:767px) {
+    @media screen and (max-width: 767px) {
       padding-top: 0;
     }
   }
@@ -318,7 +318,7 @@ form.add-new-domain-form {
     .page-header {
       line-break: anywhere;
     }
-    @media screen and (max-width: 564px){
+    @media screen and (max-width: 564px) {
       min-width: 15rem;
     }
     + .public-navbar {
@@ -339,12 +339,12 @@ form.add-new-domain-form {
     align-items: center;
     justify-content: space-between;
     padding: 24px 66px 24px;
-    @media screen and (max-width: 1160px){
-     padding: 0;
-    }
-    @media screen and (max-width: 992px){
+    @media screen and (max-width: 1160px) {
       padding: 0;
-     }
+    }
+    @media screen and (max-width: 992px) {
+      padding: 0;
+    }
     &::-webkit-scrollbar {
       display: none;
       width: 0px;
@@ -398,7 +398,7 @@ form.add-new-domain-form {
   gap: 12px;
 }
 
-.hm-sidebar-title{
+.hm-sidebar-title {
   max-width: calc(100% - 60px);
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -654,9 +654,9 @@ button.toggleButton {
 }
 .mainContentWrapperPublic {
   display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
   &:not(.hideCodeEditor) {
     .toggleButton {
       background-color: transparent !important;
@@ -708,7 +708,7 @@ button.toggleButton {
     }
   }
   .display-component {
-    @media screen and (max-width:767px) {
+    @media screen and (max-width: 767px) {
       padding-top: 3rem;
     }
   }
@@ -725,18 +725,18 @@ button.toggleButton {
     button {
       height: 48px;
     }
-    .codeTemplateButtonMore{
+    .codeTemplateButtonMore {
       height: 38px !important;
       z-index: 1000;
       width: 100px !important;
-      .dropdownMore{
-      border: none !important;
+      .dropdownMore {
+        border: none !important;
       }
     }
   }
   .inner-editor {
     height: 100%;
-    
+
     .editor-body-wrapper {
       height: calc(100% - 6rem);
 
@@ -779,28 +779,28 @@ button.toggleButton {
     img {
       display: none;
     }
-    @media only screen and (max-width: 1600px){
+    @media only screen and (max-width: 1600px) {
       left: -140px;
       font-size: 12px;
       padding: 5px;
       border-radius: 5px;
-     }
+    }
   }
 }
-.copy-button-light{
+.copy-button-light {
   border-radius: 4px 4px 0px 0px;
-  background-color: #E8E9E8;
+  background-color: #e8e9e8;
 }
-.copy-button-dark{
+.copy-button-dark {
   border-radius: 4px 4px 0px 0px;
   background-color: #222222;
 }
-.empty-div-light{
+.empty-div-light {
   padding: 10px;
   border-radius: 0px 0px 4px 4px;
-  background-color: #E8E9E8;
+  background-color: #e8e9e8;
 }
-.empty-div-dark{
+.empty-div-dark {
   padding: 10px;
   border-radius: 0px 0px 4px 4px;
   background-color: #222222;
@@ -808,9 +808,9 @@ button.toggleButton {
 $loader-size: 100px;
 $loader-dot-size: ($loader-size / 5); //20
 $loader-height: $loader-dot-size; //20
-$loader-dot-color: #2196F3;
+$loader-dot-color: #2196f3;
 
-.loader{
+.loader {
   width: $loader-size;
   height: $loader-height;
   position: absolute;
@@ -825,10 +825,18 @@ $loader-dot-color: #2196F3;
     border-radius: 100%;
     position: absolute;
     animation: shift 2s linear infinite;
-    &:nth-of-type(1) { animation-delay: -.4s; }
-    &:nth-of-type(2) { animation-delay: -.8s; }
-    &:nth-of-type(3) { animation-delay: -1.2s; }
-    &:nth-of-type(4) { animation-delay: -1.6s; }
+    &:nth-of-type(1) {
+      animation-delay: -0.4s;
+    }
+    &:nth-of-type(2) {
+      animation-delay: -0.8s;
+    }
+    &:nth-of-type(3) {
+      animation-delay: -1.2s;
+    }
+    &:nth-of-type(4) {
+      animation-delay: -1.6s;
+    }
   }
 }
 
@@ -839,10 +847,9 @@ $loader-dot-color: #2196F3;
   border: none;
   height: 5px;
   color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
-  background-color: rgba(var(--pure-material-primary-rgb, 33, 150, 
-   243), 0.12);
+  background-color: rgba(var(--pure-material-primary-rgb, 33, 150, 243), 0.12);
   font-size: 16px;
-    border-radius: 30px 30px !important;
+  border-radius: 30px 30px !important;
 }
 
 .pure-material-progress-linear::-webkit-progress-bar {
@@ -883,15 +890,15 @@ $loader-dot-color: #2196F3;
 
 @keyframes pure-material-progress-linear {
   0% {
-      background-size: 200% 100%;
-      background-position: left -31.25% top 0%;
+    background-size: 200% 100%;
+    background-position: left -31.25% top 0%;
   }
   50% {
-      background-size: 800% 100%;
-      background-position: left -49% top 0%;
+    background-size: 800% 100%;
+    background-position: left -49% top 0%;
   }
   100% {
-      background-size: 400% 100%;
-      background-position: left -102% top 0%;
+    background-size: 400% 100%;
+    background-position: left -102% top 0%;
   }
 }

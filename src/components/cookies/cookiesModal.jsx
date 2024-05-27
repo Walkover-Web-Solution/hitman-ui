@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
-import CookiesList from './cookiesList/cookiesList'
-import CookiesListItem from './cookiesListItem/cookiesListItem'
-import { connect } from 'react-redux'
-import { fetchAllCookies, addCookieDomain, updateCookies, deleteDomain } from './redux/cookiesActions'
-import shortid from 'shortid'
-import DeleteModal from '../common/deleteModal'
+import React, { Component } from "react"
+import { Modal } from "react-bootstrap"
+import CookiesList from "./cookiesList/cookiesList"
+import CookiesListItem from "./cookiesListItem/cookiesListItem"
+import { connect } from "react-redux"
+import { fetchAllCookies, addCookieDomain, updateCookies, deleteDomain } from "./redux/cookiesActions"
+import shortid from "shortid"
+import DeleteModal from "../common/deleteModal"
 
 const mapStateToProps = (state) => {
   return {
@@ -30,8 +30,8 @@ export class CookiesModal extends Component {
     validityMessage: false,
     deleteModal: false,
     deleteModalData: {
-      title: '',
-      message: '',
+      title: "",
+      message: "",
       domain: {}
     }
   }
@@ -51,7 +51,7 @@ export class CookiesModal extends Component {
 
   addDomain(domain) {
     domain.requestId = shortid.generate()
-    if (domain.domain.trim() !== '') {
+    if (domain.domain.trim() !== "") {
       this.props.add_cookies_domain(domain)
     } else this.setState({ validityMessage: true })
   }
@@ -82,17 +82,7 @@ export class CookiesModal extends Component {
   }
 
   renderCookiesList() {
-    return (
-      <CookiesList
-        {...this.props}
-        addDomain={this.addDomain.bind(this)}
-        domains={this.state.domains}
-        changeModalTab={this.changeModalTab.bind(this)}
-        toggleDelete={this.toggleDelete.bind(this)}
-        validityMessage={this.state.validityMessage}
-        clearValidityMessage={this.clearValidityMessage.bind(this)}
-      />
-    )
+    return <CookiesList {...this.props} addDomain={this.addDomain.bind(this)} domains={this.state.domains} changeModalTab={this.changeModalTab.bind(this)} toggleDelete={this.toggleDelete.bind(this)} validityMessage={this.state.validityMessage} clearValidityMessage={this.clearValidityMessage.bind(this)} />
   }
 
   toggleDelete(deleteModal, deleteModalData) {
@@ -101,15 +91,15 @@ export class CookiesModal extends Component {
 
   handleEntityDelete() {
     const { title, domain } = this.state.deleteModalData
-    if (title === 'Delete Cookie') {
+    if (title === "Delete Cookie") {
       this.props.update_cookies(domain)
     }
-    if (title === 'Delete Domain') {
+    if (title === "Delete Domain") {
       this.props.delete_domain(domain)
     }
     const newData = {
-      title: '',
-      message: '',
+      title: "",
+      message: "",
       domain: {}
     }
     this.setState({ deleteModalData: newData })
@@ -117,26 +107,11 @@ export class CookiesModal extends Component {
 
   renderCookiesListItem() {
     const selectedDomainId = this.state.selectedDomain.id
-    return (
-      <CookiesListItem
-        update_cookies={this.props.update_cookies.bind(this)}
-        changeModalTab={this.changeModalTab.bind(this)}
-        domain={this.state.domains[selectedDomainId]}
-        toggleDelete={this.toggleDelete.bind(this)}
-      />
-    )
+    return <CookiesListItem update_cookies={this.props.update_cookies.bind(this)} changeModalTab={this.changeModalTab.bind(this)} domain={this.state.domains[selectedDomainId]} toggleDelete={this.toggleDelete.bind(this)} />
   }
 
   renderDeleteModal() {
-    return (
-      <DeleteModal
-        show={this.state.deleteModal}
-        onHide={() => this.setState({ deleteModal: false })}
-        title={this.state.deleteModalData.title}
-        message={this.state.deleteModalData.message}
-        handleEntityDelete={this.handleEntityDelete.bind(this)}
-      />
-    )
+    return <DeleteModal show={this.state.deleteModal} onHide={() => this.setState({ deleteModal: false })} title={this.state.deleteModalData.title} message={this.state.deleteModalData.message} handleEntityDelete={this.handleEntityDelete.bind(this)} />
   }
 
   render() {

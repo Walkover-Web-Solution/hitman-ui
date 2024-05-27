@@ -1,13 +1,13 @@
-import { toast } from 'react-toastify'
-import { store } from '../../../store/store'
-import endpointApiService from '../endpointApiService'
-import endpointsActionTypes from './endpointsActionTypes'
-import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
-import shortid from 'shortid'
-import pagesActionTypes from '../../pages/redux/pagesActionTypes'
-import { addChildInParent } from '../../pages/redux/pagesActions'
-import { replaceTabForUntitled } from '../../tabs/redux/tabsActions'
-import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { toast } from "react-toastify"
+import { store } from "../../../store/store"
+import endpointApiService from "../endpointApiService"
+import endpointsActionTypes from "./endpointsActionTypes"
+import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from "../../common/utility"
+import shortid from "shortid"
+import pagesActionTypes from "../../pages/redux/pagesActionTypes"
+import { addChildInParent } from "../../pages/redux/pagesActions"
+import { replaceTabForUntitled } from "../../tabs/redux/tabsActions"
+import bulkPublishActionTypes from "../../publishSidebar/redux/bulkPublishActionTypes"
 
 export const formatResponseToSend = (response) => {
   return {
@@ -22,7 +22,7 @@ export const formatResponseToSend = (response) => {
     type: response.data.type || 4,
     versionId: response.data.versionId || null,
     collectionId: response.data.collectionId,
-    protocolType: response.data.protocolType,
+    protocolType: response.data.protocolType
   }
 }
 
@@ -38,7 +38,7 @@ export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, 
         const responseToSend = formatResponseToSend(response)
         const data = await dispatch(addChildInParent(responseToSend))
         history.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
-        if (props?.match?.params?.endpointId === 'new') {
+        if (props?.match?.params?.endpointId === "new") {
           dispatch(replaceTabForUntitled(data.payload.id, prevCurrentTabId))
         }
         if (customCallback) {
@@ -46,7 +46,7 @@ export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, 
         }
       })
       .catch((error) => {
-        console.log('error in saving the endpoint');
+        console.log("error in saving the endpoint")
         if (customCallback) {
           customCallback({ closeForm: false, stopLoader: true })
         }
@@ -92,10 +92,10 @@ export const deleteEndpoint = (endpoint) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
-            toast.success('Endpoint Deleted Successfully')
+            toast.success("Endpoint Deleted Successfully")
           })
           .catch((error) => {
-            console.error('Can not delete endpoint', error)
+            console.error("Can not delete endpoint", error)
           })
       })
       .catch((error) => {
@@ -189,6 +189,3 @@ export const onEndpointDuplicated = (response) => {
     response
   }
 }
-
-
-

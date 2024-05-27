@@ -1,13 +1,13 @@
-import React from 'react'
-import { Modal } from 'react-bootstrap'
-import Joi from 'joi-browser'
-import Form from '../common/form'
-import { onEnter, validate } from '../common/utility'
-import shortid from 'shortid'
-import { connect } from 'react-redux'
-import { addCollection, updateCollection } from './redux/collectionsActions'
-import { moveToNextStep } from '../../services/widgetService'
-import { defaultViewTypes } from './defaultViewModal/defaultViewModal'
+import React from "react"
+import { Modal } from "react-bootstrap"
+import Joi from "joi-browser"
+import Form from "../common/form"
+import { onEnter, validate } from "../common/utility"
+import shortid from "shortid"
+import { connect } from "react-redux"
+import { addCollection, updateCollection } from "./redux/collectionsActions"
+import { moveToNextStep } from "../../services/widgetService"
+import { defaultViewTypes } from "./defaultViewModal/defaultViewModal"
 
 const mapStateToProps = (state) => {
   return {
@@ -17,8 +17,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_collection: (newCollection, openSelectedCollection, callback) =>
-      dispatch(addCollection(newCollection, openSelectedCollection, callback)),
+    add_collection: (newCollection, openSelectedCollection, callback) => dispatch(addCollection(newCollection, openSelectedCollection, callback)),
     update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback))
   }
 }
@@ -28,11 +27,11 @@ class CollectionForm extends Form {
     super(props)
     this.state = {
       data: {
-        name: '',
-        description: '',
+        name: "",
+        description: "",
         defaultView: defaultViewTypes.TESTING
       },
-      collectionId: '',
+      collectionId: "",
       errors: {},
       show: true,
       step: 1,
@@ -44,14 +43,14 @@ class CollectionForm extends Form {
     }
 
     this.schema = {
-      name: Joi.string().min(3).max(50).trim().required().label('Collection Name'),
-      description: Joi.string().allow(null, '').label('Description'),
-      defaultView: Joi.string().allow(null, '').label('Default View')
+      name: Joi.string().min(3).max(50).trim().required().label("Collection Name"),
+      description: Joi.string().allow(null, "").label("Description"),
+      defaultView: Joi.string().allow(null, "").label("Default View")
     }
   }
 
   async componentDidMount() {
-    if (!this.props.show || this.props.title === 'Add new Collection') return
+    if (!this.props.show || this.props.title === "Add new Collection") return
     let data = {}
     const collectionId = this.props.edited_collection.id
     if (this.props.edited_collection) {
@@ -79,7 +78,7 @@ class CollectionForm extends Form {
   redirectToCollection(collection) {
     const { viewLoader } = this.state
     if (!collection.data) {
-      console.error('collection.data is undefined')
+      console.error("collection.data is undefined")
       return // or handle this case appropriately
     }
     const { id: collectionId } = collection.data
@@ -94,17 +93,14 @@ class CollectionForm extends Form {
   async onAddCollectionSubmit(defaultView) {
     const requestId = shortid.generate()
     const defaultDocProperties = {
-      defaultLogoUrl: '',
-      defaultTitle: ''
+      defaultLogoUrl: "",
+      defaultTitle: ""
     }
-    this.props.add_collection(
-      { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
-      null,
-      this.redirectToCollection.bind(this))
+    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView }, null, this.redirectToCollection.bind(this))
     this.setState({
       data: {
-        name: '',
-        description: '',
+        name: "",
+        description: "",
         defaultView: defaultViewTypes.TESTING
       }
     })
@@ -112,7 +108,7 @@ class CollectionForm extends Form {
   }
 
   setViewLoader(type, flag) {
-    if (flag === 'edit') this.setState({ updating: true })
+    if (flag === "edit") this.setState({ updating: true })
     else {
       const { viewLoader } = this.state
       this.setState({ viewLoader: { ...viewLoader, [type]: flag } })
@@ -127,12 +123,12 @@ class CollectionForm extends Form {
     }
     const body = this.state.data
     body.name = body.name.trim()
-    if (this.props.title === 'Edit Collection') {
+    if (this.props.title === "Edit Collection") {
       this.onEditCollectionSubmit(defaultView)
     }
-    if (this.props.title === 'Add new Collection') {
+    if (this.props.title === "Add new Collection") {
       this.onAddCollectionSubmit(defaultView)
-        if (this.props.setDropdownList) this.props.onHide()
+      if (this.props.setDropdownList) this.props.onHide()
     }
   }
 
@@ -144,7 +140,7 @@ class CollectionForm extends Form {
   renderCollectionDetailsForm() {
     return (
       <>
-        {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 50 characters')}
+        {this.renderInput("name", "Name", "Collection Name", true, true, false, "*collection name accepts min 3 and max 50 characters")}
         {this.renderSaveButton()}
       </>
     )
@@ -152,7 +148,7 @@ class CollectionForm extends Form {
 
   renderSaveButton() {
     return (
-      <button className='btn btn-primary btn-sm fs-4' onClick={() => this.saveCollection(defaultViewTypes.TESTING, 'edit')}>
+      <button className='btn btn-primary btn-sm fs-4' onClick={() => this.saveCollection(defaultViewTypes.TESTING, "edit")}>
         Save
       </button>
     )
@@ -175,14 +171,7 @@ class CollectionForm extends Form {
           onEnter(e, this.handleKeyPress.bind(this))
         }}
       >
-        <Modal
-          size='sm'
-          animation={false}
-          aria-labelledby='contained-modal-title-vcenter'
-          centered
-          onHide={this.props.onHide}
-          show={this.props.show}
-        >
+        <Modal size='sm' animation={false} aria-labelledby='contained-modal-title-vcenter' centered onHide={this.props.onHide} show={this.props.show}>
           <div>
             <Modal.Header className='custom-collection-modal-container' closeButton>
               <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>

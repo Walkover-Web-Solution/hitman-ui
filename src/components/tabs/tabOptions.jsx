@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import { Dropdown } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import { ReactComponent as MoreVerticalIcon } from '../../assets/icons/more-vertical.svg'
-import { openInNewTab, setActiveTabId } from '../tabs/redux/tabsActions'
-import shortid from 'shortid'
-import tabStatusTypes from '../tabs/tabStatusTypes'
-import * as _ from 'lodash'
+import React, { Component } from "react"
+import { Dropdown } from "react-bootstrap"
+import { connect } from "react-redux"
+import { ReactComponent as MoreVerticalIcon } from "../../assets/icons/more-vertical.svg"
+import { openInNewTab, setActiveTabId } from "../tabs/redux/tabsActions"
+import shortid from "shortid"
+import tabStatusTypes from "../tabs/tabStatusTypes"
+import * as _ from "lodash"
 
 const mapStateToProps = (state) => {
   return {
@@ -26,8 +26,8 @@ class TabOptions extends Component {
   renderMenuOptions() {
     const { tabs, activeTabId } = this.props.tabs
     const options = [
-      { title: 'Close all tabs', handleOnClick: this.handleCloseAllTabs.bind(this), show: true },
-      { title: 'Close all tabs but current', handleOnClick: this.handleCloseAllButCurrent.bind(this), show: true }
+      { title: "Close all tabs", handleOnClick: this.handleCloseAllTabs.bind(this), show: true },
+      { title: "Close all tabs but current", handleOnClick: this.handleCloseAllButCurrent.bind(this), show: true }
       // { title: 'Duplicate Current Tab', handleOnClick: this.handleDuplicateTab.bind(this), show: tabs[activeTabId]?.type !== 'page' }
     ]
     return options.map(
@@ -49,7 +49,7 @@ class TabOptions extends Component {
     tab.previewMode = false
     tab.isModified = true
     tab.state.endpoint = {}
-    tab.state.data.name = tab.state.data.name + ' Copy'
+    tab.state.data.name = tab.state.data.name + " Copy"
 
     this.props.open_in_new_tab(tab)
 

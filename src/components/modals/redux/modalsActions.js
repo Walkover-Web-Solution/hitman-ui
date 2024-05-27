@@ -1,4 +1,4 @@
-import modalsActionTypes from './modalsActionTypes'
+import modalsActionTypes from "./modalsActionTypes"
 
 export const openModal = (modalType, modalData = null) => {
   return (dispatch) => {
@@ -47,5 +47,5 @@ export default {
   openModal,
   closeModal,
   installModal,
-  updateStateOfCurlSlider,
+  updateStateOfCurlSlider
 }

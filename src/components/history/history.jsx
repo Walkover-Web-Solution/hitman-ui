@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import moment from 'moment'
-import { connect } from 'react-redux'
-import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
-import { Dropdown } from 'react-bootstrap'
-import { GrGraphQl } from 'react-icons/gr'
-import './history.scss'
+import React, { Component } from "react"
+import moment from "moment"
+import { connect } from "react-redux"
+import { ReactComponent as EmptyHistory } from "../../assets/icons/emptyHistroy.svg"
+import { Dropdown } from "react-bootstrap"
+import { GrGraphQl } from "react-icons/gr"
+import "./history.scss"
 
 function compareByCreatedAt(a, b) {
   const t1 = a?.createdAt
@@ -56,7 +56,7 @@ class History extends Component {
 
   renderName(history) {
     const baseUrl = history?.endpoint?.BASE_URL ? history?.endpoint?.BASE_URL + history?.endpoint?.uri : history?.endpoint?.uri
-    const endpointName = history?.endpoint?.name || baseUrl || 'Random Trigger'
+    const endpointName = history?.endpoint?.name || baseUrl || "Random Trigger"
     return endpointName
   }
 
@@ -93,11 +93,12 @@ class History extends Component {
             this.openHistorySnapshot(history.id)
           }}
         >
-          {history?.endpoint?.protocolType === 1 && <div className={`api-label lg-label ${history?.endpoint?.requestType}`}>
-            <div className='endpoint-request-div'>{history?.endpoint?.requestType}</div>
-          </div>}
-          {history?.endpoint?.protocolType === 2 && <GrGraphQl className='ml-2 graphql-icon' size={14} />
-          }
+          {history?.endpoint?.protocolType === 1 && (
+            <div className={`api-label lg-label ${history?.endpoint?.requestType}`}>
+              <div className='endpoint-request-div'>{history?.endpoint?.requestType}</div>
+            </div>
+          )}
+          {history?.endpoint?.protocolType === 2 && <GrGraphQl className='ml-2 graphql-icon' size={14} />}
           <div className='ml-3'>
             <div className='sideBarListWrapper'>
               <div className='text-left'>
@@ -106,7 +107,7 @@ class History extends Component {
                   {/* {this.renderPath(history.endpoint.id)} */}
                 </p>
               </div>
-              <small className='text-muted'>{moment(history.createdAt).format('ddd, Do MMM h:mm a')}</small>
+              <small className='text-muted'>{moment(history.createdAt).format("ddd, Do MMM h:mm a")}</small>
             </div>
           </div>
         </Dropdown.Item>
@@ -131,16 +132,16 @@ class History extends Component {
     const groupedHistory = {}
 
     historySnapshot.forEach((history) => {
-      const today = moment().startOf('day')
+      const today = moment().startOf("day")
       const createdAtMoment = moment(history.createdAt)
       let dateGroup
 
-      if (today.isSame(createdAtMoment, 'day')) {
-        dateGroup = 'Today'
-      } else if (createdAtMoment.isSame(today.clone().subtract(1, 'days'), 'day')) {
-        dateGroup = 'Yesterday'
+      if (today.isSame(createdAtMoment, "day")) {
+        dateGroup = "Today"
+      } else if (createdAtMoment.isSame(today.clone().subtract(1, "days"), "day")) {
+        dateGroup = "Yesterday"
       } else {
-        dateGroup = createdAtMoment.format('MMMM D, YYYY')
+        dateGroup = createdAtMoment.format("MMMM D, YYYY")
       }
 
       if (!groupedHistory[dateGroup]) {
@@ -150,11 +151,11 @@ class History extends Component {
       groupedHistory[dateGroup].push(history)
     })
     const sortedGroupedHistory = Object.entries(groupedHistory).sort(([dateGroupA], [dateGroupB]) => {
-      if (dateGroupA === 'Today') return -1
-      if (dateGroupB === 'Today') return 1
-      if (dateGroupA === 'Yesterday') return -1
-      if (dateGroupB === 'Yesterday') return 1
-      return moment(dateGroupB, ['MMMM D, YYYY']).diff(moment(dateGroupA, ['MMMM D, YYYY']))
+      if (dateGroupA === "Today") return -1
+      if (dateGroupB === "Today") return 1
+      if (dateGroupA === "Yesterday") return -1
+      if (dateGroupB === "Yesterday") return 1
+      return moment(dateGroupB, ["MMMM D, YYYY"]).diff(moment(dateGroupA, ["MMMM D, YYYY"]))
     })
 
     const dropdowns = sortedGroupedHistory.map(([dateGroup, histories]) => (

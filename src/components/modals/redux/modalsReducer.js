@@ -1,4 +1,4 @@
-import modalsActionTypes from './modalsActionTypes'
+import modalsActionTypes from "./modalsActionTypes"
 
 const initialState = { activeModal: null, modalData: null, installPrompt: null, publishData: false, curlSlider: false }
 

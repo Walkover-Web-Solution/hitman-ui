@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import moment from 'moment'
-import './cookiesListItem.scss'
-import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete-icon.svg'
+import React, { Component } from "react"
+import moment from "moment"
+import "./cookiesListItem.scss"
+import { ReactComponent as DeleteIcon } from "../../../assets/icons/delete-icon.svg"
 class CookiesListItem extends Component {
   constructor(props) {
     super(props)
@@ -9,8 +9,8 @@ class CookiesListItem extends Component {
     this.state = {
       addCookie: false,
       updateCookie: {
-        key: '',
-        value: ''
+        key: "",
+        value: ""
       },
       currentDomain: {}
     }
@@ -49,7 +49,7 @@ class CookiesListItem extends Component {
     const currentDomain = { ...this.state.currentDomain }
     const currentCookie = this.state.updateCookie
     let updateCookie = {}
-    let cookieName = ''
+    let cookieName = ""
 
     if (currentDomain.cookies[currentCookie.key] === currentCookie.value) {
       updateCookie = {}
@@ -77,36 +77,36 @@ class CookiesListItem extends Component {
   }
 
   prepareCookieString(cookieValue) {
-    let cookie = ''
+    let cookie = ""
     let name
-    let path = 'Path=/ ;'
-    let expires = ''
-    let secure = ''
-    let httponly = ''
-    let cookieString = ''
-    const cookieArray = cookieValue.split(';')
+    let path = "Path=/ ;"
+    let expires = ""
+    let secure = ""
+    let httponly = ""
+    let cookieString = ""
+    const cookieArray = cookieValue.split(";")
     let expiresValue = null
     cookieArray.forEach((item, index) => {
       if (index === 0) {
-        let [key, value] = item.split('=')?.filter((v) => v !== '')
+        let [key, value] = item.split("=")?.filter((v) => v !== "")
         name = key?.trim()
         value = value?.trim()
-        cookie = `${name}=${value || ''} ;`
+        cookie = `${name}=${value || ""} ;`
       } else {
-        let [key, value] = item.split('=')?.filter((v) => v !== '')
+        let [key, value] = item.split("=")?.filter((v) => v !== "")
         value = value?.trim()
-        if (key?.trim() === 'Path') {
-          path = `Path=${value || '/'} ;`
+        if (key?.trim() === "Path") {
+          path = `Path=${value || "/"} ;`
         }
-        if (key?.trim() === 'Expires') {
-          expires = `Expires=${value || ''} ;`
+        if (key?.trim() === "Expires") {
+          expires = `Expires=${value || ""} ;`
           expiresValue = value
         }
-        if (key?.trim() === 'HttpOnly') {
-          httponly = 'HttpOnly ;'
+        if (key?.trim() === "HttpOnly") {
+          httponly = "HttpOnly ;"
         }
-        if (key?.trim() === 'Secure') {
-          secure = 'Secure ;'
+        if (key?.trim() === "Secure") {
+          secure = "Secure ;"
         }
       }
     })
@@ -118,8 +118,8 @@ class CookiesListItem extends Component {
     const domain = JSON.parse(JSON.stringify(this.state.currentDomain))
     delete domain.cookies[name]
     const deleteModalData = {
-      title: 'Delete Cookie',
-      message: 'Are you sure, Do you want to delete this cookie?',
+      title: "Delete Cookie",
+      message: "Are you sure, Do you want to delete this cookie?",
       domain
     }
 
@@ -132,10 +132,7 @@ class CookiesListItem extends Component {
       Object.keys(cookies || {}).map((name, index) => (
         <div key={index} className='cookie-item'>
           <div className='w-100' key={index}>
-            <div
-              className='cursor-pointer'
-              onClick={() => this.setState({ updateCookie: { key: name, value: this.state.currentDomain.cookies[name] } })}
-            >
+            <div className='cursor-pointer' onClick={() => this.setState({ updateCookie: { key: name, value: this.state.currentDomain.cookies[name] } })}>
               {name}
             </div>
             {name === this.state.updateCookie.key && this.renderCookieArea()}
@@ -156,7 +153,7 @@ class CookiesListItem extends Component {
     for (let i = 1; cookies.length + 1; i++) {
       const cookieName = `Cookie${i}`
       if (!cookies.includes(cookieName)) {
-        const time = moment().add(1, 'Y').format()
+        const time = moment().add(1, "Y").format()
         const cookieValue = `${cookieName}=value; Path=/; Expires=${time}`
         return { key: cookieName, value: cookieValue }
       }
@@ -166,13 +163,7 @@ class CookiesListItem extends Component {
   renderCookieArea() {
     return (
       <>
-        <textarea
-          className='form-control custom-input'
-          rows='2'
-          onChange={(e) => this.handleCookieEdit(e)}
-          id='update-cookie'
-          value={this.state.updateCookie.value}
-        />
+        <textarea className='form-control custom-input' rows='2' onChange={(e) => this.handleCookieEdit(e)} id='update-cookie' value={this.state.updateCookie.value} />
         <div className='text-right mt-2'>
           {this.showDisableButton() && (
             <span className='cursor-pointer mr-3 btn default' onClick={() => this.setState({ updateCookie: {} })}>
@@ -191,7 +182,7 @@ class CookiesListItem extends Component {
     return (
       <div>
         <div className='back-link' onClick={() => this.props.changeModalTab(1)}>
-          {'< Back'}
+          {"< Back"}
         </div>
         <div className='d-flex justify-content-between align-items-center'>
           <div className='domain-title'>{this.state.currentDomain.domain}</div>

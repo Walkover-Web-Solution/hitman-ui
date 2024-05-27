@@ -1,13 +1,13 @@
-import pagesActionTypes from './pagesActionTypes'
-import { toast } from 'react-toastify'
-import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
-import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
-import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
-import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
-import generalActionsTypes from '../../redux/generalActionTypes'
-import { statesEnum } from '../../common/utility'
-import publishDocsActionTypes from '../../publishDocs/redux/publishDocsActionTypes'
-import { cloneDeep } from 'lodash'
+import pagesActionTypes from "./pagesActionTypes"
+import { toast } from "react-toastify"
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes"
+import collectionActionTypes from "../../collections/redux/collectionsActionTypes"
+import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes"
+import bulkPublishActionTypes from "../../publishSidebar/redux/bulkPublishActionTypes"
+import generalActionsTypes from "../../redux/generalActionTypes"
+import { statesEnum } from "../../common/utility"
+import publishDocsActionTypes from "../../publishDocs/redux/publishDocsActionTypes"
+import { cloneDeep } from "lodash"
 
 const initialState = {}
 

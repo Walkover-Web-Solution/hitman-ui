@@ -1,5 +1,5 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
-@import '../main/variables.scss';
+@import "../main/variables.scss";
 
 .content-header {
   width: 100%;
@@ -22,7 +22,7 @@
       height: 42px;
     }
     &::after {
-      content: '';
+      content: "";
       width: 100%;
       height: 1px;
       background: #e6dbd4;
@@ -35,7 +35,7 @@
       .nav-item {
         height: 42px;
         position: relative;
-        color: $text-color;    
+        color: $text-color;
         .nav-link {
           padding: 0 1rem 0 0;
           height: 100%;
@@ -53,7 +53,7 @@
             color: $theme-color;
             position: relative;
             &::after {
-              content: '';
+              content: "";
               width: 100%;
               height: 1px;
               background: $light-grey;
@@ -94,11 +94,10 @@
             }
             svg {
               display: block;
-              color: #00000080 ;
+              color: #00000080;
             }
             &:hover {
               background-color: unset !important;
-
             }
           }
           > .close {
@@ -117,15 +116,15 @@
             i {
               font-size: $font-small;
               &::before {
-                content: '\e9b3';
+                content: "\e9b3";
                 margin-left: unset !important;
                 margin-right: unset !important;
-                margin: .2em !important;
+                margin: 0.2em !important;
               }
             }
           }
         }
-        
+
         .modified-dot-icon {
           position: absolute;
           right: 0.5rem;
@@ -319,7 +318,7 @@
     position: relative;
   }
   .arrow-top:before {
-    content: '';
+    content: "";
     position: absolute;
     left: -18px;
     width: 12px;

@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import { ListGroup, Modal } from 'react-bootstrap'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import environmentsApiService from './environmentsApiService'
-import './environments.scss'
+import React, { Component } from "react"
+import { ListGroup, Modal } from "react-bootstrap"
+import { ReactComponent as DeleteIcon } from "../../assets/icons/delete-icon.svg"
+import environmentsApiService from "./environmentsApiService"
+import "./environments.scss"
 
 class EnvironmentModal extends Component {
   constructor(props) {
@@ -35,7 +35,7 @@ class EnvironmentModal extends Component {
   }
 
   handleEdit(environment) {
-    this.props.handle_environment_modal('Edit Environment', environment)
+    this.props.handle_environment_modal("Edit Environment", environment)
   }
 
   handleCancel(props) {
@@ -45,11 +45,7 @@ class EnvironmentModal extends Component {
   renderManageEnvironmentModal() {
     return Object.keys(this.props.environment.environments).map((environmentId) => (
       <div className='mb-2 d-flex justify-content-center' key={environmentId}>
-        <ListGroup.Item
-          style={{ width: '98%', float: 'left' }}
-          key={environmentId}
-          onClick={() => this.handleEdit(this.props.environment.environments[environmentId])}
-        >
+        <ListGroup.Item style={{ width: "98%", float: "left" }} key={environmentId} onClick={() => this.handleEdit(this.props.environment.environments[environmentId])}>
           {this.props.environment.environments[environmentId].name}
         </ListGroup.Item>
         <button
@@ -69,7 +65,7 @@ class EnvironmentModal extends Component {
       <div className='align-items-center'>
         <div className='text-center m-2 align-items-center'>No Environment Available</div>
         <div className='justify-content-center d-flex text-center'>
-          <button className='btn btn-outline orange p-2' onClick={() => this.props.handle_environment_modal('Add new Environment')}>
+          <button className='btn btn-outline orange p-2' onClick={() => this.props.handle_environment_modal("Add new Environment")}>
             Add Environment
           </button>
         </div>
@@ -84,11 +80,7 @@ class EnvironmentModal extends Component {
           <Modal.Title id='contained-modal-title-vcenter'>Manage Environments</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ListGroup className='custom-environment-list-container h-auto'>
-            {Object.keys(this.props.environment.environments).length === 0
-              ? this.renderNoEnvironmentModule()
-              : this.renderManageEnvironmentModal()}
-          </ListGroup>
+          <ListGroup className='custom-environment-list-container h-auto'>{Object.keys(this.props.environment.environments).length === 0 ? this.renderNoEnvironmentModule() : this.renderManageEnvironmentModal()}</ListGroup>
           <div>
             {/* <div className='custom-button-wrapper text-right mt-3'>
               <button className='btn btn-secondary outline btn-lg' onClick={() => this.handleCancel(this.props)}>

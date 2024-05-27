@@ -1,24 +1,24 @@
-import React from 'react'
-import { Modal } from 'react-bootstrap'
-import Form from '../common/form'
-import { onEnter } from '../common/utility'
-import Joi from 'joi-browser'
+import React from "react"
+import { Modal } from "react-bootstrap"
+import Form from "../common/form"
+import { onEnter } from "../common/utility"
+import Joi from "joi-browser"
 
 class TagManagerModal extends Form {
   constructor(props) {
     super(props)
     this.state = {
-      data: { gtmId: '' },
+      data: { gtmId: "" },
       errors: {}
     }
 
     this.schema = {
-      gtmId: Joi.string().required().label('GTM-ID')
+      gtmId: Joi.string().required().label("GTM-ID")
     }
   }
 
   componentDidMount() {
-    const data = { gtmId: '' }
+    const data = { gtmId: "" }
     if (this.props.collection_id) {
       data.gtmId = this.props.collections[this.props.collection_id].gtmId
     }
@@ -47,9 +47,9 @@ class TagManagerModal extends Form {
             </Modal.Header>
             <Modal.Body>
               <form onSubmit={this.handleSubmit}>
-                {this.renderInput('gtmId', 'GTM-ID', 'GTM-ID', true)}
+                {this.renderInput("gtmId", "GTM-ID", "GTM-ID", true)}
                 <div className='text-left mt-2 mb-2'>
-                  {this.renderButton('Submit')}
+                  {this.renderButton("Submit")}
                   <button className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={this.props.onHide}>
                     Cancel
                   </button>

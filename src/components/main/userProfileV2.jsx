@@ -1,25 +1,25 @@
-import React, { Component } from 'react'
-import { Button, Dropdown, Modal } from 'react-bootstrap'
-import Avatar from 'react-avatar'
-import lightArrow from '../../assets/icons/new-arrow.svg'
-import Power from '../../assets/icons/power.svg'
-import File from '../../assets/icons/file.svg'
-import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
-import { getCurrentOrg, getCurrentUser } from '../auth/authServiceV2'
-import GenericModal from './GenericModal'
-import { switchOrg, createOrg } from '../../services/orgApiService'
-import './userProfile.scss'
-import { toast } from 'react-toastify'
-import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { closeAllTabs } from '../tabs/redux/tabsActions'
-import { onHistoryRemoved } from '../history/redux/historyAction'
-import { ReactComponent as Users } from '../../assets/icons/users.svg'
-import { MdDeleteOutline } from 'react-icons/md'
-import IconButton from '../common/iconButton'
+import React, { Component } from "react"
+import { Button, Dropdown, Modal } from "react-bootstrap"
+import Avatar from "react-avatar"
+import lightArrow from "../../assets/icons/new-arrow.svg"
+import Power from "../../assets/icons/power.svg"
+import File from "../../assets/icons/file.svg"
+import HostedApiIcon from "../../assets/icons/hostedApiIcon.svg"
+import { getCurrentOrg, getCurrentUser } from "../auth/authServiceV2"
+import GenericModal from "./GenericModal"
+import { switchOrg, createOrg } from "../../services/orgApiService"
+import "./userProfile.scss"
+import { toast } from "react-toastify"
+import { withRouter } from "react-router-dom"
+import { connect } from "react-redux"
+import { closeAllTabs } from "../tabs/redux/tabsActions"
+import { onHistoryRemoved } from "../history/redux/historyAction"
+import { ReactComponent as Users } from "../../assets/icons/users.svg"
+import { MdDeleteOutline } from "react-icons/md"
+import IconButton from "../common/iconButton"
 import { IoIosArrowDown } from "react-icons/io"
-import OpenApiForm from '../openApi/openApiForm'
-import CollectionForm from '../collections/collectionForm'
+import OpenApiForm from "../openApi/openApiForm"
+import CollectionForm from "../collections/collectionForm"
 import { MdSwitchLeft } from "react-icons/md"
 import { FaUser } from "react-icons/fa"
 
@@ -42,23 +42,23 @@ class UserProfileV2 extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      name: '',
-      email: '',
-      orgFilter: '',
+      name: "",
+      email: "",
+      orgFilter: "",
       moreFlag: false,
       showModal: false,
       loading: false,
-      orgName: '',
-      modalForTabs: 'false',
-      tabsClosed: 'false',
-      selectedOrg: '',
-      currentOrg: '',
+      orgName: "",
+      modalForTabs: "false",
+      tabsClosed: "false",
+      selectedOrg: "",
+      currentOrg: "",
       switchOrCreate: false,
       showImportModal: false,
-      showNewCollectionModal: false,
+      showNewCollectionModal: false
     }
-    this.handleAddNewClick = this.handleAddNewClick.bind(this);
-    this.handleImportClick = this.handleImportClick.bind(this);
+    this.handleAddNewClick = this.handleAddNewClick.bind(this)
+    this.handleImportClick = this.handleImportClick.bind(this)
   }
 
   componentDidMount() {
@@ -81,7 +81,7 @@ class UserProfileV2 extends Component {
   handleAddNewClick() {
     this.setState({ showNewCollectionModal: !this.state.showNewCollectionModal })
   }
-  
+
   handleImportClick() {
     this.setState({ showImportModal: !this.state.showImportModal })
   }
@@ -89,24 +89,44 @@ class UserProfileV2 extends Component {
   renderAvatarWithOrg(onClick, ref1) {
     // const { getNotificationCount } = this.getNotificationCount()
     return (
-      <div
-        className='menu-trigger-box d-flex align-items-center justify-content-between w-100'
-      >
-        <div ref={ref1} className='d-flex position-relative cursor-pointer' onClick={(e) => {
-          e.preventDefault()
-          onClick(e)
-        }}>
+      <div className='menu-trigger-box d-flex align-items-center justify-content-between w-100'>
+        <div
+          ref={ref1}
+          className='d-flex position-relative cursor-pointer'
+          onClick={(e) => {
+            e.preventDefault()
+            onClick(e)
+          }}
+        >
           <Avatar className='mr-2' color='#343a40' name={getCurrentOrg()?.name} size={22} round='4px' />
           {this.renderOrgName()}
           {/* {getNotificationCount && getNotificationCount() > 0 &&
             <span className='user-notification-badge'>{getNotificationCount()}</span>} */}
-          <IconButton><IoIosArrowDown src={lightArrow} alt='settings-gear' className='transition cursor-pointer text-dark' /></IconButton>
+          <IconButton>
+            <IoIosArrowDown src={lightArrow} alt='settings-gear' className='transition cursor-pointer text-dark' />
+          </IconButton>
         </div>
         <div className='add-button d-flex align-items-center'>
-          <button className='mr-1 px-1 btn btn-light' onClick={this.handleAddNewClick}>New</button>
-          <button className='btn btn-light px-1' onClick={this.handleImportClick}>Import</button>
-        <OpenApiForm show={this.state.showImportModal}  onHide={() => { this.handleImportClick() }} />
-        <CollectionForm {...this.props} show={this.state.showNewCollectionModal} title='Add new Collection' onHide={() => { this.handleAddNewClick() }} />
+          <button className='mr-1 px-1 btn btn-light' onClick={this.handleAddNewClick}>
+            New
+          </button>
+          <button className='btn btn-light px-1' onClick={this.handleImportClick}>
+            Import
+          </button>
+          <OpenApiForm
+            show={this.state.showImportModal}
+            onHide={() => {
+              this.handleImportClick()
+            }}
+          />
+          <CollectionForm
+            {...this.props}
+            show={this.state.showNewCollectionModal}
+            title='Add new Collection'
+            onHide={() => {
+              this.handleAddNewClick()
+            }}
+          />
         </div>
       </div>
     )
@@ -129,9 +149,9 @@ class UserProfileV2 extends Component {
   renderUserDetails() {
     const { name, email } = this.getUserDetails()
     return (
-      <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center py-1' onClick={() => { }}>
+      <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center py-1' onClick={() => {}}>
         <div className='user-icon mr-2'>
-        <FaUser size={16} />
+          <FaUser size={16} />
         </div>
         <div className='profile-details-user-name'>
           {/* <span className='org-name'>{name}</span> */}
@@ -162,13 +182,13 @@ class UserProfileV2 extends Component {
   }
 
   getUserDetails() {
-    const email = this.state.email || ''
+    const email = this.state.email || ""
     const name = this.state.name
     return { email, name }
   }
 
   renderMenuButton() {
-    return '' // this.renderProfileOption()   //Hosted API doc is not needed anymore
+    return "" // this.renderProfileOption()   //Hosted API doc is not needed anymore
   }
 
   renderProfileOption() {
@@ -203,14 +223,8 @@ class UserProfileV2 extends Component {
 
   getPublicCollections() {
     if (this.dataFetched()) {
-      const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
-        (eId) =>
-          this.props.endpoints[eId].state === 'Pending' ||
-          (this.props.endpoints[eId].state === 'Draft' && this.props.endpoints[eId].isPublished)
-      )
-      const pendingPageIds = Object.keys(this.props.pages).filter(
-        (pId) => this.props.pages[pId].state === 'Pending' || (this.props.pages[pId].state === 'Draft' && this.props.pages[pId].isPublished)
-      )
+      const pendingEndpointIds = Object.keys(this.props.endpoints).filter((eId) => this.props.endpoints[eId].state === "Pending" || (this.props.endpoints[eId].state === "Draft" && this.props.endpoints[eId].isPublished))
+      const pendingPageIds = Object.keys(this.props.pages).filter((pId) => this.props.pages[pId].state === "Pending" || (this.props.pages[pId].state === "Draft" && this.props.pages[pId].isPublished))
       const endpointCollections = this.findPendingEndpointsCollections(pendingEndpointIds)
       const pageCollections = this.findPendingPagesCollections(pendingPageIds)
       const allCollections = [...new Set([...endpointCollections, ...pageCollections])]
@@ -294,11 +308,11 @@ class UserProfileV2 extends Component {
   }
 
   openAccountAndSettings() {
-    const {history, organizationId, location } = this.props
-      history.push({
-        pathname: `/orgs/${organizationId}/manage`,
-        search: location.search
-      })
+    const { history, organizationId, location } = this.props
+    history.push({
+      pathname: `/orgs/${organizationId}/manage`,
+      search: location.search
+    })
   }
 
   renderBilling() {
@@ -306,7 +320,7 @@ class UserProfileV2 extends Component {
       <div
         className='profile-listing'
         onClick={() => {
-          this.openOptions('/billing/subscription')
+          this.openOptions("/billing/subscription")
         }}
       >
         <img src={File} alt='file-icon' />
@@ -322,12 +336,12 @@ class UserProfileV2 extends Component {
     if (orgId) {
       let url = `${currProductUrl}/orgs/${orgId}${path}?product=hitman`
       if (!handleOpenLink) {
-        window.open(url, '_blank')
+        window.open(url, "_blank")
       } else {
         handleOpenLink(url)
       }
     } else {
-      console.log('Organization ID not found')
+      console.log("Organization ID not found")
     }
   }
 
@@ -350,7 +364,7 @@ class UserProfileV2 extends Component {
     // this.props.close_all_tabs(this.props.tabs.tabsOrder)
     // this.props.remove_history(this.props.historySnapshot)
     this.props.history.push({
-      pathname: '/logout'
+      pathname: "/logout"
     })
   }
 
@@ -364,7 +378,7 @@ class UserProfileV2 extends Component {
     const tabIdsToClose = this.props.tabs.tabsOrder
     const history = this.props.historySnapshot
 
-    if (value === 'yes') {
+    if (value === "yes") {
       this.props.close_all_tabs(tabIdsToClose)
       this.removeFromLocalStorage(tabIdsToClose)
       this.props.remove_history(history)
@@ -374,7 +388,7 @@ class UserProfileV2 extends Component {
       } else {
         switchOrg(this.state.currentOrg.id)
       }
-    } else if (value === 'no') {
+    } else if (value === "no") {
       this.setState({ orgName: "" })
       this.setState({ modalForTabs: false, showModal: false })
       // window.addEventListener('beforeunload', this.handleBeforeUnload)
@@ -385,10 +399,10 @@ class UserProfileV2 extends Component {
     this.setState({ modalForTabs: false, showModal: false })
   }
 
-  handleTrashClick(){
-    const currentOrgId = getCurrentOrg().id;
-    this.props.history.push(`/orgs/${currentOrgId}/trash`);
-  };
+  handleTrashClick() {
+    const currentOrgId = getCurrentOrg().id
+    this.props.history.push(`/orgs/${currentOrgId}/trash`)
+  }
 
   renderTrash() {
     return (
@@ -398,18 +412,24 @@ class UserProfileV2 extends Component {
           this.handleTrashClick()
         }}
       >
-        <MdDeleteOutline className='mr-2' size={17}/>
+        <MdDeleteOutline className='mr-2' size={17} />
         <span className='mr-2'>Trash</span>
-      </div>          
+      </div>
     )
   }
 
   showModalForTabs() {
-    if (this.state.modalForTabs === 'false') {
+    if (this.state.modalForTabs === "false") {
       return null
     }
     return (
-      <Modal show={this.state.modalForTabs} onHide={() => { this.handleClose() }} className='mt-4'>
+      <Modal
+        show={this.state.modalForTabs}
+        onHide={() => {
+          this.handleClose()
+        }}
+        className='mt-4'
+      >
         <Modal.Header
           closeButton
           onClick={() => {
@@ -418,12 +438,12 @@ class UserProfileV2 extends Component {
         >
           <Modal.Title>Save Tabs!</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ fontWeight: '500' }}>If you switch organization all the tabs and history will be deleted!</Modal.Body>
+        <Modal.Body style={{ fontWeight: "500" }}>If you switch organization all the tabs and history will be deleted!</Modal.Body>
         <Modal.Footer>
           <button
             className='btn btn-danger btn-lg mr-2'
             onClick={() => {
-              this.handleTabsandHistory('yes')
+              this.handleTabsandHistory("yes")
             }}
           >
             Yes
@@ -432,7 +452,7 @@ class UserProfileV2 extends Component {
             className='btn btn-secondary outline btn-lg'
             variant='secondary'
             onClick={() => {
-              this.handleTabsandHistory('no')
+              this.handleTabsandHistory("no")
             }}
           >
             No
@@ -448,7 +468,7 @@ class UserProfileV2 extends Component {
     this.setState({ selectedOrg: selectedOrg, currentOrg: org })
     if (org.id === selectedOrg.id) {
       this.setState({ modalForTabs: false })
-      toast.error('This organization is already selected')
+      toast.error("This organization is already selected")
     } else if (org.id !== selectedOrg.id && (tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
       this.setState({ modalForTabs: false })
       switchOrg(org.id)
@@ -463,7 +483,7 @@ class UserProfileV2 extends Component {
   async handleNewOrgClick() {
     this.toggleModal()
     const tabIdsToClose = this.props.tabs.tabsOrder
-    if ((tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
+    if (tabIdsToClose.length === 1 || tabIdsToClose.length === 0) {
       this.setState({ modalForTabs: false })
       this.removeFromLocalStorage(tabIdsToClose)
       this.props.close_all_tabs(tabIdsToClose)
@@ -472,18 +492,17 @@ class UserProfileV2 extends Component {
     } else {
       this.setState({ modalForTabs: true })
     }
-
   }
 
   renderOrgListDropdown() {
-    const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
+    const organizations = JSON.parse(window.localStorage.getItem("organisationList")) || []
     const selectedOrg = getCurrentOrg()
     return (
       <div className='org-listing-container '>
         <div className='org-listing-column d-flex flex-column'>
           {organizations.map((org, key) => (
             <button
-              className={`mb-2 p-2 btn btn-secondary ${org?.id === selectedOrg?.id ? 'active' : ''} `}
+              className={`mb-2 p-2 btn btn-secondary ${org?.id === selectedOrg?.id ? "active" : ""} `}
               id='publish_collection_btn'
               // variant= 'btn btn-outline'
               key={key}
@@ -521,7 +540,7 @@ class UserProfileV2 extends Component {
     let orgFilter = this.state.orgFilter
     const moreFlag = !this.state.moreFlag
     if (!moreFlag) {
-      orgFilter = ''
+      orgFilter = ""
     }
     this.setState({ orgFilter, moreFlag })
   }
@@ -540,7 +559,7 @@ class UserProfileV2 extends Component {
   }
 
   handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       this.handleAddOrg()
     }
   }
@@ -548,14 +567,14 @@ class UserProfileV2 extends Component {
   handleAddOrg = async () => {
     try {
       if (!this.validateName(this.state.orgName)) {
-        toast.error('Only alphanumeric and underscores are allowed')
+        toast.error("Only alphanumeric and underscores are allowed")
         return
       }
-      await this.handleNewOrgClick();
+      await this.handleNewOrgClick()
       this.setState({ switchOrCreate: true })
       // await createOrg(this.state.orgName)
     } catch (e) {
-      toast.error('Something went wrong')
+      toast.error("Something went wrong")
     }
   }
 
@@ -564,44 +583,28 @@ class UserProfileV2 extends Component {
       <>
         <div className='profile-menu'>
           <Dropdown className='d-flex align-items-center'>
-            <Dropdown.Toggle
-              as={React.forwardRef(({ children, onClick }, ref1) => this.renderAvatarWithOrg(onClick, ref1))}
-              id='dropdown-custom-components'
-            />
+            <Dropdown.Toggle as={React.forwardRef(({ children, onClick }, ref1) => this.renderAvatarWithOrg(onClick, ref1))} id='dropdown-custom-components' />
             <Dropdown.Menu className='p-0'>
               {this.renderUserDetails()}
               <div className='profile-listing-container'>
                 <div className='px-2 pb-2'>
-                <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
-                <Dropdown.Item>
-                  {/* <div className='profile-menu'> */}
-                  <span className='profile-details d-block' onClick={this.toggleModal} type='button'>
-                  <MdSwitchLeft size={18} />
-                    Switch Organization
-                  </span>
-                  <GenericModal
-                    orgName={this.state.orgName}
-                    validateName={this.validateName}
-                    handleKeyPress={this.handleKeyPress}
-                    inputRef={this.inputRef}
-                    setName={this.setName}
-                    handleCloseModal={this.toggleModal}
-                    showModal={this.state.showModal}
-                    title='Switch Organization'
-                    modalBody={this.renderOrgListDropdown()}
-                    keyboard={false}
-                    showInput
-                    handleAddOrg={this.handleAddOrg}
-                  />
-                </Dropdown.Item>
-                <Dropdown.Item>{this.renderTrash()}</Dropdown.Item>
-                <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
+                  <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
+                  <Dropdown.Item>
+                    {/* <div className='profile-menu'> */}
+                    <span className='profile-details d-block' onClick={this.toggleModal} type='button'>
+                      <MdSwitchLeft size={18} />
+                      Switch Organization
+                    </span>
+                    <GenericModal orgName={this.state.orgName} validateName={this.validateName} handleKeyPress={this.handleKeyPress} inputRef={this.inputRef} setName={this.setName} handleCloseModal={this.toggleModal} showModal={this.state.showModal} title='Switch Organization' modalBody={this.renderOrgListDropdown()} keyboard={false} showInput handleAddOrg={this.handleAddOrg} />
+                  </Dropdown.Item>
+                  <Dropdown.Item>{this.renderTrash()}</Dropdown.Item>
+                  <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
                 </div>
               </div>
             </Dropdown.Menu>
           </Dropdown>
         </div>
-        {this.state.modalForTabs ? this.showModalForTabs() : ''}
+        {this.state.modalForTabs ? this.showModalForTabs() : ""}
       </>
     )
   }

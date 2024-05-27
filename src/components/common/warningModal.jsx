@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Modal } from 'react-bootstrap'
+import React from "react"
+import PropTypes from "prop-types"
+import { Modal } from "react-bootstrap"
 
 function WarningModal({ show, onHide, title, message, ignoreButtonCallback }) {
   return (
@@ -38,7 +38,7 @@ WarningModal.propTypes = {
 }
 
 WarningModal.defaultProps = {
-  title: 'Warning',
+  title: "Warning",
   message: "Something's Not Right, Please try again later."
 }
 

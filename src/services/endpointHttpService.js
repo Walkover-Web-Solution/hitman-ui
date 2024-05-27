@@ -1,7 +1,7 @@
-import axios from 'axios'
-import logger from './logService'
-import 'react-toastify/dist/ReactToastify.css'
-import { getProxyToken } from '../components/auth/authServiceV2'
+import axios from "axios"
+import logger from "./logService"
+import "react-toastify/dist/ReactToastify.css"
+import { getProxyToken } from "../components/auth/authServiceV2"
 
 // axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 let endpointInstance = axios.create()

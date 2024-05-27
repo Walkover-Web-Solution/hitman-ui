@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { FaFolder } from 'react-icons/fa'
+import React, { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
+import { FaFolder } from "react-icons/fa"
 
 export default function RenderData(props) {
   const { pages, collections } = useSelector((state) => {
@@ -23,17 +23,17 @@ export default function RenderData(props) {
 
   const getType = (id) => {
     if (props?.data.length === 1) {
-      return 'collection'
+      return "collection"
     } else {
       const type = pages?.[id]?.type
       switch (type) {
         case 1:
         case 3:
-          return 'page'
+          return "page"
         case 2:
-          return 'version'
+          return "version"
         case 4:
-          return 'endpoint'
+          return "endpoint"
         default:
           break
       }
@@ -41,7 +41,7 @@ export default function RenderData(props) {
   }
 
   const addIdInPathdata = (id, slug) => {
-    if (slug === 'collection') {
+    if (slug === "collection") {
       const invisiblePageId = collections?.[id]?.rootParentId
       props.setPathData((prev) => {
         prev.push(invisiblePageId)
@@ -62,40 +62,28 @@ export default function RenderData(props) {
       {listData?.map((singleId, index) => {
         const type = getType(singleId)
         switch (type) {
-          case 'collection':
+          case "collection":
             return (
-              <div
-                onClick={() => addIdInPathdata(singleId, 'collection')}
-                key={index}
-                className='folder-box d-flex justify-content-start align-items-center p-1'
-              >
+              <div onClick={() => addIdInPathdata(singleId, "collection")} key={index} className='folder-box d-flex justify-content-start align-items-center p-1'>
                 <FaFolder color='#e98a36' size='21px' />
                 <div className='ml-1'>{collections?.[singleId]?.name}</div>
               </div>
             )
-          case 'page':
+          case "page":
             return (
-              <div
-                onClick={() => addIdInPathdata(singleId)}
-                key={index}
-                className='folder-box d-flex justify-content-start align-items-center p-1'
-              >
+              <div onClick={() => addIdInPathdata(singleId)} key={index} className='folder-box d-flex justify-content-start align-items-center p-1'>
                 <FaFolder color='#e98a36' size='21px' />
                 <div className='ml-1'>{pages?.[singleId]?.name}</div>
               </div>
             )
-          case 'version':
+          case "version":
             return (
-              <div
-                onClick={() => addIdInPathdata(singleId)}
-                key={index}
-                className='folder-box d-flex justify-content-start align-items-center p-1'
-              >
+              <div onClick={() => addIdInPathdata(singleId)} key={index} className='folder-box d-flex justify-content-start align-items-center p-1'>
                 <FaFolder color='#e98a36' size='21px' />
                 <div className='ml-1'>{pages?.[singleId]?.name}</div>
               </div>
             )
-          case 'endpoint':
+          case "endpoint":
             return (
               <div key={index} className='folder-box d-flex justify-content-start align-items-center p-1'>
                 <div className={`api-label ${pages?.[singleId]?.requestType} request-type-bgcolor`}>{pages?.[singleId]?.requestType}</div>

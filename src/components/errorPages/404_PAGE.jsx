@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 
 class ERROR_404_PAGE extends Component {
   state = {}
@@ -10,7 +10,7 @@ class ERROR_404_PAGE extends Component {
         {message ? <h3>{message}</h3> : null}
         <button
           onClick={() => {
-            this.props.history.push({ pathname: '/' })
+            this.props.history.push({ pathname: "/" })
           }}
           mat-button
         >

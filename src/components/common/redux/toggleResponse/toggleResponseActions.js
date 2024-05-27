@@ -1,4 +1,4 @@
-import toggleResponseActionTypes from './toggleResponseActionTypes'
+import toggleResponseActionTypes from "./toggleResponseActionTypes"
 
 export const onResponseToggle = (type) => {
   return (dispatch) => {

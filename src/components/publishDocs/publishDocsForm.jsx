@@ -1,53 +1,53 @@
-import React, { Component } from 'react'
-import CustomColorPicker from './customColorPicker'
-import { connect } from 'react-redux'
-import Joi from 'joi-browser'
-import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
-import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
-import { updateCollection } from '../collections/redux/collectionsActions'
-import './publishDocsForm.scss'
-import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
-import { handleChangeInUrlField, handleBlurInUrlField, openExternalLink } from '../common/utility'
-import { moveToNextStep } from '../../services/widgetService'
-import { updateCollectionIdForPublish } from '../../store/clientData/clientDataActions'
-import { publishData } from '../modals/redux/modalsActions'
-import PublishSidebar from '../publishSidebar/publishSidebar'
-import { HiOutlineExternalLink } from 'react-icons/hi'
+import React, { Component } from "react"
+import CustomColorPicker from "./customColorPicker"
+import { connect } from "react-redux"
+import Joi from "joi-browser"
+import { Button, Tooltip, OverlayTrigger } from "react-bootstrap"
+import { ReactComponent as UploadIcon } from "../../assets/icons/uploadIcon.svg"
+import { updateCollection } from "../collections/redux/collectionsActions"
+import "./publishDocsForm.scss"
+import { HOSTNAME_VALIDATION_REGEX } from "../common/constants"
+import { handleChangeInUrlField, handleBlurInUrlField, openExternalLink } from "../common/utility"
+import { moveToNextStep } from "../../services/widgetService"
+import { updateCollectionIdForPublish } from "../../store/clientData/clientDataActions"
+import { publishData } from "../modals/redux/modalsActions"
+import PublishSidebar from "../publishSidebar/publishSidebar"
+import { HiOutlineExternalLink } from "react-icons/hi"
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
-  NULL_STRING: '',
+  NULL_STRING: "",
   INITIAL_CTA: [
     {
-      name: '',
-      value: ''
+      name: "",
+      value: ""
     },
     {
-      name: '',
-      value: ''
+      name: "",
+      value: ""
     }
   ],
   INITIAL_LINKS: [
     {
-      name: '',
-      link: ''
+      name: "",
+      link: ""
     },
     {
-      name: '',
-      link: ''
+      name: "",
+      link: ""
     },
     {
-      name: '',
-      link: ''
+      name: "",
+      link: ""
     }
   ],
   LABELS: {
-    title: 'Title',
-    domain: 'Custom Domain',
-    logoUrl: 'Logo URL',
-    theme: 'Theme',
-    cta: 'CTA',
-    links: 'Links'
+    title: "Title",
+    domain: "Custom Domain",
+    logoUrl: "Logo URL",
+    theme: "Theme",
+    cta: "CTA",
+    links: "Links"
   }
 }
 
@@ -69,10 +69,10 @@ const mapStateToProps = (state) => {
 class PublishDocForm extends Component {
   state = {
     data: {
-      title: '',
-      domain: '',
-      logoUrl: '',
-      theme: ''
+      title: "",
+      domain: "",
+      logoUrl: "",
+      theme: ""
     },
     cta: publishDocFormEnum.INITIAL_CTA,
     links: publishDocFormEnum.INITIAL_LINKS
@@ -126,7 +126,7 @@ class PublishDocForm extends Component {
   }
 
   handleChangeLink = (e) => {
-    const [type, index, name] = e.target.name.split('-')
+    const [type, index, name] = e.target.name.split("-")
 
     const data = [...this.state[type]]
     data[index][name] = e.target.value
@@ -136,16 +136,16 @@ class PublishDocForm extends Component {
   schema = {
     title: Joi.string().required().trim().label(publishDocFormEnum.LABELS.title),
     domain: Joi.string()
-      .allow('')
-      .regex(HOSTNAME_VALIDATION_REGEX, { name: 'URL' })
+      .allow("")
+      .regex(HOSTNAME_VALIDATION_REGEX, { name: "URL" })
       .trim()
       .required()
-      .label('domain')
+      .label("domain")
       .error(() => {
-        return { message: 'Domain must be valid' }
+        return { message: "Domain must be valid" }
       }),
-    logoUrl: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.logoUrl),
-    theme: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.theme)
+    logoUrl: Joi.string().trim().allow("").label(publishDocFormEnum.LABELS.logoUrl),
+    theme: Joi.string().trim().allow("").label(publishDocFormEnum.LABELS.theme)
   }
 
   validate(data) {
@@ -196,23 +196,9 @@ class PublishDocForm extends Component {
       <div className='form-group'>
         <label>{publishDocFormEnum.LABELS.cta}</label>
         {this.state.cta.map((cta, index) => (
-          <div key={`cta-${index}`} className={cta.name.trim() && cta.value.trim() ? 'd-flex highlight' : 'd-flex'}>
-            <input
-              type='text'
-              className='form-control mb-2 mr-2'
-              placeholder={`CTA Name ${index + 1}`}
-              name={`cta-${index}-name`}
-              value={cta.name}
-              onChange={(e) => this.handleChangeLink(e)}
-            />
-            <input
-              type='text'
-              className='form-control mb-2 mr-2'
-              placeholder={`CTA Link ${index + 1}`}
-              name={`cta-${index}-value`}
-              value={cta.value}
-              onChange={(e) => this.handleChangeLink(e)}
-            />
+          <div key={`cta-${index}`} className={cta.name.trim() && cta.value.trim() ? "d-flex highlight" : "d-flex"}>
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`CTA Name ${index + 1}`} name={`cta-${index}-name`} value={cta.name} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`CTA Link ${index + 1}`} name={`cta-${index}-value`} value={cta.value} onChange={(e) => this.handleChangeLink(e)} />
           </div>
         ))}
       </div>
@@ -224,23 +210,9 @@ class PublishDocForm extends Component {
       <div className='form-group'>
         <label>{publishDocFormEnum.LABELS.links}</label>
         {this.state.links.map((link, index) => (
-          <div key={`cta-${index}`} className={link.name.trim() && link.link.trim() ? 'd-flex highlight' : 'd-flex'}>
-            <input
-              type='text'
-              className='form-control mb-2 mr-2'
-              placeholder={`Link Name ${index + 1}`}
-              name={`links-${index}-name`}
-              value={link.name}
-              onChange={(e) => this.handleChangeLink(e)}
-            />
-            <input
-              type='text'
-              className='form-control mb-2 mr-2'
-              placeholder={`Referral Link ${index + 1}`}
-              name={`links-${index}-link`}
-              value={link.link}
-              onChange={(e) => this.handleChangeLink(e)}
-            />
+          <div key={`cta-${index}`} className={link.name.trim() && link.link.trim() ? "d-flex highlight" : "d-flex"}>
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`Link Name ${index + 1}`} name={`links-${index}-name`} value={link.name} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`Referral Link ${index + 1}`} name={`links-${index}-link`} value={link.link} onChange={(e) => this.handleChangeLink(e)} />
           </div>
         ))}
       </div>
@@ -250,13 +222,8 @@ class PublishDocForm extends Component {
   renderFooter() {
     return (
       <div className='d-flex align-items-center'>
-        <Button
-          className={this.state.loader ? 'buttonLoader' : ''}
-          disabled={!this.state.data.title.trim()}
-          id='publish_doc_settings_save_btn'
-          onClick={() => this.saveCollectionDetails()}
-        >
-          {this.props.isSidebar ? 'Update' : 'Save'}
+        <Button className={this.state.loader ? "buttonLoader" : ""} disabled={!this.state.data.title.trim()} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>
+          {this.props.isSidebar ? "Update" : "Save"}
         </Button>
       </div>
     )
@@ -295,7 +262,7 @@ class PublishDocForm extends Component {
   }
 
   getDisabledStyle(disabled) {
-    return disabled ? { cursor: 'not-allowed', opacity: 0.4 } : { cursor: 'pointer' }
+    return disabled ? { cursor: "not-allowed", opacity: 0.4 } : { cursor: "pointer" }
   }
 
   renderUploadModule(disabled) {
@@ -305,14 +272,7 @@ class PublishDocForm extends Component {
           <label style={this.getDisabledStyle(disabled)} htmlFor='upload-button'>
             <UploadIcon />
           </label>
-          <input
-            type='file'
-            id='upload-button'
-            disabled={disabled}
-            style={{ display: 'none' }}
-            accept='.png'
-            onChange={(e) => this.onFileChange(e)}
-          />
+          <input type='file' id='upload-button' disabled={disabled} style={{ display: "none" }} accept='.png' onChange={(e) => this.onFileChange(e)} />
         </div>
       </>
     )
@@ -331,7 +291,7 @@ class PublishDocForm extends Component {
             {this.state.uploadedFile && <p>{this.state.uploadedFile.name}</p>}
             {this.state.binaryFile && (
               <span
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: "pointer" }}
                 onClick={() => {
                   const errors = this.state.errors || {}
                   delete errors.icon
@@ -353,24 +313,9 @@ class PublishDocForm extends Component {
     return (
       <div className='form-group'>
         <label>{publishDocFormEnum.LABELS[name]}</label>
-        <input
-          type='text'
-          placeholder={placeholder}
-          disabled={disabled}
-          className='form-control'
-          name={name}
-          value={data[name]}
-          onChange={(e) => this.handleChange(e, isURLInput)}
-          onBlur={(e) => this.handleBlur(e, isURLInput)}
-        />
-        {name === 'domain' && (
-          <span className='domain-info f-10 mt-1 d-block'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>
-        )}
-        {name === 'title' && (
-          <span className='domain-info f-10 mt-1 d-block'>{`Your default title will be ${
-            this.props?.collections?.[this.props?.match?.params?.collectionId]?.name
-          }`}</span>
-        )}
+        <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
+        {name === "domain" && <span className='domain-info f-10 mt-1 d-block'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>}
+        {name === "title" && <span className='domain-info f-10 mt-1 d-block'>{`Your default title will be ${this.props?.collections?.[this.props?.match?.params?.collectionId]?.name}`}</span>}
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
       </div>
     )
@@ -403,7 +348,7 @@ class PublishDocForm extends Component {
 
   renderPublicUrl() {
     const isCollectionPublished = this.props.collections[this.props.selected_collection_id]?.isPublic
-    const url = process.env.REACT_APP_PUBLIC_UI_URL + '/p?collectionId=' + this.props.selected_collection_id
+    const url = process.env.REACT_APP_PUBLIC_UI_URL + "/p?collectionId=" + this.props.selected_collection_id
     const isDisabled = this.IsParentPagePublishedInACollection(this.props.collections[this.props.selected_collection_id]?.rootParentId)
 
     if (!isCollectionPublished) return null
@@ -411,22 +356,17 @@ class PublishDocForm extends Component {
     return (
       <div>
         <div className='d-flex align-items-center'>
-        <span className='public-title mt-1 d-block'>Preview Documentation</span>
-        <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
+          <span className='public-title mt-1 d-block'>Preview Documentation</span>
+          <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
         </div>
         <OverlayTrigger
           overlay={
-            <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled ? 'd-none' : ''}>
+            <Tooltip id='tooltip-unpublished-endpoint' className={isDisabled ? "d-none" : ""}>
               At least one endpoint/page is to be published to enable this link.
             </Tooltip>
           }
         >
-          <div
-            onClick={() => isDisabled && openExternalLink(url)}
-            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-3 ${
-              isDisabled ? 'text-disable' : 'disabled-link'
-            }`}
-          >
+          <div onClick={() => isDisabled && openExternalLink(url)} className={`sidebar-public-url d-flex align-items-center justify-content-start mb-3 ${isDisabled ? "text-disable" : "disabled-link"}`}>
             <HiOutlineExternalLink className='mr-1' size={13} />
             <span>{url}</span>
           </div>
@@ -448,9 +388,7 @@ class PublishDocForm extends Component {
   }
 
   openPublishSidebar() {
-    return (
-      <>{this.props.isPublishSliderOpen && <PublishSidebar {...this.props} closePublishSidebar={this.closePublishSidebar.bind(this)} />}</>
-    )
+    return <>{this.props.isPublishSliderOpen && <PublishSidebar {...this.props} closePublishSidebar={this.closePublishSidebar.bind(this)} />}</>
   }
   closePublishSidebar() {
     this.setState({ openPublishSidebar: false })
@@ -464,12 +402,7 @@ class PublishDocForm extends Component {
     const disableCondition = this.props?.pages[rootParentId]?.child?.length > 0
     return (
       <div>
-        <Button
-          className={this.state.loader ? 'buttonLoader m-1 btn-sm fs-4' : 'm-1 btn-sm fs-4'}
-          disabled={!this.state.data.title.trim()}
-          onClick={() => this.saveCollectionDetails()}
-          variant='btn btn-outline'
-        >
+        <Button className={this.state.loader ? "buttonLoader m-1 btn-sm fs-4" : "m-1 btn-sm fs-4"} disabled={!this.state.data.title.trim()} onClick={() => this.saveCollectionDetails()} variant='btn btn-outline'>
           Save
         </Button>
         {/* <OverlayTrigger
@@ -479,13 +412,7 @@ class PublishDocForm extends Component {
             </Tooltip>
           }
         > */}
-        <Button
-          disabled={!disableCondition}
-          id='publish_collection_btn'
-          variant='btn btn-outline'
-          className='m-1 btn-sm fs-4'
-          onClick={() => this.redirectUser()}
-        >
+        <Button disabled={!disableCondition} id='publish_collection_btn' variant='btn btn-outline' className='m-1 btn-sm fs-4' onClick={() => this.redirectUser()}>
           Bulk Publish
         </Button>
         {/* </OverlayTrigger> */}
@@ -496,13 +423,7 @@ class PublishDocForm extends Component {
             </Button>
           ) : (
             isNotPublished && (
-              <Button
-                id='publish_collection_btn'
-                className='m-1 btn-sm fs-4'
-                onClick={() => this.publishCollection(selectedCollection)}
-                disabled={!selectedCollection?.docProperties?.defaultTitle}
-                variant='btn btn-outline'
-              >
+              <Button id='publish_collection_btn' className='m-1 btn-sm fs-4' onClick={() => this.publishCollection(selectedCollection)} disabled={!selectedCollection?.docProperties?.defaultTitle} variant='btn btn-outline'>
                 Publish Collection
               </Button>
             )
@@ -516,7 +437,7 @@ class PublishDocForm extends Component {
     const publishCheck = (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished()
     return (
       <>
-        <div className={this.props.onTab && 'publish-on-tab'}>
+        <div className={this.props.onTab && "publish-on-tab"}>
           <div className='d-flex justify-content-between align-item-center'>
             <div className='d-flex align-items-center'>
               <h3 className='page-title mb-0'>Manage Public Doc</h3>
@@ -525,18 +446,18 @@ class PublishDocForm extends Component {
           </div>
           {publishCheck && this.renderPublicUrl()}
           <div className='small-input mt-2'>
-            {this.renderInput('title', true, false, 'brand name')}
-            {this.renderInput('domain', false, false, 'docs.example.com')}
+            {this.renderInput("title", true, false, "brand name")}
+            {this.renderInput("domain", false, false, "docs.example.com")}
           </div>
           <div className='d-flex favicon'>
             <div className='form-group'>
               <label> Fav Icon </label>
-              <div className='favicon-uploader'>{this.renderUploadBox('icon')}</div>
+              <div className='favicon-uploader'>{this.renderUploadBox("icon")}</div>
             </div>
             <div className='or-wrap d-flex align-items-center'>
               <p className='mb-0'>OR</p>
             </div>
-            {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
+            {this.renderInput("logoUrl", false, this.state.binaryFile, "")}
           </div>
 
           <div className='color-picker'>{this.renderColorPicker()}</div>

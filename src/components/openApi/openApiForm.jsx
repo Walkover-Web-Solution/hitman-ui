@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
-import { withRouter } from 'react-router-dom'
-import { importApi } from '../collections/redux/collectionsActions'
-import { connect } from 'react-redux'
-import Joi from 'joi-browser'
-import { URL_VALIDATION_REGEX } from '../common/constants'
-import './openApi.scss'
-import { defaultViewTypes } from '../collections/defaultViewModal/defaultViewModal'
+import React, { Component } from "react"
+import { Modal } from "react-bootstrap"
+import { withRouter } from "react-router-dom"
+import { importApi } from "../collections/redux/collectionsActions"
+import { connect } from "react-redux"
+import Joi from "joi-browser"
+import { URL_VALIDATION_REGEX } from "../common/constants"
+import "./openApi.scss"
+import { defaultViewTypes } from "../collections/defaultViewModal/defaultViewModal"
 
 const mapStateToProps = (state) => {
   return {
@@ -16,8 +16,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_api: (openApiObject, importType, website, callback, view) =>
-      dispatch(importApi(openApiObject, importType, website, callback, view))
+    import_api: (openApiObject, importType, website, callback, view) => dispatch(importApi(openApiObject, importType, website, callback, view))
   }
 }
 
@@ -27,8 +26,8 @@ class OpenApiForm extends Component {
     this.state = {
       openApiObject: {},
       uploadedFile: null,
-      importType: '',
-      website: '',
+      importType: "",
+      website: "",
       errors: {
         type: null,
         website: null,
@@ -72,21 +71,21 @@ class OpenApiForm extends Component {
     let errors = {}
     let FileError = null
     errors = this.validate({ type: this.state.importType }, { type: Joi.string().required() })
-      const schema = {
-        type: Joi.string().required(),
-        website: Joi.string()
-          .regex(URL_VALIDATION_REGEX, { name: 'URL' })
-          .trim()
-          .required()
-          .label('Website')
-          .error(() => {
-            return { message: 'Website must be a valid URL' }
-          })
-      }
-      errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
-   
+    const schema = {
+      type: Joi.string().required(),
+      website: Joi.string()
+        .regex(URL_VALIDATION_REGEX, { name: "URL" })
+        .trim()
+        .required()
+        .label("Website")
+        .error(() => {
+          return { message: "Website must be a valid URL" }
+        })
+    }
+    errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
+
     if (this.state.uploadedFile === null) {
-      FileError = 'JSON file Should not be set empty'
+      FileError = "JSON file Should not be set empty"
     }
     this.setState({ errors: { ...errors, file: FileError } })
     if (errors || FileError) return
@@ -102,7 +101,7 @@ class OpenApiForm extends Component {
     const selectedFile = e.currentTarget.files[0]
     if (selectedFile) {
       const uploadedFile = new FormData()
-      uploadedFile.append('myFile', selectedFile, selectedFile.name)
+      uploadedFile.append("myFile", selectedFile, selectedFile.name)
       this.setState({ uploadedFile, errors: { ...this.state.error, file: null }, selectedFileName: selectedFile.name })
     }
   }
@@ -114,7 +113,7 @@ class OpenApiForm extends Component {
           <div id='select-json-wrapper'>
             <label>Select File</label>
             <span className='customFileChooser'>
-              <input type='file' accept={this.state.importType === 'openapi' ? '.json, .yaml' : '.json'} onChange={this.onFileChange.bind(this)}/>
+              <input type='file' accept={this.state.importType === "openapi" ? ".json, .yaml" : ".json"} onChange={this.onFileChange.bind(this)} />
               Choose file
             </span>
             {this.state.errors?.file && <div className='alert alert-danger'>{this.state.errors?.file}</div>}
@@ -136,7 +135,7 @@ class OpenApiForm extends Component {
             this.handleSubmit(e)
             const { errors, importType, website, uploadedFile } = this.state
             if ((!errors.type && !errors.website && !errors.file && importType && uploadedFile) || website) {
-              this.saveCollection(defaultViewTypes.TESTING, 'edit')
+              this.saveCollection(defaultViewTypes.TESTING, "edit")
             }
           }}
         >
@@ -155,7 +154,7 @@ class OpenApiForm extends Component {
           className='form-control custom-input'
           value={this.state.importType}
           onChange={(e) => {
-            this.setState({ importType: e.target.value, website: '', errors: { type: null, file: null, website: null } })
+            this.setState({ importType: e.target.value, website: "", errors: { type: null, file: null, website: null } })
           }}
         >
           <option value=''>Select</option>
@@ -188,9 +187,7 @@ class OpenApiForm extends Component {
     return (
       <form className='mb-2'>
         <div className=''>
-          <div>
-            {this.renderInputType()}
-          </div>
+          <div>{this.renderInputType()}</div>
           <div>{this.renderJSONFileSelector()}</div>
         </div>
       </form>
@@ -198,7 +195,7 @@ class OpenApiForm extends Component {
   }
 
   setViewLoader(type, flag) {
-    if (flag === 'edit') this.setState({ updating: true })
+    if (flag === "edit") this.setState({ updating: true })
     else {
       const { viewLoader } = this.state
       this.setState({ viewLoader: { ...viewLoader, [type]: flag } })
@@ -217,14 +214,7 @@ class OpenApiForm extends Component {
 
   renderInModal() {
     return (
-      <Modal
-        show={this.props.show}
-        onHide={this.props.onHide}
-        id='modal-open-api'
-        size='lg'
-        aria-labelledby='contained-modal-title-vcenter'
-        centered
-      >
+      <Modal show={this.props.show} onHide={this.props.onHide} id='modal-open-api' size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
         <Modal.Header className='custom-collection-modal-container' closeButton>
           <Modal.Title id='contained-modal-title-vcenter'>Import Collection</Modal.Title>
         </Modal.Header>

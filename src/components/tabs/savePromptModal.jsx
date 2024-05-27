@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
-import tabService from './tabService'
-import { useQueryClient } from 'react-query'
+import React, { Component } from "react"
+import { Modal } from "react-bootstrap"
+import tabService from "./tabService"
+import { useQueryClient } from "react-query"
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -20,10 +20,10 @@ class SavePromptModal extends Component {
     const currentTabIdClicked = this.props.tab_id
     const tab = tabs[currentTabIdClicked]
     switch (tab.type) {
-      case 'page':
+      case "page":
         await this.props.handle_save_page(true, currentTabIdClicked)
         break
-      case 'endpoint':
+      case "endpoint":
         await this.props.handle_save_endpoint(true, currentTabIdClicked)
         break
       default:
@@ -31,7 +31,7 @@ class SavePromptModal extends Component {
     }
     this.props.onConfirm(currentTabIdClicked)
     const endpointStatus = this.props.tabs.tabs[currentTabIdClicked].status
-    if (endpointStatus !== 'NEW') {
+    if (endpointStatus !== "NEW") {
       tabService.removeTab(currentTabIdClicked, { ...this.props })
     } else {
       tabService.selectTab({ ...this.props }, currentTabIdClicked)
@@ -42,29 +42,29 @@ class SavePromptModal extends Component {
     tabService.removeTab(this.props.tab_id, { ...this.props })
     this.props.onConfirm(this.props.tab_id)
     if (this.props?.pages?.[this.props?.tab_id]?.type === 3 || this.props?.pages?.[this.props?.tab_id]?.type === 1) {
-      return this.props?.queryClient?.removeQueries(['pageContent', this.props?.tab_id])
+      return this.props?.queryClient?.removeQueries(["pageContent", this.props?.tab_id])
     } else {
-      return this.props?.queryClient?.removeQueries(['endpoint', this.props?.tab_id])
+      return this.props?.queryClient?.removeQueries(["endpoint", this.props?.tab_id])
     }
   }
 
   getTabName(tabId) {
     const tab = this.props.tabs.tabs[tabId]
-    let name = ''
+    let name = ""
     if (!tab) return
     switch (tab.type) {
-      case 'history':
-        name = this.props.historySnapshots[tabId]?.endpoint?.name || tab.state.data?.name || 'Random Trigger'
+      case "history":
+        name = this.props.historySnapshots[tabId]?.endpoint?.name || tab.state.data?.name || "Random Trigger"
         break
-      case 'endpoint':
-        if (tab.status === 'SAVED') name = this.props.endpoints[tabId]?.name || ''
-        else name = tab.state.data?.name || 'Untitled'
+      case "endpoint":
+        if (tab.status === "SAVED") name = this.props.endpoints[tabId]?.name || ""
+        else name = tab.state.data?.name || "Untitled"
         break
-      case 'page':
-        name = this.props.pages[tabId]?.name || ''
+      case "page":
+        name = this.props.pages[tabId]?.name || ""
         break
       default:
-        name = ''
+        name = ""
     }
     return name
   }
@@ -79,9 +79,8 @@ class SavePromptModal extends Component {
         <Modal.Body id='custom-delete-modal-body'>
           <div>
             <p>
-              {' '}
-              This tab <strong>{this.getTabName(tabId)}</strong> has unsaved changes which will be lost if you choose to close it. Save
-              these changes to avoid losing your work.
+              {" "}
+              This tab <strong>{this.getTabName(tabId)}</strong> has unsaved changes which will be lost if you choose to close it. Save these changes to avoid losing your work.
             </p>
           </div>
           <div className='text-left mt-4 mb-2'>

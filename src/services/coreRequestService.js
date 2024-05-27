@@ -1,8 +1,8 @@
-import { bodyTypesEnums } from '../components/common/bodyTypeEnums'
+import { bodyTypesEnums } from "../components/common/bodyTypeEnums"
 
-const querystring = require('querystring')
-const FormData = require('form-data')
-const axios = require('axios')
+const querystring = require("querystring")
+const FormData = require("form-data")
+const axios = require("axios")
 
 export async function makeHttpRequestThroughAxios({ api: url, method, body: data, headers, cancelToken }) {
   headers = headers || {}
@@ -15,13 +15,13 @@ export async function makeHttpRequestThroughAxios({ api: url, method, body: data
     proxy: false,
     cancelToken
   }
-  if (headers['content-type'] === bodyTypesEnums['multipart/form-data']) {
+  if (headers["content-type"] === bodyTypesEnums["multipart/form-data"]) {
     const bodyFormData = new FormData()
     for (const [key, value] of Object.entries(data)) {
       bodyFormData.append(key, value)
     }
     options.data = bodyFormData
-  } else if (headers['content-type'] === bodyTypesEnums['application/x-www-form-urlencoded']) {
+  } else if (headers["content-type"] === bodyTypesEnums["application/x-www-form-urlencoded"]) {
     options.data = querystring.stringify(data)
   }
 

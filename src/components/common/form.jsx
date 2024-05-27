@@ -1,10 +1,10 @@
-import React, { Component, createRef } from 'react'
-import Input from './input'
+import React, { Component, createRef } from "react"
+import Input from "./input"
 // import Joi from 'joi-browser'
-import AceEditor from 'react-ace'
-import 'ace-builds'
-import 'ace-builds/src-noconflict/mode-json'
-import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
+import AceEditor from "react-ace"
+import "ace-builds"
+import "ace-builds/src-noconflict/mode-json"
+import { handleChangeInUrlField, handleBlurInUrlField } from "../common/utility"
 
 class Form extends Component {
   constructor(props) {
@@ -16,18 +16,11 @@ class Form extends Component {
     }
 
     this.modules = {
-      toolbar: [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ color: [] }, { background: [] }],
-
-        [({ list: 'ordered' }, { list: 'bullet' })],
-        ['link']
-      ]
+      toolbar: [[{ header: [1, 2, 3, 4, 5, 6, false] }], ["bold", "italic", "underline", "strike"], [{ color: [] }, { background: [] }], [({ list: "ordered" }, { list: "bullet" })], ["link"]]
     }
     this.inputRef = createRef()
 
-    this.formats = ['header', 'bold', 'italic', 'underline', 'strike', 'color', 'background', 'list', 'bullet', 'link']
+    this.formats = ["header", "bold", "italic", "underline", "strike", "color", "background", "list", "bullet", "link"]
   }
 
   validate() {
@@ -51,7 +44,7 @@ class Form extends Component {
   trimmedData() {
     const trimmedData = {}
     Object.keys(this.state.data).forEach((key) => {
-      if (typeof this.state.data[key] === 'string') {
+      if (typeof this.state.data[key] === "string") {
         trimmedData[key] = this.state.data[key]?.trim()
       } else {
         trimmedData[key] = this.state.data[key]
@@ -115,24 +108,9 @@ class Form extends Component {
     this.setState({ data })
   }
 
-  renderInput(name, urlName, label, placeholder, mandatory = false, isURLInput = false, note = '') {
+  renderInput(name, urlName, label, placeholder, mandatory = false, isURLInput = false, note = "") {
     const { data, errors } = this.state
-    return (
-      <Input
-        ref={this.inputRef}
-        name={name}
-        urlName={urlName}
-        label={label}
-        value={data[name]}
-        onChange={(e) => this.handleChange(e, isURLInput)}
-        onBlur={(e) => this.handleBlur(e, isURLInput)}
-        error={errors?.[name]}
-        placeholder={placeholder}
-        disabled={data.disabled}
-        mandatory={mandatory}
-        note={note}
-      />
-    )
+    return <Input ref={this.inputRef} name={name} urlName={urlName} label={label} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} error={errors?.[name]} placeholder={placeholder} disabled={data.disabled} mandatory={mandatory} note={note} />
   }
 
   renderTextArea(name, label, placeholder) {
@@ -142,16 +120,7 @@ class Form extends Component {
         <label htmlFor={name} className='custom-input-label'>
           {label}
         </label>
-        <textarea
-          className='form-control custom-input'
-          rows='10'
-          onChange={this.handleChange}
-          id={name}
-          error={errors[name]}
-          name={name}
-          value={data[name]}
-          placeholder={placeholder}
-        />
+        <textarea className='form-control custom-input' rows='10' onChange={this.handleChange} id={name} error={errors[name]} name={name} value={data[name]} placeholder={placeholder} />
       </div>
     )
   }
@@ -173,7 +142,7 @@ class Form extends Component {
           {label}
         </label>
         <AceEditor
-          style={{ border: '1px solid rgb(206 213 218)' }}
+          style={{ border: "1px solid rgb(206 213 218)" }}
           className='custom-raw-editor'
           mode='json'
           theme='github'

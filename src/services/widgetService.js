@@ -2,12 +2,12 @@ const widgetURL = process.env.REACT_APP_STEVE_WIDGET_URL
 const projectId = process.env.REACT_APP_STEVE_PROJECT_ID
 const authkey = process.env.REACT_APP_STEVE_AUTHKEY
 const widgetId = process.env.REACT_APP_STEVE_WIDGET_ID
-const FIRST_JULY_2021 = new Date('2021-07-01').valueOf()
+const FIRST_JULY_2021 = new Date("2021-07-01").valueOf()
 
 export function moveToNextStep(currentStepNo) {
   try {
     if (window.isUserOnboardingComplete && window.isUserOnboardingComplete() === false) {
-      const steveEvent = new window.CustomEvent('steveOnboarding', { detail: { doneStep: currentStepNo } })
+      const steveEvent = new window.CustomEvent("steveOnboarding", { detail: { doneStep: currentStepNo } })
       window.dispatchEvent(steveEvent)
     }
   } catch (error) {
@@ -16,23 +16,23 @@ export function moveToNextStep(currentStepNo) {
 }
 
 export function onOnboardingCompleted() {
-  const steveEvent = new window.CustomEvent('steveOnboarding', { detail: { isOnboardingComplete: true } })
+  const steveEvent = new window.CustomEvent("steveOnboarding", { detail: { isOnboardingComplete: true } })
   window.dispatchEvent(steveEvent)
 }
 
 function getUserName(profile) {
-  const firstName = profile?.first_name || ''
-  const lastName = profile?.last_name || ''
-  const name = firstName + ' ' + lastName
+  const firstName = profile?.first_name || ""
+  const lastName = profile?.last_name || ""
+  const name = firstName + " " + lastName
   return name?.trim()
 }
 
 export function loadWidget() {
-  let user = window.localStorage.getItem('profile')
+  let user = window.localStorage.getItem("profile")
   user = JSON.parse(user)
   const userCreatedAt = new Date(user?.created_at)?.valueOf()
   const identifier = user.identifier
-  const onboardingWgt = document.getElementById('onboarding-wgt-script')
+  const onboardingWgt = document.getElementById("onboarding-wgt-script")
   let userData = {}
   try {
     const userName = getUserName(user)
@@ -44,14 +44,14 @@ export function loadWidget() {
     }
   } catch {}
   if (!onboardingWgt && identifier) {
-    const script = document.createElement('script')
+    const script = document.createElement("script")
     script.src = widgetURL
-    script.id = 'onboarding-wgt-script'
-    script.type = 'text/javascript'
-    script.setAttribute('project-id', projectId)
-    script.setAttribute('authkey', authkey)
-    script.setAttribute('widget-id', widgetId)
-    script.setAttribute('user-data', JSON.stringify(userData))
+    script.id = "onboarding-wgt-script"
+    script.type = "text/javascript"
+    script.setAttribute("project-id", projectId)
+    script.setAttribute("authkey", authkey)
+    script.setAttribute("widget-id", widgetId)
+    script.setAttribute("user-data", JSON.stringify(userData))
     document.body.appendChild(script)
     script.onload = () => {}
   }

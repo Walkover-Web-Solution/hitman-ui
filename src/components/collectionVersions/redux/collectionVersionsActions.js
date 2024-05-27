@@ -1,8 +1,8 @@
-import collectionVersionsApiService from '../collectionVersionsApiService'
-import versionActionTypes from './collectionVersionsActionTypes'
-import { toast } from 'react-toastify'
-import pagesActionTypes from '../../pages/redux/pagesActionTypes'
-import { SESSION_STORAGE_KEY } from '../../common/utility'
+import collectionVersionsApiService from "../collectionVersionsApiService"
+import versionActionTypes from "./collectionVersionsActionTypes"
+import { toast } from "react-toastify"
+import pagesActionTypes from "../../pages/redux/pagesActionTypes"
+import { SESSION_STORAGE_KEY } from "../../common/utility"
 
 export const updateVersion = (editedVersion) => {
   return (dispatch) => {
@@ -72,4 +72,3 @@ export const onVersionAddedError = (error, newVersion) => {
     error
   }
 }
-

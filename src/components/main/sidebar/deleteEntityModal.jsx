@@ -1,11 +1,11 @@
-import React, { Component, createRef } from 'react'
-import { Modal } from 'react-bootstrap'
+import React, { Component, createRef } from "react"
+import { Modal } from "react-bootstrap"
 
-import { closeModal } from '../../modals/redux/modalsActions'
-import { DELETE_CONFIRMATION } from '../../modals/modalTypes'
-import { connect } from 'react-redux'
-import confirmationModalEnum from '../../common/confirmationModalEnum'
-import { withRouter } from 'react-router'
+import { closeModal } from "../../modals/redux/modalsActions"
+import { DELETE_CONFIRMATION } from "../../modals/modalTypes"
+import { connect } from "react-redux"
+import confirmationModalEnum from "../../common/confirmationModalEnum"
+import { withRouter } from "react-router"
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -50,18 +50,18 @@ class DeleteSidebarEntityModal extends Component {
     const { id, type } = sidebar.navList[focusedNode]
 
     switch (type) {
-      case 'collections':
+      case "collections":
         return collections[id].importedFromMarketPlace ? confirmationModalEnum.REMOVE_COLLECTION : confirmationModalEnum.DELETE_COLLECTION
-      case 'versions':
+      case "versions":
         return confirmationModalEnum.DELETE_VERSION
-      case 'groups':
+      case "groups":
         return confirmationModalEnum.DELETE_GROUP
-      case 'pages':
+      case "pages":
         return confirmationModalEnum.DELETE_PAGE
-      case 'endpoints':
+      case "endpoints":
         return confirmationModalEnum.DELETE_ENDPOINT
       default:
-        return { title: '', message: '' }
+        return { title: "", message: "" }
     }
   }
 
@@ -78,7 +78,7 @@ class DeleteSidebarEntityModal extends Component {
             {message}
             <form onSubmit={this.handleSubmit.bind(this)}>
               <button ref={this.submitButton} type='submit' id='custom-delete-modal-delete' className='btn btn-danger btn-lg mr-2'>
-                {title === 'Remove Collection' ? 'Remove' : 'Delete'}
+                {title === "Remove Collection" ? "Remove" : "Delete"}
               </button>
               <button id='custom-delete-modal-cancel' className='btn btn-secondary outline btn-lg' onClick={() => this.onHide}>
                 Cancel

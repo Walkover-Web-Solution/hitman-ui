@@ -1,6 +1,6 @@
-import cookiesApiService from '../cookiesApiService'
-import cookiesActionTypes from './cookiesActionTypes'
-import { store } from '../../../store/store'
+import cookiesApiService from "../cookiesApiService"
+import cookiesActionTypes from "./cookiesActionTypes"
+import { store } from "../../../store/store"
 
 export const fetchAllCookies = () => {
   return (dispatch) => {
@@ -8,7 +8,7 @@ export const fetchAllCookies = () => {
       .getAllCookies()
       .then((response) => {
         dispatch(onCookiesFetched(response.data))
-        window.localStorage.setItem('cookies', JSON.stringify(response.data))
+        window.localStorage.setItem("cookies", JSON.stringify(response.data))
       })
       .catch((error) => {
         dispatch(onCookiesFetchedError(error.response ? error.response.data : error))
@@ -20,7 +20,7 @@ export const fetchAllCookiesFromLocalStorage = () => {
   return (dispatch) => {
     let cookies
     try {
-      cookies = JSON.parse(window.localStorage.getItem('cookies'))
+      cookies = JSON.parse(window.localStorage.getItem("cookies"))
       dispatch(onCookiesFetched(cookies))
     } catch (err) {
       dispatch(onCookiesFetchedError(err))

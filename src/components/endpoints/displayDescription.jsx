@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import { isDashboardRoute } from '../common/utility'
-import { updateEndpoint } from '../pages/redux/pagesActions'
-import { connect } from 'react-redux'
-import './endpointBreadCrumb.scss'
-import EndpointBreadCrumb from './endpointBreadCrumb'
+import React, { Component } from "react"
+import { isDashboardRoute } from "../common/utility"
+import { updateEndpoint } from "../pages/redux/pagesActions"
+import { connect } from "react-redux"
+import "./endpointBreadCrumb.scss"
+import EndpointBreadCrumb from "./endpointBreadCrumb"
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -16,30 +16,21 @@ class DisplayDescription extends Component {
     super(props)
     this.state = {
       showDescriptionFormFlag: false,
-      showAddDescriptionFlag: isDashboardRoute(this.props)
-        ? !!(this.props.endpoint.description === '' || this.props.endpoint.description == null)
-        : false,
-      theme: ''
+      showAddDescriptionFlag: isDashboardRoute(this.props) ? !!(this.props.endpoint.description === "" || this.props.endpoint.description == null) : false,
+      theme: ""
     }
 
     this.modules = {
-      toolbar: [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ color: [] }, { background: [] }],
-
-        [({ list: 'ordered' }, { list: 'bullet' })],
-        ['link']
-      ]
+      toolbar: [[{ header: [1, 2, 3, 4, 5, 6, false] }], ["bold", "italic", "underline", "strike"], [{ color: [] }, { background: [] }], [({ list: "ordered" }, { list: "bullet" })], ["link"]]
     }
 
-    this.formats = ['header', 'bold', 'italic', 'underline', 'strike', 'color', 'background', 'list', 'bullet', 'link']
+    this.formats = ["header", "bold", "italic", "underline", "strike", "color", "background", "list", "bullet", "link"]
   }
 
   handleChange(e) {
     const data = { ...this.props.data }
     data[e.currentTarget.name] = e.currentTarget.value
-    this.props.props_from_parent('data', data)
+    this.props.props_from_parent("data", data)
   }
 
   componentDidMount() {
@@ -62,7 +53,7 @@ class DisplayDescription extends Component {
       showDescriptionFormFlag,
       showAddDescriptionFlag: true
     })
-    this.props.props_from_parent('endpoint', endpoint)
+    this.props.props_from_parent("endpoint", endpoint)
   }
 
   handleDescriptionSave(e) {
@@ -75,22 +66,20 @@ class DisplayDescription extends Component {
       showDescriptionFormFlag: false,
       showAddDescriptionFlag: true
     })
-    this.props.props_from_parent('endpoint', endpoint)
-    this.props.props_from_parent('oldDescription', value)
+    this.props.props_from_parent("endpoint", endpoint)
+    this.props.props_from_parent("oldDescription", value)
   }
 
   handleChangeDescription = (value) => {
     const endpoint = { ...this.props.endpoint }
     endpoint.description = value
-    this.props.props_from_parent('endpoint', endpoint)
+    this.props.props_from_parent("endpoint", endpoint)
   }
 
   render() {
     return (
       <div className='endpoint-header'>
-        <div className={isDashboardRoute(this.props) ? 'panel-endpoint-name-container' : 'endpoint-name-container'}>
-          {isDashboardRoute(this.props) && <>{this.props.endpoint && <EndpointBreadCrumb {...this.props} isEndpoint />}</>}
-        </div>
+        <div className={isDashboardRoute(this.props) ? "panel-endpoint-name-container" : "endpoint-name-container"}>{isDashboardRoute(this.props) && <>{this.props.endpoint && <EndpointBreadCrumb {...this.props} isEndpoint />}</>}</div>
       </div>
     )
   }

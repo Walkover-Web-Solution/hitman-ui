@@ -1,22 +1,22 @@
-import React, { Component } from 'react'
-import { isDashboardRoute, validateEmail } from '../common/utility'
-import Axios from 'axios'
-import _ from 'lodash'
-import { Modal } from 'react-bootstrap'
-import Like from '../../assets/icons/like.svg'
-import DisLike from '../../assets/icons/dislike.svg'
-import Footer from '../main/Footer'
+import React, { Component } from "react"
+import { isDashboardRoute, validateEmail } from "../common/utility"
+import Axios from "axios"
+import _ from "lodash"
+import { Modal } from "react-bootstrap"
+import Like from "../../assets/icons/like.svg"
+import DisLike from "../../assets/icons/dislike.svg"
+import Footer from "../main/Footer"
 
-const LIKE = 'like'
-const DISLIKE = 'dislike'
+const LIKE = "like"
+const DISLIKE = "dislike"
 
 class ApiDocReview extends Component {
   state = {
-    parentId: '',
-    parentType: '',
+    parentId: "",
+    parentType: "",
     vote: null,
-    user: '',
-    comment: '',
+    user: "",
+    comment: "",
     showFeedbackModal: false,
     currentReviews: {},
     validEmailAddress: true
@@ -35,7 +35,7 @@ class ApiDocReview extends Component {
 
   setLocalStorageReviews() {
     try {
-      this.setState({ currentReviews: JSON.parse(window.localStorage.getItem('review')) || {} })
+      this.setState({ currentReviews: JSON.parse(window.localStorage.getItem("review")) || {} })
     } catch {
       this.setState({ currentReviews: {} })
     }
@@ -45,7 +45,7 @@ class ApiDocReview extends Component {
     const { pageId, endpointId } = this.props?.match?.params || {}
 
     const parentId = endpointId || pageId
-    const parentType = endpointId ? 'endpoint' : 'page'
+    const parentType = endpointId ? "endpoint" : "page"
 
     this.setState({ parentId, parentType })
   }
@@ -67,18 +67,18 @@ class ApiDocReview extends Component {
   savelocalstorage(key, value) {
     let objList = {}
     try {
-      objList = JSON.parse(window.localStorage.getItem('review')) || {}
+      objList = JSON.parse(window.localStorage.getItem("review")) || {}
     } catch {
       objList = {}
     }
     objList[key] = value
     this.setState({ currentReviews: objList }, () => {
-      window.localStorage.setItem('review', JSON.stringify(objList))
+      window.localStorage.setItem("review", JSON.stringify(objList))
     })
   }
 
   postApi() {
-    const feedback = _.pick(_.cloneDeep(this.state), 'parentId', 'parentType', 'user', 'vote', 'comment')
+    const feedback = _.pick(_.cloneDeep(this.state), "parentId", "parentType", "user", "vote", "comment")
 
     const apiUrl = process.env.REACT_APP_API_URL
     const collectionId = this.props.match.params.collectionId
@@ -90,7 +90,7 @@ class ApiDocReview extends Component {
         console.error(error)
       })
     this.savelocalstorage(this.state.parentId, this.getVoteKey(this.state.vote))
-    this.setState({ user: '', comment: '', vote: null }, () => {
+    this.setState({ user: "", comment: "", vote: null }, () => {
       this.closeFeedbackModal()
     })
   }
@@ -114,7 +114,7 @@ class ApiDocReview extends Component {
       this.closeFeedbackModal()
       this.setState({ validEmailAddress: true })
     } else {
-      this.setState({ user: '', validEmailAddress: false })
+      this.setState({ user: "", validEmailAddress: false })
     }
   }
 
@@ -142,13 +142,7 @@ class ApiDocReview extends Component {
               {!this.state.validEmailAddress && <span className='error-msg'>Enter a valid email address</span>}
               <div className='form-group mt-3'>
                 <label htmlFor=''>Comment</label>
-                <textarea
-                  className='form-control'
-                  onChange={this.handleInput.bind(this)}
-                  value={this.state.comment}
-                  type='text'
-                  name='comment'
-                />
+                <textarea className='form-control' onChange={this.handleInput.bind(this)} value={this.state.comment} type='text' name='comment' />
                 <br />
               </div>
               <input type='submit' className='btn btn-primary' value='Submit' />

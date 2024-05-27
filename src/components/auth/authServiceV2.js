@@ -109,7 +109,9 @@ function AuthServiceV2() {
         if (proxyAuthToken) {
           await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
           setOrgList(getOrgList());
-          const storedCurrentOrgId = window.localStorage.getItem("currentOrganisation");
+          const storedCurrentOrgId = window.localStorage.getItem(
+            "currentOrganisation",
+          );
           let currentOrgId;
           if (storedCurrentOrgId == null || storedCurrentOrgId == "undefined") {
             currentOrgId = orgId;
@@ -118,20 +120,22 @@ function AuthServiceV2() {
           }
           switchOrg(currentOrgId);
         } else {
-          const redirectPath = getOrgList() ? `/orgs/${orgId}/dashboard` : "/logout";
+          const redirectPath = getOrgList()
+            ? `/orgs/${orgId}/dashboard`
+            : "/logout";
           history.push(redirectPath);
         }
       } catch (err) {
         history.push("/logout");
       }
     };
-  
+
     fetchData();
   }, []);
 
   return (
-    <div className='custom-loading-container'>
-      <progress className="pure-material-progress-linear w-25"/>
+    <div className="custom-loading-container">
+      <progress className="pure-material-progress-linear w-25" />
     </div>
   );
 }

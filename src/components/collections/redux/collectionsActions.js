@@ -1,12 +1,12 @@
-import { store } from '../../../store/store'
-import collectionsApiService from '../collectionsApiService'
-import collectionsActionTypes from './collectionsActionTypes'
-import openApiService from '../../openApi/openApiService'
-import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
-import { onParentPageAdded } from '../../pages/redux/pagesActions'
-import { toast } from 'react-toastify'
-import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../../common/utility'
-import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { store } from "../../../store/store"
+import collectionsApiService from "../collectionsApiService"
+import collectionsActionTypes from "./collectionsActionTypes"
+import openApiService from "../../openApi/openApiService"
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes"
+import { onParentPageAdded } from "../../pages/redux/pagesActions"
+import { toast } from "react-toastify"
+import { SESSION_STORAGE_KEY, deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from "../../common/utility"
+import bulkPublishActionTypes from "../../publishSidebar/redux/bulkPublishActionTypes"
 
 export const fetchCollections = (orgId) => {
   return (dispatch) => {
@@ -115,7 +115,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
       .updateCollection(id, editedCollection)
       .then((response) => {
         dispatch(onCollectionUpdated(response.data))
-        toast.success('Updated successfully')
+        toast.success("Updated successfully")
         if (stopLoader) {
           stopLoader()
         }
@@ -168,14 +168,14 @@ export const deleteCollection = (collection, props) => {
 
             // after deletion operation
             operationsAfterDeletion(data)
-            toast.success('Collection deleted successfully')
+            toast.success("Collection deleted successfully")
           })
           .catch((error) => {
-            console.error('error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ', error)
+            console.error("error after getting data from deleteCollection deleteAllPagesAndTabsAndReactQueryData == ", error)
           })
       })
       .catch((error) => {
-        console.error('error', error)
+        console.error("error", error)
         dispatch(onCollectionDeletedError(error.response, collection))
       })
   }
@@ -258,12 +258,12 @@ export const addCustomDomain = (collectionId, domain) => {
 export const importApi = (collection, importType, website, customCallback, defaultView) => {
   collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
-    if (importType === 'postman') {
+    if (importType === "postman") {
       openApiService
         .importPostmanCollection(collection, website, defaultView)
         .then((response) => {
           dispatch(onCollectionImported(response.data))
-          toast.success('Collection imported successfully')
+          toast.success("Collection imported successfully")
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
@@ -276,7 +276,7 @@ export const importApi = (collection, importType, website, customCallback, defau
         .importApi(collection, defaultView)
         .then((response) => {
           dispatch(onCollectionImported(response?.data))
-          toast.success('Collection imported successfully')
+          toast.success("Collection imported successfully")
           if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {

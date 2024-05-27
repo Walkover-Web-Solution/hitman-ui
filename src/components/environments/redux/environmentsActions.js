@@ -1,7 +1,7 @@
-import environmentsApiService from '../environmentsApiService'
-import environmentsActionTypes from './environmentsActionTypes'
-import { store } from '../../../store/store'
-import { toast } from 'react-toastify'
+import environmentsApiService from "../environmentsApiService"
+import environmentsActionTypes from "./environmentsActionTypes"
+import { store } from "../../../store/store"
+import { toast } from "react-toastify"
 
 export const fetchEnvironments = () => {
   return (dispatch) => {
@@ -9,7 +9,7 @@ export const fetchEnvironments = () => {
       .getEnvironments()
       .then((response) => {
         dispatch(OnEnvironmentsFetched(response.data))
-        window.localStorage.setItem('environments', JSON.stringify(response.data))
+        window.localStorage.setItem("environments", JSON.stringify(response.data))
       })
       .catch((error) => {
         dispatch(OnEnvironmentsFetchedError(error.response ? error.response.data : error))
@@ -21,7 +21,7 @@ export const fetchEnvironmentsFromLocalStorage = () => {
   return (dispatch) => {
     let environments
     try {
-      environments = JSON.parse(window.localStorage.getItem('cookies'))
+      environments = JSON.parse(window.localStorage.getItem("cookies"))
       dispatch(OnEnvironmentsFetched(environments))
     } catch (err) {
       dispatch(OnEnvironmentsFetchedError(err))
@@ -43,13 +43,13 @@ export const addEnvironment = (newEnvironment) => {
   }
 }
 
-export const importEnvironment = (newEnvironment,onClose) => {
+export const importEnvironment = (newEnvironment, onClose) => {
   return (dispatch) => {
     environmentsApiService
       .importPostmanEnvironment(newEnvironment)
       .then((response) => {
         dispatch(OnEnvironmentImported(response.data))
-        toast.success('Environment Imported Successfully')
+        toast.success("Environment Imported Successfully")
         onClose()
       })
       .catch((error) => {
@@ -181,4 +181,3 @@ export const OnEnvironmentImported = (response) => {
     response
   }
 }
-

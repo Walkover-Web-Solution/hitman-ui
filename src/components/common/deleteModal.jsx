@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import { closeTab } from '../tabs/redux/tabsActions'
-import { onEnter } from './utility'
-import tabService from '../tabs/tabService'
+import React, { Component } from "react"
+import { Modal } from "react-bootstrap"
+import { connect } from "react-redux"
+import { closeTab } from "../tabs/redux/tabsActions"
+import { onEnter } from "./utility"
+import tabService from "../tabs/tabService"
 const mapDispatchToProps = (dispatch) => {
   return {
     close_tab: (tabId) => dispatch(closeTab(tabId))
@@ -23,27 +23,27 @@ class DeleteModal extends Component {
   doSubmit() {
     this.props.onHide()
     const { title } = this.props
-    if (title === 'Delete Collection') {
+    if (title === "Delete Collection") {
       const { deleted_collection: collection } = this.props
       this.props.delete_collection(collection, this.props)
     }
-    if (title === 'Remove Collection') {
+    if (title === "Remove Collection") {
       const { deleted_collection: collection } = this.props
       this.props.remove_public_collection(collection, this.props)
     }
-    if (title === 'Delete Version' || title === 'Delete Page') {
+    if (title === "Delete Version" || title === "Delete Page") {
       const { deletedPage: page } = this.props
       this.props.delete_page(page, this.props)
     }
-    if (title === 'Delete Endpoint') {
+    if (title === "Delete Endpoint") {
       const { deleted_endpoint: endpoint } = this.props
       this.props.handle_delete(endpoint)
     }
-    if (title === 'Delete Environment') {
+    if (title === "Delete Environment") {
       const { deleted_environment: environment } = this.props
       this.props.delete_environment(environment)
     }
-    if (title === 'Delete Sample Response') {
+    if (title === "Delete Sample Response") {
       const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray]
       const sampleResponseFlagArray = [...this.props.sample_response_flag_array]
       const index = this.props.index
@@ -52,7 +52,7 @@ class DeleteModal extends Component {
       this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray)
     }
 
-    if (title === 'Delete Domain' || title === 'Delete Cookie') {
+    if (title === "Delete Domain" || title === "Delete Cookie") {
       this.props.handleEntityDelete()
     }
   }
@@ -71,7 +71,7 @@ class DeleteModal extends Component {
             <div className='text-left'>
               <form onSubmit={this.handleSubmit}>
                 <button id='custom-delete-modal-delete' className='btn btn-danger btn-sm fs-4 mr-2'>
-                  {this.props.title === 'Remove Collection' ? 'Remove' : 'Delete'}
+                  {this.props.title === "Remove Collection" ? "Remove" : "Delete"}
                 </button>
                 <button id='custom-delete-modal-cancel' className='btn btn-secondary outline btn-sm fs-4' onClick={this.props.onHide}>
                   Cancel

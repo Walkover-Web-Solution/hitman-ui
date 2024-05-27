@@ -1,43 +1,32 @@
-import React, { Component } from 'react'
-import { store } from '../../store/store'
-import { connect } from 'react-redux'
-import {
-  isDashboardRoute,
-  isStateDraft,
-  isStateReject,
-  msgText,
-  isStatePending,
-  isStateApproved,
-  getEntityState,
-  isOnPublishedPage
-} from '../common/utility'
-import './page.scss'
-import { updatePage } from './redux/pagesActions'
-import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
-import ApiDocReview from '../apiDocReview/apiDocReview'
-import { isAdmin } from '../auth/authServiceV2'
-import { approvePage, pendingPage, rejectPage, draftPage } from '../publicEndpoint/redux/publicEndpointsActions'
-import ConfirmationModal from '../common/confirmationModal'
-import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import Tiptap from '../tiptapEditor/tiptap'
-import { getPageContent } from '../../services/pageServices'
-import { getPublishedContentByIdAndType } from '../../services/generalApiService'
-import { useQuery } from 'react-query'
-import { SESSION_STORAGE_KEY } from '../common/utility'
-import Footer from '../main/Footer'
-import moment from 'moment'
+import React, { Component } from "react"
+import { store } from "../../store/store"
+import { connect } from "react-redux"
+import { isDashboardRoute, isStateDraft, isStateReject, msgText, isStatePending, isStateApproved, getEntityState, isOnPublishedPage } from "../common/utility"
+import "./page.scss"
+import { updatePage } from "./redux/pagesActions"
+import EndpointBreadCrumb from "../endpoints/endpointBreadCrumb"
+import ApiDocReview from "../apiDocReview/apiDocReview"
+import { isAdmin } from "../auth/authServiceV2"
+import { approvePage, pendingPage, rejectPage, draftPage } from "../publicEndpoint/redux/publicEndpointsActions"
+import ConfirmationModal from "../common/confirmationModal"
+import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from "../common/docViewOperations"
+import { OverlayTrigger, Tooltip } from "react-bootstrap"
+import Tiptap from "../tiptapEditor/tiptap"
+import { getPageContent } from "../../services/pageServices"
+import { getPublishedContentByIdAndType } from "../../services/generalApiService"
+import { useQuery } from "react-query"
+import { SESSION_STORAGE_KEY } from "../common/utility"
+import Footer from "../main/Footer"
+import moment from "moment"
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
     let { data, error } = useQuery(
-      ['pageContent', pageId],
+      ["pageContent", pageId],
       async () => {
-        return isOnPublishedPage()
-          ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
-          : await getPageContent(props?.match?.params?.orgId, pageId)
+        return isOnPublishedPage() ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type) : await getPageContent(props?.match?.params?.orgId, pageId)
       },
       {
         refetchOnWindowFocus: false,
@@ -48,7 +37,7 @@ const withQuery = (WrappedComponent) => {
       }
     )
     const tabId = props?.tabs?.tabs?.[pageId]
-    if (tabId?.isModified && tabId?.type == 'page' && tabId?.draft) {
+    if (tabId?.isModified && tabId?.type == "page" && tabId?.draft) {
       data = tabId?.draft
     }
     return <WrappedComponent {...props} pageContent={data} currentPageId={pageId} pageContentLoading={data?.isLoading} pageContentError={error} />
@@ -68,7 +57,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
-    tabs: state.tabs,
+    tabs: state.tabs
   }
 }
 
@@ -77,7 +66,7 @@ class DisplayPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
+      data: { id: null, versionId: null, groupId: null, name: "", contents: "" },
       page: null,
       requestKey: null
     }
@@ -100,10 +89,10 @@ class DisplayPage extends Component {
     this._isMounted = true
     this.extractPageName()
     if (!this.props?.location?.page) {
-      let pageId = ''
+      let pageId = ""
       if (isDashboardRoute(this.props)) {
-        pageId = this.props?.location?.pathname.split('/')[5]
-      } else pageId = this.props?.location?.pathname.split('/')[4]
+        pageId = this.props?.location?.pathname.split("/")[5]
+      } else pageId = this.props?.location?.pathname.split("/")[4]
       this.fetchPage(pageId)
       store.subscribe(() => {
         this.fetchPage(pageId)
@@ -122,7 +111,7 @@ class DisplayPage extends Component {
     }
     if (this.props.pageId && prevProps !== this.props) {
       if (this._isMounted) {
-        this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
+        this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: "", contents: "" } })
       }
     }
     // if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
@@ -150,9 +139,9 @@ class DisplayPage extends Component {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className='pt-3 px-1'> 
-          {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
-          <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
+        <div className='pt-3 px-1'>
+          {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem("currentPublishIdToShow")]?.name}</h2>}
+          <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? "" : this.props.pageContent)}</div>
           <span>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
         </div>
       )
@@ -164,17 +153,11 @@ class DisplayPage extends Component {
     if (!this.state.page && pageId) {
       this.fetchPage(pageId)
     }
-    return isOnPublishedPage() ? (
-      <>
-      { this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}
-      </>
-    ) : (
-      <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
-    )
+    return isOnPublishedPage() ? <>{this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}</> : <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
   }
 
   renderTiptapEditor(contents) {
-    return <Tiptap onChange={() => { }} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
+    return <Tiptap onChange={() => {}} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
   }
 
   handleRemovePublicPage(page) {
@@ -227,29 +210,11 @@ class DisplayPage extends Component {
       const approvedOrRejected = isStateApproved(pageId, pages) || isStateReject(pageId, pages)
       return (
         <div>
-          {isStatePending(pageId, pages) && isAdmin() && (
-            <ApproveRejectEntity {...this.props} entity={pages} entityId={pageId} entityName='page' />
-          )}
-          {isAdmin() && !isStatePending(pageId, pages) && (
-            <span>
-              {' '}
-              {approvedOrRejected ? this.renderInOverlay(this.renderPublishPage.bind(this), pageId) : this.renderPublishPage(pageId, pages)}
-            </span>
-          )}
-          {isAdmin() && isPublicPage && (
-            <span>
-              {' '}
-              {isStateApproved(pageId, pages)
-                ? this.renderInOverlay(this.renderUnPublishPage.bind(this), pageId)
-                : this.renderUnPublishPage(pageId, pages)}
-            </span>
-          )}
+          {isStatePending(pageId, pages) && isAdmin() && <ApproveRejectEntity {...this.props} entity={pages} entityId={pageId} entityName='page' />}
+          {isAdmin() && !isStatePending(pageId, pages) && <span> {approvedOrRejected ? this.renderInOverlay(this.renderPublishPage.bind(this), pageId) : this.renderPublishPage(pageId, pages)}</span>}
+          {isAdmin() && isPublicPage && <span> {isStateApproved(pageId, pages) ? this.renderInOverlay(this.renderUnPublishPage.bind(this), pageId) : this.renderUnPublishPage(pageId, pages)}</span>}
           {!isAdmin() && (
-            <button
-              className={'ml-2 ' + (isStateDraft(pageId, pages) ? 'btn btn-outline orange' : 'btn text-link')}
-              type='button'
-              onClick={() => (isStateDraft(pageId, pages) ? this.handlePublicPageState(pages[pageId]) : null)}
-            >
+            <button className={"ml-2 " + (isStateDraft(pageId, pages) ? "btn btn-outline orange" : "btn text-link")} type='button' onClick={() => (isStateDraft(pageId, pages) ? this.handlePublicPageState(pages[pageId]) : null)}>
               {getEntityState(pageId, pages)}
             </button>
           )}
@@ -331,7 +296,7 @@ class DisplayPage extends Component {
       })
     } catch (error) {
       // Handle errors if necessary
-      console.error('Error during approve_page:', error)
+      console.error("Error during approve_page:", error)
     }
   }
 
@@ -348,7 +313,7 @@ class DisplayPage extends Component {
         }
       })
     } catch (error) {
-      console.error('Error during draft_page:', error)
+      console.error("Error during draft_page:", error)
     }
   }
 
@@ -356,23 +321,22 @@ class DisplayPage extends Component {
     if (this.props?.pageContentLoading) {
       return (
         <>
-        <div className="container-loading p-4">
-                {!isOnPublishedPage() && (
-                <>
-                <div className="d-flex justify-content-end gap-5 mb-5 1806">
-                <div className="edit bg rounded-1 ms-5"></div>
-                  <div className="unpublish bg rounded-1 ms-5"></div>
-                <div className="publish bg rounded-1 ms-5"></div>
+          <div className='container-loading p-4'>
+            {!isOnPublishedPage() && (
+              <>
+                <div className='d-flex justify-content-end gap-5 mb-5 1806'>
+                  <div className='edit bg rounded-1 ms-5'></div>
+                  <div className='unpublish bg rounded-1 ms-5'></div>
+                  <div className='publish bg rounded-1 ms-5'></div>
+                </div>
+              </>
+            )}
+            <div className='page bg rounded-1'></div>
+            <div className='details d-flex flex-column justify-content-between align-items-center mt-5'>
+              <div className='page-box bg'></div>
+              <div className='page-footer text-center bg'></div>
             </div>
-                </>
-                )}
-            <div className="page bg rounded-1"></div>
-          <div className="details d-flex flex-column justify-content-between align-items-center mt-5">
-            <div className="page-box bg"></div>
-            <div className="page-footer text-center bg"></div>
-
           </div>
-        </div>
         </>
       )
     }

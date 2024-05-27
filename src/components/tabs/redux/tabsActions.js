@@ -1,11 +1,11 @@
-import shortid from 'shortid'
-import { store } from '../../../store/store'
-import tabStatusTypes from '../tabStatusTypes'
-import tabsActionTypes from './tabsActionTypes'
-import history from '../../../history'
-import { getOrgId, isElectron } from '../../common/utility'
-import { openModal } from '../../modals/redux/modalsActions'
-import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
+import shortid from "shortid"
+import { store } from "../../../store/store"
+import tabStatusTypes from "../tabStatusTypes"
+import tabsActionTypes from "./tabsActionTypes"
+import history from "../../../history"
+import { getOrgId, isElectron } from "../../common/utility"
+import { openModal } from "../../modals/redux/modalsActions"
+import { DESKTOP_APP_DOWNLOAD } from "../../modals/modalTypes"
 
 export const fetchTabsFromRedux = () => {
   return async (dispatch) => {
@@ -40,7 +40,7 @@ export const addNewTab = () => {
       type: tabsActionTypes.ADD_NEW_TAB,
       newTab: {
         id,
-        type: 'endpoint',
+        type: "endpoint",
         status: tabStatusTypes.NEW,
         previewMode: false,
         isModified: false,

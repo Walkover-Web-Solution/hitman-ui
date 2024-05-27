@@ -1,18 +1,15 @@
-const querystring = require('querystring')
-const FormData = require('form-data')
-const axios = require('axios')
-const https = require('https')
-const { bodyTypesEnums } = require('../src/components/common/bodyTypeEnums')
-const HITMAN_AGENT = 'Hitman/1.0.0'
+const querystring = require("querystring")
+const FormData = require("form-data")
+const axios = require("axios")
+const https = require("https")
+const { bodyTypesEnums } = require("../src/components/common/bodyTypeEnums")
+const HITMAN_AGENT = "Hitman/1.0.0"
 const cancelTokenMap = new Map()
 
-async function makeHttpRequestThroughAxios(
-  { api: url, method, body: data, header: headers, keyForRequest, sslMode },
-  FILE_UPLOAD_DIRECTORY
-) {
+async function makeHttpRequestThroughAxios({ api: url, method, body: data, header: headers, keyForRequest, sslMode }, FILE_UPLOAD_DIRECTORY) {
   const httpsAgent = getAgent(sslMode)
   headers = headers || {}
-  headers['user-agent'] = HITMAN_AGENT
+  headers["user-agent"] = HITMAN_AGENT
   const options = {
     method: method,
     url: encodeURI(url),
@@ -22,13 +19,13 @@ async function makeHttpRequestThroughAxios(
     cancelToken: createCancelToken(keyForRequest),
     httpsAgent
   }
-  if (headers['content-type'] === bodyTypesEnums['multipart/form-data']) {
+  if (headers["content-type"] === bodyTypesEnums["multipart/form-data"]) {
     const bodyFormData = new FormData()
     for (const [key, value] of Object.entries(data)) {
-      if (typeof value === 'object') {
-        const fs = require('fs')
+      if (typeof value === "object") {
+        const fs = require("fs")
         try {
-          const destPath = FILE_UPLOAD_DIRECTORY + value.id + '_' + value.name
+          const destPath = FILE_UPLOAD_DIRECTORY + value.id + "_" + value.name
           const srcExist = fs.existsSync(value.srcPath)
           const destExist = value.id ? fs.existsSync(destPath) : false
           if (!srcExist && !destExist) continue
@@ -47,7 +44,7 @@ async function makeHttpRequestThroughAxios(
     }
     options.data = bodyFormData
     options.headers = { ...headers, ...bodyFormData.getHeaders() }
-  } else if (headers['content-type'] === bodyTypesEnums['application/x-www-form-urlencoded']) {
+  } else if (headers["content-type"] === bodyTypesEnums["application/x-www-form-urlencoded"]) {
     options.data = querystring.stringify(data)
   }
   return new Promise((resolve, reject) => {
@@ -105,7 +102,7 @@ function prepareResponse(data) {
 }
 
 function invokeCancel(key) {
-  cancelTokenMap.get(key).cancel('Request was cancelled')
+  cancelTokenMap.get(key).cancel("Request was cancelled")
 }
 
 module.exports = { makeHttpRequestThroughAxios, invokeCancel }

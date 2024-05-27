@@ -1,21 +1,21 @@
-import React, { Component } from 'react'
-import { isDashboardRoute } from '../common/utility'
-import tabStatusTypes from '../tabs/tabStatusTypes'
-import tabService from '../tabs/tabService'
-import { publishData } from '../modals/redux/modalsActions'
-import './endpoints.scss'
-import { connect } from 'react-redux'
-import _, { cloneDeep } from 'lodash'
-import { getParseCurlData } from '../common/apiUtility'
-import URI, { unicode } from 'urijs'
-import { toast } from 'react-toastify'
-import { contentTypesEnums } from '../common/bodyTypeEnums'
+import React, { Component } from "react"
+import { isDashboardRoute } from "../common/utility"
+import tabStatusTypes from "../tabs/tabStatusTypes"
+import tabService from "../tabs/tabService"
+import { publishData } from "../modals/redux/modalsActions"
+import "./endpoints.scss"
+import { connect } from "react-redux"
+import _, { cloneDeep } from "lodash"
+import { getParseCurlData } from "../common/apiUtility"
+import URI, { unicode } from "urijs"
+import { toast } from "react-toastify"
+import { contentTypesEnums } from "../common/bodyTypeEnums"
 
 const hostContainerEnum = {
   hosts: {
     // customHost: { key: 'customHost', label: 'Custom Host' },
-    environmentHost: { key: 'environmentHost', label: 'Environment Host' },
-    versionHost: { key: 'versionHost', label: 'Version Host' }
+    environmentHost: { key: "environmentHost", label: "Environment Host" },
+    versionHost: { key: "versionHost", label: "Version Host" }
   }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -35,11 +35,11 @@ class HostContainer extends Component {
     super(props)
     this.state = {
       datalistHost: this.props?.endpointContent?.host?.BASE_URL,
-      datalistUri: '',
+      datalistUri: "",
       // customHost: '',
-      environmentHost: '',
-      versionHost: '',
-      selectedHost: '',
+      environmentHost: "",
+      versionHost: "",
+      selectedHost: "",
       groupId: null,
       versionId: null
     }
@@ -49,7 +49,7 @@ class HostContainer extends Component {
 
   handleClickOutside(event) {
     if ((this.state.showDatalist || this.state.showInputHost) && this.wrapperRef && !this.wrapperRef.current?.contains(event.target)) {
-      document.removeEventListener('mousedown', this.handleClickOutside)
+      document.removeEventListener("mousedown", this.handleClickOutside)
       this.setState({ showDatalist: false, showInputHost: false })
     }
     // this.props.ON_PUBLISH_DOC(false)
@@ -76,10 +76,10 @@ class HostContainer extends Component {
   }
 
   setHostAndUri() {
-    const endpointUri = this.props?.updatedUri || ''
+    const endpointUri = this.props?.updatedUri || ""
     const topPriorityHost = this.customFindTopPriorityHost()
     const selectedHost = topPriorityHost
-    const host = this.props?.endpointContent?.host?.BASE_URL || this.state[selectedHost] || this.state?.datalistHost || ''
+    const host = this.props?.endpointContent?.host?.BASE_URL || this.state[selectedHost] || this.state?.datalistHost || ""
     this.setState({ datalistUri: endpointUri, datalistHost: host, selectedHost }, () => this.setParentHostAndUri())
   }
 
@@ -88,10 +88,10 @@ class HostContainer extends Component {
   }
 
   customFindTopPriorityHost() {
-    const selectedHost = ''
+    const selectedHost = ""
     // if (this.state.selectedHost === 'customHost' || this.state.customHost) return 'customHost'
-    if (this.state.environmentHost) return 'environmentHost'
-    if (this.state.versionHost) return 'versionHost'
+    if (this.state.environmentHost) return "environmentHost"
+    if (this.state.versionHost) return "versionHost"
     return selectedHost
   }
 
@@ -101,83 +101,84 @@ class HostContainer extends Component {
   }
 
   getDataFromParsedData(untitledEndpointData, parsedData) {
-      let e = {}
-      e['url'] = parsedData.raw_url
-      parsedData = cloneDeep(parsedData);
-      untitledEndpointData = cloneDeep(untitledEndpointData)
-      untitledEndpointData.data.name = this.props.endpointContent?.data?.name || 'Untitled'
-      untitledEndpointData.currentView = this.props.endpointContent?.currentView || "testing"
-      let data = this.splitUrlHelper(e)
-      // setting method, url and host
-      untitledEndpointData.data.method = parsedData?.method.toUpperCase();
-      untitledEndpointData.data.uri = data?.datalistUri;
-      untitledEndpointData.data.updatedUri = data?.datalistUri;
-      untitledEndpointData.host =  {
-        BASE_URL: data?.datalistHost,
-        selectedHost: ""
-      }
+    let e = {}
+    e["url"] = parsedData.raw_url
+    parsedData = cloneDeep(parsedData)
+    untitledEndpointData = cloneDeep(untitledEndpointData)
+    untitledEndpointData.data.name = this.props.endpointContent?.data?.name || "Untitled"
+    untitledEndpointData.currentView = this.props.endpointContent?.currentView || "testing"
+    let data = this.splitUrlHelper(e)
+    // setting method, url and host
+    untitledEndpointData.data.method = parsedData?.method.toUpperCase()
+    untitledEndpointData.data.uri = data?.datalistUri
+    untitledEndpointData.data.updatedUri = data?.datalistUri
+    untitledEndpointData.host = {
+      BASE_URL: data?.datalistHost,
+      selectedHost: ""
+    }
 
-      // setting path variables
-      let path = new URI(parsedData.raw_url)
-      let queryParams = path.query(true);
-      path = path.pathname()
-      const pathVariableKeys = path.split('/').filter(part => part.startsWith(':')).map(key => key.slice(1));
-      for(let i = 0;i < pathVariableKeys.length ;i++){
-        let eachData = {
-          checked : "true",
-          value: "",
-          description: "",
-          key : pathVariableKeys[i]
-        }
-        untitledEndpointData.pathVariables.push(eachData)
+    // setting path variables
+    let path = new URI(parsedData.raw_url)
+    let queryParams = path.query(true)
+    path = path.pathname()
+    const pathVariableKeys = path
+      .split("/")
+      .filter((part) => part.startsWith(":"))
+      .map((key) => key.slice(1))
+    for (let i = 0; i < pathVariableKeys.length; i++) {
+      let eachData = {
+        checked: "true",
+        value: "",
+        description: "",
+        key: pathVariableKeys[i]
       }
+      untitledEndpointData.pathVariables.push(eachData)
+    }
 
-      if(parsedData?.data){
+    if (parsedData?.data) {
       // if content-type is json then value is added json stringified and body description is specially handled
       // parsedData.data is in the format of json string then convert it to object format
       try {
         parsedData.data = JSON.parse(parsedData.data)
       } catch (e) {}
-      const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase();
-      if(contentType.includes('application/json')){
-        untitledEndpointData.data.body.type = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.value = typeof(parsedData.data)=== 'object' ? JSON.stringify(parsedData.data) : parsedData.data;
-
+      const contentType = (parsedData.headers?.["Content-Type"] || parsedData.headers?.["content-type"])?.toLowerCase()
+      if (contentType.includes("application/json")) {
+        untitledEndpointData.data.body.type = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.value = typeof parsedData.data === "object" ? JSON.stringify(parsedData.data) : parsedData.data
 
         // setting body description
         untitledEndpointData.bodyDescription = {
-            "payload": {
-                 "value": {},
-                  "type": "object",
-                  "description": ""
+          payload: {
+            value: {},
+            type: "object",
+            description: ""
           }
         }
 
-        for(let key in parsedData.data){
+        for (let key in parsedData.data) {
           untitledEndpointData.bodyDescription.payload.value[key] = {
-            "value": parsedData.data[key],
-            "type": "string",
-            "description": ""
+            value: parsedData.data[key],
+            type: "string",
+            description: ""
           }
         }
       }
-       // setting data for all the rawTypes defined except JSON
-      else if(contentType && contentTypesEnums[contentType]) {
-        untitledEndpointData.data.body.type = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.value = typeof(parsedData.data)=== 'object' ? JSON.stringify(parsedData.data) : parsedData.data;
-      }
-      else{
+      // setting data for all the rawTypes defined except JSON
+      else if (contentType && contentTypesEnums[contentType]) {
+        untitledEndpointData.data.body.type = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.value = typeof parsedData.data === "object" ? JSON.stringify(parsedData.data) : parsedData.data
+      } else {
         // setting data for 'multipart/form-data' or url-encodeded
-        if(!parsedData.headers){
+        if (!parsedData.headers) {
           parsedData.headers = {}
         }
-        parsedData.headers['Content-Type'] =  (!parsedData.headers?.['Content-Type']) ? parsedData.headers?.['content-type'] : parsedData.headers?.['Content-Type'];
-        let bodyType = untitledEndpointData.data.body.type = (!parsedData.headers?.['Content-Type']) ? 'multipart/form-data': parsedData.headers?.['Content-Type'] || 'application/x-www-form-urlencoded'
+        parsedData.headers["Content-Type"] = !parsedData.headers?.["Content-Type"] ? parsedData.headers?.["content-type"] : parsedData.headers?.["Content-Type"]
+        let bodyType = (untitledEndpointData.data.body.type = !parsedData.headers?.["Content-Type"] ? "multipart/form-data" : parsedData.headers?.["Content-Type"] || "application/x-www-form-urlencoded")
 
         // 'multipart/form-data' and 'application/x-www-form-urlencoded' both contains body values description
-        for(let key in parsedData.data){
+        for (let key in parsedData.data) {
           let eachData = {
             checked: "true",
             key: key,
@@ -187,60 +188,60 @@ class HostContainer extends Component {
           }
           untitledEndpointData.data.body[bodyType].push(eachData)
         }
-        untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1)); 
+        untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1))
       }
     }
-      
-      // setting headers
-      for(let key in parsedData?.headers){
-        let eachDataOriginal = {
-          checked : "true",
-          value: parsedData.headers[key],
-          description: "",
-          key : key
-        }
-        untitledEndpointData.originalHeaders.push(eachDataOriginal);
+
+    // setting headers
+    for (let key in parsedData?.headers) {
+      let eachDataOriginal = {
+        checked: "true",
+        value: parsedData.headers[key],
+        description: "",
+        key: key
       }
-      untitledEndpointData.originalHeaders.push(...untitledEndpointData.originalHeaders.splice(0, 1));  
-      
-      // setting query params
-      for(let key in queryParams){
-        let eachDataOriginal = {
-          checked : "true",
-          value: queryParams[key],
-          description: "",
-          key : key
-        }
-        untitledEndpointData.originalParams.push(eachDataOriginal);
+      untitledEndpointData.originalHeaders.push(eachDataOriginal)
+    }
+    untitledEndpointData.originalHeaders.push(...untitledEndpointData.originalHeaders.splice(0, 1))
+
+    // setting query params
+    for (let key in queryParams) {
+      let eachDataOriginal = {
+        checked: "true",
+        value: queryParams[key],
+        description: "",
+        key: key
       }
-      untitledEndpointData.originalParams.push(...untitledEndpointData.originalParams.splice(0, 1));
+      untitledEndpointData.originalParams.push(eachDataOriginal)
+    }
+    untitledEndpointData.originalParams.push(...untitledEndpointData.originalParams.splice(0, 1))
 
     this.props.setQueryUpdatedData(untitledEndpointData)
     tabService.markTabAsModified(this.props.tabs.activeTabId)
   }
-  
-  async handleInputHostChange(e) {
-   let inputValue = e.target.value
 
-    if (inputValue.trim().startsWith('curl')) {
+  async handleInputHostChange(e) {
+    let inputValue = e.target.value
+
+    if (inputValue.trim().startsWith("curl")) {
       try {
-        let modifiedCurlCommand = inputValue;
-        let parsedData = await getParseCurlData(modifiedCurlCommand);
-        parsedData = JSON.parse(parsedData.data);
+        let modifiedCurlCommand = inputValue
+        let parsedData = await getParseCurlData(modifiedCurlCommand)
+        parsedData = JSON.parse(parsedData.data)
         this.getDataFromParsedData(this.props.untitledEndpointData, parsedData)
-        return ;
-      }catch(e){
-        toast.error('could not parse the curl')
+        return
+      } catch (e) {
+        toast.error("could not parse the curl")
       }
     }
     const data = this.splitUrlHelper(e)
     this.setState(
       {
         ...data,
-        showDatalist: e.target.value === ''
+        showDatalist: e.target.value === ""
       },
       () => {
-        this.props.props_from_parent('HostAndUri')
+        this.props.props_from_parent("HostAndUri")
         this.setParentHostAndUri()
       }
     )
@@ -265,11 +266,11 @@ class HostContainer extends Component {
     if (value?.match(variableRegex)) {
       return value.match(variableRegex)[0]
     }
-    if (environmentHost && value?.match(new RegExp('^' + environmentHost) + '/')) {
+    if (environmentHost && value?.match(new RegExp("^" + environmentHost) + "/")) {
       return environmentHost
     }
 
-    if (versionHost && value?.match(new RegExp('^' + versionHost + '/'))) {
+    if (versionHost && value?.match(new RegExp("^" + versionHost + "/"))) {
       return versionHost
     }
     if (value?.match(regex)) {
@@ -279,13 +280,13 @@ class HostContainer extends Component {
   }
 
   splitUrlHelper(e) {
-    const value = e?.target?.value || e?.url || ''
+    const value = e?.target?.value || e?.url || ""
     const hostName = this.checkExistingHosts(value)
-    let uri = ''
+    let uri = ""
     const data = {
-      datalistHost: '',
-      datalistUri: '',
-      selectedHost: '',
+      datalistHost: "",
+      datalistUri: "",
+      selectedHost: "",
       Flag: true
     }
     if (hostName) {
@@ -293,7 +294,7 @@ class HostContainer extends Component {
       // if (selectedHost === 'customHost') data.customHost = hostName
       data.datalistHost = hostName
       data.selectedHost = selectedHost
-      uri = value.replace(hostName, '')
+      uri = value.replace(hostName, "")
     } else {
       // data.selectedHost = 'customHost'
       uri = value
@@ -304,9 +305,9 @@ class HostContainer extends Component {
 
   selectCurrentHost(hostname) {
     // if (hostname === this.state.customHost) return 'customHost'
-    if (hostname === this.state.environmentHost) return 'environmentHost'
-    if (hostname === this.state.versionHost) return 'versionHost'
-    return 'environmentHost'
+    if (hostname === this.state.environmentHost) return "environmentHost"
+    if (hostname === this.state.versionHost) return "versionHost"
+    return "environmentHost"
   }
 
   setHosts() {
@@ -324,18 +325,18 @@ class HostContainer extends Component {
           id='host-container-input'
           className='form-control'
           // value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}  ? to resolve later
-          value={(this.state?.datalistHost ?? '') + (this.state?.datalistUri ?? '') ?? ''}
+          value={(this.state?.datalistHost ?? "") + (this.state?.datalistUri ?? "") ?? ""}
           name={`${endpointId}_hosts`}
           placeholder='Enter URL or paste cURL'
           onChange={(e) => this.handleInputHostChange(e)}
           autoComplete='off'
           onFocus={() =>
             this.setState({ showDatalist: true }, () => {
-              document.addEventListener('mousedown', this.handleClickOutside)
+              document.addEventListener("mousedown", this.handleClickOutside)
             })
           }
         />
-        <div className={['host-data', this.state.showDatalist ? 'd-block' : 'd-none'].join(' ')}>
+        <div className={["host-data", this.state.showDatalist ? "d-block" : "d-none"].join(" ")}>
           {Object.values(hostContainerEnum.hosts).map(
             (host, index) =>
               this.state[host.key] && (
@@ -351,13 +352,7 @@ class HostContainer extends Component {
   }
 
   renderPublicHost() {
-    return (
-      <input
-        disabled
-        className='form-control'
-        value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}
-      />
-    )
+    return <input disabled className='form-control' value={(this.props?.endpointContent?.host?.BASE_URL ?? "") + (this.props?.endpointContent?.data?.updatedUri ?? "") ?? ""} />
   }
 
   render() {

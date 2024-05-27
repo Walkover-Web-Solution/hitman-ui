@@ -1,21 +1,21 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import 'react-toastify/dist/ReactToastify.css'
-import ContentPanel from './contentPanel'
-import './main.scss'
-import SideBarV2 from './sideBarV2'
-import { loadWidget } from '../../services/widgetService'
-import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
-import { isDesktop } from 'react-device-detect'
-import OnlineSatus from '../onlineStatus/onlineStatus'
-import DesktopAppDownloadModal from './desktopAppPrompt'
-import UpdateStatus from './updateStatus'
-import { isValidDomain } from '../common/utility'
-import CollectionModal from '../collections/collectionsModal'
-import NoCollectionIcon from '../../assets/icons/collection.svg'
-import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
-import { addCollectionAndPages } from '../redux/generalActions'
-import SplitPane from '../splitPane/splitPane'
+import React, { Component } from "react"
+import { connect } from "react-redux"
+import "react-toastify/dist/ReactToastify.css"
+import ContentPanel from "./contentPanel"
+import "./main.scss"
+import SideBarV2 from "./sideBarV2"
+import { loadWidget } from "../../services/widgetService"
+import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from "../cookies/redux/cookiesActions"
+import { isDesktop } from "react-device-detect"
+import OnlineSatus from "../onlineStatus/onlineStatus"
+import DesktopAppDownloadModal from "./desktopAppPrompt"
+import UpdateStatus from "./updateStatus"
+import { isValidDomain } from "../common/utility"
+import CollectionModal from "../collections/collectionsModal"
+import NoCollectionIcon from "../../assets/icons/collection.svg"
+import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from "../auth/authServiceV2"
+import { addCollectionAndPages } from "../redux/generalActions"
+import SplitPane from "../splitPane/splitPane"
 
 const mapStateToProps = (state) => {
   return {
@@ -81,7 +81,7 @@ class MainV2 extends Component {
     } else {
       /** Perform Login Procedure for Token */
       this.props.history.push({
-        pathname: '/login'
+        pathname: "/login"
       })
     }
     this.setState({ loading: false })
@@ -105,7 +105,7 @@ class MainV2 extends Component {
     const orgId = this.props.match.params.orgId
     const org = {}
     org[orgId] = true
-    window.localStorage.setItem('visitedOrgs', JSON.stringify(org))
+    window.localStorage.setItem("visitedOrgs", JSON.stringify(org))
   }
 
   showCollectionDashboard() {
@@ -114,7 +114,7 @@ class MainV2 extends Component {
     }
     const collectionLength = Object.keys(this.props.collections).length
     const orgId = this.props.match.params.orgId
-    const temp = JSON.parse(window.localStorage.getItem('visitedOrgs'))
+    const temp = JSON.parse(window.localStorage.getItem("visitedOrgs"))
     if ((temp && temp[orgId]) || collectionLength > 0 || !this.state.showAddCollectionPage) {
       return false
     } else {
@@ -183,9 +183,7 @@ class MainV2 extends Component {
           </div>
         ) : (
           <div>
-            {!isDesktop && (
-              <div className='mobile-warning'>Looks like you have opened it on a mobile device. It looks better on a desktop device.</div>
-            )}
+            {!isDesktop && <div className='mobile-warning'>Looks like you have opened it on a mobile device. It looks better on a desktop device.</div>}
             {
               <div className='custom-main-container'>
                 {/* <Header {...this.props} /> */}
@@ -195,21 +193,8 @@ class MainV2 extends Component {
                 />
                 <div className='main-panel-wrapper'>
                   <SplitPane split='vertical' className='split-sidebar'>
-                    <SideBarV2
-                      tabs={[...this.state.tabs]}
-                      set_tabs={this.setTabs.bind(this)}
-                      default_tab_index={this.state.defaultTabIndex}
-                    />
-                    {this.showCollectionDashboard() ? (
-                      this.renderLandingDashboard()
-                    ) : (
-                      <ContentPanel
-                        {...this.props}
-                        set_environment={this.setEnvironment.bind(this)}
-                        set_tabs={this.setTabs.bind(this)}
-                        default_tab_index={this.state.defaultTabIndex}
-                      />
-                    )}
+                    <SideBarV2 tabs={[...this.state.tabs]} set_tabs={this.setTabs.bind(this)} default_tab_index={this.state.defaultTabIndex} />
+                    {this.showCollectionDashboard() ? this.renderLandingDashboard() : <ContentPanel {...this.props} set_environment={this.setEnvironment.bind(this)} set_tabs={this.setTabs.bind(this)} default_tab_index={this.state.defaultTabIndex} />}
                   </SplitPane>
                 </div>
                 <UpdateStatus />

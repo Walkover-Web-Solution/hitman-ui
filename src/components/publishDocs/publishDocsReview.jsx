@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import { Dropdown } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import { fetchFeedbacks } from './redux/publishDocsActions'
+import React, { Component } from "react"
+import { Dropdown } from "react-bootstrap"
+import { connect } from "react-redux"
+import { fetchFeedbacks } from "./redux/publishDocsActions"
 
 const mapStateToProps = (state) => {
   return {
@@ -18,7 +18,7 @@ class PublishDocsReview extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedItemType: 'endpoint',
+      selectedItemType: "endpoint",
       selectedItemId: null,
       filter: false
     }
@@ -99,7 +99,7 @@ class PublishDocsReview extends Component {
             <Dropdown.Item
               key={index}
               onClick={() => {
-                this.setState({ selectedItemType: 'endpoint' })
+                this.setState({ selectedItemType: "endpoint" })
                 this.setState({ selectedItemId: id })
                 this.setState({ filter: true })
               }}
@@ -113,7 +113,7 @@ class PublishDocsReview extends Component {
             <Dropdown.Item
               key={index}
               onClick={() => {
-                this.setState({ selectedItemType: 'page' })
+                this.setState({ selectedItemType: "page" })
                 this.setState({ selectedItemId: id })
                 this.setState({ filter: true })
               }}
@@ -129,14 +129,7 @@ class PublishDocsReview extends Component {
     return (
       <Dropdown className='mb-3 align-right cst'>
         <Dropdown.Toggle variant='' id='dropdown-basic'>
-          <span className='truncate'>
-            {' '}
-            {!this.state.filter
-              ? 'All'
-              : this.state.selectedItemType === 'endpoint'
-                ? this.props.endpoints[this.state.selectedItemId]?.name
-                : this.props.pages[this.state.selectedItemId]?.name}
-          </span>
+          <span className='truncate'> {!this.state.filter ? "All" : this.state.selectedItemType === "endpoint" ? this.props.endpoints[this.state.selectedItemId]?.name : this.props.pages[this.state.selectedItemId]?.name}</span>
         </Dropdown.Toggle>
         <Dropdown.Menu>{this.showEndpointsAndPages()}</Dropdown.Menu>
       </Dropdown>
@@ -169,12 +162,10 @@ class PublishDocsReview extends Component {
   renderFeedback(feedback) {
     return (
       <tr>
-        <td>
-          {feedback.parentType === 'endpoint' ? this.props.endpoints[feedback.parentId]?.name : this.props.pages[feedback.parentId]?.name}
-        </td>
-        <td>{feedback.user === '' ? '-' : feedback.user}</td>
+        <td>{feedback.parentType === "endpoint" ? this.props.endpoints[feedback.parentId]?.name : this.props.pages[feedback.parentId]?.name}</td>
+        <td>{feedback.user === "" ? "-" : feedback.user}</td>
         <td>{feedback.vote}</td>
-        <td>{feedback.comment === '' ? '-' : feedback.comment}</td>
+        <td>{feedback.comment === "" ? "-" : feedback.comment}</td>
       </tr>
     )
   }
@@ -188,7 +179,7 @@ class PublishDocsReview extends Component {
     return (
       <div className='feedback-tab'>
         <div className='d-flex flex-row'>
-          {this.renderHostedApiHeading('API Doc Feedback')}
+          {this.renderHostedApiHeading("API Doc Feedback")}
           {feedbacks.length > 0 && this.renderPageSelectOption()}
         </div>
         {feedbacks.length > 0 ? this.renderPageReview(feedbacks) : this.renderNoFeedback()}

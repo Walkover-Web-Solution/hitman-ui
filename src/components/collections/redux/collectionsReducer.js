@@ -1,9 +1,9 @@
-import collectionsActionTypes from './collectionsActionTypes'
-import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
-import { toast } from 'react-toastify'
-import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
-import generalActionsTypes from '../../redux/generalActionTypes'
-import { onParentPageAdded } from '../../pages/redux/pagesActions'
+import collectionsActionTypes from "./collectionsActionTypes"
+import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes"
+import { toast } from "react-toastify"
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes"
+import generalActionsTypes from "../../redux/generalActionTypes"
+import { onParentPageAdded } from "../../pages/redux/pagesActions"
 
 const initialState = {}
 

@@ -1,4 +1,4 @@
-import publishReducerActionTypes from './publishReducerActionTypes'
+import publishReducerActionTypes from "./publishReducerActionTypes"
 
 export const addInPublishedDataActions = (payload) => {
   return {

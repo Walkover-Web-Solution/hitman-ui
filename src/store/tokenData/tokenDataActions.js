@@ -1,4 +1,4 @@
-import tokenDataActionTypes from './tokenDataActionTypes'
+import tokenDataActionTypes from "./tokenDataActionTypes"
 
 export const addToken = (payload) => {
   return {

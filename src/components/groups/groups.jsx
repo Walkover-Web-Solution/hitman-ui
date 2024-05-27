@@ -1,26 +1,20 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
-import { Card } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import {
-  isDashboardRoute,
-  getUrlPathById,
-  isTechdocOwnDomain,
-  SESSION_STORAGE_KEY,
-  isOnPublishedPage
-} from '../common/utility'
-import ShareGroupForm from '../groups/shareGroupForm'
-import './groups.scss'
-import groupsService from './groupsService'
-import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
-import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
-import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
-import { deletePage } from '../pages/redux/pagesActions.js'
-import SubPageForm from './subPageForm.jsx'
-import { ReactComponent as EditSign } from '../../assets/icons/editsign.svg'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import React, { Component } from "react"
+import { withRouter } from "react-router-dom"
+import { Card } from "react-bootstrap"
+import { connect } from "react-redux"
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from "../common/utility"
+import ShareGroupForm from "../groups/shareGroupForm"
+import "./groups.scss"
+import groupsService from "./groupsService"
+import CombinedCollections from "../combinedCollections/combinedCollections.jsx"
+import { addIsExpandedAction, updataForIsPublished } from "../../store/clientData/clientDataActions.js"
+import DefaultViewModal from "../collections/defaultViewModal/defaultViewModal.jsx"
+import { deletePage } from "../pages/redux/pagesActions.js"
+import SubPageForm from "./subPageForm.jsx"
+import { ReactComponent as EditSign } from "../../assets/icons/editsign.svg"
+import { ReactComponent as DeleteIcon } from "../../assets/icons/delete-icon.svg"
 import { MdExpandMore } from "react-icons/md"
-import  IconButtons  from '../common/iconButton'
+import IconButtons from "../common/iconButton"
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
 import { IoDocumentTextOutline } from "react-icons/io5"
@@ -45,15 +39,15 @@ class Groups extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      GroupFormName: '',
+      GroupFormName: "",
       selectedPage: {},
       showSubPageForm: {
         addPage: false,
         edit: false,
         share: false
       },
-      theme: '',
-      filter: '',
+      theme: "",
+      filter: "",
       checkboxChecked: false
     }
     this.eventkey = {}
@@ -67,27 +61,18 @@ class Groups extends Component {
 
   openShareSubPageForm(groupId) {
     this.setState({
-      showSubPageForm: {share: true, addPage: false},
-      groupFormName: 'Share Subpage',
+      showSubPageForm: { share: true, addPage: false },
+      groupFormName: "Share Subpage",
       selectedGroup: { ...this.props.pages[groupId] }
     })
   }
 
   closeSubPageForm() {
-    this.setState({ showSubPageForm : {edit: false, addPage: false} })
+    this.setState({ showSubPageForm: { edit: false, addPage: false } })
   }
 
   showShareSubPageForm() {
-    return (
-      this.state.showSubPageForm.share && (
-        <ShareGroupForm
-          show={this.state.showSubPageForm.share}
-          onHide={() => this.closeSubPageForm()}
-          title={this.state.groupFormName}
-          selectedGroup={this.props.rootParentId}
-        />
-      )
-    )
+    return this.state.showSubPageForm.share && <ShareGroupForm show={this.state.showSubPageForm.share} onHide={() => this.closeSubPageForm()} title={this.state.groupFormName} selectedGroup={this.props.rootParentId} />
   }
 
   showEditPageModal() {
@@ -112,7 +97,7 @@ class Groups extends Component {
 
   openEditSubPageForm(selectedGroup) {
     this.setState({
-      showSubPageForm :{edit: true},
+      showSubPageForm: { edit: true },
       selectedGroup
     })
   }
@@ -169,61 +154,65 @@ class Groups extends Component {
     let isUserOnPublishedPage = isOnPublishedPage()
     let isuserONTechdocOwnDomain = isTechdocOwnDomain()
     const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isUserOnPublishedPage
-    const isSelected = (isUserOnPublishedPage && isuserONTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId) ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === subPageId ? 'selected' : '')
+    const isSelected = isUserOnPublishedPage && isuserONTechdocOwnDomain && sessionStorage.getItem("currentPublishIdToShow") === subPageId ? "selected" : isDashboardRoute && this.props.match.params.pageId === subPageId ? "selected" : ""
     return (
       <>
         <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
-          <button tabIndex={-1} className={`${expanded ? 'expanded' : ''}`}>
-          <div className={`active-selected d-flex justify-content-between align-items-center ${isSelected ? ' selected' : ''}`}>
-            <div
-              draggable={!isUserOnPublishedPage}
-              onDragOver={this.props.handleOnDragOver}
-              onDragStart={() => this.props.onDragStart(subPageId)}
-              onDrop={(e) => this.props.onDrop(e, subPageId)}
-              onDragEnter={(e) => this.props.onDragEnter(e, subPageId)}
-              onDragEnd={(e) => this.props.onDragEnd(e)}
-              style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
-              className={`d-flex align-items-center justify-content-center cl-name name-sub-page`}
-              onClick={(e) => {
-                this.handleRedirect(subPageId)
-                  if(!expanded){
-                  this.handleToggle(e,subPageId)
+          <button tabIndex={-1} className={`${expanded ? "expanded" : ""}`}>
+            <div className={`active-selected d-flex justify-content-between align-items-center ${isSelected ? " selected" : ""}`}>
+              <div
+                draggable={!isUserOnPublishedPage}
+                onDragOver={this.props.handleOnDragOver}
+                onDragStart={() => this.props.onDragStart(subPageId)}
+                onDrop={(e) => this.props.onDrop(e, subPageId)}
+                onDragEnter={(e) => this.props.onDragEnter(e, subPageId)}
+                onDragEnd={(e) => this.props.onDragEnd(e)}
+                style={this.props.draggingOverId === subPageId ? { border: "3px solid red" } : null}
+                className={`d-flex align-items-center justify-content-center cl-name name-sub-page`}
+                onClick={(e) => {
+                  this.handleRedirect(subPageId)
+                  if (!expanded) {
+                    this.handleToggle(e, subPageId)
                   }
-              }}
-            >
-             <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
-              <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
-                  <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 '/>
-              </span>
-              <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{this.props.pages[subPageId]?.name}</div>
-            </div>
-            
-            {
-              // [info] options not to show on publihsed page
-              isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
-                <div className='sidebar-item-action d-flex align-items-center'>
-                  <div onClick={() => this.openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
-                    <IconButtons><FiPlus /></IconButtons>
-                  </div>
-                  <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                  <IconButtons><BsThreeDots /></IconButtons>
-                  </div>
-                  <div className='dropdown-menu dropdown-menu-right'>
-                    <div className='dropdown-item d-flex' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
-                      <EditSign /> Rename
+                }}
+              >
+                <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
+                  <MdExpandMore size={13} className='collection-icons-arrow d-none' />
+                  <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 ' />
+                </span>
+                <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{this.props.pages[subPageId]?.name}</div>
+              </div>
+
+              {
+                // [info] options not to show on publihsed page
+                isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                  <div className='sidebar-item-action d-flex align-items-center'>
+                    <div onClick={() => this.openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
+                      <IconButtons>
+                        <FiPlus />
+                      </IconButtons>
                     </div>
-                    <div
-                      className='dropdown-item text-danger d-flex'
-                      onClick={() => {
-                        this.openDeleteSubPageModal(subPageId)
-                      }}
-                    >
-                      <DeleteIcon /> Delete
+                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                      <IconButtons>
+                        <BsThreeDots />
+                      </IconButtons>
+                    </div>
+                    <div className='dropdown-menu dropdown-menu-right'>
+                      <div className='dropdown-item d-flex' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
+                        <EditSign /> Rename
+                      </div>
+                      <div
+                        className='dropdown-item text-danger d-flex'
+                        onClick={() => {
+                          this.openDeleteSubPageModal(subPageId)
+                        }}
+                      >
+                        <DeleteIcon /> Delete
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : null
-            }
+                ) : null
+              }
             </div>
           </button>
           {expanded ? (
@@ -237,7 +226,7 @@ class Groups extends Component {
       </>
     )
   }
-  handleRedirect(id){
+  handleRedirect(id) {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
@@ -250,8 +239,8 @@ class Groups extends Component {
     }
   }
 
-  handleToggle(e,id) {
-    e.stopPropagation();
+  handleToggle(e, id) {
+    e.stopPropagation()
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
@@ -269,7 +258,7 @@ class Groups extends Component {
           groupsService.showDeleteGroupModal(
             this.props,
             this.closeDeleteGroupModal.bind(this),
-            'Delete Page',
+            "Delete Page",
             `Are you sure you wish to delete this page?
               All your pages and endpoints present in this page will be deleted.`,
             this.props?.pages[this.props?.rootParentId]

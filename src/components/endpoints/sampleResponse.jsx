@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import { isDashboardRoute, isNotDashboardOrDocView } from '../common/utility'
-import JSONPretty from 'react-json-pretty'
-import './endpoints.scss'
-import SampleResponseForm from './sampleResponseForm'
-import DeleteModal from '../common/deleteModal'
-import DownArrow from '../../assets/icons/downChevron.svg'
-import addToSample from '../../assets/icons/addToSamplesign.svg'
+import React, { Component } from "react"
+import { isDashboardRoute, isNotDashboardOrDocView } from "../common/utility"
+import JSONPretty from "react-json-pretty"
+import "./endpoints.scss"
+import SampleResponseForm from "./sampleResponseForm"
+import DeleteModal from "../common/deleteModal"
+import DownArrow from "../../assets/icons/downChevron.svg"
+import addToSample from "../../assets/icons/addToSamplesign.svg"
 
 class SampleResponse extends Component {
   constructor(props) {
@@ -33,18 +33,7 @@ class SampleResponse extends Component {
   }
 
   showAddForm() {
-    return (
-      this.state.showSampleResponseForm.add && (
-        <SampleResponseForm
-          {...this.props}
-          show
-          onHide={this.closeForm.bind(this)}
-          title={this.state.sampleResponseFormName}
-          selectedSampleResponse={this.state.selectedSampleResponse}
-          index={this.state.index}
-        />
-      )
-    )
+    return this.state.showSampleResponseForm.add && <SampleResponseForm {...this.props} show onHide={this.closeForm.bind(this)} title={this.state.sampleResponseFormName} selectedSampleResponse={this.state.selectedSampleResponse} index={this.state.index} />
   }
 
   openEditForm(obj, index, name) {
@@ -61,18 +50,7 @@ class SampleResponse extends Component {
   }
 
   showEditForm() {
-    return (
-      this.state.showSampleResponseForm.edit && (
-        <SampleResponseForm
-          {...this.props}
-          show
-          onHide={this.closeForm.bind(this)}
-          title={this.state.sampleResponseFormName}
-          selectedSampleResponse={this.state.selectedSampleResponse}
-          index={this.state.index}
-        />
-      )
-    )
+    return this.state.showSampleResponseForm.edit && <SampleResponseForm {...this.props} show onHide={this.closeForm.bind(this)} title={this.state.sampleResponseFormName} selectedSampleResponse={this.state.selectedSampleResponse} index={this.state.index} />
   }
 
   openDeleteForm(index, name) {
@@ -86,19 +64,8 @@ class SampleResponse extends Component {
   }
 
   showDeleteForm() {
-    const msg = 'Are you sure you want to delete this sample response?'
-    return (
-      this.state.showSampleResponseForm.delete && (
-        <DeleteModal
-          {...this.props}
-          show
-          onHide={this.closeForm.bind(this)}
-          title={this.state.sampleResponseFormName}
-          index={this.state.index}
-          message={msg}
-        />
-      )
-    )
+    const msg = "Are you sure you want to delete this sample response?"
+    return this.state.showSampleResponseForm.delete && <DeleteModal {...this.props} show onHide={this.closeForm.bind(this)} title={this.state.sampleResponseFormName} index={this.state.index} message={msg} />
   }
 
   showJSONPretty(data) {
@@ -106,7 +73,7 @@ class SampleResponse extends Component {
   }
 
   showSampleResponseBody(data) {
-    if (typeof data === 'object') {
+    if (typeof data === "object") {
       return this.showJSONPretty(data)
     } else {
       try {
@@ -133,13 +100,10 @@ class SampleResponse extends Component {
     const sampleResponseArray = [...this.props?.endpointContent?.sampleResponseArray]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array]
     return (
-      <div
-        id='sample-response'
-        className={isNotDashboardOrDocView(this.props, this.props.currentView) ? 'testing-view-sample-response' : ''}
-      >
+      <div id='sample-response' className={isNotDashboardOrDocView(this.props, this.props.currentView) ? "testing-view-sample-response" : ""}>
         {isDashboardRoute(this.props) ? (
           <div className='add-sample-response'>
-            <button className='adddescLink align-left' onClick={() => this.openAddForm({}, null, 'Add Sample Response')}>
+            <button className='adddescLink align-left' onClick={() => this.openAddForm({}, null, "Add Sample Response")}>
               <img src={addToSample} /> Add Sample Response
             </button>
           </div>
@@ -159,7 +123,7 @@ class SampleResponse extends Component {
                     //   sampleResponseFlagArray,
                     //   index
                     // )
-                    this.openDeleteForm(index, 'Delete Sample Response')
+                    this.openDeleteForm(index, "Delete Sample Response")
                   }
                 >
                   <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -175,7 +139,7 @@ class SampleResponse extends Component {
                     <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                   </svg>
                 </span>
-                <span className='sample-response-edit cursor-pointer' onClick={() => this.openEditForm(obj, index, 'Edit Sample Response')}>
+                <span className='sample-response-edit cursor-pointer' onClick={() => this.openEditForm(obj, index, "Edit Sample Response")}>
                   <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                     <path d='M9 15H15.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
                     <path
@@ -190,21 +154,18 @@ class SampleResponse extends Component {
               </>
             ) : null}
             <div className='response-item-status'>
-              {' '}
+              {" "}
               <h2 className='heading-3'>Title</h2> : {obj.title}
             </div>
             <div className='response-item-status'>
-              {' '}
+              {" "}
               <h2 className='heading-3'>Status</h2> : {obj.status}
             </div>
             <div className='response-item-status'>
-              <h2 className='heading-3'>Description</h2> : {obj.description || ''}
+              <h2 className='heading-3'>Description</h2> : {obj.description || ""}
             </div>
             <div className='response-item-status'>
-              <h2 className='heading-3'>Body</h2> :{' '}
-              {!sampleResponseFlagArray[index] && (
-                <img src={DownArrow} alt='down-arrow' className='arrowRight' onClick={() => this.props.open_body(index)} />
-              )}
+              <h2 className='heading-3'>Body</h2> : {!sampleResponseFlagArray[index] && <img src={DownArrow} alt='down-arrow' className='arrowRight' onClick={() => this.props.open_body(index)} />}
               {sampleResponseFlagArray[index] && (
                 <>
                   <img src={DownArrow} alt='down-arrow' onClick={() => this.props.close_body(index)} />

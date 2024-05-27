@@ -1,20 +1,20 @@
-import React, { Component } from 'react'
-import DocIcon from '../../../assets/icons/doc.svg'
-import ApiIcon from '../../../assets/icons/api.svg'
-import InfoIcon from '../../../assets/icons/info.svg'
-import shortid from 'shortid'
-import Joi from 'joi-browser'
-import './defaultViewModal.scss'
-import { Modal, Button } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { addNewTab } from '../../tabs/redux/tabsActions'
-import { onEnter, toTitleCase, validate } from '../../common/utility'
-import Form from '../../common/form'
-import { addPage } from '../../pages/redux/pagesActions'
+import React, { Component } from "react"
+import DocIcon from "../../../assets/icons/doc.svg"
+import ApiIcon from "../../../assets/icons/api.svg"
+import InfoIcon from "../../../assets/icons/info.svg"
+import shortid from "shortid"
+import Joi from "joi-browser"
+import "./defaultViewModal.scss"
+import { Modal, Button } from "react-bootstrap"
+import { connect } from "react-redux"
+import { withRouter } from "react-router-dom"
+import { addNewTab } from "../../tabs/redux/tabsActions"
+import { onEnter, toTitleCase, validate } from "../../common/utility"
+import Form from "../../common/form"
+import { addPage } from "../../pages/redux/pagesActions"
 export const defaultViewTypes = {
-  TESTING: 'testing',
-  DOC: 'doc'
+  TESTING: "testing",
+  DOC: "doc"
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -32,16 +32,16 @@ export class DefaultViewModal extends Form {
         addPage: false
       },
       data: {
-        name: ''
+        name: ""
       },
       errors: {
-        name: ''
+        name: ""
       }
     }
 
     this.schema = {
-      name: Joi.string().min(1).max(100).required().label('Name'),
-      contents: Joi.string().allow(null, ''),
+      name: Joi.string().min(1).max(100).required().label("Name"),
+      contents: Joi.string().allow(null, ""),
       state: Joi.valid(0, 1, 2, 3)
     }
   }
@@ -72,8 +72,8 @@ export class DefaultViewModal extends Form {
     this.props.onHide()
     let { name } = { ...this.state?.data }
     name = toTitleCase(name)
-    if (this.props.title === 'Add Parent Page' || this.props.addEntity) {
-    const rootParentId = collections?.rootParentId
+    if (this.props.title === "Add Parent Page" || this.props.addEntity) {
+      const rootParentId = collections?.rootParentId
       const data = { ...this.state.data, name }
       const newPage = {
         ...data,
@@ -83,9 +83,9 @@ export class DefaultViewModal extends Form {
       }
       this.props.add_page(rootParentId, newPage)
     }
-  
-    if (this.props?.title === 'Add Page' || this.props?.title === 'Add Sub Page' || this.props?.addEntity) {
-    const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
+
+    if (this.props?.title === "Add Page" || this.props?.title === "Add Sub Page" || this.props?.addEntity) {
+      const selectedId = this.props?.title === "Add Page" ? this.props?.selectedVersion : this.props?.selectedPage
       const ParentId = selectedId
       const data = { ...this.state.data }
       const newPage = {
@@ -96,11 +96,12 @@ export class DefaultViewModal extends Form {
         state: 0
       }
       this.props.add_page(ParentId, newPage)
-      }}
+    }
+  }
   renderCollectionDetailsForm() {
     return (
       <div className='mt-5'>
-        {this.renderInput('name', 'Name', this.props.title, 'Page name', false, false, '*name accepts min 1 & max 100 characters')}
+        {this.renderInput("name", "Name", this.props.title, "Page name", false, false, "*name accepts min 1 & max 100 characters")}
         <div className='text-left mt-4 mx-2'>
           <Button onClick={this.handleSubmit}>Submit</Button>
         </div>
@@ -118,7 +119,7 @@ export class DefaultViewModal extends Form {
         }}
       >
         <img src={ApiIcon} alt='' />
-        {'Create Endpoint'}
+        {"Create Endpoint"}
       </button>
     )
   }
@@ -132,7 +133,7 @@ export class DefaultViewModal extends Form {
         }}
       >
         <img src={DocIcon} alt='' />
-        {'Create Page'}
+        {"Create Page"}
       </button>
     )
   }
@@ -160,17 +161,10 @@ export class DefaultViewModal extends Form {
           onEnter(e, this.handleKeyPress.bind(this))
         }}
       >
-        <Modal
-          size='sm'
-          animation={false}
-          aria-labelledby='contained-modal-title-vcenter'
-          centered
-          onHide={this.props.onHide}
-          show={this.props.show}
-        >
+        <Modal size='sm' animation={false} aria-labelledby='contained-modal-title-vcenter' centered onHide={this.props.onHide} show={this.props.show}>
           <div>
             <Modal.Header className='custom-collection-modal-container' closeButton>
-              <Modal.Title id='contained-modal-title-vcenter'>{'Start adding in your collection'}</Modal.Title>
+              <Modal.Title id='contained-modal-title-vcenter'>{"Start adding in your collection"}</Modal.Title>
             </Modal.Header>
             <Modal.Body>{this.renderButtons()}</Modal.Body>
           </div>

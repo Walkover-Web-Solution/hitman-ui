@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import { Modal } from 'react-bootstrap'
-import './main.scss'
+import React, { Component } from "react"
+import { Modal } from "react-bootstrap"
+import "./main.scss"
 
 class CreateNewModal extends Component {
   constructor(props) {

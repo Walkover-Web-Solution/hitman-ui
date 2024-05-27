@@ -1,14 +1,14 @@
-import React , {useState} from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import CollectionParentPages from '../collectionVersions/collectionParentPages'
-import Groups from '../groups/groups'
-import Endpoints from '../endpoints/endpoints'
-import { toast } from 'react-toastify'
-import { updateDragDrop } from '../pages/redux/pagesActions'
+import React, { useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import CollectionParentPages from "../collectionVersions/collectionParentPages"
+import Groups from "../groups/groups"
+import Endpoints from "../endpoints/endpoints"
+import { toast } from "react-toastify"
+import { updateDragDrop } from "../pages/redux/pagesActions"
 
 function CombinedCollections(props) {
-  const [draggingOverId, setDraggingOverId] = useState(null);
-  const [draggedIdSelected, setDraggedIdSelected] = useState(null);
+  const [draggingOverId, setDraggingOverId] = useState(null)
+  const [draggedIdSelected, setDraggedIdSelected] = useState(null)
   const dispatch = useDispatch()
 
   const { childIds, pages } = useSelector((state) => {
@@ -18,13 +18,13 @@ function CombinedCollections(props) {
     }
   })
 
-  const handleOnDragOver = (e)  =>  {
+  const handleOnDragOver = (e) => {
     e.preventDefault()
   }
 
   const onDragEnter = (e, draggingOverId) => {
-    e.preventDefault();
-    setDraggingOverId(draggingOverId);
+    e.preventDefault()
+    setDraggingOverId(draggingOverId)
   }
   const onDragEnd = (e) => {
     e.preventDefault()
@@ -32,31 +32,31 @@ function CombinedCollections(props) {
   }
 
   const onDragStart = (draggedIdSelected) => {
-    setDraggedIdSelected(draggedIdSelected);
+    setDraggedIdSelected(draggedIdSelected)
   }
 
   const onDrop = (e, droppedOnId) => {
     e.preventDefault()
-    setDraggingOverId(null);
+    setDraggingOverId(null)
 
-    if (draggedIdSelected === droppedOnId) return ;
+    if (draggedIdSelected === droppedOnId) return
 
     let draggedIdParentId = pages?.[draggedIdSelected]?.parentId
     let droppedOnIdParentId = pages?.[droppedOnId]?.parentId
 
-    // if both data is not from same parent then stop the user 
-    if(draggedIdParentId != droppedOnIdParentId){
-      toast.error("Reordering is allowed inside the same parent")        
-      return ;
+    // if both data is not from same parent then stop the user
+    if (draggedIdParentId != droppedOnIdParentId) {
+      toast.error("Reordering is allowed inside the same parent")
+      return
     }
 
-    dispatch(updateDragDrop(draggedIdSelected,  droppedOnId))
+    dispatch(updateDragDrop(draggedIdSelected, droppedOnId))
   }
-  
+
   return (
     <div>
       {childIds.map((singleId) => {
-        const type = pages?.[singleId]?.type || null;
+        const type = pages?.[singleId]?.type || null
         const commonProps = {
           key: singleId,
           ...props,
@@ -65,37 +65,21 @@ function CombinedCollections(props) {
           onDrop: onDrop,
           onDragEnter: onDragEnter,
           draggingOverId: draggingOverId,
-          onDragEnd:onDragEnd
+          onDragEnd: onDragEnd
         }
         switch (type) {
           case 1:
-            return (
-              <CollectionParentPages
-                {...commonProps}
-                rootParentId={singleId}
-              />
-            )
+            return <CollectionParentPages {...commonProps} rootParentId={singleId} />
           case 3:
-            return (
-              <Groups
-                {...commonProps}
-                rootParentId={singleId}
-              />
-            )
+            return <Groups {...commonProps} rootParentId={singleId} />
           case 4:
-            return (
-              <Endpoints
-                {...commonProps}
-                endpointId={singleId}
-              />
-            )
+            return <Endpoints {...commonProps} endpointId={singleId} />
           default:
             break
         }
       })}
     </div>
-  );
-  
+  )
 }
 
 export default CombinedCollections

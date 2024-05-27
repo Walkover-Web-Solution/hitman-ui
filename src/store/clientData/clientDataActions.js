@@ -1,4 +1,4 @@
-import clientDataActionTypes from './clientDataActionTypes'
+import clientDataActionTypes from "./clientDataActionTypes"
 
 export const addIsExpandedAction = (payload) => {
   return {

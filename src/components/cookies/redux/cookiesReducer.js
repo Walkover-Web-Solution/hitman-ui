@@ -1,5 +1,5 @@
-import cookiesActionTypes from './cookiesActionTypes'
-import { toast } from 'react-toastify'
+import cookiesActionTypes from "./cookiesActionTypes"
+import { toast } from "react-toastify"
 
 const initialState = {}
 

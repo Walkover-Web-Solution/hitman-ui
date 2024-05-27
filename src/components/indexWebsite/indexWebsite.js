@@ -1,25 +1,24 @@
-import React from 'react'
-import './indexWebsite.scss'
-import { ReactComponent as Logo } from '../../assets/web/logo.svg'
-import { ReactComponent as Giddh } from '../../assets/web/logos/giddh.svg'
-import { ReactComponent as Socket } from '../../assets/web/logos/socket.svg'
-import { ReactComponent as Freejun } from '../../assets/web/logos/freejun.svg'
-import { ReactComponent as Msg91 } from '../../assets/web/logos/msg91.svg'
-import { ReactComponent as Dbdash } from '../../assets/web/logos/dbdash.svg'
-import { ReactComponent as Walkover } from '../../assets/web/logos/walkover.svg'
+import React from "react"
+import "./indexWebsite.scss"
+import { ReactComponent as Logo } from "../../assets/web/logo.svg"
+import { ReactComponent as Giddh } from "../../assets/web/logos/giddh.svg"
+import { ReactComponent as Socket } from "../../assets/web/logos/socket.svg"
+import { ReactComponent as Freejun } from "../../assets/web/logos/freejun.svg"
+import { ReactComponent as Msg91 } from "../../assets/web/logos/msg91.svg"
+import { ReactComponent as Dbdash } from "../../assets/web/logos/dbdash.svg"
+import { ReactComponent as Walkover } from "../../assets/web/logos/walkover.svg"
 
-import { MdAccessTimeFilled, MdGroups, MdRocketLaunch, MdApi } from 'react-icons/md'
+import { MdAccessTimeFilled, MdGroups, MdRocketLaunch, MdApi } from "react-icons/md"
 
-import heroImg from '../../assets/web/hero_img.png'
-import content from './indexWebsite.json'
-import { useHistory } from 'react-router'
+import heroImg from "../../assets/web/hero_img.png"
+import content from "./indexWebsite.json"
+import { useHistory } from "react-router"
 
 export default function IndexWebsite() {
-
   const history = useHistory()
 
   const handleGetStarted = () => {
-    history.push('/login')
+    history.push("/login")
   }
 
   return (
@@ -30,8 +29,12 @@ export default function IndexWebsite() {
           <div className='navigation d-flex justify-content-between container'>
             <Logo className='web_logo' />
             <div className='d-flex align-items-center nav-menu'>
-              <button onClick={handleGetStarted} className='btn btn-secondary md-btn-lg btn-sm'>Login</button>
-              <button onClick={handleGetStarted} className='btn btn-primary md-btn-lg btn-sm'>Signup</button>
+              <button onClick={handleGetStarted} className='btn btn-secondary md-btn-lg btn-sm'>
+                Login
+              </button>
+              <button onClick={handleGetStarted} className='btn btn-primary md-btn-lg btn-sm'>
+                Signup
+              </button>
             </div>
           </div>
           {/* navbar */}
@@ -45,7 +48,9 @@ export default function IndexWebsite() {
                 Faster with TechDoc
               </h1>
               <p className='web_tagline'>The Ultimate Free Solution for Your API Needs!</p>
-              <button onClick={handleGetStarted} className='btn btn-primary btn-lg'>Get Started for free</button>
+              <button onClick={handleGetStarted} className='btn btn-primary btn-lg'>
+                Get Started for free
+              </button>
             </div>
             <img src={heroImg} alt='Hero Image' /> {/* Use the imported image */}
           </div>
@@ -63,22 +68,22 @@ export default function IndexWebsite() {
                   let LogoComponent = null
 
                   switch (customer.name) {
-                    case 'giddh':
+                    case "giddh":
                       LogoComponent = <Giddh />
                       break
-                    case 'socket':
+                    case "socket":
                       LogoComponent = <Socket />
                       break
-                    case 'freejun':
+                    case "freejun":
                       LogoComponent = <Freejun />
                       break
-                    case 'msg91':
+                    case "msg91":
                       LogoComponent = <Msg91 />
                       break
-                    case 'dbdash':
+                    case "dbdash":
                       LogoComponent = <Dbdash />
                       break
-                    case 'walkover':
+                    case "walkover":
                       LogoComponent = <Walkover />
                       break
                     default:
@@ -86,12 +91,7 @@ export default function IndexWebsite() {
                   }
 
                   return (
-                    <a
-                      href={customer.urls}
-                      target='_blank'
-                      key={i}
-                      className={`${i == 2 || i == 3 ? 'col_span_2' : 'col_span-1'} grid_col`}
-                    >
+                    <a href={customer.urls} target='_blank' key={i} className={`${i == 2 || i == 3 ? "col_span_2" : "col_span-1"} grid_col`}>
                       {LogoComponent}
                     </a>
                   )
@@ -112,16 +112,16 @@ export default function IndexWebsite() {
                   let icon = null
 
                   switch (benifit.slug) {
-                    case 'productivity':
+                    case "productivity":
                       icon = <MdAccessTimeFilled fontSize={40} color='#f2994a' />
                       break
-                    case 'collaboration':
+                    case "collaboration":
                       icon = <MdGroups fontSize={40} color='#f2994a' />
                       break
-                    case 'efficiency':
+                    case "efficiency":
                       icon = <MdRocketLaunch fontSize={40} color='#f2994a' />
                       break
-                    case 'apis':
+                    case "apis":
                       icon = <MdApi fontSize={40} color='#f2994a' />
                       break
                     default:
@@ -152,7 +152,6 @@ export default function IndexWebsite() {
             <p className='m-0'>© 2024 TechDoc. All rights reserved.</p>
           </div>
         </div>
-
       </div>
     </>
   )

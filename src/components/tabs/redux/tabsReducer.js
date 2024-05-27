@@ -1,5 +1,5 @@
-import tabsActionTypes from './tabsActionTypes'
-import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import tabsActionTypes from "./tabsActionTypes"
+import bulkPublishActionTypes from "../../publishSidebar/redux/bulkPublishActionTypes"
 
 const initialState = {
   tabs: {},
@@ -44,7 +44,7 @@ function tabsReducer(state = initialState, action) {
         ...action.payload.data
       }
       return tabs
-        
+
     case tabsActionTypes.UPDATE_TAB_DRAFT:
       tabs = { ...state }
       tabs.tabs[action.payload.tabId].draft = action?.payload?.draft
@@ -89,8 +89,8 @@ function tabsReducer(state = initialState, action) {
     case tabsActionTypes.REPLACE_TAB_ID:
       const data = {
         id: action.payload.newTabId,
-        type: 'endpoint',
-        status: 'SAVED',
+        type: "endpoint",
+        status: "SAVED",
         previewMode: true,
         isModified: false,
         state: {}
@@ -99,16 +99,16 @@ function tabsReducer(state = initialState, action) {
       newTabs[action.payload?.newTabId] = data
       delete newTabs[action.payload.currentActiveTabId]
       const newOrder = state.tabsOrder.map((item) => {
-        if(item === action.payload.currentActiveTabId) return action.payload.newTabId
+        if (item === action.payload.currentActiveTabId) return action.payload.newTabId
         else return item
       })
       tabs = { ...state, tabsOrder: newOrder, activeTabId: action.payload.newTabId, tabs: newTabs }
       return tabs
-      
+
     case tabsActionTypes.UPDATE_PRE_POST_SCRIPT:
       tabs = { ...state }
-      tabs.tabs[action.payload.tabId].postScriptExecutedData = action.payload?.executedData?.postScriptExecution || ''
-      tabs.tabs[action.payload.tabId].preScriptExecutedData = action.payload?.executedData?.preScriptExecution || ''
+      tabs.tabs[action.payload.tabId].postScriptExecutedData = action.payload?.executedData?.postScriptExecution || ""
+      tabs.tabs[action.payload.tabId].preScriptExecutedData = action.payload?.executedData?.preScriptExecution || ""
       return tabs
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_TABS:
