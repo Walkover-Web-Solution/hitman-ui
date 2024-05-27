@@ -17,6 +17,7 @@ import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken }
 import { addCollectionAndPages } from '../redux/generalActions'
 import SplitPane from '../splitPane/splitPane'
 import { addUserData } from '../auth/redux/userAction'
+import { toast } from 'react-toastify'
 
 const mapStateToProps = (state) => {
   return {
@@ -60,10 +61,17 @@ class MainV2 extends Component {
       this.setState({ loading: false })
       return
     }
+    let users
+    try {
+      users = await getUserData(token);
+    }
+    catch (error) {
+      toast.error(error.message)
+      this.props.history.push({ pathname: '/login' })
+      this.setState({ loading: false }) 
+    }
 
-    const users = await getUserData(token);
-
-    if(users){
+    if (users) {
       this.props.add_user(users)
     }
     /** Token Exists */
