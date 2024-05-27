@@ -17,17 +17,17 @@ export default function IndexWebsite() {
   console.log('🚀 ~ Content:', content)
   return (
     <>
-      <div>
+      <div className='web_body'>
         <div>
           {/* navbar */}
           <div className='navigation d-flex justify-content-between container'>
             <Logo className='web_logo' />
             <div className='d-flex align-items-center nav-menu'>
               <a href='/login'>
-                <button className='btn btn-secondary md-btn-lg btn-sm'>Login</button>
+                <button className='btn web_btn-login web_btn-rg web_btn'>Login</button>
               </a>
-              <a href='/signin'>
-                <button className='btn btn-primary md-btn-lg btn-sm'>Signup</button>
+              <a href='/login'>
+                <button className='btn web_btn-primary web_btn-rg web_btn '>Signup</button>
               </a>
             </div>
           </div>
@@ -42,13 +42,57 @@ export default function IndexWebsite() {
                 Faster with TechDoc
               </h1>
               <p className='web_tagline'>The Ultimate Free Solution for Your API Needs!</p>
-              <button className='btn btn-primary btn-lg'>Get Started for free</button>
+              <a href='/login'>
+                {' '}
+                <button className='btn web_btn-primary web_btn-rg web_btn'>Get Started for free</button>
+              </a>
             </div>
             <img src={heroImg} alt='Hero Image' /> {/* Use the imported image */}
           </div>
         </div>
         <div className='web_bg-sec py-5'>
           <div className='container d-flex flex-column'>
+            <h2 className='web_h2 mb-5'>
+              Experience <span className='font-american '>the Benefits </span>
+              <br />
+              of TechDoc
+            </h2>
+            <div className='web_benifit_grid '>
+              {content?.benefits?.length &&
+                content?.benefits?.map((benifit, i) => {
+                  let icon = null
+
+                  switch (benifit.slug) {
+                    case 'productivity':
+                      icon = <MdAccessTimeFilled fontSize={40} color='#EC5413' />
+                      break
+                    case 'collaboration':
+                      icon = <MdGroups fontSize={40} color='#EC5413' />
+                      break
+                    case 'efficiency':
+                      icon = <MdRocketLaunch fontSize={40} color='#EC5413' />
+                      break
+                    case 'apis':
+                      icon = <MdApi fontSize={40} color='#EC5413' />
+                      break
+                    default:
+                      icon = null
+                  }
+                  return (
+                    <>
+                      <div className=' d-flex flex-column '>
+                        {icon}
+                        <h3 dangerouslySetInnerHTML={{ __html: benifit?.name }} className='my-3'></h3>
+                        <p>{benifit?.description}</p>
+                      </div>
+                    </>
+                  )
+                })}
+            </div>
+          </div>
+        </div>
+        <div className=' bg-white py-5'>
+          <div className='container web_cont d-flex flex-column'>
             <h2 className='web_h2 mb-5'>
               The results speak for themselves,
               <br />
@@ -96,60 +140,19 @@ export default function IndexWebsite() {
             </div>
           </div>
         </div>
-        <div className=' py-5'>
-          <div className='container d-flex flex-column'>
-            <h2 className='web_h2 mb-5'>
-              Experience <span className='font-american '>the Benefits </span>
-              <br />
-              of TechDoc
-            </h2>
-            <div className='web_benifit_grid '>
-              {content?.benefits?.length &&
-                content?.benefits?.map((benifit, i) => {
-                  let icon = null
 
-                  switch (benifit.slug) {
-                    case 'productivity':
-                      icon = <MdAccessTimeFilled fontSize={40} color='#f2994a' />
-                      break
-                    case 'collaboration':
-                      icon = <MdGroups fontSize={40} color='#f2994a' />
-                      break
-                    case 'efficiency':
-                      icon = <MdRocketLaunch fontSize={40} color='#f2994a' />
-                      break
-                    case 'apis':
-                      icon = <MdApi fontSize={40} color='#f2994a' />
-                      break
-                    default:
-                      icon = null
-                  }
-                  return (
-                    <>
-                      <div className=' d-flex flex-column p-4'>
-                        {icon}
-                        <h3 dangerouslySetInnerHTML={{ __html: benifit?.name }} className='my-3'></h3>
-                        <p>{benifit?.description}</p>
-                      </div>
-                    </>
-                  )
-                })}
-            </div>
-          </div>
-        </div>
-        <div className='container'>
-        <div className='d-flex flex-md-row flex-column  justify-content-between align-items-center'>
-          <Logo className='web_logo' />
-          {/* <ul className='web_list d-flex flex-column'>
+        <div className='container web_cont'>
+          <div className='d-flex flex-md-row flex-column  justify-content-between align-items-center'>
+            <Logo className='web_logo' />
+            {/* <ul className='web_list d-flex flex-column'>
             <li>
               <a href='https://walkover.in' target='_blank' className='text-dark'>About Us</a>
             </li>
          
           </ul> */}
-          <p className='m-0'>© 2024 TechDoc. All rights reserved.</p>
+            <p className='m-0'>© 2024 TechDoc. All rights reserved.</p>
+          </div>
         </div>
-        </div>
-    
       </div>
     </>
   )

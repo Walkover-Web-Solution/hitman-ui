@@ -1,4 +1,5 @@
 .navigation {
+  background: transparent;
   .nav-menu {
     gap: 28px;
     @media only screen and (max-width: 769px) {
@@ -7,6 +8,41 @@
   }
 }
 .web {
+  &_text-primary {
+    color: #ec5413;
+  }
+  &_bg-primary {
+    background-color: #ec5413 !important;
+  }
+  &_btn {
+    border-radius: 0px !important;
+    &.web_btn-rg {
+      font-weight: 600;
+      font-size: 18px;
+      padding: 13px 24px !important;
+    }
+    &.web_btn-lg {
+      font-weight: 600;
+      font-size: 18px;
+      padding: 13px 24px !important;
+    }
+    &.web_btn-login {
+      background-color: #f3f4f6;
+      border: #d5d9dc 1px solid;
+    }
+    &.web_btn-primary {
+      background-color: #ec5413;
+      border: #ec5413 1px solid;
+      color: white !important;
+    }
+  }
+  &_body {
+    background-color: #fbf8f3;
+  }
+  &_cont{
+    background: transparent !important;
+  }
+
   &_logo {
     width: 100%;
     max-width: 200px;
@@ -27,10 +63,14 @@
     }
   }
   &_text-primary {
-    color: #f2994a;
+    color: #ec5413;
   }
   &_hero {
-    gap: 26px;
+    background: white;
+
+    gap: 46px;
+    padding: 40px !important;
+    border: #c9c9c9 solid 1px;
     img {
       width: 70%;
       margin: 0 auto;
@@ -96,7 +136,7 @@
       }
     }
   }
-  &_list{
+  &_list {
     list-style: none;
   }
 }
