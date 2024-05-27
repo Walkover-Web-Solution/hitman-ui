@@ -6,7 +6,14 @@ import collectionsApiService from './components/collections/collectionsApiServic
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import { ToastContainer } from 'react-toastify'
-import { SESSION_STORAGE_KEY, getOrgId, isDashboardRoute, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility'
+import {
+  SESSION_STORAGE_KEY,
+  getOrgId,
+  isDashboardRoute,
+  isElectron,
+  isOnPublishedPage,
+  isTechdocOwnDomain
+} from './components/common/utility'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import Cookies from 'universal-cookie'
@@ -18,6 +25,7 @@ import { initConn, resetConn } from './services/webSocket/webSocketService.js'
 import shortid from 'shortid'
 import OauthPage from './components/OauthPage/OauthPage.js'
 import TrashPage from './components/main/Trash/trashPage.jsx'
+import IndexWebsite from './components/indexWebsite/indexWebsite.js'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -36,10 +44,12 @@ class App extends Component {
   constructor(props) {
     super(props)
     const currentOrgId = getOrgId() ?? props.location.pathname.split('/')?.[2]
-    if (currentOrgId && !isOnPublishedPage()) {initConn(currentOrgId)}
+    if (currentOrgId && !isOnPublishedPage()) {
+      initConn(currentOrgId)
+    }
     sessionStorage.setItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID, shortid.generate())
   }
-  
+
   componentDidMount() {
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault()
@@ -55,7 +65,6 @@ class App extends Component {
       })
     }
   }
-
 
   componentWillUnmount() {
     resetConn(getOrgId())
@@ -78,6 +87,7 @@ class App extends Component {
       <>
         <ToastContainer />
         <Switch>
+          <Route exact path='/' component={IndexWebsite} />
           {/* Error Page Routes */}
           <Route path='/404_PAGE' component={ERROR_404_PAGE} />
           <Route path='/403_PAGE' component={ERROR_403_PAGE} />
@@ -103,11 +113,7 @@ class App extends Component {
           {/* React App Auth Routes */}
           <Route path='/login' component={LoginV2} />
           <Route path='/logout' component={Logout} />
-          <Route path='/' component={AuthServiceV2} />
-
-          <Route path='/'>
-            <Redirect to='/dashboard' />
-          </Route>
+          <Route exact path='/proxy/auth' component={AuthServiceV2} />
         </Switch>
       </>
     )
