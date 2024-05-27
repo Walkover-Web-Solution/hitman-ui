@@ -6,5 +6,5 @@ function showDeletePageModal(props, onHide, title, message, selectedPage) {
 }
 
 export default {
-  showDeletePageModal,
+  showDeletePageModal
 }

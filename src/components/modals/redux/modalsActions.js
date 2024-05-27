@@ -5,7 +5,7 @@ export const openModal = (modalType, modalData = null) => {
     dispatch({
       type: modalsActionTypes.ON_OPEN_MODAL,
       payload: modalType,
-      data: modalData,
+      data: modalData
     })
   }
 }
@@ -13,7 +13,7 @@ export const openModal = (modalType, modalData = null) => {
 export const closeModal = () => {
   return (dispatch) => {
     dispatch({
-      type: modalsActionTypes.ON_CLOSE_MODAL,
+      type: modalsActionTypes.ON_CLOSE_MODAL
     })
   }
 }
@@ -21,7 +21,7 @@ export const closeModal = () => {
 export const publishData = (payload) => {
   return {
     type: modalsActionTypes.ON_PUBLISH_DOC,
-    payload,
+    payload
   }
 }
 
@@ -29,7 +29,7 @@ export const installModal = (event) => {
   return (dispatch) => {
     dispatch({
       type: modalsActionTypes.ON_INSTALL_MODAL,
-      payload: event,
+      payload: event
     })
   }
 }
@@ -38,7 +38,7 @@ export const updateStateOfCurlSlider = (payload) => {
   return (dispatch) => {
     dispatch({
       type: modalsActionTypes.ON_CURL_SLIDER_OPEN,
-      payload,
+      payload
     })
   }
 }
@@ -47,5 +47,5 @@ export default {
   openModal,
   closeModal,
   installModal,
-  updateStateOfCurlSlider,
+  updateStateOfCurlSlider
 }

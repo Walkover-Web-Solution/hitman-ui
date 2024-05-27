@@ -22,14 +22,14 @@ export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) =
 export const onPublicEndpointsFetched = (data) => {
   return {
     type: publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED,
-    data,
+    data
   }
 }
 
 export const onPublicEndpointsFetchedError = (error) => {
   return {
     type: publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR,
-    error,
+    error
   }
 }
 
@@ -91,14 +91,14 @@ export const rejectPage = (page) => {
 export const onPageStateSuccess = (data) => {
   return {
     type: publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS,
-    data,
+    data
   }
 }
 
 export const onPageStateError = (error) => {
   return {
     type: publicEndpointsActionTypes.ON_PAGE_STATE_ERROR,
-    error,
+    error
   }
 }
 
@@ -162,13 +162,13 @@ export const rejectEndpoint = (endpoint) => {
 export const onEndpointStateSuccess = (data) => {
   return {
     type: publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS,
-    data,
+    data
   }
 }
 
 export const onEndpointStateError = (error) => {
   return {
     type: publicEndpointsActionTypes.ON_ENDPOINT_STATE_ERROR,
-    error,
+    error
   }
 }

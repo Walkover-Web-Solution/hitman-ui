@@ -20,7 +20,7 @@ const saveAsSidebarStyle = {
   right: "0px",
   height: "100vh",
   width: "500px",
-  boxShadow: "-25px 25px 43px rgba(0, 0, 0, 0.07)",
+  boxShadow: "-25px 25px 43px rgba(0, 0, 0, 0.07)"
 }
 const darkBackgroundStyle = {
   position: "fixed",
@@ -30,7 +30,7 @@ const darkBackgroundStyle = {
   top: "0px",
   right: "0px",
   height: "100vh",
-  width: "100vw",
+  width: "100vw"
 }
 
 function PublishSidebar(props) {
@@ -41,7 +41,7 @@ function PublishSidebar(props) {
   const { pages, collections } = useSelector((state) => {
     return {
       pages: state.pages,
-      collections: state.collections,
+      collections: state.collections
     }
   })
 

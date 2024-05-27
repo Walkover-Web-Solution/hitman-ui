@@ -2,7 +2,7 @@ export const bodyTypesEnums = {
   raw: "raw",
   "application/x-www-form-urlencoded": "application/x-www-form-urlencoded",
   "multipart/form-data": "multipart/form-data",
-  none: "none",
+  none: "none"
 }
 
 export const rawTypesEnums = {
@@ -10,7 +10,7 @@ export const rawTypesEnums = {
   JSON: "JSON",
   XML: "XML",
   HTML: "HTML",
-  JavaScript: "JavaScript",
+  JavaScript: "JavaScript"
 }
 
 export const contentTypesEnums = {
@@ -19,5 +19,5 @@ export const contentTypesEnums = {
   "text/html": "HTML",
   "text/javascript": "JavaScript",
   "application/json": "JSON",
-  "image/jpeg": "TEXT",
+  "image/jpeg": "TEXT"
 }

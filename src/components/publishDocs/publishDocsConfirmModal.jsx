@@ -9,7 +9,7 @@ class PublishDocsConfirmModal extends Component {
     if (collectionId) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collectionId}`,
+        search: `?collectionId=${collectionId}`
       })
     }
     this.props.onHide()

@@ -9,14 +9,14 @@ import * as _ from "lodash"
 
 const mapStateToProps = (state) => {
   return {
-    tabs: state.tabs,
+    tabs: state.tabs
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    set_active_tab_id: (tabId) => dispatch(setActiveTabId(tabId)),
+    set_active_tab_id: (tabId) => dispatch(setActiveTabId(tabId))
   }
 }
 
@@ -27,7 +27,7 @@ class TabOptions extends Component {
     const { tabs, activeTabId } = this.props.tabs
     const options = [
       { title: "Close all tabs", handleOnClick: this.handleCloseAllTabs.bind(this), show: true },
-      { title: "Close all tabs but current", handleOnClick: this.handleCloseAllButCurrent.bind(this), show: true },
+      { title: "Close all tabs but current", handleOnClick: this.handleCloseAllButCurrent.bind(this), show: true }
       // { title: 'Duplicate Current Tab', handleOnClick: this.handleDuplicateTab.bind(this), show: tabs[activeTabId]?.type !== 'page' }
     ]
     return options.map(
@@ -36,7 +36,7 @@ class TabOptions extends Component {
           <Dropdown.Item disabled={option.disabled} key={index} onClick={option.handleOnClick}>
             {option.title}
           </Dropdown.Item>
-        ),
+        )
     )
   }
 
@@ -54,7 +54,7 @@ class TabOptions extends Component {
     this.props.open_in_new_tab(tab)
 
     this.props.history.push({
-      pathname: `/orgs/${orgId}/dashboard/${tab.type}/new`,
+      pathname: `/orgs/${orgId}/dashboard/${tab.type}/new`
     })
   }
 

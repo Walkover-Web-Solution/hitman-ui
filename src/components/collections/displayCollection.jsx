@@ -6,7 +6,7 @@ class DisplayCollection extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      description: "",
+      description: ""
     }
   }
 

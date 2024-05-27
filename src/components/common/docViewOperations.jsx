@@ -44,5 +44,5 @@ export function UnPublishEntityButton(props) {
 export default {
   ApproveRejectEntity,
   PublishEntityButton,
-  UnPublishEntityButton,
+  UnPublishEntityButton
 }

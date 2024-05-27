@@ -12,7 +12,7 @@ import "./environments.scss"
 const mapDispatchToProps = (dispatch) => {
   return {
     add_environment: (newEnvironment) => dispatch(addEnvironment(newEnvironment)),
-    update_environment: (editedEnvironment) => dispatch(updateEnvironment(editedEnvironment)),
+    update_environment: (editedEnvironment) => dispatch(updateEnvironment(editedEnvironment))
   }
 }
 
@@ -24,11 +24,11 @@ class EnvironmentVariables extends Component {
         name: "",
         variables: {
           BASE_URL: { initialValue: "", currentValue: "" },
-          1: { initialValue: "", currentValue: "" },
-        },
+          1: { initialValue: "", currentValue: "" }
+        }
       },
       originalVariableNames: ["BASE_URL", "1"],
-      updatedVariableNames: ["BASE_URL", ""],
+      updatedVariableNames: ["BASE_URL", ""]
     }
   }
 
@@ -42,12 +42,12 @@ class EnvironmentVariables extends Component {
     const updatedVariableNames = [...Object.keys(environment.variables), ""]
     environment.variables[len.toString()] = {
       initialValue: "",
-      currentValue: "",
+      currentValue: ""
     }
     this.setState({
       environment,
       originalVariableNames,
-      updatedVariableNames,
+      updatedVariableNames
     })
   }
 
@@ -57,7 +57,7 @@ class EnvironmentVariables extends Component {
   }
 
   schema = {
-    name: Joi.string().min(3).max(50).trim().required().label("Evironment Name"),
+    name: Joi.string().min(3).max(50).trim().required().label("Evironment Name")
   }
 
   doSubmit() {
@@ -89,14 +89,14 @@ class EnvironmentVariables extends Component {
       this.setState({
         environment: { name: "", variables: {} },
         originalVariableNames: [],
-        updatedVariableNames: [],
+        updatedVariableNames: []
       })
     } else {
       const originalEnvironment = jQuery.extend(true, {}, this.props.environment)
       if (JSON.stringify(originalEnvironment) !== JSON.stringify(updatedEnvironment)) {
         if (updatedEnvironment.requestId) delete updatedEnvironment.requestId
         this.props.update_environment({
-          ...updatedEnvironment,
+          ...updatedEnvironment
         })
       }
     }
@@ -110,7 +110,7 @@ class EnvironmentVariables extends Component {
     if (originalVariableNames[len.toString() - 1] !== "") {
       environment.variables[len.toString()] = {
         initialValue: "",
-        currentValue: "",
+        currentValue: ""
       }
     }
     this.setState({ environment, originalVariableNames, updatedVariableNames })
@@ -216,7 +216,7 @@ class EnvironmentVariables extends Component {
                               </td>
                             )}
                           </tr>
-                        ) : null,
+                        ) : null
                       )}
                     </tbody>
                   </Table>

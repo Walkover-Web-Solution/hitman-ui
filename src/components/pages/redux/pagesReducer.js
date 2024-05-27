@@ -31,13 +31,13 @@ function pagesReducer(state = initialState, action) {
       state[action.data.id].state = action.data.state
       state[action.data.id].isPublished = action.data.isPublished
       return {
-        ...state,
+        ...state
       }
 
     case publicEndpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
       return {
         ...state,
-        [action.editedEndpoint.id]: action.editedEndpoint,
+        [action.editedEndpoint.id]: action.editedEndpoint
       }
 
     case pagesActionTypes.ON_PARENT_PAGE_ADDED: {
@@ -68,7 +68,7 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.ADD_VERSION_REQUEST:
       return {
         ...state,
-        [action.newVersion.requestId]: action.newVersion,
+        [action.newVersion.requestId]: action.newVersion
       }
 
     case pagesActionTypes.ON_PAGE_ADDED_ERROR:
@@ -80,7 +80,7 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.ADD_VERSION_REQUEST:
       return {
         ...state,
-        [action.newVersion.requestId]: action.newVersion,
+        [action.newVersion.requestId]: action.newVersion
       }
 
     case pagesActionTypes.ON_PARENTPAGE_VERSION_ADDED:
@@ -109,7 +109,7 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.UPDATE_PAGE_REQUEST:
       return {
         ...state,
-        [action.editedPage.id]: action.editedPage,
+        [action.editedPage.id]: action.editedPage
       }
 
     case pagesActionTypes.ON_PAGE_UPDATED:
@@ -117,15 +117,15 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.response.id]: {
           ...state[action.response.id],
-          ...action.response,
-        },
+          ...action.response
+        }
       }
 
     case pagesActionTypes.ON_PAGE_UPDATED_ERROR:
       toast.error(action.error)
       return {
         ...state,
-        [action.originalPage.id]: action.originalPage,
+        [action.originalPage.id]: action.originalPage
       }
 
     case pagesActionTypes.DELETE_PAGE_REQUEST:
@@ -141,7 +141,7 @@ function pagesReducer(state = initialState, action) {
       if (action.error.status === 404) return state
       return {
         ...state,
-        [action.page.id]: action.page,
+        [action.page.id]: action.page
       }
 
     case pagesActionTypes.ON_PAGE_DUPLICATED:
@@ -164,7 +164,7 @@ function pagesReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS:
       return {
         ...state,
-        [action.data.id]: action.data,
+        [action.data.id]: action.data
       }
 
     case publicEndpointsActionTypes.ON_PAGE_STATE_ERROR:
@@ -257,7 +257,7 @@ function pagesReducer(state = initialState, action) {
       if (action?.error?.status === 404) return state
       return {
         ...state,
-        [action.endpoint.id]: action.endpoint,
+        [action.endpoint.id]: action.endpoint
       }
 
     case pagesActionTypes.ON_ENDPOINT_UPDATED:
@@ -267,8 +267,8 @@ function pagesReducer(state = initialState, action) {
           ...state[action.response.id],
           requestType: action.response?.requestType,
           name: action.response?.name,
-          state: action.response?.state,
-        },
+          state: action.response?.state
+        }
       }
     case pagesActionTypes.ON_DRAG_DROP: {
       let pages = { ...state }
@@ -284,7 +284,7 @@ function pagesReducer(state = initialState, action) {
       state[action?.response?.parentId].child.push(action?.response?.id)
       return {
         ...state,
-        [action?.response?.id]: action?.response,
+        [action?.response?.id]: action?.response
       }
     case publishDocsActionTypes.ON_DEFAULT_VERSION:
       pages = { ...state }

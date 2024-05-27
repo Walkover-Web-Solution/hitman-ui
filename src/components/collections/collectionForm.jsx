@@ -11,14 +11,14 @@ import { defaultViewTypes } from "./defaultViewModal/defaultViewModal"
 
 const mapStateToProps = (state) => {
   return {
-    collections: state.collections,
+    collections: state.collections
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     add_collection: (newCollection, openSelectedCollection, callback) => dispatch(addCollection(newCollection, openSelectedCollection, callback)),
-    update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback)),
+    update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback))
   }
 }
 
@@ -29,7 +29,7 @@ class CollectionForm extends Form {
       data: {
         name: "",
         description: "",
-        defaultView: defaultViewTypes.TESTING,
+        defaultView: defaultViewTypes.TESTING
       },
       collectionId: "",
       errors: {},
@@ -37,15 +37,15 @@ class CollectionForm extends Form {
       step: 1,
       viewLoader: {
         testing: false,
-        doc: false,
+        doc: false
       },
-      updating: false,
+      updating: false
     }
 
     this.schema = {
       name: Joi.string().min(3).max(50).trim().required().label("Collection Name"),
       description: Joi.string().allow(null, "").label("Description"),
-      defaultView: Joi.string().allow(null, "").label("Default View"),
+      defaultView: Joi.string().allow(null, "").label("Default View")
     }
   }
 
@@ -57,7 +57,7 @@ class CollectionForm extends Form {
       const { name, description } = this.props.edited_collection
       data = {
         name,
-        description,
+        description
       }
     }
     this.setState({ data, collectionId })
@@ -68,10 +68,10 @@ class CollectionForm extends Form {
       {
         ...this.state.data,
         id: this.state.collectionId,
-        defaultView,
+        defaultView
       },
       null,
-      this.redirectToCollection.bind(this),
+      this.redirectToCollection.bind(this)
     )
   }
 
@@ -94,15 +94,15 @@ class CollectionForm extends Form {
     const requestId = shortid.generate()
     const defaultDocProperties = {
       defaultLogoUrl: "",
-      defaultTitle: "",
+      defaultTitle: ""
     }
     this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView }, null, this.redirectToCollection.bind(this))
     this.setState({
       data: {
         name: "",
         description: "",
-        defaultView: defaultViewTypes.TESTING,
-      },
+        defaultView: defaultViewTypes.TESTING
+      }
     })
     moveToNextStep(1)
   }

@@ -13,13 +13,13 @@ export const fetchTabsFromRedux = () => {
     const tabsList = state.tabs.tabs
     const tabsMetadata = {
       activeTabId: state.tabs.activeTabId,
-      tabsOrder: state.tabs.tabsOrder,
+      tabsOrder: state.tabs.tabsOrder
     }
 
     dispatch({
       type: tabsActionTypes.FETCH_TABS_FROM_REDUX,
       tabsList,
-      tabsMetadata,
+      tabsMetadata
     })
   }
 }
@@ -44,8 +44,8 @@ export const addNewTab = () => {
         status: tabStatusTypes.NEW,
         previewMode: false,
         isModified: false,
-        state: {},
-      },
+        state: {}
+      }
     })
     dispatch(setActiveTabId(id))
     history.push({ pathname: `/orgs/${orgId}/dashboard/endpoint/new` })
@@ -95,7 +95,7 @@ export const setActiveTabId = (tabId) => {
   return async (dispatch) => {
     dispatch({
       type: tabsActionTypes.SET_ACTIVE_TAB_ID,
-      tabId,
+      tabId
     })
   }
 }
@@ -104,7 +104,7 @@ export const setTabsOrder = (tabsOrder) => {
   return async (dispatch) => {
     dispatch({
       type: tabsActionTypes.SET_TABS_ORDER,
-      tabsOrder,
+      tabsOrder
     })
   }
 }
@@ -120,11 +120,11 @@ export const replaceTab = (oldTabId, newTab) => {
     dispatch({
       type: tabsActionTypes.REPLACE_TAB,
       oldTabId,
-      newTab,
+      newTab
     })
     dispatch({
       type: tabsActionTypes.SET_TABS_ORDER,
-      tabsOrder,
+      tabsOrder
     })
   }
 }

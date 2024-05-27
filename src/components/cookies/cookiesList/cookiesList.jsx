@@ -5,8 +5,8 @@ class CookiesList extends Component {
   state = {
     domains: [],
     currentDomain: {
-      domain: "",
-    },
+      domain: ""
+    }
   }
 
   handleChange(e) {
@@ -26,7 +26,7 @@ class CookiesList extends Component {
     const deleteModalData = {
       title: "Delete Domain",
       message: "Are you sure, Do you want to delete this domain?",
-      domain,
+      domain
     }
 
     this.props.toggleDelete(true, deleteModalData)

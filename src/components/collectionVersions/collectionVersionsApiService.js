@@ -30,5 +30,5 @@ export function duplicateVersion(versionId) {
 export default {
   updateCollectionVersion,
   duplicateVersion,
-  saveParentPageVersion,
+  saveParentPageVersion
 }

@@ -52,7 +52,7 @@ class Environment {
     for (const [key, value] of Object.entries(this.environment)) {
       environment[key] = {
         initialValue: "",
-        currentValue: value,
+        currentValue: value
       }
     }
     return environment
@@ -72,7 +72,7 @@ class Request {
       url: this.url,
       headers: this.headers.getHeaders(),
       method: this.method,
-      body: this.body,
+      body: this.body
     }
   }
 }
@@ -90,7 +90,7 @@ class Response {
       status: this.status,
       headers: this.headers.getHeaders(),
       statusText: this.statusText,
-      body: this.body,
+      body: this.body
     }
   }
 }
@@ -168,11 +168,11 @@ export function run(code, sandbox) {
           }
         })
         consoleOutput.push(formattedArgs.join(" ")) // Capture log messages
-      },
+      }
     },
     expect: chai.expect,
     _: _,
-    moment: moment,
+    moment: moment
   }
 
   try {
@@ -197,5 +197,5 @@ export function initialize({ request, environment, response }) {
 
 export default {
   run,
-  initialize,
+  initialize
 }

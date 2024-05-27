@@ -17,13 +17,13 @@ const options = {
   cacheTime: 5000000,
   enabled: true,
   staleTime: Infinity,
-  retry: 3,
+  retry: 3
 }
 
 function TokenGenerator(props) {
   const { activeTabId } = useSelector((state) => {
     return {
-      activeTabId: state.tabs.activeTabId,
+      activeTabId: state.tabs.activeTabId
     }
   })
   const params = useParams()
@@ -52,7 +52,7 @@ function TokenGenerator(props) {
     clientAuthentication: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientAuthentication || clientAuthenticationTypeEnums?.sendOnHeaders,
     codeMethod: endpointStoredData?.authorizationData?.authorization?.oauth2?.codeMethod || codeMethodTypesEnums.sh256,
     codeVerifier: endpointStoredData?.authorizationData?.authorization?.oauth2?.codeVerifier || "",
-    refreshTokenUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.refreshTokenUrl || "",
+    refreshTokenUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.refreshTokenUrl || ""
   })
 
   const dataRef = useRef(data)
@@ -142,7 +142,7 @@ function TokenGenerator(props) {
       state: tokenDetails?.state || null,
       accessTokenUrl: dataRef.current?.accessTokenUrl || null,
       tokenType: tokenDetails?.token_type || null,
-      createdTime: tokenDetails.createdTime,
+      createdTime: tokenDetails.createdTime
     }
     dispatch(addToken(storeTokenDetails))
   }

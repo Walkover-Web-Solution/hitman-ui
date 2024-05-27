@@ -13,7 +13,7 @@ export class Script extends Component {
       selectedRawBodyType: "javascript",
       scriptEditorText: props.scriptText || "",
       preScriptText: "",
-      postScriptText: "",
+      postScriptText: ""
     }
     this.scriptEditor = ""
     this.scriptFetched = false
@@ -49,7 +49,7 @@ export class Script extends Component {
     const currentRow = cursorPosition.row
     const nextLinePosition = {
       row: currentRow + 1,
-      column: 0,
+      column: 0
     }
 
     const snippetText = `${snippet?.value}\n`
@@ -59,7 +59,7 @@ export class Script extends Component {
     this.props.handleScriptChange(updatedScriptText, this.props.type)
     const endOfInsertedSnippetPosition = {
       row: nextLinePosition.row + snippetText.split("\n").length - 2, // Adjust for the newline character
-      column: snippetText.split("\n")[snippetText.split("\n").length - 2].length, // Column position of the end of the last line of the snippet
+      column: snippetText.split("\n")[snippetText.split("\n").length - 2].length // Column position of the end of the last line of the snippet
     }
     editor.gotoLine(endOfInsertedSnippetPosition.row + 1, endOfInsertedSnippetPosition.column)
     editor.scrollToLine(endOfInsertedSnippetPosition.row)
@@ -77,10 +77,10 @@ export class Script extends Component {
           value={this.state.scriptEditorText}
           onChange={this.handleChange.bind(this)}
           setOptions={{
-            showLineNumbers: true,
+            showLineNumbers: true
           }}
           editorProps={{
-            $blockScrolling: false,
+            $blockScrolling: false
           }}
           ref={this.scriptEditorRef}
           onLoad={(editor) => {

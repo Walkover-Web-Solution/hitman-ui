@@ -6,5 +6,5 @@ function showDeleteGroupModal(props, onHide, title, message, selectedGroup) {
 }
 
 export default {
-  showDeleteGroupModal,
+  showDeleteGroupModal
 }

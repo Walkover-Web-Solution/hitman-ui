@@ -5,13 +5,13 @@ import { fetchFeedbacks } from "./redux/publishDocsActions"
 
 const mapStateToProps = (state) => {
   return {
-    feedbacks: state.feedbacks,
+    feedbacks: state.feedbacks
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetch_feedbacks: (collectionId, orgId) => dispatch(fetchFeedbacks(collectionId, orgId)),
+    fetch_feedbacks: (collectionId, orgId) => dispatch(fetchFeedbacks(collectionId, orgId))
   }
 }
 class PublishDocsReview extends Component {
@@ -20,7 +20,7 @@ class PublishDocsReview extends Component {
     this.state = {
       selectedItemType: "endpoint",
       selectedItemId: null,
-      filter: false,
+      filter: false
     }
   }
 

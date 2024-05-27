@@ -21,88 +21,88 @@ const languages = {
   node: {
     name: "Node",
     mode: "javascript",
-    imagePath: node,
+    imagePath: node
   },
   c: {
     name: "C",
     mode: "c_cpp",
-    imagePath: c,
+    imagePath: c
   },
   python: {
     name: "Python",
     mode: "python",
-    imagePath: python,
+    imagePath: python
   },
   javascript: {
     name: "Javascript",
     mode: "javascript",
-    imagePath: js,
+    imagePath: js
   },
   php: {
     name: "PHP",
     mode: "php",
-    imagePath: php,
+    imagePath: php
   },
   java: {
     name: "JAVA",
     mode: "java",
-    imagePath: java,
+    imagePath: java
   },
   shell: {
     name: "Shell",
     mode: "sh",
-    imagePath: shell,
+    imagePath: shell
   },
   csharp: {
     name: "C#",
     mode: "csharp",
-    imagePath: csharp,
+    imagePath: csharp
   },
   r: {
     name: "R",
     mode: "r",
-    imagePath: r,
+    imagePath: r
   },
   ruby: {
     name: "Ruby",
     mode: "ruby",
-    imagePath: ruby,
+    imagePath: ruby
   },
   swift: {
     name: "Swift",
     mode: "swift",
-    imagePath: swift,
+    imagePath: swift
   },
   http: {
     name: "HTTP",
     mode: "sh",
-    imagePath: http,
+    imagePath: http
   },
   clojure: {
     name: "Clojure",
     mode: "clojure",
-    imagePath: clojure,
+    imagePath: clojure
   },
   go: {
     name: "go",
     mode: "golang",
-    imagePath: go,
+    imagePath: go
   },
   objc: {
     name: "Objective C",
     mode: "objectivec",
-    imagePath: objectivec,
+    imagePath: objectivec
   },
   ocaml: {
     name: "ocaml",
     mode: "ocaml",
-    imagePath: ocaml,
+    imagePath: ocaml
   },
   axiosNode: {
     name: "Axios",
     mode: "javascript",
-    imagePath: node,
-  },
+    imagePath: node
+  }
 }
 
 export { languages, primaryLanguages, secondaryLanguages }

@@ -15,8 +15,8 @@ const hostContainerEnum = {
   hosts: {
     // customHost: { key: 'customHost', label: 'Custom Host' },
     environmentHost: { key: "environmentHost", label: "Environment Host" },
-    versionHost: { key: "versionHost", label: "Version Host" },
-  },
+    versionHost: { key: "versionHost", label: "Version Host" }
+  }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     modals: state.modals,
-    tabs: state?.tabs,
+    tabs: state?.tabs
   }
 }
 class HostContainer extends Component {
@@ -41,7 +41,7 @@ class HostContainer extends Component {
       versionHost: "",
       selectedHost: "",
       groupId: null,
-      versionId: null,
+      versionId: null
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -114,7 +114,7 @@ class HostContainer extends Component {
     untitledEndpointData.data.updatedUri = data?.datalistUri
     untitledEndpointData.host = {
       BASE_URL: data?.datalistHost,
-      selectedHost: "",
+      selectedHost: ""
     }
 
     // setting path variables
@@ -130,7 +130,7 @@ class HostContainer extends Component {
         checked: "true",
         value: "",
         description: "",
-        key: pathVariableKeys[i],
+        key: pathVariableKeys[i]
       }
       untitledEndpointData.pathVariables.push(eachData)
     }
@@ -151,15 +151,15 @@ class HostContainer extends Component {
           payload: {
             value: {},
             type: "object",
-            description: "",
-          },
+            description: ""
+          }
         }
 
         for (let key in parsedData.data) {
           untitledEndpointData.bodyDescription.payload.value[key] = {
             value: parsedData.data[key],
             type: "string",
-            description: "",
+            description: ""
           }
         }
       }
@@ -183,7 +183,7 @@ class HostContainer extends Component {
             key: key,
             value: parsedData.data[key],
             description: "",
-            type: "text",
+            type: "text"
           }
           untitledEndpointData.data.body[bodyType].push(eachData)
         }
@@ -197,7 +197,7 @@ class HostContainer extends Component {
         checked: "true",
         value: parsedData.headers[key],
         description: "",
-        key: key,
+        key: key
       }
       untitledEndpointData.originalHeaders.push(eachDataOriginal)
     }
@@ -209,7 +209,7 @@ class HostContainer extends Component {
         checked: "true",
         value: queryParams[key],
         description: "",
-        key: key,
+        key: key
       }
       untitledEndpointData.originalParams.push(eachDataOriginal)
     }
@@ -237,12 +237,12 @@ class HostContainer extends Component {
     this.setState(
       {
         ...data,
-        showDatalist: e.target.value === "",
+        showDatalist: e.target.value === ""
       },
       () => {
         this.props.props_from_parent("HostAndUri")
         this.setParentHostAndUri()
-      },
+      }
     )
   }
 
@@ -252,9 +252,9 @@ class HostContainer extends Component {
         datalistHost: host || this.props?.endpointContent?.host?.BASE_URL,
         showDatalist: false,
         selectedHost: type,
-        Flag: true,
+        Flag: true
       },
-      () => this.setParentHostAndUri(),
+      () => this.setParentHostAndUri()
     )
   }
 
@@ -286,7 +286,7 @@ class HostContainer extends Component {
       datalistHost: "",
       datalistUri: "",
       selectedHost: "",
-      Flag: true,
+      Flag: true
     }
     if (hostName) {
       const selectedHost = this.selectCurrentHost(hostName)
@@ -343,7 +343,7 @@ class HostContainer extends Component {
                   <div>{this.state[host.key]}</div>
                   <small className='text-muted font-italic'>{host.label}</small>
                 </div>
-              ),
+              )
           )}
         </div>
       </div>

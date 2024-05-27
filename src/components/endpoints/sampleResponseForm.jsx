@@ -8,14 +8,14 @@ class SampleResponseForm extends Form {
     super(props)
     this.state = {
       data: { status: "", description: "", body: "", title: "" },
-      errors: {},
+      errors: {}
     }
 
     this.schema = {
       title: Joi.string().required().max(5).label("Title: "),
       status: Joi.number().min(100).max(599).label("Status: "),
       description: Joi.string().allow(null, "").label("Description: "),
-      body: Joi.string().max(2000).allow(null, "", "null").label("Body: "),
+      body: Joi.string().max(2000).allow(null, "", "null").label("Body: ")
     }
   }
 
@@ -28,7 +28,7 @@ class SampleResponseForm extends Form {
         title,
         status: status ? String(status) : "",
         description,
-        body,
+        body
       }
     }
     this.setState({ data })

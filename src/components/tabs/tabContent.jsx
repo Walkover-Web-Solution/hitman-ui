@@ -15,7 +15,7 @@ import { withRouter } from "react-router"
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    update_collection: (editedCollection) => dispatch(updateCollection(editedCollection)),
+    update_collection: (editedCollection) => dispatch(updateCollection(editedCollection))
   }
 }
 
@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
     isTabsLoaded: state?.tabs?.loaded,
     tabsOrder: state?.tabs?.tabsOrder,
     activeTabId: state.tabs.activeTabId,
-    tabData: state?.tabs?.tabs,
+    tabData: state?.tabs?.tabs
   }
 }
 

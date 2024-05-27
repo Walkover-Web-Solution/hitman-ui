@@ -32,7 +32,7 @@ const publishDocsEnum = {
   REJECT_STATE: 3,
   APPROVED_STATE: 2,
   DRAFT_STATE: 1,
-  EMPTY_STRING: "",
+  EMPTY_STRING: ""
 }
 const DragHandle = SortableHandle(() => (
   <span className='dragIcon mr-2'>
@@ -58,7 +58,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     reject_page: (page) => dispatch(rejectPage(page)),
-    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
   }
 }
 
@@ -68,7 +68,7 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     groups: state.groups,
-    endpoints: state.pages,
+    endpoints: state.pages
   }
 }
 
@@ -82,7 +82,7 @@ class PublishDocs extends Component {
       openPageSettingsSidebar: false,
       publishLoader: false,
       publishPageLoader: false,
-      showPublishDocConfirmModal: false,
+      showPublishDocConfirmModal: false
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -97,7 +97,7 @@ class PublishDocs extends Component {
       selectedVersionId: Object.keys(collectionInfo.versions)[0],
       selectedGroupId: items?.selectedGroupId || null,
       selectedEndpointId: items?.selectedEndpointId || null,
-      selectedPageId: items?.selectedPageId || null,
+      selectedPageId: items?.selectedPageId || null
     })
   }
 
@@ -125,7 +125,7 @@ class PublishDocs extends Component {
           selectedVersionId: Object.keys(collectionInfo.versions)[0],
           selectedGroupId: items?.selectedGroupId || null,
           selectedEndpointId: items?.selectedEndpointId || null,
-          selectedPageId: items?.selectedPageId || null,
+          selectedPageId: items?.selectedPageId || null
         })
       }
     }
@@ -143,7 +143,7 @@ class PublishDocs extends Component {
             const items = {
               selectedGroupId: groupId,
               selectedEndpointId: Object.keys(endpoints)[i],
-              selectedPageId: null,
+              selectedPageId: null
             }
             return items
           }
@@ -153,7 +153,7 @@ class PublishDocs extends Component {
             const items = {
               selectedGroupId: null,
               selectedEndpointId: null,
-              selectedPageId: Object.keys(pages)[i],
+              selectedPageId: Object.keys(pages)[i]
             }
             return items
           }
@@ -163,7 +163,7 @@ class PublishDocs extends Component {
             const items = {
               selectedGroupId: groupId,
               selectedEndpointId: null,
-              selectedPageId: Object.keys(pages)[i],
+              selectedPageId: Object.keys(pages)[i]
             }
             return items
           }
@@ -171,7 +171,7 @@ class PublishDocs extends Component {
         const items = {
           selectedGroupId: null,
           selectedEndpointId: null,
-          selectedPageId: null,
+          selectedPageId: null
         }
         return items
       }
@@ -188,7 +188,7 @@ class PublishDocs extends Component {
       versions,
       groups,
       pages,
-      endpoints,
+      endpoints
     })
     return { versions, groups, pages, endpoints }
   }
@@ -196,7 +196,7 @@ class PublishDocs extends Component {
   setSelectedCollection(collection) {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-      search: `?collectionId=${collection?.id}`,
+      search: `?collectionId=${collection?.id}`
     })
   }
 
@@ -204,7 +204,7 @@ class PublishDocs extends Component {
     this.setState({
       selectedGroupId: groupId,
       selectedEndpointId: endpointId,
-      selectedPageId: false,
+      selectedPageId: false
     })
   }
 
@@ -214,7 +214,7 @@ class PublishDocs extends Component {
       selectedVersionId: e.currentTarget.value,
       selectedGroupId: items?.selectedGroupId || null,
       selectedEndpointId: items?.selectedEndpointId || null,
-      selectedPageId: items?.selectedPageId || null,
+      selectedPageId: items?.selectedPageId || null
     })
   }
 
@@ -235,7 +235,7 @@ class PublishDocs extends Component {
       this.setState({
         selectedGroupId: items?.selectedGroupId || null,
         selectedEndpointId: items?.selectedEndpointId || null,
-        selectedPageId: items?.selectedPageId || null,
+        selectedPageId: items?.selectedPageId || null
       })
     }
     this.props.reject_endpoint(this.props.endpoints[endpointId])
@@ -245,7 +245,7 @@ class PublishDocs extends Component {
     this.setState({
       selectedGroupId: groupId,
       selectedEndpointId: false,
-      selectedPageId: pageId,
+      selectedPageId: pageId
     })
   }
 
@@ -263,7 +263,7 @@ class PublishDocs extends Component {
       this.setState({
         selectedGroupId: items?.selectedGroupId || null,
         selectedEndpointId: items?.selectedEndpointId || null,
-        selectedPageId: items?.selectedPageId || null,
+        selectedPageId: items?.selectedPageId || null
       })
     }
   }
@@ -507,7 +507,7 @@ class PublishDocs extends Component {
               {this.props.collections[id]?.name}
               {this.collectionHasChanges(id) && <i className='fas fa-circle' />}
             </Dropdown.Item>
-          ),
+          )
       )
     }
   }
@@ -622,13 +622,13 @@ class PublishDocs extends Component {
       isPublished: false,
       publishedEndpoint: {},
       state: 1,
-      position: null,
+      position: null
     })
     const items = this.getInitialItems(this.state.selectedVersionId, this.state.groups, this.state.endpoints, this.state.pages, endpointId)
     this.setState({
       selectedGroupId: items?.selectedGroupId || null,
       selectedEndpointId: items?.selectedEndpointId || null,
-      selectedPageId: items?.selectedPageId || null,
+      selectedPageId: items?.selectedPageId || null
     })
   }
 
@@ -643,7 +643,7 @@ class PublishDocs extends Component {
     this.setState({
       selectedGroupId: items?.selectedGroupId || null,
       selectedEndpointId: items?.selectedEndpointId || null,
-      selectedPageId: items?.selectedPageId || null,
+      selectedPageId: items?.selectedPageId || null
     })
   }
 
@@ -776,28 +776,28 @@ class PublishDocs extends Component {
       body: {
         isChanged: null,
         type: null,
-        value: null,
+        value: null
       },
       bodyDescription: null,
       headers: {
         isChanged: null,
-        items: {},
+        items: {}
       },
       name: null,
       params: {
         isChanged: null,
-        items: {},
+        items: {}
       },
       pathVariables: {
         isChanged: null,
-        items: {},
+        items: {}
       },
       requestType: null,
       sampleResponse: {
         isChanged: null,
-        items: {},
+        items: {}
       },
-      uri: null,
+      uri: null
     }
     if (selectedEndpointId && this.state.endpoints[selectedEndpointId]) {
       const endpoint = this.state.endpoints[selectedEndpointId]
@@ -811,7 +811,7 @@ class PublishDocs extends Component {
           body: {
             isChanged: !isEqual(originalEndpoint.body, currentChanges.body),
             type: !isEqual(originalEndpoint.body.type, currentChanges.body.type),
-            value: currentChanges.body.type === bodyTypesEnums["multipart/form-data"] || currentChanges.body.type === bodyTypesEnums["application/x-www-form-urlencoded"] ? makeHighlightsData(originalEndpoint.body.value, currentChanges.body.value, "body") : !isEqual(originalEndpoint.body.value, currentChanges.body.value),
+            value: currentChanges.body.type === bodyTypesEnums["multipart/form-data"] || currentChanges.body.type === bodyTypesEnums["application/x-www-form-urlencoded"] ? makeHighlightsData(originalEndpoint.body.value, currentChanges.body.value, "body") : !isEqual(originalEndpoint.body.value, currentChanges.body.value)
           },
           bodyDescription: null,
           headers: makeHighlightsData(originalEndpoint.headers, currentChanges.headers, "headers"),
@@ -820,7 +820,7 @@ class PublishDocs extends Component {
           pathVariables: makeHighlightsData(originalEndpoint.pathVariables, currentChanges.pathVariables, "pathVariables"),
           requestType: !isEqual(originalEndpoint.requestType, currentChanges.requestType),
           sampleResponse: makeHighlightsData(originalEndpoint.sampleResponse, currentChanges.sampleResponse, "sampleResponse"),
-          uri: !isEqual(originalEndpoint.uri, currentChanges.uri),
+          uri: !isEqual(originalEndpoint.uri, currentChanges.uri)
         }
         return result
       }

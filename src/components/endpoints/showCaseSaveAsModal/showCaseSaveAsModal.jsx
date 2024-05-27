@@ -8,7 +8,7 @@ export default function ShowCaseSaveAsModal(props) {
     return {
       pages: state.pages,
       collections: state.collections,
-      activeTabId: state.tabs.activeTabId,
+      activeTabId: state.tabs.activeTabId
     }
   })
 
@@ -50,9 +50,9 @@ export default function ShowCaseSaveAsModal(props) {
       currentId,
       {
         endpointName: props?.name || "",
-        endpointDescription: props?.description || "",
+        endpointDescription: props?.description || ""
       },
-      "isHistory",
+      "isHistory"
     )
     props.onHide()
   }

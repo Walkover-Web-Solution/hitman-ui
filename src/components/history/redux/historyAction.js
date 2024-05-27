@@ -26,14 +26,14 @@ export const addHistory = (historyData) => {
 export const onHistoryDataFetched = (data) => {
   return {
     type: historyActionTypes.FETCH_HISTORY_FROM_LOCAL,
-    data,
+    data
   }
 }
 
 export const onHistoryAdded = (data) => {
   return {
     type: historyActionTypes.ADD_HISTORY,
-    data,
+    data
   }
 }
 export const onHistoryRemoved = () => {

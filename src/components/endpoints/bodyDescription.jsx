@@ -8,7 +8,7 @@ class BodyDescription extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      bodyDescription: null,
+      bodyDescription: null
     }
   }
 

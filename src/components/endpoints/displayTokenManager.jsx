@@ -11,7 +11,7 @@ const tokenDetailsToShow = ["tokenName", "accessToken", "grantType", "scope", "c
 function AccessTokenManager(props) {
   const { tokenDetails } = useSelector((state) => {
     return {
-      tokenDetails: state?.tokenData?.tokenDetails || {},
+      tokenDetails: state?.tokenData?.tokenDetails || {}
     }
   })
 

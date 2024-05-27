@@ -51,8 +51,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      enableRemoteModule: true,
-    },
+      enableRemoteModule: true
+    }
   })
   const startURL = isDev ? "http://localhost:3000" : `file://${path.join(__dirname, "/index.html")}`
   mainWindow.loadURL(startURL)
@@ -202,37 +202,37 @@ const sendUpdateStatusToWindow = (text) => {
 autoUpdater.on("checking-for-update", () => {
   sendUpdateStatusToWindow({
     type: "CHECKING_FOR_UPDATES",
-    data: null,
+    data: null
   })
 })
 autoUpdater.on("update-available", (info) => {
   sendUpdateStatusToWindow({
     type: "UPDATE_AVAILABLE",
-    data: null,
+    data: null
   })
 })
 autoUpdater.on("update-not-available", (info) => {
   sendUpdateStatusToWindow({
     type: "UPDATE_NOT_AVAILABLE",
-    data: null,
+    data: null
   })
 })
 autoUpdater.on("error", (err) => {
   log.error(err)
   sendUpdateStatusToWindow({
     type: "ERROR",
-    data: err,
+    data: err
   })
 })
 autoUpdater.on("download-progress", (progressObj) => {
   sendUpdateStatusToWindow({
     type: "DOWNLOAD_PROGRESS",
-    data: progressObj,
+    data: progressObj
   })
 })
 autoUpdater.on("update-downloaded", (info) => {
   sendUpdateStatusToWindow({
     type: "UPDATE_DOWNLOADED",
-    data: null,
+    data: null
   })
 })

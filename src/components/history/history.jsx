@@ -21,20 +21,20 @@ function compareByCreatedAt(a, b) {
 const mapStateToProps = (state) => {
   return {
     endpoints: state.pages,
-    collections: state.collections,
+    collections: state.collections
   }
 }
 
 class History extends Component {
   state = {
     show: false,
-    historySnapshot: null,
+    historySnapshot: null
   }
 
   componentDidMount() {
     if (this.props.historySnapshots) {
       this.setState({
-        historySnapshot: Object.values(this.props.historySnapshots),
+        historySnapshot: Object.values(this.props.historySnapshots)
       })
     }
   }
@@ -42,7 +42,7 @@ class History extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.props.historySnapshots !== prevProps.historySnapshots) {
       this.setState({
-        historySnapshot: Object.values(this.props.historySnapshots),
+        historySnapshot: Object.values(this.props.historySnapshots)
       })
     }
   }
@@ -50,7 +50,7 @@ class History extends Component {
   openHistorySnapshot(id) {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/history/${id}`,
-      historySnapshotId: id,
+      historySnapshotId: id
     })
   }
 

@@ -23,12 +23,12 @@ const mapStateToProps = (state) => {
     responseView: state.responseView,
     pages: state.pages,
     tabState: state.tabs.tabs,
-    tabsOrder: state.tabs.tabsOrder,
+    tabsOrder: state.tabs.tabsOrder
   }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    set_response_view: (view) => dispatch(onToggle(view)),
+    set_response_view: (view) => dispatch(onToggle(view))
   }
 }
 const withQuery = (WrappedComponent) => {
@@ -46,7 +46,7 @@ class CustomTabs extends Component {
       leftScroll: 0,
       clientScroll: this.navRef.current?.clientWidth,
       windowScroll: this.navRef.current?.scrollWidth,
-      showHistoryContainer: false,
+      showHistoryContainer: false
     }
   }
 
@@ -257,7 +257,7 @@ class CustomTabs extends Component {
     this.setState({
       leftScroll: this.navRef.current?.scrollLeft,
       windowScroll: this.navRef.current?.scrollWidth,
-      clientScroll: this.navRef.current?.clientWidth,
+      clientScroll: this.navRef.current?.clientWidth
     })
   }
 
@@ -283,7 +283,7 @@ class CustomTabs extends Component {
     const y = 1
     x -= this.navRef.current.scrollLeft
     const styles = {
-      transform: `translate(${x}px, ${y}px)`,
+      transform: `translate(${x}px, ${y}px)`
     }
     const tab = this.props.tabs.tabs[tabId]
     if (!tab) return
@@ -341,7 +341,7 @@ class CustomTabs extends Component {
       this.props.set_response_view("bottom")
     }
     this.setState((prevState) => ({
-      showHistoryContainer: !prevState.showHistoryContainer,
+      showHistoryContainer: !prevState.showHistoryContainer
     }))
   }
 
@@ -379,7 +379,7 @@ class CustomTabs extends Component {
       right: "0px",
       height: "95vh",
       width: "24%",
-      float: "right",
+      float: "right"
     }
     const history = {
       position: "fixed",
@@ -389,20 +389,20 @@ class CustomTabs extends Component {
       height: "95vh",
       width: "24%",
       float: "right",
-      "z-index": "9999",
+      "z-index": "9999"
     }
     const Heading = {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
       padding: "10px",
-      borderBottom: "0.5px solid #ddd",
+      borderBottom: "0.5px solid #ddd"
     }
     const closeButton = {
       background: "none",
       border: "none",
       fontSize: "1.5em",
-      cursor: "pointer",
+      cursor: "pointer"
     }
     return (
       <>

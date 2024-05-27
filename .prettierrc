@@ -9,7 +9,7 @@
   "proseWrap": "preserve",
   "requirePragma": false,
   "semi": false,
-  "trailingComma": "all",
+  "trailingComma": "none",
   "useTabs": false,
   "vueIndentScriptAndStyle": false,
   "printWidth": 400,

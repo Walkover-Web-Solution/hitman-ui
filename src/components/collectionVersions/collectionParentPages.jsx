@@ -34,7 +34,7 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     versions: state.versions,
     pages: state.pages,
-    clientData: state.clientData,
+    clientData: state.clientData
   }
 }
 
@@ -51,7 +51,7 @@ const mapDispatchToProps = (dispatch) => {
     update_isExpand_for_pages: (payload) => dispatch(addIsExpandedAction(payload)),
     set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload)),
     set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
 }
 
@@ -68,7 +68,7 @@ class CollectionParentPages extends Component {
         addEndpoint: false,
         addPage: false,
         share: false,
-        edit: false,
+        edit: false
       },
       showVersionForm: false,
       versionFormName: "",
@@ -77,7 +77,7 @@ class CollectionParentPages extends Component {
       selectedParentPageIndex: "",
       results: {
         pages: [],
-        endpoints: [],
+        endpoints: []
       },
       value: "",
       searchLoader: false,
@@ -89,7 +89,7 @@ class CollectionParentPages extends Component {
       clickedList: [],
       selectedCheckbox: null,
       isListVisible: false,
-      publishVersion: "",
+      publishVersion: ""
     }
     this.filterFlag = false
     this.eventkey = {}
@@ -99,7 +99,7 @@ class CollectionParentPages extends Component {
   componentDidMount() {
     if (!this.state.theme) {
       this.setState({
-        theme: this.props.collections[this.props.collection_id].theme,
+        theme: this.props.collections[this.props.collection_id].theme
       })
     }
 
@@ -114,7 +114,7 @@ class CollectionParentPages extends Component {
         selectedVersionId: defaultVersion.id,
         defaultVersionId: defaultVersion.id,
         selectedVersionName: defaultVersion.name,
-        selectedCheckbox: defaultVersion.name || null,
+        selectedCheckbox: defaultVersion.name || null
       })
     }
   }
@@ -182,8 +182,8 @@ class CollectionParentPages extends Component {
       this.setState({
         selectedParentPageIds: {
           ...this.state.selectedParentPageIds,
-          [id]: value,
-        },
+          [id]: value
+        }
       })
     }
   }
@@ -191,14 +191,14 @@ class CollectionParentPages extends Component {
   handleUpdate(collectionVersion) {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${this.props.collection_id}/pages/${collectionVersion.id}/edit`,
-      editCollectionVersion: collectionVersion,
+      editCollectionVersion: collectionVersion
     })
   }
 
   handleAddPage(pageId, collectionId) {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${collectionId}/versions/${pageId}/pages/new`,
-      pageId: pageId,
+      pageId: pageId
     })
   }
 
@@ -212,19 +212,19 @@ class CollectionParentPages extends Component {
     this.setState({
       showVersionForm: true,
       versionFormName: "Add New Version",
-      selectedParentPage: page,
+      selectedParentPage: page
     })
   }
 
   manageVersion() {
     this.setState({
-      showVersionForm: true,
+      showVersionForm: true
     })
   }
 
   hideModalVersion() {
     this.setState({
-      showVersionForm: false,
+      showVersionForm: false
     })
   }
 
@@ -242,8 +242,8 @@ class CollectionParentPages extends Component {
     this.setState({
       showAddCollectionModal: true,
       selectedPage: {
-        ...this.props.pages[pageId],
-      },
+        ...this.props.pages[pageId]
+      }
     })
   }
 
@@ -251,7 +251,7 @@ class CollectionParentPages extends Component {
     this.setState({
       showPageForm: { share: true },
       pageFormName: "Share Parent Page",
-      selectedPage: { ...this.props.pages[pageId] },
+      selectedPage: { ...this.props.pages[pageId] }
     })
   }
 
@@ -259,8 +259,8 @@ class CollectionParentPages extends Component {
     this.setState({
       showDeleteModal: true,
       selectedPage: {
-        ...this.props.pages[pageId],
-      },
+        ...this.props.pages[pageId]
+      }
     })
   }
 
@@ -311,7 +311,7 @@ class CollectionParentPages extends Component {
   openEditPageForm(pageId) {
     this.setState({
       showPageForm: { edit: true },
-      selectedPage: pageId,
+      selectedPage: pageId
     })
   }
 
@@ -331,13 +331,13 @@ class CollectionParentPages extends Component {
 
   setSelectedParentPage(e) {
     this.setState({
-      selectedParentPageIndex: e.currentTarget.value,
+      selectedParentPageIndex: e.currentTarget.value
     })
   }
   handleRedirect(id) {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`,
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
       })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
@@ -352,7 +352,7 @@ class CollectionParentPages extends Component {
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
-      id: id,
+      id: id
     })
   }
 
@@ -366,7 +366,7 @@ class CollectionParentPages extends Component {
       defaultVersionId: defaultVersionId,
       selectedVersionName: selectedVersionName,
       defaultVersionName: defaultVersionName,
-      rootId: rootId,
+      rootId: rootId
     })
     this.setState({ selectedVersionId: id })
   }
@@ -380,7 +380,7 @@ class CollectionParentPages extends Component {
     const object = this.props.pages
     const namesAndIds = list.map((itemId) => ({
       id: object[itemId].id,
-      name: object[itemId].name,
+      name: object[itemId].name
     }))
     this.setState({ clickedList: namesAndIds })
     this.toggleListVisibility()
@@ -394,14 +394,14 @@ class CollectionParentPages extends Component {
   openEditVersionForm(pageId) {
     this.setState({
       selectedVersion: {
-        ...this.props.pages[pageId],
-      },
+        ...this.props.pages[pageId]
+      }
     })
   }
 
   toggleListVisibility() {
     this.setState((prevState) => ({
-      isListVisible: !prevState.isListVisible,
+      isListVisible: !prevState.isListVisible
     }))
   }
   closeDefaultVersionForm() {
@@ -416,8 +416,8 @@ class CollectionParentPages extends Component {
     this.setState({
       showDeleteVersion: true,
       selectedVersion: {
-        ...this.props.pages[versionId],
-      },
+        ...this.props.pages[versionId]
+      }
     })
   }
 
@@ -554,7 +554,7 @@ class CollectionParentPages extends Component {
     const filteredPages = pages.filter((o) => o.name.match(new RegExp(value, "i")))
     const results = {
       pages: [],
-      endpoints: [],
+      endpoints: []
     }
     filteredPages.forEach((page) => {
       results.pages.push({ name: page.name, type: "page", id: page.id })
@@ -564,7 +564,7 @@ class CollectionParentPages extends Component {
         name: endpoint.name,
         type: "endpoint",
         id: endpoint.id,
-        requestType: endpoint.requestType,
+        requestType: endpoint.requestType
       })
     })
     this.setState({ results, searchLoader: false })
@@ -651,7 +651,7 @@ class CollectionParentPages extends Component {
     }
     if (link.length) {
       this.props.history.push({
-        pathname: link,
+        pathname: link
       })
     }
   }
@@ -662,7 +662,7 @@ class CollectionParentPages extends Component {
     this.setState({
       value: e.target.value,
       results: { pages: [], endpoints: [] },
-      searchLoader: true,
+      searchLoader: true
     })
   }
 
@@ -726,7 +726,7 @@ class CollectionParentPages extends Component {
             "Delete Version",
             `Are you sure you want to delete this Version?
         All your subpages and endpoints present in this version will be deleted.`,
-            this.state.selectedVersion,
+            this.state.selectedVersion
           )}
         {this.state.showDeleteModal &&
           pageService.showDeletePageModal(
@@ -735,7 +735,7 @@ class CollectionParentPages extends Component {
             "Delete Page",
             `Are you sure you want to delete this pages?
         All your versions,subpages and endpoints present in this page will be deleted.`,
-            this.state.selectedPage,
+            this.state.selectedPage
           )}
         {this.renderBody(this.props.rootParentId)}
       </>

@@ -33,6 +33,6 @@ createRoot(document.getElementById("root")).render(
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </PersistGate>
-  </Provider>,
+  </Provider>
 )
 registerServiceWorker()

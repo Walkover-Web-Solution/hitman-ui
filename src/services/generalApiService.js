@@ -24,5 +24,5 @@ export default {
   getCollectionsAndPages,
   getPublishedContentByPath,
   getPublishedContentByIdAndType,
-  moveCollectionsAndPages,
+  moveCollectionsAndPages
 }

@@ -7,7 +7,7 @@ import "./auth2Configurations.scss"
 export default function Auth2Configurations(props) {
   const { tokenDetails } = useSelector((state) => {
     return {
-      tokenDetails: state.tokenData.tokenDetails || {},
+      tokenDetails: state.tokenData.tokenDetails || {}
     }
   })
 

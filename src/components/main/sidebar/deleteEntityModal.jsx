@@ -9,7 +9,7 @@ import { withRouter } from "react-router"
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    close_modal: () => dispatch(closeModal()),
+    close_modal: () => dispatch(closeModal())
   }
 }
 
@@ -20,7 +20,7 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     groups: state.groups,
     pages: state.pages,
-    endpoints: state.endpoints,
+    endpoints: state.endpoints
   }
 }
 

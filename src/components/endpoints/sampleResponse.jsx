@@ -14,8 +14,8 @@ class SampleResponse extends Component {
       showSampleResponseForm: {
         add: false,
         edit: false,
-        delete: false,
-      },
+        delete: false
+      }
     }
   }
 
@@ -26,9 +26,9 @@ class SampleResponse extends Component {
       showSampleResponseForm,
       sampleResponseFormName: name,
       selectedSampleResponse: {
-        ...obj,
+        ...obj
       },
-      index,
+      index
     })
   }
 
@@ -43,9 +43,9 @@ class SampleResponse extends Component {
       showSampleResponseForm,
       sampleResponseFormName: name,
       selectedSampleResponse: {
-        ...obj,
+        ...obj
       },
-      index,
+      index
     })
   }
 
@@ -59,7 +59,7 @@ class SampleResponse extends Component {
     this.setState({
       showSampleResponseForm,
       sampleResponseFormName: name,
-      index,
+      index
     })
   }
 

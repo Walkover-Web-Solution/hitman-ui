@@ -13,7 +13,7 @@ export async function makeHttpRequestThroughAxios({ api: url, method, body: data
     headers,
     data,
     proxy: false,
-    cancelToken,
+    cancelToken
   }
   if (headers["content-type"] === bodyTypesEnums["multipart/form-data"]) {
     const bodyFormData = new FormData()
@@ -30,24 +30,24 @@ export async function makeHttpRequestThroughAxios({ api: url, method, body: data
       .then(function (response) {
         resolve({
           status: 200,
-          data: prepareResponse(response),
+          data: prepareResponse(response)
         })
       })
       .catch(function (error) {
         if (axios.isCancel(error)) {
           resolve({
             status: 200,
-            data: { success: false, error },
+            data: { success: false, error }
           })
         } else if (!error.response) {
           resolve({
             status: 200,
-            data: { success: false, error },
+            data: { success: false, error }
           })
         } else {
           resolve({
             status: 200,
-            data: prepareResponse(error.response),
+            data: prepareResponse(error.response)
           })
         }
       })
@@ -60,6 +60,6 @@ function prepareResponse(data) {
     status: data.status,
     statusText: data.statusText,
     response: data.data,
-    headers: data.headers,
+    headers: data.headers
   }
 }

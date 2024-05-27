@@ -59,7 +59,7 @@ options:
       "REACT_APP_AMPLITUDE_KEY",
       "REACT_APP_TINYMCE_API_KEY",
       "REACT_APP_TECHDOC_MAPPING_DOMAIN",
-      "PRERENDER_TOKEN",
+      "PRERENDER_TOKEN"
     ]
 
 timeout: 1200s

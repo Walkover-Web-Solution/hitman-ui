@@ -62,5 +62,5 @@ export default {
   delete: deleteMethod,
   request: requestMethod(),
   patch: patchMethod,
-  setProxyToken,
+  setProxyToken
 }

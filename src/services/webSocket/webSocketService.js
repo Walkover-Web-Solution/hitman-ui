@@ -45,7 +45,7 @@ const OperationTypes = {
   VERSION_DEFAULT: "version-default",
   DRAG_AND_DROP: "drag-and-drop",
   PUBLISH_PAGE_OR_ENDPOINT: "publish-page-or-endpoint",
-  UNPUBLISH_PAGE_OR_ENDPOINT: "unpublish-page-or-endpoint",
+  UNPUBLISH_PAGE_OR_ENDPOINT: "unpublish-page-or-endpoint"
 }
 
 const handleDeleteActions = (data) => {
@@ -68,8 +68,8 @@ const handleMessage = (message) => {
           id: message.data.rootParentId,
           type: 0,
           child: [],
-          collectionId: message.data.id,
-        },
+          collectionId: message.data.id
+        }
       }
       store.dispatch(onParentPageAdded(inivisiblePageData))
       break
@@ -142,7 +142,7 @@ const handleMessage = (message) => {
     case OperationTypes.DRAG_AND_DROP:
       store.dispatch({
         type: pagesActionTypes.ON_DRAG_DROP,
-        payload: message.data,
+        payload: message.data
       })
       break
 

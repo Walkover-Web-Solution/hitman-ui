@@ -27,7 +27,7 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     tabs: state.tabs,
     historySnapshots: state.history,
-    curlSlider: state.modals?.curlSlider || false,
+    curlSlider: state.modals?.curlSlider || false
   }
 }
 
@@ -41,7 +41,7 @@ const mapDispatchToProps = (dispatch) => {
     set_tabs_order: (tabsOrder) => dispatch(setTabsOrder(tabsOrder)),
     fetch_tabs_from_redux: (tabsOrder) => dispatch(fetchTabsFromRedux(tabsOrder)),
     replace_tab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab)),
-    update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload)),
+    update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload))
   }
 }
 
@@ -70,7 +70,7 @@ class ContentPanel extends Component {
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
-            state: {},
+            state: {}
           })
         }
       }
@@ -89,7 +89,7 @@ class ContentPanel extends Component {
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
-            state: {},
+            state: {}
           })
         }
       }
@@ -107,7 +107,7 @@ class ContentPanel extends Component {
           status: tabStatusTypes.SAVED,
           previewMode: false,
           isModified: false,
-          state: {},
+          state: {}
         })
       }
     }
@@ -130,7 +130,7 @@ class ContentPanel extends Component {
           status: tabStatusTypes.SAVED,
           previewMode: false,
           isModified: false,
-          state: { pageType },
+          state: { pageType }
         })
       }
     }
@@ -149,7 +149,7 @@ class ContentPanel extends Component {
         const collectionLength = Object.keys(this.props.collections).length
         if (collectionLength > 0) {
           this.props.history.push({
-            pathname: tab.type !== "collection" ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === "NEW" ? "new" : tabId}${tab.isModified ? "/edit" : ""}` : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`,
+            pathname: tab.type !== "collection" ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === "NEW" ? "new" : tabId}${tab.isModified ? "/edit" : ""}` : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
           })
         }
       } else {

@@ -8,7 +8,7 @@ class EnvironmentModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      environments: {},
+      environments: {}
     }
   }
 

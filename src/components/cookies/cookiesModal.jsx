@@ -9,7 +9,7 @@ import DeleteModal from "../common/deleteModal"
 
 const mapStateToProps = (state) => {
   return {
-    cookies: state.cookies,
+    cookies: state.cookies
   }
 }
 
@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch) => {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     add_cookies_domain: (domain) => dispatch(addCookieDomain(domain)),
     update_cookies: (domain) => dispatch(updateCookies(domain)),
-    delete_domain: (domain) => dispatch(deleteDomain(domain)),
+    delete_domain: (domain) => dispatch(deleteDomain(domain))
   }
 }
 
@@ -32,8 +32,8 @@ export class CookiesModal extends Component {
     deleteModalData: {
       title: "",
       message: "",
-      domain: {},
-    },
+      domain: {}
+    }
   }
 
   componentDidMount() {
@@ -100,7 +100,7 @@ export class CookiesModal extends Component {
     const newData = {
       title: "",
       message: "",
-      domain: {},
+      domain: {}
     }
     this.setState({ deleteModalData: newData })
   }

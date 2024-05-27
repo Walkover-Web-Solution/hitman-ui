@@ -54,14 +54,14 @@ function generateBodyDescription(data, isFirstRun) {
         description[key] = {
           value: isFirstRun ? element : null,
           type: typeof element,
-          description: "",
+          description: ""
         }
       } else if (Array.isArray(element)) {
         const nestedDescription = generateBodyDescription(element, isFirstRun)
         description[key] = {
           value: nestedDescription,
           type: "array",
-          description: "",
+          description: ""
         }
 
         // Set default value for arrays on first run
@@ -73,14 +73,14 @@ function generateBodyDescription(data, isFirstRun) {
         description[key] = {
           value: generateBodyDescription(element, isFirstRun),
           type: "object",
-          description: "",
+          description: ""
         }
       } else {
         // Handle unexpected types with a default fallback
         description[key] = {
           value: null,
           type: "unknown",
-          description: "Unexpected type",
+          description: "Unexpected type"
         }
       }
     })
@@ -132,5 +132,5 @@ function compareDefaultValue(updatedBodyDescription, originalBodyDescription) {
 
 export default {
   parseBody,
-  handleUpdate,
+  handleUpdate
 }

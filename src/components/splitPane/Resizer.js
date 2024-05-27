@@ -49,11 +49,11 @@ Resizer.propTypes = {
   onTouchEnd: PropTypes.func.isRequired,
   split: PropTypes.oneOf(["vertical", "horizontal"]),
   style: stylePropType,
-  resizerClassName: PropTypes.string.isRequired,
+  resizerClassName: PropTypes.string.isRequired
 }
 
 Resizer.defaultProps = {
-  resizerClassName: RESIZER_DEFAULT_CLASSNAME,
+  resizerClassName: RESIZER_DEFAULT_CLASSNAME
 }
 
 export default Resizer

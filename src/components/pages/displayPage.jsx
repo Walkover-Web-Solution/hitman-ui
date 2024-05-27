@@ -33,8 +33,8 @@ const withQuery = (WrappedComponent) => {
         cacheTime: 5000000,
         enabled: true,
         staleTime: 600000,
-        retry: 2,
-      },
+        retry: 2
+      }
     )
     const tabId = props?.tabs?.tabs?.[pageId]
     if (tabId?.isModified && tabId?.type == "page" && tabId?.draft) {
@@ -50,7 +50,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     pending_page: (page) => dispatch(pendingPage(page)),
     reject_page: (page) => dispatch(rejectPage(page)),
-    draft_page: (page) => dispatch(draftPage(page)),
+    draft_page: (page) => dispatch(draftPage(page))
   }
 }
 
@@ -58,7 +58,7 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     tabs: state.tabs,
-    users: state.users,
+    users: state.users
   }
 }
 
@@ -69,7 +69,7 @@ class DisplayPage extends Component {
     this.state = {
       data: { id: null, versionId: null, groupId: null, name: "", contents: "" },
       page: null,
-      requestKey: null,
+      requestKey: null
     }
   }
 
@@ -131,7 +131,7 @@ class DisplayPage extends Component {
   handleEdit(page) {
     this.props.history.push({
       pathname: `/orgs/${this.props?.match?.params.orgId}/dashboard/page/${this.props?.match?.params.pageId}/edit`,
-      page: page,
+      page: page
     })
   }
 

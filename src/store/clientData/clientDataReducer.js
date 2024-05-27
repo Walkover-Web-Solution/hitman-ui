@@ -2,7 +2,7 @@ import clientDataActionTypes from "./clientDataActionTypes"
 
 const initialState = {
   collectionToPublish: "",
-  publishDataForCollections: {},
+  publishDataForCollections: {}
 }
 
 const clientDataReducer = (state = initialState, action) => {
@@ -20,7 +20,7 @@ const clientDataReducer = (state = initialState, action) => {
           selectedVersionId: action?.payload?.value || "",
           defaultVersionId: action?.payload?.defaultVersionId || "",
           defaultVersionName: action?.payload?.defaultVersionName || "",
-          selectedVersionName: action?.payload?.selectedVersionName || "",
+          selectedVersionName: action?.payload?.selectedVersionName || ""
         }
       } else state[action?.payload?.id] = { defaultVersion: action?.payload?.value }
       return { ...state }

@@ -9,13 +9,13 @@ class ShareVersionForm extends Form {
     super(props)
     this.state = {
       data: {
-        shareVersionLink: "",
+        shareVersionLink: ""
       },
-      errors: {},
+      errors: {}
     }
 
     this.schema = {
-      shareVersionLink: Joi.string().required().label("Public Link"),
+      shareVersionLink: Joi.string().required().label("Public Link")
     }
   }
 

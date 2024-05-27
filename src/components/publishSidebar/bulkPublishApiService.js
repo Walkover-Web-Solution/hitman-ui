@@ -18,5 +18,5 @@ export function bulkPublishSelectedData(publishData) {
 
 export default {
   bulkPublish,
-  bulkPublishSelectedData,
+  bulkPublishSelectedData
 }

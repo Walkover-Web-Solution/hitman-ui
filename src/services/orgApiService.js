@@ -52,8 +52,8 @@ export async function inviteMembers(name, email) {
     const data = {
       user: {
         name: name,
-        email: email,
-      },
+        email: email
+      }
     }
     const res = await http.post(proxyUrl + "/addUser", data)
     toast.success("User added successfully")

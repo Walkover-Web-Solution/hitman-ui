@@ -21,8 +21,8 @@ class PublicBodyContainer extends Component {
             key: "",
             value: "",
             description: "",
-            type: "text",
-          },
+            type: "text"
+          }
         ],
         urlencoded: [
           {
@@ -30,10 +30,10 @@ class PublicBodyContainer extends Component {
             key: "",
             value: "",
             description: "",
-            type: "text",
-          },
-        ],
-      },
+            type: "text"
+          }
+        ]
+      }
     }
     this.queryRef = createRef()
     this.variablesRef = createRef()
@@ -42,7 +42,7 @@ class PublicBodyContainer extends Component {
   componentDidMount() {
     const data = {
       data: this.props?.body?.[bodyTypesEnums["multipart/form-data"]] || [{ checked: "notApplicable", key: "", value: "", description: "", type: "text" }],
-      urlencoded: this.props?.body?.[bodyTypesEnums["application/x-www-form-urlencoded"]] || [{ checked: "notApplicable", key: "", value: "", description: "", type: "text" }],
+      urlencoded: this.props?.body?.[bodyTypesEnums["application/x-www-form-urlencoded"]] || [{ checked: "notApplicable", key: "", value: "", description: "", type: "text" }]
     }
     this.setState({ data })
   }
@@ -75,7 +75,7 @@ class PublicBodyContainer extends Component {
       const body = data
       const bodyData = {
         bodyDescription: this.bodyDescription,
-        body: body,
+        body: body
       }
       this.setBody(bodyData)
     } catch (e) {
@@ -193,7 +193,7 @@ class PublicBodyContainer extends Component {
   graphqlBody() {
     const editorOptions = {
       markers: false,
-      showGutter: false,
+      showGutter: false
     }
     return (
       <div className='hm-public-table'>
@@ -209,10 +209,10 @@ class PublicBodyContainer extends Component {
               value={this.props.endpointContent?.data?.body?.query || ""}
               onChange={this.handleSetQueryData.bind(this)}
               setOptions={{
-                showLineNumbers: true,
+                showLineNumbers: true
               }}
               editorProps={{
-                $blockScrolling: false,
+                $blockScrolling: false
               }}
               onLoad={(editor) => {
                 editor.focus()
@@ -237,10 +237,10 @@ class PublicBodyContainer extends Component {
               value={this.props.endpointContent?.data?.body?.variables || ""}
               onChange={this.handleSetQueryData.bind(this)}
               setOptions={{
-                showLineNumbers: true,
+                showLineNumbers: true
               }}
               editorProps={{
-                $blockScrolling: false,
+                $blockScrolling: false
               }}
               onLoad={(editor) => {
                 editor.focus()
@@ -292,10 +292,10 @@ class PublicBodyContainer extends Component {
                   value={this.props.body?.raw?.value}
                   onChange={this.handleChangeBodyDescription.bind(this)}
                   setOptions={{
-                    showLineNumbers: true,
+                    showLineNumbers: true
                   }}
                   editorProps={{
-                    $blockScrolling: false,
+                    $blockScrolling: false
                   }}
                   onLoad={(editor) => {
                     editor.getSession().setUseWrapMode(true)
@@ -322,10 +322,10 @@ class PublicBodyContainer extends Component {
                 value={this.makeJson(this.props.body?.raw?.value || "")}
                 onChange={(value) => this.props.set_body(this.props.body.type, value)}
                 setOptions={{
-                  showLineNumbers: true,
+                  showLineNumbers: true
                 }}
                 editorProps={{
-                  $blockScrolling: false,
+                  $blockScrolling: false
                 }}
                 onLoad={(editor) => {
                   if (window.innerWidth > 425) {

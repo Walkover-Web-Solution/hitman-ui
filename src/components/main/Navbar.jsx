@@ -14,7 +14,7 @@ class Navbar extends Component {
     super(props)
     this.state = {
       name: "",
-      email: "",
+      email: ""
     }
   }
 
@@ -55,8 +55,8 @@ class Navbar extends Component {
         {this.state.showCreateNewModal &&
           this.openCreateNewModal(() =>
             this.setState({
-              showCreateNewModal: false,
-            }),
+              showCreateNewModal: false
+            })
           )}
         {this.state.showCollectionForm && collectionsService.showCollectionForm(this.props, () => this.setState({ showCollectionForm: false }), "Add new Collection")}
         {this.state.showEnvironmentForm && environmentsService.showEnvironmentForm(this.props, () => this.setState({ showEnvironmentForm: false }), "Add new Environment")}

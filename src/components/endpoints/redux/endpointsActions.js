@@ -22,7 +22,7 @@ export const formatResponseToSend = (response) => {
     type: response.data.type || 4,
     versionId: response.data.versionId || null,
     collectionId: response.data.collectionId,
-    protocolType: response.data.protocolType,
+    protocolType: response.data.protocolType
   }
 }
 
@@ -133,14 +133,14 @@ export const moveEndpointRequest = (endpointId, sourceGroupId, destinationGroupI
     type: endpointsActionTypes.MOVE_ENDPOINT_REQUEST,
     endpointId,
     sourceGroupId,
-    destinationGroupId,
+    destinationGroupId
   }
 }
 
 export const moveEndpointSuccess = (response) => {
   return {
     type: endpointsActionTypes.MOVE_ENDPOINT_SUCCESS,
-    response,
+    response
   }
 }
 
@@ -149,7 +149,7 @@ export const onEndpointAddedError = (error, newEndpoint, requestId) => {
     type: endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR,
     newEndpoint,
     error,
-    requestId,
+    requestId
   }
 }
 
@@ -157,21 +157,21 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR,
     error,
-    originalEndpoint,
+    originalEndpoint
   }
 }
 
 export const deleteEndpointRequest = (endpoint) => {
   return {
     type: pagesActionTypes.DELETE_ENDPOINT_REQUEST,
-    endpoint,
+    endpoint
   }
 }
 
 export const onEndpointDeleted = (response) => {
   return {
     type: pagesActionTypes.ON_ENDPOINT_DELETED,
-    response,
+    response
   }
 }
 
@@ -179,13 +179,13 @@ export const onEndpointDeletedError = (error, endpoint) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_DELETED_ERROR,
     error,
-    endpoint,
+    endpoint
   }
 }
 
 export const onEndpointDuplicated = (response) => {
   return {
     type: pagesActionTypes.ON_ENDPOINT_DUPLICATED,
-    response,
+    response
   }
 }

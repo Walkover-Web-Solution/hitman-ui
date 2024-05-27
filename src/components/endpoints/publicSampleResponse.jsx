@@ -8,7 +8,7 @@ import { hexToRgb } from "../common/utility"
 
 class PublicSampleResponse extends Component {
   state = {
-    theme: this.props.publicCollectionTheme,
+    theme: this.props.publicCollectionTheme
   }
 
   showJSONPretty(data) {

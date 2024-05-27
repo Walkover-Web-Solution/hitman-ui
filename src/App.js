@@ -22,7 +22,7 @@ import IndexWebsite from "./components/indexWebsite/indexWebsite.js"
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    install_modal: (event) => dispatch(installModal(event)),
+    install_modal: (event) => dispatch(installModal(event))
   }
 }
 
@@ -30,7 +30,7 @@ const mapStateToProps = (state) => {
   return {
     modals: state.modals,
     tabs: state.tabs.tabs,
-    tabsOrder: state.tabs.tabsOrder,
+    tabsOrder: state.tabs.tabsOrder
   }
 }
 class App extends Component {
@@ -53,7 +53,7 @@ class App extends Component {
       ipcRenderer.on("token-transfer-channel", (event, data) => {
         this.props.history.push({
           pathname: "/login",
-          search: `?sokt-auth-token=${data}`,
+          search: `?sokt-auth-token=${data}`
         })
       })
     }

@@ -40,7 +40,7 @@ export function loadWidget() {
       name: userName,
       email: user.email,
       userId: identifier,
-      isOnboardingComplete: userCreatedAt < FIRST_JULY_2021,
+      isOnboardingComplete: userCreatedAt < FIRST_JULY_2021
     }
   } catch {}
   if (!onboardingWgt && identifier) {
@@ -60,5 +60,5 @@ export function loadWidget() {
 export default {
   moveToNextStep,
   onOnboardingCompleted,
-  loadWidget,
+  loadWidget
 }

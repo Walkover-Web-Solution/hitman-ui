@@ -8,5 +8,5 @@ export const getPageContent = async (orgId, pageId) => {
 }
 
 export default {
-  getPageContent,
+  getPageContent
 }

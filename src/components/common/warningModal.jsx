@@ -34,12 +34,12 @@ WarningModal.propTypes = {
   onHide: PropTypes.func,
   title: PropTypes.string,
   message: PropTypes.string,
-  ignoreButtonCallback: PropTypes.func,
+  ignoreButtonCallback: PropTypes.func
 }
 
 WarningModal.defaultProps = {
   title: "Warning",
-  message: "Something's Not Right, Please try again later.",
+  message: "Something's Not Right, Please try again later."
 }
 
 export default WarningModal

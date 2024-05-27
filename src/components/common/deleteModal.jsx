@@ -6,7 +6,7 @@ import { onEnter } from "./utility"
 import tabService from "../tabs/tabService"
 const mapDispatchToProps = (dispatch) => {
   return {
-    close_tab: (tabId) => dispatch(closeTab(tabId)),
+    close_tab: (tabId) => dispatch(closeTab(tabId))
   }
 }
 class DeleteModal extends Component {

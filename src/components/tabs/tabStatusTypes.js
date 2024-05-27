@@ -5,5 +5,5 @@ const DELETED = "DELETED"
 export default {
   SAVED,
   NEW,
-  DELETED,
+  DELETED
 }

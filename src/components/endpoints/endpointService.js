@@ -6,5 +6,5 @@ function showDeleteEndpointModal(props, handleDelete, onHide, title, message, se
 }
 
 export default {
-  showDeleteEndpointModal,
+  showDeleteEndpointModal
 }

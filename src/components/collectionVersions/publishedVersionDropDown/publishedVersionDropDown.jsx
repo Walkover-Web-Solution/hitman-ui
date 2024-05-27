@@ -5,7 +5,7 @@ import { useSelector } from "react-redux"
 export default function PublishedVersionDropDown(props) {
   const { pages } = useSelector((state) => {
     return {
-      pages: state.pages,
+      pages: state.pages
     }
   })
 

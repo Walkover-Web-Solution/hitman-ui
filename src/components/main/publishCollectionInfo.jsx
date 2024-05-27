@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     modals: state.endpoints,
     isPublishSliderOpen: state.modals.publishData,
-    tabs: state.tabs,
+    tabs: state.tabs
   }
 }
 
@@ -44,7 +44,7 @@ class PublishCollectionInfo extends Component {
       totalPageCount: 0,
       totalEndpointCount: 0,
       livePageCount: 0,
-      liveEndpointCount: 0,
+      liveEndpointCount: 0
     }
   }
 

@@ -30,5 +30,5 @@ export default {
   approvePage,
   pendingPage,
   draftPage,
-  rejectPage,
+  rejectPage
 }

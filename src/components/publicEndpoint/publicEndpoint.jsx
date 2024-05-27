@@ -40,10 +40,10 @@ const withQuery = (WrappedComponent) => {
         onSuccess: (data) => {
           queryClient.setQueryData([data.type, data.id], data?.content || "", {
             staleTime: Number.MAX_SAFE_INTEGER, // Set staleTime to a large value
-            retry: 2,
+            retry: 2
           })
-        },
-      },
+        }
+      }
     )
     return <WrappedComponent {...props} setQueryUpdatedData={setQueryUpdatedData} mutationFn={mutation} keyExistInReactQuery={keyExistInReactQuery} />
   }
@@ -54,14 +54,14 @@ const mapStateToProps = (state) => {
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    endpoints: state.endpoints,
+    endpoints: state.endpoints
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetch_all_public_endpoints: (collectionIdentifier, domain) => dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain)),
-    add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams)),
+    add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams))
   }
 }
 
@@ -78,10 +78,10 @@ class PublicEndpoint extends Component {
       dislikeActive: false,
       review: {
         feedback: {},
-        endpoint: {},
+        endpoint: {}
       },
       openReviewModal: false,
-      idToRenderState: null,
+      idToRenderState: null
     }
     this.iconRef = React.createRef()
     this.hamburgerIconRef = React.createRef()
@@ -224,7 +224,7 @@ class PublicEndpoint extends Component {
                     style={{
                       backgroundColor: this.state.collectionTheme,
                       borderColor: this.state.collectionTheme,
-                      color: this.state.collectionTheme,
+                      color: this.state.collectionTheme
                     }}
                     name={`cta-${index}`}
                     onClick={() => {

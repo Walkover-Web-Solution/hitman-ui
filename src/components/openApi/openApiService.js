@@ -18,5 +18,5 @@ export function importPostmanCollection(collection, website, defaultView) {
 
 export default {
   importApi,
-  importPostmanCollection,
+  importPostmanCollection
 }

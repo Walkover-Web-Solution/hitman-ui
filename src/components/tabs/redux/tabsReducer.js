@@ -5,7 +5,7 @@ const initialState = {
   tabs: {},
   loaded: false,
   activeTabId: null,
-  tabsOrder: [],
+  tabsOrder: []
 }
 
 function tabsReducer(state = initialState, action) {
@@ -15,7 +15,7 @@ function tabsReducer(state = initialState, action) {
       tabs = {
         ...state,
         tabs: { ...state.tabs, [action.newTab.id]: action.newTab },
-        tabsOrder: [...state.tabsOrder, action.newTab.id],
+        tabsOrder: [...state.tabsOrder, action.newTab.id]
       }
 
       return tabs
@@ -29,7 +29,7 @@ function tabsReducer(state = initialState, action) {
 
     case tabsActionTypes.CLOSE_TAB:
       tabs = {
-        ...state,
+        ...state
       }
       delete tabs.tabs[action.tabId]
       tabs.tabsOrder = tabs.tabsOrder.filter((t) => t !== action.tabId)
@@ -37,11 +37,11 @@ function tabsReducer(state = initialState, action) {
 
     case tabsActionTypes.UPDATE_TAB:
       tabs = {
-        ...state,
+        ...state
       }
       tabs.tabs[action.payload.tabId] = {
         ...tabs.tabs[action.payload.tabId],
-        ...action.payload.data,
+        ...action.payload.data
       }
       return tabs
 
@@ -59,7 +59,7 @@ function tabsReducer(state = initialState, action) {
         tabs: { ...state.tabs, ...action.tabsList },
         loaded: true,
         tabsOrder: [...state.tabsOrder],
-        activeTabId: action.tabsMetadata.activeTabId ? action.tabsMetadata.activeTabId : state.activeTabId,
+        activeTabId: action.tabsMetadata.activeTabId ? action.tabsMetadata.activeTabId : state.activeTabId
       }
       action.tabsMetadata.tabsOrder.forEach((t) => {
         if (!tabs.tabsOrder.includes(t)) {
@@ -70,7 +70,7 @@ function tabsReducer(state = initialState, action) {
 
     case tabsActionTypes.REPLACE_TAB: {
       tabs = {
-        ...state,
+        ...state
       }
       delete tabs.tabs[action.oldTabId]
       tabs.tabs[action.newTab.id] = action.newTab
@@ -93,7 +93,7 @@ function tabsReducer(state = initialState, action) {
         status: "SAVED",
         previewMode: true,
         isModified: false,
-        state: {},
+        state: {}
       }
       const newTabs = state.tabs
       newTabs[action.payload?.newTabId] = data

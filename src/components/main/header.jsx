@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     groups: state.groups,
     pages: state.pages,
-    versions: state.versions,
+    versions: state.versions
   }
 }
 
@@ -74,13 +74,13 @@ class Header extends Component {
     if (collection?.id) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`,
+        search: `?collectionId=${collection.id}`
       })
     } else {
       const collection = this.props.collections[Object.keys(this.props.collections)[0]]
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`,
+        search: `?collectionId=${collection.id}`
       })
     }
   }
@@ -176,7 +176,7 @@ class Header extends Component {
 
   handleGoBack() {
     this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard`,
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard`
     })
   }
 
@@ -242,7 +242,7 @@ class Header extends Component {
       HITMAN: process.env.REACT_APP_UI_URL,
       CONTENTBASE: process.env.REACT_APP_CONTENTBASE_URL,
       EBL: process.env.REACT_APP_VIASOCKET_URL,
-      HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL,
+      HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL
     }
     return (
       <>

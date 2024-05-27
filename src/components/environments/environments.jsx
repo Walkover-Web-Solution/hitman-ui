@@ -19,7 +19,7 @@ import ImportEnvironmentModal from "./ImportEnvironmentModal"
 const mapStateToProps = (state) => {
   return {
     environment: state.environment,
-    responseView: state.responseView,
+    responseView: state.responseView
   }
 }
 
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
     update_environment: (editedEnvironment) => dispatch(updateEnvironment(editedEnvironment)),
     delete_environment: (deletedEnvironment) => dispatch(deleteEnvironment(deletedEnvironment)),
     set_environment_id: (environmentId) => dispatch(setEnvironmentId(environmentId)),
-    set_response_view: (view) => dispatch(onToggle(view)),
+    set_response_view: (view) => dispatch(onToggle(view))
   }
 }
 
@@ -43,7 +43,7 @@ class Environments extends Component {
     showEnvironmentModal: false,
     environmentToBeEdited: {},
     publicEnvironmentName: "Select Environment",
-    showImportModal: false,
+    showImportModal: false
   }
 
   async componentDidMount() {
@@ -63,7 +63,7 @@ class Environments extends Component {
   handleEnvironmentModal(environmentFormName, environmentToBeEdited) {
     this.setState({
       environmentFormName,
-      environmentToBeEdited,
+      environmentToBeEdited
     })
   }
 
@@ -76,19 +76,19 @@ class Environments extends Component {
   async handlePublicEnv(environmentId) {
     if (environmentId != null) {
       this.setState({
-        publicEnvironmentName: this.props.environment.environments[environmentId].name,
+        publicEnvironmentName: this.props.environment.environments[environmentId].name
       })
       this.props.history.push({
         Environment: "setCollectionEnvironment",
-        selectedPublicEnvironment: this.props.environment.environments[environmentId],
+        selectedPublicEnvironment: this.props.environment.environments[environmentId]
       })
     } else {
       this.setState({
-        publicEnvironmentName: "No Environment",
+        publicEnvironmentName: "No Environment"
       })
       this.props.history.push({
         Environment: "setCollectionEnvironment",
-        selectedPublicEnvironment: null,
+        selectedPublicEnvironment: null
       })
     }
   }
@@ -102,8 +102,8 @@ class Environments extends Component {
     this.setState({
       showDeleteModal: true,
       selectedEnvironment: {
-        ...this.props.environment.environments[environmentId],
-      },
+        ...this.props.environment.environments[environmentId]
+      }
     })
   }
 
@@ -116,7 +116,7 @@ class Environments extends Component {
     if (collection.data.environment != null) {
       this.setState({
         publicCollectionEnvironmentId: collection.data.environment.id,
-        originalEnvironmentReplica: collection.data.environment,
+        originalEnvironmentReplica: collection.data.environment
       })
     }
   }

@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
   return {
     collections: state.collections,
     versions: state.versions,
-    pages: state.pages,
+    pages: state.pages
   }
 }
 
@@ -24,13 +24,13 @@ class SaveAsSidebar extends Form {
     this.state = {
       data: {
         name: "",
-        description: "",
-      },
+        description: ""
+      }
     }
     this.saveAsSidebar = createRef()
     this.schema = {
       name: Joi.string().required().label("Endpoint Name"),
-      description: Joi.string().allow(null, "").label("Description"),
+      description: Joi.string().allow(null, "").label("Description")
     }
   }
 
@@ -52,7 +52,7 @@ class SaveAsSidebar extends Form {
       if (this.props?.match?.params?.endpointId !== "new") {
         this.props.setQueryUpdatedData({
           ...this.props.endpointContent,
-          data: { ...this.props.endpointContent.data, name: this.props.pages?.[this.props?.match?.params?.endpointId]?.name || "" },
+          data: { ...this.props.endpointContent.data, name: this.props.pages?.[this.props?.match?.params?.endpointId]?.name || "" }
         })
       } else {
         this.props.setQueryUpdatedData({ ...this.props.endpointContent, data: { ...this.props.endpointContent.data, name: "Untitled" } })
@@ -112,7 +112,7 @@ class SaveAsSidebar extends Form {
       height: "100vh",
       width: "35vw",
       boxShadow: "-25px 25px 43px rgba(0, 0, 0, 0.07)",
-      overflow: "hidden",
+      overflow: "hidden"
     }
 
     return (

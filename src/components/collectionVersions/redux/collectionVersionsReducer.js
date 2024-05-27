@@ -12,20 +12,20 @@ function versionsReducer(state = initialState, action) {
     case versionActionTypes.UPDATE_VERSION_REQUEST:
       return {
         ...state,
-        [action.editedVersion.id]: action.editedVersion,
+        [action.editedVersion.id]: action.editedVersion
       }
 
     case versionActionTypes.ON_VERSION_UPDATED:
       return {
         ...state,
-        [action.response.id]: action.response,
+        [action.response.id]: action.response
       }
 
     case versionActionTypes.ON_VERSION_UPDATED_ERROR:
       toast.error(action.error)
       return {
         ...state,
-        [action.originalVersion.id]: action.originalVersion,
+        [action.originalVersion.id]: action.originalVersion
       }
 
     case versionActionTypes.ON_VERSION_ADDED_ERROR:

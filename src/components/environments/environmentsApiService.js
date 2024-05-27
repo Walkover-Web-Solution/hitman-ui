@@ -40,5 +40,5 @@ export default {
   saveEnvironment,
   updateEnvironment,
   deleteEnvironment,
-  importPostmanEnvironment,
+  importPostmanEnvironment
 }

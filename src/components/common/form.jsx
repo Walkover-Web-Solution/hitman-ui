@@ -12,11 +12,11 @@ class Form extends Component {
     this.state = {
       data: {},
       errors: {},
-      isSaveDisabled: true,
+      isSaveDisabled: true
     }
 
     this.modules = {
-      toolbar: [[{ header: [1, 2, 3, 4, 5, 6, false] }], ["bold", "italic", "underline", "strike"], [{ color: [] }, { background: [] }], [({ list: "ordered" }, { list: "bullet" })], ["link"]],
+      toolbar: [[{ header: [1, 2, 3, 4, 5, 6, false] }], ["bold", "italic", "underline", "strike"], [{ color: [] }, { background: [] }], [({ list: "ordered" }, { list: "bullet" })], ["link"]]
     }
     this.inputRef = createRef()
 
@@ -149,10 +149,10 @@ class Form extends Component {
           value={data.body}
           onChange={this.handleAceEditorChange}
           setOptions={{
-            showLineNumbers: true,
+            showLineNumbers: true
           }}
           editorProps={{
-            $blockScrolling: false,
+            $blockScrolling: false
           }}
           onLoad={(editor) => {
             editor.focus()

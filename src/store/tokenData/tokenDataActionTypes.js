@@ -5,5 +5,5 @@ const UPDATE_TOKEN = "UPDATE_TOKEN"
 export default {
   ADD_TOKEN,
   DELETE_TOKEN,
-  UPDATE_TOKEN,
+  UPDATE_TOKEN
 }

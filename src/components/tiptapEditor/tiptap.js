@@ -19,8 +19,8 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: minHeight ? "textEditor minHeight" : "textEditor",
-      },
+        class: minHeight ? "textEditor minHeight" : "textEditor"
+      }
     },
     extensions: [
       StarterKit,
@@ -31,13 +31,13 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
       Color,
       Text,
       Placeholder.configure({
-        placeholder: "Write your text here …",
+        placeholder: "Write your text here …"
       }),
       Table.configure({
         resizable: true,
         HTMLAttributes: {
-          class: "my-custom-class",
-        },
+          class: "my-custom-class"
+        }
       }),
       TableCell,
       TableRow,
@@ -45,15 +45,15 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
       Link.configure({
         linkOnPaste: true,
         openOnClick: true,
-        autolink: false,
-      }),
+        autolink: false
+      })
     ],
     content: initial,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
       onChange(html)
     },
-    editable: !disabled,
+    editable: !disabled
   })
 
   useEffect(() => {

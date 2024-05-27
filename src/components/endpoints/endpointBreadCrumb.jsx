@@ -17,14 +17,14 @@ const mapStateToProps = (state) => {
     endpoints: state.pages,
     tabState: state.tabs.tabs,
     activeTabId: state.tabs.activeTabId,
-    history: state.history,
+    history: state.history
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     update_name: (payload) => dispatch(updateNameOfPages(payload)),
-    update_tab: (id, data) => dispatch(updateTab(id, data)),
+    update_tab: (id, data) => dispatch(updateTab(id, data))
   }
 }
 
@@ -42,8 +42,8 @@ class EndpointBreadCrumb extends Component {
       isPagePublished: false,
       protocols: [
         { type: "HTTP", icon: <MdHttp color='green' size={16} /> },
-        { type: "GraphQL", icon: <GrGraphQl color='rgb(170, 51, 106)' size={14} /> },
-      ],
+        { type: "GraphQL", icon: <GrGraphQl color='rgb(170, 51, 106)' size={14} /> }
+      ]
     }
   }
 
@@ -54,13 +54,13 @@ class EndpointBreadCrumb extends Component {
         this.setState({
           endpointTitle: this.props.pages[endpointId]?.name || "",
           isPagePublished: this.props.pages[endpointId]?.isPublished || false,
-          previousTitle: this.props.pages[endpointId]?.name || "",
+          previousTitle: this.props.pages[endpointId]?.name || ""
         })
       } else {
         this.setState({
           endpointTitle: "Untitled",
           isPagePublished: false,
-          previousTitle: "Untitled",
+          previousTitle: "Untitled"
         })
       }
     } else {
@@ -69,13 +69,13 @@ class EndpointBreadCrumb extends Component {
         this.setState({
           endpointTitle: this.props.pages[pageId]?.name || "",
           isPagePublished: this.props.pages[pageId]?.isPublished || false,
-          previousTitle: this.props.pages[pageId]?.name || "",
+          previousTitle: this.props.pages[pageId]?.name || ""
         })
       } else {
         this.setState({
           endpointTitle: "Untitled",
           isPagePublished: false,
-          previousTitle: "Untitled",
+          previousTitle: "Untitled"
         })
       }
     }
@@ -128,13 +128,13 @@ class EndpointBreadCrumb extends Component {
         this.setState({
           endpointTitle: this.props.pages[endpointId]?.name || "",
           isPagePublished: this.props.pages[endpointId]?.isPublished || false,
-          previousTitle: this.props.pages[endpointId]?.name || "",
+          previousTitle: this.props.pages[endpointId]?.name || ""
         })
       } else {
         this.setState({
           endpointTitle: "Untitled",
           isPagePublished: false,
-          previousTitle: "Untitled",
+          previousTitle: "Untitled"
         })
       }
     } else {
@@ -144,13 +144,13 @@ class EndpointBreadCrumb extends Component {
         this.setState({
           endpointTitle: this.props.pages[pageId]?.name || "",
           isPagePublished: this.props.pages[pageId]?.isPublished || false,
-          previousTitle: this.props.pages[pageId]?.name || "",
+          previousTitle: this.props.pages[pageId]?.name || ""
         })
       } else {
         this.setState({
           endpointTitle: "Untitled",
           isPagePublished: false,
-          previousTitle: "Untitled",
+          previousTitle: "Untitled"
         })
       }
     }

@@ -7,14 +7,14 @@ import { toast } from "react-toastify"
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    close_modal: () => dispatch(closeModal()),
+    close_modal: () => dispatch(closeModal())
   }
 }
 
 const mapStateToProps = (state) => {
   return {
     modals: state.modals,
-    tabs: state.tabs,
+    tabs: state.tabs
   }
 }
 
@@ -42,7 +42,7 @@ function DesktopAppDownloadModal(props) {
   const onHide = () => {
     const { orgId } = props.match.params
     props.history.replace({
-      pathname: `/orgs/${orgId}/dashboard/`,
+      pathname: `/orgs/${orgId}/dashboard/`
     })
     props.close_modal()
   }

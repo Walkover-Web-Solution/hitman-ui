@@ -20,26 +20,26 @@ const publishDocFormEnum = {
   INITIAL_CTA: [
     {
       name: "",
-      value: "",
+      value: ""
     },
     {
       name: "",
-      value: "",
-    },
+      value: ""
+    }
   ],
   INITIAL_LINKS: [
     {
       name: "",
-      link: "",
+      link: ""
     },
     {
       name: "",
-      link: "",
+      link: ""
     },
     {
       name: "",
-      link: "",
-    },
+      link: ""
+    }
   ],
   LABELS: {
     title: "Title",
@@ -47,22 +47,22 @@ const publishDocFormEnum = {
     logoUrl: "Logo URL",
     theme: "Theme",
     cta: "CTA",
-    links: "Links",
-  },
+    links: "Links"
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     update_collection: (collection, stopLoader) => dispatch(updateCollection(collection, stopLoader)),
     setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data)),
-    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
   }
 }
 
 const mapStateToProps = (state) => {
   return {
     isPublishSliderOpen: state.modals.publishData,
-    collections: state.collections,
+    collections: state.collections
   }
 }
 
@@ -72,10 +72,10 @@ class PublishDocForm extends Component {
       title: "",
       domain: "",
       logoUrl: "",
-      theme: "",
+      theme: ""
     },
     cta: publishDocFormEnum.INITIAL_CTA,
-    links: publishDocFormEnum.INITIAL_LINKS,
+    links: publishDocFormEnum.INITIAL_LINKS
   }
 
   componentDidMount() {
@@ -145,7 +145,7 @@ class PublishDocForm extends Component {
         return { message: "Domain must be valid" }
       }),
     logoUrl: Joi.string().trim().allow("").label(publishDocFormEnum.LABELS.logoUrl),
-    theme: Joi.string().trim().allow("").label(publishDocFormEnum.LABELS.theme),
+    theme: Joi.string().trim().allow("").label(publishDocFormEnum.LABELS.theme)
   }
 
   validate(data) {
@@ -169,7 +169,7 @@ class PublishDocForm extends Component {
     collection.favicon = this.state.binaryFile
     collection.docProperties = {
       defaultTitle: data.title.trim(),
-      defaultLogoUrl: data.logoUrl.trim(),
+      defaultLogoUrl: data.logoUrl.trim()
     }
     delete collection.isPublic
     let errors = this.validate({ ...this.state.data })
@@ -243,7 +243,7 @@ class PublishDocForm extends Component {
   handleReaderLoaded = (readerEvt) => {
     const binaryString = readerEvt.target.result
     this.setState({
-      binaryFile: window.btoa(binaryString),
+      binaryFile: window.btoa(binaryString)
     })
   }
 

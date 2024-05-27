@@ -34,11 +34,11 @@ function removeTab(tabId, props) {
 function changeRoute(props, tab) {
   if (tab.isSaved) {
     props.history.push({
-      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/${tab.id}`,
+      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/${tab.id}`
     })
   } else {
     props.history.push({
-      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`,
+      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
     })
   }
 }
@@ -54,7 +54,7 @@ function selectTab(props, tabId) {
   const tab = tabs[tabId]
   if (tab?.status === "NEW") {
     props.history.push({
-      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`,
+      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
     })
   } else if (tab?.type === "collection") {
     tab?.state?.pageType === "SETTINGS" && props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
@@ -64,7 +64,7 @@ function selectTab(props, tabId) {
       return props.history.push({ pathname: `/orgs/${getOrgId()}/dashboard/endpoint/new` })
     }
     return props.history.push({
-      pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${tab.isModified ? "/edit" : ""}`,
+      pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${tab.isModified ? "/edit" : ""}`
     })
   }
   store.dispatch(setActiveTabId(tabId))
@@ -120,5 +120,5 @@ export default {
   markTabAsSaved,
   markTabAsDeleted,
   replaceTabWithNew,
-  updateDraftData,
+  updateDraftData
 }

@@ -34,7 +34,7 @@ const mapStateToProps = (state) => {
     collections: state.collections,
     pages: state.pages,
     endpoints: state.endpoints,
-    clientData: state.clientData,
+    clientData: state.clientData
   }
 }
 
@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch) => {
     duplicate_collection: (collection) => dispatch(duplicateCollection(collection)),
     add_custom_domain: (collectionId, domain) => dispatch(addCustomDomain(collectionId, domain)),
     add_new_tab: () => dispatch(addNewTab()),
-    update_isExpand_for_collection: (payload) => dispatch(addIsExpandedAction(payload)),
+    update_isExpand_for_collection: (payload) => dispatch(addIsExpandedAction(payload))
   }
 }
 
@@ -63,7 +63,7 @@ class CollectionsComponent extends Component {
       publicLogoError: false,
       showRemoveModal: false,
       selectedCollectionIds: [],
-      showOrgModal: false,
+      showOrgModal: false
     }
     this.names = {}
   }
@@ -104,8 +104,8 @@ class CollectionsComponent extends Component {
       showCollectionForm: true,
       collectionFormName: "Edit Collection",
       selectedCollection: {
-        ...this.props.collections[collectionId],
-      },
+        ...this.props.collections[collectionId]
+      }
     })
   }
 
@@ -116,15 +116,15 @@ class CollectionsComponent extends Component {
     this.setState({
       showDeleteModal: true,
       selectedCollection: {
-        ...this.props.collections[collectionId],
-      },
+        ...this.props.collections[collectionId]
+      }
     })
   }
 
   handlePublicCollectionDescription(collection) {
     this.props.history.push({
       pathname: `/p/${collection.id}/description/${collection.name}`,
-      collection,
+      collection
     })
   }
 
@@ -170,8 +170,8 @@ class CollectionsComponent extends Component {
     this.setState({
       showRemoveModal: true,
       selectedCollection: {
-        ...this.props.collections[collectionId],
-      },
+        ...this.props.collections[collectionId]
+      }
     })
   }
 
@@ -180,7 +180,7 @@ class CollectionsComponent extends Component {
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_collection({
       value: !isExpanded,
-      id,
+      id
     })
   }
 
@@ -194,8 +194,8 @@ class CollectionsComponent extends Component {
     this.setState({
       showAddCollectionModal: true,
       selectedCollection: {
-        ...this.props.collections[collectionId],
-      },
+        ...this.props.collections[collectionId]
+      }
     })
   }
   showAddPageEndpointModal() {
@@ -350,13 +350,13 @@ class CollectionsComponent extends Component {
     if (collection?.id) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`,
+        search: `?collectionId=${collection.id}`
       })
     } else {
       const collection = this.props.collections[Object.keys(this.props.collections)[0]]
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`,
+        search: `?collectionId=${collection.id}`
       })
     }
   }
@@ -368,7 +368,7 @@ class CollectionsComponent extends Component {
   addGTM(gtmId) {
     if (gtmId) {
       const tagManagerArgs = {
-        gtmId: gtmId,
+        gtmId: gtmId
       }
       TagManager.initialize(tagManagerArgs)
     }
@@ -410,8 +410,8 @@ class CollectionsComponent extends Component {
           {this.state.showPublishDocsModal &&
             this.showPublishDocsModal(() =>
               this.setState({
-                showPublishDocsModal: false,
-              }),
+                showPublishDocsModal: false
+              })
             )}
           <div className='App-Nav'>
             <div className='tabs'>

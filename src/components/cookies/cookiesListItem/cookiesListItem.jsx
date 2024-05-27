@@ -10,9 +10,9 @@ class CookiesListItem extends Component {
       addCookie: false,
       updateCookie: {
         key: "",
-        value: "",
+        value: ""
       },
-      currentDomain: {},
+      currentDomain: {}
     }
   }
 
@@ -124,7 +124,7 @@ class CookiesListItem extends Component {
     const deleteModalData = {
       title: "Delete Cookie",
       message: "Are you sure, Do you want to delete this cookie?",
-      domain,
+      domain
     }
 
     this.props.toggleDelete(true, deleteModalData)

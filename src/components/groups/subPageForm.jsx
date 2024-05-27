@@ -8,7 +8,7 @@ import { updatePage } from "../pages/redux/pagesActions"
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    update_page: (page) => dispatch(updatePage(ownProps.history, page)),
+    update_page: (page) => dispatch(updatePage(ownProps.history, page))
   }
 }
 
@@ -17,13 +17,13 @@ class SubPageForm extends Form {
     super(props)
     this.state = {
       data: { name: "", urlName: "" },
-      errors: {},
+      errors: {}
     }
     this.schema = {
       name: Joi.string().min(1).max(100).required().label("Name"),
       urlName: Joi.string()
         .optional()
-        .allow(/[^a-zA-Z0-9\-_\.~]+/g),
+        .allow(/[^a-zA-Z0-9\-_\.~]+/g)
     }
   }
 
@@ -58,7 +58,7 @@ class SubPageForm extends Form {
         name,
         urlName,
         id: subPage?.id || endpoint?.id,
-        state: subPage?.state || endpoint?.state,
+        state: subPage?.state || endpoint?.state
       }
       this.props.update_page(editedPage)
     }

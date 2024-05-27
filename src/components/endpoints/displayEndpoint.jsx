@@ -86,7 +86,7 @@ const mapStateToProps = (state) => {
     tabs: state?.tabs?.tabs,
     tokenDetails: state?.tokenData?.tokenDetails,
     curlSlider: state.modals?.curlSlider || false,
-    users: state.users,
+    users: state.users
   }
 }
 
@@ -107,7 +107,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate)),
     update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload)),
     // set_chat_view : (view) => dispatch(onChatResponseToggle(view))
-    update_pre_post_script: (tabId, executionData) => dispatch(updatePostPreScriptExecutedData(tabId, executionData)),
+    update_pre_post_script: (tabId, executionData) => dispatch(updatePostPreScriptExecutedData(tabId, executionData))
   }
 }
 
@@ -119,10 +119,10 @@ const untitledEndpointData = {
       type: bodyTypesEnums["none"],
       [bodyTypesEnums["raw"]]: { rawType: rawTypesEnums.TEXT, value: "" },
       [bodyTypesEnums["application/x-www-form-urlencoded"]]: [{ checked: "notApplicable", key: "", value: "", description: "", type: "text" }],
-      [bodyTypesEnums["multipart/form-data"]]: [{ checked: "notApplicable", key: "", value: "", description: "", type: "text" }],
+      [bodyTypesEnums["multipart/form-data"]]: [{ checked: "notApplicable", key: "", value: "", description: "", type: "text" }]
     },
     uri: "",
-    updatedUri: "",
+    updatedUri: ""
   },
   pathVariables: [],
   environment: {},
@@ -132,16 +132,16 @@ const untitledEndpointData = {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
-    },
+      description: ""
+    }
   ],
   originalParams: [
     {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
-    },
+      description: ""
+    }
   ],
   oldDescription: "",
   headers: [],
@@ -160,9 +160,9 @@ const untitledEndpointData = {
   harObject: {},
   authorizationData: {
     authorization: {},
-    authorizationTypeSelected: "",
+    authorizationTypeSelected: ""
   },
-  protocolType: 1,
+  protocolType: 1
 }
 
 const debouncedUpdateDraftData = _.debounce((endpointId, data) => {
@@ -245,7 +245,7 @@ const withQuery = (WrappedComponent) => {
       cacheTime: 5000000,
       enabled: true,
       staleTime: Infinity,
-      retry: 3,
+      retry: 3
     })
 
     const setOldDataToNewDataForBody = (data) => {
@@ -323,7 +323,7 @@ class DisplayEndpoint extends Component {
       flagResponse: false,
       authorizationData: {
         authorization: {},
-        authorizationTypeSelected: "",
+        authorizationTypeSelected: ""
       },
       oldDescription: "",
       publicBodyFlag: true,
@@ -348,7 +348,7 @@ class DisplayEndpoint extends Component {
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
       endpointContentState: null,
-      showEndpointFormModal: false,
+      showEndpointFormModal: false
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -567,7 +567,7 @@ class DisplayEndpoint extends Component {
                 ? this.props.endpointContent.pathVariables[counter].value
                 : ""
               : "",
-            description: this.props.endpointContent.pathVariables[counter] ? (this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon ? this.props.endpointContent.pathVariables[counter].description : "") : "",
+            description: this.props.endpointContent.pathVariables[counter] ? (this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon ? this.props.endpointContent.pathVariables[counter].description : "") : ""
           })
           counter++
         }
@@ -586,7 +586,7 @@ class DisplayEndpoint extends Component {
           checked: this.props?.endpointContent?.originalParams[i].checked,
           key: this.props?.endpointContent?.originalParams[i].key,
           value: this.props?.endpointContent?.originalParams[i].value,
-          description: this.props?.endpointContent?.originalParams[i].description,
+          description: this.props?.endpointContent?.originalParams[i].description
         })
       }
     }
@@ -595,14 +595,14 @@ class DisplayEndpoint extends Component {
         checked: "true",
         key: keys[i],
         value: values[i],
-        description: description[i],
+        description: description[i]
       })
     }
     originalParams.push({
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
+      description: ""
     })
     return originalParams
   }
@@ -679,7 +679,7 @@ class DisplayEndpoint extends Component {
       const response = {
         status: error.response.status,
         statusText: status[error.response.status],
-        data: error.response.data,
+        data: error.response.data
       }
       dummyEndpointData.testResponse = response
       dummyEndpointData.flagResponse = true
@@ -687,7 +687,7 @@ class DisplayEndpoint extends Component {
     } else {
       const timeElapsed = new Date().getTime() - this.state.startTime
       const response = {
-        data: error.message || "ERROR:Server Connection Refused",
+        data: error.message || "ERROR:Server Connection Refused"
       }
       dummyEndpointData.testResponse = response
       dummyEndpointData.flagResponse = true
@@ -804,7 +804,7 @@ class DisplayEndpoint extends Component {
       BASE_URL: this.props.endpointContent.host.BASE_URL,
       bodyDescription: this.props.endpointContent.data.body.type === rawTypesEnums.JSON ? this.props.endpointContent.bodyDescription : {},
       authorizationData: this.props.endpointContent.authorizationData,
-      protocolType: this.props?.endpointContent.protocolType,
+      protocolType: this.props?.endpointContent.protocolType
     }
     const response = { ...this.state.response }
     const createdAt = new Date()
@@ -816,7 +816,7 @@ class DisplayEndpoint extends Component {
       endpoint: { ...endpoint },
       response,
       timeElapsed,
-      createdAt,
+      createdAt
     }
     this.props.add_history(obj)
   }
@@ -916,7 +916,7 @@ class DisplayEndpoint extends Component {
               tokenId: oauth2Data.selectedTokenId,
               accessToken: data.access_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.accessToken,
               refreshToken: data.refresh_token || this.props.tokenDetails[oauth2Data.selectedTokenId]?.refreshToken,
-              expiryTime: data.expires_in || this.props.tokenDetails[oauth2Data.selectedTokenId]?.expiryTime,
+              expiryTime: data.expires_in || this.props.tokenDetails[oauth2Data.selectedTokenId]?.expiryTime
             }
             this.props.update_token(dataToUpdate)
             if (oauth2Data?.addAuthorizationRequestTo === addAuthorizationDataTypes.requestHeaders && headers?.Authorization) {
@@ -952,7 +952,7 @@ class DisplayEndpoint extends Component {
       tests: null,
       loader: true,
       requestKey: keyForRequest,
-      runSendRequest,
+      runSendRequest
     })
 
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
@@ -1022,7 +1022,7 @@ class DisplayEndpoint extends Component {
         let {
           environment,
           request: { url, headers },
-          tests,
+          tests
         } = result.data
         this.setState({ tests })
         /** Replace Environemnt Variables */
@@ -1043,7 +1043,7 @@ class DisplayEndpoint extends Component {
         this.setState({
           loader: false,
           runSendRequest: null,
-          requestKey: null,
+          requestKey: null
         })
         /** Add to History */
         isDashboardRoute(this.props) && this.setData()
@@ -1140,7 +1140,7 @@ class DisplayEndpoint extends Component {
     let parentId = id
     if (!getCurrentUser()) {
       this.setState({
-        showLoginSignupModal: true,
+        showLoginSignupModal: true
       })
     }
     if ((currentTabId && !this.props.pages[currentTabId] && !this.state.showEndpointFormModal) || (this.props?.match?.params?.historyId && slug !== "isHistory")) {
@@ -1150,7 +1150,7 @@ class DisplayEndpoint extends Component {
       const body = this.prepareBodyForSaving(endpointContent?.data?.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: endpointContent?.bodyDescription,
-        body: body.value,
+        body: body.value
       })
       if (this.checkProtocolType(1) && this.props?.endpointContent?.data?.body.type === bodyTypesEnums["raw"]) {
         body.value = this.parseBody(body.value)
@@ -1178,7 +1178,7 @@ class DisplayEndpoint extends Component {
         preScript: endpointContent?.preScriptText,
         postScript: endpointContent?.postScriptText,
         docViewData: endpointContent?.docViewData,
-        protocolType: endpointContent?.protocolType || null,
+        protocolType: endpointContent?.protocolType || null
       }
       if (trimString(endpoint.name) === "" || trimString(endpoint.name).toLowerCase() === "untitled") return toast.error("Please enter Endpoint name")
       else if (currentTabId && !this.props.pages[currentTabId]) {
@@ -1192,7 +1192,7 @@ class DisplayEndpoint extends Component {
             if (closeForm) this.closeEndpointFormModal()
             if (stopLoader) this.setState({ saveAsLoader: false })
           },
-          this.props,
+          this.props
         )
         moveToNextStep(4)
       } else {
@@ -1209,7 +1209,7 @@ class DisplayEndpoint extends Component {
               if (closeForm) this.closeEndpointFormModal()
               if (stopLoader) this.setState({ saveAsLoader: false })
             },
-            this.state.saveAsFlag,
+            this.state.saveAsFlag
           )
           moveToNextStep(4)
         } else {
@@ -1221,11 +1221,11 @@ class DisplayEndpoint extends Component {
           this.props.update_endpoint(
             {
               ...endpoint,
-              id: currentTabId,
+              id: currentTabId
             },
             () => {
               this.setState({ saveLoader: false })
-            },
+            }
           )
           tabService.markTabAsSaved(currentTabId)
         }
@@ -1254,7 +1254,7 @@ class DisplayEndpoint extends Component {
         updatedHeaders[originalHeaders[i].key] = {
           checked: originalHeaders[i].checked,
           value: originalHeaders[i].value,
-          description: originalHeaders[i].description,
+          description: originalHeaders[i].description
         }
       }
     }
@@ -1357,7 +1357,7 @@ class DisplayEndpoint extends Component {
         updatedParams[originalParams[i].key] = {
           checked: originalParams[i].checked,
           value: originalParams[i].value,
-          description: originalParams[i].description,
+          description: originalParams[i].description
         }
       }
     }
@@ -1386,7 +1386,7 @@ class DisplayEndpoint extends Component {
         processedHeaders.push({
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
-          comment: headers[Object.keys(headers)[i]].description === null ? "" : headers[Object.keys(headers)[i]].description,
+          comment: headers[Object.keys(headers)[i]].description === null ? "" : headers[Object.keys(headers)[i]].description
         })
       }
     }
@@ -1401,7 +1401,7 @@ class DisplayEndpoint extends Component {
           processedParams.push({
             name: params[Object.keys(params)[i]].key,
             value: params[Object.keys(params)[i]].value,
-            comment: params[Object.keys(params)[i]].description,
+            comment: params[Object.keys(params)[i]].description
           })
         }
       }
@@ -1422,21 +1422,21 @@ class DisplayEndpoint extends Component {
             name: data[i].key,
             value: data[i].value,
             fileName: null,
-            contentType: null,
+            contentType: null
           })
         }
       }
       postData = {
         mimeType: body?.type,
         params: params,
-        comment: "",
+        comment: ""
       }
     } else {
       postData = {
         mimeType: body?.type,
         params: params,
         text: paramsFlag === false ? body?.raw?.value : "",
-        comment: "",
+        comment: ""
       }
     }
     return postData
@@ -1459,14 +1459,14 @@ class DisplayEndpoint extends Component {
       cookies: [],
       headers: this.makeHeaders(originalHeaders || {}),
       postData: body && body.type !== bodyTypesEnums["none"] ? await this.makePostData(body) : null,
-      queryString: this.makeParams(originalParams),
+      queryString: this.makeParams(originalParams)
     }
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
       harObject.url = "https://" + url
     }
     const updatedharObject = {
       ...this.props.endpointContent,
-      harObject: harObject,
+      harObject: harObject
     }
     this.props.setQueryUpdatedData(updatedharObject)
   }
@@ -1474,7 +1474,7 @@ class DisplayEndpoint extends Component {
   openCodeTemplate(harObject) {
     this.setState({
       showCodeTemplate: true,
-      harObject,
+      harObject
     })
   }
 
@@ -1538,7 +1538,7 @@ class DisplayEndpoint extends Component {
           bodyDescription[keys[i]] = {
             default: body[keys[i]],
             description: this.state.fieldDescription[keys[i]] ? this.state.fieldDescription[keys[i]] : "",
-            dataType: typeof body[keys[i]],
+            dataType: typeof body[keys[i]]
           }
         } else {
           if (typeof body[keys[i]] === "object" && Array.isArray(body[keys[i]])) {
@@ -1546,13 +1546,13 @@ class DisplayEndpoint extends Component {
               bodyDescription[keys[i]] = {
                 default: body[keys[i]],
                 description: this.state.fieldDescription[keys[i]] ? this.state.fieldDescription[keys[i]] : "",
-                dataType: "Array of " + typeof body[keys[i]][0],
+                dataType: "Array of " + typeof body[keys[i]][0]
               }
             } else {
               bodyDescription[keys[i]] = {
                 default: [""],
                 description: this.state.fieldDescription[keys[i]] ? this.state.fieldDescription[keys[i]] : "",
-                dataType: "Array of string",
+                dataType: "Array of string"
               }
             }
           } else if (typeof body[keys[i]] === "object") {
@@ -1562,13 +1562,13 @@ class DisplayEndpoint extends Component {
               bodyDescription[keys[i]] = {
                 default: body[keys[i]],
                 description: this.state.fieldDescription[keys[i]] ? this.state.fieldDescription[keys[i]] : "",
-                dataType: "Object of objects",
+                dataType: "Object of objects"
               }
             } else {
               bodyDescription[keys[i]] = {
                 default: body[keys[i]],
                 description: this.state.fieldDescription[keys[i]] ? this.state.fieldDescription[keys[i]] : "",
-                dataType: typeof body[keys[i]],
+                dataType: typeof body[keys[i]]
               }
             }
           }
@@ -1604,7 +1604,7 @@ class DisplayEndpoint extends Component {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
+      description: ""
     }
     for (let i = 0; i < originalParams.length; i++) {
       if (originalParams[i].key === title || originalParams[i].key === "") {
@@ -1618,7 +1618,7 @@ class DisplayEndpoint extends Component {
         checked: "true",
         key: title,
         value: value,
-        description: "",
+        description: ""
       })
     }
     updatedParams.push(emptyParam)
@@ -1627,13 +1627,13 @@ class DisplayEndpoint extends Component {
     if (dummyData?.authorizationData?.authorization?.oauth2) {
       dummyData.authorizationData.authorization.oauth2 = {
         ...dummyData?.authorizationData?.authorization?.oauth2,
-        selectedTokenId: tokenIdToSave,
+        selectedTokenId: tokenIdToSave
       }
     } else {
       dummyData.authorizationData.authorization = { oauth2: {} }
       dummyData.authorizationData.authorization.oauth2 = {
         ...dummyData?.authorizationData?.authorization?.oauth2,
-        selectedTokenId: tokenIdToSave,
+        selectedTokenId: tokenIdToSave
       }
     }
     this.props.setQueryUpdatedData(dummyData)
@@ -1647,7 +1647,7 @@ class DisplayEndpoint extends Component {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
+      description: ""
     }
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === "" || originalHeaders[i].key === title.split(".")[0]) {
@@ -1674,7 +1674,7 @@ class DisplayEndpoint extends Component {
         checked: "true",
         key: title === "content-type" ? "content-type" : "Authorization",
         value: title.split(".")[0] === "Authorization" ? (title.split(".")[1] === "oauth_2" ? "Bearer " + value : "Basic " + value) : "",
-        description: "",
+        description: ""
       })
     }
     if (title === "content-type") {
@@ -1685,13 +1685,13 @@ class DisplayEndpoint extends Component {
     if (dummyData?.authorizationData?.authorization?.oauth2) {
       dummyData.authorizationData.authorization.oauth2 = {
         ...dummyData?.authorizationData?.authorization?.oauth2,
-        selectedTokenId: tokenIdToSave,
+        selectedTokenId: tokenIdToSave
       }
     } else {
       dummyData.authorizationData.authorization = { oauth2: {} }
       dummyData.authorizationData.authorization.oauth2 = {
         ...dummyData?.authorizationData?.authorization?.oauth2,
-        selectedTokenId: tokenIdToSave,
+        selectedTokenId: tokenIdToSave
       }
     }
     dummyData.originalHeaders = updatedHeaders
@@ -1731,12 +1731,12 @@ class DisplayEndpoint extends Component {
     this.setState({ sampleResponseFlagArray })
     const updatedEndpointData = {
       ...this.props.endpointContent,
-      sampleResponseArray: sampleResponseArray,
+      sampleResponseArray: sampleResponseArray
     }
     this.props.setQueryUpdatedData(updatedEndpointData)
     this.props.update_endpoint({
       id: this.props.currentEndpointId,
-      sampleResponse: sampleResponseArray,
+      sampleResponse: sampleResponseArray
     })
   }
 
@@ -1784,7 +1784,7 @@ class DisplayEndpoint extends Component {
     dummyData.authorizationData = {
       ...dummyData.authorizationData,
       authorizationTypeSelected: type,
-      authorization: { ...dummyData.authorizationData.authorization, [type]: value },
+      authorization: { ...dummyData.authorizationData.authorization, [type]: value }
     }
     this.props.setQueryUpdatedData(dummyData)
   }
@@ -1800,12 +1800,12 @@ class DisplayEndpoint extends Component {
     this.setState({ sampleResponseFlagArray })
     const updatedEndpointData = {
       ...this.props.endpointContent,
-      sampleResponseArray: sampleResponseArray,
+      sampleResponseArray: sampleResponseArray
     }
     this.props.setQueryUpdatedData(updatedEndpointData)
     this.props.update_endpoint({
       id: this.props.currentEndpointId,
-      sampleResponse: sampleResponseArray,
+      sampleResponse: sampleResponseArray
     })
   }
 
@@ -1823,7 +1823,7 @@ class DisplayEndpoint extends Component {
 
   closeLoginSignupModal() {
     this.setState({
-      showLoginSignupModal: false,
+      showLoginSignupModal: false
     })
   }
 
@@ -1838,7 +1838,7 @@ class DisplayEndpoint extends Component {
     this.setState({
       loader: false,
       runSendRequest: null,
-      requestKey: null,
+      requestKey: null
     })
   }
 
@@ -1897,7 +1897,7 @@ class DisplayEndpoint extends Component {
       this.props.set_response_view("bottom")
     }
     this.setState((prevState) => ({
-      showAskAiSlider: !prevState.showAskAiSlider,
+      showAskAiSlider: !prevState.showAskAiSlider
     }))
     // this.props.set_chat_view(this.state.showAskAiSlider)
   }
@@ -2125,7 +2125,7 @@ class DisplayEndpoint extends Component {
     updatedDocViewData[index] = { ...updatedDocViewData[index], data: data }
     this.props.setQueryUpdatedData({
       ...this.props.endpointContent,
-      docViewData: updatedDocViewData,
+      docViewData: updatedDocViewData
     })
   }
 
@@ -2518,7 +2518,7 @@ class DisplayEndpoint extends Component {
         harObject: this.props?.endpointContent?.harObject,
         title: "Generate Code Snippets",
         publicCollectionTheme: this.props?.publicCollectionTheme,
-        updateCurlSlider: this.props.update_curl_slider,
+        updateCurlSlider: this.props.update_curl_slider
       }
 
       if (this.isDashboardAndTestingView(this.props, "testing")) {

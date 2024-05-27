@@ -28,7 +28,7 @@ export function apiTest(api, method, body, headers, bodyType, cancelToken) {
       url: api,
       method,
       data: bodyType === "urlEncoded" ? qs.stringify({ body }) : body,
-      headers,
+      headers
     }
     return httpService.post(`${apiUrlEndpoint}/test-apis/run`, data, { cancelToken })
   }
@@ -84,7 +84,7 @@ export async function getTokenAuthorizationCodeAndAuthorizationPKCE(accessTokenU
     redirect_uri: data.callbackUrl,
     code: code,
     grant_type: "authorization_code",
-    client_secret: data.clientSecret,
+    client_secret: data.clientSecret
   }
 
   const headers = { "Content-Type": "application/x-www-form-urlencoded" }
@@ -97,7 +97,7 @@ export async function getTokenAuthorizationCodeAndAuthorizationPKCE(accessTokenU
     const { data: responseData } = await httpService.request({
       url: `${apiUrlEndpoint}/auth/token`,
       method: "POST",
-      data: { tokenBody: body, tokenHeaders: headers, accessTokenUrl: accessTokenURL },
+      data: { tokenBody: body, tokenHeaders: headers, accessTokenUrl: accessTokenURL }
     })
     return responseData.data
   } catch (error) {
@@ -110,7 +110,7 @@ export async function getTokenPasswordAndClientGrantType(accessTokenURL, data) {
     client_id: data.clientId,
     client_secret: data.clientSecret,
     scope: data.scope,
-    grant_type: "client_credentials",
+    grant_type: "client_credentials"
   }
 
   let headers = { "Content-Type": "application/x-www-form-urlencoded" }
@@ -125,7 +125,7 @@ export async function getTokenPasswordAndClientGrantType(accessTokenURL, data) {
     const { data: responseData } = await httpService.request({
       url: `${apiUrlEndpoint}/auth/token`,
       method: "POST",
-      data: { tokenBody: body, tokenHeaders: headers, accessTokenUrl: accessTokenURL },
+      data: { tokenBody: body, tokenHeaders: headers, accessTokenUrl: accessTokenURL }
     })
     return responseData.data
   } catch (error) {
@@ -138,14 +138,14 @@ export async function getRefreshToken(singleTokenDetails) {
     client_id: singleTokenDetails.clientId,
     client_secret: singleTokenDetails.clientSecret,
     refresh_token: singleTokenDetails.refreshToken,
-    grant_type: "refresh_token",
+    grant_type: "refresh_token"
   }
 
   try {
     const { data: responseData } = await httpService.request({
       url: `${apiUrlEndpoint}/auth/token`,
       method: "POST",
-      data: { tokenBody: body, tokenHeaders: {}, accessTokenUrl: singleTokenDetails?.refreshTokenUrl },
+      data: { tokenBody: body, tokenHeaders: {}, accessTokenUrl: singleTokenDetails?.refreshTokenUrl }
     })
     return responseData.data
   } catch (error) {
@@ -158,7 +158,7 @@ export async function getSchemaThroughIntrospectionQuery(graphQlAPI) {
     const { data: responseData } = await httpService.request({
       url: graphQlAPI,
       method: "POST",
-      data: { query: introspectionQuery },
+      data: { query: introspectionQuery }
     })
     return responseData.data
   } catch (error) {
@@ -178,5 +178,5 @@ export default {
   saveEndpoint,
   getTokenAuthorizationCodeAndAuthorizationPKCE,
   getTokenPasswordAndClientGrantType,
-  getRefreshToken,
+  getRefreshToken
 }

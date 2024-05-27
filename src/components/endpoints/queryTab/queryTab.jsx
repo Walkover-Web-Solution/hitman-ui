@@ -13,13 +13,13 @@ import "./queryTab.scss"
 export default function QueryTab(props) {
   const editorOptions = {
     markers: false,
-    showGutter: false,
+    showGutter: false
   }
 
   const { activeTabId, introspectionSchemaData } = useSelector((state) => {
     return {
       activeTabId: state.tabs.activeTabId,
-      introspectionSchemaData: state?.tabs?.tabs?.[state.tabs.activeTabId]?.introspectionSchemaData,
+      introspectionSchemaData: state?.tabs?.tabs?.[state.tabs.activeTabId]?.introspectionSchemaData
     }
   })
 

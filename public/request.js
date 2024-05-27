@@ -17,7 +17,7 @@ async function makeHttpRequestThroughAxios({ api: url, method, body: data, heade
     data,
     proxy: false,
     cancelToken: createCancelToken(keyForRequest),
-    httpsAgent,
+    httpsAgent
   }
   if (headers["content-type"] === bodyTypesEnums["multipart/form-data"]) {
     const bodyFormData = new FormData()
@@ -53,7 +53,7 @@ async function makeHttpRequestThroughAxios({ api: url, method, body: data, heade
         cancelTokenMap.delete(keyForRequest)
         resolve({
           status: 200,
-          data: prepareResponse(response),
+          data: prepareResponse(response)
         })
       })
       .catch(function (error) {
@@ -61,17 +61,17 @@ async function makeHttpRequestThroughAxios({ api: url, method, body: data, heade
         if (axios.isCancel(error)) {
           resolve({
             status: 200,
-            data: { success: false, error },
+            data: { success: false, error }
           })
         } else if (!error.response) {
           resolve({
             status: 200,
-            data: { success: false, error },
+            data: { success: false, error }
           })
         } else {
           resolve({
             status: 200,
-            data: prepareResponse(error.response),
+            data: prepareResponse(error.response)
           })
         }
       })
@@ -86,7 +86,7 @@ function createCancelToken(key) {
 function getAgent(sslMode = true) {
   const rejectUnauthorized = sslMode
   const agent = new https.Agent({
-    rejectUnauthorized,
+    rejectUnauthorized
   })
   return agent
 }
@@ -97,7 +97,7 @@ function prepareResponse(data) {
     status: data.status,
     statusText: data.statusText,
     response: data.data,
-    headers: data.headers,
+    headers: data.headers
   }
 }
 

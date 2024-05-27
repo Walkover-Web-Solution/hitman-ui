@@ -21,14 +21,14 @@ export const fetchFeedbacks = (collectionId, orgId) => {
 export const onFeedbacksFetched = (feedbacks) => {
   return {
     type: publishDocsActionTypes.ON_FEEDBACKS_FETCHED,
-    feedbacks,
+    feedbacks
   }
 }
 
 export const onFeedbacksFetchedError = (error) => {
   return {
     type: publishDocsActionTypes.ON_FEEDBACKS_FETCHED_ERROR,
-    error,
+    error
   }
 }
 
@@ -49,12 +49,12 @@ export const onDefaultVersion = (orgId, versionData) => {
 export const onSetDefaultVersion = (versionData) => {
   return {
     type: publishDocsActionTypes.ON_DEFAULT_VERSION,
-    versionData,
+    versionData
   }
 }
 export const onSetDefaultVersionError = (error) => {
   return {
     type: publishDocsActionTypes.ON_DEFAULT_VERSION_ERROR,
-    error,
+    error
   }
 }

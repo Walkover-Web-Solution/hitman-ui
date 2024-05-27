@@ -10,13 +10,13 @@ import { defaultViewTypes } from "../collections/defaultViewModal/defaultViewMod
 
 const mapStateToProps = (state) => {
   return {
-    collections: state.collections,
+    collections: state.collections
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_api: (openApiObject, importType, website, callback, view) => dispatch(importApi(openApiObject, importType, website, callback, view)),
+    import_api: (openApiObject, importType, website, callback, view) => dispatch(importApi(openApiObject, importType, website, callback, view))
   }
 }
 
@@ -31,13 +31,13 @@ class OpenApiForm extends Component {
       errors: {
         type: null,
         website: null,
-        file: null,
+        file: null
       },
       step: 1,
       viewLoader: {
         testing: false,
-        doc: false,
-      },
+        doc: false
+      }
     }
   }
 
@@ -80,7 +80,7 @@ class OpenApiForm extends Component {
         .label("Website")
         .error(() => {
           return { message: "Website must be a valid URL" }
-        }),
+        })
     }
     errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
 

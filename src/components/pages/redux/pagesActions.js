@@ -35,7 +35,7 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR,
     error,
-    originalEndpoint,
+    originalEndpoint
   }
 }
 
@@ -46,7 +46,7 @@ export const updatePage = (history, editedPage) => {
       name: editedPage.name,
       urlName: editedPage.urlName,
       contents: editedPage?.contents || null,
-      state: editedPage.state,
+      state: editedPage.state
     }
     // dispatch(updatePageRequest(dataToSend))
     pageApiService
@@ -65,14 +65,14 @@ export const updatePage = (history, editedPage) => {
 export const updatePageRequest = (editedPage) => {
   return {
     type: pagesActionTypes.UPDATE_PAGE_REQUEST,
-    editedPage,
+    editedPage
   }
 }
 
 export const onPageUpdated = (response) => {
   return {
     type: pagesActionTypes.ON_PAGE_UPDATED,
-    response,
+    response
   }
 }
 
@@ -80,7 +80,7 @@ export const onPageUpdatedError = (error, originalPage) => {
   return {
     type: pagesActionTypes.ON_PAGE_UPDATED_ERROR,
     error,
-    originalPage,
+    originalPage
   }
 }
 
@@ -98,14 +98,14 @@ export const updateContent = async ({ pageData, id }) => {
 export const updateEndpointRequest = (editedEndpoint) => {
   return {
     type: pagesActionTypes.UPDATE_ENDPOINT_REQUEST,
-    editedEndpoint,
+    editedEndpoint
   }
 }
 
 export const onEndpointUpdated = (response) => {
   return {
     type: pagesActionTypes.ON_ENDPOINT_UPDATED,
-    response,
+    response
   }
 }
 
@@ -131,7 +131,7 @@ export const addPageRequestInCollection = (rootParentId, newPage) => {
   return {
     type: pagesActionTypes.ADD_PARENT_PAGE_REQUEST,
     rootParentId,
-    newPage,
+    newPage
   }
 }
 
@@ -139,7 +139,7 @@ export const onParentPageAdded = (response) => {
   return {
     type: pagesActionTypes.ON_PARENT_PAGE_ADDED,
     page: response.page,
-    version: response.version,
+    version: response.version
   }
 }
 
@@ -147,7 +147,7 @@ export const onPageAddedError = (error, newPage) => {
   return {
     type: pagesActionTypes.ON_PAGE_ADDED_ERROR,
     newPage,
-    error,
+    error
   }
 }
 
@@ -191,14 +191,14 @@ const deletePageAndChildren = (pageId, tabs, pageIds = []) => {
 export const deletePageRequest = (page) => {
   return {
     type: pagesActionTypes.DELETE_PAGE_REQUEST,
-    page,
+    page
   }
 }
 
 export const onPageDeleted = (page) => {
   return {
     type: pagesActionTypes.ON_PAGE_DELETED,
-    page,
+    page
   }
 }
 
@@ -206,7 +206,7 @@ export const onPageDeletedError = (error, page) => {
   return {
     type: pagesActionTypes.ON_PAGE_DELETED_ERROR,
     error,
-    page,
+    page
   }
 }
 
@@ -226,7 +226,7 @@ export const duplicatePage = (page) => {
 export const onPageDuplicated = (response) => {
   return {
     type: pagesActionTypes.ON_PAGE_DUPLICATED,
-    response,
+    response
   }
 }
 
@@ -251,7 +251,7 @@ export const updatePageOrderRequest = (pages, pagesOrder) => {
   }
   return {
     type: pagesActionTypes.ON_PAGES_ORDER_UPDATED,
-    pages,
+    pages
   }
 }
 
@@ -259,14 +259,14 @@ export const onPageOrderUpdatedError = (error, pages) => {
   return {
     type: pagesActionTypes.ON_PAGES_ORDER_UPDATED_ERROR,
     pages,
-    error,
+    error
   }
 }
 
 export const updatePageContentData = (payload) => {
   return {
     type: pagesActionTypes.UPDATE_CONTENT_OF_PAGE,
-    payload,
+    payload
   }
 }
 
@@ -275,22 +275,22 @@ export const updatePageData = (payload) => {
     type: pagesActionTypes.UPDATE_PAGE_DATA,
     payload: {
       pageId: payload.pageId,
-      data: payload.data,
-    },
+      data: payload.data
+    }
   }
 }
 
 export const addChildInParent = (payload) => {
   return {
     type: pagesActionTypes.ADD_CHILD_IN_PARENT,
-    payload,
+    payload
   }
 }
 
 export const updateNameOfPages = (payload) => {
   return {
     type: pagesActionTypes.UPDATE_NAME_OF_PAGE,
-    payload,
+    payload
   }
 }
 
@@ -303,7 +303,7 @@ export const updateDragDrop = (draggedId, droppedOnId, pageIds) => {
         if (response.status == 200) {
           dispatch({
             type: pagesActionTypes.ON_DRAG_DROP,
-            payload: response.data,
+            payload: response.data
           })
           toast.success("Moved succesfully")
         } else {

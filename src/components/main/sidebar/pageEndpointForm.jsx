@@ -12,13 +12,13 @@ import { addPage } from "../../pages/redux/pagesActions"
 
 const mapStateToProps = (state) => {
   return {
-    collections: state.collections,
+    collections: state.collections
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage)),
+    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage))
   }
 }
 
@@ -27,7 +27,7 @@ class PageEndpointForm extends Form {
     super(props)
     this.state = {
       data: {
-        name: "",
+        name: ""
       },
       collectionId: "",
       errors: {},
@@ -35,12 +35,12 @@ class PageEndpointForm extends Form {
       step: 1,
       viewLoader: {
         testing: false,
-        doc: false,
+        doc: false
       },
-      updating: false,
+      updating: false
     }
     this.schema = {
-      name: Joi.string().required().label("Page name"),
+      name: Joi.string().required().label("Page name")
     }
   }
 
@@ -55,7 +55,7 @@ class PageEndpointForm extends Form {
       ...data,
       requestId: shortid.generate(),
       versionId: this.props.pageType === 1 ? shortid.generate() : null,
-      pageType: this.props.pageType,
+      pageType: this.props.pageType
     }
     this.props.add_page(rootParentId, newPage)
     moveToNextStep(1)

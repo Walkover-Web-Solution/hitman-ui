@@ -18,5 +18,5 @@ function showMoveCollectionModal() {
 export default {
   showCollectionForm,
   showDeleteCollectionModal,
-  showMoveCollectionModal,
+  showMoveCollectionModal
 }

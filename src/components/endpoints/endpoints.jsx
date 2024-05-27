@@ -31,14 +31,14 @@ const endpointsEnum = {
   PENDING_STATE: 0,
   REJECT_STATE: 3,
   APPROVED_STATE: 2,
-  DRAFT_STATE: 1,
+  DRAFT_STATE: 1
 }
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.pages,
     tabs: state.tabs,
-    clientData: state.clientData,
+    clientData: state.clientData
   }
 }
 
@@ -54,7 +54,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
-    import_postman_environment: (openApiObject, importType, website, callback, view) => dispatch(importPostmanEnvironment(openApiObject, importType, website, callback, view)),
+    import_postman_environment: (openApiObject, importType, website, callback, view) => dispatch(importPostmanEnvironment(openApiObject, importType, website, callback, view))
   }
 }
 
@@ -69,8 +69,8 @@ class Endpoints extends Component {
         addPage: false,
         edit: false,
         share: false,
-        delete: false,
-      },
+        delete: false
+      }
     }
   }
 
@@ -99,15 +99,15 @@ class Endpoints extends Component {
     this.setState({
       showEndpointForm: { edit: true },
       selectedEndpoint: {
-        ...this.props.endpoints[selectedEndpoint],
-      },
+        ...this.props.endpoints[selectedEndpoint]
+      }
     })
   }
 
   openDeleteEndpointModal(endpointId) {
     this.setState({
       showEndpointForm: { delete: true },
-      selectedEndpoint: { ...this.props.endpoints[endpointId] },
+      selectedEndpoint: { ...this.props.endpoints[endpointId] }
     })
   }
 
@@ -145,7 +145,7 @@ class Endpoints extends Component {
           status: tabStatusTypes.SAVED,
           previewMode,
           isModified: false,
-          state: {},
+          state: {}
         })
       } else if (this.props.tabs.tabs[endpoint.id].previewMode === true && previewMode === false) {
         tabService.disablePreviewMode(endpoint.id)
@@ -155,7 +155,7 @@ class Endpoints extends Component {
         title: "update endpoint",
         endpoint: endpoint,
         groupId: groupId,
-        collectionId,
+        collectionId
       })
     } else {
       let id = endpoint?.id
@@ -180,7 +180,7 @@ class Endpoints extends Component {
   handleCheckboxChange = () => {
     this.props.setIsCheckForParenPage({
       id: this.props?.endpointId,
-      isChecked: !this.props?.clientData?.[this?.props?.endpointId]?.checkedForPublished,
+      isChecked: !this.props?.clientData?.[this?.props?.endpointId]?.checkedForPublished
     })
   }
 
@@ -382,7 +382,7 @@ class Endpoints extends Component {
       params: {},
       pathVariables: {},
       BASE_URL: null,
-      bodyDescription: {},
+      bodyDescription: {}
     }
     return <>{isDashboardRoute(this.props, true) && <AddEntity placeholder='API Endpoint Name' type='endpoint' endpoint={endpoint} addEndpoint={this.addEndpoint.bind(this)} />}</>
   }

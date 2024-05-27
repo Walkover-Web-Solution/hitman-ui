@@ -6,7 +6,7 @@ import "./collectionsModal.scss"
 
 const collectionsModalEnum = {
   IMPORT: "import",
-  NEW: "new",
+  NEW: "new"
 }
 
 const choices = {
@@ -15,7 +15,7 @@ const choices = {
     label: "Import",
     modalTitle: "Import Collection",
     modalSize: "sm",
-    disabled: false,
+    disabled: false
   },
   [collectionsModalEnum.NEW]: {
     key: collectionsModalEnum.NEW,
@@ -23,13 +23,13 @@ const choices = {
     disabled: false,
     modalTitle: "Create New Collection",
     modalSize: "sm",
-    id: "add_collection_create_new_btn",
-  },
+    id: "add_collection_create_new_btn"
+  }
 }
 
 class CollectionsModal extends Component {
   state = {
-    choiceSelected: null,
+    choiceSelected: null
   }
 
   selectChoice(choice) {

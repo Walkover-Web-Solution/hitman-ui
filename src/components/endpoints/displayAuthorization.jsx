@@ -13,7 +13,7 @@ const options = {
   cacheTime: 5000000,
   enabled: true,
   staleTime: Infinity,
-  retry: 3,
+  retry: 3
 }
 
 export default function Authorization(props) {
@@ -21,7 +21,7 @@ export default function Authorization(props) {
     return {
       activeTabId: state.tabs.activeTabId,
       tokenDetails: state.tokenData.tokenDetails || {},
-      tabs: state.tabs,
+      tabs: state.tabs
     }
   })
 

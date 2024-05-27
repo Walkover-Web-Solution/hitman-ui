@@ -30,8 +30,8 @@ class BodyContainer extends Component {
             key: "",
             value: "",
             description: "",
-            type: "text",
-          },
+            type: "text"
+          }
         ],
         urlencoded: [
           {
@@ -39,13 +39,13 @@ class BodyContainer extends Component {
             key: "",
             value: "",
             description: "",
-            type: "text",
-          },
-        ],
+            type: "text"
+          }
+        ]
       },
       endpointId: null,
       selectedRawBodyType: rawTypesEnums.TEXT,
-      suggestions: [],
+      suggestions: []
     }
     this.rawBodyTypes = Object.keys(rawTypesEnums)
     this.queryRef = createRef()
@@ -54,7 +54,7 @@ class BodyContainer extends Component {
     addCompleter({
       getCompletions: function (editor, session, pos, prefix, callback) {
         callback(null, [...this.state.suggestions])
-      }.bind(this),
+      }.bind(this)
     })
     this.loadEnvVarsSuggestions = this.loadEnvVarsSuggestions.bind(this)
   }
@@ -97,7 +97,7 @@ class BodyContainer extends Component {
     const data = {
       data: body?.[bodyTypesEnums["multipart/form-data"]] || [{ checked: "notApplicable", key: "", value: "", description: "", type: "text" }],
       urlencoded: body?.[bodyTypesEnums["application/x-www-form-urlencoded"]] || [{ checked: "notApplicable", key: "", value: "", description: "", type: "text" }],
-      raw: body?.raw?.value || "",
+      raw: body?.raw?.value || ""
     }
 
     this.rawBodyType = body?.raw?.rawType || rawTypesEnums.TEXT
@@ -109,7 +109,7 @@ class BodyContainer extends Component {
     this.setState({
       selectedRawBodyType: body?.raw?.rawType || rawTypesEnums.TEXT,
       selectedBodyType,
-      data,
+      data
     })
   }
 
@@ -152,7 +152,7 @@ class BodyContainer extends Component {
       suggestions.push({
         caption: `${variable}`,
         value: `{{${variable}}}`,
-        meta: "Environment variable",
+        meta: "Environment variable"
       })
     })
     if (this._isMounted) {
@@ -233,10 +233,10 @@ class BodyContainer extends Component {
                 value={this.state.selectedRawBodyType === rawTypesEnums.JSON ? this.makeJson(this.state.data.raw) : this.state.data.raw}
                 onChange={this.handleChange.bind(this)}
                 setOptions={{
-                  showLineNumbers: true,
+                  showLineNumbers: true
                 }}
                 editorProps={{
-                  $blockScrolling: false,
+                  $blockScrolling: false
                 }}
                 onLoad={(editor) => {
                   editor.focus()
@@ -334,7 +334,7 @@ class BodyContainer extends Component {
   graphqlBody() {
     const editorOptions = {
       markers: false,
-      showGutter: false,
+      showGutter: false
     }
     return (
       <div>
@@ -349,10 +349,10 @@ class BodyContainer extends Component {
               value={this.props.endpointContent?.data?.body?.query || ""}
               onChange={this.handleChangeGraphqlQuery.bind(this)}
               setOptions={{
-                showLineNumbers: true,
+                showLineNumbers: true
               }}
               editorProps={{
-                $blockScrolling: false,
+                $blockScrolling: false
               }}
               onLoad={(editor) => {
                 editor.focus()
@@ -378,10 +378,10 @@ class BodyContainer extends Component {
               value={this.props.endpointContent?.data?.body?.variables || ""}
               onChange={this.handleChangeGraphqlQuery.bind(this)}
               setOptions={{
-                showLineNumbers: true,
+                showLineNumbers: true
               }}
               editorProps={{
-                $blockScrolling: false,
+                $blockScrolling: false
               }}
               onLoad={(editor) => {
                 editor.focus()

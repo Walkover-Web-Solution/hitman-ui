@@ -12,7 +12,7 @@ const mapStateToProps = (state) => {
 
 class chatbotsideBar extends Component {
   state = {
-    inputValue: "",
+    inputValue: ""
   }
 
   handleInputChange = (e) => {
@@ -39,7 +39,7 @@ class chatbotsideBar extends Component {
       right: "0px",
       height: "95vh",
       width: "24%",
-      float: "right",
+      float: "right"
     }
 
     const inputContainerStyle = {
@@ -49,7 +49,7 @@ class chatbotsideBar extends Component {
       width: "100%",
       padding: "10px",
       borderTop: "1px ",
-      backgroundColor: "white",
+      backgroundColor: "white"
     }
 
     const headerStyle = {
@@ -57,14 +57,14 @@ class chatbotsideBar extends Component {
       justifyContent: "space-between",
       alignItems: "center",
       padding: "10px",
-      borderBottom: "0.5px solid #ddd",
+      borderBottom: "0.5px solid #ddd"
     }
 
     const closeButtonStyle = {
       background: "none",
       border: "none",
       fontSize: "1.5em",
-      cursor: "pointer",
+      cursor: "pointer"
     }
 
     return (

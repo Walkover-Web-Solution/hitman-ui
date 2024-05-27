@@ -2,7 +2,7 @@ import tokenDataActionTypes from "./tokenDataActionTypes"
 
 const initialState = {
   tokenDetails: {},
-  loading: false,
+  loading: false
 }
 
 const tokenDataReducer = (state = initialState, action) => {

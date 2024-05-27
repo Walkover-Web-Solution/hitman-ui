@@ -18,7 +18,7 @@ export async function inviteMember(name, query) {
   const data = {
     query: query,
     proxy: proxyToken,
-    name: name,
+    name: name
   }
 
   try {
@@ -35,5 +35,5 @@ export async function inviteMember(name, query) {
 }
 
 export default {
-  inviteMember,
+  inviteMember
 }

@@ -61,5 +61,5 @@ export default {
   deleteCollection,
   duplicateCollection,
   getCollectionsByCustomDomain,
-  restoreCollection,
+  restoreCollection
 }

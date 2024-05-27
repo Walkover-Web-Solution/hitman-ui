@@ -35,5 +35,5 @@ export function loadHelloWidget() {
 }
 
 export default {
-  loadHelloWidget,
+  loadHelloWidget
 }

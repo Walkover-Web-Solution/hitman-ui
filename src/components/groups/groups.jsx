@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     clientData: state.clientData,
-    modals: state.modals,
+    modals: state.modals
   }
 }
 
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
-    delete_page: (page) => dispatch(deletePage(page)),
+    delete_page: (page) => dispatch(deletePage(page))
   }
 }
 
@@ -44,11 +44,11 @@ class Groups extends Component {
       showSubPageForm: {
         addPage: false,
         edit: false,
-        share: false,
+        share: false
       },
       theme: "",
       filter: "",
-      checkboxChecked: false,
+      checkboxChecked: false
     }
     this.eventkey = {}
   }
@@ -63,7 +63,7 @@ class Groups extends Component {
     this.setState({
       showSubPageForm: { share: true, addPage: false },
       groupFormName: "Share Subpage",
-      selectedGroup: { ...this.props.pages[groupId] },
+      selectedGroup: { ...this.props.pages[groupId] }
     })
   }
 
@@ -98,7 +98,7 @@ class Groups extends Component {
   openEditSubPageForm(selectedGroup) {
     this.setState({
       showSubPageForm: { edit: true },
-      selectedGroup,
+      selectedGroup
     })
   }
 
@@ -106,8 +106,8 @@ class Groups extends Component {
     this.setState({
       showDeleteModal: true,
       selectedGroup: {
-        ...this.props.pages[groupId],
-      },
+        ...this.props.pages[groupId]
+      }
     })
   }
 
@@ -118,8 +118,8 @@ class Groups extends Component {
     this.setState({
       showAddCollectionModal: true,
       selectedPage: {
-        ...this.props.pages[groupId],
-      },
+        ...this.props.pages[groupId]
+      }
     })
   }
 
@@ -146,7 +146,7 @@ class Groups extends Component {
   handleCheckboxChange = () => {
     this.props.setIsCheckForParenPage({
       id: this.props?.rootParentId,
-      isChecked: !this.props?.clientData?.[this?.props?.rootParentId]?.checkedForPublished,
+      isChecked: !this.props?.clientData?.[this?.props?.rootParentId]?.checkedForPublished
     })
   }
 
@@ -230,7 +230,7 @@ class Groups extends Component {
   handleRedirect(id) {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`,
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
       })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
@@ -245,7 +245,7 @@ class Groups extends Component {
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
-      id: id,
+      id: id
     })
   }
 
@@ -262,7 +262,7 @@ class Groups extends Component {
             "Delete Page",
             `Are you sure you wish to delete this page?
               All your pages and endpoints present in this page will be deleted.`,
-            this.props?.pages[this.props?.rootParentId],
+            this.props?.pages[this.props?.rootParentId]
           )}
 
         {<div className='linkWith'>{this.renderBody(this.props?.rootParentId)}</div>}

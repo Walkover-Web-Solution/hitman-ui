@@ -19,7 +19,7 @@ class CodeTemplate extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      theme: "",
+      theme: ""
     }
     this.selectedLanguage = "shell"
     this.iconRef = React.createRef()
@@ -39,7 +39,7 @@ class CodeTemplate extends Component {
       httpVersion,
       cookies,
       headers,
-      postData,
+      postData
     })
     return snippet
   }
@@ -183,7 +183,7 @@ class CodeTemplate extends Component {
                 value={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
                 readOnly
                 editorProps={{
-                  $blockScrolling: false,
+                  $blockScrolling: false
                 }}
                 showGutter={false}
                 onLoad={(editor) => {

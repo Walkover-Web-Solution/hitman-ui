@@ -58,8 +58,8 @@ class SplitPane extends React.Component {
 
       // these are props that are needed in static functions. ie: gDSFP
       instanceProps: {
-        size,
-      },
+        size
+      }
     }
   }
 
@@ -82,7 +82,7 @@ class SplitPane extends React.Component {
 
   onMouseDown(event) {
     const eventWithTouches = Object.assign({}, event, {
-      touches: [{ clientX: event.clientX, clientY: event.clientY }],
+      touches: [{ clientX: event.clientX, clientY: event.clientY }]
     })
     this.onTouchStart(eventWithTouches)
   }
@@ -98,14 +98,14 @@ class SplitPane extends React.Component {
       }
       this.setState({
         active: true,
-        position,
+        position
       })
     }
   }
 
   onMouseMove(event) {
     const eventWithTouches = Object.assign({}, event, {
-      touches: [{ clientX: event.clientX, clientY: event.clientY }],
+      touches: [{ clientX: event.clientX, clientY: event.clientY }]
     })
     this.onTouchMove(eventWithTouches)
   }
@@ -165,7 +165,7 @@ class SplitPane extends React.Component {
           } else {
             this.setState({
               position: newPosition,
-              resized: true,
+              resized: true
             })
           }
 
@@ -173,7 +173,7 @@ class SplitPane extends React.Component {
 
           this.setState({
             draggedSize: newSize,
-            [isPrimaryFirst ? "pane1Size" : "pane2Size"]: newSize,
+            [isPrimaryFirst ? "pane1Size" : "pane2Size"]: newSize
           })
         }
       }
@@ -237,14 +237,14 @@ class SplitPane extends React.Component {
       WebkitUserSelect: "text",
       msUserSelect: "text",
       userSelect: "text",
-      ...styleProps,
+      ...styleProps
     }
 
     if (split === "vertical") {
       Object.assign(style, {
         flexDirection: "row",
         left: 0,
-        right: 0,
+        right: 0
       })
     } else {
       Object.assign(style, {
@@ -252,7 +252,7 @@ class SplitPane extends React.Component {
         flexDirection: "column",
         minHeight: "100%",
         top: 0,
-        width: "100%",
+        width: "100%"
       })
     }
 
@@ -327,7 +327,7 @@ SplitPane.propTypes = {
   pane1Style: stylePropType,
   pane2Style: stylePropType,
   resizerClassName: PropTypes.string,
-  step: PropTypes.number,
+  step: PropTypes.number
 }
 
 SplitPane.defaultProps = {
@@ -337,7 +337,7 @@ SplitPane.defaultProps = {
   split: "vertical",
   paneClassName: "",
   pane1ClassName: "",
-  pane2ClassName: "",
+  pane2ClassName: ""
 }
 
 polyfill(SplitPane)

@@ -27,14 +27,14 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     historySnapshot: state.history,
-    tabs: state.tabs,
+    tabs: state.tabs
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     close_all_tabs: (tabs) => dispatch(closeAllTabs(tabs)),
-    remove_history: (data) => dispatch(onHistoryRemoved(data)),
+    remove_history: (data) => dispatch(onHistoryRemoved(data))
   }
 }
 
@@ -55,7 +55,7 @@ class UserProfileV2 extends Component {
       currentOrg: "",
       switchOrCreate: false,
       showImportModal: false,
-      showNewCollectionModal: false,
+      showNewCollectionModal: false
     }
     this.handleAddNewClick = this.handleAddNewClick.bind(this)
     this.handleImportClick = this.handleImportClick.bind(this)
@@ -291,13 +291,13 @@ class UserProfileV2 extends Component {
     if (collection?.id) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`,
+        search: `?collectionId=${collection.id}`
       })
     } else {
       const collection = this.props.collections[Object.keys(this.props.collections)[0]]
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`,
+        search: `?collectionId=${collection.id}`
       })
     }
   }
@@ -311,7 +311,7 @@ class UserProfileV2 extends Component {
     const { history, organizationId, location } = this.props
     history.push({
       pathname: `/orgs/${organizationId}/manage`,
-      search: location.search,
+      search: location.search
     })
   }
 
@@ -364,7 +364,7 @@ class UserProfileV2 extends Component {
     // this.props.close_all_tabs(this.props.tabs.tabsOrder)
     // this.props.remove_history(this.props.historySnapshot)
     this.props.history.push({
-      pathname: "/logout",
+      pathname: "/logout"
     })
   }
 

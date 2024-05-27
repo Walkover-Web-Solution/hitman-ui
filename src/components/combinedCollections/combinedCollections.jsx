@@ -9,7 +9,7 @@ function CombinedCollections(props) {
   const { childIds, pages } = useSelector((state) => {
     return {
       childIds: state?.pages?.[props?.rootParentId]?.child || [],
-      pages: state.pages,
+      pages: state.pages
     }
   })
 
@@ -25,7 +25,7 @@ function CombinedCollections(props) {
           onDrop: props.onDrop,
           onDragEnter: props.onDragEnter,
           draggingOverId: props.draggingOverId,
-          onDragEnd: props.onDragEnd,
+          onDragEnd: props.onDragEnd
         }
         switch (type) {
           case 1:

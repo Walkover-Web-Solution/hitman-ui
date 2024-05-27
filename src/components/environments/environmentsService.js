@@ -12,5 +12,5 @@ function showDeleteEnvironmentModal(props, onHide, title, message, selectedEnvir
 
 export default {
   showEnvironmentForm,
-  showDeleteEnvironmentModal,
+  showDeleteEnvironmentModal
 }

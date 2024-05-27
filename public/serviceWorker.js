@@ -6,7 +6,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(urlsToCache)
-    }),
+    })
   )
 })
 
@@ -14,7 +14,7 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request).then((res) => {
       return fetch(event.request).catch(() => caches.match("offline.html"))
-    }),
+    })
   )
 })
 
@@ -29,8 +29,8 @@ self.addEventListener("activate", (event) => {
           if (!cacheWhitelist.includes(cacheName)) {
             return caches.delete(cacheName)
           }
-        }),
-      ),
-    ),
+        })
+      )
+    )
   )
 })

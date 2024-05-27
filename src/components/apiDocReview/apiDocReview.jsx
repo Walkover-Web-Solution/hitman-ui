@@ -19,7 +19,7 @@ class ApiDocReview extends Component {
     comment: "",
     showFeedbackModal: false,
     currentReviews: {},
-    validEmailAddress: true,
+    validEmailAddress: true
   }
 
   componentDidMount() {
@@ -121,7 +121,7 @@ class ApiDocReview extends Component {
   handleInput(event) {
     event.preventDefault()
     const {
-      target: { name, value },
+      target: { name, value }
     } = event
     this.setState({ [name]: value })
   }

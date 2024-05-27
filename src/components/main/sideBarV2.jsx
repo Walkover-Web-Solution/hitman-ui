@@ -36,7 +36,7 @@ const mapStateToProps = (state) => {
     groups: state.groups,
     historySnapshot: state.history,
     filter: "",
-    modals: state.modals,
+    modals: state.modals
   }
 }
 
@@ -46,7 +46,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     open_modal: (modal, data) => dispatch(openModal(modal, data)),
-    update_drag_and_drop: (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds)),
+    update_drag_and_drop: (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
   }
 }
 
@@ -67,7 +67,7 @@ class SideBarV2 extends Component {
     super(props)
     this.state = {
       data: {
-        filter: "",
+        filter: ""
       },
       name: "",
       email: "",
@@ -81,7 +81,7 @@ class SideBarV2 extends Component {
       search: false,
       endpoints: "",
       draggingOverId: null,
-      draggedIdSelected: null,
+      draggedIdSelected: null
     }
     this.inputRef = createRef()
     this.sidebarRef = createRef()
@@ -114,17 +114,17 @@ class SideBarV2 extends Component {
     }
     if (this.props.historySnapshot) {
       this.setState({
-        historySnapshot: Object.values(this.props.historySnapshot),
+        historySnapshot: Object.values(this.props.historySnapshot)
       })
     }
     if (this.props.endpoints) {
       this.setState({
-        endpoints: Object.values(this.props.endpoints),
+        endpoints: Object.values(this.props.endpoints)
       })
     }
     if (this.props.pages) {
       this.setState({
-        pages: Object.values(this.props.pages),
+        pages: Object.values(this.props.pages)
       })
     }
     if (this.props.location.collectionId) {
@@ -166,12 +166,12 @@ class SideBarV2 extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.props.historySnapshot !== prevProps.historySnapshot) {
       this.setState({
-        historySnapshot: Object.values(this.props.historySnapshot),
+        historySnapshot: Object.values(this.props.historySnapshot)
       })
     }
     if (this.props.endpoints !== prevProps.endpoints) {
       this.setState({
-        endpoints: Object.values(this.props.endpoints),
+        endpoints: Object.values(this.props.endpoints)
       })
     }
   }
@@ -252,14 +252,14 @@ class SideBarV2 extends Component {
   openHistorySnapshot(id) {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard/history/${id}`,
-      historySnapshotId: id,
+      historySnapshotId: id
     })
   }
 
   openEndpoint(id) {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${id}`,
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${id}`
       })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
@@ -272,7 +272,7 @@ class SideBarV2 extends Component {
   openPage(id) {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`,
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
       })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
@@ -353,7 +353,7 @@ class SideBarV2 extends Component {
                       </div>
                     </div>
                   </div>
-                ),
+                )
             )}
         </div>
       </div>
@@ -390,7 +390,7 @@ class SideBarV2 extends Component {
                       </div>
                     </div>
                   </div>
-                ),
+                )
             )}
         </div>
       </div>
@@ -731,8 +731,8 @@ class SideBarV2 extends Component {
     this.setState({
       showVersionForm: true,
       selectedCollection: {
-        ...this.props.collections[collectionId],
-      },
+        ...this.props.collections[collectionId]
+      }
     })
   }
 

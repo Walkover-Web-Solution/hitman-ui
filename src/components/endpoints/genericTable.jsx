@@ -10,7 +10,7 @@ import "react-autocomplete-input/dist/bundle.css"
 const autoCompleterDefaultProps = {
   Component: "input",
   autoComplete: "off",
-  trigger: ["{{"],
+  trigger: ["{{"]
 }
 
 class GenericTable extends Component {
@@ -22,7 +22,7 @@ class GenericTable extends Component {
       editButtonName: "Bulk Edit",
       originalParams: [],
       originalHeaders: [],
-      theme: "",
+      theme: ""
     }
 
     this.checkboxFlags = []
@@ -34,7 +34,7 @@ class GenericTable extends Component {
 
   state = {
     optionalParams: false,
-    randomId: "",
+    randomId: ""
   }
 
   componentDidMount() {
@@ -127,7 +127,7 @@ class GenericTable extends Component {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
+      description: ""
     }
     if (title === "Params" || title === "Headers") {
       this.props.props_from_parent(title, dataArray)
@@ -145,7 +145,7 @@ class GenericTable extends Component {
         checked: "notApplicable",
         key: "",
         value: "",
-        description: "",
+        description: ""
       }
       if (title === "Headers") this.props.props_from_parent(title, dataArray)
       if (title === "Params") this.props.props_from_parent("handleAddParam", dataArray)
@@ -174,7 +174,7 @@ class GenericTable extends Component {
     if (this.state.bulkEdit) {
       this.setState({
         bulkEdit: false,
-        editButtonName: "Bulk Edit",
+        editButtonName: "Bulk Edit"
       })
     } else {
       if (!this.helperflag && this.textAreaValueFlag) {
@@ -184,7 +184,7 @@ class GenericTable extends Component {
       }
       this.setState({
         bulkEdit: true,
-        editButtonName: "Key-Value Edit",
+        editButtonName: "Key-Value Edit"
       })
     }
   }
@@ -301,7 +301,7 @@ class GenericTable extends Component {
     if (isElectron()) {
       const { dialog } = window.require("electron").remote
       const files = dialog.showOpenDialogSync({
-        properties: ["openFile"],
+        properties: ["openFile"]
       })
       if (files) {
         const id = shortid.generate()
@@ -311,9 +311,9 @@ class GenericTable extends Component {
             value: {
               id,
               name: this.getName(files[0]),
-              srcPath: files[0],
-            },
-          },
+              srcPath: files[0]
+            }
+          }
         })
       }
     } else {
@@ -322,8 +322,8 @@ class GenericTable extends Component {
       this.handleChange({
         currentTarget: {
           name: index + ".type",
-          value: "text",
-        },
+          value: "text"
+        }
       })
     }
   }
@@ -477,7 +477,7 @@ class GenericTable extends Component {
     const priority = {
       true: 1,
       false: 2,
-      notApplicable: 3,
+      notApplicable: 3
     }
     return data.sort((itemA, itemB) => {
       return priority[itemA.checked] - priority[itemB.checked]

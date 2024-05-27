@@ -18,7 +18,7 @@ function endpointsReducer(state = initialState, action) {
       toast.error(action.error)
       return {
         ...state,
-        [action.originalEndpoint.id]: action.originalEndpoint,
+        [action.originalEndpoint.id]: action.originalEndpoint
       }
     case versionActionTypes.ON_VERSION_DUPLICATED:
       return { ...state, ...action.response.endpoints }

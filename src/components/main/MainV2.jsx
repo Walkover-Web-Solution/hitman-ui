@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    endpoints: state.endpoints,
+    endpoints: state.endpoints
   }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch) => {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
     add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId)),
-    add_user: (userData) => dispatch(addUserData(userData)),
+    add_user: (userData) => dispatch(addUserData(userData))
   }
 }
 
@@ -44,7 +44,7 @@ class MainV2 extends Component {
       defaultTabIndex: 0,
       showAddCollectionModal: false,
       loading: true,
-      showAddCollectionPage: true,
+      showAddCollectionPage: true
     }
     const { endpointId, pageId } = this.props.match.params
     // if (endpointId && endpointId !== 'new') {
@@ -82,7 +82,7 @@ class MainV2 extends Component {
         orgId = getOrgList()[0]?.id
 
         this.props.history.push({
-          pathname: `/orgs/${orgId}/dashboard`,
+          pathname: `/orgs/${orgId}/dashboard`
         })
       } else {
         const orgName = getOrgList()[0]?.name
@@ -96,7 +96,7 @@ class MainV2 extends Component {
     } else {
       /** Perform Login Procedure for Token */
       this.props.history.push({
-        pathname: "/login",
+        pathname: "/login"
       })
     }
     this.setState({ loading: false })

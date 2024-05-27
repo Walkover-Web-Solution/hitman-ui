@@ -14,13 +14,13 @@ import Form from "../../common/form"
 import { addPage } from "../../pages/redux/pagesActions"
 export const defaultViewTypes = {
   TESTING: "testing",
-  DOC: "doc",
+  DOC: "doc"
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_new_tab: () => dispatch(addNewTab()),
-    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage)),
+    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage))
   }
 }
 export class DefaultViewModal extends Form {
@@ -29,20 +29,20 @@ export class DefaultViewModal extends Form {
     this.inputRef = React.createRef()
     this.state = {
       showPageForm: {
-        addPage: false,
+        addPage: false
       },
       data: {
-        name: "",
+        name: ""
       },
       errors: {
-        name: "",
-      },
+        name: ""
+      }
     }
 
     this.schema = {
       name: Joi.string().min(1).max(100).required().label("Name"),
       contents: Joi.string().allow(null, ""),
-      state: Joi.valid(0, 1, 2, 3),
+      state: Joi.valid(0, 1, 2, 3)
     }
   }
   handleSubmit = (e) => {
@@ -79,7 +79,7 @@ export class DefaultViewModal extends Form {
         ...data,
         requestId: shortid.generate(),
         versionId: this.props.pageType === 1 ? shortid.generate() : null,
-        pageType: this.props.pageType,
+        pageType: this.props.pageType
       }
       this.props.add_page(rootParentId, newPage)
     }
@@ -93,7 +93,7 @@ export class DefaultViewModal extends Form {
         requestId: shortid.generate(),
         versionId: this.props?.pageType === 1 ? shortid.generate() : null,
         pageType: this.props?.pageType,
-        state: 0,
+        state: 0
       }
       this.props.add_page(ParentId, newPage)
     }

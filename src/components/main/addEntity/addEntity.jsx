@@ -10,33 +10,33 @@ const entityENUM = {
   endpoint: {
     key: "endpoint",
     message: "Add the API endpoint details from right section.",
-    tooltip: "",
+    tooltip: ""
   },
   version: {
     key: "version",
     message: "Add your Page.",
-    tooltip: "Versioning helps in maintaining API changes without breaking existing implementations. This gives consumers more choices without having to upgrade to the latest version",
+    tooltip: "Versioning helps in maintaining API changes without breaking existing implementations. This gives consumers more choices without having to upgrade to the latest version"
   },
   page: {
     key: "page", // rootpage
     message: "No page added.",
-    tooltip: "Page help categorize APIs",
+    tooltip: "Page help categorize APIs"
   },
   group: {
     key: "group",
     message: "No group added.",
-    tooltip: "Groups help categorize APIs",
-  },
+    tooltip: "Groups help categorize APIs"
+  }
 }
 
 export class AddEntity extends Component {
   state = {
     entityName: "",
-    errors: {},
+    errors: {}
   }
 
   schema = {
-    entityName: Joi.string().required().min(2).max(30).trim().label(`${this.props.type} name`),
+    entityName: Joi.string().required().min(2).max(30).trim().label(`${this.props.type} name`)
   }
 
   validate() {

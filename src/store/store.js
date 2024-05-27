@@ -29,12 +29,12 @@ const rootReducer = combineReducers({
   feedbacks: publishDocsReducer,
   clientData: clientDataReducer,
   tokenData: tokenDataReducer,
-  users: userReducer,
+  users: userReducer
 })
 
 const persistConfig = {
   key: "root",
-  storage,
+  storage
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

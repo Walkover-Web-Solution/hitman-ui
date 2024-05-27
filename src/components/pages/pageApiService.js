@@ -42,7 +42,7 @@ export function duplicatePage(pageId) {
 export function updatePageOrder(pagesOrder) {
   const apiUrl = getApiUrl()
   return http.patch(`${apiUrl}/updatePagesOrder`, {
-    pagesOrder: pagesOrder,
+    pagesOrder: pagesOrder
   })
 }
 
@@ -58,5 +58,5 @@ export default {
   getAllPages,
   updatePageOrder,
   saveCollectionPage,
-  dragAndDropApi,
+  dragAndDropApi
 }

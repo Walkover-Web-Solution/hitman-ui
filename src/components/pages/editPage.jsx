@@ -23,10 +23,10 @@ const withQuery = (WrappedComponent) => {
           refetchOnWindowFocus: false,
           cacheTime: 5000000,
           enabled: true,
-          staleTime: 600000,
+          staleTime: 600000
         })
         props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
-      },
+      }
     })
     const tabId = props?.tabs?.tabs?.[pageId]
     //if tab is Modified then show the data from the tab
@@ -40,14 +40,14 @@ const withQuery = (WrappedComponent) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
-    update_tab: (id, data) => dispatch(updateTab(id, data)),
+    update_tab: (id, data) => dispatch(updateTab(id, data))
   }
 }
 
 const mapStateToProps = (state) => {
   return {
     tabs: state.tabs,
-    pages: state.pages,
+    pages: state.pages
   }
 }
 
@@ -56,7 +56,7 @@ class EditPage extends Component {
     super(props)
     this.state = {
       data: { id: null, name: "", contents: "", state: "" },
-      showEditor: false,
+      showEditor: false
     }
     this.name = React.createRef()
     this.contents = React.createRef()
@@ -73,7 +73,7 @@ class EditPage extends Component {
         name,
         contents,
         isPublished,
-        state,
+        state
       }
       let updatedData = _.cloneDeep(data)
       updatedData.contents = this.props?.pageContentData
@@ -104,8 +104,8 @@ class EditPage extends Component {
       tab,
       pages,
       match: {
-        params: { pageId },
-      },
+        params: { pageId }
+      }
     } = this.props
     const { draftDataSet } = this.state
 
@@ -185,7 +185,7 @@ class EditPage extends Component {
       // Redirect to displayPage Route Component
       tabService.unmarkTabAsModified(this.props.tab.id)
       this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${pageId}`,
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${pageId}`
       })
     }
   }

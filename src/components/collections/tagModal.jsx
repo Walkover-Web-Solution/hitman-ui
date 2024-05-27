@@ -9,11 +9,11 @@ class TagManagerModal extends Form {
     super(props)
     this.state = {
       data: { gtmId: "" },
-      errors: {},
+      errors: {}
     }
 
     this.schema = {
-      gtmId: Joi.string().required().label("GTM-ID"),
+      gtmId: Joi.string().required().label("GTM-ID")
     }
   }
 

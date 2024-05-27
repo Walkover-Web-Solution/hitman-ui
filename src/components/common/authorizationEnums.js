@@ -3,7 +3,7 @@ const grantTypesEnums = {
   authorizationCodeWithPkce: "Authorization Code (With PKCE)",
   implicit: "Implicit",
   passwordCredentials: "Password Credentials",
-  clientCredentials: "Client Credentials",
+  clientCredentials: "Client Credentials"
 }
 
 const inputFieldsEnums = {
@@ -21,29 +21,29 @@ const inputFieldsEnums = {
   scope: "Scope",
   state: "State",
   clientAuthentication: "Client Authentication",
-  refreshTokenUrl: "Refresh Token URL",
+  refreshTokenUrl: "Refresh Token URL"
 }
 
 const codeMethodTypesEnums = {
   sh256: "sh-256",
-  plain: "Plain",
+  plain: "Plain"
 }
 
 const clientAuthenticationTypeEnums = {
   sendOnHeaders: "Send as Basic Auth header",
-  sendOnBody: "Send client credentials in body",
+  sendOnBody: "Send client credentials in body"
 }
 
 const authorizationTypes = {
   noAuth: "No Auth",
   basicAuth: "Basic Auth",
-  oauth2: "OAuth 2.0",
+  oauth2: "OAuth 2.0"
 }
 
 const addAuthorizationDataTypes = {
   select: "Select",
   requestHeaders: "Request Headers",
-  requestUrl: "Request URL",
+  requestUrl: "Request URL"
 }
 
 export { grantTypesEnums, inputFieldsEnums, codeMethodTypesEnums, clientAuthenticationTypeEnums, authorizationTypes, addAuthorizationDataTypes }

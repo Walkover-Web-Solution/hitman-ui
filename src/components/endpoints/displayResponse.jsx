@@ -17,7 +17,7 @@ const JSONPrettyMon = require("react-json-pretty/dist/monikai")
 
 const mapStateToProps = (state) => {
   return {
-    tabs: state?.tabs?.tabs,
+    tabs: state?.tabs?.tabs
   }
 }
 
@@ -37,7 +37,7 @@ class DisplayResponse extends Component {
     output: null,
     isShow: false,
     Open: false,
-    Show: false,
+    Show: false
   }
 
   constructor(props) {
@@ -55,7 +55,7 @@ class DisplayResponse extends Component {
       rawResponse: true,
       previewResponse: false,
       prettyResponse: false,
-      responseString: JSON.stringify(this.props.response.data),
+      responseString: JSON.stringify(this.props.response.data)
     })
   }
 
@@ -64,7 +64,7 @@ class DisplayResponse extends Component {
       rawResponse: false,
       previewResponse: false,
       prettyResponse: true,
-      responseString: JSON.stringify(this.props.response),
+      responseString: JSON.stringify(this.props.response)
     })
   }
 
@@ -72,7 +72,7 @@ class DisplayResponse extends Component {
     this.setState({
       rawResponse: false,
       previewResponse: true,
-      prettyResponse: false,
+      prettyResponse: false
     })
   }
 
@@ -87,9 +87,9 @@ class DisplayResponse extends Component {
       showSampleResponseForm,
       sampleResponseFormName: name,
       selectedSampleResponse: {
-        ...obj,
+        ...obj
       },
-      index,
+      index
     })
   }
 
@@ -120,7 +120,7 @@ class DisplayResponse extends Component {
       function () {
         this.setState({ showCopyMessage: false })
       }.bind(this),
-      2000,
+      2000
     )
   }
 

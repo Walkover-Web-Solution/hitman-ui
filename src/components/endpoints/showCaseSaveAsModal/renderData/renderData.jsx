@@ -6,7 +6,7 @@ export default function RenderData(props) {
   const { pages, collections } = useSelector((state) => {
     return {
       pages: state.pages,
-      collections: state.collections,
+      collections: state.collections
     }
   })
 

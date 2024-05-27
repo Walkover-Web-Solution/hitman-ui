@@ -36,5 +36,5 @@ export default {
   approveEndpoint,
   pendingEndpoint,
   draftEndpoint,
-  rejectEndpoint,
+  rejectEndpoint
 }

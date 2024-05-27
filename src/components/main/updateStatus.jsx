@@ -10,7 +10,7 @@ const type = {
   UPDATE_DOWNLOADED: "UPDATE_DOWNLOADED",
   ERROR: "ERROR",
   CHECKING_FOR_UPDATES: "CHECKING_FOR_UPDATES",
-  UPDATE_NOT_AVAILABLE: "UPDATE_NOT_AVAILABLE",
+  UPDATE_NOT_AVAILABLE: "UPDATE_NOT_AVAILABLE"
 }
 
 class UpdateStatus extends Component {
@@ -20,7 +20,7 @@ class UpdateStatus extends Component {
     updateStatusDisplay: false,
     progressBar: false,
     closeButton: false,
-    showSpinner: false,
+    showSpinner: false
   }
 
   componentDidMount() {

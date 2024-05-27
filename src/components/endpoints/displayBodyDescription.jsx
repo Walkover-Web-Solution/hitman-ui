@@ -30,7 +30,7 @@ class DisplayBodyDescription extends Component {
         data,
 
         newValue,
-        bodyData,
+        bodyData
       )
     }
     return { body, bodyDescription }

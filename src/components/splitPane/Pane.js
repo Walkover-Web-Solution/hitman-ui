@@ -11,7 +11,7 @@ class Pane extends React.PureComponent {
     let style = {
       flex: 1,
       position: "relative",
-      outline: "none",
+      outline: "none"
     }
 
     if (size !== undefined) {
@@ -40,7 +40,7 @@ Pane.propTypes = {
   size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   split: PropTypes.oneOf(["vertical", "horizontal"]),
   style: stylePropType,
-  eleRef: PropTypes.func,
+  eleRef: PropTypes.func
 }
 
 Pane.defaultProps = {}

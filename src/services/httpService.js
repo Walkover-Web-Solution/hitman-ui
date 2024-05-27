@@ -14,14 +14,14 @@ instance.interceptors.response.use(null, (error) => {
   if (error.response.config.method === "get" && error.response.status === 404) {
     history.push({
       pathname: "/404_PAGE",
-      error: error,
+      error: error
     })
   }
 
   if (error?.response?.config?.method === "get" && error?.response?.status === 403) {
     history.push({
       pathname: "/403_PAGE",
-      error: error,
+      error: error
     })
   }
 
@@ -84,5 +84,5 @@ export default {
   delete: deleteMethod,
   request: requestMethod(),
   patch: patchMethod,
-  setProxyToken,
+  setProxyToken
 }

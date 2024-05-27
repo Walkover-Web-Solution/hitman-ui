@@ -17,7 +17,7 @@ const ProtectedRouteV2 = ({ path, component: Component, render, ...rest }) => {
             <Redirect
               to={{
                 pathname: "/logout",
-                search: `?redirect_uri=${props.location.pathname}`,
+                search: `?redirect_uri=${props.location.pathname}`
               }}
             />
           )
@@ -31,7 +31,7 @@ const ProtectedRouteV2 = ({ path, component: Component, render, ...rest }) => {
             return (
               <Redirect
                 to={{
-                  pathname: newUrl,
+                  pathname: newUrl
                 }}
               />
             )
@@ -42,7 +42,7 @@ const ProtectedRouteV2 = ({ path, component: Component, render, ...rest }) => {
             <Redirect
               to={{
                 pathname: "/login",
-                search: `?redirect_uri=${props.location.pathname}`,
+                search: `?redirect_uri=${props.location.pathname}`
               }}
             />
           )

@@ -10,7 +10,7 @@ import { onEnter, toTitleCase } from "../common/utility"
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage)),
+    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage))
   }
 }
 
@@ -19,15 +19,15 @@ class PageForm extends Form {
     super(props)
     this.state = {
       data: {
-        name: "",
+        name: ""
       },
-      errors: {},
+      errors: {}
     }
 
     this.schema = {
       name: Joi.string().min(1).max(100).required().label("Page name"),
       contents: Joi.string().allow(null, ""),
-      state: Joi.valid(0, 1, 2, 3),
+      state: Joi.valid(0, 1, 2, 3)
     }
   }
 
@@ -47,7 +47,7 @@ class PageForm extends Form {
         ...data,
         requestId: shortid.generate(),
         versionId: this.props.pageType === 1 ? shortid.generate() : null,
-        pageType: this.props.pageType,
+        pageType: this.props.pageType
       }
       this.props.add_page(rootParentId, newPage)
     }
@@ -60,7 +60,7 @@ class PageForm extends Form {
         requestId: shortid.generate(),
         versionId: this.props?.pageType === 1 ? shortid.generate() : null,
         pageType: this.props?.pageType,
-        state: 0,
+        state: 0
       }
       this.props.add_page(ParentId, newPage)
     }

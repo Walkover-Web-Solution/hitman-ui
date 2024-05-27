@@ -16,5 +16,5 @@ export const scripts = {
 
   feedioWidget: '<!-- <script src="https://wgt.feedio.ai/"></script> -->',
 
-  factorsAi: "",
+  factorsAi: ""
 }

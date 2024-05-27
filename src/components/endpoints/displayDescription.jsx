@@ -7,7 +7,7 @@ import EndpointBreadCrumb from "./endpointBreadCrumb"
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    update_endpoint: (editedEndpoint) => dispatch(updateEndpoint(editedEndpoint)),
+    update_endpoint: (editedEndpoint) => dispatch(updateEndpoint(editedEndpoint))
   }
 }
 
@@ -17,11 +17,11 @@ class DisplayDescription extends Component {
     this.state = {
       showDescriptionFormFlag: false,
       showAddDescriptionFlag: isDashboardRoute(this.props) ? !!(this.props.endpoint.description === "" || this.props.endpoint.description == null) : false,
-      theme: "",
+      theme: ""
     }
 
     this.modules = {
-      toolbar: [[{ header: [1, 2, 3, 4, 5, 6, false] }], ["bold", "italic", "underline", "strike"], [{ color: [] }, { background: [] }], [({ list: "ordered" }, { list: "bullet" })], ["link"]],
+      toolbar: [[{ header: [1, 2, 3, 4, 5, 6, false] }], ["bold", "italic", "underline", "strike"], [{ color: [] }, { background: [] }], [({ list: "ordered" }, { list: "bullet" })], ["link"]]
     }
 
     this.formats = ["header", "bold", "italic", "underline", "strike", "color", "background", "list", "bullet", "link"]
@@ -51,7 +51,7 @@ class DisplayDescription extends Component {
     const showDescriptionFormFlag = false
     this.setState({
       showDescriptionFormFlag,
-      showAddDescriptionFlag: true,
+      showAddDescriptionFlag: true
     })
     this.props.props_from_parent("endpoint", endpoint)
   }
@@ -64,7 +64,7 @@ class DisplayDescription extends Component {
     endpoint.description = value
     this.setState({
       showDescriptionFormFlag: false,
-      showAddDescriptionFlag: true,
+      showAddDescriptionFlag: true
     })
     this.props.props_from_parent("endpoint", endpoint)
     this.props.props_from_parent("oldDescription", value)

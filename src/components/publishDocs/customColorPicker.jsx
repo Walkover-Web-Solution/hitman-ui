@@ -8,8 +8,8 @@ class CustomColorPicker extends React.Component {
     super(props)
     this.state = {
       data: {
-        theme: "",
-      },
+        theme: ""
+      }
     }
   }
 
@@ -31,7 +31,7 @@ class CustomColorPicker extends React.Component {
 
   toggleColorOption() {
     this.setState({
-      openColorPicker: !this.state.openColorPicker,
+      openColorPicker: !this.state.openColorPicker
     })
   }
 
@@ -39,7 +39,7 @@ class CustomColorPicker extends React.Component {
     const data = { ...this.state.data }
     data.theme = color.hex
     this.setState({
-      data,
+      data
     })
     this.props.set_theme(color.hex)
   }
@@ -50,7 +50,7 @@ class CustomColorPicker extends React.Component {
       height: "40px",
       width: "40px",
       borderRadius: "4px",
-      margin: "0px 20px",
+      margin: "0px 20px"
     }
     return (
       <>
