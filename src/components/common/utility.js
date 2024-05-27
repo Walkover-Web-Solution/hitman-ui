@@ -525,7 +525,11 @@ const modifyEndpointContent = (endpointData, untitledData) => {
 
   // This code will help in storing the old endpoint body data to new endpoint body data architecture (so we do not lost the old data saved inside the DB).
   // TODO - Below code should be removed later.
-  if (endpoint.protocolType === 1) {
+  if (endpoint.protocolType === 2) {
+    untitled.protocolType = 2
+    untitled.data.body = { query: endpoint.body.query, variables: endpoint.body.variables }
+  }
+  else {
     const bodyType = endpoint.body?.type || '';
     if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) && endpoint.body.raw) {
       untitled.data.body = endpoint.body;
@@ -546,10 +550,6 @@ const modifyEndpointContent = (endpointData, untitledData) => {
       }
       delete endpoint.body?.value;
     } // ends here
-  }
-  else if (endpoint.protocolType === 2) {
-    untitled.protocolType = 2
-    untitled.data.body = { query: endpoint.body.query, variables: endpoint.body.variables }
   }
   delete endpoint.body?.value;
 
