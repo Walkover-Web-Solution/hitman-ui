@@ -271,9 +271,14 @@ function pagesReducer(state = initialState, action) {
         }
       }
     case pagesActionTypes.ON_DRAG_DROP: {
-      pages = { ...state }
-      let pageData = action.payload
-      pages[pageData.id] = { ...pages[pageData.id], ...pageData }
+     let pages = { ...state }
+      let updatedPageDataObjects = action.payload
+      for (let pageId in updatedPageDataObjects) {
+       
+          const pageData = updatedPageDataObjects[pageId];
+        
+            pages[pageId] = { ...pages[pageId], ...pageData };
+      }
       return pages
     }
     case pagesActionTypes.ON_ENDPOINT_DUPLICATED:

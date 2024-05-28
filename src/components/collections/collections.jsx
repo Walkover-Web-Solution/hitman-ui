@@ -327,6 +327,12 @@ class CollectionsComponent extends Component {
                 {
                   <CombinedCollections
                     {...this.props}
+                    handleOnDragOver={this.props.handleOnDragOver}
+                    onDragEnter={this.props.onDragEnter}
+                    onDragEnd={this.props.onDragEnd}
+                    onDragStart={this.props.onDragStart}
+                    onDrop={this.props.onDrop}
+                    draggingOverId={this.props.draggingOverId}
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
