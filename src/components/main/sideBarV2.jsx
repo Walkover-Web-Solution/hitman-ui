@@ -30,8 +30,12 @@ import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
+<<<<<<< HEAD
 import { TbLogin2 } from "react-icons/tb"
 import IconButton from '../common/iconButton'
+=======
+import { TbLogin2 } from 'react-icons/tb'
+>>>>>>> 5fd82cbc0e9be94a3bd3b29e52499250dc2adc3f
 import { updateDragDrop } from '../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {
@@ -93,6 +97,8 @@ class SideBarV2 extends Component {
     this.inputRef = createRef()
     this.sidebarRef = createRef()
     // this.handleClickOutside = this.handleClickOutside.bind(this)
+    // this.onDragStart = this.onDragStart.bind(this);
+    // this.getAllChildOfPage = this.getAllChildOfPage.bind(this) // Binding the method to the instance
   }
 
   // handleClickOutside(event) {
@@ -422,6 +428,7 @@ class SideBarV2 extends Component {
     return childIds
   }
 
+<<<<<<< HEAD
   handleOnDragOver = async (e) => {
     e.preventDefault()
   }
@@ -434,6 +441,22 @@ class SideBarV2 extends Component {
   onDragEnd = async (e) => {
     e.preventDefault()
     this.setState({ draggingOverId: null })
+=======
+  handleOnDragOver(e) {
+    e.preventDefault()
+  }
+
+  onDragEnter(e, draggingOverId) {
+    e.preventDefault()
+
+    // setDraggingOverId(draggingOverId);
+    // this.setState({ draggingOverId })
+  }
+  onDragEnd(e) {
+    e.preventDefault()
+    // setDraggingOverId(null)
+    // this.setState({ draggingOverId: null })
+>>>>>>> 5fd82cbc0e9be94a3bd3b29e52499250dc2adc3f
   }
 
   onDragStart = async (draggedId) => {
@@ -443,18 +466,42 @@ class SideBarV2 extends Component {
   onDrop = async (e, droppedOnId) => {
     let pageIds = []
     e.preventDefault()
+<<<<<<< HEAD
+=======
+    // console.log(12345,this.props.pages[this.state.draggedIdSelected]?.name);
+    // console.log(54321,this.props.pages[droppedOnId]?.name);
+
+    // setDraggingOverId(null);
+    // this.setState({ draggingOverId: null })
+>>>>>>> 5fd82cbc0e9be94a3bd3b29e52499250dc2adc3f
 
     if (this.state.draggedIdSelected === droppedOnId) return
 
     let draggedIdParent = this.props.pages?.[this.state.draggedIdSelected].parentId
     let droppedOnIdParent = this.props.pages?.[droppedOnId]?.parentId
 
+<<<<<<< HEAD
+=======
+    console.log(6767676, draggedIdParent, droppedOnIdParent);
+
+>>>>>>> 5fd82cbc0e9be94a3bd3b29e52499250dc2adc3f
     //now I want all ids of child of all draggedId
     const draggedIdChilds = await this.getAllChildIds(this.state.draggedIdSelected)
 
     pageIds.push(...draggedIdChilds, draggedIdParent, droppedOnIdParent)
 
     this.props.update_drag_and_drop(this.state?.draggedIdSelected, droppedOnId, pageIds)
+<<<<<<< HEAD
+=======
+
+    // this.store?.dispatch(updateDragDrop(this.state?.draggedIdSelected, droppedOnId, pageIds))
+
+    // // if both data is not from same parent then stop the user
+    // if (draggedIdParent != droppedOnIdParent) {
+    //   this.store.dispatch(updateDragDropV2(this.state.draggingOverId, droppedOnId, draggedIdParent, droppedOnIdParent))
+    // } else {
+    // }
+>>>>>>> 5fd82cbc0e9be94a3bd3b29e52499250dc2adc3f
   }
 
   renderHistoryItem(history) {
@@ -555,7 +602,10 @@ class SideBarV2 extends Component {
         onDragEnd={this.onDragEnd}
         onDragStart={this.onDragStart}
         onDrop={this.onDrop}
+<<<<<<< HEAD
         draggingOverId={this.state.draggingOverId}
+=======
+>>>>>>> 5fd82cbc0e9be94a3bd3b29e52499250dc2adc3f
         collectionsToRender={collectionsToRender}
         selectedCollectionId={this.state.selectedCollectionId}
         empty_filter={this.emptyFilter.bind(this)}
@@ -846,6 +896,16 @@ class SideBarV2 extends Component {
           {this.showAddEntitySelectionModal()}
           {this.showAddEntityModal()}
           {this.showDeleteEntityModal()}
+<<<<<<< HEAD
+=======
+          {this.state.showVersionForm &&
+            collectionVersionsService.showVersionForm(
+              this.props,
+              this.closeVersionForm.bind(this),
+              this.state.selectedCollection.id,
+              ADD_VERSION_MODAL_NAME
+            )}
+>>>>>>> 5fd82cbc0e9be94a3bd3b29e52499250dc2adc3f
           <div className='primary-sidebar'>
             {/* [info] for publishedPage only this part is important */}
 

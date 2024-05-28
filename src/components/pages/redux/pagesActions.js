@@ -312,3 +312,21 @@ export const updateDragDrop = (draggedId, droppedOnId, pageIds) => {
       })
   }
 }
+
+
+// export const updateDragDropV2 = (draggedId, droppedOnId, draggedIdParentId, droppedOnIdParentId) =>{
+//   let uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
+//   return (dispatch) => {
+//     pageApiService
+//       .dragAndDropApiV2({ draggedId, droppedOnId, uniqueTabId, draggedIdParentId, droppedOnIdParentId })
+//       .then((response) => {
+//         dispatch({
+//           type: pagesActionTypes.ON_DRAG_DROP,
+//           payload: response.data
+//         })
+//       })
+//       .catch((error) => {
+//         console.error('Error occurred during drag and drop:', error)
+//       })
+//   }
+// }

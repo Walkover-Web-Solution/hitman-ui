@@ -332,7 +332,10 @@ class CollectionsComponent extends Component {
                     onDragEnd={this.props.onDragEnd}
                     onDragStart={this.props.onDragStart}
                     onDrop={this.props.onDrop}
+<<<<<<< HEAD
                     draggingOverId={this.props.draggingOverId}
+=======
+>>>>>>> 5fd82cbc0e9be94a3bd3b29e52499250dc2adc3f
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}

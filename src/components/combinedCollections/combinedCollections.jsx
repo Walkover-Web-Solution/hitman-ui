@@ -4,6 +4,10 @@ import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import Groups from '../groups/groups'
 import Endpoints from '../endpoints/endpoints'
 import { toast } from 'react-toastify'
+<<<<<<< HEAD
+=======
+import { updateDragDrop, updateDragDropV2 } from '../pages/redux/pagesActions'
+>>>>>>> 5fd82cbc0e9be94a3bd3b29e52499250dc2adc3f
 
 function CombinedCollections(props) {
   const dispatch = useDispatch()
@@ -27,7 +31,11 @@ function CombinedCollections(props) {
           onDragStart: props.onDragStart,
           onDrop: props.onDrop,
           onDragEnter: props.onDragEnter,
+<<<<<<< HEAD
           draggingOverId: props.draggingOverId,
+=======
+          draggingOverId: draggingOverId,
+>>>>>>> 5fd82cbc0e9be94a3bd3b29e52499250dc2adc3f
           onDragEnd: props.onDragEnd
         }
         switch (type) {
