@@ -291,16 +291,21 @@ export const updateNameOfPages = (payload) => {
   }
 }
 
-export const updateDragDrop = (draggedId, droppedOnId) => {
+export const updateDragDrop = (draggedId, droppedOnId, pageIds) => {
   let uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     pageApiService
-      .dragAndDropApi({ draggedId, droppedOnId, uniqueTabId })
+      .dragAndDropApi({ draggedId, droppedOnId, uniqueTabId, pageIds })
       .then((response) => {
-        dispatch({
-          type: pagesActionTypes.ON_DRAG_DROP,
-          payload: response.data
-        })
+        if (response.status == 200) {
+          dispatch({
+            type: pagesActionTypes.ON_DRAG_DROP,
+            payload: response.data
+          })
+          toast.success("Moved succesfully")
+        } else {
+          toast.error(response?.data)
+        }
       })
       .catch((error) => {
         console.error('Error occurred during drag and drop:', error)
