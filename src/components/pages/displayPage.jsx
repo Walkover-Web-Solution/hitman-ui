@@ -168,7 +168,7 @@ renderPageUserData(isOnPublishedPage) {
                        ? moment(pages[currentPageId].updatedAt).fromNow()
                        : null;
 
-  const user = users?.users?.find(user => user.id === updatedById);
+  const user = users?.find(user => user.id === updatedById);
 
   if (isOnPublishedPage) {
       return (
@@ -181,10 +181,10 @@ renderPageUserData(isOnPublishedPage) {
           <div className='page-user-data mt-2'>
             {lastModified ? (
               <div>
-                Updated by:<span> </span>
+                Updated by <span> </span>
                 {user?.name}
                 <br />
-                Modified At:<span> </span>
+                Modified At <span> </span>
                 {lastModified}
               </div>
             ) : (

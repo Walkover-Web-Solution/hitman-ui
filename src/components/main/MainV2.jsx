@@ -58,14 +58,11 @@ class MainV2 extends Component {
     let users
     try {
       users = await getUserData(token)
+      if(users) this.props.add_user(users)
     } catch (error) {
       toast.error(error.message)
       this.props.history.push({ pathname: '/login' })
       this.setState({ loading: false })
-    }
-    if (users && users.length > 0) {
-      console.log(35345)
-      this.props.add_user(users)
     }
 
     /** Token Exists */
