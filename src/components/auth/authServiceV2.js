@@ -3,6 +3,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import http from "../../services/httpService";
 import { switchOrg } from "../../services/orgApiService";
 import { getDataFromProxyAndSetDataToLocalStorage } from "../common/utility";
+import axios from "axios";
 
 export const tokenKey = "token";
 export const profileKey = "profile";
@@ -17,6 +18,17 @@ function useQuery() {
 
 function isAdmin() {
   return { is_admin: true };
+}
+
+async function getUserData(token){
+  const response = await axios.get(`${process.env.REACT_APP_PROXY_URL}/getUsers?itemsPerPage=100`, {
+    headers: { proxy_auth_token: token }
+  })
+
+  if(!response){
+    console.log("No User found")
+  }
+  return response.data?.data?.data;
 }
 
 function logout(redirectUrl = "/login") {
@@ -99,7 +111,6 @@ function getProxyToken() {
 function AuthServiceV2() {
   const query = useQuery();
   const history = useHistory();
-  const [orgList, setOrgList] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,7 +119,6 @@ function AuthServiceV2() {
         const orgId = query.get("company_ref_id") || getCurrentOrg()?.id || "";
         if (proxyAuthToken) {
           await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
-          setOrgList(getOrgList());
           const storedCurrentOrgId = window.localStorage.getItem("currentOrganisation");
           let currentOrgId;
           if (storedCurrentOrgId == null || storedCurrentOrgId == "undefined") {
@@ -140,6 +150,7 @@ export default AuthServiceV2;
 export {
   isAdmin,
   getCurrentUser,
+  getUserData,
   getCurrentOrg,
   getOrgList,
   getProxyToken,

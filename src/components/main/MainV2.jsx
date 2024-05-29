@@ -13,9 +13,11 @@ import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
-import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
+import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 import { addCollectionAndPages } from '../redux/generalActions'
 import SplitPane from '../splitPane/splitPane'
+import { addUserData } from '../auth/redux/userAction'
+import { toast } from 'react-toastify'
 
 const mapStateToProps = (state) => {
   return {
@@ -29,7 +31,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
-    add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId))
+    add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId)),
+    add_user: (userData) => dispatch(addUserData(userData))
   }
 }
 
@@ -43,13 +46,6 @@ class MainV2 extends Component {
       loading: true,
       showAddCollectionPage: true
     }
-    const { endpointId, pageId } = this.props.match.params
-    // if (endpointId && endpointId !== 'new') {
-    //   this.props.fetch_endpoint(endpointId)
-    // }
-    // if (pageId) {
-    //   this.props.fetch_page(pageId)
-    // }
   }
 
   async componentDidMount() {
@@ -58,6 +54,20 @@ class MainV2 extends Component {
       this.setState({ loading: false })
       return
     }
+
+    let users
+    try {
+      users = await getUserData(token)
+    } catch (error) {
+      toast.error(error.message)
+      this.props.history.push({ pathname: '/login' })
+      this.setState({ loading: false })
+    }
+    if (users && users.length > 0) {
+      console.log(35345)
+      this.props.add_user(users)
+    }
+
     /** Token Exists */
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
       /** For Logged in User */
