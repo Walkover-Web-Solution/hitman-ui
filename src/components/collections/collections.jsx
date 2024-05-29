@@ -325,10 +325,8 @@ class CollectionsComponent extends Component {
                       <div className='marketplace-icon mr-1'> M </div>
                     ) : null}
                     <span className={this.props.collections[collectionId].isPublic ? 'published' : ''}>
-                      {/* {this.findEndpointCount(collectionId) === 0 ? '' : this.findEndpointCount(collectionId)} */}
                     </span>
                   </div>
-                  {/* <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span> */}
                 </div>
               )
             }
@@ -349,7 +347,6 @@ class CollectionsComponent extends Component {
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
-                    // isPublishData={false}
                   />
                 }
               </Card.Body>
