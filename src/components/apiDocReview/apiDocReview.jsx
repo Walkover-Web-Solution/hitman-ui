@@ -141,12 +141,13 @@ const ApiDocReview = (props) => {
       return <p className='feedback-saved'>Your feedback has been saved. Thank you!</p>
     } else if (feedbackType === 'DISLIKE') {
       return (
+        <div className='d-flex justify-content-end'>
         <div className='feedback-popup'>
           <div className='feedback-content'>
-            <div className='feedback-header'>
+            <div className='d-flex feedback-header justify-content-between'>
               <span className='feedback-title'>Sorry to hear that. What can we do better?</span>
               <button
-                className='close-button'
+                className='close-button border-0 bg-white'
                 onClick={() => {
                   setFeedbackGiven(false)
                   setFeedbackType('')
@@ -181,7 +182,8 @@ const ApiDocReview = (props) => {
                     required
                   />
                 </div>
-                <Button variant='primary' onClick={handleDislike} disabled={!comment.trim()} className='feedback-button btn-sm ml-2 fs-4'>
+                <div className='d-flex justify-content-end'>
+                <Button variant='primary' onClick={handleDislike} disabled={!comment.trim()} className='feedback-button btn-sm fs-4 float-none'>
                   Send
                 </Button>
                 <Button
@@ -191,13 +193,15 @@ const ApiDocReview = (props) => {
                     setFeedbackType('')
                     setFeedbackSaved(false)
                   }}
-                  className='feedback-button btn-sm fs-4'
+                  className='feedback-button btn-sm fs-4 float-none ml-2'
                 >
                   Cancel
                 </Button>
+                </div>
               </form>
             </div>
           </div>
+        </div>
         </div>
       )
     }
@@ -205,7 +209,7 @@ const ApiDocReview = (props) => {
   return (
     !isDashboardRoute(props) && (
       <>
-       {feedbackGiven && renderFeedbackResponse()}
+       
         <div style={{ position: 'relative' }}>
           <p className='d-flex justify-content-center'style={{ fontSize: '0.8rem', color:"#adadad", fontWeight:'500' }}>Was this page helpful?</p>
           <div className='d-flex justify-content-center' style={{ gap: '20px', fontSize: '1.1rem', color:"#adadad" }}>
@@ -237,6 +241,7 @@ const ApiDocReview = (props) => {
             </div>
             </OverlayTrigger>
           </div>
+          {feedbackGiven && renderFeedbackResponse()}
         </div>
          {/* )}  */}
 
