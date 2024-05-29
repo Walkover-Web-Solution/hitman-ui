@@ -1769,7 +1769,7 @@ class DisplayEndpoint extends Component {
       case rawTypesEnums.TEXT:
         return 'text/plain'
       case rawTypesEnums.JSON:
-        return 'application/JSON'
+        return 'application/json'
       case rawTypesEnums.HTML:
         return 'text/HTML'
       case rawTypesEnums.XML:
