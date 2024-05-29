@@ -13,6 +13,7 @@ import { updateCollectionIdForPublish } from '../../store/clientData/clientDataA
 import { publishData } from '../modals/redux/modalsActions'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
+import { IoInformationCircleOutline } from 'react-icons/io5'
 import PublishDocsReview from './publishDocsReview'
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 
@@ -411,8 +412,8 @@ class PublishDocForm extends Component {
     return (
       <div>
         <div className='d-flex align-items-center'>
-        <span className='public-title mt-1 d-block'>Preview Documentation</span>
-        <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
+          <span className='public-title mt-1 d-block'>Preview Documentation</span>
+          <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
         </div>
         <OverlayTrigger
           overlay={
@@ -449,7 +450,7 @@ class PublishDocForm extends Component {
   handleSeeFeedbacks = () => {
     const collectionId = this.props.selected_collection_id
     this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
-  } 
+  }
 
   openPublishSidebar() {
     return (
@@ -475,7 +476,14 @@ class PublishDocForm extends Component {
           className='m-1 btn-sm fs-4'
           onClick={() => this.redirectUser()}
         >
-          <OverlayTrigger placement='bottom' overlay={<Tooltip className='w-25 p-3 ' id='tooltip-bulk-publish'>This will publish all the pages and endpoints inside this collection.</Tooltip>}>
+          <OverlayTrigger
+            placement='bottom'
+            overlay={
+              <Tooltip className='w-25 p-3 ' id='tooltip-bulk-publish'>
+                This will publish all the pages and endpoints inside this collection.
+              </Tooltip>
+            }
+          >
             <span>Bulk Publish</span>
           </OverlayTrigger>
         </Button>
@@ -488,10 +496,16 @@ class PublishDocForm extends Component {
           }}
           variant='btn btn-outline'
         >
-          <OverlayTrigger placement='bottom' overlay={<Tooltip className='w-25 p-3' id='tooltip-save-and-publish'>This will save as well as publish the doc</Tooltip>}>
+          <OverlayTrigger
+            placement='bottom'
+            overlay={
+              <Tooltip className='w-25 p-3' id='tooltip-save-and-publish'>
+                This will save as well as publish the doc
+              </Tooltip>
+            }
+          >
             <span>{this.state.republishNeeded ? 'Save and Republish' : 'Save and Publish'}</span>
           </OverlayTrigger>
-
         </Button>
         {!isNotPublished && (
           <Button
@@ -518,6 +532,10 @@ class PublishDocForm extends Component {
             <div className='d-flex align-items-center'>
               <h3 className='page-title mb-0'>Manage Public Doc</h3>
             </div>
+            <span onClick={this.handleSeeFeedbacks} style={{display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
+              <IoInformationCircleOutline style={{ marginRight: '2px', fontSize: '20px' }}/>
+              <span style={{ fontSize: '16px' }}>Feedbacks</span>
+            </span>
           </div>
           {publishCheck && this.renderPublicUrl()}
           <div className='small-input mt-2'>
@@ -537,10 +555,8 @@ class PublishDocForm extends Component {
 
           <div className='color-picker'>{this.renderColorPicker()}</div>
           {this.renderActionButtons(publishCheck)}
-          <button className='btn btn-primary' onClick={this.handleSeeFeedbacks}>See Feedbacks</button>
         </div>
         {this.state.openPublishSidebar && this.openPublishSidebar()}
-        
       </>
     )
   }
