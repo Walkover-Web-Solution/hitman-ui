@@ -1,0 +1,27 @@
+.feedback-popup {
+    right: 0;       
+    top:0;  
+    bottom: 0;     
+    width: 308px; 
+    height: 100vh;  
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.5); 
+    z-index: 1000;  
+    .form-control {
+        height: unset !important;
+    }
+  }
+  .feedback-content {
+    padding: 20px; 
+  }
+  
+  .close-button {
+    position: absolute;
+    right: 10px; 
+    top: 10px;
+  }
+  .feedback-saved {
+    text-align: center; 
+    color: green;       
+    font-weight: light; 
+  }
