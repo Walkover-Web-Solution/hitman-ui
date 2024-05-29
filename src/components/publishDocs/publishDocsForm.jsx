@@ -532,9 +532,9 @@ class PublishDocForm extends Component {
             <div className='d-flex align-items-center'>
               <h3 className='page-title mb-0'>Manage Public Doc</h3>
             </div>
-            <span onClick={this.handleSeeFeedbacks} style={{display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
-              <IoInformationCircleOutline style={{ marginRight: '2px', fontSize: '20px' }}/>
-              <span style={{ fontSize: '16px' }}>Feedbacks</span>
+            <span className='hover' onClick={this.handleSeeFeedbacks} style={{display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
+              <IoInformationCircleOutline style={{ color:'inherit', marginRight: '1px', fontSize: '20px' }}/>
+              <span  style={{ fontSize: '16px' }}>Feedbacks</span>
             </span>
           </div>
           {publishCheck && this.renderPublicUrl()}
