@@ -419,7 +419,7 @@ renderPageUserData(isOnPublishedPage) {
         {this.renderPublishPageOperations()}
         {this.renderPageName()}
         {this.checkPageRejected()}
-        {/* <ApiDocReview {...this.props} /> */}
+        <ApiDocReview {...this.props} />
         {isOnPublishedPage() && <Footer />}
       </div>
     )

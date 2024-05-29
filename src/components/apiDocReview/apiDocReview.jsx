@@ -1,70 +1,66 @@
-import React, { Component } from 'react'
-import { isDashboardRoute, validateEmail } from '../common/utility'
-import Axios from 'axios'
-import _ from 'lodash'
-import { Modal } from 'react-bootstrap'
-import Like from '../../assets/icons/like.svg'
-import DisLike from '../../assets/icons/dislike.svg'
-import Footer from '../main/Footer'
+import React, { useState, useEffect, useRef } from 'react'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { isDashboardRoute, SESSION_STORAGE_KEY } from '../common/utility'
+import { Button } from 'react-bootstrap'
+import { useLocation } from 'react-router'
+import http from '../../services/httpService'
+import { BiLike, BiDislike } from "react-icons/bi";
+import './apiDocReview.scss'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
 
-class ApiDocReview extends Component {
-  state = {
-    parentId: '',
-    parentType: '',
-    vote: null,
-    user: '',
-    comment: '',
-    showFeedbackModal: false,
-    currentReviews: {},
-    validEmailAddress: true
-  }
+const ApiDocReview = (props) => {
+  const [parentId, setParentId] = useState('')
+  const [parentType, setParentType] = useState('')
+  const [vote, setVote] = useState(null)
+  const [email, setEmail] = useState('')
+  const [comment, setComment] = useState('')
+  const [feedbackType, setFeedbackType] = useState('')
+  const [feedbackGiven, setFeedbackGiven] = useState(false)
+  const [feedbackSaved, setFeedbackSaved] = useState(false)
+  const [currentReviews, setCurrentReviews] = useState({})
 
-  componentDidMount() {
-    this.setParent()
-    this.setLocalStorageReviews()
-  }
+  const prevProps = useRef(props)
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps?.match?.params !== this.props?.match?.params) {
-      this.setParent()
+  const location = useLocation()
+  const queryParams = new URLSearchParams(location.search)
+
+  useEffect(() => {
+    setParent()
+    setLocalStorageReviews()
+  }, [])
+
+  useEffect(() => {
+    if (prevProps.current.match.params !== props.match.params) {
+      setParent()
     }
-  }
+    prevProps.current = props
+  }, [props.match.params])
 
-  setLocalStorageReviews() {
+  const setLocalStorageReviews = () => {
     try {
-      this.setState({ currentReviews: JSON.parse(window.localStorage.getItem('review')) || {} })
+      setCurrentReviews(JSON.parse(window.localStorage.getItem('review')) || {})
     } catch {
-      this.setState({ currentReviews: {} })
+      setCurrentReviews({})
     }
   }
 
-  setParent() {
-    const { pageId, endpointId } = this.props?.match?.params || {}
-
+  const setParent = () => {
+    const { pageId, endpointId } = props.match.params || {}
     const parentId = endpointId || pageId
     const parentType = endpointId ? 'endpoint' : 'page'
-
-    this.setState({ parentId, parentType })
+    setParentId(parentId)
+    setParentType(parentType)
   }
 
-  toggleReviewModal = () => this.setState({ showFeedbackModal: !this.state.showFeedbackModal })
-
-  handleOnClick(value, callback) {
-    const { pageId, endpointId } = this.props.match.params
-
-    const entityId = endpointId || pageId
-
-    if (entityId) {
-      this.setState({ vote: this.getVoteValue(value) }, () => {
-        if (callback) callback()
-      })
-    }
+  const handleFeedback = (type) => {
+    console.log(`Feedback given: ${type}`)
+    setFeedbackGiven(true)
+    setFeedbackType(type)
   }
 
-  savelocalstorage(key, value) {
+  const savelocalstorage = (key, value) => {
     let objList = {}
     try {
       objList = JSON.parse(window.localStorage.getItem('review')) || {}
@@ -72,133 +68,187 @@ class ApiDocReview extends Component {
       objList = {}
     }
     objList[key] = value
-    this.setState({ currentReviews: objList }, () => {
-      window.localStorage.setItem('review', JSON.stringify(objList))
-    })
+    setCurrentReviews(objList)
+    window.localStorage.setItem('review', JSON.stringify(objList))
   }
-
-  postApi() {
-    const feedback = _.pick(_.cloneDeep(this.state), 'parentId', 'parentType', 'user', 'vote', 'comment')
-
+  const handleDislike = () => {
+    const feedback = {
+      parentId: parentId,
+      parentType: parentType,
+      email: email,
+      vote: getVoteValue(LIKE),
+      comment: comment
+    }
     const apiUrl = process.env.REACT_APP_API_URL
-    const collectionId = this.props.match.params.collectionId
-    Axios.post(apiUrl + `/collections/${collectionId}/feedbacks`, feedback)
+    const pageId = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+    http
+      .post(apiUrl + `/feedback/negative`,{pageId, comment})
       .then((response) => {
         console.log(response)
+        setFeedbackSaved(true)
+        setEmail(response.email)
+        setComment(response.comment)
+        setVote(null)
       })
       .catch((error) => {
         console.error(error)
       })
-    this.savelocalstorage(this.state.parentId, this.getVoteKey(this.state.vote))
-    this.setState({ user: '', comment: '', vote: null }, () => {
-      this.closeFeedbackModal()
-    })
   }
 
-  getVoteValue(value) {
+  const handleLikeButton = () => {
+    const feedback = {
+      parentId: parentId,
+      parentType: parentType,
+      email: email,
+      vote: getVoteValue(LIKE),
+      comment: comment
+    }
+    const apiUrl = process.env.REACT_APP_API_URL
+    const pageId = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+    http
+      .post(apiUrl + `/feedback/positive`,{pageId})
+      .then((response) => {
+        console.log(response)
+        savelocalstorage(parentId, getVoteKey(vote))
+        setEmail('')
+        setComment('')
+        setVote(null)
+        setFeedbackGiven(true)
+        setFeedbackType('LIKE')
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  const getVoteValue = (value) => {
     return value === LIKE ? 1 : -1
   }
 
-  getVoteKey(value) {
+  const getVoteKey = (value) => {
     return value === 1 ? LIKE : DISLIKE
   }
 
-  closeFeedbackModal() {
-    this.state.showFeedbackModal && this.setState({ showFeedbackModal: false })
+  const handleInput = (event) => {
+    event.preventDefault()
+    const { name, value } = event.target
+    if (name === 'email') setEmail(value)
+    else if (name === 'comment') setComment(value)
   }
 
-  handleOnSubmit(event) {
-    event.preventDefault()
-    if (validateEmail(this.state.user)) {
-      this.postApi()
-      this.closeFeedbackModal()
-      this.setState({ validEmailAddress: true })
-    } else {
-      this.setState({ user: '', validEmailAddress: false })
+  const renderFeedbackResponse = () => {
+    if (feedbackSaved || feedbackType === 'LIKE') {
+      return <p className='feedback-saved'>Your feedback has been saved. Thank you!</p>
+    } else if (feedbackType === 'DISLIKE') {
+      return (
+        <div className='d-flex justify-content-end'>
+        <div className='feedback-popup'>
+          <div className='feedback-content'>
+            <div className='d-flex feedback-header justify-content-between'>
+              <span className='feedback-title'>Sorry to hear that. What can we do better?</span>
+              <button
+                className='close-button border-0 bg-white'
+                onClick={() => {
+                  setFeedbackGiven(false)
+                  setFeedbackType('')
+                  setFeedbackSaved(false)
+                }}
+              >
+                X
+              </button>
+            </div>
+            <div className='feedback-body'>
+              <form>
+                <div className='form-group mb-0'>
+                  <label>Email</label>
+                  <input
+                    className='form-control'
+                    placeholder='Enter email'
+                    onChange={handleInput}
+                    value={email}
+                    type='email'
+                    name='email'
+                  />
+                </div>
+                <div className='form-group mt-3'>
+                  <label>Comment</label>
+                  <textarea
+                    className='form-control'
+                    onChange={handleInput}
+                    value={comment}
+                    type='text'
+                    name='comment'
+                    placeholder='Enter comment'
+                    required
+                  />
+                </div>
+                <div className='d-flex justify-content-end'>
+                <Button variant='primary' onClick={handleDislike} disabled={!comment.trim()} className='feedback-button btn-sm fs-4 float-none'>
+                  Send
+                </Button>
+                <Button
+                  variant='secondary'
+                  onClick={() => {
+                    setFeedbackGiven(false)
+                    setFeedbackType('')
+                    setFeedbackSaved(false)
+                  }}
+                  className='feedback-button btn-sm fs-4 float-none ml-2'
+                >
+                  Cancel
+                </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        </div>
+      )
     }
   }
-
-  handleInput(event) {
-    event.preventDefault()
-    const {
-      target: { name, value }
-    } = event
-    this.setState({ [name]: value })
-  }
-
-  renderUserFeedbackModal() {
-    return (
-      <Modal backdrop='static' show onHide={this.closeFeedbackModal.bind(this)}>
-        <div className=''>
-          <Modal.Header closeButton>
-            <Modal.Title>Would you like to leave a comment?</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <form onSubmit={this.handleOnSubmit.bind(this)}>
-              <div className='form-group mb-0'>
-                <label>Email</label>
-                <input className='form-control' onChange={this.handleInput.bind(this)} value={this.state.user} type='text' name='user' />
-              </div>
-              {!this.state.validEmailAddress && <span className='error-msg'>Enter a valid email address</span>}
-              <div className='form-group mt-3'>
-                <label htmlFor=''>Comment</label>
-                <textarea
-                  className='form-control'
-                  onChange={this.handleInput.bind(this)}
-                  value={this.state.comment}
-                  type='text'
-                  name='comment'
-                />
-                <br />
-              </div>
-              <input type='submit' className='btn btn-primary' value='Submit' />
-            </form>
-          </Modal.Body>
-          <Modal.Footer />
+  return (
+    !isDashboardRoute(props) && (
+      <>
+       
+        <div style={{ position: 'relative' }}>
+          <p className='d-flex justify-content-center'style={{ fontSize: '0.8rem', color:"#adadad", fontWeight:'500' }}>Was this page helpful?</p>
+          <div className='d-flex justify-content-center' style={{ gap: '20px', fontSize: '1.1rem', color:"#adadad" }}>
+          <OverlayTrigger
+              placement='bottom'
+              overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}
+            >
+            
+            <div
+              className='cursor-pointer'
+              onClick={() => {
+                handleLikeButton()
+              }}
+            >
+              <BiLike />
+            </div>
+            </OverlayTrigger>
+            <OverlayTrigger
+              placement='bottom'
+              overlay={<Tooltip id='dislike-tooltip'>Not helpful</Tooltip>}
+            >
+            <div
+              className='cursor-pointer'
+              onClick={() => {
+                handleFeedback('DISLIKE')
+              }}
+            >
+              <BiDislike />
+            </div>
+            </OverlayTrigger>
+          </div>
+          {feedbackGiven && renderFeedbackResponse()}
         </div>
-      </Modal>
-    )
-  }
+         {/* )}  */}
 
-  render() {
-    const isAlreadyReviewd = this.state.currentReviews[this.state.parentId]
-    return (
-      !isDashboardRoute(this.props) && (
-        <>
-          {this.state.showFeedbackModal && this.renderUserFeedbackModal()}
-          {!isAlreadyReviewd && (
-            <div>
-              <p className='d-flex justify-content-center'>Did this page help you?</p>
-              <div className='d-flex justify-content-center'>
-                <div
-                  className='cursor-pointer'
-                  onClick={() => {
-                    this.handleOnClick(LIKE, this.postApi.bind(this))
-                  }}
-                >
-                  <img src={Like} alt='' />
-                </div>
-                <div
-                  className='cursor-pointer'
-                  onClick={() => {
-                    this.handleOnClick(DISLIKE, this.toggleReviewModal.bind(this))
-                  }}
-                >
-                  <img src={DisLike} alt='' />
-                </div>
-              </div>
-            </div>
-          )}
-          {isAlreadyReviewd && (
-            <div>
-              <span>Thank you for reviewing</span>
-            </div>
-          )}
-          <Footer theme={this.state.collectionTheme} />
-        </>
-      )
+       
+      </>
     )
-  }
+  )
 }
 
 export default ApiDocReview

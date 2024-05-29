@@ -129,3 +129,7 @@
 .disabled-link {
   opacity: 0.5;
 }
+.hover {
+  :hover{color: blue;
+  text-decoration: underline;}
+}

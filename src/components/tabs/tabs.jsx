@@ -11,12 +11,13 @@ import Plus from '../../assets/icons/plus.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { IoIosSettings } from "react-icons/io"
-import { HiMiniDocumentText } from "react-icons/hi2";
+import { IoIosSettings } from 'react-icons/io'
+import { HiMiniDocumentText } from 'react-icons/hi2'
 import IconButtons from '../common/iconButton'
-import { GrFormClose } from "react-icons/gr"
-import { LuHistory } from "react-icons/lu";
-import { GrGraphQl } from "react-icons/gr";
+import { GrFormClose } from 'react-icons/gr'
+import { LuHistory } from 'react-icons/lu'
+import { GrGraphQl } from 'react-icons/gr'
+import { IoIosChatboxes } from "react-icons/io";
 
 const mapStateToProps = (state) => {
   return {
@@ -202,14 +203,17 @@ class CustomTabs extends Component {
               </span>
             </>
           )
-        } else {
-          return (
-            <div className='d-flex align-items-center'>
-              <IoIosSettings size={18} className='setting-icons mr-1' />
-              <span>{collectionName}</span>
-            </div>
-          )
         }
+      }
+      case 'feedback': {
+        return (
+          <>
+            <div className='d-flex align-items-center'>
+              <IoIosChatboxes className='mr-1' size={16} />
+              <span>Feedback</span>
+            </div>
+          </>
+        )
       }
       default:
     }
@@ -271,7 +275,7 @@ class CustomTabs extends Component {
     return Number.parseInt((this.navRef.current?.scrollWidth - this.navRef.current?.clientWidth - this.state.leftScroll) / 200)
   }
 
-  handleAddTab() {
+    handleAddTab() {
     this.scrollLength()
     tabService.newTab({ ...this.props })
   }
@@ -326,8 +330,7 @@ class CustomTabs extends Component {
           </div>
         </>
       )
-    }
-    else if (tab.type === 'history') {
+    } else if (tab.type === 'history') {
       return (
         <>
           <div className='hover-div' style={styles}>
@@ -335,6 +338,18 @@ class CustomTabs extends Component {
           </div>
           <div className='hover-div' style={styles}>
             <div className='page-name'>history</div>
+          </div>
+        </>
+      )
+    }
+    else if(tab.type === 'feedback'){
+      return(
+        <>
+          <div className='hover-div' style={styles}>
+            <div className='page-name'>feedback</div>
+          </div>
+          <div className='hover-div' style={styles}>
+            <div className='page-name'>feedback</div>
           </div>
         </>
       )

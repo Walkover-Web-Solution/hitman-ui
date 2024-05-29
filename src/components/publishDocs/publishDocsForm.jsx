@@ -13,6 +13,8 @@ import { updateCollectionIdForPublish } from '../../store/clientData/clientDataA
 import { publishData } from '../modals/redux/modalsActions'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
+import { IoInformationCircleOutline } from 'react-icons/io5'
+import PublishDocsReview from './publishDocsReview'
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
@@ -72,7 +74,8 @@ class PublishDocForm extends Component {
       title: '',
       domain: '',
       logoUrl: '',
-      theme: ''
+      theme: '',
+      republishNeeded: false
     },
     cta: publishDocFormEnum.INITIAL_CTA,
     links: publishDocFormEnum.INITIAL_LINKS
@@ -134,7 +137,7 @@ class PublishDocForm extends Component {
   }
 
   schema = {
-    title: Joi.string().required().trim().label(publishDocFormEnum.LABELS.title),
+    title: Joi.string().min(3).max(50).required().trim().label(publishDocFormEnum.LABELS.title),
     domain: Joi.string()
       .allow('')
       .regex(HOSTNAME_VALIDATION_REGEX, { name: 'URL' })
@@ -157,7 +160,7 @@ class PublishDocForm extends Component {
     return errors
   }
 
-  saveCollectionDetails() {
+  saveAndPublishCollection(selectedCollection) {
     const collectionId = this.props.selected_collection_id
     const collection = { ...this.props.collections[collectionId] }
     const data = { ...this.state.data }
@@ -182,6 +185,13 @@ class PublishDocForm extends Component {
     this.setState({ loader: true })
     this.props.update_collection(collection, () => {
       this.setState({ loader: false })
+      // Publish collection if not already published
+      if (selectedCollection?.isPublic !== true) {
+        const editedCollection = { ...selectedCollection }
+        editedCollection.isPublic = true
+        this.props.update_collection(editedCollection)
+        moveToNextStep(6)
+      }
     })
   }
 
@@ -386,15 +396,6 @@ class PublishDocForm extends Component {
     return selectedCollection?.isPublic || false
   }
 
-  publishCollection(selectedCollection) {
-    if (selectedCollection?.isPublic !== true) {
-      const editedCollection = { ...selectedCollection }
-      editedCollection.isPublic = true
-      this.props.update_collection(editedCollection)
-      moveToNextStep(6)
-    }
-  }
-
   redirectUser() {
     this.setState({ openPublishSidebar: true })
     this.props.ON_PUBLISH_DOC(true)
@@ -411,8 +412,8 @@ class PublishDocForm extends Component {
     return (
       <div>
         <div className='d-flex align-items-center'>
-        <span className='public-title mt-1 d-block'>Preview Documentation</span>
-        <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
+          <span className='public-title mt-1 d-block'>Preview Documentation</span>
+          <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
         </div>
         <OverlayTrigger
           overlay={
@@ -422,13 +423,12 @@ class PublishDocForm extends Component {
           }
         >
           <div
-            onClick={() => isDisabled && openExternalLink(url)}
             className={`sidebar-public-url d-flex align-items-center justify-content-start mb-3 ${
               isDisabled ? 'text-disable' : 'disabled-link'
             }`}
           >
             <HiOutlineExternalLink className='mr-1' size={13} />
-            <span>{url}</span>
+            <span onClick={() => isDisabled && openExternalLink(url)}>{url}</span>
           </div>
         </OverlayTrigger>
       </div>
@@ -445,6 +445,11 @@ class PublishDocForm extends Component {
       }
     }
     return false
+  }
+
+  handleSeeFeedbacks = () => {
+    const collectionId = this.props.selected_collection_id
+    this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
   }
 
   openPublishSidebar() {
@@ -465,49 +470,55 @@ class PublishDocForm extends Component {
     return (
       <div>
         <Button
-          className={this.state.loader ? 'buttonLoader m-1 btn-sm fs-4' : 'm-1 btn-sm fs-4'}
-          disabled={!this.state.data.title.trim()}
-          onClick={() => this.saveCollectionDetails()}
-          variant='btn btn-outline'
-        >
-          Save
-        </Button>
-        {/* <OverlayTrigger
-          overlay={
-            <Tooltip id='tooltip-bulkPublish'>
-              {!disableCondition ? "Add Page/Endpoint inside Collection." : "Allow to publish all Pages/Endpoint inside Collection"}
-            </Tooltip>
-          }
-        > */}
-        <Button
           disabled={!disableCondition}
           id='publish_collection_btn'
           variant='btn btn-outline'
           className='m-1 btn-sm fs-4'
           onClick={() => this.redirectUser()}
         >
-          Bulk Publish
+          <OverlayTrigger
+            placement='bottom'
+            overlay={
+              <Tooltip className='w-25 p-3 ' id='tooltip-bulk-publish'>
+                This will publish all the pages and endpoints inside this collection.
+              </Tooltip>
+            }
+          >
+            <span>Bulk Publish</span>
+          </OverlayTrigger>
         </Button>
-        {/* </OverlayTrigger> */}
-        <>
-          {publishCheck ? (
-            <Button variant='btn btn-outline-danger btn-sm fs-4' className='m-1 btn-sm fs-4' onClick={() => this.props.unPublishCollection()}>
-              Unpublish Doc
-            </Button>
-          ) : (
-            isNotPublished && (
-              <Button
-                id='publish_collection_btn'
-                className='m-1 btn-sm fs-4'
-                onClick={() => this.publishCollection(selectedCollection)}
-                disabled={!selectedCollection?.docProperties?.defaultTitle}
-                variant='btn btn-outline'
-              >
-                Publish Collection
-              </Button>
-            )
-          )}
-        </>
+        <Button
+          className={this.state.loader ? 'buttonLoader m-1 btn-sm fs-4' : 'm-1 btn-sm fs-4'}
+          disabled={!this.state.data.title.trim()}
+          onClick={() => {
+            this.saveAndPublishCollection(selectedCollection)
+            this.setState({ republishNeeded: true })
+          }}
+          variant='btn btn-outline'
+        >
+          <OverlayTrigger
+            placement='bottom'
+            overlay={
+              <Tooltip className='w-25 p-3' id='tooltip-save-and-publish'>
+                This will save as well as publish the doc
+              </Tooltip>
+            }
+          >
+            <span>{this.state.republishNeeded ? 'Save and Republish' : 'Save and Publish'}</span>
+          </OverlayTrigger>
+        </Button>
+        {!isNotPublished && (
+          <Button
+            variant='btn btn-outline-danger btn-sm fs-4'
+            className='m-1 btn-sm fs-4'
+            onClick={() => {
+              this.props.unPublishCollection()
+              this.setState({ republishNeeded: false })
+            }}
+          >
+            Unpublish Doc
+          </Button>
+        )}
       </div>
     )
   }
@@ -521,7 +532,10 @@ class PublishDocForm extends Component {
             <div className='d-flex align-items-center'>
               <h3 className='page-title mb-0'>Manage Public Doc</h3>
             </div>
-            {this.renderActionButtons(publishCheck)}
+            <span className='hover' onClick={this.handleSeeFeedbacks} style={{display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
+              <IoInformationCircleOutline style={{ color:'inherit', marginRight: '1px', fontSize: '20px' }}/>
+              <span  style={{ fontSize: '16px' }}>Feedbacks</span>
+            </span>
           </div>
           {publishCheck && this.renderPublicUrl()}
           <div className='small-input mt-2'>
@@ -540,10 +554,7 @@ class PublishDocForm extends Component {
           </div>
 
           <div className='color-picker'>{this.renderColorPicker()}</div>
-          {/* <div className='cta-buton'>
-            {this.renderCTAButtons()}
-            {this.renderLinkButtons()}
-          </div> */}
+          {this.renderActionButtons(publishCheck)}
         </div>
         {this.state.openPublishSidebar && this.openPublishSidebar()}
       </>

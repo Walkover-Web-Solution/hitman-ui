@@ -1,0 +1,18 @@
+.feedback-popup {    
+    width: 333px; 
+    height: 252px;  
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.5); 
+    z-index: 1000;  
+    .form-control {
+        height: unset !important;
+    }
+  }
+  .feedback-content {
+    padding: 12px; 
+  }
+  .feedback-saved {
+    text-align: center; 
+    color: green;       
+    font-weight: light; 
+  }
