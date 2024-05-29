@@ -13,7 +13,7 @@ import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
-import { addNewTab, updateTab } from '../tabs/redux/tabsActions'
+import { addNewTab } from '../tabs/redux/tabsActions'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
@@ -21,12 +21,14 @@ import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg
 import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
 import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
 import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTagsign.svg'
-import { MdExpandMore } from "react-icons/md"
+import { RiShareForward2Line } from "react-icons/ri";
+import { MdExpandMore } from 'react-icons/md'
+import MoveModal from '../common/moveModal/moveModal'
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
 import { LuFolder } from "react-icons/lu";
-import { RiShareForward2Line } from "react-icons/ri";
+
 
 const mapStateToProps = (state) => {
   return {
@@ -41,7 +43,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     add_collection: (newCollection) => dispatch(addCollection(newCollection)),
     update_collection: (editedCollection) => dispatch(updateCollection(editedCollection)),
-    delete_collection: (collection, props) => dispatch(deleteCollection(collection, props)),
+    delete_collection: (collection) => dispatch(deleteCollection(collection)),
     duplicate_collection: (collection) => dispatch(duplicateCollection(collection)),
     add_custom_domain: (collectionId, domain) => dispatch(addCustomDomain(collectionId, domain)),
     add_new_tab: () => dispatch(addNewTab()),
@@ -52,6 +54,7 @@ const mapDispatchToProps = (dispatch) => {
 class CollectionsComponent extends Component {
   constructor(props) {
     super(props)
+    this.handleOrgModalClose = this.handleOrgModalClose.bind(this);
     this.state = {
       showCollectionForm: false,
       collectionFormName: '',
@@ -60,7 +63,8 @@ class CollectionsComponent extends Component {
       defaultPublicLogo: hitmanLogo,
       publicLogoError: false,
       showRemoveModal: false,
-      selectedCollectionIds: []
+      selectedCollectionIds: [],
+      showOrgModal: false,
     }
     this.names = {}
   }
@@ -82,7 +86,16 @@ class CollectionsComponent extends Component {
     this.props.duplicate_collection(collectionCopy)
   }
 
-  async handleGoToDocs(collection) {
+  async handleOrgModalOpen(collection) {
+    this.setState({ showOrgModal: true })
+    this.setState({ moveCollection: collection })
+  }
+
+  handleOrgModalClose() {
+    this.setState({ showOrgModal: false })
+  }
+
+  handleGoToDocs(collection) {
     const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p?collectionId=${collection.id}`
     openExternalLink(publicDocsUrl)
   }
@@ -186,8 +199,6 @@ class CollectionsComponent extends Component {
     if (collectionId) {
       this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
-    // const activeTab = this.props.tabs.activeTabId
-    // // store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
   }
 
   openAddPageEndpointModal(collectionId) {
@@ -314,8 +325,10 @@ class CollectionsComponent extends Component {
                       <div className='marketplace-icon mr-1'> M </div>
                     ) : null}
                     <span className={this.props.collections[collectionId].isPublic ? 'published' : ''}>
+                      {/* {this.findEndpointCount(collectionId) === 0 ? '' : this.findEndpointCount(collectionId)} */}
                     </span>
                   </div>
+                  {/* <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span> */}
                 </div>
               )
             }
@@ -336,6 +349,7 @@ class CollectionsComponent extends Component {
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
+                    // isPublishData={false}
                   />
                 }
               </Card.Body>
@@ -436,6 +450,7 @@ class CollectionsComponent extends Component {
                 )}
               {this.openTagManagerModal()}
               {this.showDeleteCollectionModal()}
+              {this.state.showOrgModal && <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />}
             </div>
           </div>
           {this.props.collectionsToRender.length > 0 ? (

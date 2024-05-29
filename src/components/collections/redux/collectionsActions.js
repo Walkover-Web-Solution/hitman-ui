@@ -153,7 +153,7 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
   }
 }
 
-export const deleteCollection = (collection, props) => {
+export const deleteCollection = (collection) => {
   collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     collectionsApiService
@@ -200,6 +200,13 @@ export const onCollectionDeletedError = (error, collection) => {
     type: collectionsActionTypes.ON_COLLECTION_DELETED_ERROR,
     error,
     collection
+  }
+}
+
+export const moveCollection = (collection) => {
+  return {
+    type: collectionsActionTypes.MOVE_COLLECTION,
+    payload:collection
   }
 }
 
