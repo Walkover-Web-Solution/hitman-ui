@@ -210,7 +210,7 @@ const ApiDocReview = (props) => {
     !isDashboardRoute(props) && (
       <>
        
-        <div style={{ position: 'relative' }}>
+        <div>
           <p className='d-flex justify-content-center'style={{ fontSize: '0.8rem', color:"#adadad", fontWeight:'500' }}>Was this page helpful?</p>
           <div className='d-flex justify-content-center' style={{ gap: '20px', fontSize: '1.1rem', color:"#adadad" }}>
           <OverlayTrigger
