@@ -27,6 +27,7 @@ import { useQuery } from 'react-query'
 import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
 import moment from 'moment'
+import DisplayUserAndModifiedData from '../common/userService'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -154,46 +155,24 @@ class DisplayPage extends Component {
         <div className='pt-3 px-1'> 
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
           <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
-          <span className='mb-2 d-inline-block'>{isOnPublishedPage() ? this.renderPageUserData(true) : this.renderPageUserData(false)}</span>
+          <span className='mb-2 d-inline-block'>{isOnPublishedPage() ? 
+          <DisplayUserAndModifiedData
+          isOnPublishedPage={true}
+          pages={this.props.pages}
+          currentPage={this.props.currentPageId}
+          users={this.props.users}
+          /> : 
+          <DisplayUserAndModifiedData
+          isOnPublishedPage={false}
+          pages={this.props.pages}
+          currentPage={this.props.currentPageId}
+          users={this.props.users}
+          />}
+          </span>
         </div>
       )
     }
   }
-
-  
-renderPageUserData(isOnPublishedPage) {
-  const { pages, currentPageId, users } = this.props;
-  const updatedById = pages?.[currentPageId]?.updatedBy;  
-  const lastModified = pages?.[currentPageId]?.updatedAt 
-                       ? moment(pages[currentPageId].updatedAt).fromNow()
-                       : null;
-
-  const user = users?.find(user => user.id === updatedById);
-
-  if (isOnPublishedPage) {
-      return (
-          <div>
-              {lastModified && <>Modified At <span>{lastModified}</span></>}
-          </div>
-      );
-  } else {
-      return (
-          <div className='page-user-data mt-2'>
-            {lastModified ? (
-              <div>
-                Updated by <span> </span>
-                {user?.name}
-                <br />
-                Modified At <span> </span>
-                {lastModified}
-              </div>
-            ) : (
-              <span></span>
-            )}
-          </div>
-      );
-  }
-}
 
   renderPageName() {
     const pageId = this.props?.match?.params.pageId

@@ -69,6 +69,8 @@ import { updateToken } from '../../store/tokenData/tokenDataActions.js'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
 import { LiaSaveSolid } from "react-icons/lia"
 import QueryTab from './queryTab/queryTab.jsx'
+import DisplayUserAndModifiedData from '../common/userService.jsx'
+
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -2793,39 +2795,6 @@ class DisplayEndpoint extends Component {
       }
     }
   }
-  renderEndpointUserData(isOnPublishedPage) {
-    const { pages, currentEndpointId, users } = this.props;
-    const updatedById = pages?.[currentEndpointId]?.updatedBy;  
-    const lastModified = pages?.[currentEndpointId]?.updatedAt 
-                         ? moment(pages[currentEndpointId].updatedAt).fromNow()
-                         : null;
-
-    const user = users?.find(user => user.id === updatedById);
-
-    if (isOnPublishedPage) {
-        return (
-            <div>
-                {lastModified && <>Modified At <span>{lastModified}</span></>}
-            </div>
-        );
-    } else {
-        return (
-            <div className='page-user-data mt-2'>
-              {lastModified ? (
-                <div>
-                  Updated by<span> </span>
-                  {user?.name}
-                  <br />
-                  Modified At<span> </span>
-                  {lastModified}
-                </div>
-              ) : (
-                <span></span>
-              )}
-            </div>
-        );
-    }
-}
 
   render() {
     if (this.props?.endpointContentLoading) {
@@ -3192,7 +3161,13 @@ class DisplayEndpoint extends Component {
               </div>
               {/* <ApiDocReview {...this.props} /> */}
               
-              <span className='footer-upper'>{isOnPublishedPage() && <><span className='pl-3'>{isOnPublishedPage() && this.renderEndpointUserData(true)}</span><Footer /></>}</span>
+              <span className='footer-upper'>{isOnPublishedPage() && <><span className='pl-3'>{isOnPublishedPage() && <DisplayUserAndModifiedData
+                                    isOnPublishedPage={true}
+                                    pages={this.props.pages}
+                                    currentPage={this.props.currentEndpointId}
+                                    users={this.props.users}
+                                
+              />}</span><Footer /></>}</span>
             </div>
 
             {this.isDashboardAndTestingView() ? (
@@ -3216,8 +3191,31 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
-        <span className='pl-3 ml-1 mb-2 d-inline-block'>{!isOnPublishedPage() && this.renderEndpointUserData(false)}</span>
-        <span className='footer-lower ml-2 ml-sm-4 '>{isOnPublishedPage() && <><span className='pl-3'>{isOnPublishedPage() && this.renderEndpointUserData(true)}</span><Footer /></>}</span>
+        <span className='pl-3 ml-1 mb-2 d-inline-block'>
+            {!isOnPublishedPage() && (
+              <DisplayUserAndModifiedData
+              isOnPublishedPage={false}
+              pages={this.props.pages}
+              currentPage={this.props.currentEndpointId}
+              users={this.props.users}
+              />
+            )}
+        </span>
+        <span className='footer-lower ml-2 ml-sm-4'>
+                    {isOnPublishedPage() && (
+                        <>
+                            <span className='pl-3'>
+                                <DisplayUserAndModifiedData
+                                    isOnPublishedPage={true}
+                                    pages={this.props.pages}
+                                    currentPage={this.props.currentEndpointId}
+                                    users={this.props.users}
+                                />
+                            </span>
+                            <Footer />
+                        </>
+                    )}
+                </span>
       </div>
     ) : null
   }
