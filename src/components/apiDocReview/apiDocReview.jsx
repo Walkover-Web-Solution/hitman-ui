@@ -186,17 +186,6 @@ const ApiDocReview = (props) => {
                 <Button variant='primary' onClick={handleDislike} disabled={!comment.trim()} className='feedback-button btn-sm fs-4 float-none'>
                   Send
                 </Button>
-                <Button
-                  variant='secondary'
-                  onClick={() => {
-                    setFeedbackGiven(false)
-                    setFeedbackType('')
-                    setFeedbackSaved(false)
-                  }}
-                  className='feedback-button btn-sm fs-4 float-none ml-2'
-                >
-                  Cancel
-                </Button>
                 </div>
               </form>
             </div>
@@ -211,7 +200,7 @@ const ApiDocReview = (props) => {
       <>
        
         <div>
-          <p className='d-flex justify-content-center'style={{ fontSize: '0.8rem', color:"#adadad", fontWeight:'500' }}>Was this page helpful?</p>
+          <p className='d-flex justify-content-center'style={{ fontSize: '0.8rem', color:"gray", fontWeight:'500' }}>Was this page helpful?</p>
           <div className='d-flex justify-content-center' style={{ gap: '20px', fontSize: '1.1rem', color:"#adadad" }}>
           <OverlayTrigger
               placement='bottom'

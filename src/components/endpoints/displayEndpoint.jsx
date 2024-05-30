@@ -3222,15 +3222,14 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
-                <span className='mb-2 d-inline-block'>
+                <span className='mb-2 d-inline-block text-secondary '>
                   {isOnPublishedPage() &&
                     this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt &&
                     `Modified at ${moment(this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt).fromNow()}`}
                 </span>
               </div>
-              <div className='w-75'>
-                <ApiDocReview {...this.props} />
-                <span className='footer-upper'>{isOnPublishedPage() && <Footer />}</span>
+              <div className='w-75 mt-4'>
+                <span className='footer-upper'><ApiDocReview {...this.props} />{isOnPublishedPage() && <Footer />}</span>
               </div>
             </div>
 
@@ -3252,7 +3251,7 @@ class DisplayEndpoint extends Component {
           </div>
         )}
 
-        <span className='footer-lower'>{isOnPublishedPage() && <Footer />}</span>
+        <span className='footer-lower mt-4'><ApiDocReview {...this.props} />{isOnPublishedPage() && <Footer />}</span>
       </div>
     ) : null
   }
