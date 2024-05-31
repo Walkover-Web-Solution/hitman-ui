@@ -785,6 +785,7 @@ button.is_active {
     border: 1px solid $outline-color;
     background-color: #fff;
     border-radius: $border-radius;
+    display: block !important;
     .ProseMirror {
       padding: 1rem;
       &.ProseMirror-focused {
