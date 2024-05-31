@@ -94,11 +94,9 @@ class TabContent extends Component {
               onTab
             />
           )
-        }
-        case 'feedback' :
-          if(this.props.location.pathname.split('/')[6] === 'feedback') {
-          return <PublishDocsReview {...this.props} selected_collection_id={tabId} />
-        } 
+        }else {
+            return <PublishDocsReview {...this.props} selected_collection_id={tabId} />
+          } 
       default:
         break
     }
