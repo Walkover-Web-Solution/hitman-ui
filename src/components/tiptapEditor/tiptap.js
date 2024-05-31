@@ -79,7 +79,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
   }, [editor, setHeadings]);
 
   return (
-    <div className={`textEditorContainer d-flex justify-content-center${!isInlineEditor ? 'editor' : ''}`}>
+    <div className={`textEditorContainer d-flex justify-content-center${!isInlineEditor ? ' editor d-block' : ''}`}>
       {isInlineEditor && editor && (
         <BubbleMenu className='bubble-menu' tippyOptions={{ duration: 100 }} editor={editor}>
           <MenuBar editor={editor} key={editor} />
