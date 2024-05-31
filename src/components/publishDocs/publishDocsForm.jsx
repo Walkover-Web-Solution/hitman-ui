@@ -340,8 +340,7 @@ class PublishDocForm extends Component {
           <div className='uploadBox' style={this.getDisabledStyle(this.state.data.logoUrl)}>
             {!this.state.binaryFile && <div className='d-flex align-items-center'>{this.renderUploadModule(this.state.data.logoUrl)}</div>}
             {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' alt='data' />}
-          </div>
-          <div className='uplod-info'>
+          <div className='uplod-info d-none'>
             {this.state.binaryFile && (
               <span
                 style={{ cursor: 'pointer' }}
@@ -354,6 +353,7 @@ class PublishDocForm extends Component {
                 <FaRegTimesCircle className='text-dark' />
               </span>
             )}
+          </div>
           </div>
           
         </div>
@@ -378,12 +378,12 @@ class PublishDocForm extends Component {
           onBlur={(e) => this.handleBlur(e, isURLInput)}
         />
         {name === 'domain' && (
-          <span className='domain-info fs-3 mt-1 d-block text-danger'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}
+          <span className='domain-info fs-4 mt-1 d-block text-danger'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}
           <a className='ml-1' href='https://techdoc.walkover.in/p/White-Labelling?collectionId=2Uv_sfKTLPI3'>Learn More</a>
           </span>
         )}
         {name === 'title' && (
-          <span className='domain-info fs-3 mt-1 d-block'>Collection name will be used by default when no title is entered.</span>
+          <span className='domain-info fs-4 mt-1 d-block'>Collection name will be used by default when no title is entered.</span>
         )}
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
       </div>
