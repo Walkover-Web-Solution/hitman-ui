@@ -164,7 +164,7 @@ class DisplayPage extends Component {
       return (
         <div className='pt-3 px-1'> 
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
-          <div className='pageText doc-view' id='headingTop'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
+          <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
           <span>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
         </div>
       )

@@ -79,7 +79,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
   }, [editor, setHeadings]);
 
   return (
-    <div className={`textEditorContainer ${!isInlineEditor ? 'editor' : ''}`}>
+    <div className={`textEditorContainer d-flex justify-content-center${!isInlineEditor ? 'editor' : ''}`}>
       {isInlineEditor && editor && (
         <BubbleMenu className='bubble-menu' tippyOptions={{ duration: 100 }} editor={editor}>
           <MenuBar editor={editor} key={editor} />
@@ -91,8 +91,12 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
         </FloatingMenu>
       )}
       {!isInlineEditor && <MenuBar editor={editor} key={editor} />}
-      <EditorContent editor={editor}  className='ww' />
-      
+      <EditorContent editor={editor}  className='public-page-editor' />
+        <div className='editor-headings border border-2 p-2 rounded-lg'>
+          {headings.map((heading, index) => (
+            <a className='heading-page-view d-block overflow-hidden w-100' target='_top' key={index} href={`#heading${index + 1}`}>{heading}</a>
+          ))}
+        </div>
     </div>
   )
 }
