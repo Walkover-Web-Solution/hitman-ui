@@ -46,6 +46,7 @@ class PublishDocsReview extends Component {
 
   renderFeedback() {
     const { feedbacks, pages } = this.props;
+    console.log(feedbacks);
     return (
       <div className="feedback-table-container">
         <table className="table">
@@ -66,11 +67,6 @@ class PublishDocsReview extends Component {
                 <td>
                   {Object.keys(feedback.comments).length === 0 ? (
                     <div>No comments</div>
-                  ) : Object.keys(feedback.comments).length === 1 ? (
-                    // Display single comment directly
-                    <div>
-                      <strong>{feedback.comments[0].email}</strong>: {feedback.comments[0].comment}
-                    </div>
                   ) : (
                     // Use Accordion for multiple comments
                     <Accordion defaultActiveKey="0">
@@ -82,9 +78,11 @@ class PublishDocsReview extends Component {
                         </Card.Header>
                         <Accordion.Collapse eventKey="1">
                           <Card.Body>
-                            {Object.entries(feedback.comments).map(([key, comment], idx) => (
-                              <div key={idx}>
-                                <strong>{comment.email}</strong>: {comment.comment}
+                            {Object.entries(feedback.comments).map(([email, comments], idx) => (
+                              <div key={email}>
+                                <strong>Email: {email}</strong>
+                                <br />
+                                Comments: {comments.map(comment => <><br/>{comment}</>)}
                               </div>
                             ))}
                           </Card.Body>
