@@ -15,6 +15,8 @@ import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
 import { IoInformationCircleOutline } from 'react-icons/io5'
 import PublishDocsReview from './publishDocsReview'
+import { FiCopy } from 'react-icons/fi';
+import { FaRegTimesCircle } from "react-icons/fa";
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
@@ -274,9 +276,9 @@ class PublishDocForm extends Component {
 
   renderColorPicker() {
     return (
-      <div className='form-group'>
+      <div className='form-group mb-4'>
         <label>{publishDocFormEnum.LABELS.theme}</label>
-        <div className='d-flex justify-content-between colorChooser'>
+        <div className='colorChooser'>
           <CustomColorPicker set_theme={this.setTheme.bind(this)} theme={this.state.data.theme} />
         </div>
       </div>
@@ -336,9 +338,7 @@ class PublishDocForm extends Component {
           <div className='uploadBox' style={this.getDisabledStyle(this.state.data.logoUrl)}>
             {!this.state.binaryFile && <div className='d-flex align-items-center'>{this.renderUploadModule(this.state.data.logoUrl)}</div>}
             {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' alt='data' />}
-          </div>
-          <div className='uplod-info'>
-            {this.state.uploadedFile && <p>{this.state.uploadedFile.name}</p>}
+          <div className='uplod-info d-none'>
             {this.state.binaryFile && (
               <span
                 style={{ cursor: 'pointer' }}
@@ -348,10 +348,12 @@ class PublishDocForm extends Component {
                   this.setState({ binaryFile: null, uploadedFile: null, errors })
                 }}
               >
-                Remove
+                <FaRegTimesCircle className='text-dark' />
               </span>
             )}
           </div>
+          </div>
+          
         </div>
         {errors && errors[name] && <small className='text-danger'>{errors[name]}</small>}
       </>
@@ -361,7 +363,7 @@ class PublishDocForm extends Component {
   renderInput(name, mandatory = false, disabled, placeholder, isURLInput = false) {
     const { data, errors } = this.state
     return (
-      <div className='form-group'>
+      <div className='form-group mb-4'>
         <label>{publishDocFormEnum.LABELS[name]}</label>
         <input
           type='text'
@@ -374,12 +376,12 @@ class PublishDocForm extends Component {
           onBlur={(e) => this.handleBlur(e, isURLInput)}
         />
         {name === 'domain' && (
-          <span className='domain-info f-10 mt-1 d-block'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>
+          <span className='domain-info fs-4 mt-1 d-block text-danger'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}
+          <a className='ml-1' href='https://techdoc.walkover.in/p/White-Labelling?collectionId=2Uv_sfKTLPI3'>Learn More</a>
+          </span>
         )}
         {name === 'title' && (
-          <span className='domain-info f-10 mt-1 d-block'>{`Your default title will be ${
-            this.props?.collections?.[this.props?.match?.params?.collectionId]?.name
-          }`}</span>
+          <span className='domain-info fs-4 mt-1 d-block'>Collection name will be used by default when no title is entered.</span>
         )}
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
       </div>
@@ -401,7 +403,14 @@ class PublishDocForm extends Component {
     this.props.ON_PUBLISH_DOC(true)
     // this.props.setCollectionIdForPublish({ collectionId: this.props.selected_collection_id })
   }
+  openExternalLink = (url) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
+  copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(
+    );
+  };
   renderPublicUrl() {
     const isCollectionPublished = this.props.collections[this.props.selected_collection_id]?.isPublic
     const url = process.env.REACT_APP_PUBLIC_UI_URL + '/p?collectionId=' + this.props.selected_collection_id
@@ -411,8 +420,8 @@ class PublishDocForm extends Component {
 
     return (
       <div>
-        <div className='d-flex align-items-center'>
-          <span className='public-title mt-1 d-block'>Preview Documentation</span>
+        <div className='d-flex align-items-center mt-4 mb-1'>
+          <span className='public-title d-block'>Preview Documentation</span>
           <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
         </div>
         <OverlayTrigger
@@ -422,14 +431,21 @@ class PublishDocForm extends Component {
             </Tooltip>
           }
         >
-          <div
-            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-3 ${
-              isDisabled ? 'text-disable' : 'disabled-link'
-            }`}
-          >
-            <HiOutlineExternalLink className='mr-1' size={13} />
-            <span onClick={() => isDisabled && openExternalLink(url)}>{url}</span>
-          </div>
+           <div
+        className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4 ${
+          isDisabled ? 'text-disable' : 'disabled-link'
+        }`}
+      >
+        <HiOutlineExternalLink className='mr-1' size={13} />
+        <span onClick={() => isDisabled && this.openExternalLink(url)}>{url}</span>
+        <button
+          className="copy-button-link ml-2 border-0 bg-white"
+          onClick={() => this.copyToClipboard(url)}
+          title="Copy URL"
+        >
+          <FiCopy size={13} />
+        </button>
+      </div>
         </OverlayTrigger>
       </div>
     )
@@ -468,7 +484,7 @@ class PublishDocForm extends Component {
     const rootParentId = this.props?.collections[this.props.selected_collection_id]?.rootParentId
     const disableCondition = this.props?.pages[rootParentId]?.child?.length > 0
     return (
-      <div>
+      <div className='mt-2'>
         <Button
           disabled={!disableCondition}
           id='publish_collection_btn'
@@ -527,23 +543,26 @@ class PublishDocForm extends Component {
     const publishCheck = (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished()
     return (
       <>
+      <div className='d-flex justify-content-center'>
         <div className={this.props.onTab && 'publish-on-tab'}>
           <div className='d-flex justify-content-between align-item-center'>
             <div className='d-flex align-items-center'>
-              <h3 className='page-title mb-0'>Manage Public Doc</h3>
+              <h3 className='page-title mb-0'>Publish Collection Settings</h3>
             </div>
             <span className='hover' onClick={this.handleSeeFeedbacks} style={{display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
               <IoInformationCircleOutline style={{ color:'inherit', marginRight: '1px', fontSize: '20px' }}/>
               <span  style={{ fontSize: '16px' }}>Feedbacks</span>
             </span>
           </div>
+        <span className='mt-2 d-inline-block'>Completing this step will make your collection available at a public URL.</span>
+
           {publishCheck && this.renderPublicUrl()}
           <div className='small-input mt-2'>
             {this.renderInput('title', true, false, 'brand name')}
             {this.renderInput('domain', false, false, 'docs.example.com')}
           </div>
-          <div className='d-flex favicon'>
-            <div className='form-group'>
+          <div className='d-flex favicon mb-4'>
+            <div className='form-group mb-0'>
               <label> Fav Icon </label>
               <div className='favicon-uploader'>{this.renderUploadBox('icon')}</div>
             </div>
@@ -555,6 +574,7 @@ class PublishDocForm extends Component {
 
           <div className='color-picker'>{this.renderColorPicker()}</div>
           {this.renderActionButtons(publishCheck)}
+        </div>
         </div>
         {this.state.openPublishSidebar && this.openPublishSidebar()}
       </>

@@ -204,6 +204,14 @@ class CustomTabs extends Component {
             </>
           )
         }
+        else {
+          return (
+            <div className='d-flex align-items-center'>
+              <IoIosSettings size={18} className='setting-icons mr-1' />
+              <span>{collectionName}</span>
+            </div>
+          )
+        }
       }
       case 'feedback': {
         return (

@@ -3,7 +3,6 @@
 
 .uploadBox {
   cursor: pointer;
-  height: 2.5rem;
   overflow: hidden;
   label {
     margin-bottom: 0;
@@ -17,10 +16,18 @@
       border-color: #f1a147;
     }
   }
+  &:hover {
+    .uplod-info {
+      display: inline !important;
+    }
+  }
 }
 
 .domain-info {
   width: max-content;
+  a {
+    color: #dc3545;
+  }
 }
 
 .upload-box-text {
@@ -39,7 +46,6 @@
 
 .favicon {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
   position: relative;
   input {
@@ -67,15 +73,17 @@
 }
 
 .uploadBox img {
-  width: 100%;
-  padding: 10px;
+  width: 34px;
+  height: 34px;
   object-fit: contain;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .uplod-info {
-  margin-left: 10px;
+  position: absolute;
+  left: 30px;
+  top: 16px;
   p {
     max-width: 5rem;
     overflow: hidden;
@@ -89,8 +97,9 @@
 
 .publish-on-tab {
   padding: 20px;
+  width: 660px;
   input {
-    max-width: 18rem;
+    max-width: 100%;
   }
   .cta-buton {
     .form-group>div input:first-child {
@@ -132,4 +141,9 @@
 .hover {
   :hover{color: blue;
   text-decoration: underline;}
+}
+.copy-button-link {
+  &:focus {
+outline: unset !important;
+  }
 }
