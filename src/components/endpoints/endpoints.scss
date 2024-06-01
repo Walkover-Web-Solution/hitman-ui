@@ -1257,10 +1257,11 @@ table#custom-generic-table {
   width: 100%;
 
   nav.nav.nav-tabs {
-    border: 1px solid #e0e0e0;
+    border: 1px solid #0000001f;
     border-radius: 4px;
     width: auto;
     margin: 15px 20px 0px;
+    margin-top: 0 !important;
     display: inline-block;
   }
 
@@ -1551,9 +1552,9 @@ table#custom-generic-table {
   padding-top: 35px;
   width: 432px;
   min-width: 432px;
-  border-left: 1px solid rgba(128, 128, 128, 0.219);
-  border-right: 1px solid rgba(128, 128, 128, 0.219);
-  border-bottom: 1px solid rgba(128, 128, 128, 0.219);
+  border-left: 1px solid #0000001f;
+  border-right: 1px solid #0000001f;
+  border-bottom: 1px solid #0000001f;
   transition: 300ms;
 
   .select-code-wrapper {
@@ -1610,9 +1611,7 @@ table#custom-generic-table {
     height: 100%;
 
     #code-window-sidebar {
-      border-bottom: 1px solid rgba(128, 128, 128, 0.219);
       border-top: 1px solid rgba(128, 128, 128, 0.219);
-      padding: 15px 15px 4px;
     }
 
     .editor-body-wrapper {
