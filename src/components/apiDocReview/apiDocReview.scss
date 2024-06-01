@@ -1,9 +1,10 @@
 .feedback-popup {    
     width: 333px; 
-    height: 252px;  
+    height: 246px;  
     background-color: white;
     box-shadow: -2px 0 5px rgba(0,0,0,0.5); 
     z-index: 1000;  
+    right: 18px;
     .form-control {
         height: unset !important;
     }
@@ -15,4 +16,8 @@
     text-align: center; 
     color: green;       
     font-weight: light; 
+  }
+  .like-unline {
+    color:#adadad;
+    gap: 20px;
   }

@@ -141,8 +141,7 @@ const ApiDocReview = (props) => {
       return <p className='feedback-saved'>Your feedback has been saved. Thank you!</p>
     } else if (feedbackType === 'DISLIKE') {
       return (
-        <div className='d-flex justify-content-end'>
-        <div className='feedback-popup'>
+        <div className='feedback-popup position-absolute'>
           <div className='feedback-content'>
             <div className='d-flex feedback-header justify-content-between'>
               <span className='feedback-title'>Sorry to hear that. What can we do better?</span>
@@ -191,7 +190,6 @@ const ApiDocReview = (props) => {
             </div>
           </div>
         </div>
-        </div>
       )
     }
   }
@@ -200,8 +198,8 @@ const ApiDocReview = (props) => {
       <>
        
         <div>
-          <p className='d-flex justify-content-center'style={{ fontSize: '0.8rem', color:"gray", fontWeight:'500' }}>Was this page helpful?</p>
-          <div className='d-flex justify-content-center' style={{ gap: '20px', fontSize: '1.1rem', color:"#adadad" }}>
+          <p className='d-flex justify-content-center fs-4 font-weight-700 text-secondary'>Was this page helpful?</p>
+          <div className='d-flex justify-content-center like-unline fs-2'>
           <OverlayTrigger
               placement='bottom'
               overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}
