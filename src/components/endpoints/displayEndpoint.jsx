@@ -3159,7 +3159,7 @@ class DisplayEndpoint extends Component {
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
               </div>    
-              <span className='footer-upper'>
+              <span className='footer-upper w-100'>
                 {isOnPublishedPage() && (
               <>
               <span className='pl-3'>
