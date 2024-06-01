@@ -25,6 +25,7 @@ import { BsThreeDots } from "react-icons/bs"
 import { GrGraphQl } from 'react-icons/gr'
 import '../../../src/components/styles.scss'
 import { importPostmanEnvironment } from '../environments/environmentsApiService'
+import {  hexToRgb} from '../common/utility'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -71,10 +72,14 @@ class Endpoints extends Component {
         edit: false,
         share: false,
         delete: false,
-      }
+      },
+      optionalParams: false,
+      isHovered: false,
     }
   }
-
+  handleHover = (isHovered) => {
+    this.setState({ isHovered });
+  };
   componentDidMount() {
     if (this.props.theme) {
       this.setState({ theme: this.props.theme })
@@ -339,6 +344,18 @@ class Endpoints extends Component {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     let isUserOnPublishedPage = isOnPublishedPage()
     const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
+    let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
+    var collectionTheme = this.props.collections[collectionId]?.theme
+    const dynamicColor = hexToRgb(collectionTheme, 0.15);
+    const staticColor = '#bdbdbd';
+
+    const backgroundStyle = {
+      backgroundImage: this.state.isHovered || isSelected
+        ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})`
+        : ''
+    };
     return (
       <>
         <div 
@@ -354,7 +371,9 @@ class Endpoints extends Component {
           <div className={this.props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between mt-1'>
             <button>
-            <div className={`side-bar d-flex ${isSelected ? 'Selected' : ''}`}>
+            <div className={`side-bar d-flex ${isSelected ? 'Selected' : ''}`} style={backgroundStyle}
+        onMouseEnter={() => this.handleHover(true)}
+        onMouseLeave={() => this.handleHover(false)}>
             <button
               tabIndex={-1}
               onClick={() => {

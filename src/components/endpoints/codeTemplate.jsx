@@ -68,9 +68,20 @@ class CodeTemplate extends Component {
     if (this.props.harObject) {
       this.makeCodeTemplate(this.selectedLanguage)
     }
-    if (!this.state.theme) {
-      this.setState({ theme: this.props.publicCollectionTheme })
-    }
+    const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.04);
+    const staticColor = '#fafafa';
+
+    const backgroundStyle = {
+      backgroundImage: `
+        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})
+      `,
+    };
+
+    this.setState({
+      theme: { backgroundStyle },
+    });
+  
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -102,9 +113,9 @@ class CodeTemplate extends Component {
 
   render() {
     return (
-      <div className={(this.props.match.params.endpointId) ? "show-curl-endpoint pubCodeWrapper" : "pubCodeWrapper"} style={{ backgroundColor: hexToRgb(this.state?.theme, '0.04') }}>
+      <div className={(this.props.match.params.endpointId) ? "show-curl-endpoint pubCodeWrapper" : "pubCodeWrapper"} style={this.state.theme.backgroundStyle}>
         <div className='inner-editor'>
-          <Col id='code-window-sidebar' xs={12} className=''>
+          <Col id='code-window-sidebar' xs={12} className='px-3 pt-3 pb-1'>
             <div className='code-heading mb-3 d-flex align-items-center'>
               <span className={this.props.theme === 'light' ? 'col-black' : 'col-black'}>Sample code</span>
               {this.props.showClosebtn && <div className='d-flex justify-content-end flex-grow-1'>

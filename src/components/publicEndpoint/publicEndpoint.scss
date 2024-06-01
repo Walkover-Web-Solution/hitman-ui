@@ -274,7 +274,6 @@ form.add-new-domain-form {
   }
   .main-table-wrapper {
     > div {
-      margin-bottom: 1rem;
       &:empty {
         display: none;
       }
@@ -338,7 +337,7 @@ form.add-new-domain-form {
     max-width: 1160px;
     align-items: center;
     justify-content: space-between;
-    padding: 24px 66px 24px;
+    padding: 16px 66px 24px;
     @media screen and (max-width: 1160px){
      padding: 0;
     }
@@ -360,9 +359,9 @@ form.add-new-domain-form {
           text-transform: capitalize;
           font-weight: 700;
           font-size: 22px;
-          margin-bottom: 0.5rem;
+          // margin-bottom: 0.5rem;
           max-width: 80%;
-          min-height: 2.25rem;
+          // min-height: 2.25rem;
           text-overflow: ellipsis !important;
           overflow: hidden !important;
           white-space: nowrap;
@@ -395,7 +394,7 @@ form.add-new-domain-form {
   display: flex;
   color: #fff;
   align-items: center;
-  gap: 12px;
+  gap: 7px;
 }
 
 .hm-sidebar-title{
@@ -409,7 +408,6 @@ form.add-new-domain-form {
   width: 100%;
   object-fit: contain;
   height: 100%;
-  padding: 3px;
 }
 
 h4.hm-sidebar-title {
@@ -478,7 +476,7 @@ h4.hm-sidebar-title span {
   .public-generic-table-title-container {
     font-size: 14px !important;
     font-weight: 600 !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 8px;
     display: inline-block;
     .fa-circle {
       color: #e98a36;
@@ -541,8 +539,6 @@ h4.hm-sidebar-title span {
 }
 
 .hm-panel.endpoint-public-response-container.public-doc {
-  padding: 15px 0;
-  margin: 30px 0 0;
   width: 100%;
   .tab-content {
     margin: 0;
@@ -614,8 +610,8 @@ h4.hm-sidebar-title span {
 }
 
 .hm-sidebar-logo {
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 29px;
 }
 
 .select-code-wrapper .show.dropdown .dropdown-toggle::after {

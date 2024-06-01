@@ -690,7 +690,7 @@ class SideBarV2 extends Component {
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
     const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
     return (
-      <div className='hm-sidebar-header d-flex align-items-center'>
+      <div className='hm-sidebar-header d-flex align-items-start'>
             <div className='hm-sidebar-logo'>
               <img
                 id='publicLogo'
@@ -733,7 +733,7 @@ class SideBarV2 extends Component {
     return (
       <>
         {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
-        <div className='plr-3 pt-2'>
+        <div className='pr-2 pl-2 pt-3'>
           {isOnPublishedPage() && this.renderCollectionName()}
           {this.renderSearch()}
           {/* {this.renderDownloadDesktopApp()} */}

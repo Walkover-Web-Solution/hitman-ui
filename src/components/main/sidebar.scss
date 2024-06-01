@@ -55,7 +55,7 @@
 
 .Resizer {
   width: 1px;
-  background: #e6dbd4;
+  background: #0000001f;
   cursor: col-resize;
   position: relative;
   &::after {
@@ -123,10 +123,6 @@ body .sidebar {
       justify-content: center;
       transition: all 0.3s ease-in;
       border-radius: 5px 5px;
-
-      &:hover {
-        background-color: #dfdcd5;
-      }
     }
   }
   .fade {
@@ -672,9 +668,6 @@ input[type='text']:focus {
     width: 20px !important;
     color: #808080;
     border-radius: 5px 5px;
-    &:hover {
-      background-color: #d6d2d28f;
-    }
   }
   .collection-icons {
     color: #808080;
@@ -863,8 +856,8 @@ input[type='text']:focus {
 }
 
 .search-container {
-  border: 1px solid rgba(0, 0, 0, 0.104);
-  padding: 4px;
+  border: 1px solid #0000001f;
+  padding: 4px 6px;
   border-radius: 4px;
 
   &:focus-within {
@@ -941,7 +934,7 @@ input[type='text']:focus {
   position: fixed;
   bottom: 0;
   left: 0;
-  border-top: 1px solid rgb(221, 205, 205);
+  border-top: 1px solid #0000001f;
   width: 330px;
   padding-left: 16px;
   z-index: 9;
