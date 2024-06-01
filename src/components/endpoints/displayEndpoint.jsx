@@ -3262,7 +3262,7 @@ class DisplayEndpoint extends Component {
                     `Modified at ${moment(this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt).fromNow()}`}
                 </span>
               </div>
-              <div className='w-75 mt-4'>
+              <div className='w-75 mt-4 position-relative'>
                 <span className='footer-upper'><ApiDocReview {...this.props} />{isOnPublishedPage() && <Footer />}</span>
               </div>
             </div>
