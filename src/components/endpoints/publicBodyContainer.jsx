@@ -12,7 +12,10 @@ import { hexToRgb, isOnPublishedPage } from '../common/utility'
 class PublicBodyContainer extends Component {
   constructor(props) {
     super(props)
-    this.state = {
+    this.state = {theme: {
+      publicCollectionTheme: this.props.publicCollectionTheme,
+      backgroundStyle: {}
+    },
       showBodyCodeEditor: true,
       data: {
         data: [
@@ -45,6 +48,26 @@ class PublicBodyContainer extends Component {
       urlencoded: this.props?.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
     }
     this.setState({ data });
+    this.updateBackgroundStyle();
+
+  } updateBackgroundStyle() {
+    const { publicCollectionTheme } = this.state.theme;
+    const dynamicColor = hexToRgb(publicCollectionTheme, 0.02);
+    const staticColor = '#fafafa';
+
+    const backgroundStyle = {
+      backgroundImage: `
+        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})
+      `,
+    };
+
+    this.setState(prevState => ({
+      theme: {
+        ...prevState.theme,
+        backgroundStyle,
+      },
+    }));
   }
 
   handleChangeBody(title, dataArray) {
@@ -206,7 +229,7 @@ class PublicBodyContainer extends Component {
             className={`${isOnPublishedPage() ? "custom-raw-editor-public" : "custom-raw-editor"}`}
             mode={'json'}
             theme='github'
-            style={{ backgroundColor: hexToRgb(this.props.publicCollectionTheme, '0.04') }}
+            style={this.state.theme.backgroundStyle}
             value={this.props.endpointContent?.data?.body?.query || ''}
             onChange={this.handleSetQueryData.bind(this)}
             setOptions={{
@@ -234,7 +257,7 @@ class PublicBodyContainer extends Component {
             className={`${isOnPublishedPage() ? "custom-raw-editor-public" : "custom-raw-editor"}`}
             mode={'json'}
             theme='github'
-            style={{ backgroundColor: hexToRgb(this.props.publicCollectionTheme, '0.04') }}
+            style={this.state.theme.backgroundStyle}
             value={this.props.endpointContent?.data?.body?.variables || ''}
             onChange={this.handleSetQueryData.bind(this)}
             setOptions={{
@@ -287,7 +310,7 @@ class PublicBodyContainer extends Component {
           this.props.body.type !== bodyTypesEnums['multipart/form-data'] &&
           this.props.body.type !== bodyTypesEnums['application/x-www-form-urlencoded'] &&
           (this.props.body.type === rawTypesEnums.JSON ? (
-            <div className='hm-public-table'>
+            <div className='hm-public-table mb-4'>
               <div className='public-generic-table-title-container'>
                 Body <small className='text-muted'>({this.props.body.type})</small>{' '}
                 {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
@@ -312,7 +335,7 @@ class PublicBodyContainer extends Component {
                 <AceEditor
                   className={`${isOnPublishedPage() ? "custom-raw-editor-public" : "custom-raw-editor"}`}
                   mode='json'
-                  style={{ backgroundColor: hexToRgb(this.props.publicCollectionTheme, '0.04') }}
+                  style={this.state.theme.backgroundStyle}
                   theme='github'
                   value={this.props.body?.raw?.value}
                   onChange={this.handleChangeBodyDescription.bind(this)}
@@ -328,7 +351,7 @@ class PublicBodyContainer extends Component {
                   }}
                 />
               ) : (
-                <div className='body-description-container' style={{ backgroundColor: hexToRgb(this.props.publicCollectionTheme, '0.04') }}>
+                <div className='body-description-container' style={this.state.theme.backgroundStyle}>
                   {/* Previous Body Description Layout */}
                   {/* {this.displayObject(this.bodyDescription, 'body_description')} */}
                   {this.displayBodyDecription(undefined, this.bodyDescription)}

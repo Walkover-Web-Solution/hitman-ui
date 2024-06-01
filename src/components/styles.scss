@@ -284,6 +284,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   border-radius: 4px;
   opacity: 1;
   display: inline-block;
+  border: 1px solid #0000001f !important;
 
   &.api-label-lg {
     font-size: 12px;

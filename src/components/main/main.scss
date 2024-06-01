@@ -1158,7 +1158,7 @@ body .form-group {
 
 body .form-control {
   height: 36px;
-  border: 1px solid $outline-color;
+  border: 1px solid #0000001f;
   font-size: $font-normal;
   font-weight: 400;
   color: #000;
@@ -1687,6 +1687,9 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
   @media screen and (max-width:992px) {
     padding-right: 24px;
     padding-left: 24px;
+  }
+  @media screen and (max-width:767px) {
+  padding-top: 3rem;
   }
   @media screen and (max-width:568px) {
     padding-right: 12px;
@@ -2295,8 +2298,7 @@ button[name='cta-1'] {
 }
 
 .pubSampleResponse h3.heading-2 {
-  text-transform: uppercase;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .mainpublic-endpoint-main .custom-display-page {

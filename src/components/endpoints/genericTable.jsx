@@ -38,7 +38,19 @@ class GenericTable extends Component {
   }
 
   componentDidMount() {
-    this.setState({ optionalParams: false, theme: this.props.publicCollectionTheme })
+    const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
+    const staticColor = '#fafafa';
+
+    const backgroundStyle = {
+      backgroundImage: `
+        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})
+      `,
+    };
+
+    this.setState({
+      theme: { backgroundStyle },
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -259,7 +271,7 @@ class GenericTable extends Component {
                 className='Checkbox'
                 onChange={this.handleChange}
               />
-              <span className='checkmark' style={{ backgroundColor: this.state.theme, borderColor: this.state.theme }} />
+              <span className='checkmark' style={{ backgroundColor: this.props.publicCollectionTheme, borderColor: this.props.publicCollectionTheme }} />
             </label>
           )}
         </td>
@@ -548,7 +560,7 @@ class GenericTable extends Component {
       // table-bordered
       <div className='hm-public-table position-relative mb-2'>
         {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) ? <div>{title}</div> : null}
-        <div className={isDocView ? 'public-generic-table-title-container' : 'generic-table-title-container'}>
+        <div className={isDocView ? 'public-generic-table-title-container mb-2' : 'generic-table-title-container'}>
           {isDocView && dataArray.length > 0 ? (
             <span>
               {this.renderTitle(title)} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}
@@ -557,7 +569,7 @@ class GenericTable extends Component {
         </div>
 
         {!this.state.bulkEdit && dataArray.length > 0 ? (
-          <div className='headParaWraper' style={{ backgroundColor: hexToRgb(this.state?.theme, '0.04') }}>
+          <div className='headParaWraper' style={this.state.theme.backgroundStyle}>
             <table className='table' id='custom-generic-table'>
               {isDashboardRoute(this.props) ? (
                 <thead>

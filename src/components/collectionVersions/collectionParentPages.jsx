@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Card, Dropdown, Accordion, DropdownButton, Button } from 'react-bootstrap'
+import React, { Component, useState } from 'react'
+import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import ShareVersionForm from './shareVersionForm'
@@ -36,6 +36,8 @@ import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
 import { IoDocumentTextOutline } from "react-icons/io5"
+import {  hexToRgb} from '../common/utility'
+
 
 const mapStateToProps = (state) => {
   return {
@@ -97,20 +99,24 @@ class CollectionParentPages extends Component {
       clickedList: [],
       selectedCheckbox: null,
       isListVisible: false,
-      publishVersion: ''
+      publishVersion: '',
+      optionalParams: false,
+      isHovered: false,
     }
     this.filterFlag = false
     this.eventkey = {}
     this.versionDropDownRef = React.createRef();
   }
-
+  handleHover = (isHovered) => {
+    this.setState({ isHovered });
+  };
   componentDidMount() {
     if (!this.state.theme) {
       this.setState({
         theme: this.props.collections[this.props.collection_id].theme
       })
     }
-
+   
     const { pageId, endpointId } = this.props.match.params
     if (pageId) this.setParentPageForEntity(pageId, 'page')
 
@@ -468,19 +474,30 @@ class CollectionParentPages extends Component {
       </DropdownButton>
     )
   }
-
   renderBody(pageId, index) {
     let isUserOnPublishedPage = isOnPublishedPage()
     const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const publishData = this.props.modals.publishData
     const rootId = pageId
     const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === pageId ? 'selected' : '')
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
+    let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
+    var collectionTheme = this.props.collections[collectionId]?.theme
+    const dynamicColor = hexToRgb(collectionTheme, 0.15);
+    const staticColor = '#bdbdbd';
+
+    const backgroundStyle = {
+      backgroundImage: this.state.isHovered || isSelected
+        ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})`
+        : ''
+    };
     return (
       <>
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
           <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
             <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''}`}>
-          <div className={`active-select d-flex align-items-center justify-content-between ${isSelected ? ' selected' : ''}`}>
+          <div className={`active-select d-flex align-items-center justify-content-between ${isSelected ? ' selected' : ''}`} style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
               <div
                 className={`d-flex align-items-center cl-name ` }
                 onClick={(e) => {

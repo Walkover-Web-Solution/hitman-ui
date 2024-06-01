@@ -69,6 +69,7 @@ import { updateToken } from '../../store/tokenData/tokenDataActions.js'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
 import { LiaSaveSolid } from "react-icons/lia"
 import QueryTab from './queryTab/queryTab.jsx'
+import { hexToRgb } from '../common/utility'
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -389,7 +390,8 @@ class DisplayEndpoint extends Component {
       sslMode: getCurrentUserSSLMode(),
       showAskAiSlider: false,
       endpointContentState: null,
-      showEndpointFormModal: false
+      showEndpointFormModal: false,
+      optionalParams: false,
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -418,6 +420,20 @@ class DisplayEndpoint extends Component {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
+    const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
+    const staticColor = '#f5f5f5';
+
+    const backgroundStyle = {
+      backgroundImage: `
+        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})
+      `,
+    };
+
+    this.setState({
+      theme:  backgroundStyle ,
+    });
+  
   }
 
   handleShortcuts = (event, data) => {
@@ -2826,7 +2842,7 @@ class DisplayEndpoint extends Component {
     }
 }
 
-  render() {
+  render(props) {
     if (this.props?.endpointContentLoading) {
       return (
         <>
@@ -2889,7 +2905,7 @@ class DisplayEndpoint extends Component {
       >
         <div
           onClick={this.closeChatBotModal}
-          className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}
+          className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}  style={this.state.theme}
         >
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
@@ -2943,10 +2959,10 @@ class DisplayEndpoint extends Component {
               <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
                 <div className='endpoint-header'>
                   {this.isNotDashboardOrDocView() && (
-                    <div className='endpoint-name-container d-flex justify-content-between'>
+                    <div className='d-flex endpoint-name-container justify-content-between mb-2'>
                       {this.isNotDashboardOrDocView() && (
                         <>
-                          <h1 className='endpoint-title'>{this.props?.endpointContent?.data?.name || ''}</h1>
+                          <h1 className='endpoint-title mb-0'>{this.props?.endpointContent?.data?.name || ''}</h1>
                           {!isDashboardRoute(this.props) && (
                             <div className='request-button'>
                               <button
@@ -2955,7 +2971,7 @@ class DisplayEndpoint extends Component {
                                     ? 'btn custom-theme-btn btn-lg buttonLoader'
                                     : 'btn btn-lg custom-theme-btn px-md-4 px-3'
                                 }
-                                style={{ background: theme }}
+                                 style={{ backgroundColor: this.props.publicCollectionTheme }}
                                 type='submit'
                                 id='send-request-button'
                                 onClick={() => this.handleSend()}

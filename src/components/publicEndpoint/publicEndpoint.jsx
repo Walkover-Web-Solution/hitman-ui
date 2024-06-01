@@ -388,6 +388,15 @@ class PublicEndpoint extends Component {
     }
     let collectionKeys = Object.keys(this.props?.collections || {})
     const { isCTAandLinksPresent } = this.getCTALinks()
+    const dynamicColor = hexToRgb(collectionTheme, 0.04);
+    const staticColor = '#f0f0f0';
+
+    const backgroundStyle = {
+      backgroundImage: `
+        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})
+      `,
+    };
 
     return (
       <>
@@ -408,7 +417,7 @@ class PublicEndpoint extends Component {
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
         <span ref={this.iconRef} className={'hamberger-icon'}>
-          <MdDehaze id='hamburgerIcon' className='icon-active fs-4 fw-bold' onClick={() => { this.handleShowSideBar() }} />
+          <MdDehaze id='hamburgerIcon' className='icon-active fw-bold' onClick={() => { this.handleShowSideBar() }} />
           <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
           {/* <span className='logo-name' id="logoName"> 
              {this.props.collections[collectionKeys[0]]?.favicon && (
@@ -434,7 +443,7 @@ class PublicEndpoint extends Component {
           {/* [info] part 3 */}
           <SplitPane split='vertical' className={'split-sidebar-public'}>
             {/* [info] part 3 subpart 1 sidebar data left content */}
-            <div className={'hm-sidebar' + ( isTechdocOwnDomain() ? ' pb-5' : '')} style={{ backgroundColor: hexToRgb(collectionTheme, '0.04') }}>
+            <div className={'hm-sidebar' + (isTechdocOwnDomain() ? ' pb-5' : '')} style={backgroundStyle}>
               {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
             </div>
             {/*  [info] part 3 subpart 1 sidebar data right content */}
