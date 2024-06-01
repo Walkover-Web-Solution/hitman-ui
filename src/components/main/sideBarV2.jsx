@@ -690,21 +690,24 @@ class SideBarV2 extends Component {
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
     const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
     return (
-      <div className='hm-sidebar-header d-flex align-items-start'>
-            <div className='hm-sidebar-logo'>
-              <img
-                id='publicLogo'
-                alt='public-logo'
-                src={
-                  this.props.collections?.[collectionKeys[0]]?.favicon
-                    ? `data:image/png;base64,${this.props?.collections?.[collectionKeys[0]]?.favicon}`
-                    : this.props.collections?.[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
-                }
-                // onError={() => { this.setState({ publicLogoError: true })}}
-                width='60'
-                height='60'
-              />
-            </div>
+      <div className='hm-sidebar-header align-items-start'>
+         {(this.props.collections[collectionKeys[0]]?.favicon ||
+  this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
+  <div className='hm-sidebar-logo'>
+    <img
+      id='publicLogo'
+      alt='public-logo'
+      src={
+        this.props.collections[collectionKeys[0]]?.favicon
+          ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
+          : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl
+      }
+      width='60'
+      height='60'
+    />
+  </div>
+)}
+
         <h4 className='hm-sidebar-title'>
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documentation</span>
