@@ -703,11 +703,6 @@ button.toggleButton {
       max-width: 100%;
     }
   }
-  .display-component {
-    @media screen and (max-width:767px) {
-      padding-top: 3rem;
-    }
-  }
 }
 .pubCodeWrapper {
   z-index: 199;
