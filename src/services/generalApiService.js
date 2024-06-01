@@ -6,9 +6,9 @@ export function getCollectionsAndPages(orgId, queryParamsString = '') {
   return http.get(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString}`)
 }
 
-export async function moveCollectionsAndPages(moveToOrgId, collection) {
+export async function moveCollectionsAndPages(moveToOrgId, collection, flag = true) {
   const { id, orgId, name } = collection
-  return http.put(apiUrl + `/orgs/${orgId}/collections/${id}`, { orgId: moveToOrgId, name });
+  return http.put(apiUrl + `/orgs/${orgId}/collections/${id}`, { orgId: moveToOrgId, name, flag });
 }
 
 export function getPublishedContentByPath(queryParamsString = '') {
