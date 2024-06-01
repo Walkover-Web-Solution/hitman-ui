@@ -71,6 +71,7 @@ import { LiaSaveSolid } from "react-icons/lia"
 import QueryTab from './queryTab/queryTab.jsx'
 import { hexToRgb } from '../common/utility'
 import {background} from '../backgroundColor.js'
+import DisplayUserAndModifiedData from '../common/userService.jsx'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -3206,10 +3207,22 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
-              </div>
-              {/* <ApiDocReview {...this.props} /> */}
-              
-              <span className='footer-upper'>{isOnPublishedPage() && <><span className='pl-3'>{isOnPublishedPage() && this.renderEndpointUserData(true)}</span><Footer /></>}</span>
+              </div>    
+              <span className='footer-upper'>
+                {isOnPublishedPage() && (
+              <>
+              <span className='pl-3'>
+              <DisplayUserAndModifiedData
+              isOnPublishedPage={true}
+              pages={this.props.pages}
+              currentPage={this.props.currentEndpointId}
+              users={this.props.users}
+            />
+          </span>
+          <Footer />
+        </>
+      )}
+    </span>
             </div>
 
             {this.isDashboardAndTestingView() ? (
@@ -3233,8 +3246,27 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
-        <span className='pl-3 ml-1 mb-2 d-inline-block'>{!isOnPublishedPage() && this.renderEndpointUserData(false)}</span>
-        <span className='footer-lower ml-2 ml-sm-4 '>{isOnPublishedPage() && <><span className='pl-3'>{isOnPublishedPage() && this.renderEndpointUserData(true)}</span><Footer /></>}</span>
+        {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
+              <DisplayUserAndModifiedData
+              isOnPublishedPage={isOnPublishedPage()}
+              pages={this.props.pages}
+              currentPage={this.props.currentEndpointId}
+              users={this.props.users}
+              />
+        </span>}
+        <span className='footer-lower ml-2 ml-sm-4'>           
+                        <>
+                            <span className='pl-3'>
+                                <DisplayUserAndModifiedData
+                                    isOnPublishedPage={isOnPublishedPage()}
+                                    pages={this.props.pages}
+                                    currentPage={this.props.currentEndpointId}
+                                    users={this.props.users}
+                                />
+                            </span>
+                            <Footer />
+                        </>   
+                </span>
       </div>
     ) : null
   }

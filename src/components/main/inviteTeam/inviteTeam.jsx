@@ -17,7 +17,7 @@ function InviteTeam() {
   const history = useHistory()
   const inputRef = useRef(null)
   const { users } = useSelector((state) => {
-  return {users: state.users}
+    return { users: state.users }
   })
 
   useEffect(() => {
@@ -55,7 +55,7 @@ function InviteTeam() {
         return
       }
       const response = await inviteMembers(name, email)
-      if (response?.data?.status == "success") {
+      if (response?.data?.status == 'success') {
         dispatch(addNewUserData(response?.data?.data))
         handleCloseModal()
       }

@@ -46,13 +46,6 @@ class MainV2 extends Component {
       loading: true,
       showAddCollectionPage: true
     }
-    const { endpointId, pageId } = this.props.match.params
-    // if (endpointId && endpointId !== 'new') {
-    //   this.props.fetch_endpoint(endpointId)
-    // }
-    // if (pageId) {
-    //   this.props.fetch_page(pageId)
-    // }
   }
 
   async componentDidMount() {
@@ -61,19 +54,17 @@ class MainV2 extends Component {
       this.setState({ loading: false })
       return
     }
+
     let users
     try {
-      users = await getUserData(token);
-    }
-    catch (error) {
+      users = await getUserData(token)
+      if(users) this.props.add_user(users)
+    } catch (error) {
       toast.error(error.message)
       this.props.history.push({ pathname: '/login' })
-      this.setState({ loading: false }) 
+      this.setState({ loading: false })
     }
 
-    if (users) {
-      this.props.add_user(users)
-    }
     /** Token Exists */
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
       /** For Logged in User */

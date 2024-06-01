@@ -15,7 +15,7 @@ import './trash.scss';
 const TrashPage = () => {
   const [collections, setCollections] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [editableRow, setEditableRow] = useState({ id: null, name: "" });
+  const [editableRow, setEditableRow] = useState({ id: null, name: '' });
   const history = useHistory();
   const orgId = getCurrentOrg()?.id;
   const users = useSelector((state) => state.users);
@@ -44,7 +44,7 @@ const TrashPage = () => {
       const data = { name: collectionName};
       const response = await restoreCollection(orgId, data, collectionId);
       if (response.status === 200) {
-        setCollections(prevCollections => prevCollections.filter(c => c.id !== collectionId));
+        setCollections((prevCollections) => prevCollections.filter((c) => c.id !== collectionId))
         toast.success('Collection restored successfully');
       }
     } catch (error) {
@@ -54,29 +54,29 @@ const TrashPage = () => {
   };
 
   const handleChangeName = (event) => {
-    setEditableRow(prev => ({ ...prev, name: event.target.value }));
+    setEditableRow((prev) => ({ ...prev, name: event.target.value }))
   };
 
   const handleSaveEdit = async (collectionId) => {
     try {
-      const data = { name: editableRow.name};
-      const response = await restoreCollection(orgId, data, collectionId);
+      const data = { name: editableRow.name }
+      const response = await restoreCollection(orgId, data, collectionId)
       if (response.status === 200) {
-        setCollections(prevCollections => prevCollections.filter(c => c.id !== collectionId));
-        toast.success('Collection restored successfully');
-        setEditableRow({ id: null, name: "" });
+        setCollections((prevCollections) => prevCollections.filter((c) => c.id !== collectionId))
+        toast.success('Collection restored successfully')
+        setEditableRow({ id: null, name: '' })
       } else {
-        throw new Error('Restoration with new name failed');
+        throw new Error('Restoration with new name failed')
       }
     } catch (error) {
-      toast.error('Failed to restore collection with new name');
+      toast.error('Failed to restore collection with new name')
     }
-  };
+  }
 
   const findUserNameById = (id) => {
-    const user = users.find(user => user.id === id);
-    return user ? user.name : 'Unknown';
-};
+    const user = users.find((user) => user.id === id)
+    return user ? user.name : 'Unknown'
+  }
 
   if (isLoading) {
     return (
@@ -86,13 +86,13 @@ const TrashPage = () => {
           <p className='mt-3'>Loading</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
     <Container>
-      <div className="back-to-workspace mb-4 d-flex align-items-center" onClick={handleBack} style={{cursor: 'pointer'}}>
-        <BiArrowBack className='mr-2'/>
+      <div className='back-to-workspace mb-4 d-flex align-items-center' onClick={handleBack} style={{ cursor: 'pointer' }}>
+        <BiArrowBack className='mr-2' />
         <span>Back to workspace</span>
       </div>
       <h3>Trash</h3>
@@ -113,27 +113,18 @@ const TrashPage = () => {
                 <tr key={collection.id}>
                   <td>
                     {editableRow.id === collection.id ? (
-                      <Form.Control
-                        type="text"
-                        value={editableRow.name}
-                        onChange={handleChangeName}
-                      />
+                      <Form.Control type='text' value={editableRow.name} onChange={handleChangeName} />
                     ) : (
                       collection.name
                     )}
                   </td>
                   <td>{moment(collection?.deletedAt).fromNow()}</td>
-                  <td>
-                  {findUserNameById(collection?.updatedBy)}
-                  </td>
-                  <td className="restore-action">
+                  <td>{findUserNameById(collection?.updatedBy)}</td>
+                  <td className='restore-action'>
                     {editableRow.id === collection.id ? (
                       <Button onClick={() => handleSaveEdit(collection.id)}>Save</Button>
                     ) : (
-                      <MdSettingsBackupRestore
-                        className="react-icon"
-                        onClick={() => handleRestore(collection.id, collection.name)}
-                      />
+                      <MdSettingsBackupRestore className='react-icon' onClick={() => handleRestore(collection.id, collection.name)} />
                     )}
                   </td>
                 </tr>
@@ -142,13 +133,13 @@ const TrashPage = () => {
           </Table>
         </>
       ) : (
-        <div className="text-center mt-5">
-          <img src={trashImage} alt="Trash" width={180} className='mb-2'/>
+        <div className='text-center mt-5'>
+          <img src={trashImage} alt='Trash' width={180} className='mb-2' />
           <p>Your trash is empty.</p>
         </div>
       )}
     </Container>
-  );
-};
+  )
+}
 
-export default TrashPage;
+export default TrashPage

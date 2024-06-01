@@ -111,7 +111,6 @@ function getProxyToken() {
 function AuthServiceV2() {
   const query = useQuery();
   const history = useHistory();
-  const [orgList, setOrgList] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,7 +119,6 @@ function AuthServiceV2() {
         const orgId = query.get("company_ref_id") || getCurrentOrg()?.id || "";
         if (proxyAuthToken) {
           await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
-          setOrgList(getOrgList());
           const storedCurrentOrgId = window.localStorage.getItem("currentOrganisation");
           let currentOrgId;
           if (storedCurrentOrgId == null || storedCurrentOrgId == "undefined") {
@@ -153,6 +151,7 @@ export {
   isAdmin,
   getUserData,
   getCurrentUser,
+  getUserData,
   getCurrentOrg,
   getOrgList,
   getProxyToken,
