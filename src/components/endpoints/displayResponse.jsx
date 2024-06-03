@@ -13,6 +13,8 @@ import addtosample from '../../assets/icons/addToSamplesign.svg'
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoMdArrowDropright } from "react-icons/io";
 import { connect } from 'react-redux'
+import {background} from '../backgroundColor.js'
+
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
 
@@ -116,7 +118,7 @@ class DisplayResponse extends Component {
 
   componentDidMount() {
     const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
-    const staticColor = '#fafafa';
+    const staticColor = background['backgroound_boxs'];
 
     const backgroundStyle = {
       backgroundImage: `

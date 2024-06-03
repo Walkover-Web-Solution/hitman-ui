@@ -5,7 +5,7 @@ import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import { Style } from 'react-style-tag'
 import { hexToRgb } from '../common/utility'
-
+import {background} from '../backgroundColor.js'
 class PublicSampleResponse extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +22,7 @@ class PublicSampleResponse extends Component {
   updateBackgroundStyle() {
     const { publicCollectionTheme } = this.state.theme;
     const dynamicColor = hexToRgb(publicCollectionTheme, 0.02);
-    const staticColor = '#fafafa';
+    const staticColor = background['backgroound_boxs'];
 
     const backgroundStyle = {
       backgroundImage: `

@@ -6,6 +6,7 @@ import shortid from 'shortid'
 import _ from 'lodash'
 import TextField from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
+import {background} from '../backgroundColor.js'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
@@ -39,7 +40,7 @@ class GenericTable extends Component {
 
   componentDidMount() {
     const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
-    const staticColor = '#fafafa';
+    const staticColor = background['backgroound_boxs'];
 
     const backgroundStyle = {
       backgroundImage: `

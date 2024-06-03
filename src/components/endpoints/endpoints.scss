@@ -1554,7 +1554,7 @@ table#custom-generic-table {
   min-width: 432px;
   border-left: 1px solid $lightblackborder;
   border-right: 1px solid $lightblackborder;
-  border-bottom: 1px solid #0000001f;
+  border-bottom: 1px solid $lightblackborder;
   transition: 300ms;
 
   .select-code-wrapper {
