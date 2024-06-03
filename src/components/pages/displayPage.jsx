@@ -28,6 +28,7 @@ import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
 import moment from 'moment'
 import DisplayUserAndModifiedData from '../common/userService'
+import RenderPageContent from './renderPageContent'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -152,9 +153,9 @@ class DisplayPage extends Component {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className='pt-3 px-1'> 
+        <div className='pt-3 px-1'>
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
-          <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
+          <div className='pageText'><RenderPageContent pageContent={this.props?.pageContent || ''} /></div>
           <span className='mb-2 d-inline-block'> 
           <DisplayUserAndModifiedData
           isOnPublishedPage={isOnPublishedPage()}
@@ -175,7 +176,7 @@ class DisplayPage extends Component {
     }
     return isOnPublishedPage() ? (
       <>
-      { this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}
+        {this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}
       </>
     ) : (
       <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
@@ -365,23 +366,23 @@ class DisplayPage extends Component {
     if (this.props?.pageContentLoading) {
       return (
         <>
-        <div className="container-loading p-4">
-                {!isOnPublishedPage() && (
-                <>
+          <div className="container-loading p-4">
+            {!isOnPublishedPage() && (
+              <>
                 <div className="d-flex justify-content-end gap-5 mb-5 1806">
-                <div className="edit bg rounded-1 ms-5"></div>
+                  <div className="edit bg rounded-1 ms-5"></div>
                   <div className="unpublish bg rounded-1 ms-5"></div>
-                <div className="publish bg rounded-1 ms-5"></div>
-            </div>
-                </>
-                )}
+                  <div className="publish bg rounded-1 ms-5"></div>
+                </div>
+              </>
+            )}
             <div className="page bg rounded-1"></div>
-          <div className="details d-flex flex-column justify-content-between align-items-center mt-5">
-            <div className="page-box bg"></div>
-            <div className="page-footer text-center bg"></div>
+            <div className="details d-flex flex-column justify-content-between align-items-center mt-5">
+              <div className="page-box bg"></div>
+              <div className="page-footer text-center bg"></div>
 
+            </div>
           </div>
-        </div>
         </>
       )
     }
