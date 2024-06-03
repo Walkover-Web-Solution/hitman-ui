@@ -1,5 +1,5 @@
 import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
-import thunk from 'redux-thunk'
+import {thunk}  from 'redux-thunk'
 import collectionsReducer from '../components/collections/redux/collectionsReducer'
 import environmentsReducer from '../components/environments/redux/environmentsReducer'
 import pagesReducer from '../components/pages/redux/pagesReducer'
