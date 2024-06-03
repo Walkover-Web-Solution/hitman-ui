@@ -1,4 +1,14 @@
 import React, { useEffect, useState } from 'react'
+import {
+    isDashboardRoute,
+    isStateDraft,
+    isStateReject,
+    msgText,
+    isStatePending,
+    isStateApproved,
+    getEntityState,
+    isOnPublishedPage
+  } from '../common/utility'
 
 export default function RenderPageContent(props) {
 
@@ -27,20 +37,21 @@ export default function RenderPageContent(props) {
     }
 
     return (
-        <div className=' w-100 d-flex justify-content-center'>
-            <div className='doc-view' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
-
-            <div className='editor-headings border border-2 p-2 rounded-lg'>
-                <ul>
-                    {headings.map((heading) => (
-                        <li key={heading.id}>
-                            <div onClick={() => scrollToHeading(heading.id)}>
-                                {heading.text}
+        <div className={`page-text-render w-100 d-flex flex-lg-row flex-column-reverse ${isOnPublishedPage() ? "justify-content-center" : ""}`}>
+            {headings.length > 0 && (<div className='doc-view' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />)}
+            {isOnPublishedPage() && headings.length > 0 && (
+                <div className='editor-headings border border-2 p-2 rounded-lg h-100'>
+                    <div>
+                        {headings.map((heading) => (
+                            <div key={heading.id}>
+                                <span onClick={() => scrollToHeading(heading.id)} className='d-block w-100'>
+                                    {heading.text}
+                                </span>
                             </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
