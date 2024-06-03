@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component } from 'react'
 import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -37,7 +37,7 @@ import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
 import { IoDocumentTextOutline } from "react-icons/io5"
 import {  hexToRgb} from '../common/utility'
-
+import {background} from '../backgroundColor.js'
 
 const mapStateToProps = (state) => {
   return {
@@ -102,6 +102,7 @@ class CollectionParentPages extends Component {
       publishVersion: '',
       optionalParams: false,
       isHovered: false,
+      isHover: false
     }
     this.filterFlag = false
     this.eventkey = {}
@@ -109,6 +110,9 @@ class CollectionParentPages extends Component {
   }
   handleHover = (isHovered) => {
     this.setState({ isHovered });
+  };
+  handleHovers = (isHover) => {
+    this.setState({ isHover });
   };
   componentDidMount() {
     if (!this.state.theme) {
@@ -484,12 +488,22 @@ class CollectionParentPages extends Component {
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = this.props.collections[collectionId]?.theme
     const dynamicColor = hexToRgb(collectionTheme, 0.15);
-    const staticColor = '#bdbdbd';
+    const staticColor = background['background_hover'] ;
+
 
     const backgroundStyle = {
       backgroundImage: this.state.isHovered || isSelected
         ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
         linear-gradient(to right, ${staticColor}, ${staticColor})`
+        : ''
+    };
+    const dynamicColors = hexToRgb(collectionTheme, 0.30);
+    const staticColors = background['background_hover'] ;
+
+    const backgroundStyles = {
+      backgroundImage: this.state.isHover
+        ? `linear-gradient(to right, ${dynamicColors}, ${dynamicColors}),
+        linear-gradient(to right, ${staticColors}, ${staticColors})`
         : ''
     };
     return (
@@ -507,9 +521,9 @@ class CollectionParentPages extends Component {
                   }
                 }}
               >
-                <div className='d-flex align-items-center cl-name'>
+                <div className='d-flex cl-name ml-1 align-items-baseline'>
                 <span className='versionChovron' onClick={(e) => this.handleToggle(e, this.props.rootParentId)}>
-                  <MdExpandMore size={13} className='collection-icons-arrow d-none '/>
+                  <MdExpandMore size={13} className='collection-icons-arrow d-none' style={backgroundStyles} onMouseEnter={() => this.handleHovers(true)}  onMouseLeave={() => this.handleHovers(false)}/>
                   <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1'/>
                   </span>
                   <div

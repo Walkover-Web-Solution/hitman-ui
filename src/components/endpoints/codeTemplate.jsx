@@ -14,6 +14,8 @@ import { RiCheckboxMultipleBlankLine } from "react-icons/ri";
 import IconButton from '../common/iconButton'
 import { BsThreeDotsVertical } from "react-icons/bs"
 import { hexToRgb, isOnPublishedPage } from '../common/utility'
+import {background} from '../backgroundColor.js'
+
 const HTTPSnippet = require('httpsnippet')
 class CodeTemplate extends Component {
   constructor(props) {
@@ -69,7 +71,7 @@ class CodeTemplate extends Component {
       this.makeCodeTemplate(this.selectedLanguage)
     }
     const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.04);
-    const staticColor = '#fafafa';
+    const staticColor = background['background_pubCode'];
 
     const backgroundStyle = {
       backgroundImage: `

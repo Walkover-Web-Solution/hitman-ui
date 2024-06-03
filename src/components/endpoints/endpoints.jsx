@@ -26,6 +26,7 @@ import { GrGraphQl } from 'react-icons/gr'
 import '../../../src/components/styles.scss'
 import { importPostmanEnvironment } from '../environments/environmentsApiService'
 import {  hexToRgb} from '../common/utility'
+import {background} from '../backgroundColor.js'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -348,7 +349,7 @@ class Endpoints extends Component {
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = this.props.collections[collectionId]?.theme
     const dynamicColor = hexToRgb(collectionTheme, 0.15);
-    const staticColor = '#bdbdbd';
+    const staticColor = background['background_hover'];
 
     const backgroundStyle = {
       backgroundImage: this.state.isHovered || isSelected
@@ -371,7 +372,7 @@ class Endpoints extends Component {
           <div className={this.props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between mt-1'>
             <button>
-            <div className={`side-bar d-flex ${isSelected ? 'Selected' : ''}`} style={backgroundStyle}
+            <div className={`side-bar d-flex align-items-center ${isSelected ? 'Selected' : ''}`} style={backgroundStyle}
         onMouseEnter={() => this.handleHover(true)}
         onMouseLeave={() => this.handleHover(false)}>
             <button
