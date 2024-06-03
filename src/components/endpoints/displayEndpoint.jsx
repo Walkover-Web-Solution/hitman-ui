@@ -2874,7 +2874,7 @@ class DisplayEndpoint extends Component {
       >
         <div
           onClick={this.closeChatBotModal}
-          className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}  style={this.state.theme}
+          className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}  style={this.state.theme.backgroundStyle}
         >
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
