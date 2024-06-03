@@ -151,7 +151,6 @@ export {
   isAdmin,
   getUserData,
   getCurrentUser,
-  getUserData,
   getCurrentOrg,
   getOrgList,
   getProxyToken,
