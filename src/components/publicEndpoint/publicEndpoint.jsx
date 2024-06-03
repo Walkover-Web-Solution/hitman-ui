@@ -18,6 +18,7 @@ import { addCollectionAndPages } from '../redux/generalActions'
 import generalApiService from '../../services/generalApiService'
 import { useQueryClient, useMutation } from 'react-query'
 import { MdDehaze, MdClose } from "react-icons/md";
+import {background} from '../backgroundColor.js'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -389,7 +390,7 @@ class PublicEndpoint extends Component {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const { isCTAandLinksPresent } = this.getCTALinks()
     const dynamicColor = hexToRgb(collectionTheme, 0.04);
-    const staticColor = '#f0f0f0';
+    const staticColor = background['background_sideBar'];
 
     const backgroundStyle = {
       backgroundImage: `

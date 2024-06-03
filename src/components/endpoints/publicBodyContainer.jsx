@@ -8,7 +8,7 @@ import './publicEndpoint.scss'
 import { Badge, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
 import { hexToRgb, isOnPublishedPage } from '../common/utility'
-
+import {background} from '../backgroundColor.js'
 class PublicBodyContainer extends Component {
   constructor(props) {
     super(props)
@@ -53,7 +53,7 @@ class PublicBodyContainer extends Component {
   } updateBackgroundStyle() {
     const { publicCollectionTheme } = this.state.theme;
     const dynamicColor = hexToRgb(publicCollectionTheme, 0.02);
-    const staticColor = '#fafafa';
+    const staticColor = background['backgroound_boxs'];
 
     const backgroundStyle = {
       backgroundImage: `
