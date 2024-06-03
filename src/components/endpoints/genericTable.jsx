@@ -49,7 +49,7 @@ class GenericTable extends Component {
     });
   }
     const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
-    const staticColor = background['backgroound_boxs'];
+    const staticColor = background['backgroound_boxes'];
 
     const backgroundStyle = {
       backgroundImage: `

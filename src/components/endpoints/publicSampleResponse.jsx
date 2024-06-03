@@ -22,7 +22,7 @@ class PublicSampleResponse extends Component {
   updateBackgroundStyle() {
     const { publicCollectionTheme } = this.state.theme;
     const dynamicColor = hexToRgb(publicCollectionTheme, 0.02);
-    const staticColor = background['backgroound_boxs'];
+    const staticColor = background['backgroound_boxes'];
 
     const backgroundStyle = {
       backgroundImage: `
