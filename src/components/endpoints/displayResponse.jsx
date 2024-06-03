@@ -303,7 +303,7 @@ class DisplayResponse extends Component {
                     )}
                   </></div>}
                   {this.state.selectedBodyTab === 'preview' && <div>
-                   <a value={JSON.stringify(this.props.response.data)}></a>
+                 <div dangerouslySetInnerHTML={{ __html: JSON.stringify(this.props.response.data) }} />
                     </div>}
                 </div>
               </div>
