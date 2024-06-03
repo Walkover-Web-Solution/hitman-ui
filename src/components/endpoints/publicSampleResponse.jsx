@@ -5,12 +5,39 @@ import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import { Style } from 'react-style-tag'
 import { hexToRgb } from '../common/utility'
-
+import {background} from '../backgroundColor.js'
 class PublicSampleResponse extends Component {
-  state = {
-    theme: this.props.publicCollectionTheme
+  constructor(props) {
+    super(props);
+    this.state = {
+      theme: {
+        publicCollectionTheme: this.props.publicCollectionTheme,
+        backgroundStyle: {}
+      },
+    };
   }
+  componentDidMount() {
+    this.updateBackgroundStyle();
+  }
+  updateBackgroundStyle() {
+    const { publicCollectionTheme } = this.state.theme;
+    const dynamicColor = hexToRgb(publicCollectionTheme, 0.02);
+    const staticColor = background['backgroound_boxes'];
 
+    const backgroundStyle = {
+      backgroundImage: `
+        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})
+      `,
+    };
+
+    this.setState(prevState => ({
+      theme: {
+        ...prevState.theme,
+        backgroundStyle,
+      },
+    }));
+  }
   showJSONPretty(data) {
     return <JSONPretty data={data} />
   }
@@ -34,16 +61,16 @@ class PublicSampleResponse extends Component {
         <Style>
           {`
           .sample-response nav.nav.nav-tabs a.active {
-                background: ${this.state.theme};
+                background: ${this.props.publicCollectionTheme};
                 color:#fff;
               } 
           `}
         </Style>
         <div className='pubSampleResponse'>
-          <h3 className='heading-2'>
+          <h3 className='heading-2 pt-1 mt-4'>
             <span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span>
           </h3>
-          <div className='sample-response mb-3' style={{ backgroundColor: hexToRgb(this.state?.theme, '0.04')}}>
+          <div className='sample-response mb-1' style={this.state.theme.backgroundStyle}>
             <Tabs id='uncontrolled-tab-example'>
               {this.props.sample_response_array.map((sampleResponse, key) => (
                 <Tab

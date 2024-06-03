@@ -1069,7 +1069,6 @@ label.data-type {
 .heading-2 {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
 }
 
 .orange-heading {
@@ -1158,7 +1157,7 @@ body .form-group {
 
 body .form-control {
   height: 36px;
-  border: 1px solid $outline-color;
+  border: 1px solid $lightblackborder;
   font-size: $font-normal;
   font-weight: 400;
   color: #000;
@@ -1348,6 +1347,7 @@ button.editBtn {
 .headParaWraper {
   padding: 4px 20px 20px 11px;
   border-radius: $border-radius;
+  border: 1px solid $lightblackborder;
 }
 
 .adddescLink {
@@ -1687,6 +1687,9 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
   @media screen and (max-width:992px) {
     padding-right: 24px;
     padding-left: 24px;
+  }
+  @media screen and (max-width:767px) {
+  padding-top: 3rem;
   }
   @media screen and (max-width:568px) {
     padding-right: 12px;
@@ -2295,8 +2298,7 @@ button[name='cta-1'] {
 }
 
 .pubSampleResponse h3.heading-2 {
-  text-transform: uppercase;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .mainpublic-endpoint-main .custom-display-page {
@@ -3441,7 +3443,7 @@ body .btn-group-custom {
 }
 
 body .bottom-text-editor {
-  box-shadow: 4px 4px 20px 0px #0000001f;
+  box-shadow: 4px 4px 20px 0px $lightblackborder;
   padding: 0;
   height: 2rem;
 
@@ -3587,6 +3589,7 @@ body .doc-secs-container {
     padding: 1rem;
     background-color: #f7f6f3;
     border-radius: $border-radius;
+    border: 1px solid $lightblackborder;
   }
 
   .testing-view-sample-response {

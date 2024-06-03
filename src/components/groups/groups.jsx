@@ -23,7 +23,9 @@ import { MdExpandMore } from "react-icons/md"
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
-import { IoDocumentTextOutline } from "react-icons/io5";
+import { IoDocumentTextOutline } from "react-icons/io5"
+import {  hexToRgb} from '../common/utility'
+import {background} from '../backgroundColor.js'
 
 const mapStateToProps = (state) => {
   return {
@@ -54,15 +56,32 @@ class Groups extends Component {
       },
       theme: '',
       filter: '',
-      checkboxChecked: false
+      checkboxChecked: false,
+      optionalParams: false,
+      isHovered: false,
+      isHover: false,
+      backgroundColor: ''
     }
     this.eventkey = {}
   }
+  handleHover = (isHovered) => {
+    this.setState({ isHovered });
+  };
+  handleHovers = (isHover) => {
+    this.setState({ isHover });
+  };
 
   componentDidMount() {
     if (!this.state.theme) {
-      this.setState({ theme: this.props.collections[this.props.collection_id].theme })
+      this.setState({
+        theme: this.props.collections[this.props.collection_id].theme
+      })
     }
+    fetch('/colors.json')
+    .then(response => response.json())
+    .then(data => {
+      this.setState({ backgroundColor: data.backgroundColor });
+    })
   }
 
   openShareSubPageForm(groupId) {
@@ -170,11 +189,32 @@ class Groups extends Component {
     let isuserONTechdocOwnDomain = isTechdocOwnDomain()
     const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isUserOnPublishedPage
     const isSelected = (isUserOnPublishedPage && isuserONTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId) ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === subPageId ? 'selected' : '')
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
+    let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
+    var collectionTheme = this.props.collections[collectionId]?.theme
+    const dynamicColor = hexToRgb(collectionTheme, 0.15);
+    const staticColor = background['background_hover'] ;
+
+    const backgroundStyle = {
+      backgroundImage: this.state.isHovered || isSelected
+        ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})`
+        : ''
+    };
+    const dynamicColors = hexToRgb(collectionTheme, 0.30);
+    const staticColors = background['background_hover'];
+
+    const backgroundStyles = {
+      backgroundImage: this.state.isHover
+        ? `linear-gradient(to right, ${dynamicColors}, ${dynamicColors}),
+        linear-gradient(to right, ${staticColors}, ${staticColors})`
+        : ''
+    };
     return (
       <>
         <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
           <button tabIndex={-1} className={`${expanded ? 'expanded' : ''}`}>
-          <div className={`active-selected d-flex justify-content-between align-items-center ${isSelected ? ' selected' : ''}`}>
+          <div className={`active-selected d-flex justify-content-between align-items-center ${isSelected ? ' selected' : ''}`} style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
             <div
               draggable={!isUserOnPublishedPage}
               onDragOver={this.props.handleOnDragOver}
@@ -183,7 +223,7 @@ class Groups extends Component {
               onDragEnter={(e) => this.props.onDragEnter(e, subPageId)}
               onDragEnd={(e) => this.props.onDragEnd(e)}
               style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
-              className={`d-flex align-items-center justify-content-center cl-name name-sub-page`}
+              className={`d-flex justify-content-center cl-name name-sub-page ml-1`}
               onClick={(e) => {
                 this.handleRedirect(subPageId)
                   if(!expanded){
@@ -191,8 +231,8 @@ class Groups extends Component {
                   }
               }}
             >
-              <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
-              <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
+             <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
+              <MdExpandMore size={13} className='collection-icons-arrow d-none' style={backgroundStyles} onMouseEnter={() => this.handleHovers(true)}  onMouseLeave={() => this.handleHovers(false)}/>
                   <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 '/>
               </span>
               <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{this.props.pages[subPageId]?.name}</div>
