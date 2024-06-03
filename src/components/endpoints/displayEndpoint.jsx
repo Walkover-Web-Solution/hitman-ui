@@ -433,7 +433,7 @@ class DisplayEndpoint extends Component {
     };
 
     this.setState({
-      theme:  backgroundStyle ,
+      theme: { backgroundStyle} ,
     });
   
   }
