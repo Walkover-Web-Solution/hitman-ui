@@ -70,6 +70,8 @@ import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
 import { LiaSaveSolid } from "react-icons/lia"
 import QueryTab from './queryTab/queryTab.jsx'
 import { hexToRgb } from '../common/utility'
+import {background} from '../backgroundColor.js'
+
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -421,7 +423,7 @@ class DisplayEndpoint extends Component {
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
     const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
-    const staticColor = '#f5f5f5';
+    const staticColor = background['background_mainPage'];
 
     const backgroundStyle = {
       backgroundImage: `
@@ -2842,7 +2844,7 @@ class DisplayEndpoint extends Component {
     }
 }
 
-  render(props) {
+  render() {
     if (this.props?.endpointContentLoading) {
       return (
         <>

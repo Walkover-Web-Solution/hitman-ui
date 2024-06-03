@@ -55,7 +55,7 @@
 
 .Resizer {
   width: 1px;
-  background: #0000001f;
+  background: $lightblackborder;
   cursor: col-resize;
   position: relative;
 
@@ -134,6 +134,9 @@ body .sidebar {
       justify-content: center;
       transition: all 0.3s ease-in;
       border-radius: 5px 5px;
+      &:hover {
+        background-color: #dfdcd5;
+      }
     }
   }
 
@@ -285,13 +288,13 @@ button {
     width: 100%;
     margin-left: 10px;
     margin-top: 4px;
-
+    height: 28px;
     &.selected {
       background: $grey;
     }
 
     &:hover {
-      background: $grey !important;
+      background: $grey ;
 
         .versionChovron {
           .collection-icons-arrow {
@@ -308,7 +311,7 @@ button {
   .active-select {
     width: 100%;
     margin-top: 4px;
-    height: 1.5rem;
+    height: 28px;
 
     &.selected {
       background: $grey;
@@ -413,7 +416,7 @@ button {
   color: $text-color;
   padding-right: 0;
   position: relative;
-  height: 1.5rem;
+  height: 28px;
   text-align: left;
   justify-content: space-between;
   margin-top: 1px;
@@ -687,7 +690,7 @@ input[type='text']:focus {
 
 .versionChovron {
   width: 26px;
-  height: 20px;
+  height: 15px;
   .collection-icons-arrow {
     transition: all 0.3s ease-in;
     height: 20px !important;
@@ -760,6 +763,7 @@ input[type='text']:focus {
         .side-bar {
           padding-left: 6px !important;
           width: 100%;
+          height: 28px;
         }
       }
     }
@@ -887,7 +891,7 @@ input[type='text']:focus {
 }
 
 .search-container {
-  border: 1px solid #0000001f;
+  border: 1px solid $lightblackborder;
   padding: 4px 6px;
   border-radius: 4px;
 
@@ -964,7 +968,7 @@ input[type='text']:focus {
   position: fixed;
   bottom: 0;
   left: 0;
-  border-top: 1px solid #0000001f;
+  border-top: 1px solid $lightblackborder;
   width: 330px;
   padding-left: 16px;
   z-index: 9;
