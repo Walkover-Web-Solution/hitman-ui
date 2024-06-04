@@ -390,7 +390,6 @@ class DisplayEndpoint extends Component {
       showAskAiSlider: false,
       endpointContentState: null,
       showEndpointFormModal: false,
-      titleChange : false
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -2101,9 +2100,6 @@ class DisplayEndpoint extends Component {
       this.setState({ data: obj })
     }
   }
-  getTitleChanged(isChanged) {
-     this.setState({ titleChange: isChanged });
-  }
 
   renderCookiesModal() {
     return (
@@ -2731,9 +2727,10 @@ class DisplayEndpoint extends Component {
                 id='api_save_btn'
                 className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader btn-sm d-flex align-items-center' : 'btn btn-outline orange btn-sm d-flex align-items-center'}
                 type='button'
-                disabled={!this.state.titleChange}
+                disabled={!this.props?.tabs[this.props?.activeTabId]?.isModified}
                 onClick={() => this.handleSave()}
-                >
+                title={!this.props?.tabs[this.props?.activeTabId]?.isModified ? 'No changes in this request' : 'Save request'}
+              >
                 <LiaSaveSolid className='save-icon mr-1' size={16} />
                 <span>Save</span>
               </button>
@@ -2904,7 +2901,6 @@ class DisplayEndpoint extends Component {
                             old_description={this.state.oldDescription}
                             props_from_parent={this.propsFromDescription.bind(this)}
                             alterEndpointName={(name) => this.alterEndpointName(name)}
-                            getTitleChanged={(isTitleChange) => this.getTitleChanged(isTitleChange)}
                           />
                         )}
                         {this.renderSaveButton()}
