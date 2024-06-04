@@ -239,6 +239,7 @@ class DisplayResponse extends Component {
           <div className='tab-content ml-0'>
             {this.state.selectedResponseTab === 'body' && (
               <div>
+                <div className='d-flex justify-content-between'>
                 <ul className='nav nav-pills body-button'>
                   <li className='nav-item' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
                     <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-2 py-1 fs-4' : 'nav-link px-2 py-1 fs-4'} href='#pretty'>Pretty</a>
@@ -250,9 +251,7 @@ class DisplayResponse extends Component {
                     <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'} href='#preview'>Preview</a>
                   </li>
                 </ul>
-                <div className='tab-content'>
-                  {this.state.selectedBodyTab === 'pretty' && <div>
-                  {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
+                {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
                       <div
                         // style={{ float: "right" }}
                         className='add-to-sample-response'
@@ -262,6 +261,9 @@ class DisplayResponse extends Component {
                         </div>
                       </div>
                     ) : null}
+                </div>
+                <div className='tab-content'>
+                  {this.state.selectedBodyTab === 'pretty' && <div>
                     <AceEditor
                       style={{ border: '1px solid rgb(206 213 218)' }}
                       className='custom-raw-editor'
@@ -283,16 +285,6 @@ class DisplayResponse extends Component {
                     />
                   </div>}
                   {this.state.selectedBodyTab === 'raw' && <div> <>
-                    {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
-                      <div
-                        // style={{ float: "right" }}
-                        className='add-to-sample-response'
-                      >
-                        <div className='adddescLink' onClick={() => this.addSampleResponse(this.props.response)}>
-                          <img src={addtosample} /> Add to Sample Response
-                        </div>
-                      </div>
-                    ) : null}
                     {isDashboardRoute(this.props) && (
                       <div className='tab-content' id='myTabContent'>
                         <div className='tab-pane fade show active' id='home' role='tabpanel' aria-labelledby='home-tab'>
