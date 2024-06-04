@@ -157,7 +157,7 @@ class DisplayResponse extends Component {
 
   displayBodyAndHeaderResponse() {
     const { data, errors } = this.state
-    
+
     const TestResultsPreview = () => {
       const tests = this.props.tests
       if (!tests) return null
@@ -251,27 +251,37 @@ class DisplayResponse extends Component {
                   </li>
                 </ul>
                 <div className='tab-content'>
-                  {this.state.selectedBodyTab === 'pretty' && <div> 
-                  <AceEditor
-          style={{ border: '1px solid rgb(206 213 218)' }}
-          className='custom-raw-editor'
-          mode='json'
-          theme='github'
-          value={JSON.stringify(this.props.response.data)}
-          onChange={this.handleAceEditorChange}
-          setOptions={{
-            showLineNumbers: true
-          }}
-          editorProps={{
-            $blockScrolling: false
-          }}
-          onLoad={(editor) => {
-            editor.focus()
-            editor.getSession().setUseWrapMode(true)
-            editor.setShowPrintMargin(false)
-          }}
-        />
-              </div>}
+                  {this.state.selectedBodyTab === 'pretty' && <div>
+                  {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
+                      <div
+                        // style={{ float: "right" }}
+                        className='add-to-sample-response'
+                      >
+                        <div className='adddescLink' onClick={() => this.addSampleResponse(this.props.response)}>
+                          <img src={addtosample} /> Add to Sample Response
+                        </div>
+                      </div>
+                    ) : null}
+                    <AceEditor
+                      style={{ border: '1px solid rgb(206 213 218)' }}
+                      className='custom-raw-editor'
+                      mode='json'
+                      theme='github'
+                      value={JSON.stringify(this.props.response.data, null, 2)}
+                      onChange={this.handleAceEditorChange}
+                      setOptions={{
+                        showLineNumbers: true
+                      }}
+                      editorProps={{
+                        $blockScrolling: false
+                      }}
+                      onLoad={(editor) => {
+                        editor.focus()
+                        editor.getSession().setUseWrapMode(true)
+                        editor.setShowPrintMargin(false)
+                      }}
+                    />
+                  </div>}
                   {this.state.selectedBodyTab === 'raw' && <div> <>
                     {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
                       <div
@@ -303,8 +313,8 @@ class DisplayResponse extends Component {
                     )}
                   </></div>}
                   {this.state.selectedBodyTab === 'preview' && <div>
-                 <div dangerouslySetInnerHTML={{ __html: JSON.stringify(this.props.response.data) }} />
-                    </div>}
+                    <div dangerouslySetInnerHTML={{ __html: JSON.stringify(this.props.response.data) }} />
+                  </div>}
                 </div>
               </div>
             )}
