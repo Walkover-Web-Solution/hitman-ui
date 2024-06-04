@@ -3079,7 +3079,7 @@ class DisplayEndpoint extends Component {
               aria-controls={`script-${this.props.tab.id}`}
               aria-selected='false'
             >
-              Script
+              Scripts
             </a>
           </li>
           <li className='nav-item cookie-tab'>
