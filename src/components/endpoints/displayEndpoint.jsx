@@ -682,7 +682,10 @@ class DisplayEndpoint extends Component {
     if (match === null) return str
 
     if (isDashboardRoute(this.props)) {
-      if (!envVars) return str.replace(regexp, '')
+      if (!envVars) {
+        const missingVariable = match[1]
+        return `${missingVariable}`
+    }
 
       do {
         variables.push(match[1])
@@ -690,6 +693,7 @@ class DisplayEndpoint extends Component {
 
       for (let i = 0; i < variables.length; i++) {
         const envVariable = envVars[variables[i]]
+        if(!envVariable) return variables;
         const strToReplace = `{{${variables[i]}}}`
         if (envVariable?.currentValue) {
           str = str.replace(strToReplace, envVariable.currentValue)
@@ -697,6 +701,7 @@ class DisplayEndpoint extends Component {
           str = str.replace(strToReplace, envVariable.initialValue)
         } else {
           str = str.replace(strToReplace, '')
+          // return toast.error(`Environment variable '${variables[i]}' is unresolved`);
         }
       }
     }

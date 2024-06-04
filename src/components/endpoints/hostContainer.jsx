@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
-import tabStatusTypes from '../tabs/tabStatusTypes'
 import tabService from '../tabs/tabService'
-import { publishData } from '../modals/redux/modalsActions'
 import './endpoints.scss'
 import { connect } from 'react-redux'
 import _, { cloneDeep } from 'lodash'
@@ -13,9 +11,7 @@ import { contentTypesEnums } from '../common/bodyTypeEnums'
 
 const hostContainerEnum = {
   hosts: {
-    // customHost: { key: 'customHost', label: 'Custom Host' },
-    environmentHost: { key: 'environmentHost', label: 'Environment Host' },
-    versionHost: { key: 'versionHost', label: 'Version Host' }
+    environmentHost: { key: 'environmentHost', label: 'Environment Host' }
   }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -36,11 +32,8 @@ class HostContainer extends Component {
     this.state = {
       datalistHost: this.props?.endpointContent?.host?.BASE_URL,
       datalistUri: '',
-      // customHost: '',
       environmentHost: '',
-      versionHost: '',
       selectedHost: '',
-      groupId: null,
       versionId: null
     }
     this.wrapperRef = React.createRef()
@@ -55,18 +48,10 @@ class HostContainer extends Component {
     // this.props.ON_PUBLISH_DOC(false)
   }
 
-  componentDidMount() {
-    this.setHosts()
-  }
-
   componentDidUpdate(prevProps, prevState) {
     if (
-      prevProps.environmentHost !== this.props.environmentHost ||
-      prevProps.versionHost !== this.props.versionHost
-      // prevProps.customHost !== this.props.customHost
-    ) {
-      this.setHosts()
-    }
+      prevProps.environmentHost !== this.props.environmentHost 
+    ) 
     if (!_.isEqual(prevProps.updatedUri, this.props.updatedUri)) {
       this.setState({ datalistUri: this.props.updatedUri })
     }
@@ -89,9 +74,7 @@ class HostContainer extends Component {
 
   customFindTopPriorityHost() {
     const selectedHost = ''
-    // if (this.state.selectedHost === 'customHost' || this.state.customHost) return 'customHost'
     if (this.state.environmentHost) return 'environmentHost'
-    if (this.state.versionHost) return 'versionHost'
     return selectedHost
   }
 
@@ -173,24 +156,40 @@ class HostContainer extends Component {
         if(!parsedData.headers){
           parsedData.headers = {}
         }
-        parsedData.headers['Content-Type'] =  (!parsedData.headers?.['Content-Type']) ? parsedData.headers?.['content-type'] : parsedData.headers?.['Content-Type'];
-        let bodyType = untitledEndpointData.data.body.type = (!parsedData.headers?.['Content-Type']) ? 'multipart/form-data': parsedData.headers?.['Content-Type'] || 'application/x-www-form-urlencoded'
-
-        // 'multipart/form-data' and 'application/x-www-form-urlencoded' both contains body values description
-        for(let key in parsedData.data){
-          let eachData = {
-            checked: "true",
-            key: key,
-            value: parsedData.data[key],
-            description: "",
-            type: "text"
+        const contentType = parsedData.headers['Content-Type'] || parsedData.headers['content-type'] || 'application/x-www-form-urlencoded';
+        parsedData.headers['Content-Type'] = contentType;
+        const bodyType = contentType;
+    
+        if (bodyType === 'application/x-www-form-urlencoded') {
+          let urlEncodedData = new URLSearchParams(parsedData.data).toString();
+          let keyValuePairs = urlEncodedData.split('&');
+      
+          keyValuePairs.forEach(pair => {
+            let [key, value] = pair.split('=');
+            let eachData = {
+              checked: "true",
+              key: decodeURIComponent(key),
+              value: decodeURIComponent(value),
+              description: "",
+              type: "text"
+            };
+            untitledEndpointData.data.body[bodyType].push(eachData);
+          });
+        } else if (bodyType === 'multipart/form-data') {
+          for (let key in parsedData.data) {
+            let eachData = {
+              checked: "true",
+              key: key,
+              value: parsedData.data[key],
+              description: "",
+              type: "text"
+            };
+            untitledEndpointData.data.body[bodyType].push(eachData);
           }
-          untitledEndpointData.data.body[bodyType].push(eachData)
         }
         untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1)); 
       }
     }
-      
       // setting headers
       for(let key in parsedData?.headers){
         let eachDataOriginal = {
@@ -261,16 +260,12 @@ class HostContainer extends Component {
   checkExistingHosts(value) {
     const regex = /^((http[s]?|ftp):\/\/[\w.\-@:]*)/i
     const variableRegex = /^{{[\w|-]+}}/i
-    const { environmentHost, versionHost } = this.state
+    const { environmentHost } = this.state
     if (value?.match(variableRegex)) {
       return value.match(variableRegex)[0]
     }
     if (environmentHost && value?.match(new RegExp('^' + environmentHost) + '/')) {
       return environmentHost
-    }
-
-    if (versionHost && value?.match(new RegExp('^' + versionHost + '/'))) {
-      return versionHost
     }
     if (value?.match(regex)) {
       return value.match(regex)[0]
@@ -290,12 +285,10 @@ class HostContainer extends Component {
     }
     if (hostName) {
       const selectedHost = this.selectCurrentHost(hostName)
-      // if (selectedHost === 'customHost') data.customHost = hostName
       data.datalistHost = hostName
       data.selectedHost = selectedHost
       uri = value.replace(hostName, '')
     } else {
-      // data.selectedHost = 'customHost'
       uri = value
     }
     data.datalistUri = uri
@@ -303,17 +296,8 @@ class HostContainer extends Component {
   }
 
   selectCurrentHost(hostname) {
-    // if (hostname === this.state.customHost) return 'customHost'
     if (hostname === this.state.environmentHost) return 'environmentHost'
-    if (hostname === this.state.versionHost) return 'versionHost'
     return 'environmentHost'
-  }
-
-  setHosts() {
-    const { versionHost, environmentHost } = this.props
-    this.setState({ versionHost, environmentHost }, () => {
-      this.setHostAndUri()
-    })
   }
 
   renderHostDatalist() {
@@ -361,9 +345,6 @@ class HostContainer extends Component {
   }
 
   render() {
-    if (isDashboardRoute(this.props) && this.state.groupId && this.props.tab.status === tabStatusTypes.DELETED) {
-      this.setState({ groupId: null })
-    }
     if (isDashboardRoute(this.props)) {
       return this.renderHostDatalist()
     } else {

@@ -4,9 +4,9 @@ import { withRouter } from 'react-router-dom'
 import { importApi } from '../collections/redux/collectionsActions'
 import { connect } from 'react-redux'
 import Joi from 'joi-browser'
-import { URL_VALIDATION_REGEX } from '../common/constants'
 import './openApi.scss'
 import { defaultViewTypes } from '../collections/defaultViewModal/defaultViewModal'
+import DragAndDropUploader from '../environments/DragAndDropUploader'
 
 const mapStateToProps = (state) => {
   return {
@@ -16,8 +16,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_api: (openApiObject, importType, website, callback, view) =>
-      dispatch(importApi(openApiObject, importType, website, callback, view))
+    import_api: (openApiObject, importType, callback, view) =>
+      dispatch(importApi(openApiObject, importType, callback, view))
   }
 }
 
@@ -28,10 +28,8 @@ class OpenApiForm extends Component {
       openApiObject: {},
       uploadedFile: null,
       importType: '',
-      website: '',
       errors: {
         type: null,
-        website: null,
         file: null
       },
       step: 1,
@@ -63,7 +61,7 @@ class OpenApiForm extends Component {
 
   importApi(defaultView) {
     const uploadedFile = this.state.uploadedFile
-    this.props.import_api(uploadedFile, this.state.importType, this.state.website, null, defaultView)
+    this.props.import_api(uploadedFile, this.state.importType, null, defaultView)
     this.props.onHide()
   }
 
@@ -73,17 +71,9 @@ class OpenApiForm extends Component {
     let FileError = null
     errors = this.validate({ type: this.state.importType }, { type: Joi.string().required() })
       const schema = {
-        type: Joi.string().required(),
-        website: Joi.string()
-          .regex(URL_VALIDATION_REGEX, { name: 'URL' })
-          .trim()
-          .required()
-          .label('Website')
-          .error(() => {
-            return { message: 'Website must be a valid URL' }
-          })
+        type: Joi.string().required()
       }
-      errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
+      errors = this.validate({ type: this.state.importType }, schema)
    
     if (this.state.uploadedFile === null) {
       FileError = 'JSON file Should not be set empty'
@@ -134,8 +124,8 @@ class OpenApiForm extends Component {
           onClick={(e) => {
             e.preventDefault()
             this.handleSubmit(e)
-            const { errors, importType, website, uploadedFile } = this.state
-            if ((!errors.type && !errors.website && !errors.file && importType && uploadedFile) || website) {
+            const { errors, importType, uploadedFile } = this.state
+            if ((!errors.type && !errors.file && importType && uploadedFile)) {
               this.saveCollection(defaultViewTypes.TESTING, 'edit')
             }
           }}
@@ -155,7 +145,7 @@ class OpenApiForm extends Component {
           className='form-control custom-input'
           value={this.state.importType}
           onChange={(e) => {
-            this.setState({ importType: e.target.value, website: '', errors: { type: null, file: null, website: null } })
+            this.setState({ importType: e.target.value, errors: { type: null, file: null} })
           }}
         >
           <option value=''>Select</option>
@@ -167,23 +157,6 @@ class OpenApiForm extends Component {
     )
   }
 
-  renderWebsiteInput() {
-    return (
-      <div className='form-group'>
-        <label> Website: </label>
-        <input
-          className='form-control'
-          name='website'
-          value={this.state.website}
-          onChange={(e) => {
-            this.setState({ website: e.target.value, errors: { ...this.state.errors, website: null } })
-          }}
-        />
-        {this.state.errors?.website && <div className='alert alert-danger'>{this.state.errors?.website}</div>}
-      </div>
-    )
-  }
-
   renderImportForm() {
     return (
       <form className='mb-2'>
@@ -191,7 +164,10 @@ class OpenApiForm extends Component {
           <div>
             {this.renderInputType()}
           </div>
-          <div>{this.renderJSONFileSelector()}</div>
+          <div>
+            {/* {this.renderJSONFileSelector()} */}
+          <DragAndDropUploader onClose={false} />
+          </div>
         </div>
       </form>
     )
