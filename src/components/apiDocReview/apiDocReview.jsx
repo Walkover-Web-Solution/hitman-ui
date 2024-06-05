@@ -171,7 +171,7 @@ const ApiDocReview = (props) => {
   return (
     !isDashboardRoute(props) && (
       <>
-        <div>
+        <div className='position-relative'>
           <p className='d-flex justify-content-center fs-4 font-weight-700 text-secondary'>Was this page helpful?</p>
           <div className='d-flex justify-content-center like-unline fs-2'>
           <OverlayTrigger
