@@ -13,15 +13,6 @@ import addtosample from '../../assets/icons/addToSamplesign.svg'
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoMdArrowDropright } from "react-icons/io";
 import { connect } from 'react-redux'
-import {background} from '../backgroundColor.js'
-import 'ace-builds'
-import 'ace-builds/src-noconflict/mode-html'
-import 'ace-builds/src-noconflict/mode-java'
-import 'ace-builds/src-noconflict/mode-javascript'
-import 'ace-builds/src-noconflict/mode-json'
-import 'ace-builds/src-noconflict/mode-xml'
-import 'ace-builds/src-noconflict/theme-github'
-import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
@@ -299,7 +290,7 @@ class DisplayResponse extends Component {
                     {isDashboardRoute(this.props) && (
                       <div className='tab-content' id='myTabContent'>
                         <div className='tab-pane fade show active' id='home' role='tabpanel' aria-labelledby='home-tab'>
-                          <JSONPretty theme={JSONPrettyMon} data={this.props.response.data} />
+                          <JSONPretty className='raw-response' theme={JSONPrettyMon} data={this.props.response.data} />
                         </div>
                         <div className='tab-pane fade' id='profile' role='tabpanel' aria-labelledby='profile-tab'>
                           {JSON.stringify(this.props.response.data)}

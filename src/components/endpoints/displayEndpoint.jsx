@@ -3132,7 +3132,7 @@ class DisplayEndpoint extends Component {
         {this.renderBodyContainer()}
       </div>
       <div
-        className='tab-pane fade Script-content'
+        className='tab-pane fade script-content'
         id={`script-${this.props.tab.id}`}
         role='tabpanel'
         aria-labelledby='pills-script-tab'
