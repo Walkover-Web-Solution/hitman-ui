@@ -32,6 +32,11 @@ const ApiDocReview = (props) => {
       setParent()
     }
     prevProps.current = props
+    return () => {
+      setFeedbackGiven(false);
+      setFeedbackType('');
+      setFeedbackSaved(false);
+      };
   }, [props.match.params])
 
   const setLocalStorageReviews = () => {
