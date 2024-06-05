@@ -1,4 +1,3 @@
-import { Store } from 'redux'
 import { SESSION_STORAGE_KEY } from '../../common/utility'
 import publishDocsApiService from '../publishDocsApiService'
 import publishDocsActionTypes from './publishDocsActionTypes'
@@ -8,9 +7,7 @@ export const fetchFeedbacks = (collectionId) => {
     publishDocsApiService
       .getFeedbacks(collectionId)
       .then((response) => {
-        if(response.data?.success){
-          dispatch(onFeedbacksFetched(response.data.feedbacks))
-        }
+          dispatch(onFeedbacksFetched(response?.data?.feedbacks || []))
       })
       .catch((error) => {
         dispatch(onFeedbacksFetchedError(error.response ? error.response.data : error))

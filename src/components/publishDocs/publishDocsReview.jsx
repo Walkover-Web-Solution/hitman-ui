@@ -46,7 +46,6 @@ class PublishDocsReview extends Component {
 
   renderFeedback() {
     const { feedbacks, pages } = this.props;
-    console.log(feedbacks);
     return (
       <div className="feedback-table-container">
         <table className="table">
@@ -61,9 +60,9 @@ class PublishDocsReview extends Component {
           <tbody>
             {feedbacks.map((feedback, index) => (
               <tr key={index}>
-                <td>{pages[feedback.pageId] ? pages[feedback.pageId].name : 'Unknown Page'}</td>
-                <td>{feedback.positiveCount}</td>
-                <td>{feedback.negativeCount}</td>
+                <td>{pages[feedback?.pageId] ? pages[feedback?.pageId]?.name : 'Unknown Page'}</td>
+                <td>{feedback?.positiveCount}</td>
+                <td>{feedback?.negativeCount}</td>
                 <td>
                   {Object.keys(feedback.comments).length === 0 ? (
                     <div>No comments</div>
