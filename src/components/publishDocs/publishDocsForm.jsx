@@ -17,6 +17,8 @@ import { IoInformationCircleOutline } from 'react-icons/io5'
 import PublishDocsReview from './publishDocsReview'
 import { FiCopy } from 'react-icons/fi';
 import { FaRegTimesCircle } from "react-icons/fa";
+import { updateTab } from '../tabs/redux/tabsActions'
+import { store } from '../../store/store'
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
@@ -59,7 +61,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     update_collection: (collection, stopLoader) => dispatch(updateCollection(collection, stopLoader)),
     setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data)),
-    ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
+    ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
+    update_tab: (activeTab) => dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' }}))
   }
 }
 
@@ -465,6 +468,8 @@ class PublishDocForm extends Component {
 
   handleSeeFeedbacks = () => {
     const collectionId = this.props.selected_collection_id
+    const activeTab = this.props.tabs.activeTabId
+    this.props.update_tab(activeTab, { state: { pageType: 'FEEDBACK' } })
     this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
   }
 

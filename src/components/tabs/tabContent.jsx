@@ -95,8 +95,7 @@ class TabContent extends Component {
             />
           )
         }
-        case 'feedback' :
-          if(this.props.location.pathname.split('/')[6] === 'feedback') {
+        else{
           return <PublishDocsReview {...this.props} selected_collection_id={tabId} />
         } 
       default:

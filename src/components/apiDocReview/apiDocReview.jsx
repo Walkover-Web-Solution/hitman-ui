@@ -2,10 +2,9 @@ import React, { useState, useEffect, useRef } from 'react'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { isDashboardRoute, SESSION_STORAGE_KEY } from '../common/utility'
 import { Button } from 'react-bootstrap'
-import { useLocation } from 'react-router'
-import http from '../../services/httpService'
 import { BiLike, BiDislike } from "react-icons/bi";
 import './apiDocReview.scss'
+import { dislike, like } from '../../services/feedbackService'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -22,9 +21,6 @@ const ApiDocReview = (props) => {
   const [currentReviews, setCurrentReviews] = useState({})
 
   const prevProps = useRef(props)
-
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
 
   useEffect(() => {
     setParent()
@@ -55,7 +51,6 @@ const ApiDocReview = (props) => {
   }
 
   const handleFeedback = (type) => {
-    console.log(`Feedback given: ${type}`)
     setFeedbackGiven(true)
     setFeedbackType(type)
   }
@@ -71,20 +66,14 @@ const ApiDocReview = (props) => {
     setCurrentReviews(objList)
     window.localStorage.setItem('review', JSON.stringify(objList))
   }
+
   const handleDislike = () => {
-    const feedback = {
-      parentId: parentId,
-      parentType: parentType,
-      email: email,
-      vote: getVoteValue(LIKE),
-      comment: comment
-    }
-    const apiUrl = process.env.REACT_APP_API_URL
     const pageId = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    http
-      .post(apiUrl + `/feedback/negative`,{pageId, comment})
+    const feedback = {
+      pageId, comment, email
+    }
+   dislike(feedback)
       .then((response) => {
-        console.log(response)
         setFeedbackSaved(true)
         setEmail(response.email)
         setComment(response.comment)
@@ -96,19 +85,9 @@ const ApiDocReview = (props) => {
   }
 
   const handleLikeButton = () => {
-    const feedback = {
-      parentId: parentId,
-      parentType: parentType,
-      email: email,
-      vote: getVoteValue(LIKE),
-      comment: comment
-    }
-    const apiUrl = process.env.REACT_APP_API_URL
     const pageId = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    http
-      .post(apiUrl + `/feedback/positive`,{pageId})
+    like(pageId)
       .then((response) => {
-        console.log(response)
         savelocalstorage(parentId, getVoteKey(vote))
         setEmail('')
         setComment('')
@@ -119,10 +98,6 @@ const ApiDocReview = (props) => {
       .catch((error) => {
         console.error(error)
       })
-  }
-
-  const getVoteValue = (value) => {
-    return value === LIKE ? 1 : -1
   }
 
   const getVoteKey = (value) => {
@@ -196,7 +171,6 @@ const ApiDocReview = (props) => {
   return (
     !isDashboardRoute(props) && (
       <>
-       
         <div>
           <p className='d-flex justify-content-center fs-4 font-weight-700 text-secondary'>Was this page helpful?</p>
           <div className='d-flex justify-content-center like-unline fs-2'>
@@ -204,7 +178,6 @@ const ApiDocReview = (props) => {
               placement='bottom'
               overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}
             >
-            
             <div
               className='cursor-pointer'
               onClick={() => {
@@ -230,9 +203,6 @@ const ApiDocReview = (props) => {
           </div>
           {feedbackGiven && renderFeedbackResponse()}
         </div>
-         {/* )}  */}
-
-       
       </>
     )
   )
