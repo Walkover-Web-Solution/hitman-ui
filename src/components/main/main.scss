@@ -1735,6 +1735,7 @@ table#custom-generic-table tbody input[value='true'] + span.checkmark {
     display: none;
     transition: 200ms;
   }
+ 
 
   .primary-sidebar .nav-tabs {
     border-top: 1px solid #d3ccc5;
@@ -1759,7 +1760,11 @@ table#custom-generic-table tbody input[value='true'] + span.checkmark {
     margin: 5px auto 0;
   }
 }
-
+.raw-response {
+  .__json-pretty__ {
+    margin-bottom: 0 !important;
+  }
+}
 .app-name {
   svg {
     margin: 5px 10px 5px 0;
@@ -3829,7 +3834,7 @@ body .tox {
 .cursor-text {
   cursor: text !important;
 }
-.Script-content {
+.script-content {
   &.active {
     display: flex !important;
   }
