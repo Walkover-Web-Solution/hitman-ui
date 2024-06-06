@@ -12,7 +12,7 @@ import { RiCloseLine } from "react-icons/ri";
 import { RiCheckboxMultipleLine } from "react-icons/ri";
 import { RiCheckboxMultipleBlankLine } from "react-icons/ri";
 import IconButton from '../common/iconButton'
-import { BsThreeDotsVertical } from "react-icons/bs"
+import { BsThreeDots } from "react-icons/bs"
 import { hexToRgb, isOnPublishedPage } from '../common/utility'
 import {background} from '../backgroundColor.js'
 
@@ -142,8 +142,11 @@ class CodeTemplate extends Component {
                 <Dropdown >
                   <Dropdown.Toggle className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore mr-0' : 'dropdownMore mr-0'}>
                     {primaryLanguages.includes(this.selectedLanguage) ? (
-                      <span><BsThreeDotsVertical />
-                      </span>
+                      <div className='d-flex flex-column '>
+                      <span><BsThreeDots /></span>
+                      <span>More</span>
+                      </div>
+                      
                     ) : (
                       <span>{languages[this.selectedLanguage].name}</span>
                     )}

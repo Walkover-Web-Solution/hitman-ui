@@ -511,7 +511,7 @@ class CollectionParentPages extends Component {
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
           <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
             <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''}`}>
-          <div className={`active-select d-flex align-items-center justify-content-between ${isSelected ? ' selected' : ''}`} style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
+          <div className={`active-select d-flex align-items-center justify-content-between rounded mr-2 ${isSelected ? ' selected' : ''}`} style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
               <div
                 className={`d-flex align-items-center cl-name ` }
                 onClick={(e) => {
