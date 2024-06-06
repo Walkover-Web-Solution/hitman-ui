@@ -36,7 +36,6 @@ import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from "react-icons/tb"
 import { updateDragDrop } from '../pages/redux/pagesActions'
-import {  hexToRgb} from '../common/utility'
 import {background} from '../backgroundColor.js'
 
 const mapStateToProps = (state) => {
