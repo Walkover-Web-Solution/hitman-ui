@@ -214,7 +214,7 @@ class Groups extends Component {
       <>
         <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
           <button tabIndex={-1} className={`${expanded ? 'expanded' : ''}`}>
-          <div className={`active-selected d-flex justify-content-between align-items-center ${isSelected ? ' selected' : ''}`} style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
+          <div className={`active-selected d-flex justify-content-between align-items-center rounded mr-2 ${isSelected ? ' selected' : ''}`} style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
             <div
               draggable={!isUserOnPublishedPage}
               onDragOver={this.props.handleOnDragOver}
