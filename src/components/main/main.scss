@@ -4040,7 +4040,7 @@ body .tox {
   &::before{
     content: '';
     display: block;
-    border-left: 1px solid rgb(227 227 227 / 79%);
+    border-left: 1px solid #00000010;
     height: 97%;
     position: absolute;
     top: -3px;
@@ -4054,7 +4054,7 @@ body .tox {
     &::before{
       content: '';
       display: block;
-      border-left: 1px solid rgb(227 227 227 / 79%);
+      border-left: 1px solid #00000010;
       height: 97%;
       position: absolute;
       top: 0;

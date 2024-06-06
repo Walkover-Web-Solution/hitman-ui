@@ -2901,13 +2901,14 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-              ? 'mainContentWrapperPublic hideCodeEditor'
+              ? 'mainContentWrapperPublic hideCodeEditor h-100'
               : 'mainContentWrapperPublic '
         }
+        style={this.state.theme.backgroundStyle}
       >
         <div
           onClick={this.closeChatBotModal}
-          className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}  style={this.state.theme.backgroundStyle}
+          className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}  
         >
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
