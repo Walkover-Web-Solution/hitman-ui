@@ -38,24 +38,29 @@ export default function RenderPageContent(props) {
 
     return (
         <>
-        { headings.length > 0 && (
-        <div className={`page-text-render w-100 d-flex flex-lg-row flex-column-reverse`}>
-            {headings.length > 0 && (<div className='doc-view' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />)}
-            {isOnPublishedPage() && headings.length > 0 && (
-                <div className='editor-headings border border-2 p-2 rounded-lg h-100'>
-                    <div>
-                        {headings.map((heading) => (
-                            <div key={heading.id}>
-                                <span onClick={() => scrollToHeading(heading.id)} className='d-block w-100'>
-                                    {heading.text}
-                                </span>
+            {headings.length > 0 && (
+                <div className={`page-text-render w-100 d-flex flex-lg-row flex-column-reverse`}>
+                    {headings.length > 0 && (<div className='doc-view' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />)}
+                    {isOnPublishedPage() && headings.length > 0 && (
+                        <>
+                            <div className='editor-headings  d-flex flex-column h-100'>
+                                <span className='text-secondary pb-2 d-inline-block'> In this page</span>
+                                <div className='border border-2 p-2 rounded-lg h-100'>
+                                    <div>
+                                        {headings.map((heading) => (
+                                            <div key={heading.id}>
+                                                <span onClick={() => scrollToHeading(heading.id)} className='d-block w-100 py-1 cursor-pointer'>
+                                                    {heading.text}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
-                        ))}
-                    </div>
+                        </>
+                    )}
                 </div>
             )}
-        </div>
-    )}
         </>
     )
 }
