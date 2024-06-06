@@ -960,6 +960,7 @@ input[type='text']:focus {
   }
   &:hover {
     background-color: #d6d2d28f;
+    text-decoration: unset;
   }
 }
 .hm-sidebar-outer-block {

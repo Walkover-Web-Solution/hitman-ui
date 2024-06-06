@@ -32,6 +32,8 @@ import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from "react-icons/tb"
 import { updateDragDrop } from '../pages/redux/pagesActions'
+import {  hexToRgb} from '../common/utility'
+import {background} from '../backgroundColor.js'
 
 const mapStateToProps = (state) => {
   return {
@@ -87,7 +89,9 @@ class SideBarV2 extends Component {
       search: false,
       endpoints: '',
       draggingOverId: null,
-      draggedIdSelected: null
+      draggedIdSelected: null,
+      isHovered: false,
+      thene: ''
     }
     this.inputRef = createRef()
     this.sidebarRef = createRef()
@@ -101,7 +105,12 @@ class SideBarV2 extends Component {
   //     document.removeEventListener('click', this.handleClickOutside)
   //   }
   // }
-
+  handleHover = (isHovered) => {
+    this.setState({ isHovered });
+  };
+  handleHovers = (isHover) => {
+    this.setState({ isHover });
+  };
   componentDidMount() {
     const pages = this.props.pages
     const endpoint = []
@@ -689,6 +698,19 @@ class SideBarV2 extends Component {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
     const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
+    let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
+    var collectionTheme = this.props.collections[collectionId]?.theme
+    const dynamicColor = hexToRgb(collectionTheme, 0.15);
+    const staticColor = background['background_hover'] ;
+
+
+    const backgroundStyle = {
+      backgroundImage: this.state.isHovered
+        ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})`
+        : ''
+    };
     return (
       <div className='hm-sidebar-header align-items-start'>
          {(this.props.collections[collectionKeys[0]]?.favicon ||
@@ -713,7 +735,7 @@ class SideBarV2 extends Component {
           <span>API Documentation</span>
         </h4>
         {isTechdocOwnDomain() && (
-          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5'>
+          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5' style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
             <TbLogin2 className='text-black' />
             <button
               type='button'
