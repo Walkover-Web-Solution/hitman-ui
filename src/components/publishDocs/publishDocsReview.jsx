@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Dropdown } from 'react-bootstrap'
+import { Dropdown, Accordion, Card, Button } from 'react-bootstrap';
 import { connect } from 'react-redux'
-import { fetchFeedbacks } from './redux/publishDocsActions'
+import { fetchFeedbacks} from './redux/publishDocsActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -11,7 +11,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetch_feedbacks: (collectionId, orgId) => dispatch(fetchFeedbacks(collectionId, orgId))
+    fetch_feedbacks: (collectionId) => dispatch(fetchFeedbacks(collectionId))
   }
 }
 class PublishDocsReview extends Component {
@@ -25,14 +25,14 @@ class PublishDocsReview extends Component {
   }
 
   componentDidMount() {
-    const { collectionId, orgId } = this.props.match.params
-    collectionId && this.props.fetch_feedbacks(collectionId, orgId)
+    const { collectionId } = this.props.match.params
+    collectionId && this.props.fetch_feedbacks(collectionId)
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { collectionId, orgId } = this.props.match.params
+    const { collectionId } = this.props.match.params
     if (prevProps.match.params.collectionId !== collectionId) {
-      collectionId && this.props.fetch_feedbacks(collectionId, orgId)
+      collectionId && this.props.fetch_feedbacks(collectionId)
     }
   }
 
@@ -44,154 +44,71 @@ class PublishDocsReview extends Component {
     )
   }
 
-  showEndpointsAndPages() {
-    const collectionId = this.props.selected_collection_id
-    const versionIds = Object.keys(this.props.versions).filter((vId) => this.props.versions[vId].collectionId === collectionId)
-    const groupIds = Object.keys(this.props.groups)
-    const groupsArray = []
-    for (let i = 0; i < groupIds.length; i++) {
-      const groupId = groupIds[i]
-      const group = this.props.groups[groupId]
-
-      if (versionIds.includes(group.versionId)) {
-        groupsArray.push(groupId)
-      }
-    }
-
-    const endpointIds = Object.keys(this.props.endpoints)
-    const pageIds = Object.keys(this.props.pages)
-    const endpointsArray = []
-    const pagesArray = []
-
-    for (let i = 0; i < endpointIds.length; i++) {
-      const endpointId = endpointIds[i]
-      const endpoint = this.props.endpoints[endpointId]
-
-      if (groupsArray.includes(endpoint.groupId)) {
-        if (this.props.endpoints[endpointId].isPublished) {
-          endpointsArray.push(endpointId)
-        }
-      }
-    }
-
-    for (let i = 0; i < pageIds.length; i++) {
-      const pageId = pageIds[i]
-      const pages = this.props.pages[pageId]
-
-      if (groupsArray.includes(pages.groupId) || versionIds.includes(pages.versionId)) {
-        if (this.props.pages[pageId].isPublished) {
-          pagesArray.push(pageId)
-        }
-      }
-    }
-
+  renderFeedback() {
+    const { feedbacks, pages } = this.props;
     return (
-      <>
-        <Dropdown.Item
-          onClick={() => {
-            this.setState({ filter: false })
-          }}
-        >
-          All
-        </Dropdown.Item>
-        {endpointsArray.length > 0 &&
-          endpointsArray.map((id, index) => (
-            <Dropdown.Item
-              key={index}
-              onClick={() => {
-                this.setState({ selectedItemType: 'endpoint' })
-                this.setState({ selectedItemId: id })
-                this.setState({ filter: true })
-              }}
-            >
-              {this.props.endpoints[id]?.name}
-            </Dropdown.Item>
-          ))}
-
-        {pagesArray.length > 0 &&
-          pagesArray.map((id, index) => (
-            <Dropdown.Item
-              key={index}
-              onClick={() => {
-                this.setState({ selectedItemType: 'page' })
-                this.setState({ selectedItemId: id })
-                this.setState({ filter: true })
-              }}
-            >
-              {this.props.pages[id]?.name}
-            </Dropdown.Item>
-          ))}
-      </>
-    )
-  }
-
-  renderPageSelectOption() {
-    return (
-      <Dropdown className='mb-3 align-right cst'>
-        <Dropdown.Toggle variant='' id='dropdown-basic'>
-          <span className='truncate'>
-            {' '}
-            {!this.state.filter
-              ? 'All'
-              : this.state.selectedItemType === 'endpoint'
-                ? this.props.endpoints[this.state.selectedItemId]?.name
-                : this.props.pages[this.state.selectedItemId]?.name}
-          </span>
-        </Dropdown.Toggle>
-        <Dropdown.Menu>{this.showEndpointsAndPages()}</Dropdown.Menu>
-      </Dropdown>
-    )
-  }
-
-  renderPageReview(feedbacks) {
-    const selectedItemId = this.state.selectedItemId
-    const filteredFeedbacks = !this.state.filter ? feedbacks : feedbacks.filter((feedback) => feedback.parentId === selectedItemId)
-    return (
-      <div className='hosted-doc-wrapper'>
-        <table className='feedback-table'>
+      <div className="feedback-table-container">
+        <table className="table">
           <thead>
-            <th>Page</th>
-            <th>Email</th>
-            <th>Quality</th>
-            <th>Comment</th>
-          </thead>
-          <tbody>{filteredFeedbacks.map((feedback) => this.renderFeedback(feedback))}</tbody>
-          <tfoot>
             <tr>
-              <td>Total Score: {filteredFeedbacks.reduce((prev, current) => prev + current.vote, 0)}</td>
+              <th>Page</th>
+              <th>Positive Count</th>
+              <th>Negative Count</th>
+              <th>Comments</th>
             </tr>
-          </tfoot>
+          </thead>
+          <tbody>
+            {feedbacks.map((feedback, index) => (
+              <tr key={index}>
+                <td>{pages[feedback?.pageId] ? pages[feedback?.pageId]?.name : 'Unknown Page'}</td>
+                <td>{feedback?.positiveCount}</td>
+                <td>{feedback?.negativeCount}</td>
+                <td>
+                  {Object.keys(feedback.comments).length === 0 ? (
+                    <div>No comments</div>
+                  ) : (
+                    // Use Accordion for multiple comments
+                    <Accordion defaultActiveKey="0">
+                      <Card>
+                        <Card.Header className='p-0'>
+                          <Accordion.Toggle as={Button}  variant="link" eventKey="1">
+                            Show Comments
+                          </Accordion.Toggle>
+                        </Card.Header>
+                        <Accordion.Collapse eventKey="1">
+                          <Card.Body>
+                            {Object.entries(feedback.comments).map(([email, comments], idx) => (
+                              <div key={email}>
+                                <strong>Email: {email}</strong>
+                                <br />
+                                Comments: {comments.map(comment => <><br/>{comment}</>)}
+                              </div>
+                            ))}
+                          </Card.Body>
+                        </Accordion.Collapse>
+                      </Card>
+                    </Accordion>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
-    )
+    );
   }
-
-  renderFeedback(feedback) {
-    return (
-      <tr>
-        <td>
-          {feedback.parentType === 'endpoint' ? this.props.endpoints[feedback.parentId]?.name : this.props.pages[feedback.parentId]?.name}
-        </td>
-        <td>{feedback.user === '' ? '-' : feedback.user}</td>
-        <td>{feedback.vote}</td>
-        <td>{feedback.comment === '' ? '-' : feedback.comment}</td>
-      </tr>
-    )
-  }
-
   renderNoFeedback() {
     return <div>No feedbacks received</div>
   }
 
   render() {
-    const feedbacks = this.props.feedbacks[this.props.match.params.collectionId] || []
+    const feedbacks = this.props.feedbacks  || []
     return (
       <div className='feedback-tab'>
         <div className='d-flex flex-row'>
           {this.renderHostedApiHeading('API Doc Feedback')}
-          {feedbacks.length > 0 && this.renderPageSelectOption()}
         </div>
-        {feedbacks.length > 0 ? this.renderPageReview(feedbacks) : this.renderNoFeedback()}
+        {feedbacks.length > 0 ? this.renderFeedback() : this.renderNoFeedback()}
       </div>
     )
   }

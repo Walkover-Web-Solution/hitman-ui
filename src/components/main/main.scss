@@ -1146,7 +1146,6 @@ body .form-group {
   label {
     color: $text-color-dark;
     line-height: 1;
-    margin: 0 0 0.25rem;
     font-weight: 500;
   }
 
@@ -3805,7 +3804,6 @@ body .tox {
     position: static !important;
     width: 100% !important;
     min-width: 100% !important;
-    height: 50vh !important;
     .closeEditor {
       transition: 450ms;
     }

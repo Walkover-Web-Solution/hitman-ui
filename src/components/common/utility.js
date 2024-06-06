@@ -687,7 +687,7 @@ export const deleteAllPagesAndTabsAndReactQueryData = async (pageId,collectionId
 
     
     // update the parent's child
-    let parentId = pages[pageId].parentId
+    let parentId = pages[pageId]?.parentId
     if (parentId != null) {
       pages[parentId].child = pages[parentId].child.filter((id) => id !== pageId)
     }
