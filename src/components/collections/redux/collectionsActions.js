@@ -116,7 +116,6 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
       .updateCollection(id, editedCollection)
       .then((response) => {
         dispatch(onCollectionUpdated(response.data))
-        toast.success('Updated successfully')
         if (stopLoader) {
           stopLoader()
         }

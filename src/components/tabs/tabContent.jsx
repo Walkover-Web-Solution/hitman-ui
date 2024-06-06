@@ -94,9 +94,10 @@ class TabContent extends Component {
               onTab
             />
           )
-        } else {
-          return <PublishDocsReview {...this.props} selected_collection_id={tabId} />
         }
+        else{
+          return <PublishDocsReview {...this.props} selected_collection_id={tabId} />
+        } 
       default:
         break
     }
