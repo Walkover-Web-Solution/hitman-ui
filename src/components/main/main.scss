@@ -3422,6 +3422,10 @@ body .btn-group-custom {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      color: #00000094;
+      &:hover {
+         color: #000000;
+      }
     }
     @media screen and (max-width: 992px) {
       width: 100%;
