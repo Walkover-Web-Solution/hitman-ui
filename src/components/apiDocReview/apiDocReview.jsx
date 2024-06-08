@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { isDashboardRoute, SESSION_STORAGE_KEY } from '../common/utility'
 import { Button } from 'react-bootstrap'
-import { BiLike, BiDislike } from "react-icons/bi";
+import { BiLike, BiDislike } from 'react-icons/bi'
 import './apiDocReview.scss'
 import { dislike, like } from '../../services/feedbackService'
+import { LuAsterisk } from 'react-icons/lu'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -33,10 +34,10 @@ const ApiDocReview = (props) => {
     }
     prevProps.current = props
     return () => {
-      setFeedbackGiven(false);
-      setFeedbackType('');
-      setFeedbackSaved(false);
-      };
+      setFeedbackGiven(false)
+      setFeedbackType('')
+      setFeedbackSaved(false)
+    }
   }, [props.match.params])
 
   const setLocalStorageReviews = () => {
@@ -75,9 +76,11 @@ const ApiDocReview = (props) => {
   const handleDislike = () => {
     const pageId = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const feedback = {
-      pageId, comment, email
+      pageId,
+      comment,
+      email
     }
-   dislike(feedback)
+    dislike(feedback)
       .then((response) => {
         setFeedbackSaved(true)
         setEmail(response.email)
@@ -91,18 +94,20 @@ const ApiDocReview = (props) => {
 
   const handleLikeButton = () => {
     const pageId = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    like(pageId)
-      .then((response) => {
-        savelocalstorage(parentId, getVoteKey(vote))
-        setEmail('')
-        setComment('')
-        setVote(null)
-        setFeedbackGiven(true)
-        setFeedbackType('LIKE')
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+    if (!feedbackGiven) {
+      like(pageId)
+        .then((response) => {
+          savelocalstorage(parentId, getVoteKey(vote))
+          setEmail('')
+          setComment('')
+          setVote(null)
+          setFeedbackGiven(true)
+          setFeedbackType('LIKE')
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
   }
 
   const getVoteKey = (value) => {
@@ -112,8 +117,14 @@ const ApiDocReview = (props) => {
   const handleInput = (event) => {
     event.preventDefault()
     const { name, value } = event.target
-    if (name === 'email') setEmail(value)
-    else if (name === 'comment') setComment(value)
+    if (name === 'email') {
+      setEmail(value)
+    } else if (name === 'comment') setComment(value)
+  }
+
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return re.test(String(email).toLowerCase())
   }
 
   const renderFeedbackResponse = () => {
@@ -148,9 +159,12 @@ const ApiDocReview = (props) => {
                     type='email'
                     name='email'
                   />
+                  {!validateEmail(email) && email && <div className='text-danger fs-4'>Invalid email address</div>}
                 </div>
                 <div className='form-group mt-3'>
-                  <label>Comment</label>
+                  <label>
+                    Comment <LuAsterisk color='red' />
+                  </label>
                   <textarea
                     className='form-control'
                     onChange={handleInput}
@@ -160,11 +174,19 @@ const ApiDocReview = (props) => {
                     placeholder='Enter comment'
                     required
                   />
+                  {comment && comment.trim().length < 5 && (
+                    <div className='text-danger fs-4'>Comment must be at least 5 characters long</div>
+                  )}
                 </div>
                 <div className='d-flex justify-content-end'>
-                <Button variant='primary' onClick={handleDislike} disabled={!comment.trim()} className='feedback-button btn-sm fs-4 float-none'>
-                  Send
-                </Button>
+                  <Button
+                    variant='primary'
+                    onClick={handleDislike}
+                    disabled={!validateEmail(email) || !comment.trim()}
+                    className='feedback-button btn-sm fs-4 float-none'
+                  >
+                    Send
+                  </Button>
                 </div>
               </form>
             </div>
@@ -179,31 +201,25 @@ const ApiDocReview = (props) => {
         <div className='position-relative'>
           <p className='d-flex justify-content-center fs-4 font-weight-700 text-secondary'>Was this page helpful?</p>
           <div className='d-flex justify-content-center like-unline fs-2'>
-          <OverlayTrigger
-              placement='bottom'
-              overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}
-            >
-            <div
-              className='cursor-pointer'
-              onClick={() => {
-                handleLikeButton()
-              }}
-            >
-              <BiLike />
-            </div>
+            <OverlayTrigger placement='bottom' overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}>
+              <div
+                className='cursor-pointer'
+                onClick={() => {
+                  handleLikeButton()
+                }}
+              >
+                <BiLike />
+              </div>
             </OverlayTrigger>
-            <OverlayTrigger
-              placement='bottom'
-              overlay={<Tooltip id='dislike-tooltip'>Not helpful</Tooltip>}
-            >
-            <div
-              className='cursor-pointer'
-              onClick={() => {
-                handleFeedback('DISLIKE')
-              }}
-            >
-              <BiDislike />
-            </div>
+            <OverlayTrigger placement='bottom' overlay={<Tooltip id='dislike-tooltip'>Not helpful</Tooltip>}>
+              <div
+                className='cursor-pointer'
+                onClick={() => {
+                  handleFeedback('DISLIKE')
+                }}
+              >
+                <BiDislike />
+              </div>
             </OverlayTrigger>
           </div>
           {feedbackGiven && renderFeedbackResponse()}
