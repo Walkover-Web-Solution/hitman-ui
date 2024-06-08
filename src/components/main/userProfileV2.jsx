@@ -548,7 +548,7 @@ class UserProfileV2 extends Component {
   handleAddOrg = async () => {
     try {
       if (!this.validateName(this.state.orgName)) {
-        toast.error('Only alphanumeric and underscores are allowed')
+        toast.error('Invalid organization name')
         return
       }
       await this.handleNewOrgClick();

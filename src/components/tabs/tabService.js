@@ -57,8 +57,8 @@ function selectTab(props, tabId) {
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
     })
   } else if (tab?.type === 'collection') {
-    tab?.state?.pageType === 'SETTINGS' && props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
-    // : props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
+    tab?.state?.pageType === 'SETTINGS' ? props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
+    : props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
   } else {
     if (!(tab?.type && tab?.id)) {
       return props.history.push({ pathname: `/orgs/${getOrgId()}/dashboard/endpoint/new` })
