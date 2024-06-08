@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component} from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
@@ -182,6 +182,10 @@ class EndpointBreadCrumb extends Component {
       tempData.data.name = e.currentTarget.value
       this.props.setQueryUpdatedData(tempData)
       this.props.update_name({ id: this.props?.match?.params?.endpointId, name: e.currentTarget.value })
+    }
+    else{
+      const pageId = this.props?.match?.params?.pageId;
+      this.props.update_name({id: pageId, name: e.currentTarget.value})
     }
   }
 

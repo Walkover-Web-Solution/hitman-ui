@@ -1764,3 +1764,7 @@ table#custom-generic-table {
   border: 1px solid rgba(128, 128, 128, 0.452);
   padding: 10px;
 }
+.tiptap-editor-container {
+  height: 300px;
+  overflow: auto;
+}

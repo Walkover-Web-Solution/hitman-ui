@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { store } from '../../store/store'
 import { connect } from 'react-redux'
+import * as _ from 'lodash'
+import { toast } from 'react-toastify'
+import MenuBar from '../tiptapEditor/menubar'
 import {
   isDashboardRoute,
   isStateDraft,
@@ -12,7 +15,7 @@ import {
   isOnPublishedPage
 } from '../common/utility'
 import './page.scss'
-import { updatePage } from './redux/pagesActions'
+import { updateContent, updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 import { isAdmin } from '../auth/authServiceV2'
@@ -23,35 +26,48 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
 import { getPageContent } from '../../services/pageServices'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
 import moment from 'moment'
+import tabService from '../tabs/tabService'
+import WarningModal from '../common/warningModal'
+import { updateTab } from '../tabs/redux/tabsActions'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+    const queryClient = useQueryClient()
     const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
-    let { data, error } = useQuery(
-      ['pageContent', pageId],
-      async () => {
-        return isOnPublishedPage()
-          ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
-          : await getPageContent(props?.match?.params?.orgId, pageId)
-      },
-      {
-        refetchOnWindowFocus: false,
-        cacheTime: 5000000,
-        enabled: true,
-        staleTime: 600000,
-        retry: 2
+    let { data, error, isLoading } = useQuery(['pageContent', pageId], async () => {
+      return isOnPublishedPage()
+        ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
+        : await getPageContent(props?.match?.params?.orgId, pageId)
+    })
+    const mutation = useMutation(updateContent, {
+      onSuccess: (data) => {
+        queryClient.setQueryData(['pageContent', pageId], data?.contents || '', {
+          refetchOnWindowFocus: false,
+          cacheTime: 5000000,
+          enabled: true,
+          staleTime: 600000
+        })
       }
-    )
+    })
     const tabId = props?.tabs?.tabs?.[pageId]
     if (tabId?.isModified && tabId?.type == 'page' && tabId?.draft) {
       data = tabId?.draft
     }
-    return <WrappedComponent {...props} pageContent={data} currentPageId={pageId} pageContentLoading={data?.isLoading} pageContentError={error} />
+    return (
+      <WrappedComponent
+        {...props}
+        pageContent={data}
+        currentPageId={pageId}
+        pageContentLoading={data?.isLoading}
+        pageContentError={error}
+        mutationFn={mutation}
+      />
+    )
   }
 }
 
@@ -61,14 +77,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     pending_page: (page) => dispatch(pendingPage(page)),
     reject_page: (page) => dispatch(rejectPage(page)),
-    draft_page: (page) => dispatch(draftPage(page))
+    draft_page: (page) => dispatch(draftPage(page)),
+    update_tab: (id, data) => dispatch(updateTab(id, data))
   }
 }
 
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
-    tabs: state.tabs,
+    tabs: state.tabs
   }
 }
 
@@ -79,23 +96,26 @@ class DisplayPage extends Component {
     this.state = {
       data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
       page: null,
-      requestKey: null
+      requestKey: null,
+      showEditor: false
     }
+    this.name = React.createRef()
+    this.contents = React.createRef()
   }
 
-  fetchPage(pageId) {
+  async fetchPage(pageId) {
     let data = {}
     const { pages } = store.getState()
     const page = pages[pageId]
     if (page) {
-      const { id, versionId, groupId, name, contents } = page
-      data = { id, versionId, groupId, name, contents }
-      if (this._isMounted) {
-        this.setState({ data, page })
-      }
+      const { id, versionId, groupId, name, contents, isPublished, state } = page
+      data = { id, versionId, groupId, name, contents, isPublished, state }
+      let updatedData = _.cloneDeep(data)
+      updatedData.contents = this.props?.data
+
+      this.setState({ data: updatedData, originalData: data, draftDataSet: true })
     }
   }
-
   async componentDidMount() {
     this._isMounted = true
     this.extractPageName()
@@ -114,6 +134,7 @@ class DisplayPage extends Component {
         this.setState({ data: this.props.pages[this.props.pageId] })
       }
     }
+    // document.body.addEventListener('click', this.handleClickOutside)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -125,10 +146,53 @@ class DisplayPage extends Component {
         this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
       }
     }
-    // if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
-    //   this.fetchPageContent(this.props.match.params.pageId)
-    // }
+    this.setPageData()
+    const { save_page_flag: prevSavePageFlag } = prevProps
+    const { save_page_flag: savePageFlag, tab, handle_save_page: handleSavePage } = this.props
+    if (savePageFlag !== prevSavePageFlag) {
+      if (savePageFlag) {
+        this.handleSubmit()
+        handleSavePage(false, tab.id)
+      }
+    }
   }
+  componentWillUnmount() {
+    // document.body.removeEventListener('click', this.handleClickOutside)
+    this._isMounted = false
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.showEditor !== nextState.showEditor || this.props.pageContent !== nextProps.pageContent) {
+      return true
+    }
+    return false
+  }
+
+  async setPageData() {
+    const {
+      tab,
+      pages,
+      match: {
+        params: { pageId }
+      }
+    } = this.props
+    const { draftDataSet } = this.state
+
+    if (tab && pageId) {
+      if (tab.isModified && !draftDataSet) {
+        let data = this.state.data
+        data.contents = this.props.pageContent
+        this.setState({ ...tab.state, draftDataSet: true, data: data })
+      } else if (pageId !== 'new' && pages[tab.id] && !this.state.originalData?.id) {
+        await this.fetchPage(tab.id)
+      }
+    }
+  }
+
+  // handleClickOutside = (event) => {
+  //   if (this.editorRef && !this.editorRef.contains(event.target)) {
+  //     this.setState({ showEditor: false })
+  //   }
+  // }
 
   extractPageName() {
     if (!isDashboardRoute(this.props, true) && this.props.pages) {
@@ -138,25 +202,69 @@ class DisplayPage extends Component {
     }
   }
 
-  handleEdit(page) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props?.match?.params.orgId}/dashboard/page/${this.props?.match?.params.pageId}/edit`,
-      page: page
-    })
-  }
-
-  checkPageRejected() {
+  checkPageRejected(index) {
     if (this.props.rejected) {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className='pt-3 px-1'> 
-          {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
-          <div className='pageText doc-view'>{this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}</div>
-          <span>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
+        <div
+          className='pt-3 px-1'
+          ref={(node) => {
+            this.editorRef = node
+          }}
+        >
+          {isOnPublishedPage() && (
+            <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>
+          )}
+          {!isOnPublishedPage() && this.state.showEditor ? (
+            <div className='pageText doc-view'>
+              {this.renderEditor(this.props.pageContent === null ? '' : this.props.pageContent, index)}
+            </div>
+          ) : (
+            <div
+              className='pageText doc-view'
+              onClick={() => {
+                this.setState({ showEditor: true })
+              }}
+            >
+              {this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}
+            </div>
+          )}
+          {isOnPublishedPage() && (
+            <div className='pageText doc-view'>
+              {this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}
+            </div>
+          )}
+          <span>
+            {isOnPublishedPage() &&
+              this.props?.pages?.[this.props?.currentPageId]?.updatedAt &&
+              `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}
+          </span>
         </div>
       )
     }
+  }
+  isModified() {
+    let tabId = this.props.tab.id
+    return this.props.tabs[tabId]?.activeTabId
+  }
+  handleSubmit = (e) => {
+    e.preventDefault()
+    const editedPage = { ...this.state.data }
+    if (editedPage.contents !== this.props.pageContent) {
+      editedPage.contents = this.props.pageContent
+    }
+
+    if (editedPage.name.trim() === '') {
+      toast.error('Page name cannot be empty.')
+      return
+    }
+    delete editedPage['isPublished']
+    this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
+    this.setState({ data: editedPage, showEditor: false }, () => {
+      tabService.markTabAsSaved(this.props.tab.id)
+      tabService.updateDraftData(editedPage.id, editedPage.contents)
+    })
   }
 
   renderPageName() {
@@ -165,16 +273,55 @@ class DisplayPage extends Component {
       this.fetchPage(pageId)
     }
     return isOnPublishedPage() ? (
-      <>
-      { this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}
-      </>
+      <>{this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}</>
     ) : (
       <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
     )
   }
 
   renderTiptapEditor(contents) {
-    return <Tiptap onChange={() => { }} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
+    return <Tiptap onChange={() => {}} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
+  }
+  renderEditor(contents, index) {
+    return (
+      <Tiptap
+        onChange={this.handleChange}
+        initial={contents}
+        match={this.props.match}
+        isInlineEditor={false}
+        disabled={false}
+        minHeight
+        key={index}
+      />
+    )
+  }
+  handleChange = (value) => {
+    const data = { ...this.state.data }
+    data.contents = value
+    let tabId = this.props.tab.id
+
+    this.setState({ data }, () => {
+      if (!this.props.tabs[tabId]?.activeTabId) {
+        tabService.markTabAsModified(this.props.tab.id)
+      }
+      this.updateTabDraftData(value)
+    })
+  }
+  handleCancel() {
+    const pageId = this.props.match.params.pageId
+    if (pageId) {
+      // Redirect to displayPage Route Component
+      tabService.unmarkTabAsModified(this.props.tab.id)
+      this.setState({ showEditor: false })
+    }
+  }
+  updateTabDraftData(value) {
+    if (this.props.tab.id === this.props.tabs.activeTabId) {
+      clearTimeout(this.saveTimeOut)
+      this.saveTimeOut = setTimeout(() => {
+        tabService.updateDraftData(this.props.tab.id, _.cloneDeep(value))
+      }, 1000)
+    }
   }
 
   handleRemovePublicPage(page) {
@@ -197,10 +344,6 @@ class DisplayPage extends Component {
         }}
       />
     )
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false
   }
 
   renderPublishPage(pageId, pages) {
@@ -253,16 +396,20 @@ class DisplayPage extends Component {
               {getEntityState(pageId, pages)}
             </button>
           )}
-          <button
-            className='btn btn-primary btn-sm fs-4'
-            onClick={() => {
-              this.handleEdit(this.state.data)
-            }}
-          >
-            Edit
+          <button onClick={this.handleSubmit} className='btn btn-primary btn-sm fs-4 '>
+            Save
           </button>
         </div>
       )
+    }
+  }
+
+  setUnsavedTabDataInIDB() {
+    if (this.props.tab.id === this.props.tabs.activeTabId) {
+      clearTimeout(this.saveTimeOut)
+      this.saveTimeOut = setTimeout(() => {
+        this.props.update_tab(this.props.tab.id, { state: _.cloneDeep(this.state) })
+      }, 1000)
     }
   }
 
@@ -356,34 +503,42 @@ class DisplayPage extends Component {
     if (this.props?.pageContentLoading) {
       return (
         <>
-        <div className="container-loading p-4">
-                {!isOnPublishedPage() && (
-                <>
-                <div className="d-flex justify-content-end gap-5 mb-5 1806">
-                <div className="edit bg rounded-1 ms-5"></div>
-                  <div className="unpublish bg rounded-1 ms-5"></div>
-                <div className="publish bg rounded-1 ms-5"></div>
+          <div className='container-loading p-4'>
+            {!isOnPublishedPage() && (
+              <>
+                <div className='d-flex justify-content-end gap-5 mb-5 1806'>
+                  <div className='edit bg rounded-1 ms-5'></div>
+                  <div className='unpublish bg rounded-1 ms-5'></div>
+                  <div className='publish bg rounded-1 ms-5'></div>
+                </div>
+              </>
+            )}
+            <div className='page bg rounded-1'></div>
+            <div className='details d-flex flex-column justify-content-between align-items-center mt-5'>
+              <div className='page-box bg'></div>
+              <div className='page-footer text-center bg'></div>
             </div>
-                </>
-                )}
-            <div className="page bg rounded-1"></div>
-          <div className="details d-flex flex-column justify-content-between align-items-center mt-5">
-            <div className="page-box bg"></div>
-            <div className="page-footer text-center bg"></div>
-
           </div>
-        </div>
         </>
       )
     }
     return (
       <div className='custom-display-page'>
+        <WarningModal
+          show={this.state.warningModalFlag}
+          onHide={() => {
+            this.setState({ warningModalFlag: false })
+          }}
+          ignoreButtonCallback={() => {
+            this.handleCancel()
+          }}
+          message='Your unsaved changes will be lost.'
+        />
         {this.renderPublishConfirmationModal()}
         {this.renderUnPublishConfirmationModal()}
         {this.renderPublishPageOperations()}
         {this.renderPageName()}
         {this.checkPageRejected()}
-        {/* <ApiDocReview {...this.props} /> */}
         {isOnPublishedPage() && <Footer />}
       </div>
     )

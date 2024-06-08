@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Dropdown, Modal } from 'react-bootstrap'
 import { SketchPicker } from 'react-color'
-import { BiCodeBlock, BiFontColor } from 'react-icons/bi'
+import { BiCodeBlock, BiFontColor} from 'react-icons/bi'
 import {
   FaBold,
   FaImage,
@@ -27,6 +27,8 @@ export default function MenuBar({ editor }) {
   const [showLink, setShowLink] = useState(false)
   const [showTable, setShowTable] = useState(false)
   const [showImage, setShowImage] = useState(false)
+  const [color, setColor] = useState("");
+  
 
   if (!editor) {
     return null
@@ -105,11 +107,14 @@ export default function MenuBar({ editor }) {
   }
 
   function handleTextColor(color) {
-    editor.chain().focus().setColor(color.hex).run()
+    setColor(color.hex);
+    editor.chain().focus().setColor(color.hex).run();
   }
+  
 
   return (
-    <div className='menuBar custom-editor'>
+    <div className='menuBar   '>
+      
       {showModal()}
       <button onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'is-active' : ''}>
         <FaBold />
@@ -213,7 +218,7 @@ export default function MenuBar({ editor }) {
           <BiFontColor />
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          <SketchPicker onChangeComplete={handleTextColor} />
+          <SketchPicker color={color} onChangeComplete={handleTextColor} />
         </Dropdown.Menu>
       </Dropdown>
       <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
