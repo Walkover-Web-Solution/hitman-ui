@@ -3205,6 +3205,7 @@ class DisplayEndpoint extends Component {
               users={this.props.users}
               />
         </span>}
+        {isOnPublishedPage() &&
         <span className='footer-lower ml-2 ml-sm-4'>           
                         <>
                             <span className='pl-3'>
@@ -3218,6 +3219,7 @@ class DisplayEndpoint extends Component {
                             <Footer />
                         </>   
                 </span>
+  }
       </div>
     ) : null
   }

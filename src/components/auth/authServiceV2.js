@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import http from "../../services/httpService";
 import { switchOrg } from "../../services/orgApiService";
@@ -21,14 +21,14 @@ function isAdmin() {
 }
 
 async function getUserData(token){
-  const response = await axios.get(`${process.env.REACT_APP_PROXY_URL}/getUsers?itemsPerPage=100`, {
-    headers: { proxy_auth_token: token }
-  })
-
-  if(!response){
-    console.log("No User found")
+  try{
+    const response = await axios.get(proxyUrl + "/getUsers?itemsPerPage=100", {
+      headers: { proxy_auth_token: token }
+    })
+    return response?.data?.data?.data;
+  } catch(e){
+    logoutRedirection("/login");
   }
-  return response.data?.data?.data;
 }
 
 function logout(redirectUrl = "/login") {

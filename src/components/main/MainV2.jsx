@@ -4,13 +4,11 @@ import 'react-toastify/dist/ReactToastify.css'
 import ContentPanel from './contentPanel'
 import './main.scss'
 import SideBarV2 from './sideBarV2'
-import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
 import { isDesktop } from 'react-device-detect'
 import OnlineSatus from '../onlineStatus/onlineStatus'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import UpdateStatus from './updateStatus'
-import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
 import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
@@ -55,33 +53,19 @@ class MainV2 extends Component {
       return
     }
 
-    let users
-    try {
-      users = await getUserData(token)
-      if(users) this.props.add_user(users)
-    } catch (error) {
-      toast.error(error.message)
-      this.props.history.push({ pathname: '/login' })
-      this.setState({ loading: false })
-    }
-
+    let users = await getUserData(token)
+    if(users) this.props.add_user(users)
+    
     /** Token Exists */
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
       /** For Logged in User */
       let orgId = this.props.match.params.orgId
-
       if (!orgId) {
         orgId = getOrgList()[0]?.id
-
         this.props.history.push({
           pathname: `/orgs/${orgId}/dashboard`
         })
       } else {
-        const orgName = getOrgList()[0]?.name
-        if (isValidDomain()) {
-          loadWidget()
-          // loadHelloWidget() commenting to hide helloWidget
-        }
         await this.fetchAll()
         this.props.add_collection_and_pages(orgId)
       }
@@ -95,18 +79,8 @@ class MainV2 extends Component {
   }
 
   async fetchAll() {
-    // this.fetchFromBackend()
     this.props.fetch_all_cookies()
   }
-
-  // fetchFromBackend() {
-  // const orgId = this.props.match.params.orgId
-  // this.props.fetch_collections(orgId)
-  // this.props.fetch_all_versions(orgId)
-  // this.props.fetch_groups(orgId)
-  // this.props.fetch_endpoints(orgId)
-  // this.props.fetch_pages(orgId)
-  // }
 
   setVisitedOrgs() {
     const orgId = this.props.match.params.orgId
