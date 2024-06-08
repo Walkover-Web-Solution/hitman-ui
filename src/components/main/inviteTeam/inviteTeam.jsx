@@ -7,11 +7,11 @@ import GenericModal from '../GenericModal'
 import { inviteMembers } from '../../../services/orgApiService'
 import { useSelector, useDispatch } from 'react-redux'
 import { addNewUserData } from '../../auth/redux/userAction'
+import { inviteuserMail } from '../../common/apiUtility'
 
 function InviteTeam() {
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
-  const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const history = useHistory()
@@ -34,16 +34,13 @@ function InviteTeam() {
   const handleInviteClick = () => setShowModal(true)
   const handleCloseModal = () => {
     setShowModal(false)
-    setName('')
     setEmail('')
   }
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSendInvite(e)
-    }
+    if (e.key === 'Enter') handleSendInvite(e)
   }
 
   const handleSendInvite = async (e) => {
@@ -54,10 +51,12 @@ function InviteTeam() {
         toast.error('Invalid email format')
         return
       }
-      const response = await inviteMembers(name, email)
+      const extractedName = email.substring(0, email.indexOf('@')).replace(/[^a-zA-Z]/g, '');
+      const response = await inviteMembers(extractedName, email)
       if (response?.data?.status == 'success') {
         dispatch(addNewUserData(response?.data?.data))
         handleCloseModal()
+        await inviteuserMail(email)
       }
     } catch (error) {
       toast.error('Cannot proceed at the moment. Please try again later')
@@ -79,13 +78,11 @@ function InviteTeam() {
           + Add Member
         </button>
         <GenericModal
-          name={name}
           email={email}
           validateEmail={validateEmail}
           handleKeyPress={handleKeyPress}
           inputRef={inputRef}
           setEmail={setEmail}
-          setName={setName}
           handleSendInvite={handleSendInvite}
           handleCloseModal={handleCloseModal}
           showModal={showModal}
@@ -97,7 +94,6 @@ function InviteTeam() {
         <table className='table'>
           <thead>
             <tr>
-              {/* <th>Name</th> */}
               <th>Email</th>
               <th>Role</th>
               <th>Action</th>
@@ -106,9 +102,8 @@ function InviteTeam() {
           <tbody>
             {Object.entries(users).map(([key, user]) => (
               <tr key={key}>
-                <td>{user.email}</td>
-                <td>Admin</td> {/* Assuming role is always 'Admin' */}
-                <td>{/* Add your edit button here */}</td>
+                <td>{user?.email}</td>
+                <td>Admin</td> 
               </tr>
             ))}
           </tbody>
