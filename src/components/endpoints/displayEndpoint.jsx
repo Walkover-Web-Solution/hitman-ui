@@ -2285,6 +2285,7 @@ class DisplayEndpoint extends Component {
 
   debouncedSave = _.debounce(this.saveData, 1000)
 
+
   renderTiptapEditor(item, index) {
     return (
       <Tiptap
@@ -2302,7 +2303,7 @@ class DisplayEndpoint extends Component {
     switch (item.type) {
       case 'textArea': {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
-          return <div>{this.renderTiptapEditor(item, index)}</div>
+          return <div className="tiptap-editor-container">{this.renderTiptapEditor(item, index)}</div>
         }
         break
       }
@@ -2310,7 +2311,7 @@ class DisplayEndpoint extends Component {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
           return (
             <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
-              {this.renderTiptapEditor(item, index)}
+              <div className='tiptap-editor-container'>{this.renderTiptapEditor(item, index)}</div>
             </div>
           )
         }
@@ -2378,7 +2379,7 @@ class DisplayEndpoint extends Component {
             <Dropdown.Toggle variant='' id='dropdown-basic' className='doc-plus'>
               <img src={PlusIcon} className='mr-2 cursor-pointer' onClick={() => this.showDocOptions()} alt='' />
             </Dropdown.Toggle>
-            <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>
+            <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>   
               <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
               <Dropdown.Item onClick={() => this.addBlock('textBlock')}>Text Block</Dropdown.Item>
             </Dropdown.Menu>
@@ -2389,7 +2390,7 @@ class DisplayEndpoint extends Component {
   }
 
   addBlock(blockType) {
-    const updatedDocViewData = [...this.props.endpointContent.docViewData, { type: blockType, data: '' }]
+    const updatedDocViewData = [...this.props.endpointContent.docViewData, { type: blockType, data: ''}]
     this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: updatedDocViewData })
   }
 

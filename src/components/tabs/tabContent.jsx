@@ -4,7 +4,7 @@ import { Tab } from 'react-bootstrap'
 import { Route, Switch } from 'react-router-dom'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
 import DisplayPage from '../pages/displayPage'
-import EditPage from '../pages/editPage'
+// import EditPage from '../pages/editPage'
 import { getCurrentUser } from '../auth/authServiceV2'
 import PublishDocsForm from './../publishDocs/publishDocsForm'
 import { updateCollection } from '../collections/redux/collectionsActions'
@@ -77,7 +77,7 @@ class TabContent extends Component {
       case 'page':
         return (
           <Switch>
-            <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' render={(props) => <EditPage {...this.props} {...props} tab={tab} />} />
+            {/* <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' render={(props) => <EditPage {...this.props} {...props} tab={tab} />} /> */}
             <Route path='/orgs/:orgId/dashboard/page/:pageId' render={(props) => <DisplayPage {...props} tab={tab} />} />
           </Switch>
         )
