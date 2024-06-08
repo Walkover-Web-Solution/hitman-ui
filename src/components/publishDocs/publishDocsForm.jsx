@@ -9,7 +9,6 @@ import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
 import { handleChangeInUrlField, handleBlurInUrlField, openExternalLink } from '../common/utility'
 import { moveToNextStep } from '../../services/widgetService'
-import { updateCollectionIdForPublish } from '../../store/clientData/clientDataActions'
 import { publishData } from '../modals/redux/modalsActions'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
@@ -60,7 +59,6 @@ const publishDocFormEnum = {
 const mapDispatchToProps = (dispatch) => {
   return {
     update_collection: (collection, stopLoader) => dispatch(updateCollection(collection, stopLoader)),
-    setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data)),
     ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
     update_tab: (activeTab) => dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' }}))
   }
@@ -404,7 +402,6 @@ class PublishDocForm extends Component {
   redirectUser() {
     this.setState({ openPublishSidebar: true })
     this.props.ON_PUBLISH_DOC(true)
-    // this.props.setCollectionIdForPublish({ collectionId: this.props.selected_collection_id })
   }
   openExternalLink = (url) => {
     window.open(url, '_blank', 'noopener,noreferrer');

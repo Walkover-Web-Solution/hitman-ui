@@ -20,9 +20,15 @@ export async function getPublishedContentByIdAndType(id, type) {
   return type == 4 ? data?.data?.publishedContent || {} : data?.data?.publishedContent?.contents || {}
 }
 
+export async function runAutomation(details) {
+  let data = await http.post(apiUrl + `/run/automation`, details)
+  return data;
+}
+
 export default {
   getCollectionsAndPages,
   getPublishedContentByPath,
   getPublishedContentByIdAndType,
-  moveCollectionsAndPages
+  moveCollectionsAndPages,
+  runAutomation,
 }

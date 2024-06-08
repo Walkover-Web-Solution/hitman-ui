@@ -21,9 +21,16 @@ export const updataForIsPublished = (payload) => {
   }
 }
 
-export const updateCollectionIdForPublish = (payload) => {
+export const updateEndpointCheckStatus = (payload) => {
   return {
-    type: clientDataActionTypes.SET_COLLECTION_ID_FOR_PUBLISH,
+    type: clientDataActionTypes.UDPATE_ENDPOINT_CHECK_STATUS,
+    payload
+  }
+}
+
+export const updateAllEndpointCheckStatus = (payload) => {
+  return {
+    type: clientDataActionTypes.UPDATE_ALL_ENDPOINTS_CHECK_STATUS,
     payload
   }
 }

@@ -1,0 +1,32 @@
+.checkbox-container {
+    span {
+        color: rgb(137, 136, 136);
+        font-size: 12px;
+
+        &:hover {
+            color: rgba(0, 0, 0, 0.8);
+        }
+    }
+
+    input {
+        height: 10px;
+    }
+
+    .saperation {
+        background-color: grey;
+        height: 20px;
+        width: 1px;
+        transform: translateY(-2%);
+    }
+}
+
+.automation-modal-container {
+    height: 200px;
+}
+
+.data-message {
+    color: rgba(128, 128, 128, 0.706);
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+}

@@ -49,3 +49,14 @@
 .protocol-dropdown {
   border: 1px solid rgba(128, 128, 128, 0.3) !important;
 }
+
+.endpoint-description {
+  &:focus{
+    outline: none;
+    border: none;
+  }
+  &:active{
+    outline: none;
+    border: none;
+  }
+}
