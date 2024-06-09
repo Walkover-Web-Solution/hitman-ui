@@ -47,7 +47,13 @@ class DisplayDescription extends Component {
       this.setState({ theme: this.props.publicCollectionTheme })
     }
     if (this.contentEditableRef.current) {
-      this.contentEditableRef.current.innerText = this.props?.endpoint?.description;
+      this.contentEditableRef.current.innerText = this.props?.endpoint?.description || 'Write Description';
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.endpointId !== this.props.endpointId) {
+      this.contentEditableRef.current.innerText = this.props?.endpoint?.description || 'Write Description';
     }
   }
 

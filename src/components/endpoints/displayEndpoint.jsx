@@ -2995,6 +2995,7 @@ class DisplayEndpoint extends Component {
                         {this.isDashboardAndTestingView() && (
                           <DisplayDescription
                             {...this.props}
+                            endpointId={this.props?.currentEndpointId}
                             endpoint={this.props.endpointContent}
                             data={this.state.data}
                             old_description={this.state.oldDescription}
