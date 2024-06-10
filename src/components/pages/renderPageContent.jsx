@@ -43,8 +43,8 @@ export default function RenderPageContent(props) {
                     {headings.length > 0 && (<div className='doc-view' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />)}
                     {isOnPublishedPage() && headings.length > 0 && (
                         <>
-                            <div className='editor-headings  d-flex flex-column h-100'>
-                                <span className='text-secondary pb-2 d-inline-block'> In this page</span>
+                            <div className='editor-headings d-flex flex-column h-100'>
+                                <span className='pb-2 text-dark d-inline-block font-weight-bold fs-3'> On this page</span>
                                 <div className='border border-2 p-2 rounded-lg h-100'>
                                     <div>
                                         {headings.map((heading) => (
