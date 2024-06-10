@@ -209,7 +209,7 @@ const getEndpointContent = async (props) => {
     return tabId?.draft
   }
 
- const extractParams = (pattern, pathname) => {
+  const extractParams = (pattern, pathname) => {
     const patternParts = pattern.split('/');
     const pathParts = pathname.split('/');
 
@@ -1129,9 +1129,12 @@ class DisplayEndpoint extends Component {
     }
     this.setState({ loader: false })
 
-    if (this.myRef?.current?.scrollIntoView) {
-      this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
-    }
+    setTimeout(() => {
+      if (this.myRef?.current?.scrollIntoView) {
+        console.log("inside here");
+        this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 0);
   }
 
   runScript(code, environment, request, responseJson) {
@@ -1976,7 +1979,7 @@ class DisplayEndpoint extends Component {
   displayResponseAndSampleResponse() {
     return (
       <>
-        <div className='custom-tabs clear-both response-container mb-2' ref={this.myRef}>
+        <div className='custom-tabs clear-both response-container mb-2' >
           <div className='d-flex justify-content-between align-items-center'>
             <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
               <li className='nav-item'>
@@ -2845,7 +2848,6 @@ class DisplayEndpoint extends Component {
       !isDashboardRoute(this.props) ||
       !isSavedEndpoint(this.props) ? (
       <div
-        ref={this.myRef}
         className={
           !this.isNotDashboardOrDocView()
             ? ''
