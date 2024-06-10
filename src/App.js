@@ -26,6 +26,7 @@ import shortid from 'shortid'
 import OauthPage from './components/OauthPage/OauthPage.js'
 import TrashPage from './components/main/Trash/trashPage.jsx'
 import IndexWebsite from './components/indexWebsite/indexWebsite.js'
+import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -113,6 +114,7 @@ class App extends Component {
           <Route path='/login' component={LoginV2} />
           <Route path='/logout' component={Logout} />
           <Route exact path='/proxy/auth' component={AuthServiceV2} />
+          <Route exact path='/orgs/:orgId/automation/:collectionId' component={RunAutomation} />
         </Switch>
       </>
     )

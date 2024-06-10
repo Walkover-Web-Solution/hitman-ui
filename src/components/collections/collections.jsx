@@ -29,7 +29,6 @@ import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
 import { LuFolder } from "react-icons/lu";
 import { TbSettingsAutomation } from "react-icons/tb";
-import RunAutomation from './runAutomation/runAutomation'
 
 
 const mapStateToProps = (state) => {
@@ -71,7 +70,7 @@ class CollectionsComponent extends Component {
       automationSelectedCollectionId: null,
     }
     this.names = {}
-    this.handleAutomationModal = this.handleAutomationModal.bind(this)
+    this.handleApiAutomation = this.handleApiAutomation.bind(this)
   }
 
   closeCollectionForm() {
@@ -235,15 +234,7 @@ class CollectionsComponent extends Component {
   }
 
   handleApiAutomation(collectionId) {
-    this.handleAutomationModal(collectionId)
-  }
-
-  handleAutomationModal(collectionId) {
-    this.setState({ showRunAutomationModal: !this.state.showRunAutomationModal, automationSelectedCollectionId:collectionId })
-  }
-
-  renderRunAutomationModal() {
-    return <RunAutomation handleClose={this.handleAutomationModal} collectionId={this.state.automationSelectedCollectionId} />
+    this.props.history.push(`/orgs/${this.props.match.params.orgId}/automation/${collectionId}`)
   }
 
   renderBody(collectionId, collectionState) {
