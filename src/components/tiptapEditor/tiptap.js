@@ -14,13 +14,15 @@ import Text from '@tiptap/extension-text'
 import TextStyle from '@tiptap/extension-text-style'
 import Placeholder from '@tiptap/extension-placeholder'
 import Color from '@tiptap/extension-color'
+import TextAlign from '@tiptap/extension-text-align';
+import CodeBlock from '@tiptap/extension-code-block';
+import { BsThreeDots } from "react-icons/bs";
 import '../styles.scss'
 import {
   FaBold,
   FaItalic,
   FaStrikethrough,
   FaUnderline,
-  FaCode,
   FaHighlighter,
   FaLink,
   FaUndo,
@@ -29,13 +31,20 @@ import {
   FaListOl,
   FaRulerHorizontal,
   FaImage,
-  FaTable
+  FaTable,
+  FaAlignLeft,
+  FaAlignCenter,
+  FaAlignRight,
+  FaAlignJustify,
+  FaHeading,
+  FaCode,
 } from 'react-icons/fa'
-import { LuHeading1, LuHeading2, LuHeading3, LuTextQuote } from "react-icons/lu";
-import { BiCodeBlock, BiPlus } from 'react-icons/bi'
+import { LuHeading1, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, LuTextQuote, LuListTodo } from "react-icons/lu";
+import { BiCodeBlock, BiFontColor, BiPlus } from 'react-icons/bi'
 import { Dropdown, Modal } from 'react-bootstrap'
 import { Style } from 'react-style-tag'
 import { LiaSortAlphaDownSolid } from 'react-icons/lia'
+import { SketchPicker } from 'react-color'
 
 
 export default function Tiptap({ initial, onChange, disabled, isInlineEditor, minHeight }) {
@@ -46,6 +55,10 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
   const [showLink, setShowLink] = useState(false)
   const [showTable, setShowTable] = useState(false)
   const [showImage, setShowImage] = useState(false)
+  const [alignment, setAlignment] = useState('left');
+  const [color, setColor] = useState("");
+  const [activeHeading, setActiveHeading] = useState(0);
+
 
 
   const editor = useEditor({
@@ -60,9 +73,13 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
       Underline,
       Highlight,
       Image,
+      CodeBlock,
       TextStyle,
       Color.configure({
         types: ['textStyle'],
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
       }),
       Text,
       Placeholder.configure({
@@ -90,10 +107,39 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
     },
     editable: !disabled
   })
+  const toggleHeading = (level) => {
+    if (editor) {
+      editor.chain().focus().toggleHeading({ level }).run();
+      setActiveHeading(level);
+    }
+  };
+
+  const HeadingIcon = ({ level }) => {
+    switch (level) {
+      case 1:
+        return <LuHeading1 />;
+      case 2:
+        return <LuHeading2 />;
+      case 3:
+        return <LuHeading3 />;
+      case 4:
+        return <LuHeading4 />;
+      case 5:
+        return <LuHeading5 />;
+      case 6:
+        return <LuHeading6 />;
+      default:
+        return <FaHeading />;
+    }
+  };
   function onHide() {
     if (showImage) setShowImage(false)
     else if (showLink) setShowLink(false)
     else setShowTable(false)
+  }
+  function handleTextColor(color) {
+    setColor(color.hex);
+    editor.chain().focus().setColor(color.hex).run();
   }
   function showModal() {
     return (
@@ -185,9 +231,6 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
           >
             <FaUnderline />
           </button>
-          <button onClick={() => editor.chain().focus().toggleCode().run()} className={editor.isActive('code') ? 'is-active' : ''}>
-            <FaCode />
-          </button>
           <button
             type='button'
             onClick={() => editor.chain().focus().toggleHighlight().run()}
@@ -195,30 +238,39 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
           >
             <FaHighlighter />
           </button>
-          <button onClick={() => editor.chain().focus().undo().run()}>
-            <FaUndo />
-          </button>
-          <button onClick={() => editor.chain().focus().redo().run()}>
-            <FaRedo />
-          </button>
-          <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={editor.isActive('bulletList') ? 'is-active' : ''}>
-            <FaListUl />
-          </button>
-          <button
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={editor.isActive('orderedList') ? 'is-active' : ''}
-          >
-            <FaListOl />
-          </button>
-          <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-            <FaRulerHorizontal />
-          </button>
-          <button onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive('codeBlock') ? 'is-active' : ''}>
-            <BiCodeBlock />
-          </button>
           <button onClick={() => setShowLink(true)}>
             <FaLink />
           </button>
+          <Dropdown>
+            <Dropdown.Toggle variant="light" id="alignment-dropdown">
+              {alignment === 'left' && <FaAlignLeft />}
+              {alignment === 'center' && <FaAlignCenter />}
+              {alignment === 'right' && <FaAlignRight />}
+              {alignment === 'justify' && <FaAlignJustify />}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => { setAlignment('left'); editor.chain().focus().setTextAlign('left').run(); }}>
+                <FaAlignLeft /> Left
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => { setAlignment('center'); editor.chain().focus().setTextAlign('center').run(); }}>
+                <FaAlignCenter /> Center
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => { setAlignment('right'); editor.chain().focus().setTextAlign('right').run(); }} >
+                <FaAlignRight /> Right
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => { setAlignment('justify'); editor.chain().focus().setTextAlign('justify').run(); }}>
+                <FaAlignJustify /> Justify
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <Dropdown>
+            <Dropdown.Toggle>
+              <BiFontColor />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <SketchPicker color={color} onChangeComplete={handleTextColor} />
+            </Dropdown.Menu>
+          </Dropdown>
           <Dropdown >
             <Dropdown.Toggle>
               <FaTable />
@@ -254,6 +306,52 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
+          <Dropdown>
+            <Dropdown.Toggle variant="light" id="heading-dropdown">
+              <HeadingIcon level={activeHeading} />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {[1, 2, 3, 4, 5, 6].map((level) => (
+                <Dropdown.Item key={level}>
+                  <button
+                    onClick={() => toggleHeading(level)}
+                    className={editor.isActive('heading', { level }) ? 'is-active' : ''}
+                  >
+                    <HeadingIcon level={level} /> Heading{level}
+                  </button>
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+          <Dropdown>
+            <Dropdown.Toggle variant="light" id="additional-options-dropdown">
+              <BsThreeDots />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => editor.chain().focus().undo().run()}>
+                <FaUndo /> Undo
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().redo().run()}>
+                <FaRedo /> Redo
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().toggleBulletList().run()} className={editor.isActive('bulletList') ? 'is-active' : ''}>
+                <FaListUl /> Bullet List
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().toggleOrderedList().run()} className={editor.isActive('orderedList') ? 'is-active' : ''}>
+                <FaListOl /> Numbered List
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                <FaRulerHorizontal /> Horizontal Rule
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive('codeBlock') ? 'is-active' : ''}>
+                <FaCode /> Code Block
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? 'is-active' : ''}>
+                <LuTextQuote /> Quote
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+
         </BubbleMenu>
       )}
 
