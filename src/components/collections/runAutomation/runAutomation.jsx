@@ -109,19 +109,17 @@ export default function RunAutomation() {
                                 <div className='saperation'></div>
                                 <span onClick={() => handleSelectAndDeselectAll(false)} className='ml-1 cursor-pointer'>Deselect All</span>
                             </div>
-                            <div className='d-flex justify-content-end'>
-                                {automationLoading ?
-                                    <button className='btn btn-primary btn-sm fs-4 mt-2 d-flex justify-content-center align-items-center'>
-                                        <span size="sm" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                        <span className='ml-1'>Running...</span>
-                                    </button>
-                                    :
-                                    <button onClick={handleRunAutomation} className='btn btn-primary btn-sm fs-4 mt-2 d-flex justify-content-center align-items-center'>
-                                        <IoIosPlay className='mr-1' />
-                                        <span>Run</span>
-                                    </button>
-                                }
-                            </div>
+                            {automationLoading ?
+                                <button className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'>
+                                    <span size="sm" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span className='ml-1'>Running...</span>
+                                </button>
+                                :
+                                <button onClick={handleRunAutomation} className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'>
+                                    <IoIosPlay className='mr-1' />
+                                    <span>Run</span>
+                                </button>
+                            }
                         </div>
 
                         <div className='mt-1 d-flex flex-column align-items-start justify-content-center'>
