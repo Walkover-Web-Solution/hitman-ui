@@ -97,7 +97,7 @@ class DisplayPage extends Component {
       data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
       page: null,
       requestKey: null,
-      showEditor: false
+      showEditor: true
     }
     this.name = React.createRef()
     this.contents = React.createRef()
@@ -117,6 +117,7 @@ class DisplayPage extends Component {
     }
   }
   async componentDidMount() {
+    await this.setPageData()
     this._isMounted = true
     this.extractPageName()
     if (!this.props?.location?.page) {
@@ -216,18 +217,14 @@ class DisplayPage extends Component {
           {isOnPublishedPage() && (
             <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>
           )}
-          {!isOnPublishedPage() && this.state.showEditor ? (
-            <div className='pageText doc-view'>
-              {this.renderEditor(this.props.pageContent === null ? '' : this.props.pageContent, index)}
-            </div>
-          ) : (
+          {!isOnPublishedPage() && (
             <div
               className='pageText doc-view'
               onClick={() => {
                 this.setState({ showEditor: true })
               }}
             >
-              {this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}
+              {this.renderEditor(this.props.pageContent === null ? '' : this.props.pageContent, index)}
             </div>
           )}
           {isOnPublishedPage() && (
@@ -251,7 +248,7 @@ class DisplayPage extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
     const editedPage = { ...this.state.data }
-    if (editedPage.contents !== this.props.pageContent) {
+    if (this.props.pageContent != null && editedPage.contents !== this.props.pageContent) {
       editedPage.contents = this.props.pageContent
     }
 
