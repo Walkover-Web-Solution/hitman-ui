@@ -481,11 +481,11 @@ class UserProfileV2 extends Component {
     const selectedOrg = getCurrentOrg()
     return (
       <div className='org-listing-container '>
-        <div className='org-listing-column d-flex flex-column'>
+        <div className='org-listing-column d-flex flex-column w-100'>
           {organizations.map((org, key) => (
             <div key={key} className="d-flex justify-content-between align-items-center">
               <button
-                className={`mb-2 p-2 btn btn-secondary ${org?.id === selectedOrg?.id ? 'active' : ''}`}
+                className={`mb-2 p-2 btn btn-secondary org-listing-button ${org?.id === selectedOrg?.id ? 'active' : ''}`}
                 onClick={() => {
                   this.handleOrgClick(org, selectedOrg)
                 }}
