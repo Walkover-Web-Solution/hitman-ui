@@ -3,14 +3,17 @@
   min-height: 14vh;
   justify-content: center;
   .org-listing-column {
-    flex: 0 0 46%;
-    button {
+    .org-listing-button {
       height: 44px !important;
       text-transform: capitalize;
       border-radius: 8px !important;
       font-weight: 500 !important;
       font-size: 14px !important;
       transition: ease-in;
+      overflow: hidden;
+      width: 200px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       &.btn-secondary {
         background-color: #6c757d !important;
       }
