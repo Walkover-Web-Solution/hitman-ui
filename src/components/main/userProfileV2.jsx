@@ -74,9 +74,12 @@ class UserProfileV2 extends Component {
     this.setState({ email: currentUser.email })
   }
 
-  toggleModal = async() => {
-    if (!this.state.showModal) await fetchOrganizations();
-    this.setState({ showModal: !this.state.showModal })
+  toggleModal = async () => {
+    this.setState({ showModal: !this.state.showModal, loading: true });
+    if (!this.state.showModal) {
+      await fetchOrganizations();
+      this.setState({ loading: false });
+    }
   }
 
   handleAddNewClick() {
@@ -585,7 +588,7 @@ class UserProfileV2 extends Component {
                 <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
                 <Dropdown.Item>
                   {/* <div className='profile-menu'> */}
-                  <span className='profile-details d-block' onClick={this.toggleModal} type='button'>
+                  <span className='profile-details w-100' onClick={this.toggleModal} type='button'>
                   <MdSwitchLeft size={18} />
                     Switch Organization
                   </span>
@@ -598,7 +601,13 @@ class UserProfileV2 extends Component {
                     handleCloseModal={this.toggleModal}
                     showModal={this.state.showModal}
                     title='Switch Organization'
-                    modalBody={this.renderOrgListDropdown()}
+                    modalBody={
+                      this.state.loading ? (
+                        <div>Loading...</div> 
+                      ) : (
+                        this.renderOrgListDropdown()
+                      )
+                    }
                     keyboard={false}
                     showInput
                     handleAddOrg={this.handleAddOrg}
