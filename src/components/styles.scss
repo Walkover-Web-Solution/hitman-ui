@@ -300,27 +300,27 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 
   &.POST {
-    background-color: #d5e8dd;
+    background-color: $post-background-color;
     color: #27ae60;
   }
 
   &.GET {
-    background-color: #e9e4d9;
+    background-color: $get-background-color;
     color: #e98a36;
   }
 
   &.PUT {
-    background-color: #e4e3ce;
+    background-color: $put-background-color;
     color: #cca027;
   }
 
   &.PATCH {
-    background-color: #e4d9cd;
+    background-color: $patch-background-color;
     color: #ce6529;
   }
 
   &.DELETE {
-    background-color: #e4d2d4;
+    background-color: $delete-background-color;
     color: #d13755;
   }
 }
