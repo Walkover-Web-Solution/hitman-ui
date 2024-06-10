@@ -7,7 +7,7 @@ import File from '../../assets/icons/file.svg'
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
 import { getCurrentOrg, getCurrentUser } from '../auth/authServiceV2'
 import GenericModal from './GenericModal'
-import { switchOrg, createOrg } from '../../services/orgApiService'
+import { switchOrg, createOrg, fetchOrganizations, leaveOrganization } from '../../services/orgApiService'
 import './userProfile.scss'
 import { toast } from 'react-toastify'
 import { withRouter } from 'react-router-dom'
@@ -74,8 +74,12 @@ class UserProfileV2 extends Component {
     this.setState({ email: currentUser.email })
   }
 
-  toggleModal = () => {
-    this.setState({ showModal: !this.state.showModal })
+  toggleModal = async () => {
+    this.setState({ showModal: !this.state.showModal, loading: true });
+    if (!this.state.showModal) {
+      await fetchOrganizations();
+      this.setState({ loading: false });
+    }
   }
 
   handleAddNewClick() {
@@ -480,23 +484,32 @@ class UserProfileV2 extends Component {
     const selectedOrg = getCurrentOrg()
     return (
       <div className='org-listing-container '>
-        <div className='org-listing-column d-flex flex-column'>
+        <div className='org-listing-column d-flex flex-column w-100'>
           {organizations.map((org, key) => (
-            <button
-              className={`mb-2 p-2 btn btn-secondary ${org?.id === selectedOrg?.id ? 'active' : ''} `}
-              id='publish_collection_btn'
-              // variant= 'btn btn-outline'
-              key={key}
-              onClick={() => {
-                this.handleOrgClick(org, selectedOrg)
-              }}
-            >
-              {org.name}
-            </button>
+            <div key={key} className="d-flex justify-content-between align-items-center">
+              <button
+                className={`mb-2 p-2 btn btn-secondary org-listing-button ${org?.id === selectedOrg?.id ? 'active' : ''}`}
+                onClick={() => {
+                  this.handleOrgClick(org, selectedOrg)
+                }}
+              >
+                {org.name}
+              </button>
+              <button
+                className="mb-2 p-2 btn btn-danger"
+                onClick={() => this.leaveOrganizationAndUpdate(org.id)}
+              >
+                Leave
+              </button>
+            </div>
           ))}
         </div>
       </div>
     )
+  }
+  
+  leaveOrganizationAndUpdate(orgId) {
+    leaveOrganization(orgId);
   }
 
   getAllOrgs(organizations) {
@@ -575,7 +588,7 @@ class UserProfileV2 extends Component {
                 <Dropdown.Item className='mt-2'>{this.renderInviteTeam()}</Dropdown.Item>
                 <Dropdown.Item>
                   {/* <div className='profile-menu'> */}
-                  <span className='profile-details d-block' onClick={this.toggleModal} type='button'>
+                  <span className='profile-details w-100' onClick={this.toggleModal} type='button'>
                   <MdSwitchLeft size={18} />
                     Switch Organization
                   </span>
@@ -588,7 +601,13 @@ class UserProfileV2 extends Component {
                     handleCloseModal={this.toggleModal}
                     showModal={this.state.showModal}
                     title='Switch Organization'
-                    modalBody={this.renderOrgListDropdown()}
+                    modalBody={
+                      this.state.loading ? (
+                        <div>Loading...</div> 
+                      ) : (
+                        this.renderOrgListDropdown()
+                      )
+                    }
                     keyboard={false}
                     showInput
                     handleAddOrg={this.handleAddOrg}

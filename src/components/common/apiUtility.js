@@ -1,3 +1,5 @@
+import { getCurrentOrg, getCurrentUser } from "../auth/authServiceV2";
+
 export async function getParseCurlData(curl) {
     let viaSocketUrl = 'https://flow-api.viasocket.com/utility/parse-curl';
     const response = await fetch(viaSocketUrl, {
@@ -15,3 +17,19 @@ export async function getParseCurlData(curl) {
 
     return response.json(); 
 }
+
+export async function inviteuserMail(email) {
+    let viaSocketUrl = 'https://flow.sokt.io/func/scriOLOYbi0d';
+    await fetch(viaSocketUrl, {
+        method: 'POST', 
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            receiverEmail: email,
+            senderEmail: getCurrentUser()?.email,
+            organizationName: getCurrentOrg()?.name
+        }) 
+    });
+}
+
