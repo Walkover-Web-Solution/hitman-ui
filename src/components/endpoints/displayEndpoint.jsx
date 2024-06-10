@@ -70,6 +70,8 @@ import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
 import { LiaSaveSolid } from 'react-icons/lia'
 import QueryTab from './queryTab/queryTab.jsx'
 import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
+import DisplayUserAndModifiedData from '../common/userService.jsx'
+
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -99,7 +101,8 @@ const mapStateToProps = (state) => {
     activeTabId: state.tabs.activeTabId,
     tabs: state?.tabs?.tabs,
     tokenDetails: state?.tokenData?.tokenDetails,
-    curlSlider: state.modals?.curlSlider || false
+    curlSlider: state.modals?.curlSlider || false,
+    users: state.users
   }
 }
 
@@ -550,7 +553,7 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
-    // if (!e?.currentTarget?.value) return;
+    // if(!e?.target?.value) return;
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
     data.uri = e.currentTarget.value
@@ -3222,15 +3225,27 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
-                <span className='mb-2 d-inline-block text-secondary '>
-                  {isOnPublishedPage() &&
-                    this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt &&
-                    `Modified at ${moment(this.props?.endpoints?.[this.props?.currentEndpointId]?.updatedAt).fromNow()}`}
-                </span>
-              </div>
-              <div className='w-75 mt-4 position-relative'>
-                <span className='footer-upper'><ApiDocReview {...this.props} />{isOnPublishedPage() && <Footer />}</span>
-              </div>
+              </div>    
+              <div className='w-100'>    
+              <span className='footer-upper'>
+                {isOnPublishedPage() && (
+              <>
+              <span className='pl-3'>
+              <DisplayUserAndModifiedData
+              isOnPublishedPage={true}
+              pages={this.props.pages}
+              currentPage={this.props.currentEndpointId}
+              users={this.props.users}
+            />
+          </span>
+          <div className='w-100 d-flex justify-content-center'>
+          <ApiDocReview {...this.props} />
+          </div>
+          <Footer />
+        </>
+      )}
+    </span>
+    </div>
             </div>
 
             {this.isDashboardAndTestingView() ? (
@@ -3250,8 +3265,32 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
-
-        <span className='footer-lower mt-4'><ApiDocReview {...this.props} />{isOnPublishedPage() && <Footer />}</span>
+        {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
+              <DisplayUserAndModifiedData
+              isOnPublishedPage={isOnPublishedPage()}
+              pages={this.props.pages}
+              currentPage={this.props.currentEndpointId}
+              users={this.props.users}
+              />
+        </span>}
+              <div className='w-100'>    
+        <span className='footer-lower ml-2 ml-sm-4'>           
+                        <>
+                            <span className='pl-3'>
+                                <DisplayUserAndModifiedData
+                                    isOnPublishedPage={isOnPublishedPage()}
+                                    pages={this.props.pages}
+                                    currentPage={this.props.currentEndpointId}
+                                    users={this.props.users}
+                                />
+                            </span>
+                            <div className='w-100 d-flex flex-column align-items-center'>
+                            <ApiDocReview {...this.props} />
+                            </div>
+                            <Footer />
+                        </>   
+                </span>
+                </div>
       </div>
     ) : null
   }

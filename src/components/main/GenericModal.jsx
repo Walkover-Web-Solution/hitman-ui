@@ -7,7 +7,6 @@ import { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 function GenericModal({
   email,
-  name,
   validateEmail,
   validateName,
   keyboard,
@@ -34,7 +33,6 @@ function GenericModal({
   const handleClose = () => {
     handleCloseModal()
     setcreateOrg(false)
-    setName('')
   }
   return (
     <div>
@@ -47,18 +45,7 @@ function GenericModal({
             <>
               <InputGroup className='mb-2'>
                 <Form.Control
-                  ref={inputRef}
-                  placeholder='Enter User Name'
-                  type='name'
-                  aria-label="Recipient's name"
-                  aria-describedby='basic-addon2'
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  onKeyDown={handleKeyPress}
-                />
-              </InputGroup>
-              <InputGroup>
-                <Form.Control
+                 ref={inputRef}
                   placeholder='Enter User Email'
                   type='email'
                   aria-label="Recipient's email"
