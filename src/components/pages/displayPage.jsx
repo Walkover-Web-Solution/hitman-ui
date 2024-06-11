@@ -115,18 +115,6 @@ class DisplayPage extends Component {
         this.setState({ data: this.props.pages[this.props.pageId] })
       }
     }
-    const div = document.getElementById('headingTop');
-    console.log(div)
-        if (div) {
-          const h2Elements = div.querySelectorAll('h2');
-          console.log(h2Elements,"h2elements")
-          h2Elements.forEach((h2, index) => {
-            h2.id = `heading${index + 1}`;
-          });
-          const data = Array.from(h2Elements).map(h2 => h2.innerHTML);
-          console.log(data,data)
-          // setHeadings(data);
-        }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -171,28 +159,6 @@ class DisplayPage extends Component {
       )
     }
   }
-  // checkPageHeading() {
-  //   const [headings, setHeadings] = useState([]);
-  //   useEffect(() => {
-  //     const div = document.getElementById('headingTop');
-  //     if (div) {
-  //       const h2Elements = div.querySelectorAll('h2');
-  //       h2Elements.forEach((h2, index) => {
-  //         h2.id = `heading${index + 1}`;
-  //       });
-  //       const data = Array.from(h2Elements).map(h2 => h2.innerHTML);
-  //       setHeadings(data);
-  //     }
-  
-  //   }, [ setHeadings]);
-  //   return (
-  //     <>
-  //     {headings.map((heading, index) => (
-  //       <a className='d-block' target='_top' key={index} href={`#heading${index + 1}`}>{heading}</a>
-  //     ))}
-  //     </>
-  //   )
-  // }
 
   
 renderPageUserData(isOnPublishedPage) {
@@ -453,7 +419,6 @@ renderPageUserData(isOnPublishedPage) {
         {this.renderPublishPageOperations()}
         {this.renderPageName()}
         {this.checkPageRejected()}
-        {/* {this.checkPageHeading()} */}
         {/* <ApiDocReview {...this.props} /> */}
         {isOnPublishedPage() && <Footer />}
       </div>
