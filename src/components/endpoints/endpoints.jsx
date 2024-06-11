@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOnRedirectionPage } from '../common/utility'
 import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
@@ -24,9 +24,9 @@ import  IconButtons  from '../common/iconButton'
 import { BsThreeDots } from "react-icons/bs"
 import { GrGraphQl } from 'react-icons/gr'
 import '../../../src/components/styles.scss'
+// import { importPostmanEnvironment } from '../environments/environmentsApiService'
+import { setLatestUrl } from '../collections/redux/urlAction'
 import { importPostmanEnvironment } from '../environments/environmentsApiService'
-
-// 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
   PENDING_STATE: 0,
   REJECT_STATE: 3,
@@ -38,7 +38,8 @@ const mapStateToProps = (state) => {
   return {
     endpoints: state.pages,
     tabs: state.tabs,
-    clientData: state.clientData
+    clientData: state.clientData,
+    latestUrl : state.urlMapping.latestUrl
   }
 }
 
@@ -54,6 +55,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    set_latest_url: (url) =>dispatch(setLatestUrl(url)),
     import_postman_environment: (openApiObject, importType, website, callback, view) =>
     dispatch(importPostmanEnvironment(openApiObject, importType, website, callback, view))
   }
@@ -79,6 +81,7 @@ class Endpoints extends Component {
     if (this.props.theme) {
       this.setState({ theme: this.props.theme })
     }
+    
     const { endpointId } = this.props.match.params
   }
 
@@ -338,6 +341,10 @@ class Endpoints extends Component {
   displaySingleEndpoint(endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     let isUserOnPublishedPage = isOnPublishedPage()
+    let id = endpointId
+    let pathName = getUrlPathById(id, this.props.pages)
+    pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+    let isUserOnRedirectionPage = isOnRedirectionPage()
     const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
     return (
       <>
@@ -358,11 +365,16 @@ class Endpoints extends Component {
             <button
               tabIndex={-1}
               onClick={() => {
-                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
+                if(!isUserOnRedirectionPage)
+                  {this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)}
+                else{
+                  this.props.set_latest_url( pathName)
+                }
               }}
-              onDoubleClick={() =>
-                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
-              }
+              onDoubleClick={() => {
+                if(!isUserOnRedirectionPage)
+                  {this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)}
+              }}
             >
               
               {this.displayEndpointName(endpointId)}

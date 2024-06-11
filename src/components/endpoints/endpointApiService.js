@@ -12,7 +12,7 @@ const apiUrlEndpoint = process.env.REACT_APP_API_URL
 
 function getApiUrl() {
   const orgId = getOrgId()
-  return apiUrlEndpoint + `/orgs/${orgId}`
+  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 }
 
 function endpointUrlForCollection(pageId) {

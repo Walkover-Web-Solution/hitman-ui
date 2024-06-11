@@ -7,11 +7,13 @@ import {
   getUrlPathById,
   isTechdocOwnDomain,
   SESSION_STORAGE_KEY,
-  isOnPublishedPage
+  isOnPublishedPage,
+  isOnRedirectionPage
 } from '../common/utility'
 import ShareGroupForm from '../groups/shareGroupForm'
 import './groups.scss'
 import groupsService from './groupsService'
+import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
@@ -20,16 +22,19 @@ import SubPageForm from './subPageForm.jsx'
 import { ReactComponent as EditSign } from '../../assets/icons/editsign.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { MdExpandMore } from "react-icons/md"
+import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
 import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
 import { IoDocumentTextOutline } from "react-icons/io5"
+import { setLatestUrl } from '../collections/redux/urlAction.js'
 
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     clientData: state.clientData,
-    modals: state.modals
+    modals: state.modals,
+    latestUrl: state.urlMapping.latestUrl
   }
 }
 
@@ -37,7 +42,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     update_isExpand_for_subPages: (payload) => dispatch(addIsExpandedAction(payload)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
-    delete_page: (page) => dispatch(deletePage(page))
+    delete_page: (page) => dispatch(deletePage(page)),
+    set_latest_url: (url) =>dispatch(setLatestUrl(url))
   }
 }
 
@@ -164,79 +170,6 @@ class Groups extends Component {
       isChecked: !this.props?.clientData?.[this?.props?.rootParentId]?.checkedForPublished
     })
   }
-
-  renderBody(subPageId) {
-    let isUserOnPublishedPage = isOnPublishedPage()
-    let isuserONTechdocOwnDomain = isTechdocOwnDomain()
-    const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isUserOnPublishedPage
-    const isSelected = (isUserOnPublishedPage && isuserONTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId) ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === subPageId ? 'selected' : '')
-    return (
-      <>
-        <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
-          <button tabIndex={-1} className={`${expanded ? 'expanded' : ''}`}>
-          <div className={`active-selected d-flex justify-content-between align-items-center ${isSelected ? ' selected' : ''}`}>
-            <div
-              draggable={!isUserOnPublishedPage}
-              onDragOver={this.props.handleOnDragOver}
-              onDragStart={() => this.props.onDragStart(subPageId)}
-              onDrop={(e) => this.props.onDrop(e, subPageId)}
-              onDragEnter={(e) => this.props.onDragEnter(e, subPageId)}
-              onDragEnd={(e) => this.props.onDragEnd(e)}
-              style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
-              className={`d-flex align-items-center justify-content-center cl-name name-sub-page`}
-              onClick={(e) => {
-                this.handleRedirect(subPageId)
-                  if(!expanded){
-                  this.handleToggle(e,subPageId)
-                  }
-              }}
-            >
-             <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
-              <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
-                  <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 '/>
-              </span>
-              <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{this.props.pages[subPageId]?.name}</div>
-            </div>
-            
-            {
-              // [info] options not to show on publihsed page
-              isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
-                <div className='sidebar-item-action d-flex align-items-center'>
-                  <div onClick={() => this.openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
-                    <IconButtons><FiPlus /></IconButtons>
-                  </div>
-                  <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                  <IconButtons><BsThreeDots /></IconButtons>
-                  </div>
-                  <div className='dropdown-menu dropdown-menu-right'>
-                    <div className='dropdown-item d-flex' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
-                      <EditSign /> Rename
-                    </div>
-                    <div
-                      className='dropdown-item text-danger d-flex'
-                      onClick={() => {
-                        this.openDeleteSubPageModal(subPageId)
-                      }}
-                    >
-                      <DeleteIcon /> Delete
-                    </div>
-                  </div>
-                </div>
-              ) : null
-            }
-            </div>
-          </button>
-          {expanded ? (
-            <div className='linkWrapper versionPages'>
-              <Card.Body>
-                <CombinedCollections {...this.props} />
-              </Card.Body>
-            </div>
-          ) : null}
-        </div>
-      </>
-    )
-  }
   handleRedirect(id){
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
@@ -248,6 +181,93 @@ class Groups extends Component {
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
       this.props.history.push(pathName)
     }
+  }
+  handleToggle(e,id) {
+    e.stopPropagation();
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
+    this.props.update_isExpand_for_subPages({
+      value: !isExpanded,
+      id: id
+    })
+  }
+
+
+  renderBody(subPageId) {
+    let isUserOnPublishedPage = isOnPublishedPage()
+    let isUserOnRedirectionPage = isOnRedirectionPage()
+    let isuserONTechdocOwnDomain = isTechdocOwnDomain()
+    let pathName = getUrlPathById(subPageId, this.props.pages)
+    pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+    const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isUserOnPublishedPage ?? isUserOnRedirectionPage
+    const isSelected = (isUserOnPublishedPage && !isOnRedirectionPage && isuserONTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId) ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === subPageId ? 'selected' : '')
+    return (
+      <>
+        <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
+          <button tabIndex={-1} className={`${expanded ? 'expanded' : ''} ${isSelected}`}>
+            <div
+              draggable={!isUserOnPublishedPage}
+              onDragOver={this.props.handleOnDragOver}
+              onDragStart={() => this.props.onDragStart(subPageId)}
+              onDrop={(e) => this.props.onDrop(e, subPageId)}
+              onDragEnter={(e) => this.props.onDragEnter(e, subPageId)}
+              onDragEnd={(e) => this.props.onDragEnd(e)}
+              style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
+              className={`d-flex align-items-center justify-content-center cl-name name-sub-page`}
+              onClick={(e) => {
+                if(!isUserOnRedirectionPage)
+                  {this.handleRedirect(subPageId)}
+                else{
+                  this.props.set_latest_url(pathName)
+                }
+                
+                  if(!expanded){
+                  this.handleToggle(e,subPageId)
+                  }
+              }}
+            >
+             <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
+              <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
+                  <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 '/>
+              </span>
+              <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{this.props.pages[subPageId]?.name}</div>
+            </div>
+            {
+              // [info] options not to show on publihsed page
+              isDashboardRoute(this.props, true) && !isOnRedirectionPage() && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                <div className='sidebar-item-action d-flex align-items-center'>
+                  <div onClick={() => this.openAddSubPageModal(subPageId)} className='mr-1 d-flex align-items-center'>
+                    <Plus />
+                  </div>
+                  <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <i className='uil uil-ellipsis-v' />
+                  </div>
+                  <div className='dropdown-menu dropdown-menu-right'>
+                    <div className='dropdown-item' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
+                      <EditSign /> Rename
+                    </div>
+                    <div
+                      className='dropdown-item'
+                      onClick={() => {
+                        this.openDeleteSubPageModal(subPageId)
+                      }}
+                    >
+                      <DeleteIcon /> Delete
+                    </div>
+                  </div>
+                </div>
+              ) : null
+            }
+          </button>
+          {expanded ? (
+            <div className='linkWrapper versionPages'>
+              <Card.Body>
+                <CombinedCollections {...this.props} />
+              </Card.Body>
+            </div>
+          ) : null}
+        </div>
+      </>
+    )
   }
 
   handleToggle(e,id) {

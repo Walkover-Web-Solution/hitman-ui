@@ -10,7 +10,8 @@ import {
   isTechdocOwnDomain,
   SESSION_STORAGE_KEY,
   isOnPublishedPage,
-  ADD_VERSION_MODAL_NAME
+  ADD_VERSION_MODAL_NAME,
+  isOnRedirectionPage
 } from '../common/utility'
 import './collectionVersions.scss'
 import AddEntity from '../main/addEntity/addEntity'
@@ -27,6 +28,7 @@ import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg
 import { toast } from 'react-toastify'
 import SubPageForm from '../groups/subPageForm'
 import { ReactComponent as Rename } from '../../assets/icons/renameSign.svg'
+import {ReactComponent as ShareIcon} from '../../assets/icons/sharesign.svg'
 import SelectVersion from './selectVersion/selectVersion'
 import CustomModal from '../customModal/customModal'
 import { MdOutlineSettings } from 'react-icons/md'
@@ -36,13 +38,15 @@ import  IconButtons  from '../common/iconButton'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
 import { IoDocumentTextOutline } from "react-icons/io5"
+import { setLatestUrl } from '../collections/redux/urlAction'
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
     pages: state.pages,
-    clientData: state.clientData
+    clientData: state.clientData,
+    latestUrl: state.urlMapping.latestUrl
   }
 }
 
@@ -59,7 +63,8 @@ const mapDispatchToProps = (dispatch) => {
     update_isExpand_for_pages: (payload) => dispatch(addIsExpandedAction(payload)),
     set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload)),
     set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData)),
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    set_latest_url: (url) =>dispatch(setLatestUrl(url))
   }
 }
 
@@ -333,6 +338,13 @@ class CollectionParentPages extends Component {
     })
   }
 
+  openRedirectUrlModal(pageId) {
+    this.setState({
+      showPageForm: { share: true },
+      selectedPage: pageId
+    })
+  }
+
   closePageForm() {
     this.setState({ showPageForm: { share: false, addEndpoint: false, addPage: false } })
   }
@@ -365,9 +377,20 @@ class CollectionParentPages extends Component {
     }
   }
 
+  // renderVersion(rootId) {
+  //   const versionToRender = this.props.pages[rootId].child;
+  //   return (
+  //     <div>
+  //       {versionToRender.map((childId, index) => {
+  //         const childPage = this.props.pages[childId];
+  //         return <p key={index}>{childPage.name}</p>;
+  //       })}
+  //     </div>
+  //   );
+  // }
   handleToggle(e,id) {
     e.stopPropagation();
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
+    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage() ?? isOnRedirectionPage()
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
       id: id
@@ -468,23 +491,41 @@ class CollectionParentPages extends Component {
       </DropdownButton>
     )
   }
+  handleRedirect(id){
+    if (isDashboardRoute(this.props)) {
+      this.props.history.push({
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
+      })
+    } else {
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
+      let pathName = getUrlPathById(id, this.props.pages)
+      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+      this.props.history.push(pathName)
+    }
+  }
 
   renderBody(pageId, index) {
     let isUserOnPublishedPage = isOnPublishedPage()
-    const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
+    let isUserOnRedirectionPage = isOnRedirectionPage()
+    let pathName = getUrlPathById(this.props.rootParentId, this.props.pages)
+    pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+    const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage ?? isUserOnRedirectionPage
     const publishData = this.props.modals.publishData
     const rootId = pageId
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === pageId ? 'selected' : '')
+    const isSelected = (isUserOnPublishedPage && !isUserOnRedirectionPage) && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === pageId ? 'selected' : '')
     return (
       <>
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
           <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-            <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''}`}>
-          <div className={`active-select d-flex align-items-center justify-content-between ${isSelected ? ' selected' : ''}`}>
+            <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''} ${isSelected}`}>
               <div
                 className={`d-flex align-items-center cl-name ` }
                 onClick={(e) => {
-                  this.handleRedirect(this.props.rootParentId)
+                  if(!isUserOnRedirectionPage)
+                    {this.handleRedirect(this.props.rootParentId)}
+                  else{
+                    this.props.set_latest_url(pathName)
+                  }
                   if(!expanded){
                   this.handleToggle(e,this.props.rootParentId)
                   }
@@ -519,53 +560,60 @@ class CollectionParentPages extends Component {
                   </div>
                 </div>
               </div>
-             
 
               {
                 // [info] options not to show on publihsed page
-                isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                isDashboardRoute(this.props, true) && !isOnRedirectionPage() && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
                   <div className='sidebar-item-action d-flex align-items-center'>
                     <div
-                      className='d-flex align-items-center'
+                      className='mr-1 d-flex align-items-center'
                       onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
                     >
-                      <IconButtons><FiPlus /></IconButtons>
+                      <FiPlus/>
                     </div>
-                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <IconButtons><BsThreeDots /></IconButtons>
+                    <div className='sidebar-item-action-btn' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                      <i className='uil uil-ellipsis-v' />
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
-                      <div className='dropdown-item d-flex' onClick={() => this.openEditPageForm(pageId)}>
+                      <div className='dropdown-item' onClick={() => this.openEditPageForm(pageId)}>
                         <Rename /> Rename
-                      </div>                     
-                      <div
-                        className='dropdown-item d-flex'
-                        onClick={() => {
-                          this.manageVersion(true)
-                        }}
-                      >
-                        <MdOutlineSettings size={20} color='#f2994a' />
-                        <span data-toggle='modal' data-target='#exampleModalCenter'> Manage Version
-                        </span>
                       </div>
                       <div
-                        className='dropdown-item text-danger d-flex'
+                        className='dropdown-item'
                         onClick={() => {
                           this.openDeletePageModal(pageId)
                         }}
                       >
                         <DeleteIcon /> Delete
                       </div>
+                      <div
+                        className='dropdown-item'
+                        onClick={() => {
+                          this.manageVersion(true)
+                        }}
+                      >
+                        <MdOutlineSettings size={20} color='#f2994a' />
+                        <span data-toggle='modal' data-target='#exampleModalCenter'>
+                          Manage Version
+                        </span>
+                      </div>
+                      <div
+                        className='dropdown-item'
+                        onClick={() => {
+                          this.openRedirectUrlModal(pageId)
+                        }}
+                      >
+                      <ShareIcon /> Redirect URL
+                      </div>  
                     </div>
                   </div>
                 ) : null
               }
-              </div>
             </button>
             {expanded ? (
               <div className='version-collapse'>
                 <Card.Body>
-                  <div className='linkWrapper versionPages'>
+                  <div className='linkWrapper versionPages pl-4'>
                     <CombinedCollections
                       {...this.props}
                       page_id={pageId}
@@ -766,6 +814,13 @@ class CollectionParentPages extends Component {
 
         {this.state.showVersionForm && this.openManageVersionModal()}
         {this.showEditPageModal()}
+        {/* {this.state.showVersionForm &&
+          collectionVersionsService.showVersionForm(
+            this.props,
+            this.closeVersionForm.bind(this),
+            this.props.rootParentId,
+            ADD_VERSION_MODAL_NAME
+          )} */}
 
         {this.state.showDeleteVersion &&
           pageService.showDeletePageModal(
@@ -791,4 +846,4 @@ class CollectionParentPages extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CollectionParentPages))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CollectionParentPages)) 
