@@ -14,6 +14,8 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { IoMdArrowDropright } from "react-icons/io";
 import { connect } from 'react-redux'
 import AceEditor from 'react-ace'
+import { background } from '../backgroundColor'
+import classNames from 'classnames';
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
@@ -43,7 +45,8 @@ class DisplayResponse extends Component {
     Open: false,
     Show: false,
     selectedBodyTab: 'pretty',
-    data: {}
+    data: {},
+    showPreScript: true,
   }
 
   constructor(props) {
@@ -241,7 +244,7 @@ class DisplayResponse extends Component {
           <div className='tab-content ml-0'>
             {this.state.selectedResponseTab === 'body' && (
               <div>
-                <div className='d-flex justify-content-between'>
+                <div className='d-flex justify-content-between mt-2 mb-1'>
                 <ul className='nav nav-pills body-button'>
                   <li className='nav-item' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
                     <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-2 py-1 fs-4' : 'nav-link px-2 py-1 fs-4'} href='#pretty'>Pretty</a>
@@ -290,7 +293,7 @@ class DisplayResponse extends Component {
                     {isDashboardRoute(this.props) && (
                       <div className='tab-content' id='myTabContent'>
                         <div className='tab-pane fade show active' id='home' role='tabpanel' aria-labelledby='home-tab'>
-                          <JSONPretty className='raw-response' theme={JSONPrettyMon} data={this.props.response.data} />
+                          <JSONPretty className='raw-response border' theme={JSONPrettyMon} data={this.props.response.data} />
                         </div>
                         <div className='tab-pane fade' id='profile' role='tabpanel' aria-labelledby='profile-tab'>
                           {JSON.stringify(this.props.response.data)}
@@ -307,7 +310,7 @@ class DisplayResponse extends Component {
                     )}
                   </></div>}
                   {this.state.selectedBodyTab === 'preview' && <div>
-                    <div dangerouslySetInnerHTML={{ __html: JSON.stringify(this.props.response.data) }} />
+                    <div className='border p-2' dangerouslySetInnerHTML={{ __html: JSON.stringify(this.props.response.data) }} />
                   </div>}
                 </div>
               </div>
@@ -369,47 +372,8 @@ class DisplayResponse extends Component {
   }
 
   displayConsole() {
-    const { isOpen } = this.state
-    const { isShow } = this.state
-    const { Show } = this.state
-    const { Open } = this.state
-    const Base_url = this.props?.endpointContent?.host?.BASE_URL ? this.props?.endpointContent?.host?.BASE_URL : null
-    const uri = this.props?.endpointContent?.data?.updatedUri ? this.props?.endpointContent?.data?.updatedUri : null
-
     return (
-      <div>
-        <div className='dropdown-data'>
-          {isOpen ? <IoMdArrowDropdown size={18} className='dropdown-icon' onClick={this.toggleDropdown} /> : <IoMdArrowDropright size={18} className='dropdown-icon' onClick={this.toggleDropdown} />}
-          {this.props?.endpointContent?.data?.method}
-          {'  '}
-          {Base_url + uri}
-          <div className={`dropdown-content pt-2 ${isOpen ? 'show' : ''}`}>
-            <div className='dropdown-data'>
-              {isShow ? <IoMdArrowDropdown size={18} onClick={this.toggleDropdownHeaders} /> : <IoMdArrowDropright size={18} onClick={this.toggleDropdownHeaders} />} Response Headers
-              <div className={`dropdown-content ${isOpen ? 'show' : ''}`} >
-                <span href='#' className={`dropdown-content-option ${isShow ? 'show' : ''}`}>{this.renderTableData()}</span>
-              </div>
-            </div>
-            <div className='dropdown-data'>
-              {Show ? <IoMdArrowDropdown size={18} onClick={this.toggleDropdownRequest} /> : <IoMdArrowDropright size={18} onClick={this.toggleDropdownRequest} />} Request Headers
-              <div className={`dropdown-content ${isOpen ? 'show' : ''}`}>
-                <span href='#' className={` dropdown-content-option ${Show ? 'show' : ''}`}>
-                  {this.renderResponseHeader()}
-                </span>
-              </div>
-            </div>
-            <div className='dropdown-data'>
-              {Open ? <IoMdArrowDropdown size={18} onClick={this.toggleDropdownBody} /> : <IoMdArrowDropright size={18} onClick={this.toggleDropdownBody} />} Body
-              <div className={`dropdown-content ${isOpen ? 'show' : ''}`}>
-                <span href='#' className={` dropdown-content-option ${Open ? 'show' : ''}`}>
-                  {JSON.stringify(this.props.response.data)}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='test-results-container px-2'>{this.renderConsole()}</div>
-      </div>
+        <div className='test-results-container mt-1'>{this.renderConsole()}</div>
     )
   }
 
@@ -427,7 +391,17 @@ class DisplayResponse extends Component {
     this.setState({ Show: !this.state.Show })
   }
 
+  handlePreScriptClick = () => {
+    this.setState({ showPreScript: true });
+  };
+
+  handlePostScriptClick = () => {
+    this.setState({ showPreScript: false });
+  };
+
   renderConsole() {
+    const { tabs, activeTabId } = this.props;
+    const { showPreScript } = this.state;
     const checkWhetherJsonOrNot = (data) =>{
       try{
         if(JSON.parse(data)) return true
@@ -441,6 +415,7 @@ class DisplayResponse extends Component {
     function RenderConsoleComponent(props) {
       return (props?.data.map((singleConsole, index) => {
         const isJson = checkWhetherJsonOrNot(singleConsole)
+
         if (isJson) {
           return <>
             <JSONPretty theme={JSONPrettyMon} data={JSON.parse(singleConsole)} />
@@ -456,10 +431,69 @@ class DisplayResponse extends Component {
 
     return (
       <div className='w-100'>
-        <span>Pre-Script Execution</span>
-        <div className='p-2'>{<RenderConsoleComponent data={this.props.tabs?.[this.props?.activeTabId]?.preScriptExecutedData || []} />}</div>
-        <span>Post-Script Execution</span>
-        <div className='p-2'>{<RenderConsoleComponent data={this.props.tabs?.[this.props?.activeTabId]?.postScriptExecutedData || []} />}</div>
+        <div className='console-button'>
+          <button
+            className={classNames('btn', 'btn-sm', 'fs-4', 'mr-2', { active: showPreScript })}
+            onClick={this.handlePreScriptClick}
+          >
+            Pre-Script
+          </button>
+          <button
+            className={classNames('btn', 'btn-sm', 'fs-4', { active: !showPreScript })}
+            onClick={this.handlePostScriptClick}
+          >
+            Post-Script
+          </button>
+        </div>
+        {showPreScript ? (
+          <>
+            <div className='p-2'>
+              <AceEditor
+                style={{ border: '1px solid rgb(206 213 218)' }}
+                className='custom-raw-editor'
+                mode='json'
+                theme='github'
+                value={JSON.stringify(tabs?.[activeTabId]?.preScriptExecutedData || [], null, 2)}
+                onChange={this.handleAceEditorChange}
+                setOptions={{
+                  showLineNumbers: true,
+                }}
+                editorProps={{
+                  $blockScrolling: false,
+                }}
+                onLoad={(editor) => {
+                  editor.focus();
+                  editor.getSession().setUseWrapMode(true);
+                  editor.setShowPrintMargin(false);
+                }}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className='p-2'>
+              <AceEditor
+                style={{ border: '1px solid rgb(206 213 218)' }}
+                className='custom-raw-editor'
+                mode='json'
+                theme='github'
+                value={JSON.stringify(tabs?.[activeTabId]?.postScriptExecutedData || [], null, 2)}
+                onChange={this.handleAceEditorChange}
+                setOptions={{
+                  showLineNumbers: true,
+                }}
+                editorProps={{
+                  $blockScrolling: false,
+                }}
+                onLoad={(editor) => {
+                  editor.focus();
+                  editor.getSession().setUseWrapMode(true);
+                  editor.setShowPrintMargin(false);
+                }}
+              />
+            </div>
+          </>
+        )}
       </div>
     )
   }
