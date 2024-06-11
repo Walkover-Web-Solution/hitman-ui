@@ -293,7 +293,7 @@ class DisplayResponse extends Component {
                     {isDashboardRoute(this.props) && (
                       <div className='tab-content' id='myTabContent'>
                         <div className='tab-pane fade show active' id='home' role='tabpanel' aria-labelledby='home-tab'>
-                          <JSONPretty className='raw-response border' theme={JSONPrettyMon} data={this.props.response.data} />
+                          <JSONPretty className='raw-response' theme={JSONPrettyMon} data={this.props.response.data} />
                         </div>
                         <div className='tab-pane fade' id='profile' role='tabpanel' aria-labelledby='profile-tab'>
                           {JSON.stringify(this.props.response.data)}
@@ -310,7 +310,7 @@ class DisplayResponse extends Component {
                     )}
                   </></div>}
                   {this.state.selectedBodyTab === 'preview' && <div>
-                    <div className='border p-2' dangerouslySetInnerHTML={{ __html: JSON.stringify(this.props.response.data) }} />
+                    <div className='border p-2 rounded bg-white' dangerouslySetInnerHTML={{ __html: JSON.stringify(this.props.response.data) }} />
                   </div>}
                 </div>
               </div>
