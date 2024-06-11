@@ -526,13 +526,13 @@ $border-color: rgba(227, 228, 230, 0.7);
       &.active {
         background-color: unset !important;
         color: black;
-        border-color: #f2994a !important;
+        border-color: $theme-color !important;
 
       }
       &:hover {
         background-color: unset !important;
         color: black !important;
-        border-color: #f2994a !important;
+        border-color: $theme-color important;
       }
     }
   }
@@ -1780,4 +1780,23 @@ table#custom-generic-table {
   color: plum;
   border: 1px solid rgba(128, 128, 128, 0.452);
   padding: 10px;
+}
+.raw-response {
+ pre {
+    margin-bottom: 0 !important;
+    padding: 8px;
+  }
+}
+.console-button {
+  button {
+    border: unset !important;
+    border-bottom: 2px solid transparent !important;
+    border-radius: unset !important;
+    &:hover {
+      border-color: $theme-color !important;
+    }
+    &.active {
+      border-color: $theme-color !important;
+    }
+  }
 }
