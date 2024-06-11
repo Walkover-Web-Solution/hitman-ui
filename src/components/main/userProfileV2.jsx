@@ -74,9 +74,12 @@ class UserProfileV2 extends Component {
     this.setState({ email: currentUser.email })
   }
 
-  toggleModal = async() => {
-    if (!this.state.showModal) await fetchOrganizations();
-    this.setState({ showModal: !this.state.showModal })
+  toggleModal = async () => {
+    this.setState({ showModal: !this.state.showModal, loading: true });
+    if (!this.state.showModal) {
+      await fetchOrganizations();
+      this.setState({ loading: false });
+    }
   }
 
   handleAddNewClick() {
@@ -598,7 +601,13 @@ class UserProfileV2 extends Component {
                     handleCloseModal={this.toggleModal}
                     showModal={this.state.showModal}
                     title='Switch Organization'
-                    modalBody={this.renderOrgListDropdown()}
+                    modalBody={
+                      this.state.loading ? (
+                        <div>Loading...</div> 
+                      ) : (
+                        this.renderOrgListDropdown()
+                      )
+                    }
                     keyboard={false}
                     showInput
                     handleAddOrg={this.handleAddOrg}

@@ -500,7 +500,7 @@ class PublishDocForm extends Component {
           <OverlayTrigger
             placement='bottom'
             overlay={
-              <Tooltip className='w-25 p-3 ' id='tooltip-bulk-publish'>
+              <Tooltip className='w-25 p-3' id='tooltip-bulk-publish'>
                 This will publish all the pages and endpoints inside this collection.
               </Tooltip>
             }
