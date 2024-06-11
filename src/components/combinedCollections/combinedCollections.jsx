@@ -1,12 +1,10 @@
-import React , {useState} from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
 import Groups from '../groups/groups'
 import Endpoints from '../endpoints/endpoints'
-import { toast } from 'react-toastify'
 
 function CombinedCollections(props) {
-  const dispatch = useDispatch()
 
   const { childIds, pages } = useSelector((state) => {
     return {
