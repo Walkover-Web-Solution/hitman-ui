@@ -1785,6 +1785,8 @@ table#custom-generic-table {
  pre {
     margin-bottom: 0 !important;
     padding: 8px;
+    border: 1px solid $border-color !important;
+    border-radius: 4px;
   }
 }
 .console-button {
