@@ -1,0 +1,85 @@
+.redirections {
+    padding: 20px;
+  gap: 24px;
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  
+    .form {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+     
+  
+      input {
+        flex: 1;
+        margin-right: 10px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+  
+      button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        background: #e98a36;
+        color: white;
+        cursor: pointer;
+  
+        // &:hover {
+        //   background: #0056b3;
+        // }
+      }
+    }
+  
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: auto;
+  
+      th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+      }
+  
+      th {
+        background: #f4f4f4;
+      }
+  
+      td {
+        button {
+          padding: 4px 8px;
+          border: none;
+          border-radius: 4px;
+          background: #ff4d4d;
+          color: white;
+          cursor: pointer;
+  
+          &:hover {
+            background: #cc0000;
+          }
+        }
+      }
+    }
+  }
+  .sidebar-content {
+    overflow: hidden auto;
+    flex: auto;
+    .card-body {
+      padding: 0;
+    }
+    .collection-name {
+      line-height: 1;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  
+  .main-content {
+    flex: 2; 
+  }
+  
