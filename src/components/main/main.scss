@@ -3409,8 +3409,27 @@ body .btn-group-custom {
   padding: 2rem 2.75rem;
   border-radius: 5px;
   overflow: hidden;
+  max-width: 800px;
 }
-
+.page-text-render {
+  gap: 50px;
+}
+.editor-headings  {
+  width: 300px;
+  position: sticky;
+  top: 60px;
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      &:hover {
+        color: $on-this-page-hover-color;
+      }
+    }
+    @media screen and (max-width: 992px) {
+      width: 100%;
+    }
+  }
 .tox-editor-container {
   .tox-toolbar__group {
     .tox-tbtn {
