@@ -2203,7 +2203,6 @@ button[name='cta-1'] {
   font-size: 12px;
 }
 .mainpublic-endpoint-main .custom-display-page {
-  margin: auto;
   float: none;
   background: none;
 }
@@ -3210,12 +3209,16 @@ body .btn-group-custom {
   max-width: 800px;
 }
 .page-text-render {
+  gap: 150px;
+@media screen and (max-width:1600px) {
   gap: 50px;
+}
 }
 .editor-headings  {
   width: 300px;
   position: sticky;
   top: 60px;
+  background-color: white;
     span {
       overflow: hidden;
       text-overflow: ellipsis;
