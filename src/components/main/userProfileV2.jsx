@@ -21,7 +21,7 @@ import { IoIosArrowDown } from "react-icons/io"
 import OpenApiForm from '../openApi/openApiForm'
 import CollectionForm from '../collections/collectionForm'
 import { MdSwitchLeft } from "react-icons/md"
-import { FaUser } from "react-icons/fa"
+import { FiUser } from "react-icons/fi";
 
 const mapStateToProps = (state) => {
   return {
@@ -135,7 +135,7 @@ class UserProfileV2 extends Component {
     return (
       <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center py-1' onClick={() => { }}>
         <div className='user-icon mr-2'>
-        <FaUser size={16} />
+        <FiUser size={16} />
         </div>
         <div className='profile-details-user-name'>
           {/* <span className='org-name'>{name}</span> */}
@@ -153,7 +153,7 @@ class UserProfileV2 extends Component {
           this.openAccountAndSettings()
         }}
       >
-        <Users className='mr-2' size={17} />
+        <Users className='mr-2 ' size={17} />
         <span> Invite User</span>
       </div>
     )
