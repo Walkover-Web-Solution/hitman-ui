@@ -410,9 +410,9 @@ class PublishDocForm extends Component {
 
     return (
       <div>
-        <div className='d-flex align-items-center'>
-        <span className='public-title mt-1 d-block'>Preview Documentation</span>
-        <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
+        <div className='published-post d-flex align-items-center mt-4 mb-1'>
+          <span className='public-title d-block'>Preview Documentation</span>
+          <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
         </div>
         <OverlayTrigger
           overlay={
@@ -485,29 +485,34 @@ class PublishDocForm extends Component {
           variant='btn btn-outline'
           className='m-1 btn-sm fs-4'
           onClick={() => this.redirectUser()}
+          title='This will publish all the pages and endpoints inside this collection.'
         >
-          Bulk Publish
+            Bulk Publish
         </Button>
-        {/* </OverlayTrigger> */}
-        <>
-          {publishCheck ? (
-            <Button variant='btn btn-outline-danger btn-sm fs-4' className='m-1 btn-sm fs-4' onClick={() => this.props.unPublishCollection()}>
-              Unpublish Doc
-            </Button>
-          ) : (
-            isNotPublished && (
-              <Button
-                id='publish_collection_btn'
-                className='m-1 btn-sm fs-4'
-                onClick={() => this.publishCollection(selectedCollection)}
-                disabled={!selectedCollection?.docProperties?.defaultTitle}
-                variant='btn btn-outline'
-              >
-                Publish Collection
-              </Button>
-            )
-          )}
-        </>
+        <Button
+          className={this.state.loader ? 'buttonLoader m-1 btn-sm fs-4' : 'm-1 btn-sm fs-4'}
+          disabled={!this.state.data.title.trim()}
+          onClick={() => {
+            this.saveAndPublishCollection(selectedCollection)
+            this.setState({ republishNeeded: true })
+          }}
+          variant='btn btn-outline'
+          title='This will save as well as publish the doc'
+        >
+          {this.state.republishNeeded ? 'Save and Republish' : 'Save and Publish'}
+        </Button>
+        {!isNotPublished && (
+          <Button
+            variant='btn btn-outline-danger btn-sm fs-4'
+            className='m-1 btn-sm fs-4'
+            onClick={() => {
+              this.props.unPublishCollection()
+              this.setState({ republishNeeded: false })
+            }}
+          >
+            Unpublish Doc
+          </Button>
+        )}
       </div>
     )
   }

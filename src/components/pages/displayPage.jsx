@@ -151,7 +151,7 @@ class DisplayPage extends Component {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className='pt-3 px-1'>
+        <div className='page-wrapper pt-3 px-1'>
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
           <div className='pageText'><RenderPageContent pageContent={this.props?.pageContent || ''} /></div>
           <span>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
@@ -378,7 +378,7 @@ class DisplayPage extends Component {
       )
     }
     return (
-      <div className='custom-display-page'>
+      <div className={`custom-display-page ${isOnPublishedPage() ? "custom-display-public-page" : ""}`}>
         {this.renderPublishConfirmationModal()}
         {this.renderUnPublishConfirmationModal()}
         {this.renderPublishPageOperations()}
