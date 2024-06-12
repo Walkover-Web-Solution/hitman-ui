@@ -2945,7 +2945,7 @@ class DisplayEndpoint extends Component {
                         {this.renderToggleView()}
                         {this.renderDocViewOperations()}
                       </div>
-                      <div className='position-relative top-part'>
+                      <div className='position-relative top-part d-flex justify-content-between align-items-end'>
                         {this.state.showEndpointFormModal && (
                           <SaveAsSidebar
                             {...this.props}
