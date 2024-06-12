@@ -123,7 +123,7 @@ export default function Authorization(props) {
             >
               {selectedAuthorizationType}
             </button>
-            <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+            <div className='dropdown-menu w-100' aria-labelledby='dropdownMenuButton'>
               {Object.keys(authorizationTypes).map((key, index) => (
                 <button className='dropdown-item' onClick={() => handleSelectAuthorizationType(key)} key={index}>
                   {authorizationTypes[key]}
@@ -139,7 +139,7 @@ export default function Authorization(props) {
                 <button className='btn dropdown-toggle outline-border' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                   {addAuthorizationDataToForAuth2}
                 </button>
-                <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+                <div className='dropdown-menu w-100' aria-labelledby='dropdownMenuButton'>
                   {Object.keys(addAuthorizationDataTypes).map((key, index) => {
                     return (
                       <button key={index} onClick={() => handleAddAuthorizationTo(key)} className='dropdown-item'>

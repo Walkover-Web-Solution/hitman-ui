@@ -2768,7 +2768,7 @@ class DisplayEndpoint extends Component {
 
   renderSaveButton() {
     return (
-      <div className='save-endpoint position-absolute top-right'>
+      <div className='save-endpoint'>
         {this.isDashboardAndTestingView() ? (
           this.props.location.pathname.split('/')[5] !== 'new' ? (
             <Dropdown as={ButtonGroup}>
@@ -2977,7 +2977,7 @@ class DisplayEndpoint extends Component {
                         {this.renderToggleView()}
                         {this.renderDocViewOperations()}
                       </div>
-                      <div className='position-relative top-part'>
+                      <div className='position-relative top-part d-flex justify-content-between align-items-end'>
                         {this.state.showEndpointFormModal && (
                           <SaveAsSidebar
                             {...this.props}
