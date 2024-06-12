@@ -4,6 +4,17 @@
   float: right;
 }
 
+.custom-display-public-page {
+  max-width: 100% !important;
+  .page-wrapper {
+    margin-left: auto;
+    margin-right: auto;
+    &:has(.editor-headings) {
+      margin-right: unset !important;
+    }
+  }
+}
+
 .custom-display-page {
   padding: 10px 30px;
   margin-left: auto;
@@ -15,7 +26,6 @@
   padding-top: 25px;
   left: 5px;
   right: 6rem;
-  max-width: 867px;
   // min-height: calc(100vh - 70px);
   button {
     margin-bottom: 15px;
@@ -26,6 +36,9 @@
   }
   p {
     margin-bottom: 0;
+  }
+  .page-wrapper {
+    max-width: 1300px;
   }
 }
 
