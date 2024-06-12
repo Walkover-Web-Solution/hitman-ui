@@ -1,6 +1,6 @@
 .redirections {
 
-  h1 {
+  h3 {
     text-align: center;
     margin-bottom: 20px;
   }
@@ -101,6 +101,7 @@
   border-right: 1px solid grey;
   height: 100vh;
   overflow: scroll;
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -108,6 +109,12 @@
 
 .redirection-table-container {
   flex-grow: 1;
+  height: 95vh;
+  overflow: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .domain-name {
