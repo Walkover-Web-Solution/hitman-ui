@@ -24,6 +24,16 @@
   .end-point-title {
     font-weight: 700;
   }
+  .api-label {
+    background-color: rgba(39, 174, 96, .1) !important;
+    border: none !important;
+  } 
+}
+.published-post {
+  .api-label {
+    background-color: rgba(39, 174, 96, .1) !important;
+    border: none !important;
+  }
 }
 
 .endpoint-name-input {
