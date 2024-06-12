@@ -1,114 +1,90 @@
 import React, { useState, useEffect } from 'react'
-import './redirections.scss'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useParams } from 'react-router'
-import { createUrl, deleteUrl, updateUrl } from './redirectionApiServices'
+import { addUrlWithAdditionalPath, deleteMappedUrl } from './redirectionApiServices'
+import { getUrlPathById } from '../common/utility'
+import './redirections.scss'
 
-const Redirections = (props) => {
+const Redirections = () => {
   const params = useParams()
 
-  const { pages, collections, childIds, latestUrl } = useSelector((state) => {
+  const { pages, collections, childIds } = useSelector((state) => {
     return {
       pages: state.pages,
       collections: state.collections,
-      childIds: state?.pages?.[state.collections?.[params.collectionId]?.rootParentId]?.child || [],
-      latestUrl: state.urlMapping.latestUrl
+      childIds: state?.pages?.[state.collections?.[params.collectionId]?.rootParentId]?.child || []
     }
   })
 
-  const [oldUrl, setOldUrl] = useState([])
-  const [oldUrlArray, setOldUrlArray] = useState([])
+  const [userPath, setUserPath] = useState([])
+  const [redirectUrls, setRedirectUrls] = useState([])
+  const [selectedPageId, setselectedPageId] = useState(null)
+  const [latestUrl, setLatestUrl] = useState('')
 
-  const pageId = latestUrl?.split('/')[5]
+  const visiblePath = `${process.env.REACT_APP_UI_URL}/p`
 
   useEffect(() => {
     loadUrls()
   }, [params?.collectionId])
 
-  // Inside the loadUrls function
+  const addOldUrlsOfChilds = (pagesHaveOldUrls, pageId) => {
+    Object.entries(pages[pageId]?.oldUrls).forEach(([index, oldUrl]) => {
+      pagesHaveOldUrls.push({ pageId, oldUrl, oldUrlId: index })
+    })
+    if (pages?.[pageId]?.child.length > 0) {
+      pages[pageId].child.forEach((pageId) => addOldUrlsOfChilds(pagesHaveOldUrls, pageId))
+    }
+  }
+
   const loadUrls = async () => {
+    const collectionId = params.collectionId
+    const rootParentId = collections?.[collectionId]?.rootParentId
+    const rootParentChilds = pages?.[rootParentId]?.child
+    const pagesHaveOldUrls = []
     try {
-      const oldUrlsArray = Object.keys(pages)
-        .map((index) => {
-          return {
-            pageName: pages[index].name,
-            pageId: pages[index].id,
-            oldUrls: pages[index]?.oldUrls || ''
-          }
-        })
-        .filter((item) => Object.keys(item.oldUrls).length > 0)
-      setOldUrlArray(oldUrlsArray)
+      rootParentChilds.forEach((pageId) => addOldUrlsOfChilds(pagesHaveOldUrls, pageId))
+      console.log(pagesHaveOldUrls, 12345678)
+      setRedirectUrls(pagesHaveOldUrls)
     } catch (error) {
       console.error('Failed to fetch URLs:', error)
     }
   }
 
-  const handleAddUrl = async (page_id, collection_id, old_url) => {
+  const handleAddUrl = async () => {
     try {
-      const result = await createUrl(page_id, collection_id, old_url)
-      console.log('URL created successfully:', result)
+      const result = (await addUrlWithAdditionalPath(selectedPageId, params.collectionId, userPath)).data
+      const updatedRedirectUrls = [...redirectUrls, { pageId: result.pageId, redirectionUrls: [result.oldUrl] }]
+      setRedirectUrls(updatedRedirectUrls)
     } catch (error) {
       console.error('Failed to create URL:', error)
     }
   }
 
-  const handleUpdateUrl = async (id) => {
-    try {
-      await updateUrl(id)
-      console.log('URL updated successfully')
-    } catch (error) {
-      console.error('Failed to update URL:', error)
-    }
-  }
-
   const handleDeleteUrl = async (id, url) => {
     try {
-      await deleteUrl(id)
-      console.log('URL deleted successfully')
-      const updatedOldUrlArray = oldUrlArray.map((item) => {
-        if (item.oldUrls && item.oldUrls[url]) {
-          delete item.oldUrls[url]
-        }
-        return item
-      })
-
-      setOldUrlArray(updatedOldUrlArray)
-      console.log(oldUrlArray, 'old urls')
+      await deleteMappedUrl(id)
+      // const updatedOldUrlArray = redirectUrls.map((item) => {
+      //   if (item.pageId === pageId) {
+      //     const updatedOldUrls = { ...item.oldUrls }
+      //     delete updatedOldUrls[id]
+      //     return { ...item, oldUrls: updatedOldUrls }
+      //   }
+      //   return item
+      // })
+      // setRedirectUrls(updatedOldUrlArray)
     } catch (error) {
       console.error('Failed to delete URL:', error)
     }
   }
 
-  const renderTable = () => {
-    return (
-      <table>
-        <thead>
-          <tr>
-            <th className='center-heading'>Old URL</th>
-            <th className='center-heading'>Latest URL</th>
-            <th className='center-heading'>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {oldUrlArray.map(
-            (item, index) =>
-              item.oldUrls &&
-              Object.entries(item.oldUrls).map(([url, idx]) => (
-                <tr key={index}>
-                  <td>{idx}</td>
-                  <td>{item.pageName}</td>
-                  <td>
-                    <div key={url}>
-                      <DeleteIcon onClick={() => handleDeleteUrl(url, idx)} />
-                    </div>
-                  </td>
-                </tr>
-              ))
-          )}
-        </tbody>
-      </table>
-    )
+  const setLatestUrlForPage = (id, setInUseState = true) => {
+    if (setInUseState) setselectedPageId(id)
+    let pathName = getUrlPathById(id, pages)
+    pathName = `/${pathName}`
+    pathName = pathName.replace('null', params.collectionId)
+    if (setInUseState) setLatestUrl(pathName)
+    return pathName
   }
 
   const renderAllVersionOfParentPage = (versionId) => {
@@ -129,17 +105,21 @@ const Redirections = (props) => {
     const parentPageChildIds = pages?.[pageId]?.child
     return (
       <div className='mt-2'>
-        <span className='parent-page-heading'>{pages?.[pageId]?.name}</span>
+        <span className='parent-page-heading cursor-pointer' onClick={() => setLatestUrlForPage(pageId)}>
+          {pages?.[pageId]?.name}
+        </span>
         <div className='pl-2'>{renderAllVersionOfParentPage(parentPageChildIds)}</div>
       </div>
     )
   }
 
   const renderSubPage = (subPageId) => {
-    const subPageChildIds = pages?.[pageId]?.child
+    const subPageChildIds = pages?.[subPageId]?.child
     return (
       <div className='mt-2'>
-        <span>{pages?.[subPageId]?.name}</span>
+        <span className='cursor-pointer' onClick={() => setLatestUrlForPage(subPageId)}>
+          {pages?.[subPageId]?.name}
+        </span>
         <div className='pl-2'>{renderAllPagesOfParent(subPageChildIds)}</div>
       </div>
     )
@@ -147,8 +127,8 @@ const Redirections = (props) => {
 
   const renderEndpoint = (endpointId) => {
     return (
-      <div className='mt-2'>
-        <span>{pages?.[endpointId]?.name}</span>
+      <div className='mt-2 cursor-pointer'>
+        <span onClick={() => setLatestUrlForPage(endpointId)}>{pages?.[endpointId]?.name}</span>
       </div>
     )
   }
@@ -158,7 +138,6 @@ const Redirections = (props) => {
       <div>
         {parentChilds?.map((singleId) => {
           const type = pages?.[singleId]?.type || null
-          console.log(type)
           switch (type) {
             case 1:
               return renderParentPage(singleId)
@@ -174,6 +153,59 @@ const Redirections = (props) => {
     )
   }
 
+  const hasCustomDomain = () => {
+    const domain = collections?.[params.collectionId]?.customDomain
+    const url = 'http://' + domain + '/p/'
+    const ownDomain = 'http://techdoc.walkover.in/p/'
+    if (domain !== null) return url
+    return ownDomain
+  }
+
+  const handleInputChange = (e) => {
+    const newValue = e.target.value
+    const prefix = hasCustomDomain()
+    const suffix = '?collectionId=' + params.collectionId
+    setUserPath(prefix + newValue + suffix)
+  }
+
+  const getLatestUrl = (pageId) => {
+    const path = setLatestUrlForPage(pageId, false)
+    return `${visiblePath}${path}`
+  }
+
+  const renderTable = () => {
+    return (
+      <div>
+        {redirectUrls.length > 0 ? (
+          <table>
+            <thead>
+              <tr>
+                <th className='center-heading'>Old URL</th>
+                <th className='center-heading'>Latest URL</th>
+                <th className='center-heading'>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {redirectUrls.map((redirectUrlDetails, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{redirectUrlDetails.oldUrl}</td>
+                    <td>{getLatestUrl(redirectUrlDetails?.pageId)}</td>
+                    <td>
+                      <DeleteIcon onClick={() => handleDeleteUrl(index, redirectUrlDetails?.oldUrlId)} />
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <div className='empty-table-heading d-flex justify-content-center align-items-center'> No Data is present here </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className='redirections d-flex h-100'>
       <div className='d-flex justify-content-start sidebar-pages-container'>
@@ -184,12 +216,32 @@ const Redirections = (props) => {
         <div className='main-content'>
           <h1>
             {collections?.[params.collectionId]?.name.charAt(0).toUpperCase() + collections?.[params.collectionId]?.name.slice(1)}{' '}
-            Redirections
+            Redirections{' '}
           </h1>
           <div className='form'>
-            <input type='text' placeholder='Old URL' onChange={(e) => setOldUrl(e.target.value)} />
-            <input type='disable' placeholder='Latest URL' value={latestUrl} />
-            <button onClick={(id) => handleAddUrl(pageId, params.collectionId, oldUrl)}>Add</button>
+            <div className='d-flex flex-column flex-shrink-1 flex-grow-1'>
+              <input
+                type='text'
+                class='input-part editable h-100'
+                id='part2'
+                placeholder='Enter your path'
+                onChange={(e) => handleInputChange(e)}
+              />
+              <span>
+                Domain for the path:- <span className='domain-name'>{visiblePath}</span>
+              </span>
+            </div>
+            <input
+              disabled
+              type='text'
+              className='h-100'
+              placeholder='Click on page and endpoint to add latest url'
+              value={latestUrl}
+              readOnly
+            />
+            <button className='h-100 fs-4' onClick={handleAddUrl}>
+              Add
+            </button>
           </div>
           {renderTable()}
         </div>

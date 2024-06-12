@@ -99,8 +99,24 @@
 .sidebar-pages-container {
   width: 20%;
   border-right: 1px solid grey;
+  height: 100vh;
+  overflow: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .redirection-table-container {
   flex-grow: 1;
+}
+
+.domain-name {
+  color: green;
+}
+
+.empty-table-heading {
+  font-size: 16px;
+  color: rgba(128, 128, 128, 0.499);
+  margin-top: 40px;
+  height: 200px;
 }

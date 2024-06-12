@@ -14,7 +14,6 @@ import storage from 'redux-persist/lib/storage'
 import clientDataReducer from './clientData/clientDataReducer'
 import tokenDataReducer from './tokenData/tokenDataReducers'
 import userReducer from '../components/auth/redux/userReducer'
-import urlMappingReducer from '../components/collections/redux/urlReducer'
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -31,7 +30,6 @@ const rootReducer = combineReducers({
   clientData: clientDataReducer,
   tokenData: tokenDataReducer,
   users: userReducer,
-  urlMapping: urlMappingReducer
 })
 
 const persistConfig = {

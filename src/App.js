@@ -25,7 +25,7 @@ import shortid from 'shortid'
 import OauthPage from './components/OauthPage/OauthPage.js'
 import TrashPage from './components/main/Trash/trashPage.jsx'
 import IndexWebsite from './components/indexWebsite/indexWebsite.js'
-import Redirections from './components/collections/redirections.jsx'
+import Redirections from './components/collections/Redirections.jsx'
 
 const mapDispatchToProps = (dispatch) => {
   return {
