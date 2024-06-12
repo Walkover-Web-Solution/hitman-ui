@@ -4,18 +4,18 @@ import 'react-toastify/dist/ReactToastify.css'
 import ContentPanel from './contentPanel'
 import './main.scss'
 import SideBarV2 from './sideBarV2'
-import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
 import { isDesktop } from 'react-device-detect'
 import OnlineSatus from '../onlineStatus/onlineStatus'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import UpdateStatus from './updateStatus'
-import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
 import NoCollectionIcon from '../../assets/icons/collection.svg'
-import { getCurrentUser, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
+import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 import { addCollectionAndPages } from '../redux/generalActions'
 import SplitPane from '../splitPane/splitPane'
+import { addUserData } from '../auth/redux/userAction'
+import { toast } from 'react-toastify'
 
 const mapStateToProps = (state) => {
   return {
@@ -29,7 +29,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
-    add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId))
+    add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId)),
+    add_user: (userData) => dispatch(addUserData(userData))
   }
 }
 
@@ -43,13 +44,6 @@ class MainV2 extends Component {
       loading: true,
       showAddCollectionPage: true
     }
-    const { endpointId, pageId } = this.props.match.params
-    // if (endpointId && endpointId !== 'new') {
-    //   this.props.fetch_endpoint(endpointId)
-    // }
-    // if (pageId) {
-    //   this.props.fetch_page(pageId)
-    // }
   }
 
   async componentDidMount() {
@@ -58,23 +52,20 @@ class MainV2 extends Component {
       this.setState({ loading: false })
       return
     }
+
+    let users = await getUserData(token)
+    if(users) this.props.add_user(users)
+    
     /** Token Exists */
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
       /** For Logged in User */
       let orgId = this.props.match.params.orgId
-
       if (!orgId) {
         orgId = getOrgList()[0]?.id
-
         this.props.history.push({
           pathname: `/orgs/${orgId}/dashboard`
         })
       } else {
-        const orgName = getOrgList()[0]?.name
-        if (isValidDomain()) {
-          loadWidget()
-          // loadHelloWidget() commenting to hide helloWidget
-        }
         await this.fetchAll()
         this.props.add_collection_and_pages(orgId)
       }
@@ -88,18 +79,8 @@ class MainV2 extends Component {
   }
 
   async fetchAll() {
-    // this.fetchFromBackend()
     this.props.fetch_all_cookies()
   }
-
-  // fetchFromBackend() {
-  // const orgId = this.props.match.params.orgId
-  // this.props.fetch_collections(orgId)
-  // this.props.fetch_all_versions(orgId)
-  // this.props.fetch_groups(orgId)
-  // this.props.fetch_endpoints(orgId)
-  // this.props.fetch_pages(orgId)
-  // }
 
   setVisitedOrgs() {
     const orgId = this.props.match.params.orgId

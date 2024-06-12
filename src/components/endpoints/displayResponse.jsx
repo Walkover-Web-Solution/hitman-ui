@@ -14,7 +14,6 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { IoMdArrowDropright } from "react-icons/io";
 import { connect } from 'react-redux'
 import AceEditor from 'react-ace'
-import { background } from '../backgroundColor'
 import classNames from 'classnames';
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')

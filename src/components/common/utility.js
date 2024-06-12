@@ -677,7 +677,7 @@ export const deleteAllPagesAndTabsAndReactQueryData = async (pageId) => {
     tabs = _.cloneDeep(tabs)
 
     // update the parent's child
-    let parentId = pages[pageId].parentId
+    let parentId = pages?.[pageId]?.parentId
     if (parentId != null) {
       pages[parentId].child = pages[parentId].child.filter((id) => id !== pageId)
     }
