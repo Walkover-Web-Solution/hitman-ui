@@ -255,20 +255,33 @@ class DisplayResponse extends Component {
   }
   renderResponseHeader() {
     const { originalHeaders } = this.props.endpointContent
+    const filteredHeaders = originalHeaders.reduce((acc, header) => {
+        const existingHeader = acc.find(h => Object.keys(h)[0] === Object.keys(header)[0])
+        if (existingHeader) {
+            if (existingHeader[Object.keys(header)[0]].type !== 'disable') {
+                acc = acc.filter(h => Object.keys(h)[0] !== Object.keys(header)[0])
+                acc.push(header)
+            }
+        } else {
+            acc.push(header)
+        }
+        return acc
+    }, [])
+
     return (
-      <div>
-        {originalHeaders.map((header, index) => (
-          <div key={index}>
-            {Object.entries(header).map(([key, value]) => (
-              <div key={key}>
-                <strong>{key}:</strong> {JSON.stringify(value)}
-              </div>
+        <div>
+            {filteredHeaders.map((header, index) => (
+                <div key={index}>
+                    {Object.entries(header).map(([key, value]) => (
+                        <div key={key}>
+                            <strong>{key}:</strong> {JSON.stringify(value)}
+                        </div>
+                    ))}
+                </div>
             ))}
-          </div>
-        ))}
-      </div>
+        </div>
     )
-  }
+}
 
   displayHeader() {
     if (this.props.response.headers) {
