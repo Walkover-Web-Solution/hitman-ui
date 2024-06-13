@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, {useEffect, useState } from 'react'
 import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react'
 import Underline from '@tiptap/extension-underline'
 import StarterKit from '@tiptap/starter-kit'
@@ -58,6 +58,11 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
   const [alignment, setAlignment] = useState('left');
   const [color, setColor] = useState("");
   const [activeHeading, setActiveHeading] = useState(0);
+  const [editorContent, setEditorContent] = useState(initial);
+
+  useEffect(() => {
+    setEditorContent(initial); // Set the content initially
+  }, [initial]);
 
 
 
@@ -100,10 +105,12 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
         autolink: false
       })
     ],
-    content: initial,
+    content: editorContent,
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML()
-      onChange(html)
+      const html = editor.getHTML();
+      setEditorContent(html); // Update editor content
+      onChange(html);
+      localStorage.setItem('tiptapEditorContent', html);
     },
     editable: !disabled
   })
