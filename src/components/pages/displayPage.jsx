@@ -36,7 +36,7 @@ import tabService from '../tabs/tabService'
 import WarningModal from '../common/warningModal'
 import { updateTab } from '../tabs/redux/tabsActions'
 
-const withQuery = (WrappedComponent) => {
+const withQuery =(WrappedComponent) => {
   return (props) => {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const queryClient = useQueryClient()
@@ -47,7 +47,7 @@ const withQuery = (WrappedComponent) => {
         : await getPageContent(props?.match?.params?.orgId, pageId)
     })
     const mutation = useMutation(updateContent, {
-      onSuccess: (data) => {
+      onSuccess:(data) => {
         queryClient.setQueryData(['pageContent', pageId], data?.contents || '', {
           refetchOnWindowFocus: false,
           cacheTime: 5000000,
@@ -104,6 +104,7 @@ class DisplayPage extends Component {
     }
     this.name = React.createRef()
     this.contents = React.createRef()
+    this.editorContentKey = 'tiptapEditorContent';
   }
 
   async fetchPage(pageId) {
@@ -120,9 +121,10 @@ class DisplayPage extends Component {
     }
   }
   async componentDidMount() {
+    this.loadEditorContent();
     await this.setPageData()
     this._isMounted = true
-    this.extractPageName()
+    this.extractPageName()  
     if (!this.props?.location?.page) {
       let pageId = ''
       if (isDashboardRoute(this.props)) {
@@ -142,6 +144,7 @@ class DisplayPage extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    this.loadEditorContent();
     if (this.props?.location?.pathname !== prevProps?.location?.pathname) {
       this.extractPageName()
     }
@@ -163,12 +166,30 @@ class DisplayPage extends Component {
   componentWillUnmount() {
     // document.body.removeEventListener('click', this.handleClickOutside)
     this._isMounted = false
+    this.saveEditorContent();
   }
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.showEditor !== nextState.showEditor || this.props.pageContent !== nextProps.pageContent) {
       return true
     }
     return false
+  }
+
+  loadEditorContent() {
+    const storedContent = localStorage.getItem(this.editorContentKey);
+    if (storedContent) {
+      this.setState((prevState) => ({
+        data: {
+          ...prevState.data,
+          contents: storedContent,
+        },
+      }));
+    }
+  }
+
+  saveEditorContent() {
+    const { data } = this.state;
+    localStorage.setItem(this.editorContentKey, data.contents || '');
   }
 
   async setPageData() {
@@ -250,6 +271,7 @@ class DisplayPage extends Component {
     return this.props.tabs[tabId]?.activeTabId
   }
   handleSubmit = (e) => {
+    debugger
     e.preventDefault()
     const editedPage = { ...this.state.data }
     if (this.props.pageContent != null && editedPage.contents !== this.props.pageContent) {
@@ -265,6 +287,7 @@ class DisplayPage extends Component {
     this.setState({ data: editedPage, showEditor: false }, () => {
       tabService.markTabAsSaved(this.props.tab.id)
       tabService.updateDraftData(editedPage.id, editedPage.contents)
+      this.saveEditorContent(); 
     })
   }
 
@@ -284,17 +307,21 @@ class DisplayPage extends Component {
     return <Tiptap onChange={() => {}} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
   }
   renderEditor(contents, index) {
-    return (
-      <Tiptap
-        onChange={this.handleChange}
-        initial={contents}
-        match={this.props.match}
-        isInlineEditor={false}
-        disabled={false}
-        minHeight
-        key={index}
-      />
-    )
+    if(contents!== undefined)
+      {
+        return (
+          <Tiptap
+            onChange={this.handleChange}
+            initial={contents}
+            match={this.props.match}
+            isInlineEditor={false}
+            disabled={false}
+            minHeight
+            key={index}
+          />
+        )
+      }
+    
   }
   handleChange = (value) => {
     const data = { ...this.state.data }
