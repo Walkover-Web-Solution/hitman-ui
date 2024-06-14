@@ -28,6 +28,7 @@ import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
 import moment from 'moment'
 import RenderPageContent from './renderPageContent'
+import DisplayUserAndModifiedData from '../common/userService'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -70,6 +71,7 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     tabs: state.tabs,
+    users: state.users
   }
 }
 
@@ -384,8 +386,10 @@ class DisplayPage extends Component {
         {this.renderPublishPageOperations()}
         {this.renderPageName()}
         {this.checkPageRejected()}
-        {/* <ApiDocReview {...this.props} /> */}
+        <div>
+        <ApiDocReview {...this.props} />
         {isOnPublishedPage() && <Footer />}
+        </div>
       </div>
     )
   }

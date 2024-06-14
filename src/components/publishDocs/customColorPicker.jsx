@@ -50,11 +50,10 @@ class CustomColorPicker extends React.Component {
       height: '40px',
       width: '40px',
       borderRadius: '4px',
-      margin: '0px 20px'
     }
     return (
       <>
-        <div className='d-flex align-items-center'>
+        <div className='d-flex align-items-center justify-content-between'>
           <div>
             <TwitterPicker
               triangle='hide'
