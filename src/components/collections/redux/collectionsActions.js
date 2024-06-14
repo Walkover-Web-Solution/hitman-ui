@@ -115,7 +115,6 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
       .updateCollection(id, editedCollection)
       .then((response) => {
         dispatch(onCollectionUpdated(response.data))
-        toast.success('Updated successfully')
         if (stopLoader) {
           stopLoader()
         }
@@ -153,7 +152,7 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
   }
 }
 
-export const deleteCollection = (collection, props) => {
+export const deleteCollection = (collection) => {
   collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     collectionsApiService

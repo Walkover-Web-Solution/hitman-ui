@@ -33,6 +33,8 @@ import moment from 'moment'
 import tabService from '../tabs/tabService'
 import WarningModal from '../common/warningModal'
 import { updateTab } from '../tabs/redux/tabsActions'
+import RenderPageContent from './renderPageContent'
+import DisplayUserAndModifiedData from '../common/userService'
 
 const withQuery =(WrappedComponent) => {
   return (props) => {
@@ -85,7 +87,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
-    tabs: state.tabs
+    tabs: state.tabs,
+    users: state.users
   }
 }
 
@@ -230,7 +233,7 @@ class DisplayPage extends Component {
     } else {
       return (
         <div
-          className='pt-3 px-1'
+          className='page-wrapper  pt-3 px-1'
           ref={(node) => {
             this.editorRef = node
           }}
@@ -248,16 +251,8 @@ class DisplayPage extends Component {
               {this.renderEditor(this.props.pageContent === null ? '' : this.props.pageContent, index)}
             </div>
           )}
-          {isOnPublishedPage() && (
-            <div className='pageText doc-view'>
-              {this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}
-            </div>
-          )}
-          <span>
-            {isOnPublishedPage() &&
-              this.props?.pages?.[this.props?.currentPageId]?.updatedAt &&
-              `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}
-          </span>
+         <div className='pageText'><RenderPageContent pageContent={this.props?.pageContent || ''} /></div>
+         <span>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
         </div>
       )
     }
@@ -293,7 +288,9 @@ class DisplayPage extends Component {
       this.fetchPage(pageId)
     }
     return isOnPublishedPage() ? (
-      <>{this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}</>
+      <>
+        {this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}
+      </>
     ) : (
       <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
     )
@@ -527,27 +524,28 @@ class DisplayPage extends Component {
     if (this.props?.pageContentLoading) {
       return (
         <>
-          <div className='container-loading p-4'>
+          <div className="container-loading p-4">
             {!isOnPublishedPage() && (
               <>
-                <div className='d-flex justify-content-end gap-5 mb-5 1806'>
-                  <div className='edit bg rounded-1 ms-5'></div>
-                  <div className='unpublish bg rounded-1 ms-5'></div>
-                  <div className='publish bg rounded-1 ms-5'></div>
+                <div className="d-flex justify-content-end gap-5 mb-5 1806">
+                  <div className="edit bg rounded-1 ms-5"></div>
+                  <div className="unpublish bg rounded-1 ms-5"></div>
+                  <div className="publish bg rounded-1 ms-5"></div>
                 </div>
               </>
             )}
-            <div className='page bg rounded-1'></div>
-            <div className='details d-flex flex-column justify-content-between align-items-center mt-5'>
-              <div className='page-box bg'></div>
-              <div className='page-footer text-center bg'></div>
+            <div className="page bg rounded-1"></div>
+            <div className="details d-flex flex-column justify-content-between align-items-center mt-5">
+              <div className="page-box bg"></div>
+              <div className="page-footer text-center bg"></div>
+
             </div>
           </div>
         </>
       )
     }
     return (
-      <div className='custom-display-page'>
+<div className={`custom-display-page ${isOnPublishedPage() ? "custom-display-public-page" : ""}`}>
         <WarningModal
           show={this.state.warningModalFlag}
           onHide={() => {
@@ -563,7 +561,10 @@ class DisplayPage extends Component {
         {this.renderPublishPageOperations()}
         {this.renderPageName()}
         {this.checkPageRejected()}
+        <div>
+        <ApiDocReview {...this.props} />
         {isOnPublishedPage() && <Footer />}
+        </div>
       </div>
     )
   }

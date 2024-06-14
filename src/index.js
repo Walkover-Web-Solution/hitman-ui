@@ -3,7 +3,6 @@ import { Route, Switch, Router } from 'react-router-dom'
 
 import './index.scss'
 import App from './App'
-import registerServiceWorker from './registerServiceWorker'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.js'
 import '../src/components/main/responsive.scss'
@@ -35,4 +34,3 @@ createRoot(document.getElementById('root')).render(
     </PersistGate>
   </Provider>
 )
-registerServiceWorker()

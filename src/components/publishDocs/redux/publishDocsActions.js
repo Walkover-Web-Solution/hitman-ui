@@ -1,15 +1,13 @@
-// import {store} from '../../../store/store'
-import { store } from '../../../store/store'
 import { SESSION_STORAGE_KEY } from '../../common/utility'
 import publishDocsApiService from '../publishDocsApiService'
 import publishDocsActionTypes from './publishDocsActionTypes'
 
-export const fetchFeedbacks = (collectionId, orgId) => {
+export const fetchFeedbacks = (collectionId) => {
   return (dispatch) => {
     publishDocsApiService
-      .getFeedbacks(collectionId, orgId)
+      .getFeedbacks(collectionId)
       .then((response) => {
-        dispatch(onFeedbacksFetched(response.data))
+          dispatch(onFeedbacksFetched(response?.data?.feedbacks || []))
       })
       .catch((error) => {
         dispatch(onFeedbacksFetchedError(error.response ? error.response.data : error))
