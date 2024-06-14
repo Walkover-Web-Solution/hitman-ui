@@ -38,7 +38,15 @@ class GenericTable extends Component {
   }
 
   componentDidMount() {
-    this.setState({ optionalParams: false, theme: this.props.publicCollectionTheme })
+    this.setState({theme: this.props.publicCollectionTheme })
+    const { dataArray, originalData } = this.props;
+    if (dataArray && originalData) {
+    this.setState({
+      dataArray: this.sortData(dataArray),
+      originalData: this.sortData(originalData),
+      optionalParams: false
+    });
+  }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -243,18 +251,23 @@ class GenericTable extends Component {
   }
 
   renderPublicTableRow(dataArray, index, originalData, title) {
-    dataArray = this.sortData(dataArray)
-    originalData = this.sortData(originalData)
+    const currentItem = dataArray[index];
+    const originalItem = originalData[index];
+    const isChecked = currentItem.checked === 'true';
+    const isNotApplicable = currentItem.checked === 'notApplicable';
+    const isDisabled = originalItem.checked !== 'false';
+    const isEmpty = originalItem.empty;
+  
     return (
-      <tr key={index} id='generic-table-row' className={getHighlightsData(this.props, title, [dataArray[index].key]) ? 'active' : ''}>
+      <tr key={currentItem.key} id='generic-table-row' className={getHighlightsData(this.props, title, [currentItem.key]) ? 'active' : ''}>
         <td className='custom-td' id='generic-table-key-cell'>
-          {dataArray[index].checked === 'notApplicable' ? null : (
+          {isNotApplicable ? null : (
             <label className='customCheckbox'>
               <input
-                disabled={originalData[index].checked === 'false' ? null : 'disabled'}
-                name={index + '.checkbox'}
-                value = {dataArray[index].checked}
-                checked={dataArray[index].checked === 'true'}
+                disabled={isDisabled}
+                name={`${index}.checkbox`}
+                value={currentItem.checked}
+                checked={isChecked}
                 type='checkbox'
                 className='Checkbox'
                 onChange={this.handleChange}
@@ -264,30 +277,30 @@ class GenericTable extends Component {
           )}
         </td>
         <td className='custom-td keyWrapper'>
-          {dataArray[index].key}
+          {currentItem.key}
           <p className='text-muted small'>
-            {originalData[index].checked === 'true' || originalData[index].checked === 'notApplicable' ? '' : '(Optional)'}
+            {isChecked || isNotApplicable ? '' : '(Optional)'}
           </p>
         </td>
         <td className='custom-td valueWrapper'>
           <div className='d-flex align-items-center'>
             <input
-              name={index + '.value'}
-              value = {dataArray[index].type === 'file' ? '' : dataArray[index].value}
-              key={index + this.state.randomId}
+              name={`${index}.value`}
+              value={currentItem.type === 'file' ? '' : currentItem.value}
+              key={`${index}${this.state.randomId}`}
               onChange={this.handleChange}
               type='text'
-              placeholder={`Enter ${dataArray[index].key}`}
-              className={['form-control', originalData[index].empty ? 'empty-params' : ''].join(' ')}
+              placeholder={`Enter ${currentItem.key}`}
+              className={`form-control ${isEmpty ? 'empty-params' : ''}`}
             />
-            {originalData[index].empty ? <div className='small mandatory-field-text'>*This field is mandatory</div> : null}
+            {isEmpty && <div className='small mandatory-field-text'>*This field is mandatory</div>}
           </div>
-          {dataArray[index].description?.length > 0 ? (
-            <p className='small text-muted'>{`Description: ${dataArray[index].description}`}</p>
-          ) : null}
+          {currentItem.description && (
+            <p className='small text-muted'>{`Description: ${currentItem.description}`}</p>
+          )}
         </td>
       </tr>
-    )
+    );
   }
 
   renderTextOrFileInput(dataArray, index) {
