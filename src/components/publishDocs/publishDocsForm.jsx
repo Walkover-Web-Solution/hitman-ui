@@ -422,7 +422,7 @@ class PublishDocForm extends Component {
 
     return (
       <div>
-        <div className='d-flex align-items-center mt-4 mb-1'>
+        <div className='published-post d-flex align-items-center mt-4 mb-1'>
           <span className='public-title d-block'>Preview Documentation</span>
           <div className='api-label POST request-type-bgcolor ml-2 w-auto px-1 '> published </div>
         </div>
@@ -495,17 +495,9 @@ class PublishDocForm extends Component {
           variant='btn btn-outline'
           className='m-1 btn-sm fs-4'
           onClick={() => this.redirectUser()}
+          title='This will publish all the pages and endpoints inside this collection.'
         >
-          <OverlayTrigger
-            placement='bottom'
-            overlay={
-              <Tooltip className='w-25 p-3 ' id='tooltip-bulk-publish'>
-                This will publish all the pages and endpoints inside this collection.
-              </Tooltip>
-            }
-          >
-            <span>Bulk Publish</span>
-          </OverlayTrigger>
+            Bulk Publish
         </Button>
         <Button
           className={this.state.loader ? 'buttonLoader m-1 btn-sm fs-4' : 'm-1 btn-sm fs-4'}
@@ -515,17 +507,9 @@ class PublishDocForm extends Component {
             this.setState({ republishNeeded: true })
           }}
           variant='btn btn-outline'
+          title='This will save as well as publish the doc'
         >
-          <OverlayTrigger
-            placement='bottom'
-            overlay={
-              <Tooltip className='w-25 p-3' id='tooltip-save-and-publish'>
-                This will save as well as publish the doc
-              </Tooltip>
-            }
-          >
-            <span>{this.state.republishNeeded ? 'Save and Republish' : 'Save and Publish'}</span>
-          </OverlayTrigger>
+          {this.state.republishNeeded ? 'Save and Republish' : 'Save and Publish'}
         </Button>
         {!isNotPublished && (
           <Button
