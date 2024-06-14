@@ -59,6 +59,9 @@ class CodeTemplate extends Component {
       } else {
         codeSnippet = snippet.convert(selectedLanguage);
       }
+      if (codeSnippet.includes('///')) {
+      codeSnippet = codeSnippet.replace('///', '//')
+    }
       codeSnippet = decodeURI(codeSnippet)
     } catch (error) {
       console.error(error)
