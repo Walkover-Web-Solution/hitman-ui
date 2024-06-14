@@ -45,7 +45,9 @@ export const updatePage = (history, editedPage) => {
       name: editedPage.name,
       urlName: editedPage.urlName,
       contents: editedPage?.contents || null,
-      state: editedPage.state
+      state: editedPage.state,
+      collectionId: editedPage.collectionId,
+      urlMappingFlag: editedPage.urlMappingFlag,
     }
     // dispatch(updatePageRequest(dataToSend))
     pageApiService
