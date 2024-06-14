@@ -708,7 +708,10 @@ class DisplayEndpoint extends Component {
     if (match === null) return str
 
     if (isDashboardRoute(this.props)) {
-      if (!envVars) return str.replace(regexp, '')
+      if (!envVars) {
+        const missingVariable = match[1]
+        return `${missingVariable}`
+    }
 
       do {
         variables.push(match[1])
@@ -716,6 +719,7 @@ class DisplayEndpoint extends Component {
 
       for (let i = 0; i < variables.length; i++) {
         const envVariable = envVars[variables[i]]
+        if(!envVariable) return variables;
         const strToReplace = `{{${variables[i]}}}`
         if (envVariable?.currentValue) {
           str = str.replace(strToReplace, envVariable.currentValue)
@@ -1347,6 +1351,11 @@ class DisplayEndpoint extends Component {
 
   doSubmitHeader(title) {
     const originalHeaders = [...this.props?.endpointContent.originalHeaders]
+    originalHeaders.map((item)=>{
+      if(item.key){
+        item.key = item.key.trim();
+      }
+    })
     const updatedHeaders = {}
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '') {
@@ -1788,7 +1797,15 @@ class DisplayEndpoint extends Component {
         ...dummyData?.authorizationData?.authorization?.oauth2,
         selectedTokenId: tokenIdToSave
       }
-    } else {
+    }
+    else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
+      debugger
+      const basicAuth = dummyData?.authorizationData?.authorization?.basicAuth
+      if (basicAuth) {
+        dummyData.authorizationData.authorization.user = basicAuth.username
+        dummyData.authorizationData.authorization.password = basicAuth.password
+      }
+    }else {
       dummyData.authorizationData.authorization = { oauth2: {} }
       dummyData.authorizationData.authorization.oauth2 = {
         ...dummyData?.authorizationData?.authorization?.oauth2,

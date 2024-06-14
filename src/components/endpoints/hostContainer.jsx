@@ -13,14 +13,7 @@ import { contentTypesEnums } from '../common/bodyTypeEnums'
 
 const hostContainerEnum = {
   hosts: {
-    // customHost: { key: 'customHost', label: 'Custom Host' },
-    environmentHost: { key: 'environmentHost', label: 'Environment Host' },
-    versionHost: { key: 'versionHost', label: 'Version Host' }
-  }
-}
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    // ON_PUBLISH_DOC: (data) => dispatch(publishData(data))
+    environmentHost: { key: 'environmentHost', label: 'Environment Host' }
   }
 }
 
@@ -38,10 +31,7 @@ class HostContainer extends Component {
       datalistUri: '',
       // customHost: '',
       environmentHost: '',
-      versionHost: '',
-      selectedHost: '',
-      groupId: null,
-      versionId: null
+      selectedHost: ''
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -61,9 +51,7 @@ class HostContainer extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (
-      prevProps.environmentHost !== this.props.environmentHost ||
-      prevProps.versionHost !== this.props.versionHost
-      // prevProps.customHost !== this.props.customHost
+      prevProps.environmentHost !== this.props.environmentHost 
     ) {
       this.setHosts()
     }
@@ -89,9 +77,7 @@ class HostContainer extends Component {
 
   customFindTopPriorityHost() {
     const selectedHost = ''
-    // if (this.state.selectedHost === 'customHost' || this.state.customHost) return 'customHost'
     if (this.state.environmentHost) return 'environmentHost'
-    if (this.state.versionHost) return 'versionHost'
     return selectedHost
   }
 
@@ -101,133 +87,167 @@ class HostContainer extends Component {
   }
 
   getDataFromParsedData(untitledEndpointData, parsedData) {
-      let e = {}
-      e['url'] = parsedData.raw_url
-      parsedData = cloneDeep(parsedData);
-      untitledEndpointData = cloneDeep(untitledEndpointData)
-      untitledEndpointData.data.name = this.props.endpointContent?.data?.name || 'Untitled'
-      untitledEndpointData.currentView = this.props.endpointContent?.currentView || "testing"
-      let data = this.splitUrlHelper(e)
-      // setting method, url and host
-      untitledEndpointData.data.method = parsedData?.method.toUpperCase();
-      untitledEndpointData.data.uri = data?.datalistUri;
-      untitledEndpointData.data.updatedUri = data?.datalistUri;
-      untitledEndpointData.host =  {
-        BASE_URL: data?.datalistHost,
-        selectedHost: ""
-      }
+    let e = {}
+    e['url'] = parsedData.raw_url
+    parsedData = cloneDeep(parsedData)
+    untitledEndpointData = cloneDeep(untitledEndpointData)
+    untitledEndpointData.data.name = this.props.endpointContent?.data?.name || 'Untitled'
+    untitledEndpointData.currentView = this.props.endpointContent?.currentView || 'testing'
+    let data = this.splitUrlHelper(e)
+    // setting method, url and host
+    untitledEndpointData.data.method = parsedData?.method.toUpperCase()
+    untitledEndpointData.data.uri = data?.datalistUri
+    untitledEndpointData.data.updatedUri = data?.datalistUri
+    untitledEndpointData.host = {
+      BASE_URL: data?.datalistHost,
+      selectedHost: ''
+    }
 
-      // setting path variables
-      let path = new URI(parsedData.raw_url)
-      let queryParams = path.query(true);
-      path = path.pathname()
-      const pathVariableKeys = path.split('/').filter(part => part.startsWith(':')).map(key => key.slice(1));
-      for(let i = 0;i < pathVariableKeys.length ;i++){
-        let eachData = {
-          checked : "true",
-          value: "",
-          description: "",
-          key : pathVariableKeys[i]
-        }
-        untitledEndpointData.pathVariables.push(eachData)
-      }
+    if (parsedData.auth_type == 'basic') {
+      untitledEndpointData.authorizationData.authorizationTypeSelected = `${parsedData.auth_type}Auth`
+    } else {
+      untitledEndpointData.authorizationData.authorizationTypeSelected = parsedData.auth_type
+    }
+    untitledEndpointData.authorizationData.authorization = parsedData.auth
 
-      if(parsedData?.data){
+    // setting path variables
+    let path = new URI(parsedData.raw_url)
+    let queryParams = path.query(true)
+    path = path.pathname()
+    const pathVariableKeys = path
+      .split('/')
+      .filter((part) => part.startsWith(':'))
+      .map((key) => key.slice(1))
+    for (let i = 0; i < pathVariableKeys.length; i++) {
+      let eachData = {
+        checked: 'true',
+        value: '',
+        description: '',
+        key: pathVariableKeys[i]
+      }
+      untitledEndpointData.pathVariables.push(eachData)
+    }
+
+    if (parsedData?.data) {
       // if content-type is json then value is added json stringified and body description is specially handled
       // parsedData.data is in the format of json string then convert it to object format
       try {
         parsedData.data = JSON.parse(parsedData.data)
       } catch (e) {}
-      const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase();
-      if(contentType.includes('application/json')){
-        untitledEndpointData.data.body.type = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.value = typeof(parsedData.data)=== 'object' ? JSON.stringify(parsedData.data) : parsedData.data;
+      const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase()
+      if (contentType.includes('application/json')) {
+        /* contentType = 'application/json' */
+        untitledEndpointData.data.body.type = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.value = typeof parsedData.data === 'object' ? JSON.stringify(parsedData.data) : parsedData.data
         // setting body description
         untitledEndpointData.bodyDescription = {
-            "payload": {
-                 "value": {},
-                  "type": "object",
-                  "description": ""
+          payload: {
+            value: {},
+            type: 'object',
+            description: ''
           }
         }
 
-        for(let key in parsedData.data){
+        for (let key in parsedData.data) {
           untitledEndpointData.bodyDescription.payload.value[key] = {
-            "value": parsedData.data[key],
-            "type": "string",
-            "description": ""
+            value: parsedData.data[key],
+            type: 'string',
+            description: ''
           }
         }
+        console.log(parsedData)
+        console.log(untitledEndpointData)
       }
-       // setting data for all the rawTypes defined except JSON
-      else if(contentType && contentTypesEnums[contentType]) {
-        untitledEndpointData.data.body.type = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.value = typeof(parsedData.data)=== 'object' ? JSON.stringify(parsedData.data) : parsedData.data;
-      }
-      else{
+      // setting data for all the rawTypes defined except JSON
+      else if (contentType && contentTypesEnums[contentType]) {
+        untitledEndpointData.data.body.type = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.value = typeof parsedData.data === 'object' ? JSON.stringify(parsedData.data) : parsedData.data
+      } else {
         // setting data for 'multipart/form-data' or url-encodeded
-        if(!parsedData.headers){
+        if (!parsedData.headers) {
           parsedData.headers = {}
         }
-        parsedData.headers['Content-Type'] =  (!parsedData.headers?.['Content-Type']) ? parsedData.headers?.['content-type'] : parsedData.headers?.['Content-Type'];
-        let bodyType = untitledEndpointData.data.body.type = (!parsedData.headers?.['Content-Type']) ? 'multipart/form-data': parsedData.headers?.['Content-Type'] || 'application/x-www-form-urlencoded'
+        parsedData.headers['Content-Type'] = !parsedData.headers?.['Content-Type']
+          ? parsedData.headers?.['content-type']
+          : parsedData.headers?.['Content-Type']
+        let bodyType = (untitledEndpointData.data.body.type = !parsedData.headers?.['Content-Type']
+          ? 'multipart/form-data'
+          : parsedData.headers?.['Content-Type'] || 'application/x-www-form-urlencoded')
 
         // 'multipart/form-data' and 'application/x-www-form-urlencoded' both contains body values description
-        for(let key in parsedData.data){
+        let keyValuePairs = parsedData.data.split('&')
+        let keys = []
+        let values = []
+        // Iterate over each key-value pair
+        keyValuePairs.forEach((pair) => {
+          let [key, value] = pair.split('=')
+          keys.push(key)
+          values.push(value)
+        })
+        for (let key in values) {
           let eachData = {
-            checked: "true",
-            key: key,
-            value: parsedData.data[key],
-            description: "",
-            type: "text"
+            checked: 'true',
+            key: keys[key],
+            value: values[key],
+            description: '',
+            type: 'text'
           }
           untitledEndpointData.data.body[bodyType].push(eachData)
         }
-        untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1)); 
+        untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1))
       }
     }
-      
-      // setting headers
-      for(let key in parsedData?.headers){
-        let eachDataOriginal = {
-          checked : "true",
-          value: parsedData.headers[key],
-          description: "",
-          key : key
-        }
-        untitledEndpointData.originalHeaders.push(eachDataOriginal);
+
+    // setting headers
+    for (let key in parsedData?.headers) {
+      let eachDataOriginal = {
+        checked: 'true',
+        value: parsedData.headers[key],
+        description: '',
+        key: key
       }
-      untitledEndpointData.originalHeaders.push(...untitledEndpointData.originalHeaders.splice(0, 1));  
-      
-      // setting query params
-      for(let key in queryParams){
-        let eachDataOriginal = {
-          checked : "true",
-          value: queryParams[key],
-          description: "",
-          key : key
-        }
-        untitledEndpointData.originalParams.push(eachDataOriginal);
+      untitledEndpointData.originalHeaders.push(eachDataOriginal)
+    }
+    untitledEndpointData.originalHeaders.push(...untitledEndpointData.originalHeaders.splice(0, 1))
+
+    // setting query params
+    for (let key in queryParams) {
+      let eachDataOriginal = {
+        checked: 'true',
+        value: queryParams[key],
+        description: '',
+        key: key
       }
-      untitledEndpointData.originalParams.push(...untitledEndpointData.originalParams.splice(0, 1));
+      untitledEndpointData.originalParams.push(eachDataOriginal)
+    }
+    untitledEndpointData.originalParams.push(...untitledEndpointData.originalParams.splice(0, 1))
 
     this.props.setQueryUpdatedData(untitledEndpointData)
     tabService.markTabAsModified(this.props.tabs.activeTabId)
   }
-  
+
   async handleInputHostChange(e) {
-   let inputValue = e.target.value
+    let inputValue = e.target.value
 
     if (inputValue.trim().startsWith('curl')) {
       try {
-        let modifiedCurlCommand = inputValue;
-        let parsedData = await getParseCurlData(modifiedCurlCommand);
-        parsedData = JSON.parse(parsedData.data);
+        let modifiedCurlCommand = inputValue
+        if (modifiedCurlCommand.includes('--url')) {
+          modifiedCurlCommand = modifiedCurlCommand.replace('--url', ' ')
+        }
+        let parsedData = await getParseCurlData(modifiedCurlCommand)
+        parsedData = JSON.parse(parsedData.data)
+        // Remove any occurrence of 'http://' followed by a space
+        parsedData.url = parsedData.url.replace(/^http:\/\/\s/, '')
+        // Check if 'http://' or 'https://' appears twice and correct it
+        parsedData.url = parsedData.url.replace(/^(http:\/\/https?:\/\/)/, '$2')
+        parsedData.raw_url = parsedData.raw_url.replace(/^http:\/\/\s/, '')
+        parsedData.raw_url = parsedData.raw_url.replace(/^(http:\/\/https?:\/\/)/, '$2')
         this.getDataFromParsedData(this.props.untitledEndpointData, parsedData)
-        return ;
-      }catch(e){
+        return
+      } catch (e) {
         toast.error('could not parse the curl')
       }
     }
@@ -259,16 +279,12 @@ class HostContainer extends Component {
   checkExistingHosts(value) {
     const regex = /^((http[s]?|ftp):\/\/[\w.\-@:]*)/i
     const variableRegex = /^{{[\w|-]+}}/i
-    const { environmentHost, versionHost } = this.state
+    const { environmentHost } = this.state
     if (value?.match(variableRegex)) {
       return value.match(variableRegex)[0]
     }
     if (environmentHost && value?.match(new RegExp('^' + environmentHost) + '/')) {
       return environmentHost
-    }
-
-    if (versionHost && value?.match(new RegExp('^' + versionHost + '/'))) {
-      return versionHost
     }
     if (value?.match(regex)) {
       return value.match(regex)[0]
@@ -303,13 +319,12 @@ class HostContainer extends Component {
   selectCurrentHost(hostname) {
     // if (hostname === this.state.customHost) return 'customHost'
     if (hostname === this.state.environmentHost) return 'environmentHost'
-    if (hostname === this.state.versionHost) return 'versionHost'
     return 'environmentHost'
   }
 
   setHosts() {
-    const { versionHost, environmentHost } = this.props
-    this.setState({ versionHost, environmentHost }, () => {
+    const { environmentHost } = this.props
+    this.setState({ environmentHost }, () => {
       this.setHostAndUri()
     })
   }
@@ -370,4 +385,4 @@ class HostContainer extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HostContainer)
+export default connect(mapStateToProps)(HostContainer)

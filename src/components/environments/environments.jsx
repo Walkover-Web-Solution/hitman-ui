@@ -22,6 +22,7 @@ import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions';
 import IconButton from '../common/iconButton';
 import { IoIosArrowDown } from "react-icons/io";
 import ImportEnvironmentModal from './ImportEnvironmentModal';
+import { getCurrentUser } from '../auth/authServiceV2.js';
 
 const mapStateToProps = (state) => {
   return {
@@ -101,7 +102,7 @@ class Environments extends Component {
   }
 
   async handleAdd(newEnvironment) {
-    newEnvironment.requestId = shortId.generate();
+    newEnvironment.userId = getCurrentUser()?.id;
     this.props.add_environment(newEnvironment);
   }
 
