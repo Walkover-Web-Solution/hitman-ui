@@ -1,20 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 import { addUrlWithAdditionalPath, deleteMappedUrl } from './redirectionApiServices'
 import { getUrlPathById } from '../common/utility'
+import { addOldUrlOfPage, deleteOldUrlOfPage } from '../pages/redux/pagesActions'
+import { toast } from 'react-toastify'
+import { IoDocumentTextOutline } from "react-icons/io5"
+import { BiLogoGraphql } from "react-icons/bi";
 import './redirections.scss'
 
 const Redirections = () => {
+
   const params = useParams()
   const userPathRef = useRef(null)
+  const dispatch = useDispatch();
 
-  const { pages, collections, childIds } = useSelector((state) => {
+  const { pages, collections, childIds, customDomain } = useSelector((state) => {
     return {
       pages: state.pages,
       collections: state.collections,
-      childIds: state?.pages?.[state.collections?.[params.collectionId]?.rootParentId]?.child || []
+      childIds: state?.pages?.[state.collections?.[params.collectionId]?.rootParentId]?.child || [],
+      customDomain: state.collections?.[params.collectionId]?.customDomain || ''
     }
   })
 
@@ -22,7 +29,7 @@ const Redirections = () => {
   const [selectedPageId, setselectedPageId] = useState(null)
   const [latestUrl, setLatestUrl] = useState('')
 
-  const visiblePath = `${process.env.REACT_APP_UI_URL}/p/`
+  const visiblePath = customDomain ? `https://${customDomain}/` : `${process.env.REACT_APP_UI_URL}/p/`
 
   useEffect(() => {
     loadUrls()
@@ -30,8 +37,8 @@ const Redirections = () => {
 
   const addOldUrlsOfChilds = (pagesHaveOldUrls, pageId) => {
     {
-      pages[pageId]?.oldUrls && Object.keys(pages[pageId]?.oldUrls).length > 0 && Object.entries(pages[pageId]?.oldUrls).forEach(([index, oldUrl]) => {
-        pagesHaveOldUrls.push({ pageId, oldUrl, oldUrlId: index })
+      pages[pageId]?.oldUrls && Object.keys(pages[pageId]?.oldUrls).length > 0 && Object.entries(pages[pageId]?.oldUrls).forEach(([index, path]) => {
+        pagesHaveOldUrls.push({ pageId, path, pathId: index })
       })
     }
     if (pages?.[pageId]?.child.length > 0) {
@@ -46,7 +53,6 @@ const Redirections = () => {
     const pagesHaveOldUrls = []
     try {
       rootParentChilds.forEach((pageId) => addOldUrlsOfChilds(pagesHaveOldUrls, pageId))
-      console.log(pagesHaveOldUrls, 12345678)
       setRedirectUrls(pagesHaveOldUrls)
     } catch (error) {
       console.error('Failed to fetch URLs:', error.message)
@@ -55,39 +61,42 @@ const Redirections = () => {
 
   const handleAddUrl = async () => {
     try {
-      const url = getWholeUrl(userPathRef.current.value)
-      const result = (await addUrlWithAdditionalPath(selectedPageId, params.collectionId, url)).data
-      const updatedRedirectUrls = [...redirectUrls, { pageId: result.pageId, oldUrl: url, oldUrlId: result.id }]
+      const path = userPathRef.current.value
+      const result = (await addUrlWithAdditionalPath(selectedPageId, params.collectionId, path)).data
+      const updatedRedirectUrls = [...redirectUrls, { pageId: result.pageId, path, pathId: result.id }]
+      dispatch(addOldUrlOfPage({ pageId: result.pageId, path, pathId: result.id }))
       setRedirectUrls(updatedRedirectUrls)
     } catch (error) {
       console.error('Failed to create URL:', error)
+      toast.error(error.message)
     }
   }
 
-  const handleDeleteUrl = async (id, url) => {
-    try {
-      await deleteMappedUrl(id)
-    } catch (error) {
-      console.error('Failed to delete URL:', error)
-    }
+  const handleDeleteUrl = async (indexId, pageId, pathId) => {
+    deleteMappedUrl(pathId).then(() => {
+      dispatch(deleteOldUrlOfPage({ pageId, pathId }))
+      setRedirectUrls((prev) => prev.filter((_, i) => i !== indexId))
+    }).catch((error) => {
+      console.log(error.message)
+      toast.error(error.message)
+    })
   }
 
   const setLatestUrlForPage = (id, setInUseState = true) => {
     if (setInUseState) setselectedPageId(id)
     let pathName = getUrlPathById(id, pages)
-    pathName = `${pathName}`
     pathName = pathName.replace('null', params.collectionId)
     if (setInUseState) setLatestUrl(pathName)
     return pathName
   }
 
   const renderAllVersionOfParentPage = (versionId) => {
-    const versionChilds = pages?.[versionId]?.child
+    const versionChilds = pages?.[versionId]?.child || []
     return (
       <>
-        {versionChilds.length === 0 ? null : (
+        {versionChilds?.length === 0 ? null : (
           <div className='mt-2'>
-            <span>{pages?.[versionId]?.name}</span>
+            <span className='version-heading'>{pages?.[versionId]?.name}</span>
             <div className='pl-2'>{renderAllPagesOfParent(versionChilds)}</div>
           </div>
         )}
@@ -96,33 +105,52 @@ const Redirections = () => {
   }
 
   const renderParentPage = (pageId) => {
-    const parentPageChildIds = pages?.[pageId]?.child
+    const parentPageChildIds = pages?.[pageId]?.child || []
     return (
-      <div className='mt-2'>
-        <span className='parent-page-heading cursor-pointer' onClick={() => setLatestUrlForPage(pageId)}>
-          {pages?.[pageId]?.name}
-        </span>
-        <div className='pl-2'>{renderAllVersionOfParentPage(parentPageChildIds)}</div>
+      <div className='mt-4'>
+        <div className='page-heading-container cursor-pointer d-flex align-items-center' onClick={() => setLatestUrlForPage(pageId)}>
+          <IoDocumentTextOutline size={14} className='mb-1' />
+          <span className='ml-1 page-heading page-heading parent-page-heading'>{pages?.[pageId]?.name}</span>
+        </div>
+        <div className='pl-3'>
+          {parentPageChildIds.map(versionId => renderAllVersionOfParentPage(versionId))}
+        </div>
       </div>
     )
   }
 
   const renderSubPage = (subPageId) => {
-    const subPageChildIds = pages?.[subPageId]?.child
+    const subPageChildIds = pages?.[subPageId]?.child || []
     return (
-      <div className='mt-2'>
-        <span className='cursor-pointer' onClick={() => setLatestUrlForPage(subPageId)}>
-          {pages?.[subPageId]?.name}
-        </span>
+      <div className='mt-1'>
+        <div className='page-heading-container cursor-pointer' onClick={() => setLatestUrlForPage(subPageId)}>
+          <span className='page-heading page-heading d-flex align-items-center'>
+            <IoDocumentTextOutline size={14} className='mb-1' />
+            <span className='ml-1 page-heading page-heading'>{pages?.[subPageId]?.name}</span>
+          </span>
+        </div>
         <div className='pl-2'>{renderAllPagesOfParent(subPageChildIds)}</div>
       </div>
     )
   }
 
   const renderEndpoint = (endpointId) => {
+
+    const getRequestTypeIcon = () => {
+      if (pages?.[endpointId]?.protocolType === 2) return <BiLogoGraphql className='graphql-icon' />
+      else {
+        return (
+          <div className={`${pages?.[endpointId]?.requestType}-chip`}>
+            <div className='endpoint-request-div'>{pages?.[endpointId]?.requestType}</div>
+          </div>
+        )
+      }
+    }
+
     return (
-      <div className='mt-2 cursor-pointer'>
-        <span onClick={() => setLatestUrlForPage(endpointId)}>{pages?.[endpointId]?.name}</span>
+      <div className='mt-1 page-heading-container cursor-pointer d-flex align-items-center' onClick={() => setLatestUrlForPage(endpointId)}>
+        <span className='mr-1 page-heading'>{pages?.[endpointId]?.name}</span>
+        {getRequestTypeIcon()}
       </div>
     )
   }
@@ -147,27 +175,33 @@ const Redirections = () => {
     )
   }
 
-  const getWholeUrl = (value) => {
-    const customDomain = collections?.[params.collectionId]?.customDomain
-    const urlPrefix = customDomain ? 'http://' + customDomain + '/p/' : visiblePath;
-    const urlSuffix = '?collectionId=' + params.collectionId
-    return urlPrefix + value + urlSuffix;
-  }
-
   const getLatestUrl = (pageId) => {
     const path = setLatestUrlForPage(pageId, false)
     return `${visiblePath}${path}`
   }
 
+  const handleRedirection = (value, type) => {
+    switch (type) {
+      case 'slug':
+        window.open(`${visiblePath}${value}?collectionId=${params.collectionId}`, '_blank')
+        break;
+      case 'redirection':
+        window.open(value, '_blank')
+        break;
+      default:
+        break;
+    }
+  }
+
   const renderTable = () => {
     return (
-      <div>
+      <div className='mt-5'>
         {redirectUrls.length > 0 ? (
           <table>
             <thead>
               <tr>
-                <th className='center-heading'>Old URL</th>
-                <th className='center-heading'>Latest URL</th>
+                <th className='center-heading'>Slug</th>
+                <th className='center-heading'>Redirection URL</th>
                 <th className='center-heading'>Actions</th>
               </tr>
             </thead>
@@ -175,10 +209,17 @@ const Redirections = () => {
               {redirectUrls.map((redirectUrlDetails, index) => {
                 return (
                   <tr key={index}>
-                    <td>{redirectUrlDetails.oldUrl}</td>
-                    <td>{getLatestUrl(redirectUrlDetails?.pageId)}</td>
+                    <td className='cursor-pointer url-path'>
+                      <span title='click to open link' className='cursor-pointer url-path' onClick={(e) => handleRedirection(e.target.innerText, 'slug')}>{redirectUrlDetails.path}</span>
+                    </td>
                     <td>
-                      <DeleteIcon onClick={() => handleDeleteUrl(index, redirectUrlDetails?.oldUrlId)} />
+                      <span title='click to open link' className='cursor-pointer url-redirection' onClick={(e) => handleRedirection(e.target.innerText, 'redirection')}>{getLatestUrl(redirectUrlDetails?.pageId)}</span>
+                    </td>
+                    <td>
+                      <DeleteIcon
+                        className='cursor-pointer'
+                        onClick={() => handleDeleteUrl(index, redirectUrlDetails?.pageId, redirectUrlDetails?.pathId)}
+                      />
                     </td>
                   </tr>
                 )
@@ -194,7 +235,7 @@ const Redirections = () => {
 
   return (
     <div className='redirections d-flex h-100'>
-      <div className='d-flex justify-content-start sidebar-pages-container'>
+      <div className='d-flex justify-content-start sidebar-pages-container mb-4'>
         <div className='p-4'>{renderAllPagesOfParent(childIds)}</div>
       </div>
       <div className='saperation'></div>
@@ -202,29 +243,17 @@ const Redirections = () => {
         <div className='main-content'>
           <h3>{collections?.[params.collectionId]?.name.charAt(0).toUpperCase() + collections?.[params.collectionId]?.name.slice(1)} Redirections</h3>
           <div className='form'>
-            <div className='d-flex flex-column flex-shrink-1 flex-grow-1'>
-              <input
-                ref={userPathRef}
-                type='text'
-                class='input-part editable h-100'
-                id='part2'
-                placeholder='Enter your path'
-              />
-              <span>
-                Domain for the path:- <span className='domain-name'>{visiblePath}</span>
-              </span>
+            <div className='d-flex justify-content-center flex-grow-1'>
+              <div className='d-flex flex-column flex-grow-1'>
+                <input ref={userPathRef} type='text' className=' h-100' id='part2' placeholder='Slug' />
+                <span className='mt-1 additional-info'>Domain - <span className='domain-name'>{visiblePath}</span></span>
+              </div>
+              <div className='d-flex flex-column flex-grow-1 ml-2'>
+                <input size='sm' disabled type='text' className='' placeholder='Redirection URL' value={latestUrl} />
+                <span className='mt-1 additional-info'>Click on the pages and endpoints to add the redirection URL</span>
+              </div>
             </div>
-            <input
-              disabled
-              type='text'
-              className='h-100'
-              placeholder='Click on page and endpoint to add latest url'
-              value={latestUrl}
-              readOnly
-            />
-            <button className='h-100 fs-4' onClick={handleAddUrl}>
-              Add
-            </button>
+            <button className='h-100 fs-4 ml-2' onClick={handleAddUrl}>Add</button>
           </div>
           {renderTable()}
         </div>

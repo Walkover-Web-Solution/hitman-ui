@@ -291,6 +291,20 @@ export const updateNameOfPages = (payload) => {
   }
 }
 
+export const addOldUrlOfPage = (payload) => {
+  return {
+    type: pagesActionTypes.ADD_OLD_URL,
+    payload
+  }
+}
+
+export const deleteOldUrlOfPage = (payload) => {
+  return {
+    type: pagesActionTypes.DELETE_OLD_URL,
+    payload
+  }
+}
+
 export const updateDragDrop = (draggedId, droppedOnId, pageIds) => {
   let uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {

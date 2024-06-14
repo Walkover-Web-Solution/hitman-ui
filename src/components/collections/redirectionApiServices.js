@@ -8,8 +8,8 @@ export function deleteMappedUrl(id) {
   return http.delete(apiUrl + `/orgs/${orgId}/urlMappings/${id}`)
 }
 
-export function addUrlWithAdditionalPath(pageId, collectionId, oldUrl) {
+export function addUrlWithAdditionalPath(pageId, collectionId, path) {
   const orgId = getOrgId()
-  const body = { pageId, collectionId, oldUrl };
+  const body = { pageId, collectionId, oldUrl: path };
   return http.post(apiUrl + `/orgs/${orgId}/urlMappings`, body)
 }

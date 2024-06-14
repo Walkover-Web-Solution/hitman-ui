@@ -271,13 +271,13 @@ function pagesReducer(state = initialState, action) {
         }
       }
     case pagesActionTypes.ON_DRAG_DROP: {
-     let pages = { ...state }
+      let pages = { ...state }
       let updatedPageDataObjects = action.payload
       for (let pageId in updatedPageDataObjects) {
-       
-          const pageData = updatedPageDataObjects[pageId];
-        
-            pages[pageId] = { ...pages[pageId], ...pageData };
+
+        const pageData = updatedPageDataObjects[pageId];
+
+        pages[pageId] = { ...pages[pageId], ...pageData };
       }
       return pages
     }
@@ -291,6 +291,16 @@ function pagesReducer(state = initialState, action) {
       pages = { ...state }
       pages[action?.versionData?.newVersionId].state = 1
       pages[action.versionData?.oldVersionId].state = 0
+      return pages
+
+    case pagesActionTypes.ADD_OLD_URL:
+      pages = { ...state }
+      pages[action.payload.pageId].oldUrls = { ...pages[action.payload.pageId].oldUrls, [action.payload.pathId]: action.payload.path }
+      return pages
+
+    case pagesActionTypes.DELETE_OLD_URL:
+      pages = { ...state }
+      delete pages[action.payload.pageId].oldUrls[action.payload.pathId]
       return pages
 
     default:

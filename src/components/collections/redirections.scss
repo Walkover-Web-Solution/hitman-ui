@@ -1,3 +1,5 @@
+@import '../main/variables.scss';
+
 .redirections {
 
   h3 {
@@ -86,7 +88,6 @@
 }
 
 .parent-page-heading {
-  font-size: 14px;
   font-weight: bold;
 }
 
@@ -126,4 +127,72 @@
   color: rgba(128, 128, 128, 0.499);
   margin-top: 40px;
   height: 200px;
+}
+
+.url-redirection {
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.page-heading-container {
+  padding: 4px 10px;
+  border-radius: 4px;
+  width: fit-content;
+  max-width: 100%;
+
+  &:hover {
+    background-color: rgba(195, 191, 191, 0.4);
+  }
+
+  .page-heading {
+    &:hover {
+      color: black;
+    }
+  }
+}
+
+.version-heading {
+  color: grey;
+}
+
+.url-path {
+  color: rgb(30, 117, 186);
+
+  :hover {
+    text-decoration: underline;
+  }
+}
+
+.additional-info {
+  font-size: 12px;
+}
+
+.POST-chip {
+  color: rgb(255, 123, 0);
+  font-size: 7px;
+  width: 60px;
+}
+
+.GET-chip {
+  color: green;
+  font-size: 7px;
+  width: 60px;
+}
+
+.PUT-chip {
+  color: steelblue;
+  font-size: 7px;
+  width: 60px;
+}
+
+.PATCH-chip {
+  color: rgb(166, 168, 169);
+  width: 60px;
+}
+
+.DELETE-chip {
+  color: red;
+  font-size: 7px;
+  width: 60px;
 }
