@@ -8,6 +8,7 @@ import { addEnvironment, updateEnvironment } from './redux/environmentsActions'
 import Joi from 'joi-browser'
 import { validate, onEnter } from '../common/utility'
 import './environments.scss'
+import { getCurrentUser } from '../auth/authServiceV2'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -82,10 +83,10 @@ class EnvironmentVariables extends Component {
     }
     const updatedEnvironment = { ...this.state.environment, variables: updatedVariables }
 
+    const userId = getCurrentUser()?.id
     if (this.props.title === 'Add new Environment') {
       this.props.onHide()
-      const requestId = shortId.generate()
-      this.props.add_environment({ ...updatedEnvironment, requestId })
+      this.props.add_environment({ ...updatedEnvironment, userId })
       this.setState({
         environment: { name: '', variables: {} },
         originalVariableNames: [],
@@ -94,9 +95,9 @@ class EnvironmentVariables extends Component {
     } else {
       const originalEnvironment = jQuery.extend(true, {}, this.props.environment)
       if (JSON.stringify(originalEnvironment) !== JSON.stringify(updatedEnvironment)) {
-        if (updatedEnvironment.requestId) delete updatedEnvironment.requestId
         this.props.update_environment({
-          ...updatedEnvironment
+          ...updatedEnvironment,
+          userId
         })
       }
     }
