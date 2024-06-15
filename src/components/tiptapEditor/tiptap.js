@@ -58,13 +58,6 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
   const [alignment, setAlignment] = useState('left');
   const [color, setColor] = useState("");
   const [activeHeading, setActiveHeading] = useState(0);
-  const [editorContent, setEditorContent] = useState(initial);
-
-  useEffect(() => {
-    setEditorContent(initial); // Set the content initially
-  }, [initial]);
-
-
 
   const editor = useEditor({
     editorProps: {
@@ -105,12 +98,11 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
         autolink: false
       })
     ],
-    content: editorContent,
+    content: initial,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
-      setEditorContent(html); // Update editor content
       onChange(html);
-      localStorage.setItem('tiptapEditorContent', html);
+      localStorage.setItem(html);
     },
     editable: !disabled
   })

@@ -44,7 +44,7 @@ const withQuery =(WrappedComponent) => {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const queryClient = useQueryClient()
     const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
-    let { data, error, isLoading } = useQuery(['pageContent', pageId], async () => {
+    let { data, error} = useQuery(['pageContent', pageId], async () => {
       return isOnPublishedPage()
         ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
         : await getPageContent(props?.match?.params?.orgId, pageId)
@@ -107,7 +107,6 @@ class DisplayPage extends Component {
     }
     this.name = React.createRef()
     this.contents = React.createRef()
-    this.editorContentKey = 'tiptapEditorContent';
   }
 
   async fetchPage(pageId) {
@@ -124,7 +123,6 @@ class DisplayPage extends Component {
     }
   }
   async componentDidMount() {
-    this.loadEditorContent();
     await this.setPageData()
     this._isMounted = true
     this.extractPageName()  
@@ -147,7 +145,6 @@ class DisplayPage extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this.loadEditorContent();
     if (this.props?.location?.pathname !== prevProps?.location?.pathname) {
       this.extractPageName()
     }
@@ -169,30 +166,12 @@ class DisplayPage extends Component {
   componentWillUnmount() {
     // document.body.removeEventListener('click', this.handleClickOutside)
     this._isMounted = false
-    this.saveEditorContent();
   }
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.showEditor !== nextState.showEditor || this.props.pageContent !== nextProps.pageContent) {
       return true
     }
     return false
-  }
-
-  loadEditorContent() {
-    const storedContent = localStorage.getItem(this.editorContentKey);
-    if (storedContent) {
-      this.setState((prevState) => ({
-        data: {
-          ...prevState.data,
-          contents: storedContent,
-        },
-      }));
-    }
-  }
-
-  saveEditorContent() {
-    const { data } = this.state;
-    localStorage.setItem(this.editorContentKey, data.contents || '');
   }
 
   async setPageData() {
@@ -215,12 +194,6 @@ class DisplayPage extends Component {
       }
     }
   }
-
-  // handleClickOutside = (event) => {
-  //   if (this.editorRef && !this.editorRef.contains(event.target)) {
-  //     this.setState({ showEditor: false })
-  //   }
-  // }
 
   extractPageName() {
     if (!isDashboardRoute(this.props, true) && this.props.pages) {
@@ -290,7 +263,6 @@ class DisplayPage extends Component {
     this.setState({ data: editedPage, showEditor: false }, () => {
       tabService.markTabAsSaved(this.props.tab.id)
       tabService.updateDraftData(editedPage.id, editedPage.contents)
-      this.saveEditorContent(); 
     })
   }
 
