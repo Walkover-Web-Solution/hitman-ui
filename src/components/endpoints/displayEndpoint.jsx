@@ -69,12 +69,6 @@ import { updateToken } from '../../store/tokenData/tokenDataActions.js'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
 import { LiaSaveSolid } from 'react-icons/lia'
 import QueryTab from './queryTab/queryTab.jsx'
-import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
-import DisplayUserAndModifiedData from '../common/userService.jsx'
-
-import { hexToRgb } from '../common/utility'
-import {background} from '../backgroundColor.js'
-
 const shortid = require('shortid')
 const status = require('http-status')
 const URI = require('urijs')
@@ -2932,8 +2926,8 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-            ? 'mainContentWrapperPublic hideCodeEditor'
-            : 'mainContentWrapperPublic '
+              ? 'mainContentWrapperPublic hideCodeEditor'
+              : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
