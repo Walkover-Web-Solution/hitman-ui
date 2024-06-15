@@ -3204,7 +3204,7 @@ body .btn-group-custom {
 .doc-view {
   box-shadow: 0px 2px 6px 0px #03225014;
   background-color: #fff;
-  // padding: 2rem 2.75rem;
+  padding: 2rem 2.75rem;
   border-radius: 5px;
   overflow: hidden;
   max-width: 800px;
@@ -3855,4 +3855,16 @@ body .tox {
 
 .cursor-text {
   cursor: text !important;
+}
+.create-table {
+  .btn {
+    &.btn-light {
+      color: #212529 !important;
+      background-color: #f8f9fa !important;
+      border-color: #f8f9fa !important;
+      &:hover {
+        background-color: #e9ecef !important;
+      }
+    }
+  }
 }

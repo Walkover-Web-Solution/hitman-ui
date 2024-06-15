@@ -250,7 +250,7 @@ class EndpointBreadCrumb extends Component {
   render() {
     this.props.isEndpoint ? this.setEndpointData() : this.setPageData()
     return (
-      <div className='endpoint-header'>
+      <div className='endpoint-header ml-3'>
         <div className='panel-endpoint-name-container'>
           <div className='page-title-name d-flex align-items-center'>
             {this.props?.match?.params?.endpointId === 'new' && this.switchProtocolTypeDropdown()}
