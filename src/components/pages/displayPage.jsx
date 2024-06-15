@@ -35,6 +35,7 @@ import WarningModal from '../common/warningModal'
 import { updateTab } from '../tabs/redux/tabsActions'
 import RenderPageContent from './renderPageContent'
 import DisplayUserAndModifiedData from '../common/userService'
+import { isNodeActive } from '@tiptap/react'
 
 const withQuery =(WrappedComponent) => {
   return (props) => {
@@ -233,7 +234,7 @@ class DisplayPage extends Component {
     } else {
       return (
         <div
-          className='page-wrapper  pt-3 px-1'
+          className={`page-wrapper ${isOnPublishedPage() ? "pt-3" : ""}`}
           ref={(node) => {
             this.editorRef = node
           }}
@@ -243,7 +244,7 @@ class DisplayPage extends Component {
           )}
           {!isOnPublishedPage() && (
             <div
-              className='pageText doc-view'
+              className='pageText doc-view p-0 shadow-none'
               onClick={() => {
                 this.setState({ showEditor: true })
               }}
@@ -559,8 +560,10 @@ class DisplayPage extends Component {
         {this.renderPublishConfirmationModal()}
         {this.renderUnPublishConfirmationModal()}
         {this.renderPublishPageOperations()}
+        <div className={`${!isOnPublishedPage() ? "page-heading-content" : ""}`}>
         {this.renderPageName()}
         {this.checkPageRejected()}
+        </div>
         <div>
         <ApiDocReview {...this.props} />
         {isOnPublishedPage() && <Footer />}

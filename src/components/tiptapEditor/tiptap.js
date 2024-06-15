@@ -217,7 +217,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
   }
 
   return (
-    <div className={`textEditorContainer ${!isInlineEditor ? 'editor' : ''}`}>
+    <div className={`textEditorContainer ${!isInlineEditor ? 'editor border border-0' : ''}`}>
 
       {editor && (
 
@@ -270,16 +270,16 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-          <Dropdown>
-            <Dropdown.Toggle>
+          <Dropdown className='create-table'>
+            <Dropdown.Toggle className='btn-light'>
               <BiFontColor />
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <SketchPicker color={color} onChangeComplete={handleTextColor} />
             </Dropdown.Menu>
           </Dropdown>
-          <Dropdown >
-            <Dropdown.Toggle>
+          <Dropdown className='create-table'>
+            <Dropdown.Toggle className='btn-light'>
               <FaTable />
             </Dropdown.Toggle>
             <Dropdown.Menu>
