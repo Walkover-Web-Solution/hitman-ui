@@ -266,7 +266,7 @@ function TokenGenerator(props) {
             <label className='basic-auth-label'>{inputFieldsEnums[key]}</label>
             <div className='dropdown basic-auth-input'>
               <button
-                className='btn dropdown-toggle new-token-generator-dropdown'
+                className='btn dropdown-toggle new-token-generator-dropdown w-100'
                 id='dropdownMenuButton'
                 data-toggle='dropdown'
                 aria-haspopup='true'
@@ -290,7 +290,7 @@ function TokenGenerator(props) {
             <label className='basic-auth-label'>{inputFieldsEnums[key]}</label>
             <div className='dropdown basic-auth-input'>
               <button
-                className='btn dropdown-toggle new-token-generator-dropdown'
+                className='btn dropdown-toggle new-token-generator-dropdown w-100'
                 id='dropdownMenuButton'
                 data-toggle='dropdown'
                 aria-haspopup='true'
