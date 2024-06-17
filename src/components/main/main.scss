@@ -1286,7 +1286,7 @@ button.editBtn {
   margin: 2px 0;
 }
 .headParaWraper {
-  padding: 4px 20px 20px 11px;
+  padding: 8px;
   border-radius: $border-radius;
   border: 1px solid $lightblackborder;
 }
@@ -2589,10 +2589,9 @@ main.mainpublic-endpoint-main .for-public-view {
   }
   .techdoc-svg {
     display: flex;
+    width: 120px;
     @media screen and (max-width:768px) {
-      padding: 10px;
-      margin-left: -34px;
-      margin-right: -33px;
+     width: 100px;
     }
   }
 }
@@ -3802,7 +3801,7 @@ body .tox {
     height: 97%;
     position: absolute;
     top: -3px;
-    left: 26px;
+    left: 30px;
   }
  }
  .expanded {

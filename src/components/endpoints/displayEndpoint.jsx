@@ -3062,7 +3062,7 @@ class DisplayEndpoint extends Component {
               <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
                 <div className='endpoint-header'>
                   {this.isNotDashboardOrDocView() && (
-                    <div className='d-flex endpoint-name-container justify-content-between mb-2'>
+                    <div className='d-flex endpoint-name-container justify-content-between mb-3'>
                       {this.isNotDashboardOrDocView() && (
                         <>
                           <h1 className='endpoint-title mb-0'>{this.props?.endpointContent?.data?.name || ''}</h1>
