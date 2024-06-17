@@ -6,7 +6,7 @@ import Joi from 'joi-browser'
 import history from '../../history'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
-import {orgListKey, profileKey,tokenKey, currentOrgKey, getProxyToken} from '../auth/authServiceV2'
+import { getCurrentUser} from '../auth/authServiceV2'
 import { bodyTypesEnums, rawTypesEnums } from './bodyTypeEnums'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
@@ -26,8 +26,6 @@ export const SESSION_STORAGE_KEY = {
   PUBLIC_COLLECTION_ID: 'publicCollectionId',
   UNIQUE_TAB_ID: 'uniqueTabId'
 }
-
-const proxyUrl = process.env.REACT_APP_PROXY_URL
 
 export function sentryIntegration() {
   Sentry.init({
@@ -85,6 +83,7 @@ export function getDomainName(hostname) {
 
   return parts[0] || ''
 }
+
 export const msgText = {
   publishPage: 'You are about to make these changes live on your Public API doc.',
   unpublishPage: 'You are about to Unpublish Page from your Public API doc.',
@@ -211,59 +210,9 @@ export function toTitleCase(str) {
 }
 
 export function getOrgId() {
-  let orgList = window.localStorage.getItem('currentOrganisation')
-  orgList = JSON.parse(orgList)
-  return orgList?.id
-}
-
-export function getParentIds(id, type, data) {
-  let entities = {}
-  const parentIds = { collectionId: '', versionId: '', groupId: '', pageId: '' }
-  const { pages, endpoints, groups, versions } = data
-
-  switch (type) {
-    case 'page':
-      entities = pages
-      break
-    case 'endpoint':
-      entities = endpoints
-      break
-    default:
-      entities = {}
-  }
-
-  const entity = entities?.[id]
-  if (!entity) {
-    return parentIds
-  }
-
-  const groupId = entity?.groupId
-  let versionId = ''
-
-  if (groupId) {
-    parentIds.groupId = groupId
-    versionId = groups?.[entity.groupId]?.versionId
-  } else if (entity?.versionId) {
-    versionId = entity?.versionId
-  }
-
-  let collectionId = ''
-
-  if (versionId) {
-    parentIds.versionId = versionId
-    collectionId = versions?.[versionId]?.collectionId
-  }
-  const pageId = ''
-  if (pageId) {
-    parentIds.pageId = pageId
-    collectionId = pages?.[pageId]?.collectionId
-  }
-
-  if (collectionId) {
-    parentIds.collectionId = collectionId
-  }
-
-  return parentIds
+  const state = store.getState();
+  const currentOrganization = state?.organizations?.currentOrg;
+  return currentOrganization?.id
 }
 
 export function handleChangeInUrlField(data) {
@@ -454,9 +403,8 @@ export function validateEmail(email) {
 }
 
 export function getUserProfile() {
-  let user = window.localStorage.getItem(profileKey)
+  let user = getCurrentUser()
   try {
-    user = JSON.parse(user)
     return user
   } catch (e) { }
 }
@@ -489,32 +437,6 @@ export function compareAlphabetically(a, b, data) {
   if (item1 < item2) order = -1
   else if (item1 > item2) order = 1
   return order
-}
-
-export async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
-  if (!proxyAuthToken) {
-    proxyAuthToken = getProxyToken()
-  }
-  try {
-    const response = await fetch(proxyUrl + '/getDetails', {
-      headers: {
-        proxy_auth_token: proxyAuthToken
-      }
-    })
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
-
-    const data = await response.json()
-    const userInfo = data.data[0]
-    window.localStorage.setItem(tokenKey, proxyAuthToken)
-    window.localStorage.setItem(profileKey, JSON.stringify(userInfo))
-    window.localStorage.setItem(currentOrgKey, JSON.stringify(userInfo.currentCompany))
-    window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.c_companies))
-  } catch (e) {
-    console.error('error ', e)
-    throw new Error(e?.message ? e.message : 'Something went wrong')
-  }
 }
 
 const modifyEndpointContent = (endpointData, untitledData) => {
@@ -786,7 +708,6 @@ export default {
   ADD_GROUP_MODAL_NAME,
   ADD_VERSION_MODAL_NAME,
   ADD_PAGE_MODAL_NAME,
-  getParentIds,
   handleChangeInUrlField,
   handleBlurInUrlField,
   formatBytes,

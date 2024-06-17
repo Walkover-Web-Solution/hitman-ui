@@ -4,7 +4,7 @@ import RenderData from './renderData/renderData'
 import './showCaseSaveAsModal.scss'
 
 export default function ShowCaseSaveAsModal(props) {
-  const { pages, collections, activeTabId } = useSelector((state) => {
+  const { pages, collections } = useSelector((state) => {
     return {
       pages: state.pages,
       collections: state.collections,

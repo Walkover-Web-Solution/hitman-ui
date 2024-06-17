@@ -2,15 +2,12 @@ import React, { Component } from 'react'
 import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import ShareVersionForm from './shareVersionForm'
 import {
   isDashboardRoute,
-  getParentIds,
   getUrlPathById,
   isTechdocOwnDomain,
   SESSION_STORAGE_KEY,
-  isOnPublishedPage,
-  ADD_VERSION_MODAL_NAME
+  isOnPublishedPage
 } from '../common/utility'
 import './collectionVersions.scss'
 import AddEntity from '../main/addEntity/addEntity'
@@ -25,7 +22,7 @@ import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 import { onDefaultVersion } from '../publishDocs/redux/publishDocsActions'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { toast } from 'react-toastify'
-import SubPageForm from '../groups/subPageForm'
+import SubPageForm from '../subPages/subPageForm'
 import { ReactComponent as Rename } from '../../assets/icons/renameSign.svg'
 import SelectVersion from './selectVersion/selectVersion'
 import CustomModal from '../customModal/customModal'
@@ -70,7 +67,6 @@ class CollectionParentPages extends Component {
     super(props)
     this.state = {
       selectedParentPageIds: {},
-      showShareVersionForm: false,
       showDeleteModal: false,
       pageFormName: '',
       selectedPage: {},
@@ -120,11 +116,6 @@ class CollectionParentPages extends Component {
         theme: this.props.collections[this.props.collection_id].theme
       })
     }
-   
-    const { pageId, endpointId } = this.props.match.params
-    if (pageId) this.setParentPageForEntity(pageId, 'page')
-
-    if (endpointId) this.setParentPageForEntity(endpointId, 'endpoint')
     const defaultVersion = this.findDefaultVersion()
     if (defaultVersion) {
       this.setState({
@@ -141,18 +132,6 @@ class CollectionParentPages extends Component {
     if (prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
       this.setState({ selectedParentPageIds: {} })
     }
-
-    const { pageId, endpointId } = this.props.match.params
-    const { pageId: prevPageId, endpointId: prevEndpointId } = prevProps.match.params
-
-    if (pageId && prevPageId !== pageId) {
-      this.setParentPageForEntity(pageId, 'page')
-    }
-
-    if (endpointId && prevEndpointId !== endpointId) {
-      this.setParentPageForEntity(endpointId, 'endpoint')
-    }
-
     if (prevProps?.pages?.[this.props?.rootParentId]?.child !== this.props?.pages?.[this.props?.rootParentId]?.child) {
       let check = this.checkIfSelectedVersionIdIsPresent()
       if (!check) {
@@ -190,10 +169,6 @@ class CollectionParentPages extends Component {
     const { pages, rootParentId } = this.props
     const children = pages[rootParentId]?.child || []
     return children.map((childId) => pages[childId]).find((page) => page?.state === 1)
-  }
-
-  setParentPageForEntity(id, type) {
-    const { pageId } = getParentIds(id, type, this.props)
   }
 
   setSelectedVersionId(id, value) {
@@ -281,19 +256,6 @@ class CollectionParentPages extends Component {
         ...this.props.pages[pageId]
       }
     })
-  }
-
-  showShareVersionForm() {
-    return (
-      this.state.showPageForm.share && (
-        <ShareVersionForm
-          show={this.state.showPageForm.share}
-          onHide={() => this.closePageForm()}
-          title={this.state.pageFormName}
-          selectedPage={this.state.selectedPage}
-        />
-      )
-    )
   }
 
   showAddPageEndpointModal() {
@@ -792,7 +754,6 @@ class CollectionParentPages extends Component {
     const versionsCount = this.getVersionsCount(this.filteredPages)
     return (
       <>
-        {this.showShareVersionForm()}
         {this.showAddPageEndpointModal()}
 
         {this.state.showVersionForm && this.openManageVersionModal()}

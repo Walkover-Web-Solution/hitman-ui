@@ -8,10 +8,9 @@ import {
   isTechdocOwnDomain,
   SESSION_STORAGE_KEY,
   isOnPublishedPage
-} from '../common/utility'
-import ShareGroupForm from '../groups/shareGroupForm'
-import './groups.scss'
-import groupsService from './groupsService'
+} from '../common/utility.js'
+import './subpages.scss'
+import groupsService from './subPageService.js'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
@@ -20,7 +19,7 @@ import SubPageForm from './subPageForm.jsx'
 import { ReactComponent as EditSign } from '../../assets/icons/editsign.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { MdExpandMore } from "react-icons/md"
-import  IconButtons  from '../common/iconButton'
+import  IconButtons  from '../common/iconButton.jsx'
 import { FiPlus } from "react-icons/fi"
 import { BsThreeDots } from "react-icons/bs"
 import { IoDocumentTextOutline } from "react-icons/io5"
@@ -90,23 +89,6 @@ class Groups extends Component {
       groupFormName: 'Share Subpage',
       selectedGroup: { ...this.props.pages[groupId] }
     })
-  }
-
-  closeSubPageForm() {
-    this.setState({ showSubPageForm : {edit: false, addPage: false} })
-  }
-
-  showShareSubPageForm() {
-    return (
-      this.state.showSubPageForm.share && (
-        <ShareGroupForm
-          show={this.state.showSubPageForm.share}
-          onHide={() => this.closeSubPageForm()}
-          title={this.state.groupFormName}
-          selectedGroup={this.props.rootParentId}
-        />
-      )
-    )
   }
 
   showEditPageModal() {
@@ -302,7 +284,6 @@ class Groups extends Component {
   render() {
     return (
       <>
-        {this.showShareSubPageForm()}
         {this.showAddPageEndpointModal()}
         {this.showEditPageModal()}
         {this.state.showDeleteModal &&

@@ -57,7 +57,6 @@ import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import PlusIcon from '../../assets/icons/plus.svg'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
-import ChatbotsideBar from './chatbotsideBar'
 import { useQuery, useQueryClient } from 'react-query'
 import utilityFunctions from '../common/utility.js'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
@@ -104,7 +103,7 @@ const mapStateToProps = (state) => {
     tabs: state?.tabs?.tabs,
     tokenDetails: state?.tokenData?.tokenDetails,
     curlSlider: state.modals?.curlSlider || false,
-    users: state.users
+    users: state.users.usersList
   }
 }
 
@@ -1486,10 +1485,6 @@ class DisplayEndpoint extends Component {
     this.setState({ showEndpointFormModal: false, saveAsFlag: false })
   }
 
-  closeChatBotModal = () => {
-    this.setState({ showAskAiSlider: false })
-  }
-
   makeHeaders(headers) {
     const processedHeaders = []
     for (let i = 0; i < Object.keys(headers)?.length; i++) {
@@ -1800,7 +1795,6 @@ class DisplayEndpoint extends Component {
       }
     }
     else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
-      debugger
       const basicAuth = dummyData?.authorizationData?.authorization?.basicAuth
       if (basicAuth) {
         dummyData.authorizationData.authorization.user = basicAuth.username
@@ -2017,16 +2011,6 @@ class DisplayEndpoint extends Component {
         </OverlayTrigger>
       </div>
     )
-  }
-
-  toggleChatbotModal = () => {
-    if (this.props.responseView === 'right' && this.state.showAskAiSlider === false) {
-      this.props.set_response_view('bottom')
-    }
-    this.setState((prevState) => ({
-      showAskAiSlider: !prevState.showAskAiSlider
-    }))
-    // this.props.set_chat_view(this.state.showAskAiSlider)
   }
 
   checkProtocolType(protocolType = 1) {
@@ -2937,8 +2921,7 @@ class DisplayEndpoint extends Component {
         style={this.state.theme.backgroundStyle}
       >
         <div
-          onClick={this.closeChatBotModal}
-          className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}  
+          className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}
         >
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
@@ -3291,15 +3274,6 @@ class DisplayEndpoint extends Component {
             {this.renderCodeTemplate()}
           </div>
         </div>
-        {this.isDashboardAndTestingView() && (
-          <div>
-            {this.state.showAskAiSlider && <ChatbotsideBar {...this.props} onHide={() => this.closeChatBotModal()} />}
-            <div />
-            {/* <div className='ask-ai-btn' onClick={this.toggleChatbotModal}>
-              <p>Ask AI</p>
-            </div> */}
-          </div>
-        )}
         {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
               <DisplayUserAndModifiedData
               isOnPublishedPage={isOnPublishedPage()}

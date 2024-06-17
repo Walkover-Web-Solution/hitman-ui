@@ -23,7 +23,7 @@ const ProtectedRouteV2 = ({ path, component: Component, render, ...rest }) => {
           )
         } else if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
           const currentOrgId = getCurrentOrg().id
-          if (isOrgInPath && match[2] !== currentOrgId.toString()) {
+          if (currentOrgId && isOrgInPath && match[2] !== currentOrgId.toString()) {
             let newUrl
             if (props?.location?.pathname.split('/')[1] === 'orgs') {
               newUrl = props?.location?.pathname.replace(/\/orgs\/[^\/]+/, `/orgs/${currentOrgId}/`)
