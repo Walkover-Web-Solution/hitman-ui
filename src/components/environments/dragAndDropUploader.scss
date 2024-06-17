@@ -1,3 +1,5 @@
+@import '.././main/variables.scss';
+
 .drag-and-drop-uploader {
   .dropzone {
     border: 2px dashed #cccccc;
@@ -48,9 +50,9 @@
       background-color: #cccccc;
       border-color: #cccccc;
       &:hover {
-        background-color: #cccccc !important;
-        color: #fff !important;
-        border-color: #cccccc !important;
+        background-color: $disabled-background-color !important;
+        color: $disabled-color !important;
+        border-color: $disabled-border-color !important;
       }
     }
 
