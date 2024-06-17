@@ -5,6 +5,9 @@ import { Button } from 'react-bootstrap'
 import { BiLike, BiDislike } from "react-icons/bi";
 import './apiDocReview.scss'
 import { dislike, like } from '../../services/feedbackService'
+import { LuAsterisk } from 'react-icons/lu'
+import { hexToRgb, isOnPublishedPage } from '../common/utility'
+import {background} from '../backgroundColor.js'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -19,8 +22,27 @@ const ApiDocReview = (props) => {
   const [feedbackGiven, setFeedbackGiven] = useState(false)
   const [feedbackSaved, setFeedbackSaved] = useState(false)
   const [currentReviews, setCurrentReviews] = useState({})
-
   const prevProps = useRef(props)
+  const [theme, setTheme] = useState({ backgroundStyle: {} });
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const dynamicColor = hexToRgb(props.publicCollectionTheme, 0.15); // Assuming props.publicCollectionTheme is passed as a prop
+    const staticColor = background['background_hover']; // Adjust as per your background structure
+
+    const backgroundStyle = {
+      backgroundImage: isHovered
+        ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+           linear-gradient(to right, ${staticColor}, ${staticColor})`
+        : ''
+    };
+
+    setTheme({ backgroundStyle });
+  }, [isHovered, props.publicCollectionTheme]);
+
+  const handleHover = (hoverState) => {
+    setIsHovered(hoverState);
+  };
 
   useEffect(() => {
     setParent()
@@ -177,33 +199,30 @@ const ApiDocReview = (props) => {
     !isDashboardRoute(props) && (
       <>
         <div className='position-relative'>
-          <p className='d-flex justify-content-center fs-4 font-weight-700 text-secondary'>Was this page helpful?</p>
+          <p className='d-flex justify-content-center font-weight-700 text-secondary'>Was this page helpful?</p>
           <div className='d-flex justify-content-center like-unline fs-2'>
-          <OverlayTrigger
-              placement='bottom'
-              overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}
-            >
-            <div
-              className='cursor-pointer'
-              onClick={() => {
-                handleLikeButton()
-              }}
-            >
-              <BiLike />
-            </div>
+            <OverlayTrigger placement='bottom' overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}>
+              <div
+                className='cursor-pointer'
+                onClick={() => {
+                  handleLikeButton()
+                }}
+              >
+                <BiLike size={30} onMouseEnter={() => handleHover(true)}
+                onMouseLeave={() => handleHover(false)}
+                // style={theme.backgroundStyle}
+                 />
+              </div>
             </OverlayTrigger>
-            <OverlayTrigger
-              placement='bottom'
-              overlay={<Tooltip id='dislike-tooltip'>Not helpful</Tooltip>}
-            >
-            <div
-              className='cursor-pointer'
-              onClick={() => {
-                handleFeedback('DISLIKE')
-              }}
-            >
-              <BiDislike />
-            </div>
+            <OverlayTrigger placement='bottom' overlay={<Tooltip id='dislike-tooltip'>Not helpful</Tooltip>}>
+              <div
+                className='cursor-pointer'
+                onClick={() => {
+                  handleFeedback('DISLIKE')
+                }}
+              >
+                <BiDislike size={30} />
+              </div>
             </OverlayTrigger>
           </div>
           {feedbackGiven && renderFeedbackResponse()}

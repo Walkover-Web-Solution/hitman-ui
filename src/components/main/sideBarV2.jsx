@@ -712,7 +712,7 @@ class SideBarV2 extends Component {
         : ''
     };
     return (
-      <div className='hm-sidebar-header align-items-start'>
+      <div className='hm-sidebar-header align-items-start pl-1'>
          {(this.props.collections[collectionKeys[0]]?.favicon ||
   this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
   <div className='hm-sidebar-logo'>
@@ -735,7 +735,7 @@ class SideBarV2 extends Component {
           <span>API Documentation</span>
         </h4>
         {isTechdocOwnDomain() && (
-          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5' style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
+          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5 align-items-center' style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
             <TbLogin2 className='text-black' />
             <button
               type='button'
