@@ -1,6 +1,5 @@
 import collectionVersionsApiService from '../collectionVersionsApiService'
 import versionActionTypes from './collectionVersionsActionTypes'
-import { toast } from 'react-toastify'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 import { SESSION_STORAGE_KEY } from '../../common/utility'
 

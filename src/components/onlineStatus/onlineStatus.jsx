@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import './onlineStatus.scss'
 
-export default function OnlineSatus(props) {
+export default function OnlineSatus() {
   const [online, isOnline] = useState(navigator.onLine)
   const [needToUpdate, changeStatus] = useState(false)
-  const [timestamp, setTime] = useState(null)
   const [showStatus, changeShowStatus] = useState(false)
 
   const setOnline = async () => {
@@ -17,7 +16,6 @@ export default function OnlineSatus(props) {
   }
 
   const fetchDataFromBackend = () => {
-    props.fetchFromBackend(timestamp)
     changeShowStatus(false)
     changeStatus(false)
   }

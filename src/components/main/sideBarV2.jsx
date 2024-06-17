@@ -26,7 +26,6 @@ import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 // import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
-import AddEntitySelectionModal from './addEntityModal'
 import PageForm from '../pages/pageForm'
 import CollectionModal from '../collections/collectionsModal'
 import DeleteSidebarEntityModal from './sidebar/deleteEntityModal'
@@ -823,21 +822,6 @@ class SideBarV2 extends Component {
     this.setState({ openAddEntitySelectionModal: false })
   }
 
-  showAddEntitySelectionModal() {
-    return (
-      this.state.openAddEntitySelectionModal && (
-        <AddEntitySelectionModal
-          {...this.props}
-          title='ADD'
-          show
-          onHide={() => this.closeAddEntitySelectionModal()}
-          openAddEntityModal={this.openAddEntityModal.bind(this)}
-          collectionId={this.collectionId}
-        />
-      )
-    )
-  }
-
   openAddEntityModal(entity) {
     this.setState({ openAddEntitySelectionModal: false, entity })
   }
@@ -871,7 +855,6 @@ class SideBarV2 extends Component {
     return (
       <>
         <nav className={this.getSidebarInteractionClass()}>
-          {this.showAddEntitySelectionModal()}
           {this.showAddEntityModal()}
           {this.showDeleteEntityModal()}
           <div className='primary-sidebar'>

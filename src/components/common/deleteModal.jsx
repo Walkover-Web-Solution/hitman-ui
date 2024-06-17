@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { closeTab } from '../tabs/redux/tabsActions'
 import { onEnter } from './utility'
-import tabService from '../tabs/tabService'
+
 const mapDispatchToProps = (dispatch) => {
   return {
     close_tab: (tabId) => dispatch(closeTab(tabId))

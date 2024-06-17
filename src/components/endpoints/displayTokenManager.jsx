@@ -89,8 +89,6 @@ function TokenDetailsComponent({ tokenDetails, selectedTokenId }) {
         return title = 'Grant Type'
       case 'scope':
         return title = 'Scope'
-      case 'scope':
-        return title = 'Scope'
       case 'accessTokenUrl':
         return title = 'Access Token URL'
       case 'createdTime':

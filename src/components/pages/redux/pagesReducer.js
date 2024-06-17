@@ -7,7 +7,6 @@ import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishAction
 import generalActionsTypes from '../../redux/generalActionTypes'
 import { statesEnum } from '../../common/utility'
 import publishDocsActionTypes from '../../publishDocs/redux/publishDocsActionTypes'
-import { cloneDeep } from 'lodash'
 
 const initialState = {}
 

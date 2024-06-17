@@ -43,9 +43,6 @@ jobs:
           REACT_APP_STEVE_AUTHKEY: ${{vars.YOUR_STEVE_AUTHKEY}}
           REACT_APP_STEVE_WIDGET_ID: ${{vars.YOUR_STEVE_WIDGET_ID}}
           
-          #HELLO_WIDGET
-          REACT_APP_HELLO_WIDGET_TOKEN : ${{vars.REACT_APP_HELLO_WIDGET_TOKEN}}
-          
           # Desktop App Urls
           REACT_APP_DESKTOP_APP_DOWNLOAD_LINK : ${{vars.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK}}
           

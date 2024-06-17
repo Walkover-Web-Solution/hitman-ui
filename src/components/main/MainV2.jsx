@@ -14,7 +14,7 @@ import NoCollectionIcon from '../../assets/icons/collection.svg'
 import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 import { addCollectionAndPages } from '../redux/generalActions'
 import SplitPane from '../splitPane/splitPane'
-import { addUserData } from '../auth/redux/userAction'
+import { addUserData } from '../auth/redux/usersRedux/userAction'
 import { toast } from 'react-toastify'
 
 const mapStateToProps = (state) => {

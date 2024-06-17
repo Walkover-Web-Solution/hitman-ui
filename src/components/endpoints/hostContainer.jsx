@@ -2,12 +2,11 @@ import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import tabService from '../tabs/tabService'
-import { publishData } from '../modals/redux/modalsActions'
 import './endpoints.scss'
 import { connect } from 'react-redux'
 import _, { cloneDeep } from 'lodash'
 import { getParseCurlData } from '../common/apiUtility'
-import URI, { unicode } from 'urijs'
+import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
 
@@ -156,8 +155,6 @@ class HostContainer extends Component {
             description: ''
           }
         }
-        console.log(parsedData)
-        console.log(untitledEndpointData)
       }
       // setting data for all the rawTypes defined except JSON
       else if (contentType && contentTypesEnums[contentType]) {
