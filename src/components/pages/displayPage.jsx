@@ -236,7 +236,6 @@ class DisplayPage extends Component {
     return this.props.tabs[tabId]?.activeTabId
   }
   handleSubmit = (e) => {
-    debugger
     e.preventDefault()
     const editedPage = { ...this.state.data }
     if (this.props.pageContent != null && editedPage.contents !== this.props.pageContent) {
