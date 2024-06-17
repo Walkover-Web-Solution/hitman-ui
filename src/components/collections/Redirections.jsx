@@ -246,7 +246,7 @@ const Redirections = () => {
       </div>
       <div className='saperation'></div>
       <div className='d-flex justify-content-center redirection-table-container mt-4'>
-        <div className='main-content'>
+        <div className='main-container'>
           <h3>{collections?.[params.collectionId]?.name.charAt(0).toUpperCase() + collections?.[params.collectionId]?.name.slice(1)} Redirections</h3>
           <div className='form'>
             <div className='d-flex justify-content-center flex-grow-1'>
