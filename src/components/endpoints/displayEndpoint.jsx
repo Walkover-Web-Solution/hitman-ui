@@ -365,6 +365,7 @@ class DisplayEndpoint extends Component {
   constructor(props) {
     super(props)
     this.handleRemovePublicEndpoint = this.handleRemovePublicEndpoint.bind(this)
+    this.handleUpdateUri = this.debounce(this.handleUpdateUri, 300);
     this.myRef = React.createRef()
     this.sideRef = React.createRef()
     this.state = {
@@ -412,6 +413,7 @@ class DisplayEndpoint extends Component {
   }
 
   async componentDidMount() {
+    this.handleUpdateUri(this.props.endpointContent?.originalParams)
     this.isMobileView()
     if (this.props.endpointContent) {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
@@ -496,6 +498,12 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.endpointConten?.originalParams !== this.props.endpointContent?.originalParams ||
+      prevProps.endpointContent !== this.props.endpointContent
+    ) {
+      this.handleUpdateUri(this.props.endpointContent?.originalParams);
+    }
     window.addEventListener('resize', this.updateDimensions)
     if (prevState.isMobileView !== this.state.isMobileView) {
       this.isMobileView()
@@ -618,6 +626,14 @@ class DisplayEndpoint extends Component {
         this.props.update_tab(this.props.tab.id, { state })
       }, 1000)
     }
+  }
+  debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+      const context = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), wait);
+    };
   }
 
   setPathVariables(pathVariableKeys, pathVariableKeysObject) {
@@ -1403,35 +1419,46 @@ class DisplayEndpoint extends Component {
   }
 
   handleUpdateUri(originalParams) {
-    const tempdata = this.props.endpointContent
-    if (originalParams.length === 0) {
-      const updatedUri = this.props.endpointContent.data.updatedUri.split('?')[0]
-      const data = { ...this.props?.endpointContent.data }
-      data.updatedUri = updatedUri
-      tempdata.data = data
-      this.props.setQueryUpdatedData(tempdata)
-      return
-    }
-    const originalUri = this.props?.endpointContent.data.updatedUri.split('?')[0] + '?'
-    const parts = {}
-    for (let i = 0; i < originalParams.length; i++) {
-      if (originalParams[i].key.length !== 0 && originalParams[i].checked === 'true') {
-        parts[originalParams[i].key] = originalParams[i].value
-      }
-    }
-    URI.escapeQuerySpace = false
-    let updatedUri = URI.buildQuery(parts)
-    updatedUri = originalUri + URI.decode(updatedUri)
-    const data = { ...this.props?.endpointContent.data }
-    if (Object.keys(parts).length === 0) {
-      data.updatedUri = updatedUri.split('?')[0]
-    } else {
-      data.updatedUri = updatedUri
-    }
-    tempdata.data = data
-    this.props.setQueryUpdatedData(tempdata)
-  }
+    console.log('handleUpdateUri called with:', originalParams);
 
+    const tempdata = this.props.endpointContent;
+
+    if (originalParams.length === 0) {
+      const updatedUri = this.props.endpointContent.data.updatedUri.split('?')[0];
+      const data = { ...this.props.endpointContent.data };
+      data.updatedUri = updatedUri;
+      tempdata.data = data;
+      this.props.setQueryUpdatedData(tempdata);
+      return;
+    }
+
+    const originalUri = this.props.endpointContent.data.updatedUri.split('?')[0] + '?';
+    const parts = {};
+
+    originalParams.forEach(param => {
+      if (param.key.length !== 0 && param.checked === 'true') {
+        parts[param.key] = param.value;
+      }
+    });
+
+    console.log('Query Parts:', parts);
+
+    let updatedUri = URI.buildQuery(parts);
+    updatedUri = originalUri + URI.decode(updatedUri);
+
+    console.log('Updated URI:', updatedUri);
+
+    const data = { ...this.props.endpointContent.data };
+    if (Object.keys(parts).length === 0) {
+      data.updatedUri = updatedUri.split('?')[0];
+    } else {
+      data.updatedUri = updatedUri;
+    }
+    tempdata.data = data;
+
+    this.props.setQueryUpdatedData(tempdata);
+  }
+  
   doSubmitParam() {
     const originalParams = [...this.props?.endpointContent.originalParams]
     const updatedParams = {}
