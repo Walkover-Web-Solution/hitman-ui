@@ -495,12 +495,14 @@ class UserProfileV2 extends Component {
               >
                 {org.name}
               </button>
-              <button
-                className="mb-2 p-2 btn btn-danger"
-                onClick={() => this.leaveOrganizationAndUpdate(org.id)}
-              >
-                Leave
-              </button>
+              {org?.id !== selectedOrg?.id && (
+                <button
+                  className="mb-2 p-2 btn btn-danger"
+                  onClick={() => this.leaveOrganizationAndUpdate(org.id)}
+                >
+                  Leave
+                </button>
+              )}
             </div>
           ))}
         </div>
