@@ -104,7 +104,6 @@ class HostContainer extends Component {
       let e = {}
       e['url'] = parsedData.raw_url
       parsedData = cloneDeep(parsedData);
-      untitledEndpointData = cloneDeep(untitledEndpointData)
       untitledEndpointData.data.name = this.props.endpointContent?.data?.name || 'Untitled'
       untitledEndpointData.currentView = this.props.endpointContent?.currentView || "testing"
       let data = this.splitUrlHelper(e)
