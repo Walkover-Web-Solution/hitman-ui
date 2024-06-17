@@ -276,7 +276,8 @@ button {
 
         .versionChovron {
           .collection-icons-arrow {
-            display: inline-block !important;
+          background-color: white;
+          display: inline-block !important;
           }
           .collection-icons {
             display: none !important;
@@ -330,6 +331,7 @@ button {
       .versionChovron {
         .collection-icons-arrow {
           display: inline-block !important;
+          background-color: white;
         }
         .collection-icons {
           display: none !important;
@@ -441,6 +443,7 @@ button {
       .versionChovron {
         .collection-icons-arrow {
           display: inline-block !important;
+          background-color: white;
         }
         .collection-icons {
           display: none !important;
@@ -664,7 +667,7 @@ input[type='text']:focus {
 
 .versionChovron {
   width: 26px;
-  height: 15px;
+  height: 23px;
   .collection-icons-arrow {
     transition: all 0.3s ease-in;
     height: 20px !important;
@@ -861,7 +864,7 @@ input[type='text']:focus {
 
 .search-container {
   border: 1px solid $lightblackborder;
-  padding: 4px 6px;
+  padding: 4px 10px;
   border-radius: 4px;
 
   &:focus-within {
