@@ -20,7 +20,7 @@ import { ReactComponent as CancelRequest } from '../../assets/icons/cancelReques
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 import endpointService from './endpointService'
 import { bodyTypesEnums } from '../common/bodyTypeEnums'
-import  IconButtons  from '../common/iconButton'
+import IconButtons from '../common/iconButton'
 import { BsThreeDots } from "react-icons/bs"
 import { GrGraphQl } from 'react-icons/gr'
 import '../../../src/components/styles.scss'
@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
     import_postman_environment: (openApiObject, importType, website, callback, view) =>
-    dispatch(importPostmanEnvironment(openApiObject, importType, website, callback, view))
+      dispatch(importPostmanEnvironment(openApiObject, importType, website, callback, view))
   }
 }
 
@@ -98,7 +98,7 @@ class Endpoints extends Component {
 
   openEditEndpointForm(selectedEndpoint) {
     this.setState({
-      showEndpointForm: { edit: true},
+      showEndpointForm: { edit: true },
       selectedEndpoint: {
         ...this.props.endpoints[selectedEndpoint]
       }
@@ -245,8 +245,8 @@ class Endpoints extends Component {
   displayDeleteOpt(endpointId) {
     return (
       <div className='dropdown-item text-danger d-flex' onClick={() => this.openDeleteEndpointModal(endpointId)}>
-      <DeleteIcon /> Delete
-    </div>
+        <DeleteIcon /> Delete
+      </div>
     )
   }
 
@@ -300,7 +300,7 @@ class Endpoints extends Component {
     return (
       <div className='sidebar-item-action'>
         <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-        <IconButtons><BsThreeDots /></IconButtons>
+          <IconButtons><BsThreeDots /></IconButtons>
         </div>
 
         <div className='dropdown-menu dropdown-menu-right'>
@@ -330,6 +330,7 @@ class Endpoints extends Component {
           selectedEndpoint={this.props?.endpointId}
           pageType={4}
           isEndpoint={true}
+          selectedPage={this.props?.endpointId}
         />
       )
     )
@@ -341,43 +342,43 @@ class Endpoints extends Component {
     const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
     return (
       <>
-        <div 
-        key={endpointId} 
-        draggable={!isUserOnPublishedPage}
-        onDragOver={this.props.handleOnDragOver}
-        onDragStart={() => this.props.onDragStart(endpointId)}
-        onDrop={(e) => this.props.onDrop(e, endpointId)}
-        onDragEnter = {(e) => this.props.onDragEnter(e, endpointId)}
-        onDragEnd = {(e) => this.props.onDragEnd(e)}
-        style={this.props.draggingOverId === endpointId ? { borderTop:'3px solid red'}: null}
+        <div
+          key={endpointId}
+          draggable={!isUserOnPublishedPage}
+          onDragOver={this.props.handleOnDragOver}
+          onDragStart={() => this.props.onDragStart(endpointId)}
+          onDrop={(e) => this.props.onDrop(e, endpointId)}
+          onDragEnter={(e) => this.props.onDragEnter(e, endpointId)}
+          onDragEnd={(e) => this.props.onDragEnd(e)}
+          style={this.props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
         >
           <div className={this.props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between mt-1'>
             <button>
-            <div className={`side-bar d-flex ${isSelected ? 'Selected' : ''}`}>
-            <button
-              tabIndex={-1}
-              onClick={() => {
-                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
-              }}
-              onDoubleClick={() =>
-                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
-              }
-            >
-              
-              {this.displayEndpointName(endpointId)}
-              
-            </button>
-              <div className='d-flex align-items-center'>
-                {isDashboardRoute(this.props, true) &&
-                  !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
-                  this.displayEndpointOptions(endpointId)}
-                {/* <div className='ml-1 published-icon transition'>
+              <div className={`side-bar d-flex ${isSelected ? 'Selected' : ''}`}>
+                <button
+                  tabIndex={-1}
+                  onClick={() => {
+                    this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
+                  }}
+                  onDoubleClick={() =>
+                    this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
+                  }
+                >
+
+                  {this.displayEndpointName(endpointId)}
+
+                </button>
+                <div className='d-flex align-items-center'>
+                  {isDashboardRoute(this.props, true) &&
+                    !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
+                    this.displayEndpointOptions(endpointId)}
+                  {/* <div className='ml-1 published-icon transition'>
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
+                </div>
               </div>
-              </div>
-              </button>
+            </button>
           </div>
         </div>
       </>

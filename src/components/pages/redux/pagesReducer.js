@@ -74,7 +74,6 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.ON_PAGE_ADDED_ERROR:
       toast.error(action.error)
       pages = { ...state }
-      delete pages[action.newPage.requestId]
       return pages
 
     case pagesActionTypes.ADD_VERSION_REQUEST:

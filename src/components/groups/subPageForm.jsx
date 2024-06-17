@@ -3,13 +3,19 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import Form from '../common/form'
-import { onEnter, ADD_GROUP_MODAL_NAME, validate, getOnlyUrlPathById } from '../common/utility'
+import { onEnter, ADD_GROUP_MODAL_NAME, validate, getOnlyUrlPathById, getUrlPathById } from '../common/utility'
 // import { onEnter, ADD_GROUP_MODAL_NAME, validate } from '../common/utility'
 import { updatePage } from '../pages/redux/pagesActions'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     update_page: (page) => dispatch(updatePage(ownProps.history, page))
+  }
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    pages: state.pages
   }
 }
 
@@ -42,27 +48,36 @@ class SubPageForm extends Form {
     this.setState({ data })
   }
 
+  getPrevUrlName(id) {
+    const path = getUrlPathById(id, this.props.pages)
+    const questionMarkIndex = path.indexOf('?');
+    if (questionMarkIndex === -1) return path
+    if (questionMarkIndex === 0) return null;
+    const actualPath = path.substring(0, questionMarkIndex);
+    return actualPath
+  }
+
   async doSubmit() {
-    debugger
     const errors = validate({ name: this.state.data.name }, this.schema)
     if (errors) {
       this.setState({ errors })
       return null
     }
     this.props.onHide()
-    let { name, urlName } = { ...this.state.data }
+    let { name, urlName, prevUrlName } = { ...this.state.data }
 
     if (this.props.title === 'Rename') {
       const subPage = this.props?.pages?.[this.props.selectedPage]
       const endpoint = this.props?.endpoints?.[this.props.selectedEndpoint]
+      const path = this.getPrevUrlName(this.props.selectedPage);
       const editedPage = {
-        ...this.state.data,
+        prevUrlName: path ?? prevUrlName,
         name,
         urlName,
         urlMappingFlag: (this.state.data.prevUrlName === this.state.data.urlName) ? false : true,
         id: subPage?.id || endpoint?.id,
         state: subPage?.state || endpoint?.state,
-        collectionId: subPage.collectionId,
+        collectionId: subPage?.collectionId,
       }
       this.props.update_page(editedPage)
     }
@@ -128,4 +143,4 @@ class SubPageForm extends Form {
   }
 }
 
-export default connect(null, mapDispatchToProps)(SubPageForm)
+export default connect(mapStateToProps, mapDispatchToProps)(SubPageForm)

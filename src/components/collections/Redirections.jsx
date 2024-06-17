@@ -8,6 +8,7 @@ import { addOldUrlOfPage, deleteOldUrlOfPage } from '../pages/redux/pagesActions
 import { toast } from 'react-toastify'
 import { IoDocumentTextOutline } from "react-icons/io5"
 import { BiLogoGraphql } from "react-icons/bi";
+import { addCollectionAndPages } from '../redux/generalActions'
 import './redirections.scss'
 
 const Redirections = () => {
@@ -32,8 +33,13 @@ const Redirections = () => {
   const visiblePath = customDomain ? `https://${customDomain}/` : `${process.env.REACT_APP_UI_URL}/p/`
 
   useEffect(() => {
-    loadUrls()
+    getAllPagesAndCollection()
   }, [params?.collectionId])
+
+  const getAllPagesAndCollection = async () => {
+    addCollectionAndPages(params.orgId);
+    loadUrls()
+  }
 
   const addOldUrlsOfChilds = (pagesHaveOldUrls, pageId) => {
     {
