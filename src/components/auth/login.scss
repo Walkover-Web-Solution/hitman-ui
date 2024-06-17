@@ -1,8 +1,9 @@
 .login {
-  height: 100vh;
-
   &__details {
     background-color: #f2984a73;
+    @media screen and (max-width: 575px) {
+      border-radius: 4px;
+    }
 
     h4 {
       font-size: 24px;
@@ -23,6 +24,14 @@
 
     div {
       width: fit-content;
+    }
+  }
+  &__main {
+    button {
+      margin: 0 !important;
+      @media screen and (max-width:575px) {
+        width: 95vw !important;
+      }
     }
   }
 }
