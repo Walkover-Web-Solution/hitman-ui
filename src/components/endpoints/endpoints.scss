@@ -1598,7 +1598,7 @@ table#custom-generic-table {
   .select-code-wrapper {
     button {
       color: black;
-      border: 1px solid transparent !important;
+      border: 1px solid $lightblackborder !important;
 
       &:hover {
         border-color: gray !important;
@@ -1614,7 +1614,7 @@ table#custom-generic-table {
       border: 1px solid transparent;
       button {
         color: black !important;
-        border: none !important;
+        border: 1px solid $lightblackborder !important;
 
         &::after {
           all: unset !important;
@@ -1637,7 +1637,6 @@ table#custom-generic-table {
         }
       }
       &.show {
-        border: 2px solid black !important;
         border-radius: 4px;
       }
 
