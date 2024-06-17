@@ -20,7 +20,7 @@ function Footer({ theme }) {
             href={domainSrc}
             style={{ backgroundColor: hexToRgb(theme, '1') }}
           >
-            <TECHDOCPUBLISH className= 'techdoc-svg' />
+            <TECHDOCPUBLISH className='techdoc-svg' />
           </a>
         </p>
       </div>
