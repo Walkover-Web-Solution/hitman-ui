@@ -14,7 +14,6 @@ import heroImg from '../../assets/web/hero_img.png'
 import content from './indexWebsite.json'
 
 export default function IndexWebsite() {
-  console.log('🚀 ~ Content:', content)
   return (
     <>
       <div className='web_body'>

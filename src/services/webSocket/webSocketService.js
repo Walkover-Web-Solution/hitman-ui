@@ -1,6 +1,6 @@
 import WebSocketClient from 'rtlayer-client'
 import { store } from '../../store/store'
-import { addChildInParent, onPageUpdated, onParentPageAdded, updateDragDrop } from '../../components/pages/redux/pagesActions'
+import { addChildInParent, onPageUpdated, onParentPageAdded } from '../../components/pages/redux/pagesActions'
 import {
   deleteCollectionRequest,
   onCollectionAdded,

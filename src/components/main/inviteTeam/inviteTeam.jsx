@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
 import { inviteMembers } from '../../../services/orgApiService'
 import { useSelector, useDispatch } from 'react-redux'
-import { addNewUserData } from '../../auth/redux/userAction'
+import { addNewUserData } from '../../auth/redux/usersRedux/userAction'
 import { inviteuserMail } from '../../common/apiUtility'
 
 function InviteTeam() {
@@ -17,7 +17,7 @@ function InviteTeam() {
   const history = useHistory()
   const inputRef = useRef(null)
   const { users } = useSelector((state) => {
-    return { users: state.users }
+    return { users: state.users.usersList }
   })
 
   useEffect(() => {
