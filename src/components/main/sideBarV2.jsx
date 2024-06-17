@@ -32,6 +32,8 @@ import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from "react-icons/tb"
 import { updateDragDrop } from '../pages/redux/pagesActions'
+import {  hexToRgb} from '../common/utility'
+import {background} from '../backgroundColor.js'
 
 const mapStateToProps = (state) => {
   return {
@@ -87,7 +89,9 @@ class SideBarV2 extends Component {
       search: false,
       endpoints: '',
       draggingOverId: null,
-      draggedIdSelected: null
+      draggedIdSelected: null,
+      isHovered: false,
+      thene: ''
     }
     this.inputRef = createRef()
     this.sidebarRef = createRef()
@@ -101,7 +105,12 @@ class SideBarV2 extends Component {
   //     document.removeEventListener('click', this.handleClickOutside)
   //   }
   // }
-
+  handleHover = (isHovered) => {
+    this.setState({ isHovered });
+  };
+  handleHovers = (isHover) => {
+    this.setState({ isHover });
+  };
   componentDidMount() {
     const pages = this.props.pages
     const endpoint = []
@@ -689,28 +698,44 @@ class SideBarV2 extends Component {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
     const publishedCollectionTitle = this.props?.collections?.[collectionKeys[0]]?.docProperties?.defaultTitle || ''
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
+    let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
+    var collectionTheme = this.props.collections[collectionId]?.theme
+    const dynamicColor = hexToRgb(collectionTheme, 0.15);
+    const staticColor = background['background_hover'] ;
+
+
+    const backgroundStyle = {
+      backgroundImage: this.state.isHovered
+        ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})`
+        : ''
+    };
     return (
-      <div className='hm-sidebar-header d-flex align-items-center'>
-            <div className='hm-sidebar-logo'>
-              <img
-                id='publicLogo'
-                alt='public-logo'
-                src={
-                  this.props.collections?.[collectionKeys[0]]?.favicon
-                    ? `data:image/png;base64,${this.props?.collections?.[collectionKeys[0]]?.favicon}`
-                    : this.props.collections?.[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
-                }
-                // onError={() => { this.setState({ publicLogoError: true })}}
-                width='60'
-                height='60'
-              />
-            </div>
+      <div className='hm-sidebar-header align-items-start'>
+         {(this.props.collections[collectionKeys[0]]?.favicon ||
+  this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
+  <div className='hm-sidebar-logo'>
+    <img
+      id='publicLogo'
+      alt='public-logo'
+      src={
+        this.props.collections[collectionKeys[0]]?.favicon
+          ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
+          : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl
+      }
+      width='60'
+      height='60'
+    />
+  </div>
+)}
+
         <h4 className='hm-sidebar-title'>
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documentation</span>
         </h4>
         {isTechdocOwnDomain() && (
-          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5'>
+          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5' style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
             <TbLogin2 className='text-black' />
             <button
               type='button'
@@ -733,7 +758,7 @@ class SideBarV2 extends Component {
     return (
       <>
         {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...this.props} />}
-        <div className='plr-3 pt-2'>
+        <div className='pr-2 pl-2 pt-3'>
           {isOnPublishedPage() && this.renderCollectionName()}
           {this.renderSearch()}
           {/* {this.renderDownloadDesktopApp()} */}

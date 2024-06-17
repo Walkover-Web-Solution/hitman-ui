@@ -13,6 +13,8 @@ import addtosample from '../../assets/icons/addToSamplesign.svg'
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoMdArrowDropright } from "react-icons/io";
 import { connect } from 'react-redux'
+import {background} from '../backgroundColor.js'
+
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
 
@@ -115,9 +117,19 @@ class DisplayResponse extends Component {
   }
 
   componentDidMount() {
-    if (!this.state.theme) {
-      this.setState({ theme: this.props.publicCollectionTheme })
-    }
+    const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
+    const staticColor = background['backgroound_boxes'];
+
+    const backgroundStyle = {
+      backgroundImage: `
+        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})
+      `,
+    };
+
+    this.setState({
+      theme: { backgroundStyle },
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -423,7 +435,7 @@ class DisplayResponse extends Component {
   render() {
     const { theme } = this.state
     return (
-      <div className='endpoint-response-container overflow-auto mt-4' style={{ backgroundColor: hexToRgb(this.state?.theme, '0.04')}}>
+      <div className='endpoint-response-container overflow-auto mt-4' style={this.state.theme.backgroundStyle}>
         {this.props.loader ? (
           this.renderLoader()
         ) : this.props.flagResponse ? (
