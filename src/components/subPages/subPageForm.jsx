@@ -3,7 +3,8 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import Form from '../common/form'
-import { onEnter, ADD_GROUP_MODAL_NAME, validate, getOnlyUrlPathById } from '../common/utility'
+import { onEnter, ADD_GROUP_MODAL_NAME, validate, getOnlyUrlPathById, getUrlPathById } from '../common/utility'
+// import { onEnter, ADD_GROUP_MODAL_NAME, validate } from '../common/utility'
 import { updatePage } from '../pages/redux/pagesActions'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -12,11 +13,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
+const mapStateToProps = (state, ownProps) => {
+  return {
+    pages: state.pages
+  }
+}
+
 class SubPageForm extends Form {
   constructor(props) {
     super(props)
     this.state = {
-      data: { name: '', urlName: '' },
+      data: { name: '', urlName: '', prevUrlName: '' },
       errors: {}
     }
     this.schema = {
@@ -36,9 +43,18 @@ class SubPageForm extends Form {
     if (this.props.selectedPage || this.props.selectedEndpoint) {
       const name = subPage?.name || endpoint?.name
       const urlName = subPage?.urlName || endpoint?.urlName
-      data = { name, urlName }
+      data = { name, urlName, prevUrlName: urlName }
     }
     this.setState({ data })
+  }
+
+  getPrevUrlName(id) {
+    const path = getUrlPathById(id, this.props.pages)
+    const questionMarkIndex = path.indexOf('?');
+    if (questionMarkIndex === -1) return path
+    if (questionMarkIndex === 0) return null;
+    const actualPath = path.substring(0, questionMarkIndex);
+    return actualPath
   }
 
   async doSubmit() {
@@ -48,17 +64,20 @@ class SubPageForm extends Form {
       return null
     }
     this.props.onHide()
-    let { name, urlName } = { ...this.state.data }
+    let { name, urlName, prevUrlName } = { ...this.state.data }
 
     if (this.props.title === 'Rename') {
-    const subPage = this.props?.pages?.[this.props.selectedPage]
+      const subPage = this.props?.pages?.[this.props.selectedPage]
       const endpoint = this.props?.endpoints?.[this.props.selectedEndpoint]
+      const path = this.getPrevUrlName(this.props.selectedPage);
       const editedPage = {
-        ...this.state.data,
+        prevUrlName: path ?? prevUrlName,
         name,
         urlName,
+        urlMappingFlag: (this.state.data.prevUrlName === this.state.data.urlName) ? false : true,
         id: subPage?.id || endpoint?.id,
-        state: subPage?.state || endpoint?.state
+        state: subPage?.state || endpoint?.state,
+        collectionId: subPage?.collectionId,
       }
       this.props.update_page(editedPage)
     }
@@ -74,54 +93,54 @@ class SubPageForm extends Form {
       'internal'
     )
     if (this.props.title === 'Rename') {
-    return (
-      <div
-        onKeyPress={(e) => {
-          onEnter(e, this.handleKeyPress.bind(this))
-        }}
-      >
-        <Modal
-          show={this.props.show}
-          onHide={this.props.onHide}
-          size='lg'
-          animation={false}
-          aria-labelledby='contained-modal-title-vcenter'
+      return (
+        <div
+          onKeyPress={(e) => {
+            onEnter(e, this.handleKeyPress.bind(this))
+          }}
         >
-          <Modal.Header className='custom-collection-modal-container' closeButton>
-            <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <form onSubmit={this.handleSubmit}>
-              <div className='row'>
-                <div className='col-12'>
-                  {this.renderInput('name', 'Name', nameTitle, true, false, false, '*name accepts min 1 & max 100 characters')}
+          <Modal
+            show={this.props.show}
+            onHide={this.props.onHide}
+            size='lg'
+            animation={false}
+            aria-labelledby='contained-modal-title-vcenter'
+          >
+            <Modal.Header className='custom-collection-modal-container' closeButton>
+              <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <form onSubmit={this.handleSubmit}>
+                <div className='row'>
+                  <div className='col-12'>
+                    {this.renderInput('name', 'Name', nameTitle, true, false, false, '*name accepts min 1 & max 100 characters')}
+                  </div>
+                  <div className='col-12'>
+                    {this.renderInput(
+                      'urlName',
+                      'URL Name',
+                      pageSlug,
+                      true,
+                      false,
+                      false,
+                      '*Page slug can only contain alphanumeric values and reserved keywords like - _ . ~'
+                    )}
+                  </div>
                 </div>
-                <div className='col-12'>
-                  {this.renderInput(
-                    'urlName',
-                    'URL Name',
-                    pageSlug,
-                    true,
-                    false,
-                    false,
-                    '*Page slug can only contain alphanumeric values and reserved keywords like - _ . ~'
-                  )}
-                </div>
-              </div>
 
-              <div className='text-left'>
-                {this.renderButton('Submit')}
-                <button className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={this.props.onHide}>
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </Modal.Body>
-        </Modal>
-      </div>
-    )
+                <div className='text-left'>
+                  {this.renderButton('Submit')}
+                  <button className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={this.props.onHide}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </Modal.Body>
+          </Modal>
+        </div>
+      )
+    }
   }
 }
-}
 
-export default connect(null, mapDispatchToProps)(SubPageForm)
+export default connect(mapStateToProps, mapDispatchToProps)(SubPageForm)

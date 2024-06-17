@@ -442,12 +442,12 @@ export function compareAlphabetically(a, b, data) {
 const modifyEndpointContent = (endpointData, untitledData) => {
   const endpoint = cloneDeep(endpointData)
   const untitled = cloneDeep(untitledData)
-  untitled.data.name = endpoint.name
-  untitled.data.method = endpoint.requestType
+  untitled.data.name = endpoint?.name || 'Endpoint'
+  untitled.data.method = endpoint?.requestType || 'GET'
 
   // This code will help in storing the old endpoint body data to new endpoint body data architecture (so we do not lost the old data saved inside the DB).
   // TODO - Below code should be removed later.
-  if (endpoint.protocolType === 2) {
+  if (endpoint?.protocolType === 2) {
     untitled.protocolType = 2
     untitled.data.body = { query: endpoint.body.query, variables: endpoint.body.variables }
   }
@@ -563,6 +563,10 @@ export function isOnPublishedPage() {
   return (isTechdocOwnDomain() && path == 'p') || !isTechdocOwnDomain()
 }
 
+export function isOnRedirectionPage() {
+  return window.location.pathname.includes('/redirections');
+}
+
 const deleteSidebarData = (pages, tabs, pageId, deletedTabIds, deletedIds) => {
   if (pages[pageId]) {
     pages[pageId].child.forEach((childPageId) => {
@@ -662,7 +666,7 @@ export const trimString = (str) => {
 export const modifyDataForBulkPublish = (collectionData, allPagesData, collectionId) => {
   const rootParentId = collectionData?.[collectionId]?.rootParentId
   const formatedData = {
-    name: collectionData?.[collectionId]?.name,
+    name: collectionData?.[collectionId]?.name || null,
     metadata: { rootParentId, collectionId },
     children: modifiedData(allPagesData?.[rootParentId]?.child || [], allPagesData)
   }
@@ -734,5 +738,6 @@ export default {
   deleteAllPagesAndTabsAndReactQueryData,
   operationsAfterDeletion,
   trimString,
-  modifyDataForBulkPublish
+  modifyDataForBulkPublish,
+  isOnRedirectionPage
 }
