@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-    isDashboardRoute,
-    isStateDraft,
-    isStateReject,
-    msgText,
-    isStatePending,
-    isStateApproved,
-    getEntityState,
-    isOnPublishedPage
-  } from '../common/utility'
+import {isOnPublishedPage} from '../common/utility'
 
 export default function RenderPageContent(props) {
 

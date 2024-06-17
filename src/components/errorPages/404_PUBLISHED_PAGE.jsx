@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 
 class ERROR_404_PUBLISHED_PAGE extends Component {
-  constructor(props) {
-    super(props)
-  }
   state = {}
   render() {
     const message =

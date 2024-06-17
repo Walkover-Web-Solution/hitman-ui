@@ -27,7 +27,8 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     historySnapshot: state.history,
-    tabs: state.tabs
+    tabs: state.tabs,
+    organizationList : state.organizations.orgList
   }
 }
 
@@ -117,7 +118,6 @@ class UserProfileV2 extends Component {
   }
 
   renderOrgName() {
-    const { name } = this.getUserDetails()
     return (
       <div>
         <div className='org-name'>{getCurrentOrg()?.name || null}</div>
@@ -131,7 +131,7 @@ class UserProfileV2 extends Component {
   }
 
   renderUserDetails() {
-    const { name, email } = this.getUserDetails()
+    const { email } = this.getUserDetails()
     return (
       <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center py-1' onClick={() => { }}>
         <div className='user-icon mr-2'>
@@ -331,7 +331,7 @@ class UserProfileV2 extends Component {
         handleOpenLink(url)
       }
     } else {
-      console.log('Organization ID not found')
+      console.error('Organization ID not found')
     }
   }
 
@@ -480,7 +480,7 @@ class UserProfileV2 extends Component {
   }
 
   renderOrgListDropdown() {
-    const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
+    const organizations = this.props.organizationList || []
     const selectedOrg = getCurrentOrg()
     return (
       <div className='org-listing-container '>

@@ -11,7 +11,7 @@ import { deleteEndpoint, duplicateEndpoint, addEndpoint } from './redux/endpoint
 // import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
-import SubPageForm from '../groups/subPageForm'
+import SubPageForm from '../subPages/subPageForm'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { ReactComponent as Duplicate } from '../../assets/icons/duplicateSign.svg'
 import { ReactComponent as Approved } from '../../assets/icons/approvedSign.svg'
@@ -85,12 +85,6 @@ class Endpoints extends Component {
     if (this.props.theme) {
       this.setState({ theme: this.props.theme })
     }
-    const { endpointId } = this.props.match.params
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { endpointId } = this.props.match.params
-    const { endpointId: prevEndpointId } = prevProps.match.params
   }
 
   async handleDelete(endpoint) {

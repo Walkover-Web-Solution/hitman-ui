@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import shortId from 'shortid';
 import EnvironmentModal from './environmentModal';
 import './environments.scss';
 import environmentsService from './environmentsService.js';

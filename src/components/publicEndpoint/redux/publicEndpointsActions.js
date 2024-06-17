@@ -1,7 +1,6 @@
 import publicEndpointsService from '../publicEndpointsService.js'
 import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'
-import endpointApiService from '../../endpoints/endpointApiService.js'
 import { SESSION_STORAGE_KEY } from '../../common/utility.js'
 
 export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) => {
