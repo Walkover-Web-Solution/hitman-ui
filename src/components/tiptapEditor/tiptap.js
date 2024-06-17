@@ -102,7 +102,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       onChange(html);
-      localStorage.setItem(html);
+      localStorage.setItem('editorContent',html);
     },
     editable: !disabled
   })

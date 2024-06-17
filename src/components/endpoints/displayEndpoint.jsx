@@ -72,6 +72,8 @@ import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import DisplayUserAndModifiedData from '../common/userService.jsx'
 import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
+import debounce from 'lodash/debounce';
+
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -366,7 +368,7 @@ class DisplayEndpoint extends Component {
   constructor(props) {
     super(props)
     this.handleRemovePublicEndpoint = this.handleRemovePublicEndpoint.bind(this)
-    this.handleUpdateUri = this.debounce(this.handleUpdateUri, 300);
+    this.handleUpdateUri = debounce(this.handleUpdateUri.bind(this), 300);
     this.myRef = React.createRef()
     this.sideRef = React.createRef()
     this.state = {
@@ -415,7 +417,6 @@ class DisplayEndpoint extends Component {
   }
 
   async componentDidMount() {
-    this.handleUpdateUri(this.props.endpointContent?.originalParams)
     this.isMobileView()
     if (this.props.endpointContent) {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
@@ -514,12 +515,6 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.endpointConten?.originalParams !== this.props.endpointContent?.originalParams ||
-      prevProps.endpointContent !== this.props.endpointContent
-    ) {
-      this.handleUpdateUri(this.props.endpointContent?.originalParams);
-    }
     window.addEventListener('resize', this.updateDimensions)
     if (prevState.isMobileView !== this.state.isMobileView) {
       this.isMobileView()
@@ -538,6 +533,7 @@ class DisplayEndpoint extends Component {
         !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
     ) {
       this.prepareHarObject()
+      this.handleUpdateUri(this.props.endpointContent?.originalParams);
     }
     if (this.state.endpoint.id !== prevState.endpoint.id && !this.props.location.pathname.includes('history')) {
       this.setState({ flagResponse: false })
@@ -547,6 +543,7 @@ class DisplayEndpoint extends Component {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
     }
   }
+
 
   setSslMode() {
     this.setState({ sslMode: !this.state.sslMode }, () => {
@@ -642,14 +639,6 @@ class DisplayEndpoint extends Component {
         this.props.update_tab(this.props.tab.id, { state })
       }, 1000)
     }
-  }
-  debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-      const context = this;
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(context, args), wait);
-    };
   }
 
   setPathVariables(pathVariableKeys, pathVariableKeysObject) {
@@ -1444,7 +1433,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleUpdateUri(originalParams) {
-    console.log('handleUpdateUri called with:', originalParams);
 
     const tempdata = this.props.endpointContent;
 
@@ -1460,18 +1448,14 @@ class DisplayEndpoint extends Component {
     const originalUri = this.props.endpointContent.data.updatedUri.split('?')[0] + '?';
     const parts = {};
 
-    originalParams.forEach(param => {
-      if (param.key.length !== 0 && param.checked === 'true') {
-        parts[param.key] = param.value;
+    for (let i = 0; i < originalParams.length; i++) {
+      if (originalParams[i].key.length !== 0 && originalParams[i].checked === 'true') {
+        parts[originalParams[i].key] = originalParams[i].value
       }
-    });
-
-    console.log('Query Parts:', parts);
-
+    }
     let updatedUri = URI.buildQuery(parts);
     updatedUri = originalUri + URI.decode(updatedUri);
 
-    console.log('Updated URI:', updatedUri);
 
     const data = { ...this.props.endpointContent.data };
     if (Object.keys(parts).length === 0) {
@@ -1481,7 +1465,9 @@ class DisplayEndpoint extends Component {
     }
     tempdata.data = data;
 
-    this.props.setQueryUpdatedData(tempdata);
+    if (!_.isEqual(tempdata, this.props.endpointContent)) {
+      this.props.setQueryUpdatedData(tempdata);
+    }
   }
   
   doSubmitParam() {
