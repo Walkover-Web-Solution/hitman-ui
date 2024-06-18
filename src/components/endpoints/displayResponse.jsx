@@ -300,7 +300,7 @@ class DisplayResponse extends Component {
                   </div>}
                   {this.state.selectedBodyTab === 'raw' && <div> <>
                     {isDashboardRoute(this.props) && (
-                      <div className='tab-content' id='myTabContent'>
+                      <div className='tab-content bg-white border rounded' id='myTabContent'>
                         <div className='tab-pane fade show active' id='home' role='tabpanel' aria-labelledby='home-tab'>
                           <JSONPretty className='raw-response' theme={JSONPrettyMon} data={this.props.response.data} />
                         </div>
