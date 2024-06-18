@@ -3288,7 +3288,7 @@ class DisplayEndpoint extends Component {
         </div>
         {this.isDashboardAndTestingView() && (
           <div>
-            {this.state.showAskAiSlider && <ChatbotsideBar {...this.props} onHide={() => this.closeChatBotModal()} />}
+            {/* {this.state.showAskAiSlider && <ChatbotsideBar {...this.props} onHide={() => this.closeChatBotModal()} />} */}
             <div />
             {/* <div className='ask-ai-btn' onClick={this.toggleChatbotModal}>
               <p>Ask AI</p>

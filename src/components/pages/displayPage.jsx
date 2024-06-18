@@ -3,7 +3,6 @@ import { store } from '../../store/store'
 import { connect } from 'react-redux'
 import * as _ from 'lodash'
 import { toast } from 'react-toastify'
-import MenuBar from '../tiptapEditor/menubar'
 import {
   isDashboardRoute,
   isStateDraft,
@@ -22,7 +21,6 @@ import { isAdmin } from '../auth/authServiceV2'
 import { approvePage, pendingPage, rejectPage, draftPage } from '../publicEndpoint/redux/publicEndpointsActions'
 import ConfirmationModal from '../common/confirmationModal'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
 import { getPageContent } from '../../services/pageServices'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
@@ -31,16 +29,9 @@ import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
 import moment from 'moment'
 import tabService from '../tabs/tabService'
+import RenderPageContent from './renderPageContent'
 import WarningModal from '../common/warningModal'
 import { updateTab } from '../tabs/redux/tabsActions'
-import RenderPageContent from './renderPageContent'
-import DisplayUserAndModifiedData from '../common/userService'
-import tabService from '../tabs/tabService'
-import WarningModal from '../common/warningModal'
-import { updateTab } from '../tabs/redux/tabsActions'
-import RenderPageContent from './renderPageContent'
-import DisplayUserAndModifiedData from '../common/userService'
-import { isNodeActive } from '@tiptap/react'
 
 const withQuery =(WrappedComponent) => {
   return (props) => {
@@ -228,11 +219,6 @@ class DisplayPage extends Component {
               }}
             >
               {this.renderEditor(this.props.pageContent === null ? '' : this.props.pageContent, index)}
-            </div>
-          )}
-          {isOnPublishedPage() && (
-            <div className='pageText doc-view'>
-              {this.renderTiptapEditor(this.props.pageContent === null ? '' : this.props.pageContent)}
             </div>
           )}
            <div className='pageText'>{isOnPublishedPage() && <RenderPageContent pageContent={this.props?.pageContent || ''} />}</div>
