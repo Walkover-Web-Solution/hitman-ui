@@ -245,27 +245,27 @@ class DisplayResponse extends Component {
             {this.state.selectedResponseTab === 'body' && (
               <div>
                 <div className='d-flex justify-content-between mt-2 mb-1'>
-                <ul className='nav nav-pills body-button'>
-                  <li className='nav-item' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
-                    <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-2 py-1 fs-4' : 'nav-link px-2 py-1 fs-4'} href='#pretty'>Pretty</a>
-                  </li>
-                  <li className='nav-item' onClick={() => this.setState({ selectedBodyTab: 'raw' })}>
-                    <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'} href='#raw'>Raw</a>
-                  </li>
-                  <li className='nav-item' onClick={() => this.setState({ selectedBodyTab: 'preview' })}>
-                    <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'} href='#preview'>Preview</a>
-                  </li>
-                </ul>
-                {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
-                      <div
-                        // style={{ float: "right" }}
-                        className='add-to-sample-response'
-                      >
-                        <div className='adddescLink' onClick={() => this.addSampleResponse(this.props.response)}>
-                          <img src={addtosample} /> Add to Sample Response
-                        </div>
+                  <ul className='nav nav-pills body-button'>
+                    <li className='nav-item' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
+                      <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-2 py-1 fs-4' : 'nav-link px-2 py-1 fs-4'} href='#pretty'>Pretty</a>
+                    </li>
+                    <li className='nav-item' onClick={() => this.setState({ selectedBodyTab: 'raw' })}>
+                      <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'} href='#raw'>Raw</a>
+                    </li>
+                    <li className='nav-item' onClick={() => this.setState({ selectedBodyTab: 'preview' })}>
+                      <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'} href='#preview'>Preview</a>
+                    </li>
+                  </ul>
+                  {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
+                    <div
+                      // style={{ float: "right" }}
+                      className='add-to-sample-response'
+                    >
+                      <div className='adddescLink' onClick={() => this.addSampleResponse(this.props.response)}>
+                        <img src={addtosample} /> Add to Sample Response
                       </div>
-                    ) : null}
+                    </div>
+                  ) : null}
                 </div>
                 <div className='tab-content'>
                   {this.state.selectedBodyTab === 'pretty' && <div>
@@ -373,7 +373,7 @@ class DisplayResponse extends Component {
 
   displayConsole() {
     return (
-        <div className='test-results-container mt-1'>{this.renderConsole()}</div>
+      <div className='test-results-container mt-1'>{this.renderConsole()}</div>
     )
   }
 
@@ -402,31 +402,45 @@ class DisplayResponse extends Component {
   renderConsole() {
     const { tabs, activeTabId } = this.props;
     const { showPreScript } = this.state;
-    const checkWhetherJsonOrNot = (data) =>{
-      try{
-        if(JSON.parse(data)) return true
+    const checkWhetherJsonOrNot = (data) => {
+      try {
+        if (JSON.parse(data)) return true
         return false
       }
-      catch(error){
+      catch (error) {
         return false
       }
     }
 
     function RenderConsoleComponent(props) {
-      return (props?.data.map((singleConsole, index) => {
+      let consoleString = ''
+      props.data.forEach((singleConsole, index) => {
         const isJson = checkWhetherJsonOrNot(singleConsole)
-
-        if (isJson) {
-          return <>
-            <JSONPretty theme={JSONPrettyMon} data={JSON.parse(singleConsole)} />
-            <br />
-          </>
-        }
-        return <>
-          <span key={index}>{singleConsole}</span>
-          <br />
-        </>
-      }))
+        if (isJson) consoleString = consoleString + (index === 0 ? '' : '\n') + JSON.stringify(JSON.parse(singleConsole), null, 2)
+        else consoleString = consoleString + (index === 0 ? '' : '\n') + singleConsole
+      })
+      return (
+        <div className='p-2'>
+          <AceEditor
+            style={{ border: '1px solid rgb(206 213 218)' }}
+            className='custom-raw-editor'
+            mode='json'
+            theme='github'
+            value={consoleString}
+            showGutter={false}
+            setOptions={{
+              showLineNumbers: true
+            }}
+            editorProps={{
+              $blockScrolling: false
+            }}
+            onLoad={(editor) => {
+              editor.getSession().setUseWrapMode(true)
+              editor.setShowPrintMargin(false)
+            }}
+          />
+        </div>
+      )
     }
 
     return (
@@ -445,55 +459,7 @@ class DisplayResponse extends Component {
             Post-Script
           </button>
         </div>
-        {showPreScript ? (
-          <>
-            <div className='p-2'>
-              <AceEditor
-                style={{ border: '1px solid rgb(206 213 218)' }}
-                className='custom-raw-editor'
-                mode='json'
-                theme='github'
-                value={JSON.stringify(tabs?.[activeTabId]?.preScriptExecutedData || [], null, 2)}
-                onChange={this.handleAceEditorChange}
-                setOptions={{
-                  showLineNumbers: true,
-                }}
-                editorProps={{
-                  $blockScrolling: false,
-                }}
-                onLoad={(editor) => {
-                  editor.focus();
-                  editor.getSession().setUseWrapMode(true);
-                  editor.setShowPrintMargin(false);
-                }}
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className='p-2'>
-              <AceEditor
-                style={{ border: '1px solid rgb(206 213 218)' }}
-                className='custom-raw-editor'
-                mode='json'
-                theme='github'
-                value={JSON.stringify(tabs?.[activeTabId]?.postScriptExecutedData || [], null, 2)}
-                onChange={this.handleAceEditorChange}
-                setOptions={{
-                  showLineNumbers: true,
-                }}
-                editorProps={{
-                  $blockScrolling: false,
-                }}
-                onLoad={(editor) => {
-                  editor.focus();
-                  editor.getSession().setUseWrapMode(true);
-                  editor.setShowPrintMargin(false);
-                }}
-              />
-            </div>
-          </>
-        )}
+        <RenderConsoleComponent data={showPreScript ? tabs?.[activeTabId]?.preScriptExecutedData || [] : tabs?.[activeTabId]?.postScriptExecutedData || []} />
       </div>
     )
   }
