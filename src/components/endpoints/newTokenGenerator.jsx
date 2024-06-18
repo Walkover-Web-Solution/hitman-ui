@@ -266,7 +266,7 @@ function TokenGenerator(props) {
             <label className='basic-auth-label'>{inputFieldsEnums[key]}</label>
             <div className='dropdown basic-auth-input'>
               <button
-                className='btn dropdown-toggle new-token-generator-dropdown'
+                className='btn dropdown-toggle new-token-generator-dropdown w-100'
                 id='dropdownMenuButton'
                 data-toggle='dropdown'
                 aria-haspopup='true'
@@ -290,7 +290,7 @@ function TokenGenerator(props) {
             <label className='basic-auth-label'>{inputFieldsEnums[key]}</label>
             <div className='dropdown basic-auth-input'>
               <button
-                className='btn dropdown-toggle new-token-generator-dropdown'
+                className='btn dropdown-toggle new-token-generator-dropdown w-100'
                 id='dropdownMenuButton'
                 data-toggle='dropdown'
                 aria-haspopup='true'
@@ -410,7 +410,7 @@ function TokenGenerator(props) {
   }
 
   return (
-    <Modal onHide={closeModal} id='modal-new-token-generator' size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered show={props?.show}>
+    <Modal onHide={closeModal} id='modal-new-token-generator' className='get-access-token' size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered show={props?.show}>
 
       <Modal.Header className='custom-collection-modal-container' closeButton>
         <Modal.Title id='contained-modal-title-vcenter'>{props?.title}</Modal.Title>
@@ -424,7 +424,7 @@ function TokenGenerator(props) {
 
         <div className='text-right'>
           <button className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={handleSaveConfiguration}>Save</button>
-          <button className='btn btn-primary btn-lg ml-2' type='button' onClick={makeRequest}>Request Token</button>
+          <button className='btn btn-primary btn-sm fs-4 ml-2' type='button' onClick={makeRequest}>Request Token</button>
         </div>
 
       </Modal.Body>
