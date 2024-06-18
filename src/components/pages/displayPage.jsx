@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import { store } from '../../store/store'
 import { connect } from 'react-redux'
 import * as _ from 'lodash'
@@ -35,14 +35,19 @@ import { updateTab } from '../tabs/redux/tabsActions'
 
 const withQuery =(WrappedComponent) => {
   return (props) => {
-    let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const queryClient = useQueryClient()
+    let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
-    let { data, error} = useQuery(['pageContent', pageId], async () => {
+    let { data, error,refetch, isLoading} = useQuery(['pageContent', pageId], async () => {
       return isOnPublishedPage()
         ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
         : await getPageContent(props?.match?.params?.orgId, pageId)
     })
+    useEffect(() => {
+      if (pageId) {
+        refetch();
+      }
+    }, [pageId]);
     const mutation = useMutation(updateContent, {
       onSuccess:(data) => {
         queryClient.setQueryData(['pageContent', pageId], data?.contents || '', {
@@ -117,7 +122,7 @@ class DisplayPage extends Component {
     }
   }
   async componentDidMount() {
-    await this.setPageData()
+    await this.setPageData(this.props.match.params.pageId)
     this._isMounted = true
     this.extractPageName()  
     if (!this.props?.location?.page) {
@@ -147,7 +152,12 @@ class DisplayPage extends Component {
         this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
       }
     }
-    this.setPageData()
+    const newPageId = this.props?.match?.params?.pageId;
+    const oldPageId = prevProps?.match?.params?.pageId;
+
+    if (newPageId !== oldPageId) {
+      this.setPageData(newPageId);
+    }
     const { save_page_flag: prevSavePageFlag } = prevProps
     const { save_page_flag: savePageFlag, tab, handle_save_page: handleSavePage } = this.props
     if (savePageFlag !== prevSavePageFlag) {
@@ -269,7 +279,7 @@ class DisplayPage extends Component {
   renderTiptapEditor(contents) {
     return <Tiptap onChange={() => {}} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
   }
-  renderEditor(contents, index) {
+  renderEditor(contents) {
     if(contents!== undefined)
       {
         return (
@@ -280,7 +290,7 @@ class DisplayPage extends Component {
             isInlineEditor={false}
             disabled={false}
             minHeight
-            key={index}
+            key={this.props.currentPageId}
           />
         )
       }

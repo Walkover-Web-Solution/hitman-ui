@@ -88,7 +88,7 @@ class DisplayDescription extends Component {
   render() {
     return (
       <div className='endpoint-header'>
-        <div className={isDashboardRoute(this.props) ? 'panel-endpoint-name-container pl-3' : 'endpoint-name-container'}>
+        <div className={isDashboardRoute(this.props) ? 'panel-endpoint-name-container' : 'endpoint-name-container'}>
           {isDashboardRoute(this.props) && <>{this.props.endpoint && <EndpointBreadCrumb {...this.props} isEndpoint />}</>}
         </div>
       </div>
