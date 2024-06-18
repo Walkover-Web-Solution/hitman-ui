@@ -30,6 +30,9 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
 import moment from 'moment'
+import tabService from '../tabs/tabService'
+import WarningModal from '../common/warningModal'
+import { updateTab } from '../tabs/redux/tabsActions'
 import RenderPageContent from './renderPageContent'
 import DisplayUserAndModifiedData from '../common/userService'
 import tabService from '../tabs/tabService'
@@ -525,7 +528,7 @@ class DisplayPage extends Component {
       )
     }
     return (
-      <div className='custom-display-page'>
+<div className={`custom-display-page ${isOnPublishedPage() ? "custom-display-public-page" : ""}`}>
         <WarningModal
           show={this.state.warningModalFlag}
           onHide={() => {
