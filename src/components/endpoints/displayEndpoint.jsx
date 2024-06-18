@@ -71,8 +71,7 @@ import { LiaSaveSolid } from 'react-icons/lia'
 import QueryTab from './queryTab/queryTab.jsx'
 import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
 import DisplayUserAndModifiedData from '../common/userService.jsx'
-import debounce from 'lodash/debounce';
-
+import debounce from 'lodash/debounce'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -367,7 +366,7 @@ class DisplayEndpoint extends Component {
   constructor(props) {
     super(props)
     this.handleRemovePublicEndpoint = this.handleRemovePublicEndpoint.bind(this)
-    this.handleUpdateUri = debounce(this.handleUpdateUri.bind(this), 300);
+    this.handleUpdateUri = debounce(this.handleUpdateUri.bind(this), 300)
     this.myRef = React.createRef()
     this.sideRef = React.createRef()
     this.state = {
@@ -517,7 +516,7 @@ class DisplayEndpoint extends Component {
         !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
     ) {
       this.prepareHarObject()
-      this.handleUpdateUri(this.props.endpointContent?.originalParams);
+      this.handleUpdateUri(this.props.endpointContent?.originalParams)
     }
     if (this.state.endpoint.id !== prevState.endpoint.id && !this.props.location.pathname.includes('history')) {
       this.setState({ flagResponse: false })
@@ -527,7 +526,6 @@ class DisplayEndpoint extends Component {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
     }
   }
-
 
   setSslMode() {
     this.setState({ sslMode: !this.state.sslMode }, () => {
@@ -1408,43 +1406,43 @@ class DisplayEndpoint extends Component {
   }
 
   handleUpdateUri(originalParams) {
-
-    const tempdata = this.props.endpointContent;
+    const tempdata = this.props.endpointContent
 
     if (originalParams.length === 0) {
-      const updatedUri = this.props.endpointContent.data.updatedUri.split('?')[0];
-      const data = { ...this.props.endpointContent.data };
-      data.updatedUri = updatedUri;
-      tempdata.data = data;
-      this.props.setQueryUpdatedData(tempdata);
-      return;
+      const updatedUri = this.props.endpointContent.data.updatedUri.split('?')[0]
+      const data = { ...this.props.endpointContent.data }
+      data.updatedUri = updatedUri
+      tempdata.data = data
+      this.props.setQueryUpdatedData(tempdata)
+      return
     }
 
-    const originalUri = this.props.endpointContent.data.updatedUri.split('?')[0] + '?';
-    const parts = {};
+    const originalUri = this.props.endpointContent.data.updatedUri.split('?')[0] + '?'
+    const parts = {}
 
     for (let i = 0; i < originalParams.length; i++) {
       if (originalParams[i].key.length !== 0 && originalParams[i].checked === 'true') {
         parts[originalParams[i].key] = originalParams[i].value
       }
     }
-    let updatedUri = URI.buildQuery(parts);
-    updatedUri = originalUri + URI.decode(updatedUri);
+    const queryParams = Object.keys(parts)
+      .map((key) => `${encodeURIComponent(key).replace(/%20/g, ' ')}=${encodeURIComponent(parts[key]).replace(/%20/g, ' ')}`)
+      .join('&')
+    let updatedUri = originalUri + queryParams
 
-
-    const data = { ...this.props.endpointContent.data };
+    const data = { ...this.props.endpointContent.data }
     if (Object.keys(parts).length === 0) {
-      data.updatedUri = updatedUri.split('?')[0];
+      data.updatedUri = updatedUri.split('?')[0]
     } else {
-      data.updatedUri = updatedUri;
+      data.updatedUri = updatedUri
     }
-    tempdata.data = data;
+    tempdata.data = data
 
     if (!_.isEqual(tempdata, this.props.endpointContent)) {
-      this.props.setQueryUpdatedData(tempdata);
+      this.props.setQueryUpdatedData(tempdata)
     }
   }
-  
+
   doSubmitParam() {
     const originalParams = [...this.props?.endpointContent.originalParams]
     const updatedParams = {}
@@ -2280,7 +2278,6 @@ class DisplayEndpoint extends Component {
 
   debouncedSave = _.debounce(this.saveData, 1000)
 
-
   renderTiptapEditor(item, index) {
     return (
       <Tiptap
@@ -2298,7 +2295,7 @@ class DisplayEndpoint extends Component {
     switch (item.type) {
       case 'textArea': {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
-          return <div className="tiptap-editor-container">{this.renderTiptapEditor(item, index)}</div>
+          return <div className='tiptap-editor-container'>{this.renderTiptapEditor(item, index)}</div>
         }
         break
       }
@@ -2374,7 +2371,7 @@ class DisplayEndpoint extends Component {
             <Dropdown.Toggle variant='' id='dropdown-basic' className='doc-plus'>
               <img src={PlusIcon} className='mr-2 cursor-pointer' onClick={() => this.showDocOptions()} alt='' />
             </Dropdown.Toggle>
-            <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>   
+            <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>
               <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
               <Dropdown.Item onClick={() => this.addBlock('textBlock')}>Text Block</Dropdown.Item>
             </Dropdown.Menu>
@@ -2385,7 +2382,7 @@ class DisplayEndpoint extends Component {
   }
 
   addBlock(blockType) {
-    const updatedDocViewData = [...this.props.endpointContent.docViewData, { type: blockType, data: ''}]
+    const updatedDocViewData = [...this.props.endpointContent.docViewData, { type: blockType, data: '' }]
     this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: updatedDocViewData })
   }
 
@@ -3239,27 +3236,27 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
-              </div>    
-              <div className='w-100'>    
-              <span className='footer-upper'>
-                {isOnPublishedPage() && (
-              <>
-              <span className='pl-3'>
-              <DisplayUserAndModifiedData
-              isOnPublishedPage={true}
-              pages={this.props.pages}
-              currentPage={this.props.currentEndpointId}
-              users={this.props.users}
-            />
-          </span>
-          <div className='w-100 d-flex justify-content-center'>
-          <ApiDocReview {...this.props} />
-          </div>
-          <Footer />
-        </>
-      )}
-    </span>
-    </div>
+              </div>
+              <div className='w-100'>
+                <span className='footer-upper'>
+                  {isOnPublishedPage() && (
+                    <>
+                      <span className='pl-3'>
+                        <DisplayUserAndModifiedData
+                          isOnPublishedPage={true}
+                          pages={this.props.pages}
+                          currentPage={this.props.currentEndpointId}
+                          users={this.props.users}
+                        />
+                      </span>
+                      <div className='w-100 d-flex justify-content-center'>
+                        <ApiDocReview {...this.props} />
+                      </div>
+                      <Footer />
+                    </>
+                  )}
+                </span>
+              </div>
             </div>
 
             {this.isDashboardAndTestingView() ? (
@@ -3279,32 +3276,34 @@ class DisplayEndpoint extends Component {
             </div> */}
           </div>
         )}
-        {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
-              <DisplayUserAndModifiedData
+        {!isOnPublishedPage() && (
+          <span className='pl-3 ml-1 mb-2 d-inline-block'>
+            <DisplayUserAndModifiedData
               isOnPublishedPage={isOnPublishedPage()}
               pages={this.props.pages}
               currentPage={this.props.currentEndpointId}
               users={this.props.users}
-              />
-        </span>}
-              <div className='w-100'>    
-        <span className='footer-lower ml-2 ml-sm-4'>           
-                        <>
-                            <span className='pl-3'>
-                                <DisplayUserAndModifiedData
-                                    isOnPublishedPage={isOnPublishedPage()}
-                                    pages={this.props.pages}
-                                    currentPage={this.props.currentEndpointId}
-                                    users={this.props.users}
-                                />
-                            </span>
-                            <div className='w-100 d-flex flex-column align-items-center'>
-                            <ApiDocReview {...this.props} />
-                            </div>
-                            <Footer />
-                        </>   
-                </span>
-                </div>
+            />
+          </span>
+        )}
+        <div className='w-100'>
+          <span className='footer-lower ml-2 ml-sm-4'>
+            <>
+              <span className='pl-3'>
+                <DisplayUserAndModifiedData
+                  isOnPublishedPage={isOnPublishedPage()}
+                  pages={this.props.pages}
+                  currentPage={this.props.currentEndpointId}
+                  users={this.props.users}
+                />
+              </span>
+              <div className='w-100 d-flex flex-column align-items-center'>
+                <ApiDocReview {...this.props} />
+              </div>
+              <Footer />
+            </>
+          </span>
+        </div>
       </div>
     ) : null
   }
