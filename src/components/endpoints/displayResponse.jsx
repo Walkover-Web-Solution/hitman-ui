@@ -416,8 +416,8 @@ class DisplayResponse extends Component {
       let consoleString = ''
       props.data.forEach((singleConsole, index) => {
         const isJson = checkWhetherJsonOrNot(singleConsole)
-        if (isJson) consoleString = consoleString + (index === 0 ? '' : '\n') + JSON.stringify(JSON.parse(singleConsole), null, 2)
-        else consoleString = consoleString + (index === 0 ? '' : '\n') + singleConsole
+        if (isJson) consoleString = consoleString + (index === 0 ? '' : '\n\n') + JSON.stringify(JSON.parse(singleConsole), null, 2)
+        else consoleString = consoleString + (index === 0 ? '' : '\n\n') + singleConsole
       })
       return (
         <div className='p-2'>
@@ -428,6 +428,7 @@ class DisplayResponse extends Component {
             theme='github'
             value={consoleString}
             showGutter={false}
+            readOnly={true}
             setOptions={{
               showLineNumbers: true
             }}
