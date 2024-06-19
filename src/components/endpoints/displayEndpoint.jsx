@@ -406,6 +406,7 @@ class DisplayEndpoint extends Component {
       endpointContentState: null,
       showEndpointFormModal: false,
       optionalParams: false,
+      titleChange: false
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()

@@ -1680,14 +1680,14 @@ table#custom-generic-table {
     }
 
 
-      .dropdown {
-        button {
-          color: black !important;
-
-          &:hover {
-            color: white !important;
-            background-color: #343a40 !important;
-          }
+    .dropdown {
+      button {
+        color: black !important;
+        border: 1px solid #343a40 !important;
+        &:hover {
+          color: white !important;
+          background-color: #343a40 !important;
+        }
 
           &.active {
             color: white !important;
