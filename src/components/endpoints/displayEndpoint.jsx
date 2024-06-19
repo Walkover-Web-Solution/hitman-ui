@@ -3243,6 +3243,7 @@ class DisplayEndpoint extends Component {
                     <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                   )}
                 </div>
+                </div>
                 <div className='w-100'>
                   <span className='footer-upper'>
                     {isOnPublishedPage() && (
@@ -3299,7 +3300,6 @@ class DisplayEndpoint extends Component {
               </>
             </span>
           </div>
-        </div>
         </div>
         ) : null
   }
