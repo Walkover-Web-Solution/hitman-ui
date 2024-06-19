@@ -11,6 +11,11 @@ import Plus from '../../assets/icons/plus.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+
+import { CiSettings } from "react-icons/ci";
+import { IoDocumentTextOutline } from "react-icons/io5";
+
+
 import { IoIosSettings } from 'react-icons/io'
 import { IoIosChatboxes } from "react-icons/io";
 import { CiSettings } from "react-icons/ci";
