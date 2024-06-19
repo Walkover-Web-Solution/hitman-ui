@@ -1154,6 +1154,11 @@ button.btn.btn-secondary {
     color: #fff;
   }
 }
+.get-access-token {
+  .modal-lg {
+    max-width: 700px !important;
+  }
+}
 .modal {
   .modal-dialog {
     // width: fit-content !important;
@@ -3098,7 +3103,7 @@ ul.react-autoComplete-input {
 
 #authorization-form {
   & input {
-    max-width: 15rem;
+    max-width: 22rem;
   }
   & label {
     color: #212121;
@@ -3108,7 +3113,6 @@ ul.react-autoComplete-input {
 }
 .top-part {
   .page-title-name {
-    padding-right: 7rem;
     input {
       font-size: 20px;
       width: max-content;
@@ -3230,6 +3234,7 @@ body .btn-group-custom {
     }
     @media screen and (max-width: 992px) {
       width: 100%;
+      position: static;
     }
   }
 .tox-editor-container {
