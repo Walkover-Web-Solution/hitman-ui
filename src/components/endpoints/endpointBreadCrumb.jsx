@@ -7,6 +7,7 @@ import { onPageUpdated, updateNameOfPages } from '../pages/redux/pagesActions'
 import { MdHttp } from "react-icons/md";
 import { GrGraphQl } from "react-icons/gr";
 import { updateTab } from '../tabs/redux/tabsActions'
+import { prototype } from 'form-data'
 
 const mapStateToProps = (state) => {
   return {
@@ -219,6 +220,8 @@ class EndpointBreadCrumb extends Component {
   handleProtocolTypeClick(index) {
     this.props.setQueryUpdatedData({ ...this.props.endpointContent, protocolType: index + 1 })
     this.props.update_tab(this.props?.match?.params.endpointId === 'new' && this.props.activeTabId, { isModified: true })
+    console.log("this.props.endpointContent.protocolType ", this.props.endpointContent.protocolType)
+    this.props.setActiveTab()
   }
 
   switchProtocolTypeDropdown() {
@@ -252,10 +255,10 @@ class EndpointBreadCrumb extends Component {
         <div className='panel-endpoint-name-container'>
           <div className='page-title-name d-flex align-items-center'>
             {this.props?.match?.params?.endpointId === 'new' && this.switchProtocolTypeDropdown()}
-            {(this.props?.match?.params?.endpointId != 'new' && this.props?.endpointContent?.protocolType === 1 && this.state?.protocols?.[0]?.icon) && 
-            <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[0]?.icon}</button>}
-            {(this.props?.match?.params?.endpointId != 'new' && this.props?.endpointContent?.protocolType === 2 && this.state?.protocols?.[1]?.icon) && 
-            <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[1]?.icon}</button>}
+            {(this.props?.match?.params?.endpointId != 'new' && this.props?.endpointContent?.protocolType === 1 && this.state?.protocols?.[0]?.icon) &&
+              <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[0]?.icon}</button>}
+            {(this.props?.match?.params?.endpointId != 'new' && this.props?.endpointContent?.protocolType === 2 && this.state?.protocols?.[1]?.icon) &&
+              <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[1]?.icon}</button>}
             <input
               name='enpoint-title'
               ref={this.nameInputRef}
