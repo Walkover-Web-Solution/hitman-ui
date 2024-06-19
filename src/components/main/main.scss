@@ -1737,6 +1737,7 @@ table#custom-generic-table tbody input[value='true'] + span.checkmark {
     display: none;
     transition: 200ms;
   }
+ 
 
   .primary-sidebar .nav-tabs {
     border-top: 1px solid #d3ccc5;
@@ -1761,7 +1762,6 @@ table#custom-generic-table tbody input[value='true'] + span.checkmark {
     margin: 5px auto 0;
   }
 }
-
 .app-name {
   svg {
     margin: 5px 10px 5px 0;
@@ -3363,9 +3363,6 @@ body .doc-secs-container {
     .response-viewer {
       margin: 0;
       .custom-tabs {
-        position: relative;
-        top: -1.75rem;
-        max-width: 50%;
         .nav-tabs {
           margin-top: 0;
           margin-bottom: 0;
@@ -3855,4 +3852,19 @@ body .tox {
 
 .cursor-text {
   cursor: text !important;
+}
+.script-content {
+  &.active {
+    display: flex !important;
+  }
+  .Script-button {
+    width: 100px;
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.089) !important;
+    }
+    &.active {
+      color: #e98a36 !important;
+      background-color: rgba(128, 128, 128, 0.089) !important;
+    }
+  }
 }
