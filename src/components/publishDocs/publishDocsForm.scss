@@ -147,3 +147,13 @@
 outline: unset !important;
   }
 }
+.sidebar-public-url {
+  margin-left: 0px;
+  overflow: scroll;
+  cursor: pointer;
+  background-color: white;
+  padding: 5px 10px 1px 10px;
+  width: fit-content;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
