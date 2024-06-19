@@ -13,6 +13,9 @@
       margin-right: unset !important;
     }
   }
+  &:has(.page-text-render) {
+    display: block !important;
+  }
 }
 
 .custom-display-page {
@@ -24,6 +27,7 @@
   max-width: 1300px;
   justify-content: space-between;
   max-width: 1300px;
+  justify-content: space-between;
   padding-top: 25px;
   left: 5px;
   right: 6rem;

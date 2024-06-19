@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component ,useState ,useEffect } from 'react'
 import { store } from '../../store/store'
 import { connect } from 'react-redux'
 import {
@@ -71,7 +71,7 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     tabs: state.tabs,
-    users: state.users
+    users: state.users.usersList
   }
 }
 
