@@ -406,7 +406,7 @@ class DisplayEndpoint extends Component {
       endpointContentState: null,
       showEndpointFormModal: false,
       optionalParams: false,
-      titleChange : false
+      titleChange: false
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -3243,66 +3243,65 @@ class DisplayEndpoint extends Component {
                     <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                   )}
                 </div>
-                <div className='w-100'>
-                  <span className='footer-upper'>
-                    {isOnPublishedPage() && (
-                      <>
-                        <span className='pl-3'>
-                          <DisplayUserAndModifiedData
-                            isOnPublishedPage={true}
-                            pages={this.props.pages}
-                            currentPage={this.props.currentEndpointId}
-                            users={this.props.users}
-                          />
-                        </span>
-                        <div className='w-100 d-flex justify-content-center'>
-                          <ApiDocReview {...this.props} />
-                        </div>
-                        <Footer />
-                      </>
-                    )}
-                  </span>
-                </div>
               </div>
-
-              {this.isDashboardAndTestingView() ? (
-                <div className='response-container-main position-relative'>
-                  {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
-                </div>
-              ) : null}
-              {this.renderCodeTemplate()}
-            </div>
-          </div>
-          {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
-            <DisplayUserAndModifiedData
-              isOnPublishedPage={isOnPublishedPage()}
-              pages={this.props.pages}
-              currentPage={this.props.currentEndpointId}
-              users={this.props.users}
-            />
-          </span>}
-          <div className='w-100'>
-            <span className='footer-lower ml-2 ml-sm-4'>
-              <>
-                <span className='pl-3'>
-                  <DisplayUserAndModifiedData
-                    isOnPublishedPage={isOnPublishedPage()}
-                    pages={this.props.pages}
-                    currentPage={this.props.currentEndpointId}
-                    users={this.props.users}
-                  />
+              <div className='w-100'>
+                <span className='footer-upper'>
+                  {isOnPublishedPage() && (
+                    <>
+                      <span className='pl-3'>
+                        <DisplayUserAndModifiedData
+                          isOnPublishedPage={true}
+                          pages={this.props.pages}
+                          currentPage={this.props.currentEndpointId}
+                          users={this.props.users}
+                        />
+                      </span>
+                      <div className='w-100 d-flex justify-content-center'>
+                        <ApiDocReview {...this.props} />
+                      </div>
+                      <Footer />
+                    </>
+                  )}
                 </span>
-                <div className='w-100 d-flex flex-column align-items-center'>
-                  <ApiDocReview {...this.props} />
-                </div>
-                <Footer />
-              </>
-            </span>
+              </div>
+            </div>
+            {this.isDashboardAndTestingView() ? (
+              <div className='response-container-main position-relative'>
+                {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
+              </div>
+            ) : null}
+            {this.renderCodeTemplate()}
           </div>
         </div>
+        {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
+          <DisplayUserAndModifiedData
+            isOnPublishedPage={isOnPublishedPage()}
+            pages={this.props.pages}
+            currentPage={this.props.currentEndpointId}
+            users={this.props.users}
+          />
+        </span>}
+        <div className='w-100'>
+          <span className='footer-lower ml-2 ml-sm-4'>
+            <>
+              <span className='pl-3'>
+                <DisplayUserAndModifiedData
+                  isOnPublishedPage={isOnPublishedPage()}
+                  pages={this.props.pages}
+                  currentPage={this.props.currentEndpointId}
+                  users={this.props.users}
+                />
+              </span>
+              <div className='w-100 d-flex flex-column align-items-center'>
+                <ApiDocReview {...this.props} />
+              </div>
+              <Footer />
+            </>
+          </span>
         </div>
-        ) : null
+      </div>
+    ) : null
   }
 }
 
-        export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayEndpoint)))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayEndpoint)))
