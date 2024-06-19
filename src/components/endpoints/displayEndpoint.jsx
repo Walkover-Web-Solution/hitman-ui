@@ -513,7 +513,6 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log("active tab : ", this.state.activeTab)
     window.addEventListener('resize', this.updateDimensions)
     if (prevState.isMobileView !== this.state.isMobileView) {
       this.isMobileView()
