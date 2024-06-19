@@ -6,8 +6,6 @@ import { BiLike, BiDislike } from 'react-icons/bi'
 import './apiDocReview.scss'
 import { dislike, like } from '../../services/feedbackService'
 import { LuAsterisk } from 'react-icons/lu'
-import { hexToRgb, isOnPublishedPage } from '../common/utility'
-import {background} from '../backgroundColor.js'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -23,26 +21,6 @@ const ApiDocReview = (props) => {
   const [feedbackSaved, setFeedbackSaved] = useState(false)
   const [currentReviews, setCurrentReviews] = useState({})
   const prevProps = useRef(props)
-  const [theme, setTheme] = useState({ backgroundStyle: {} });
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    const dynamicColor = hexToRgb(props.publicCollectionTheme, 0.15); // Assuming props.publicCollectionTheme is passed as a prop
-    const staticColor = background['background_hover']; // Adjust as per your background structure
-
-    const backgroundStyle = {
-      backgroundImage: isHovered
-        ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
-           linear-gradient(to right, ${staticColor}, ${staticColor})`
-        : ''
-    };
-
-    setTheme({ backgroundStyle });
-  }, [isHovered, props.publicCollectionTheme]);
-
-  const handleHover = (hoverState) => {
-    setIsHovered(hoverState);
-  };
 
   useEffect(() => {
     setParent()
