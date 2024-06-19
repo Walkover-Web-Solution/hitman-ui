@@ -69,7 +69,7 @@ import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
 import { LiaSaveSolid } from 'react-icons/lia'
 import QueryTab from './queryTab/queryTab.jsx'
 import { hexToRgb } from '../common/utility'
-import {background} from '../backgroundColor.js'
+import { background } from '../backgroundColor.js'
 import DisplayUserAndModifiedData from '../common/userService.jsx'
 import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
 const shortid = require('shortid')
@@ -206,8 +206,8 @@ const getEndpointContent = async (props) => {
   let endpointId = isUserOnPublishedPage
     ? currentIdToShow
     : props?.match?.params.endpointId !== 'new'
-    ? props?.match?.params?.endpointId
-    : props?.activeTabId
+      ? props?.match?.params?.endpointId
+      : props?.activeTabId
 
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
@@ -260,8 +260,8 @@ const withQuery = (WrappedComponent) => {
     let endpointId = isOnPublishedPage()
       ? currentIdToShow
       : props?.match?.params.endpointId !== 'new'
-      ? props?.match?.params?.endpointId
-      : props?.activeTabId
+        ? props?.match?.params?.endpointId
+        : props?.activeTabId
     const historyId = props?.match?.params?.historyId
 
     let queryKey, fetchFunction
@@ -423,8 +423,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
     const { endpointId } = this.props.match.params
@@ -445,9 +445,9 @@ class DisplayEndpoint extends Component {
     };
 
     this.setState({
-      theme:  {backgroundStyle} ,
+      theme: { backgroundStyle },
     });
-  
+
   }
 
   handleShortcuts = (event, data) => {
@@ -513,6 +513,7 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    console.log("active tab : ", this.state.activeTab)
     window.addEventListener('resize', this.updateDimensions)
     if (prevState.isMobileView !== this.state.isMobileView) {
       this.isMobileView()
@@ -712,7 +713,7 @@ class DisplayEndpoint extends Component {
       if (!envVars) {
         const missingVariable = match[1]
         return `${missingVariable}`
-    }
+      }
 
       do {
         variables.push(match[1])
@@ -720,7 +721,7 @@ class DisplayEndpoint extends Component {
 
       for (let i = 0; i < variables.length; i++) {
         const envVariable = envVars[variables[i]]
-        if(!envVariable) return variables;
+        if (!envVariable) return variables;
         const strToReplace = `{{${variables[i]}}}`
         if (envVariable?.currentValue) {
           str = str.replace(strToReplace, envVariable.currentValue)
@@ -1354,8 +1355,8 @@ class DisplayEndpoint extends Component {
 
   doSubmitHeader(title) {
     const originalHeaders = [...this.props?.endpointContent.originalHeaders]
-    originalHeaders.map((item)=>{
-      if(item.key){
+    originalHeaders.map((item) => {
+      if (item.key) {
         item.key = item.key.trim();
       }
     })
@@ -1803,7 +1804,7 @@ class DisplayEndpoint extends Component {
         dummyData.authorizationData.authorization.user = basicAuth.username
         dummyData.authorizationData.authorization.password = basicAuth.password
       }
-    }else {
+    } else {
       dummyData.authorizationData.authorization = { oauth2: {} }
       dummyData.authorizationData.authorization.oauth2 = {
         ...dummyData?.authorizationData?.authorization?.oauth2,
@@ -2868,37 +2869,37 @@ class DisplayEndpoint extends Component {
   }
   renderEndpointUserData(isOnPublishedPage) {
     const { pages, currentEndpointId, users } = this.props;
-    const updatedById = pages?.[currentEndpointId]?.updatedBy;  
-    const lastModified = pages?.[currentEndpointId]?.updatedAt 
-                         ? moment(pages[currentEndpointId].updatedAt).fromNow()
-                         : null;
+    const updatedById = pages?.[currentEndpointId]?.updatedBy;
+    const lastModified = pages?.[currentEndpointId]?.updatedAt
+      ? moment(pages[currentEndpointId].updatedAt).fromNow()
+      : null;
 
     const user = users?.find(user => user.id === updatedById);
 
     if (isOnPublishedPage) {
-        return (
-            <div>
-                {lastModified && <>Modified At <span>{lastModified}</span></>}
-            </div>
-        );
+      return (
+        <div>
+          {lastModified && <>Modified At <span>{lastModified}</span></>}
+        </div>
+      );
     } else {
-        return (
-            <div className='page-user-data mt-2'>
-              {lastModified ? (
-                <div>
-                  Updated by<span> </span>
-                  {user?.name}
-                  <br />
-                  Modified At<span> </span>
-                  {lastModified}
-                </div>
-              ) : (
-                <span></span>
-              )}
+      return (
+        <div className='page-user-data mt-2'>
+          {lastModified ? (
+            <div>
+              Updated by<span> </span>
+              {user?.name}
+              <br />
+              Modified At<span> </span>
+              {lastModified}
             </div>
-        );
+          ) : (
+            <span></span>
+          )}
+        </div>
+      );
     }
-}
+  }
 
   render() {
     if (this.props?.endpointContentLoading) {
@@ -2938,8 +2939,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
 
     if (this.props.save_endpoint_flag && this.props.tab.id === this.props.selected_tab_id) {
       this.props.handle_save_endpoint(false)
@@ -2956,8 +2957,8 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-            ? 'mainContentWrapperPublic hideCodeEditor'
-            : 'mainContentWrapperPublic '
+              ? 'mainContentWrapperPublic hideCodeEditor'
+              : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
@@ -2966,9 +2967,8 @@ class DisplayEndpoint extends Component {
         >
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${
-                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-              }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+                }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
@@ -3030,7 +3030,7 @@ class DisplayEndpoint extends Component {
                                     ? 'btn custom-theme-btn btn-lg buttonLoader'
                                     : 'btn btn-lg custom-theme-btn px-md-4 px-3'
                                 }
-                                 style={{ backgroundColor: this.props.publicCollectionTheme }}
+                                style={{ backgroundColor: this.props.publicCollectionTheme }}
                                 type='submit'
                                 id='send-request-button'
                                 onClick={() => this.handleSend()}
@@ -3082,8 +3082,8 @@ class DisplayEndpoint extends Component {
                                       href={`#params-${this.props.tab.id}`}
                                       role="tab"
                                       aria-controls={`params-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'params'}
-                                      onClick={() => this.setState({ activeTab: 'params' })}
+                                      aria-selected={this.state.activeTab === 'default'}
+                                      onClick={() => this.setState({ activeTab: 'default' })}
                                     >
                                       Params
                                     </a>
@@ -3180,8 +3180,8 @@ class DisplayEndpoint extends Component {
                                       href={`#query-${this.props.tab.id}`}
                                       role="tab"
                                       aria-controls={`query-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'query'}
-                                      onClick={() => this.setState({ activeTab: 'query' })}
+                                      aria-selected={this.state.activeTab === 'default'}
+                                      onClick={() => this.setState({ activeTab: 'default' })}
                                     >
                                       Query
                                     </a>
@@ -3410,26 +3410,26 @@ class DisplayEndpoint extends Component {
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
               </div>
-              <div className='w-100'>    
-              <span className='footer-upper'>
-                {isOnPublishedPage() && (
-              <>
-              <span className='pl-3'>
-              <DisplayUserAndModifiedData
-              isOnPublishedPage={true}
-              pages={this.props.pages}
-              currentPage={this.props.currentEndpointId}
-              users={this.props.users}
-            />
-          </span>
-          <div className='w-100 d-flex justify-content-center'>
-          <ApiDocReview {...this.props} />
-          </div>
-          <Footer />
-        </>
-      )}
-    </span>
-    </div>
+              <div className='w-100'>
+                <span className='footer-upper'>
+                  {isOnPublishedPage() && (
+                    <>
+                      <span className='pl-3'>
+                        <DisplayUserAndModifiedData
+                          isOnPublishedPage={true}
+                          pages={this.props.pages}
+                          currentPage={this.props.currentEndpointId}
+                          users={this.props.users}
+                        />
+                      </span>
+                      <div className='w-100 d-flex justify-content-center'>
+                        <ApiDocReview {...this.props} />
+                      </div>
+                      <Footer />
+                    </>
+                  )}
+                </span>
+              </div>
             </div>
 
             {this.isDashboardAndTestingView() ? (
@@ -3441,31 +3441,31 @@ class DisplayEndpoint extends Component {
           </div>
         </div>
         {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
-              <DisplayUserAndModifiedData
-              isOnPublishedPage={isOnPublishedPage()}
-              pages={this.props.pages}
-              currentPage={this.props.currentEndpointId}
-              users={this.props.users}
-              />
+          <DisplayUserAndModifiedData
+            isOnPublishedPage={isOnPublishedPage()}
+            pages={this.props.pages}
+            currentPage={this.props.currentEndpointId}
+            users={this.props.users}
+          />
         </span>}
-              <div className='w-100'>    
-        <span className='footer-lower ml-2 ml-sm-4'>           
-                        <>
-                            <span className='pl-3'>
-                                <DisplayUserAndModifiedData
-                                    isOnPublishedPage={isOnPublishedPage()}
-                                    pages={this.props.pages}
-                                    currentPage={this.props.currentEndpointId}
-                                    users={this.props.users}
-                                />
-                            </span>
-                            <div className='w-100 d-flex flex-column align-items-center'>
-                            <ApiDocReview {...this.props} />
-                            </div>
-                            <Footer />
-                        </>   
-                </span>
-                </div>
+        <div className='w-100'>
+          <span className='footer-lower ml-2 ml-sm-4'>
+            <>
+              <span className='pl-3'>
+                <DisplayUserAndModifiedData
+                  isOnPublishedPage={isOnPublishedPage()}
+                  pages={this.props.pages}
+                  currentPage={this.props.currentEndpointId}
+                  users={this.props.users}
+                />
+              </span>
+              <div className='w-100 d-flex flex-column align-items-center'>
+                <ApiDocReview {...this.props} />
+              </div>
+              <Footer />
+            </>
+          </span>
+        </div>
       </div>
     ) : null
   }
