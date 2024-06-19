@@ -23,7 +23,6 @@ import 'ace-builds/src-noconflict/mode-xml'
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
-import { background } from '../backgroundColor'
 import classNames from 'classnames';
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
