@@ -104,9 +104,11 @@ export class Script extends Component {
     switch (this.props.type) {
       case 'Pre-Script':
         snippets = preReqSnippets
+        text = "Pre-Script are written in Javascript, and are run before the response is recieved."
         break
       case 'Post-Script':
         snippets = postReqSnippets
+        text = "Post-Script are written in Javascript, and are run after the response is recieved."
         break
       default:
         snippets = []
@@ -115,6 +117,7 @@ export class Script extends Component {
     return (
       <div className='snippets col-4'>
         <h4>Snippets</h4>
+        <p>{text}</p>
         {snippets.map((snippet, index) => (
           <div key={index} onClick={() => this.insertSnippet(Snippets[snippet])}>
             {Snippets[snippet].key}

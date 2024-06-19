@@ -207,8 +207,8 @@ const getEndpointContent = async (props) => {
   let endpointId = isUserOnPublishedPage
     ? currentIdToShow
     : props?.match?.params.endpointId !== 'new'
-      ? props?.match?.params?.endpointId
-      : props?.activeTabId
+    ? props?.match?.params?.endpointId
+    : props?.activeTabId
 
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
@@ -261,8 +261,8 @@ const withQuery = (WrappedComponent) => {
     let endpointId = isOnPublishedPage()
       ? currentIdToShow
       : props?.match?.params.endpointId !== 'new'
-        ? props?.match?.params?.endpointId
-        : props?.activeTabId
+      ? props?.match?.params?.endpointId
+      : props?.activeTabId
     const historyId = props?.match?.params?.historyId
 
     let queryKey, fetchFunction
@@ -406,7 +406,6 @@ class DisplayEndpoint extends Component {
       endpointContentState: null,
       showEndpointFormModal: false,
       optionalParams: false,
-      titleChange : false
     }
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -423,8 +422,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-        ? this.props.location.pathname.split('/')[5]
-        : this.props.location.pathname.split('/')[4]
+      ? this.props.location.pathname.split('/')[5]
+      : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
     const { endpointId } = this.props.match.params
@@ -445,9 +444,9 @@ class DisplayEndpoint extends Component {
     };
 
     this.setState({
-      theme: { backgroundStyle },
+      theme: { backgroundStyle} ,
     });
-
+  
   }
 
   handleShortcuts = (event, data) => {
@@ -712,7 +711,7 @@ class DisplayEndpoint extends Component {
       if (!envVars) {
         const missingVariable = match[1]
         return `${missingVariable}`
-      }
+    }
 
       do {
         variables.push(match[1])
@@ -720,7 +719,7 @@ class DisplayEndpoint extends Component {
 
       for (let i = 0; i < variables.length; i++) {
         const envVariable = envVars[variables[i]]
-        if (!envVariable) return variables;
+        if(!envVariable) return variables;
         const strToReplace = `{{${variables[i]}}}`
         if (envVariable?.currentValue) {
           str = str.replace(strToReplace, envVariable.currentValue)
@@ -1352,8 +1351,8 @@ class DisplayEndpoint extends Component {
 
   doSubmitHeader(title) {
     const originalHeaders = [...this.props?.endpointContent.originalHeaders]
-    originalHeaders.map((item) => {
-      if (item.key) {
+    originalHeaders.map((item)=>{
+      if(item.key){
         item.key = item.key.trim();
       }
     })
@@ -1801,7 +1800,7 @@ class DisplayEndpoint extends Component {
         dummyData.authorizationData.authorization.user = basicAuth.username
         dummyData.authorizationData.authorization.password = basicAuth.password
       }
-    } else {
+    }else {
       dummyData.authorizationData.authorization = { oauth2: {} }
       dummyData.authorizationData.authorization.oauth2 = {
         ...dummyData?.authorizationData?.authorization?.oauth2,
@@ -2771,7 +2770,7 @@ class DisplayEndpoint extends Component {
 
   renderSaveButton() {
     return (
-      <div className='save-endpoint'>
+      <div className='save-endpoint position-absolute top-right'>
         {this.isDashboardAndTestingView() ? (
           this.props.location.pathname.split('/')[5] !== 'new' ? (
             <Dropdown as={ButtonGroup}>
@@ -2783,9 +2782,7 @@ class DisplayEndpoint extends Component {
                     : 'btn btn-outline orange btn-sm d-flex align-items-center'
                 }
                 type='button'
-                disabled={!this.props?.tabs[this.props?.activeTabId]?.isModified}
                 onClick={() => this.handleSave()}
-                title={!this.props?.tabs[this.props?.activeTabId]?.isModified ? 'No changes in this request' : 'Save request'}
               >
                 <LiaSaveSolid className='save-icon mr-1' size={16} />
                 <span>Save</span>
@@ -2899,8 +2896,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-        ? this.props.location.pathname.split('/')[5]
-        : this.props.location.pathname.split('/')[4]
+      ? this.props.location.pathname.split('/')[5]
+      : this.props.location.pathname.split('/')[4]
 
     if (this.props.save_endpoint_flag && this.props.tab.id === this.props.selected_tab_id) {
       this.props.handle_save_endpoint(false)
@@ -2928,8 +2925,9 @@ class DisplayEndpoint extends Component {
         >
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-                }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${
+                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
@@ -2947,7 +2945,7 @@ class DisplayEndpoint extends Component {
                         {this.renderToggleView()}
                         {this.renderDocViewOperations()}
                       </div>
-                      <div className='d-flex justify-content-between align-items-center'>
+                      <div className='position-relative top-part'>
                         {this.state.showEndpointFormModal && (
                           <SaveAsSidebar
                             {...this.props}
@@ -2990,7 +2988,7 @@ class DisplayEndpoint extends Component {
                                     ? 'btn custom-theme-btn btn-lg buttonLoader'
                                     : 'btn btn-lg custom-theme-btn px-md-4 px-3'
                                 }
-                                style={{ backgroundColor: this.props.publicCollectionTheme }}
+                                 style={{ backgroundColor: this.props.publicCollectionTheme }}
                                 type='submit'
                                 id='send-request-button'
                                 onClick={() => this.handleSend()}
@@ -3238,71 +3236,73 @@ class DisplayEndpoint extends Component {
                         this.renderDocView()
                       )}
                     </div>
+                    {this.isDashboardAndTestingView() && this.renderScriptError()}
+                    {this.displayResponse()}
                   </div>
-                  {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
-                    <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
-                  )}
                 </div>
-                <div className='w-100'>
-                  <span className='footer-upper'>
-                    {isOnPublishedPage() && (
-                      <>
-                        <span className='pl-3'>
-                          <DisplayUserAndModifiedData
-                            isOnPublishedPage={true}
-                            pages={this.props.pages}
-                            currentPage={this.props.currentEndpointId}
-                            users={this.props.users}
-                          />
-                        </span>
-                        <div className='w-100 d-flex justify-content-center'>
-                          <ApiDocReview {...this.props} />
-                        </div>
-                        <Footer />
-                      </>
-                    )}
-                  </span>
-                </div>
-              </div>
-
-              {this.isDashboardAndTestingView() ? (
-                <div className='response-container-main position-relative'>
-                  {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
-                </div>
-              ) : null}
-              {this.renderCodeTemplate()}
-            </div>
-          </div>
-          {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
-            <DisplayUserAndModifiedData
-              isOnPublishedPage={isOnPublishedPage()}
+                {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
+                  <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
+                )}
+              </div>    
+              <div className='w-100'>    
+              <span className='footer-upper'>
+                {isOnPublishedPage() && (
+              <>
+              <span className='pl-3'>
+              <DisplayUserAndModifiedData
+              isOnPublishedPage={true}
               pages={this.props.pages}
               currentPage={this.props.currentEndpointId}
               users={this.props.users}
             />
-          </span>}
-          <div className='w-100'>
-            <span className='footer-lower ml-2 ml-sm-4'>
-              <>
-                <span className='pl-3'>
-                  <DisplayUserAndModifiedData
-                    isOnPublishedPage={isOnPublishedPage()}
-                    pages={this.props.pages}
-                    currentPage={this.props.currentEndpointId}
-                    users={this.props.users}
-                  />
-                </span>
-                <div className='w-100 d-flex flex-column align-items-center'>
-                  <ApiDocReview {...this.props} />
-                </div>
-                <Footer />
-              </>
-            </span>
+          </span>
+          <div className='w-100 d-flex justify-content-center'>
+          <ApiDocReview {...this.props} />
+          </div>
+          <Footer />
+        </>
+      )}
+    </span>
+    </div>
+            </div>
+
+            {this.isDashboardAndTestingView() ? (
+              <div className='response-container-main position-relative'>
+                {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
+              </div>
+            ) : null}
+            {this.renderCodeTemplate()}
           </div>
         </div>
-        </div>
-        ) : null
+        {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
+              <DisplayUserAndModifiedData
+              isOnPublishedPage={isOnPublishedPage()}
+              pages={this.props.pages}
+              currentPage={this.props.currentEndpointId}
+              users={this.props.users}
+              />
+        </span>}
+              <div className='w-100'>    
+        <span className='footer-lower ml-2 ml-sm-4'>           
+                        <>
+                            <span className='pl-3'>
+                                <DisplayUserAndModifiedData
+                                    isOnPublishedPage={isOnPublishedPage()}
+                                    pages={this.props.pages}
+                                    currentPage={this.props.currentEndpointId}
+                                    users={this.props.users}
+                                />
+                            </span>
+                            <div className='w-100 d-flex flex-column align-items-center'>
+                            <ApiDocReview {...this.props} />
+                            </div>
+                            <Footer />
+                        </>   
+                </span>
+                </div>
+      </div>
+    ) : null
   }
 }
 
-        export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayEndpoint)))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayEndpoint)))

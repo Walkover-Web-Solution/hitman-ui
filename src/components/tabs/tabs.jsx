@@ -14,13 +14,10 @@ import { withRouter } from 'react-router-dom'
 import { IoIosSettings } from 'react-icons/io'
 import { HiMiniDocumentText } from 'react-icons/hi2'
 import IconButtons from '../common/iconButton'
+import { GrFormClose } from 'react-icons/gr'
+import { LuHistory } from 'react-icons/lu'
+import { GrGraphQl } from 'react-icons/gr'
 import { IoIosChatboxes } from "react-icons/io";
-import { CiSettings } from "react-icons/ci";
-import { GrFormClose } from "react-icons/gr"
-import { IoDocumentTextOutline } from "react-icons/io5";
-
-import { LuHistory } from "react-icons/lu";
-import { GrGraphQl } from "react-icons/gr";
 
 const mapStateToProps = (state) => {
   return {
@@ -181,14 +178,14 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <div className='d-flex align-items-center'>
-                <IoDocumentTextOutline size={14} className='mr-1 mb-1'/>
+                <HiMiniDocumentText className='mr-1' size={16} />
                 <span>{page.name}</span>
               </div>
             )
           } else {
             return (
               <div className='d-flex align-items-center'>
-              <IoDocumentTextOutline size={14} className='mr-1 mb-1'/>
+                <HiMiniDocumentText className='mr-1' size={16} />
                 <span>{page.name}</span>
               </div>
             )
@@ -201,7 +198,7 @@ class CustomTabs extends Component {
           return (
             <>
               <span className='d-flex align-items-center'>
-                <CiSettings  size={18} className='setting-icons mr-1 mb-1' />
+                <IoIosSettings size={18} className='setting-icons mr-1' />
                 <span>{collectionName}</span>
               </span>
             </>
@@ -210,7 +207,7 @@ class CustomTabs extends Component {
         else {
           return (
             <div className='d-flex align-items-center'>
-              <CiSettings  size={18} className='setting-icons mr-1 mb-1' />
+              <IoIosSettings size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
           )

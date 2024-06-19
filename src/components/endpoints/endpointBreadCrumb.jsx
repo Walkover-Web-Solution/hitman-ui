@@ -177,8 +177,6 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    this.setState({ changesMade: true });
-    this.props.getTitleChanged(this.state.changesMade);
     if (this.props?.isEndpoint) {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = e.currentTarget.value
