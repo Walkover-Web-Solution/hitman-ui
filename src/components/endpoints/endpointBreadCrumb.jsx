@@ -219,7 +219,6 @@ class EndpointBreadCrumb extends Component {
   handleProtocolTypeClick(index) {
     this.props.setQueryUpdatedData({ ...this.props.endpointContent, protocolType: index + 1 })
     this.props.update_tab(this.props?.match?.params.endpointId === 'new' && this.props.activeTabId, { isModified: true })
-    console.log("this.props.endpointContent.protocolType ", this.props.endpointContent.protocolType)
     this.props.setActiveTab()
   }
 
