@@ -69,7 +69,7 @@ import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums.js'
 import { LiaSaveSolid } from 'react-icons/lia'
 import QueryTab from './queryTab/queryTab.jsx'
 import { hexToRgb } from '../common/utility'
-import {background} from '../backgroundColor.js'
+import { background } from '../backgroundColor.js'
 import DisplayUserAndModifiedData from '../common/userService.jsx'
 import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
 const shortid = require('shortid')
@@ -206,8 +206,8 @@ const getEndpointContent = async (props) => {
   let endpointId = isUserOnPublishedPage
     ? currentIdToShow
     : props?.match?.params.endpointId !== 'new'
-    ? props?.match?.params?.endpointId
-    : props?.activeTabId
+      ? props?.match?.params?.endpointId
+      : props?.activeTabId
 
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
@@ -216,8 +216,8 @@ const getEndpointContent = async (props) => {
   }
 
   const extractParams = (pattern, pathname) => {
-    const patternParts = pattern.split('/')
-    const pathParts = pathname.split('/')
+    const patternParts = pattern.split('/');
+    const pathParts = pathname.split('/');
 
     const params = {}
     patternParts.forEach((part, index) => {
@@ -260,8 +260,8 @@ const withQuery = (WrappedComponent) => {
     let endpointId = isOnPublishedPage()
       ? currentIdToShow
       : props?.match?.params.endpointId !== 'new'
-      ? props?.match?.params?.endpointId
-      : props?.activeTabId
+        ? props?.match?.params?.endpointId
+        : props?.activeTabId
     const historyId = props?.match?.params?.historyId
 
     let queryKey, fetchFunction
@@ -405,7 +405,9 @@ class DisplayEndpoint extends Component {
       endpointContentState: null,
       showEndpointFormModal: false,
       optionalParams: false,
+      activeTab: 'default'
     }
+    this.setActiveTab = this.setActiveTab.bind(this);
     this.uri = React.createRef()
     this.paramKey = React.createRef()
     this.setCurrentReponseView()
@@ -421,8 +423,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
     const { endpointId } = this.props.match.params
@@ -443,9 +445,9 @@ class DisplayEndpoint extends Component {
     };
 
     this.setState({
-      theme:  {backgroundStyle} ,
+      theme: { backgroundStyle },
     });
-  
+
   }
 
   handleShortcuts = (event, data) => {
@@ -710,7 +712,7 @@ class DisplayEndpoint extends Component {
       if (!envVars) {
         const missingVariable = match[1]
         return `${missingVariable}`
-    }
+      }
 
       do {
         variables.push(match[1])
@@ -718,7 +720,7 @@ class DisplayEndpoint extends Component {
 
       for (let i = 0; i < variables.length; i++) {
         const envVariable = envVars[variables[i]]
-        if(!envVariable) return variables;
+        if (!envVariable) return variables;
         const strToReplace = `{{${variables[i]}}}`
         if (envVariable?.currentValue) {
           str = str.replace(strToReplace, envVariable.currentValue)
@@ -1160,9 +1162,11 @@ class DisplayEndpoint extends Component {
     }
     this.setState({ loader: false })
 
-    if (this.myRef?.current?.scrollIntoView) {
-      this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
-    }
+    setTimeout(() => {
+      if (this.myRef?.current?.scrollIntoView) {
+        this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 0);
   }
 
   runScript(code, environment, request, responseJson) {
@@ -1350,8 +1354,8 @@ class DisplayEndpoint extends Component {
 
   doSubmitHeader(title) {
     const originalHeaders = [...this.props?.endpointContent.originalHeaders]
-    originalHeaders.map((item)=>{
-      if(item.key){
+    originalHeaders.map((item) => {
+      if (item.key) {
         item.key = item.key.trim();
       }
     })
@@ -1799,7 +1803,7 @@ class DisplayEndpoint extends Component {
         dummyData.authorizationData.authorization.user = basicAuth.username
         dummyData.authorizationData.authorization.password = basicAuth.password
       }
-    }else {
+    } else {
       dummyData.authorizationData.authorization = { oauth2: {} }
       dummyData.authorizationData.authorization.oauth2 = {
         ...dummyData?.authorizationData?.authorization?.oauth2,
@@ -2017,10 +2021,14 @@ class DisplayEndpoint extends Component {
     return false
   }
 
+  setActiveTab() {
+    this.setState({ activeTab: "default" });
+  }
+
   displayResponseAndSampleResponse() {
     return (
       <>
-        <div className='custom-tabs clear-both response-container mb-2' ref={this.myRef}>
+        <div className='custom-tabs clear-both response-container mb-2' >
           <div className='d-flex justify-content-between align-items-center'>
             <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
               <li className='nav-item'>
@@ -2860,37 +2868,37 @@ class DisplayEndpoint extends Component {
   }
   renderEndpointUserData(isOnPublishedPage) {
     const { pages, currentEndpointId, users } = this.props;
-    const updatedById = pages?.[currentEndpointId]?.updatedBy;  
-    const lastModified = pages?.[currentEndpointId]?.updatedAt 
-                         ? moment(pages[currentEndpointId].updatedAt).fromNow()
-                         : null;
+    const updatedById = pages?.[currentEndpointId]?.updatedBy;
+    const lastModified = pages?.[currentEndpointId]?.updatedAt
+      ? moment(pages[currentEndpointId].updatedAt).fromNow()
+      : null;
 
     const user = users?.find(user => user.id === updatedById);
 
     if (isOnPublishedPage) {
-        return (
-            <div>
-                {lastModified && <>Modified At <span>{lastModified}</span></>}
-            </div>
-        );
+      return (
+        <div>
+          {lastModified && <>Modified At <span>{lastModified}</span></>}
+        </div>
+      );
     } else {
-        return (
-            <div className='page-user-data mt-2'>
-              {lastModified ? (
-                <div>
-                  Updated by<span> </span>
-                  {user?.name}
-                  <br />
-                  Modified At<span> </span>
-                  {lastModified}
-                </div>
-              ) : (
-                <span></span>
-              )}
+      return (
+        <div className='page-user-data mt-2'>
+          {lastModified ? (
+            <div>
+              Updated by<span> </span>
+              {user?.name}
+              <br />
+              Modified At<span> </span>
+              {lastModified}
             </div>
-        );
+          ) : (
+            <span></span>
+          )}
+        </div>
+      );
     }
-}
+  }
 
   render() {
     if (this.props?.endpointContentLoading) {
@@ -2930,8 +2938,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
 
     if (this.props.save_endpoint_flag && this.props.tab.id === this.props.selected_tab_id) {
       this.props.handle_save_endpoint(false)
@@ -2944,13 +2952,12 @@ class DisplayEndpoint extends Component {
       !isDashboardRoute(this.props) ||
       !isSavedEndpoint(this.props) ? (
       <div
-        ref={this.myRef}
         className={
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-            ? 'mainContentWrapperPublic hideCodeEditor'
-            : 'mainContentWrapperPublic '
+              ? 'mainContentWrapperPublic hideCodeEditor'
+              : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
@@ -2959,9 +2966,8 @@ class DisplayEndpoint extends Component {
         >
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${
-                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-              }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+                }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
@@ -2999,6 +3005,7 @@ class DisplayEndpoint extends Component {
                             old_description={this.state.oldDescription}
                             props_from_parent={this.propsFromDescription.bind(this)}
                             alterEndpointName={(name) => this.alterEndpointName(name)}
+                            setActiveTab={this.setActiveTab}
                           />
                         )}
                         {this.renderSaveButton()}
@@ -3022,7 +3029,7 @@ class DisplayEndpoint extends Component {
                                     ? 'btn custom-theme-btn btn-lg buttonLoader'
                                     : 'btn btn-lg custom-theme-btn px-md-4 px-3'
                                 }
-                                 style={{ backgroundColor: this.props.publicCollectionTheme }}
+                                style={{ backgroundColor: this.props.publicCollectionTheme }}
                                 type='submit'
                                 id='send-request-button'
                                 onClick={() => this.handleSend()}
@@ -3058,229 +3065,370 @@ class DisplayEndpoint extends Component {
                       SSL certificate verification {this.state.sslMode ? <span className='enabled'>enabled</span> : <span>disabled</span>}{' '}
                     </div>
                   )}
-                    <div className={this.isDashboardAndTestingView() ? 'endpoint-headers-container d-flex' : 'hm-public-endpoint-headers'}>
-                    <div className='main-table-wrapper'>
-  {this.isDashboardAndTestingView() ? (
-    <div className='d-flex justify-content-between align-items-center'>
-      <div className='headers-params-wrapper custom-tabs'>
-        <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
-          <li className='nav-item'>
-            <a
-              className={this.setAuthorizationTab ? 'nav-link ' : 'nav-link active'}
-              id='pills-params-tab'
-              data-toggle='pill'
-              href={`#params-${this.props.tab.id}`}
-              role='tab'
-              aria-controls={`params-${this.props.tab.id}`}
-              aria-selected={this.setAuthorizationTab ? 'false' : 'true'}
-            >
-              Params
-            </a>
-          </li>
-          <li className='nav-item'>
-            <a
-              className={this.setAuthorizationTab ? 'nav-link active' : 'nav-link '}
-              id='pills-authorization-tab'
-              data-toggle='pill'
-              href={`#authorization-${this.props.tab.id}`}
-              role='tab'
-              aria-controls={`authorization-${this.props.tab.id}`}
-              aria-selected={this.setAuthorizationTab ? 'true' : 'false'}
-            >
-              Authorization
-            </a>
-          </li>
-          <li className='nav-item'>
-            <a
-              className='nav-link'
-              id='pills-headers-tab'
-              data-toggle='pill'
-              href={`#headers-${this.props.tab.id}`}
-              role='tab'
-              aria-controls={`headers-${this.props.tab.id}`}
-              aria-selected='false'
-            >
-              Headers
-            </a>
-          </li>
-          <li className='nav-item'>
-            <a
-              className='nav-link'
-              id='pills-body-tab'
-              data-toggle='pill'
-              href={`#body-${this.props.tab.id}`}
-              role='tab'
-              aria-controls={`body-${this.props.tab.id}`}
-              aria-selected='false'
-            >
-              Body
-            </a>
-          </li>
-          <li className='nav-item'>
-            <a
-              className='nav-link'
-              id='pills-script-tab'
-              data-toggle='pill'
-              href={`#script-${this.props.tab.id}`}
-              role='tab'
-              aria-controls={`script-${this.props.tab.id}`}
-              aria-selected='false'
-            >
-              Scripts
-            </a>
-          </li>
-          <li className='nav-item cookie-tab'>
-            {getCurrentUser() && (
-              <a className='nav-link' onClick={() => this.setState({ showCookiesModal: true })}>
-                Cookies
-              </a>
-            )}
-          </li>
-        </ul>
-      </div>
-    </div>
-  ) : null}
-  {this.isDashboardAndTestingView() ? (
-    <div className='tab-content' id='pills-tabContent'>
-      <div
-        className={this.setAuthorizationTab ? 'tab-pane fade' : 'tab-pane fade show active'}
-        id={`params-${this.props.tab.id}`}
-        role='tabpanel'
-        aria-labelledby='pills-params-tab'
-      >
-        {this.renderParams()}
-        <div>{this.renderPathVariables()}</div>
-      </div>
-      <div
-        className={this.setAuthorizationTab ? 'tab-pane fade show active' : 'tab-pane fade'}
-        id={`authorization-${this.props.tab.id}`}
-        role='tabpanel'
-        aria-labelledby='pills-authorization-tab'
-      >
-        <div>
-          <Authorization
-            {...this.props}
-            set_authorization_headers={this.setHeaders.bind(this)}
-            set_authoriztaion_params={this.setParams.bind(this)}
-            set_authoriztaion_type={this.setAuthType.bind(this)}
-            handleSaveEndpoint={this.handleSave.bind(this)}
-          />
-        </div>
-      </div>
-      <div
-        className='tab-pane fade'
-        id={`headers-${this.props.tab.id}`}
-        role='tabpanel'
-        aria-labelledby='pills-headers-tab'
-      >
-        <div>{this.renderHeaders()}</div>
-      </div>
-      <div className='tab-pane fade' id={`body-${this.props.tab.id}`} role='tabpanel' aria-labelledby='pills-body-tab'>
-        {this.renderBodyContainer()}
-      </div>
-      <div
-        className='tab-pane fade script-content'
-        id={`script-${this.props.tab.id}`}
-        role='tabpanel'
-        aria-labelledby='pills-script-tab'
-      >
-        <ul className='nav nav-tabs flex-column mt-0 border border-0' id='pills-sub-tab' role='tablist'>
-          <li className='nav-item'>
-            <a
-              className='nav-link active px-1 py-2 border border-0 Script-button rounded-0'
-              id='pills-pre-script-tab'
-              data-toggle='pill'
-              href={`#pre-script-${this.props.tab.id}`}
-              role='tab'
-              aria-controls={`pre-script-${this.props.tab.id}`}
-              aria-selected='true'
-              title='Pre-Script are written in Javascript, and are run before the response is recieved.'
-            >
-              Pre-Script
-            </a>
-          </li>
-          <li className='nav-item'>
-            <a
-              className='nav-link px-1 py-2 border border-0 Script-button rounded-0'
-              id='pills-post-script-tab'
-              data-toggle='pill'
-              href={`#post-script-${this.props.tab.id}`}
-              role='tab'
-              aria-controls={`post-script-${this.props.tab.id}`}
-              aria-selected='false'
-              title='Post-Script are written in Javascript, and are run after the response is recieved.'
-            >
-              Post-Script
-            </a>
-          </li>
-        </ul>
-        <div className='tab-content w-100' id='pills-sub-tabContent'>
-          <div
-            className='tab-pane fade show active'
-            id={`pre-script-${this.props.tab.id}`}
-            role='tabpanel'
-            aria-labelledby='pills-pre-script-tab'
-          >
-            <div>
-              <Script
-                type='Pre-Script'
-                handleScriptChange={this.handleScriptChange.bind(this)}
-                scriptText={this.props?.endpointContent?.preScriptText}
-                endpointContent={this.props?.endpointContent}
-              />
-            </div>
-          </div>
-          <div
-            className='tab-pane fade'
-            id={`post-script-${this.props.tab.id}`}
-            role='tabpanel'
-            aria-labelledby='pills-post-script-tab'
-          >
-            <div>
-              <Script
-                type='Post-Script'
-                handleScriptChange={this.handleScriptChange.bind(this)}
-                scriptText={this.props?.endpointContent?.postScriptText}
-                endpointContent={this.props?.endpointContent}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  ) : (
-    this.renderDocView()
-  )}
-  {this.isDashboardAndTestingView() && this.renderScriptError()}
-  {this.displayResponse()}
-</div>
+                  <div className={this.isDashboardAndTestingView() ? 'endpoint-headers-container d-flex' : 'hm-public-endpoint-headers'}>
+                    <div className="main-table-wrapper">
+                      {this.isDashboardAndTestingView() ? (
+                        <div className="d-flex justify-content-between align-items-center">
+                          <div className="headers-params-wrapper custom-tabs">
+                            <ul className="nav nav-tabs" id="pills-tab" role="tablist">
+                              {this.checkProtocolType(1) && (
+                                <>
+                                  <li className="nav-item">
+                                    <a
+                                      className={`nav-link ${this.state.activeTab === 'default' ? 'active' : ''}`}
+                                      id={`pills-params-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
+                                      href={`#params-${this.props.tab.id}`}
+                                      role="tab"
+                                      aria-controls={`params-${this.props.tab.id}`}
+                                      aria-selected={this.state.activeTab === 'default'}
+                                      onClick={() => this.setState({ activeTab: 'default' })}
+                                    >
+                                      Params
+                                    </a>
+                                  </li>
+                                  <li className="nav-item">
+                                    <a
+                                      className={`nav-link ${this.state.activeTab === 'authorization' ? 'active' : ''}`}
+                                      id={`pills-authorization-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
+                                      href={`#authorization-${this.props.tab.id}`}
+                                      role="tab"
+                                      aria-controls={`authorization-${this.props.tab.id}`}
+                                      aria-selected={this.state.activeTab === 'authorization'}
+                                      onClick={() => this.setState({ activeTab: 'authorization' })}
+                                    >
+                                      Authorization
+                                    </a>
+                                  </li>
+                                  <li className="nav-item">
+                                    <a
+                                      className={`nav-link ${this.state.activeTab === 'headers' ? 'active' : ''}`}
+                                      id={`pills-headers-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
+                                      href={`#headers-${this.props.tab.id}`}
+                                      role="tab"
+                                      aria-controls={`headers-${this.props.tab.id}`}
+                                      aria-selected={this.state.activeTab === 'headers'}
+                                      onClick={() => this.setState({ activeTab: 'headers' })}
+                                    >
+                                      Headers
+                                    </a>
+                                  </li>
+                                  <li className="nav-item">
+                                    <a
+                                      className={`nav-link ${this.state.activeTab === 'body' ? 'active' : ''}`}
+                                      id={`pills-body-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
+                                      href={`#body-${this.props.tab.id}`}
+                                      role="tab"
+                                      aria-controls={`body-${this.props.tab.id}`}
+                                      aria-selected={this.state.activeTab === 'body'}
+                                      onClick={() => this.setState({ activeTab: 'body' })}
+                                    >
+                                      Body
+                                    </a>
+                                  </li>
+                                  <li className="nav-item">
+                                    <a
+                                      className={`nav-link ${this.state.activeTab === 'pre-script' ? 'active' : ''}`}
+                                      id={`pills-pre-script-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
+                                      href={`#pre-script-${this.props.tab.id}`}
+                                      role="tab"
+                                      aria-controls={`pre-script-${this.props.tab.id}`}
+                                      aria-selected={this.state.activeTab === 'pre-script'}
+                                      onClick={() => this.setState({ activeTab: 'pre-script' })}
+                                    >
+                                      Pre-Script
+                                    </a>
+                                  </li>
+                                  <li className="nav-item">
+                                    <a
+                                      className={`nav-link ${this.state.activeTab === 'post-script' ? 'active' : ''}`}
+                                      id={`pills-post-script-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
+                                      href={`#post-script-${this.props.tab.id}`}
+                                      role="tab"
+                                      aria-controls={`post-script-${this.props.tab.id}`}
+                                      aria-selected={this.state.activeTab === 'post-script'}
+                                      onClick={() => this.setState({ activeTab: 'post-script' })}
+                                    >
+                                      Post-Script
+                                    </a>
+                                  </li>
+                                  {getCurrentUser() && (
+                                    <li className="nav-item cookie-tab">
+                                      <a
+                                        className={`nav-link ${this.state.activeTab === 'cookies' ? 'active' : ''}`}
+                                        onClick={() => this.setState({ showCookiesModal: true })}
+                                      >
+                                        Cookies
+                                      </a>
+                                    </li>
+                                  )}
+                                </>
+                              )}
+                              {this.checkProtocolType(2) && (
+                                <>
+                                  <li className="nav-item">
+                                    <a
+                                      className={`nav-link ${this.state.activeTab === 'default' ? 'active' : ''}`}
+                                      id={`pills-query-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
+                                      href={`#query-${this.props.tab.id}`}
+                                      role="tab"
+                                      aria-controls={`query-${this.props.tab.id}`}
+                                      aria-selected={this.state.activeTab === 'default'}
+                                      onClick={() => this.setState({ activeTab: 'default' })}
+                                    >
+                                      Query
+                                    </a>
+                                  </li>
+                                  <li className="nav-item">
+                                    <a
+                                      className={`nav-link ${this.state.activeTab === 'authorization' ? 'active' : ''}`}
+                                      id={`pills-authorization-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
+                                      href={`#authorization-${this.props.tab.id}`}
+                                      role="tab"
+                                      aria-controls={`authorization-${this.props.tab.id}`}
+                                      aria-selected={this.state.activeTab === 'authorization'}
+                                      onClick={() => this.setState({ activeTab: 'authorization' })}
+                                    >
+                                      Authorization
+                                    </a>
+                                  </li>
+                                  <li className="nav-item">
+                                    <a
+                                      className={`nav-link ${this.state.activeTab === 'headers' ? 'active' : ''}`}
+                                      id={`pills-headers-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
+                                      href={`#headers-${this.props.tab.id}`}
+                                      role="tab"
+                                      aria-controls={`headers-${this.props.tab.id}`}
+                                      aria-selected={this.state.activeTab === 'headers'}
+                                      onClick={() => this.setState({ activeTab: 'headers' })}
+                                    >
+                                      Headers
+                                    </a>
+                                  </li>
+                                  <li className="nav-item">
+                                    <a
+                                      className={`nav-link ${this.state.activeTab === 'pre-script' ? 'active' : ''}`}
+                                      id={`pills-pre-script-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
+                                      href={`#pre-script-${this.props.tab.id}`}
+                                      role="tab"
+                                      aria-controls={`pre-script-${this.props.tab.id}`}
+                                      aria-selected={this.state.activeTab === 'pre-script'}
+                                      onClick={() => this.setState({ activeTab: 'pre-script' })}
+                                    >
+                                      Pre-Script
+                                    </a>
+                                  </li>
+                                  <li className="nav-item">
+                                    <a
+                                      className={`nav-link ${this.state.activeTab === 'post-script' ? 'active' : ''}`}
+                                      id={`pills-post-script-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
+                                      href={`#post-script-${this.props.tab.id}`}
+                                      role="tab"
+                                      aria-controls={`post-script-${this.props.tab.id}`}
+                                      aria-selected={this.state.activeTab === 'post-script'}
+                                      onClick={() => this.setState({ activeTab: 'post-script' })}
+                                    >
+                                      Post-Script
+                                    </a>
+                                  </li>
+                                </>
+                              )}
+                            </ul>
+                          </div>
+                        </div>
+                      ) : null}
 
+                      {this.isDashboardAndTestingView() ? (
+                        <div className="tab-content" id="pills-tabContent">
+                          {this.checkProtocolType(1) && (
+                            <>
+                              <div
+                                className={`tab-pane fade ${this.state.activeTab === 'default' ? 'show active' : ''}`}
+                                id={`params-${this.props.tab.id}`}
+                                role="tabpanel"
+                                aria-labelledby={`pills-params-tab-${this.props.tab.id}`}
+                              >
+                                {this.renderParams()}
+                                <div>{this.renderPathVariables()}</div>
+                              </div>
+                              <div
+                                className={`tab-pane fade ${this.state.activeTab === 'authorization' ? 'show active' : ''}`}
+                                id={`authorization-${this.props.tab.id}`}
+                                role="tabpanel"
+                                aria-labelledby={`pills-authorization-tab-${this.props.tab.id}`}
+                              >
+                                <div>
+                                  <Authorization
+                                    {...this.props}
+                                    set_authorization_headers={this.setHeaders.bind(this)}
+                                    set_authoriztaion_params={this.setParams.bind(this)}
+                                    set_authoriztaion_type={this.setAuthType.bind(this)}
+                                    handleSaveEndpoint={this.handleSave.bind(this)}
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className={`tab-pane fade ${this.state.activeTab === 'headers' ? 'show active' : ''}`}
+                                id={`headers-${this.props.tab.id}`}
+                                role="tabpanel"
+                                aria-labelledby={`pills-headers-tab-${this.props.tab.id}`}
+                              >
+                                <div>{this.renderHeaders()}</div>
+                              </div>
+                              <div
+                                className={`tab-pane fade ${this.state.activeTab === 'body' ? 'show active' : ''}`}
+                                id={`body-${this.props.tab.id}`}
+                                role="tabpanel"
+                                aria-labelledby={`pills-body-tab-${this.props.tab.id}`}
+                              >
+                                {this.renderBodyContainer()}
+                              </div>
+                              <div
+                                className={`tab-pane fade ${this.state.activeTab === 'pre-script' ? 'show active' : ''}`}
+                                id={`pre-script-${this.props.tab.id}`}
+                                role="tabpanel"
+                                aria-labelledby={`pills-pre-script-tab-${this.props.tab.id}`}
+                              >
+                                <div>
+                                  <Script
+                                    type="Pre-Script"
+                                    handleScriptChange={this.handleScriptChange.bind(this)}
+                                    scriptText={this.props?.endpointContent?.preScriptText}
+                                    endpointContent={this.props?.endpointContent}
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className={`tab-pane fade ${this.state.activeTab === 'post-script' ? 'show active' : ''}`}
+                                id={`post-script-${this.props.tab.id}`}
+                                role="tabpanel"
+                                aria-labelledby={`pills-post-script-tab-${this.props.tab.id}`}
+                              >
+                                <div>
+                                  <Script
+                                    type="Post-Script"
+                                    handleScriptChange={this.handleScriptChange.bind(this)}
+                                    scriptText={this.props?.endpointContent?.postScriptText}
+                                    endpointContent={this.props?.endpointContent}
+                                  />
+                                </div>
+                              </div>
+                            </>
+                          )}
+                          {this.checkProtocolType(2) && (
+                            <>
+                              <div
+                                className={`tab-pane fade ${this.state.activeTab === 'default' ? 'show active' : ''}`}
+                                id={`query-${this.props.tab.id}`}
+                                role="tabpanel"
+                                aria-labelledby={`pills-query-tab-${this.props.tab.id}`}
+                              >
+                                <QueryTab
+                                  endpointContent={this.props.endpointContent}
+                                  setQueryTabBody={this.setQueryTabBody.bind(this)}
+                                  endpointId={this.props.endpointId}
+                                />
+                              </div>
+                              <div
+                                className={`tab-pane fade ${this.state.activeTab === 'authorization' ? 'show active' : ''}`}
+                                id={`authorization-${this.props.tab.id}`}
+                                role="tabpanel"
+                                aria-labelledby={`pills-authorization-tab-${this.props.tab.id}`}
+                              >
+                                <div>
+                                  <Authorization
+                                    {...this.props}
+                                    set_authorization_headers={this.setHeaders.bind(this)}
+                                    set_authoriztaion_params={this.setParams.bind(this)}
+                                    set_authoriztaion_type={this.setAuthType.bind(this)}
+                                    handleSaveEndpoint={this.handleSave.bind(this)}
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className={`tab-pane fade ${this.state.activeTab === 'headers' ? 'show active' : ''}`}
+                                id={`headers-${this.props.tab.id}`}
+                                role="tabpanel"
+                                aria-labelledby={`pills-headers-tab-${this.props.tab.id}`}
+                              >
+                                <div>{this.renderHeaders()}</div>
+                              </div>
+                              <div
+                                className={`tab-pane fade ${this.state.activeTab === 'pre-script' ? 'show active' : ''}`}
+                                id={`pre-script-${this.props.tab.id}`}
+                                role="tabpanel"
+                                aria-labelledby={`pills-pre-script-tab-${this.props.tab.id}`}
+                              >
+                                <div>
+                                  <Script
+                                    type="Pre-Script"
+                                    handleScriptChange={this.handleScriptChange.bind(this)}
+                                    scriptText={this.props?.endpointContent?.preScriptText}
+                                    endpointContent={this.props?.endpointContent}
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className={`tab-pane fade ${this.state.activeTab === 'post-script' ? 'show active' : ''}`}
+                                id={`post-script-${this.props.tab.id}`}
+                                role="tabpanel"
+                                aria-labelledby={`pills-post-script-tab-${this.props.tab.id}`}
+                              >
+                                <div>
+                                  <Script
+                                    type="Post-Script"
+                                    handleScriptChange={this.handleScriptChange.bind(this)}
+                                    scriptText={this.props?.endpointContent?.postScriptText}
+                                    endpointContent={this.props?.endpointContent}
+                                  />
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        this.renderDocView()
+                      )}
                     </div>
+
+                    {this.isDashboardAndTestingView() && this.renderScriptError()}
+                    {this.displayResponse()}
+                  </div>
                 </div>
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
               </div>
-              <div className='w-100'>    
-              <span className='footer-upper'>
-                {isOnPublishedPage() && (
-              <>
-              <span className='pl-3'>
-              <DisplayUserAndModifiedData
-              isOnPublishedPage={true}
-              pages={this.props.pages}
-              currentPage={this.props.currentEndpointId}
-              users={this.props.users}
-            />
-          </span>
-          <div className='w-100 d-flex justify-content-center'>
-          <ApiDocReview {...this.props} />
-          </div>
-          <Footer />
-        </>
-      )}
-    </span>
-    </div>
+              <div className='w-100'>
+                <span className='footer-upper'>
+                  {isOnPublishedPage() && (
+                    <>
+                      <span className='pl-3'>
+                        <DisplayUserAndModifiedData
+                          isOnPublishedPage={true}
+                          pages={this.props.pages}
+                          currentPage={this.props.currentEndpointId}
+                          users={this.props.users}
+                        />
+                      </span>
+                      <div className='w-100 d-flex justify-content-center'>
+                        <ApiDocReview {...this.props} />
+                      </div>
+                      <Footer />
+                    </>
+                  )}
+                </span>
+              </div>
             </div>
 
             {this.isDashboardAndTestingView() ? (
@@ -3292,31 +3440,31 @@ class DisplayEndpoint extends Component {
           </div>
         </div>
         {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
-              <DisplayUserAndModifiedData
-              isOnPublishedPage={isOnPublishedPage()}
-              pages={this.props.pages}
-              currentPage={this.props.currentEndpointId}
-              users={this.props.users}
-              />
+          <DisplayUserAndModifiedData
+            isOnPublishedPage={isOnPublishedPage()}
+            pages={this.props.pages}
+            currentPage={this.props.currentEndpointId}
+            users={this.props.users}
+          />
         </span>}
-              <div className='w-100'>    
-        <span className='footer-lower ml-2 ml-sm-4'>           
-                        <>
-                            <span className='pl-3'>
-                                <DisplayUserAndModifiedData
-                                    isOnPublishedPage={isOnPublishedPage()}
-                                    pages={this.props.pages}
-                                    currentPage={this.props.currentEndpointId}
-                                    users={this.props.users}
-                                />
-                            </span>
-                            <div className='w-100 d-flex flex-column align-items-center'>
-                            <ApiDocReview {...this.props} />
-                            </div>
-                            <Footer />
-                        </>   
-                </span>
-                </div>
+        <div className='w-100'>
+          <span className='footer-lower ml-2 ml-sm-4'>
+            <>
+              <span className='pl-3'>
+                <DisplayUserAndModifiedData
+                  isOnPublishedPage={isOnPublishedPage()}
+                  pages={this.props.pages}
+                  currentPage={this.props.currentEndpointId}
+                  users={this.props.users}
+                />
+              </span>
+              <div className='w-100 d-flex flex-column align-items-center'>
+                <ApiDocReview {...this.props} />
+              </div>
+              <Footer />
+            </>
+          </span>
+        </div>
       </div>
     ) : null
   }

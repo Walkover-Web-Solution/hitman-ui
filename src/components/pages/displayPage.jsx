@@ -71,7 +71,7 @@ const mapStateToProps = (state) => {
   return {
     pages: state.pages,
     tabs: state.tabs,
-    users: state.users
+    users: state.users.usersList
   }
 }
 
