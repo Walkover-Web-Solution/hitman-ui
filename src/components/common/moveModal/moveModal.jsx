@@ -3,16 +3,16 @@ import { Button, Modal } from 'react-bootstrap'
 import { FiUsers } from "react-icons/fi";
 import generalApiService from '../../../services/generalApiService';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteCollectionRequest } from '../../collections/redux/collectionsActions';
 import './moveModal.scss'
 import { deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../utility';
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes';
 
 const MoveModal = (props) => {
-
-  const orgs = JSON.parse(window.localStorage.getItem('organisationList'))
-
+  const { orgs } = useSelector((state) => {
+    return { orgs: state.organizations.orgList }
+  })
   const dispatch = useDispatch()
 
   const [selectedOrganization, setSelectedOrganization] = useState(null)
