@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import { updateEndpoint } from '../pages/redux/pagesActions'
 import { connect } from 'react-redux'
@@ -32,7 +32,7 @@ class DisplayDescription extends Component {
         ['link']
       ]
     }
-
+    this.contentEditableRef = createRef();
     this.formats = ['header', 'bold', 'italic', 'underline', 'strike', 'color', 'background', 'list', 'bullet', 'link']
   }
 
@@ -45,6 +45,15 @@ class DisplayDescription extends Component {
   componentDidMount() {
     if (!this.state.theme) {
       this.setState({ theme: this.props.publicCollectionTheme })
+    }
+    if (this.contentEditableRef.current) {
+      this.contentEditableRef.current.innerText = this.props?.endpoint?.description || 'Write Description';
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.endpointId !== this.props.endpointId) {
+      this.contentEditableRef.current.innerText = this.props?.endpoint?.description || 'Write Description';
     }
   }
 
@@ -79,10 +88,9 @@ class DisplayDescription extends Component {
     this.props.props_from_parent('oldDescription', value)
   }
 
-  handleChangeDescription = (value) => {
-    const endpoint = { ...this.props.endpoint }
-    endpoint.description = value
-    this.props.props_from_parent('endpoint', endpoint)
+  handleChangeDescription = () => {
+    const value = this.contentEditableRef.current.innerText;
+    this.props.props_from_parent(value)
   }
 
   render() {
@@ -90,6 +98,16 @@ class DisplayDescription extends Component {
       <div className='endpoint-header'>
         <div className={isDashboardRoute(this.props) ? 'panel-endpoint-name-container' : 'endpoint-name-container'}>
           {isDashboardRoute(this.props) && <>{this.props.endpoint && <EndpointBreadCrumb setActiveTab={this.props.setActiveTab} {...this.props} isEndpoint />}</>}
+          {isDashboardRoute(this.props) && this.props.endpoint &&
+            <div
+              ref={this.contentEditableRef}
+              onInput={this.handleChangeDescription}
+              className='endpoint-description'
+              contentEditable={true}
+              suppressContentEditableWarning={true}
+            >
+            </div>
+          }
         </div>
       </div>
     )
