@@ -3469,4 +3469,4 @@ class DisplayEndpoint extends Component {
   }
 }
 
-        export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayEndpoint)))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayEndpoint)))
