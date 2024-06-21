@@ -1283,8 +1283,17 @@ button.editBtn {
   margin: 2px 0;
 }
 .headParaWraper {
-  padding: 4px 20px 20px 11px;
   border-radius: $border-radius;
+
+  #custom-generic-table {
+    padding-left: 12px;
+    padding-right: 12px;
+
+    &:has(.custom-th) {
+      padding-bottom: 12px;
+      border: 1px solid $border-color;
+    }
+  }
 }
 
 .adddescLink {
@@ -2898,9 +2907,8 @@ li.nav-item.cookie-tab a {
       position: absolute;
       right: 15px;
       z-index: 9;
-      @media screen and (max-width:768px) {
+      @media screen and (max-width:480px) {
         position: static !important;
-        margin-right: 2rem;
         padding-bottom: 10px;
       }
     }
@@ -3541,6 +3549,9 @@ body .tox {
   }
   }
 .pubCodeWrapper {
+  @media screen and (max-width: 1300px) {
+    min-width: 350px !important;
+  }
   @media only screen and (max-width: 1160px) {
     position: static !important;
     width: 100% !important;
@@ -3831,4 +3842,11 @@ body .tox {
 
 .cursor-text {
   cursor: text !important;
+}
+.body-ace-editer {
+  .close-button {
+    right: 3px;
+    top: 3px;
+    z-index: 9;
+  }
 }

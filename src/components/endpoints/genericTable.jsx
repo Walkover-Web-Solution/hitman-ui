@@ -6,6 +6,7 @@ import shortid from 'shortid'
 import _ from 'lodash'
 import TextField from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
+import { isOnPublishedPage } from '../common/utility'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
@@ -557,7 +558,7 @@ class GenericTable extends Component {
         </div>
 
         {!this.state.bulkEdit && dataArray.length > 0 ? (
-          <div className='headParaWraper' style={{ backgroundColor: hexToRgb(this.state?.theme, '0.04') }}>
+          <div  className={`headParaWraper ${isOnPublishedPage() ? "p-0" : "p-3"}`} style={{ backgroundColor: hexToRgb(this.state?.theme, '0.04') }}>
             <table className='table' id='custom-generic-table'>
               {isDashboardRoute(this.props) ? (
                 <thead>
