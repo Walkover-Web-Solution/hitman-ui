@@ -333,14 +333,14 @@ form.add-new-domain-form {
     scrollbar-width: none;
     display: flex;
     flex-direction: column;
-    max-width: 1160px;
+    max-width: 100%;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 66px 24px;
-    @media screen and (max-width: 1160px){
-     padding: 0;
+    padding: 24px 66px 24px;
+    @media screen and (max-width: 1400px){
+      padding: 1.25rem 1.25rem;
     }
-    @media screen and (max-width: 992px){
+    @media screen and (max-width: 1160px){
       padding: 0;
      }
     &::-webkit-scrollbar {

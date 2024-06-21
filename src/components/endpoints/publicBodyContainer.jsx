@@ -36,9 +36,26 @@ class PublicBodyContainer extends Component {
           }
         ]
       },
+      editorHeight: '250px',
+      isExpanded: false,
     }
     this.queryRef = createRef();
     this.variablesRef = createRef();
+    this.expandEditor = this.expandEditor.bind(this);
+    this.collapseEditor = this.collapseEditor.bind(this);
+  }
+  expandEditor() {
+    this.setState({
+      editorHeight: '500px',
+      isExpanded: true,
+    });
+  }
+  collapseEditor(event) {
+    event.stopPropagation(); // Prevent the click event from bubbling up to the parent div
+    this.setState({
+      editorHeight: '250px',
+      isExpanded: false,
+    });
   }
 
   componentDidMount() {
@@ -334,7 +351,7 @@ class PublicBodyContainer extends Component {
                 <AceEditor
                   className={`${isOnPublishedPage() ? "custom-raw-editor-public" : "custom-raw-editor"}`}
                   mode='json'
-                  style={this.state.theme.backgroundStyle}
+                  style={{ backgroundColor: hexToRgb(this.props.publicCollectionTheme, '0.04') }}
                   theme='github'
                   value={this.props.body?.raw?.value}
                   onChange={this.handleChangeBodyDescription.bind(this)}
