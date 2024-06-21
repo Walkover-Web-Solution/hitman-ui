@@ -796,7 +796,7 @@ button.toggleButton {
   background-color: #222222;
 }
 $loader-size: 100px;
-$loader-dot-size: ($loader-size / 5); //20
+$loader-dot-size: calc($loader-size / 5); //20
 $loader-height: $loader-dot-size; //20
 $loader-dot-color: #2196F3;
 
