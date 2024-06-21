@@ -3238,6 +3238,8 @@ class DisplayEndpoint extends Component {
                         this.renderDocView()
                       )}
                     </div>
+                    {this.isDashboardAndTestingView() && this.renderScriptError()}
+                    {this.displayResponse()}
                   </div>
                   {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                     <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
