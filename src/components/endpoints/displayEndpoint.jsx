@@ -72,6 +72,8 @@ import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import DisplayUserAndModifiedData from '../common/userService.jsx'
 import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
+import debounce from 'lodash/debounce';
+
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -366,6 +368,7 @@ class DisplayEndpoint extends Component {
   constructor(props) {
     super(props)
     this.handleRemovePublicEndpoint = this.handleRemovePublicEndpoint.bind(this)
+    this.handleUpdateUri = debounce(this.handleUpdateUri.bind(this), 300)
     this.myRef = React.createRef()
     this.sideRef = React.createRef()
     this.state = {
@@ -533,6 +536,7 @@ class DisplayEndpoint extends Component {
         !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
     ) {
       this.prepareHarObject()
+      this.handleUpdateUri(this.props.endpointContent?.originalParams)
     }
     if (this.state.endpoint.id !== prevState.endpoint.id && !this.props.location.pathname.includes('history')) {
       this.setState({ flagResponse: false })
@@ -1434,32 +1438,40 @@ class DisplayEndpoint extends Component {
 
   handleUpdateUri(originalParams) {
     const tempdata = this.props.endpointContent
+
     if (originalParams.length === 0) {
       const updatedUri = this.props.endpointContent.data.updatedUri.split('?')[0]
-      const data = { ...this.props?.endpointContent.data }
+      const data = { ...this.props.endpointContent.data }
       data.updatedUri = updatedUri
       tempdata.data = data
       this.props.setQueryUpdatedData(tempdata)
       return
     }
-    const originalUri = this.props?.endpointContent.data.updatedUri.split('?')[0] + '?'
+
+    const originalUri = this.props.endpointContent.data.updatedUri.split('?')[0] + '?'
     const parts = {}
+
     for (let i = 0; i < originalParams.length; i++) {
       if (originalParams[i].key.length !== 0 && originalParams[i].checked === 'true') {
         parts[originalParams[i].key] = originalParams[i].value
       }
     }
-    URI.escapeQuerySpace = false
-    let updatedUri = URI.buildQuery(parts)
-    updatedUri = originalUri + URI.decode(updatedUri)
-    const data = { ...this.props?.endpointContent.data }
+    const queryParams = Object.keys(parts)
+      .map((key) => `${encodeURIComponent(key).replace(/%20/g, ' ')}=${encodeURIComponent(parts[key]).replace(/%20/g, ' ')}`)
+      .join('&')
+    let updatedUri = originalUri + queryParams
+
+    const data = { ...this.props.endpointContent.data }
     if (Object.keys(parts).length === 0) {
       data.updatedUri = updatedUri.split('?')[0]
     } else {
       data.updatedUri = updatedUri
     }
     tempdata.data = data
-    this.props.setQueryUpdatedData(tempdata)
+
+    if (!_.isEqual(tempdata, this.props.endpointContent)) {
+      this.props.setQueryUpdatedData(tempdata)
+    }
   }
 
   doSubmitParam() {
@@ -2311,7 +2323,7 @@ class DisplayEndpoint extends Component {
     switch (item.type) {
       case 'textArea': {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
-          return <div>{this.renderTiptapEditor(item, index)}</div>
+          return <div className='tiptap-editor-container'>{this.renderTiptapEditor(item, index)}</div>
         }
         break
       }
@@ -2319,7 +2331,7 @@ class DisplayEndpoint extends Component {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
           return (
             <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
-              {this.renderTiptapEditor(item, index)}
+              <div className='tiptap-editor-container'>{this.renderTiptapEditor(item, index)}</div>
             </div>
           )
         }
@@ -3406,6 +3418,9 @@ class DisplayEndpoint extends Component {
                     {this.displayResponse()}
                   </div>
                 </div>
+                {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
+                  <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
+                )}
               </div>
               <div className='w-100'>
                 <span className='footer-upper'>

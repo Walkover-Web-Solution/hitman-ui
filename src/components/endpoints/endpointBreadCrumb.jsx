@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component} from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
@@ -185,6 +185,10 @@ class EndpointBreadCrumb extends Component {
       this.props.setQueryUpdatedData(tempData)
       this.props.update_name({ id: this.props?.match?.params?.endpointId, name: e.currentTarget.value })
     }
+    else{
+      const pageId = this.props?.match?.params?.pageId;
+      this.props.update_name({id: pageId, name: e.currentTarget.value})
+    }
   }
 
   handleInputBlur() {
@@ -260,7 +264,6 @@ class EndpointBreadCrumb extends Component {
             <input
               name='enpoint-title'
               ref={this.nameInputRef}
-              style={{ textTransform: 'capitalize' }}
               className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
               onChange={this.handleInputChange.bind(this)}
               value={this.props?.isEndpoint
