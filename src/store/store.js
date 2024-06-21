@@ -15,6 +15,7 @@ import clientDataReducer from './clientData/clientDataReducer'
 import tokenDataReducer from './tokenData/tokenDataReducers'
 import userReducer from '../components/auth/redux/usersRedux/userReducer'
 import organizationReducer from '../components/auth/redux/organizationRedux/organizationReducer'
+import urlMappingReducer from '../components/collections/redux/urlReducer'
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -31,7 +32,8 @@ const rootReducer = combineReducers({
   clientData: clientDataReducer,
   tokenData: tokenDataReducer,
   users: userReducer,
-  organizations : organizationReducer
+  organizations : organizationReducer,
+  urlMapping: urlMappingReducer,
 })
 
 const persistConfig = {

@@ -782,5 +782,4 @@ class CollectionParentPages extends Component {
     )
   }
 }
-
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CollectionParentPages))
