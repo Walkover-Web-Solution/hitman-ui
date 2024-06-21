@@ -3827,6 +3827,10 @@ body .tox {
   }
 
 .pubCodeWrapper {
+  @media screen and (max-width: 1300px) {
+    min-width: 350px !important;
+    width: 350px !important;
+  }
   @media only screen and (max-width: 1160px) {
     position: static !important;
     width: 100% !important;
@@ -4147,3 +4151,4 @@ body .tox {
     z-index: 9;
   }
 }
+
