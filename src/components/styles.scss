@@ -473,10 +473,17 @@ button.btn.btn-default {
 button.btn {
   box-shadow: none !important;
 }
+.custom-editor-public-page {
+  .custom-raw-editor-public {
+    width: 95% !important;
+    &.ace-github {
+      background: unset;
+    }
+  }
+}
 
 .custom-raw-editor-public {
   width: 100% !important;
-  height: 250px !important;
   border-radius: 4px;
   border: 1px solid $lightblackborder;
   .ace_gutter {

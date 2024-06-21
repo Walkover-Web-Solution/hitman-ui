@@ -3129,32 +3129,17 @@ class DisplayEndpoint extends Component {
                                       Body
                                     </a>
                                   </li>
-                                  <li className="nav-item">
+                                  <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'pre-script' ? 'active' : ''}`}
-                                      id={`pills-pre-script-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
-                                      href={`#pre-script-${this.props.tab.id}`}
-                                      role="tab"
-                                      aria-controls={`pre-script-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'pre-script'}
-                                      onClick={() => this.setState({ activeTab: 'pre-script' })}
+                                      className='nav-link'
+                                      id='pills-script-tab'
+                                      data-toggle='pill'
+                                      href={`#script-${this.props.tab.id}`}
+                                      role='tab'
+                                      aria-controls={`script-${this.props.tab.id}`}
+                                      aria-selected='false'
                                     >
-                                      Pre-Script
-                                    </a>
-                                  </li>
-                                  <li className="nav-item">
-                                    <a
-                                      className={`nav-link ${this.state.activeTab === 'post-script' ? 'active' : ''}`}
-                                      id={`pills-post-script-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
-                                      href={`#post-script-${this.props.tab.id}`}
-                                      role="tab"
-                                      aria-controls={`post-script-${this.props.tab.id}`}
-                                      aria-selected={this.state.activeTab === 'post-script'}
-                                      onClick={() => this.setState({ activeTab: 'post-script' })}
-                                    >
-                                      Post-Script
+                                      Script
                                     </a>
                                   </li>
                                   {getCurrentUser() && (
@@ -3294,33 +3279,72 @@ class DisplayEndpoint extends Component {
                                 {this.renderBodyContainer()}
                               </div>
                               <div
-                                className={`tab-pane fade ${this.state.activeTab === 'pre-script' ? 'show active' : ''}`}
-                                id={`pre-script-${this.props.tab.id}`}
-                                role="tabpanel"
-                                aria-labelledby={`pills-pre-script-tab-${this.props.tab.id}`}
+                                className='tab-pane fade Script-content'
+                                id={`script-${this.props.tab.id}`}
+                                role='tabpanel'
+                                aria-labelledby='pills-script-tab'
                               >
-                                <div>
-                                  <Script
-                                    type="Pre-Script"
-                                    handleScriptChange={this.handleScriptChange.bind(this)}
-                                    scriptText={this.props?.endpointContent?.preScriptText}
-                                    endpointContent={this.props?.endpointContent}
-                                  />
-                                </div>
-                              </div>
-                              <div
-                                className={`tab-pane fade ${this.state.activeTab === 'post-script' ? 'show active' : ''}`}
-                                id={`post-script-${this.props.tab.id}`}
-                                role="tabpanel"
-                                aria-labelledby={`pills-post-script-tab-${this.props.tab.id}`}
-                              >
-                                <div>
-                                  <Script
-                                    type="Post-Script"
-                                    handleScriptChange={this.handleScriptChange.bind(this)}
-                                    scriptText={this.props?.endpointContent?.postScriptText}
-                                    endpointContent={this.props?.endpointContent}
-                                  />
+                                <ul className='nav nav-tabs flex-column mt-0 border border-0' id='pills-sub-tab' role='tablist'>
+                                  <li className='nav-item'>
+                                    <a
+                                      className='nav-link active px-1 py-2 border border-0 Script-button rounded-0'
+                                      id='pills-pre-script-tab'
+                                      data-toggle='pill'
+                                      href={`#pre-script-${this.props.tab.id}`}
+                                      role='tab'
+                                      aria-controls={`pre-script-${this.props.tab.id}`}
+                                      aria-selected='true'
+                                      title='Pre-Script are written in Javascript, and are run before the response is recieved.'
+                                    >
+                                      Pre-Script
+                                    </a>
+                                  </li>
+                                  <li className='nav-item'>
+                                    <a
+                                      className='nav-link px-1 py-2 border border-0 Script-button rounded-0'
+                                      id='pills-post-script-tab'
+                                      data-toggle='pill'
+                                      href={`#post-script-${this.props.tab.id}`}
+                                      role='tab'
+                                      aria-controls={`post-script-${this.props.tab.id}`}
+                                      aria-selected='false'
+                                      title='Post-Script are written in Javascript, and are run after the response is recieved.'
+                                    >
+                                      Post-Script
+                                    </a>
+                                  </li>
+                                </ul>
+                                <div className='tab-content w-100' id='pills-sub-tabContent'>
+                                  <div
+                                    className='tab-pane fade show active'
+                                    id={`pre-script-${this.props.tab.id}`}
+                                    role='tabpanel'
+                                    aria-labelledby={`pills-pre-script-tab-${this.props.tab.id}`}
+                                  >
+                                    <div>
+                                      <Script
+                                        type='Pre-Script'
+                                        handleScriptChange={this.handleScriptChange.bind(this)}
+                                        scriptText={this.props?.endpointContent?.preScriptText}
+                                        endpointContent={this.props?.endpointContent}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div
+                                    className='tab-pane fade'
+                                    id={`post-script-${this.props.tab.id}`}
+                                    role='tabpanel'
+                                    aria-labelledby='pills-post-script-tab'
+                                  >
+                                    <div>
+                                      <Script
+                                        type='Post-Script'
+                                        handleScriptChange={this.handleScriptChange.bind(this)}
+                                        scriptText={this.props?.endpointContent?.postScriptText}
+                                        endpointContent={this.props?.endpointContent}
+                                      />
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </>

@@ -1572,7 +1572,21 @@ table#custom-generic-table {
 .disable-callback {
   color: rgb(155, 152, 152) !important;
 }
-
+.pubCode-icon {
+  height: fit-content;
+  border-left: 1px solid $lightblackborder !important;
+  border-bottom: 1px solid $lightblackborder !important;
+  border-top: 1px solid $lightblackborder !important;
+  border-radius: 4px 0 0 4px !important;
+  &.active {
+    transform: rotate(180deg);
+  border-right: 1px solid $lightblackborder !important;
+  border-radius: 0 4px 4px 0 !important;
+  }
+  @media screen and (max-width: 1160px) {
+    display: none !important;
+  }
+}
 .pubCodeWrapper {
   z-index: 199;
   padding-top: 35px;
@@ -1582,6 +1596,9 @@ table#custom-generic-table {
   border-right: 1px solid $lightblackborder;
   border-bottom: 1px solid $lightblackborder;
   transition: 300ms;
+  @media screen and (max-width: 1160px) {
+    display: block !important;
+  }
 
   .select-code-wrapper {
     button {
@@ -1667,6 +1684,9 @@ table#custom-generic-table {
 
       padding: 0px;
     }
+  }
+  &.pubCodeWrapper-hide {
+    display: none;
   }
 }
 
