@@ -68,7 +68,7 @@ export default function RunAutomation() {
     const organizeSelectedEnv = () => {
         if (!currentEnvironmentId) return;
         let arrangedEnv = {}
-        Object.keys(allEnviroments[currentEnvironmentId]?.variables).forEach((envKey) => {
+        Object.keys(allEnviroments?.[currentEnvironmentId]?.variables || {}).forEach((envKey) => {
             arrangedEnv[envKey] = allEnviroments[currentEnvironmentId]?.variables?.[envKey]?.currentValue || '';
         })
         return arrangedEnv;
