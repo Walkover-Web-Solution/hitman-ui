@@ -1292,7 +1292,6 @@ class DisplayEndpoint extends Component {
         return toast.error('Please enter Endpoint name')
       else if (currentTabId && !this.props.pages[currentTabId]) {
         endpoint.requestId = currentTabId
-        endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
         this.props.add_endpoint(
           endpoint,
