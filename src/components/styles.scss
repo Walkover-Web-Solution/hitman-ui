@@ -758,7 +758,6 @@ button.is_active {
       height: auto;
     }
   }
-
   .tippy-box {
     max-width: 100% !important;
     background-color: #fff;
@@ -778,7 +777,7 @@ button.is_active {
     }
   }
   .minHeight {
-    min-height: 55vh;
+    min-height: 25rem;
   }
   .menuBar {
     border-bottom: 1px solid $outline-color;
@@ -895,43 +894,4 @@ button.is_active {
   font-weight: 800;
   opacity: 0.7;
   display: inline-block;
-}
-/* Add this CSS to your project's stylesheet */
-.bubble-menu {
-  display: flex;
-  background-color: #fff;
-  padding: 0;
-  border-radius: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ccc;
-
-  button {
-    border: none;
-    background: none;
-    color: #000;
-    font-size: 0.85rem;
-    font-weight: 500;
-    padding: 0.2rem;
-    margin: 0.2rem;
-    opacity: 0.6;
-
-    &:hover,
-    &.is-active {
-      opacity: 1;
-    }
-  }
-}
-
-.floating-menu {
-  position: fixed;
-  top: 50%;
-  left: 0; 
-  transform: translateY(-50%); 
-
-  .biplus-icon {
-    position: absolute;
-    top: 50%;
-    left: -40px;
-    transform: translateY(-50%);
-  }
 }

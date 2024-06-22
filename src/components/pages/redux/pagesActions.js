@@ -116,7 +116,7 @@ export const addPage = (history, rootParentId, newPage) => {
       .then((response) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
-        history.push(`/orgs/${orgId}/dashboard/page/${data.id}`)
+        history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
       .catch((error) => {
         dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))

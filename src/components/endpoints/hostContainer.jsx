@@ -86,20 +86,21 @@ class HostContainer extends Component {
   }
 
   getDataFromParsedData(untitledEndpointData, parsedData) {
-      let e = {}
-      e['url'] = parsedData.raw_url
-      parsedData = cloneDeep(parsedData);
-      untitledEndpointData.data.name = this.props.endpointContent?.data?.name || 'Untitled'
-      untitledEndpointData.currentView = this.props.endpointContent?.currentView || "testing"
-      let data = this.splitUrlHelper(e)
-      // setting method, url and host
-      untitledEndpointData.data.method = parsedData?.method.toUpperCase();
-      untitledEndpointData.data.uri = data?.datalistUri;
-      untitledEndpointData.data.updatedUri = data?.datalistUri;
-      untitledEndpointData.host =  {
-        BASE_URL: data?.datalistHost,
-        selectedHost: ""
-      }
+    let e = {}
+    e['url'] = parsedData.raw_url
+    parsedData = cloneDeep(parsedData)
+    untitledEndpointData = cloneDeep(untitledEndpointData)
+    untitledEndpointData.data.name = this.props.endpointContent?.data?.name || 'Untitled'
+    untitledEndpointData.currentView = this.props.endpointContent?.currentView || 'testing'
+    let data = this.splitUrlHelper(e)
+    // setting method, url and host
+    untitledEndpointData.data.method = parsedData?.method.toUpperCase()
+    untitledEndpointData.data.uri = data?.datalistUri
+    untitledEndpointData.data.updatedUri = data?.datalistUri
+    untitledEndpointData.host = {
+      BASE_URL: data?.datalistHost,
+      selectedHost: ''
+    }
 
     if (parsedData.auth_type == 'basic') {
       untitledEndpointData.authorizationData.authorizationTypeSelected = `${parsedData.auth_type}Auth`

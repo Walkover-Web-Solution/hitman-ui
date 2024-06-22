@@ -66,6 +66,7 @@ class SubPageForm extends Form {
 
   render() {
     const nameTitle = this.props.isEndpoint ? 'Endpoint Name' : 'Page Name'
+    const redirectUrl = ' Enter URL'
     const pageSlug = 'Page Slug'
     const tagLine = getOnlyUrlPathById(
       this.props?.match?.params?.pageId || this.props?.match?.params?.endpointId,
