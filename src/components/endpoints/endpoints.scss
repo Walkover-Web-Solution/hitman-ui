@@ -1574,14 +1574,13 @@ table#custom-generic-table {
 }
 .pubCode-icon {
   height: fit-content;
-  border-left: 1px solid $lightblackborder !important;
-  border-bottom: 1px solid $lightblackborder !important;
-  border-top: 1px solid $lightblackborder !important;
-  border-radius: 4px 0 0 4px !important;
+  z-index: 999;
+  border-radius: 50% !important;
+  padding: 0 4px !important;
+  left: -7px;
   &.active {
     transform: rotate(180deg);
-  border-right: 1px solid $lightblackborder !important;
-  border-radius: 0 4px 4px 0 !important;
+    left: -13px !important;
   }
   @media screen and (max-width: 1160px) {
     display: none !important;
@@ -1596,9 +1595,7 @@ table#custom-generic-table {
   border-right: 1px solid $lightblackborder;
   border-bottom: 1px solid $lightblackborder;
   transition: 300ms;
-  @media screen and (max-width: 1160px) {
-    display: block !important;
-  }
+ 
 
   .select-code-wrapper {
     button {
@@ -1686,7 +1683,11 @@ table#custom-generic-table {
     }
   }
   &.pubCodeWrapper-hide {
-    display: none;
+    width: 10px ;
+    min-width: 10px ;
+    @media screen and (max-width: 1160px) {
+    // all: unset !important;
+    }
   }
 }
 

@@ -138,13 +138,13 @@ class CodeTemplate extends Component {
   render() {
     return (
       <>
-      <div className='d-flex'>
+      <div className='d-flex position-relative'>
         { isOnPublishedPage() && (
          <button
           onClick={this.handleButtonClick}
-          className={`pubCode-icon btn mt-4${this.props.curlSlider ? ' active' : ''}`}
+          className={`pubCode-icon btn mt-4 position-absolute border border-dark${this.props.curlSlider ? ' active' : ''}`}
         >
-          <FaChevronRight />
+          <FaChevronRight size={12}/>
         </button>)}
         <div
        className={this.props.match.params.endpointId ? 'show-curl-endpoint pubCodeWrapper'  : this.props.curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper'}
