@@ -709,6 +709,10 @@ button.toggleButton {
   width: 432px;
   min-width: 432px;
   transition: 300ms;
+  @media screen and (max-width: 1300px) {
+    min-width: 350px ;
+    width: 300px ;
+  }
   .select-code-wrapper {
     flex-direction: row;
     height: 30px;

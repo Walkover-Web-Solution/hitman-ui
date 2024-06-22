@@ -1593,7 +1593,10 @@ table#custom-generic-table {
   border-right: 1px solid $lightblackborder;
   border-bottom: 1px solid $lightblackborder;
   transition: 300ms;
- 
+  @media screen and (max-width: 1300px) {
+    min-width: 350px ;
+    width: 300px ;
+  }
 
   .select-code-wrapper {
     button {
