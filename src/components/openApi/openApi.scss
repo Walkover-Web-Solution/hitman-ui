@@ -30,17 +30,16 @@
 }
 
 span.customFileChooser {
-  background: #f5f6f7;
-  border: none;
-  display: block;
-  padding: 0.5rem 1rem;
-  line-height: 1.5;
   width: 100%;
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  transition: border .2s ease-in-out;
   position: relative;
-  margin-bottom: 24px;
 }
 
-span.customFileChooser > input {
+span.customFileChooser>input {
   cursor: pointer;
   position: absolute;
   opacity: 0;
