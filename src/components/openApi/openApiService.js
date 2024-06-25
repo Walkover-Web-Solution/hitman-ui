@@ -7,16 +7,10 @@ function getApiUrl() {
 }
 
 export function importApi(openApiObject, defaultView) {
-  const apiUrl = getApiUrl()
-  return http.post(`${apiUrl}/import/openApi?view=${defaultView}`, openApiObject)
-}
-
-export function importPostmanCollection(collection, website, defaultView) {
-  const apiUrl = getApiUrl()
-  return http.post(`${apiUrl}/import/postman?website=${website}&view=${defaultView}`, collection)
+  const apiUrl = getApiUrl();
+  return http.post(`${apiUrl}/orgs/:orgId/importCollection?defaultView=${defaultView}`, openApiObject);
 }
 
 export default {
-  importApi,
-  importPostmanCollection
+  importApi
 }
