@@ -254,38 +254,30 @@ export const addCustomDomain = (collectionId, domain) => {
   }
 }
 
-export const importApi = (collection, importType, website, customCallback, defaultView) => {
-  collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
-  return (dispatch) => {
-    if (importType === 'postman') {
-      openApiService
-        .importPostmanCollection(collection, website, defaultView)
-        .then((response) => {
-          dispatch(onCollectionImported(response.data))
-          toast.success('Collection imported successfully')
-          if (customCallback) customCallback({ success: true })
-        })
-        .catch((error) => {
-          toast.error(error.response ? error.response.data : error)
-          dispatch(onCollectionImportedError(error.response ? error.response.data : error))
-          if (customCallback) customCallback({ success: false })
-        })
-    } else {
-      openApiService
-        .importApi(collection, defaultView)
-        .then((response) => {
-          dispatch(onCollectionImported(response?.data))
-          toast.success('Collection imported successfully')
-          if (customCallback) customCallback({ success: true })
-        })
-        .catch((error) => {
-          toast.error(error.response ? error.response.data : error)
-          dispatch(onCollectionImportedError(error?.response ? error?.response?.data : error))
-          if (customCallback) customCallback({ success: false })
-        })
+export const importApi = (collection, uniqueTabId, customCallback, defaultView) => {
+  
+  return async (dispatch) => {
+    try {
+      uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
+  
+      const response = await importApi(collection, defaultView);
+      dispatch(onCollectionImported(response?.data));
+      toast.success('Collection imported successfully');
+
+      if (customCallback) {
+        customCallback({ success: true });
+      }
+    } catch (error) {
+      const errorMessage = error?.response?.data || error.message || 'An error occurred';
+      toast.error(errorMessage);
+      dispatch(onCollectionImportedError(errorMessage));
+
+      if (customCallback) {
+        customCallback({ success: false });
+      }
     }
-  }
-}
+  };
+};
 
 export const saveImportedVersion = (response) => {
   return {

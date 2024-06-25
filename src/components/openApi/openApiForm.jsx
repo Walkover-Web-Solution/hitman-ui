@@ -7,6 +7,7 @@ import Joi from 'joi-browser'
 import { URL_VALIDATION_REGEX } from '../common/constants'
 import './openApi.scss'
 import { defaultViewTypes } from '../collections/defaultViewModal/defaultViewModal'
+import { CiImport } from "react-icons/ci";
 
 const mapStateToProps = (state) => {
   return {
@@ -112,10 +113,14 @@ class OpenApiForm extends Component {
       <React.Fragment>
         <div className='form-group'>
           <div id='select-json-wrapper'>
-            <label>Select File</label>
-            <span className='customFileChooser'>
-              <input type='file' accept={this.state.importType === 'openapi' ? '.json, .yaml' : '.json'} onChange={this.onFileChange.bind(this)}/>
-              Choose file
+            <span className='customFileChooser d-block'>
+              <input type='file' accept='.json, .yaml, .yml'onChange={this.onFileChange.bind(this)} />
+              <div className="upload-icon">
+                <CiImport size={50} className='text-primary' />
+              </div>
+              <div className='upload-text'>
+                <p className='text-secondary fs-3'>Drop anywhere to import<br />or select <span className="text-primary">files</span> or <span className="text-primary">folders</span></p>
+              </div>
             </span>
             {this.state.errors?.file && <div className='alert alert-danger'>{this.state.errors?.file}</div>}
           </div>
@@ -131,41 +136,15 @@ class OpenApiForm extends Component {
         <button
           id='add_collection_import_btn'
           className='btn btn-primary btn-sm fs-4 mr-2'
-          onClick={(e) => {
-            e.preventDefault()
-            this.handleSubmit(e)
-            const { errors, importType, website, uploadedFile } = this.state
-            if ((!errors.type && !errors.website && !errors.file && importType && uploadedFile) || website) {
-              this.saveCollection(defaultViewTypes.TESTING, 'edit')
-            }
-          }}
+          onClick={this.handleSubmit}
         >
-          Import
+          Importv
         </button>
+
       </div>
     )
   }
 
-  renderInputType() {
-    return (
-      <div className='form-group'>
-        <label>Type: </label>
-        <select
-          name='type'
-          className='form-control custom-input'
-          value={this.state.importType}
-          onChange={(e) => {
-            this.setState({ importType: e.target.value, website: '', errors: { type: null, file: null, website: null } })
-          }}
-        >
-          <option value=''>Select</option>
-          <option value='postman'>Postman</option>
-          <option value='openapi'>OpenAPI</option>
-        </select>
-        {this.state.errors?.type && <div className='alert alert-danger'>{this.state.errors?.type}</div>}
-      </div>
-    )
-  }
 
   renderWebsiteInput() {
     return (
@@ -188,9 +167,6 @@ class OpenApiForm extends Component {
     return (
       <form className='mb-2'>
         <div className=''>
-          <div>
-            {this.renderInputType()}
-          </div>
           <div>{this.renderJSONFileSelector()}</div>
         </div>
       </form>

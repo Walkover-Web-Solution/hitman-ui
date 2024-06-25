@@ -1,18 +1,20 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import DragAndDropUploader from '../common/dragAndDropModel/DragAndDropUploader';
+// import DragAndDropUploader from './DragAndDropUploader';
 
-const ImportEnvironmentModal = ({ show, onClose }) => {
+
+const ImportCollectionModal = ({ show, onClose }) => {
   return (
     <Modal show={show} onHide={onClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Import Environment</Modal.Title>
+        <Modal.Title>Import Collection</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <DragAndDropUploader  importType='environment' onClose={onClose} />
+        <DragAndDropUploader importType='openapi'  onClose={onClose} />
       </Modal.Body>
     </Modal>
   );
 };
 
-export default ImportEnvironmentModal;
+export default ImportCollectionModal;
