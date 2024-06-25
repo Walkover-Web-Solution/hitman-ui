@@ -1,38 +1,33 @@
-import React, { Component } from 'react'
-import './publicEndpoint.scss'
-import DisplayBodyDescription from './displayBodyDescription'
-import bodyDescriptionService from './bodyDescriptionService'
-import { rawTypesEnums } from '../common/bodyTypeEnums'
+import React, { useState, useEffect } from 'react';
+import './publicEndpoint.scss';
+import DisplayBodyDescription from './displayBodyDescription';
+import bodyDescriptionService from './bodyDescriptionService';
+import { rawTypesEnums } from '../common/bodyTypeEnums';
 
-class BodyDescription extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      bodyDescription: null
-    }
-  }
+const BodyDescription = (props) => {
+  const [bodyDescription, setBodyDescription] = useState(null);
 
-  componentDidMount() {
-    if (bodyDescriptionService.parseBody(this.props.body)) {
-      bodyDescriptionService.handleUpdate(false, this.props)
+  useEffect(() => {
+    if (bodyDescriptionService.parseBody(props.body)) {
+      bodyDescriptionService.handleUpdate(false, props);
     } else {
-      if (this.props.body === '') {
-        bodyDescriptionService.handleUpdate(true, this.props, 'Empty json body')
-      } else bodyDescriptionService.handleUpdate(true, this.props, 'Please Enter Valid JSON')
+      if (props.body === '') {
+        bodyDescriptionService.handleUpdate(true, props, 'Empty json body');
+      } else {
+        bodyDescriptionService.handleUpdate(true, props, 'Please Enter Valid JSON');
+      }
     }
-  }
+  }, [props.body]); // Dependency array to run effect when props.body changes
 
-  render() {
-    return (
-      <div>
-        {this.props.body_type === rawTypesEnums.JSON && (
-          <div>
-            <DisplayBodyDescription body_description={this.props.body_description} {...this.props} />
-          </div>
-        )}
-      </div>
-    )
-  }
-}
+  return (
+    <div>
+      {props.body_type === rawTypesEnums.JSON && (
+        <div>
+          <DisplayBodyDescription body_description={props.body_description} {...props} />
+        </div>
+      )}
+    </div>
+  );
+};
 
-export default BodyDescription
+export default BodyDescription;
