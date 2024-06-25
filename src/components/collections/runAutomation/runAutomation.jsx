@@ -6,7 +6,7 @@ import { IoIosPlay } from "react-icons/io";
 import { updateEndpointCheckStatus, updateAllEndpointCheckStatus } from '../../../store/clientData/clientDataActions';
 import { toast } from 'react-toastify';
 import { runAutomation } from '../../../services/generalApiService';
-import './runAutomation.scss'
+import './runAutomation.scss';
 
 export default function RunAutomation() {
 
@@ -60,9 +60,9 @@ export default function RunAutomation() {
 
     const filterSelectedEndpointIds = () => {
         return endpointsIds.reduce((acc, endpointId) => {
-            if (clientData?.[endpointId]?.automationCheck === true) acc.push(endpointId)
+            if (clientData?.[endpointId]?.automationCheck === true) acc[endpointId] = allPages?.[endpointId]?.name;
             return acc;
-        }, []);
+        }, {});
     }
 
     const organizeSelectedEnv = () => {
