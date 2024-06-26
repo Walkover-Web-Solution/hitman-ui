@@ -4,7 +4,6 @@ import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import Form from '../common/form'
 import { onEnter, ADD_GROUP_MODAL_NAME, validate, getOnlyUrlPathById, getUrlPathById } from '../common/utility'
-// import { onEnter, ADD_GROUP_MODAL_NAME, validate } from '../common/utility'
 import { updatePage } from '../pages/redux/pagesActions'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
