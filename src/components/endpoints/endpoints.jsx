@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
@@ -11,7 +11,7 @@ import { deleteEndpoint, duplicateEndpoint, addEndpoint } from './redux/endpoint
 // import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
-import SubPageForm from '../subPages/subPageForm'
+import SubPageForm from "../subPages/subPageForm.jsx"
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { ReactComponent as Duplicate } from '../../assets/icons/duplicateSign.svg'
 import { ReactComponent as Approved } from '../../assets/icons/approvedSign.svg'
@@ -25,8 +25,6 @@ import { BsThreeDots } from "react-icons/bs"
 import { GrGraphQl } from 'react-icons/gr'
 import '../../../src/components/styles.scss'
 import { importPostmanEnvironment } from '../environments/environmentsApiService'
-import {  hexToRgb} from '../common/utility'
-import {background} from '../backgroundColor.js'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -61,86 +59,80 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-class Endpoints extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      endpointState: 'Make Public',
-      theme: '',
-      checkboxChecked: false,
-      showEndpointForm: {
-        addPage: false,
-        edit: false,
-        share: false,
-        delete: false,
-      },
-      optionalParams: false,
-      isHovered: false,
+const Endpoints = (props) => {
+
+  const [state, setState] = useState({
+    endpointState: 'Make Public',
+    theme: '',
+    checkboxChecked: false,
+    showEndpointForm: {
+      addPage: false,
+      edit: false,
+      share: false,
+      delete: false,
     }
-  }
-  handleHover = (isHovered) => {
-    this.setState({ isHovered });
-  };
-  componentDidMount() {
-    if (this.props.theme) {
-      this.setState({ theme: this.props.theme })
+  });
+
+  useEffect(() => {
+    if (props.theme) {
+      setState((prevState) => ({ ...prevState, theme: props.theme }));
     }
+  }, [props.theme])
+
+  const handleDelete = async (endpoint) => {
+    await props.delete_endpoint(endpoint)
+    tabService.removeTab(props.tabs.activeTabId, { ...props })
   }
 
-  async handleDelete(endpoint) {
-    await this.props.delete_endpoint(endpoint)
-    tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
+  const handleDuplicate = (endpoint) => {
+    props.duplicate_endpoint(endpoint)
   }
 
-  handleDuplicate(endpoint) {
-    this.props.duplicate_endpoint(endpoint)
-  }
-
-  openEditEndpointForm(selectedEndpoint) {
-    this.setState({
+  const openEditEndpointForm = (selectedEndpoint) => {
+    setState({
       showEndpointForm: { edit: true },
       selectedEndpoint: {
-        ...this.props.endpoints[selectedEndpoint]
+        ...props.endpoints[selectedEndpoint]
       }
     })
   }
 
-  openDeleteEndpointModal(endpointId) {
-    this.setState({
+  const openDeleteEndpointModal = (endpointId) => {
+    setState({
       showEndpointForm: { delete: true },
-      selectedEndpoint: { ...this.props.endpoints[endpointId] }
+      selectedEndpoint: { ...props.endpoints[endpointId] }
     })
   }
-  
-  closeDeleteEndpointModal() {
-    this.setState({ showEndpointForm: { delete: false } })
+
+  const closeDeleteEndpointModal = () => {
+    setState({ showEndpointForm: { delete: false } })
   }
 
-  async handlePublicEndpointState(endpoint) {
-    if (this.isStateDraft(endpoint.id) || this.isStateReject(endpoint.id)) {
-      this.props.pending_endpoint(endpoint)
+  const handlePublicEndpointState = async (endpoint) => {
+    if (isStateDraft(endpoint.id) || isStateReject(endpoint.id)) {
+      props.pending_endpoint(endpoint)
     }
   }
 
-  async handleCancelRequest(endpoint) {
-    this.props.draft_endpoint(endpoint)
+  const handleCancelRequest = async (endpoint) => {
+    props.draft_endpoint(endpoint)
   }
 
-  async handleApproveRequest(endpoint) {
-    this.props.approve_endpoint(endpoint)
+  const handleApproveRequest = async (endpoint) => {
+    props.approve_endpoint(endpoint)
   }
 
-  async handleRejectRequest(endpoint) {
-    this.props.reject_endpoint(endpoint)
+  const handleRejectRequest = async (endpoint) => {
+    props.reject_endpoint(endpoint)
   }
 
-  handleDisplay(endpoint, groupId, collectionId, previewMode) {
+  const handleDisplay = (endpoint, groupId, collectionId, previewMode) => {
     window.scroll(0, 0)
-    if (isDashboardRoute(this.props, true)) {
-      if (!this.props.tabs.tabs[endpoint.id]) {
-        const previewTabId = Object.keys(this.props.tabs.tabs).filter((tabId) => this.props.tabs.tabs[tabId].previewMode === true)[0]
-        if (previewTabId) this.props.close_tab(previewTabId)
-        this.props.open_in_new_tab({
+    if (isDashboardRoute(props, true)) {
+      if (!props.tabs.tabs[endpoint.id]) {
+        const previewTabId = Object.keys(props.tabs.tabs).filter((tabId) => props.tabs.tabs[tabId].previewMode === true)[0]
+        if (previewTabId) props.close_tab(previewTabId)
+        props.open_in_new_tab({
           id: endpoint.id,
           type: 'endpoint',
           status: tabStatusTypes.SAVED,
@@ -148,11 +140,11 @@ class Endpoints extends Component {
           isModified: false,
           state: {}
         })
-      } else if (this.props.tabs.tabs[endpoint.id].previewMode === true && previewMode === false) {
+      } else if (props.tabs.tabs[endpoint.id].previewMode === true && previewMode === false) {
         tabService.disablePreviewMode(endpoint.id)
       }
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${endpoint.id}`,
+      props.history.push({
+        pathname: `/orgs/${props.match.params.orgId}/dashboard/endpoint/${endpoint.id}`,
         title: 'update endpoint',
         endpoint: endpoint,
         groupId: groupId,
@@ -161,34 +153,34 @@ class Endpoints extends Component {
     } else {
       let id = endpoint?.id
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
-      let pathName = getUrlPathById(id, this.props.pages)
+      let pathName = getUrlPathById(id, props.pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      this.props.history.push(pathName)
+      props.history.push(pathName)
     }
   }
 
-  extractEndpoints() {
+  const extractEndpoints = () => {
     const endpoints = {}
-    for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
+    for (let i = 0; i < Object.keys(props.endpoints).length; i++) {
       if (
-        this.props.endpoints[Object.keys(this.props.endpoints)[i]].parentId &&
-        this.props.endpoints[Object.keys(this.props.endpoints)[i]].parentId === this.props.parent_id
+        props.endpoints[Object.keys(props.endpoints)[i]].parentId &&
+        props.endpoints[Object.keys(props.endpoints)[i]].parentId === props.parent_id
       ) {
-        endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[Object.keys(this.props.endpoints)[i]]
+        endpoints[Object.keys(props.endpoints)[i]] = props.endpoints[Object.keys(props.endpoints)[i]]
       }
     }
 
     return endpoints
   }
 
-  handleCheckboxChange = () => {
-    this.props.setIsCheckForParenPage({
-      id: this.props?.endpointId,
-      isChecked: !this.props?.clientData?.[this?.props?.endpointId]?.checkedForPublished
+  const handleCheckboxChange = () => {
+    props.setIsCheckForParenPage({
+      id: props?.endpointId,
+      isChecked: !props?.clientData?.[props?.endpointId]?.checkedForPublished
     })
   }
 
-  makePositionWiseEndpoints(endpoints) {
+  const makePositionWiseEndpoints = (endpoints) => {
     const positionWiseEndpoints = []
     for (let i = 0; i < Object.keys(endpoints).length; i++) {
       positionWiseEndpoints[endpoints[Object.keys(endpoints)[i]].position] = Object.keys(endpoints)[i]
@@ -196,69 +188,69 @@ class Endpoints extends Component {
     return positionWiseEndpoints
   }
 
-  isStateApproved(endpointId) {
-    return this.props.endpoints[endpointId].state === endpointsEnum.APPROVED_STATE
+  const isStateApproved = (endpointId) => {
+    return props.endpoints[endpointId].state === endpointsEnum.APPROVED_STATE
   }
 
-  isStatePending(endpointId) {
-    return this.props.endpoints[endpointId].state === endpointsEnum.PENDING_STATE
+  const isStatePending = (endpointId) => {
+    return props.endpoints[endpointId].state === endpointsEnum.PENDING_STATE
   }
 
-  isStateDraft(endpointId) {
-    return this.props.endpoints[endpointId].state === endpointsEnum.DRAFT_STATE
+  const isStateDraft = (endpointId) => {
+    return props.endpoints[endpointId].state === endpointsEnum.DRAFT_STATE
   }
 
-  isStateReject(endpointId) {
-    return this.props.endpoints[endpointId].state === endpointsEnum.REJECT_STATE
+  const isStateReject = (endpointId) => {
+    return props.endpoints[endpointId].state === endpointsEnum.REJECT_STATE
   }
 
-  displayEndpointName(endpointId) {
+  const displayEndpointName = (endpointId) => {
     let isUserOnPublishedPage = isOnPublishedPage()
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && props.match.params.endpointId === endpointId ? 'selected' : '')
     return (
       <>
-        {this.props.isPublishData && this.props.modals.publishData ? (
+        {props.isPublishData && props.modals.publishData ? (
           <div className='sidebar-accordion-item'>
             <input
               type='checkbox'
-              checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
-              onChange={this.handleCheckboxChange}
+              checked={props?.clientData?.[props?.endpointId]?.checkedForPublished || false}
+              onChange={handleCheckboxChange}
             />
-            {this.props.endpointContent.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
-              {this.props.endpoints[endpointId].requestType}
+            {props.endpointContent.protocolType === 1 && <div className={`api-label ${props.endpoints[endpointId].requestType} request-type-bgcolor`}>
+              {props.endpoints[endpointId].requestType}
             </div>}
-            <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
+            <div className='end-point-name truncate'>{props.endpoints[endpointId].name}</div>
           </div>
         ) : (
           <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`}>
-            {this.props?.endpoints[endpointId]?.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
-              {this.props.endpoints[endpointId].requestType}
+            {props?.endpoints[endpointId]?.protocolType === 1 && <div className={`api-label ${props.endpoints[endpointId].requestType} request-type-bgcolor`}>
+              {props.endpoints[endpointId].requestType}
             </div>}
-            {this.props?.endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
-            <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
+            {props?.endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
+            <div className='end-point-name truncate'>{props.endpoints[endpointId].name}</div>
           </div>
         )}
       </>
     )
   }
 
-  displayDeleteOpt(endpointId) {
+  const displayDeleteOpt = (endpointId) => {
     return (
-      <div className='dropdown-item text-danger d-flex' onClick={() => this.openDeleteEndpointModal(endpointId)}>
+      <div className='dropdown-item text-danger d-flex' onClick={() => openDeleteEndpointModal(endpointId)}>
         <DeleteIcon /> Delete
       </div>
     )
   }
 
-  displayDuplicateOpt(endpointId) {
+  const displayDuplicateOpt = (endpointId) => {
     return (
-      <div className='dropdown-item d-flex' onClick={() => this.handleDuplicate(this.props.endpoints[endpointId])}>
+      <div className='dropdown-item d-flex' onClick={() => handleDuplicate(props.endpoints[endpointId])}>
         <Duplicate /> Duplicate
       </div>
     )
   }
 
-  displayApproveOpt() {
+  const displayApproveOpt = () => {
     return (
       <div className='dropdown-item' disabled>
         <Approved />
@@ -267,36 +259,36 @@ class Endpoints extends Component {
     )
   }
 
-  displayMakePublicOpt(endpointId) {
+  const displayMakePublicOpt = (endpointId) => {
     return (
-      <div id='make_public_btn' className='dropdown-item' onClick={() => this.handlePublicEndpointState(this.props.endpoints[endpointId])}>
+      <div id='make_public_btn' className='dropdown-item' onClick={() => handlePublicEndpointState(props.endpoints[endpointId])}>
         <MakePublic />
         Make Public
       </div>
     )
   }
 
-  displayCancelRequestOpt(endpointId) {
+  const displayCancelRequestOpt = (endpointId) => {
     return (
-      <div className='dropdown-item' onClick={() => this.handleCancelRequest(this.props.endpoints[endpointId])}>
+      <div className='dropdown-item' onClick={() => handleCancelRequest(props.endpoints[endpointId])}>
         <CancelRequest /> Cancel Request
       </div>
     )
   }
 
-  displayOtherOpt(endpointId) {
+  const displayOtherOpt = (endpointId) => {
     return (
       <>
-        {this.isStateDraft(endpointId) || this.isStateReject(endpointId) ? this.displayMakePublicOpt(endpointId) : null}
+        {isStateDraft(endpointId) || isStateReject(endpointId) ? displayMakePublicOpt(endpointId) : null}
 
-        {this.isStateApproved(endpointId) ? this.displayApproveOpt() : null}
+        {isStateApproved(endpointId) ? displayApproveOpt() : null}
 
-        {this.isStatePending(endpointId) ? this.displayCancelRequestOpt(endpointId) : null}
+        {isStatePending(endpointId) ? displayCancelRequestOpt(endpointId) : null}
       </>
     )
   }
 
-  displayEndpointOptions(endpointId) {
+  const displayEndpointOptions = (endpointId) => {
     return (
       <div className='sidebar-item-action'>
         <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
@@ -304,30 +296,30 @@ class Endpoints extends Component {
         </div>
 
         <div className='dropdown-menu dropdown-menu-right'>
-          <div className='dropdown-item d-flex' onClick={() => this.openEditEndpointForm(endpointId)}>
+          <div className='dropdown-item d-flex' onClick={() => openEditEndpointForm(endpointId)}>
             <RenamedItem /> Rename
           </div>
-          {this.displayDuplicateOpt(endpointId)}
-          {this.displayDeleteOpt(endpointId)}
-          {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
+          {displayDuplicateOpt(endpointId)}
+          {displayDeleteOpt(endpointId)}
+          {/* {props.endpoints[endpointId]?.isPublished ? displayApproveOpt() : displayOtherOpt(endpointId)} */}
         </div>
       </div>
     )
   }
-  showEditEndpointModal() {
+  const showEditEndpointModal = () => {
     return (
-      this.state.showEndpointForm.edit && (
+      state.showEndpointForm.edit && (
         <SubPageForm
-          {...this.props}
+          {...props}
           title='Rename'
-          show={this.state.showEndpointForm.edit}
+          show={state.showEndpointForm.edit}
           onCancel={() => {
-            this.setState({ showEndpointForm: false })
+            setState({ showEndpointForm: false })
           }}
           onHide={() => {
-            this.setState({ showEndpointForm: false })
+            setState({ showEndpointForm: false })
           }}
-          selectedEndpoint={this.props?.endpointId}
+          selectedEndpoint={props?.endpointId}
           pageType={4}
           isEndpoint={true}
           selectedPage={this.props?.endpointId}
@@ -336,59 +328,45 @@ class Endpoints extends Component {
     )
   }
 
-  displaySingleEndpoint(endpointId) {
-    const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
+  const displaySingleEndpoint = (endpointId) => {
+    const idToCheck = props.location.pathname.split('/')[4] === 'endpoint' ? props.location.pathname.split('/')[5] : null
     let isUserOnPublishedPage = isOnPublishedPage()
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
-    let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
-    var collectionTheme = this.props.collections[collectionId]?.theme
-    const dynamicColor = hexToRgb(collectionTheme, 0.15);
-    const staticColor = background['background_hover'];
-
-    const backgroundStyle = {
-      backgroundImage: this.state.isHovered || isSelected
-        ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
-        linear-gradient(to right, ${staticColor}, ${staticColor})`
-        : ''
-    };
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && props.match.params.endpointId === endpointId ? 'selected' : '')
     return (
       <>
         <div
           key={endpointId}
           draggable={!isUserOnPublishedPage}
-          onDragOver={this.props.handleOnDragOver}
-          onDragStart={() => this.props.onDragStart(endpointId)}
-          onDrop={(e) => this.props.onDrop(e, endpointId)}
-          onDragEnter={(e) => this.props.onDragEnter(e, endpointId)}
-          onDragEnd={(e) => this.props.onDragEnd(e)}
-          style={this.props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
+          onDragOver={props.handleOnDragOver}
+          onDragStart={() => props.onDragStart(endpointId)}
+          onDrop={(e) => props.onDrop(e, endpointId)}
+          onDragEnter={(e) => props.onDragEnter(e, endpointId)}
+          onDragEnd={(e) => props.onDragEnd(e)}
+          style={props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
         >
-          <div className={this.props?.endpoints[endpointId]?.state} />
+          <div className={props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between mt-1'>
             <button>
-            <div className={`side-bar d-flex align-items-center rounded mr-2 ${isSelected ? 'Selected' : ''}`} style={backgroundStyle}
-        onMouseEnter={() => this.handleHover(true)}
-        onMouseLeave={() => this.handleHover(false)}>
-            <button
-              tabIndex={-1}
-              onClick={() => {
-                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
-              }}
-              onDoubleClick={() =>
-                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
-              }
-            >
-              
-              {this.displayEndpointName(endpointId)}
-              
-            </button>
-              <div className='d-flex align-items-center'>
-                {isDashboardRoute(this.props, true) &&
-                  !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
-                  this.displayEndpointOptions(endpointId)}
-                {/* <div className='ml-1 published-icon transition'>
-                    {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+              <div className={`side-bar d-flex ${isSelected ? 'Selected' : ''}`}>
+                <button
+                  tabIndex={-1}
+                  onClick={() => {
+                    handleDisplay(props.endpoints[endpointId], props.endpointId, props.collection_id, true)
+                  }}
+                  onDoubleClick={() =>
+                    handleDisplay(props.endpoints[endpointId], props.endpointId, props.collection_id, false)
+                  }
+                >
+
+                  {displayEndpointName(endpointId)}
+
+                </button>
+                <div className='d-flex align-items-center'>
+                  {isDashboardRoute(props, true) &&
+                    !props.collections[props.collection_id]?.importedFromMarketPlace &&
+                    displayEndpointOptions(endpointId)}
+                  {/* <div className='ml-1 published-icon transition'>
+                    {props.endpoints[props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
                 </div>
               </div>
@@ -399,11 +377,11 @@ class Endpoints extends Component {
     )
   }
 
-  addEndpoint(endpoint) {
-    this.props.add_endpoint(endpoint, this.props.parent_id, null)
+  const addEndpoint = (endpoint) => {
+    props.add_endpoint(endpoint, props.parent_id, null)
   }
 
-  renderForm() {
+  const renderForm = () => {
     const endpoint = {
       uri: '',
       name: '',
@@ -417,37 +395,37 @@ class Endpoints extends Component {
     }
     return (
       <>
-        {isDashboardRoute(this.props, true) && (
-          <AddEntity placeholder='API Endpoint Name' type='endpoint' endpoint={endpoint} addEndpoint={this.addEndpoint.bind(this)} />
+        {isDashboardRoute(props, true) && (
+          <AddEntity placeholder='API Endpoint Name' type='endpoint' endpoint={endpoint} addEndpoint={addEndpoint.bind(this)} />
         )}
       </>
     )
   }
 
-  displayUserEndpoints(endpointId) {
+  const displayUserEndpoints = (endpointId) => {
     return (
       <>
-        {this.displaySingleEndpoint(endpointId)}
+        {displaySingleEndpoint(endpointId)}
         {/* {endpoints?.map((endpointId) => (
-          this.displaySingleEndpoint(endpointId)
+          displaySingleEndpoint(endpointId)
         ))} */}
-        {endpointId?.length === 0 && this.renderForm()}
+        {endpointId?.length === 0 && renderForm()}
       </>
     )
   }
 
-  filterEndpointIdsByGroup() {
-    const endpointIds = Object.keys(this.props.endpoints).filter(
-      (eId) => this.props.endpoints[eId].parentId && this.props.endpoints[eId].parentId === this.props.parent_id
+  const filterEndpointIdsByGroup = () => {
+    const endpointIds = Object.keys(props.endpoints).filter(
+      (eId) => props.endpoints[eId].parentId && props.endpoints[eId].parentId === props.parent_id
     )
     return endpointIds
   }
 
-  extractEndpointsFromIds(endpointIds) {
+  const extractEndpointsFromIds = (endpointIds) => {
     let endpointsArray = []
     for (let index = 0; index < endpointIds.length; index++) {
       const id = endpointIds[index]
-      const endpoint = this.props.endpoints[id]
+      const endpoint = props.endpoints[id]
       endpointsArray = [...endpointsArray, endpoint]
     }
     endpointsArray.sort(function (a, b) {
@@ -462,37 +440,35 @@ class Endpoints extends Component {
     return endpointsArray || []
   }
 
-  getEndpointsEntity(endpointsArray) {
+  const getEndpointsEntity = (endpointsArray) => {
     const endpoints = {}
     for (let index = 0; index < endpointsArray.length; index++) {
       const id = endpointsArray[index].id || endpointsArray[index].requestId
-      endpoints[id] = this.props.endpoints[id]
+      endpoints[id] = props.endpoints[id]
     }
     return endpoints || {}
   }
 
-  render() {
-    const endpointIds = this.filterEndpointIdsByGroup()
-    let endpointsArray = []
-    endpointsArray = this.extractEndpointsFromIds(endpointIds)
-    let endpoints = {}
-    endpoints = this.getEndpointsEntity(endpointsArray)
-    return (
-      <>
-        {this.showEditEndpointModal()}
-        {this.state.showEndpointForm.delete &&
-          endpointService.showDeleteEndpointModal(
-            this.props,
-            this.handleDelete.bind(this),
-            this.closeDeleteEndpointModal.bind(this),
-            'Delete Endpoint',
-            `Are you sure you want to delete this endpoint?`,
-            this.state.selectedEndpoint
-          )}
-        {this.displayUserEndpoints(this?.props?.endpointId)}
-      </>
-    )
-  }
+  const endpointIds = filterEndpointIdsByGroup()
+  let endpointsArray = []
+  endpointsArray = extractEndpointsFromIds(endpointIds)
+  let endpoints = {}
+  endpoints = getEndpointsEntity(endpointsArray)
+  return (
+    <>
+      {showEditEndpointModal()}
+      {state.showEndpointForm.delete &&
+        endpointService.showDeleteEndpointModal(
+          props,
+          handleDelete.bind(this),
+          closeDeleteEndpointModal.bind(this),
+          'Delete Endpoint',
+          `Are you sure you want to delete this endpoint?`,
+          state.selectedEndpoint
+        )}
+      {displayUserEndpoints(props?.endpointId)}
+    </>
+  )
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Endpoints))
