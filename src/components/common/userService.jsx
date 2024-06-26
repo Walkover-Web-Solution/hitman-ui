@@ -5,7 +5,9 @@ const DisplayUserAndModifiedData = ({ isOnPublishedPage, pages, currentPage, use
   const updatedById = pages?.[currentPage]?.updatedBy
   const lastModified = pages?.[currentPage]?.updatedAt ? moment(pages[currentPage].updatedAt).fromNow() : null
 
-  const user = users?.find((user) => user.id === updatedById)
+  // const user = users?.find((user) => user.id === updatedById)
+  const user = Array.isArray(users) ? users.find((user) => user.id === updatedById) : undefined;
+
 
   if (isOnPublishedPage) {
     return (
