@@ -442,12 +442,16 @@ export function compareAlphabetically(a, b, data) {
 const modifyEndpointContent = (endpointData, untitledData) => {
   const endpoint = cloneDeep(endpointData)
   const untitled = cloneDeep(untitledData)
-  untitled.data.name = endpoint.name
-  untitled.data.method = endpoint.requestType
+  untitled.data.name = endpoint?.name || 'Endpoint'
+  untitled.data.method = endpoint?.requestType || 'GET'
 
   // This code will help in storing the old endpoint body data to new endpoint body data architecture (so we do not lost the old data saved inside the DB).
   // TODO - Below code should be removed later.
-  if (endpoint.protocolType === 1) {
+  if (endpoint?.protocolType === 2) {
+    untitled.protocolType = 2
+    untitled.data.body = { query: endpoint.body.query, variables: endpoint.body.variables }
+  }
+  else {
     const bodyType = endpoint.body?.type || '';
     if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) && endpoint.body.raw) {
       untitled.data.body = endpoint.body;
@@ -468,10 +472,6 @@ const modifyEndpointContent = (endpointData, untitledData) => {
       }
       delete endpoint.body?.value;
     } // ends here
-  }
-  else if (endpoint.protocolType === 2) {
-    untitled.protocolType = 2
-    untitled.data.body = { query: endpoint.body.query, variables: endpoint.body.variables }
   }
   delete endpoint.body?.value;
 
@@ -512,6 +512,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.testResponse = {}
   untitled.flagResponse = false;
   untitled.bodyDescription = endpointData.bodyDescription
+  untitled.description = endpointData.description
   return { ...untitled }
 }
 
@@ -563,6 +564,10 @@ export function isOnPublishedPage() {
   return (isTechdocOwnDomain() && path == 'p') || !isTechdocOwnDomain()
 }
 
+export function isOnRedirectionPage() {
+  return window.location.pathname.includes('/redirections');
+}
+
 const deleteSidebarData = (pages, tabs, pageId, deletedTabIds, deletedIds) => {
   if (pages[pageId]) {
     pages[pageId].child.forEach((childPageId) => {
@@ -582,7 +587,7 @@ const deleteSidebarData = (pages, tabs, pageId, deletedTabIds, deletedIds) => {
   }
 }
 
-export const deleteAllPagesAndTabsAndReactQueryData = async (pageId,collectionId) => {
+export const deleteAllPagesAndTabsAndReactQueryData = async (pageId, collectionId) => {
   try {
     const deletedTabIds = new Set() // to keep set of ids deleted
 
@@ -597,17 +602,17 @@ export const deleteAllPagesAndTabsAndReactQueryData = async (pageId,collectionId
     let { pages, tabs } = store.getState()
     pages = _.cloneDeep(pages)
     tabs = _.cloneDeep(tabs)
-   
-      if (collectionId && tabs.tabs?.[collectionId]) {
-        delete tabs.tabs[collectionId];
-        tabs.tabsOrder = tabs.tabsOrder.filter(tab => tab !== collectionId);
-        if (tabs?.activeTabId == collectionId) {
-          foundActiveTabId = true
-        }
-        
+
+    if (collectionId && tabs.tabs?.[collectionId]) {
+      delete tabs.tabs[collectionId];
+      tabs.tabsOrder = tabs.tabsOrder.filter(tab => tab !== collectionId);
+      if (tabs?.activeTabId == collectionId) {
+        foundActiveTabId = true
+      }
+
     }
 
-    
+
     // update the parent's child
     let parentId = pages[pageId]?.parentId
     if (parentId != null) {
@@ -672,7 +677,7 @@ export const trimString = (str) => {
 export const modifyDataForBulkPublish = (collectionData, allPagesData, collectionId) => {
   const rootParentId = collectionData?.[collectionId]?.rootParentId
   const formatedData = {
-    name: collectionData?.[collectionId]?.name,
+    name: collectionData?.[collectionId]?.name || null,
     metadata: { rootParentId, collectionId },
     children: modifiedData(allPagesData?.[rootParentId]?.child || [], allPagesData)
   }
@@ -744,5 +749,6 @@ export default {
   deleteAllPagesAndTabsAndReactQueryData,
   operationsAfterDeletion,
   trimString,
-  modifyDataForBulkPublish
+  modifyDataForBulkPublish,
+  isOnRedirectionPage
 }

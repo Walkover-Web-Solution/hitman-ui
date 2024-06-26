@@ -46,18 +46,26 @@ export const updatePage = (history, editedPage) => {
       name: editedPage.name,
       urlName: editedPage.urlName,
       contents: editedPage?.contents || null,
-      state: editedPage.state
+      state: editedPage.state,
+      collectionId: editedPage.collectionId,
+      urlMappingFlag: editedPage.urlMappingFlag,
+      prevUrlName: editedPage.prevUrlName,
     }
-    // dispatch(updatePageRequest(dataToSend))
     pageApiService
       .updatePage(editedPage.id, dataToSend)
       .then((response) => {
+        if (response.data.newUrlMapping) {
+          const oldUrls = store.getState().pages?.[editedPage.id]?.oldUrls
+          oldUrls[response.data.newUrlMapping.id] = response.data.newUrlMapping.oldUrl
+          dispatch(onPageUpdated({ ...response.data.updatedPage, oldUrls }))
+          return response.data.updatedPage;
+        }
         dispatch(onPageUpdated(response.data))
         toast.success("Updated successfully")
         return response.data
       })
       .catch((error) => {
-        dispatch(onPageUpdatedError(error.response ? error.response.data : error, editedPage))
+        toast.error(error.message)
       })
   }
 }
@@ -290,6 +298,20 @@ export const addChildInParent = (payload) => {
 export const updateNameOfPages = (payload) => {
   return {
     type: pagesActionTypes.UPDATE_NAME_OF_PAGE,
+    payload
+  }
+}
+
+export const addOldUrlOfPage = (payload) => {
+  return {
+    type: pagesActionTypes.ADD_OLD_URL,
+    payload
+  }
+}
+
+export const deleteOldUrlOfPage = (payload) => {
+  return {
+    type: pagesActionTypes.DELETE_OLD_URL,
     payload
   }
 }
