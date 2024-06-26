@@ -68,6 +68,9 @@
   background-size: 400% 400%;
   animation: gradientbg 20s ease infinite;
   height: 100vh;
+  @media screen and (max-width: 575px) {
+  height: calc( 100vh - 127px);
+  }
 }
 
 @keyframes gradientbg {
