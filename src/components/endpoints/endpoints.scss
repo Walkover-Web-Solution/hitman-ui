@@ -1571,7 +1571,18 @@ table#custom-generic-table {
 .disable-callback {
   color: rgb(155, 152, 152) !important;
 }
-
+.pubCode-icon {
+  height: fit-content;
+  z-index: 999;
+  left: -11px;
+  border: 1px solid $lightblackborder !important;
+  &.active {
+    transform: rotate(180deg);
+  }
+  @media screen and (max-width: 1160px) {
+    display: none !important;
+  }
+}
 .pubCodeWrapper {
   z-index: 199;
   padding-top: 35px;
@@ -1581,6 +1592,10 @@ table#custom-generic-table {
   border-right: 1px solid $lightblackborder;
   border-bottom: 1px solid $lightblackborder;
   transition: 300ms;
+  @media screen and (max-width: 1300px) {
+    min-width: 350px ;
+    width: 300px ;
+  }
 
   .select-code-wrapper {
     button {
@@ -1665,6 +1680,13 @@ table#custom-generic-table {
       }
 
       padding: 0px;
+    }
+  }
+  &.pubCodeWrapper-hide {
+    width: 10px ;
+    min-width: 10px ;
+    @media screen and (max-width: 1160px) {
+    // all: unset !important;
     }
   }
 }

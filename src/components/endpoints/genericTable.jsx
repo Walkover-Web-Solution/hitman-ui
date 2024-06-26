@@ -7,6 +7,7 @@ import _ from 'lodash'
 import TextField from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
 import {background} from '../backgroundColor.js'
+import { isOnPublishedPage } from '../common/utility'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
@@ -39,8 +40,17 @@ class GenericTable extends Component {
   }
 
   componentDidMount() {
+    this.setState({theme: this.props.publicCollectionTheme })
+    const { dataArray, originalData } = this.props;
+    if (dataArray && originalData) {
+    this.setState({
+      dataArray: this.sortData(dataArray),
+      originalData: this.sortData(originalData),
+      optionalParams: false
+    });
+  }
     const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
-    const staticColor = background['backgroound_boxes'];
+    const staticColor = background['background_boxes'];
 
     const backgroundStyle = {
       backgroundImage: `
@@ -49,15 +59,9 @@ class GenericTable extends Component {
       `,
     };
 
-  const { dataArray, originalData } = this.props;
-  if (dataArray && originalData) {
     this.setState({
-      dataArray: this.sortData(dataArray),
-      originalData: this.sortData(originalData),
-      optionalParams: false,
-      theme: backgroundStyle
+      theme: { backgroundStyle },
     });
-  }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -283,7 +287,7 @@ class GenericTable extends Component {
                 className='Checkbox'
                 onChange={this.handleChange}
               />
-              <span className='checkmark' style={{ backgroundColor: this.state.theme, borderColor: this.state.theme }} />
+              <span className='checkmark' style={{ backgroundColor: this.props.publicCollectionTheme, borderColor: this.props.publicCollectionTheme }} />
             </label>
           )}
         </td>
@@ -581,7 +585,7 @@ class GenericTable extends Component {
         </div>
 
         {!this.state.bulkEdit && dataArray.length > 0 ? (
-          <div className='headParaWraper' style={this.state.theme.backgroundStyle}>
+         <div className={`headParaWraper ${isOnPublishedPage() ? "p-0" : "p-3"}`} style={this.state.theme.backgroundStyle}>
             <table className='table' id='custom-generic-table'>
               {isDashboardRoute(this.props) ? (
                 <thead>
