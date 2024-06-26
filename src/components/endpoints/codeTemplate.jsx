@@ -142,7 +142,7 @@ class CodeTemplate extends Component {
         { isOnPublishedPage() && (
          <button
           onClick={this.handleButtonClick}
-          className={`pubCode-icon btn mt-4 position-absolute border border-dark${this.props.curlSlider ? ' active' : ''}`}
+          className={`pubCode-icon btn mt-4 position-absolute rounded-circle px-1 py-0${this.props.curlSlider ? ' active' : ''}`}
         >
           <FaChevronRight size={12}/>
         </button>)}
