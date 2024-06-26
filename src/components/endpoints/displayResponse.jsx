@@ -346,20 +346,33 @@ class DisplayResponse extends Component {
   }
   renderResponseHeader() {
     const { originalHeaders } = this.props.endpointContent
+    const filteredHeaders = originalHeaders.reduce((acc, header) => {
+        const existingHeader = acc.find(h => Object.keys(h)[0] === Object.keys(header)[0])
+        if (existingHeader) {
+            if (existingHeader[Object.keys(header)[0]].type !== 'disable') {
+                acc = acc.filter(h => Object.keys(h)[0] !== Object.keys(header)[0])
+                acc.push(header)
+            }
+        } else {
+            acc.push(header)
+        }
+        return acc
+    }, [])
+
     return (
-      <div>
-        {originalHeaders.map((header, index) => (
-          <div key={index}>
-            {Object.entries(header).map(([key, value]) => (
-              <div key={key}>
-                <strong>{key}:</strong> {JSON.stringify(value)}
-              </div>
+        <div>
+            {filteredHeaders.map((header, index) => (
+                <div key={index}>
+                    {Object.entries(header).map(([key, value]) => (
+                        <div key={key}>
+                            <strong>{key}:</strong> {JSON.stringify(value)}
+                        </div>
+                    ))}
+                </div>
             ))}
-          </div>
-        ))}
-      </div>
+        </div>
     )
-  }
+}
 
   displayHeader() {
     if (this.props.response.headers) {
@@ -562,48 +575,7 @@ class DisplayResponse extends Component {
               {this.showAddForm()}
               <div className='response-viewer'>
                 <div className='response-tabs'>
-                  {/* {isDashboardRoute(this.props) && (
-                        <ul className='nav nav-tabs' id='myTab' role='tablist'>
-                          <li className='nav-item'>
-                            <a
-                              className='nav-link active'
-                              id='home-tab'
-                              data-toggle='tab'
-                              href='#home'
-                              role='tab'
-                              aria-controls='home'
-                              aria-selected='true'
-                            >
-                              Pretty
-                            </a>
-                          </li>
-                          <li className='nav-item'>
-                            <a
-                              className='nav-link'
-                              id='profile-tab'
-                              data-toggle='tab'
-                              href='#profile'
-                              role='tab'
-                              aria-controls='profile'
-                              aria-selected='false'
-                            >
-                              Raw
-                            </a>
-                          </li>
-                          <li className='nav-item'>
-                            <a
-                              className='nav-link'
-                              id='contact-tab'
-                              data-toggle='tab'
-                              href='#contact'
-                              role='tab'
-                              aria-controls='contact'
-                              aria-selected='false'
-                            >
-                              Preview
-                            </a>
-                          </li>
-                        </ul>)} */}
+                  
                 </div>
                 {this.props.response.status && this.displayBodyAndHeaderResponse()}
                 {this.state.selectedResponseTab === 'header' && this.props.response.headers && this.displayHeader()}
@@ -620,7 +592,6 @@ class DisplayResponse extends Component {
           <div>
             <div className='empty-response'>Response</div>
             <div className='empty-response-container'>
-              {/* <img src={image} height="100px" width="100px" alt="" /> */}
               <EmptyResponseImg />
               <p className='mt-0'>Hit Send to trigger the API call</p>
             </div>

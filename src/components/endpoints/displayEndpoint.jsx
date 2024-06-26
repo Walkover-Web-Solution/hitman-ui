@@ -152,7 +152,8 @@ const untitledEndpointData = {
       checked: 'notApplicable',
       key: '',
       value: '',
-      description: ''
+      description: '',
+      type: '',
     }
   ],
   originalParams: [
@@ -160,7 +161,8 @@ const untitledEndpointData = {
       checked: 'notApplicable',
       key: '',
       value: '',
-      description: ''
+      description: '',
+      type:'',
     }
   ],
   oldDescription: '',
@@ -289,38 +291,25 @@ const withQuery = (WrappedComponent) => {
       const bodyType = endpoint.body.type
       const untitled = _.cloneDeep(untitledEndpointData.data)
 
-      if (data.protocolType === 1) {
-        if (
-          [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) &&
-          endpoint.body.raw
-        ) {
-          untitled.body = endpoint.body
-        } else if (
-          [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)
-        ) {
-          untitled.body = { ...untitled.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } }
-        } else if (bodyType === bodyTypesEnums['application/x-www-form-urlencoded'] || bodyType === bodyTypesEnums['multipart/form-data']) {
-          if (endpoint.body[bodyType]) {
-            untitled.body = endpoint.body
-          } else {
-            untitled.body = { ...untitled.body, type: bodyType, [bodyType]: endpoint.body?.value || [] }
-          }
-        } else if (bodyType === bodyTypesEnums['none']) {
-          if (
-            endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] ||
-            endpoint.body?.[bodyTypesEnums['multipart/form-data']] ||
-            endpoint.body?.[bodyTypesEnums['raw']]
-          ) {
-            untitled.body = endpoint.body
-          } else {
-            untitled.body = { ...untitled.body, ...endpoint.body }
-          }
+      if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) && endpoint.body.raw) {
+        untitled.body = endpoint.body;
+      } else if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)) {
+        untitled.body = { ...untitled.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } };
+      } else if (bodyType === bodyTypesEnums['application/x-www-form-urlencoded'] || bodyType === bodyTypesEnums['multipart/form-data']) {
+        if (endpoint.body[bodyType]) {
+          untitled.body = endpoint.body;
+        } else {
+          untitled.body = { ...untitled.body, type: bodyType, [bodyType]: endpoint.body?.value || [] };
         }
-      } else {
-        untitled.body = { query: endpoint?.body?.query || '', variables: endpoint.body.variables || '' }
-        untitled.protocolType = 2
+      } else if (bodyType === bodyTypesEnums['none']) {
+        if (endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || endpoint.body?.[bodyTypesEnums['multipart/form-data']] || endpoint.body?.[bodyTypesEnums['raw']]) {
+          untitled.body = endpoint.body;
+        }
+        else {
+          untitled.body = { ...untitled.body, ...endpoint.body }
+        }
       }
-      delete endpoint.body?.value
+      delete endpoint.body?.value;
 
       untitled.uri = endpoint.uri
       untitled.updatedUri = endpoint.updatedUri
@@ -670,7 +659,7 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(dummyData)
   }
 
-  makeOriginalParams(keys, values, description) {
+  makeOriginalParams(keys, values, description,type) {
     const originalParams = []
     for (let i = 0; i < this.props?.endpointContent?.originalParams?.length; i++) {
       if (this.props?.endpointContent?.originalParams[i].checked === 'false') {
@@ -678,7 +667,8 @@ class DisplayEndpoint extends Component {
           checked: this.props?.endpointContent?.originalParams[i].checked,
           key: this.props?.endpointContent?.originalParams[i].key,
           value: this.props?.endpointContent?.originalParams[i].value,
-          description: this.props?.endpointContent?.originalParams[i].description
+          description: this.props?.endpointContent?.originalParams[i].description,
+          type: this.props?.endpointContent?.originalParams[i].type,
         })
       }
     }
@@ -694,7 +684,8 @@ class DisplayEndpoint extends Component {
       checked: 'notApplicable',
       key: '',
       value: '',
-      description: ''
+      description: '',
+      type:''
     })
     return originalParams
   }
@@ -1497,7 +1488,8 @@ class DisplayEndpoint extends Component {
         processedHeaders.push({
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
-          comment: headers[Object.keys(headers)[i]].description === null ? '' : headers[Object.keys(headers)[i]].description
+          comment: headers[Object.keys(headers)[i]].description === null ? '' : headers[Object.keys(headers)[i]].description,
+          type: headers[Object.keys(headers)[i]].type,
         })
       }
     }
@@ -1512,7 +1504,8 @@ class DisplayEndpoint extends Component {
           processedParams.push({
             name: params[Object.keys(params)[i]].key,
             value: params[Object.keys(params)[i]].value,
-            comment: params[Object.keys(params)[i]].description
+            comment: params[Object.keys(params)[i]].description,
+            type: params[Object.keys(params)[i]].type,
           })
         }
       }
@@ -1708,6 +1701,13 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(tempData)
   }
 
+  makeFunctionNonEditable(val) {
+    const readOnlyFunction = document.createElement('textarea');
+    readOnlyFunction.value = JSON.stringify(val, null, 2);
+    readOnlyFunction.setAttribute('readonly', true);
+    document.body.appendChild(readOnlyFunction);
+  }
+
   setParams(value, title, authorizationFlag, tokenIdToSave) {
     const originalParams = this.props.endpointContent.originalParams
     const updatedParams = []
@@ -1715,7 +1715,8 @@ class DisplayEndpoint extends Component {
       checked: 'notApplicable',
       key: '',
       value: '',
-      description: ''
+      description: '',
+      type: 'enable'
     }
     for (let i = 0; i < originalParams.length; i++) {
       if (originalParams[i].key === title || originalParams[i].key === '') {
@@ -1729,8 +1730,10 @@ class DisplayEndpoint extends Component {
         checked: 'true',
         key: title,
         value: value,
-        description: ''
+        description: '',
+        type: 'disable'
       })
+      this.makeFunctionNonEditable(updatedParams[0].key)
     }
     updatedParams.push(emptyParam)
     const dummyData = this.props.endpointContent
@@ -1758,7 +1761,8 @@ class DisplayEndpoint extends Component {
       checked: 'notApplicable',
       key: '',
       value: '',
-      description: ''
+      description: '',
+      type: 'enable',
     }
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
@@ -1785,8 +1789,10 @@ class DisplayEndpoint extends Component {
         checked: 'true',
         key: title === 'content-type' ? 'content-type' : 'Authorization',
         value: title.split('.')[0] === 'Authorization' ? (title.split('.')[1] === 'oauth_2' ? 'Bearer ' + value : 'Basic ' + value) : '',
-        description: ''
+        description: '',
+        type: 'disable'
       })
+      this.makeFunctionNonEditable(updatedHeaders[0].key)
     }
     if (title === 'content-type') {
       updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(value)
@@ -1814,6 +1820,43 @@ class DisplayEndpoint extends Component {
     }
     dummyData.originalHeaders = updatedHeaders
     this.props.setQueryUpdatedData(dummyData)
+  }
+
+  deleteHeader() {
+    const originalHeaders = this.props.endpointContent.originalHeaders
+    const updatedHeaders = []
+    for(let i = 0; i < originalHeaders.length; i++){
+      if( originalHeaders[i].key === 'Authorization' && originalHeaders[i].type === 'disable'){
+        continue;
+      }
+      else{
+        updatedHeaders.push(originalHeaders[i])
+      }
+    }
+    this.propsFromChild('Headers', updatedHeaders)
+  }
+
+  deleteParams() {
+    const originalParams = this.props.endpointContent.originalParams
+    const updatedParams = []
+    const emptyParam = {
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: '',
+      type: 'enable'
+    }
+    for (let i = 0; i < originalParams.length; i++){
+      if(originalParams[i].key === 'access_token' && originalParams[i].type === 'disable'){
+        continue
+      }
+      else{
+        updatedParams.push(originalParams[i])
+      }
+    }
+    const dummyData = this.props.endpointContent
+    dummyData.originalParams = updatedParams
+    this.handleUpdateUri(updatedParams)
   }
 
   identifyBodyType(bodyType) {
@@ -2958,8 +3001,8 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-              ? 'mainContentWrapperPublic hideCodeEditor'
-              : 'mainContentWrapperPublic '
+            ? 'mainContentWrapperPublic hideCodeEditor'
+            : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
@@ -3276,6 +3319,8 @@ class DisplayEndpoint extends Component {
                                     set_authoriztaion_params={this.setParams.bind(this)}
                                     set_authoriztaion_type={this.setAuthType.bind(this)}
                                     handleSaveEndpoint={this.handleSave.bind(this)}
+                                    delete_headers ={this.deleteHeader.bind(this)}
+                                    delete_params ={this.deleteParams.bind(this)}
                                   />
                                 </div>
                               </div>
@@ -3397,6 +3442,72 @@ class DisplayEndpoint extends Component {
                               </div>
                             </>
                           )}
+                          <div
+                            className={this.setAuthorizationTab ? 'tab-pane fade show active' : 'tab-pane fade '}
+                            id={`authorization-${this.props.tab.id}`}
+                            role='tabpanel'
+                            aria-labelledby='pills-authorization-tab'
+                          >
+                            <div>
+                              <Authorization
+                                {...this.props}
+                                set_authorization_headers={this.setHeaders.bind(this)}
+                                set_authoriztaion_params={this.setParams.bind(this)}
+                                set_authoriztaion_type={this.setAuthType.bind(this)}
+                                handleSaveEndpoint={this.handleSave.bind(this)}
+                                delete_headers ={this.deleteHeader.bind(this)}
+                                delete_params ={this.deleteParams.bind(this)}
+                              />
+                            </div>
+                          </div>
+                          <div
+                            className='tab-pane fade'
+                            id={`headers-${this.props.tab.id}`}
+                            role='tabpanel'
+                            aria-labelledby='pills-headers-tab'
+                          >
+                            <div>{this.renderHeaders()}</div>
+                          </div>
+                          {this.checkProtocolType(1) && (
+                            <div
+                              className='tab-pane fade'
+                              id={`body-${this.props.tab.id}`}
+                              role='tabpanel'
+                              aria-labelledby='pills-body-tab'
+                            >
+                              {this.renderBodyContainer()}
+                            </div>
+                          )}
+                          <div
+                            className='tab-pane fade'
+                            id={`pre-script-${this.props.tab.id}`}
+                            role='tabpanel'
+                            aria-labelledby='pills-pre-script-tab'
+                          >
+                            <div>
+                              <Script
+                                type='Pre-Script'
+                                handleScriptChange={this.handleScriptChange.bind(this)}
+                                scriptText={this.props?.endpointContent?.preScriptText}
+                                endpointContent={this.props?.endpointContent}
+                              />
+                            </div>
+                          </div>
+                          <div
+                            className='tab-pane fade'
+                            id={`post-script-${this.props.tab.id}`}
+                            role='tabpanel'
+                            aria-labelledby='pills-post-script-tab'
+                          >
+                            <div>
+                              <Script
+                                type='Post-Script'
+                                handleScriptChange={this.handleScriptChange.bind(this)}
+                                scriptText={this.props?.endpointContent?.postScriptText}
+                                endpointContent={this.props?.endpointContent}
+                              />
+                            </div>
+                          </div>
                         </div>
                       ) : (
                         this.renderDocView()

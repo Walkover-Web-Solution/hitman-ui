@@ -331,6 +331,7 @@ class GenericTable extends Component {
           type='text'
           placeholder='Key'
           className='form-control'
+          disabled={dataArray[index]?.type === 'disable' ? true : false}
           options={{ '{{': _.keys(this.props.environment.variables) }}
         />
         {title === 'formData' && (
@@ -393,7 +394,7 @@ class GenericTable extends Component {
           {dataArray[index].checked === 'notApplicable' ? null : (
             <label className='customCheckbox'>
               <input
-                disabled={isDashboardRoute(this.props, true) || originalData[index].checked === 'false' ? null : 'disabled'}
+                disabled={isDashboardRoute(this.props, true) || originalData[index].checked === 'false' || originalData[index].type!= 'enable' ? null : 'disabled'}
                 name={index + '.checkbox'}
                 value = {dataArray[index].checked}
                 checked={dataArray[index].checked === 'true'}
@@ -421,6 +422,7 @@ class GenericTable extends Component {
                 onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
                 className='form-control'
                 placeholder={dataArray[index].checked === 'notApplicable' ? 'Value' : `Enter ${dataArray[index].key}`}
+                disabled={dataArray[index]?.type === 'disable' ? true : false}
                 options={{ '{{': _.keys(this.props.environment.variables) }}
                 type={dataArray[index].type}
               />
