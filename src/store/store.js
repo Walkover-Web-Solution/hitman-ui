@@ -31,7 +31,7 @@ const rootReducer = combineReducers({
   clientData: clientDataReducer,
   tokenData: tokenDataReducer,
   users: userReducer,
-  organizations: organizationReducer
+  organizations : organizationReducer,
 })
 
 const persistConfig = {
