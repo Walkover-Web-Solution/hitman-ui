@@ -485,7 +485,7 @@ class CollectionParentPages extends Component {
               >
                 <div className='d-flex cl-name ml-1 align-items-baseline'>
                 <span className='versionChovron' onClick={(e) => this.handleToggle(e, this.props.rootParentId)}>
-                  <MdExpandMore size={13} className='collection-icons-arrow d-none' style={backgroundStyles} onMouseEnter={() => this.handleHovers(true)}  onMouseLeave={() => this.handleHovers(false)}/>
+                  <MdExpandMore size={13} className='collection-icons-arrow d-none' />
                   <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1'/>
                   </span>
                   <div
