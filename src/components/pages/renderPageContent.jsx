@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import {isOnPublishedPage} from '../common/utility'
+import { isOnPublishedPage } from '../common/utility'
+import { IoDocumentTextOutline } from "react-icons/io5";
 
 export default function RenderPageContent(props) {
 
     const [headings, setHeadings] = useState([]);
-    const [htmlWithIds, setHtmlWithIds] = useState(props?.pageContent);
+    const [htmlWithIds, setHtmlWithIds] = useState(props?.pageContent || '');
+    const [innerText, setInnerText] = useState('');
 
     const addIdsToHeadings = (html) => {
         const parser = new DOMParser();
@@ -16,6 +18,7 @@ export default function RenderPageContent(props) {
             return { id, text: h2.innerText };
         });
         setHeadings(h2Headings);
+        setInnerText(doc.body.innerText)
         return doc.body.innerHTML;
     };
 
@@ -29,9 +32,9 @@ export default function RenderPageContent(props) {
 
     return (
         <>
-            {headings.length > 0 && (
+            {innerText.length > 0 ?
                 <div className={`page-text-render w-100 d-flex flex-lg-row flex-column-reverse`}>
-                    {headings.length > 0 && (<div className='doc-view' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />)}
+                    <div dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
                     {isOnPublishedPage() && headings.length > 0 && (
                         <>
                             <div className='editor-headings d-flex flex-column h-100'>
@@ -50,8 +53,12 @@ export default function RenderPageContent(props) {
                             </div>
                         </>
                     )}
+                </div> :
+                <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
+                    <IoDocumentTextOutline color='grey' size={100} />
+                    <span className='empty-line'>Your document is empty</span>
                 </div>
-            )}
+            }
         </>
     )
 }
