@@ -162,7 +162,7 @@ const untitledEndpointData = {
       key: '',
       value: '',
       description: '',
-      type:'',
+      type: '',
     }
   ],
   oldDescription: '',
@@ -395,7 +395,7 @@ class DisplayEndpoint extends Component {
       endpointContentState: null,
       showEndpointFormModal: false,
       optionalParams: false,
-      titleChange : false,
+      titleChange: false,
       activeTab: 'default'
     }
     this.setActiveTab = this.setActiveTab.bind(this);
@@ -659,7 +659,7 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(dummyData)
   }
 
-  makeOriginalParams(keys, values, description,type) {
+  makeOriginalParams(keys, values, description, type) {
     const originalParams = []
     for (let i = 0; i < this.props?.endpointContent?.originalParams?.length; i++) {
       if (this.props?.endpointContent?.originalParams[i].checked === 'false') {
@@ -685,7 +685,7 @@ class DisplayEndpoint extends Component {
       key: '',
       value: '',
       description: '',
-      type:''
+      type: ''
     })
     return originalParams
   }
@@ -1825,11 +1825,11 @@ class DisplayEndpoint extends Component {
   deleteHeader() {
     const originalHeaders = this.props.endpointContent.originalHeaders
     const updatedHeaders = []
-    for(let i = 0; i < originalHeaders.length; i++){
-      if( originalHeaders[i].key === 'Authorization' && originalHeaders[i].type === 'disable'){
+    for (let i = 0; i < originalHeaders.length; i++) {
+      if (originalHeaders[i].key === 'Authorization' && originalHeaders[i].type === 'disable') {
         continue;
       }
-      else{
+      else {
         updatedHeaders.push(originalHeaders[i])
       }
     }
@@ -1846,11 +1846,11 @@ class DisplayEndpoint extends Component {
       description: '',
       type: 'enable'
     }
-    for (let i = 0; i < originalParams.length; i++){
-      if(originalParams[i].key === 'access_token' && originalParams[i].type === 'disable'){
+    for (let i = 0; i < originalParams.length; i++) {
+      if (originalParams[i].key === 'access_token' && originalParams[i].type === 'disable') {
         continue
       }
-      else{
+      else {
         updatedParams.push(originalParams[i])
       }
     }
@@ -3001,8 +3001,8 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-            ? 'mainContentWrapperPublic hideCodeEditor'
-            : 'mainContentWrapperPublic '
+              ? 'mainContentWrapperPublic hideCodeEditor'
+              : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
@@ -3319,8 +3319,8 @@ class DisplayEndpoint extends Component {
                                     set_authoriztaion_params={this.setParams.bind(this)}
                                     set_authoriztaion_type={this.setAuthType.bind(this)}
                                     handleSaveEndpoint={this.handleSave.bind(this)}
-                                    delete_headers ={this.deleteHeader.bind(this)}
-                                    delete_params ={this.deleteParams.bind(this)}
+                                    delete_headers={this.deleteHeader.bind(this)}
+                                    delete_params={this.deleteParams.bind(this)}
                                   />
                                 </div>
                               </div>
@@ -3455,8 +3455,8 @@ class DisplayEndpoint extends Component {
                                 set_authoriztaion_params={this.setParams.bind(this)}
                                 set_authoriztaion_type={this.setAuthType.bind(this)}
                                 handleSaveEndpoint={this.handleSave.bind(this)}
-                                delete_headers ={this.deleteHeader.bind(this)}
-                                delete_params ={this.deleteParams.bind(this)}
+                                delete_headers={this.deleteHeader.bind(this)}
+                                delete_params={this.deleteParams.bind(this)}
                               />
                             </div>
                           </div>
@@ -3517,6 +3517,9 @@ class DisplayEndpoint extends Component {
                     {this.displayResponse()}
                   </div>
                 </div>
+                {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
+                  <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
+                )}
               </div>
               <div className='w-100'>
                 <span className='footer-upper'>
@@ -3540,42 +3543,42 @@ class DisplayEndpoint extends Component {
               </div>
             </div>
 
-              {this.isDashboardAndTestingView() ? (
-                <div className='response-container-main position-relative'>
-                  {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
-                </div>
-              ) : null}
-              {this.renderCodeTemplate()}
-            </div>
-          </div>
-          {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
-            <DisplayUserAndModifiedData
-              isOnPublishedPage={isOnPublishedPage()}
-              pages={this.props.pages}
-              currentPage={this.props.currentEndpointId}
-              users={this.props.users}
-            />
-          </span>}
-          <div className='w-100'>
-            <span className='footer-lower ml-2 ml-sm-4'>
-              <>
-                <span className='pl-3'>
-                  <DisplayUserAndModifiedData
-                    isOnPublishedPage={isOnPublishedPage()}
-                    pages={this.props.pages}
-                    currentPage={this.props.currentEndpointId}
-                    users={this.props.users}
-                  />
-                </span>
-                <div className='w-100 d-flex flex-column align-items-center'>
-                  <ApiDocReview {...this.props} />
-                </div>
-                <Footer />
-              </>
-            </span>
+            {this.isDashboardAndTestingView() ? (
+              <div className='response-container-main position-relative'>
+                {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
+              </div>
+            ) : null}
+            {this.renderCodeTemplate()}
           </div>
         </div>
-        ) : null
+        {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
+          <DisplayUserAndModifiedData
+            isOnPublishedPage={isOnPublishedPage()}
+            pages={this.props.pages}
+            currentPage={this.props.currentEndpointId}
+            users={this.props.users}
+          />
+        </span>}
+        <div className='w-100'>
+          <span className='footer-lower ml-2 ml-sm-4'>
+            <>
+              <span className='pl-3'>
+                <DisplayUserAndModifiedData
+                  isOnPublishedPage={isOnPublishedPage()}
+                  pages={this.props.pages}
+                  currentPage={this.props.currentEndpointId}
+                  users={this.props.users}
+                />
+              </span>
+              <div className='w-100 d-flex flex-column align-items-center'>
+                <ApiDocReview {...this.props} />
+              </div>
+              <Footer />
+            </>
+          </span>
+        </div>
+      </div>
+    ) : null
   }
 }
 

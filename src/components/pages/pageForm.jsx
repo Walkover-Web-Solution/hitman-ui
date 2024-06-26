@@ -41,7 +41,7 @@ class PageForm extends Form {
     let { name } = { ...this.state.data }
     name = toTitleCase(name)
     if (this.props.title === 'Add Parent Page' || this.props.addEntity) {
-        const rootParentId = collections?.rootParentId
+      const rootParentId = collections?.rootParentId
       const data = { ...this.state.data, name }
       const newPage = {
         ...data,
@@ -52,18 +52,18 @@ class PageForm extends Form {
       this.props.add_page(rootParentId, newPage)
     }
     if (this.props?.title === 'Add Page' || this.props?.title === 'Add Sub Page' || this.props?.addEntity) {
-        const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
-        const ParentId = selectedId
-        const data = { ...this.state.data, name }
-        const newPage = {
-          ...data,
-          requestId: shortid.generate(),
-          versionId: this.props?.pageType === 1 ? shortid.generate() : null,
-          pageType: this.props?.pageType,
-          state: 0
-        }
-        this.props.add_page(ParentId, newPage)
-          }
+      const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
+      const ParentId = selectedId
+      const data = { ...this.state.data, name }
+      const newPage = {
+        ...data,
+        requestId: shortid.generate(),
+        versionId: this.props?.pageType === 1 ? shortid.generate() : null,
+        pageType: this.props?.pageType,
+        state: 0
+      }
+      this.props.add_page(ParentId, newPage)
+    }
   }
 
   render() {

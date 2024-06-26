@@ -15,7 +15,6 @@ import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken }
 import { addCollectionAndPages } from '../redux/generalActions'
 import SplitPane from '../splitPane/splitPane'
 import { addUserData } from '../auth/redux/usersRedux/userAction'
-import { toast } from 'react-toastify'
 
 const mapStateToProps = (state) => {
   return {
@@ -202,4 +201,5 @@ class MainV2 extends Component {
     )
   }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(MainV2)
