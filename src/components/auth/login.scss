@@ -1,8 +1,9 @@
 .login {
-  height: 100vh;
-
   &__details {
     background-color: #f2984a73;
+    @media screen and (max-width: 575px) {
+      border-radius: 4px;
+    }
 
     h4 {
       font-size: 24px;
@@ -23,6 +24,14 @@
 
     div {
       width: fit-content;
+    }
+  }
+  &__main {
+    button {
+      margin: 0 !important;
+      @media screen and (max-width:575px) {
+        width: 95vw !important;
+      }
     }
   }
 }
@@ -59,6 +68,11 @@
   background-size: 400% 400%;
   animation: gradientbg 20s ease infinite;
   height: 100vh;
+  @media screen and (max-width: 575px) {
+  min-height: calc( 100vh - 127px);
+  max-height: 100vh;
+  height: fit-content;
+  }
 }
 
 @keyframes gradientbg {
