@@ -7,6 +7,7 @@ import _ from 'lodash'
 import TextField from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
 import {background} from '../backgroundColor.js'
+import { isOnPublishedPage } from '../common/utility'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
@@ -49,7 +50,7 @@ class GenericTable extends Component {
     });
   }
     const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
-    const staticColor = background['backgroound_boxes'];
+    const staticColor = background['background_boxes'];
 
     const backgroundStyle = {
       backgroundImage: `
@@ -586,7 +587,7 @@ class GenericTable extends Component {
         </div>
 
         {!this.state.bulkEdit && dataArray.length > 0 ? (
-          <div className='headParaWraper' style={this.state.theme.backgroundStyle}>
+         <div className={`headParaWraper ${isOnPublishedPage() ? "p-0" : "p-3"}`} style={this.state.theme.backgroundStyle}>
             <table className='table' id='custom-generic-table'>
               {isDashboardRoute(this.props) ? (
                 <thead>

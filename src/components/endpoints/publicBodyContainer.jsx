@@ -8,6 +8,7 @@ import { Badge} from 'react-bootstrap'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
 import { hexToRgb, isOnPublishedPage } from '../common/utility'
 import {background} from '../backgroundColor.js'
+import { FaLongArrowAltUp } from 'react-icons/fa'
 class PublicBodyContainer extends Component {
   constructor(props) {
     super(props)
@@ -36,9 +37,26 @@ class PublicBodyContainer extends Component {
           }
         ]
       },
+      editorHeight: '250px',
+      isExpanded: false,
     }
     this.queryRef = createRef();
     this.variablesRef = createRef();
+    this.expandEditor = this.expandEditor.bind(this);
+    this.collapseEditor = this.collapseEditor.bind(this);
+  }
+  expandEditor() {
+    this.setState({
+      editorHeight: '500px',
+      isExpanded: true,
+    });
+  }
+  collapseEditor(event) {
+    event.stopPropagation(); // Prevent the click event from bubbling up to the parent div
+    this.setState({
+      editorHeight: '250px',
+      isExpanded: false,
+    });
   }
 
   componentDidMount() {
@@ -52,7 +70,7 @@ class PublicBodyContainer extends Component {
   } updateBackgroundStyle() {
     const { publicCollectionTheme } = this.state.theme;
     const dynamicColor = hexToRgb(publicCollectionTheme, 0.02);
-    const staticColor = background['backgroound_boxes'];
+    const staticColor = background['background_boxes'];
 
     const backgroundStyle = {
       backgroundImage: `
@@ -331,24 +349,29 @@ class PublicBodyContainer extends Component {
                 </li>
               </ul>
               {this.state.showBodyCodeEditor ? (
-                <AceEditor
-                  className={`${isOnPublishedPage() ? "custom-raw-editor-public" : "custom-raw-editor"}`}
-                  mode='json'
-                  style={this.state.theme.backgroundStyle}
-                  theme='github'
-                  value={this.props.body?.raw?.value}
-                  onChange={this.handleChangeBodyDescription.bind(this)}
-                  setOptions={{
-                    showLineNumbers: true
-                  }}
-                  editorProps={{
-                    $blockScrolling: false
-                  }}
-                  onLoad={(editor) => {
-                    editor.getSession().setUseWrapMode(true)
-                    editor.setShowPrintMargin(false)
-                  }}
-                />
+                <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>
+                {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
+                <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
+                  <AceEditor
+                    className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
+                    mode='json'
+                    theme='github'
+                    value={this.props.body?.raw?.value}
+                    onChange={this.handleChangeBodyDescription.bind(this)}
+                    style={{ height: this.state.editorHeight }}
+                    setOptions={{
+                      showLineNumbers: true,
+                    }}
+                    editorProps={{
+                      $blockScrolling: false,
+                    }}
+                    onLoad={(editor) => {
+                      editor.getSession().setUseWrapMode(true);
+                      editor.setShowPrintMargin(false);
+                    }}
+                  />
+                </div>
+              </div>
               ) : (
                 <div className='body-description-container' style={this.state.theme.backgroundStyle}>
                   {/* Previous Body Description Layout */}
