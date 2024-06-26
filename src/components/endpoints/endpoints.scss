@@ -1574,11 +1574,10 @@ table#custom-generic-table {
 .pubCode-icon {
   height: fit-content;
   z-index: 999;
-  left: -7px;
+  left: -11px;
   border: 1px solid $lightblackborder !important;
   &.active {
     transform: rotate(180deg);
-    left: -13px !important;
   }
   @media screen and (max-width: 1160px) {
     display: none !important;
