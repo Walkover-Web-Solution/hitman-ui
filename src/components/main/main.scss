@@ -1349,16 +1349,16 @@ button.editBtn {
 
 .headParaWraper {
   border-radius: $border-radius;
-  border: 1px solid $lightblackborder;
 
   #custom-generic-table {
     padding-left: 12px;
     padding-right: 12px;
-
     &:has(.custom-th) {
       padding-bottom: 12px;
-      border: 1px solid $border-color;
     }
+  }
+  &:has(.custom-th) {
+    border: 1px solid $lightblackborder;
   }
 }
 

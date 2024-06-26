@@ -1575,9 +1575,8 @@ table#custom-generic-table {
 .pubCode-icon {
   height: fit-content;
   z-index: 999;
-  border-radius: 50% !important;
-  padding: 0 4px !important;
   left: -7px;
+  border: 1px solid $lightblackborder !important;
   &.active {
     transform: rotate(180deg);
     left: -13px !important;
