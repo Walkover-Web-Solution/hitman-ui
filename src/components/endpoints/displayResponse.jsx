@@ -578,37 +578,6 @@ class DisplayResponse extends Component {
                   
                 </div>
                 {this.props.response.status && this.displayBodyAndHeaderResponse()}
-                {this.state.selectedResponseTab === 'body' && (
-                  <>
-                    {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
-                      <div
-                        className='add-to-sample-response'
-                      >
-                        <div className='adddescLink' onClick={() => this.addSampleResponse(this.props.response)}>
-                          <img src={addtosample} /> Add to Sample Response
-                        </div>
-                      </div>
-                    ) : null}
-                    {isDashboardRoute(this.props) && (
-                      <div className='tab-content' id='myTabContent'>
-                        <div className='tab-pane fade show active' id='home' role='tabpanel' aria-labelledby='home-tab'>
-                          <JSONPretty theme={JSONPrettyMon} data={this.props.response.data} />
-                        </div>
-                        <div className='tab-pane fade' id='profile' role='tabpanel' aria-labelledby='profile-tab'>
-                          {JSON.stringify(this.props.response.data)}
-                        </div>
-                        <div className='tab-pane fade' id='contact' role='tabpanel' aria-labelledby='contact-tab'>
-                          Feature coming soon... Stay tuned
-                        </div>
-                      </div>
-                    )}
-                    {!isDashboardRoute(this.props) && (
-                      <div className='tab-content'>
-                        <JSONPretty theme={JSONPrettyMon} data={this.props.response.data} />
-                      </div>
-                    )}
-                  </>
-                )}
                 {this.state.selectedResponseTab === 'header' && this.props.response.headers && this.displayHeader()}
                 {this.state.selectedResponseTab === 'testResults' && isDashboardRoute(this.props) && this.props.tests && (
                   <TestResults tests={this.props.tests} />
