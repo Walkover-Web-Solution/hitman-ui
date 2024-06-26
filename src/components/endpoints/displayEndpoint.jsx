@@ -3319,6 +3319,8 @@ class DisplayEndpoint extends Component {
                                     set_authoriztaion_params={this.setParams.bind(this)}
                                     set_authoriztaion_type={this.setAuthType.bind(this)}
                                     handleSaveEndpoint={this.handleSave.bind(this)}
+                                    delete_headers ={this.deleteHeader.bind(this)}
+                                    delete_params ={this.deleteParams.bind(this)}
                                   />
                                 </div>
                               </div>
