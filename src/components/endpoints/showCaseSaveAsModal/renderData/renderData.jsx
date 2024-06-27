@@ -43,16 +43,10 @@ export default function RenderData(props) {
   const addIdInPathdata = (id, slug) => {
     if (slug === 'collection') {
       const invisiblePageId = collections?.[id]?.rootParentId
-      props.setPathData((prev) => {
-        prev.push(invisiblePageId)
-        return prev
-      })
+      props.setPathData((prev) => [...prev, invisiblePageId])
       setListData(pages?.[invisiblePageId]?.child)
     } else {
-      props.setPathData((prev) => {
-        prev.push(id)
-        return prev
-      })
+      props.setPathData((prev) => [...prev, id])
       setListData(pages?.[id]?.child)
     }
   }
