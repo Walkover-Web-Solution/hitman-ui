@@ -20,7 +20,7 @@ import IconButton from '../common/iconButton'
 import { IoIosArrowDown } from "react-icons/io"
 import CollectionForm from '../collections/collectionForm'
 import { MdSwitchLeft } from "react-icons/md"
-import { FaUser } from "react-icons/fa"
+import { FiUser } from "react-icons/fi"
 import ImportCollectionModal from '../importCollection/importColectionModel'
 
 const mapStateToProps = (state) => {
