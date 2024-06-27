@@ -1,8 +1,6 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import DragAndDropUploader from '../common/dragAndDropModel/DragAndDropUploader';
-// import DragAndDropUploader from './DragAndDropUploader';
-
 
 const ImportCollectionModal = ({ show, onClose }) => {
   return (
@@ -11,7 +9,7 @@ const ImportCollectionModal = ({ show, onClose }) => {
         <Modal.Title>Import Collection</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <DragAndDropUploader importType='openapi'  onClose={onClose} />
+        <DragAndDropUploader importType='collection'  onClose={onClose} />
       </Modal.Body>
     </Modal>
   );

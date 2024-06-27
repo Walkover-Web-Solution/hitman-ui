@@ -18,11 +18,10 @@ import { ReactComponent as Users } from '../../assets/icons/users.svg'
 import { MdDeleteOutline } from 'react-icons/md'
 import IconButton from '../common/iconButton'
 import { IoIosArrowDown } from "react-icons/io"
-import OpenApiForm from '../openApi/openApiForm'
 import CollectionForm from '../collections/collectionForm'
 import { MdSwitchLeft } from "react-icons/md"
 import { FaUser } from "react-icons/fa"
-import ImportCollectionModal from '../openApi/importColectionModel'
+import ImportCollectionModal from '../importCollection/importColectionModel'
 
 const mapStateToProps = (state) => {
   return {
@@ -111,7 +110,6 @@ class UserProfileV2 extends Component {
         <div className='add-button d-flex align-items-center'>
           <button className='mr-1 px-1 btn btn-light' onClick={this.handleAddNewClick}>New</button>
           <button className='btn btn-light px-1' onClick={this.handleImportClick}>Import</button>
-        {/* <OpenApiForm show={this.state.showImportModal}  onHide={() => { this.handleImportClick() }} /> */}
         <ImportCollectionModal show={this.state.showImportModal} onClose={() => { this.handleImportClick() }}/>
         <CollectionForm {...this.props} show={this.state.showNewCollectionModal} title='Add new Collection' onHide={() => { this.handleAddNewClick() }} />
         </div>

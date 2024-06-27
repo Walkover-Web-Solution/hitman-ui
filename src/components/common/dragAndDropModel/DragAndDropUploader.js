@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { CiImport } from "react-icons/ci";
 import './dragAndDropUploader.scss';
 import { importEnvironment } from '../../environments/redux/environmentsActions';
-import { importApi } from '../../collections/redux/collectionsActions';
+import { importCollection } from '../../collections/redux/collectionsActions';
 
 
 const DragAndDropUploader = ({ onClose, view, importType }) => {
@@ -24,10 +24,10 @@ const DragAndDropUploader = ({ onClose, view, importType }) => {
     if (importType == 'environment') {
       dispatch(importEnvironment(uploadedFile, onClose))
     }
-    if (importType === 'openapi') {
+    if (importType === 'collection') {
       const uploadedFile = new FormData()
       uploadedFile.append('myFile', file, fileName)
-      dispatch(importApi(uploadedFile, view, onClose, 'application/json'));
+      dispatch(importCollection(uploadedFile, view, onClose, 'application/json'));
     }
   };
 
