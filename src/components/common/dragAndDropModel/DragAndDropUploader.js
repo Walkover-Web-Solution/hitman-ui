@@ -25,16 +25,9 @@ const DragAndDropUploader = ({ onClose, view, importType }) => {
       dispatch(importEnvironment(uploadedFile, onClose))
     }
     if (importType === 'openapi') {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target.result;
-        const rawData = {
-          myFile: content,
-          fileName: fileName,
-        };
-          dispatch(importApi(JSON.parse(rawData.myFile), view, onClose, 'application/json'));
-      };
-      reader.readAsText(file);
+      const uploadedFile = new FormData()
+      uploadedFile.append('myFile', file, fileName)
+      dispatch(importApi(uploadedFile, view, onClose, 'application/json'));
     }
   };
 
