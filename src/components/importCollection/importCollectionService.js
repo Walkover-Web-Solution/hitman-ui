@@ -6,11 +6,11 @@ function getApiUrl() {
   return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 }
 
-export function importApi(openApiObject, defaultView) {
+export function importCollectionService(openApiObject, uniqueTabId, defaultView) {
   const apiUrl = getApiUrl();
-  return http.post(`${apiUrl}/importCollection?defaultView=${defaultView}`, openApiObject);
+  return http.post(`${apiUrl}/importCollection?defaultView=${defaultView}&uniqueTabId=${uniqueTabId}`, openApiObject);
 }
 
 export default {
-  importApi
+  importCollectionService
 }
