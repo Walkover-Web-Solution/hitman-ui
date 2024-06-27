@@ -14,7 +14,9 @@ import {
   getUrlPathById,
   isTechdocOwnDomain,
   isOnPublishedPage,
-  hexToRgb
+  hexToRgb,
+  modifyDataForBulkPublish,
+  isOnRedirectionPage
 } from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
@@ -193,35 +195,6 @@ class SideBarV2 extends Component {
     }
   }
 
-  // handleShortcuts = (event, data) => {
-  //   // const { focused: sidebarFocused, navList, focusedNode } = this.props.sidebar
-  //   switch (data) {
-  //     // case 'FOCUS_SEARCH': this.inputRef.focus()
-  //       // break
-  //     case 'UP_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_PREVIOUS_ITEM })
-  //       break
-  //     case 'DOWN_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_NEXT_ITEM })
-  //       break
-  //     case 'OPEN_ENTITY':
-  //       if (sidebarFocused && focusedNode) {
-  //         const { id, type, isExpandable } = navList[focusedNode]
-  //         // if (isExpandable) {
-  //         //   store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM })
-  //         // } else {
-  //         //   this.openEntity(id, type)
-  //         // }
-  //       }
-  //       break
-  //     case 'CLOSE_ENTITY': if (sidebarFocused && focusedNode) store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM })
-  //       break
-  //     case 'DUPLICATE_ENTITY': if (sidebarFocused && focusedNode) sidebarActions.duplicateEntity(focusedNode)
-  //       break
-  //     case 'DELETE_ENTITY': if (sidebarFocused && focusedNode) this.handleDeleteEntity(focusedNode)
-  //       break
-  //     default: break
-  //   }
-  // }
-
   handleDeleteEntity(focusedNode) {
     this.props.open_modal(DELETE_CONFIRMATION, { nodeAddress: focusedNode })
   }
@@ -283,7 +256,7 @@ class SideBarV2 extends Component {
   }
 
   openEndpoint(id) {
-    if (isDashboardRoute(this.props)) {
+    if (isDashboardRoute(this.props) ) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${id}`
       })
@@ -300,7 +273,7 @@ class SideBarV2 extends Component {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
       })
-    } else {
+    } else{
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props?.pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
@@ -633,45 +606,22 @@ class SideBarV2 extends Component {
       </div>
     )
   }
-
-  // renderDownloadDesktopApp () {
-  //   const handleDownloadClick = () => {
-  //     const link = `${DESKTOP_APP_DOWNLOAD_LINK}?source=header`
-  //     openExternalLink(link)
-  //   }
-  //   return (
-  //     <div className='d-flex align-items-center mb-3 cursor-pointer' onClick={handleDownloadClick}>
-  //       <DownloadIcon className='mr-2' />
-  //       <span>Download Desktop App</span>
-  //     </div>
-  //   )
-  // }
-
   renderSidebarContent() {
     const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
     const collectionId = Object.keys(this.props?.collections)?.[0]
     return (
       <div
         ref={this.sidebarRef}
-        onClick={(e) => {
-          // if (!sidebarFocused && this.sidebarRef.current.contains(document.activeElement)) {
-          //   store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR })
-          // }
-        }}
-        onBlur={(e) => {
-          // if (sidebarFocused && !this.sidebarRef.current.contains(e.relatedTarget)) {
-          //   store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
-          // }
-        }}
         className={[''].join(' ')}
       >
         {this.showAddCollectionModal()}
-        {isOnPublishedPage() ? (
+        {isOnPublishedPage() || isOnRedirectionPage() ? (
           <div className='sidebar-accordion'>
             <CombinedCollections
               {...this.props}
               collection_id={collectionId}
               rootParentId={this.props.collections?.[collectionId]?.rootParentId}
+              setLatestUrl ={this.props.latestUrl}
             />
           </div>
         ) : (
@@ -753,7 +703,6 @@ class SideBarV2 extends Component {
   }
 
   renderDashboardSidebar() {
-    const element = isOnPublishedPage()
     var isOnDashboardPage = isDashboardRoute(this.props)
     return (
       <>

@@ -1209,7 +1209,11 @@ button.btn.btn-secondary {
     color: #fff;
   }
 }
-
+.get-access-token {
+  .modal-lg {
+    max-width: 700px !important;
+  }
+}
 .modal {
   .modal-dialog {
     // width: fit-content !important;
@@ -1346,7 +1350,17 @@ button.editBtn {
 .headParaWraper {
   padding: 8px;
   border-radius: $border-radius;
-  border: 1px solid $lightblackborder;
+
+  #custom-generic-table {
+    padding-left: 12px;
+    padding-right: 12px;
+    &:has(.custom-th) {
+      padding-bottom: 12px;
+    }
+  }
+  &:has(.custom-th) {
+    border: 1px solid $lightblackborder;
+  }
 }
 
 .adddescLink {
@@ -1822,6 +1836,7 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
     display: none;
     transition: 200ms;
   }
+ 
 
   .primary-sidebar .nav-tabs {
     border-top: 1px solid #d3ccc5;
@@ -1846,7 +1861,6 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
     margin: 5px auto 0;
   }
 }
-
 .app-name {
   svg {
     margin: 5px 10px 5px 0;
@@ -3058,10 +3072,8 @@ li.nav-item.cookie-tab a {
       position: absolute;
       right: 15px;
       z-index: 9;
-
-      @media screen and (max-width:768px) {
+      @media screen and (max-width:480px) {
         position: static !important;
-        margin-right: 2rem;
         padding-bottom: 10px;
       }
     }
@@ -3280,7 +3292,7 @@ ul.react-autoComplete-input {
 
 #authorization-form {
   & input {
-    max-width: 15rem;
+    max-width: 22rem;
   }
 
   & label {
@@ -3292,7 +3304,6 @@ ul.react-autoComplete-input {
 
 .top-part {
   .page-title-name {
-    padding-right: 7rem;
     input {
       font-size: 20px;
       width: max-content;
@@ -3587,12 +3598,7 @@ body .doc-secs-container {
 
     .response-viewer {
       margin: 0;
-
       .custom-tabs {
-        position: relative;
-        top: -1.75rem;
-        max-width: 50%;
-
         .nav-tabs {
           margin-top: 0;
           margin-bottom: 0;
@@ -4119,3 +4125,26 @@ body .tox {
 .cursor-text {
   cursor: text !important;
 }
+.Script-content {
+  &.active {
+    display: flex !important;
+  }
+  .Script-button {
+    width: 100px;
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.089) !important;
+    }
+    &.active {
+      color: #e98a36 !important;
+      background-color: rgba(128, 128, 128, 0.089) !important;
+    }
+  }
+}
+.body-ace-editer {
+  .close-button {
+    right: 3px;
+    top: 3px;
+    z-index: 9;
+  }
+}
+

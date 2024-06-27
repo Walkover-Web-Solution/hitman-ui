@@ -14,6 +14,9 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 99;
+  .show {
+    display: inline-flex !important;
+  }
 }
 
 .split-sidebar>div:first-child {
@@ -24,8 +27,11 @@
 .split-sidebar-public>div:first-child {
   max-width: 330px !important;
   width: unset;
-  min-width: 250px !important;
-  // background-color: $secondary-color;
+  min-width: 260px !important;
+  background-color: white;
+  @media screen and (max-width: 992px) {
+    flex: unset !important;
+  }
 
   @media screen and (max-width:767px) {
     position: fixed !important;
@@ -528,9 +534,9 @@ button {
       }
 
       .profile-listing-container .dropdown-item {
-        padding: 0.25rem 1rem;
+        padding: 0.25rem 9px;
         span {
-          font-size: $font-small-s;
+          font-size: $font-normal-n;
         }
         img {
           margin-right: 0.65rem;
@@ -922,6 +928,9 @@ input[type='text']:focus {
     transition:  400ms;
     width: 100%;
     padding: 10px 20px;
+    @media screen and (max-width: 568px) {
+      padding: 10px 12px;
+    }
     svg{
       font-size: 20px;
       font-weight: 700 !important;
@@ -989,7 +998,7 @@ input[type='text']:focus {
       background-color: unset !important;
     }
   }
-  @media screen and (max-width: 1400px) {
+  @media screen and (max-width: 992px) {
     width: 280px;
   }
   &:hover {

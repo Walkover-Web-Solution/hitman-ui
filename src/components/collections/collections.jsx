@@ -21,14 +21,15 @@ import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg
 import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
 import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
 import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTagsign.svg'
-import { RiShareForward2Line } from "react-icons/ri";
 import { MdExpandMore } from 'react-icons/md'
 import MoveModal from '../common/moveModal/moveModal'
-import  IconButtons  from '../common/iconButton'
-import { FiPlus } from "react-icons/fi"
-import { BsThreeDots } from "react-icons/bs"
-import { LuFolder } from "react-icons/lu";
-
+import IconButtons from '../common/iconButton'
+import { FiPlus } from 'react-icons/fi'
+import { BsThreeDots } from 'react-icons/bs'
+import { LuFolder } from 'react-icons/lu'
+import { RiShareForward2Line } from 'react-icons/ri'
+import { TbDirections } from 'react-icons/tb'
+import { TbSettingsAutomation } from "react-icons/tb";
 
 const mapStateToProps = (state) => {
   return {
@@ -65,12 +66,15 @@ class CollectionsComponent extends Component {
       showRemoveModal: false,
       selectedCollectionIds: [],
       showOrgModal: false,
+      showRunAutomationModal: false,
+      automationSelectedCollectionId: null,
     }
     this.names = {}
+    this.handleApiAutomation = this.handleApiAutomation.bind(this)
   }
 
   closeCollectionForm() {
-    this.setState({ showCollectionForm: false})
+    this.setState({ showCollectionForm: false })
   }
 
   async handleAddCollection(newCollection) {
@@ -186,7 +190,7 @@ class CollectionsComponent extends Component {
     })
   }
 
-  toggleSelectedColelctionIds(e,id) {
+  toggleSelectedColelctionIds(e, id) {
     e.stopPropagation()
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_collection({
@@ -229,6 +233,13 @@ class CollectionsComponent extends Component {
     )
   }
 
+  openRedirectionsPage(collection) {
+    this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collection.id}/redirections`)
+  }
+  handleApiAutomation(collectionId) {
+    this.props.history.push(`/orgs/${this.props.match.params.orgId}/automation/${collectionId}`)
+  }
+
   renderBody(collectionId, collectionState) {
     const expanded = this.props.clientData?.[collectionId]?.isExpanded ?? isOnPublishedPage()
     var isOnDashboardPage = isDashboardRoute(this.props)
@@ -237,17 +248,20 @@ class CollectionsComponent extends Component {
       <React.Fragment key={collectionId}>
         <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
           <button tabIndex={-1} variant='default' className={`sidebar-hower ${expanded ? 'expanded' : ''}`}>
-            <div className='inner-container' onClick={(e) =>{
-              this.openPublishSettings(collectionId)
-              if(!expanded){
-                this.toggleSelectedColelctionIds(e,collectionId)
-              }
-            }}>
+            <div
+              className='inner-container'
+              onClick={(e) => {
+                this.openPublishSettings(collectionId)
+                if (!expanded) {
+                  this.toggleSelectedColelctionIds(e, collectionId)
+                }
+              }}
+            >
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
-                <span className='versionChovron' onClick={(e) => this.toggleSelectedColelctionIds(e,collectionId)}>
-                  <MdExpandMore size={13} className='collection-icons-arrow d-none'/>
-                  <LuFolder size={13}  className='collection-icons d-inline ml-1'/>
+                  <span className='versionChovron' onClick={(e) => this.toggleSelectedColelctionIds(e, collectionId)}>
+                    <MdExpandMore size={13} className='collection-icons-arrow d-none' />
+                    <LuFolder size={13} className='collection-icons d-inline ml-1' />
                   </span>
                   {collectionState === 'singleCollection' ? (
                     <div className='sidebar-accordion-item' onClick={() => this.openSelectedCollection(collectionId)}>
@@ -297,11 +311,15 @@ class CollectionsComponent extends Component {
                             <RiShareForward2Line size={16} color='grey' /> Move
                           </div>
                           <div
-                            className='dropdown-item text-danger d-flex'
-                            onClick={() => {
-                              this.openDeleteCollectionModal(collectionId)
-                            }}
+                            className='dropdown-item d-flex'
+                            onClick={() => this.openRedirectionsPage(this.props.collections[collectionId])}
                           >
+                            <TbDirections size={16} color='grey' /> Redirections
+                          </div>
+                          <div className='dropdown-item' onClick={() => this.handleApiAutomation(collectionId)}>
+                            <TbSettingsAutomation size={16} color='grey' /> API Automation
+                          </div>
+                          <div className='dropdown-item text-danger d-flex' onClick={() => { this.openDeleteCollectionModal(collectionId) }}>
                             <DeleteIcon /> Delete
                           </div>
                         </>
@@ -317,16 +335,13 @@ class CollectionsComponent extends Component {
                           <div> Remove Public Collection </div>
                         </div>
                       )}
-                      
                     </div>
                   </div>
                   <div className='theme-color d-flex transition counts ml-1 f-12'>
                     {this.props.collections[collectionId]?.importedFromMarketPlace ? (
                       <div className='marketplace-icon mr-1'> M </div>
                     ) : null}
-                    <span className={this.props.collections[collectionId].isPublic ? 'published' : ''}>
-                      {/* {this.findEndpointCount(collectionId) === 0 ? '' : this.findEndpointCount(collectionId)} */}
-                    </span>
+                    <span className={this.props.collections[collectionId].isPublic ? 'published' : ''}></span>
                   </div>
                   {/* <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span> */}
                 </div>
@@ -336,7 +351,6 @@ class CollectionsComponent extends Component {
           {expanded ? (
             <div id='collection-collapse'>
               <Card.Body>
-
                 {
                   <CombinedCollections
                     {...this.props}
@@ -349,7 +363,7 @@ class CollectionsComponent extends Component {
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
-                    // isPublishData={false}
+                  // isPublishData={false}
                   />
                 }
               </Card.Body>
@@ -456,6 +470,7 @@ class CollectionsComponent extends Component {
           {this.props.collectionsToRender.length > 0 ? (
             <div className='App-Side'>
               {this.props.collectionsToRender.map((collectionId, index) => this.renderBody(collectionId, 'allCollections'))}
+              {this.state.showRunAutomationModal && this.renderRunAutomationModal()}
             </div>
           ) : this.props.filter === '' ? (
             this.renderEmptyCollections()

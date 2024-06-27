@@ -429,11 +429,11 @@ class CollectionParentPages extends Component {
         className='version-dropdown'
         ref={this.versionDropDownRef}
         id='dropdown-basic-button'
-        onClick={(e) => e.stopPropagation()}
+        // onClick={(e) => e.stopPropagation()}
         title={this.versionName()}
       >
         {this.props.pages[rootId].child.map((childId, index) => (
-          <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
+          <Dropdown.Item className='fs-4' key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
             {this.props.pages[childId]?.name}
           </Dropdown.Item>
         ))}
@@ -782,5 +782,4 @@ class CollectionParentPages extends Component {
     )
   }
 }
-
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CollectionParentPages))

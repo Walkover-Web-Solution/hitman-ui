@@ -259,7 +259,6 @@ $border-color: rgba(227, 228, 230, 0.7);
       outline: none;
       border: none;
       background: inherit;
-      padding: 2px 2px 2px 20px;
     }
   }
 
@@ -346,6 +345,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 
         .dropdown-menu {
           padding: 6px;
+
           .dropdown-item {
             &:hover {
               background-color: rgba(128, 128, 128, 0.123);
@@ -499,7 +499,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     .nav-item {
       .nav-link {
         &:hover {
-          color: #fff !important;
+          color: #fff;
           background-color: $theme-color;
         }
       }
@@ -512,6 +512,29 @@ $border-color: rgba(227, 228, 230, 0.7);
         &:hover {
           opacity: 0.6;
         }
+      }
+    }
+  }
+}
+
+.body-button {
+  .nav-item {
+    .nav-link {
+      border-bottom: 2px solid transparent;
+      color: black !important;
+      border-radius: 0 !important;
+
+      &.active {
+        background-color: unset !important;
+        color: black;
+        border-color: $theme-color !important;
+
+      }
+
+      &:hover {
+        background-color: unset !important;
+        color: black !important;
+        border-color: $theme-color important;
       }
     }
   }
@@ -535,6 +558,12 @@ $border-color: rgba(227, 228, 230, 0.7);
     justify-content: space-between;
     margin-bottom: 15px;
     flex-wrap: wrap;
+    position: absolute;
+    right: 32px;
+
+    @media screen and (max-width:992px) {
+      position: static;
+    }
 
     .statusWrapper {
       display: flex;
@@ -596,10 +625,6 @@ $border-color: rgba(227, 228, 230, 0.7);
           }
         }
       }
-    }
-
-    .tab-content {
-      margin: 10px;
     }
   }
 
@@ -811,7 +836,6 @@ table#custom-generic-table {
   line-height: 1.3;
   color: black !important;
   background: white !important;
-  max-height: 500px;
   overflow: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -995,6 +1019,7 @@ table#custom-generic-table {
   min-width: unset !important;
   width: auto;
   padding-right: 2px !important;
+
   button.btn.custom-request-button {
     width: 100%;
     border-radius: 0px;
@@ -1171,7 +1196,6 @@ table#custom-generic-table {
 }
 
 .add-to-sample-response {
-  width: 100%;
   float: right;
 
   .toast.show {
@@ -1226,6 +1250,7 @@ table#custom-generic-table {
     padding: 16px 8px 8px 13px;
     border-radius: $border-radius;
     border: 1px solid $lightblackborder;
+
     .nav-tabs {
       margin: 10px 0 0 !important;
     }
@@ -1545,7 +1570,18 @@ table#custom-generic-table {
 .disable-callback {
   color: rgb(155, 152, 152) !important;
 }
-
+.pubCode-icon {
+  height: fit-content;
+  z-index: 999;
+  left: -11px;
+  border: 1px solid $lightblackborder !important;
+  &.active {
+    transform: rotate(180deg);
+  }
+  @media screen and (max-width: 1160px) {
+    display: none !important;
+  }
+}
 .pubCodeWrapper {
   z-index: 199;
   width: 432px;
@@ -1554,6 +1590,10 @@ table#custom-generic-table {
   border-right: 1px solid $lightblackborder;
   border-bottom: 1px solid $lightblackborder;
   transition: 300ms;
+  @media screen and (max-width: 1300px) {
+    min-width: 350px ;
+    width: 300px ;
+  }
 
   .select-code-wrapper {
     button {
@@ -1571,7 +1611,8 @@ table#custom-generic-table {
     }
 
     .dropdown {
-      border: 1px solid transparent ;
+      border: 1px solid transparent;
+
       button {
         color: black !important;
         border: 1px solid $lightblackborder !important;
@@ -1579,6 +1620,7 @@ table#custom-generic-table {
         &::after {
           all: unset !important;
         }
+
         &.active {
           border: revert !important;
         }
@@ -1596,12 +1638,14 @@ table#custom-generic-table {
           }
         }
       }
+
       &.show {
         border-radius: 4px;
       }
+
       &:hover {
         border-radius: 4px;
-        border-color: gray ;
+        border-color: gray;
       }
     }
 
@@ -1635,6 +1679,13 @@ table#custom-generic-table {
       padding: 0px;
     }
   }
+  &.pubCodeWrapper-hide {
+    width: 10px ;
+    min-width: 10px ;
+    @media screen and (max-width: 1160px) {
+    // all: unset !important;
+    }
+  }
 }
 
 .show-curl-endpoint {
@@ -1644,7 +1695,7 @@ table#custom-generic-table {
   top: 40px;
   background-color: #f7f6f3 !important;
   color: black !important;
-  width:426px !important;
+  width: 426px !important;
   min-width: unset !important;
 
   .select-code-wrapper {
@@ -1677,34 +1728,34 @@ table#custom-generic-table {
     }
 
 
-      .dropdown {
-        button {
-          color: black !important;
+    .dropdown {
+      button {
+        color: black !important;
 
-          &:hover {
-            color: white !important;
-            background-color: #343a40 !important;
-          }
+        &:hover {
+          color: white !important;
+          background-color: #343a40 !important;
+        }
 
-          &.active {
-            color: white !important;
-            background-color: black !important;
-          }
+        &.active {
+          color: white !important;
+          background-color: black !important;
+        }
 
-          &.btn {
-            &.btn-primary {
-              &.active {
-                background-color: black !important;
-              }
+        &.btn {
+          &.btn-primary {
+            &.active {
+              background-color: black !important;
+            }
 
-              &:focus {
-                background-color: black !important;
-                color: white !important;
-              }
+            &:focus {
+              background-color: black !important;
+              color: white !important;
             }
           }
         }
       }
+    }
 
   }
 }
@@ -1714,6 +1765,7 @@ table#custom-generic-table {
     font-size: 12px;
   }
 }
+
 .dropdown-icon {
   color: #4CAF50;
   font-size: 16px;
@@ -1762,4 +1814,28 @@ table#custom-generic-table {
   color: plum;
   border: 1px solid rgba(128, 128, 128, 0.452);
   padding: 10px;
+}
+
+.raw-response {
+  pre {
+    margin-bottom: 0 !important;
+    padding: 8px;
+    border-radius: 4px;
+  }
+}
+
+.console-button {
+  button {
+    border: unset !important;
+    border-bottom: 2px solid transparent !important;
+    border-radius: unset !important;
+
+    &:hover {
+      border-color: $theme-color !important;
+    }
+
+    &.active {
+      border-color: $theme-color !important;
+    }
+  }
 }

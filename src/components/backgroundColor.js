@@ -3,5 +3,5 @@ export const background = {
    'background_sideBar' : '#f0f0f0',
    'background_pubCode' : '#fafafa',
    'background_mainPage' : '#f5f5f5',
-   'backgroound_boxes' : '#fafafa'
+   'background_boxes' : '#fafafa'
 }

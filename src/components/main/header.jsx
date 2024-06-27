@@ -14,7 +14,8 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     groups: state.groups,
     pages: state.pages,
-    versions: state.versions
+    versions: state.versions,
+    organizations : state.organizations.orgList
   }
 }
 
@@ -266,7 +267,7 @@ class Header extends Component {
           showCommunityButton={false}
           getNotificationCount={() => this.getNotificationCount()}
           project_name=''
-          organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []}
+          organizations={this.props.organizations}
           organizationId={getOrgId()}
           productName='hitman'
           renderNavTitle={() => this.renderNavTitle()}

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
-import collectionsApiService from './components/collections/collectionsApiService'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import { ToastContainer } from 'react-toastify'
@@ -26,6 +25,8 @@ import shortid from 'shortid'
 import OauthPage from './components/OauthPage/OauthPage.js'
 import TrashPage from './components/main/Trash/trashPage.jsx'
 import IndexWebsite from './components/indexWebsite/indexWebsite.js'
+import Redirections from './components/collections/Redirections.jsx'
+import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -44,9 +45,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     const currentOrgId = getOrgId() ?? props.location.pathname.split('/')?.[2]
-    if (currentOrgId && !isOnPublishedPage()) {
-      initConn(currentOrgId)
-    }
+    if (currentOrgId && !isOnPublishedPage()) {initConn(currentOrgId)}
     sessionStorage.setItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID, shortid.generate())
   }
 
@@ -102,6 +101,7 @@ class App extends Component {
           <ProtectedRouteV2 path='/orgs/:orgId/dashboard/history/:historyId' component={MainV2} />
           <Route path='/orgs/:orgId/invite' component={InviteTeam} />
           <ProtectedRouteV2 path='/orgs/:orgId/trash' component={TrashPage} />
+          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/redirections' component={Redirections} />
 
           {/* Not Logged in Dashboard Route */}
           <Route path='/dashboard/' component={MainV2} />
@@ -113,6 +113,7 @@ class App extends Component {
           <Route path='/login' component={LoginV2} />
           <Route path='/logout' component={Logout} />
           <Route exact path='/proxy/auth' component={AuthServiceV2} />
+          <Route exact path='/orgs/:orgId/automation/:collectionId' component={RunAutomation} />
         </Switch>
       </>
     )

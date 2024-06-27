@@ -6,6 +6,7 @@ const apiUrl = process.env.REACT_APP_API_URL
 const orgId = getOrgId()
 
 function getApiEndpoint() {
+const orgId = getOrgId()
   return `${apiUrl}/orgs/${orgId}/collections`
 }
 

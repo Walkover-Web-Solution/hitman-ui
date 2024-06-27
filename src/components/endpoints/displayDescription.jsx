@@ -1,99 +1,27 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { isDashboardRoute } from '../common/utility'
-import { updateEndpoint } from '../pages/redux/pagesActions'
-import { connect } from 'react-redux'
-import './endpointBreadCrumb.scss'
 import EndpointBreadCrumb from './endpointBreadCrumb'
+import './endpointBreadCrumb.scss'
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    update_endpoint: (editedEndpoint) => dispatch(updateEndpoint(editedEndpoint))
-  }
-}
+function DisplayDescription(props) {
 
-class DisplayDescription extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      showDescriptionFormFlag: false,
-      showAddDescriptionFlag: isDashboardRoute(this.props)
-        ? !!(this.props.endpoint.description === '' || this.props.endpoint.description == null)
-        : false,
-      theme: ''
-    }
+  const [description, setDescription] = useState(props?.endpoint?.description || '');
 
-    this.modules = {
-      toolbar: [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ color: [] }, { background: [] }],
-
-        [({ list: 'ordered' }, { list: 'bullet' })],
-        ['link']
-      ]
-    }
-
-    this.formats = ['header', 'bold', 'italic', 'underline', 'strike', 'color', 'background', 'list', 'bullet', 'link']
+  const handleChangeDescription = (e) => {
+    const value = e.currentTarget.value
+    if (value.length > 500) return;
+    setDescription(value)
+    props.props_from_parent(value)
   }
 
-  handleChange(e) {
-    const data = { ...this.props.data }
-    data[e.currentTarget.name] = e.currentTarget.value
-    this.props.props_from_parent('data', data)
-  }
-
-  componentDidMount() {
-    if (!this.state.theme) {
-      this.setState({ theme: this.props.publicCollectionTheme })
-    }
-  }
-
-  handleDescription() {
-    const showDescriptionFormFlag = true
-    const showAddDescriptionFlag = false
-    this.setState({ showDescriptionFormFlag, showAddDescriptionFlag })
-  }
-
-  handleDescriptionCancel() {
-    const endpoint = { ...this.props.endpoint }
-    endpoint.description = this.props.old_description
-    const showDescriptionFormFlag = false
-    this.setState({
-      showDescriptionFormFlag,
-      showAddDescriptionFlag: true
-    })
-    this.props.props_from_parent('endpoint', endpoint)
-  }
-
-  handleDescriptionSave(e) {
-    e.preventDefault()
-    const value = this.props.endpoint.description
-    const endpoint = { ...this.props.endpoint }
-    this.props.update_endpoint({ id: endpoint.id, description: value })
-    endpoint.description = value
-    this.setState({
-      showDescriptionFormFlag: false,
-      showAddDescriptionFlag: true
-    })
-    this.props.props_from_parent('endpoint', endpoint)
-    this.props.props_from_parent('oldDescription', value)
-  }
-
-  handleChangeDescription = (value) => {
-    const endpoint = { ...this.props.endpoint }
-    endpoint.description = value
-    this.props.props_from_parent('endpoint', endpoint)
-  }
-
-  render() {
-    return (
-      <div className='endpoint-header'>
-        <div className={isDashboardRoute(this.props) ? 'panel-endpoint-name-container' : 'endpoint-name-container'}>
-          {isDashboardRoute(this.props) && <>{this.props.endpoint && <EndpointBreadCrumb {...this.props} isEndpoint />}</>}
-        </div>
+  return (
+    <div className='endpoint-header flex-grow-1'>
+      <div className={isDashboardRoute(props) ? 'panel-endpoint-name-container' : 'endpoint-name-container'}>
+        {isDashboardRoute(props) && <>{props.endpoint && <EndpointBreadCrumb setActiveTab={props.setActiveTab} {...props} isEndpoint />}</>}
+        {isDashboardRoute(props) && props.endpoint && <input placeholder='Write Description' value={description} onChange={handleChangeDescription} className='endpoint-description w-100' />}
       </div>
-    )
-  }
+    </div>
+  )
 }
 
-export default connect(null, mapDispatchToProps)(DisplayDescription)
+export default DisplayDescription
