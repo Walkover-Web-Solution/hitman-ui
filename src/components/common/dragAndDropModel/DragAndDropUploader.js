@@ -18,7 +18,7 @@ const DragAndDropUploader = ({ onClose, view, importType }) => {
     setFileName(uploadedFile.name);
   }, []);
 
-  const handleImport = (dispatch) => {
+  const handleImport = () => {
     const uploadedFile = new FormData()
     uploadedFile.append('myFile', file, fileName)
     if (importType == 'environment') {

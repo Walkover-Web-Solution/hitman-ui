@@ -8,7 +8,7 @@ function getApiUrl() {
 
 export function importApi(openApiObject, defaultView) {
   const apiUrl = getApiUrl();
-  return http.post(`${apiUrl}/orgs/:orgId/importCollection?defaultView=${defaultView}`, openApiObject);
+  return http.post(`${apiUrl}/importCollection?defaultView=${defaultView}`, openApiObject);
 }
 
 export default {
