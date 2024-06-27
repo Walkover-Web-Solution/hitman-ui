@@ -28,7 +28,6 @@ import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
 import moment from 'moment'
 import RenderPageContent from './renderPageContent'
-import DisplayUserAndModifiedData from '../common/userService'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
