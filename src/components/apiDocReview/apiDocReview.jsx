@@ -5,6 +5,7 @@ import { Button } from 'react-bootstrap'
 import { BiLike, BiDislike } from "react-icons/bi";
 import './apiDocReview.scss'
 import { dislike, like } from '../../services/feedbackService'
+import { LuAsterisk } from 'react-icons/lu'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -19,7 +20,6 @@ const ApiDocReview = (props) => {
   const [feedbackGiven, setFeedbackGiven] = useState(false)
   const [feedbackSaved, setFeedbackSaved] = useState(false)
   const [currentReviews, setCurrentReviews] = useState({})
-
   const prevProps = useRef(props)
 
   useEffect(() => {
@@ -177,33 +177,27 @@ const ApiDocReview = (props) => {
     !isDashboardRoute(props) && (
       <>
         <div className='position-relative'>
-          <p className='d-flex justify-content-center fs-4 font-weight-700 text-secondary'>Was this page helpful?</p>
+          <p className='d-flex justify-content-center font-weight-700 text-secondary'>Was this page helpful?</p>
           <div className='d-flex justify-content-center like-unline fs-2'>
-          <OverlayTrigger
-              placement='bottom'
-              overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}
-            >
-            <div
-              className='cursor-pointer'
-              onClick={() => {
-                handleLikeButton()
-              }}
-            >
-              <BiLike />
-            </div>
+            <OverlayTrigger placement='bottom' overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}>
+              <div
+                className='cursor-pointer'
+                onClick={() => {
+                  handleLikeButton()
+                }}
+              >
+                <BiLike size={30} />
+              </div>
             </OverlayTrigger>
-            <OverlayTrigger
-              placement='bottom'
-              overlay={<Tooltip id='dislike-tooltip'>Not helpful</Tooltip>}
-            >
-            <div
-              className='cursor-pointer'
-              onClick={() => {
-                handleFeedback('DISLIKE')
-              }}
-            >
-              <BiDislike />
-            </div>
+            <OverlayTrigger placement='bottom' overlay={<Tooltip id='dislike-tooltip'>Not helpful</Tooltip>}>
+              <div
+                className='cursor-pointer'
+                onClick={() => {
+                  handleFeedback('DISLIKE')
+                }}
+              >
+                <BiDislike size={30} />
+              </div>
             </OverlayTrigger>
           </div>
           {feedbackGiven && renderFeedbackResponse()}

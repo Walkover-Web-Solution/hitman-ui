@@ -92,7 +92,6 @@ $border-color: rgba(227, 228, 230, 0.7);
   padding: 5px;
   border-top-right-radius: 4px;
   border-top-left-radius: 4px;
-  margin-top: -1.75rem;
 
   .list-group {
     width: 100%;
@@ -1248,7 +1247,7 @@ table#custom-generic-table {
 
   .sample-response {
     background-color: $secondary-color;
-    padding: 1rem 1.5rem;
+    padding: 16px 8px 8px 13px;
     border-radius: $border-radius;
     border: 1px solid $lightblackborder;
 
@@ -1585,7 +1584,6 @@ table#custom-generic-table {
 }
 .pubCodeWrapper {
   z-index: 199;
-  padding-top: 35px;
   width: 432px;
   min-width: 432px;
   border-left: 1px solid $lightblackborder;
@@ -1600,7 +1598,7 @@ table#custom-generic-table {
   .select-code-wrapper {
     button {
       color: black;
-      border: 1px solid transparent !important;
+      border: 1px solid $lightblackborder !important;
 
       &:hover {
         border-color: gray !important;
@@ -1617,7 +1615,7 @@ table#custom-generic-table {
 
       button {
         color: black !important;
-        border: none !important;
+        border: 1px solid $lightblackborder !important;
 
         &::after {
           all: unset !important;
@@ -1642,7 +1640,6 @@ table#custom-generic-table {
       }
 
       &.show {
-        border: 2px solid black !important;
         border-radius: 4px;
       }
 
