@@ -66,15 +66,16 @@ const Redirections = () => {
   }
 
   const handleAddUrl = async () => {
+    let result
     try {
       const path = userPathRef.current.value
-      const result = (await addUrlWithAdditionalPath(selectedPageId, params.collectionId, path)).data
+      result = (await addUrlWithAdditionalPath(selectedPageId, params.collectionId, path)).data
       const updatedRedirectUrls = [...redirectUrls, { pageId: result.pageId, path, pathId: result.id }]
       dispatch(addOldUrlOfPage({ pageId: result.pageId, path, pathId: result.id }))
       setRedirectUrls(updatedRedirectUrls)
     } catch (error) {
       console.error('Failed to create URL:', error)
-      toast.error(error.message)
+      toast.error(error.response.data.msg)
     }
   }
 
