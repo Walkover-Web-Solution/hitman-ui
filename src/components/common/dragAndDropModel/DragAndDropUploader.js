@@ -1,11 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { importEnvironment } from './redux/environmentsActions';
 import { useDispatch } from 'react-redux';
 import { CiImport } from "react-icons/ci";
-import './dragAndDropUploader.scss'; 
+import './dragAndDropUploader.scss';
+import { importEnvironment } from '../../environments/redux/environmentsActions';
+import { importCollection } from '../../collections/redux/collectionsActions';
 
-const DragAndDropUploader = ({ onClose }) => {
+
+const DragAndDropUploader = ({ onClose, view, importType }) => {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
   const dispatch = useDispatch();
@@ -19,7 +21,14 @@ const DragAndDropUploader = ({ onClose }) => {
   const handleImport = () => {
     const uploadedFile = new FormData()
     uploadedFile.append('myFile', file, fileName)
-    dispatch(importEnvironment(uploadedFile,onClose))
+    if (importType == 'environment') {
+      dispatch(importEnvironment(uploadedFile, onClose))
+    }
+    if (importType === 'collection') {
+      const uploadedFile = new FormData()
+      uploadedFile.append('myFile', file, fileName)
+      dispatch(importCollection(uploadedFile, view, onClose, 'application/json'));
+    }
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
