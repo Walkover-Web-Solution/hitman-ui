@@ -261,7 +261,7 @@ export const importApi = (collection, uniqueTabId, customCallback, defaultView) 
     try {
       uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
   
-      const response = await importApi(collection, defaultView);
+      const response = await openApiService.importApi(collection, defaultView);
       dispatch(onCollectionImported(response?.data));
       toast.success('Collection imported successfully');
 
