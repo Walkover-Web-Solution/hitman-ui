@@ -20,13 +20,14 @@ function isAdmin() {
   return { is_admin: true };
 }
 
-async function getUserData(token){
-  try{
+async function getUserData(token) {
+  try {
     const response = await axios.get(proxyUrl + "/getUsers?itemsPerPage=100", {
       headers: { proxy_auth_token: token }
     })
     return response?.data?.data?.data;
-  } catch(e){
+  } catch (e) {
+    localStorageCleanUp();
     logoutRedirection("/login");
   }
 }
@@ -107,7 +108,7 @@ function getProxyToken() {
 }
 
 async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
-  if (!proxyAuthToken) {proxyAuthToken = getProxyToken()}
+  if (!proxyAuthToken) { proxyAuthToken = getProxyToken() }
 
   window.localStorage.setItem(tokenKey, proxyAuthToken);
   try {
@@ -127,7 +128,7 @@ async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
     store.dispatch(setOrganizationList(userInfo.c_companies));
     store.dispatch(setCurrentorganization(userInfo.currentCompany));
     const currentOrgId = userInfo.currentCompany?.id;
-    if (currentOrgId) {switchOrg(currentOrgId)}
+    if (currentOrgId) { switchOrg(currentOrgId) }
   } catch (e) {
     console.error('Error:', e);
   }
@@ -136,25 +137,25 @@ async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
 function AuthServiceV2() {
   const query = useQuery();
   const history = useHistory();
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const proxyAuthToken = query.get("proxy_auth_token");
         if (proxyAuthToken) {
           await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
-        } 
+        }
       } catch (err) {
         history.push("/logout");
       }
     };
-  
+
     fetchData();
   }, []);
-  
+
   return (
     <div className='custom-loading-container'>
-      <progress className="pure-material-progress-linear w-25"/>
+      <progress className="pure-material-progress-linear w-25" />
     </div>
   );
 }
