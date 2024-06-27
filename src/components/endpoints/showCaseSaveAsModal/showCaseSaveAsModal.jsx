@@ -4,11 +4,12 @@ import RenderData from './renderData/renderData'
 import './showCaseSaveAsModal.scss'
 
 export default function ShowCaseSaveAsModal(props) {
-  const { pages, collections } = useSelector((state) => {
+  const { pages, collections, currentOrg } = useSelector((state) => {
     return {
       pages: state.pages,
       collections: state.collections,
-      activeTabId: state.tabs.activeTabId
+      activeTabId: state.tabs.activeTabId,
+      currentOrg: state.organizations.currentOrg,
     }
   })
 
@@ -66,7 +67,7 @@ export default function ShowCaseSaveAsModal(props) {
             <div className='d-flex justify-content-start align-items-center'>
               {index !== 0 && <span className='ml-1'>/</span>}
               <div onClick={() => handleGoBack(index)} className='ml-1 tab-line'>
-              {index === 0 ? JSON.parse(localStorage.getItem(singleId))?.name : getName(singleId)}
+                {index === 0 ? currentOrg?.name : getName(singleId)}
               </div>
             </div>
           )

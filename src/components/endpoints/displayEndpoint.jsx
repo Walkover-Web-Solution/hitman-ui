@@ -408,6 +408,7 @@ class DisplayEndpoint extends Component {
       activeTab: 'default'
     }
     this.setActiveTab = this.setActiveTab.bind(this);
+    this.setBody = this.setBody.bind(this);
     this.uri = React.createRef()
     this.paramKey = React.createRef()
     this.setCurrentReponseView()
@@ -703,7 +704,7 @@ class DisplayEndpoint extends Component {
       envVars = customEnv
     }
     str = str?.toString() || ''
-    const regexp = /{{((\w|-)+)}}/g
+    const regexp = /{{((\w|-|\s)+)}}/g
     let match = regexp.exec(str)
     const variables = []
     if (match === null) return str
@@ -720,7 +721,7 @@ class DisplayEndpoint extends Component {
 
       for (let i = 0; i < variables.length; i++) {
         const envVariable = envVars[variables[i]]
-        if (!envVariable) return variables;
+        if (!envVariable) continue;
         const strToReplace = `{{${variables[i]}}}`
         if (envVariable?.currentValue) {
           str = str.replace(strToReplace, envVariable.currentValue)
@@ -750,7 +751,7 @@ class DisplayEndpoint extends Component {
   replaceVariablesInBody(body, bodyType, customEnv) {
     if (bodyType === bodyTypesEnums['multipart/form-data'] || bodyType === bodyTypesEnums['application/x-www-form-urlencoded']) {
       body = this.replaceVariablesInJson(body, customEnv)
-    } else if (this.rawBodyType?.includes(bodyType)) {
+    } else if (this.rawBodyTypes?.includes(bodyType)) {
       body = this.replaceVariables(body, customEnv)
     }
     return body

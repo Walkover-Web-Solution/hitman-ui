@@ -6,9 +6,11 @@
 
 .custom-display-public-page {
   max-width: 100% !important;
+
   .page-wrapper {
     margin-left: auto;
     margin-right: auto;
+
     &:has(.editor-headings) {
       margin-right: unset !important;
     }
@@ -26,17 +28,21 @@
   padding-top: 25px;
   left: 5px;
   right: 6rem;
+
   // min-height: calc(100vh - 70px);
   button {
     margin-bottom: 15px;
     float: right;
+
     &.btn-outline.orange {
       pointer-events: none;
     }
   }
+
   p {
     margin-bottom: 0;
   }
+
   .page-wrapper {
     max-width: 1300px;
   }
@@ -91,6 +97,7 @@
   background: inherit;
   min-height: 55vh;
   word-break: break-all;
+
   * {
     font-size: revert;
     margin-bottom: 0;
@@ -124,4 +131,14 @@
   font-size: 12px;
   color: #d61124;
   font-weight: 400;
+}
+
+.empty-line { 
+  font-size: 14px;
+  font-weight: bolder;
+  color: #4f4f4f;
+}
+
+.empty-heading-for-page {
+  height: 70vh;
 }
