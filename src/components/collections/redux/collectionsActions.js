@@ -1,7 +1,7 @@
 import { store } from '../../../store/store'
 import collectionsApiService from '../collectionsApiService'
 import collectionsActionTypes from './collectionsActionTypes'
-import openApiService from '../../openApi/openApiService'
+import {importCollectionService} from '../../importCollection/importCollectionService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import { onParentPageAdded } from '../../pages/redux/pagesActions'
 import { toast } from 'react-toastify'
@@ -255,13 +255,13 @@ export const addCustomDomain = (collectionId, domain) => {
   }
 }
 
-export const importApi = (collection, uniqueTabId, customCallback, defaultView) => {
+export const importCollection = (collection, uniqueTabId, customCallback, defaultView) => {
   
   return async (dispatch) => {
     try {
       uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
   
-      const response = await openApiService.importApi(collection, defaultView);
+      const response = await importCollectionService(collection, uniqueTabId, defaultView);
       dispatch(onCollectionImported(response?.data));
       toast.success('Collection imported successfully');
 
@@ -293,22 +293,7 @@ export const onVersionsFetchedError = (error) => {
     error
   }
 }
-// To do later
-export const importCollection = (collection, customCallback) => {
-  return (dispatch) => {
-    dispatch(importCollectionRequest(collection))
-    collectionsApiService
-      .importCollection(collection.id)
-      .then((response) => {
-        dispatch(onCollectionImported(response.data))
-        if (customCallback) customCallback({ success: true })
-      })
-      .catch((error) => {
-        dispatch(onCollectionImportedError(error.response ? error.response.data : error, collection))
-        if (customCallback) customCallback({ success: false })
-      })
-  }
-}
+
 // To do later
 export const importCollectionRequest = (collection) => {
   return {

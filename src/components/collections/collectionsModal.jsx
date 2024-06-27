@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import CollectionForm from './collectionForm'
-import OpenApiForm from '../openApi/openApiForm'
 import { Modal } from 'react-bootstrap'
 import './collectionsModal.scss'
 
@@ -76,20 +75,6 @@ class CollectionsModal extends Component {
       <CollectionForm
         {...this.props}
         title='Add new Collection'
-        showOnlyForm
-        onCancel={() => {
-          this.removeSelection()
-        }}
-        onHide={() => {
-          this.props.onHide()
-        }}
-      />
-    )
-  }
-
-  renderImportForm() {
-    return (
-      <OpenApiForm
         showOnlyForm
         onCancel={() => {
           this.removeSelection()
