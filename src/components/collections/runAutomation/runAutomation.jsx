@@ -76,6 +76,7 @@ export default function RunAutomation() {
 
     const handleRunAutomation = async () => {
         const filteredEndpointIds = filterSelectedEndpointIds();
+        if (Object.keys(filteredEndpointIds).length === 0) return toast.warn('Please select endpoints');
         if (filteredEndpointIds.length === 0) return toast.error('Please select at least one endpoints to run the automation')
         const organizedEnv = organizeSelectedEnv();
         setAutomationLoading(true)
