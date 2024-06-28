@@ -32,7 +32,7 @@ import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
-import { TbLogin2 } from "react-icons/tb"
+import { FiExternalLink } from "react-icons/fi";
 import { updateDragDrop } from '../pages/redux/pagesActions'
 import {background} from '../backgroundColor.js'
 
@@ -685,7 +685,7 @@ class SideBarV2 extends Component {
         </h4>
         {isTechdocOwnDomain() && (
           <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5 align-items-center' style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
-            <TbLogin2 className='text-black' />
+            <FiExternalLink className='text-black mb-1' />
             <button
               type='button'
               class='btn btn-lg'
@@ -693,7 +693,7 @@ class SideBarV2 extends Component {
               data-bs-placement='top'
               data-bs-title='Login to manage this docs'
             >
-              Login to manage this docs
+              Go to Techdoc
             </button>
           </a>
         )}
