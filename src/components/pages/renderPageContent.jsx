@@ -9,21 +9,35 @@ export default function RenderPageContent(props) {
     const [innerText, setInnerText] = useState('');
 
     const addIdsToHeadings = (html) => {
+        if (!html || typeof html !== 'string') {
+            return '';
+        }
+        
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         const h2Elements = doc.querySelectorAll('h2');
-        const h2Headings = Array.from(h2Elements).map((h2, index) => {
-            const id = `heading-${index}`;
-            h2.setAttribute('id', id);
-            return { id, text: h2.innerText };
-        });
+        const h2Headings = Array.from(h2Elements).reduce((acc, h2, index) => {
+            const text = h2.innerText.trim();
+            if (text) {
+                const id = `heading-${index}`;
+                h2.setAttribute('id', id);
+                acc.push({ id, text });
+            }
+            return acc;
+        }, []);
         setHeadings(h2Headings);
         setInnerText(doc.body.innerText)
         return doc.body.innerHTML;
     };
 
     useEffect(() => {
-        setHtmlWithIds(addIdsToHeadings(props?.pageContent));
+        if (props?.pageContent && Object.keys(props.pageContent).length > 0) {
+            const updatedHtml = addIdsToHeadings(props.pageContent);
+            setHtmlWithIds(updatedHtml);
+        } else {
+            setHtmlWithIds('');
+            setHeadings([]);
+        }
     }, [props?.pageContent]);
 
     const scrollToHeading = (headingId) => {

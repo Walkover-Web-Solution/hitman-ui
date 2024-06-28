@@ -350,7 +350,6 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   line-height: 32px;
   font-style: normal;
   font-weight: normal;
-  text-transform: capitalize;
   display: flex;
   width: 100%;
   height: 32px;
@@ -367,7 +366,6 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 .hm-sidebar-label {
   height: 24px;
   margin-bottom: 5px;
-  text-transform: capitalize;
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -872,7 +870,6 @@ label.data-type {
 .code-heading {
   margin: 0;
   color: #fff;
-  text-transform: capitalize;
   font-weight: 500;
   font-size: 16px;
 }
@@ -2415,7 +2412,6 @@ span.endpointNameWrapper {
 .linkWrapper .linkWith .accordion>button {
   position: relative;
   color: #e98a36;
-  text-transform: capitalize;
 }
 
 .mainContentWrapper.dashboardPage .des-wrapper {
@@ -2491,7 +2487,6 @@ span.endpointNameWrapper {
 .stickyNav .entityTitle {
   display: block;
   color: #000000;
-  text-transform: capitalize;
   font-weight: 700;
   font-size: 20px;
 }
@@ -2746,7 +2741,6 @@ li.nav-item.cookie-tab a {
   }
   h4 {
     font-size: 14px;
-    text-transform: capitalize;
     color: #817f7f;
     font-weight: 500;
     position: sticky;
@@ -2885,7 +2879,6 @@ li.nav-item.cookie-tab a {
   }
   h3 {
     font-size: 20px;
-    text-transform: capitalize;
     margin-bottom: 45px;
   }
   button {
@@ -3532,7 +3525,7 @@ body .tox {
 .textEditorContainer{
   position: relative;
   .menuBar{
-    position: sticky;
+    // position: sticky;
     top: -2px;
     z-index: 1;
     background: white;
@@ -3886,5 +3879,17 @@ body .tox {
     right: 3px;
     top: 3px;
     z-index: 9;
+  }
+}
+.create-table {
+  .btn {
+    &.btn-light {
+      color: #212529 !important;
+      background-color: #f8f9fa !important;
+      border-color: #f8f9fa !important;
+      &:hover {
+        background-color: #e9ecef !important;
+      }
+    }
   }
 }

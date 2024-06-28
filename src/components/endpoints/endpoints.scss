@@ -107,7 +107,6 @@ $border-color: rgba(227, 228, 230, 0.7);
       padding: 7px;
       font-size: 12px;
       font-weight: 400;
-      text-transform: capitalize;
       border: 1px solid transparent;
       border-radius: 4px;
       margin: 0;
@@ -1835,4 +1834,8 @@ table#custom-generic-table {
       border-color: $theme-color !important;
     }
   }
+}
+.tiptap-editor-container {
+  height: 300px;
+  overflow: auto;
 }
