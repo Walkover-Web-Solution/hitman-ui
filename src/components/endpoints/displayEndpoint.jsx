@@ -1279,13 +1279,13 @@ class DisplayEndpoint extends Component {
         preScript: endpointContent?.preScriptText,
         postScript: endpointContent?.postScriptText,
         docViewData: endpointContent?.docViewData,
-        protocolType: endpointContent?.protocolType || null
+        protocolType: endpointContent?.protocolType || null,
+        description: endpointContent?.description || '',
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
       else if (currentTabId && !this.props.pages[currentTabId]) {
         endpoint.requestId = currentTabId
-        endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
         this.props.add_endpoint(
           endpoint,
@@ -1887,6 +1887,10 @@ class DisplayEndpoint extends Component {
     }
     if (title === 'endpoint') this.setState({ endpoint: data })
     if (title === 'oldDescription') this.setState({ oldDescription: data })
+    const endpointContent = this.props?.endpointContent;
+    endpointContent.description = title
+    this.props.setQueryUpdatedData(endpointContent)
+    this.setModifiedTabData()
   }
 
   propsFromSampleResponse(sampleResponseArray, sampleResponseFlagArray) {
@@ -3046,7 +3050,8 @@ class DisplayEndpoint extends Component {
                         {this.isDashboardAndTestingView() && (
                           <DisplayDescription
                             {...this.props}
-                            endpoint={this.state.endpoint}
+                            endpointId={this.props?.currentEndpointId}
+                            endpoint={this.props.endpointContent}
                             data={this.state.data}
                             old_description={this.state.oldDescription}
                             props_from_parent={this.propsFromDescription.bind(this)}

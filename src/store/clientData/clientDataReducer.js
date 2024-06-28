@@ -1,9 +1,6 @@
 import clientDataActionTypes from './clientDataActionTypes'
 
-const initialState = {
-  collectionToPublish: '',
-  publishDataForCollections: {}
-}
+const initialState = {}
 
 const clientDataReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -30,9 +27,18 @@ const clientDataReducer = (state = initialState, action) => {
       state[action.payload.id] = { ...state[action.payload.id], checkedForPublished: action.payload.isChecked }
       return { ...state }
 
-    case clientDataActionTypes.SET_COLLECTION_ID_FOR_PUBLISH:
-      state['collectionToPublish'] = action.payload.collectionId
+    case clientDataActionTypes.UDPATE_ENDPOINT_CHECK_STATUS:
+      if (!state[action.payload.id]) state[action.payload.id] = {}
+      state[action.payload.id] = { ...state[action.payload.id], automationCheck: action.payload.check }
       return { ...state }
+
+    case clientDataActionTypes.UPDATE_ALL_ENDPOINTS_CHECK_STATUS:
+      action.payload.endpointsIds.forEach((endpointId) => {
+        if (!state[endpointId]) state[endpointId] = {}
+        state[endpointId] = { ...state[endpointId], automationCheck: action.payload.isSelectAll ? true : false }
+      })
+      return { ...state }
+
     default:
       return state
   }
