@@ -1,46 +1,37 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { store } from '../../store/store'
 import ReactHtmlParser from 'html-react-parser'
 
-class DisplayCollection extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      description: ''
-    }
-  }
+const DisplayCollection = (props) => {
+  const [description, setDescription] = useState('')
+  const collections = useSelector((state) => state.collections)
 
-  async componentDidMount() {
-    if (!this.props.location.collection) {
-      const collectionId = this.props.location.pathname.split('/')[2]
-      this.fetchCollection(collectionId)
-      store.subscribe(() => {
-        this.fetchCollection(collectionId)
-      })
-    }
-  }
+  useEffect(() => {
+    const collectionId = props.location.pathname.split('/')[2]
+    fetchCollection(collectionId)
+    const unsubscribe = store.subscribe(() => fetchCollection(collectionId))
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.collections !== prevProps.collections) {
-      const collectionId = this.props.match.params.collectionIdentifier
-      if (this.props.collections[collectionId] && this.props.collections[collectionId] !== prevProps.collections[collectionId]) {
-        this.setState({ description: this.props.collections[collectionId].description })
-      }
+    return () => {
+      unsubscribe()
     }
-  }
+  }, [props.location])
 
-  fetchCollection(collectionId) {
-    const { collections } = store.getState()
+  useEffect(() => {
+    const collectionId = props.match.params.collectionIdentifier
+    if (collections[collectionId]) {
+      setDescription(collections[collectionId].description)
+    }
+  }, [collections, props.match.params.collectionIdentifier])
+
+  const fetchCollection = (collectionId) => {
     const collection = collections[collectionId]
     if (collection) {
-      const { description } = collection
-      this.setState({ description })
+      setDescription(collection.description)
     }
   }
 
-  render() {
-    return <div className='collection-description'>{ReactHtmlParser(this.state.description)}</div>
-  }
+  return <div className='collection-description'>{ReactHtmlParser(description)}</div>
 }
 
 export default DisplayCollection

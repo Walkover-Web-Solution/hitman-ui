@@ -72,19 +72,19 @@ class OpenApiForm extends Component {
     let errors = {}
     let FileError = null
     errors = this.validate({ type: this.state.importType }, { type: Joi.string().required() })
-      const schema = {
-        type: Joi.string().required(),
-        website: Joi.string()
-          .regex(URL_VALIDATION_REGEX, { name: 'URL' })
-          .trim()
-          .required()
-          .label('Website')
-          .error(() => {
-            return { message: 'Website must be a valid URL' }
-          })
-      }
-      errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
-   
+    const schema = {
+      type: Joi.string().required(),
+      website: Joi.string()
+        .regex(URL_VALIDATION_REGEX, { name: 'URL' })
+        .trim()
+        .required()
+        .label('Website')
+        .error(() => {
+          return { message: 'Website must be a valid URL' }
+        })
+    }
+    errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
+
     if (this.state.uploadedFile === null) {
       FileError = 'JSON file Should not be set empty'
     }
@@ -114,7 +114,11 @@ class OpenApiForm extends Component {
           <div id='select-json-wrapper'>
             <label>Select File</label>
             <span className='customFileChooser'>
-              <input type='file' accept={this.state.importType === 'openapi' ? '.json, .yaml' : '.json'} onChange={this.onFileChange.bind(this)}/>
+              <input
+                type='file'
+                accept={this.state.importType === 'openapi' ? '.json, .yaml' : '.json'}
+                onChange={this.onFileChange.bind(this)}
+              />
               Choose file
             </span>
             {this.state.errors?.file && <div className='alert alert-danger'>{this.state.errors?.file}</div>}
@@ -188,9 +192,7 @@ class OpenApiForm extends Component {
     return (
       <form className='mb-2'>
         <div className=''>
-          <div>
-            {this.renderInputType()}
-          </div>
+          <div>{this.renderInputType()}</div>
           <div>{this.renderJSONFileSelector()}</div>
         </div>
       </form>

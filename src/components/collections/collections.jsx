@@ -56,7 +56,7 @@ const mapDispatchToProps = (dispatch) => {
 class CollectionsComponent extends Component {
   constructor(props) {
     super(props)
-    this.handleOrgModalClose = this.handleOrgModalClose.bind(this);
+    this.handleOrgModalClose = this.handleOrgModalClose.bind(this)
     this.state = {
       showCollectionForm: false,
       collectionFormName: '',
@@ -66,7 +66,7 @@ class CollectionsComponent extends Component {
       publicLogoError: false,
       showRemoveModal: false,
       selectedCollectionIds: [],
-      showOrgModal: false,
+      showOrgModal: false
     }
     this.names = {}
   }
@@ -310,10 +310,7 @@ class CollectionsComponent extends Component {
                           >
                             <TbDirections size={16} color='grey' /> Redirections
                           </div>
-                          <div
-                            className='dropdown-item text-danger d-flex'
-                            onClick={() => this.openDeleteCollectionModal(collectionId)}
-                          >
+                          <div className='dropdown-item text-danger d-flex' onClick={() => this.openDeleteCollectionModal(collectionId)}>
                             <DeleteIcon color='red' /> Delete
                           </div>
                         </>
@@ -456,7 +453,9 @@ class CollectionsComponent extends Component {
                 )}
               {this.openTagManagerModal()}
               {this.showDeleteCollectionModal()}
-              {this.state.showOrgModal && <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />}
+              {this.state.showOrgModal && (
+                <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />
+              )}
             </div>
           </div>
           {this.props.collectionsToRender.length > 0 ? (

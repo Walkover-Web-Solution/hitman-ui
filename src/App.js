@@ -1,18 +1,11 @@
-import React, { Component } from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Route, Switch } from 'react-router-dom'
 import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import MainV2 from './components/main/MainV2'
-import Public from './components/publicEndpoint/publicEndpoint.jsx'
+import Public from './components/publicEndpoint/publicEndpoint1.jsx'
 import { ToastContainer } from 'react-toastify'
-import {
-  SESSION_STORAGE_KEY,
-  getOrgId,
-  isDashboardRoute,
-  isElectron,
-  isOnPublishedPage,
-  isTechdocOwnDomain
-} from './components/common/utility'
+import { SESSION_STORAGE_KEY, getOrgId, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import Cookies from 'universal-cookie'
@@ -40,39 +33,39 @@ const mapStateToProps = (state) => {
     tabsOrder: state.tabs.tabsOrder
   }
 }
-class App extends Component {
-  constructor(props) {
-    super(props)
-    const currentOrgId = getOrgId() ?? props.location.pathname.split('/')?.[2]
-    if (currentOrgId && !isOnPublishedPage()) {initConn(currentOrgId)}
-    sessionStorage.setItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID, shortid.generate())
-  }
 
-  componentDidMount() {
-    window.addEventListener('beforeinstallprompt', (e) => {
+const App = (props) => {
+  useEffect(() => {
+    const currentOrgId = getOrgId() ?? props.location.pathname.split('/')?.[2]
+    if (currentOrgId && !isOnPublishedPage()) {
+      initConn(currentOrgId)
+    }
+    sessionStorage.setItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID, shortid.generate())
+
+    const handleBeforeInstallPrompt = (e) => {
       e.preventDefault()
-      this.props.install_modal(e)
-    })
+      props.install_modal(e)
+    }
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
-        this.props.history.push({
+        props.history.push({
           pathname: '/login',
           search: `?sokt-auth-token=${data}`
         })
       })
     }
-  }
 
-  componentWillUnmount() {
-    resetConn(getOrgId())
-  }
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+      resetConn(getOrgId())
+    }
+  }, [props])
 
-  render = () => {
-    return this.renderApp()
-  }
-
-  renderApp = () => {
+  const renderApp = () => {
     if (!isElectron() && !isTechdocOwnDomain()) {
       return (
         <Switch>
@@ -86,12 +79,9 @@ class App extends Component {
         <ToastContainer />
         <Switch>
           <Route exact path='/' component={IndexWebsite} />
-          {/* Error Page Routes */}
           <Route path='/404_PAGE' component={ERROR_404_PAGE} />
           <Route path='/403_PAGE' component={ERROR_403_PAGE} />
           <Route path='/auth/redirect' component={OauthPage} />
-
-          {/* Logged in Dashboard Routes */}
           <ProtectedRouteV2 exact path='/orgs/:orgId/dashboard/' component={MainV2} />
           <ProtectedRouteV2 path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={MainV2} />
           <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/settings' component={MainV2} />
@@ -104,11 +94,7 @@ class App extends Component {
 
           {/* Not Logged in Dashboard Route */}
           <Route path='/dashboard/' component={MainV2} />
-
-          {/*  Public Page Routes */}
           <Route path='/p' component={Public} />
-
-          {/* React App Auth Routes */}
           <Route path='/login' component={LoginV2} />
           <Route path='/logout' component={Logout} />
           <Route exact path='/proxy/auth' component={AuthServiceV2} />
@@ -116,7 +102,9 @@ class App extends Component {
       </>
     )
   }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(App)
 
-// export default App
+  // export default App
+  return renderApp()
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

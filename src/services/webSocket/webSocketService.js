@@ -27,7 +27,7 @@ export function initConn(channel) {
 }
 
 export function resetConn(channel) {
-  CLIENT.unsubscribe(channel || CHANNEL)
+  /* CLIENT.unsubscribe(channel || CHANNEL) */
 }
 
 const subscribe = () => {
@@ -51,7 +51,6 @@ const OperationTypes = {
   DRAG_AND_DROP: 'drag-and-drop',
   PUBLISH_PAGE_OR_ENDPOINT: 'publish-page-or-endpoint',
   UNPUBLISH_PAGE_OR_ENDPOINT: 'unpublish-page-or-endpoint'
-
 }
 
 const handleDeleteActions = (data) => {
@@ -137,13 +136,13 @@ const handleMessage = (message) => {
       })
       break
 
-      case OperationTypes.PUBLISH_PAGE_OR_ENDPOINT:
-        store.dispatch(onEndpointStateSuccess({ state: message.data.state, id: message.data.id, isPublished: message.data.isPublished }))
-        break
+    case OperationTypes.PUBLISH_PAGE_OR_ENDPOINT:
+      store.dispatch(onEndpointStateSuccess({ state: message.data.state, id: message.data.id, isPublished: message.data.isPublished }))
+      break
 
-      case OperationTypes.UNPUBLISH_PAGE_OR_ENDPOINT:
-        store.dispatch(onEndpointStateSuccess({ state: message.data.state, id: message.data.id, isPublished: message.data.isPublished }))
-        break
+    case OperationTypes.UNPUBLISH_PAGE_OR_ENDPOINT:
+      store.dispatch(onEndpointStateSuccess({ state: message.data.state, id: message.data.id, isPublished: message.data.isPublished }))
+      break
 
     case OperationTypes.DRAG_AND_DROP:
       store.dispatch({

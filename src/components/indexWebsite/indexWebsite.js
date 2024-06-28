@@ -7,7 +7,6 @@ import { ReactComponent as Freejun } from '../../assets/web/logos/freejun.svg'
 import { ReactComponent as Msg91 } from '../../assets/web/logos/msg91.svg'
 import { ReactComponent as Dbdash } from '../../assets/web/logos/dbdash.svg'
 import { ReactComponent as Walkover } from '../../assets/web/logos/walkover.svg'
-
 import { MdAccessTimeFilled, MdGroups, MdRocketLaunch, MdApi } from 'react-icons/md'
 
 import heroImg from '../../assets/web/hero_img.png'

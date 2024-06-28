@@ -7,7 +7,7 @@ import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { addCollection, updateCollection } from './redux/collectionsActions'
 import { moveToNextStep } from '../../services/widgetService'
-import { defaultViewTypes } from './defaultViewModal/defaultViewModal'
+import { defaultViewTypes } from './defaultViewModal/defaultViewModal1'
 
 const mapStateToProps = (state) => {
   return {
@@ -80,6 +80,7 @@ class CollectionForm extends Form {
     const { viewLoader } = this.state
     if (!collection.data) {
       console.error('collection.data is undefined')
+      this.props.onHide()
       return // or handle this case appropriately
     }
     const { id: collectionId } = collection.data
@@ -100,7 +101,8 @@ class CollectionForm extends Form {
     this.props.add_collection(
       { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
       null,
-      this.redirectToCollection.bind(this))
+      this.redirectToCollection.bind(this)
+    )
     this.setState({
       data: {
         name: '',
@@ -132,7 +134,7 @@ class CollectionForm extends Form {
     }
     if (this.props.title === 'Add new Collection') {
       this.onAddCollectionSubmit(defaultView)
-        if (this.props.setDropdownList) this.props.onHide()
+      if (this.props.setDropdownList) this.props.onHide()
     }
   }
 

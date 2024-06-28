@@ -7,7 +7,7 @@ import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { moveToNextStep } from '../../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../../common/constants'
-import DefaultViewModal from '../../collections/defaultViewModal/defaultViewModal'
+import DefaultViewModal from '../../collections/defaultViewModal/defaultViewModal1'
 import { addPage } from '../../pages/redux/pagesActions'
 
 const mapStateToProps = (state) => {

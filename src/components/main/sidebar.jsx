@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, useSelector } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import moment from 'moment'
@@ -11,10 +11,7 @@ import {
   SESSION_STORAGE_KEY,
   getUrlPathById,
   isTechdocOwnDomain,
-  isOnPublishedPage,
-  hexToRgb,
-  modifyDataForBulkPublish,
-  isOnRedirectionPage
+  isOnPublishedPage
 } from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
@@ -29,7 +26,6 @@ import UserProfile from './userProfile'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from 'react-icons/tb'
 import { updateDragDrop } from '../pages/redux/pagesActions'
-import { background } from '../backgroundColor.js'
 
 const mapStateToProps = (state) => {
   return {
@@ -76,33 +72,26 @@ const SideBar = (props) => {
   const [pages, setPages] = useState([])
   const [draggingOverId, setDraggingOverId] = useState(null)
   const [draggedIdSelected, setDraggedIdSelected] = useState(null)
+
   const getSidebarInteractionClass = () => {
     return isDashboardRoute(props, true) ? 'sidebar' : 'sidebar'
   }
 
   const renderCollectionName = () => {
+    // Extract the first collection's details
     const collectionKeys = Object.keys(props.collections || {})
     const firstCollection = props?.collections?.[collectionKeys[0]] || {}
     const collectionName = firstCollection.name
     const publishedCollectionTitle = firstCollection.docProperties?.defaultTitle || ''
+    const faviconURL = props.collections?.[collectionKeys[0]]?.favicon
+      ? `data:image/png;base64,${props?.collections?.[collectionKeys[0]]?.favicon}`
+      : this.props.collections?.[collectionKeys[0]]?.docProperties?.defaultLogoUrl || ''
 
     return (
       <div className='hm-sidebar-header d-flex align-items-center'>
-        {(props.collections[collectionKeys[0]]?.favicon || props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
-          <div className='hm-sidebar-logo'>
-            <img
-              id='publicLogo'
-              alt='public-logo'
-              src={
-                props.collections[collectionKeys[0]]?.favicon
-                  ? `data:image/png;base64,${props.collections[collectionKeys[0]]?.favicon}`
-                  : props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl
-              }
-              width='60'
-              height='60'
-            />
-          </div>
-        )}
+        <div className='hm-sidebar-logo'>
+          <img id='publicLogo' alt='public-logo' src={''} width='60' height='60' />
+        </div>
         <h4 className='hm-sidebar-title'>
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documentation</span>
