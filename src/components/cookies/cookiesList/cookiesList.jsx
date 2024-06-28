@@ -75,7 +75,7 @@ class CookiesList extends Component {
         </div>
       ))
     ) : (
-      <h4 className='text-center'>No Domain available!</h4>
+      <h4 className='text-center fs-4 text-secondary'>No Domain available!</h4>
     )
   }
 

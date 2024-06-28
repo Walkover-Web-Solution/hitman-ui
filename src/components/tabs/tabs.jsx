@@ -415,12 +415,12 @@ class CustomTabs extends Component {
     const history = {
       position: 'fixed',
       background: '#f7f6f3',
-      top: '40px',
+      top: '41px',
       right: '0px',
       height: '95vh',
       width: '24%',
       float: 'right',
-      'z-index': '9999'
+      zIndex: '9999'
     }
     const Heading = {
       display: 'flex',
@@ -533,7 +533,7 @@ class CustomTabs extends Component {
               </button>
             </Nav.Item>
             {this.state.showHistoryContainer && (
-              <div style={history}>
+              <div className='history-main-container' style={history}>
                 <div style={Heading}>
                   History
                   <div className='d-flex' style={closeButton} onClick={this.handleHistoryClick} aria-label='Close'>
