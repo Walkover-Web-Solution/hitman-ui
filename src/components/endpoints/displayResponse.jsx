@@ -1,6 +1,5 @@
-// import image from "../common/Screenshot 2020-03-21 at 10.53.24 AM.png";
 import { ReactComponent as EmptyResponseImg } from './img/empty-response.svg'
-import React, { Component, createRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import JSONPretty from 'react-json-pretty'
 import './endpoints.scss'
@@ -10,10 +9,7 @@ import SampleResponseForm from './sampleResponseForm'
 import { Overlay, Spinner, Tooltip } from 'react-bootstrap'
 import TestResults from './testResults'
 import addtosample from '../../assets/icons/addToSamplesign.svg'
-import { IoMdArrowDropdown } from "react-icons/io";
-import { IoMdArrowDropright } from "react-icons/io";
 import { connect } from 'react-redux'
-import {background} from '../backgroundColor.js'
 import 'ace-builds'
 import 'ace-builds/src-noconflict/mode-html'
 import 'ace-builds/src-noconflict/mode-java'
@@ -24,22 +20,16 @@ import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
 import classNames from 'classnames';
-
-const JSONPrettyMon = require('react-json-pretty/dist/monikai')
-
+const JSONPrettyMon = require('react-json-pretty/dist/monikai');
 
 const mapStateToProps = (state) => {
   return {
     tabs: state?.tabs?.tabs,
-  }
-}
+  };
+};
 
-
-class DisplayResponse extends Component {
-  state = {
-    rawResponse: false,
-    prettyResponse: true,
-    previewResponse: false,
+const DisplayResponse = (props) => {
+  const [state, setState] = useState({
     responseString: '',
     timeElapsed: '',
     show: false,
@@ -48,166 +38,119 @@ class DisplayResponse extends Component {
     showCopyMessage: false,
     selectedResponseTab: 'body',
     isOpen: false,
-    output: null,
     isShow: false,
     Open: false,
     Show: false,
-    selectedBodyTab: 'pretty',
-    data: {},
     showPreScript: true,
-  }
+    selectedBodyTab: 'pretty',
+  });
 
-  constructor(props) {
-    super(props)
-    this.copyDivRef = createRef()
-    this.myRef = React.createRef();
-  }
-  handleAceEditorChange = (value) => {
-    const data = { ...this.state.data }
-    data.body = value
-    this.setState({ data })
-  }
+  const copyDivRef = useRef();
 
-  responseTime() {
-    const timeElapsed = this.props.timeElapsed
-    this.setState({ timeElapsed })
-  }
+  const addSampleResponse = (response) => {
+    openAddForm(response, null, 'Add Sample Response');
+  };
 
-  rawDataResponse() {
-    this.setState({
-      rawResponse: true,
-      previewResponse: false,
-      prettyResponse: false,
-      responseString: JSON.stringify(this.props.response.data)
-    })
-  }
-
-  prettyDataResponse() {
-    this.setState({
-      rawResponse: false,
-      previewResponse: false,
-      prettyResponse: true,
-      responseString: JSON.stringify(this.props.response)
-    })
-  }
-
-  previewDataResponse() {
-    this.setState({
-      rawResponse: false,
-      previewResponse: true,
-      prettyResponse: false
-    })
-  }
-
-  addSampleResponse(response) {
-    this.openAddForm(response, null, 'Add Sample Response')
-  }
-
-  openAddForm(obj, index, name) {
-    const showSampleResponseForm = { ...this.state.showSampleResponseForm }
-    showSampleResponseForm.add = true
-    this.setState({
+  const openAddForm = (obj, index, name) => {
+    const showSampleResponseForm = { ...state.showSampleResponseForm };
+    showSampleResponseForm.add = true;
+    setState(prevState => ({
+      ...prevState,
       showSampleResponseForm,
       sampleResponseFormName: name,
       selectedSampleResponse: {
         ...obj
       },
       index
-    })
-  }
+    }));
+  };
 
-  closeForm() {
-    const showSampleResponseForm = { add: false, delete: false, edit: false }
-    this.setState({ showSampleResponseForm })
-  }
+  const closeForm = () => {
+    const showSampleResponseForm = { add: false, delete: false, edit: false };
+    setState(prevState => ({ ...prevState, showSampleResponseForm }));
+  };
 
-  showAddForm() {
+  const showAddForm = () => {
     return (
-      this.state.showSampleResponseForm.add && (
+      state.showSampleResponseForm.add && (
         <SampleResponseForm
-          {...this.props}
+          {...props}
           show
-          onHide={this.closeForm.bind(this)}
-          title={this.state.sampleResponseFormName}
-          selectedSampleResponse={this.state.selectedSampleResponse}
-          index={this.state.index}
+          onHide={closeForm}
+          title={state.sampleResponseFormName}
+          selectedSampleResponse={state.selectedSampleResponse}
+          index={state.index}
         />
       )
-    )
-  }
+    );
+  };
 
-  componentDidMount() {
-    const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
-    const staticColor = background['background_boxes'];
+  useEffect(() => {
+    if (!state.theme) {
+      setState(prevState => ({ ...prevState, theme: props.publicCollectionTheme }));
+    }
+  }, [props.publicCollectionTheme, state.theme]);
 
-    const backgroundStyle = {
-      backgroundImage: `
-        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
-        linear-gradient(to right, ${staticColor}, ${staticColor})
-      `,
+  useEffect(() => {
+    setState(prevState => ({ ...prevState, selectedResponseTab: 'body' }));
+  }, [props.response]);
+
+  const showCopyMessage = () => {
+    setState(prevState => ({ ...prevState, showCopyMessage: true }));
+    setTimeout(() => {
+      setState(prevState => ({ ...prevState, showCopyMessage: false }));
+    }, 2000);
+  };
+
+  const displayBodyAndHeaderResponse = () => {
+    const TestResultsPreview = () => {
+      const tests = props.tests;
+      if (!tests) return null;
+      const failedTests = tests.filter((test) => test.success === false);
+      const passedTests = tests.filter((test) => test.success === true);
+      let testMessage = '';
+      let testMessageColor = 'inherit';
+      if (failedTests.length) {
+        testMessage = `(${failedTests.length} / ${tests.length} Failed)`;
+        testMessageColor = 'red';
+      } else if (passedTests.length) {
+        testMessage = `(${passedTests.length} / ${tests.length} Passed)`;
+        testMessageColor = 'green';
+      }
+      return <span style={{ color: testMessageColor }}>{testMessage}</span>;
     };
 
-    this.setState({
-      theme: { backgroundStyle },
-    });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.response !== this.props.response) {
-      this.setState({ selectedResponseTab: 'body' })
-    }
-  }
-
-  showCopyMessage() {
-    this.setState({ showCopyMessage: true })
-    setTimeout(
-      function () {
-        this.setState({ showCopyMessage: false })
-      }.bind(this),
-      2000
-    )
-  }
-
-  displayBodyAndHeaderResponse() {
-    const { data, errors } = this.state
-
-    const TestResultsPreview = () => {
-      const tests = this.props.tests
-      if (!tests) return null
-      const failedTests = tests.filter((test) => test.success === false)
-      const passedTests = tests.filter((test) => test.success === true)
-      let testMessage = ''
-      let testMessageColor = 'inherit'
-      if (failedTests.length) {
-        testMessage = `(${failedTests.length}/${tests.length} Failed)`
-        testMessageColor = 'red'
-      } else if (passedTests.length) {
-        testMessage = `(${passedTests.length}/${tests.length} Passed)`
-        testMessageColor = 'green'
-      }
-      return <span style={{ color: testMessageColor }}>{testMessage}</span>
-    }
     return (
       <>
-        <div className='custom-tabs' ref={this.myRef}>
+        <div className='custom-tabs' ref={copyDivRef}>
           <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
-            <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'body' }) }}>
+            <li
+              className='nav-item'
+              onClick={() => {
+                setState(prevState => ({ ...prevState, selectedResponseTab: 'body' }));
+              }}
+            >
               <a
-                className={this.state.selectedResponseTab === 'body' ? 'nav-link active' : 'nav-link'}
-                style={this.state.selectedResponseTab === 'body' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                className={state.selectedResponseTab === 'body' ? 'nav-link active' : 'nav-link'}
+                style={state.selectedResponseTab === 'body' ? { backgroundColor: props.publicCollectionTheme } : {}}
                 id='pills-response-tab'
                 data-toggle='pill'
                 role='tab'
-                aria-controls={isDashboardRoute(this.props) ? `response-${this.props.tab.id}` : 'response'}
+                aria-controls={isDashboardRoute(props) ? `response - ${props.tab.id} ` : 'response'}
                 aria-selected='true'
               >
                 Body
               </a>
             </li>
-            <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'header' }) }}>
+            <li
+              className='nav-item'
+              onClick={() => {
+                setState(prevState => ({ ...prevState, selectedResponseTab: 'header' }));
+              }}
+            >
               <a
-                className={this.state.selectedResponseTab === 'header' ? 'nav-link active' : 'nav-link'}
-                style={this.state.selectedResponseTab === 'header' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                className={state.selectedResponseTab === 'header' ? 'nav-link active' : 'nav-link'}
+                style={state.selectedResponseTab === 'header' ? { backgroundColor: props.publicCollectionTheme } : {}}
                 id='pills-header-tab'
                 data-toggle='pill'
                 aria-selected='false'
@@ -217,11 +160,16 @@ class DisplayResponse extends Component {
                 Headers
               </a>
             </li>
-            {isDashboardRoute(this.props) && (
+            {isDashboardRoute(props) && (
               <>
-                <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'testResults' }) }}>
+                <li
+                  className='nav-item'
+                  onClick={() => {
+                    setState(prevState => ({ ...prevState, selectedResponseTab: 'testResults' }));
+                  }}
+                >
                   <a
-                    className={this.state.selectedResponseTab === 'testResults' ? 'nav-link active' : 'nav-link'}
+                    className={state.selectedResponseTab === 'testResults' ? 'nav-link active' : 'nav-link'}
                     id='pills-testResults-tab'
                     data-toggle='pill'
                     aria-selected='false'
@@ -231,10 +179,15 @@ class DisplayResponse extends Component {
                     Test Results <TestResultsPreview />
                   </a>
                 </li>
-                <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'console' }) }}>
+                <li
+                  className='nav-item'
+                  onClick={() => {
+                    setState(prevState => ({ ...prevState, selectedResponseTab: 'console' }));
+                  }}
+                >
                   <a
-                    className={this.state.selectedResponseTab === 'console' ? 'nav-link active' : 'nav-link'}
-                    style={this.state.selectedResponseTab === 'console' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                    className={state.selectedResponseTab === 'console' ? 'nav-link active' : 'nav-link'}
+                    style={state.selectedResponseTab === 'console' ? { backgroundColor: props.publicCollectionTheme } : {}}
                     id='pills-console-tab'
                     data-toggle='pill'
                     aria-selected='false'
@@ -247,93 +200,16 @@ class DisplayResponse extends Component {
               </>
             )}
           </ul>
-
-          {/* Content Area */}
-          <div className='tab-content ml-0'>
-            {this.state.selectedResponseTab === 'body' && (
-              <div>
-                <div className='d-flex justify-content-between mt-2 mb-1'>
-                  <ul className='nav nav-pills body-button'>
-                    <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
-                      <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-2 py-1 fs-4' : 'nav-link px-2 py-1 fs-4'}>Pretty</a>
-                    </li>
-                    <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'raw' })}>
-                      <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'}>Raw</a>
-                    </li>
-                    <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'preview' })}>
-                      <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'}>Preview</a>
-                    </li>
-                  </ul>
-                  {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
-                    <div
-                      // style={{ float: "right" }}
-                      className='add-to-sample-response'
-                    >
-                      <div className='adddescLink' onClick={() => this.addSampleResponse(this.props.response)}>
-                        <img src={addtosample} /> Add to Sample Response
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-                <div className='tab-content'>
-                  {this.state.selectedBodyTab === 'pretty' && <div>
-                    <AceEditor
-                      style={{ border: '1px solid rgb(206 213 218)' }}
-                      className='custom-raw-editor'
-                      mode='json'
-                      theme='github'
-                      value={JSON.stringify(this.props.response.data, null, 2)}
-                      onChange={this.handleAceEditorChange}
-                      setOptions={{
-                        showLineNumbers: true
-                      }}
-                      editorProps={{
-                        $blockScrolling: false
-                      }}
-                      onLoad={(editor) => {
-                        editor.focus()
-                        editor.getSession().setUseWrapMode(true)
-                        editor.setShowPrintMargin(false)
-                      }}
-                    />
-                  </div>}
-                  {this.state.selectedBodyTab === 'raw' && <div> <>
-                    {isDashboardRoute(this.props) && (
-                      <div className='tab-content bg-white border rounded' id='myTabContent'>
-                        <div className='tab-pane fade show active' id='home' role='tabpanel' aria-labelledby='home-tab'>
-                          <JSONPretty className='raw-response' theme={JSONPrettyMon} data={this.props.response.data} />
-                        </div>
-                        <div className='tab-pane fade' id='profile' role='tabpanel' aria-labelledby='profile-tab'>
-                          {JSON.stringify(this.props.response.data)}
-                        </div>
-                        <div className='tab-pane fade' id='contact' role='tabpanel' aria-labelledby='contact-tab'>
-                          Feature coming soon... Stay tuned
-                        </div>
-                      </div>
-                    )}
-                    {!isDashboardRoute(this.props) && (
-                      <div className='tab-content'>
-                        <JSONPretty theme={JSONPrettyMon} data={this.props.response.data} />
-                      </div>
-                    )}
-                  </></div>}
-                  {this.state.selectedBodyTab === 'preview' && <div>
-                    <div className='border p-2 rounded bg-white' dangerouslySetInnerHTML={{ __html: JSON.stringify(this.props.response.data) }} />
-                  </div>}
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </>
     );
-  }
+  };
 
-  renderTableData() {
-    const headerContent = this.props.response.headers
-    const headerContentKeys = Object.keys(headerContent)
+  const renderTableData = () => {
+    const headerContent = props.response.headers;
+    const headerContentKeys = Object.keys(headerContent);
     return headerContentKeys.map((key, index) => {
-      const value = headerContent[key]
+      const value = headerContent[key];
       return (
         <tr key={key}>
           <th className='text-nowrap' scope='row'>
@@ -344,38 +220,9 @@ class DisplayResponse extends Component {
       )
     })
   }
-  renderResponseHeader() {
-    const { originalHeaders } = this.props.endpointContent
-    const filteredHeaders = originalHeaders.reduce((acc, header) => {
-        const existingHeader = acc.find(h => Object.keys(h)[0] === Object.keys(header)[0])
-        if (existingHeader) {
-            if (existingHeader[Object.keys(header)[0]].type !== 'disable') {
-                acc = acc.filter(h => Object.keys(h)[0] !== Object.keys(header)[0])
-                acc.push(header)
-            }
-        } else {
-            acc.push(header)
-        }
-        return acc
-    }, [])
 
-    return (
-        <div>
-            {filteredHeaders.map((header, index) => (
-                <div key={index}>
-                    {Object.entries(header).map(([key, value]) => (
-                        <div key={key}>
-                            <strong>{key}:</strong> {JSON.stringify(value)}
-                        </div>
-                    ))}
-                </div>
-            ))}
-        </div>
-    )
-}
-
-  displayHeader() {
-    if (this.props.response.headers) {
+  const displayHeader = () => {
+    if (props.response.headers) {
       return (
         <div className='response-headers-container'>
           <table className='table table-sm fs-6'>
@@ -385,44 +232,27 @@ class DisplayResponse extends Component {
                 <th scope='col'>Value</th>
               </tr>
             </thead>
-            <tbody>{this.renderTableData()}</tbody>
+            <tbody>{renderTableData()}</tbody>
           </table>
         </div>
-      )
+      );
     }
-  }
-
-  displayConsole() {
-    return (
-      <div className='test-results-container mt-1'>{this.renderConsole()}</div>
-    )
-  }
-
-  toggleDropdown = () => {
-    this.setState({ isOpen: !this.state.isOpen })
-  }
-
-  toggleDropdownBody = () => {
-    this.setState({ Open: !this.state.Open })
-  }
-  toggleDropdownHeaders = () => {
-    this.setState({ isShow: !this.state.isShow })
-  }
-  toggleDropdownRequest = () => {
-    this.setState({ Show: !this.state.Show })
-  }
-
-  handlePreScriptClick = () => {
-    this.setState({ showPreScript: true });
   };
 
-  handlePostScriptClick = () => {
-    this.setState({ showPreScript: false });
+  const displayConsole = () => {
+    return <div className='test-results-container px-2'>{renderConsole()}</div>
   };
 
-  renderConsole() {
-    const { tabs, activeTabId } = this.props;
-    const { showPreScript } = this.state;
+  const handlePreScriptClick = () => {
+    setState((prev) => { return { ...prev, showPreScript: true } });
+  };
+
+  const handlePostScriptClick = () => {
+    setState((prev) => { return { ...prev, showPreScript: false } });
+  };
+
+  const renderConsole = () => {
+    const { tabs, activeTabId } = props;
     const checkWhetherJsonOrNot = (data) => {
       try {
         if (JSON.parse(data)) return true
@@ -432,7 +262,6 @@ class DisplayResponse extends Component {
         return false
       }
     }
-
     function RenderConsoleComponent(props) {
       let consoleString = ''
       props.data.forEach((singleConsole, index) => {
@@ -469,87 +298,75 @@ class DisplayResponse extends Component {
       <div className='w-100'>
         <div className='console-button'>
           <button
-            className={classNames('btn', 'btn-sm', 'fs-4', 'mr-2', { active: showPreScript })}
-            onClick={this.handlePreScriptClick}
+            className={classNames('btn', 'btn-sm', 'fs-4', 'mr-2', { active: state.showPreScript })}
+            onClick={handlePreScriptClick}
           >
             Pre-Script
           </button>
           <button
-            className={classNames('btn', 'btn-sm', 'fs-4', { active: !showPreScript })}
-            onClick={this.handlePostScriptClick}
+            className={classNames('btn', 'btn-sm', 'fs-4', { active: !state.showPreScript })}
+            onClick={handlePostScriptClick}
           >
             Post-Script
           </button>
         </div>
-        <RenderConsoleComponent data={showPreScript ? tabs?.[activeTabId]?.preScriptExecutedData || [] : tabs?.[activeTabId]?.postScriptExecutedData || []} />
+        <RenderConsoleComponent data={state.showPreScript ? tabs?.[activeTabId]?.preScriptExecutedData || [] : tabs?.[activeTabId]?.postScriptExecutedData || []} />
       </div>
-    )
-  }
+    );
+  };
 
-  renderBlank() {
-    return (
-      <div className='px-3 py-5 text-center'>
-        <div>No logs yet.</div>
-        <small>Send a request to view its detail in the console</small>
-      </div>
-    )
-  }
-
-  renderLoader() {
+  const renderLoader = () => {
     return (
       <div className='text-center my-5'>
         <Spinner variant='dark' animation='border' />
         <div className='my-2'>Sending Request</div>
-        <button className='btn btn-outline orange' onClick={this.props.handleCancel}>
+        <button className='btn btn-outline orange' onClick={props.handleCancel}>
           Cancel
         </button>
       </div>
-    )
-  }
+    );
+  };
 
-  renderRequestError() {
+  const renderRequestError = () => {
     return (
       <div className='text-center my-5'>
         <div>Could not send request</div>
-        <small className='text-danger'>{this.props.response.data}</small>
+        <small className='text-danger'>{props.response.data}</small>
       </div>
-    )
-  }
+    );
+  };
 
-  renderStatusMessage() {
-    const { status, statusText } = this.props.response
-    const color = status >= 400 || status >= 500 ? 'error' : status >= 200 && status < 300 ? 'success' : 'regular'
-    return <div className={`response-status-value-${color}`}>{status + ' ' + statusText}</div>
-  }
+  const renderStatusMessage = () => {
+    const { status, statusText } = props.response;
+    const color = status >= 400 || status >= 500 ? 'error' : status >= 200 && status < 300 ? 'success' : 'regular';
+    return <div className={`response-status-value-${color}`}>{status + ' ' + statusText}</div>;
+  };
 
-  render() {
-    const { theme } = this.state
-    return (
-      <div className='endpoint-response-container overflow-auto mt-4' style={this.state.theme.backgroundStyle}>
-        {this.props.loader ? (
-          this.renderLoader()
-        ) : this.props.flagResponse ? (
-          this.props.response.status ? (
+  return (
+    <div className='endpoint-response-container overflow-auto mt-4' style={{ backgroundColor: hexToRgb(state?.theme, '0.04') }}>
+      {props.loader ? renderLoader() :
+        props.flagResponse ? (
+          props.response.status ? (
             <div>
               <div className='response-status justify-content-end'>
                 <div className='statusWrapper'>
-                  {this.props.response.status && (
+                  {props.response.status && (
                     <div id='status'>
                       <div className='response-status-item-name'>Status :</div>
-                      {this.renderStatusMessage()}
+                      {renderStatusMessage()}
                     </div>
                   )}
                   <div id='time'>
                     <div className='response-status-item-name'>Time:</div>
-                    <div className='response-status-value' style={{ color: theme }}>
-                      {this.props.timeElapsed} ms
+                    <div className='response-status-value' style={{ color: state.theme }}>
+                      {props.timeElapsed} ms
                     </div>
                   </div>
-                  <Overlay target={this.copyDivRef.current} show={this.state.showCopyMessage} placement='top'>
+                  <Overlay target={copyDivRef.current} show={state.showCopyMessage} placement='top'>
                     <Tooltip id='copy-message'>Copied</Tooltip>
                   </Overlay>
-                  <div className='resPubclipboardWrapper' ref={this.copyDivRef} onClick={() => this.showCopyMessage()}>
-                    <CopyToClipboard text={JSON.stringify(this.props.response.data)} onCopy={() => this.setState({ copied: true })}>
+                  <div className='resPubclipboardWrapper' ref={copyDivRef} onClick={showCopyMessage}>
+                    <CopyToClipboard text={JSON.stringify(props.response.data)} onCopy={() => setState(prevState => ({ ...prevState, copied: true }))}>
                       <button>
                         <svg width='13' height='13' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                           <path
@@ -572,34 +389,98 @@ class DisplayResponse extends Component {
                   </div>
                 </div>
               </div>
-              {this.showAddForm()}
+              {showAddForm()}
               <div className='response-viewer'>
-                <div className='response-tabs'>
-                  
-                </div>
-                {this.props.response.status && this.displayBodyAndHeaderResponse()}
-                {this.state.selectedResponseTab === 'header' && this.props.response.headers && this.displayHeader()}
-                {this.state.selectedResponseTab === 'testResults' && isDashboardRoute(this.props) && this.props.tests && (
-                  <TestResults tests={this.props.tests} />
+                {props.response.status && displayBodyAndHeaderResponse()}
+                {state.selectedResponseTab === 'body' && (
+                  <div>
+                    <div className='d-flex justify-content-between mt-2 mb-1'>
+                      <ul className='nav nav-pills body-button'>
+                        <li className='nav-item cursor-pointer' onClick={() => setState((prev) => { return { ...prev, selectedBodyTab: 'pretty' } })}>
+                          <a className={state.selectedBodyTab === 'pretty' ? 'nav-link active px-2 py-1 fs-4' : 'nav-link px-2 py-1 fs-4'}>Pretty</a>
+                        </li>
+                        <li className='nav-item cursor-pointer' onClick={() => setState((prev) => { return { ...prev, selectedBodyTab: 'raw' } })}>
+                          <a className={state.selectedBodyTab === 'raw' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'}>Raw</a>
+                        </li>
+                        <li className='nav-item cursor-pointer' onClick={() => setState((prev) => { return { ...prev, selectedBodyTab: 'preview' } })}>
+                          <a className={state.selectedBodyTab === 'preview' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'}>Preview</a>
+                        </li>
+                      </ul>
+                      {getCurrentUser() && isSavedEndpoint(props) && isDashboardRoute(props) ? (
+                        <div className='add-to-sample-response'>
+                          <div className='adddescLink' onClick={() => addSampleResponse(props.response)}>
+                            <img src={addtosample} /> Add to Sample Response
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                    <div className='tab-content'>
+                      {state.selectedBodyTab === 'pretty' && <div>
+                        <AceEditor
+                          style={{ border: '1px solid rgb(206 213 218)' }}
+                          className='custom-raw-editor'
+                          mode='json'
+                          theme='github'
+                          value={JSON.stringify(props.response.data, null, 2)}
+                          setOptions={{
+                            showLineNumbers: true
+                          }}
+                          editorProps={{
+                            $blockScrolling: false
+                          }}
+                          onLoad={(editor) => {
+                            editor.focus()
+                            editor.getSession().setUseWrapMode(true)
+                            editor.setShowPrintMargin(false)
+                          }}
+                        />
+                      </div>}
+                      {state.selectedBodyTab === 'raw' && <div> <>
+                        {isDashboardRoute(props) && (
+                          <div className='tab-content bg-white border rounded' id='myTabContent'>
+                            <div className='tab-pane fade show active' id='home' role='tabpanel' aria-labelledby='home-tab'>
+                              <JSONPretty className='raw-response' theme={JSONPrettyMon} data={props.response.data} />
+                            </div>
+                            <div className='tab-pane fade' id='profile' role='tabpanel' aria-labelledby='profile-tab'>
+                              {JSON.stringify(props.response.data)}
+                            </div>
+                            <div className='tab-pane fade' id='contact' role='tabpanel' aria-labelledby='contact-tab'>
+                              Feature coming soon... Stay tuned
+                            </div>
+                          </div>
+                        )}
+                        {!isDashboardRoute(props) && (
+                          <div className='tab-content'>
+                            <JSONPretty theme={JSONPrettyMon} data={props.response.data} />
+                          </div>
+                        )}
+                      </></div>}
+                      {state.selectedBodyTab === 'preview' && <div>
+                        <div className='border p-2 rounded bg-white' dangerouslySetInnerHTML={{ __html: JSON.stringify(props.response.data) }} />
+                      </div>}
+                    </div>
+                  </div>
                 )}
-                {this.state.selectedResponseTab === 'console' && this.displayConsole()}
+                {state.selectedResponseTab === 'header' && props.response.headers && displayHeader()}
+                {state.selectedResponseTab === 'testResults' && isDashboardRoute(props) && props.tests && (
+                  <TestResults tests={props.tests} />
+                )}
+                {state.selectedResponseTab === 'console' && displayConsole()}
               </div>
             </div>
           ) : (
-            this.renderRequestError()
+            renderRequestError()
           )
         ) : (
           <div>
             <div className='empty-response'>Response</div>
             <div className='empty-response-container'>
               <EmptyResponseImg />
-              <p className='mt-0'>Hit Send to trigger the API call</p>
+              <p p className='mt-0'>Hit Send to trigger the API call</p>
             </div>
           </div>
         )}
-      </div>
-    )
-  }
+    </div>
+  );
 }
-
 export default connect(mapStateToProps, null)(DisplayResponse)
