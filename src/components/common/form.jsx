@@ -156,46 +156,6 @@ class Form extends Component {
     )
   }
 
-  renderButton(label, style) {
-    return (
-      <button className='btn btn-primary btn-sm fs-4' id='add_collection_create_new_btn'>
-        {label}
-      </button>
-    )
-  }
-
-  renderAceEditor(name, label) {
-    const { data, errors } = this.state
-
-    return (
-      <div className='form-group '>
-        <label htmlFor={name} className='custom-input-label'>
-          {label}
-        </label>
-        <AceEditor
-          style={{ border: '1px solid rgb(206 213 218)' }}
-          className='custom-raw-editor'
-          mode='json'
-          theme='github'
-          value={data.body}
-          onChange={this.handleAceEditorChange}
-          setOptions={{
-            showLineNumbers: true
-          }}
-          editorProps={{
-            $blockScrolling: false
-          }}
-          onLoad={(editor) => {
-            editor.focus()
-            editor.getSession().setUseWrapMode(true)
-            editor.setShowPrintMargin(false)
-          }}
-        />
-        <small className='muted-text'>*Body should not exceed more than 2000 characters.</small>
-        {errors[name] && <div className='alert alert-danger'>{errors[name]}</div>}
-      </div>
-    )
-  }
 }
 
 export default Form

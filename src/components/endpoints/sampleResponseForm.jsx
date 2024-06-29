@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from 'react-bootstrap'
 import Joi from 'joi-browser'
+import AceEditor from 'react-ace'
 import Form from '../common/form'
 
 
@@ -103,27 +104,50 @@ const SampleResponseForm = (props) => {
     </div>
   );
 
-  const renderAceEditor = (name, label) => (
-    <div className="form-group">
-      <label htmlFor={name}>{label}</label>
-      <textarea
-        value={data[name]}
-        onChange={handleChange}
-        id={name}
-        name={name}
-        className="form-control"
-        rows="5"
-      />
-      {errors[name] && <div className="alert alert-danger">{errors[name]}</div>}
-    </div>
-  );
+  const handleAceEditorChange = (value) => {
+    data.body = value
+    setData({ ...data, body: value })
+  }
 
-  const renderButton = (label) => (
-    <button className="btn btn-primary">
-      {label}
-    </button>
-  );
+  const renderAceEditor = (name, label) => {
 
+    return (
+      <div className='form-group '>
+        <label htmlFor={name} className='custom-input-label'>
+          {label}
+        </label>
+        <AceEditor
+          style={{ border: '1px solid rgb(206 213 218)' }}
+          className='custom-raw-editor'
+          mode='json'
+          theme='github'
+          value={data.body}
+          onChange={handleAceEditorChange}
+          setOptions={{
+            showLineNumbers: true
+          }}
+          editorProps={{
+            $blockScrolling: false
+          }}
+          onLoad={(editor) => {
+            editor.focus()
+            editor.getSession().setUseWrapMode(true)
+            editor.setShowPrintMargin(false)
+          }}
+        />
+        <small className='muted-text'>*Body should not exceed more than 2000 characters.</small>
+        {errors[name] && <div className='alert alert-danger'>{errors[name]}</div>}
+      </div>
+    )
+  }
+
+  const renderButton = (label, style) => {
+    return (
+      <button className='btn btn-primary btn-sm fs-4' id='add_collection_create_new_btn'>
+        {label}
+      </button>
+    )
+  }
 
 
   return (
