@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import './inviteTeam.scss'
-import { getCurrentOrg } from '../../auth/authServiceV2'
+import { getCurrentOrg, getCurrentUser, getProxyToken } from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
 import { inviteMembers } from '../../../services/orgApiService'
@@ -19,6 +19,19 @@ function InviteTeam() {
   const { users } = useSelector((state) => {
     return { users: state.users.usersList }
   })
+
+  useEffect(() => {
+    const userId = getCurrentUser()?.id
+    // window.SendDataToChatbot({
+    //   bridgeName: 'root',
+    //   threadId: userId,
+    //   parentId: '',
+    //   fullScreen: 'false', // Consider changing these string booleans to actual booleans (false) if the API expects boolean values
+    //   hideCloseButton: 'false',
+    //   hideIcon: 'false',
+    //   variables: { Proxy_auth_token: getProxyToken() }
+    // });
+  }, [])
 
   useEffect(() => {
     if (showModal) {

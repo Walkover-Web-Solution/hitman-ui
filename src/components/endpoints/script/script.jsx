@@ -5,6 +5,7 @@ import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
 import { Snippets, preReqSnippets, postReqSnippets } from './snippets'
+import { getProxyToken } from '../../auth/authServiceV2'
 
 export class Script extends Component {
   constructor(props) {
@@ -25,9 +26,21 @@ export class Script extends Component {
     if (this.props.scriptText) {
       this.setState({ scriptEditorText: this.props.scriptText })
     }
+    window.addEventListener('message', (event) => {
+      const receivedData = event.data;
+      console.log(receivedData,"recieveddata")
+   });
   }
 
   componentDidUpdate(prevProps, prevState) {
+    window.SendDataToChatbot({ bridgeName: 'api', threadId: '134',parentId: '',
+    fullScreen: 'false',
+    hideCloseButton: 'false',
+    hideIcon: 'false', variables: {Proxy_auth_token : getProxyToken(), endpoint: this.props.endpointContent}});
+    window.addEventListener('message', (event) => {
+      const receivedData = event.data;
+      console.log(receivedData,"recieveddata")
+   });
     if (this.props.scriptText && !this.scriptFetched && this.props.scriptText !== prevProps.scriptText) {
       this.setState({ scriptEditorText: this.props.scriptText || '' })
       this.scriptFetched = true
@@ -69,7 +82,6 @@ export class Script extends Component {
     editor.scrollToLine(endOfInsertedSnippetPosition.row);
     editor.focus();
   };
-
 
   renderScriptEditor() {
     return (
@@ -129,6 +141,7 @@ export class Script extends Component {
       <div className='row'>
         {this.renderScriptEditor()}
         {this.snippetsList()}
+        <button onClick={() => window.openChatbot()}>Ask AI</button>
       </div>
     )
   }

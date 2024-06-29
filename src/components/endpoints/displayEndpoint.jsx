@@ -27,7 +27,7 @@ import BodyContainer from './displayBody'
 import DisplayDescription from './displayDescription'
 import DisplayResponse from './displayResponse'
 import SampleResponse from './sampleResponse'
-import { getCurrentUser, isAdmin } from '../auth/authServiceV2'
+import { getCurrentUser, getProxyToken, isAdmin } from '../auth/authServiceV2'
 import endpointApiService, { getEndpoint } from './endpointApiService'
 import './endpoints.scss'
 import GenericTable from './genericTable'
@@ -505,6 +505,12 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    window.SendDataToChatbot({ bridgeName: 'api', threadId: getCurrentUser()?.id, parentId: '',
+    fullScreen: 'false',
+    hideCloseButton: 'false',
+    hideIcon: 'false', 
+    variables: {Proxy_auth_token : getProxyToken(), endpoint: this.props.endpointContent}});
+    // window.closeChatbot()
     window.addEventListener('resize', this.updateDimensions)
     if (prevState.isMobileView !== this.state.isMobileView) {
       this.isMobileView()
