@@ -377,6 +377,7 @@
 .history-main-container {
   border-left: 1px solid $lightblackborder;
   border-top: 1px solid $lightblackborder;
-
-
+  .history-option {
+    transition: none !important;
+  }
 }
