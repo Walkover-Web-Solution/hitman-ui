@@ -746,6 +746,9 @@ button.toggleButton {
       }
 
       padding: 0px;
+      &.editor-body-wrapper-height {
+      height: calc(100vh - 185px) !important;
+      }
     }
   }
 }

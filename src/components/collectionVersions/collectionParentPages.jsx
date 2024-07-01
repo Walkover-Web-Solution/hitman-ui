@@ -433,7 +433,7 @@ class CollectionParentPages extends Component {
         title={this.versionName()}
       >
         {this.props.pages[rootId].child.map((childId, index) => (
-          <Dropdown.Item className='fs-4' key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
+          <Dropdown.Item  key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
             {this.props.pages[childId]?.name}
           </Dropdown.Item>
         ))}
