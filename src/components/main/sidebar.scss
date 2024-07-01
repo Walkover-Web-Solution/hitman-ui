@@ -3,6 +3,7 @@
 .mainpublic-endpoint-main {
   .Pane1 {
     width: 330px !important;
+
     @media screen and (max-width:1400px) {
       width: 280px !important;
     }
@@ -14,6 +15,7 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 99;
+
   .show {
     display: inline-flex !important;
   }
@@ -24,11 +26,13 @@
   max-width: 330px !important;
   background-color: $secondary-color;
 }
+
 .split-sidebar-public>div:first-child {
   max-width: 330px !important;
   width: unset;
   min-width: 260px !important;
   background-color: white;
+
   @media screen and (max-width: 992px) {
     flex: unset !important;
   }
@@ -104,9 +108,11 @@ body .sidebar {
     line-height: 1.5rem;
     width: 196px;
   }
+
   .sub-page-header {
     width: 150px;
   }
+
   .globe-img {
     width: 13px;
     height: 1.5rem;
@@ -140,6 +146,7 @@ body .sidebar {
       justify-content: center;
       transition: all 0.3s ease-in;
       border-radius: 5px 5px;
+
       &:hover {
         background-color: #dfdcd5;
       }
@@ -285,220 +292,227 @@ body .sidebar {
         margin-right: 10px;
         justify-content: center;
       }
-button {
-  &.selected {
-    background: $grey;
-  }
 
-  .active-selected {
-    width: 100%;
-    margin-left: 10px;
-    margin-top: 4px;
-    height: 28px;
-    &.selected {
-      background: $grey;
-    }
-
-    &:hover {
-      background: $grey ;
-
-        .versionChovron {
-          .collection-icons-arrow {
-          background-color: white;
-          display: inline-block !important;
-          }
-          .collection-icons {
-            display: none !important;
-          }
+      button {
+        &.selected {
+          background: $grey;
         }
 
-    }
-  }
+        .active-selected {
+          width: 100%;
+          margin-left: 10px;
+          margin-top: 4px;
+          height: 28px;
 
-  .active-select {
-    width: 100%;
-    margin-top: 4px;
-    height: 28px;
+          &.selected {
+            background: $grey;
+          }
 
-    &.selected {
-      background: $grey;
-    }
+          &:hover {
+            background: $grey ;
 
-    &:hover {
-      background: $grey;
-    }
+            .versionChovron {
+              .collection-icons-arrow {
+                background-color: white;
+                display: inline-block !important;
+              }
 
-    .cl-name {
-      width: 100%;
+              .collection-icons {
+                display: none !important;
+              }
+            }
 
-      .name-parent-page {
-        overflow-wrap: anywhere;
-        max-width: 240px !important;
-
-        @media (max-width: 1400px) and (min-width: 400px) {
-          max-width: 180px !important;
-        }
-
-        .text-truncate {
-          font-size: 14px;
-          padding-left: 0 !important;
-          max-width: 115px;
-
-          @media screen and (max-width:768px) {
-            font-size: 16px;
           }
         }
-      }
 
-    }
+        .active-select {
+          width: 100%;
+          margin-top: 4px;
+          height: 28px;
 
-    .published-icon {
-      opacity: 0;
-    }
-    &:hover {
-      .versionChovron {
-        .collection-icons-arrow {
-          display: inline-block !important;
-          background-color: white;
+          &.selected {
+            background: $grey;
+          }
+
+          &:hover {
+            background: $grey;
+          }
+
+          .cl-name {
+            width: 100%;
+
+            .name-parent-page {
+              overflow-wrap: anywhere;
+              max-width: 240px !important;
+
+              @media (max-width: 1400px) and (min-width: 400px) {
+                max-width: 180px !important;
+              }
+
+              .text-truncate {
+                font-size: 14px;
+                padding-left: 0 !important;
+                max-width: 115px;
+
+                @media screen and (max-width:768px) {
+                  font-size: 16px;
+                }
+              }
+            }
+
+          }
+
+          .published-icon {
+            opacity: 0;
+          }
+
+          &:hover {
+            .versionChovron {
+              .collection-icons-arrow {
+                display: inline-block !important;
+                background-color: white;
+              }
+
+              .collection-icons {
+                display: none !important;
+              }
+            }
+          }
         }
-        .collection-icons {
-          display: none !important;
+
+        .sidebar-item-action-btn {
+          cursor: pointer;
+
+          i {
+            display: flex;
+            height: 12px;
+            width: 0.5rem;
+            justify-content: center;
+          }
         }
-      }
-    }
-  }
 
-  .sidebar-item-action-btn {
-    cursor: pointer;
+        .sidebar-item-action {
+          padding: 0 0.7rem;
+          z-index: 19;
 
-    i {
-      display: flex;
-      height: 12px;
-      width: 0.5rem;
-      justify-content: center;
-    }
-  }
+          >div {
+            &:not(.dropdown-menu) {
+              opacity: 0;
+              visibility: hidden;
+            }
+          }
 
-  .sidebar-item-action {
-    padding: 0 0.7rem;
-    z-index: 19;
+          .sidebar-item-action-btn[aria-expanded='true'] {
+            opacity: 1;
+            visibility: visible;
+            background-color: $secondary-color;
+          }
 
-    >div {
-      &:not(.dropdown-menu) {
-        opacity: 0;
-        visibility: hidden;
-      }
-    }
+          .dropdown-menu {
+            box-shadow: 0px 18px 46px -14px #e5e5e5;
+            padding: 6px !important;
 
-    .sidebar-item-action-btn[aria-expanded='true'] {
-      opacity: 1;
-      visibility: visible;
-      background-color: $secondary-color;
-    }
+            .dropdown-item {
+              font-size: 14px;
+              padding: 0.25rem 1rem;
+              border-radius: 3px 3px;
 
-    .dropdown-menu {
-      box-shadow: 0px 18px 46px -14px #e5e5e5;
-      padding: 6px !important;
+              svg {
+                filter: grayscale(1);
+              }
 
-      .dropdown-item {
-        font-size: 14px;
-        padding: 0.25rem 1rem;
-        border-radius: 3px 3px;
+              &:hover {
+                background-color: rgba(128, 128, 128, 0.123);
+              }
+            }
+          }
+        }
 
-        svg {
-          filter: grayscale(1);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        border: none;
+        background: transparent;
+        color: $text-color;
+        padding-right: 0;
+        position: relative;
+        height: 28px;
+        text-align: left;
+        justify-content: space-between;
+        margin-top: 1px;
+        margin-bottom: 1px;
+
+        &:active,
+        &:focus {
+          outline: none;
+          box-shadow: none;
+        }
+
+        &.focused {
+          background-color: $grey;
         }
 
         &:hover {
-          background-color: rgba(128, 128, 128, 0.123);
-        }
-      }
-    }
-  }
-
-  width: 100%;
-  display: flex;
-  align-items: center;
-  border: none;
-  background: transparent;
-  color: $text-color;
-  padding-right: 0;
-  position: relative;
-  height: 28px;
-  text-align: left;
-  justify-content: space-between;
-  margin-top: 1px;
-  margin-bottom: 1px;
-
-  &:active,
-  &:focus {
-    outline: none;
-    box-shadow: none;
-  }
-
-  &.focused {
-    background-color: $grey;
-  }
-
-  &:hover {
-    .sidebar-item-action>div {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    .counts {
-      opacity: 0;
-    }
-
-    .sidebar-item-action-btn[aria-expanded='true'] {
-      background-color: $grey;
-    }
-  }
-
-  &.sidebar-hower {
-
-    &:hover {
-      background: $grey;
-      .versionChovron {
-        .collection-icons-arrow {
-          display: inline-block !important;
-          background-color: white;
-        }
-        .collection-icons {
-          display: none !important;
-
-        }
-      }
-
-      .sidebar-toggle {
-        transition: all 0.3s ease-in;
-
-        &:hover {
-          background: #ebebeb;
-          border-color: #f1eee5;
-
-          .sidebar-item-action-btn {
+          .sidebar-item-action>div {
             visibility: visible;
             opacity: 1;
           }
+
+          .counts {
+            opacity: 0;
+          }
+
+          .sidebar-item-action-btn[aria-expanded='true'] {
+            background-color: $grey;
+          }
         }
 
-        i {
-          color: #000;
+        &.sidebar-hower {
+
+          &:hover {
+            background: $grey;
+
+            .versionChovron {
+              .collection-icons-arrow {
+                display: inline-block !important;
+                background-color: white;
+              }
+
+              .collection-icons {
+                display: none !important;
+
+              }
+            }
+
+            .sidebar-toggle {
+              transition: all 0.3s ease-in;
+
+              &:hover {
+                background: #ebebeb;
+                border-color: #f1eee5;
+
+                .sidebar-item-action-btn {
+                  visibility: visible;
+                  opacity: 1;
+                }
+              }
+
+              i {
+                color: #000;
+              }
+            }
+          }
+        }
+
+        &.expanded {
+          .versionChovron {
+            .collection-icons-arrow {
+              transform: rotate(0);
+            }
+          }
         }
       }
     }
-  }
-
-  &.expanded {
-    .versionChovron {
-      .collection-icons-arrow {
-        transform: rotate(0);
-      }
-    }
-  }
-}
-}
 
     .sidebar-content::-webkit-scrollbar {
       display: none;
@@ -528,6 +542,7 @@ button {
       flex: 0 0 auto;
       border-top: 1px solid #dcdcdc;
       padding: 9px 16px 0;
+
       .profile-details {
         // border-bottom: 1px solid #e6dbd4;
         // padding: 0.5rem 0 0.25rem;
@@ -535,16 +550,19 @@ button {
 
       .profile-listing-container .dropdown-item {
         padding: 0.25rem 9px;
+
         span {
           font-size: $font-normal-n;
         }
+
         img {
           margin-right: 0.65rem;
           width: 14px;
         }
+
         .invite-user {
           svg {
-           width: 15px;
+            width: 15px;
           }
         }
       }
@@ -581,6 +599,7 @@ button {
         align-items: center;
         line-height: 1;
       }
+
       .dropdown {
         .dropdown-menu {
           width: 100%;
@@ -700,6 +719,7 @@ input[type='text']:focus {
 .versionChovron {
   width: 26px;
   height: 23px;
+
   .collection-icons-arrow {
     transition: all 0.3s ease-in;
     height: 20px !important;
@@ -707,6 +727,7 @@ input[type='text']:focus {
     color: #808080;
     border-radius: 5px 5px;
   }
+
   .collection-icons {
     color: #808080;
   }
@@ -736,7 +757,10 @@ input[type='text']:focus {
     }
   }
 }
-.side-bar , .active-selected , .active-select {
+
+.side-bar,
+.active-selected,
+.active-select {
   &:hover {
     background: $grey;
   }
@@ -745,7 +769,8 @@ input[type='text']:focus {
     background: $grey;
   }
 }
-.sidebar-accordion .sidebar-accordion-item > i {
+
+.sidebar-accordion .sidebar-accordion-item>i {
   display: inline-block;
   width: 30px;
 }
@@ -764,18 +789,22 @@ input[type='text']:focus {
   transform: rotate(-90deg);
   transition: 200ms;
 }
+
 // .expanded {
 //   #collection-collapse {
-    .card-body {
-      button {
-        margin-bottom: 2px;
-        .side-bar {
-          padding-left: 6px !important;
-          width: 100%;
-          height: 28px;
-          margin-left: 8px;        }
-      }
+.card-body {
+  button {
+    margin-bottom: 2px;
+
+    .side-bar {
+      padding-left: 6px !important;
+      width: 100%;
+      height: 28px;
+      margin-left: 8px;
     }
+  }
+}
+
 //   }
 // }
 .secondary-sidebar {
@@ -849,7 +878,7 @@ input[type='text']:focus {
     transform: rotate(-90deg);
     transition: 300ms;
   }
-  }
+}
 
 .versionPages .sidebar-accordion {
   position: relative;
@@ -912,61 +941,67 @@ input[type='text']:focus {
     border: 1px solid black;
   }
 }
+
 .icon-active {
   display: none;
+
   @media screen and (max-width:767px) {
     display: block;
   }
 }
+
 @media screen and (max-width:767px) {
-.hamberger-icon {
+  .hamberger-icon {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index:  1000;
-    transition:  400ms;
+    z-index: 1000;
+    transition: 400ms;
     width: 100%;
     padding: 10px 20px;
+
     @media screen and (max-width: 568px) {
       padding: 10px 12px;
     }
-    svg{
+
+    svg {
       font-size: 20px;
       font-weight: 700 !important;
     }
-      &.close-icon {
-        top: -10px;
-        left: 245px !important;
-        position: fixed;
-        background: transparent;
-        padding-left: 10px;
-      }
-    }
 
-    .logo-name {
+    &.close-icon {
+      top: -10px;
+      left: 245px !important;
       position: fixed;
-      left: 60px;
-      top: 5px;
-      z-index: 1111;
-      display: flex;
-      align-items: center;
-
-      .icon-name {
-        font-weight: 700;
-        font-size: 20px;
-      }
-
-      .hamberger-img {
-        width: 34px;
-      }
-    }
-
-
-    .pubCodeWrapper {
-      top: 41px !important;
+      background: transparent;
+      padding-left: 10px;
     }
   }
+
+  .logo-name {
+    position: fixed;
+    left: 60px;
+    top: 5px;
+    z-index: 1111;
+    display: flex;
+    align-items: center;
+
+    .icon-name {
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .hamberger-img {
+      width: 34px;
+    }
+  }
+
+
+  .pubCodeWrapper {
+    top: 41px !important;
+  }
+}
 
 
 .close-bar {
@@ -982,29 +1017,19 @@ input[type='text']:focus {
   left: 0;
   border-top: 1px solid $lightblackborder;
   width: 330px;
-  padding-left: 16px;
   z-index: 9;
   height: 34px;
-  svg {
-    width: 18px;
-    height: 16px;
-    color: black;
-  }
-  button {
-    font-weight: 700 !important;
-    padding-left: 7px !important;
-    &:hover {
-      background-color: unset !important;
-    }
-  }
+  cursor: pointer;
+
   @media screen and (max-width: 992px) {
     width: 280px;
   }
+
   &:hover {
-    background-color: #d6d2d28f;
-    text-decoration: unset;
+    text-decoration: underline;
   }
 }
+
 .hm-sidebar-outer-block {
   .linkWrapper {
     button {
@@ -1014,6 +1039,7 @@ input[type='text']:focus {
     }
   }
 }
+
 .sidebar-accordion {
   button {
     .side-bar {
@@ -1023,6 +1049,7 @@ input[type='text']:focus {
     }
   }
 }
+
 .add-button {
   button {
     font-size: 12px;

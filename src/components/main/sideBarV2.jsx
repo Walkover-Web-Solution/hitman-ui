@@ -37,7 +37,7 @@ import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { FiExternalLink } from "react-icons/fi";
 import { updateDragDrop } from '../pages/redux/pagesActions'
-import {background} from '../backgroundColor.js'
+import { background } from '../backgroundColor.js'
 
 const mapStateToProps = (state) => {
   return {
@@ -99,7 +99,7 @@ class SideBarV2 extends Component {
     }
     this.inputRef = createRef()
     this.sidebarRef = createRef()
-    // this.handleClickOutside = this.handleClickOutside.bind(this)
+    this.handleGotoTechdocBtn = this.handleGotoTechdocBtn.bind(this)
   }
 
   // handleClickOutside(event) {
@@ -256,7 +256,7 @@ class SideBarV2 extends Component {
   }
 
   openEndpoint(id) {
-    if (isDashboardRoute(this.props) ) {
+    if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${id}`
       })
@@ -273,7 +273,7 @@ class SideBarV2 extends Component {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
       })
-    } else{
+    } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props?.pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
@@ -568,7 +568,7 @@ class SideBarV2 extends Component {
             this.setState({ showAddCollectionModal: false })
           }}
           show={this.state.showAddCollectionModal}
-          // open_selected_collection={this.openSelectedCollection.bind(this)}
+        // open_selected_collection={this.openSelectedCollection.bind(this)}
         />
       )
     )
@@ -621,7 +621,7 @@ class SideBarV2 extends Component {
               {...this.props}
               collection_id={collectionId}
               rootParentId={this.props.collections?.[collectionId]?.rootParentId}
-              setLatestUrl ={this.props.latestUrl}
+              setLatestUrl={this.props.latestUrl}
             />
           </div>
         ) : (
@@ -644,6 +644,10 @@ class SideBarV2 extends Component {
     )
   }
 
+  handleGotoTechdocBtn() {
+    window.open('/login', '_blank')
+  }
+
   renderCollectionName() {
     let collectionKeys = Object.keys(this.props?.collections || {})
     const collectionName = this.props?.collections?.[collectionKeys[0]]?.name
@@ -652,7 +656,7 @@ class SideBarV2 extends Component {
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = this.props.collections[collectionId]?.theme
     const dynamicColor = hexToRgb(collectionTheme, 0.15);
-    const staticColor = background['background_hover'] ;
+    const staticColor = background['background_hover'];
 
 
     const backgroundStyle = {
@@ -663,40 +667,32 @@ class SideBarV2 extends Component {
     };
     return (
       <div className='hm-sidebar-header align-items-start pl-1'>
-         {(this.props.collections[collectionKeys[0]]?.favicon ||
-  this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
-  <div className='hm-sidebar-logo'>
-    <img
-      id='publicLogo'
-      alt='public-logo'
-      src={
-        this.props.collections[collectionKeys[0]]?.favicon
-          ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
-          : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl
-      }
-      width='60'
-      height='60'
-    />
-  </div>
-)}
+        {(this.props.collections[collectionKeys[0]]?.favicon ||
+          this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
+            <div className='hm-sidebar-logo'>
+              <img
+                id='publicLogo'
+                alt='public-logo'
+                src={
+                  this.props.collections[collectionKeys[0]]?.favicon
+                    ? `data:image/png;base64,${this.props.collections[collectionKeys[0]]?.favicon}`
+                    : this.props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl
+                }
+                width='60'
+                height='60'
+              />
+            </div>
+          )}
 
         <h4 className='hm-sidebar-title'>
           {publishedCollectionTitle || collectionName || ''}
           <span>API Documentation</span>
         </h4>
         {isTechdocOwnDomain() && (
-          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5 align-items-center' style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
-            <FiExternalLink className='text-black mb-1' />
-            <button
-              type='button'
-              class='btn btn-lg'
-              data-bs-toggle='tooltip'
-              data-bs-placement='top'
-              data-bs-title='Login to manage this docs'
-            >
-              Go to Techdoc
-            </button>
-          </a>
+          <div onClick={this.handleGotoTechdocBtn} className='login-button position-fixed pl-4 d-flex justify-content-start align-items-center col-black' style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
+            <span>Go to Techdoc</span>
+            <FiExternalLink className='ml-1' size={14} />
+          </div>
         )}
       </div>
     )

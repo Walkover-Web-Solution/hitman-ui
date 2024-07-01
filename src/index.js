@@ -29,7 +29,7 @@ createRoot(document.getElementById('root')).render(
             <Route path='/' component={App} />
           </Switch>
         </Router>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </PersistGate>
   </Provider>
