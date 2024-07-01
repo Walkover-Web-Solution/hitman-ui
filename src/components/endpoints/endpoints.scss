@@ -1574,7 +1574,7 @@ table#custom-generic-table {
 .pubCode-icon {
   height: fit-content;
   z-index: 999;
-  left: -11px;
+  left: -10.5px;
   border: 1px solid $lightblackborder !important;
   &.active {
     transform: rotate(180deg);
@@ -1678,8 +1678,8 @@ table#custom-generic-table {
     }
   }
   &.pubCodeWrapper-hide {
-    width: 10px ;
-    min-width: 10px ;
+    width: 10px;
+    min-width: 15px;
     .inner-editor {
       display: none;
       @media screen and (max-width: 1160px) {
