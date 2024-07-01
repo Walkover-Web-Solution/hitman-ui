@@ -418,7 +418,7 @@ class CustomTabs extends Component {
       top: '41px',
       right: '0px',
       height: '95vh',
-      width: '24%',
+      width: '445px',
       float: 'right',
       zIndex: '9999'
     }

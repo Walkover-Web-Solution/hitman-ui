@@ -731,7 +731,7 @@ button.toggleButton {
     height: 100%;
     
     .editor-body-wrapper {
-      height: calc(100% - 6rem);
+      height: calc(100vh - 140px);
 
       .ace-editor-wrapper {
         height: 100%;
