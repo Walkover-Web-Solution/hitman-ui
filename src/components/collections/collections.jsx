@@ -30,6 +30,8 @@ import { LuFolder } from 'react-icons/lu'
 import { RiShareForward2Line } from 'react-icons/ri'
 import { TbDirections } from 'react-icons/tb'
 import { TbSettingsAutomation } from "react-icons/tb";
+import { LiaFileExportSolid } from "react-icons/lia";
+import ExportButton from '../exportButton/exportButton'
 
 const mapStateToProps = (state) => {
   return {
@@ -319,8 +321,12 @@ class CollectionsComponent extends Component {
                           <div className='dropdown-item' onClick={() => this.handleApiAutomation(collectionId)}>
                             <TbSettingsAutomation size={16} color='grey' /> API Automation
                           </div>
-                          <div className='dropdown-item text-danger d-flex' onClick={() => { this.openDeleteCollectionModal(collectionId) }}>
-                            <DeleteIcon /> Delete
+                          <div className='dropdown-item d-flex align-items-center h-auto'>
+                          <LiaFileExportSolid size={16} />
+                           <ExportButton orgId={this.props.match.params.orgId} collectionId={collectionId} collectionName={this.props.collections[collectionId].name}/>
+                          </div>
+                          <div className='dropdown-item delete-button-sb text-danger d-flex' onClick={() => { this.openDeleteCollectionModal(collectionId) }}>
+                            <DeleteIcon size={14} /> Delete
                           </div>
                         </>
                       )}
