@@ -442,6 +442,51 @@ class DisplayEndpoint extends Component {
 
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const userid = getCurrentUser()?.id
+    window.SendDataToChatbot({ bridgeName: this.state.activeTab == 'pre-script' ? 'scripts' : 'api', threadId: `${userid}`, parentId: '',
+    fullScreen: 'false',
+    hideCloseButton: 'false',
+    hideIcon: 'false', 
+    variables: {Proxy_auth_token : getProxyToken(), endpoint: this.props.endpointContent}});
+    window.closeChatbot()
+    window.addEventListener('resize', this.updateDimensions)
+    if (prevState.isMobileView !== this.state.isMobileView) {
+      this.isMobileView()
+    }
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.extractEndpointName()
+    }
+    if (this.props.endpointId !== prevProps.endpointId) {
+    }
+    if (
+      this.props?.endpointContent &&
+      (!_.isEqual(this.state?.endpointContentState?.data, this.props?.endpointContent?.data) ||
+        !_.isEqual(this.state?.endpointContentState?.originalParams, this.props?.endpointContent?.originalParams) ||
+        !_.isEqual(this.state?.endpointContentState?.originalHeaders, this.props?.endpointContent?.originalHeaders) ||
+        !_.isEqual(this.state?.endpointContentState?.pathVariables, this.props?.endpointContent?.pathVariables) ||
+        !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
+    ) {
+      this.prepareHarObject()
+    }
+    if (this.state.endpoint.id !== prevState.endpoint.id && !this.props.location.pathname.includes('history')) {
+      this.setState({ flagResponse: false })
+    }
+
+    if (this.props?.endpointContent && !_.isEqual(this.props.endpointContent, this.state.endpointContentState)) {
+      this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions)
+    document.removeEventListener('keydown', this.handleKeyDown)
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
+  }
+
   handleShortcuts = (event, data) => {
     const { activeTabId } = this.props.tabs
     const { id: endpointId } = this.props.tab
@@ -492,50 +537,6 @@ class DisplayEndpoint extends Component {
       this.setState({ isMobileView: true, codeEditorVisibility: true })
     } else {
       this.setState({ isMobileView: false, codeEditorVisibility: false })
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateDimensions)
-    document.removeEventListener('keydown', this.handleKeyDown)
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    window.SendDataToChatbot({ bridgeName: 'api', threadId: getCurrentUser()?.id, parentId: '',
-    fullScreen: 'false',
-    hideCloseButton: 'false',
-    hideIcon: 'false', 
-    variables: {Proxy_auth_token : getProxyToken(), endpoint: this.props.endpointContent}});
-    // window.closeChatbot()
-    window.addEventListener('resize', this.updateDimensions)
-    if (prevState.isMobileView !== this.state.isMobileView) {
-      this.isMobileView()
-    }
-    if (this.props.location.pathname !== prevProps.location.pathname) {
-      this.extractEndpointName()
-    }
-    if (this.props.endpointId !== prevProps.endpointId) {
-    }
-    if (
-      this.props?.endpointContent &&
-      (!_.isEqual(this.state?.endpointContentState?.data, this.props?.endpointContent?.data) ||
-        !_.isEqual(this.state?.endpointContentState?.originalParams, this.props?.endpointContent?.originalParams) ||
-        !_.isEqual(this.state?.endpointContentState?.originalHeaders, this.props?.endpointContent?.originalHeaders) ||
-        !_.isEqual(this.state?.endpointContentState?.pathVariables, this.props?.endpointContent?.pathVariables) ||
-        !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
-    ) {
-      this.prepareHarObject()
-    }
-    if (this.state.endpoint.id !== prevState.endpoint.id && !this.props.location.pathname.includes('history')) {
-      this.setState({ flagResponse: false })
-    }
-
-    if (this.props?.endpointContent && !_.isEqual(this.props.endpointContent, this.state.endpointContentState)) {
-      this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
     }
   }
 

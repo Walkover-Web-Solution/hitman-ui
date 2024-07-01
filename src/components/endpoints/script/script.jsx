@@ -5,7 +5,8 @@ import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
 import { Snippets, preReqSnippets, postReqSnippets } from './snippets'
-import { getProxyToken } from '../../auth/authServiceV2'
+import { BiSolidBot } from "react-icons/bi";
+import { getCurrentUser, getProxyToken } from '../../auth/authServiceV2'
 
 export class Script extends Component {
   constructor(props) {
@@ -26,21 +27,14 @@ export class Script extends Component {
     if (this.props.scriptText) {
       this.setState({ scriptEditorText: this.props.scriptText })
     }
-    window.addEventListener('message', (event) => {
-      const receivedData = event.data;
-      console.log(receivedData,"recieveddata")
-   });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    window.SendDataToChatbot({ bridgeName: 'api', threadId: '134',parentId: '',
+    const userId = getCurrentUser()?.id
+    window.SendDataToChatbot({ bridgeName: 'scripts', threadId: `${userId}`,parentId: '',
     fullScreen: 'false',
     hideCloseButton: 'false',
     hideIcon: 'false', variables: {Proxy_auth_token : getProxyToken(), endpoint: this.props.endpointContent}});
-    window.addEventListener('message', (event) => {
-      const receivedData = event.data;
-      console.log(receivedData,"recieveddata")
-   });
     if (this.props.scriptText && !this.scriptFetched && this.props.scriptText !== prevProps.scriptText) {
       this.setState({ scriptEditorText: this.props.scriptText || '' })
       this.scriptFetched = true
@@ -85,8 +79,9 @@ export class Script extends Component {
 
   renderScriptEditor() {
     return (
-      <div className='col-8'>
+      <div className='col-8 position-relative'>
         {' '}
+        <button className='ai-button-editor position-absolute ' onClick={() => window.openChatbot()}><BiSolidBot /></button>
         <AceEditor
           className='custom-raw-editor'
           mode='javascript'
@@ -141,7 +136,6 @@ export class Script extends Component {
       <div className='row'>
         {this.renderScriptEditor()}
         {this.snippetsList()}
-        <button onClick={() => window.openChatbot()}>Ask AI</button>
       </div>
     )
   }

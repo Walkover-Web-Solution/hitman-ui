@@ -21,16 +21,14 @@ function InviteTeam() {
   })
 
   useEffect(() => {
+    if (typeof window.SendDataToChatbot === 'function') {
     const userId = getCurrentUser()?.id
-    // window.SendDataToChatbot({
-    //   bridgeName: 'root',
-    //   threadId: userId,
-    //   parentId: '',
-    //   fullScreen: 'false', // Consider changing these string booleans to actual booleans (false) if the API expects boolean values
-    //   hideCloseButton: 'false',
-    //   hideIcon: 'false',
-    //   variables: { Proxy_auth_token: getProxyToken() }
-    // });
+    window.SendDataToChatbot({
+      bridgeName: 'root',
+      threadId: `${userId}`,
+      variables: {Proxy_auth_token : getProxyToken()}
+    })
+      }
   }, [])
 
   useEffect(() => {
@@ -49,7 +47,6 @@ function InviteTeam() {
     setShowModal(false)
     setEmail('')
   }
-
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
   const handleKeyPress = (e) => {
