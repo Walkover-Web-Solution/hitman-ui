@@ -87,3 +87,30 @@ export async function inviteMembers(name, email) {
     toast.error('Cannot proceed at the moment. Please try again later')
   }
 }
+
+function proxyGooglereferenceMapping() {
+  const envMappings = {
+    local: process.env.REACT_APP_PROXY_REFERENCE_ID_LOCAL,
+    test: process.env.REACT_APP_PROXY_REFERENCE_ID_TEST,
+    prod: process.env.REACT_APP_PROXY_REFERENCE_ID_PROD,
+  };
+  return envMappings[process.env.REACT_APP_ENV] || "";
+}
+
+export async function removeUser(userId) {
+  try{
+    const feature_id = proxyGooglereferenceMapping();
+    const data = {
+        feature_id: feature_id,
+        company_id: getCurrentOrg()?.id
+    }
+    const headers = {
+      authkey: 'ebc1437c957484fcc548ee8b22449305'
+    };
+    const res = await http.post(`https://routes.msg91.com/api/clientUsers/${userId}/remove`, data, {headers})
+    return res
+  } catch (e) {
+    console.error(e)
+    toast.error('Cannot proceed at the moment. Please try again later')
+  }
+}

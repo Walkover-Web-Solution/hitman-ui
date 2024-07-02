@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import './inviteTeam.scss'
-import { getCurrentOrg, getCurrentUser, getProxyToken } from '../../auth/authServiceV2'
+import { getCurrentOrg, getCurrentUser, getProxyToken, getUserData } from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
-import { inviteMembers } from '../../../services/orgApiService'
+import { inviteMembers, removeUser } from '../../../services/orgApiService'
 import { useSelector, useDispatch } from 'react-redux'
-import { addNewUserData } from '../../auth/redux/usersRedux/userAction'
+import { addNewUserData, addUserData } from '../../auth/redux/usersRedux/userAction'
 import { inviteuserMail } from '../../common/apiUtility'
 
 function InviteTeam() {
@@ -53,6 +53,23 @@ function InviteTeam() {
     if (e.key === 'Enter') handleSendInvite(e)
   }
 
+  const handleRemoveMember = async (userId) => {
+    setLoading(true);
+    try {
+      const token = getProxyToken()
+      const response = await removeUser(userId);
+      if (response?.status === 'success' || '200') {
+        toast.success('User removed successfully');
+        let users = await getUserData(token)
+        if(users) dispatch(addUserData(users))
+      }
+    } catch (error) {
+      toast.error('Error removing member');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSendInvite = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -63,8 +80,8 @@ function InviteTeam() {
       }
       const extractedName = email.substring(0, email.indexOf('@')).replace(/[^a-zA-Z]/g, '');
       const response = await inviteMembers(extractedName, email)
-      if (response?.data?.status == 'success') {
-        dispatch(addNewUserData(response?.data?.data))
+      if (response?.status == 'success' || '200') {
+        dispatch(addNewUserData([response?.data?.data]))
         handleCloseModal()
         await inviteuserMail(email)
       }
@@ -114,6 +131,14 @@ function InviteTeam() {
               <tr key={key}>
                 <td>{user?.email}</td>
                 <td>Admin</td> 
+                <td>
+              <button 
+                className='btn btn-danger btn-sm' 
+                onClick={() => handleRemoveMember(user?.id)}
+              >
+                Remove
+              </button>
+            </td>
               </tr>
             ))}
           </tbody>

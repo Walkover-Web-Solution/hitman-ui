@@ -12,11 +12,11 @@ const userReducer = (state = initialState, action) => {
         case ADD_USER_DATA:
             return { ...state, usersList: action.data };
         case ADD_NEW_USER:
-            return [ ...state, action.data];
+                return { ...state, usersList: [...state.usersList, ...action.data] };
         case SET_CURRENT_USER:
             return { ...state, currentUser: action.data };
         default:
-            return state; // Return the current state if action type doesn't match
+            return state;
     }
 };
 
