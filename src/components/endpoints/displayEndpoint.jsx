@@ -439,17 +439,15 @@ class DisplayEndpoint extends Component {
     this.setState({
       theme: { backgroundStyle },
     });
-
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const userid = getCurrentUser()?.id
-    window.SendDataToChatbot({ bridgeName: this.state.activeTab == 'pre-script' ? 'scripts' : 'api', threadId: `${userid}`, parentId: '',
-    fullScreen: 'false',
-    hideCloseButton: 'false',
-    hideIcon: 'false', 
+  const userid = getCurrentUser()?.id
+  if (typeof window.SendDataToChatbot === 'function') {
+    window.SendDataToChatbot({ bridgeName: 'api', threadId: `${userid}`,
     variables: {Proxy_auth_token : getProxyToken(), endpoint: this.props.endpointContent}});
-    window.closeChatbot()
+  }
+    // window.closeChatbot()
     window.addEventListener('resize', this.updateDimensions)
     if (prevState.isMobileView !== this.state.isMobileView) {
       this.isMobileView()
@@ -3387,6 +3385,8 @@ class DisplayEndpoint extends Component {
                                         handleScriptChange={this.handleScriptChange.bind(this)}
                                         scriptText={this.props?.endpointContent?.preScriptText}
                                         endpointContent={this.props?.endpointContent}
+                                        key={this.props.activeTabId}
+
                                       />
                                     </div>
                                   </div>
@@ -3402,6 +3402,8 @@ class DisplayEndpoint extends Component {
                                         handleScriptChange={this.handleScriptChange.bind(this)}
                                         scriptText={this.props?.endpointContent?.postScriptText}
                                         endpointContent={this.props?.endpointContent}
+                                        key={this.props.activeTabId}
+
                                       />
                                     </div>
                                   </div>
@@ -3459,6 +3461,7 @@ class DisplayEndpoint extends Component {
                                     handleScriptChange={this.handleScriptChange.bind(this)}
                                     scriptText={this.props?.endpointContent?.preScriptText}
                                     endpointContent={this.props?.endpointContent}
+                                    key={this.props.activeTabId}
                                   />
                                 </div>
                               </div>
@@ -3474,6 +3477,8 @@ class DisplayEndpoint extends Component {
                                     handleScriptChange={this.handleScriptChange.bind(this)}
                                     scriptText={this.props?.endpointContent?.postScriptText}
                                     endpointContent={this.props?.endpointContent}
+                                    key={this.props.activeTabId}
+
                                   />
                                 </div>
                               </div>

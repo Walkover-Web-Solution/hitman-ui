@@ -6,7 +6,6 @@ import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
 import { Snippets, preReqSnippets, postReqSnippets } from './snippets'
 import { BiSolidBot } from "react-icons/bi";
-import { getCurrentUser, getProxyToken } from '../../auth/authServiceV2'
 
 export class Script extends Component {
   constructor(props) {
@@ -28,13 +27,8 @@ export class Script extends Component {
       this.setState({ scriptEditorText: this.props.scriptText })
     }
   }
-
+  
   componentDidUpdate(prevProps, prevState) {
-    const userId = getCurrentUser()?.id
-    window.SendDataToChatbot({ bridgeName: 'scripts', threadId: `${userId}`,parentId: '',
-    fullScreen: 'false',
-    hideCloseButton: 'false',
-    hideIcon: 'false', variables: {Proxy_auth_token : getProxyToken(), endpoint: this.props.endpointContent}});
     if (this.props.scriptText && !this.scriptFetched && this.props.scriptText !== prevProps.scriptText) {
       this.setState({ scriptEditorText: this.props.scriptText || '' })
       this.scriptFetched = true

@@ -21,15 +21,15 @@ function InviteTeam() {
   })
 
   useEffect(() => {
-    if (typeof window.SendDataToChatbot === 'function') {
-    const userId = getCurrentUser()?.id
-    window.SendDataToChatbot({
-      bridgeName: 'root',
-      threadId: `${userId}`,
-      variables: {Proxy_auth_token : getProxyToken()}
-    })
-      }
-  }, [])
+      if (typeof window.SendDataToChatbot === 'function') {
+        const userId = getCurrentUser()?.id
+        window.SendDataToChatbot({
+          bridgeName: 'LandingPage',
+          threadId: `${userId}`,
+          variables: {Proxy_auth_token : getProxyToken()}
+        })
+          }
+    }, []);
 
   useEffect(() => {
     if (showModal) {
