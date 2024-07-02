@@ -1,18 +1,34 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Joi from 'joi-browser';
-import './endpoints.scss';
-import ShowCaseSaveAsModal from './showCaseSaveAsModal/showCaseSaveAsModal';
 import Input from '../common/input';
 import { trimString } from '../common/utility';
 import IconButtons from '../common/iconButton';
 import { MdOutlineClose } from "react-icons/md";
+import ShowCaseSaveAsModal from './showCaseSaveAsModal/showCaseSaveAsModal';
+import './endpoints.scss';
+
 
 const SaveAsSidebar = (props) => {
+
+  const saveAsSidebarStyle = {
+    position: 'fixed',
+    background: 'white',
+    zIndex: '1050',
+    top: '0px',
+    right: '0px',
+    height: '100vh',
+    width: '35vw',
+    boxShadow: '-25px 25px 43px rgba(0, 0, 0, 0.07)',
+    overflow: 'hidden',
+  };
+
+
   const [data, setData] = useState({
     name: '',
     description: '',
   });
+
+  const title = data.name;
   const saveAsSidebar = useRef(null);
   const inputRef = useRef(null);
 
@@ -88,18 +104,6 @@ const SaveAsSidebar = (props) => {
     );
   };
 
-  const title = data.name;
-  const saveAsSidebarStyle = {
-    position: 'fixed',
-    background: 'white',
-    zIndex: '1050',
-    top: '0px',
-    right: '0px',
-    height: '100vh',
-    width: '35vw',
-    boxShadow: '-25px 25px 43px rgba(0, 0, 0, 0.07)',
-    overflow: 'hidden',
-  };
 
   return (
     <div
