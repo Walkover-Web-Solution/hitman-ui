@@ -3182,13 +3182,14 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className='nav-link'
-                                      id='pills-script-tab'
-                                      data-toggle='pill'
+                                      className={`nav-link ${this.state.activeTab === 'script' ? 'active' : ''}`}
+                                      id={`pills-script-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
                                       href={`#script-${this.props.tab.id}`}
-                                      role='tab'
+                                      role="tab"
                                       aria-controls={`script-${this.props.tab.id}`}
-                                      aria-selected='false'
+                                      aria-selected={this.state.activeTab === 'script'}
+                                      onClick={() => this.setState({ activeTab: 'script' })}
                                     >
                                       Script
                                     </a>
@@ -3332,10 +3333,10 @@ class DisplayEndpoint extends Component {
                                 {this.renderBodyContainer()}
                               </div>
                               <div
-                                className='tab-pane fade Script-content'
+                                className={`tab-pane fade Script-content ${this.state.activeTab === 'script' ? 'show active' : ''}`}
                                 id={`script-${this.props.tab.id}`}
                                 role='tabpanel'
-                                aria-labelledby='pills-script-tab'
+                                aria-labelledby={`pills-script-tab-${this.props.tab.id}`}
                               >
                                 <ul className='nav nav-tabs flex-column mt-0 border border-0' id='pills-sub-tab' role='tablist'>
                                   <li className='nav-item'>
