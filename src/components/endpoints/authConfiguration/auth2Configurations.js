@@ -50,12 +50,12 @@ export default function Auth2Configurations(props) {
                                 </button>
                                 <div className='dropdown-menu dropdown-menu-token available-token-dropdown-menu' aria-labelledby='dropdownMenuButton'>
                                     {Object.keys(tokenDetails).map((tokenId, index) => (
-                                        <button onClick={() => handleSelectToken(tokenId)} key={index} type='button' className='dropdown-item dropdown-token-item fs-4 d-block' >
+                                        <button onClick={() => handleSelectToken(tokenId)} key={index} type='button' className='dropdown-item dropdown-token-item  px-1 fs-4 d-block' >
                                             {tokenDetails[tokenId].tokenName}
                                         </button>
                                     ))}
                                     {Object.keys(tokenDetails).length !== 0 ?
-                                        <button onClick={handleManageTokenClick} type='button' className='dropdown-item manage-token-title fs-4 d-block' >
+                                        <button onClick={handleManageTokenClick} type='button' className='dropdown-item manage-token-title fs-4 px-1 d-block' >
                                             Manage Tokens
                                         </button> :
                                         <button type='button' className='dropdown-item p-1 fs-4' >

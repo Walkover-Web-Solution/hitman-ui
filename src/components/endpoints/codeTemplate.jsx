@@ -204,7 +204,7 @@ class CodeTemplate extends Component {
                 </Dropdown>
               </div>
             </Col>
-            <Col className='editor-body-wrapper' xs={12}>
+            <Col className={isOnPublishedPage() ? 'editor-body-wrapper' : 'editor-body-wrapper editor-body-wrapper-height'} xs={12}>
               <div className='ace-editor-wrapper'>
                 <div id='code-window-body' className={!isOnPublishedPage() ? 'copy-button-light' : 'copy-button-dark'}>
                   <CopyToClipboard

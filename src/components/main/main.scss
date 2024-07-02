@@ -60,20 +60,23 @@ html body {
 }
 .version-dropdown {
   .dropdown-toggle {
-    font-size: 14px !important;
+    font-size: 11px !important;
     padding: 5px;
     padding-right: 4px !important;
     margin-left: 4px;
-    border: 1px solid transparent !important;
+
     @media screen and (max-width:768px) {
       font-size: 16px !important;
     }
+
     &:active {
       color: black !important;
     }
+
     &::after {
       content: "" !important;
       top: 0 !important;
+      right: 4px;
       transform: rotate(362deg) !important;
       border-top: 4.8px solid !important;
       border-right: 4.8px solid transparent !important;
@@ -81,25 +84,33 @@ html body {
       border-left: 4.8px solid transparent !important;
       display: none !important;
     }
-
     &:hover {
-      border-color: rgba(128, 128, 128, 0.363) !important;
-&::after {
-  display: block !important;
-}
+      &::after {
+        display: block !important;
+      }
     }
   }
-.dropdown-menu {
-  max-width: 260px;
-  left: -36px !important;
-  a {
-    max-width: 180px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    display: block !important;
+  .dropdown-menu{
+    min-width: 80px !important;
+    max-width: 200px !important;
+   .dropdown-item {
+    padding: auto 4px !important;
+    font-size: 11px !important;
+   }
   }
-}
+
+  .dropdown-menu {
+    max-width: 260px;
+    left: -36px !important;
+
+    a {
+      max-width: 180px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: block !important;
+    }
+  }
 }
   
 .dropdown {
@@ -2740,18 +2751,9 @@ a.cta-type {
 // Cookie
 
 .cookie-modal {
-  input.form-control {
-    max-width: 85%;
-  }
-
   .cookie-modal form {
     padding: 0 !important;
   }
-
-  button.btn.btn-primary {
-    padding: 7px 33px;
-  }
-
   form {
     padding: 0 !important;
   }
