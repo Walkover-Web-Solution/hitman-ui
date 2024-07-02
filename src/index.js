@@ -15,7 +15,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { createRoot } from 'react-dom/client'
 
-if(process.env.REACT_APP_ENV != 'local'){
+if (process.env.REACT_APP_ENV != 'local') {
   sentryIntegration()
 }
 const queryClient = new QueryClient()
@@ -29,7 +29,7 @@ createRoot(document.getElementById('root')).render(
             <Route path='/' component={App} />
           </Switch>
         </Router>
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </PersistGate>
   </Provider>
