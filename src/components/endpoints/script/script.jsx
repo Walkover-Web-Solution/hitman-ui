@@ -5,6 +5,7 @@ import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
 import { Snippets, preReqSnippets, postReqSnippets } from './snippets'
+import { BiSolidBot } from "react-icons/bi";
 
 export class Script extends Component {
   constructor(props) {
@@ -26,7 +27,7 @@ export class Script extends Component {
       this.setState({ scriptEditorText: this.props.scriptText })
     }
   }
-
+  
   componentDidUpdate(prevProps, prevState) {
     if (this.props.scriptText && !this.scriptFetched && this.props.scriptText !== prevProps.scriptText) {
       this.setState({ scriptEditorText: this.props.scriptText || '' })
@@ -70,11 +71,11 @@ export class Script extends Component {
     editor.focus();
   };
 
-
   renderScriptEditor() {
     return (
-      <div className='col-8'>
+      <div className='col-8 position-relative'>
         {' '}
+        <button className='ai-button-editor position-absolute ' onClick={() => window.openChatbot()}><BiSolidBot /></button>
         <AceEditor
           className='custom-raw-editor'
           mode='javascript'
