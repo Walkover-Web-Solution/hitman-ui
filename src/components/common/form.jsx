@@ -1,131 +1,120 @@
-import React, { Component, createRef } from 'react'
-import Input from './input'
-// import Joi from 'joi-browser'
+import React, { useEffect, useRef, useState } from 'react'
 import AceEditor from 'react-ace'
+import Input from './input'
+import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
 import 'ace-builds'
 import 'ace-builds/src-noconflict/mode-json'
-import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
 
-class Form extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      data: {},
-      errors: {},
-      isSaveDisabled: true
-    }
+const Form = ({ children, doSubmit }) => {
 
-    this.modules = {
-      toolbar: [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ color: [] }, { background: [] }],
+  const [data, setData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [isSaveDisabled, setIsSavedDisabled] = useState(true);
+  const inputRef = useRef()
 
-        [({ list: 'ordered' }, { list: 'bullet' })],
-        ['link']
-      ]
-    }
-    this.inputRef = createRef()
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ color: [] }, { background: [] }],
 
-    this.formats = ['header', 'bold', 'italic', 'underline', 'strike', 'color', 'background', 'list', 'bullet', 'link']
+      [({ list: 'ordered' }, { list: 'bullet' })],
+      ['link']
+    ]
   }
 
-  validate() {
+  const formats = ['header', 'bold', 'italic', 'underline', 'strike', 'color', 'background', 'list', 'bullet', 'link']
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [])
+
+  const validate = () => {
     return null
-    // const options = { abortEarly: false }
-    // const { error } = Joi.validate(this.trimmedData(), this.schema, options)
-    // if (!error) return null
-    // const errors = {}
-    // for (const item of error.details) {
-    //   if (!errors[item.path[0]]) { errors[item.path[0]] = item.message }
-    // }
-    // return errors
   }
 
-  componentDidMount() {
-    if (this.inputRef.current) {
-      this.inputRef.current.focus()
-    }
-  }
-
-  trimmedData() {
+  const trimmedData = () => {
     const trimmedData = {}
-    Object.keys(this.state.data).forEach((key) => {
-      if (typeof this.state.data[key] === 'string') {
-        trimmedData[key] = this.state.data[key]?.trim()
+    Object.keys(data).forEach((key) => {
+      if (typeof data[key] === 'string') {
+        trimmedData[key] = data[key]?.trim()
       } else {
-        trimmedData[key] = this.state.data[key]
+        trimmedData[key] = data[key]
       }
     })
-    this.setState({ data: trimmedData })
-    return trimmedData
+    setData(trimmedData);
+    return trimmedData;
   }
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    this.handleKeyPress()
+    handleKeyPress()
   }
 
-  handleKeyPress() {
-    const errors = this.validate()
-    this.setState({ errors: errors || {} })
+  const handleKeyPress = () => {
+    const errors = validate()
+    setErrors(errors || {})
     if (errors) return
-    this.doSubmit()
+    doSubmit()
   }
 
-  handleChange = (e, isURLInput = false) => {
-    const data = { ...this.state.data }
-    data[e.currentTarget.name] = e.currentTarget.value
+  const handleChange = (e, isURLInput = false) => {
+    const tempData = { ...data };
+    tempData[e.currentTarget.name] = e.currentTarget.value
     if (isURLInput) {
-      data[e.currentTarget.name] = handleChangeInUrlField(data[e.currentTarget.name])
+      tempData[e.currentTarget.name] = handleChangeInUrlField(tempData[e.currentTarget.name])
     }
-    this.setState({ errors: {}, data })
+    setData(tempData)
+    setErrors({})
   }
 
-  handleBlur = (e, isURLInput = false) => {
-    const data = { ...this.state.data }
+  const handleBlur = (e, isURLInput = false) => {
+    const tempData = data;
     if (isURLInput) {
-      data[e.currentTarget.name] = handleBlurInUrlField(data[e.currentTarget.name])
+      tempData[e.currentTarget.name] = handleBlurInUrlField(tempData[e.currentTarget.name])
     }
-    this.setState({ errors: {}, data })
+    setData(tempData)
+    setErrors({})
   }
 
-  getSaveDisableStatus(notdefined, active) {
-    let isSaveDisabled = this.state.isSaveDisabled
-    if (isSaveDisabled === notdefined || isSaveDisabled === active) {
-      isSaveDisabled = true
+  const getSaveDisableStatus = (notdefined, active) => {
+    let saveDisabled = isSaveDisabled
+    if (saveDisabled === notdefined || saveDisabled === active) {
+      saveDisabled = true
     } else {
-      isSaveDisabled = false
+      saveDisabled = false
     }
-    return isSaveDisabled
+    return saveDisabled
   }
 
-  handleEditorChange = (value, editor) => {
-    const data = this.state.data
+  const handleEditorChange = (value, editor) => {
+    const tempData = data;
     const description = value
-    const isSaveDisabled = this.getSaveDisableStatus(undefined, null)
+    const saveDisabled = getSaveDisableStatus(undefined, null)
     const length = editor.getText().trim().length
-    data.description = description
-    this.setState({ data, length, isSaveDisabled })
+    tempData.description = description
+    setData({ ...tempData });
+    setIsSavedDisabled(saveDisabled)
   }
 
-  handleAceEditorChange = (value) => {
-    const data = { ...this.state.data }
-    data.body = value
-    this.setState({ data })
+  const handleAceEditorChange = (value) => {
+    const tempData = { ...data }
+    tempData.body = value
+    setData(tempData)
   }
 
-  renderInput(name, urlName, label, placeholder, mandatory = false, isURLInput = false, note = '') {
-    const { data, errors } = this.state
+  const renderInput = (name, urlName, label, placeholder, mandatory = false, isURLInput = false, note = '') => {
     return (
       <Input
-        ref={this.inputRef}
+        ref={inputRef}
         name={name}
         urlName={urlName}
         label={label}
         value={data[name]}
-        onChange={(e) => this.handleChange(e, isURLInput)}
-        onBlur={(e) => this.handleBlur(e, isURLInput)}
+        onChange={(e) => handleChange(e, isURLInput)}
+        onBlur={(e) => handleBlur(e, isURLInput)}
         error={errors?.[name]}
         placeholder={placeholder}
         disabled={data.disabled}
@@ -135,8 +124,8 @@ class Form extends Component {
     )
   }
 
-  renderTextArea(name, label, placeholder) {
-    const { data, errors } = this.state
+  const renderTextArea = (name, label, placeholder) => {
+
     return (
       <div className='form-group '>
         <label htmlFor={name} className='custom-input-label'>
@@ -145,7 +134,7 @@ class Form extends Component {
         <textarea
           className='form-control custom-input'
           rows='10'
-          onChange={this.handleChange}
+          onChange={handleChange}
           id={name}
           error={errors[name]}
           name={name}
@@ -156,7 +145,7 @@ class Form extends Component {
     )
   }
 
-  renderButton(label, style) {
+  const renderButton = (label, style) => {
     return (
       <button className='btn btn-primary btn-sm fs-4' id='add_collection_create_new_btn'>
         {label}
@@ -164,9 +153,7 @@ class Form extends Component {
     )
   }
 
-  renderAceEditor(name, label) {
-    const { data, errors } = this.state
-
+  const renderAceEditor = (name, label) => {
     return (
       <div className='form-group '>
         <label htmlFor={name} className='custom-input-label'>
@@ -178,7 +165,7 @@ class Form extends Component {
           mode='json'
           theme='github'
           value={data.body}
-          onChange={this.handleAceEditorChange}
+          onChange={handleAceEditorChange}
           setOptions={{
             showLineNumbers: true
           }}
@@ -196,6 +183,14 @@ class Form extends Component {
       </div>
     )
   }
+
+  return children({
+    renderInput,
+    renderTextArea,
+    renderAceEditor,
+    renderButton,
+    handleSubmit
+  });
 }
 
 export default Form
