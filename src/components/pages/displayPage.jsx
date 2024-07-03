@@ -29,6 +29,7 @@ import Footer from '../main/Footer'
 import moment from 'moment'
 import DisplayUserAndModifiedData from '../common/userService'
 import RenderPageContent from './renderPageContent'
+import DisplayUserAndModifiedData from '../common/userService'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -149,6 +150,7 @@ class DisplayPage extends Component {
   }
 
   checkPageRejected() {
+    debugger
     if (this.props.rejected) {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
@@ -159,9 +161,9 @@ class DisplayPage extends Component {
           <span className='mb-2 d-inline-block'> 
           <DisplayUserAndModifiedData
           isOnPublishedPage={isOnPublishedPage()}
-          pages={this.props.pages}
-          currentPage={this.props.currentPageId}
-          users={this.props.users}
+          pages={this.props?.pages}
+          currentPage={this.props?.currentPageId}
+          users={this.props?.users}
           />
           </span>
         </div>
