@@ -29,8 +29,9 @@ import { BsThreeDots } from 'react-icons/bs'
 import { LuFolder } from 'react-icons/lu'
 import { RiShareForward2Line } from 'react-icons/ri'
 import { TbDirections } from 'react-icons/tb'
-import { isAdmin } from '../auth/authServiceV2'
-import { BiDuplicate } from 'react-icons/bi'
+import { TbSettingsAutomation } from "react-icons/tb";
+import ExportButton from '../exportButton/exportButton'
+import { BiExport } from "react-icons/bi";
 
 const mapStateToProps = (state) => {
   return {
@@ -67,8 +68,11 @@ class CollectionsComponent extends Component {
       showRemoveModal: false,
       selectedCollectionIds: [],
       showOrgModal: false,
+      showRunAutomationModal: false,
+      automationSelectedCollectionId: null,
     }
     this.names = {}
+    this.handleApiAutomation = this.handleApiAutomation.bind(this)
   }
 
   closeCollectionForm() {
@@ -234,6 +238,10 @@ class CollectionsComponent extends Component {
   openRedirectionsPage(collection) {
     this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collection.id}/redirections`)
   }
+  handleApiAutomation(collectionId) {
+    this.props.history.push(`/orgs/${this.props.match.params.orgId}/automation/${collectionId}`)
+  }
+
   renderBody(collectionId, collectionState) {
     const expanded = this.props.clientData?.[collectionId]?.isExpanded ?? isOnPublishedPage()
     var isOnDashboardPage = isDashboardRoute(this.props)
@@ -310,11 +318,15 @@ class CollectionsComponent extends Component {
                           >
                             <TbDirections size={16} color='grey' /> Redirections
                           </div>
-                          <div
-                            className='dropdown-item text-danger d-flex'
-                            onClick={() => this.openDeleteCollectionModal(collectionId)}
-                          >
-                            <DeleteIcon color='red' /> Delete
+                          <div className='dropdown-item' onClick={() => this.handleApiAutomation(collectionId)}>
+                            <TbSettingsAutomation size={16} color='grey' /> API Automation
+                          </div>
+                          <div className='dropdown-item d-flex align-items-center h-auto'>
+                            <BiExport size={18} color='grey' />
+                            <ExportButton orgId={this.props.match.params.orgId} collectionId={collectionId} collectionName={this.props.collections[collectionId].name} />
+                          </div>
+                          <div className='dropdown-item delete-button-sb text-danger d-flex' onClick={() => { this.openDeleteCollectionModal(collectionId) }}>
+                            <DeleteIcon size={14} /> Delete
                           </div>
                         </>
                       )}
@@ -356,6 +368,7 @@ class CollectionsComponent extends Component {
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
+                  // isPublishData={false}
                   />
                 }
               </Card.Body>
@@ -462,6 +475,7 @@ class CollectionsComponent extends Component {
           {this.props.collectionsToRender.length > 0 ? (
             <div className='App-Side'>
               {this.props.collectionsToRender.map((collectionId, index) => this.renderBody(collectionId, 'allCollections'))}
+              {this.state.showRunAutomationModal && this.renderRunAutomationModal()}
             </div>
           ) : this.props.filter === '' ? (
             this.renderEmptyCollections()

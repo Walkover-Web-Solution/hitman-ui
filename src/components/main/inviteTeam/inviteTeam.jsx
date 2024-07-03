@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import './inviteTeam.scss'
-import { getCurrentOrg } from '../../auth/authServiceV2'
+import { getCurrentOrg, getCurrentUser, getProxyToken } from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
 import { inviteMembers } from '../../../services/orgApiService'
@@ -21,6 +21,17 @@ function InviteTeam() {
   })
 
   useEffect(() => {
+      if (typeof window.SendDataToChatbot === 'function') {
+        const userId = getCurrentUser()?.id
+        window.SendDataToChatbot({
+          bridgeName: 'LandingPage',
+          threadId: `${userId}`,
+          variables: {Proxy_auth_token : getProxyToken()}
+        })
+          }
+    }, []);
+
+  useEffect(() => {
     if (showModal) {
       inputRef.current.focus()
     }
@@ -36,7 +47,6 @@ function InviteTeam() {
     setShowModal(false)
     setEmail('')
   }
-
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
   const handleKeyPress = (e) => {

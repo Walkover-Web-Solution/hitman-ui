@@ -30,7 +30,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     // ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
-    // setCollectionIdForPublish: (data) => dispatch(updateCollectionIdForPublish(data))
   }
 }
 
