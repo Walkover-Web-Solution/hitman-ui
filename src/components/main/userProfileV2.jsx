@@ -135,7 +135,7 @@ class UserProfileV2 extends Component {
     return (
       <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center py-1' onClick={() => { }}>
         <div className='user-icon mr-2'>
-        <FiUser size={16} />
+        <FaUser size={16} />
         </div>
         <div className='profile-details-user-name'>
           {/* <span className='org-name'>{name}</span> */}
