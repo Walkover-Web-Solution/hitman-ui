@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import './inviteTeam.scss'
-import { getCurrentOrg, getProxyToken, getUserData } from '../../auth/authServiceV2'
+import { getCurrentOrg, getCurrentUser} from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
 import { inviteMembers, removeUser } from '../../../services/orgApiService'
 import { useSelector, useDispatch } from 'react-redux'
-import { addNewUserData, addUserData } from '../../auth/redux/usersRedux/userAction'
+import { addNewUserData, removeUserData } from '../../auth/redux/usersRedux/userAction'
 import { inviteuserMail } from '../../common/apiUtility'
 
 function InviteTeam() {
@@ -46,12 +46,10 @@ function InviteTeam() {
   const handleRemoveMember = async (userId) => {
     setLoading(true);
     try {
-      const token = getProxyToken()
       const response = await removeUser(userId);
       if (response?.status === 'success' || '200') {
         toast.success('User removed successfully');
-        let users = await getUserData(token)
-        if(users) dispatch(addUserData(users))
+        dispatch(removeUserData(userId))
       }
     } catch (error) {
       toast.error('Error removing member');
@@ -123,12 +121,12 @@ function InviteTeam() {
                 <td>{user?.email}</td>
                 <td>Admin</td> 
                 <td>
-              <button 
+                {user?.id !== getCurrentUser()?.id && (<button 
                 className='btn btn-danger btn-sm' 
                 onClick={() => handleRemoveMember(user?.id)}
               >
                 Remove
-              </button>
+              </button>)}
             </td>
               </tr>
             ))}

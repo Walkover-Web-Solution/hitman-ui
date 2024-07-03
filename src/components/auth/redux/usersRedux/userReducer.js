@@ -1,6 +1,7 @@
 export const ADD_USER_DATA = 'ADD_USER_DATA';
 export const ADD_NEW_USER = 'ADD_NEW_USER';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const REMOVE_USER = 'REMOVE_USER';
 
 const initialState = {
   usersList: [],
@@ -15,6 +16,10 @@ const userReducer = (state = initialState, action) => {
                 return { ...state, usersList: [...state.usersList, ...action.data] };
         case SET_CURRENT_USER:
             return { ...state, currentUser: action.data };
+        case REMOVE_USER:
+            return {...state,
+            usersList: state.usersList.filter(user => user.id !== action.payload)
+            };    
         default:
             return state;
     }
