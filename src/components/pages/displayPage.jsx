@@ -1,4 +1,4 @@
-import React, { Component ,useState ,useEffect } from 'react'
+import React, { Component } from 'react'
 import { store } from '../../store/store'
 import { connect } from 'react-redux'
 import {
@@ -19,14 +19,12 @@ import { isAdmin } from '../auth/authServiceV2'
 import { approvePage, pendingPage, rejectPage, draftPage } from '../publicEndpoint/redux/publicEndpointsActions'
 import ConfirmationModal from '../common/confirmationModal'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
 import { getPageContent } from '../../services/pageServices'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 import { useQuery } from 'react-query'
 import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
-import moment from 'moment'
 import RenderPageContent from './renderPageContent'
 import DisplayUserAndModifiedData from '../common/userService'
 
@@ -149,7 +147,6 @@ class DisplayPage extends Component {
   }
 
   checkPageRejected() {
-    debugger
     if (this.props.rejected) {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
