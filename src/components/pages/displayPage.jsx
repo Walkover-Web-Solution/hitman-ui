@@ -1,4 +1,4 @@
-import React, { Component ,useState ,useEffect } from 'react'
+import React, { Component} from 'react'
 import { store } from '../../store/store'
 import { connect } from 'react-redux'
 import {
@@ -19,16 +19,14 @@ import { isAdmin } from '../auth/authServiceV2'
 import { approvePage, pendingPage, rejectPage, draftPage } from '../publicEndpoint/redux/publicEndpointsActions'
 import ConfirmationModal from '../common/confirmationModal'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Tiptap from '../tiptapEditor/tiptap'
 import { getPageContent } from '../../services/pageServices'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 import { useQuery } from 'react-query'
 import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
-import moment from 'moment'
-import DisplayUserAndModifiedData from '../common/userService'
 import RenderPageContent from './renderPageContent'
+import DisplayUserAndModifiedData from '../common/userService'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -159,9 +157,9 @@ class DisplayPage extends Component {
           <span className='mb-2 d-inline-block'> 
           <DisplayUserAndModifiedData
           isOnPublishedPage={isOnPublishedPage()}
-          pages={this.props.pages}
-          currentPage={this.props.currentPageId}
-          users={this.props.users}
+          pages={this.props?.pages}
+          currentPage={this.props?.currentPageId}
+          users={this.props?.users}
           />
           </span>
         </div>
