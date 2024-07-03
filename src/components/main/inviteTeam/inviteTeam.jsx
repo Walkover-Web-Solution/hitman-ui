@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import './inviteTeam.scss'
-import { getCurrentOrg, getCurrentUser} from '../../auth/authServiceV2'
+import { getCurrentOrg, getCurrentUser, getProxyToken} from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
 import { inviteMembers, removeUser } from '../../../services/orgApiService'
