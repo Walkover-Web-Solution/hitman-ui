@@ -23,8 +23,6 @@ const History = () => {
   const history = useHistory();
   const { orgId } = useParams();
 
-  const endpoints = useSelector((state) => state.pages);
-  const collections = useSelector((state) => state.collections);
   const historySnapshots = useSelector((state) => state.history);
 
   const [historySnapshot, setHistorySnapshot] = useState([]);
