@@ -1,7 +1,6 @@
 import { store } from '../../../store/store'
 import collectionsApiService from '../collectionsApiService'
 import collectionsActionTypes from './collectionsActionTypes'
-import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import { onParentPageAdded } from '../../pages/redux/pagesActions'
 import { toast } from 'react-toastify'
@@ -254,38 +253,30 @@ export const addCustomDomain = (collectionId, domain) => {
   }
 }
 
-export const importApi = (collection, importType, website, customCallback, defaultView) => {
-  collection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
-  return (dispatch) => {
-    if (importType === 'postman') {
-      openApiService
-        .importPostmanCollection(collection, website, defaultView)
-        .then((response) => {
-          dispatch(onCollectionImported(response.data))
-          toast.success('Collection imported successfully')
-          if (customCallback) customCallback({ success: true })
-        })
-        .catch((error) => {
-          toast.error(error.response ? error.response.data : error)
-          dispatch(onCollectionImportedError(error.response ? error.response.data : error))
-          if (customCallback) customCallback({ success: false })
-        })
-    } else {
-      openApiService
-        .importApi(collection, defaultView)
-        .then((response) => {
-          dispatch(onCollectionImported(response?.data))
-          toast.success('Collection imported successfully')
-          if (customCallback) customCallback({ success: true })
-        })
-        .catch((error) => {
-          toast.error(error.response ? error.response.data : error)
-          dispatch(onCollectionImportedError(error?.response ? error?.response?.data : error))
-          if (customCallback) customCallback({ success: false })
-        })
+export const importCollection = (collection, uniqueTabId, customCallback, defaultView) => {
+  
+  return async (dispatch) => {
+    try {
+      uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
+  
+      const response = await collectionsApiService.importCollectionService(collection, uniqueTabId, defaultView);
+      dispatch(onCollectionImported(response?.data));
+      toast.success('Collection imported successfully');
+
+      if (customCallback) {
+        customCallback({ success: true });
+      }
+    } catch (error) {
+      const errorMessage = error?.response?.data || error.message || 'An error occurred';
+      toast.error(errorMessage);
+      dispatch(onCollectionImportedError(errorMessage));
+
+      if (customCallback) {
+        customCallback({ success: false });
+      }
     }
-  }
-}
+  };
+};
 
 export const saveImportedVersion = (response) => {
   return {
@@ -300,22 +291,7 @@ export const onVersionsFetchedError = (error) => {
     error
   }
 }
-// To do later
-export const importCollection = (collection, customCallback) => {
-  return (dispatch) => {
-    dispatch(importCollectionRequest(collection))
-    collectionsApiService
-      .importCollection(collection.id)
-      .then((response) => {
-        dispatch(onCollectionImported(response.data))
-        if (customCallback) customCallback({ success: true })
-      })
-      .catch((error) => {
-        dispatch(onCollectionImportedError(error.response ? error.response.data : error, collection))
-        if (customCallback) customCallback({ success: false })
-      })
-  }
-}
+
 // To do later
 export const importCollectionRequest = (collection) => {
   return {
