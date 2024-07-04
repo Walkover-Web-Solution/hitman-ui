@@ -261,7 +261,7 @@ class EndpointBreadCrumb extends Component {
               name='enpoint-title'
               ref={this.nameInputRef}
               style={{ textTransform: 'capitalize' }}
-              className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
+              className={['page-title mb-0 fs-1', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
               onChange={this.handleInputChange.bind(this)}
               value={this.props?.isEndpoint
                 ? this.props?.pages?.[this.props?.match?.params?.endpointId]?.name ||

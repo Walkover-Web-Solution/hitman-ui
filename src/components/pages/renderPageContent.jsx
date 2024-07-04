@@ -55,7 +55,7 @@ export default function RenderPageContent(props) {
                     )}
                 </div> :
                 <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
-                    <IoDocumentTextOutline color='grey' size={100} />
+                    <IoDocumentTextOutline size={100} aria-disabled />
                     <span className='empty-line'>Your document is empty</span>
                 </div>
             }

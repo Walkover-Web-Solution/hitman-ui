@@ -5,7 +5,7 @@
   margin: 0 auto;
   flex-direction: column !important;
   overflow: hidden;
-  height: 100%;
+  height: calc(100% + 41px);
   .main-content {
     height: calc(100% - 2.75rem);
     overflow: auto;
