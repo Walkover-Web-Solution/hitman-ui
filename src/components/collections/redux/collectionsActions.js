@@ -1,7 +1,6 @@
 import { store } from '../../../store/store'
 import collectionsApiService from '../collectionsApiService'
 import collectionsActionTypes from './collectionsActionTypes'
-import {importCollectionService} from '../../importCollection/importCollectionService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import { onParentPageAdded } from '../../pages/redux/pagesActions'
 import { toast } from 'react-toastify'
@@ -260,7 +259,7 @@ export const importCollection = (collection, uniqueTabId, customCallback, defaul
     try {
       uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
   
-      const response = await importCollectionService(collection, uniqueTabId, defaultView);
+      const response = await collectionsApiService.importCollectionService(collection, uniqueTabId, defaultView);
       dispatch(onCollectionImported(response?.data));
       toast.success('Collection imported successfully');
 
