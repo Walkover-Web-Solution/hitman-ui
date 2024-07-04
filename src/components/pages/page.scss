@@ -173,12 +173,10 @@
 
 .empty-heading-for-page {
   height: 70vh;
-  svg {
-    color: $disabled-color-page;
-  }
+
   .empty-line { 
     font-size: 14px;
     font-weight: bolder;
-    color: $disabled-color-page;
+    color: gray;
   }
 }

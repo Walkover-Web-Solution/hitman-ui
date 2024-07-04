@@ -28,6 +28,7 @@ import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
 import moment from 'moment'
 import RenderPageContent from './renderPageContent'
+import { IoDocumentTextOutline } from "react-icons/io5";
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -153,8 +154,23 @@ class DisplayPage extends Component {
     } else {
       return (
         <div className={`page-wrapper ${isOnPublishedPage() ? "pt-3" : ""}`}>
-          {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
-          <div className='pageText'><RenderPageContent pageContent={this.props?.pageContent || ''} /></div>
+          {isOnPublishedPage() && this.props?.pageContent && (<h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>)}
+          {
+            this.props?.pageContent ? (
+              <div className='pageText'>
+                <RenderPageContent pageContent={this.props.pageContent} />
+              </div>
+            ) : (
+              <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
+                <IoDocumentTextOutline size={140} color='gray' />
+                <span className='empty-line'>
+                  {!isOnPublishedPage() ? "Your document" : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
+                </span>
+
+              </div>
+            )
+          }
+
           <span className='mt-2 d-inline-block'>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
         </div>
       )
