@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
+import Joi from 'joi';
 import { addUrlWithAdditionalPath, deleteMappedUrl } from './redirectionApiServices'
 import { getUrlPathById } from '../common/utility'
 import { addOldUrlOfPage, deleteOldUrlOfPage } from '../pages/redux/pagesActions'
@@ -29,6 +30,7 @@ const Redirections = () => {
   const [redirectUrls, setRedirectUrls] = useState([])
   const [selectedPageId, setselectedPageId] = useState(null)
   const [latestUrl, setLatestUrl] = useState('')
+  const [errors, setErrors] = useState({});
 
   const visiblePath = customDomain ? `https://${customDomain}/` : `${process.env.REACT_APP_UI_URL}/p/`
 
@@ -65,14 +67,47 @@ const Redirections = () => {
     }
   }
 
-  const handleAddUrl = async () => {
+  const schema = Joi.object({
+    path: Joi.string().min(1).required().trim().label('Slug').messages({
+      'string.empty': 'Slug cannot be empty',
+      'any.required': 'Slug is required',
+    }),
+    latestUrl: Joi.string().min(1).required().trim().label('Redirection URL').messages({
+      'string.empty': 'Redirection URL cannot be empty',
+      'any.required': 'Redirection URL is required',
+    }),
+  });
+
+  const validate = (data) => {
+    const options = { abortEarly: false };
+    const { error } = schema.validate(data, options);
+    if (!error) return null;
+    const errors = {};
+    for (const item of error.details) errors[item.path[0]] = item.message;
+    return errors;
+  };
+
+  const handleAddUrl = async (event) => {
+    event.preventDefault();
+    const path = userPathRef.current.value.trim()
+    const validationErrors = validate({ path, latestUrl });
+    if (validationErrors) {
+      setErrors(validationErrors);
+      return;
+    }
+    setErrors({});
+
+    if (!selectedPageId) {
+      setErrors({ path: 'Please select a page to add the redirection URL' });
+      return;
+    }
     let result
     try {
-      const path = userPathRef.current.value
       result = (await addUrlWithAdditionalPath(selectedPageId, params.collectionId, path)).data
       const updatedRedirectUrls = [...redirectUrls, { pageId: result.pageId, path, pathId: result.id }]
       dispatch(addOldUrlOfPage({ pageId: result.pageId, path, pathId: result.id }))
       setRedirectUrls(updatedRedirectUrls)
+      userPathRef.current.value = '';
     } catch (error) {
       console.error('Failed to create URL:', error)
       toast.error(error.response.data.msg)
@@ -253,10 +288,12 @@ const Redirections = () => {
             <div className='d-flex justify-content-center flex-grow-1'>
               <div className='d-flex flex-column flex-grow-1'>
                 <input ref={userPathRef} type='text' className=' h-100' id='part2' placeholder='Slug' />
+                {errors.path && <small className='text-danger'>{errors.path}</small>}
                 <span className='mt-1 additional-info'>Domain - <span className='domain-name'>{visiblePath}</span></span>
               </div>
               <div className='d-flex flex-column flex-grow-1 ml-2'>
                 <input size='sm' disabled type='text' className='' placeholder='Redirection URL' value={latestUrl} />
+                {errors.latestUrl && <small className='text-danger'>{errors.latestUrl}</small>}
                 <span className='mt-1 additional-info'>Click on the pages and endpoints to add the redirection URL</span>
               </div>
             </div>
