@@ -152,10 +152,10 @@ class DisplayPage extends Component {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className='page-wrapper pt-3 px-1'>
+        <div className={`page-wrapper ${isOnPublishedPage() ? "pt-3" : ""}`}>
           {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
           <div className='pageText'><RenderPageContent pageContent={this.props?.pageContent || ''} /></div>
-          <span>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
+          <span className='mt-2 d-inline-block'>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
         </div>
       )
     }
@@ -256,7 +256,7 @@ class DisplayPage extends Component {
             </button>
           )}
           <button
-            className='btn btn-primary btn-sm fs-4'
+            className='btn btn-primary btn-sm fs-4 mt-1'
             onClick={() => {
               this.handleEdit(this.state.data)
             }}
@@ -382,11 +382,13 @@ class DisplayPage extends Component {
       <div className={`custom-display-page ${isOnPublishedPage() ? "custom-display-public-page" : ""}`}>
         {this.renderPublishConfirmationModal()}
         {this.renderUnPublishConfirmationModal()}
+        <div className={`${!isOnPublishedPage() ? "page-heading-content" : ""}`}>
         {this.renderPublishPageOperations()}
         {this.renderPageName()}
+        </div>
         {this.checkPageRejected()}
         <div>
-        <ApiDocReview {...this.props} />
+        {this.props?.pageContent && ( <ApiDocReview {...this.props} />)}
         {isOnPublishedPage() && <Footer />}
         </div>
       </div>
