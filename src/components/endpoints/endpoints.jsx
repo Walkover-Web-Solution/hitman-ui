@@ -352,7 +352,6 @@ const Endpoints = (props) => {
   }
 
   const filterEndpointIdsByGroup = () => {
-    debugger
     const endpointIds = Object.keys(endpoints).filter(
       (eId) => endpoints[eId].parentId && endpoints[eId].parentId === props.parent_id
     )
