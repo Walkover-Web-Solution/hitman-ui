@@ -53,6 +53,10 @@ export function duplicateCollection(collectionId) {
   return http.post(`${apiUrl}/orgs/${orgId}/duplicateCollections/${collectionId}`)
 }
 
+export function importCollectionService(openApiObject, uniqueTabId, defaultView) {
+  return http.post(`${apiUrl}/orgs/${orgId}/importCollection?defaultView=${defaultView}&uniqueTabId=${uniqueTabId}`, openApiObject);
+}
+
 export default {
   getCollections,
   getCollection,
@@ -62,5 +66,6 @@ export default {
   deleteCollection,
   duplicateCollection,
   getCollectionsByCustomDomain,
-  restoreCollection
+  restoreCollection,
+  importCollectionService
 }
