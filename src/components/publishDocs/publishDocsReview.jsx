@@ -1,51 +1,31 @@
-import React, { Component } from 'react'
-import { Dropdown, Accordion, Card, Button } from 'react-bootstrap';
-import { connect } from 'react-redux'
-import { fetchFeedbacks} from './redux/publishDocsActions'
+import React, {useEffect } from 'react';
+import {Accordion, Card, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFeedbacks } from './redux/publishDocsActions';
+import { useRouteMatch} from 'react-router-dom';
 
-const mapStateToProps = (state) => {
-  return {
-    feedbacks: state.feedbacks
-  }
-}
+const PublishDocsReview = () => {
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetch_feedbacks: (collectionId) => dispatch(fetchFeedbacks(collectionId))
-  }
-}
-class PublishDocsReview extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      selectedItemType: 'endpoint',
-      selectedItemId: null,
-      filter: false
+  const match = useRouteMatch();
+  const dispatch = useDispatch();
+
+  const feedbacks = useSelector((state) => state.feedbacks);
+  const pages = useSelector((state) => state.pages);
+
+  useEffect(() => {
+    const { collectionId } = match.params;
+    if (collectionId) {
+      dispatch(fetchFeedbacks(collectionId));
     }
-  }
+  }, [match.params.collectionId, dispatch]);
 
-  componentDidMount() {
-    const { collectionId } = this.props.match.params
-    collectionId && this.props.fetch_feedbacks(collectionId)
-  }
+  const renderHostedApiHeading = (heading) => (
+    <div className='page-title mb-3'>
+      <div>{heading}</div>
+    </div>
+  );
 
-  componentDidUpdate(prevProps, prevState) {
-    const { collectionId } = this.props.match.params
-    if (prevProps.match.params.collectionId !== collectionId) {
-      collectionId && this.props.fetch_feedbacks(collectionId)
-    }
-  }
-
-  renderHostedApiHeading(heading) {
-    return (
-      <div className='page-title mb-3'>
-        <div>{heading}</div>
-      </div>
-    )
-  }
-
-  renderFeedback() {
-    const { feedbacks, pages } = this.props;
+  const renderFeedback = () => {
     return (
       <div className="feedback-table-container">
         <table className="table">
@@ -67,21 +47,25 @@ class PublishDocsReview extends Component {
                   {Object.keys(feedback.comments).length === 0 ? (
                     <div>No comments</div>
                   ) : (
-                    // Use Accordion for multiple comments
                     <Accordion defaultActiveKey="0">
                       <Card>
                         <Card.Header className='p-0'>
-                          <Accordion.Toggle as={Button}  variant="link" eventKey="1">
+                          <Accordion.Toggle as={Button} variant="link" eventKey="1">
                             Show Comments
                           </Accordion.Toggle>
                         </Card.Header>
                         <Accordion.Collapse eventKey="1">
                           <Card.Body>
-                            {Object.entries(feedback.comments).map(([email, comments], idx) => (
+                            {Object.entries(feedback.comments).map(([email, comments]) => (
                               <div key={email}>
                                 <strong>Email: {email}</strong>
                                 <br />
-                                Comments: {comments.map(comment => <><br/>{comment}</>)}
+                                Comments: {comments.map((comment, idx) => (
+                                  <React.Fragment key={idx}>
+                                    <br />
+                                    {comment}
+                                  </React.Fragment>
+                                ))}
                               </div>
                             ))}
                           </Card.Body>
@@ -96,22 +80,18 @@ class PublishDocsReview extends Component {
         </table>
       </div>
     );
-  }
-  renderNoFeedback() {
-    return <div>No feedbacks received</div>
-  }
+  };
 
-  render() {
-    const feedbacks = this.props.feedbacks  || []
-    return (
-      <div className='feedback-tab'>
-        <div className='d-flex flex-row'>
-          {this.renderHostedApiHeading('API Doc Feedback')}
-        </div>
-        {feedbacks.length > 0 ? this.renderFeedback() : this.renderNoFeedback()}
+  const renderNoFeedback = () => <div>No feedbacks received</div>;
+
+  return (
+    <div className='feedback-tab'>
+      <div className='d-flex flex-row'>
+        {renderHostedApiHeading('API Doc Feedback')}
       </div>
-    )
-  }
-}
+      {feedbacks.length > 0 ? renderFeedback() : renderNoFeedback()}
+    </div>
+  );
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishDocsReview)
+export default PublishDocsReview;
