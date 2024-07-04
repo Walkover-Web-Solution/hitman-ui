@@ -1,11 +1,11 @@
-import React, {useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
-import {useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom';
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility.js'
 import groupsService from './subPageService.js'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
-import { addIsExpandedAction, updataForIsPublished } from '../../store/clientData/clientDataActions.js'
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
 import SubPageForm from './subPageForm.jsx'
 import { ReactComponent as EditSign } from '../../assets/icons/editsign.svg'
@@ -20,29 +20,30 @@ import { background } from '../backgroundColor.js'
 import './subpages.scss'
 
 
-const Groups =(props) =>{
-  const [selectedPage, setSelectedPage] = useState({});
-  const [showSubPageForm, setShowSubPageForm] = useState({
-    addPage: false,
-    edit: false,
-    share: false
-  });
+const SubPage = (props) => {
+
+  const { pages, clientData, collections } = useSelector((state) => ({
+    pages: state.pages,
+    clientData: state.clientData,
+    collections: state.collections,
+  }));
+
+  const dispatch = useDispatch();
+
+  const history = useHistory();
+
+  const [showSubPageForm, setShowSubPageForm] = useState({ addPage: false, edit: false, share: false });
   const [theme, setTheme] = useState('');
-  const [idToRenderState, setIdToRenderState] = useState(null);
-  const [selectedGroup, setSelectedGroup] = useState({});
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [showAddCollectionModal, setShowAddCollectionModal] = useState(false);
   const [isHover, setIsHover] = useState(false);
-  const [backgroundColor, setBackgroundColor] = useState('');
-  const { pages, clientData,modals,collections } = useSelector((state) => ({
-    pages: state.pages,
-    clientData: state.clientData,
-    modals: state.modals,
-    collections: state.collections,
-  }));
-  const dispatch = useDispatch();
-  const history = useHistory();
+
+  useEffect(() => {
+    if (!theme) {
+      setTheme(props.collections[props.collection_id].theme);
+    }
+  }, [theme, props.collections, props.collection_id]);
 
   const handleHover = (hovered) => {
     setIsHovered(hovered);
@@ -51,17 +52,6 @@ const Groups =(props) =>{
     setIsHover(hover);
   };
 
-  useEffect(() => {
-    if (!theme) {
-      setTheme(props.collections[props.collection_id].theme);
-    }
-    fetch('/colors.json')
-      .then((response) => response.json())
-      .then((data) => {
-        setBackgroundColor(data.backgroundColor);
-      });
-  }, [theme, props.collections, props.collection_id]); 
-
   const showEditPageModal = () => {
     return (
       showSubPageForm.edit && (
@@ -69,12 +59,8 @@ const Groups =(props) =>{
           {...props}
           title="Rename"
           show={showSubPageForm.edit}
-          onCancel={() => {
-            setShowSubPageForm(false);
-          }}
-          onHide={() => {
-            setShowSubPageForm(false);
-          }}
+          onCancel={() => { setShowSubPageForm(false) }}
+          onHide={() => { setShowSubPageForm(false) }}
           selectedPage={props?.rootParentId}
           pageType={3}
         />
@@ -82,23 +68,20 @@ const Groups =(props) =>{
     );
   }
 
-  const openEditSubPageForm = (selectedGroup) => {
+  const openEditSubPageForm = () => {
     setShowSubPageForm({ edit: true });
-    setSelectedGroup(selectedGroup);
   };
 
-  const openDeleteSubPageModal = (groupId) => {
+  const openDeleteSubPageModal = () => {
     setShowDeleteModal(true);
-    setSelectedGroup({ ...props.pages[groupId] });
   }
 
   const closeDeleteGroupModal = () => {
     setShowDeleteModal(false);
   };
 
-  const openAddSubPageModal = (groupId) => {
+  const openAddSubPageModal = () => {
     setShowAddCollectionModal(true);
-    setSelectedPage({ ...props.pages[groupId] });
   };
 
   const showAddPageEndpointModal = () => {
@@ -121,34 +104,22 @@ const Groups =(props) =>{
     const isUserOnPublishedPage = isOnPublishedPage();
     const isUserOnTechdocOwnDomain = isTechdocOwnDomain();
     const expanded = clientData?.[subPageId]?.isExpanded ?? isUserOnPublishedPage;
-    const isSelected =
-      isUserOnPublishedPage && isUserOnTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId
-        ? 'selected'
-        : isDashboardRoute && props.match.params.pageId === subPageId
-        ? 'selected'
-        : '';
-    const idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || idToRenderState;
+    const isSelected = isUserOnPublishedPage && isUserOnTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId ? 'selected' : isDashboardRoute && props.match.params.pageId === subPageId ? 'selected' : '';
+    const idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW);
     const collectionId = pages?.[idToRender]?.collectionId ?? null;
     const collectionTheme = collections[collectionId]?.theme;
     const dynamicColor = hexToRgb(collectionTheme, 0.15);
     const staticColor = background['background_hover'];
 
     const backgroundStyle = {
-      backgroundImage:
-        isHovered || isSelected
-          ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
-        linear-gradient(to right, ${staticColor}, ${staticColor})`
-          : ''
+      backgroundImage: isHovered || isSelected ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
     };
 
     const dynamicColors = hexToRgb(collectionTheme, 0.3);
     const staticColors = background['background_hover'];
 
     const backgroundStyles = {
-      backgroundImage: isHover
-        ? `linear-gradient(to right, ${dynamicColors}, ${dynamicColors}),
-        linear-gradient(to right, ${staticColors}, ${staticColors})`
-        : ''
+      backgroundImage: isHover ? `linear-gradient(to right, ${dynamicColors}, ${dynamicColors}), linear-gradient(to right, ${staticColors}, ${staticColors})` : ''
     };
 
     return (
@@ -230,11 +201,8 @@ const Groups =(props) =>{
   };
 
   const handleRedirect = (id) => {
-    if (isDashboardRoute(props)) {
-      history.push({
-        pathname: `/orgs/${props.match.params.orgId}/dashboard/page/${id}`
-      });
-    } else {
+    if (isDashboardRoute(props)) history.push({ pathname: `/orgs/${props.match.params.orgId}/dashboard/page/${id}` });
+    else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id);
       let pathName = getUrlPathById(id, pages);
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`;
@@ -245,29 +213,18 @@ const Groups =(props) =>{
   const handleToggle = (e, id) => {
     e.stopPropagation();
     const isExpanded = clientData?.[id]?.isExpanded ?? isOnPublishedPage();
-    dispatch(addIsExpandedAction({
-      value: !isExpanded,
-      id: id
-    }));
+    dispatch(addIsExpandedAction({ value: !isExpanded, id: id }));
   };
 
 
   return (
     <>
-      {showAddPageEndpointModal()} 
-      {showEditPageModal()} 
-      {showDeleteModal && groupsService.showDeleteGroupModal(
-        props,
-        closeDeleteGroupModal,
-        'Delete Page',
-        `Are you sure you wish to delete this page?
-          All your pages and endpoints present in this page will be deleted.`,
-        pages[props.rootParentId]
-      )}
-
+      {showAddPageEndpointModal()}
+      {showEditPageModal()}
+      {showDeleteModal && groupsService.showDeleteGroupModal(props, closeDeleteGroupModal, 'Delete Page', `Are you sure you wish to delete this page? All your pages and endpoints present in this page will be deleted.`, pages[props.rootParentId])}
       <div className='linkWith'>{renderBody(props.rootParentId)}</div>
     </>
   );
 }
 
-export default Groups
+export default SubPage
