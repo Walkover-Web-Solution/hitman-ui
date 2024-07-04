@@ -16,6 +16,7 @@ import { IoInformationCircleOutline } from 'react-icons/io5'
 import { FiCopy } from 'react-icons/fi'
 import { FaRegTimesCircle } from "react-icons/fa"
 import { updateTab } from '../tabs/redux/tabsActions'
+
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 
 const publishDocFormEnum = {

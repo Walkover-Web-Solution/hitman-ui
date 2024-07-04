@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
-import './publishDocsConfirmModal.scss';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import './publishDocsConfirmModal.scss';
 
 const PublishDocsConfirmModal = (props) => {
   const history = useHistory();
@@ -18,13 +18,7 @@ const PublishDocsConfirmModal = (props) => {
   };
 
   return (
-    <Modal
-      size='lg'
-      // dialogClassName={"publish-doc-confirm-modal"}
-      centered
-      onHide={props.onHide}
-      show={props.show}
-    >
+    <Modal size='lg' centered onHide={props.onHide} show={props.show} >
       <div>
         <Modal.Header className='custom-collection-modal-container' closeButton>
           <Modal.Title id='contained-modal-title-vcenter'>
@@ -36,11 +30,7 @@ const PublishDocsConfirmModal = (props) => {
             <li>Publish the endpoints you wish to make public.</li>
             <li>{' Publish the collection, once you are finished with the above step.'}</li>
           </ul>
-
-          <button
-            className='btn btn-primary'
-            onClick={() => handleOkay(props.collection_id)}
-          >
+          <button className='btn btn-primary' onClick={() => handleOkay(props.collection_id)}>
             Okay
           </button>
         </Modal.Body>
