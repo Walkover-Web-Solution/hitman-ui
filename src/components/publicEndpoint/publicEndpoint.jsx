@@ -444,7 +444,7 @@ class PublicEndpoint extends Component {
           {/* [info] part 3 */}
           <SplitPane split='vertical' className={'split-sidebar-public'}>
             {/* [info] part 3 subpart 1 sidebar data left content */}
-            <div className={'hm-sidebar' + (isTechdocOwnDomain() ? ' pb-5' : '')} style={backgroundStyle}>
+            <div className='hm-sidebar' style={backgroundStyle}>
               {collectionId && <SideBarV2 {...this.props} collectionName={collectionName} OnPublishedPage={true} />}
             </div>
             {/*  [info] part 3 subpart 1 sidebar data right content */}
