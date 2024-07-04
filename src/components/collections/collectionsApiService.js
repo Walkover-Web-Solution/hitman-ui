@@ -54,6 +54,7 @@ export function duplicateCollection(collectionId) {
 }
 
 export function importCollectionService(openApiObject, uniqueTabId, defaultView) {
+  const orgId = getOrgId()
   return http.post(`${apiUrl}/orgs/${orgId}/importCollection?defaultView=${defaultView}&uniqueTabId=${uniqueTabId}`, openApiObject);
 }
 
