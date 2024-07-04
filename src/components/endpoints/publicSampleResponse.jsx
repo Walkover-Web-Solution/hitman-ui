@@ -1,26 +1,24 @@
-import React, { Component } from 'react'
-import { Tabs, Tab } from 'react-bootstrap'
-import JSONPretty from 'react-json-pretty'
-import { willHighlight, getHighlightsData } from './highlightChangesHelper'
-import './endpoints.scss'
-import { Style } from 'react-style-tag'
-import { hexToRgb } from '../common/utility'
-import {background} from '../backgroundColor.js'
-class PublicSampleResponse extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      theme: {
-        publicCollectionTheme: this.props.publicCollectionTheme,
-        backgroundStyle: {}
-      },
-    };
-  }
-  componentDidMount() {
-    this.updateBackgroundStyle();
-  }
-  updateBackgroundStyle() {
-    const { publicCollectionTheme } = this.state.theme;
+import React, { useState, useEffect } from 'react';
+import { Tabs, Tab } from 'react-bootstrap';
+import JSONPretty from 'react-json-pretty';
+import { willHighlight, getHighlightsData } from './highlightChangesHelper';
+import './endpoints.scss';
+import { Style } from 'react-style-tag';
+import { hexToRgb } from '../common/utility';
+import { background } from '../backgroundColor.js';
+
+const PublicSampleResponse = (props) => {
+  const [theme, setTheme] = useState({
+    publicCollectionTheme: props.publicCollectionTheme,
+    backgroundStyle: {},
+  });
+
+  useEffect(() => {
+    updateBackgroundStyle();
+  }, [props.publicCollectionTheme]);
+
+  const updateBackgroundStyle = () => {
+    const { publicCollectionTheme } = theme;
     const dynamicColor = hexToRgb(publicCollectionTheme, 0.02);
     const staticColor = background['background_boxes'];
 
@@ -31,73 +29,70 @@ class PublicSampleResponse extends Component {
       `,
     };
 
-    this.setState(prevState => ({
-      theme: {
-        ...prevState.theme,
-        backgroundStyle,
-      },
+    setTheme((prevState) => ({
+      ...prevState,
+      backgroundStyle,
     }));
-  }
-  showJSONPretty(data) {
-    return <JSONPretty data={data} />
-  }
+  };
 
-  showSampleResponseBody(data) {
+  const showJSONPretty = (data) => {
+    return <JSONPretty data={data} />;
+  };
+
+  const showSampleResponseBody = (data) => {
     if (typeof data === 'object') {
-      return this.showJSONPretty(data)
+      return showJSONPretty(data);
     } else {
       try {
-        data = JSON.parse(data)
-        return this.showJSONPretty(data)
+        data = JSON.parse(data);
+        return showJSONPretty(data);
       } catch (err) {
-        return <pre>{data}</pre>
+        return <pre>{data}</pre>;
       }
     }
-  }
+  };
 
-  render() {
-    return (
-      <>
-        <Style>
-          {`
+  return (
+    <>
+      <Style>
+        {`
           .sample-response nav.nav.nav-tabs a.active {
-                background: ${this.props.publicCollectionTheme};
+                background: ${props.publicCollectionTheme};
                 color:#fff;
               } 
           `}
-        </Style>
-        <div className='pubSampleResponse'>
-          <h3 className='heading-2 pt-1 mt-4'>
-            <span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span>
-          </h3>
-          <div className='sample-response mb-1' style={this.state.theme.backgroundStyle}>
-            <Tabs id='uncontrolled-tab-example'>
-              {this.props.sample_response_array.map((sampleResponse, key) => (
-                <Tab
+      </Style>
+      <div className='pubSampleResponse'>
+        <h3 className='heading-2 pt-1 mt-4'>
+          <span>Sample Response {willHighlight(props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span>
+        </h3>
+        <div className='sample-response mb-1' style={theme.backgroundStyle}>
+          <Tabs id='uncontrolled-tab-example'>
+            {props.sample_response_array.map((sampleResponse, key) => (
+              <Tab
                 key={key}
-                  eventKey={sampleResponse.title}
-                  title={
-                    getHighlightsData(this.props, 'sampleResponse', sampleResponse.title) ? (
-                      <span>
-                        {sampleResponse.title}
-                        <i className='fas fa-circle' />
-                      </span>
-                    ) : (
-                      sampleResponse.title
-                    )
-                  }
-                >
-                  <div>{sampleResponse.status}</div>
-                  <div>{sampleResponse.description}</div>
-                  <div>{this.showSampleResponseBody(sampleResponse.data)}</div>
-                </Tab>
-              ))}
-            </Tabs>
-          </div>
+                eventKey={sampleResponse.title}
+                title={
+                  getHighlightsData(props, 'sampleResponse', sampleResponse.title) ? (
+                    <span>
+                      {sampleResponse.title}
+                      <i className='fas fa-circle' />
+                    </span>
+                  ) : (
+                    sampleResponse.title
+                  )
+                }
+              >
+                <div>{sampleResponse.status}</div>
+                <div>{sampleResponse.description}</div>
+                <div>{showSampleResponseBody(sampleResponse.data)}</div>
+              </Tab>
+            ))}
+          </Tabs>
         </div>
-      </>
-    )
-  }
-}
+      </div>
+    </>
+  );
+};
 
-export default PublicSampleResponse
+export default PublicSampleResponse;
