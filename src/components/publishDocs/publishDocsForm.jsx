@@ -427,7 +427,7 @@ const PublishDocForm = (props) => {
             <div className='or-wrap d-flex align-items-center'>
               <p className='mb-0'>OR</p>
             </div>
-            {renderInput('logoUrl', false, false, binaryFile,'')}
+            {renderInput('logoUrl', false, binaryFile, '')}
           </div>
 
           <div className='color-picker'>{renderColorPicker()}</div>
