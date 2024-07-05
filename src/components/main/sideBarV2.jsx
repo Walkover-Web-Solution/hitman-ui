@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, useCallback, useSelector } from 'react'
-import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useHistory, useLocation, useParams, useRouteMatch } from 'react-router-dom'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import './main.scss'
@@ -21,8 +21,6 @@ import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import NoFound, { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
-import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
-// import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
 import CollectionModal from '../collections/collectionsModal'
@@ -33,72 +31,63 @@ import { TbLogin2 } from 'react-icons/tb'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 import { background } from '../backgroundColor.js'
 
-const mapStateToProps = (state) => {
-  return {
-    collections: state.collections,
-    endpoints: state.pages,
-    versions: state.versions,
-    pages: state.pages,
-    groups: state.groups,
-    historySnapshot: state.history,
-    filter: '',
-    modals: state.modals
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    open_modal: (modal, data) => dispatch(openModal(modal, data)),
-    update_drag_and_drop: (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
-  }
-}
-
-function compareByCreatedAt(a, b) {
-  const t1 = a?.createdAt
-  const t2 = b?.createdAt
-  let comparison = 0
-  if (t1 < t2) {
-    comparison = 1
-  } else if (t1 > t2) {
-    comparison = -1
-  }
-  return comparison
-}
-
 const SideBar = (props) => {
+  const collections = useSelector((state) => state.collections)
+  const pages = useSelector((state) => state.pages)
+  const historySnapshot = useSelector((state) => state.history)
+  const dispatch = useDispatch()
+
+  const update_drag_and_drop = (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
+
+  const history = useHistory()
+  const location = useLocation()
+  const match = useRouteMatch()
+
   const [collectionId, setCollectionId] = useState(null)
-  const [isShowAddCollectionModal, setIsShowAddCollectionModal] = useState(false)
   const [selectedCollectionId, setSelectedCollectionId] = useState(null)
   const [secondarySidebarToggle, setSecondarySidebarToggle] = useState(false)
   const inputRef = useRef(null)
   const sidebarRef = useRef(null)
-  const [data, setData] = useState({ filter: '' })
-  const [historySnapshot, setHistorySnapshot] = useState([])
-  const [endpoints, setEndpoints] = useState([])
-  const [pages, setPages] = useState([])
+  const [searchData, setSearchData] = useState({ filter: '' })
   const [draggingOverId, setDraggingOverId] = useState(null)
   const [draggedIdSelected, setDraggedIdSelected] = useState(null)
+  const [filteredHistorySnapshot, setFilteredHistorySnapshot] = useState([])
+  const [filteredEndpoints, setFilteredEndpoints] = useState([])
+  const [filteredPages, setFilteredPages] = useState([])
+
   const getSidebarInteractionClass = () => {
-    return isDashboardRoute(props, true) ? 'sidebar' : 'sidebar'
+    return isDashboardRoute({ match, location, history }, true) ? 'sidebar' : 'sidebar'
+  }
+
+  function compareByCreatedAt(a, b) {
+    const t1 = a?.createdAt
+    const t2 = b?.createdAt
+    let comparison = 0
+    if (t1 < t2) {
+      comparison = 1
+    } else if (t1 > t2) {
+      comparison = -1
+    }
+    return comparison
   }
 
   const renderCollectionName = () => {
-    const collectionKeys = Object.keys(props.collections || {})
-    const firstCollection = props?.collections?.[collectionKeys[0]] || {}
+    const collectionKeys = Object.keys(collections || {})
+    const firstCollection = collections?.[collectionKeys[0]] || {}
     const collectionName = firstCollection.name
     const publishedCollectionTitle = firstCollection.docProperties?.defaultTitle || ''
 
     return (
       <div className='hm-sidebar-header d-flex align-items-center'>
-        {(props.collections[collectionKeys[0]]?.favicon || props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
+        {(collections[collectionKeys[0]]?.favicon || collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
           <div className='hm-sidebar-logo'>
             <img
               id='publicLogo'
               alt='public-logo'
               src={
-                props.collections[collectionKeys[0]]?.favicon
-                  ? `data:image/png;base64,${props.collections[collectionKeys[0]]?.favicon}`
-                  : props.collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl
+                collections[collectionKeys[0]]?.favicon
+                  ? `data:image/png;base64,${collections[collectionKeys[0]]?.favicon}`
+                  : collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl
               }
               width='60'
               height='60'
@@ -128,34 +117,34 @@ const SideBar = (props) => {
   }
 
   const handleOnChange = (e) => {
-    const searchData = e.target.value.toLowerCase()
-    const newData = { ...data, filter: e.target.value }
+    const searchTerm = e.target.value.toLowerCase()
+    const newData = { ...searchData, filter: e.target.value }
     let filteredHistorySnapshot = []
-    if (props.historySnapshot) {
-      filteredHistorySnapshot = Object.values(props.historySnapshot).filter(
+    if (historySnapshot) {
+      filteredHistorySnapshot = Object.values(historySnapshot).filter(
         (o) =>
-          o.endpoint?.name?.toLowerCase().includes(searchData) ||
-          o.endpoint?.BASE_URL?.toLowerCase().includes(searchData) ||
-          o.endpoint?.uri?.toLowerCase().includes(searchData)
+          o.endpoint?.name?.toLowerCase().includes(searchTerm) ||
+          o.endpoint?.BASE_URL?.toLowerCase().includes(searchTerm) ||
+          o.endpoint?.uri?.toLowerCase().includes(searchTerm)
       )
     }
     let filteredEndpoints = []
     let filteredPages = []
-    const sideBarData = props.pages
+    const sideBarData = pages
     for (let key in sideBarData) {
       let o = sideBarData[key]
       if (
-        o.name?.toLowerCase().includes(searchData) ||
-        o.BASE_URL?.toLowerCase().includes(searchData) ||
-        o.uri?.toLowerCase().includes(searchData)
+        o.name?.toLowerCase().includes(searchTerm) ||
+        o.BASE_URL?.toLowerCase().includes(searchTerm) ||
+        o.uri?.toLowerCase().includes(searchTerm)
       ) {
         sideBarData[key]?.type === 4 ? filteredEndpoints.push(sideBarData[key]) : filteredPages.push(sideBarData[key])
       }
     }
-    setData(newData)
-    setHistorySnapshot(filteredHistorySnapshot)
-    setEndpoints(filteredEndpoints)
-    setPages(filteredPages)
+    setSearchData(newData)
+    setFilteredHistorySnapshot(filteredHistorySnapshot)
+    setFilteredEndpoints(filteredEndpoints)
+    setFilteredPages(filteredPages)
   }
 
   const renderSearch = () => {
@@ -164,7 +153,7 @@ const SideBar = (props) => {
         <SearchIcon className='mr-2' />
         <input
           ref={inputRef}
-          value={data.filter}
+          value={searchData.filter}
           className='search-input'
           placeholder='Type / to search'
           autoComplete='off'
@@ -178,7 +167,7 @@ const SideBar = (props) => {
   }
 
   const renderGlobalAddButton = () => {
-    const isMarketplaceImported = props.collections[collectionId]?.importedFromMarketPlace
+    const isMarketplaceImported = collections[collectionId]?.importedFromMarketPlace
     const title = collectionId
       ? isMarketplaceImported
         ? 'Cannot add Entities to a Marketplace Collection.'
@@ -189,34 +178,35 @@ const SideBar = (props) => {
       getCurrentUser() && (
         <div className='d-flex align-items-center justify-content-end'>
           {/* Uncomment the next line to display filter state */}
-          {/* <span className='f-12 font-weight-700'>{filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span> */}
+          {/* <span className='f-12 font-weight-700'>{searchData.filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span> */}
         </div>
       )
     )
   }
 
   const openPage = (id) => {
-    if (isDashboardRoute(props)) {
-      props.history.push({
-        pathname: `/orgs/${props.match.params.orgId}/dashboard/page/${id}`
+    if (isDashboardRoute({ match, location, history })) {
+      history.push({
+        pathname: `/orgs/${match.params.orgId}/dashboard/page/${id}`
       })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
-      let pathName = getUrlPathById(id, props?.pages)
+      let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      props.history.push(pathName)
+      history.push(pathName)
     }
   }
+
   const renderPath = (id, type) => {
     let path = ''
-    const collectionId = props.pages[id]?.collectionId
+    const collectionId = pages[id]?.collectionId
 
     switch (type) {
       case 'endpoint':
-        path = `${props.collections[collectionId]?.name} > ${getOnlyUrlPathById(id, props.pages)}`
+        path = `${collections[collectionId]?.name} > ${getOnlyUrlPathById(id, pages)}`
         break
       case 'page':
-        path = `${props.collections[collectionId]?.name} > ${getOnlyUrlPathById(id, props.pages)}`
+        path = `${collections[collectionId]?.name} > ${getOnlyUrlPathById(id, pages)}`
         break
       default:
         path = ''
@@ -237,8 +227,8 @@ const SideBar = (props) => {
       <div>
         <div className='px-3'>Pages</div>
         <div className='py-3'>
-          {props.pages &&
-            pages.map(
+          {pages &&
+            filteredPages.map(
               (page, index) =>
                 Object.keys(page).length !== 0 &&
                 !(page?.type === 2 || page?.type === 0) && (
@@ -263,25 +253,25 @@ const SideBar = (props) => {
   }
 
   const openEndpoint = (id) => {
-    if (isDashboardRoute(props)) {
-      props.history.push({
-        pathname: `/orgs/${props.match.params.orgId}/dashboard/endpoint/${id}`
+    if (isDashboardRoute({ match, location, history })) {
+      history.push({
+        pathname: `/orgs/${match.params.orgId}/dashboard/endpoint/${id}`
       })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
-      let pathName = getUrlPathById(id, props?.pages)
+      let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      props.history.push(pathName)
+      history.push(pathName)
     }
   }
 
   const renderEndpointsList = () => {
     return (
       <div>
-        {endpoints.length > 0 && <div className='px-3'>Endpoints</div>}
+        {filteredEndpoints.length > 0 && <div className='px-3'>Endpoints</div>}
         <div className='py-3'>
-          {endpoints.length > 0 &&
-            endpoints.map(
+          {filteredEndpoints.length > 0 &&
+            filteredEndpoints.map(
               (endpoint, index) =>
                 Object.keys(endpoint).length !== 0 && (
                   <div className='btn d-flex align-items-center mb-2' onClick={() => openEndpoint(endpoint.id)} key={index}>
@@ -305,8 +295,8 @@ const SideBar = (props) => {
   }
 
   const openHistorySnapshot = (id) => {
-    props.history.push({
-      pathname: `/orgs/${props.match.params.orgId}/dashboard/history/${id}`,
+    history.push({
+      pathname: `/orgs/${match.params.orgId}/dashboard/history/${id}`,
       historySnapshotId: id
     })
   }
@@ -334,8 +324,8 @@ const SideBar = (props) => {
   const renderHistoryList = () => {
     return (
       <div className='mt-3'>
-        {historySnapshot && historySnapshot.length > 0 ? (
-          historySnapshot.sort(compareByCreatedAt).map((history) => renderHistoryItem(history))
+        {filteredHistorySnapshot && filteredHistorySnapshot.length > 0 ? (
+          filteredHistorySnapshot.sort(compareByCreatedAt).map((history) => renderHistoryItem(history))
         ) : (
           <div className='empty-collections'>
             <div>
@@ -352,12 +342,12 @@ const SideBar = (props) => {
   }
 
   const renderSearchList = () => {
-    if (data.filter !== '') {
-      return pages.length > 0 || endpoints.length > 0 || historySnapshot.length > 0 ? (
+    if (searchData.filter !== '') {
+      return filteredPages.length > 0 || filteredEndpoints.length > 0 || filteredHistorySnapshot.length > 0 ? (
         <div className='searchResult'>
-          {pages.length > 0 ? renderPagesList() : null}
-          {endpoints.length > 0 ? renderEndpointsList() : null}
-          {historySnapshot.length > 0 ? (
+          {filteredPages.length > 0 ? renderPagesList() : null}
+          {filteredEndpoints.length > 0 ? renderEndpointsList() : null}
+          {filteredHistorySnapshot.length > 0 ? (
             <div>
               <div className='px-3'>History</div>
               {renderHistoryList()}
@@ -375,7 +365,7 @@ const SideBar = (props) => {
 
   const getAllChildIds = useCallback(
     async (pageId) => {
-      let pageObject = props.pages?.[pageId]
+      let pageObject = pages?.[pageId]
       let childIds = []
       if (pageObject?.child && pageObject?.child?.length > 0) {
         for (const childId of pageObject.child) {
@@ -385,7 +375,7 @@ const SideBar = (props) => {
       }
       return childIds
     },
-    [props.pages]
+    [pages]
   )
 
   const handleOnDragOver = useCallback((e) => {
@@ -413,21 +403,21 @@ const SideBar = (props) => {
 
       if (draggedIdSelected === droppedOnId) return
 
-      let draggedIdParent = props.pages?.[draggedIdSelected]?.parentId
-      let droppedOnIdParent = props.pages?.[droppedOnId]?.parentId
+      let draggedIdParent = pages?.[draggedIdSelected]?.parentId
+      let droppedOnIdParent = pages?.[droppedOnId]?.parentId
 
       // Retrieve all child IDs of draggedId
       const draggedIdChilds = await getAllChildIds(draggedIdSelected)
 
       pageIds.push(...draggedIdChilds, draggedIdParent, droppedOnIdParent)
 
-      props.update_drag_and_drop(draggedIdSelected, droppedOnId, pageIds)
+      update_drag_and_drop(draggedIdSelected, droppedOnId, pageIds)
     },
-    [props.pages, draggedIdSelected, getAllChildIds, props.update_drag_and_drop]
+    [pages, draggedIdSelected, getAllChildIds, update_drag_and_drop]
   )
 
   const emptyFilter = () => {
-    setData((prevData) => ({ ...prevData, filter: '' }))
+    setSearchData((prevData) => ({ ...prevData, filter: '' }))
   }
 
   // Function to open a collection
@@ -438,7 +428,7 @@ const SideBar = (props) => {
 
   // Rendering collections with handling logic
   const renderCollections = () => {
-    const collectionsToRender = Object.keys(props.collections || {})
+    const collectionsToRender = Object.keys(collections || {})
     return (
       <Collections
         {...props}
@@ -453,15 +443,15 @@ const SideBar = (props) => {
         empty_filter={emptyFilter}
         disable_secondary_sidebar={() => setSecondarySidebarToggle(true)}
         collection_selected={openCollection}
-        filter={data.filter}
+        filter={searchData.filter}
       />
     )
   }
 
   const renderSidebarContent = () => {
-    const selectedCollectionName = props.collections[collectionId]?.name || ' '
-    const collectionId1 = Object.keys(props?.collections)?.[0]
-    const rootParentId = props?.collections?.[collectionId1]?.rootParentId || null
+    const selectedCollectionName = collections[collectionId]?.name || ' '
+    const collectionId1 = Object.keys(collections)?.[0]
+    const rootParentId = collections?.[collectionId1]?.rootParentId || null
     return (
       <div
         ref={sidebarRef}
@@ -483,8 +473,9 @@ const SideBar = (props) => {
       </div>
     )
   }
+
   const renderDashboardSidebar = () => {
-    let isOnDashboardPage = isDashboardRoute(props)
+    let isOnDashboardPage = isDashboardRoute({ match, location, history })
     return (
       <>
         {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...props} />}
@@ -494,12 +485,13 @@ const SideBar = (props) => {
           {/* {isOnDashboardPage && renderGlobalAddButton()} */}
         </div>
         <div className='sidebar-content'>
-          {data.filter !== '' && renderSearchList()}
-          {data.filter === '' && renderSidebarContent()}
+          {searchData.filter !== '' && renderSearchList()}
+          {searchData.filter === '' && renderSidebarContent()}
         </div>
       </>
     )
   }
+
   return (
     <>
       {
@@ -511,4 +503,4 @@ const SideBar = (props) => {
   )
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SideBar))
+export default SideBar
