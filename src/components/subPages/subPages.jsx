@@ -2,13 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import {
-  isDashboardRoute,
-  getUrlPathById,
-  isTechdocOwnDomain,
-  SESSION_STORAGE_KEY,
-  isOnPublishedPage
-} from '../common/utility.js'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility.js'
 import './subpages.scss'
 import groupsService from './subPageService.js'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
@@ -18,13 +12,13 @@ import { deletePage } from '../pages/redux/pagesActions.js'
 import SubPageForm from './subPageForm.jsx'
 import { ReactComponent as EditSign } from '../../assets/icons/editsign.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import { MdExpandMore } from "react-icons/md"
-import  IconButtons  from '../common/iconButton.jsx'
-import { FiPlus } from "react-icons/fi"
-import { BsThreeDots } from "react-icons/bs"
-import { IoDocumentTextOutline } from "react-icons/io5"
-import {  hexToRgb} from '../common/utility'
-import {background} from '../backgroundColor.js'
+import { MdExpandMore } from 'react-icons/md'
+import IconButtons from '../common/iconButton.jsx'
+import { FiPlus } from 'react-icons/fi'
+import { BsThreeDots } from 'react-icons/bs'
+import { IoDocumentTextOutline } from 'react-icons/io5'
+import { hexToRgb } from '../common/utility'
+import { background } from '../backgroundColor.js'
 
 const mapStateToProps = (state) => {
   return {
@@ -64,28 +58,28 @@ class Groups extends Component {
     this.eventkey = {}
   }
   handleHover = (isHovered) => {
-    this.setState({ isHovered });
-  };
+    this.setState({ isHovered })
+  }
   handleHovers = (isHover) => {
-    this.setState({ isHover });
-  };
+    this.setState({ isHover })
+  }
 
   componentDidMount() {
     if (!this.state.theme) {
       this.setState({
-        theme: this.props.collections[this.props.collection_id].theme
+        theme: this.props.collections[this.props.collection_id]?.theme
       })
     }
     fetch('/colors.json')
-    .then(response => response.json())
-    .then(data => {
-      this.setState({ backgroundColor: data.backgroundColor });
-    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({ backgroundColor: data.backgroundColor })
+      })
   }
 
   openShareSubPageForm(groupId) {
     this.setState({
-      showSubPageForm: {share: true, addPage: false},
+      showSubPageForm: { share: true, addPage: false },
       groupFormName: 'Share Subpage',
       selectedGroup: { ...this.props.pages[groupId] }
     })
@@ -113,7 +107,7 @@ class Groups extends Component {
 
   openEditSubPageForm(selectedGroup) {
     this.setState({
-      showSubPageForm :{edit: true},
+      showSubPageForm: { edit: true },
       selectedGroup
     })
   }
@@ -170,82 +164,97 @@ class Groups extends Component {
     let isUserOnPublishedPage = isOnPublishedPage()
     let isuserONTechdocOwnDomain = isTechdocOwnDomain()
     const expanded = this.props.clientData?.[this.props.rootParentId]?.isExpanded ?? isUserOnPublishedPage
-    const isSelected = (isUserOnPublishedPage && isuserONTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId) ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === subPageId ? 'selected' : '')
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
+    const isSelected =
+      isUserOnPublishedPage && isuserONTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId
+        ? 'selected'
+        : isDashboardRoute && this.props.match.params.pageId === subPageId
+        ? 'selected'
+        : ''
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = this.props.collections[collectionId]?.theme
-    const dynamicColor = hexToRgb(collectionTheme, 0.15);
-    const staticColor = background['background_hover'] ;
+    const dynamicColor = hexToRgb(collectionTheme, 0.15)
+    const staticColor = background['background_hover']
 
     const backgroundStyle = {
-      backgroundImage: this.state.isHovered || isSelected
-        ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+      backgroundImage:
+        this.state.isHovered || isSelected
+          ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
         linear-gradient(to right, ${staticColor}, ${staticColor})`
-        : ''
-    };
-    const dynamicColors = hexToRgb(collectionTheme, 0.30);
-    const staticColors = background['background_hover'];
+          : ''
+    }
+    const dynamicColors = hexToRgb(collectionTheme, 0.3)
+    const staticColors = background['background_hover']
 
     const backgroundStyles = {
       backgroundImage: this.state.isHover
         ? `linear-gradient(to right, ${dynamicColors}, ${dynamicColors}),
         linear-gradient(to right, ${staticColors}, ${staticColors})`
         : ''
-    };
+    }
     return (
       <>
         <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
           <button tabIndex={-1} className={`${expanded ? 'expanded' : ''}`}>
-          <div className={`active-selected d-flex justify-content-between align-items-center rounded mr-2 ${isSelected ? ' selected' : ''}`} style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
             <div
-              draggable={!isUserOnPublishedPage}
-              onDragOver={this.props.handleOnDragOver}
-              onDragStart={() => this.props.onDragStart(subPageId)}
-              onDrop={(e) => this.props.onDrop(e, subPageId)}
-              onDragEnter={(e) => this.props.onDragEnter(e, subPageId)}
-              onDragEnd={(e) => this.props.onDragEnd(e)}
-              style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
-              className={`d-flex justify-content-center cl-name name-sub-page ml-1`}
-              onClick={(e) => {
-                this.handleRedirect(subPageId)
-                  if(!expanded){
-                  this.handleToggle(e,subPageId)
-                  }
-              }}
+              className={`active-selected d-flex justify-content-between align-items-center rounded mr-2 ${isSelected ? ' selected' : ''}`}
+              style={backgroundStyle}
+              onMouseEnter={() => this.handleHover(true)}
+              onMouseLeave={() => this.handleHover(false)}
             >
-             <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
-              <MdExpandMore size={13} className='collection-icons-arrow d-none' />
-                  <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 '/>
-              </span>
-              <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{this.props.pages[subPageId]?.name}</div>
-            </div>
-            
-            {
-              // [info] options not to show on publihsed page
-              isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
-                <div className='sidebar-item-action d-flex align-items-center'>
-                  <div onClick={() => this.openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
-                    <IconButtons><FiPlus /></IconButtons>
-                  </div>
-                  <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                  <IconButtons><BsThreeDots /></IconButtons>
-                  </div>
-                  <div className='dropdown-menu dropdown-menu-right'>
-                    <div className='dropdown-item d-flex' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
-                      <EditSign /> Rename
+              <div
+                draggable={!isUserOnPublishedPage}
+                onDragOver={this.props.handleOnDragOver}
+                onDragStart={() => this.props.onDragStart(subPageId)}
+                onDrop={(e) => this.props.onDrop(e, subPageId)}
+                onDragEnter={(e) => this.props.onDragEnter(e, subPageId)}
+                onDragEnd={(e) => this.props.onDragEnd(e)}
+                style={this.props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
+                className={`d-flex justify-content-center cl-name name-sub-page ml-1`}
+                onClick={(e) => {
+                  this.handleRedirect(subPageId)
+                  if (!expanded) {
+                    this.handleToggle(e, subPageId)
+                  }
+                }}
+              >
+                <span className='versionChovron' onClick={(e) => this.handleToggle(e, subPageId)}>
+                  <MdExpandMore size={13} className='collection-icons-arrow d-none' />
+                  <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 ' />
+                </span>
+                <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{this.props.pages[subPageId]?.name}</div>
+              </div>
+
+              {
+                // [info] options not to show on publihsed page
+                isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                  <div className='sidebar-item-action d-flex align-items-center'>
+                    <div onClick={() => this.openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
+                      <IconButtons>
+                        <FiPlus />
+                      </IconButtons>
                     </div>
-                    <div
-                      className='dropdown-item text-danger d-flex'
-                      onClick={() => {
-                        this.openDeleteSubPageModal(subPageId)
-                      }}
-                    >
-                      <DeleteIcon /> Delete
+                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                      <IconButtons>
+                        <BsThreeDots />
+                      </IconButtons>
+                    </div>
+                    <div className='dropdown-menu dropdown-menu-right'>
+                      <div className='dropdown-item d-flex' onClick={() => this.openEditSubPageForm(this.props.pages[subPageId])}>
+                        <EditSign /> Rename
+                      </div>
+                      <div
+                        className='dropdown-item text-danger d-flex'
+                        onClick={() => {
+                          this.openDeleteSubPageModal(subPageId)
+                        }}
+                      >
+                        <DeleteIcon /> Delete
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : null
-            }
+                ) : null
+              }
             </div>
           </button>
           {expanded ? (
@@ -259,7 +268,7 @@ class Groups extends Component {
       </>
     )
   }
-  handleRedirect(id){
+  handleRedirect(id) {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
@@ -272,8 +281,8 @@ class Groups extends Component {
     }
   }
 
-  handleToggle(e,id) {
-    e.stopPropagation();
+  handleToggle(e, id) {
+    e.stopPropagation()
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_subPages({
       value: !isExpanded,
