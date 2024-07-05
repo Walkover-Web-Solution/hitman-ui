@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Auth2Configurations from './authConfiguration/auth2Configurations'
 import { useParams } from 'react-router'
 import { useQuery, useQueryClient } from 'react-query'
@@ -39,12 +39,13 @@ export default function Authorization(props) {
   )
   const [addAuthorizationDataToForAuth2, setAddAuthorizationDataToForAuth2] = useState(
     addAuthorizationDataTypes[endpointStoredData?.authorizationData?.authorization?.oauth2?.addAuthorizationRequestTo] ||
-      addAuthorizationDataTypes.select
+    addAuthorizationDataTypes.select
   )
-  const [basicAuthData, setBasicAuthData] = useState({
-    username: endpointStoredData?.authorizationData?.authorization?.basicAuth?.username || '',
-    password: endpointStoredData?.authorizationData?.authorization?.basicAuth?.password || ''
-  })
+
+  const usernameRef = useRef(null);
+  const passwordRef = useRef(null);
+  const basicAuthDataRef = useRef({ username: endpointStoredData?.authorizationData?.authorization?.basicAuth?.username || '', password: endpointStoredData?.authorizationData?.authorization?.basicAuth?.password || '' });
+
   const [showPassword, setShowPassword] = useState(false)
   const [selectedTokenId, setSelectedTokenId] = useState(
     endpointStoredData?.authorizationData?.authorization?.oauth2?.selectedTokenId || null
@@ -60,29 +61,23 @@ export default function Authorization(props) {
       if (newAuthType === authorizationTypes.basicAuth) {
         const basicAuthUser = endpointStoredData?.authorizationData?.authorization?.user || ''
         const basicAuthPass = endpointStoredData?.authorizationData?.authorization?.password || ''
-        setBasicAuthData({
-          username: basicAuthUser,
-          password: basicAuthPass
-        })
+        basicAuthDataRef.current = { username: basicAuthUser, password: basicAuthPass };
       } else {
-        setBasicAuthData({
-          username: '',
-          password: ''
-        })
+        basicAuthDataRef.current = { username: '', password: '' };
       }
     }
   }, [endpointStoredData?.authorizationData, authorizationTypes])
 
   function handleChange(e) {
-    setBasicAuthData((prev) => {
-      return { ...prev, [e.target.name]: e.target.value }
-    })
-    if (e.target.name === 'username') {
-      props.set_authoriztaion_type('basicAuth', { username: e.target.value, password: basicAuthData.password })
-      generateEncodedValue(e.target.value, basicAuthData.password)
-    } else if (e.target.name === 'password') {
-      props.set_authoriztaion_type('basicAuth', { username: basicAuthData.password, password: e.target.value })
-      generateEncodedValue(basicAuthData.username, e.target.value)
+    const { name, value } = e.target;
+    basicAuthDataRef.current = { ...basicAuthDataRef.current, [name]: value };
+
+    if (name === 'username') {
+      props.set_authoriztaion_type('basicAuth', { username: value, password: basicAuthDataRef.current.password });
+      generateEncodedValue(value, basicAuthDataRef.current.password);
+    } else if (name === 'password') {
+      props.set_authoriztaion_type('basicAuth', { username: basicAuthDataRef.current.username, password: value });
+      generateEncodedValue(basicAuthDataRef.current.username, value);
     }
   }
 
@@ -205,7 +200,7 @@ export default function Authorization(props) {
         <div className='authorization-editor-wrapper' id='authorization-form'>
           <form className='form-group'>
             <label className='mb-1'>Username</label>
-            <input className='form-control' name='username' value={basicAuthData.username} onChange={handleChange} />
+            <input className='form-control' name='username' value={basicAuthDataRef.current.username} onChange={handleChange} ref={usernameRef} />
             <label htmlFor='password'>Password</label>
             <div className='d-flex flex-row align-items-center'>
               <input
@@ -213,8 +208,9 @@ export default function Authorization(props) {
                 id='password'
                 type={showPassword ? (showPassword === true ? null : 'password') : 'password'}
                 name='password'
-                value={basicAuthData.password}
+                value={basicAuthDataRef.current.password}
                 onChange={handleChange}
+                ref={passwordRef}
               />
               <label className='mb-3 ml-3'>
                 <input className='mr-1' type='checkbox' onClick={handleShowPassword} />
