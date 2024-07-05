@@ -52,7 +52,7 @@ class PublicBodyContainer extends Component {
     });
   }
   collapseEditor(event) {
-    event.stopPropagation(); // Prevent the click event from bubbling up to the parent div
+    event.stopPropagation();
     this.setState({
       editorHeight: '250px',
       isExpanded: false,
@@ -296,8 +296,35 @@ class PublicBodyContainer extends Component {
       </div>
     )
   }
+  prettifyJson(jsonString) {
+    let indent = 0;
+    const indentString = '  ';
+    return jsonString.replace(/({|}|\[|\]|,)/g, (match) => {
+      if (match === '{' || match === '[') {
+        indent += 1;
+        return match + '\n' + indentString.repeat(indent);
+      } else if (match === '}' || match === ']') {
+        indent -= 1;
+        return '\n' + indentString.repeat(indent) + match;
+      } else if (match === ',') {
+        return match + '\n' + indentString.repeat(indent);
+      }
+      return match;
+    });
+  }
 
   render() {
+    const { body } = this.props;
+    const rawBody = body?.raw?.value || '';
+    let formattedRawBody = rawBody;
+
+    // Try to format the raw body as JSON if possible
+    try {
+      const parsedBody = JSON.parse(rawBody);
+      formattedRawBody = this.prettifyJson(JSON.stringify(parsedBody));
+    } catch (e) {
+      // If parsing fails, keep the raw body as is
+    }
     this.bodyDescription = this.props.body_description
     if (this.props.body && this.props.endpointContent?.protocolType === 2) return this.graphqlBody();
     if (this.props.body && this.props.body.type === 'none') return null;
@@ -356,7 +383,7 @@ class PublicBodyContainer extends Component {
                        className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
                        mode='json'
                        theme='github'
-                       value={this.makeJson(this.props.body?.raw?.value || '')}
+                       value={formattedRawBody}
                        onChange={this.handleChangeBodyDescription.bind(this)}
                        style={{ height: this.state.editorHeight }}
                        setOptions={{
@@ -390,7 +417,7 @@ class PublicBodyContainer extends Component {
                 className='custom-raw-editor'
                 mode={this.props.body.type.toLowerCase()}
                 theme='github'
-                value={this.makeJson(this.props.body?.raw?.value || '')}
+                value={this.props.body?.raw?.value || ''}
                 onChange={(value) => this.props.set_body(this.props.body.type, value)}
                 setOptions={{
                   showLineNumbers: true
