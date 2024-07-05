@@ -21,47 +21,23 @@ const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
   NULL_STRING: '',
-  INITIAL_CTA: [
-    {
-      name: '',
-      value: ''
-    },
-    {
-      name: '',
-      value: ''
-    }
-  ],
-  INITIAL_LINKS: [
-    {
-      name: '',
-      link: ''
-    },
-    {
-      name: '',
-      link: ''
-    },
-    {
-      name: '',
-      link: ''
-    }
-  ],
   LABELS: {
     title: 'Title',
     domain: 'Custom Domain',
     logoUrl: 'Logo URL',
     theme: 'Theme',
-    cta: 'CTA',
-    links: 'Links'
   }
 }
 
 const PublishDocForm = (props) => {
   const dispatch = useDispatch()
-  const collections = useSelector((state) => state.collections)
-  const isPublishSliderOpen = useSelector((state) => state.modals.publishData)
-  const tabs = useSelector((state) => state.tabs)
-  const pages = useSelector((state) => state.pages)
 
+  const { collections, isPublishSliderOpen, tabs, pages } = useSelector((state) => ({
+    collections: state.collections,
+    isPublishSliderOpen: state.modals.publishData,
+    tabs: state.tabs,
+    pages: state.pages
+  }));
   const [data, setData] = useState({
     title: '',
     domain: '',
@@ -69,9 +45,6 @@ const PublishDocForm = (props) => {
     theme: '',
     republishNeeded: false
   })
-
-  const [cta, setCta] = useState(publishDocFormEnum.INITIAL_CTA)
-  const [links, setLinks] = useState(publishDocFormEnum.INITIAL_LINKS)
   const [errors, setErrors] = useState({})
   const [binaryFile, setBinaryFile] = useState(null)
   const [uploadedFile, setUploadedFile] = useState(null)
@@ -94,12 +67,8 @@ const PublishDocForm = (props) => {
         logoUrl = collection?.docProperties?.defaultLogoUrl || publishDocFormEnum.NULL_STRING
         domain = collection?.customDomain || publishDocFormEnum.NULL_STRING
         theme = collection?.theme || publishDocFormEnum.NULL_STRING
-        cta = collection?.docProperties?.cta || publishDocFormEnum.INITIAL_CTA
-        links = collection?.docProperties?.links || publishDocFormEnum.INITIAL_LINKS
         favicon = collection?.favicon || publishDocFormEnum.NULL_STRING
         setData({ title, logoUrl, domain, theme })
-        setCta(cta)
-        setLinks(links)
         setBinaryFile(favicon)
       }
     }
@@ -121,13 +90,6 @@ const PublishDocForm = (props) => {
     }
     setErrors({})
     setData(newData)
-  }
-
-  const handleChangeLink = (e) => {
-    const [type, index, name] = e.target.name.split('-')
-    const newData = [...(type === 'cta' ? cta : links)]
-    newData[index][name] = e.target.value
-    type === 'cta' ? setCta(newData) : setLinks(newData)
   }
 
   const schema = {
@@ -158,8 +120,6 @@ const PublishDocForm = (props) => {
     const collectionId = props.selected_collection_id
     const collection = { ...collections[collectionId] }
     const newData = { ...data }
-    const newCta = cta
-    const newLinks = links
     const customDomain = newData.domain.trim()
     collection.customDomain = customDomain.length !== 0 ? customDomain : null
     collection.theme = newData.theme
@@ -179,7 +139,6 @@ const PublishDocForm = (props) => {
     setLoader(true)
     dispatch(updateCollection(collection, () => {
       setLoader(false)
-      // Publish collection if not already published
       if (selectedCollection?.isPublic !== true) {
         const editedCollection = { ...selectedCollection }
         editedCollection.isPublic = true
@@ -190,81 +149,11 @@ const PublishDocForm = (props) => {
   }
 
   const setTheme = (theme) => {
-    const newData = { ...data }
-    newData.theme = theme
-    setData(newData)
+    setData((prevData) => ({
+      ...prevData,
+      theme
+    }));
   }
-
-  const renderCTAButtons = () => (
-    <div className='form-group'>
-      <label>{publishDocFormEnum.LABELS.cta}</label>
-      {cta.map((ctaItem, index) => (
-        <div key={`cta-${index}`} className={ctaItem.name.trim() && ctaItem.value.trim() ? 'd-flex highlight' : 'd-flex'}>
-          <input
-            type='text'
-            className='form-control mb-2 mr-2'
-            placeholder={`CTA Name ${index + 1}`}
-            name={`cta-${index}-name`}
-            value={ctaItem.name}
-            onChange={(e) => handleChangeLink(e)}
-          />
-          <input
-            type='text'
-            className='form-control mb-2 mr-2'
-            placeholder={`CTA Link ${index + 1}`}
-            name={`cta-${index}-value`}
-            value={ctaItem.value}
-            onChange={(e) => handleChangeLink(e)}
-          />
-        </div>
-      ))}
-    </div>
-  )
-
-  const renderLinkButtons = () => (
-    <div className='form-group'>
-      <label>{publishDocFormEnum.LABELS.links}</label>
-      {links.map((linkItem, index) => (
-        <div key={`link-${index}`} className={linkItem.name.trim() && linkItem.link.trim() ? 'd-flex highlight' : 'd-flex'}>
-          <input
-            type='text'
-            className='form-control mb-2 mr-2'
-            placeholder={`Link Name ${index + 1}`}
-            name={`links-${index}-name`}
-            value={linkItem.name}
-            onChange={(e) => handleChangeLink(e)}
-          />
-          <input
-            type='text'
-            className='form-control mb-2 mr-2'
-            placeholder={`Link URL ${index + 1}`}
-            name={`links-${index}-link`}
-            value={linkItem.link}
-            onChange={(e) => handleChangeLink(e)}
-          />
-        </div>
-      ))}
-    </div>
-  )
-
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0]
-    setBinaryFile(file)
-    setUploadedFile(file)
-  }
-
-  const renderFooter = () => (
-    <div className='d-flex align-items-center'>
-      <Button
-        className={loader ? 'buttonLoader' : ''}
-        disabled={!data.title.trim()}
-        id='publish_doc_settings_save_btn'
-        onClick={() => saveAndPublishCollection(getSelectedCollection())}
-      >
-        {props.isSidebar ? 'Update' : 'Save'}
-      </Button>
-    </div>
-  )
 
   const renderColorPicker = () => (
     <div className='form-group mb-4'>
@@ -310,7 +199,7 @@ const PublishDocForm = (props) => {
     </>
   )
 
-  const renderUploadBox = (name, mandatory = false, disabled) => {
+  const renderUploadBox = (name) => {
     const error = errors[name]
     return (
       <>
@@ -341,7 +230,7 @@ const PublishDocForm = (props) => {
     )
   }
 
-  const renderInput = (name, mandatory = false, disabled, placeholder, isURLInput = false) => {
+  const renderInput = (name, disabled, placeholder, isURLInput = false) => {
     const value = data[name]
     const error = errors[name]
     return (
