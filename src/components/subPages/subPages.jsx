@@ -164,13 +164,7 @@ const SubPage = (props) => {
               }}
             >
               <span className='versionChovron' onClick={(e) => handleToggle(e, subPageId)}>
-                <MdExpandMore
-                  size={13}
-                  className='collection-icons-arrow d-none'
-                  style={backgroundStyles}
-                  onMouseEnter={() => handleHovers(true)}
-                  onMouseLeave={() => handleHovers(false)}
-                />
+                <MdExpandMore size={13} className='collection-icons-arrow d-none' />
                 <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 ' />
               </span>
               <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{pages[subPageId]?.name}</div>
