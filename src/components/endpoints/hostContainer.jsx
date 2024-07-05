@@ -138,7 +138,7 @@ const HostContainer = (props) => {
     if (parsedData?.data) {
       try {
         parsedData.data = JSON.parse(parsedData.data);
-      } catch (e) { }
+      } catch (e) {}
       const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase();
       if (contentType.includes('application/json')) {
         untitledEndpointData.data.body.type = contentTypesEnums[contentType];

@@ -377,20 +377,7 @@ const Endpoints = (props) => {
     return endpointsArray || []
   }
 
-  const getEndpointsEntity = (endpointsArray) => {
-    const endpoints = {}
-    for (let index = 0; index < endpointsArray.length; index++) {
-      const id = endpointsArray[index].id || endpointsArray[index].requestId
-      endpoints[id] = endpoints[id]
-    }
-    return endpoints || {}
-  }
-
-  const endpointIds = filterEndpointIdsByGroup()
-  let endpointsArray = []
-  endpointsArray = extractEndpointsFromIds(endpointIds)
-  let _endpoints = {}
-  _endpoints = getEndpointsEntity(endpointsArray)
+  
   return <>
     {showEditEndpointModal()}
     {showEndpointForm.delete &&

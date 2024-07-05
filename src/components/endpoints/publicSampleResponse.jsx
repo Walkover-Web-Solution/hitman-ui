@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import JSONPretty from 'react-json-pretty';
-import { willHighlight, getHighlightsData } from './highlightChangesHelper';
-import './endpoints.scss';
 import { Style } from 'react-style-tag';
 import { hexToRgb } from '../common/utility';
+import { willHighlight, getHighlightsData } from './highlightChangesHelper';
 import { background } from '../backgroundColor.js';
+import './endpoints.scss';
 
 const PublicSampleResponse = (props) => {
   const [theme, setTheme] = useState({
