@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, hexToRgb } from '../common/utility'
-import {  draftEndpoint, pendingEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
+import { draftEndpoint, pendingEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -12,9 +12,6 @@ import { updataForIsPublished } from '../../store/clientData/clientDataActions'
 import SubPageForm from "../subPages/subPageForm.jsx"
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { ReactComponent as Duplicate } from '../../assets/icons/duplicateSign.svg'
-import { ReactComponent as Approved } from '../../assets/icons/approvedSign.svg'
-import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.svg'
-import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 import endpointService from './endpointService'
 import { bodyTypesEnums } from '../common/bodyTypeEnums'
@@ -124,14 +121,6 @@ const Endpoints = (props) => {
     }))
   }
 
-  const isStateApproved = (endpointId) => {
-    return endpoints[endpointId].state === endpointsEnum.APPROVED_STATE
-  }
-
-  const isStatePending = (endpointId) => {
-    return endpoints[endpointId].state === endpointsEnum.PENDING_STATE
-  }
-
   const isStateDraft = (endpointId) => {
     return endpoints[endpointId].state === endpointsEnum.DRAFT_STATE
   }
@@ -227,53 +216,11 @@ const Endpoints = (props) => {
     )
   }
 
-
-
-
-
   const displayDuplicateOpt = (endpointId) => {
     return (
       <div className='dropdown-item d-flex' onClick={() => handleDuplicate(endpoints[endpointId])}>
         <Duplicate /> Duplicate
       </div>
-    )
-  }
-
-  const displayApproveOpt = () => {
-    return (
-      <div className='dropdown-item' disabled>
-        <Approved />
-        Approved
-      </div>
-    )
-  }
-
-  const displayMakePublicOpt = (endpointId) => {
-    return (
-      <div id='make_public_btn' className='dropdown-item' onClick={() => handlePublicEndpointState(endpoints[endpointId])}>
-        <MakePublic />
-        Make Public
-      </div>
-    )
-  }
-
-  const displayCancelRequestOpt = (endpointId) => {
-    return (
-      <div className='dropdown-item' onClick={() => handleCancelRequest(endpoints[endpointId])}>
-        <CancelRequest /> Cancel Request
-      </div>
-    )
-  }
-
-  const displayOtherOpt = (endpointId) => {
-    return (
-      <>
-        {isStateDraft(endpointId) || isStateReject(endpointId) ? displayMakePublicOpt(endpointId) : null}
-
-        {isStateApproved(endpointId) ? displayApproveOpt() : null}
-
-        {isStatePending(endpointId) ? displayCancelRequestOpt(endpointId) : null}
-      </>
     )
   }
 
@@ -351,33 +298,6 @@ const Endpoints = (props) => {
     )
   }
 
-  const filterEndpointIdsByGroup = () => {
-    const endpointIds = Object.keys(endpoints).filter(
-      (eId) => endpoints[eId].parentId && endpoints[eId].parentId === props.parent_id
-    )
-    return endpointIds
-  }
-
-  const extractEndpointsFromIds = (endpointIds) => {
-    let endpointsArray = []
-    for (let index = 0; index < endpointIds.length; index++) {
-      const id = endpointIds[index]
-      const endpoint = endpoints[id]
-      endpointsArray = [...endpointsArray, endpoint]
-    }
-    endpointsArray.sort(function (a, b) {
-      if (a.name < b.name) {
-        return -1
-      }
-      if (a.name > b.name) {
-        return 1
-      }
-      return 0
-    })
-    return endpointsArray || []
-  }
-
-  
   return <>
     {showEditEndpointModal()}
     {showEndpointForm.delete &&
