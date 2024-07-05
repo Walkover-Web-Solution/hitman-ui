@@ -352,6 +352,10 @@ const Endpoints = (props) => {
   }
 
   const filterEndpointIdsByGroup = () => {
+<<<<<<< HEAD
+=======
+    debugger
+>>>>>>> 858639ea97b2677008daccd45b997c3bd2190f1b
     const endpointIds = Object.keys(endpoints).filter(
       (eId) => endpoints[eId].parentId && endpoints[eId].parentId === props.parent_id
     )
@@ -377,6 +381,7 @@ const Endpoints = (props) => {
     return endpointsArray || []
   }
 
+<<<<<<< HEAD
   const getEndpointsEntity = (endpointsArray) => {
     const endpoints = {}
     for (let index = 0; index < endpointsArray.length; index++) {
@@ -391,6 +396,9 @@ const Endpoints = (props) => {
   endpointsArray = extractEndpointsFromIds(endpointIds)
   let _endpoints = {}
   _endpoints = getEndpointsEntity(endpointsArray)
+=======
+  
+>>>>>>> 858639ea97b2677008daccd45b997c3bd2190f1b
   return <>
     {showEditEndpointModal()}
     {showEndpointForm.delete &&

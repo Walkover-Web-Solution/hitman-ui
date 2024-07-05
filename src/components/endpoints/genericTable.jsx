@@ -7,7 +7,10 @@ import _ from 'lodash'
 import TextField from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
 import { background } from '../backgroundColor.js'
+<<<<<<< HEAD
 import { isOnPublishedPage } from '../common/utility'
+=======
+>>>>>>> 858639ea97b2677008daccd45b997c3bd2190f1b
 
 const autoCompleterDefaultProps = {
   Component: 'input',
@@ -19,8 +22,11 @@ const GenericTable = (props) => {
   const [bulkEdit, setBulkEdit] = useState(false);
   const [optionalParams, setOptionalParams] = useState(false);
   const [editButtonName, setEditButtonName] = useState('Bulk Edit');
+<<<<<<< HEAD
   const [originalParams, setOriginalParams] = useState([]);
   const [originalHeaders, setOriginalHeaders] = useState([]);
+=======
+>>>>>>> 858639ea97b2677008daccd45b997c3bd2190f1b
   const [theme, setTheme] = useState('');
   const [randomId, setRandomId] = useState('');
 
@@ -32,11 +38,16 @@ const GenericTable = (props) => {
 
   useEffect(() => {
     setTheme(props.publicCollectionTheme);
+<<<<<<< HEAD
 
     const { dataArray, originalData } = props;
     if (dataArray && originalData) {
       setOriginalParams(dataArray);
       setOriginalHeaders(originalData);
+=======
+    const { dataArray, originalData } = props;
+    if (dataArray && originalData) {
+>>>>>>> 858639ea97b2677008daccd45b997c3bd2190f1b
       setOptionalParams(false);
     }
 
@@ -533,6 +544,7 @@ const GenericTable = (props) => {
       </thead>
     )
   }
+<<<<<<< HEAD
 
   const sortData = (data) => {
     const priority = {
@@ -544,6 +556,8 @@ const GenericTable = (props) => {
       return priority[itemA.checked] - priority[itemB.checked]
     })
   }
+=======
+>>>>>>> 858639ea97b2677008daccd45b997c3bd2190f1b
   const { dataArray, original_data: originalData, title } = props
   if (!isDashboardRoute(props)) {
     for (let index = 0; index < dataArray.length; index++) {
