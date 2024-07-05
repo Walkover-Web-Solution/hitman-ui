@@ -349,29 +349,29 @@ class PublicBodyContainer extends Component {
                 </li>
               </ul>
               {this.state.showBodyCodeEditor ? (
-                <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>
-                {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
-                <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
-                  <AceEditor
-                    className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
-                    mode='json'
-                    theme='github'
-                    value={this.props.body?.raw?.value}
-                    onChange={this.handleChangeBodyDescription.bind(this)}
-                    style={{ height: this.state.editorHeight }}
-                    setOptions={{
-                      showLineNumbers: true,
-                    }}
-                    editorProps={{
-                      $blockScrolling: false,
-                    }}
-                    onLoad={(editor) => {
-                      editor.getSession().setUseWrapMode(true);
-                      editor.setShowPrintMargin(false);
-                    }}
-                  />
-                </div>
-              </div>
+                   <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>
+                   {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
+                   <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
+                     <AceEditor
+                       className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
+                       mode='json'
+                       theme='github'
+                       value={this.makeJson(this.props.body?.raw?.value || '')}
+                       onChange={this.handleChangeBodyDescription.bind(this)}
+                       style={{ height: this.state.editorHeight }}
+                       setOptions={{
+                         showLineNumbers: true,
+                       }}
+                       editorProps={{
+                         $blockScrolling: false,
+                       }}
+                       onLoad={(editor) => {
+                         editor.getSession().setUseWrapMode(true);
+                         editor.setShowPrintMargin(false);
+                       }}
+                     />
+                   </div>
+                 </div>
               ) : (
                 <div className='body-description-container' style={this.state.theme.backgroundStyle}>
                   {/* Previous Body Description Layout */}
