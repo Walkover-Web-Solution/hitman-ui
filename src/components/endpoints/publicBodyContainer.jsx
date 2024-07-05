@@ -356,7 +356,7 @@ class PublicBodyContainer extends Component {
                        className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
                        mode='json'
                        theme='github'
-                       value={this.props.body?.raw?.value}
+                       value={this.makeJson(this.props.body?.raw?.value || '')}
                        onChange={this.handleChangeBodyDescription.bind(this)}
                        style={{ height: this.state.editorHeight }}
                        setOptions={{
