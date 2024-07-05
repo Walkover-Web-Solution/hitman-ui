@@ -1,37 +1,27 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useHistory, useLocation, useParams, useRouteMatch } from 'react-router-dom'
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import './main.scss'
 import {
   isDashboardRoute,
-  ADD_VERSION_MODAL_NAME,
-  isElectron,
   getOnlyUrlPathById,
   SESSION_STORAGE_KEY,
   getUrlPathById,
   isTechdocOwnDomain,
-  isOnPublishedPage,
-  hexToRgb,
-  modifyDataForBulkPublish,
-  isOnRedirectionPage
+  isOnPublishedPage
 } from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import NoFound, { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
-import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
-// import collectionVersionsService from '../collectionVersions/collectionVersionsService';
 import './main.scss'
 import './sidebar.scss'
-import CollectionModal from '../collections/collectionsModal'
-import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from 'react-icons/tb'
 import { updateDragDrop } from '../pages/redux/pagesActions'
-import { background } from '../backgroundColor.js'
 
 const SideBar = (props) => {
   const collections = useSelector((state) => state.collections)
@@ -165,24 +155,6 @@ const SideBar = (props) => {
           onChange={handleOnChange}
         />
       </div>
-    )
-  }
-
-  const renderGlobalAddButton = () => {
-    const isMarketplaceImported = collections[collectionId]?.importedFromMarketPlace
-    const title = collectionId
-      ? isMarketplaceImported
-        ? 'Cannot add Entities to a Marketplace Collection.'
-        : 'Add Entities to Collection'
-      : 'Add/Import Collection'
-
-    return (
-      getCurrentUser() && (
-        <div className='d-flex align-items-center justify-content-end'>
-          {/* Uncomment the next line to display filter state */}
-          {/* <span className='f-12 font-weight-700'>{searchData.filter === '' ? 'COLLECTION' : 'SEARCH RESULTS'}</span> */}
-        </div>
-      )
     )
   }
 
@@ -484,7 +456,6 @@ const SideBar = (props) => {
         <div className='plr-3 pt-2'>
           {isOnPublishedPage() && renderCollectionName()}
           {renderSearch()}
-          {/* {isOnDashboardPage && renderGlobalAddButton()} */}
         </div>
         <div className='sidebar-content'>
           {searchData.filter !== '' && renderSearchList()}
