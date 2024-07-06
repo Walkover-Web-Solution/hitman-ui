@@ -170,7 +170,7 @@ class DisplayPage extends Component {
               </div>
             )
           }
-         { this.props?.pageContent && (<span className='mt-2 d-inline-block'>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>)}
+         { this.props?.pageContent && (<span className='mt-2 Modified-at d-inline-block'>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>)}
         </div>
       )
     }
