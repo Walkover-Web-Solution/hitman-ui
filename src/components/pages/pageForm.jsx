@@ -60,7 +60,7 @@ class PageForm extends Form {
         requestId: shortid.generate(),
         versionId: this.props?.pageType === 1 ? shortid.generate() : null,
         pageType: this.props?.pageType,
-        state: 1
+        state: 0
       }
       this.props.add_page(ParentId, newPage)
     }
