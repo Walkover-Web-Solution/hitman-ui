@@ -166,12 +166,11 @@ class DisplayPage extends Component {
                 <span className='empty-line'>
                   {!isOnPublishedPage() ? "Your document" : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
                 </span>
-
+                <span className='mt-2 d-inline-block Modified-at font-weight-bold fs-4'>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
               </div>
             )
           }
-
-          <span className='mt-2 d-inline-block'>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>
+         { this.props?.pageContent && (<span className='mt-2 d-inline-block'>{isOnPublishedPage() && this.props?.pages?.[this.props?.currentPageId]?.updatedAt && `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}</span>)}
         </div>
       )
     }
@@ -244,7 +243,7 @@ class DisplayPage extends Component {
 
       const approvedOrRejected = isStateApproved(pageId, pages) || isStateReject(pageId, pages)
       return (
-        <div>
+        <div className='page-button-inner'>
           {isStatePending(pageId, pages) && isAdmin() && (
             <ApproveRejectEntity {...this.props} entity={pages} entityId={pageId} entityName='page' />
           )}
@@ -398,11 +397,11 @@ class DisplayPage extends Component {
       <div className={`custom-display-page ${isOnPublishedPage() ? "custom-display-public-page" : ""}`}>
         {this.renderPublishConfirmationModal()}
         {this.renderUnPublishConfirmationModal()}
-        <div className={`${!isOnPublishedPage() ? "page-heading-content" : ""}`}>
         {this.renderPublishPageOperations()}
+        <div className={`${!isOnPublishedPage() ? "page-heading-content" : ""}`}>
         {this.renderPageName()}
-        </div>
         {this.checkPageRejected()}
+        </div>
         <div>
         {this.props?.pageContent && ( <ApiDocReview {...this.props} />)}
         {isOnPublishedPage() && <Footer />}
