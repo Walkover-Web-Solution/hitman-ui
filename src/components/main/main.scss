@@ -3434,6 +3434,7 @@ body .btn-group-custom {
       }
     }
     @media screen and (max-width: 992px) {
+      position: static;
       width: 100%;
     }
   }
@@ -3674,7 +3675,7 @@ body .doc-secs-container {
   // position: relative;
   // overflow: auto; /* Add this line to enable scrolling */
   .page-display {
-    max-width: 1300px;
+    max-width: 90%;
     margin-left: auto;
     margin-right: auto;
     float: unset !important;

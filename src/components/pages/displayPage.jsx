@@ -28,6 +28,7 @@ import Footer from '../main/Footer'
 import RenderPageContent from './renderPageContent'
 import DisplayUserAndModifiedData from '../common/userService'
 import { IoDocumentTextOutline } from "react-icons/io5";
+import moment from 'moment'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -165,18 +166,25 @@ class DisplayPage extends Component {
                 <span className='empty-line'>
                   {!isOnPublishedPage() ? "Your document" : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
                 </span>
-
+                <span className='mt-2 fs-4 d-inline-block Modified-at font-weight-bold'>
+                  <DisplayUserAndModifiedData
+                    isOnPublishedPage={isOnPublishedPage()}
+                    pages={this.props?.pages}
+                    currentPage={this.props?.currentPageId}
+                    users={this.props?.users}
+                  />
+                </span>
               </div>
             )
           }
 
-{this.props?.pageContent && (<span className='my-2 d-inline-block'> 
-          <DisplayUserAndModifiedData
-          isOnPublishedPage={isOnPublishedPage()}
-          pages={this.props?.pages}
-          currentPage={this.props?.currentPageId}
-          users={this.props?.users}
-          />
+          {this.props?.pageContent && (<span className='my-2 d-inline-block Modified-at'>
+            <DisplayUserAndModifiedData
+              isOnPublishedPage={isOnPublishedPage()}
+              pages={this.props?.pages}
+              currentPage={this.props?.currentPageId}
+              users={this.props?.users}
+            />
           </span>)}
         </div>
       )
@@ -250,7 +258,7 @@ class DisplayPage extends Component {
 
       const approvedOrRejected = isStateApproved(pageId, pages) || isStateReject(pageId, pages)
       return (
-        <div>
+        <div className='page-button-inner'>
           {isStatePending(pageId, pages) && isAdmin() && (
             <ApproveRejectEntity {...this.props} entity={pages} entityId={pageId} entityName='page' />
           )}
@@ -404,11 +412,11 @@ class DisplayPage extends Component {
       <div className={`custom-display-page ${isOnPublishedPage() ? "custom-display-public-page" : ""}`}>
         {this.renderPublishConfirmationModal()}
         {this.renderUnPublishConfirmationModal()}
-        <div className={`${!isOnPublishedPage() ? "page-heading-content" : ""}`}>
         {this.renderPublishPageOperations()}
+        <div className={`${!isOnPublishedPage() ? "page-heading-content" : ""}`}>
         {this.renderPageName()}
-        </div>
         {this.checkPageRejected()}
+        </div>
         <div>
         {this.props?.pageContent && ( <ApiDocReview {...this.props} />)}
         {isOnPublishedPage() && <Footer />}
