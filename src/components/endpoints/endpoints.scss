@@ -62,7 +62,8 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 }
 
-#modal-display-token {
+#modal-display-token { 
+  max-width: 800px;
   .modal-content {
     min-height: 500px;
 
@@ -259,7 +260,6 @@ $border-color: rgba(227, 228, 230, 0.7);
       outline: none;
       border: none;
       background: inherit;
-      padding: 2px 2px 2px 20px;
     }
   }
 
@@ -1067,12 +1067,12 @@ table#custom-generic-table {
 }
 
 .oauth2-token-details-list-item-button {
-  font-size: 13px;
+  font-size: 11px;
   color: white;
   background: rgb(221, 77, 20);
   border: none;
   border-radius: 3px;
-  padding: 10px;
+  padding: 6px;
 }
 
 .token-detail-div {
@@ -1573,7 +1573,7 @@ table#custom-generic-table {
 .pubCode-icon {
   height: fit-content;
   z-index: 999;
-  left: -11px;
+  left: -10.5px;
   border: 1px solid $lightblackborder !important;
   &.active {
     transform: rotate(180deg);
@@ -1677,10 +1677,13 @@ table#custom-generic-table {
     }
   }
   &.pubCodeWrapper-hide {
-    width: 10px ;
-    min-width: 10px ;
-    @media screen and (max-width: 1160px) {
-    // all: unset !important;
+    width: 10px;
+    min-width: 15px;
+    .inner-editor {
+      display: none;
+      @media screen and (max-width: 1160px) {
+       display: block;
+        }
     }
   }
 }

@@ -2,13 +2,7 @@ import React, { Component } from 'react'
 import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import {
-  isDashboardRoute,
-  getUrlPathById,
-  isTechdocOwnDomain,
-  SESSION_STORAGE_KEY,
-  isOnPublishedPage
-} from '../common/utility'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
 import './collectionVersions.scss'
 import AddEntity from '../main/addEntity/addEntity'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
@@ -28,20 +22,21 @@ import SelectVersion from './selectVersion/selectVersion'
 import CustomModal from '../customModal/customModal'
 import { MdOutlineSettings } from 'react-icons/md'
 import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
-import { MdExpandMore } from "react-icons/md"
-import  IconButtons  from '../common/iconButton'
-import { FiPlus } from "react-icons/fi"
-import { BsThreeDots } from "react-icons/bs"
-import { IoDocumentTextOutline } from "react-icons/io5"
-import {  hexToRgb} from '../common/utility'
-import {background} from '../backgroundColor.js'
+import { MdExpandMore } from 'react-icons/md'
+import IconButtons from '../common/iconButton'
+import { FiPlus } from 'react-icons/fi'
+import { BsThreeDots } from 'react-icons/bs'
+import { IoDocumentTextOutline } from 'react-icons/io5'
+import { hexToRgb } from '../common/utility'
+import { background } from '../backgroundColor.js'
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     versions: state.versions,
     pages: state.pages,
-    clientData: state.clientData
+    clientData: state.clientData,
+    modals: state.modals
   }
 }
 
@@ -102,18 +97,18 @@ class CollectionParentPages extends Component {
     }
     this.filterFlag = false
     this.eventkey = {}
-    this.versionDropDownRef = React.createRef();
+    this.versionDropDownRef = React.createRef()
   }
   handleHover = (isHovered) => {
-    this.setState({ isHovered });
-  };
+    this.setState({ isHovered })
+  }
   handleHovers = (isHover) => {
-    this.setState({ isHover });
-  };
+    this.setState({ isHover })
+  }
   componentDidMount() {
     if (!this.state.theme) {
       this.setState({
-        theme: this.props.collections[this.props.collection_id].theme
+        theme: this.props.collections[this.props.collection_id]?.theme
       })
     }
     const defaultVersion = this.findDefaultVersion()
@@ -138,18 +133,28 @@ class CollectionParentPages extends Component {
         for (let index = 0; index < this.props?.pages?.[this.props?.rootParentId]?.child?.length; index++) {
           const versionId = this.props?.pages?.[this.props?.rootParentId]?.child?.[index]
           if (this.props?.pages?.[versionId]?.state === 1) {
-            this.setState({ selectedVersionId: versionId, selectedVersionName: this.props?.pages?.[versionId]?.name, defaultVersionId: versionId, defaultVersionName: this.props?.pages?.[versionId]?.name })
-            break;
+            this.setState({
+              selectedVersionId: versionId,
+              selectedVersionName: this.props?.pages?.[versionId]?.name,
+              defaultVersionId: versionId,
+              defaultVersionName: this.props?.pages?.[versionId]?.name
+            })
+            break
           }
         }
       }
     }
 
-    if (this.props?.pages?.[this.state.selectedVersionId] && this.props?.pages?.[this.state.selectedVersionId]?.name !== prevState.selectedVersionName) {
+    if (
+      this.props?.pages?.[this.state.selectedVersionId] &&
+      this.props?.pages?.[this.state.selectedVersionId]?.name !== prevState.selectedVersionName
+    ) {
       if (prevState.selectedVersionId === prevState.defaultVersionId) {
-        this.setState({ selectedVersionName: this.props.pages?.[this.state.selectedVersionId]?.name, defaultVersionName: this.props.pages?.[this.state.selectedVersionId]?.name })
-      }
-      else {
+        this.setState({
+          selectedVersionName: this.props.pages?.[this.state.selectedVersionId]?.name,
+          defaultVersionName: this.props.pages?.[this.state.selectedVersionId]?.name
+        })
+      } else {
         this.setState({ selectedVersionName: this.props.pages?.[this.state.selectedVersionId]?.name })
       }
     }
@@ -157,7 +162,7 @@ class CollectionParentPages extends Component {
 
   checkIfSelectedVersionIdIsPresent() {
     for (let index = 0; index < this.props?.pages?.[this.props?.rootParentId]?.child.length; index++) {
-      const elementId = this.props?.pages?.[this.props?.rootParentId]?.child?.[index];
+      const elementId = this.props?.pages?.[this.props?.rootParentId]?.child?.[index]
       if (elementId === this.state.selectedVersionId) {
         return true
       }
@@ -200,7 +205,7 @@ class CollectionParentPages extends Component {
     this.props.duplicate_page(page)
   }
   closeCollectionForm() {
-    this.setState({ showCollectionForm: false})
+    this.setState({ showCollectionForm: false })
   }
   openAddVersionForm(page) {
     this.setState({
@@ -324,7 +329,7 @@ class CollectionParentPages extends Component {
       selectedParentPageIndex: e.currentTarget.value
     })
   }
-  handleRedirect(id){
+  handleRedirect(id) {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
@@ -337,8 +342,8 @@ class CollectionParentPages extends Component {
     }
   }
 
-  handleToggle(e,id) {
-    e.stopPropagation();
+  handleToggle(e, id) {
+    e.stopPropagation()
     const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     this.props.update_isExpand_for_pages({
       value: !isExpanded,
@@ -419,8 +424,13 @@ class CollectionParentPages extends Component {
     }
   }
   versionName() {
-    const versionName = this.state.defaultVersionName.length > 10 ? `${this.state.defaultVersionName.substring(0, 7)} ... ` : this.state.defaultVersionName;
-    return (this.props.pages?.[this.props.rootParentId]?.child?.length === 1) ? versionName : (this.state.selectedVersionName.length > 10 ? `${this.state.selectedVersionName.substring(0, 7)} ... ` : this.state.selectedVersionName);
+    const versionName =
+      this.state.defaultVersionName.length > 10 ? `${this.state.defaultVersionName.substring(0, 7)} ... ` : this.state.defaultVersionName
+    return this.props.pages?.[this.props.rootParentId]?.child?.length === 1
+      ? versionName
+      : this.state.selectedVersionName.length > 10
+      ? `${this.state.selectedVersionName.substring(0, 7)} ... `
+      : this.state.selectedVersionName
   }
 
   versionDropDown(rootId) {
@@ -433,7 +443,7 @@ class CollectionParentPages extends Component {
         title={this.versionName()}
       >
         {this.props.pages[rootId].child.map((childId, index) => (
-          <Dropdown.Item className='fs-4' key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
+          <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
             {this.props.pages[childId]?.name}
           </Dropdown.Item>
         ))}
@@ -445,114 +455,129 @@ class CollectionParentPages extends Component {
     const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const publishData = this.props.modals.publishData
     const rootId = pageId
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : (isDashboardRoute && this.props.match.params.pageId === pageId ? 'selected' : '')
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
+    const isSelected =
+      isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId
+        ? 'selected'
+        : isDashboardRoute && this.props.match.params.pageId === pageId
+        ? 'selected'
+        : ''
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = this.props.collections[collectionId]?.theme
-    const dynamicColor = hexToRgb(collectionTheme, 0.15);
-    const staticColor = background['background_hover'] ;
-
+    const dynamicColor = hexToRgb(collectionTheme, 0.15)
+    const staticColor = background['background_hover']
 
     const backgroundStyle = {
-      backgroundImage: this.state.isHovered || isSelected
-        ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+      backgroundImage:
+        this.state.isHovered || isSelected
+          ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
         linear-gradient(to right, ${staticColor}, ${staticColor})`
-        : ''
-    };
-    const dynamicColors = hexToRgb(collectionTheme, 0.30);
-    const staticColors = background['background_hover'] ;
+          : ''
+    }
+    const dynamicColors = hexToRgb(collectionTheme, 0.3)
+    const staticColors = background['background_hover']
 
     const backgroundStyles = {
       backgroundImage: this.state.isHover
         ? `linear-gradient(to right, ${dynamicColors}, ${dynamicColors}),
         linear-gradient(to right, ${staticColors}, ${staticColors})`
         : ''
-    };
+    }
     return (
       <>
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
           <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
             <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''}`}>
-          <div className={`active-select d-flex align-items-center justify-content-between rounded mr-2 ${isSelected ? ' selected' : ''}`} style={backgroundStyle} onMouseEnter={() => this.handleHover(true)} onMouseLeave={() => this.handleHover(false)}>
               <div
-                className={`d-flex align-items-center cl-name ` }
-                onClick={(e) => {
-                  this.handleRedirect(this.props.rootParentId)
-                  if(!expanded){
-                  this.handleToggle(e,this.props.rootParentId)
-                  }
-                }}
+                className={`active-select d-flex align-items-center justify-content-between rounded mr-2 ${isSelected ? ' selected' : ''}`}
+                style={backgroundStyle}
+                onMouseEnter={() => this.handleHover(true)}
+                onMouseLeave={() => this.handleHover(false)}
               >
-                <div className='d-flex cl-name ml-1 align-items-baseline'>
-                <span className='versionChovron' onClick={(e) => this.handleToggle(e, this.props.rootParentId)}>
-                  <MdExpandMore size={13} className='collection-icons-arrow d-none' />
-                  <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1'/>
-                  </span>
-                  <div
-                    className='d-flex justify-content-between align-items-center name-parent-page'
-                    draggable={!isUserOnPublishedPage}
-                    onDragOver={this.props.handleOnDragOver}
-                    onDragStart={() => this.props.onDragStart(pageId)}
-                    onDrop={(e) => this.props.onDrop(e, pageId)}
-                    onDragEnter={(e) => this.props.onDragEnter(e, pageId)}
-                    onDragEnd={(e) => this.props.onDragEnd(e)}
-                    style={this.props.draggingOverId === pageId ? { border: '3px solid red' } : null}
-                  >
-                    <div className='text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
-                    {!isUserOnPublishedPage ? (
-                      this.versionDropDown(rootId)
-                    ) : (
-                      <PublishedVersionDropDown
-                        handleDropdownItemClick={this.handleDropdownItemClick.bind(this)}
-                        rootParentId={this.props?.rootParentId}
-                        defaultVersionName={this.state.defaultVersionName}
-                        selectedVersionName={this.state.selectedVersionName}
-                      />
-                    )}
+                <div
+                  className={`d-flex align-items-center cl-name `}
+                  onClick={(e) => {
+                    this.handleRedirect(this.props.rootParentId)
+                    if (!expanded) {
+                      this.handleToggle(e, this.props.rootParentId)
+                    }
+                  }}
+                >
+                  <div className='d-flex cl-name ml-1 align-items-baseline'>
+                    <span className='versionChovron' onClick={(e) => this.handleToggle(e, this.props.rootParentId)}>
+                      <MdExpandMore size={13} className='collection-icons-arrow d-none' />
+                      <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1' />
+                    </span>
+                    <div
+                      className='d-flex justify-content-between align-items-center name-parent-page'
+                      draggable={!isUserOnPublishedPage}
+                      onDragOver={this.props.handleOnDragOver}
+                      onDragStart={() => this.props.onDragStart(pageId)}
+                      onDrop={(e) => this.props.onDrop(e, pageId)}
+                      onDragEnter={(e) => this.props.onDragEnter(e, pageId)}
+                      onDragEnd={(e) => this.props.onDragEnd(e)}
+                      style={this.props.draggingOverId === pageId ? { border: '3px solid red' } : null}
+                    >
+                      <div className='text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
+                      {!isUserOnPublishedPage ? (
+                        this.versionDropDown(rootId)
+                      ) : (
+                        <PublishedVersionDropDown
+                          handleDropdownItemClick={this.handleDropdownItemClick.bind(this)}
+                          rootParentId={this.props?.rootParentId}
+                          defaultVersionName={this.state.defaultVersionName}
+                          selectedVersionName={this.state.selectedVersionName}
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-             
 
-              {
-                // [info] options not to show on publihsed page
-                isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
-                  <div className='sidebar-item-action d-flex align-items-center'>
-                    <div
-                      className='d-flex align-items-center'
-                      onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
-                    >
-                      <IconButtons><FiPlus /></IconButtons>
-                    </div>
-                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                    <IconButtons><BsThreeDots /></IconButtons>
-                    </div>
-                    <div className='dropdown-menu dropdown-menu-right'>
-                      <div className='dropdown-item d-flex' onClick={() => this.openEditPageForm(pageId)}>
-                        <Rename /> Rename
-                      </div>                     
+                {
+                  // [info] options not to show on publihsed page
+                  isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                    <div className='sidebar-item-action d-flex align-items-center'>
                       <div
-                        className='dropdown-item d-flex'
-                        onClick={() => {
-                          this.manageVersion(true)
-                        }}
+                        className='d-flex align-items-center'
+                        onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
                       >
-                        <MdOutlineSettings size={20} color='#f2994a' />
-                        <span data-toggle='modal' data-target='#exampleModalCenter'> Manage Version
-                        </span>
+                        <IconButtons>
+                          <FiPlus />
+                        </IconButtons>
                       </div>
-                      <div
-                        className='dropdown-item text-danger d-flex'
-                        onClick={() => {
-                          this.openDeletePageModal(pageId)
-                        }}
-                      >
-                        <DeleteIcon /> Delete
+                      <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                        <IconButtons>
+                          <BsThreeDots />
+                        </IconButtons>
+                      </div>
+                      <div className='dropdown-menu dropdown-menu-right'>
+                        <div className='dropdown-item d-flex' onClick={() => this.openEditPageForm(pageId)}>
+                          <Rename /> Rename
+                        </div>
+                        <div
+                          className='dropdown-item d-flex'
+                          onClick={() => {
+                            this.manageVersion(true)
+                          }}
+                        >
+                          <MdOutlineSettings size={20} color='#f2994a' />
+                          <span data-toggle='modal' data-target='#exampleModalCenter'>
+                            {' '}
+                            Manage Version
+                          </span>
+                        </div>
+                        <div
+                          className='dropdown-item text-danger d-flex'
+                          onClick={() => {
+                            this.openDeletePageModal(pageId)
+                          }}
+                        >
+                          <DeleteIcon /> Delete
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ) : null
-              }
+                  ) : null
+                }
               </div>
             </button>
             {expanded ? (

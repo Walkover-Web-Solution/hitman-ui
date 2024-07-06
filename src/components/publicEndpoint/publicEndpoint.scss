@@ -254,9 +254,9 @@ form.add-new-domain-form {
   border-right: 1px solid rgba(66, 9, 9, 0.02);
   min-width: 230px;
   max-width: 330px;
-  // nav.public-endpoint-sidebar {
-  //   width: 250px;
-  // }
+ &:has(.login-button ) {
+  padding-bottom: 34px;
+ }
 
   .public-endpoint-sidebar .primary-sidebar {
     border: none;
@@ -355,7 +355,6 @@ form.add-new-domain-form {
       .endpoint-name-container {
         .endpoint-title {
           color: #000000;
-          text-transform: capitalize;
           font-weight: 700;
           font-size: 22px;
           // margin-bottom: 0.5rem;
@@ -597,7 +596,6 @@ h4.hm-sidebar-title span {
 
 .page-heading-pub {
   color: #000000;
-  text-transform: capitalize;
   font-weight: 600;
   font-size: 22px;
   margin-bottom: 5px;
@@ -731,7 +729,7 @@ button.toggleButton {
     height: 100%;
     
     .editor-body-wrapper {
-      height: calc(100% - 6rem);
+      height: calc(100vh - 140px);
 
       .ace-editor-wrapper {
         height: 100%;
@@ -746,6 +744,9 @@ button.toggleButton {
       }
 
       padding: 0px;
+      &.editor-body-wrapper-height {
+      height: calc(100vh - 185px) !important;
+      }
     }
   }
 }

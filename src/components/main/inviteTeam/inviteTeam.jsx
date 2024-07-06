@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import './inviteTeam.scss'
-import { getCurrentOrg } from '../../auth/authServiceV2'
+import { getCurrentOrg, getCurrentUser, getProxyToken } from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
-import { inviteMembers } from '../../../services/orgApiService'
+import { inviteMembers, removeUser } from '../../../services/orgApiService'
 import { useSelector, useDispatch } from 'react-redux'
-import { addNewUserData } from '../../auth/redux/usersRedux/userAction'
+import { addNewUserData, removeUserData } from '../../auth/redux/usersRedux/userAction'
 import { inviteuserMail } from '../../common/apiUtility'
 
 function InviteTeam() {
@@ -19,6 +19,17 @@ function InviteTeam() {
   const { users } = useSelector((state) => {
     return { users: state.users.usersList }
   })
+
+  useEffect(() => {
+      if (typeof window.SendDataToChatbot === 'function') {
+        const userId = getCurrentUser()?.id
+        window.SendDataToChatbot({
+          bridgeName: 'LandingPage',
+          threadId: `${userId}`,
+          variables: {Proxy_auth_token : getProxyToken()}
+        })
+          }
+    }, []);
 
   useEffect(() => {
     if (showModal) {
@@ -36,12 +47,26 @@ function InviteTeam() {
     setShowModal(false)
     setEmail('')
   }
-
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') handleSendInvite(e)
   }
+
+  const handleRemoveMember = async (userId) => {
+    setLoading(true);
+    try {
+      const response = await removeUser(userId);
+      if (response?.status === 'success' || '200') {
+        toast.success('User removed successfully');
+        dispatch(removeUserData(userId))
+      }
+    } catch (error) {
+      toast.error('Error removing member');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSendInvite = async (e) => {
     e.preventDefault()
@@ -54,8 +79,8 @@ function InviteTeam() {
       }
       const extractedName = email.substring(0, email.indexOf('@')).replace(/[^a-zA-Z]/g, '');
       const response = await inviteMembers(extractedName, email)
-      if (response?.data?.status == 'success') {
-        dispatch(addNewUserData(response?.data?.data))
+      if (response?.status == 'success' || '200') {
+        dispatch(addNewUserData([response?.data?.data]))
         handleCloseModal()
         await inviteuserMail(email)
       }
@@ -105,6 +130,14 @@ function InviteTeam() {
               <tr key={key}>
                 <td>{user?.email}</td>
                 <td>Admin</td> 
+                <td>
+                {user?.id !== getCurrentUser()?.id && (<button 
+                className='btn btn-danger btn-sm' 
+                onClick={() => handleRemoveMember(user?.id)}
+              >
+                Remove
+              </button>)}
+            </td>
               </tr>
             ))}
           </tbody>

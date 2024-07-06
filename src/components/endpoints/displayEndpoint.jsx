@@ -27,7 +27,7 @@ import BodyContainer from './displayBody'
 import DisplayDescription from './displayDescription'
 import DisplayResponse from './displayResponse'
 import SampleResponse from './sampleResponse'
-import { getCurrentUser, isAdmin } from '../auth/authServiceV2'
+import { getCurrentUser, getProxyToken, isAdmin } from '../auth/authServiceV2'
 import endpointApiService, { getEndpoint } from './endpointApiService'
 import './endpoints.scss'
 import GenericTable from './genericTable'
@@ -439,7 +439,50 @@ class DisplayEndpoint extends Component {
     this.setState({
       theme: { backgroundStyle },
     });
+  }
 
+  componentDidUpdate(prevProps, prevState) {
+  const userid = getCurrentUser()?.id
+  if (typeof window.SendDataToChatbot === 'function') {
+    window.SendDataToChatbot({ bridgeName: 'api', threadId: `${userid}`,
+    variables: {Proxy_auth_token : getProxyToken(), endpoint: this.props.endpointContent}});
+  }
+    // window.closeChatbot()
+    window.addEventListener('resize', this.updateDimensions)
+    if (prevState.isMobileView !== this.state.isMobileView) {
+      this.isMobileView()
+    }
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.extractEndpointName()
+    }
+    if (this.props.endpointId !== prevProps.endpointId) {
+    }
+    if (
+      this.props?.endpointContent &&
+      (!_.isEqual(this.state?.endpointContentState?.data, this.props?.endpointContent?.data) ||
+        !_.isEqual(this.state?.endpointContentState?.originalParams, this.props?.endpointContent?.originalParams) ||
+        !_.isEqual(this.state?.endpointContentState?.originalHeaders, this.props?.endpointContent?.originalHeaders) ||
+        !_.isEqual(this.state?.endpointContentState?.pathVariables, this.props?.endpointContent?.pathVariables) ||
+        !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
+    ) {
+      this.prepareHarObject()
+    }
+    if (this.state.endpoint.id !== prevState.endpoint.id && !this.props.location.pathname.includes('history')) {
+      this.setState({ flagResponse: false })
+    }
+
+    if (this.props?.endpointContent && !_.isEqual(this.props.endpointContent, this.state.endpointContentState)) {
+      this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions)
+    document.removeEventListener('keydown', this.handleKeyDown)
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
   }
 
   handleShortcuts = (event, data) => {
@@ -492,44 +535,6 @@ class DisplayEndpoint extends Component {
       this.setState({ isMobileView: true, codeEditorVisibility: true })
     } else {
       this.setState({ isMobileView: false, codeEditorVisibility: false })
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateDimensions)
-    document.removeEventListener('keydown', this.handleKeyDown)
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    window.addEventListener('resize', this.updateDimensions)
-    if (prevState.isMobileView !== this.state.isMobileView) {
-      this.isMobileView()
-    }
-    if (this.props.location.pathname !== prevProps.location.pathname) {
-      this.extractEndpointName()
-    }
-    if (this.props.endpointId !== prevProps.endpointId) {
-    }
-    if (
-      this.props?.endpointContent &&
-      (!_.isEqual(this.state?.endpointContentState?.data, this.props?.endpointContent?.data) ||
-        !_.isEqual(this.state?.endpointContentState?.originalParams, this.props?.endpointContent?.originalParams) ||
-        !_.isEqual(this.state?.endpointContentState?.originalHeaders, this.props?.endpointContent?.originalHeaders) ||
-        !_.isEqual(this.state?.endpointContentState?.pathVariables, this.props?.endpointContent?.pathVariables) ||
-        !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
-    ) {
-      this.prepareHarObject()
-    }
-    if (this.state.endpoint.id !== prevState.endpoint.id && !this.props.location.pathname.includes('history')) {
-      this.setState({ flagResponse: false })
-    }
-
-    if (this.props?.endpointContent && !_.isEqual(this.props.endpointContent, this.state.endpointContentState)) {
-      this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
     }
   }
 
@@ -1279,13 +1284,13 @@ class DisplayEndpoint extends Component {
         preScript: endpointContent?.preScriptText,
         postScript: endpointContent?.postScriptText,
         docViewData: endpointContent?.docViewData,
-        protocolType: endpointContent?.protocolType || null
+        protocolType: endpointContent?.protocolType || null,
+        description: endpointContent?.description || '',
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
       else if (currentTabId && !this.props.pages[currentTabId]) {
         endpoint.requestId = currentTabId
-        endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
         this.props.add_endpoint(
           endpoint,
@@ -1887,6 +1892,10 @@ class DisplayEndpoint extends Component {
     }
     if (title === 'endpoint') this.setState({ endpoint: data })
     if (title === 'oldDescription') this.setState({ oldDescription: data })
+    const endpointContent = this.props?.endpointContent;
+    endpointContent.description = title
+    this.props.setQueryUpdatedData(endpointContent)
+    this.setModifiedTabData()
   }
 
   propsFromSampleResponse(sampleResponseArray, sampleResponseFlagArray) {
@@ -3046,7 +3055,8 @@ class DisplayEndpoint extends Component {
                         {this.isDashboardAndTestingView() && (
                           <DisplayDescription
                             {...this.props}
-                            endpoint={this.state.endpoint}
+                            endpointId={this.props?.currentEndpointId}
+                            endpoint={this.props.endpointContent}
                             data={this.state.data}
                             old_description={this.state.oldDescription}
                             props_from_parent={this.propsFromDescription.bind(this)}
@@ -3177,13 +3187,14 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className='nav-link'
-                                      id='pills-script-tab'
-                                      data-toggle='pill'
+                                      className={`nav-link ${this.state.activeTab === 'script' ? 'active' : ''}`}
+                                      id={`pills-script-tab-${this.props.tab.id}`}
+                                      data-toggle="pill"
                                       href={`#script-${this.props.tab.id}`}
-                                      role='tab'
+                                      role="tab"
                                       aria-controls={`script-${this.props.tab.id}`}
-                                      aria-selected='false'
+                                      aria-selected={this.state.activeTab === 'script'}
+                                      onClick={() => this.setState({ activeTab: 'script' })}
                                     >
                                       Script
                                     </a>
@@ -3327,10 +3338,10 @@ class DisplayEndpoint extends Component {
                                 {this.renderBodyContainer()}
                               </div>
                               <div
-                                className='tab-pane fade Script-content'
+                                className={`tab-pane fade Script-content ${this.state.activeTab === 'script' ? 'show active' : ''}`}
                                 id={`script-${this.props.tab.id}`}
                                 role='tabpanel'
-                                aria-labelledby='pills-script-tab'
+                                aria-labelledby={`pills-script-tab-${this.props.tab.id}`}
                               >
                                 <ul className='nav nav-tabs flex-column mt-0 border border-0' id='pills-sub-tab' role='tablist'>
                                   <li className='nav-item'>
@@ -3375,6 +3386,8 @@ class DisplayEndpoint extends Component {
                                         handleScriptChange={this.handleScriptChange.bind(this)}
                                         scriptText={this.props?.endpointContent?.preScriptText}
                                         endpointContent={this.props?.endpointContent}
+                                        key={this.props.activeTabId}
+
                                       />
                                     </div>
                                   </div>
@@ -3390,6 +3403,8 @@ class DisplayEndpoint extends Component {
                                         handleScriptChange={this.handleScriptChange.bind(this)}
                                         scriptText={this.props?.endpointContent?.postScriptText}
                                         endpointContent={this.props?.endpointContent}
+                                        key={this.props.activeTabId}
+
                                       />
                                     </div>
                                   </div>
@@ -3447,6 +3462,7 @@ class DisplayEndpoint extends Component {
                                     handleScriptChange={this.handleScriptChange.bind(this)}
                                     scriptText={this.props?.endpointContent?.preScriptText}
                                     endpointContent={this.props?.endpointContent}
+                                    key={this.props.activeTabId}
                                   />
                                 </div>
                               </div>
@@ -3462,6 +3478,8 @@ class DisplayEndpoint extends Component {
                                     handleScriptChange={this.handleScriptChange.bind(this)}
                                     scriptText={this.props?.endpointContent?.postScriptText}
                                     endpointContent={this.props?.endpointContent}
+                                    key={this.props.activeTabId}
+
                                   />
                                 </div>
                               </div>
