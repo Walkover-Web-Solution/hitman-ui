@@ -27,7 +27,7 @@ const DragAndDropUploader = ({ onClose, view, importType }) => {
     if (importType === 'collection') {
       const uploadedFile = new FormData()
       uploadedFile.append('myFile', file, fileName)
-      dispatch(importCollection(uploadedFile, view, onClose, 'application/json'));
+      dispatch(importCollection(uploadedFile, view, onClose, 'testing'));
     }
   };
 
