@@ -1,61 +1,59 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router';
-import { useDispatch } from 'react-redux';
-import AceEditor from 'react-ace';
-import { Dropdown, Col } from 'react-bootstrap';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { languages, primaryLanguages, secondaryLanguages } from './languages';
+import './endpoints.scss'
+import React, { Component } from 'react'
+import { Dropdown, Col } from 'react-bootstrap'
+import 'ace-builds'
+import AceEditor from 'react-ace'
+import 'ace-builds/webpack-resolver'
+import 'ace-builds/src-noconflict/theme-tomorrow_night'
+import 'ace-builds/src-noconflict/theme-github'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { languages, primaryLanguages, secondaryLanguages } from './languages'
 import { RiCloseLine } from "react-icons/ri";
 import { RiCheckboxMultipleLine } from "react-icons/ri";
 import { RiCheckboxMultipleBlankLine } from "react-icons/ri";
 import IconButton from '../common/iconButton'
+import { BsThreeDots } from "react-icons/bs"
 import { hexToRgb, isOnPublishedPage } from '../common/utility'
+import {background} from '../backgroundColor.js'
 import { FaChevronRight } from "react-icons/fa";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { updateStateOfCurlSlider } from '../modals/redux/modalsActions';
-import HTTPSnippet from 'httpsnippet';
-import './endpoints.scss';
+import { updateStateOfCurlSlider } from '../modals/redux/modalsActions'
+import { connect } from 'react-redux'
 
-import 'ace-builds';
-import 'ace-builds/webpack-resolver';
-import 'ace-builds/src-noconflict/theme-tomorrow_night';
-import 'ace-builds/src-noconflict/theme-github';
+const HTTPSnippet = require('httpsnippet')
 
-const CodeTemplate = (props) => {
+const mapStateToProps = (state) => ({
+  modal: state.modals || {},
+  isActive: state.isActive,
+});
 
-  const dispatch = useDispatch();
-
-  const params = useParams()
-
-  const [theme, setTheme] = useState('');
-  const [codeSnippet, setCodeSnippet] = useState('');
-  const [copied, setCopied] = useState(false);
-  const [editorHeight, setEditorHeight] = useState('');
-  const [curlSlider, setCurlSlider] = useState(true);
-
-  const selectedLanguageRef = useRef('shell');
-  const codeTemplateRef = useRef();
-
-  useEffect(() => {
-    if (props.harObject) {
-      makeCodeTemplate(selectedLanguageRef.current);
+const mapDispatchToProps = (dispatch) => ({
+  ON_CURL_SLIDER_OPEN: (payload) => dispatch(updateStateOfCurlSlider(payload)),
+});
+class CodeTemplate extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      theme: '',
+      curlSlider: false
     }
-    if (!theme) {
-      setTheme(props.publicCollectionTheme);
-    }
-  }, [props.harObject, theme, props.publicCollectionTheme]);
-
-  useEffect(() => {
-    if (codeSnippet !== '') adjustEditorHeight();
-  }, [codeSnippet]);
-
-  function handleButtonClick() {
-    setCurlSlider(!curlSlider);
-    dispatch(updateStateOfCurlSlider(!curlSlider))
+    this.selectedLanguage = 'shell'
+    this.iconRef = React.createRef()
+    this.OutlineArrowRef = React.createRef()
+    this.pubCodesRef = React.createRef()
+    this.iconNoneRef = React.createRef()
+    this.closeIconRef = React.createRef()
+    this.codeTemplateRef = React.createRef()
+    this.handleButtonClick = this.handleButtonClick.bind(this);
   }
 
-  const makeCodeSnippet = () => {
-    const { method, url, httpVersion, cookies, headers, postData } = props.harObject;
+  handleButtonClick() {
+    const { curlSlider } = this.state;
+    this.setState({ curlSlider: !curlSlider });
+    this.props.ON_CURL_SLIDER_OPEN(!curlSlider);
+  }
+  makeCodeSnippet() {
+    const harObject = this.props.harObject
+    let { method, url, httpVersion, cookies, headers, postData } = harObject
     const snippet = new HTTPSnippet({
       method,
       url,
@@ -63,103 +61,139 @@ const CodeTemplate = (props) => {
       cookies,
       headers,
       postData
-    });
-    return snippet;
-  };
+    })
+    return snippet
+  }
 
-  const makeCodeTemplate = (selectedLanguage) => {
-    const { harObject } = props;
-    if (!harObject || !harObject.method) return;
-
-    selectedLanguageRef.current = selectedLanguage;
-    const selectedLanguageNameselectedLanguageName = languages[selectedLanguage].name;
-    let generatedCodeSnippet = '';
-
+  makeCodeTemplate(selectedLanguage) {
+    const harObject = this.props.harObject
+    if (!harObject || !harObject.method) return
+    this.selectedLanguage = selectedLanguage
+    this.selectedLanguageName = languages[selectedLanguage].name
+    let codeSnippet = ''
     try {
-      const snippet = makeCodeSnippet();
+      const snippet = this.makeCodeSnippet()
       if (selectedLanguage === 'axiosNode') {
-        generatedCodeSnippet = snippet.convert('node', 'axios');
+        codeSnippet = snippet.convert('node', 'axios');
       } else {
-        generatedCodeSnippet = snippet.convert(selectedLanguage);
+        codeSnippet = snippet.convert(selectedLanguage);
       }
-      generatedCodeSnippet = decodeURI(generatedCodeSnippet);
+      if (codeSnippet.includes('///')) {
+      codeSnippet = codeSnippet.replace('///', '//')
+    }
+      codeSnippet = decodeURI(codeSnippet)
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
+    this.setState({ codeSnippet, copied: false })
+  }
 
-    setCodeSnippet(generatedCodeSnippet);
-    setCopied(false);
-  };
+  componentDidMount() {
+    if (this.props.harObject) {
+      this.makeCodeTemplate(this.selectedLanguage)
+    }
+    const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.04);
+    const staticColor = background['background_pubCode'];
 
-  const handleCloseClick = () => {
-    props.updateCurlSlider(false);
-  };
+    const backgroundStyle = {
+      backgroundImage: `
+        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})
+      `,
+    };
 
-  const getClassForLanguages = (key) => {
+    this.setState({
+      theme: { backgroundStyle },
+    });
+  
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.harObject !== prevProps.harObject) {
+      this.makeCodeTemplate(this.selectedLanguage)
+    }
+    if (prevState.codeSnippet !== this.state.codeSnippet) {
+      this.adjustEditorHeight();
+    }
+  }
+
+  handleCloseClick = () => {
+    this.props.updateCurlSlider(false)
+  }
+
+  getClassForLanguages = (key) => {
     const commonClass = 'mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center';
-    let classToReturn = key === selectedLanguageRef.current ? 'active ' + commonClass : commonClass;
-    return props.theme !== 'light' ? classToReturn + ' ' : classToReturn;
-  };
+    let classToReturn = key === this.selectedLanguage ? 'active ' + commonClass : commonClass;
+    return this.props.theme !== 'light' ? classToReturn + ' ' : classToReturn;
+  }
 
-  const adjustEditorHeight = () => {
-    if (codeTemplateRef.current) {
-      const editor = codeTemplateRef.current.editor;
+  adjustEditorHeight = () => {
+    if (this.codeTemplateRef.current) {
+      const editor = this.codeTemplateRef.current.editor;
       const newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth();
-      setEditorHeight(`${newHeight}px`);
+      this.setState({ editorHeight: `${newHeight}px` });
     }
-  };
+  }
 
-  return (
-    <>
+  render() {
+    return (
+      <>
       <div className='d-flex position-relative'>
-        {isOnPublishedPage() && (
-          <button
-            onClick={handleButtonClick}
-            className={`pubCode-icon btn mt-4 position-absolute rounded-circle px-1 py-0 bg-white${props.curlSlider ? ' active' : ''}`}
-          >
-            <FaChevronRight size={12} />
-          </button>)}
-        <div className={params.endpointId ? 'show-curl-endpoint pubCodeWrapper' : props?.curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper'} style={{ backgroundColor: hexToRgb(theme, '0.04') }}>
+        { isOnPublishedPage() && (
+         <button
+          onClick={this.handleButtonClick}
+          className={`pubCode-icon btn mt-4 position-absolute rounded-circle px-1 py-0 bg-white${this.props.curlSlider ? ' active' : ''}`}
+        >
+          <FaChevronRight size={12}/>
+        </button>)}
+        <div
+       className={this.props.match.params.endpointId ? 'show-curl-endpoint pubCodeWrapper'  : this.props.curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper'}
+      style={{
+        backgroundColor: hexToRgb(this.state?.theme, '0.04')
+      }}
+        >
           <div className='inner-editor'>
-            <Col id='code-window-sidebar' xs={12} className='px-3 pt-3 pb-1 col-12'>
+            <Col id='code-window-sidebar' xs={12} className='px-3 pt-3 pb-1'>
               <div className='code-heading mb-3 d-flex align-items-center'>
-                <span className={props.theme === 'light' ? 'col-black' : 'col-black'}>Sample code</span>
-                {props.showClosebtn && (
-                  <div className='d-flex justify-content-end flex-grow-1'>
-                    <IconButton>
-                      <RiCloseLine color='black' className='cur-pointer' onClick={handleCloseClick} />
-                    </IconButton>
-                  </div>
-                )}
+                <span className={this.props.theme === 'light' ? 'col-black' : 'col-black'}>Sample code</span>
+                {this.props.showClosebtn && <div className='d-flex justify-content-end flex-grow-1'>
+                  <IconButton>
+                    <RiCloseLine color='black' className='cur-pointer' onClick={this.handleCloseClick} />
+                  </IconButton>
+                </div>}
               </div>
               <div className='select-code-wrapper d-flex align-items-center mb-3 img'>
                 {primaryLanguages.map((key) => (
                   <button
                     key={key}
-                    className={`${params.endpointId ? "btn btn-outline-dark" : ""} ${getClassForLanguages(key)}`}
+                    className={`${(this.props.match.params.endpointId) ? "btn btn-outline-dark" : ""}  ${this.getClassForLanguages(key)}`}
                     onClick={() => {
-                      makeCodeTemplate(key);
+                      this.makeCodeTemplate(key)
                     }}
                   >
                     <img src={languages[key].imagePath} alt={languages[key].name} width={15} />
                     {languages[key].name}
                   </button>
                 ))}
-                <Dropdown>
-                  <Dropdown.Toggle className={secondaryLanguages.includes(selectedLanguageRef.current) ? 'active dropdownMore mr-0' : 'dropdownMore mr-0'}>
-                    {primaryLanguages.includes(selectedLanguageRef.current) ? (
-                      <span><BsThreeDotsVertical /></span>
+                <Dropdown >
+                  <Dropdown.Toggle className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore mr-0' : 'dropdownMore mr-0'}>
+                    {primaryLanguages.includes(this.selectedLanguage) ? (
+                      <div className='d-flex flex-column '>
+                      <span><BsThreeDots /></span>
+                      <span>More</span>
+                      </div>
+                      
                     ) : (
-                      <span>{languages[selectedLanguageRef.current].name}</span>
+                      <span>{languages[this.selectedLanguage].name}</span>
                     )}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     {secondaryLanguages.map((key) => (
                       <Dropdown.Item
                         key={key}
-                        className={key === selectedLanguageRef.current ? 'active mb-2 mt-2' : 'mb-2 mt-2'}
+                        className={key === this.selectedLanguage ? 'active mb-2 mt-2' : 'mb-2 mt-2'}
                         onClick={() => {
-                          makeCodeTemplate(key);
+                          this.makeCodeTemplate(key)
                         }}
                       >
                         <img src={languages[key].imagePath} alt={languages[key].name} className='mr-2' />
@@ -174,29 +208,29 @@ const CodeTemplate = (props) => {
               <div className='ace-editor-wrapper'>
                 <div id='code-window-body' className={!isOnPublishedPage() ? 'copy-button-light' : 'copy-button-dark'}>
                   <CopyToClipboard
-                    text={codeSnippet ? codeSnippet : ''}
-                    onCopy={() => setCopied(true)}
+                    text={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
+                    onCopy={() => this.setState({ copied: true }, () => setTimeout(() => this.setState({ copied: false }), 1000))}
                     className='copy-to-clipboard mt-1'
                   >
-                    <button>{copied ? <IconButton> <RiCheckboxMultipleLine color={props.theme === 'light' ? 'black' : "white"} /> </IconButton> : <IconButton><RiCheckboxMultipleBlankLine className='cur-pointer' color={props.theme === 'light' ? 'black' : "white"} /></IconButton>}</button>
+                    <button >{this.state.copied ? <IconButton> <RiCheckboxMultipleLine color={this.props.theme === 'light' ? 'black' : "white"} /> </IconButton> : <IconButton><RiCheckboxMultipleBlankLine className='cur-pointer' color={this.props.theme === 'light' ? 'black' : "white"} /></IconButton>}</button>
                   </CopyToClipboard>
                 </div>
                 <AceEditor
-                  height={editorHeight}
-                  ref={codeTemplateRef}
-                  mode={languages[selectedLanguageRef.current].mode}
-                  theme={props.theme === 'light' ? 'kuroir' : "tomorrow_night"}
+                  height={this.state.editorHeight}
+                  ref={this.codeTemplateRef}
+                  mode={languages[this.selectedLanguage].mode}
+                  theme={this.props.theme === 'light' ? 'kuroir' : "tomorrow_night"}
                   highlightActiveLine={false}
                   focus={false}
-                  value={codeSnippet ? codeSnippet : ''}
+                  value={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
                   readOnly
                   editorProps={{
                     $blockScrolling: false
                   }}
                   showGutter={false}
                   onLoad={(editor) => {
-                    editor.getSession().setUseWrapMode(true);
-                    editor.setShowPrintMargin(false);
+                    editor.getSession().setUseWrapMode(true)
+                    editor.setShowPrintMargin(false)
                   }}
                 />
                 <div id='code-window-body' className={!isOnPublishedPage() ? 'empty-div-light' : 'empty-div-dark'}></div>
@@ -204,9 +238,10 @@ const CodeTemplate = (props) => {
             </Col>
           </div>
         </div>
-      </div>
-    </>
-  );
-};
+        </div>
+      </>
+    )
+  }
+}
 
-export default CodeTemplate;
+export default connect(mapStateToProps, mapDispatchToProps)(CodeTemplate);
