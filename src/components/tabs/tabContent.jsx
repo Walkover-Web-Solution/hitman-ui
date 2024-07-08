@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { useQueryClient } from 'react-query'
 import { Tab } from 'react-bootstrap'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
 import DisplayPage from '../pages/displayPage'
 import EditPage from '../pages/editPage'
@@ -11,8 +11,7 @@ import { updateCollection } from '../collections/redux/collectionsActions'
 import { connect } from 'react-redux'
 import PublishDocsReview from './../publishDocs/publishDocsReview'
 import { updateContent } from '../pages/redux/pagesActions'
-import { withRouter } from 'react-router'
-
+import withRouter from '../common/withRouter'
 const mapDispatchToProps = (dispatch) => {
   return {
     update_collection: (editedCollection) => dispatch(updateCollection(editedCollection))
@@ -30,8 +29,8 @@ const mapStateToProps = (state) => {
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-     const queryClient = useQueryClient(); 
-     const deleteFromReactQueryByKey = (id) => {
+    const queryClient = useQueryClient();
+    const deleteFromReactQueryByKey = (id) => {
       queryClient.removeQueries(['pageContent', id]);
     };
     return <WrappedComponent {...props} deleteFromReactQueryByKey={deleteFromReactQueryByKey} />
@@ -58,7 +57,7 @@ class TabContent extends Component {
     // to save changes to backend if tab is closed from not active tab
     if (this.props.save_page_flag && tabId === this.props.selected_tab_id) {
       this.props.handle_save_page(false);
-      updateContent({ pageData: { id: tabId, contents: tab.draft , state : this.props.pages?.[tabId]?.state, name : this.props.pages?.[tabId]?.name}, id: tabId });
+      updateContent({ pageData: { id: tabId, contents: tab.draft, state: this.props.pages?.[tabId]?.state, name: this.props.pages?.[tabId]?.name }, id: tabId });
       this.props.deleteFromReactQueryByKey(tabId);
     }
     switch (tab?.type) {
@@ -76,10 +75,10 @@ class TabContent extends Component {
         return <DisplayEndpoint {...this.props} environment={{}} tab={tab} />
       case 'page':
         return (
-          <Switch>
-            <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' render={(props) => <EditPage {...this.props} {...props} tab={tab} />} />
-            <Route path='/orgs/:orgId/dashboard/page/:pageId' render={(props) => <DisplayPage {...props} tab={tab} />} />
-          </Switch>
+          <Routes>
+            <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' element={<EditPage {...this.props} tab={tab} />} />
+            <Route path='/orgs/:orgId/dashboard/page/:pageId' element={<DisplayPage {...this.props} tab={tab} />} />
+          </Routes>
         )
       case 'collection':
         if (this.props.location.pathname.split('/')[6] === 'settings') {
@@ -94,9 +93,9 @@ class TabContent extends Component {
               onTab
             />
           )
-        }else {
-            return <PublishDocsReview {...this.props} selected_collection_id={tabId} />
-          } 
+        } else {
+          return <PublishDocsReview {...this.props} selected_collection_id={tabId} />
+        }
       default:
         break
     }
@@ -111,14 +110,14 @@ class TabContent extends Component {
       <Tab.Content>
         {getCurrentUser() && this.props.isTabsLoaded
           ? Object.keys(this.props.tabData).map((tabId) => (
-              <Tab.Pane eventKey={tabId} key={tabId}>
-                {this.renderContent(tabId)}
-              </Tab.Pane>
-            ))
+            <Tab.Pane eventKey={tabId} key={tabId}>
+              {this.renderContent(tabId)}
+            </Tab.Pane>
+          ))
           : this.renderEndpoint()}
       </Tab.Content>
     )
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(TabContent)))
+export default connect(mapStateToProps, mapDispatchToProps)(withQuery(withRouter(TabContent)))

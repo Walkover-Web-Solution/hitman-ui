@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Table, Button, Form } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { BiArrowBack } from 'react-icons/bi';
 import { MdSettingsBackupRestore } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import trashImage from '../../../assets/icons/trash.webp';
-
 import { getCurrentOrg } from '../../auth/authServiceV2';
 import { getAllDeletedCollections, restoreCollection } from '../../collections/collectionsApiService';
 import './trash.scss';
@@ -16,7 +15,7 @@ const TrashPage = () => {
   const [collections, setCollections] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editableRow, setEditableRow] = useState({ id: null, name: '' });
-  const history = useHistory();
+  const navigate = useNavigate();
   const orgId = getCurrentOrg()?.id;
   const users = useSelector((state) => state.users.usersList);
 
@@ -36,7 +35,7 @@ const TrashPage = () => {
   }, [orgId]);
 
   const handleBack = () => {
-    history.push(`/orgs/${orgId}/dashboard/`);
+    navigate  (`/orgs/${orgId}/dashboard/`);
   };
 
   const handleRestore = async (collectionId, collectionName) => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility.js'
 import groupsService from './subPageService.js'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
@@ -30,7 +30,7 @@ const SubPage = (props) => {
 
   const dispatch = useDispatch();
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [showSubPageForm, setShowSubPageForm] = useState({ addPage: false, edit: false, share: false });
   const [theme, setTheme] = useState('');
@@ -201,12 +201,12 @@ const SubPage = (props) => {
   };
 
   const handleRedirect = (id) => {
-    if (isDashboardRoute(props)) history.push({ pathname: `/orgs/${props.match.params.orgId}/dashboard/page/${id}` });
+    if (isDashboardRoute(props)) navigate(`/orgs/${props.match.params.orgId}/dashboard/page/${id}`);
     else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id);
       let pathName = getUrlPathById(id, pages);
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`;
-      history.push(pathName);
+      navigate(pathName);
     }
   };
 
