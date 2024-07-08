@@ -54,7 +54,7 @@ class TabOptions extends Component {
 
     this.props.open_in_new_tab(tab)
 
-    this.props.navigate.push({
+    this.props.navigate({
       pathname: `/orgs/${orgId}/dashboard/${tab.type}/new`
     })
   }

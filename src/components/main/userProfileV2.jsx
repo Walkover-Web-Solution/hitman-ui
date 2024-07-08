@@ -182,7 +182,7 @@ class UserProfileV2 extends Component {
   openAccountAndSettings = () => {
     const { history } = this.props
     const orgId = getCurrentOrg()?.id
-    navigate.push({ pathname: `/orgs/${orgId}/invite` })
+    this.props.navigate({ pathname: `/orgs/${orgId}/invite` })
   }
 
   getUserDetails() {
@@ -299,13 +299,13 @@ class UserProfileV2 extends Component {
 
   openPublishDocs(collection) {
     if (collection?.id) {
-      this.props.navigate.push({
+      this.props.navigate({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
       })
     } else {
       const collection = this.props.collections[Object.keys(this.props.collections)[0]]
-      this.props.navigate.push({
+      this.props.navigate({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
       })
@@ -318,8 +318,8 @@ class UserProfileV2 extends Component {
   }
 
   openAccountAndSettings() {
-    const { history, organizationId, location } = this.props
-    navigate.push({
+    const { organizationId, location } = this.props
+    this.props.navigate({
       pathname: `/orgs/${organizationId}/manage`,
       search: location.search
     })
@@ -373,9 +373,7 @@ class UserProfileV2 extends Component {
     // this.removeFromLocalStorage(this.props.tabs.tabsOrder)
     // this.props.close_all_tabs(this.props.tabs.tabsOrder)
     // this.props.remove_history(this.props.historySnapshot)
-    this.props.navigate.push({
-      pathname: '/logout'
-    })
+    this.props.navigate( '/logout')
   }
 
   removeFromLocalStorage(tabIds) {
@@ -411,7 +409,7 @@ class UserProfileV2 extends Component {
 
   handleTrashClick() {
     const currentOrgId = getCurrentOrg().id
-    this.props.navigate.push(`/orgs/${currentOrgId}/trash`)
+    this.props.navigate(`/orgs/${currentOrgId}/trash`)
   }
 
   renderTrash() {

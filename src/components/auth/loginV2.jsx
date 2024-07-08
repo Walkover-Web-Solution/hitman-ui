@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./auth.scss";
 import "./login.scss";
 import { ReactComponent as TECHDOC } from "../../assets/icons/TECHDOC100.svg";
-import { ReactComponent as TECHDOCC } from "../../assets/icons/TECHDOC.svg"
+import { ReactComponent as TECHDOCC } from "../../assets/icons/TECHDOC.svg";
 import { getCurrentOrg, getCurrentUser, getOrgList } from "./authServiceV2";
 import withRouter from "../common/withRouter";
 
@@ -14,14 +14,13 @@ class LoginV2 extends Component {
   };
 
   componentDidMount() {
-    this.checkIfUserAlreadyLogin()
+    this.checkIfUserAlreadyLogin();
   }
 
   checkIfUserAlreadyLogin() {
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
       this.props.navigate(`/orgs/${getCurrentOrg().id}/dashboard`);
-    }
-    else this.loadScript();
+    } else this.loadScript();
   }
 
   loadScript() {

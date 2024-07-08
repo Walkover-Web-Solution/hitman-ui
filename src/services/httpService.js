@@ -13,14 +13,14 @@ instance.interceptors.response.use(null, (error) => {
   const navigate = useNavigate()
 
   if (error.response.config.method === 'get' && error.response.status === 404) {
-    navigate.push({
+    navigate({
       pathname: '/404_PAGE',
       error: error
     })
   }
 
   if (error?.response?.config?.method === 'get' && error?.response?.status === 403) {
-    navigate.push({
+    navigate({
       pathname: '/403_PAGE',
       error: error
     })

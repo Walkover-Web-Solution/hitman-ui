@@ -28,9 +28,9 @@ import { BsThreeDots } from 'react-icons/bs'
 import { LuFolder } from 'react-icons/lu'
 import { RiShareForward2Line } from 'react-icons/ri'
 import { TbDirections } from 'react-icons/tb'
-import { TbSettingsAutomation } from "react-icons/tb";
+import { TbSettingsAutomation } from 'react-icons/tb'
 import ExportButton from '../exportButton/exportButton'
-import { BiExport } from "react-icons/bi";
+import { BiExport } from 'react-icons/bi'
 import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
@@ -57,7 +57,7 @@ const mapDispatchToProps = (dispatch) => {
 class CollectionsComponent extends Component {
   constructor(props) {
     super(props)
-    this.handleOrgModalClose = this.handleOrgModalClose.bind(this);
+    this.handleOrgModalClose = this.handleOrgModalClose.bind(this)
     this.state = {
       showCollectionForm: false,
       collectionFormName: '',
@@ -69,7 +69,7 @@ class CollectionsComponent extends Component {
       selectedCollectionIds: [],
       showOrgModal: false,
       showRunAutomationModal: false,
-      automationSelectedCollectionId: null,
+      automationSelectedCollectionId: null
     }
     this.names = {}
     this.handleApiAutomation = this.handleApiAutomation.bind(this)
@@ -130,8 +130,7 @@ class CollectionsComponent extends Component {
 
   handlePublicCollectionDescription(collection) {
     this.props.navigate({
-      pathname: `/p/${collection.id}/description/${collection.name}`,
-      state: { Header }
+      pathname: `/p/${collection.id}/description/${collection.name}`
     })
   }
 
@@ -323,9 +322,18 @@ class CollectionsComponent extends Component {
                           </div>
                           <div className='dropdown-item d-flex align-items-center h-auto'>
                             <BiExport size={18} color='grey' />
-                            <ExportButton orgId={this.props.match.params.orgId} collectionId={collectionId} collectionName={this.props.collections[collectionId].name} />
+                            <ExportButton
+                              orgId={this.props.match.params.orgId}
+                              collectionId={collectionId}
+                              collectionName={this.props.collections[collectionId].name}
+                            />
                           </div>
-                          <div className='dropdown-item delete-button-sb text-danger d-flex' onClick={() => { this.openDeleteCollectionModal(collectionId) }}>
+                          <div
+                            className='dropdown-item delete-button-sb text-danger d-flex'
+                            onClick={() => {
+                              this.openDeleteCollectionModal(collectionId)
+                            }}
+                          >
                             <DeleteIcon size={14} /> Delete
                           </div>
                         </>
@@ -368,7 +376,7 @@ class CollectionsComponent extends Component {
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
-                  // isPublishData={false}
+                    // isPublishData={false}
                   />
                 }
               </Card.Body>
@@ -465,7 +473,9 @@ class CollectionsComponent extends Component {
                 )}
               {this.openTagManagerModal()}
               {this.showDeleteCollectionModal()}
-              {this.state.showOrgModal && <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />}
+              {this.state.showOrgModal && (
+                <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />
+              )}
             </div>
           </div>
           {this.props.collectionsToRender.length > 0 ? (
@@ -492,4 +502,4 @@ class CollectionsComponent extends Component {
   }
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(withRouter(CollectionsComponent)))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CollectionsComponent))

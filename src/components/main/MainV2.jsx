@@ -73,7 +73,7 @@ class MainV2 extends Component {
       let orgId = this.props.match.params.orgId
       if (!orgId) {
         orgId = getOrgList()[0]?.id
-        this.props.navigate.push({
+        this.props.navigate({
           pathname: `/orgs/${orgId}/dashboard`
         })
       } else {
@@ -82,7 +82,7 @@ class MainV2 extends Component {
       }
     } else {
       /** Perform Login Procedure for Token */
-      this.props.navigate.push({
+      this.props.navigate({
         pathname: '/login'
       })
     }

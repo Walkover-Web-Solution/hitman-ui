@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import { useNavigate } from 'react-router-dom'
 import './inviteTeam.scss'
 import { getCurrentOrg, getCurrentUser, getProxyToken } from '../../auth/authServiceV2'
@@ -40,7 +39,7 @@ function InviteTeam() {
 
   const handleBack = () => {
     const orgId = getCurrentOrg()?.id
-    navigate.push(`/orgs/${orgId}/dashboard`)
+    navigate(`/orgs/${orgId}/dashboard`)
   }
 
   const handleInviteClick = () => setShowModal(true)
