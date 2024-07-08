@@ -70,18 +70,25 @@
     margin-bottom: 0;
   }
 
-  .page-wrapper {
-    max-width: 800px;
-    &:has(.empty-heading-for-page) {
-      display: contents;
-    }
-    .page-text-render {
-      img {
-        max-width: 100%;
-        overflow: auto;
+    .page-wrapper {
+      max-width: 800px;
+  
+      &:has(.empty-heading-for-page) {
+        display: contents;
+      }
+  
+      .page-text-render {
+        :first-child {
+          overflow: auto;
+          max-width: 800px;
+  
+          img {
+            max-width: 100%;
+            overflow: auto;
+          }
+        }
       }
     }
-  }
   .page-button-inner {
     position: absolute;
     right: 18px;
@@ -92,6 +99,9 @@
   .page-heading-content {
     max-width: 800px;
     margin: auto;
+  }
+  &:has(.page-text-render) {
+    display: block !important;
   }
 }
 
