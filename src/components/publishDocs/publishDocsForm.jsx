@@ -268,7 +268,6 @@ const PublishDocForm = (props) => {
   const isCollectionPublished = (selectedCollection) => selectedCollection?.isPublic || false
 
   const redirectUser = () => {
-    debugger
     setOpenPublishSidebar(true)
     dispatch(publishData(true))
   }
@@ -417,8 +416,8 @@ const PublishDocForm = (props) => {
 
           {publishCheck && renderPublicUrl()}
           <div className='small-input mt-2'>
-            {renderInput('title', true, false, 'brand name')}
-            {renderInput('domain', false, false, 'docs.example.com')}
+            {renderInput('title',false, 'brand name',false)}
+            {renderInput('domain', false, 'docs.example.com',false)}
           </div>
           <div className='d-flex favicon mb-4'>
             <div className='form-group mb-0'>
