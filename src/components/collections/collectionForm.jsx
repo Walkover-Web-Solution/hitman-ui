@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { addCollection, updateCollection } from './redux/collectionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import { defaultViewTypes } from './defaultViewModal/defaultViewModal'
+import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
   return {
@@ -85,7 +86,7 @@ class CollectionForm extends Form {
     const { id: collectionId } = collection.data
     if (collection.success) {
       const { orgId } = this.props.match.params
-      this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
+      this.props.navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/settings`)
     }
     if (this.props.setDropdownList) this.props.setDropdownList(collection.data)
     this.props.onHide()
@@ -132,7 +133,7 @@ class CollectionForm extends Form {
     }
     if (this.props.title === 'Add new Collection') {
       this.onAddCollectionSubmit(defaultView)
-        if (this.props.setDropdownList) this.props.onHide()
+      if (this.props.setDropdownList) this.props.onHide()
     }
   }
 
@@ -198,4 +199,4 @@ class CollectionForm extends Form {
     return this.props.showOnlyForm ? this.renderForm() : this.renderInModal()
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionForm)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CollectionForm))
