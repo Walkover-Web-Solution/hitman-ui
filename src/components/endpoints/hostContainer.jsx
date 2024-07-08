@@ -174,26 +174,27 @@ class HostContainer extends Component {
           : parsedData.headers?.['Content-Type'] || 'application/x-www-form-urlencoded')
 
         // 'multipart/form-data' and 'application/x-www-form-urlencoded' both contains body values description
-        let keyValuePairs = parsedData.data.split('&')
-        let keys = []
-        let values = []
-        // Iterate over each key-value pair
-        keyValuePairs.forEach((pair) => {
-          let [key, value] = pair.split('=')
-          keys.push(key)
-          values.push(value)
-        })
-        for (let key in values) {
-          let eachData = {
-            checked: 'true',
-            key: keys[key],
-            value: values[key],
-            description: '',
-            type: 'text'
+        if (typeof parsedData.data === 'string') {
+          let keyValuePairs = parsedData.data.split('&')
+          let keys = []
+          let values = []
+          keyValuePairs.forEach((pair) => {
+            let [key, value] = pair.split('=')
+            keys.push(key)
+            values.push(value)
+          })
+          for (let key in values) {
+            let eachData = {
+              checked: 'true',
+              key: keys[key],
+              value: values[key],
+              description: '',
+              type: 'text'
+            }
+            untitledEndpointData.data.body[bodyType].push(eachData)
           }
-          untitledEndpointData.data.body[bodyType].push(eachData)
+          untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1))
         }
-        untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1))
       }
     }
 
