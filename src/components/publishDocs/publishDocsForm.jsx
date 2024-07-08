@@ -16,9 +16,9 @@ import { IoInformationCircleOutline } from 'react-icons/io5'
 import { FiCopy } from 'react-icons/fi'
 import { FaRegTimesCircle } from 'react-icons/fa'
 import { updateTab } from '../tabs/redux/tabsActions'
-const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 import withRouter from '../common/withRouter'
 
+const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
   NULL_STRING: '',
   INITIAL_CTA: [
@@ -463,7 +463,7 @@ class PublishDocForm extends Component {
     const collectionId = this.props.selected_collection_id
     const activeTab = this.props.tabs.activeTabId
     this.props.update_tab(activeTab, { state: { pageType: 'FEEDBACK' } })
-    this.props.navigate.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+    this.props.navigate(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
   }
 
   openPublishSidebar() {

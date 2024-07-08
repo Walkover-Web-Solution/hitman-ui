@@ -7,11 +7,11 @@ import Joi from 'joi-browser'
 import './defaultViewModal.scss'
 import { Modal, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import { addNewTab } from '../../tabs/redux/tabsActions'
 import { onEnter, toTitleCase, validate } from '../../common/utility'
 import Form from '../../common/form'
 import { addPage } from '../../pages/redux/pagesActions'
+import withRouter from '../../common/withRouter'
 export const defaultViewTypes = {
   TESTING: 'testing',
   DOC: 'doc'
@@ -20,7 +20,7 @@ export const defaultViewTypes = {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_new_tab: () => dispatch(addNewTab()),
-    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage))
+    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.navigate, rootParentId, newPage))
   }
 }
 export class DefaultViewModal extends Form {
@@ -184,4 +184,4 @@ export class DefaultViewModal extends Form {
   }
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(DefaultViewModal))
+export default connect(null, mapDispatchToProps)(withRouter(DefaultViewModal))

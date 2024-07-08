@@ -11,7 +11,6 @@ import {
 import tabStatusTypes from './tabStatusTypes'
 import { getCurrentUser } from '../auth/authServiceV2'
 import { getOrgId } from '../common/utility'
-import { useNavigate } from 'react-router-dom'
 
 function newTab() {
   store.dispatch(addNewTab())
@@ -41,13 +40,12 @@ function removeTab(tabId, props) {
 }
 
 function changeRoute(props, tab) {
-  const navigate = useNavigate()
   if (tab.isSaved) {
-    props.navigate.push({
+    props.navigate({
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/${tab.id}`
     })
   } else {
-    props.navigate.push({
+    props.navigate({
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
     })
   }
@@ -60,21 +58,20 @@ function removeAllTabs(props) {
 
 function selectTab(props, tabId) {
   const { tabs } = store.getState().tabs
-  const navigate = useNavigate()
   const tab = tabs[tabId]
   if (tab?.status === 'NEW') {
-    props.navigate.push({
+    props.navigate({
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
     })
   } else if (tab?.type === 'collection') {
     tab?.state?.pageType === 'SETTINGS'
-      ? props.navigate.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
-      : props.navigate.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
+      ? props.navigate(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
+      : props.navigate(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
   } else {
     if (!(tab?.type && tab?.id)) {
-      return props.navigate.push({ pathname: `/orgs/${getOrgId()}/dashboard/endpoint/new` })
+      return props.navigate({ pathname: `/orgs/${getOrgId()}/dashboard/endpoint/new` })
     }
-    return props.navigate.push({
+    return props.navigate({
       pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${tab.isModified ? '/edit' : ''}`
     })
   }

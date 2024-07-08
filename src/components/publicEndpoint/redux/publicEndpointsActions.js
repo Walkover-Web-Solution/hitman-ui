@@ -4,8 +4,7 @@ import publicPageService from '../publicPageService'
 import { SESSION_STORAGE_KEY } from '../../common/utility.js'
 import { useNavigate } from 'react-router-dom'
 
-export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) => {
-  const navigate = useNavigate()
+export const fetchAllPublicEndpoints = (navigate, collectionIdentifier, domain) => {
   return (dispatch) => {
     publicEndpointsService
       .fetchAll(collectionIdentifier, domain)
@@ -14,7 +13,7 @@ export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) =
       })
       .catch((error) => {
         dispatch(onPublicEndpointsFetchedError(error.response ? error.response.data : error))
-        navigate.push({ pathname: '/p/error', collection: true })
+        navigate({ pathname: '/p/error', collection: true })
       })
   }
 }

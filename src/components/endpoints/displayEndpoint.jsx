@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
@@ -110,7 +109,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_endpoint: (newEndpoint, rootParentID, callback, props) =>
-      dispatch(addEndpoint(ownProps.history, newEndpoint, rootParentID, callback, props)),
+      dispatch(addEndpoint(ownProps.navigate, newEndpoint, rootParentID, callback, props)),
     update_endpoint: (editedEndpoint, stopSave) => dispatch(updateEndpoint(editedEndpoint, stopSave)),
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
@@ -3625,4 +3624,4 @@ class DisplayEndpoint extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayEndpoint)))
+export default connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayEndpoint))

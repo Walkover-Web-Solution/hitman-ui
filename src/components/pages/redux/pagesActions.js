@@ -116,17 +116,16 @@ export const onEndpointUpdated = (response) => {
   }
 }
 
-export const addPage = (rootParentId, newPage) => {
+export const addPage = (navigate, rootParentId, newPage) => {
   newPage.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   const orgId = getOrgId()
-  const navigate = useNavigate()
   return (dispatch) => {
     pageApiService
       .saveCollectionPage(rootParentId, newPage)
       .then((response) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
-        navigate.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
+        navigate(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
       .catch((error) => {
         dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))

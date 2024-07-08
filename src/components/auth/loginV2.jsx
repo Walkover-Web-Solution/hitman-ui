@@ -88,4 +88,4 @@ class LoginV2 extends Component {
   }
 }
 
-export default withRouter(LoginV2);
+export default withRouter(LoginV2)
