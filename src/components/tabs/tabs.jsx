@@ -10,7 +10,6 @@ import { isElectron } from '../common/utility'
 import Plus from '../../assets/icons/plus.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import { IoIosSettings } from 'react-icons/io'
 import { HiMiniDocumentText } from 'react-icons/hi2'
 import IconButtons from '../common/iconButton'
@@ -550,4 +549,4 @@ class CustomTabs extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(CustomTabs)))
+export default connect(mapStateToProps, mapDispatchToProps)(withQuery(CustomTabs))

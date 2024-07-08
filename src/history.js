@@ -1,6 +1,6 @@
 import { createHashHistory } from 'history'
 import { isElectron } from './components/common/utility'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 
-const navigate = isElectron() ? createHashHistory() : useNavigate()
+const navigate = 'navigate'
 export default navigate

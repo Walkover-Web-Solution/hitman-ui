@@ -18,7 +18,8 @@ import { addCollectionAndPages } from '../redux/generalActions'
 import generalApiService from '../../services/generalApiService'
 import { useQueryClient, useMutation } from 'react-query'
 import { MdDehaze, MdClose } from "react-icons/md";
-import {background} from '../backgroundColor.js'
+import { background } from '../backgroundColor.js'
+import withRouter from '../common/withRouter.jsx'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -69,33 +70,33 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetch_all_public_endpoints: (collectionIdentifier, domain) =>
-      dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain)),
+      dispatch(fetchAllPublicEndpoints(ownProps.navigate, collectionIdentifier, domain)),
     add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams))
   }
 }
 
 class PublicEndpoint extends Component {
   constructor() {
- super()
- this.state = {
-  publicCollectionId: '',
-    collectionName: '',
-    collectionTheme: null,
-   isNavBar: false,
-   isSticky: false,
-   likeActive: false,
-   dislikeActive: false,
-   review: {
-    feedback: {},
-    endpoint: {}
-    },
-    openReviewModal: false,
-    idToRenderState: null,
+    super()
+    this.state = {
+      publicCollectionId: '',
+      collectionName: '',
+      collectionTheme: null,
+      isNavBar: false,
+      isSticky: false,
+      likeActive: false,
+      dislikeActive: false,
+      review: {
+        feedback: {},
+        endpoint: {}
+      },
+      openReviewModal: false,
+      idToRenderState: null,
     }
- this.iconRef = React.createRef()
- this.hamburgerIconRef = React.createRef()
- this.logoName = React.createRef()
- this.closeIconRef = React.createRef()
+    this.iconRef = React.createRef()
+    this.hamburgerIconRef = React.createRef()
+    this.logoName = React.createRef()
+    this.closeIconRef = React.createRef()
   }
 
 
@@ -133,7 +134,7 @@ class PublicEndpoint extends Component {
       // internal case here collectionId will be there always
       queryParamApi2.collectionId = collectionId
       queryParamApi2.path = url.pathname.slice(3) // ignoring '/p/' in pathName
-      this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true})
+      this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true })
     } else if (!isTechdocOwnDomain()) {
       // external case
       queryParamApi2.custom_domain = window.location.hostname // setting hostname
@@ -157,14 +158,14 @@ class PublicEndpoint extends Component {
     // Remove the last '&' character
     queryParamsString = queryParamsString.slice(0, -1)
 
-    try{
+    try {
       const response = await generalApiService.getPublishedContentByPath(queryParamsString)
       this.setDataToReactQueryAndSessionStorage(response)
-    }catch(e){
+    } catch (e) {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, 'undefined')
       this.setState({ idToRenderState: 'undefined' })
     }
-    
+
   }
 
   async componentDidUpdate(prevState) {
@@ -417,10 +418,10 @@ class PublicEndpoint extends Component {
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
-        <span ref={this.iconRef} className={'hamberger-icon'}>
-          <MdDehaze id='hamburgerIcon' className='icon-active fw-bold' onClick={() => { this.handleShowSideBar() }} />
-          <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
-          {/* <span className='logo-name' id="logoName"> 
+          <span ref={this.iconRef} className={'hamberger-icon'}>
+            <MdDehaze id='hamburgerIcon' className='icon-active fw-bold' onClick={() => { this.handleShowSideBar() }} />
+            <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
+            {/* <span className='logo-name' id="logoName"> 
              {this.props.collections[collectionKeys[0]]?.favicon && (
                 <img
                     className='hamberger-img'
@@ -436,7 +437,7 @@ class PublicEndpoint extends Component {
                     height='20'
                   />
                  )} */}
-              {/* <span className="icon-name">{this.props.collections[collectionId]?.name}</span> */}
+            {/* <span className="icon-name">{this.props.collections[collectionId]?.name}</span> */}
 
             {/* </span> */}
             {/* Original icons */}
@@ -450,7 +451,7 @@ class PublicEndpoint extends Component {
             {/*  [info] part 3 subpart 1 sidebar data right content */}
             <div
               className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
-              // style={{ backgroundColor: hexToRgb(collectionTheme, '0.05') }}
+            // style={{ backgroundColor: hexToRgb(collectionTheme, '0.05') }}
             >
               {idToRender ? (
                 <div
@@ -494,8 +495,8 @@ class PublicEndpoint extends Component {
                 </div>
               ) : (
                 <>
-                <div className='custom-loading-container'>
-                <progress class="pure-material-progress-linear w-25"/>
+                  <div className='custom-loading-container'>
+                    <progress class="pure-material-progress-linear w-25" />
                   </div>
                 </>
               )}
@@ -507,4 +508,4 @@ class PublicEndpoint extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withQuery(PublicEndpoint))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(PublicEndpoint)))

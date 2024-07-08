@@ -9,8 +9,8 @@ const PublishDocsConfirmModal = (props) => {
 
   const handleOkay = (collectionId) => {
     if (collectionId) {
-      history.push({
-        pathname: `/orgs/${match.params.orgId}/admin/publish`,
+      this.props.navigate({
+        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collectionId}`
       })
     }

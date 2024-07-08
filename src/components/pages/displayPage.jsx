@@ -150,7 +150,7 @@ class DisplayPage extends Component {
   }
 
   handleEdit(page) {
-    this.props.navigate.push({
+    this.props.navigate({
       pathname: `/orgs/${this.props?.match?.params.orgId}/dashboard/page/${this.props?.match?.params.pageId}/edit`,
       page: page
     })

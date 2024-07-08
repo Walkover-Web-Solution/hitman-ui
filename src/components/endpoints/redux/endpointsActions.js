@@ -26,7 +26,7 @@ export const formatResponseToSend = (response) => {
   }
 }
 
-export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, props) => {
+export const addEndpoint = (navigate, newEndpoint, rootParentId, customCallback, props) => {
   newEndpoint.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   const orgId = getOrgId()
   const requestId = shortid.generate()
@@ -37,7 +37,7 @@ export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, 
       .then(async (response) => {
         const responseToSend = formatResponseToSend(response)
         const data = await dispatch(addChildInParent(responseToSend))
-        history.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
+        navigate(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
         if (props?.match?.params?.endpointId === 'new') {
           dispatch(replaceTabForUntitled(data.payload.id, prevCurrentTabId))
         }

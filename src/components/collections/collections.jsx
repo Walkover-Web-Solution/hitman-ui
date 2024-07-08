@@ -130,8 +130,7 @@ class CollectionsComponent extends Component {
 
   handlePublicCollectionDescription(collection) {
     this.props.navigate({
-      pathname: `/p/${collection.id}/description/${collection.name}`,
-      state: { Header }
+      pathname: `/p/${collection.id}/description/${collection.name}`
     })
   }
 

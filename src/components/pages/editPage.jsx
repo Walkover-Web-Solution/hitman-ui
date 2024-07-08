@@ -13,8 +13,8 @@ import withRouter from '../common/withRouter'
 import { useNavigate } from 'react-router-dom'
 
 const withQuery = (WrappedComponent) => {
-  const navigate = useNavigate()
   return (props) => {
+    const navigate = useNavigate()
     const queryClient = useQueryClient()
     const pageId = props.match.params.pageId
     const orgId = props.match.params.orgId
@@ -27,7 +27,7 @@ const withQuery = (WrappedComponent) => {
           enabled: true,
           staleTime: 600000
         })
-        navigate.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
+        navigate(`/orgs/${orgId}/dashboard/page/${pageId}`)
       }
     })
     const tabId = props?.tabs?.tabs?.[pageId]
@@ -186,7 +186,7 @@ class EditPage extends Component {
     if (pageId) {
       // Redirect to displayPage Route Component
       tabService.unmarkTabAsModified(this.props.tab.id)
-      this.props.navigate.push({
+      this.props.navigate({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${pageId}`
       })
     }
