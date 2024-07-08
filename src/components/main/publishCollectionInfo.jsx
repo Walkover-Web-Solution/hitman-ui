@@ -14,6 +14,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { store } from '../../store/store'
 import { updateTab } from '../tabs/redux/tabsActions'
 import _ from 'lodash'
+import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
   return {
@@ -116,7 +117,7 @@ class PublishCollectionInfo extends Component {
   async redirectToApiFeedback() {
     // const collectionId = this.props.collectionId
     // if (collectionId) {
-    //   this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+    //   this.props.navigate.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
     // }
     // const activeTab = this.props.tabs.activeTabId
     // store.dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
@@ -288,7 +289,7 @@ class PublishCollectionInfo extends Component {
   async openPublishSettings() {
     const collectionId = this.props.collectionId
     if (collectionId) {
-      this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
+      this.props.navigate.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
     const activeTab = this.props.tabs.activeTabId
     store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))
@@ -324,4 +325,4 @@ class PublishCollectionInfo extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishCollectionInfo)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PublishCollectionInfo))

@@ -6,6 +6,7 @@ import { openInNewTab, setActiveTabId } from '../tabs/redux/tabsActions'
 import shortid from 'shortid'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import * as _ from 'lodash'
+import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
   return {
@@ -53,7 +54,7 @@ class TabOptions extends Component {
 
     this.props.open_in_new_tab(tab)
 
-    this.props.history.push({
+    this.props.navigate.push({
       pathname: `/orgs/${orgId}/dashboard/${tab.type}/new`
     })
   }
@@ -81,4 +82,4 @@ class TabOptions extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TabOptions)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TabOptions))

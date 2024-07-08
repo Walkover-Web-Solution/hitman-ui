@@ -14,10 +14,11 @@ import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
 import { IoInformationCircleOutline } from 'react-icons/io5'
 import { FiCopy } from 'react-icons/fi'
-import { FaRegTimesCircle } from "react-icons/fa"
+import { FaRegTimesCircle } from 'react-icons/fa'
 import { updateTab } from '../tabs/redux/tabsActions'
 
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
+import withRouter from '../common/withRouter'
 
 const publishDocFormEnum = {
   NULL_STRING: '',
@@ -25,7 +26,7 @@ const publishDocFormEnum = {
     title: 'Title',
     domain: 'Custom Domain',
     logoUrl: 'Logo URL',
-    theme: 'Theme',
+    theme: 'Theme'
   }
 }
 
@@ -37,7 +38,7 @@ const PublishDocForm = (props) => {
     isPublishSliderOpen: state.modals.publishData,
     tabs: state.tabs,
     pages: state.pages
-  }));
+  }))
   const [data, setData] = useState({
     title: '',
     domain: '',
@@ -137,23 +138,25 @@ const PublishDocForm = (props) => {
     setErrors(newErrors || {})
     if (newErrors) return
     setLoader(true)
-    dispatch(updateCollection(collection, () => {
-      setLoader(false)
-      if (selectedCollection?.isPublic !== true) {
-        const editedCollection = { ...selectedCollection }
-        editedCollection.isPublic = true
-        dispatch(updateCollection(editedCollection))
-        moveToNextStep(6)
-      }
-      setRepublishNeeded(true)
-    }))
+    dispatch(
+      updateCollection(collection, () => {
+        setLoader(false)
+        if (selectedCollection?.isPublic !== true) {
+          const editedCollection = { ...selectedCollection }
+          editedCollection.isPublic = true
+          dispatch(updateCollection(editedCollection))
+          moveToNextStep(6)
+        }
+        setRepublishNeeded(true)
+      })
+    )
   }
 
   const setTheme = (theme) => {
     setData((prevData) => ({
       ...prevData,
       theme
-    }));
+    }))
   }
 
   const renderColorPicker = () => (
@@ -255,7 +258,9 @@ const PublishDocForm = (props) => {
             </a>
           </span>
         )}
-        {name === 'title' && <span className='domain-info fs-4 mt-1 d-block'>Collection name will be used by default when no title is entered.</span>}
+        {name === 'title' && (
+          <span className='domain-info fs-4 mt-1 d-block'>Collection name will be used by default when no title is entered.</span>
+        )}
         {error && <small className='alert alert-danger'>{error}</small>}
       </div>
     )
@@ -337,11 +342,7 @@ const PublishDocForm = (props) => {
     props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
   }
 
-  const openPublishSidebars = () => (
-    <>
-      {isPublishSliderOpen && <PublishSidebar {...props} closePublishSidebar={closePublishSidebar} />}
-    </>
-  )
+  const openPublishSidebars = () => <>{isPublishSliderOpen && <PublishSidebar {...props} closePublishSidebar={closePublishSidebar} />}</>
 
   const closePublishSidebar = () => {
     setOpenPublishSidebar(false)
@@ -416,18 +417,25 @@ const PublishDocForm = (props) => {
 
           {publishCheck && renderPublicUrl()}
           <div className='small-input mt-2'>
-            {renderInput('title',false, 'brand name',false)}
-            {renderInput('domain', false, 'docs.example.com',false)}
+            {renderInput('title', false, 'brand name', false)}
+            {renderInput('domain', false, 'docs.example.com', false)}
           </div>
           <div className='d-flex favicon mb-4'>
             <div className='form-group mb-0'>
               <label>Fav Icon</label>
               <div className='favicon-uploader'>{renderUploadBox('icon')}</div>
             </div>
-            <div className='or-wrap d-flex align-items-center'>
-              <p className='mb-0'>OR</p>
+            <div className='d-flex favicon mb-4'>
+              <div className='form-group mb-0'>
+                <label> Fav Icon </label>
+                <div className='favicon-uploader'>{this.renderUploadBox('icon')}</div>
+              </div>
+              <div className='or-wrap d-flex align-items-center'>
+                <p className='mb-0'>OR</p>
+              </div>
+              {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
             </div>
-            {renderInput('logoUrl', false, false, binaryFile,'')}
+            {renderInput('logoUrl', false, false, binaryFile, '')}
           </div>
 
           <div className='color-picker'>{renderColorPicker()}</div>

@@ -2,24 +2,25 @@ import axios from 'axios'
 import logger from './logService'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import history from '../history'
 import { logout, getProxyToken } from '../components/auth/authServiceV2'
+import { useNavigate } from 'react-router-dom'
 
 // axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
 let instance = axios.create()
 instance.interceptors.response.use(null, (error) => {
   const expectedError = error.response && error.response.status >= 400 && error.response.status < 500
+  const navigate = useNavigate()
 
   if (error.response.config.method === 'get' && error.response.status === 404) {
-    history.push({
+    navigate.push({
       pathname: '/404_PAGE',
       error: error
     })
   }
 
   if (error?.response?.config?.method === 'get' && error?.response?.status === 403) {
-    history.push({
+    navigate.push({
       pathname: '/403_PAGE',
       error: error
     })
