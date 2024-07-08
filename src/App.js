@@ -1,32 +1,25 @@
 import React, { Component } from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
+import { connect } from 'react-redux'
+import shortid from 'shortid'
+import { ToastContainer } from 'react-toastify'
+import { SESSION_STORAGE_KEY, getOrgId, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility'
 import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
-import { ToastContainer } from 'react-toastify'
-import {
-  SESSION_STORAGE_KEY,
-  getOrgId,
-  isDashboardRoute,
-  isElectron,
-  isOnPublishedPage,
-  isTechdocOwnDomain
-} from './components/common/utility'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
-import Cookies from 'universal-cookie'
 import AuthServiceV2 from './components/auth/authServiceV2'
 import InviteTeam from './components/main/inviteTeam/inviteTeam'
-import { connect } from 'react-redux'
 import { installModal } from './components/modals/redux/modalsActions'
 import { initConn, resetConn } from './services/webSocket/webSocketService.js'
-import shortid from 'shortid'
 import OauthPage from './components/OauthPage/OauthPage.js'
 import TrashPage from './components/main/Trash/trashPage.jsx'
 import IndexWebsite from './components/indexWebsite/indexWebsite.js'
 import Redirections from './components/collections/Redirections.jsx'
 import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
+import withRouter from './components/common/withRouter.jsx'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -45,9 +38,10 @@ class App extends Component {
   constructor(props) {
     super(props)
     const currentOrgId = getOrgId() ?? props.location.pathname.split('/')?.[2]
-    if (currentOrgId && !isOnPublishedPage()) {initConn(currentOrgId)}
+    if (currentOrgId && !isOnPublishedPage()) { initConn(currentOrgId) }
     sessionStorage.setItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID, shortid.generate())
   }
+
 
   componentDidMount() {
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -57,10 +51,7 @@ class App extends Component {
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
-        this.props.history.push({
-          pathname: '/login',
-          search: `?sokt-auth-token=${data}`
-        })
+        this.props.navigate('/login', { search: `?sokt-auth-token=${data}` })
       })
     }
   }
@@ -76,49 +67,50 @@ class App extends Component {
   renderApp = () => {
     if (!isElectron() && !isTechdocOwnDomain()) {
       return (
-        <Switch>
-          <Route path='*' component={Public} />
-        </Switch>
+        <Routes>
+          <Route path='*' element={<Public />} />
+        </Routes>
       )
     }
 
     return (
       <>
         <ToastContainer />
-        <Switch>
-          <Route exact path='/' component={IndexWebsite} />
+        <Routes>
+          <Route exact path='/' element={<IndexWebsite />} />
           {/* Error Page Routes */}
-          <Route path='/404_PAGE' component={ERROR_404_PAGE} />
-          <Route path='/403_PAGE' component={ERROR_403_PAGE} />
-          <Route path='/auth/redirect' component={OauthPage} />
+          <Route path='/404_PAGE' element={<ERROR_404_PAGE />} />
+          <Route path='/403_PAGE' element={<ERROR_403_PAGE />} />
+          <Route path='/auth/redirect' element={<OauthPage />} />
 
           {/* Logged in Dashboard Routes */}
-          <ProtectedRouteV2 exact path='/orgs/:orgId/dashboard/' component={MainV2} />
-          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={MainV2} />
-          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/settings' component={MainV2} />
-          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' component={MainV2} />
-          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/page/:pageId' component={MainV2} />
-          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/history/:historyId' component={MainV2} />
-          <Route path='/orgs/:orgId/invite' component={InviteTeam} />
-          <ProtectedRouteV2 path='/orgs/:orgId/trash' component={TrashPage} />
-          <ProtectedRouteV2 path='/orgs/:orgId/dashboard/collection/:collectionId/redirections' component={Redirections} />
+          <Route element={<ProtectedRouteV2 />}>
+            <Route path='/orgs/:orgId/dashboard/' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/endpoint/:endpointId' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/collection/:collectionId/settings' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/page/:pageId' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/history/:historyId' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/trash' element={<TrashPage />} />
+            <Route path='/orgs/:orgId/dashboard/collection/:collectionId/redirections' element={<Redirections />} />
+          </Route>
+
+          <Route path='/orgs/:orgId/invite' element={<InviteTeam />} />
 
           {/* Not Logged in Dashboard Route */}
-          <Route path='/dashboard/' component={MainV2} />
+          <Route path='/dashboard/' element={<MainV2 />} />
 
           {/*  Public Page Routes */}
-          <Route path='/p' component={Public} />
+          <Route path='/p' element={<Public />} />
 
           {/* React App Auth Routes */}
-          <Route path='/login' component={LoginV2} />
-          <Route path='/logout' component={Logout} />
-          <Route exact path='/proxy/auth' component={AuthServiceV2} />
-          <Route exact path='/orgs/:orgId/automation/:collectionId' component={RunAutomation} />
-        </Switch>
+          <Route path='/login' element={<LoginV2 />} />
+          <Route path='/logout' element={<Logout />} />
+          <Route exact path='/proxy/auth' element={<AuthServiceV2 />} />
+          <Route exact path='/orgs/:orgId/automation/:collectionId' element={<RunAutomation />} />
+        </Routes>
       </>
     )
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(App)
-
-// export default App
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App))
