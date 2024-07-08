@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
+import withRouter from '../common/withRouter.jsx'
 import { connect } from 'react-redux'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
 import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
@@ -25,8 +25,8 @@ import { BsThreeDots } from "react-icons/bs"
 import { GrGraphQl } from 'react-icons/gr'
 import '../../../src/components/styles.scss'
 import { importPostmanEnvironment } from '../environments/environmentsApiService'
-import {  hexToRgb} from '../common/utility'
-import {background} from '../backgroundColor.js'
+import { hexToRgb } from '../common/utility'
+import { background } from '../backgroundColor.js'
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -111,7 +111,7 @@ class Endpoints extends Component {
       selectedEndpoint: { ...this.props.endpoints[endpointId] }
     })
   }
-  
+
   closeDeleteEndpointModal() {
     this.setState({ showEndpointForm: { delete: false } })
   }
@@ -151,19 +151,21 @@ class Endpoints extends Component {
       } else if (this.props.tabs.tabs[endpoint.id].previewMode === true && previewMode === false) {
         tabService.disablePreviewMode(endpoint.id)
       }
-      this.props.history.push({
+      this.props.navigate({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${endpoint.id}`,
-        title: 'update endpoint',
-        endpoint: endpoint,
-        groupId: groupId,
-        collectionId
+        state: {
+          title: 'update endpoint',
+          endpoint: endpoint,
+          groupId: groupId,
+          collectionId
+        }
       })
     } else {
       let id = endpoint?.id
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props.pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      this.props.history.push(pathName)
+      this.props.navigate(pathName)
     }
   }
 
@@ -367,27 +369,27 @@ class Endpoints extends Component {
           <div className={this.props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between mt-1'>
             <button>
-            <div className={`side-bar d-flex align-items-center rounded mr-2 ${isSelected ? 'Selected' : ''}`} style={backgroundStyle}
-        onMouseEnter={() => this.handleHover(true)}
-        onMouseLeave={() => this.handleHover(false)}>
-            <button
-              tabIndex={-1}
-              onClick={() => {
-                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
-              }}
-              onDoubleClick={() =>
-                this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
-              }
-            >
-              
-              {this.displayEndpointName(endpointId)}
-              
-            </button>
-              <div className='d-flex align-items-center'>
-                {isDashboardRoute(this.props, true) &&
-                  !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
-                  this.displayEndpointOptions(endpointId)}
-                {/* <div className='ml-1 published-icon transition'>
+              <div className={`side-bar d-flex align-items-center rounded mr-2 ${isSelected ? 'Selected' : ''}`} style={backgroundStyle}
+                onMouseEnter={() => this.handleHover(true)}
+                onMouseLeave={() => this.handleHover(false)}>
+                <button
+                  tabIndex={-1}
+                  onClick={() => {
+                    this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
+                  }}
+                  onDoubleClick={() =>
+                    this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
+                  }
+                >
+
+                  {this.displayEndpointName(endpointId)}
+
+                </button>
+                <div className='d-flex align-items-center'>
+                  {isDashboardRoute(this.props, true) &&
+                    !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
+                    this.displayEndpointOptions(endpointId)}
+                  {/* <div className='ml-1 published-icon transition'>
                     {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
                 </div>
@@ -495,4 +497,4 @@ class Endpoints extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Endpoints))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withRouter(Endpoints)))

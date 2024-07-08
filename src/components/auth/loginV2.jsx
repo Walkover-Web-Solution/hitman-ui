@@ -4,6 +4,7 @@ import "./login.scss";
 import { ReactComponent as TECHDOC } from "../../assets/icons/TECHDOC100.svg";
 import { ReactComponent as TECHDOCC } from "../../assets/icons/TECHDOC.svg"
 import { getCurrentOrg, getCurrentUser, getOrgList } from "./authServiceV2";
+import withRouter from "../common/withRouter";
 
 class LoginV2 extends Component {
   proxyGooglereferenceMapping = {
@@ -18,9 +19,7 @@ class LoginV2 extends Component {
 
   checkIfUserAlreadyLogin() {
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
-      this.props.history.push(
-        `/orgs/${getCurrentOrg().id}/dashboard`,
-      );
+      this.props.navigate(`/orgs/${getCurrentOrg().id}/dashboard`);
     }
     else this.loadScript();
   }
@@ -62,7 +61,7 @@ class LoginV2 extends Component {
       <>
         <div className="login d-flex gap-sm-0 gap-4 flex-column-reverse flex-sm-row p-2 p-sm-0">
           <div className="login__details deatil-sec col-xl-3 col-lg-4 col-md-5 col-sm-6 p-2 p-sm-4 p-xl-5">
-            <TECHDOC className="d-none d-sm-block"/>
+            <TECHDOC className="d-none d-sm-block" />
             <h4 className="mt-4">
               Your company’s technical knowledge deserves a beautiful home
             </h4>
@@ -78,7 +77,7 @@ class LoginV2 extends Component {
 
           <div className="login__main col-sm-6 col-md-7 col-lg-8 col-xl9 p-0 mb-3 p-sm-4 p-xl-5 ">
             <div className="login__main__loginbtn pt-sm-0">
-            <TECHDOCC className="d-flex justify-content-center d-sm-none w-100 mb-2"/>
+              <TECHDOCC className="d-flex justify-content-center d-sm-none w-100 mb-2" />
               <h2 className="d-none d-sm-block t-dark">Welcome Back!</h2>
               <div id={divId} />
             </div>
@@ -89,4 +88,4 @@ class LoginV2 extends Component {
   }
 }
 
-export default LoginV2;
+export default withRouter(LoginV2);

@@ -26,6 +26,7 @@ import Environments from '../environments/environments'
 import { IoCodeSlashOutline } from 'react-icons/io5'
 import { updateStateOfCurlSlider } from '../modals/redux/modalsActions.js'
 import IconButton from '../common/iconButton.jsx'
+import withRouter from '../common/withRouter.jsx'
 
 const mapStateToProps = (state) => {
   return {
@@ -157,7 +158,7 @@ class ContentPanel extends Component {
 
         const collectionLength = Object.keys(this.props.collections).length
         if (collectionLength > 0) {
-          this.props.history.push({
+          this.props.navigate({
             pathname:
               tab.type !== 'collection'
                 ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${(tab.isModified) ? '/edit' : ''}`
@@ -210,10 +211,10 @@ class ContentPanel extends Component {
                   {this.props.match.params.endpointId
                     && (
                       <div className='d-flex justify-content-center align-items-center code-curl-icon' onClick={() => this.handleCodeCurlClick()}>
-                     <IconButton>
-                       <IoCodeSlashOutline type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" size={18} />
-                     </IconButton>
-                    </div>
+                        <IconButton>
+                          <IoCodeSlashOutline type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" size={18} />
+                        </IconButton>
+                      </div>
                     )}
 
                 </div>
@@ -273,4 +274,4 @@ class ContentPanel extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContentPanel)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ContentPanel))
