@@ -19,6 +19,7 @@ class LoginV2 extends Component {
 
   checkIfUserAlreadyLogin() {
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
+      debugger
       this.props.navigate(`/orgs/${getCurrentOrg().id}/dashboard`);
     } else this.loadScript();
   }
