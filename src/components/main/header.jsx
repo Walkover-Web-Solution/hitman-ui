@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import BackIcon from '../../assets/icons/back-arrow.svg'
 
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
+import { withRouter } from 'react-router'
 
 const mapStateToProps = (state) => {
   return {
@@ -15,7 +16,7 @@ const mapStateToProps = (state) => {
     groups: state.groups,
     pages: state.pages,
     versions: state.versions,
-    organizations : state.organizations.orgList
+    organizations: state.organizations.orgList
   }
 }
 
@@ -82,13 +83,13 @@ class Header extends Component {
 
   openPublishDocs(collection) {
     if (collection?.id) {
-      this.props.history.push({
+      this.props.navigate({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
       })
     } else {
       const collection = this.props.collections[Object.keys(this.props.collections)[0]]
-      this.props.history.push({
+      this.props.navigate({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
       })
@@ -189,7 +190,7 @@ class Header extends Component {
   }
 
   handleGoBack() {
-    this.props.history.push({
+    this.props.navigate({
       pathname: `/orgs/${this.props.match.params.orgId}/dashboard`
     })
   }
@@ -282,4 +283,4 @@ class Header extends Component {
   }
 }
 
-export default connect(mapStateToProps, null)(Header)
+export default connect(mapStateToProps, null)(withRouter(Header))
