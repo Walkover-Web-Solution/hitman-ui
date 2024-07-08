@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { withRouter } from 'react-router-dom'
 import WarningModal from '../common/warningModal'
 import { updateContent, updatePage } from '../pages/redux/pagesActions'
 import './page.scss'
@@ -10,8 +9,11 @@ import * as _ from 'lodash'
 import { updateTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
+import withRouter from '../common/withRouter'
+import { useNavigate } from 'react-router-dom'
 
 const withQuery = (WrappedComponent) => {
+  const navigate = useNavigate()
   return (props) => {
     const queryClient = useQueryClient()
     const pageId = props.match.params.pageId
@@ -25,7 +27,7 @@ const withQuery = (WrappedComponent) => {
           enabled: true,
           staleTime: 600000
         })
-        props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
+        navigate.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
       }
     })
     const tabId = props?.tabs?.tabs?.[pageId]
@@ -184,7 +186,7 @@ class EditPage extends Component {
     if (pageId) {
       // Redirect to displayPage Route Component
       tabService.unmarkTabAsModified(this.props.tab.id)
-      this.props.history.push({
+      this.props.navigate.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${pageId}`
       })
     }

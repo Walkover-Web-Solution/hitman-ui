@@ -13,10 +13,11 @@ import { publishData } from '../modals/redux/modalsActions'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
 import { IoInformationCircleOutline } from 'react-icons/io5'
-import { FiCopy } from 'react-icons/fi';
-import { FaRegTimesCircle } from "react-icons/fa";
+import { FiCopy } from 'react-icons/fi'
+import { FaRegTimesCircle } from 'react-icons/fa'
 import { updateTab } from '../tabs/redux/tabsActions'
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
+import withRouter from '../common/withRouter'
 
 const publishDocFormEnum = {
   NULL_STRING: '',
@@ -58,7 +59,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     update_collection: (collection, stopLoader) => dispatch(updateCollection(collection, stopLoader)),
     ON_PUBLISH_DOC: (data) => dispatch(publishData(data)),
-    update_tab: (activeTab) => dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' }}))
+    update_tab: (activeTab) => dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
   }
 }
 
@@ -337,22 +338,21 @@ class PublishDocForm extends Component {
           <div className='uploadBox' style={this.getDisabledStyle(this.state.data.logoUrl)}>
             {!this.state.binaryFile && <div className='d-flex align-items-center'>{this.renderUploadModule(this.state.data.logoUrl)}</div>}
             {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' alt='data' />}
-          <div className='uplod-info d-none'>
-            {this.state.binaryFile && (
-              <span
-                style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  const errors = this.state.errors || {}
-                  delete errors.icon
-                  this.setState({ binaryFile: null, uploadedFile: null, errors })
-                }}
-              >
-                <FaRegTimesCircle className='text-dark' />
-              </span>
-            )}
+            <div className='uplod-info d-none'>
+              {this.state.binaryFile && (
+                <span
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    const errors = this.state.errors || {}
+                    delete errors.icon
+                    this.setState({ binaryFile: null, uploadedFile: null, errors })
+                  }}
+                >
+                  <FaRegTimesCircle className='text-dark' />
+                </span>
+              )}
+            </div>
           </div>
-          </div>
-          
         </div>
         {errors && errors[name] && <small className='text-danger'>{errors[name]}</small>}
       </>
@@ -375,8 +375,11 @@ class PublishDocForm extends Component {
           onBlur={(e) => this.handleBlur(e, isURLInput)}
         />
         {name === 'domain' && (
-          <span className='domain-info fs-4 mt-1 d-block text-danger'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}
-          <a className='ml-1' href='https://techdoc.walkover.in/p/White-Labelling?collectionId=2Uv_sfKTLPI3'>Learn More</a>
+          <span className='domain-info fs-4 mt-1 d-block text-danger'>
+            {`Point c name of the above domain to ${MAPPING_DOMAIN}`}
+            <a className='ml-1' href='https://techdoc.walkover.in/p/White-Labelling?collectionId=2Uv_sfKTLPI3'>
+              Learn More
+            </a>
           </span>
         )}
         {name === 'title' && (
@@ -402,13 +405,12 @@ class PublishDocForm extends Component {
     this.props.ON_PUBLISH_DOC(true)
   }
   openExternalLink = (url) => {
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
 
   copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text).then(
-    );
-  };
+    navigator.clipboard.writeText(text).then()
+  }
   renderPublicUrl() {
     const isCollectionPublished = this.props.collections[this.props.selected_collection_id]?.isPublic
     const url = process.env.REACT_APP_PUBLIC_UI_URL + '/p?collectionId=' + this.props.selected_collection_id
@@ -429,21 +431,17 @@ class PublishDocForm extends Component {
             </Tooltip>
           }
         >
-           <div
-        className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4 ${
-          isDisabled ? 'text-disable' : 'disabled-link'
-        }`}
-      >
-        <HiOutlineExternalLink className='mr-1' size={13} />
-        <span onClick={() => isDisabled && this.openExternalLink(url)}>{url}</span>
-        <button
-          className="copy-button-link ml-2 border-0 bg-white"
-          onClick={() => this.copyToClipboard(url)}
-          title="Copy URL"
-        >
-          <FiCopy size={13} />
-        </button>
-      </div>
+          <div
+            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4 ${
+              isDisabled ? 'text-disable' : 'disabled-link'
+            }`}
+          >
+            <HiOutlineExternalLink className='mr-1' size={13} />
+            <span onClick={() => isDisabled && this.openExternalLink(url)}>{url}</span>
+            <button className='copy-button-link ml-2 border-0 bg-white' onClick={() => this.copyToClipboard(url)} title='Copy URL'>
+              <FiCopy size={13} />
+            </button>
+          </div>
         </OverlayTrigger>
       </div>
     )
@@ -465,7 +463,7 @@ class PublishDocForm extends Component {
     const collectionId = this.props.selected_collection_id
     const activeTab = this.props.tabs.activeTabId
     this.props.update_tab(activeTab, { state: { pageType: 'FEEDBACK' } })
-    this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+    this.props.navigate.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
   }
 
   openPublishSidebar() {
@@ -493,7 +491,7 @@ class PublishDocForm extends Component {
           onClick={() => this.redirectUser()}
           title='This will publish all the pages and endpoints inside this collection.'
         >
-            Bulk Publish
+          Bulk Publish
         </Button>
         <Button
           className={this.state.loader ? 'buttonLoader m-1 btn-sm fs-4' : 'm-1 btn-sm fs-4'}
@@ -527,38 +525,42 @@ class PublishDocForm extends Component {
     const publishCheck = (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished()
     return (
       <>
-      <div className='d-flex justify-content-center'>
-        <div className={this.props.onTab && 'publish-on-tab'}>
-          <div className='d-flex justify-content-between align-item-center'>
-            <div className='d-flex align-items-center'>
-              <h3 className='page-title mb-0'>Publish Collection Settings</h3>
+        <div className='d-flex justify-content-center'>
+          <div className={this.props.onTab && 'publish-on-tab'}>
+            <div className='d-flex justify-content-between align-item-center'>
+              <div className='d-flex align-items-center'>
+                <h3 className='page-title mb-0'>Publish Collection Settings</h3>
+              </div>
+              <span
+                className='hover'
+                onClick={this.handleSeeFeedbacks}
+                style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}
+              >
+                <IoInformationCircleOutline style={{ color: 'inherit', marginRight: '1px', fontSize: '20px' }} />
+                <span style={{ fontSize: '16px' }}>Feedbacks</span>
+              </span>
             </div>
-            <span className='hover' onClick={this.handleSeeFeedbacks} style={{display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}>
-              <IoInformationCircleOutline style={{ color:'inherit', marginRight: '1px', fontSize: '20px' }}/>
-              <span  style={{ fontSize: '16px' }}>Feedbacks</span>
-            </span>
-          </div>
-        <span className='mt-2 d-inline-block'>Completing this step will make your collection available at a public URL.</span>
+            <span className='mt-2 d-inline-block'>Completing this step will make your collection available at a public URL.</span>
 
-          {publishCheck && this.renderPublicUrl()}
-          <div className='small-input mt-2'>
-            {this.renderInput('title', true, false, 'brand name')}
-            {this.renderInput('domain', false, false, 'docs.example.com')}
-          </div>
-          <div className='d-flex favicon mb-4'>
-            <div className='form-group mb-0'>
-              <label> Fav Icon </label>
-              <div className='favicon-uploader'>{this.renderUploadBox('icon')}</div>
+            {publishCheck && this.renderPublicUrl()}
+            <div className='small-input mt-2'>
+              {this.renderInput('title', true, false, 'brand name')}
+              {this.renderInput('domain', false, false, 'docs.example.com')}
             </div>
-            <div className='or-wrap d-flex align-items-center'>
-              <p className='mb-0'>OR</p>
+            <div className='d-flex favicon mb-4'>
+              <div className='form-group mb-0'>
+                <label> Fav Icon </label>
+                <div className='favicon-uploader'>{this.renderUploadBox('icon')}</div>
+              </div>
+              <div className='or-wrap d-flex align-items-center'>
+                <p className='mb-0'>OR</p>
+              </div>
+              {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
             </div>
-            {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
-          </div>
 
-          <div className='color-picker'>{this.renderColorPicker()}</div>
-          {this.renderActionButtons(publishCheck)}
-        </div>
+            <div className='color-picker'>{this.renderColorPicker()}</div>
+            {this.renderActionButtons(publishCheck)}
+          </div>
         </div>
         {this.state.openPublishSidebar && this.openPublishSidebar()}
       </>
@@ -566,4 +568,4 @@ class PublishDocForm extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishDocForm)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PublishDocForm))

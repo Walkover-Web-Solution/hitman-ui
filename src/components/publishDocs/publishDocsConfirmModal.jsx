@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap'
 import './publishDocsConfirmModal.scss'
+import withRouter from '../common/withRouter'
 
 class PublishDocsConfirmModal extends Component {
   state = {}
 
   handleOkay(collectionId) {
     if (collectionId) {
-      this.props.history.push({
+      this.props.navigate.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collectionId}`
       })
@@ -49,4 +50,4 @@ class PublishDocsConfirmModal extends Component {
   }
 }
 
-export default PublishDocsConfirmModal
+export default withRouter(PublishDocsConfirmModal)

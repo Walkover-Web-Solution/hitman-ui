@@ -1,8 +1,17 @@
 import { store } from '../../store/store'
-import { addNewTab, closeAllTabs, closeTab, replaceTabForUntitled, setActiveTabId, updateTab, updateTabDraft } from '../tabs/redux/tabsActions'
+import {
+  addNewTab,
+  closeAllTabs,
+  closeTab,
+  replaceTabForUntitled,
+  setActiveTabId,
+  updateTab,
+  updateTabDraft
+} from '../tabs/redux/tabsActions'
 import tabStatusTypes from './tabStatusTypes'
 import { getCurrentUser } from '../auth/authServiceV2'
 import { getOrgId } from '../common/utility'
+import { useNavigate } from 'react-router-dom'
 
 function newTab() {
   store.dispatch(addNewTab())
@@ -32,12 +41,13 @@ function removeTab(tabId, props) {
 }
 
 function changeRoute(props, tab) {
+  const navigate = useNavigate()
   if (tab.isSaved) {
-    props.history.push({
+    props.navigate.push({
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/${tab.id}`
     })
   } else {
-    props.history.push({
+    props.navigate.push({
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
     })
   }
@@ -50,21 +60,22 @@ function removeAllTabs(props) {
 
 function selectTab(props, tabId) {
   const { tabs } = store.getState().tabs
-
+  const navigate = useNavigate()
   const tab = tabs[tabId]
   if (tab?.status === 'NEW') {
-    props.history.push({
+    props.navigate.push({
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
     })
   } else if (tab?.type === 'collection') {
-    tab?.state?.pageType === 'SETTINGS' ? props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
-    : props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
+    tab?.state?.pageType === 'SETTINGS'
+      ? props.navigate.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
+      : props.navigate.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
   } else {
     if (!(tab?.type && tab?.id)) {
-      return props.history.push({ pathname: `/orgs/${getOrgId()}/dashboard/endpoint/new` })
+      return props.navigate.push({ pathname: `/orgs/${getOrgId()}/dashboard/endpoint/new` })
     }
-    return props.history.push({
-      pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${(tab.isModified)?'/edit':''}`
+    return props.navigate.push({
+      pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${tab.isModified ? '/edit' : ''}`
     })
   }
   store.dispatch(setActiveTabId(tabId))

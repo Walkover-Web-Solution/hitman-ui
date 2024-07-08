@@ -31,7 +31,7 @@ const SideBar = (props) => {
 
   const update_drag_and_drop = (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const location = useLocation()
   const match = useRouteMatch()
 
@@ -160,14 +160,14 @@ const SideBar = (props) => {
 
   const openPage = (id) => {
     if (isDashboardRoute({ match, location, history })) {
-      history.push({
+      navigate.push({
         pathname: `/orgs/${match.params.orgId}/dashboard/page/${id}`
       })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      history.push(pathName)
+      navigate.push(pathName)
     }
   }
 
@@ -228,14 +228,14 @@ const SideBar = (props) => {
 
   const openEndpoint = (id) => {
     if (isDashboardRoute({ match, location, history })) {
-      history.push({
+      navigate.push({
         pathname: `/orgs/${match.params.orgId}/dashboard/endpoint/${id}`
       })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      history.push(pathName)
+      navigate.push(pathName)
     }
   }
 
@@ -269,7 +269,7 @@ const SideBar = (props) => {
   }
 
   const openHistorySnapshot = (id) => {
-    history.push({
+    navigate.push({
       pathname: `/orgs/${match.params.orgId}/dashboard/history/${id}`,
       historySnapshotId: id
     })

@@ -6,6 +6,7 @@ import history from '../../../history'
 import { getOrgId, isElectron } from '../../common/utility'
 import { openModal } from '../../modals/redux/modalsActions'
 import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
+import { useNavigate } from 'react-router-dom'
 
 export const fetchTabsFromRedux = () => {
   return async (dispatch) => {
@@ -28,6 +29,7 @@ export const addNewTab = () => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
   const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
+  const navigate = useNavigate()
   if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) {
     return openModal(DESKTOP_APP_DOWNLOAD)
   }
@@ -48,7 +50,7 @@ export const addNewTab = () => {
       }
     })
     dispatch(setActiveTabId(id))
-    history.push({ pathname: `/orgs/${orgId}/dashboard/endpoint/new` })
+    navigate.push({ pathname: `/orgs/${orgId}/dashboard/endpoint/new` })
   }
 }
 
