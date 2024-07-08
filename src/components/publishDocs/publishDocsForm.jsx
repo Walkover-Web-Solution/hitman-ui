@@ -145,6 +145,7 @@ const PublishDocForm = (props) => {
         dispatch(updateCollection(editedCollection))
         moveToNextStep(6)
       }
+      setRepublishNeeded(true)
     }))
   }
 
@@ -370,7 +371,6 @@ const PublishDocForm = (props) => {
           disabled={!data.title.trim()}
           onClick={() => {
             saveAndPublishCollection(selectedCollection)
-            setRepublishNeeded(true)
           }}
           variant='btn btn-outline'
           title='This will save as well as publish the doc'
@@ -427,7 +427,7 @@ const PublishDocForm = (props) => {
             <div className='or-wrap d-flex align-items-center'>
               <p className='mb-0'>OR</p>
             </div>
-            {renderInput('logoUrl', false, binaryFile, '')}
+            {renderInput('logoUrl', false, false, binaryFile,'')}
           </div>
 
           <div className='color-picker'>{renderColorPicker()}</div>
