@@ -6,7 +6,6 @@ import navigate from '../../../history'
 import { getOrgId, isElectron } from '../../common/utility'
 import { openModal } from '../../modals/redux/modalsActions'
 import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
-import { useNavigate } from 'react-router-dom'
 
 export const fetchTabsFromRedux = () => {
   return async (dispatch) => {
@@ -49,7 +48,7 @@ export const addNewTab = () => {
       }
     })
     dispatch(setActiveTabId(id))
-    navigate({ pathname: `/orgs/${orgId}/dashboard/endpoint/new` })
+    navigate(`/orgs/${orgId}/dashboard/endpoint/new`)
   }
 }
 

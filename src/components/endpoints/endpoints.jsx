@@ -21,7 +21,7 @@ import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg
 import endpointService from './endpointService'
 import { bodyTypesEnums } from '../common/bodyTypeEnums'
 import IconButtons from '../common/iconButton'
-import { BsThreeDots } from "react-icons/bs"
+import { BsThreeDots } from 'react-icons/bs'
 import { GrGraphQl } from 'react-icons/gr'
 import '../../../src/components/styles.scss'
 import { importPostmanEnvironment } from '../environments/environmentsApiService'
@@ -72,15 +72,15 @@ class Endpoints extends Component {
         addPage: false,
         edit: false,
         share: false,
-        delete: false,
+        delete: false
       },
       optionalParams: false,
-      isHovered: false,
+      isHovered: false
     }
   }
   handleHover = (isHovered) => {
-    this.setState({ isHovered });
-  };
+    this.setState({ isHovered })
+  }
   componentDidMount() {
     if (this.props.theme) {
       this.setState({ theme: this.props.theme })
@@ -151,8 +151,8 @@ class Endpoints extends Component {
       } else if (this.props.tabs.tabs[endpoint.id].previewMode === true && previewMode === false) {
         tabService.disablePreviewMode(endpoint.id)
       }
-      this.props.navigate({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${endpoint.id}`,
+      const { orgId } = this.props.params
+      this.props.navigate(`/orgs/${orgId}/dashboard/endpoint/${endpoint.id}`, {
         state: {
           title: 'update endpoint',
           endpoint: endpoint,
@@ -216,7 +216,12 @@ class Endpoints extends Component {
 
   displayEndpointName(endpointId) {
     let isUserOnPublishedPage = isOnPublishedPage()
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
+    const isSelected =
+      isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId
+        ? 'selected'
+        : isDashboardRoute && this.props.params.endpointId === endpointId
+        ? 'selected'
+        : ''
     return (
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
@@ -226,16 +231,20 @@ class Endpoints extends Component {
               checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
               onChange={this.handleCheckboxChange}
             />
-            {this.props.endpointContent.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
-              {this.props.endpoints[endpointId].requestType}
-            </div>}
+            {this.props.endpointContent.protocolType === 1 && (
+              <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
+                {this.props.endpoints[endpointId].requestType}
+              </div>
+            )}
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         ) : (
           <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`}>
-            {this.props?.endpoints[endpointId]?.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
-              {this.props.endpoints[endpointId].requestType}
-            </div>}
+            {this.props?.endpoints[endpointId]?.protocolType === 1 && (
+              <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
+                {this.props.endpoints[endpointId].requestType}
+              </div>
+            )}
             {this.props?.endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
             <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
@@ -302,7 +311,9 @@ class Endpoints extends Component {
     return (
       <div className='sidebar-item-action'>
         <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-          <IconButtons><BsThreeDots /></IconButtons>
+          <IconButtons>
+            <BsThreeDots />
+          </IconButtons>
         </div>
 
         <div className='dropdown-menu dropdown-menu-right'>
@@ -341,19 +352,25 @@ class Endpoints extends Component {
   displaySingleEndpoint(endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     let isUserOnPublishedPage = isOnPublishedPage()
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : (isDashboardRoute && this.props.match.params.endpointId === endpointId ? 'selected' : '')
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
+    const isSelected =
+      isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId
+        ? 'selected'
+        : isDashboardRoute && this.props.params.endpointId === endpointId
+        ? 'selected'
+        : ''
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = this.props.collections[collectionId]?.theme
-    const dynamicColor = hexToRgb(collectionTheme, 0.15);
-    const staticColor = background['background_hover'];
+    const dynamicColor = hexToRgb(collectionTheme, 0.15)
+    const staticColor = background['background_hover']
 
     const backgroundStyle = {
-      backgroundImage: this.state.isHovered || isSelected
-        ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+      backgroundImage:
+        this.state.isHovered || isSelected
+          ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
         linear-gradient(to right, ${staticColor}, ${staticColor})`
-        : ''
-    };
+          : ''
+    }
     return (
       <>
         <div
@@ -369,9 +386,12 @@ class Endpoints extends Component {
           <div className={this.props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between mt-1'>
             <button>
-              <div className={`side-bar d-flex align-items-center rounded mr-2 ${isSelected ? 'Selected' : ''}`} style={backgroundStyle}
+              <div
+                className={`side-bar d-flex align-items-center rounded mr-2 ${isSelected ? 'Selected' : ''}`}
+                style={backgroundStyle}
                 onMouseEnter={() => this.handleHover(true)}
-                onMouseLeave={() => this.handleHover(false)}>
+                onMouseLeave={() => this.handleHover(false)}
+              >
                 <button
                   tabIndex={-1}
                   onClick={() => {
@@ -381,16 +401,14 @@ class Endpoints extends Component {
                     this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
                   }
                 >
-
                   {this.displayEndpointName(endpointId)}
-
                 </button>
                 <div className='d-flex align-items-center'>
                   {isDashboardRoute(this.props, true) &&
                     !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
                     this.displayEndpointOptions(endpointId)}
                   {/* <div className='ml-1 published-icon transition'>
-                    {this.props.endpoints[this.props.match.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+                    {this.props.endpoints[this.props.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
                   </div> */}
                 </div>
               </div>
@@ -415,7 +433,7 @@ class Endpoints extends Component {
       params: {},
       pathVariables: {},
       BASE_URL: null,
-      bodyDescription: {},
+      bodyDescription: {}
     }
     return (
       <>
@@ -497,4 +515,4 @@ class Endpoints extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withRouter(Endpoints)))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Endpoints))

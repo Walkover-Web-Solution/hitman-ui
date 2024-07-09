@@ -180,9 +180,8 @@ class UserProfileV2 extends Component {
   }
 
   openAccountAndSettings = () => {
-    const { history } = this.props
     const orgId = getCurrentOrg()?.id
-    this.props.navigate({ pathname: `/orgs/${orgId}/invite` })
+    this.props.navigate(`/orgs/${orgId}/invite`)
   }
 
   getUserDetails() {
@@ -298,18 +297,14 @@ class UserProfileV2 extends Component {
   }
 
   openPublishDocs(collection) {
-    if (collection?.id) {
-      this.props.navigate({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`
-      })
-    } else {
-      const collection = this.props.collections[Object.keys(this.props.collections)[0]]
-      this.props.navigate({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`
-      })
+    let collectionId = collection?.id
+    if (!collectionId) {
+      collection = this.props.collections[Object.keys(this.props.collections)[0]]
+      collectionId = collection.id
     }
+    const orgId = this.props.params.orgId
+    const url = `/orgs/${orgId}/admin/publish?collectionId=${collectionId}`
+    this.props.navigate(url)
   }
 
   getNotificationCount() {
@@ -340,9 +335,9 @@ class UserProfileV2 extends Component {
   }
 
   openOptions(path) {
-    const { match, handleOpenLink } = this.props
+    const { handleOpenLink } = this.props
     const currProductUrl = process.env.REACT_APP_UI_BASE_URL || process.env.REACT_APP_UI_URL
-    const { orgId } = match.params
+    const { orgId } = this.props.params
     if (orgId) {
       let url = `${currProductUrl}/orgs/${orgId}${path}?product=hitman`
       if (!handleOpenLink) {
@@ -373,7 +368,7 @@ class UserProfileV2 extends Component {
     // this.removeFromLocalStorage(this.props.tabs.tabsOrder)
     // this.props.close_all_tabs(this.props.tabs.tabsOrder)
     // this.props.remove_history(this.props.historySnapshot)
-    this.props.navigate( '/logout')
+    this.props.navigate('/logout')
   }
 
   removeFromLocalStorage(tabIds) {

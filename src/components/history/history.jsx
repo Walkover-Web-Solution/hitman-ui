@@ -34,8 +34,7 @@ const History = () => {
   }, [historySnapshots]);
 
   const openHistorySnapshot = (id) => {
-    navigate({
-      pathname: `/orgs/${orgId}/dashboard/history/${id}`,
+    navigate(`/orgs/${orgId}/dashboard/history/${id}`, {
       state: { historySnapshotId: id }
     });
   };

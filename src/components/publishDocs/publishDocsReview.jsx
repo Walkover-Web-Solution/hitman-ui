@@ -1,34 +1,33 @@
-import React, {useEffect } from 'react';
-import {Accordion, Card, Button } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchFeedbacks } from './redux/publishDocsActions';
-import { useRouteMatch} from 'react-router-dom';
+import React, { useEffect } from 'react'
+import { Accordion, Card, Button } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchFeedbacks } from './redux/publishDocsActions'
+import { useRouteMatch } from 'react-router-dom'
 
 const PublishDocsReview = () => {
+  const match = useRouteMatch()
+  const dispatch = useDispatch()
 
-  const match = useRouteMatch();
-  const dispatch = useDispatch();
-
-  const feedbacks = useSelector((state) => state.feedbacks);
-  const pages = useSelector((state) => state.pages);
+  const feedbacks = useSelector((state) => state.feedbacks)
+  const pages = useSelector((state) => state.pages)
 
   useEffect(() => {
-    const { collectionId } = match.params;
+    const { collectionId } = match.params
     if (collectionId) {
-      dispatch(fetchFeedbacks(collectionId));
+      dispatch(fetchFeedbacks(collectionId))
     }
-  }, [match.params.collectionId, dispatch]);
+  }, [match.params.collectionId, dispatch])
 
   const renderHostedApiHeading = (heading) => (
     <div className='page-title mb-3'>
       <div>{heading}</div>
     </div>
-  );
+  )
 
   const renderFeedback = () => {
     return (
-      <div className="feedback-table-container">
-        <table className="table">
+      <div className='feedback-table-container'>
+        <table className='table'>
           <thead>
             <tr>
               <th>Page</th>
@@ -47,20 +46,21 @@ const PublishDocsReview = () => {
                   {Object.keys(feedback.comments).length === 0 ? (
                     <div>No comments</div>
                   ) : (
-                    <Accordion defaultActiveKey="0">
+                    <Accordion defaultActiveKey='0'>
                       <Card>
                         <Card.Header className='p-0'>
-                          <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                          <Accordion.Toggle as={Button} variant='link' eventKey='1'>
                             Show Comments
                           </Accordion.Toggle>
                         </Card.Header>
-                        <Accordion.Collapse eventKey="1">
+                        <Accordion.Collapse eventKey='1'>
                           <Card.Body>
                             {Object.entries(feedback.comments).map(([email, comments]) => (
                               <div key={email}>
                                 <strong>Email: {email}</strong>
                                 <br />
-                                Comments: {comments.map((comment, idx) => (
+                                Comments:{' '}
+                                {comments.map((comment, idx) => (
                                   <React.Fragment key={idx}>
                                     <br />
                                     {comment}
@@ -79,19 +79,17 @@ const PublishDocsReview = () => {
           </tbody>
         </table>
       </div>
-    );
-  };
+    )
+  }
 
-  const renderNoFeedback = () => <div>No feedbacks received</div>;
+  const renderNoFeedback = () => <div>No feedbacks received</div>
 
   return (
     <div className='feedback-tab'>
-      <div className='d-flex flex-row'>
-        {renderHostedApiHeading('API Doc Feedback')}
-      </div>
+      <div className='d-flex flex-row'>{renderHostedApiHeading('API Doc Feedback')}</div>
       {feedbacks.length > 0 ? renderFeedback() : renderNoFeedback()}
     </div>
-  );
-};
+  )
+}
 
-export default PublishDocsReview;
+export default PublishDocsReview
