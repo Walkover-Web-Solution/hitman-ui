@@ -163,9 +163,9 @@ class DisplayPage extends Component {
               <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
                 <IoDocumentTextOutline size={140} color='gray' />
                 <span className='empty-line'>
-                  {!isOnPublishedPage() ? "Your document" : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
+                  {!isOnPublishedPage() ?  this.props?.pages?.[this.props?.match?.params?.pageId]?.name : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
                 </span>
-                <span className='mt-2 d-inline-block Modified-at font-weight-bold fs-4'><DisplayUserAndModifiedData
+                <span className='mt-1 d-inline-block Modified-at fs-4'><DisplayUserAndModifiedData
           isOnPublishedPage={isOnPublishedPage()}
           pages={this.props?.pages}
           currentPage={this.props?.currentPageId}
@@ -408,7 +408,7 @@ class DisplayPage extends Component {
         {this.renderUnPublishConfirmationModal()}
         {this.renderPublishPageOperations()}
         <div className={`${!isOnPublishedPage() ? "page-heading-content" : ""}`}>
-        {this.renderPageName()}
+        {this.props?.pageContent && (this.renderPageName())}
         {this.checkPageRejected()}
         </div>
         <div>
