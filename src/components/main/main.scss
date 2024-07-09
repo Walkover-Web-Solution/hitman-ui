@@ -3420,12 +3420,6 @@ body .btn-group-custom {
   overflow: hidden;
   max-width: 800px;
 }
-.page-text-render {
-  gap: 150px;
-@media screen and (max-width:1600px) {
-  gap: 50px;
-}
-}
 .editor-headings  {
   width: 300px;
   position: sticky;
@@ -3440,6 +3434,7 @@ body .btn-group-custom {
       }
     }
     @media screen and (max-width: 992px) {
+      position: static;
       width: 100%;
     }
   }
@@ -3680,7 +3675,9 @@ body .doc-secs-container {
   // position: relative;
   // overflow: auto; /* Add this line to enable scrolling */
   .page-display {
-    width: calc(1600px - 50rem);
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
     float: unset !important;
     position: relative;
   }

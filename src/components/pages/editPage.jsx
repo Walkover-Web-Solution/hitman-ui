@@ -236,7 +236,7 @@ class EditPage extends Component {
 
   render() {
     return (
-      <div className='parent-page-display d-flex justify-content-center'>
+      <div className='parent-page-display'>
         <div className='custom-edit-page page-display mt-3 px-3'>
           <WarningModal
             show={this.state.warningModalFlag}

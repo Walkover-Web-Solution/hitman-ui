@@ -12,7 +12,7 @@ const DisplayUserAndModifiedData = ({ isOnPublishedPage, pages, currentPage, use
       <div>
         {lastModified && (
           <>
-            Modified At <span>{lastModified}</span>
+            Modified at <span>{lastModified}</span>
           </>
         )}
       </div>
@@ -20,12 +20,12 @@ const DisplayUserAndModifiedData = ({ isOnPublishedPage, pages, currentPage, use
   }
 
   return (
-    <div className='page-user-data mt-2'>
+    <div className='page-user-data'>
       {lastModified ? (
         <div>
           Updated by <span>{user?.name || 'Unknown'}</span>
           <br />
-          Modified At <span>{lastModified}</span>
+          Modified at <span>{lastModified}</span>
         </div>
       ) : (
         <span></span>

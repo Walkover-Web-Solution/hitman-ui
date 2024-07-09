@@ -27,6 +27,8 @@ import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
 import RenderPageContent from './renderPageContent'
 import DisplayUserAndModifiedData from '../common/userService'
+import { IoDocumentTextOutline } from "react-icons/io5";
+import moment from 'moment'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -151,17 +153,38 @@ class DisplayPage extends Component {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className='page-wrapper pt-3 px-1'>
-          {isOnPublishedPage() && <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>}
-          <div className='pageText'><RenderPageContent pageContent={this.props?.pageContent || ''} /></div>
-          <span className='mb-2 d-inline-block'> 
-          <DisplayUserAndModifiedData
-          isOnPublishedPage={isOnPublishedPage()}
-          pages={this.props?.pages}
-          currentPage={this.props?.currentPageId}
-          users={this.props?.users}
-          />
-          </span>
+        <div className={`page-wrapper ${isOnPublishedPage() ? "pt-3" : ""}`}>
+          {isOnPublishedPage() && this.props?.pageContent && (<h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>)}
+          {
+            this.props?.pageContent ? (
+              <div className='pageText'>
+                <RenderPageContent pageContent={this.props.pageContent} />
+              </div>
+            ) : (
+              <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
+                <IoDocumentTextOutline size={140} color='gray' />
+                <span className='empty-line'>
+                  {!isOnPublishedPage() ? this.props?.pages?.[this.props?.match?.params?.pageId]?.name : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
+                </span>
+                <span className='mt-1 d-inline-block Modified-at fs-4'>
+                  <DisplayUserAndModifiedData
+                    isOnPublishedPage={isOnPublishedPage()}
+                    pages={this.props?.pages}
+                    currentPage={this.props?.currentPageId}
+                    users={this.props?.users}
+                  /></span>
+              </div>
+            )
+          }
+
+          {this.props?.pageContent && (<span className='my-2 d-inline-block Modified-at'>
+            <DisplayUserAndModifiedData
+              isOnPublishedPage={isOnPublishedPage()}
+              pages={this.props?.pages}
+              currentPage={this.props?.currentPageId}
+              users={this.props?.users}
+            />
+          </span>)}
         </div>
       )
     }
@@ -234,7 +257,7 @@ class DisplayPage extends Component {
 
       const approvedOrRejected = isStateApproved(pageId, pages) || isStateReject(pageId, pages)
       return (
-        <div>
+        <div className='page-button-inner'>
           {isStatePending(pageId, pages) && isAdmin() && (
             <ApproveRejectEntity {...this.props} entity={pages} entityId={pageId} entityName='page' />
           )}
@@ -262,7 +285,7 @@ class DisplayPage extends Component {
             </button>
           )}
           <button
-            className='btn btn-primary btn-sm fs-4'
+            className='btn btn-primary btn-sm fs-4 mt-1'
             onClick={() => {
               this.handleEdit(this.state.data)
             }}
@@ -389,10 +412,12 @@ class DisplayPage extends Component {
         {this.renderPublishConfirmationModal()}
         {this.renderUnPublishConfirmationModal()}
         {this.renderPublishPageOperations()}
-        {this.renderPageName()}
+        <div className={`${!isOnPublishedPage() ? "page-heading-content" : ""}`}>
+        {this.props?.pageContent && (this.renderPageName())}
         {this.checkPageRejected()}
+        </div>
         <div>
-        <ApiDocReview {...this.props} />
+        {this.props?.pageContent && ( <ApiDocReview {...this.props} />)}
         {isOnPublishedPage() && <Footer />}
         </div>
       </div>
