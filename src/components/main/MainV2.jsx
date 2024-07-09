@@ -25,6 +25,7 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints
   }
 }
+
 const mapDispatchToProps = (dispatch) => {
   return {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
@@ -70,21 +71,17 @@ class MainV2 extends Component {
     /** Token Exists */
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
       /** For Logged in User */
-      let orgId = this.props.match.params.orgId
+      let orgId = this.props.params.orgId
       if (!orgId) {
         orgId = getOrgList()[0]?.id
-        this.props.navigate({
-          pathname: `/orgs/${orgId}/dashboard`
-        })
+        this.props.navigate(`/orgs/${orgId}/dashboard`)
       } else {
         await this.fetchAll()
         this.props.add_collection_and_pages(orgId)
       }
     } else {
       /** Perform Login Procedure for Token */
-      this.props.navigate({
-        pathname: '/login'
-      })
+      this.props.navigate('/login')
     }
     this.setState({ loading: false })
   }
@@ -94,7 +91,7 @@ class MainV2 extends Component {
   }
 
   setVisitedOrgs() {
-    const orgId = this.props.match.params.orgId
+    const orgId = this.props.params.orgId
     const org = {}
     org[orgId] = true
     window.localStorage.setItem('visitedOrgs', JSON.stringify(org))
@@ -105,7 +102,7 @@ class MainV2 extends Component {
       return false
     }
     const collectionLength = Object.keys(this.props.collections).length
-    const orgId = this.props.match.params.orgId
+    const orgId = this.props.params.orgId
     const temp = JSON.parse(window.localStorage.getItem('visitedOrgs'))
     if ((temp && temp[orgId]) || collectionLength > 0 || !this.state.showAddCollectionPage) {
       return false
@@ -181,10 +178,8 @@ class MainV2 extends Component {
             {
               <div className='custom-main-container'>
                 {/* <Header {...this.props} /> */}
-                <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
-                <OnlineSatus
-                // fetchFromBackend={this.fetchFromBackend.bind(this)}
-                />
+                <DesktopAppDownloadModal />
+                <OnlineSatus />
                 <div className='main-panel-wrapper'>
                   <SplitPane split='vertical' className='split-sidebar'>
                     <SideBarV2

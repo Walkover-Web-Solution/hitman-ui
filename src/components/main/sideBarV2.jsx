@@ -35,7 +35,7 @@ const SideBar = (props) => {
   const location = useLocation()
   const params = useParams()
 
-  const match = {params: {...params}}
+  const match = { params: { ...params } }
 
   const [collectionId, setCollectionId] = useState(null)
   const [selectedCollectionId, setSelectedCollectionId] = useState(null)
@@ -162,9 +162,7 @@ const SideBar = (props) => {
 
   const openPage = (id) => {
     if (isDashboardRoute({ match, location, navigate })) {
-      navigate({
-        pathname: `/orgs/${match.params.orgId}/dashboard/page/${id}`
-      })
+      navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
@@ -230,9 +228,7 @@ const SideBar = (props) => {
 
   const openEndpoint = (id) => {
     if (isDashboardRoute({ match, location, navigate })) {
-      navigate({
-        pathname: `/orgs/${match.params.orgId}/dashboard/endpoint/${id}`
-      })
+      navigate(`/orgs/${params.orgId}/dashboard/endpoint/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
@@ -271,10 +267,7 @@ const SideBar = (props) => {
   }
 
   const openHistorySnapshot = (id) => {
-    navigate({
-      pathname: `/orgs/${match.params.orgId}/dashboard/history/${id}`,
-      historySnapshotId: id
-    })
+    navigate(`/orgs/${params.orgId}/dashboard/history/${id}`, { state: { historySnapshotId: id } })
   }
 
   const renderHistoryItem = (history) => {

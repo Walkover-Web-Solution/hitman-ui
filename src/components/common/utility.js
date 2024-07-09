@@ -5,7 +5,7 @@ import { store } from '../../store/store'
 import Joi from 'joi-browser'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
-import { getCurrentUser} from '../auth/authServiceV2'
+import { getCurrentUser } from '../auth/authServiceV2'
 import { bodyTypesEnums, rawTypesEnums } from './bodyTypeEnums'
 import navigate from '../../history'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
@@ -97,10 +97,10 @@ export function isDashboardRoute(props, sidebar = false) {
   // now our own domain will only be considered as dashboard route
   if (
     isTechdocOwnDomain() &&
-    (props.match.path.includes('/dashboard') ||
-      props.match.path.includes('/orgs/:orgId/dashboard') ||
-      (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish')) ||
-      (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/feedback')))
+    (props.location.pathname.includes('/dashboard') ||
+      props.location.pathname.includes('/orgs/:orgId/dashboard') ||
+      (sidebar === true && props.location.pathname.includes('/orgs/:orgId/admin/publish')) ||
+      (sidebar === true && props.location.pathname.includes('/orgs/:orgId/admin/feedback')))
   ) {
     return true
   } else return false
@@ -210,8 +210,8 @@ export function toTitleCase(str) {
 }
 
 export function getOrgId() {
-  const state = store.getState();
-  const currentOrganization = state?.organizations?.currentOrg;
+  const state = store.getState()
+  const currentOrganization = state?.organizations?.currentOrg
   return currentOrganization?.id
 }
 
@@ -367,7 +367,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) { }
+        } catch (err) {}
       })
     })
   }
@@ -380,7 +380,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) { }
+        } catch (err) {}
       })
     })
   }
@@ -406,7 +406,7 @@ export function getUserProfile() {
   let user = getCurrentUser()
   try {
     return user
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function getCurrentUserSSLMode() {
@@ -416,7 +416,7 @@ export function getCurrentUserSSLMode() {
     sslModeData = JSON.parse(sslModeData)
     const { identifier } = user
     return sslModeData?.[identifier]
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function setCurrentUserSSLMode(sslModeFlag) {
@@ -427,7 +427,7 @@ export function setCurrentUserSSLMode(sslModeFlag) {
     sslModeData = JSON.parse(sslModeData || '{}')
     const sslMode = { ...sslModeData, [identifier]: sslModeFlag }
     window.localStorage.setItem('ssl-mode', JSON.stringify(sslMode))
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function compareAlphabetically(a, b, data) {
@@ -450,34 +450,41 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   if (endpoint?.protocolType === 2) {
     untitled.protocolType = 2
     untitled.data.body = { query: endpoint.body.query, variables: endpoint.body.variables }
-  }
-  else {
-    const bodyType = endpoint.body?.type || '';
-    if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) && endpoint.body.raw) {
-      untitled.data.body = endpoint.body;
-    } else if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)) {
-      untitled.data.body = { ...untitled.data.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } };
+  } else {
+    const bodyType = endpoint.body?.type || ''
+    if (
+      [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) &&
+      endpoint.body.raw
+    ) {
+      untitled.data.body = endpoint.body
+    } else if (
+      [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)
+    ) {
+      untitled.data.body = { ...untitled.data.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } }
     } else if (bodyType === bodyTypesEnums['application/x-www-form-urlencoded'] || bodyType === bodyTypesEnums['multipart/form-data']) {
       if (endpoint.body[bodyType]) {
-        untitled.data.body = endpoint.body;
+        untitled.data.body = endpoint.body
       } else {
-        untitled.data.body = { ...untitled.data.body, type: bodyType, [bodyType]: endpoint.body?.value || [] };
+        untitled.data.body = { ...untitled.data.body, type: bodyType, [bodyType]: endpoint.body?.value || [] }
       }
     } else if (bodyType === bodyTypesEnums['none']) {
-      if (endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || endpoint.body?.[bodyTypesEnums['multipart/form-data']] || endpoint.body?.[bodyTypesEnums['raw']]) {
-        untitled.data.body = endpoint.body;
-      }
-      else {
+      if (
+        endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] ||
+        endpoint.body?.[bodyTypesEnums['multipart/form-data']] ||
+        endpoint.body?.[bodyTypesEnums['raw']]
+      ) {
+        untitled.data.body = endpoint.body
+      } else {
         untitled.data.body = { ...untitled.data.body, ...endpoint.body }
       }
-      delete endpoint.body?.value;
+      delete endpoint.body?.value
     } // ends here
   }
-  delete endpoint.body?.value;
+  delete endpoint.body?.value
 
   untitled.data.uri = endpoint.uri
   untitled.data.updatedUri = endpoint.uri
-  untitled.authorizationData = endpoint?.authorizationData || untitled.authorizationData;
+  untitled.authorizationData = endpoint?.authorizationData || untitled.authorizationData
   const headersData = Object.keys(endpoint.headers).map((key) => {
     return { key, ...endpoint.headers[key] }
   })
@@ -510,7 +517,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.preScriptText = endpoint.preScript
   untitled.host['BASE_URL'] = endpoint.BASE_URL
   untitled.testResponse = {}
-  untitled.flagResponse = false;
+  untitled.flagResponse = false
   untitled.bodyDescription = endpointData.bodyDescription
   untitled.description = endpointData.description
   return { ...untitled }
@@ -565,7 +572,7 @@ export function isOnPublishedPage() {
 }
 
 export function isOnRedirectionPage() {
-  return window.location.pathname.includes('/redirections');
+  return window.location.pathname.includes('/redirections')
 }
 
 const deleteSidebarData = (pages, tabs, pageId, deletedTabIds, deletedIds) => {
@@ -604,14 +611,12 @@ export const deleteAllPagesAndTabsAndReactQueryData = async (pageId, collectionI
     tabs = _.cloneDeep(tabs)
 
     if (collectionId && tabs.tabs?.[collectionId]) {
-      delete tabs.tabs[collectionId];
-      tabs.tabsOrder = tabs.tabsOrder.filter(tab => tab !== collectionId);
+      delete tabs.tabs[collectionId]
+      tabs.tabsOrder = tabs.tabsOrder.filter((tab) => tab !== collectionId)
       if (tabs?.activeTabId == collectionId) {
         foundActiveTabId = true
       }
-
     }
-
 
     // update the parent's child
     let parentId = pages?.[pageId]?.parentId

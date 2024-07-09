@@ -117,7 +117,7 @@ class PublishCollectionInfo extends Component {
   async redirectToApiFeedback() {
     // const collectionId = this.props.collectionId
     // if (collectionId) {
-    //   this.props.navigate(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+    //   this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/collection/${collectionId}/feedback`)
     // }
     // const activeTab = this.props.tabs.activeTabId
     // store.dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
@@ -289,7 +289,7 @@ class PublishCollectionInfo extends Component {
   async openPublishSettings() {
     const collectionId = this.props.collectionId
     if (collectionId) {
-      this.props.navigate(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
+      this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
     const activeTab = this.props.tabs.activeTabId
     store.dispatch(updateTab(activeTab, { state: { pageType: 'SETTINGS' } }))

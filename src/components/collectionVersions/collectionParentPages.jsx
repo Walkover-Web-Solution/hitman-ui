@@ -188,15 +188,16 @@ class CollectionParentPages extends Component {
   }
 
   handleUpdate(collectionVersion) {
-    this.props.navigate({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${this.props.collection_id}/pages/${collectionVersion.id}/edit`,
+    const { orgId } = this.props.params
+    const { collection_id } = this.props
+    this.props.navigate(`/orgs/${orgId}/dashboard/${collection_id}/pages/${collectionVersion.id}/edit`, {
       state: { editCollectionVersion: collectionVersion }
     })
   }
 
   handleAddPage(pageId, collectionId) {
-    this.props.navigate({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${collectionId}/versions/${pageId}/pages/new`,
+    const { orgId } = this.props.params
+    this.props.navigate(`/orgs/${orgId}/dashboard/${collectionId}/versions/${pageId}/pages/new`, {
       state: { pageId: pageId }
     })
   }
@@ -331,7 +332,7 @@ class CollectionParentPages extends Component {
   }
   handleRedirect(id) {
     if (isDashboardRoute(this.props)) {
-      this.props.navigate(`/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`)
+      this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/page/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props.pages)
@@ -427,8 +428,8 @@ class CollectionParentPages extends Component {
     return this.props.pages?.[this.props.rootParentId]?.child?.length === 1
       ? versionName
       : this.state.selectedVersionName.length > 10
-        ? `${this.state.selectedVersionName.substring(0, 7)} ... `
-        : this.state.selectedVersionName
+      ? `${this.state.selectedVersionName.substring(0, 7)} ... `
+      : this.state.selectedVersionName
   }
 
   versionDropDown(rootId) {
@@ -456,9 +457,9 @@ class CollectionParentPages extends Component {
     const isSelected =
       isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId
         ? 'selected'
-        : isDashboardRoute && this.props.match.params.pageId === pageId
-          ? 'selected'
-          : ''
+        : isDashboardRoute && this.props.params.pageId === pageId
+        ? 'selected'
+        : ''
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = this.props.collections[collectionId]?.theme
@@ -691,7 +692,7 @@ class CollectionParentPages extends Component {
   }
 
   openLink(item) {
-    const collectionId = this.props.match.params.collectionId
+    const collectionId = this.props.params.collectionId
     const collectionName = this.props.collectionName
     let link = ''
     switch (item.type) {
@@ -705,9 +706,7 @@ class CollectionParentPages extends Component {
         break
     }
     if (link.length) {
-      this.props.navigate({
-        pathname: link
-      })
+      this.props.navigate(link)
     }
   }
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Tab, Nav, Dropdown } from 'react-bootstrap'
-
 import { connect } from 'react-redux'
 import 'react-tabs/style/react-tabs.css'
 
@@ -51,7 +50,7 @@ const mapDispatchToProps = (dispatch) => {
     set_tabs_order: (tabsOrder) => dispatch(setTabsOrder(tabsOrder)),
     fetch_tabs_from_redux: (tabsOrder) => dispatch(fetchTabsFromRedux(tabsOrder)),
     replace_tab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab)),
-    update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload)),
+    update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload))
   }
 }
 
@@ -66,7 +65,7 @@ class ContentPanel extends Component {
   }
 
   componentDidUpdate() {
-    const { endpointId, pageId, historyId, collectionId } = this.props.match.params
+    const { endpointId, pageId, historyId, collectionId } = this.props.params
     if (this.props.tabs.loaded && endpointId && endpointId !== 'new') {
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
@@ -145,8 +144,8 @@ class ContentPanel extends Component {
       }
     }
 
-    if (this.props.tabs.loaded && this.props.match.path === '/orgs/:orgId/dashboard/') {
-      const { orgId } = this.props.match.params
+    if (this.props.tabs.loaded && this.props.location.pathname === `/orgs/${this.props.params.orgId}/dashboard/`) {
+      const { orgId } = this.props.params
       if (this.props.tabs?.tabsOrder?.length) {
         const { tabs, activeTabId, tabsOrder } = this.props.tabs
 
@@ -158,12 +157,11 @@ class ContentPanel extends Component {
 
         const collectionLength = Object.keys(this.props.collections).length
         if (collectionLength > 0) {
-          this.props.navigate({
-            pathname:
-              tab.type !== 'collection'
-                ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${(tab.isModified) ? '/edit' : ''}`
-                : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
-          })
+          this.props.navigate(
+            tab.type !== 'collection'
+              ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '/edit' : ''}`
+              : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+          )
         }
       } else {
         this.props.add_new_tab()
@@ -196,7 +194,6 @@ class ContentPanel extends Component {
     return (
       <main role='main' className='main'>
         {this.state.showLoginSignupModal && <LoginSignupModal show onHide={() => this.closeLoginSignupModal()} title='Save Endpoint' />}
-        {/* <main role="main" className="main ml-sm-auto custom-main"> */}
         <Tab.Container id='left-tabs-example' defaultActiveKey={activeTabId} activeKey={activeTabId}>
           {getCurrentUser() ? (
             <>
@@ -208,20 +205,26 @@ class ContentPanel extends Component {
                     handle_save_page={this.handleSavePage.bind(this)}
                   />
                   <Environments {...this.props} />
-                  {this.props.match.params.endpointId
-                    && (
-                      <div className='d-flex justify-content-center align-items-center code-curl-icon' onClick={() => this.handleCodeCurlClick()}>
-                        <IconButton>
-                          <IoCodeSlashOutline type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" size={18} />
-                        </IconButton>
-                      </div>
-                    )}
-
+                  {this.props.params.endpointId && (
+                    <div
+                      className='d-flex justify-content-center align-items-center code-curl-icon'
+                      onClick={() => this.handleCodeCurlClick()}
+                    >
+                      <IconButton>
+                        <IoCodeSlashOutline
+                          type='button'
+                          data-bs-toggle='offcanvas'
+                          data-bs-target='#offcanvasRight'
+                          aria-controls='offcanvasRight'
+                          size={18}
+                        />
+                      </IconButton>
+                    </div>
+                  )}
                 </div>
               </div>
             </>
           ) : (
-            // rendered a static single tab mimicking the original, instead of tabs component if user is not signed
             <div className='content-header'>
               <div className='tabs-container tabs-width d-flex dashboard-wrp'>
                 <Nav variant='pills' className=''>

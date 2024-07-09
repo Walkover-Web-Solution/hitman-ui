@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Dropdown, Accordion, Card, Button } from 'react-bootstrap';
+import { Dropdown, Accordion, Card, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { fetchFeedbacks} from './redux/publishDocsActions'
+import { fetchFeedbacks } from './redux/publishDocsActions'
+import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
   return {
@@ -25,13 +26,13 @@ class PublishDocsReview extends Component {
   }
 
   componentDidMount() {
-    const { collectionId } = this.props.match.params
+    const { collectionId } = this.props.params
     collectionId && this.props.fetch_feedbacks(collectionId)
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { collectionId } = this.props.match.params
-    if (prevProps.match.params.collectionId !== collectionId) {
+    const { collectionId } = this.props.params
+    if (prevProps.params.collectionId !== collectionId) {
       collectionId && this.props.fetch_feedbacks(collectionId)
     }
   }
@@ -45,10 +46,10 @@ class PublishDocsReview extends Component {
   }
 
   renderFeedback() {
-    const { feedbacks, pages } = this.props;
+    const { feedbacks, pages } = this.props
     return (
-      <div className="feedback-table-container">
-        <table className="table">
+      <div className='feedback-table-container'>
+        <table className='table'>
           <thead>
             <tr>
               <th>Page</th>
@@ -68,20 +69,26 @@ class PublishDocsReview extends Component {
                     <div>No comments</div>
                   ) : (
                     // Use Accordion for multiple comments
-                    <Accordion defaultActiveKey="0">
+                    <Accordion defaultActiveKey='0'>
                       <Card>
                         <Card.Header className='p-0'>
-                          <Accordion.Toggle as={Button}  variant="link" eventKey="1">
+                          <Accordion.Toggle as={Button} variant='link' eventKey='1'>
                             Show Comments
                           </Accordion.Toggle>
                         </Card.Header>
-                        <Accordion.Collapse eventKey="1">
+                        <Accordion.Collapse eventKey='1'>
                           <Card.Body>
                             {Object.entries(feedback.comments).map(([email, comments], idx) => (
                               <div key={email}>
                                 <strong>Email: {email}</strong>
                                 <br />
-                                Comments: {comments.map(comment => <><br/>{comment}</>)}
+                                Comments:{' '}
+                                {comments.map((comment) => (
+                                  <>
+                                    <br />
+                                    {comment}
+                                  </>
+                                ))}
                               </div>
                             ))}
                           </Card.Body>
@@ -95,23 +102,21 @@ class PublishDocsReview extends Component {
           </tbody>
         </table>
       </div>
-    );
+    )
   }
   renderNoFeedback() {
     return <div>No feedbacks received</div>
   }
 
   render() {
-    const feedbacks = this.props.feedbacks  || []
+    const feedbacks = this.props.feedbacks || []
     return (
       <div className='feedback-tab'>
-        <div className='d-flex flex-row'>
-          {this.renderHostedApiHeading('API Doc Feedback')}
-        </div>
+        <div className='d-flex flex-row'>{this.renderHostedApiHeading('API Doc Feedback')}</div>
         {feedbacks.length > 0 ? this.renderFeedback() : this.renderNoFeedback()}
       </div>
     )
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishDocsReview)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PublishDocsReview))

@@ -22,7 +22,7 @@ export const formatResponseToSend = (response) => {
     type: response.data.type || 4,
     versionId: response.data.versionId || null,
     collectionId: response.data.collectionId,
-    protocolType: response.data.protocolType,
+    protocolType: response.data.protocolType
   }
 }
 
@@ -38,7 +38,7 @@ export const addEndpoint = (navigate, newEndpoint, rootParentId, customCallback,
         const responseToSend = formatResponseToSend(response)
         const data = await dispatch(addChildInParent(responseToSend))
         navigate(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
-        if (props?.match?.params?.endpointId === 'new') {
+        if (props?.params?.endpointId === 'new') {
           dispatch(replaceTabForUntitled(data.payload.id, prevCurrentTabId))
         }
         if (customCallback) {
@@ -188,6 +188,3 @@ export const onEndpointDuplicated = (response) => {
     response
   }
 }
-
-
-

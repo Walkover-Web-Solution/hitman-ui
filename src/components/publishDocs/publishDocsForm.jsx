@@ -463,7 +463,7 @@ class PublishDocForm extends Component {
     const collectionId = this.props.selected_collection_id
     const activeTab = this.props.tabs.activeTabId
     this.props.update_tab(activeTab, { state: { pageType: 'FEEDBACK' } })
-    this.props.navigate(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+    this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/collection/${collectionId}/feedback`)
   }
 
   openPublishSidebar() {

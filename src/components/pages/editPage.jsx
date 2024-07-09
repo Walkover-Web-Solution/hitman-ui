@@ -11,13 +11,15 @@ import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
 import withRouter from '../common/withRouter'
 import { useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const navigate = useNavigate()
+    const params = useParams()
     const queryClient = useQueryClient()
-    const pageId = props.match.params.pageId
-    const orgId = props.match.params.orgId
+    const pageId = params.pageId
+    const orgId = params.orgId
     const pageContentData = useQuery(['pageContent', pageId])
     const mutation = useMutation(updateContent, {
       onSuccess: (data) => {
@@ -102,21 +104,15 @@ class EditPage extends Component {
   }
 
   async setPageData() {
-    const {
-      tab,
-      pages,
-      match: {
-        params: { pageId }
-      }
-    } = this.props
+    const { tab, pages } = this.props
     const { draftDataSet } = this.state
 
-    if (tab && pageId) {
+    if (tab && this.props?.params?.pageId) {
       if (tab.isModified && !draftDataSet) {
         let data = this.state.data
         data.contents = this.props.pageContentData
         this.setState({ ...tab.state, draftDataSet: true, data: data })
-      } else if (pageId !== 'new' && pages[tab.id] && !this.state.originalData?.id) {
+      } else if (this.props?.params?.pageId !== 'new' && pages[tab.id] && !this.state.originalData?.id) {
         await this.fetchPage(tab.id)
       }
     }
@@ -182,13 +178,11 @@ class EditPage extends Component {
   }
 
   handleCancel() {
-    const pageId = this.props.match.params.pageId
+    const pageId = this.props.params.pageId
     if (pageId) {
       // Redirect to displayPage Route Component
       tabService.unmarkTabAsModified(this.props.tab.id)
-      this.props.navigate({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${pageId}`
-      })
+      this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/page/${pageId}`)
     }
   }
 
@@ -203,7 +197,6 @@ class EditPage extends Component {
         <Tiptap
           onChange={this.handleChange}
           initial={this.props?.pageContentData}
-          match={this.props.match}
           isInlineEditor={false}
           disabled={false}
           minHeight

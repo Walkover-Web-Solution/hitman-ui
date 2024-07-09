@@ -85,7 +85,7 @@ class CollectionForm extends Form {
     }
     const { id: collectionId } = collection.data
     if (collection.success) {
-      const { orgId } = this.props.match.params
+      const { orgId } = this.props.params
       this.props.navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/settings`)
     }
     if (this.props.setDropdownList) this.props.setDropdownList(collection.data)
@@ -101,7 +101,8 @@ class CollectionForm extends Form {
     this.props.add_collection(
       { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
       null,
-      this.redirectToCollection.bind(this))
+      this.redirectToCollection.bind(this)
+    )
     this.setState({
       data: {
         name: '',

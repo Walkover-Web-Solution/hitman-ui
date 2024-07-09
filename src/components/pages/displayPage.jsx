@@ -32,13 +32,13 @@ import withRouter from '../common/withRouter'
 const withQuery = (WrappedComponent) => {
   return (props) => {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
+    const pageId = !isOnPublishedPage() ? props?.params?.pageId : currentIdToShow
     let { data, error } = useQuery(
       ['pageContent', pageId],
       async () => {
         return isOnPublishedPage()
           ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
-          : await getPageContent(props?.match?.params?.orgId, pageId)
+          : await getPageContent(props?.params?.orgId, pageId)
       },
       {
         refetchOnWindowFocus: false,
@@ -135,23 +135,23 @@ class DisplayPage extends Component {
         this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
       }
     }
-    // if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
-    //   this.fetchPageContent(this.props.match.params.pageId)
+    // if (this.props.params.pageId !== prevProps.params.pageId) {
+    //   this.fetchPageContent(this.props.params.pageId)
     // }
   }
 
   extractPageName() {
     if (!isDashboardRoute(this.props, true) && this.props.pages) {
-      const pageName = this.props?.pages?.[this.props?.match?.params?.pageId]?.name
+      const pageName = this.props?.pages?.[this.props?.params?.pageId]?.name
       if (pageName) this.props.fetch_entity_name(pageName)
       else this.props.fetch_entity_name()
     }
   }
 
   handleEdit(page) {
-    this.props.navigate({
-      pathname: `/orgs/${this.props?.match?.params.orgId}/dashboard/page/${this.props?.match?.params.pageId}/edit`,
-      page: page
+    const { orgId, pageId } = this.props.params
+    this.props.navigate(`/orgs/${orgId}/dashboard/page/${pageId}/edit`, {
+      state: { page: page }
     })
   }
 
@@ -181,7 +181,7 @@ class DisplayPage extends Component {
   }
 
   renderPageName() {
-    const pageId = this.props?.match?.params.pageId
+    const pageId = this.props?.params.pageId
     if (!this.state.page && pageId) {
       this.fetchPage(pageId)
     }
@@ -193,7 +193,7 @@ class DisplayPage extends Component {
   }
 
   renderTiptapEditor(contents) {
-    return <Tiptap onChange={() => {}} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
+    return <Tiptap onChange={() => {}} initial={contents} isInlineEditor disabled key={Math.random()} />
   }
 
   handleRemovePublicPage(page) {
@@ -239,7 +239,7 @@ class DisplayPage extends Component {
   renderPublishPageOperations() {
     if (isDashboardRoute(this.props)) {
       let pages = { ...this.props.pages }
-      const pageId = this.props?.match.params?.pageId
+      const pageId = this.props?.params?.pageId
       pages = pages[pageId]
       const isPublicPage = pages?.isPublished
 
@@ -333,7 +333,7 @@ class DisplayPage extends Component {
   }
 
   async handleApprovePageRequest() {
-    const pageId = this.props?.match?.params?.pageId
+    const pageId = this.props?.params?.pageId
 
     // Check if the component is still mounted before updating the state
     if (this._isMounted) {
@@ -355,7 +355,7 @@ class DisplayPage extends Component {
   }
 
   async handleDraftPageRequest() {
-    const pageId = this.props?.match?.params?.pageId
+    const pageId = this.props?.params?.pageId
     if (this._isMounted) {
       this.setState({ publishLoader: true })
     }

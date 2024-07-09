@@ -7,11 +7,9 @@ class PublishDocsConfirmModal extends Component {
   state = {}
 
   handleOkay(collectionId) {
+    const { orgId } = this.props.params
     if (collectionId) {
-      this.props.navigate({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collectionId}`
-      })
+      this.props.navigate(`/orgs/${orgId}/admin/publish?collectionId=${collectionId}`)
     }
     this.props.onHide()
   }
