@@ -1,5 +1,5 @@
 import React from 'react'
-import './indexWebsite.scss'
+import { useNavigate } from 'react-router-dom'
 import { ReactComponent as Logo } from '../../assets/web/logo.svg'
 import { ReactComponent as Giddh } from '../../assets/web/logos/giddh.svg'
 import { ReactComponent as Socket } from '../../assets/web/logos/socket.svg'
@@ -7,13 +7,19 @@ import { ReactComponent as Freejun } from '../../assets/web/logos/freejun.svg'
 import { ReactComponent as Msg91 } from '../../assets/web/logos/msg91.svg'
 import { ReactComponent as Dbdash } from '../../assets/web/logos/dbdash.svg'
 import { ReactComponent as Walkover } from '../../assets/web/logos/walkover.svg'
-
 import { MdAccessTimeFilled, MdGroups, MdRocketLaunch, MdApi } from 'react-icons/md'
-
 import heroImg from '../../assets/web/hero_img.png'
 import content from './indexWebsite.json'
+import './indexWebsite.scss'
 
 export default function IndexWebsite() {
+
+  const navigate = useNavigate()
+
+  const handleGoToLogin = () => {
+    navigate('/login')
+  }
+
   return (
     <>
       <div className='web_body'>
@@ -22,10 +28,10 @@ export default function IndexWebsite() {
           <div className='navigation d-flex justify-content-between container'>
             <Logo className='web_logo' />
             <div className='d-flex align-items-center nav-menu'>
-              <a href='/login'>
+              <a onClick={handleGoToLogin}>
                 <button className='btn web_btn-login web_btn-rg web_btn'>Login</button>
               </a>
-              <a href='/login'>
+              <a onClick={handleGoToLogin}>
                 <button className='btn web_btn-primary web_btn-rg web_btn '>Signup</button>
               </a>
             </div>
