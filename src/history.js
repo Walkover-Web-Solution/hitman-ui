@@ -1,4 +1,3 @@
-import { createHashHistory } from 'history'
 import { isElectron } from './components/common/utility'
 // import { useNavigate } from 'react-router-dom'
 
