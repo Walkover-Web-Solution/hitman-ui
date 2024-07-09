@@ -20,7 +20,7 @@ const DisplayUserAndModifiedData = ({ isOnPublishedPage, pages, currentPage, use
   }
 
   return (
-    <div className='page-user-data mt-2'>
+    <div className='page-user-data'>
       {lastModified ? (
         <div>
           Updated by <span>{user?.name || 'Unknown'}</span>
