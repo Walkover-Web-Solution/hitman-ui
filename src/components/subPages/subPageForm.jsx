@@ -29,8 +29,9 @@ class SubPageForm extends Form {
     this.schema = {
       name: Joi.string().min(1).max(100).required().label('Name'),
       urlName: Joi.string()
-        .optional()
         .allow(/[^a-zA-Z0-9\-_\.~]+/g)
+        .required()
+        .label('Page Slug')  
     }
   }
 
