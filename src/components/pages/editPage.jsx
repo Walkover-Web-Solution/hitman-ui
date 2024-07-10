@@ -10,8 +10,7 @@ import { updateTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
 import withRouter from '../common/withRouter'
-import { useNavigate } from 'react-router-dom'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {

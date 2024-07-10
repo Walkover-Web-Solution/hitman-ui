@@ -6,7 +6,6 @@ import { Header as GenericHeader } from 'viasocket-shared-plugins'
 import { connect } from 'react-redux'
 import BackIcon from '../../assets/icons/back-arrow.svg'
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
-import { withRouter } from 'react-router'
 import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {

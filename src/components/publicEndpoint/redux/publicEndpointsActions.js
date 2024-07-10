@@ -2,7 +2,6 @@ import publicEndpointsService from '../publicEndpointsService.js'
 import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'
 import { SESSION_STORAGE_KEY } from '../../common/utility.js'
-import { useNavigate } from 'react-router-dom'
 
 export const fetchAllPublicEndpoints = (navigate, collectionIdentifier, domain) => {
   return (dispatch) => {
@@ -122,7 +121,7 @@ export const approveEndpoint = (endpoint, publishLoaderHandler) => {
         publishLoaderHandler()
       })
       .catch((error) => {
-        dispatch(onEndpointStateError(error.response ? error.response.data : error))
+        dispatch(onEndpointStateError(error?.response ? error?.response?.data : error))
         publishLoaderHandler()
       })
   }

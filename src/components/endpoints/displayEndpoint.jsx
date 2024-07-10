@@ -1227,7 +1227,7 @@ class DisplayEndpoint extends Component {
 
   prepareBodyForSaving(body) {
     const data = _.cloneDeep(body)
-    if (data.type === bodyTypesEnums['multipart/form-data']) {
+    if (data?.type === bodyTypesEnums['multipart/form-data']) {
       data[bodyTypesEnums['multipart/form-data']].forEach((item) => {
         if (item.type === 'file') item.value = {}
       })
@@ -1264,7 +1264,7 @@ class DisplayEndpoint extends Component {
       const body = this.prepareBodyForSaving(endpointContent?.data?.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: endpointContent?.bodyDescription,
-        body: body.value
+        body: body?.value
       })
       if (this.checkProtocolType(1) && this.props?.endpointContent?.data?.body.type === bodyTypesEnums['raw']) {
         body.value = this.parseBody(body.value)
@@ -1285,7 +1285,7 @@ class DisplayEndpoint extends Component {
         headers: headersData,
         params: updatedParams,
         pathVariables: updatedPathVariables,
-        BASE_URL: endpointContent.host.BASE_URL || null,
+        BASE_URL: endpointContent?.host.BASE_URL || null,
         bodyDescription: endpointContent?.bodyDescription,
         authorizationData: endpointContent.authorizationData,
         notes: endpointContent?.endpoint.notes,

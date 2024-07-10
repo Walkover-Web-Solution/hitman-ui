@@ -6,7 +6,6 @@ import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryDa
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
-import { useNavigate } from 'react-router-dom'
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -173,7 +172,7 @@ export const deletePage = (page) => {
             toast.success('Deleted succesfully')
           })
           .catch((error) => {
-            console.errro(error)
+            console.log(error)
           })
       })
       .catch((error) => {

@@ -15,8 +15,6 @@ import { HiOutlineExternalLink } from 'react-icons/hi'
 import { IoInformationCircleOutline } from 'react-icons/io5'
 import { FiCopy } from 'react-icons/fi'
 import { FaRegTimesCircle } from 'react-icons/fa'
-import { updateTab } from '../tabs/redux/tabsActions'
-import withRouter from '../common/withRouter'
 
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
@@ -421,22 +419,14 @@ const PublishDocForm = (props) => {
           </div>
           <div className='d-flex favicon mb-4'>
             <div className='form-group mb-0'>
-              <label>Fav Icon</label>
+              <label> Fav Icon </label>
               <div className='favicon-uploader'>{renderUploadBox('icon')}</div>
             </div>
-            <div className='d-flex favicon mb-4'>
-              <div className='form-group mb-0'>
-                <label> Fav Icon </label>
-                <div className='favicon-uploader'>{renderUploadBox('icon')}</div>
-              </div>
-              <div className='or-wrap d-flex align-items-center'>
-                <p className='mb-0'>OR</p>
-              </div>
-              {renderInput('logoUrl', false, binaryFile, '')}
+            <div className='or-wrap d-flex align-items-center'>
+              <p className='mb-0'>OR</p>
             </div>
-            {renderInput('logoUrl', false, false, binaryFile, '')}
+            {renderInput('logoUrl', false, binaryFile, '')}
           </div>
-
           <div className='color-picker'>{renderColorPicker()}</div>
           {renderActionButtons(publishCheck)}
         </div>

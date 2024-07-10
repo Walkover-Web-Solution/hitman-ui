@@ -177,7 +177,7 @@ class DisplayPage extends Component {
               <IoDocumentTextOutline size={140} color='gray' />
               <span className='empty-line'>
                 {!isOnPublishedPage()
-                  ? this.props?.pages?.[this.props?.match?.params?.pageId]?.name
+                  ? this.props?.pages?.[this.props?.params?.pageId]?.name
                   : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}{' '}
                 is empty
               </span>

@@ -76,6 +76,7 @@ const App = ({ install_modal, modals }) => {
           <Route element={<ProtectedRouteV2 />}>
             <Route path='/orgs/:orgId/dashboard/' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/endpoint/:endpointId' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/endpoint/:endpointId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/settings' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId' element={<MainV2 />} />
