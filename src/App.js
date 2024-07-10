@@ -79,6 +79,7 @@ const App = ({ install_modal, modals }) => {
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/settings' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/history/:historyId' element={<MainV2 />} />
             <Route path='/orgs/:orgId/trash' element={<TrashPage />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/redirections' element={<Redirections />} />
@@ -88,7 +89,7 @@ const App = ({ install_modal, modals }) => {
 
           <Route path='/dashboard/' element={<MainV2 />} />
 
-          <Route path='/p' element={<Public />} />
+          <Route path='/p/*' element={<Public />} />
         </Routes>
       </>
     )

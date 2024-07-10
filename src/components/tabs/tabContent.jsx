@@ -74,12 +74,8 @@ class TabContent extends Component {
       case 'endpoint':
         return <DisplayEndpoint {...this.props} environment={{}} tab={tab} />
       case 'page':
-        return (
-          <Routes>
-            <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' element={<EditPage {...this.props} tab={tab} />} />
-            <Route path='/orgs/:orgId/dashboard/page/:pageId' element={<DisplayPage {...this.props} tab={tab} />} />
-          </Routes>
-        )
+        if (window.location.pathname.includes('/edit')) return <EditPage {...this.props} tab={tab} />
+        else return <DisplayPage {...this.props} tab={tab} />
       case 'collection':
         const location = this.props.location.pathname.split('/')[6]
         if (location === 'settings') {
