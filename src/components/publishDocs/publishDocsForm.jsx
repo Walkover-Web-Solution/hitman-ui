@@ -334,11 +334,11 @@ const PublishDocForm = (props) => {
     return false
   }
 
-  handleSeeFeedbacks = () => {
-    const collectionId = this.props.selected_collection_id
-    const activeTab = this.props.tabs.activeTabId
-    this.props.update_tab(activeTab, { state: { pageType: 'FEEDBACK' } })
-    this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+  const handleSeeFeedbacks = () => {
+    const collectionId = props.selected_collection_id
+    const activeTab = props.tabs.activeTabId
+    props.update_tab(activeTab, { state: { pageType: 'FEEDBACK' } })
+    props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${collectionId}/feedback`)
   }
 
   const openPublishSidebars = () => <>{isPublishSliderOpen && <PublishSidebar {...props} closePublishSidebar={closePublishSidebar} />}</>

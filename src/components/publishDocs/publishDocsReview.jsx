@@ -2,21 +2,20 @@ import React, { useEffect } from 'react'
 import { Accordion, Card, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchFeedbacks } from './redux/publishDocsActions'
-import { useRouteMatch } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 const PublishDocsReview = () => {
-  const match = useRouteMatch()
+  const { collectionId } = useParams()
   const dispatch = useDispatch()
 
   const feedbacks = useSelector((state) => state.feedbacks)
   const pages = useSelector((state) => state.pages)
 
   useEffect(() => {
-    const { collectionId } = match.params
     if (collectionId) {
       dispatch(fetchFeedbacks(collectionId))
     }
-  }, [match.params.collectionId, dispatch])
+  }, [collectionId, dispatch])
 
   const renderHostedApiHeading = (heading) => (
     <div className='page-title mb-3'>
