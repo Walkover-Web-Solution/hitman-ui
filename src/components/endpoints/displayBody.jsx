@@ -223,16 +223,12 @@ class BodyContainer extends Component {
 
   makeJson(body) {
     if (typeof body === 'string') return body
-    if (!this.alteredBody) {
       try {
         const parsedBody = JSON.stringify(JSON.parse(body), null, 2)
         return parsedBody
       } catch (e) {
         return body
       }
-    } else {
-      return body
-    }
   }
 
   setRawBodyType(rawBodyType) {
