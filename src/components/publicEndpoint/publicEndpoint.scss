@@ -730,7 +730,9 @@ button.toggleButton {
     
     .editor-body-wrapper {
       height: calc(100vh - 140px);
-
+    @media screen and (max-width: 1160px) {
+      height: 100%;
+    }
       .ace-editor-wrapper {
         height: 100%;
         min-width: 0;
