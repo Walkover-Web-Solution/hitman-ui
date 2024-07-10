@@ -11,7 +11,8 @@ import { updateCollection } from '../collections/redux/collectionsActions'
 import { connect } from 'react-redux'
 import PublishDocsReview from './../publishDocs/publishDocsReview'
 import { updateContent } from '../pages/redux/pagesActions'
-import withRouter from '../common/withRouter'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
+
 const mapDispatchToProps = (dispatch) => {
   return {
     update_collection: (editedCollection) => dispatch(updateCollection(editedCollection))
@@ -29,10 +30,10 @@ const mapStateToProps = (state) => {
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    const queryClient = useQueryClient();
+    const queryClient = useQueryClient()
     const deleteFromReactQueryByKey = (id) => {
-      queryClient.removeQueries(['pageContent', id]);
-    };
+      queryClient.removeQueries(['pageContent', id])
+    }
     return <WrappedComponent {...props} deleteFromReactQueryByKey={deleteFromReactQueryByKey} />
   }
 }
@@ -56,9 +57,12 @@ class TabContent extends Component {
     const tab = this.props.tabData?.[tabId]
     // to save changes to backend if tab is closed from not active tab
     if (this.props.save_page_flag && tabId === this.props.selected_tab_id) {
-      this.props.handle_save_page(false);
-      updateContent({ pageData: { id: tabId, contents: tab.draft, state: this.props.pages?.[tabId]?.state, name: this.props.pages?.[tabId]?.name }, id: tabId });
-      this.props.deleteFromReactQueryByKey(tabId);
+      this.props.handle_save_page(false)
+      updateContent({
+        pageData: { id: tabId, contents: tab.draft, state: this.props.pages?.[tabId]?.state, name: this.props.pages?.[tabId]?.name },
+        id: tabId
+      })
+      this.props.deleteFromReactQueryByKey(tabId)
     }
     switch (tab?.type) {
       case 'history':
@@ -81,7 +85,8 @@ class TabContent extends Component {
           </Routes>
         )
       case 'collection':
-        if (this.props.location.pathname.split('/')[6] === 'settings') {
+        const location = this.props.location.pathname.split('/')[6]
+        if (location === 'settings') {
           return (
             <PublishDocsForm
               {...this.props}
@@ -110,14 +115,23 @@ class TabContent extends Component {
       <Tab.Content>
         {getCurrentUser() && this.props.isTabsLoaded
           ? Object.keys(this.props.tabData).map((tabId) => (
-            <Tab.Pane eventKey={tabId} key={tabId}>
-              {this.renderContent(tabId)}
-            </Tab.Pane>
-          ))
+              <Tab.Pane eventKey={tabId} key={tabId}>
+                {this.renderContent(tabId)}
+              </Tab.Pane>
+            ))
           : this.renderEndpoint()}
       </Tab.Content>
     )
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withQuery(withRouter(TabContent)))
+const withRouterWrapper = (Component) => {
+  return (props) => {
+    const navigate = useNavigate()
+    const params = useParams()
+    const location = useLocation()
+    return <Component {...props} navigate={navigate} params={params} location={location} />
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withQuery(withRouterWrapper(TabContent)))

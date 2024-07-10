@@ -427,12 +427,12 @@ const PublishDocForm = (props) => {
             <div className='d-flex favicon mb-4'>
               <div className='form-group mb-0'>
                 <label> Fav Icon </label>
-                <div className='favicon-uploader'>{this.renderUploadBox('icon')}</div>
+                <div className='favicon-uploader'>{renderUploadBox('icon')}</div>
               </div>
               <div className='or-wrap d-flex align-items-center'>
                 <p className='mb-0'>OR</p>
               </div>
-              {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
+              {renderInput('logoUrl', false, binaryFile, '')}
             </div>
             {renderInput('logoUrl', false, false, binaryFile, '')}
           </div>

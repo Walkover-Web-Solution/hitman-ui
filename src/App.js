@@ -1,53 +1,54 @@
-import React, { useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
-import shortid from 'shortid';
-import { ToastContainer } from 'react-toastify';
-import { SESSION_STORAGE_KEY, getOrgId, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility';
-import LoginV2 from './components/auth/loginV2';
-import Logout from './components/auth/logout';
-import MainV2 from './components/main/MainV2';
-import Public from './components/publicEndpoint/publicEndpoint.jsx';
-import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages';
-import ProtectedRouteV2 from './components/common/protectedRouteV2';
-import AuthServiceV2 from './components/auth/authServiceV2';
-import InviteTeam from './components/main/inviteTeam/inviteTeam';
-import { installModal } from './components/modals/redux/modalsActions';
-import { initConn, resetConn } from './services/webSocket/webSocketService.js';
-import OauthPage from './components/OauthPage/OauthPage.js';
-import TrashPage from './components/main/Trash/trashPage.jsx';
-import IndexWebsite from './components/indexWebsite/indexWebsite.js';
-import Redirections from './components/collections/Redirections.jsx';
-import RunAutomation from './components/collections/runAutomation/runAutomation.jsx';
+import React, { useEffect } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom'
+import { connect } from 'react-redux'
+import shortid from 'shortid'
+import { ToastContainer } from 'react-toastify'
+import { SESSION_STORAGE_KEY, getOrgId, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility'
+import LoginV2 from './components/auth/loginV2'
+import Logout from './components/auth/logout'
+import MainV2 from './components/main/MainV2'
+import Public from './components/publicEndpoint/publicEndpoint.jsx'
+import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
+import ProtectedRouteV2 from './components/common/protectedRouteV2'
+import AuthServiceV2 from './components/auth/authServiceV2'
+import InviteTeam from './components/main/inviteTeam/inviteTeam'
+import { installModal } from './components/modals/redux/modalsActions'
+import { initConn, resetConn } from './services/webSocket/webSocketService.js'
+import OauthPage from './components/OauthPage/OauthPage.js'
+import TrashPage from './components/main/Trash/trashPage.jsx'
+import IndexWebsite from './components/indexWebsite/indexWebsite.js'
+import Redirections from './components/collections/Redirections.jsx'
+import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
+import NavigationSetter from './history.js'
 
 const App = ({ install_modal, modals }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   useEffect(() => {
-    const currentOrgId = getOrgId() ?? window.location.pathname.split('/')?.[2];
+    const currentOrgId = getOrgId() ?? window.location.pathname.split('/')?.[2]
     if (currentOrgId && !isOnPublishedPage()) {
-      initConn(currentOrgId);
+      initConn(currentOrgId)
     }
-    sessionStorage.setItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID, shortid.generate());
+    sessionStorage.setItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID, shortid.generate())
 
     window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      install_modal(e);
-    });
+      e.preventDefault()
+      install_modal(e)
+    })
 
     return () => {
-      resetConn(getOrgId());
-    };
-  }, [install_modal]);
+      resetConn(getOrgId())
+    }
+  }, [install_modal])
 
   useEffect(() => {
     if (isElectron()) {
-      const { ipcRenderer } = window.require('electron');
+      const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
-        navigate('/login', { search: `?sokt-auth-token=${data}` });
-      });
+        navigate('/login', { search: `?sokt-auth-token=${data}` })
+      })
     }
-  }, [navigate]);
+  }, [navigate])
 
   const renderApp = () => {
     if (!isElectron() && !isTechdocOwnDomain()) {
@@ -55,12 +56,13 @@ const App = ({ install_modal, modals }) => {
         <Routes>
           <Route path='*' element={<Public />} />
         </Routes>
-      );
+      )
     }
 
     return (
       <>
         <ToastContainer />
+        <NavigationSetter />
         <Routes>
           <Route exact path='/' element={<IndexWebsite />} />
           <Route exact path='/login' element={<LoginV2 />} />
@@ -89,18 +91,18 @@ const App = ({ install_modal, modals }) => {
           <Route path='/p' element={<Public />} />
         </Routes>
       </>
-    );
-  };
+    )
+  }
 
-  return renderApp();
-};
+  return renderApp()
+}
 
 const mapDispatchToProps = (dispatch) => ({
-  install_modal: (event) => dispatch(installModal(event)),
-});
+  install_modal: (event) => dispatch(installModal(event))
+})
 
 const mapStateToProps = (state) => ({
-  modals: state.modals,
-});
+  modals: state.modals
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App)

@@ -1,5 +1,15 @@
-import { isElectron } from './components/common/utility'
-// import { useNavigate } from 'react-router-dom'
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { setNavigate } from './navigationService'
 
-const navigate = 'navigate'
-export default navigate
+const NavigationSetter = () => {
+  const navigate = useNavigate()
+
+  React.useEffect(() => {
+    setNavigate(navigate)
+  }, [navigate])
+
+  return null
+}
+
+export default NavigationSetter

@@ -29,11 +29,14 @@ import RenderPageContent from './renderPageContent'
 import { IoDocumentTextOutline } from 'react-icons/io5'
 import DisplayUserAndModifiedData from '../common/userService'
 import withRouter from '../common/withRouter'
+import { useParams } from 'react-router-dom'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
+    const params = useParams()
+    console.log(params.pageId, 123456)
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    const pageId = !isOnPublishedPage() ? props?.params?.pageId : currentIdToShow
+    const pageId = !isOnPublishedPage() ? params?.pageId : currentIdToShow
     let { data, error } = useQuery(
       ['pageContent', pageId],
       async () => {
