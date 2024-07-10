@@ -9,6 +9,7 @@ import './apiDocReview.scss'
 import { dislike, like } from '../../services/feedbackService'
 import { LuAsterisk } from 'react-icons/lu'
 import { SlLike } from "react-icons/sl";
+import { VscStarFull } from "react-icons/vsc";
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -101,26 +102,33 @@ const ApiDocReview = (props) => {
   }
 
   const handleLikeButton = () => {
-    const pageId = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    if (!feedbackGiven) {
-      like(pageId)
-        .then((response) => {
-          savelocalstorage(parentId, getVoteKey(vote))
-          setEmail('')
-          setComment('')
-          setVote(null)
-          setFeedbackGiven(true)
-          setFeedbackType('LIKE')
-        })
-        .catch((error) => {
-          console.error(error)
-        })
+
+    if (feedbackGiven) {
+      return;
     }
+  
+    const pageId = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW);
+  
+    like(pageId)
+      .then((response) => {
+        savelocalstorage(parentId, getVoteKey(vote));
+        setEmail('');
+        setComment('');
+        setVote(null);
+        setFeedbackGiven(true);
+        setFeedbackType('LIKE');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  
     setLiked(!liked);
+  
     if (!liked) {
       setShowSolidDislike(false);
     }
-  }
+  };
+  
 
   const getVoteKey = (value) => {
     return value === 1 ? LIKE : DISLIKE
@@ -139,7 +147,7 @@ const ApiDocReview = (props) => {
 
   const renderFeedbackResponse = () => {
     if (feedbackSaved || feedbackType === 'LIKE') {
-      return 
+      return
     } else if (feedbackType === 'DISLIKE') {
       return (
         <Modal show={show} onHide={handleClose}>
@@ -165,7 +173,7 @@ const ApiDocReview = (props) => {
               controlId="exampleForm.ControlTextarea1"
             >
               <Form.Label>
-                comment
+                Comment <VscStarFull size='8' color='red' />
               </Form.Label>
               <Form.Control
                 placeholder='Enter comment'
@@ -186,7 +194,7 @@ const ApiDocReview = (props) => {
         {show && (
           <Button variant="primary" onClick={() => { handleDislike(); handleClose(); }}
             disabled={ !comment.trim()}>
-            send
+            Send
           </Button>
         )}
         </Modal.Footer>
@@ -199,6 +207,7 @@ const ApiDocReview = (props) => {
     !isDashboardRoute(props) && (
       <>
         <div className='position-relative'>
+          <p className='d-flex justify-content-center Modified-at'>Was this page helpful?</p>
           <div className='d-flex justify-content-center like-unline fs-2'>
             <OverlayTrigger placement='bottom' overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}>
               <div
@@ -207,7 +216,7 @@ const ApiDocReview = (props) => {
                   handleLikeButton()
                 }}
               >
-                   {liked ? <BiSolidLike size={20} /> : <BiLike size={20} />}
+                {liked ? <BiSolidLike size={20} /> : <BiLike size={20} />}
               </div>
             </OverlayTrigger>
             <OverlayTrigger placement='bottom' overlay={<Tooltip id='dislike-tooltip'>Not helpful</Tooltip>}>
@@ -217,7 +226,7 @@ const ApiDocReview = (props) => {
                   handleFeedback('DISLIKE')
                 }}
               >
- {showSolidDislike ? <BiSolidDislike size={20} /> : <BiDislike size={20} />}
+                {showSolidDislike ? <BiSolidDislike size={20} /> : <BiDislike size={20} />}
               </div>
             </OverlayTrigger>
           </div>
