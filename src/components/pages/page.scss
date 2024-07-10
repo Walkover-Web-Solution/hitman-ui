@@ -199,4 +199,9 @@
 }
 .Modified-at {
   color: $footer-color;
+  &.upper-Modified-at {
+    @media screen and (max-width: 1160px) {
+      display: none;
+    }
+  }
 }
