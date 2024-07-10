@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import shortid from 'shortid'
 import { ToastContainer } from 'react-toastify'
 import { SESSION_STORAGE_KEY, getOrgId, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility'
@@ -21,8 +21,9 @@ import Redirections from './components/collections/Redirections.jsx'
 import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
 import NavigationSetter from './history.js'
 
-const App = ({ install_modal, modals }) => {
-  const navigate = useNavigate()
+const App = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const currentOrgId = getOrgId() ?? window.location.pathname.split('/')?.[2]
@@ -33,13 +34,13 @@ const App = ({ install_modal, modals }) => {
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault()
-      install_modal(e)
+      dispatch(installModal(e))
     })
 
     return () => {
       resetConn(getOrgId())
     }
-  }, [install_modal])
+  }, [])
 
   useEffect(() => {
     if (isElectron()) {
@@ -99,12 +100,4 @@ const App = ({ install_modal, modals }) => {
   return renderApp()
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  install_modal: (event) => dispatch(installModal(event))
-})
-
-const mapStateToProps = (state) => ({
-  modals: state.modals
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default App
