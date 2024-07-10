@@ -1,13 +1,14 @@
 import React from 'react'
 import { Modal } from 'react-bootstrap'
-import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import './publishDocsConfirmModal.scss'
+import withRouter from '../common/withRouter'
 
 const PublishDocsConfirmModal = (props) => {
-  const history = useHistory()
-  const match = useRouteMatch()
+  const params = useParams()
 
-  const handleOkay = (collectionId) => {
+  function handleOkay(collectionId) {
+    const { orgId } = params
     if (collectionId) {
       this.props.navigate(`/orgs/${orgId}/admin/publish?collectionId=${collectionId}`)
     }
@@ -34,4 +35,4 @@ const PublishDocsConfirmModal = (props) => {
   )
 }
 
-export default PublishDocsConfirmModal
+export default withRouter(PublishDocsConfirmModal)
