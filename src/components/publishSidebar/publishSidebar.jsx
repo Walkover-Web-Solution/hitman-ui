@@ -49,6 +49,8 @@ function PublishSidebar(props) {
   const [allSelectedIds, setAllSelectedIds] = useState([])
   const [defaultExpandedIds, setDefaultExpandedIds] = useState([])
 
+  const isColLectionPublished= collections[params.collectionId]?.isPublic
+
   useEffect(() => {
     getModifiedData()
   }, [params.collectionId])
@@ -58,6 +60,14 @@ function PublishSidebar(props) {
     const data2 = flattenTree({ name: '', children: [{ ...data1 }] })
     setDefaultExpandedIds(getDefaultExpandedIds(data2))
     setFlattenData(data2)
+    setInitialSelectedIds(data2)
+  }
+
+  const setInitialSelectedIds = (data) => {
+    const selectedIds = data
+      .filter(item => pages?.[item.metadata?.actualId]?.isPublished)
+      .map(item => item.id)
+    setAllSelectedIds(selectedIds)
   }
 
   const onSelect = (e) => {
@@ -152,6 +162,7 @@ function PublishSidebar(props) {
               handleExpand
             }) => {
               const requestType = element.metadata?.actualId ? pages?.[element.metadata?.actualId]?.requestType : null
+              const isPagePublished = pages?.[element.metadata?.actualId]?.isPublished
               return (
                 <div
                   {...getNodeProps({ onClick: handleExpand })}
@@ -160,8 +171,7 @@ function PublishSidebar(props) {
                   <CheckBoxIcon
                     className='checkbox-icon'
                     onClick={(e) => handleOnClick(e, handleSelect)}
-                    variant={isHalfSelected ? 'some' : isSelected ? 'all' : 'none'}
-                  />
+                    variant={(isColLectionPublished || isPagePublished) ? 'all' :isHalfSelected ? 'some' : isSelected ? 'all' : 'none'} />
                   <span className='name element-name'>
                     {element.name}
                     {requestType && pages?.[element.metadata?.actualId]?.protocolType === 1 && (
