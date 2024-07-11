@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 import CustomColorPicker from './customColorPicker'
 import Joi from 'joi-browser'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
@@ -15,6 +16,7 @@ import { HiOutlineExternalLink } from 'react-icons/hi'
 import { IoInformationCircleOutline } from 'react-icons/io5'
 import { FiCopy } from 'react-icons/fi'
 import { FaRegTimesCircle } from 'react-icons/fa'
+import { updateTab } from '../tabs/redux/tabsActions'
 
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
@@ -28,7 +30,10 @@ const publishDocFormEnum = {
 }
 
 const PublishDocForm = (props) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const params = useParams();
+  
 
   const { collections, isPublishSliderOpen, tabs, pages } = useSelector((state) => ({
     collections: state.collections,
@@ -334,10 +339,9 @@ const PublishDocForm = (props) => {
 
   const handleSeeFeedbacks = () => {
     const collectionId = props.selected_collection_id
-    const activeTab = props.tabs.activeTabId
-    props.update_tab(activeTab, { state: { pageType: 'FEEDBACK' } })
-    props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${collectionId}/feedback`)
-    console.log(props)
+    const activeTab = tabs.activeTabId
+    dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
+    navigate(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/feedback`)
   }
 
   const openPublishSidebars = () => <>{isPublishSliderOpen && <PublishSidebar {...props} closePublishSidebar={closePublishSidebar} />}</>

@@ -34,7 +34,6 @@ import { useParams } from 'react-router-dom'
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const params = useParams()
-    console.log(params.pageId, 123456)
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const pageId = !isOnPublishedPage() ? params?.pageId : currentIdToShow
     let { data, error } = useQuery(

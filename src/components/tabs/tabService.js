@@ -40,7 +40,6 @@ function removeTab(tabId, props) {
 }
 
 function changeRoute(props, tab) {
-  console.log(props)
   if (tab.isSaved) {
     props.navigate(`/orgs/${props.params.orgId}/dashboard/${tab.type}/${tab.id}`)
   } else {
@@ -56,7 +55,6 @@ function removeAllTabs(props) {
 function selectTab(props, tabId) {
   const { tabs } = store.getState().tabs
   const tab = tabs[tabId]
-  console.log(tab)
   if (tab?.status === 'NEW') {
     props.navigate(`/orgs/${props.params.orgId}/dashboard/${tab.type}/new`)
   } else if (tab?.type === 'collection') {

@@ -172,7 +172,7 @@ export const deletePage = (page) => {
             toast.success('Deleted succesfully')
           })
           .catch((error) => {
-            console.log(error)
+            console.error(error)
           })
       })
       .catch((error) => {

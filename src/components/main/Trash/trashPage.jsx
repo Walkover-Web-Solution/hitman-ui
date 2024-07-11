@@ -47,7 +47,6 @@ const TrashPage = () => {
         toast.success('Collection restored successfully')
       }
     } catch (error) {
-      console.log(error)
       if (error?.response?.data === 'Collection Name Must be Unique') setEditableRow({ id: collectionId, name: collectionName })
       toast.error(error?.response?.data)
     }

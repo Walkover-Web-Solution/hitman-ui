@@ -122,7 +122,7 @@ const Redirections = () => {
         setRedirectUrls((prev) => prev.filter((_, i) => i !== indexId))
       })
       .catch((error) => {
-        console.log(error.message)
+        console.error(error.message)
         toast.error(error.message)
       })
   }
