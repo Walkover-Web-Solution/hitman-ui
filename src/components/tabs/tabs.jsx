@@ -10,17 +10,16 @@ import { isElectron } from '../common/utility'
 import Plus from '../../assets/icons/plus.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import { IoIosSettings } from 'react-icons/io'
-import { IoIosChatboxes } from "react-icons/io";
-import { CiSettings } from "react-icons/ci";
-import { HiMiniDocumentText } from "react-icons/hi2";
+import { HiMiniDocumentText } from 'react-icons/hi2'
 import IconButtons from '../common/iconButton'
-import { GrFormClose } from "react-icons/gr"
-import { IoDocumentTextOutline } from "react-icons/io5";
+import { IoIosChatboxes } from 'react-icons/io'
+import { CiSettings } from 'react-icons/ci'
+import { GrFormClose } from 'react-icons/gr'
+import { IoDocumentTextOutline } from 'react-icons/io5'
 
-import { LuHistory } from "react-icons/lu";
-import { GrGraphQl } from "react-icons/gr";
+import { LuHistory } from 'react-icons/lu'
+import { GrGraphQl } from 'react-icons/gr'
 
 const mapStateToProps = (state) => {
   return {
@@ -71,26 +70,26 @@ class CustomTabs extends Component {
   }
 
   handleKeyDown = (e) => {
-    const activeTabId = this.props?.tabs?.activeTabId;
-    const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-    const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0;
+    const activeTabId = this.props?.tabs?.activeTabId
+    const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+    const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0
 
     if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
       switch (e.key) {
         case 't':
-          e.preventDefault();
-          this.handleOpenNextTab();
-          break;
+          e.preventDefault()
+          this.handleOpenNextTab()
+          break
         case 'w':
-          e.preventDefault();
-          this.handleCloseTabs([activeTabId]);
-          break;
+          e.preventDefault()
+          this.handleCloseTabs([activeTabId])
+          break
         case 'n':
-          e.preventDefault();
-          this.handleAddTab();
-          break;
+          e.preventDefault()
+          this.handleAddTab()
+          break
         default:
-          break;
+          break
       }
     }
   }
@@ -150,7 +149,11 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <div className='d-flex justify-content-center align-items-center'>
-                {endpoint.protocolType === 1 && <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{this.props.tabState[tabId]?.draft?.data?.method}</div>}
+                {endpoint.protocolType === 1 && (
+                  <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
+                    {this.props.tabState[tabId]?.draft?.data?.method}
+                  </div>
+                )}
                 {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
                 <span>{this.props.pages[tabId]?.name}</span>
               </div>
@@ -158,7 +161,11 @@ class CustomTabs extends Component {
           } else {
             return (
               <div className='d-flex justify-content-center align-items-center'>
-                {endpoint.protocolType === 1 && <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{this.props.tabState[tabId]?.draft?.data?.method}</div>}
+                {endpoint.protocolType === 1 && (
+                  <div className={`${this.props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
+                    {this.props.tabState[tabId]?.draft?.data?.method}
+                  </div>
+                )}
                 {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
                 <span>{this.props.pages[tabId]?.name}</span>
               </div>
@@ -168,7 +175,9 @@ class CustomTabs extends Component {
           const endpoint = this.props?.tabState?.[tabId]
           return (
             <div className='d-flex align-items-center'>
-              {endpoint?.draft?.protocolType === 1 && <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>}
+              {endpoint?.draft?.protocolType === 1 && (
+                <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>
+              )}
               {endpoint?.draft?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
               {tab.state?.data?.name || 'Untitled'}
             </div>
@@ -181,14 +190,14 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <div className='d-flex align-items-center'>
-                <IoDocumentTextOutline size={14} className='mr-1 mb-1'/>
+                <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
                 <span>{page.name}</span>
               </div>
             )
           } else {
             return (
               <div className='d-flex align-items-center'>
-              <IoDocumentTextOutline size={14} className='mr-1 mb-1'/>
+                <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
                 <span>{page.name}</span>
               </div>
             )
@@ -201,16 +210,15 @@ class CustomTabs extends Component {
           return (
             <>
               <span className='d-flex align-items-center'>
-                <CiSettings  size={18} className='setting-icons mr-1 mb-1' />
+                <CiSettings size={18} className='setting-icons mr-1 mb-1' />
                 <span>{collectionName}</span>
               </span>
             </>
           )
-        }
-        else {
+        } else {
           return (
             <div className='d-flex align-items-center'>
-              <CiSettings  size={18} className='setting-icons mr-1 mb-1' />
+              <CiSettings size={18} className='setting-icons mr-1 mb-1' />
               <span>{collectionName}</span>
             </div>
           )
@@ -286,7 +294,7 @@ class CustomTabs extends Component {
     return Number.parseInt((this.navRef.current?.scrollWidth - this.navRef.current?.clientWidth - this.state.leftScroll) / 200)
   }
 
-    handleAddTab() {
+  handleAddTab() {
     this.scrollLength()
     tabService.newTab({ ...this.props })
   }
@@ -321,9 +329,11 @@ class CustomTabs extends Component {
           <div className='hover-div' style={styles}>
             {/* <div className='group-name'>{this.props.pages[tabId]?.name}</div> */}
             <div className='d-flex align-items-center'>
-              {endpoint.protocolType === 1 && <div className={`api-label ${this.props.tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
-                {this.props.tabState[tabId]?.draft?.data?.method}{' '}
-              </div>}
+              {endpoint.protocolType === 1 && (
+                <div className={`api-label ${this.props.tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
+                  {this.props.tabState[tabId]?.draft?.data?.method}{' '}
+                </div>
+              )}
               {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
               <div className='endpoint-name ml-1'>{this.props.pages[tabId].name}</div>
             </div>
@@ -352,9 +362,8 @@ class CustomTabs extends Component {
           </div>
         </>
       )
-    }
-    else if(tab.type === 'feedback'){
-      return(
+    } else if (tab.type === 'feedback') {
+      return (
         <>
           <div className='hover-div' style={styles}>
             <div className='page-name'>feedback</div>
@@ -498,7 +507,9 @@ class CustomTabs extends Component {
                       {this.renderTabName(tabId)}
                     </button>
                     <button className=' close' onClick={() => this.handleCloseTabs([tabId])}>
-                      <IconButtons><i className='uil uil-multiply' /></IconButtons>
+                      <IconButtons>
+                        <i className='uil uil-multiply' />
+                      </IconButtons>
                     </button>
                   </Nav.Link>
                 </Nav.Item>
@@ -525,7 +536,7 @@ class CustomTabs extends Component {
           </Nav.Item>
           <div className='d-flex'>
             <Nav.Item className='tab-buttons' id='options-tab-button'>
-              <TabOptions history={this.props.history} match={this.props.match} handleCloseTabs={this.handleCloseTabs.bind(this)} />
+              <TabOptions history={this.props.history} handleCloseTabs={this.handleCloseTabs.bind(this)} />
             </Nav.Item>
             <Nav.Item className='' id='history-tab-button'>
               <button onClick={this.handleHistoryClick} className='px-2' style={{ outline: 'none' }}>
@@ -537,7 +548,9 @@ class CustomTabs extends Component {
                 <div style={Heading}>
                   History
                   <div className='d-flex' style={closeButton} onClick={this.handleHistoryClick} aria-label='Close'>
-                    <IconButtons><GrFormClose /></IconButtons>
+                    <IconButtons>
+                      <GrFormClose />
+                    </IconButtons>
                   </div>
                 </div>
                 <History {...this.props} />
@@ -550,4 +563,4 @@ class CustomTabs extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(CustomTabs)))
+export default connect(mapStateToProps, mapDispatchToProps)(withQuery(CustomTabs))

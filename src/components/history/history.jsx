@@ -1,50 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import moment from 'moment';
-import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
-import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg';
-import { Dropdown } from 'react-bootstrap';
-import { GrGraphQl } from 'react-icons/gr';
-import './history.scss';
+import React, { useState, useEffect } from 'react'
+import moment from 'moment'
+import { useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
+import { Dropdown } from 'react-bootstrap'
+import { GrGraphQl } from 'react-icons/gr'
+import './history.scss'
 
 function compareByCreatedAt(a, b) {
-  const t1 = a?.createdAt;
-  const t2 = b?.createdAt;
-  let comparison = 0;
+  const t1 = a?.createdAt
+  const t2 = b?.createdAt
+  let comparison = 0
   if (t1 < t2) {
-    comparison = 1;
+    comparison = 1
   } else if (t1 > t2) {
-    comparison = -1;
+    comparison = -1
   }
-  return comparison;
+  return comparison
 }
 
 const History = () => {
-  const history = useHistory();
-  const { orgId } = useParams();
+  const { orgId } = useParams()
+  const navigate = useNavigate()
 
-  const historySnapshots = useSelector((state) => state.history);
+  const historySnapshots = useSelector((state) => state.history)
 
-  const [historySnapshot, setHistorySnapshot] = useState([]);
+  const [historySnapshot, setHistorySnapshot] = useState([])
 
   useEffect(() => {
     if (historySnapshots) {
-      setHistorySnapshot(Object.values(historySnapshots));
+      setHistorySnapshot(Object.values(historySnapshots))
     }
-  }, [historySnapshots]);
+  }, [historySnapshots])
 
   const openHistorySnapshot = (id) => {
-    history.push({
-      pathname: `/orgs/${orgId}/dashboard/history/${id}`,
-      historySnapshotId: id
-    });
-  };
+    navigate(`/orgs/${orgId}/dashboard/history/${id}`, {
+      state: { historySnapshotId: id }
+    })
+  }
 
   const renderName = (history) => {
-    const baseUrl = history?.endpoint?.BASE_URL ? history?.endpoint?.BASE_URL + history?.endpoint?.uri : history?.endpoint?.uri;
-    const endpointName = history?.endpoint?.name || baseUrl || 'Random Trigger';
-    return endpointName;
-  };
+    const baseUrl = history?.endpoint?.BASE_URL ? history?.endpoint?.BASE_URL + history?.endpoint?.uri : history?.endpoint?.uri
+    const endpointName = history?.endpoint?.name || baseUrl || 'Random Trigger'
+    return endpointName
+  }
 
   const renderHistoryItem = (history) => {
     return (
@@ -53,7 +52,7 @@ const History = () => {
           key={history.id}
           className='history-option btn d-flex align-items-center mb-2 pt-2'
           onClick={() => {
-            openHistorySnapshot(history.id);
+            openHistorySnapshot(history.id)
           }}
         >
           {history?.endpoint?.protocolType === 1 && (
@@ -65,17 +64,15 @@ const History = () => {
           <div className='ml-3'>
             <div className='sideBarListWrapper'>
               <div className='text-left'>
-                <p>
-                  {renderName(history)}
-                </p>
+                <p>{renderName(history)}</p>
               </div>
               <small className='text-muted'>{moment(history.createdAt).format('ddd, Do MMM h:mm a')}</small>
             </div>
           </div>
         </Dropdown.Item>
       )
-    );
-  };
+    )
+  }
 
   const renderHistoryList = () => {
     if (!historySnapshot || historySnapshot.length === 0) {
@@ -88,38 +85,38 @@ const History = () => {
             <h5>No History available.</h5>
           </div>
         </div>
-      );
+      )
     }
 
-    const groupedHistory = {};
+    const groupedHistory = {}
 
     historySnapshot.forEach((history) => {
-      const today = moment().startOf('day');
-      const createdAtMoment = moment(history.createdAt);
-      let dateGroup;
+      const today = moment().startOf('day')
+      const createdAtMoment = moment(history.createdAt)
+      let dateGroup
 
       if (today.isSame(createdAtMoment, 'day')) {
-        dateGroup = 'Today';
+        dateGroup = 'Today'
       } else if (createdAtMoment.isSame(today.clone().subtract(1, 'days'), 'day')) {
-        dateGroup = 'Yesterday';
+        dateGroup = 'Yesterday'
       } else {
-        dateGroup = createdAtMoment.format('MMMM D, YYYY');
+        dateGroup = createdAtMoment.format('MMMM D, YYYY')
       }
 
       if (!groupedHistory[dateGroup]) {
-        groupedHistory[dateGroup] = [];
+        groupedHistory[dateGroup] = []
       }
 
-      groupedHistory[dateGroup].push(history);
-    });
+      groupedHistory[dateGroup].push(history)
+    })
 
     const sortedGroupedHistory = Object.entries(groupedHistory).sort(([dateGroupA], [dateGroupB]) => {
-      if (dateGroupA === 'Today') return -1;
-      if (dateGroupB === 'Today') return 1;
-      if (dateGroupA === 'Yesterday') return -1;
-      if (dateGroupB === 'Yesterday') return 1;
-      return moment(dateGroupB, ['MMMM D, YYYY']).diff(moment(dateGroupA, ['MMMM D, YYYY']));
-    });
+      if (dateGroupA === 'Today') return -1
+      if (dateGroupB === 'Today') return 1
+      if (dateGroupA === 'Yesterday') return -1
+      if (dateGroupB === 'Yesterday') return 1
+      return moment(dateGroupB, ['MMMM D, YYYY']).diff(moment(dateGroupA, ['MMMM D, YYYY']))
+    })
 
     const dropdowns = sortedGroupedHistory.map(([dateGroup, histories]) => (
       <ul key={dateGroup}>
@@ -130,7 +127,7 @@ const History = () => {
               <li
                 key={history.id}
                 onClick={() => {
-                  openHistorySnapshot(history.id);
+                  openHistorySnapshot(history.id)
                 }}
               >
                 {renderHistoryItem(history)}
@@ -139,12 +136,12 @@ const History = () => {
           </ul>
         </li>
       </ul>
-    ));
+    ))
 
-    return <div className='mt-3 dropdown-menu-center px-2'>{dropdowns}</div>;
-  };
+    return <div className='mt-3 dropdown-menu-center px-2'>{dropdowns}</div>
+  }
 
-  return renderHistoryList();
-};
+  return renderHistoryList()
+}
 
-export default History;
+export default History
