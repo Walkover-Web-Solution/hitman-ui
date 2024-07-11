@@ -3224,12 +3224,6 @@ body .btn-group-custom {
   overflow: hidden;
   max-width: 800px;
 }
-.page-text-render {
-  gap: 150px;
-@media screen and (max-width:1600px) {
-  gap: 50px;
-}
-}
 .editor-headings  {
   width: 300px;
   position: sticky;
@@ -3450,8 +3444,9 @@ body .doc-secs-container {
   // position: relative;
   // overflow: auto; /* Add this line to enable scrolling */
   .page-display {
-    margin: 20rem;
-    max-width: 50rem;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
     float: unset !important;
     position: relative;
   }

@@ -41,7 +41,7 @@ const SubPage = (props) => {
 
   useEffect(() => {
     if (!theme) {
-      setTheme(props.collections[props.collection_id].theme);
+      setTheme(props.collections[props.collection_id]?.theme);
     }
   }, [theme, props.collections, props.collection_id]);
 
@@ -215,7 +215,6 @@ const SubPage = (props) => {
     const isExpanded = clientData?.[id]?.isExpanded ?? isOnPublishedPage();
     dispatch(addIsExpandedAction({ value: !isExpanded, id: id }));
   };
-
 
   return (
     <>

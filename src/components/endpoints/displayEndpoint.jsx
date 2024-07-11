@@ -3563,19 +3563,21 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
+                {
+                  isOnPublishedPage() && (<span className='pl-3 Modified-at upper-Modified-at'>
+                    <DisplayUserAndModifiedData
+                      isOnPublishedPage={true}
+                      pages={this.props.pages}
+                      currentPage={this.props.currentEndpointId}
+                      users={this.props.users}
+                    />
+                  </span>)
+                }
               </div>
               <div className='w-100'>
                 <span className='footer-upper'>
                   {isOnPublishedPage() && (
                     <>
-                      <span className='pl-3'>
-                        <DisplayUserAndModifiedData
-                          isOnPublishedPage={true}
-                          pages={this.props.pages}
-                          currentPage={this.props.currentEndpointId}
-                          users={this.props.users}
-                        />
-                      </span>
                       <div className='w-100 d-flex justify-content-center'>
                         <ApiDocReview {...this.props} />
                       </div>
@@ -3594,7 +3596,7 @@ class DisplayEndpoint extends Component {
             {this.renderCodeTemplate()}
           </div>
         </div>
-        {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block'>
+        {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
           <DisplayUserAndModifiedData
             isOnPublishedPage={isOnPublishedPage()}
             pages={this.props.pages}
@@ -3605,7 +3607,7 @@ class DisplayEndpoint extends Component {
         <div className='w-100'>
           <span className='footer-lower ml-2 ml-sm-4'>
             <>
-              <span className='pl-3'>
+              <span className='pl-3 Modified-at'>
                 <DisplayUserAndModifiedData
                   isOnPublishedPage={isOnPublishedPage()}
                   pages={this.props.pages}

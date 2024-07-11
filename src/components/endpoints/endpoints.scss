@@ -1396,9 +1396,11 @@ table#custom-generic-table {
 
 .hm-public-endpoint-headers {
   border-radius: 4px;
-  padding-bottom: 25px;
   display: flex;
   flex-wrap: wrap;
+  @media screen and (max-width: 1160px) {
+    padding-bottom: 24px;
+  }
 }
 
 .respHeading h2.orange-heading {

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { isOnPublishedPage } from '../common/utility'
-import { IoDocumentTextOutline } from "react-icons/io5";
 
 export default function RenderPageContent(props) {
 
@@ -32,7 +31,7 @@ export default function RenderPageContent(props) {
 
     return (
         <>
-            {innerText.length > 0 ?
+            {innerText.length > 0 &&
                 <div className={`page-text-render w-100 d-flex flex-lg-row flex-column-reverse`}>
                     <div dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
                     {isOnPublishedPage() && headings.length > 0 && (
@@ -53,11 +52,7 @@ export default function RenderPageContent(props) {
                             </div>
                         </>
                     )}
-                </div> :
-                <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
-                    <IoDocumentTextOutline color='grey' size={100} />
-                    <span className='empty-line'>Your document is empty</span>
-                </div>
+                </div> 
             }
         </>
     )
