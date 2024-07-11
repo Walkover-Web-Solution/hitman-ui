@@ -8,7 +8,7 @@ function Footer({ theme }) {
 
   return (
     // <footer>
-      <div className='footerWrapper my-4'>
+      <div className='footerWrapper mb-4'>
         <p className='for-public-view' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <span className='poweredByText' style={{ color: 'grey'}}>
             Powered by{' '}
