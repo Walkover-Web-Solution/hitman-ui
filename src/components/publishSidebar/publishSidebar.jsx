@@ -48,6 +48,7 @@ function PublishSidebar(props) {
   const [flattenData, setFlattenData] = useState([{ name: '', id: 0, children: [], parent: null }])
   const [allSelectedIds, setAllSelectedIds] = useState([])
   const [defaultExpandedIds, setDefaultExpandedIds] = useState([])
+  const [isPageSelected, setIsPageSelected] = useState(false)
 
   const isColLectionPublished= collections[params.collectionId]?.isPublic
 
@@ -68,6 +69,7 @@ function PublishSidebar(props) {
       .filter(item => pages?.[item.metadata?.actualId]?.isPublished)
       .map(item => item.id)
     setAllSelectedIds(selectedIds)
+    setIsPageSelected(true)
   }
 
   const onSelect = (e) => {
@@ -104,6 +106,10 @@ function PublishSidebar(props) {
 
   const ArrowIcon = ({ isOpen }) => {
     return !isOpen ? <MdOutlineArrowDropDown color='black' size={22} /> : <MdArrowDropUp color='black' size={22} />
+  }
+
+  const handleChange = () => {
+    setIsPageSelected(!isPageSelected)
   }
 
   const CheckBoxIcon = ({ variant, ...rest }) => {
@@ -168,10 +174,12 @@ function PublishSidebar(props) {
                   {...getNodeProps({ onClick: handleExpand })}
                   style={{ marginLeft: 20 * (level - 1), display: 'flex', justifyContent: 'start', alignItems: 'center' }}
                 >
-                  <CheckBoxIcon
+                  {isColLectionPublished && <CheckBoxIcon className='checkbox-icon' onClick={handleChange} variant={isPageSelected? 'all' : 'none'}/>}
+                  {!isColLectionPublished && isPagePublished && <CheckBoxIcon className='checkbox-icon' onClick={handleChange} variant={isPageSelected? 'all' : 'none'}/>}
+                  {!isColLectionPublished && !isPagePublished && <CheckBoxIcon
                     className='checkbox-icon'
                     onClick={(e) => handleOnClick(e, handleSelect)}
-                    variant={(isColLectionPublished || isPagePublished) ? 'all' :isHalfSelected ? 'some' : isSelected ? 'all' : 'none'} />
+                    variant={(isColLectionPublished || isPagePublished) ? 'all' :isHalfSelected ? 'some' : isSelected ? 'all' : 'none'} />}
                   <span className='name element-name'>
                     {element.name}
                     {requestType && pages?.[element.metadata?.actualId]?.protocolType === 1 && (
