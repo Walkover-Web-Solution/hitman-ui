@@ -122,7 +122,7 @@ export default function RunAutomation() {
               </div>
               {automationLoading ? (
                 <button className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'>
-                  <span size='sm' class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>
+                  <span size='sm' className='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>
                   <span className='ml-1'>Running...</span>
                 </button>
               ) : (

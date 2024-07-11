@@ -1,60 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Table, Button, Form } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { BiArrowBack } from 'react-icons/bi';
-import { MdSettingsBackupRestore } from 'react-icons/md';
-import { useSelector } from 'react-redux';
-import moment from 'moment';
-import { toast } from 'react-toastify';
-import trashImage from '../../../assets/icons/trash.webp';
-import { getCurrentOrg } from '../../auth/authServiceV2';
-import { getAllDeletedCollections, restoreCollection } from '../../collections/collectionsApiService';
-import './trash.scss';
+import React, { useEffect, useState } from 'react'
+import { Container, Table, Button, Form, Alert } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
+import { BiArrowBack } from 'react-icons/bi'
+import { MdSettingsBackupRestore } from 'react-icons/md'
+import { useSelector } from 'react-redux'
+import moment from 'moment'
+import { toast } from 'react-toastify'
+import trashImage from '../../../assets/icons/trash.webp'
+import { getCurrentOrg } from '../../auth/authServiceV2'
+import { getAllDeletedCollections, restoreCollection } from '../../collections/collectionsApiService'
+import './trash.scss'
 
 const TrashPage = () => {
-  const [collections, setCollections] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [editableRow, setEditableRow] = useState({ id: null, name: '' });
-  const navigate = useNavigate();
-  const orgId = getCurrentOrg()?.id;
-  const users = useSelector((state) => state.users.usersList);
+  const [collections, setCollections] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [editableRow, setEditableRow] = useState({ id: null, name: '' })
+  const navigate = useNavigate()
+  const orgId = getCurrentOrg()?.id
+  const users = useSelector((state) => state.users.usersList)
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
-        const response = await getAllDeletedCollections(orgId);
-        setCollections(response?.data);
+        const response = await getAllDeletedCollections(orgId)
+        setCollections(response?.data)
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching data:', error)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     }
-    fetchData();
-  }, [orgId]);
+    fetchData()
+  }, [orgId])
 
   const handleBack = () => {
-    navigate  (`/orgs/${orgId}/dashboard/`);
-  };
+    navigate(`/orgs/${orgId}/dashboard/`)
+  }
 
   const handleRestore = async (collectionId, collectionName) => {
     try {
-      const data = { name: collectionName};
-      const response = await restoreCollection(orgId, data, collectionId);
+      const data = { name: collectionName }
+      const response = await restoreCollection(orgId, data, collectionId)
       if (response.status === 200) {
         setCollections((prevCollections) => prevCollections.filter((c) => c.id !== collectionId))
-        toast.success('Collection restored successfully');
+        toast.success('Collection restored successfully')
       }
     } catch (error) {
-      if (error?.response?.data === 'Collection Name Must be Unique') setEditableRow({ id: collectionId, name: collectionName });
-      toast.error(error?.response?.data);
+      console.log(error)
+      if (error?.response?.data === 'Collection Name Must be Unique') setEditableRow({ id: collectionId, name: collectionName })
+      toast.error(error?.response?.data)
     }
-  };
+  }
 
   const handleChangeName = (event) => {
     setEditableRow((prev) => ({ ...prev, name: event.target.value }))
-  };
+  }
 
   const handleSaveEdit = async (collectionId) => {
     try {
@@ -68,6 +69,7 @@ const TrashPage = () => {
         throw new Error('Restoration with new name failed')
       }
     } catch (error) {
+      Alert('Failed')
       toast.error('Failed to restore collection with new name')
     }
   }

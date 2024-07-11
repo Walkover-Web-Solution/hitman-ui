@@ -337,6 +337,7 @@ const PublishDocForm = (props) => {
     const activeTab = props.tabs.activeTabId
     props.update_tab(activeTab, { state: { pageType: 'FEEDBACK' } })
     props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+    console.log(props)
   }
 
   const openPublishSidebars = () => <>{isPublishSliderOpen && <PublishSidebar {...props} closePublishSidebar={closePublishSidebar} />}</>

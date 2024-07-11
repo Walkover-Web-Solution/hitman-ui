@@ -56,17 +56,20 @@ function removeAllTabs(props) {
 function selectTab(props, tabId) {
   const { tabs } = store.getState().tabs
   const tab = tabs[tabId]
+  console.log(tab)
   if (tab?.status === 'NEW') {
     props.navigate(`/orgs/${props.params.orgId}/dashboard/${tab.type}/new`)
   } else if (tab?.type === 'collection') {
     tab?.state?.pageType === 'SETTINGS'
       ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/settings`)
       : props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/feedback`)
+  } else if (tab?.type === 'page' && tab?.id) {
+    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}/edit`)
   } else {
     if (!(tab?.type && tab?.id)) {
       return props.navigate(`/orgs/${getOrgId()}/dashboard/endpoint/new`)
     }
-    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${tab.isModified ? '/edit' : ''}`)
+    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}`)
   }
   store.dispatch(setActiveTabId(tabId))
 }

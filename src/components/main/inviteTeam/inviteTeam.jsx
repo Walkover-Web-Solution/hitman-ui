@@ -16,6 +16,8 @@ function InviteTeam() {
   const [showModal, setShowModal] = useState(false)
   const navigate = useNavigate()
   const inputRef = useRef(null)
+  const orgId = getCurrentOrg()?.id
+
   const { users } = useSelector((state) => {
     return { users: state.users.usersList }
   })
@@ -38,7 +40,6 @@ function InviteTeam() {
   }, [showModal])
 
   const handleBack = () => {
-    const orgId = getCurrentOrg()?.id
     navigate(`/orgs/${orgId}/dashboard`)
   }
 

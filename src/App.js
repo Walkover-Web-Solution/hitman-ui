@@ -22,8 +22,8 @@ import RunAutomation from './components/collections/runAutomation/runAutomation.
 import NavigationSetter from './history.js'
 
 const App = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const currentOrgId = getOrgId() ?? window.location.pathname.split('/')?.[2]
