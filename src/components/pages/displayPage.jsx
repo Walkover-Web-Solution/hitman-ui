@@ -28,17 +28,20 @@ import Footer from '../main/Footer'
 import RenderPageContent from './renderPageContent'
 import { IoDocumentTextOutline } from "react-icons/io5";
 import DisplayUserAndModifiedData from '../common/userService'
+import withRouter from '../common/withRouter'
+import { useParams } from 'react-router-dom'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
+    const params = useParams()
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
+    const pageId = !isOnPublishedPage() ? params?.pageId : currentIdToShow
     let { data, error } = useQuery(
       ['pageContent', pageId],
       async () => {
         return isOnPublishedPage()
           ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
-          : await getPageContent(props?.match?.params?.orgId, pageId)
+          : await getPageContent(props?.params?.orgId, pageId)
       },
       {
         refetchOnWindowFocus: false,
@@ -52,7 +55,15 @@ const withQuery = (WrappedComponent) => {
     if (tabId?.isModified && tabId?.type == 'page' && tabId?.draft) {
       data = tabId?.draft
     }
-    return <WrappedComponent {...props} pageContent={data} currentPageId={pageId} pageContentLoading={data?.isLoading} pageContentError={error} />
+    return (
+      <WrappedComponent
+        {...props}
+        pageContent={data}
+        currentPageId={pageId}
+        pageContentLoading={data?.isLoading}
+        pageContentError={error}
+      />
+    )
   }
 }
 
@@ -127,23 +138,23 @@ class DisplayPage extends Component {
         this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
       }
     }
-    // if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
-    //   this.fetchPageContent(this.props.match.params.pageId)
+    // if (this.props.params.pageId !== prevProps.params.pageId) {
+    //   this.fetchPageContent(this.props.params.pageId)
     // }
   }
 
   extractPageName() {
     if (!isDashboardRoute(this.props, true) && this.props.pages) {
-      const pageName = this.props?.pages?.[this.props?.match?.params?.pageId]?.name
+      const pageName = this.props?.pages?.[this.props?.params?.pageId]?.name
       if (pageName) this.props.fetch_entity_name(pageName)
       else this.props.fetch_entity_name()
     }
   }
 
   handleEdit(page) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props?.match?.params.orgId}/dashboard/page/${this.props?.match?.params.pageId}/edit`,
-      page: page
+    const { orgId, pageId } = this.props.params
+    this.props.navigate(`/orgs/${orgId}/dashboard/page/${pageId}/edit`, {
+      state: { page: page }
     })
   }
 
@@ -186,21 +197,19 @@ class DisplayPage extends Component {
   }
 
   renderPageName() {
-    const pageId = this.props?.match?.params.pageId
+    const pageId = this.props?.params.pageId
     if (!this.state.page && pageId) {
       this.fetchPage(pageId)
     }
     return isOnPublishedPage() ? (
-      <>
-        {this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}
-      </>
+      <>{this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}</>
     ) : (
       <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
     )
   }
 
   renderTiptapEditor(contents) {
-    return <Tiptap onChange={() => { }} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
+    return <Tiptap onChange={() => {}} initial={contents} isInlineEditor disabled key={Math.random()} />
   }
 
   handleRemovePublicPage(page) {
@@ -246,7 +255,7 @@ class DisplayPage extends Component {
   renderPublishPageOperations() {
     if (isDashboardRoute(this.props)) {
       let pages = { ...this.props.pages }
-      const pageId = this.props?.match.params?.pageId
+      const pageId = this.props?.params?.pageId
       pages = pages[pageId]
       const isPublicPage = pages?.isPublished
 
@@ -340,7 +349,7 @@ class DisplayPage extends Component {
   }
 
   async handleApprovePageRequest() {
-    const pageId = this.props?.match?.params?.pageId
+    const pageId = this.props?.params?.pageId
 
     // Check if the component is still mounted before updating the state
     if (this._isMounted) {
@@ -362,7 +371,7 @@ class DisplayPage extends Component {
   }
 
   async handleDraftPageRequest() {
-    const pageId = this.props?.match?.params?.pageId
+    const pageId = this.props?.params?.pageId
     if (this._isMounted) {
       this.setState({ publishLoader: true })
     }
@@ -382,28 +391,27 @@ class DisplayPage extends Component {
     if (this.props?.pageContentLoading) {
       return (
         <>
-          <div className="container-loading p-4">
+          <div className='container-loading p-4'>
             {!isOnPublishedPage() && (
               <>
-                <div className="d-flex justify-content-end gap-5 mb-5 1806">
-                  <div className="edit bg rounded-1 ms-5"></div>
-                  <div className="unpublish bg rounded-1 ms-5"></div>
-                  <div className="publish bg rounded-1 ms-5"></div>
+                <div className='d-flex justify-content-end gap-5 mb-5 1806'>
+                  <div className='edit bg rounded-1 ms-5'></div>
+                  <div className='unpublish bg rounded-1 ms-5'></div>
+                  <div className='publish bg rounded-1 ms-5'></div>
                 </div>
               </>
             )}
-            <div className="page bg rounded-1"></div>
-            <div className="details d-flex flex-column justify-content-between align-items-center mt-5">
-              <div className="page-box bg"></div>
-              <div className="page-footer text-center bg"></div>
-
+            <div className='page bg rounded-1'></div>
+            <div className='details d-flex flex-column justify-content-between align-items-center mt-5'>
+              <div className='page-box bg'></div>
+              <div className='page-footer text-center bg'></div>
             </div>
           </div>
         </>
       )
     }
     return (
-      <div className={`custom-display-page ${isOnPublishedPage() ? "custom-display-public-page" : ""}`}>
+      <div className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}>
         {this.renderPublishConfirmationModal()}
         {this.renderUnPublishConfirmationModal()}
         {this.renderPublishPageOperations()}
@@ -420,4 +428,4 @@ class DisplayPage extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayPage))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayPage)))

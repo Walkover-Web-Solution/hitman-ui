@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import withRouter from '../common/withRouter.jsx'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
 import './collectionVersions.scss'
 import AddEntity from '../main/addEntity/addEntity'
@@ -188,16 +188,17 @@ class CollectionParentPages extends Component {
   }
 
   handleUpdate(collectionVersion) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${this.props.collection_id}/pages/${collectionVersion.id}/edit`,
-      editCollectionVersion: collectionVersion
+    const { orgId } = this.props.params
+    const { collection_id } = this.props
+    this.props.navigate(`/orgs/${orgId}/dashboard/${collection_id}/pages/${collectionVersion.id}/edit`, {
+      state: { editCollectionVersion: collectionVersion }
     })
   }
 
   handleAddPage(pageId, collectionId) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${collectionId}/versions/${pageId}/pages/new`,
-      pageId: pageId
+    const { orgId } = this.props.params
+    this.props.navigate(`/orgs/${orgId}/dashboard/${collectionId}/versions/${pageId}/pages/new`, {
+      state: { pageId: pageId }
     })
   }
 
@@ -331,14 +332,12 @@ class CollectionParentPages extends Component {
   }
   handleRedirect(id) {
     if (isDashboardRoute(this.props)) {
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
-      })
+      this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/page/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, this.props.pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      this.props.history.push(pathName)
+      this.props.navigate(pathName)
     }
   }
 
@@ -458,7 +457,7 @@ class CollectionParentPages extends Component {
     const isSelected =
       isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId
         ? 'selected'
-        : isDashboardRoute && this.props.match.params.pageId === pageId
+        : isDashboardRoute && this.props.params.pageId === pageId
         ? 'selected'
         : ''
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
@@ -693,7 +692,7 @@ class CollectionParentPages extends Component {
   }
 
   openLink(item) {
-    const collectionId = this.props.match.params.collectionId
+    const collectionId = this.props.params.collectionId
     const collectionName = this.props.collectionName
     let link = ''
     switch (item.type) {
@@ -707,9 +706,7 @@ class CollectionParentPages extends Component {
         break
     }
     if (link.length) {
-      this.props.history.push({
-        pathname: link
-      })
+      this.props.navigate(link)
     }
   }
 
@@ -807,4 +804,4 @@ class CollectionParentPages extends Component {
     )
   }
 }
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CollectionParentPages))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withRouter(CollectionParentPages)))

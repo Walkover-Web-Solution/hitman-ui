@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
@@ -72,6 +71,8 @@ import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import DisplayUserAndModifiedData from '../common/userService.jsx'
 import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
+import withRouter from '../common/withRouter.jsx'
+import { useParams } from 'react-router-dom'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -110,7 +111,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_endpoint: (newEndpoint, rootParentID, callback, props) =>
-      dispatch(addEndpoint(ownProps.history, newEndpoint, rootParentID, callback, props)),
+      dispatch(addEndpoint(ownProps.navigate, newEndpoint, rootParentID, callback, props)),
     update_endpoint: (editedEndpoint, stopSave) => dispatch(updateEndpoint(editedEndpoint, stopSave)),
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
@@ -153,7 +154,7 @@ const untitledEndpointData = {
       key: '',
       value: '',
       description: '',
-      type: '',
+      type: ''
     }
   ],
   originalParams: [
@@ -162,7 +163,7 @@ const untitledEndpointData = {
       key: '',
       value: '',
       description: '',
-      type: '',
+      type: ''
     }
   ],
   oldDescription: '',
@@ -208,9 +209,9 @@ const getEndpointContent = async (props) => {
 
   let endpointId = isUserOnPublishedPage
     ? currentIdToShow
-    : props?.match?.params.endpointId !== 'new'
-      ? props?.match?.params?.endpointId
-      : props?.activeTabId
+    : props.params.endpointId !== 'new'
+    ? props.params?.endpointId
+    : props?.activeTabId
 
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
@@ -219,8 +220,8 @@ const getEndpointContent = async (props) => {
   }
 
   const extractParams = (pattern, pathname) => {
-    const patternParts = pattern.split('/');
-    const pathParts = pathname.split('/');
+    const patternParts = pattern.split('/')
+    const pathParts = pathname.split('/')
 
     const params = {}
     patternParts.forEach((part, index) => {
@@ -258,14 +259,11 @@ const fetchHistory = (historyId, props) => {
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
+    const params = useParams()
     const queryClient = useQueryClient()
     let currentIdToShow = isOnPublishedPage() ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
-    let endpointId = isOnPublishedPage()
-      ? currentIdToShow
-      : props?.match?.params.endpointId !== 'new'
-        ? props?.match?.params?.endpointId
-        : props?.activeTabId
-    const historyId = props?.match?.params?.historyId
+    let endpointId = isOnPublishedPage() ? currentIdToShow : params.endpointId !== 'new' ? params?.endpointId : props?.activeTabId
+    const historyId = params?.historyId
 
     let queryKey, fetchFunction
     if (historyId && historyId !== 'new') {
@@ -291,25 +289,33 @@ const withQuery = (WrappedComponent) => {
       const bodyType = endpoint.body.type
       const untitled = _.cloneDeep(untitledEndpointData.data)
 
-      if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) && endpoint.body.raw) {
-        untitled.body = endpoint.body;
-      } else if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)) {
-        untitled.body = { ...untitled.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } };
+      if (
+        [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) &&
+        endpoint.body.raw
+      ) {
+        untitled.body = endpoint.body
+      } else if (
+        [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)
+      ) {
+        untitled.body = { ...untitled.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } }
       } else if (bodyType === bodyTypesEnums['application/x-www-form-urlencoded'] || bodyType === bodyTypesEnums['multipart/form-data']) {
         if (endpoint.body[bodyType]) {
-          untitled.body = endpoint.body;
+          untitled.body = endpoint.body
         } else {
-          untitled.body = { ...untitled.body, type: bodyType, [bodyType]: endpoint.body?.value || [] };
+          untitled.body = { ...untitled.body, type: bodyType, [bodyType]: endpoint.body?.value || [] }
         }
       } else if (bodyType === bodyTypesEnums['none']) {
-        if (endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || endpoint.body?.[bodyTypesEnums['multipart/form-data']] || endpoint.body?.[bodyTypesEnums['raw']]) {
-          untitled.body = endpoint.body;
-        }
-        else {
+        if (
+          endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] ||
+          endpoint.body?.[bodyTypesEnums['multipart/form-data']] ||
+          endpoint.body?.[bodyTypesEnums['raw']]
+        ) {
+          untitled.body = endpoint.body
+        } else {
           untitled.body = { ...untitled.body, ...endpoint.body }
         }
       }
-      delete endpoint.body?.value;
+      delete endpoint.body?.value
 
       untitled.uri = endpoint.uri
       untitled.updatedUri = endpoint.updatedUri
@@ -320,8 +326,7 @@ const withQuery = (WrappedComponent) => {
 
     const setQueryUpdatedData = (data, callbackFn = null) => {
       let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-      const endpointId =
-        props?.match?.params.endpointId !== 'new' ? props?.match?.params?.endpointId || currentIdToShow : props?.activeTabId
+      const endpointId = params.endpointId !== 'new' ? params?.endpointId || currentIdToShow : props?.activeTabId
       data.data = setOldDataToNewDataForBody(data)
       queryClient.setQueryData(queryKey, data)
       // only update the data if it is different from default data
@@ -398,8 +403,8 @@ class DisplayEndpoint extends Component {
       titleChange: false,
       activeTab: 'default'
     }
-    this.setActiveTab = this.setActiveTab.bind(this);
-    this.setBody = this.setBody.bind(this);
+    this.setActiveTab = this.setActiveTab.bind(this)
+    this.setBody = this.setBody.bind(this)
     this.uri = React.createRef()
     this.paramKey = React.createRef()
     this.setCurrentReponseView()
@@ -415,38 +420,41 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-        ? this.props.location.pathname.split('/')[5]
-        : this.props.location.pathname.split('/')[4]
+      ? this.props.location.pathname.split('/')[5]
+      : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
-    const { endpointId } = this.props.match.params
+    const { endpointId } = this.props.params
     if (endpointId === 'new') this.setUnsavedTabDataInIDB()
     document.addEventListener('keydown', this.handleKeyDown)
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
-    const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
-    const staticColor = background['background_mainPage'];
+    const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02)
+    const staticColor = background['background_mainPage']
 
     const backgroundStyle = {
       backgroundImage: `
         linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
         linear-gradient(to right, ${staticColor}, ${staticColor})
-      `,
-    };
+      `
+    }
 
     this.setState({
-      theme: { backgroundStyle },
-    });
+      theme: { backgroundStyle }
+    })
   }
 
   componentDidUpdate(prevProps, prevState) {
-  const userid = getCurrentUser()?.id
-  if (typeof window.SendDataToChatbot === 'function') {
-    window.SendDataToChatbot({ bridgeName: 'api', threadId: `${userid}`,
-    variables: {Proxy_auth_token : getProxyToken(), endpoint: this.props.endpointContent}});
-  }
+    const userid = getCurrentUser()?.id
+    if (typeof window.SendDataToChatbot === 'function') {
+      window.SendDataToChatbot({
+        bridgeName: 'api',
+        threadId: `${userid}`,
+        variables: { Proxy_auth_token: getProxyToken(), endpoint: this.props.endpointContent }
+      })
+    }
     // window.closeChatbot()
     window.addEventListener('resize', this.updateDimensions)
     if (prevState.isMobileView !== this.state.isMobileView) {
@@ -551,7 +559,7 @@ class DisplayEndpoint extends Component {
 
   extractEndpointName() {
     if (!isDashboardRoute(this.props, true) && this.props.endpoints) {
-      const endpointName = this.props.endpoints[this.props.match.params.endpointId]?.name
+      const endpointName = this.props.endpoints[this.props.params.endpointId]?.name
       if (endpointName) this.props.fetch_entity_name(endpointName)
       else this.props.fetch_entity_name()
     }
@@ -674,7 +682,7 @@ class DisplayEndpoint extends Component {
           key: this.props?.endpointContent?.originalParams[i].key,
           value: this.props?.endpointContent?.originalParams[i].value,
           description: this.props?.endpointContent?.originalParams[i].description,
-          type: this.props?.endpointContent?.originalParams[i].type,
+          type: this.props?.endpointContent?.originalParams[i].type
         })
       }
     }
@@ -719,7 +727,7 @@ class DisplayEndpoint extends Component {
 
       for (let i = 0; i < variables.length; i++) {
         const envVariable = envVars[variables[i]]
-        if (!envVariable) continue;
+        if (!envVariable) continue
         const strToReplace = `{{${variables[i]}}}`
         if (envVariable?.currentValue) {
           str = str.replace(strToReplace, envVariable.currentValue)
@@ -1163,9 +1171,9 @@ class DisplayEndpoint extends Component {
 
     setTimeout(() => {
       if (this.myRef?.current?.scrollIntoView) {
-        this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
-    }, 0);
+    }, 0)
   }
 
   runScript(code, environment, request, responseJson) {
@@ -1219,7 +1227,7 @@ class DisplayEndpoint extends Component {
 
   prepareBodyForSaving(body) {
     const data = _.cloneDeep(body)
-    if (data.type === bodyTypesEnums['multipart/form-data']) {
+    if (data?.type === bodyTypesEnums['multipart/form-data']) {
       data[bodyTypesEnums['multipart/form-data']].forEach((item) => {
         if (item.type === 'file') item.value = {}
       })
@@ -1248,7 +1256,7 @@ class DisplayEndpoint extends Component {
     }
     if (
       (currentTabId && !this.props.pages[currentTabId] && !this.state.showEndpointFormModal) ||
-      (this.props?.match?.params?.historyId && slug !== 'isHistory')
+      (this.props?.params?.historyId && slug !== 'isHistory')
     ) {
       this.openEndpointFormModal()
     } else {
@@ -1256,7 +1264,7 @@ class DisplayEndpoint extends Component {
       const body = this.prepareBodyForSaving(endpointContent?.data?.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: endpointContent?.bodyDescription,
-        body: body.value
+        body: body?.value
       })
       if (this.checkProtocolType(1) && this.props?.endpointContent?.data?.body.type === bodyTypesEnums['raw']) {
         body.value = this.parseBody(body.value)
@@ -1269,7 +1277,7 @@ class DisplayEndpoint extends Component {
         return obj
       }, {})
       const endpoint = {
-        id: slug === 'isHistory' ? this.props?.match?.params?.historyId : currentTabId,
+        id: slug === 'isHistory' ? this.props?.params?.historyId : currentTabId,
         uri: endpointContent?.data.updatedUri,
         name: this.state.saveAsFlag ? endpointName : endpointContent?.data?.name,
         requestType: endpointContent?.data?.method,
@@ -1277,15 +1285,15 @@ class DisplayEndpoint extends Component {
         headers: headersData,
         params: updatedParams,
         pathVariables: updatedPathVariables,
-        BASE_URL: endpointContent.host.BASE_URL || null,
+        BASE_URL: endpointContent?.host?.BASE_URL || null,
         bodyDescription: endpointContent?.bodyDescription,
-        authorizationData: endpointContent.authorizationData,
+        authorizationData: endpointContent?.authorizationData,
         notes: endpointContent?.endpoint.notes,
         preScript: endpointContent?.preScriptText,
         postScript: endpointContent?.postScriptText,
         docViewData: endpointContent?.docViewData,
         protocolType: endpointContent?.protocolType || null,
-        description: endpointContent?.description || '',
+        description: endpointContent?.description || ''
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
@@ -1355,7 +1363,7 @@ class DisplayEndpoint extends Component {
     const originalHeaders = [...this.props?.endpointContent.originalHeaders]
     originalHeaders.map((item) => {
       if (item.key) {
-        item.key = item.key.trim();
+        item.key = item.key.trim()
       }
     })
     const updatedHeaders = {}
@@ -1495,7 +1503,7 @@ class DisplayEndpoint extends Component {
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
           comment: headers[Object.keys(headers)[i]].description === null ? '' : headers[Object.keys(headers)[i]].description,
-          type: headers[Object.keys(headers)[i]].type,
+          type: headers[Object.keys(headers)[i]].type
         })
       }
     }
@@ -1511,7 +1519,7 @@ class DisplayEndpoint extends Component {
             name: params[Object.keys(params)[i]].key,
             value: params[Object.keys(params)[i]].value,
             comment: params[Object.keys(params)[i]].description,
-            type: params[Object.keys(params)[i]].type,
+            type: params[Object.keys(params)[i]].type
           })
         }
       }
@@ -1708,10 +1716,10 @@ class DisplayEndpoint extends Component {
   }
 
   makeFunctionNonEditable(val) {
-    const readOnlyFunction = document.createElement('textarea');
-    readOnlyFunction.value = JSON.stringify(val, null, 2);
-    readOnlyFunction.setAttribute('readonly', true);
-    document.body.appendChild(readOnlyFunction);
+    const readOnlyFunction = document.createElement('textarea')
+    readOnlyFunction.value = JSON.stringify(val, null, 2)
+    readOnlyFunction.setAttribute('readonly', true)
+    document.body.appendChild(readOnlyFunction)
   }
 
   setParams(value, title, authorizationFlag, tokenIdToSave) {
@@ -1768,7 +1776,7 @@ class DisplayEndpoint extends Component {
       key: '',
       value: '',
       description: '',
-      type: 'enable',
+      type: 'enable'
     }
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
@@ -1810,8 +1818,7 @@ class DisplayEndpoint extends Component {
         ...dummyData?.authorizationData?.authorization?.oauth2,
         selectedTokenId: tokenIdToSave
       }
-    }
-    else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
+    } else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
       const basicAuth = dummyData?.authorizationData?.authorization?.basicAuth
       if (basicAuth) {
         dummyData.authorizationData.authorization.user = basicAuth.username
@@ -1833,9 +1840,8 @@ class DisplayEndpoint extends Component {
     const updatedHeaders = []
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === 'Authorization' && originalHeaders[i].type === 'disable') {
-        continue;
-      }
-      else {
+        continue
+      } else {
         updatedHeaders.push(originalHeaders[i])
       }
     }
@@ -1855,8 +1861,7 @@ class DisplayEndpoint extends Component {
     for (let i = 0; i < originalParams.length; i++) {
       if (originalParams[i].key === 'access_token' && originalParams[i].type === 'disable') {
         continue
-      }
-      else {
+      } else {
         updatedParams.push(originalParams[i])
       }
     }
@@ -1892,7 +1897,7 @@ class DisplayEndpoint extends Component {
     }
     if (title === 'endpoint') this.setState({ endpoint: data })
     if (title === 'oldDescription') this.setState({ oldDescription: data })
-    const endpointContent = this.props?.endpointContent;
+    const endpointContent = this.props?.endpointContent
     endpointContent.description = title
     this.props.setQueryUpdatedData(endpointContent)
     this.setModifiedTabData()
@@ -2077,13 +2082,13 @@ class DisplayEndpoint extends Component {
   }
 
   setActiveTab() {
-    this.setState({ activeTab: "default" });
+    this.setState({ activeTab: 'default' })
   }
 
   displayResponseAndSampleResponse() {
     return (
       <>
-        <div className='custom-tabs clear-both response-container mb-2' >
+        <div className='custom-tabs clear-both response-container mb-2'>
           <div className='d-flex justify-content-between align-items-center'>
             <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
               <li className='nav-item'>
@@ -2352,7 +2357,7 @@ class DisplayEndpoint extends Component {
       <Tiptap
         initial={item.data}
         onChange={(e) => this.debouncedSave(index, e)}
-        match={this.props.match}
+        match={this.props}
         isInlineEditor
         disabled={!isDashboardRoute(this.props)}
         key={`${item.type}-${index}`}
@@ -2607,7 +2612,7 @@ class DisplayEndpoint extends Component {
               updatedUri={_.cloneDeep(this.props?.endpointContent?.data?.updatedUri)}
               set_base_url={this.setBaseUrl.bind(this)}
               // customHost={this.props?.endpointContent?.host.BASE_URL || ''}
-              endpointId={this.props?.match?.params?.endpointId}
+              endpointId={this.props?.params?.endpointId}
               set_host_uri={this.setHostUri.bind(this)}
               props_from_parent={this.propsFromChild.bind(this)}
               setQueryUpdatedData={this.props.setQueryUpdatedData.bind(this)}
@@ -2894,7 +2899,7 @@ class DisplayEndpoint extends Component {
 
   renderCodeTemplate() {
     const shouldShowCodeTemplate =
-      (this.isDashboardAndTestingView(this.props, 'testing') && this.props.curlSlider && this.props.match.params.endpointId) ||
+      (this.isDashboardAndTestingView(this.props, 'testing') && this.props.curlSlider && this.props.params.endpointId) ||
       isOnPublishedPage(this.props)
     const harObjectExists = !!this.props?.endpointContent?.harObject
 
@@ -2922,20 +2927,22 @@ class DisplayEndpoint extends Component {
     }
   }
   renderEndpointUserData(isOnPublishedPage) {
-    const { pages, currentEndpointId, users } = this.props;
-    const updatedById = pages?.[currentEndpointId]?.updatedBy;
-    const lastModified = pages?.[currentEndpointId]?.updatedAt
-      ? moment(pages[currentEndpointId].updatedAt).fromNow()
-      : null;
+    const { pages, currentEndpointId, users } = this.props
+    const updatedById = pages?.[currentEndpointId]?.updatedBy
+    const lastModified = pages?.[currentEndpointId]?.updatedAt ? moment(pages[currentEndpointId].updatedAt).fromNow() : null
 
-    const user = users?.find(user => user.id === updatedById);
+    const user = users?.find((user) => user.id === updatedById)
 
     if (isOnPublishedPage) {
       return (
         <div>
-          {lastModified && <>Modified At <span>{lastModified}</span></>}
+          {lastModified && (
+            <>
+              Modified At <span>{lastModified}</span>
+            </>
+          )}
         </div>
-      );
+      )
     } else {
       return (
         <div className='page-user-data mt-2'>
@@ -2951,7 +2958,7 @@ class DisplayEndpoint extends Component {
             <span></span>
           )}
         </div>
-      );
+      )
     }
   }
 
@@ -2993,8 +3000,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-        ? this.props.location.pathname.split('/')[5]
-        : this.props.location.pathname.split('/')[4]
+      ? this.props.location.pathname.split('/')[5]
+      : this.props.location.pathname.split('/')[4]
 
     if (this.props.save_endpoint_flag && this.props.tab.id === this.props.selected_tab_id) {
       this.props.handle_save_endpoint(false)
@@ -3011,18 +3018,17 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-              ? 'mainContentWrapperPublic hideCodeEditor'
-              : 'mainContentWrapperPublic '
+            ? 'mainContentWrapperPublic hideCodeEditor'
+            : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
-        <div
-          className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}
-        >
+        <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-                }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${
+                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
@@ -3122,20 +3128,20 @@ class DisplayEndpoint extends Component {
                     </div>
                   )}
                   <div className={this.isDashboardAndTestingView() ? 'endpoint-headers-container d-flex' : 'hm-public-endpoint-headers'}>
-                    <div className="main-table-wrapper">
+                    <div className='main-table-wrapper'>
                       {this.isDashboardAndTestingView() ? (
-                        <div className="d-flex justify-content-between align-items-center">
-                          <div className="headers-params-wrapper custom-tabs">
-                            <ul className="nav nav-tabs" id="pills-tab" role="tablist">
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <div className='headers-params-wrapper custom-tabs'>
+                            <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
                               {this.checkProtocolType(1) && (
                                 <>
-                                  <li className="nav-item">
+                                  <li className='nav-item'>
                                     <a
                                       className={`nav-link ${this.state.activeTab === 'default' ? 'active' : ''}`}
                                       id={`pills-params-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
+                                      data-toggle='pill'
                                       href={`#params-${this.props.tab.id}`}
-                                      role="tab"
+                                      role='tab'
                                       aria-controls={`params-${this.props.tab.id}`}
                                       aria-selected={this.state.activeTab === 'default'}
                                       onClick={() => this.setState({ activeTab: 'default' })}
@@ -3143,13 +3149,13 @@ class DisplayEndpoint extends Component {
                                       Params
                                     </a>
                                   </li>
-                                  <li className="nav-item">
+                                  <li className='nav-item'>
                                     <a
                                       className={`nav-link ${this.state.activeTab === 'authorization' ? 'active' : ''}`}
                                       id={`pills-authorization-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
+                                      data-toggle='pill'
                                       href={`#authorization-${this.props.tab.id}`}
-                                      role="tab"
+                                      role='tab'
                                       aria-controls={`authorization-${this.props.tab.id}`}
                                       aria-selected={this.state.activeTab === 'authorization'}
                                       onClick={() => this.setState({ activeTab: 'authorization' })}
@@ -3157,13 +3163,13 @@ class DisplayEndpoint extends Component {
                                       Authorization
                                     </a>
                                   </li>
-                                  <li className="nav-item">
+                                  <li className='nav-item'>
                                     <a
                                       className={`nav-link ${this.state.activeTab === 'headers' ? 'active' : ''}`}
                                       id={`pills-headers-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
+                                      data-toggle='pill'
                                       href={`#headers-${this.props.tab.id}`}
-                                      role="tab"
+                                      role='tab'
                                       aria-controls={`headers-${this.props.tab.id}`}
                                       aria-selected={this.state.activeTab === 'headers'}
                                       onClick={() => this.setState({ activeTab: 'headers' })}
@@ -3171,13 +3177,13 @@ class DisplayEndpoint extends Component {
                                       Headers
                                     </a>
                                   </li>
-                                  <li className="nav-item">
+                                  <li className='nav-item'>
                                     <a
                                       className={`nav-link ${this.state.activeTab === 'body' ? 'active' : ''}`}
                                       id={`pills-body-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
+                                      data-toggle='pill'
                                       href={`#body-${this.props.tab.id}`}
-                                      role="tab"
+                                      role='tab'
                                       aria-controls={`body-${this.props.tab.id}`}
                                       aria-selected={this.state.activeTab === 'body'}
                                       onClick={() => this.setState({ activeTab: 'body' })}
@@ -3189,9 +3195,9 @@ class DisplayEndpoint extends Component {
                                     <a
                                       className={`nav-link ${this.state.activeTab === 'script' ? 'active' : ''}`}
                                       id={`pills-script-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
+                                      data-toggle='pill'
                                       href={`#script-${this.props.tab.id}`}
-                                      role="tab"
+                                      role='tab'
                                       aria-controls={`script-${this.props.tab.id}`}
                                       aria-selected={this.state.activeTab === 'script'}
                                       onClick={() => this.setState({ activeTab: 'script' })}
@@ -3200,7 +3206,7 @@ class DisplayEndpoint extends Component {
                                     </a>
                                   </li>
                                   {getCurrentUser() && (
-                                    <li className="nav-item cookie-tab">
+                                    <li className='nav-item cookie-tab'>
                                       <a
                                         className={`nav-link ${this.state.activeTab === 'cookies' ? 'active' : ''}`}
                                         onClick={() => this.setState({ showCookiesModal: true })}
@@ -3213,13 +3219,13 @@ class DisplayEndpoint extends Component {
                               )}
                               {this.checkProtocolType(2) && (
                                 <>
-                                  <li className="nav-item">
+                                  <li className='nav-item'>
                                     <a
                                       className={`nav-link ${this.state.activeTab === 'default' ? 'active' : ''}`}
                                       id={`pills-query-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
+                                      data-toggle='pill'
                                       href={`#query-${this.props.tab.id}`}
-                                      role="tab"
+                                      role='tab'
                                       aria-controls={`query-${this.props.tab.id}`}
                                       aria-selected={this.state.activeTab === 'default'}
                                       onClick={() => this.setState({ activeTab: 'default' })}
@@ -3227,13 +3233,13 @@ class DisplayEndpoint extends Component {
                                       Query
                                     </a>
                                   </li>
-                                  <li className="nav-item">
+                                  <li className='nav-item'>
                                     <a
                                       className={`nav-link ${this.state.activeTab === 'authorization' ? 'active' : ''}`}
                                       id={`pills-authorization-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
+                                      data-toggle='pill'
                                       href={`#authorization-${this.props.tab.id}`}
-                                      role="tab"
+                                      role='tab'
                                       aria-controls={`authorization-${this.props.tab.id}`}
                                       aria-selected={this.state.activeTab === 'authorization'}
                                       onClick={() => this.setState({ activeTab: 'authorization' })}
@@ -3241,13 +3247,13 @@ class DisplayEndpoint extends Component {
                                       Authorization
                                     </a>
                                   </li>
-                                  <li className="nav-item">
+                                  <li className='nav-item'>
                                     <a
                                       className={`nav-link ${this.state.activeTab === 'headers' ? 'active' : ''}`}
                                       id={`pills-headers-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
+                                      data-toggle='pill'
                                       href={`#headers-${this.props.tab.id}`}
-                                      role="tab"
+                                      role='tab'
                                       aria-controls={`headers-${this.props.tab.id}`}
                                       aria-selected={this.state.activeTab === 'headers'}
                                       onClick={() => this.setState({ activeTab: 'headers' })}
@@ -3255,13 +3261,13 @@ class DisplayEndpoint extends Component {
                                       Headers
                                     </a>
                                   </li>
-                                  <li className="nav-item">
+                                  <li className='nav-item'>
                                     <a
                                       className={`nav-link ${this.state.activeTab === 'pre-script' ? 'active' : ''}`}
                                       id={`pills-pre-script-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
+                                      data-toggle='pill'
                                       href={`#pre-script-${this.props.tab.id}`}
-                                      role="tab"
+                                      role='tab'
                                       aria-controls={`pre-script-${this.props.tab.id}`}
                                       aria-selected={this.state.activeTab === 'pre-script'}
                                       onClick={() => this.setState({ activeTab: 'pre-script' })}
@@ -3269,13 +3275,13 @@ class DisplayEndpoint extends Component {
                                       Pre-Script
                                     </a>
                                   </li>
-                                  <li className="nav-item">
+                                  <li className='nav-item'>
                                     <a
                                       className={`nav-link ${this.state.activeTab === 'post-script' ? 'active' : ''}`}
                                       id={`pills-post-script-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
+                                      data-toggle='pill'
                                       href={`#post-script-${this.props.tab.id}`}
-                                      role="tab"
+                                      role='tab'
                                       aria-controls={`post-script-${this.props.tab.id}`}
                                       aria-selected={this.state.activeTab === 'post-script'}
                                       onClick={() => this.setState({ activeTab: 'post-script' })}
@@ -3291,13 +3297,13 @@ class DisplayEndpoint extends Component {
                       ) : null}
 
                       {this.isDashboardAndTestingView() ? (
-                        <div className="tab-content" id="pills-tabContent">
+                        <div className='tab-content' id='pills-tabContent'>
                           {this.checkProtocolType(1) && (
                             <>
                               <div
                                 className={`tab-pane fade ${this.state.activeTab === 'default' ? 'show active' : ''}`}
                                 id={`params-${this.props.tab.id}`}
-                                role="tabpanel"
+                                role='tabpanel'
                                 aria-labelledby={`pills-params-tab-${this.props.tab.id}`}
                               >
                                 {this.renderParams()}
@@ -3306,7 +3312,7 @@ class DisplayEndpoint extends Component {
                               <div
                                 className={`tab-pane fade ${this.state.activeTab === 'authorization' ? 'show active' : ''}`}
                                 id={`authorization-${this.props.tab.id}`}
-                                role="tabpanel"
+                                role='tabpanel'
                                 aria-labelledby={`pills-authorization-tab-${this.props.tab.id}`}
                               >
                                 <div>
@@ -3324,7 +3330,7 @@ class DisplayEndpoint extends Component {
                               <div
                                 className={`tab-pane fade ${this.state.activeTab === 'headers' ? 'show active' : ''}`}
                                 id={`headers-${this.props.tab.id}`}
-                                role="tabpanel"
+                                role='tabpanel'
                                 aria-labelledby={`pills-headers-tab-${this.props.tab.id}`}
                               >
                                 <div>{this.renderHeaders()}</div>
@@ -3332,7 +3338,7 @@ class DisplayEndpoint extends Component {
                               <div
                                 className={`tab-pane fade ${this.state.activeTab === 'body' ? 'show active' : ''}`}
                                 id={`body-${this.props.tab.id}`}
-                                role="tabpanel"
+                                role='tabpanel'
                                 aria-labelledby={`pills-body-tab-${this.props.tab.id}`}
                               >
                                 {this.renderBodyContainer()}
@@ -3387,7 +3393,6 @@ class DisplayEndpoint extends Component {
                                         scriptText={this.props?.endpointContent?.preScriptText}
                                         endpointContent={this.props?.endpointContent}
                                         key={this.props.activeTabId}
-
                                       />
                                     </div>
                                   </div>
@@ -3404,7 +3409,6 @@ class DisplayEndpoint extends Component {
                                         scriptText={this.props?.endpointContent?.postScriptText}
                                         endpointContent={this.props?.endpointContent}
                                         key={this.props.activeTabId}
-
                                       />
                                     </div>
                                   </div>
@@ -3417,7 +3421,7 @@ class DisplayEndpoint extends Component {
                               <div
                                 className={`tab-pane fade ${this.state.activeTab === 'default' ? 'show active' : ''}`}
                                 id={`query-${this.props.tab.id}`}
-                                role="tabpanel"
+                                role='tabpanel'
                                 aria-labelledby={`pills-query-tab-${this.props.tab.id}`}
                               >
                                 <QueryTab
@@ -3429,7 +3433,7 @@ class DisplayEndpoint extends Component {
                               <div
                                 className={`tab-pane fade ${this.state.activeTab === 'authorization' ? 'show active' : ''}`}
                                 id={`authorization-${this.props.tab.id}`}
-                                role="tabpanel"
+                                role='tabpanel'
                                 aria-labelledby={`pills-authorization-tab-${this.props.tab.id}`}
                               >
                                 <div>
@@ -3445,7 +3449,7 @@ class DisplayEndpoint extends Component {
                               <div
                                 className={`tab-pane fade ${this.state.activeTab === 'headers' ? 'show active' : ''}`}
                                 id={`headers-${this.props.tab.id}`}
-                                role="tabpanel"
+                                role='tabpanel'
                                 aria-labelledby={`pills-headers-tab-${this.props.tab.id}`}
                               >
                                 <div>{this.renderHeaders()}</div>
@@ -3453,12 +3457,12 @@ class DisplayEndpoint extends Component {
                               <div
                                 className={`tab-pane fade ${this.state.activeTab === 'pre-script' ? 'show active' : ''}`}
                                 id={`pre-script-${this.props.tab.id}`}
-                                role="tabpanel"
+                                role='tabpanel'
                                 aria-labelledby={`pills-pre-script-tab-${this.props.tab.id}`}
                               >
                                 <div>
                                   <Script
-                                    type="Pre-Script"
+                                    type='Pre-Script'
                                     handleScriptChange={this.handleScriptChange.bind(this)}
                                     scriptText={this.props?.endpointContent?.preScriptText}
                                     endpointContent={this.props?.endpointContent}
@@ -3469,17 +3473,16 @@ class DisplayEndpoint extends Component {
                               <div
                                 className={`tab-pane fade ${this.state.activeTab === 'post-script' ? 'show active' : ''}`}
                                 id={`post-script-${this.props.tab.id}`}
-                                role="tabpanel"
+                                role='tabpanel'
                                 aria-labelledby={`pills-post-script-tab-${this.props.tab.id}`}
                               >
                                 <div>
                                   <Script
-                                    type="Post-Script"
+                                    type='Post-Script'
                                     handleScriptChange={this.handleScriptChange.bind(this)}
                                     scriptText={this.props?.endpointContent?.postScriptText}
                                     endpointContent={this.props?.endpointContent}
                                     key={this.props.activeTabId}
-
                                   />
                                 </div>
                               </div>

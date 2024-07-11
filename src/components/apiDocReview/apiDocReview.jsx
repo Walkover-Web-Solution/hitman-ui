@@ -10,6 +10,7 @@ import { dislike, like } from '../../services/feedbackService'
 import { LuAsterisk } from 'react-icons/lu'
 import { SlLike } from "react-icons/sl";
 import { VscStarFull } from "react-icons/vsc";
+import { useParams } from 'react-router-dom'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -29,6 +30,7 @@ const ApiDocReview = (props) => {
   const [showSolidDislike, setShowSolidDislike] = useState(false);
 
   const handleClose = () => setShow(false);
+  const params = useParams()
 
   useEffect(() => {
     setParent()
@@ -36,7 +38,7 @@ const ApiDocReview = (props) => {
   }, [])
 
   useEffect(() => {
-    if (prevProps.current.match.params !== props.match.params) {
+    if (prevProps.current.params !== params) {
       setParent()
     }
     prevProps.current = props
@@ -45,7 +47,7 @@ const ApiDocReview = (props) => {
       setFeedbackType('')
       setFeedbackSaved(false)
     }
-  }, [props.match.params])
+  }, [params])
 
   const setLocalStorageReviews = () => {
     try {
@@ -56,7 +58,7 @@ const ApiDocReview = (props) => {
   }
 
   const setParent = () => {
-    const { pageId, endpointId } = props.match.params || {}
+    const { pageId, endpointId } = params || {}
     const parentId = endpointId || pageId
     const parentType = endpointId ? 'endpoint' : 'page'
     setParentId(parentId)

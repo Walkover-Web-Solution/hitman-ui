@@ -3,7 +3,7 @@ import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'
 import { SESSION_STORAGE_KEY } from '../../common/utility.js'
 
-export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) => {
+export const fetchAllPublicEndpoints = (navigate, collectionIdentifier, domain) => {
   return (dispatch) => {
     publicEndpointsService
       .fetchAll(collectionIdentifier, domain)
@@ -12,7 +12,7 @@ export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) =
       })
       .catch((error) => {
         dispatch(onPublicEndpointsFetchedError(error.response ? error.response.data : error))
-        history.push({ pathname: '/p/error', collection: true })
+        navigate({ pathname: '/p/error', collection: true })
       })
   }
 }
@@ -115,13 +115,13 @@ export const approveEndpoint = (endpoint, publishLoaderHandler) => {
   const uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     publicEndpointsService
-      .approveEndpoint(endpoint,uniqueTabId)
+      .approveEndpoint(endpoint, uniqueTabId)
       .then((response) => {
         dispatch(onEndpointStateSuccess({ state: response.data.state, id: response.data.id, isPublished: true }))
         publishLoaderHandler()
       })
       .catch((error) => {
-        dispatch(onEndpointStateError(error.response ? error.response.data : error))
+        dispatch(onEndpointStateError(error?.response ? error?.response?.data : error))
         publishLoaderHandler()
       })
   }
