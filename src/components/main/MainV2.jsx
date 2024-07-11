@@ -15,6 +15,7 @@ import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken }
 import { addCollectionAndPages } from '../redux/generalActions'
 import SplitPane from '../splitPane/splitPane'
 import { addUserData } from '../auth/redux/usersRedux/userAction'
+import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
   return {
@@ -24,6 +25,7 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints
   }
 }
+
 const mapDispatchToProps = (dispatch) => {
   return {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
@@ -46,15 +48,16 @@ class MainV2 extends Component {
   }
 
   async componentDidMount() {
-    const scriptId = "chatbot-main-script"
-    const chatbot_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI1OTgyIiwiY2hhdGJvdF9pZCI6IjY2NTQ3OWE4YmQ1MDQxYWU5M2ZjZDNjNSIsInVzZXJfaWQiOiIxMjQifQ.aI4h6OmkVvQP5dyiSNdtKpA4Z1TVNdlKjAe5D8XCrew"
-    const scriptSrc = "https://chatbot-embed.viasocket.com/chatbot-prod.js"
+    const scriptId = 'chatbot-main-script'
+    const chatbot_token =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI1OTgyIiwiY2hhdGJvdF9pZCI6IjY2NTQ3OWE4YmQ1MDQxYWU5M2ZjZDNjNSIsInVzZXJfaWQiOiIxMjQifQ.aI4h6OmkVvQP5dyiSNdtKpA4Z1TVNdlKjAe5D8XCrew'
+    const scriptSrc = 'https://chatbot-embed.viasocket.com/chatbot-prod.js'
     if (chatbot_token && !document.getElementById(scriptId)) {
-    const script = document.createElement("script");
-    script.setAttribute("embedToken", chatbot_token);
-    script.id = scriptId;
-    document.head.appendChild(script);
-    script.src = scriptSrc
+      const script = document.createElement('script')
+      script.setAttribute('embedToken', chatbot_token)
+      script.id = scriptId
+      document.head.appendChild(script)
+      script.src = scriptSrc
     }
     const token = getProxyToken()
     if (!token) {
@@ -63,26 +66,22 @@ class MainV2 extends Component {
     }
 
     let users = await getUserData(token)
-    if(users) this.props.add_user(users)
-    
+    if (users) this.props.add_user(users)
+
     /** Token Exists */
     if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
       /** For Logged in User */
-      let orgId = this.props.match.params.orgId
+      let orgId = this.props.params.orgId
       if (!orgId) {
         orgId = getOrgList()[0]?.id
-        this.props.history.push({
-          pathname: `/orgs/${orgId}/dashboard`
-        })
+        this.props.navigate(`/orgs/${orgId}/dashboard`)
       } else {
         await this.fetchAll()
         this.props.add_collection_and_pages(orgId)
       }
     } else {
       /** Perform Login Procedure for Token */
-      this.props.history.push({
-        pathname: '/login'
-      })
+      this.props.navigate('/login')
     }
     this.setState({ loading: false })
   }
@@ -92,7 +91,7 @@ class MainV2 extends Component {
   }
 
   setVisitedOrgs() {
-    const orgId = this.props.match.params.orgId
+    const orgId = this.props.params.orgId
     const org = {}
     org[orgId] = true
     window.localStorage.setItem('visitedOrgs', JSON.stringify(org))
@@ -103,7 +102,7 @@ class MainV2 extends Component {
       return false
     }
     const collectionLength = Object.keys(this.props.collections).length
-    const orgId = this.props.match.params.orgId
+    const orgId = this.props.params.orgId
     const temp = JSON.parse(window.localStorage.getItem('visitedOrgs'))
     if ((temp && temp[orgId]) || collectionLength > 0 || !this.state.showAddCollectionPage) {
       return false
@@ -179,10 +178,8 @@ class MainV2 extends Component {
             {
               <div className='custom-main-container'>
                 {/* <Header {...this.props} /> */}
-                <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
-                <OnlineSatus
-                // fetchFromBackend={this.fetchFromBackend.bind(this)}
-                />
+                <DesktopAppDownloadModal />
+                <OnlineSatus />
                 <div className='main-panel-wrapper'>
                   <SplitPane split='vertical' className='split-sidebar'>
                     <SideBarV2
@@ -212,4 +209,4 @@ class MainV2 extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainV2)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(MainV2))

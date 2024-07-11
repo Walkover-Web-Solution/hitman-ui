@@ -5,8 +5,8 @@ import authService, { getCurrentUser } from '../auth/authService'
 import { Header as GenericHeader } from 'viasocket-shared-plugins'
 import { connect } from 'react-redux'
 import BackIcon from '../../assets/icons/back-arrow.svg'
-
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
+import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
   return {
@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
     groups: state.groups,
     pages: state.pages,
     versions: state.versions,
-    organizations : state.organizations.orgList
+    organizations: state.organizations.orgList
   }
 }
 
@@ -80,16 +80,16 @@ class Header extends Component {
   }
 
   openPublishDocs(collection) {
+    const { orgId } = this.props.params
+
     if (collection?.id) {
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
+      this.props.navigate(`/orgs/${orgId}/admin/publish`, {
         search: `?collectionId=${collection.id}`
       })
     } else {
-      const collection = this.props.collections[Object.keys(this.props.collections)[0]]
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`
+      const defaultCollection = this.props.collections[Object.keys(this.props.collections)[0]]
+      this.props.navigate(`/orgs/${orgId}/admin/publish`, {
+        search: `?collectionId=${defaultCollection.id}`
       })
     }
   }
@@ -188,9 +188,8 @@ class Header extends Component {
   }
 
   handleGoBack() {
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard`
-    })
+    const { orgId } = this.props.params
+    this.props.navigate(`/orgs/${orgId}/dashboard`)
   }
 
   renderNavTitle() {
@@ -281,4 +280,4 @@ class Header extends Component {
   }
 }
 
-export default connect(mapStateToProps, null)(Header)
+export default connect(mapStateToProps, null)(withRouter(Header))
