@@ -30,10 +30,9 @@ const publishDocFormEnum = {
 }
 
 const PublishDocForm = (props) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const params = useParams();
-  
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const params = useParams()
 
   const { collections, isPublishSliderOpen, tabs, pages } = useSelector((state) => ({
     collections: state.collections,
@@ -430,7 +429,7 @@ const PublishDocForm = (props) => {
             <div className='or-wrap d-flex align-items-center'>
               <p className='mb-0'>OR</p>
             </div>
-            {renderInput('logoUrl', false, binaryFile, '')}
+            {renderInput('logoUrl', false, false, binaryFile, '')}
           </div>
           <div className='color-picker'>{renderColorPicker()}</div>
           {renderActionButtons(publishCheck)}
