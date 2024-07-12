@@ -312,7 +312,7 @@ form.add-new-domain-form {
   .custom-display-page {
     padding: 0 1.5rem;
     min-width: 250px;
-    height: 97vh;
+    height: 100vh;
     .page-header {
       line-break: anywhere;
     }
@@ -337,6 +337,7 @@ form.add-new-domain-form {
     align-items: center;
     justify-content: space-between;
     padding: 24px 66px 24px;
+    padding-bottom: 0;
     @media screen and (max-width: 1400px){
       padding: 1.25rem 1.25rem;
     }

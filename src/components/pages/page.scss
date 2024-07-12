@@ -150,7 +150,7 @@
 .pageText {
   width: 100%;
   background: inherit;
-  min-height: 55vh;
+  min-height: calc(100vh - 200px);
   word-break: break-all;
 
   * {
