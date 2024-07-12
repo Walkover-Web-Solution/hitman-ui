@@ -1730,7 +1730,8 @@ class DisplayEndpoint extends Component {
       checked: 'notApplicable',
       key: '',
       value: '',
-      description: ''
+      description: '',
+      type: 'enable'
     }
     for (let i = 0; i < originalParams.length; i++) {
       if (originalParams[i].key === title || originalParams[i].key === '') {
@@ -1744,8 +1745,10 @@ class DisplayEndpoint extends Component {
         checked: 'true',
         key: title,
         value: value,
-        description: ''
+        description: '',
+        type: 'disable'
       })
+      this.makeFunctionNonEditable(updatedParams[0].key)
     }
     updatedParams.push(emptyParam)
     const dummyData = this.props.endpointContent
@@ -1766,6 +1769,7 @@ class DisplayEndpoint extends Component {
     this.propsFromChild('Params', updatedParams)
   }
 
+
   setHeaders(value, title, authorizationFlag = undefined, tokenIdToSave) {
     const originalHeaders = this.props.endpointContent.originalHeaders
     const updatedHeaders = []
@@ -1774,7 +1778,7 @@ class DisplayEndpoint extends Component {
       key: '',
       value: '',
       description: '',
-      type: 'enable'
+      type: 'enable',
     }
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
@@ -1801,8 +1805,10 @@ class DisplayEndpoint extends Component {
         checked: 'true',
         key: title === 'content-type' ? 'content-type' : 'Authorization',
         value: title.split('.')[0] === 'Authorization' ? (title.split('.')[1] === 'oauth_2' ? 'Bearer ' + value : 'Basic ' + value) : '',
-        description: ''
+        description: '',
+        type: 'disable'
       })
+      this.makeFunctionNonEditable(updatedHeaders[0].key)
     }
     if (title === 'content-type') {
       updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(value)
@@ -1814,7 +1820,8 @@ class DisplayEndpoint extends Component {
         ...dummyData?.authorizationData?.authorization?.oauth2,
         selectedTokenId: tokenIdToSave
       }
-    } else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
+    }
+    else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
       const basicAuth = dummyData?.authorizationData?.authorization?.basicAuth
       if (basicAuth) {
         dummyData.authorizationData.authorization.user = basicAuth.username
@@ -3320,6 +3327,8 @@ class DisplayEndpoint extends Component {
                                     set_authoriztaion_params={this.setParams.bind(this)}
                                     set_authoriztaion_type={this.setAuthType.bind(this)}
                                     handleSaveEndpoint={this.handleSave.bind(this)}
+                                    delete_headers={this.deleteHeader.bind(this)}
+                                    delete_params={this.deleteParams.bind(this)}
                                   />
                                 </div>
                               </div>
@@ -3439,6 +3448,8 @@ class DisplayEndpoint extends Component {
                                     set_authoriztaion_params={this.setParams.bind(this)}
                                     set_authoriztaion_type={this.setAuthType.bind(this)}
                                     handleSaveEndpoint={this.handleSave.bind(this)}
+                                    delete_headers={this.deleteHeader.bind(this)}
+                                    delete_params={this.deleteParams.bind(this)}
                                   />
                                 </div>
                               </div>
