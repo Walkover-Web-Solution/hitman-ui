@@ -6,7 +6,6 @@ import { openInNewTab, setActiveTabId } from '../tabs/redux/tabsActions'
 import shortid from 'shortid'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import * as _ from 'lodash'
-import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
   return {
@@ -42,7 +41,7 @@ class TabOptions extends Component {
   }
 
   handleDuplicateTab() {
-    const { orgId } = this.props.params
+    const { orgId } = this.props.match.params
     const { tabs, activeTabId } = this.props.tabs
     const tab = _.cloneDeep(tabs[activeTabId])
     tab.id = shortid.generate()
@@ -54,7 +53,9 @@ class TabOptions extends Component {
 
     this.props.open_in_new_tab(tab)
 
-    this.props.navigate(`/orgs/${orgId}/dashboard/${tab.type}/new`)
+    this.props.history.push({
+      pathname: `/orgs/${orgId}/dashboard/${tab.type}/new`
+    })
   }
 
   async handleCloseAllTabs() {
@@ -80,4 +81,4 @@ class TabOptions extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TabOptions))
+export default connect(mapStateToProps, mapDispatchToProps)(TabOptions)

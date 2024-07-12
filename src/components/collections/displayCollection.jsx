@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { store } from '../../store/store'
 import ReactHtmlParser from 'html-react-parser'
-import withRouter from '../common/withRouter'
 
 class DisplayCollection extends Component {
   constructor(props) {
@@ -23,7 +22,7 @@ class DisplayCollection extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.collections !== prevProps.collections) {
-      const collectionId = this.props.params.collectionIdentifier
+      const collectionId = this.props.match.params.collectionIdentifier
       if (this.props.collections[collectionId] && this.props.collections[collectionId] !== prevProps.collections[collectionId]) {
         this.setState({ description: this.props.collections[collectionId].description })
       }
@@ -44,4 +43,4 @@ class DisplayCollection extends Component {
   }
 }
 
-export default withRouter(DisplayCollection)
+export default DisplayCollection

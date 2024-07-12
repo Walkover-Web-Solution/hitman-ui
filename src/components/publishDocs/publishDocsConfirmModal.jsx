@@ -1,25 +1,29 @@
-import React from 'react'
-import { Modal } from 'react-bootstrap'
-import { useParams } from 'react-router-dom'
-import './publishDocsConfirmModal.scss'
-import withRouter from '../common/withRouter'
+import React from 'react';
+import { Modal } from 'react-bootstrap';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+import './publishDocsConfirmModal.scss';
 
 const PublishDocsConfirmModal = (props) => {
-  const params = useParams()
+  const history = useHistory();
+  const match = useRouteMatch();
 
-  function handleOkay(collectionId) {
-    const { orgId } = params
+  const handleOkay = (collectionId) => {
     if (collectionId) {
-      this.props.navigate(`/orgs/${orgId}/admin/publish?collectionId=${collectionId}`)
+      history.push({
+        pathname: `/orgs/${match.params.orgId}/admin/publish`,
+        search: `?collectionId=${collectionId}`,
+      });
     }
-    props.onHide()
-  }
+    props.onHide();
+  };
 
   return (
-    <Modal size='lg' centered onHide={props.onHide} show={props.show}>
+    <Modal size='lg' centered onHide={props.onHide} show={props.show} >
       <div>
         <Modal.Header className='custom-collection-modal-container' closeButton>
-          <Modal.Title id='contained-modal-title-vcenter'>All set to publish your API doc, just a few more steps to go</Modal.Title>
+          <Modal.Title id='contained-modal-title-vcenter'>
+            All set to publish your API doc, just a few more steps to go
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ul>
@@ -32,7 +36,7 @@ const PublishDocsConfirmModal = (props) => {
         </Modal.Body>
       </div>
     </Modal>
-  )
-}
+  );
+};
 
-export default withRouter(PublishDocsConfirmModal)
+export default PublishDocsConfirmModal;

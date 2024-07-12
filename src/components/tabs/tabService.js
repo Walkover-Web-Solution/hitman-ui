@@ -1,13 +1,5 @@
 import { store } from '../../store/store'
-import {
-  addNewTab,
-  closeAllTabs,
-  closeTab,
-  replaceTabForUntitled,
-  setActiveTabId,
-  updateTab,
-  updateTabDraft
-} from '../tabs/redux/tabsActions'
+import { addNewTab, closeAllTabs, closeTab, replaceTabForUntitled, setActiveTabId, updateTab, updateTabDraft } from '../tabs/redux/tabsActions'
 import tabStatusTypes from './tabStatusTypes'
 import { getCurrentUser } from '../auth/authServiceV2'
 import { getOrgId } from '../common/utility'
@@ -41,9 +33,13 @@ function removeTab(tabId, props) {
 
 function changeRoute(props, tab) {
   if (tab.isSaved) {
-    props.navigate(`/orgs/${props.params.orgId}/dashboard/${tab.type}/${tab.id}`)
+    props.history.push({
+      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/${tab.id}`
+    })
   } else {
-    props.navigate(`/orgs/${props.params.orgId}/dashboard/${tab.type}/new`)
+    props.history.push({
+      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
+    })
   }
 }
 
@@ -54,20 +50,22 @@ function removeAllTabs(props) {
 
 function selectTab(props, tabId) {
   const { tabs } = store.getState().tabs
+
   const tab = tabs[tabId]
   if (tab?.status === 'NEW') {
-    props.navigate(`/orgs/${props.params.orgId}/dashboard/${tab.type}/new`)
+    props.history.push({
+      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
+    })
   } else if (tab?.type === 'collection') {
-    tab?.state?.pageType === 'SETTINGS'
-      ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/settings`)
-      : props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/feedback`)
-  } else if (tab?.type === 'page' && tab?.id) {
-    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}/edit`)
+    tab?.state?.pageType === 'SETTINGS' ? props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
+    : props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
   } else {
     if (!(tab?.type && tab?.id)) {
-      return props.navigate(`/orgs/${getOrgId()}/dashboard/endpoint/new`)
+      return props.history.push({ pathname: `/orgs/${getOrgId()}/dashboard/endpoint/new` })
     }
-    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}`)
+    return props.history.push({
+      pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${(tab.isModified)?'/edit':''}`
+    })
   }
   store.dispatch(setActiveTabId(tabId))
 }

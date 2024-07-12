@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { FaSquare, FaCheckSquare, FaMinusSquare } from 'react-icons/fa'
 import { MdArrowDropUp } from 'react-icons/md'
 import { MdOutlineArrowDropDown } from 'react-icons/md'
@@ -169,7 +169,9 @@ function PublishSidebar(props) {
                         <div className='endpoint-request-div'>{requestType}</div>
                       </div>
                     )}
-                    {pages?.[element.metadata?.actualId]?.protocolType === 2 && <GrGraphQl className='ml-2 graphql-icon' size={14} />}
+                    {pages?.[element.metadata?.actualId]?.protocolType === 2 && (
+                      <GrGraphQl className='ml-2 graphql-icon' size={14} />
+                    )}
                   </span>
                   {isBranch && <ArrowIcon isOpen={isExpanded} />}
                 </div>
