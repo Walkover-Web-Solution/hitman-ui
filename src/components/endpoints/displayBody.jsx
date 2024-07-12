@@ -98,10 +98,19 @@ class BodyContainer extends Component {
       this.showRawBodyType = false;
     }
 
+    const rawBody = body?.raw?.value || '';
+    let formattedRawBody = rawBody;
+
+    try {
+      const parsedBody = JSON.parse(rawBody);
+      formattedRawBody = this.prettifyJson(JSON.stringify(parsedBody));
+    } catch (e) {
+    }
+
     const data = {
       data: body?.[bodyTypesEnums['multipart/form-data']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
       urlencoded: body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
-      raw: body?.raw?.value || ''
+      raw: formattedRawBody,
     };
 
     this.rawBodyType = body?.raw?.rawType || rawTypesEnums.TEXT;
@@ -114,6 +123,22 @@ class BodyContainer extends Component {
       selectedRawBodyType: body?.raw?.rawType || rawTypesEnums.TEXT,
       selectedBodyType,
       data
+    });
+  }
+  prettifyJson(jsonString) {
+    let indent = 0;
+    const indentString = '  ';
+    return jsonString.replace(/({|}|\[|\]|,)/g, (match) => {
+      if (match === '{' || match === '[') {
+        indent += 1;
+        return match + '\n' + indentString.repeat(indent);
+      } else if (match === '}' || match === ']') {
+        indent -= 1;
+        return '\n' + indentString.repeat(indent) + match;
+      } else if (match === ',') {
+        return match + '\n' + indentString.repeat(indent);
+      }
+      return match;
     });
   }
 

@@ -231,7 +231,7 @@ class Endpoints extends Component {
           </div>
         ) : (
           <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`}>
-            {this.props?.endpoints[endpointId]?.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
+            {this.props?.endpoints[endpointId]?.protocolType === 1 && <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
               {this.props.endpoints[endpointId].requestType}
             </div>}
             {this.props?.endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
