@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Auth2Configurations from './authConfiguration/auth2Configurations'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { useQuery, useQueryClient } from 'react-query'
 import { useSelector } from 'react-redux'
 import _, { cloneDeep } from 'lodash'
@@ -125,13 +125,8 @@ export default function Authorization(props) {
     tabService.updateDraftData(endpointId, _.cloneDeep(dataToSave))
     if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestHeaders) {
       props.set_authorization_headers(selectedTokenValue, 'Authorization.oauth_2')
-      props.delete_params()
     } else if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestUrl) {
       props.set_authoriztaion_params(selectedTokenValue, 'access_token')
-      props.delete_headers()
-    } else {
-      props.delete_headers()
-      props.delete_params()
     }
     setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes[key])
   }

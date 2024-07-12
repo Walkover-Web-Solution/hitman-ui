@@ -2,8 +2,8 @@ import axios from 'axios'
 import logger from './logService'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import history from '../history'
 import { logout, getProxyToken } from '../components/auth/authServiceV2'
-import { navigateTo } from '../navigationService'
 
 // axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
@@ -12,14 +12,16 @@ instance.interceptors.response.use(null, (error) => {
   const expectedError = error.response && error.response.status >= 400 && error.response.status < 500
 
   if (error.response.config.method === 'get' && error.response.status === 404) {
-    navigateTo('/404_PAGE', {
-      state: { error: error }
+    history.push({
+      pathname: '/404_PAGE',
+      error: error
     })
   }
 
   if (error?.response?.config?.method === 'get' && error?.response?.status === 403) {
-    navigateTo('/403_PAGE', {
-      state: { error: error }
+    history.push({
+      pathname: '/403_PAGE',
+      error: error
     })
   }
 
@@ -48,9 +50,6 @@ function addProxyToken() {
 
 async function getMethod(url, config = null) {
   instance = addProxyToken()
-  if (url.includes('undefined')) {
-    return
-  }
   return await instance.get(url, config)
 }
 async function postMethod(url, data = null, config = null) {

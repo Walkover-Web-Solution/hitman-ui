@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { isDashboardRoute, SESSION_STORAGE_KEY } from '../common/utility'
-import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
-import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 import { BiLike, BiDislike, BiSolidLike, BiSolidDislike } from 'react-icons/bi'
 import './apiDocReview.scss'
 import { dislike, like } from '../../services/feedbackService'
 import { LuAsterisk } from 'react-icons/lu'
-import { SlLike } from 'react-icons/sl'
-import { VscStarFull } from 'react-icons/vsc'
-import { useParams } from 'react-router-dom'
+import { SlLike } from "react-icons/sl";
+import { VscStarFull } from "react-icons/vsc";
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -26,11 +25,10 @@ const ApiDocReview = (props) => {
   const [feedbackSaved, setFeedbackSaved] = useState(false)
   const [currentReviews, setCurrentReviews] = useState({})
   const prevProps = useRef(props)
-  const [show, setShow] = useState(false)
-  const [showSolidDislike, setShowSolidDislike] = useState(false)
+  const [show, setShow] = useState(false);
+  const [showSolidDislike, setShowSolidDislike] = useState(false);
 
-  const handleClose = () => setShow(false)
-  const params = useParams()
+  const handleClose = () => setShow(false);
 
   useEffect(() => {
     setParent()
@@ -38,16 +36,16 @@ const ApiDocReview = (props) => {
   }, [])
 
   useEffect(() => {
-    if (prevProps.current.params !== params) {
+    if (prevProps.current.match.params !== props.match.params) {
       setParent()
     }
     prevProps.current = props
     return () => {
-      setFeedbackGiven(false)
-      setFeedbackType('')
-      setFeedbackSaved(false)
-    }
-  }, [params])
+      setFeedbackGiven(false);
+      setFeedbackType('');
+      setFeedbackSaved(false);
+      };
+  }, [props.match.params])
 
   const setLocalStorageReviews = () => {
     try {
@@ -58,7 +56,7 @@ const ApiDocReview = (props) => {
   }
 
   const setParent = () => {
-    const { pageId, endpointId } = params || {}
+    const { pageId, endpointId } = props.match.params || {}
     const parentId = endpointId || pageId
     const parentType = endpointId ? 'endpoint' : 'page'
     setParentId(parentId)
@@ -70,7 +68,7 @@ const ApiDocReview = (props) => {
     setFeedbackType(type)
     setShow(true)
     // setshowSolidDislike(!showSolidDislike)
-    setLiked(false)
+    setLiked(false);
   }
 
   const savelocalstorage = (key, value) => {
@@ -88,11 +86,9 @@ const ApiDocReview = (props) => {
   const handleDislike = () => {
     const pageId = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const feedback = {
-      pageId,
-      comment,
-      email
+      pageId, comment, email
     }
-    dislike(feedback)
+   dislike(feedback)
       .then((response) => {
         setFeedbackSaved(true)
         setEmail(response.email)
@@ -102,35 +98,37 @@ const ApiDocReview = (props) => {
       .catch((error) => {
         console.error(error)
       })
-    setShowSolidDislike(true)
+      setShowSolidDislike(true);
   }
 
   const handleLikeButton = () => {
+
     if (feedbackGiven) {
-      return
+      return;
     }
-
-    const pageId = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-
+  
+    const pageId = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW);
+  
     like(pageId)
       .then((response) => {
-        savelocalstorage(parentId, getVoteKey(vote))
-        setEmail('')
-        setComment('')
-        setVote(null)
-        setFeedbackGiven(true)
-        setFeedbackType('LIKE')
+        savelocalstorage(parentId, getVoteKey(vote));
+        setEmail('');
+        setComment('');
+        setVote(null);
+        setFeedbackGiven(true);
+        setFeedbackType('LIKE');
       })
       .catch((error) => {
-        console.error(error)
-      })
-
-    setLiked(!liked)
-
+        console.error(error);
+      });
+  
+    setLiked(!liked);
+  
     if (!liked) {
-      setShowSolidDislike(false)
+      setShowSolidDislike(false);
     }
-  }
+  };
+  
 
   const getVoteKey = (value) => {
     return value === 1 ? LIKE : DISLIKE
@@ -153,52 +151,58 @@ const ApiDocReview = (props) => {
     } else if (feedbackType === 'DISLIKE') {
       return (
         <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Sorry to hear that. What can we do better?</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group className='mb-3' controlId='exampleForm.ControlInput1'>
-                <Form.Label>Email address</Form.Label>
-                <Form.Control type='email' placeholder='name@example.com' autoFocus onChange={handleInput} value={email} name='email' />
-                {!validateEmail(email) && email && <div className='text-danger fs-4'>Invalid email address</div>}
-              </Form.Group>
-              <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
-                <Form.Label>
-                  Comment <VscStarFull size='8' color='red' />
-                </Form.Label>
-                <Form.Control
-                  placeholder='Enter comment'
-                  as='textarea'
-                  onChange={handleInput}
-                  rows={3}
-                  value={comment}
-                  type='text'
-                  name='comment'
-                />
-                {comment && comment.trim().length < 5 && <div className='text-danger fs-4'>Comment must be at least 5 characters long</div>}
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            {show && (
-              <Button
-                variant='primary'
-                onClick={() => {
-                  handleDislike()
-                  handleClose()
-                }}
-                disabled={!comment.trim()}
-              >
-                Send
-              </Button>
-            )}
-          </Modal.Footer>
-        </Modal>
+        <Modal.Header closeButton>
+          <Modal.Title>Sorry to hear that. What can we do better?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="name@example.com"
+                autoFocus
+                onChange={handleInput}
+                value={email}
+                name='email'
+              />
+            {!validateEmail(email) && email && <div className='text-danger fs-4'>Invalid email address</div>}
+            </Form.Group>
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea1"
+            >
+              <Form.Label>
+                Comment <VscStarFull size='8' color='red' />
+              </Form.Label>
+              <Form.Control
+                placeholder='Enter comment'
+                as="textarea"
+                onChange={handleInput}
+                rows={3}
+                value={comment}
+                type='text'
+                name='comment'
+              />
+              {comment && comment.trim().length < 5 && (
+                <div className='text-danger fs-4'>Comment must be at least 5 characters long</div>
+              )}
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+        {show && (
+          <Button variant="primary" onClick={() => { handleDislike(); handleClose(); }}
+            disabled={ !comment.trim()}>
+            Send
+          </Button>
+        )}
+        </Modal.Footer>
+      </Modal>
       )
     }
   }
-  const [liked, setLiked] = useState(false)
+  const [liked, setLiked] = useState(false);
   return (
     !isDashboardRoute(props) && (
       <>

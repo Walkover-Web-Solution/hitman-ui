@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility.js'
 import groupsService from './subPageService.js'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
@@ -18,7 +18,6 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './subpages.scss'
-import { useParams } from 'react-router-dom'
 
 const SubPage = (props) => {
   const { pages, clientData, collections } = useSelector((state) => ({
@@ -29,8 +28,7 @@ const SubPage = (props) => {
 
   const dispatch = useDispatch()
 
-  const navigate = useNavigate()
-  const params = useParams()
+  const history = useHistory()
 
   const [showSubPageForm, setShowSubPageForm] = useState({ addPage: false, edit: false, share: false })
   const [theme, setTheme] = useState('')
@@ -111,7 +109,7 @@ const SubPage = (props) => {
     const isSelected =
       isUserOnPublishedPage && isUserOnTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId
         ? 'selected'
-        : isDashboardRoute && params.pageId === subPageId
+        : isDashboardRoute && props.match.params.pageId === subPageId
         ? 'selected'
         : ''
     const idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
@@ -131,6 +129,10 @@ const SubPage = (props) => {
     const staticColors = background['background_hover']
 
     const backgroundStyles = {
+      backgroundImage: isHover
+        ? `linear-gradient(to right, ${dynamicColors}, ${dynamicColors}),
+        linear-gradient(to right, ${staticColors}, ${staticColors})`
+        : '',
       backgroundImage: isHover
         ? `linear-gradient(to right, ${dynamicColors}, ${dynamicColors}), linear-gradient(to right, ${staticColors}, ${staticColors})`
         : ''
@@ -204,19 +206,27 @@ const SubPage = (props) => {
   }
 
   const handleRedirect = (id) => {
-    if (isDashboardRoute(props)) navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
-    else {
+    if (isDashboardRoute(props)) {
+      history.push({
+        pathname: `/orgs/${props.match.params.orgId}/dashboard/page/${id}`
+      })
+    } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      navigate(pathName)
+      history.push(pathName)
     }
   }
 
   const handleToggle = (e, id) => {
     e.stopPropagation()
     const isExpanded = clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-    dispatch(addIsExpandedAction({ value: !isExpanded, id: id }))
+    dispatch(
+      addIsExpandedAction({
+        value: !isExpanded,
+        id: id
+      })
+    )
   }
 
   return (
@@ -228,9 +238,11 @@ const SubPage = (props) => {
           props,
           closeDeleteGroupModal,
           'Delete Page',
-          `Are you sure you wish to delete this page? All your pages and endpoints present in this page will be deleted.`,
+          `Are you sure you wish to delete this page?
+          All your pages and endpoints present in this page will be deleted.`,
           pages[props.rootParentId]
         )}
+
       <div className='linkWith'>{renderBody(props.rootParentId)}</div>
     </>
   )

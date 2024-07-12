@@ -4,11 +4,10 @@ import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
 import { getOnlyUrlPathById, isElectron, trimString } from '../common/utility'
 import { onPageUpdated, updateNameOfPages } from '../pages/redux/pagesActions'
-import { MdHttp } from 'react-icons/md'
-import { GrGraphQl } from 'react-icons/gr'
+import { MdHttp } from "react-icons/md";
+import { GrGraphQl } from "react-icons/gr";
 import { updateTab } from '../tabs/redux/tabsActions'
 import { prototype } from 'form-data'
-import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
   return {
@@ -26,7 +25,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     update_name: (payload) => dispatch(updateNameOfPages(payload)),
-    update_tab: (id, data) => dispatch(updateTab(id, data))
+    update_tab: (id, data) => dispatch(updateTab(id, data)),
   }
 }
 
@@ -42,16 +41,13 @@ class EndpointBreadCrumb extends Component {
       versionName: null,
       collectionName: null,
       isPagePublished: false,
-      protocols: [
-        { type: 'HTTP', icon: <MdHttp color='green' size={16} /> },
-        { type: 'GraphQL', icon: <GrGraphQl color='rgb(170, 51, 106)' size={14} /> }
-      ]
+      protocols: [{ type: 'HTTP', icon: <MdHttp color='green' size={16} /> }, { type: 'GraphQL', icon: <GrGraphQl color='rgb(170, 51, 106)' size={14} /> }]
     }
   }
 
   componentDidMount() {
     if (this.props.isEndpoint) {
-      const endpointId = this.props?.params.endpointId
+      const endpointId = this.props?.match?.params.endpointId
       if (this.props?.pages?.[endpointId]) {
         this.setState({
           endpointTitle: this.props.pages[endpointId]?.name || '',
@@ -66,7 +62,7 @@ class EndpointBreadCrumb extends Component {
         })
       }
     } else {
-      const pageId = this.props?.params.pageId
+      const pageId = this.props?.match?.params.pageId
       if (this.props?.pages?.[pageId]) {
         this.setState({
           endpointTitle: this.props.pages[pageId]?.name || '',
@@ -106,7 +102,7 @@ class EndpointBreadCrumb extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // const endpointId = this.props?.params.endpointId
+    // const endpointId = this.props?.match?.params.endpointId
     // if (this.props.isEndpoint && this.props?.data?.name !== prevProps?.data?.name) {
     //   this.setState({
     //     endpointTitle: this.props.data.name,
@@ -124,8 +120,8 @@ class EndpointBreadCrumb extends Component {
     // }
     // this.changeEndpointName()
     if (this.props.isEndpoint) {
-      if (prevProps.params.endpointId === this.props?.params.endpointId) return
-      const endpointId = this.props?.params.endpointId
+      if (prevProps.match?.params.endpointId === this.props?.match?.params.endpointId) return
+      const endpointId = this.props?.match?.params.endpointId
       if (this.props?.pages?.[endpointId]) {
         this.setState({
           endpointTitle: this.props.pages[endpointId]?.name || '',
@@ -140,8 +136,8 @@ class EndpointBreadCrumb extends Component {
         })
       }
     } else {
-      if (prevProps?.params.pageId === this.props?.params.pageId) return
-      const pageId = this.props?.params.pageId
+      if (prevProps.match?.params.pageId === this.props?.match?.params.pageId) return
+      const pageId = this.props?.match?.params.pageId
       if (this.props?.pages?.[pageId]) {
         this.setState({
           endpointTitle: this.props.pages[pageId]?.name || '',
@@ -182,22 +178,22 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    this.setState({ changesMade: true })
+    this.setState({ changesMade: true });
     if (this.props?.isEndpoint) {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = e.currentTarget.value
       this.props.setQueryUpdatedData(tempData)
-      this.props.update_name({ id: this.props?.params?.endpointId, name: e.currentTarget.value })
+      this.props.update_name({ id: this.props?.match?.params?.endpointId, name: e.currentTarget.value })
     }
   }
 
   handleInputBlur() {
     this.setState({ nameEditable: false })
-    if (this.props?.params?.endpointId !== 'new' && trimString(this.props?.endpointContent?.data?.name).length === 0) {
+    if (this.props?.match?.params?.endpointId !== 'new' && trimString(this.props?.endpointContent?.data?.name).length === 0) {
       const tempData = this.props?.endpointContent || {}
-      tempData.data.name = this.props?.pages?.[this.props?.params?.endpointId]?.name
+      tempData.data.name = this.props?.pages?.[this.props?.match?.params?.endpointId]?.name
       this.props.setQueryUpdatedData(tempData)
-    } else if (this.props?.params?.endpointId === 'new' && !this.props?.endpointContent?.data?.name) {
+    } else if (this.props?.match?.params?.endpointId === 'new' && !this.props?.endpointContent?.data?.name) {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = 'Untitled'
       this.props.setQueryUpdatedData(tempData)
@@ -205,13 +201,13 @@ class EndpointBreadCrumb extends Component {
   }
 
   setEndpointData() {
-    this.endpointId = this.props?.params.endpointId
+    this.endpointId = this.props?.match?.params.endpointId
     this.collectionId = this.props.pages[this.endpointId]?.collectionId
     this.collectionName = this.collectionId ? this.props.collections[this.collectionId]?.name : null
   }
 
   setPageData() {
-    this.pageId = this.props?.params.pageId
+    this.pageId = this.props?.match?.params.pageId
     this.collectionId = this.props.pages[this.pageId]?.collectionId
     this.collectionName = this.collectionId ? this.props.collections[this.collectionId]?.name : null
   }
@@ -222,7 +218,7 @@ class EndpointBreadCrumb extends Component {
 
   handleProtocolTypeClick(index) {
     this.props.setQueryUpdatedData({ ...this.props.endpointContent, protocolType: index + 1 })
-    this.props.update_tab(this.props?.params.endpointId === 'new' && this.props.activeTabId, { isModified: true })
+    this.props.update_tab(this.props?.match?.params.endpointId === 'new' && this.props.activeTabId, { isModified: true })
     this.props.setActiveTab()
   }
 
@@ -236,7 +232,7 @@ class EndpointBreadCrumb extends Component {
           aria-haspopup='true'
           aria-expanded='false'
         >
-          {this.state.protocols[this.props?.endpointContent?.protocolType - 1]?.icon}
+          {this.state.protocols[(this.props?.endpointContent?.protocolType - 1)]?.icon}
         </button>
         <div className='dropdown-menu protocol-dropdown' aria-labelledby='dropdownMenuButton'>
           {this.state.protocols.map((protocolDetails, index) => (
@@ -256,30 +252,22 @@ class EndpointBreadCrumb extends Component {
       <div className='endpoint-header'>
         <div className='panel-endpoint-name-container'>
           <div className='page-title-name d-flex align-items-center'>
-            {this.props?.params?.endpointId === 'new' && this.switchProtocolTypeDropdown()}
-            {this.props?.params?.endpointId != 'new' &&
-              this.props?.endpointContent?.protocolType === 1 &&
-              this.state?.protocols?.[0]?.icon && (
-                <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[0]?.icon}</button>
-              )}
-            {this.props?.params?.endpointId != 'new' &&
-              this.props?.endpointContent?.protocolType === 2 &&
-              this.state?.protocols?.[1]?.icon && (
-                <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[1]?.icon}</button>
-              )}
+            {this.props?.match?.params?.endpointId === 'new' && this.switchProtocolTypeDropdown()}
+            {(this.props?.match?.params?.endpointId != 'new' && this.props?.endpointContent?.protocolType === 1 && this.state?.protocols?.[0]?.icon) &&
+              <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[0]?.icon}</button>}
+            {(this.props?.match?.params?.endpointId != 'new' && this.props?.endpointContent?.protocolType === 2 && this.state?.protocols?.[1]?.icon) &&
+              <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[1]?.icon}</button>}
             <input
               name='enpoint-title'
               ref={this.nameInputRef}
               style={{ textTransform: 'capitalize' }}
               className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
               onChange={this.handleInputChange.bind(this)}
-              value={
-                this.props?.isEndpoint
-                  ? this.props?.pages?.[this.props?.params?.endpointId]?.name ||
-                    this.props?.history?.[this.props?.params?.historyId]?.endpoint?.name ||
-                    this.props?.endpointContent?.data?.name
-                  : this.props?.pages?.[this.props?.params?.pageId]?.name
-              }
+              value={this.props?.isEndpoint
+                ? this.props?.pages?.[this.props?.match?.params?.endpointId]?.name ||
+                this.props?.history?.[this.props?.match?.params?.historyId]?.endpoint?.name ||
+                this.props?.endpointContent?.data?.name
+                : this.props?.pages?.[this.props?.match?.params?.pageId]?.name}
             />
           </div>
           {this.props.location.pathname.split('/')[5] !== 'new' && (
@@ -287,13 +275,17 @@ class EndpointBreadCrumb extends Component {
               {this.collectionName && <span className='collection-name-path'>{`${this.collectionName}/`}</span>}
               {
                 <span>
-                  {getOnlyUrlPathById(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages, 'internal')}
+                  {getOnlyUrlPathById(
+                    this.props?.match?.params?.pageId || this.props?.match?.params?.endpointId,
+                    this.props.pages,
+                    'internal'
+                  )}
                 </span>
               }
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
                 <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
               )}
-              {this.props.pages?.[this.props?.params?.pageId]?.isPublished && (
+              {this.props.pages?.[this.props?.match?.params?.pageId]?.isPublished && (
                 <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
               )}
             </div>
@@ -304,4 +296,4 @@ class EndpointBreadCrumb extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EndpointBreadCrumb))
+export default connect(mapStateToProps, mapDispatchToProps)(EndpointBreadCrumb)

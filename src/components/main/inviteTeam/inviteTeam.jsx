@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import './inviteTeam.scss'
-import { getCurrentOrg, getCurrentUser, getProxyToken } from '../../auth/authServiceV2'
+import { getCurrentOrg, getCurrentUser, getProxyToken} from '../../auth/authServiceV2'
 import { toast } from 'react-toastify'
 import GenericModal from '../GenericModal'
 import { inviteMembers, removeUser } from '../../../services/orgApiService'
@@ -14,24 +14,22 @@ function InviteTeam() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
-  const navigate = useNavigate()
+  const history = useHistory()
   const inputRef = useRef(null)
-  const orgId = getCurrentOrg()?.id
-
   const { users } = useSelector((state) => {
     return { users: state.users.usersList }
   })
 
   useEffect(() => {
-    if (typeof window.SendDataToChatbot === 'function') {
-      const userId = getCurrentUser()?.id
-      window.SendDataToChatbot({
-        bridgeName: 'LandingPage',
-        threadId: `${userId}`,
-        variables: { Proxy_auth_token: getProxyToken() }
-      })
-    }
-  }, [])
+      if (typeof window.SendDataToChatbot === 'function') {
+        const userId = getCurrentUser()?.id
+        window.SendDataToChatbot({
+          bridgeName: 'LandingPage',
+          threadId: `${userId}`,
+          variables: {Proxy_auth_token : getProxyToken()}
+        })
+          }
+    }, []);
 
   useEffect(() => {
     if (showModal) {
@@ -40,7 +38,8 @@ function InviteTeam() {
   }, [showModal])
 
   const handleBack = () => {
-    navigate(`/orgs/${orgId}/dashboard`)
+    const orgId = getCurrentOrg()?.id
+      history.push(`/orgs/${orgId}/dashboard`)
   }
 
   const handleInviteClick = () => setShowModal(true)
@@ -55,19 +54,19 @@ function InviteTeam() {
   }
 
   const handleRemoveMember = async (userId) => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const response = await removeUser(userId)
+      const response = await removeUser(userId);
       if (response?.status === 'success' || '200') {
-        toast.success('User removed successfully')
+        toast.success('User removed successfully');
         dispatch(removeUserData(userId))
       }
     } catch (error) {
-      toast.error('Error removing member')
+      toast.error('Error removing member');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleSendInvite = async (e) => {
     e.preventDefault()
@@ -77,7 +76,7 @@ function InviteTeam() {
         toast.error('Invalid email format')
         return
       }
-      const extractedName = email.substring(0, email.indexOf('@')).replace(/[^a-zA-Z]/g, '')
+      const extractedName = email.substring(0, email.indexOf('@')).replace(/[^a-zA-Z]/g, '');
       const response = await inviteMembers(extractedName, email)
       if (response?.status == 'success' || '200') {
         dispatch(addNewUserData([response?.data?.data]))
@@ -129,14 +128,15 @@ function InviteTeam() {
             {Object.entries(users).map(([key, user]) => (
               <tr key={key}>
                 <td>{user?.email}</td>
-                <td>Admin</td>
+                <td>Admin</td> 
                 <td>
-                  {user?.id !== getCurrentUser()?.id && (
-                    <button className='btn btn-danger btn-sm' onClick={() => handleRemoveMember(user?.id)}>
-                      Remove
-                    </button>
-                  )}
-                </td>
+                {user?.id !== getCurrentUser()?.id && (<button 
+                className='btn btn-danger btn-sm' 
+                onClick={() => handleRemoveMember(user?.id)}
+              >
+                Remove
+              </button>)}
+            </td>
               </tr>
             ))}
           </tbody>

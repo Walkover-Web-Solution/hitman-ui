@@ -1,32 +1,34 @@
-import React, { useEffect } from 'react'
-import { Accordion, Card, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchFeedbacks } from './redux/publishDocsActions'
-import { useParams } from 'react-router-dom'
+import React, {useEffect } from 'react';
+import {Accordion, Card, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFeedbacks } from './redux/publishDocsActions';
+import { useRouteMatch} from 'react-router-dom';
 
 const PublishDocsReview = () => {
-  const { collectionId } = useParams()
-  const dispatch = useDispatch()
 
-  const feedbacks = useSelector((state) => state.feedbacks)
-  const pages = useSelector((state) => state.pages)
+  const match = useRouteMatch();
+  const dispatch = useDispatch();
+
+  const feedbacks = useSelector((state) => state.feedbacks);
+  const pages = useSelector((state) => state.pages);
 
   useEffect(() => {
+    const { collectionId } = match.params;
     if (collectionId) {
-      dispatch(fetchFeedbacks(collectionId))
+      dispatch(fetchFeedbacks(collectionId));
     }
-  }, [collectionId, dispatch])
+  }, [match.params.collectionId, dispatch]);
 
   const renderHostedApiHeading = (heading) => (
     <div className='page-title mb-3'>
       <div>{heading}</div>
     </div>
-  )
+  );
 
   const renderFeedback = () => {
     return (
-      <div className='feedback-table-container'>
-        <table className='table'>
+      <div className="feedback-table-container">
+        <table className="table">
           <thead>
             <tr>
               <th>Page</th>
@@ -45,14 +47,14 @@ const PublishDocsReview = () => {
                   {Object.keys(feedback.comments).length === 0 ? (
                     <div>No comments</div>
                   ) : (
-                    <Accordion defaultActiveKey='0'>
+                    <Accordion defaultActiveKey="0">
                       <Card>
                         <Card.Header className='p-0'>
-                          <Accordion.Toggle as={Button} variant='link' eventKey='1'>
+                          <Accordion.Toggle as={Button} variant="link" eventKey="1">
                             Show Comments
                           </Accordion.Toggle>
                         </Card.Header>
-                        <Accordion.Collapse eventKey='1'>
+                        <Accordion.Collapse eventKey="1">
                           <Card.Body>
                             {Object.entries(feedback.comments).map(([email, comments]) => (
                               <div key={email}>

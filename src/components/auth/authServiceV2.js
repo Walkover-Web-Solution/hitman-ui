@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import http from "../../services/httpService";
 import { switchOrg } from "../../services/orgApiService";
 import axios from "axios";
@@ -136,7 +136,7 @@ async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
 
 function AuthServiceV2() {
   const query = useQuery();
-  const navigate = useNavigate();
+  const history = useHistory();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -146,7 +146,7 @@ function AuthServiceV2() {
           await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
         }
       } catch (err) {
-        navigate("/logout");
+        history.push("/logout");
       }
     };
 

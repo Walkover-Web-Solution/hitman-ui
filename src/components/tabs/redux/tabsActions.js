@@ -2,7 +2,7 @@ import shortid from 'shortid'
 import { store } from '../../../store/store'
 import tabStatusTypes from '../tabStatusTypes'
 import tabsActionTypes from './tabsActionTypes'
-import { navigateTo } from '../../../navigationService'
+import history from '../../../history'
 import { getOrgId, isElectron } from '../../common/utility'
 import { openModal } from '../../modals/redux/modalsActions'
 import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
@@ -48,7 +48,7 @@ export const addNewTab = () => {
       }
     })
     dispatch(setActiveTabId(id))
-    navigateTo(`/orgs/${orgId}/dashboard/endpoint/new`)
+    history.push({ pathname: `/orgs/${orgId}/dashboard/endpoint/new` })
   }
 }
 

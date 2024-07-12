@@ -22,11 +22,11 @@ export const formatResponseToSend = (response) => {
     type: response.data.type || 4,
     versionId: response.data.versionId || null,
     collectionId: response.data.collectionId,
-    protocolType: response.data.protocolType
+    protocolType: response.data.protocolType,
   }
 }
 
-export const addEndpoint = (navigate, newEndpoint, rootParentId, customCallback, props) => {
+export const addEndpoint = (history, newEndpoint, rootParentId, customCallback, props) => {
   newEndpoint.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   const orgId = getOrgId()
   const requestId = shortid.generate()
@@ -37,8 +37,8 @@ export const addEndpoint = (navigate, newEndpoint, rootParentId, customCallback,
       .then(async (response) => {
         const responseToSend = formatResponseToSend(response)
         const data = await dispatch(addChildInParent(responseToSend))
-        navigate(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
-        if (props?.params?.endpointId === 'new') {
+        history.push(`/orgs/${orgId}/dashboard/endpoint/${data?.payload?.id}`)
+        if (props?.match?.params?.endpointId === 'new') {
           dispatch(replaceTabForUntitled(data.payload.id, prevCurrentTabId))
         }
         if (customCallback) {
@@ -188,3 +188,6 @@ export const onEndpointDuplicated = (response) => {
     response
   }
 }
+
+
+

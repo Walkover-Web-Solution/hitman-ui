@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useHistory, useLocation, useParams, useRouteMatch } from 'react-router-dom'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import './main.scss'
@@ -39,11 +39,9 @@ const SideBar = (props) => {
 
   const update_drag_and_drop = (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
 
-  const navigate = useNavigate()
+  const history = useHistory()
   const location = useLocation()
-  const params = useParams()
-
-  const match = { params: { ...params } }
+  const match = useRouteMatch()
 
   const [collectionId, setCollectionId] = useState(null)
   const [selectedCollectionId, setSelectedCollectionId] = useState(null)
@@ -58,7 +56,7 @@ const SideBar = (props) => {
   const [filteredPages, setFilteredPages] = useState([])
 
   const getSidebarInteractionClass = () => {
-    return isDashboardRoute({ match, location, navigate }, true) ? 'sidebar' : 'sidebar'
+    return isDashboardRoute({ match, location, history }, true) ? 'sidebar' : 'sidebar'
   }
 
   function compareByCreatedAt(a, b) {
@@ -187,13 +185,15 @@ const SideBar = (props) => {
   }
 
   const openPage = (id) => {
-    if (isDashboardRoute({ match, location, navigate })) {
-      navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
+    if (isDashboardRoute({ match, location, history })) {
+      history.push({
+        pathname: `/orgs/${match.params.orgId}/dashboard/page/${id}`
+      })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      navigate(pathName)
+      history.push(pathName)
     }
   }
 
@@ -253,13 +253,15 @@ const SideBar = (props) => {
   }
 
   const openEndpoint = (id) => {
-    if (isDashboardRoute({ match, location, navigate })) {
-      navigate(`/orgs/${params.orgId}/dashboard/endpoint/${id}`)
+    if (isDashboardRoute({ match, location, history })) {
+      history.push({
+        pathname: `/orgs/${match.params.orgId}/dashboard/endpoint/${id}`
+      })
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      navigate(pathName)
+      history.push(pathName)
     }
   }
 
@@ -293,7 +295,10 @@ const SideBar = (props) => {
   }
 
   const openHistorySnapshot = (id) => {
-    navigate(`/orgs/${params.orgId}/dashboard/history/${id}`, { state: { historySnapshotId: id } })
+    history.push({
+      pathname: `/orgs/${match.params.orgId}/dashboard/history/${id}`,
+      historySnapshotId: id
+    })
   }
 
   const renderHistoryItem = (history) => {
@@ -470,7 +475,7 @@ const SideBar = (props) => {
   }
 
   const renderDashboardSidebar = () => {
-    let isOnDashboardPage = isDashboardRoute({ match, location, navigate })
+    let isOnDashboardPage = isDashboardRoute({ match, location, history })
     return (
       <>
         {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...props} />}
