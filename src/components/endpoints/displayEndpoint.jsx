@@ -1768,6 +1768,7 @@ class DisplayEndpoint extends Component {
     this.propsFromChild('Params', updatedParams)
   }
 
+
   setHeaders(value, title, authorizationFlag = undefined, tokenIdToSave) {
     const originalHeaders = this.props.endpointContent.originalHeaders
     const updatedHeaders = []
@@ -1776,7 +1777,7 @@ class DisplayEndpoint extends Component {
       key: '',
       value: '',
       description: '',
-      type: 'enable'
+      type: 'enable',
     }
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
@@ -1818,7 +1819,8 @@ class DisplayEndpoint extends Component {
         ...dummyData?.authorizationData?.authorization?.oauth2,
         selectedTokenId: tokenIdToSave
       }
-    } else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
+    }
+    else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
       const basicAuth = dummyData?.authorizationData?.authorization?.basicAuth
       if (basicAuth) {
         dummyData.authorizationData.authorization.user = basicAuth.username
@@ -3443,6 +3445,8 @@ class DisplayEndpoint extends Component {
                                     set_authoriztaion_params={this.setParams.bind(this)}
                                     set_authoriztaion_type={this.setAuthType.bind(this)}
                                     handleSaveEndpoint={this.handleSave.bind(this)}
+                                    delete_headers={this.deleteHeader.bind(this)}
+                                    delete_params={this.deleteParams.bind(this)}
                                   />
                                 </div>
                               </div>
