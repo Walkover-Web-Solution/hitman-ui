@@ -248,9 +248,9 @@ const fetchHistory = (historyId, props) => {
   let draftData = props?.tabs[historyId]?.draft
   // showing data from draft if data is modified
   if (props?.tabs[historyId]?.isModified && draftData) {
-    return draftData
+    return {...draftData, flagResponse:true}
   }
-  return utilityFunctions.modifyEndpointContent(_.cloneDeep(data), _.cloneDeep(untitledEndpointData))
+  return { ...utilityFunctions.modifyEndpointContent(_.cloneDeep(data), _.cloneDeep(untitledEndpointData)), flagResponse: true }
 }
 
 const withQuery = (WrappedComponent) => {
@@ -464,7 +464,9 @@ class DisplayEndpoint extends Component {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.extractEndpointName()
     }
-    if (this.props.endpointId !== prevProps.endpointId) {
+
+    if (this.props.endpointId !== prevProps.endpointId ) {
+      this.setState({flagResponse:false})
     }
     if (
       this.props?.endpointContent &&
@@ -476,7 +478,7 @@ class DisplayEndpoint extends Component {
     ) {
       this.prepareHarObject()
     }
-    if (this.state.endpoint.id !== prevState.endpoint.id && !this.props.location.pathname.includes('history')) {
+    if (this.state.endpoint.id !== prevState.endpoint.id) {
       this.setState({ flagResponse: false })
     }
 
@@ -534,6 +536,7 @@ class DisplayEndpoint extends Component {
       }
     }
   }
+  
   updateDimensions = () => {
     this.setState({ publicEndpointWidth: window.innerWidth, publicEndpointHeight: window.innerHeight })
     this.isMobileView()
@@ -906,7 +909,7 @@ class DisplayEndpoint extends Component {
       authorizationData: this.props.endpointContent.authorizationData,
       protocolType: this.props?.endpointContent.protocolType
     }
-    const response = { ...this.state.response }
+    const response = { ...this.props?.endpointContent?.testResponse };
     const createdAt = new Date()
     const timeElapsed = this.state.timeElapsed
     delete response.request
@@ -2027,7 +2030,7 @@ class DisplayEndpoint extends Component {
   }
 
   checkProtocolType(protocolType = 1) {
-    if (this.props.endpointContent.protocolType === protocolType) return true
+    if (this.props?.endpointContent?.protocolType === protocolType) return true
     return false
   }
 
@@ -2036,7 +2039,7 @@ class DisplayEndpoint extends Component {
   }
 
   displayResponseAndSampleResponse() {
-    return (
+        return (
       <>
         <div className='custom-tabs clear-both response-container mb-2' >
           <div className='d-flex justify-content-between align-items-center'>
@@ -2072,30 +2075,30 @@ class DisplayEndpoint extends Component {
             </ul>
           </div>
           <div className='tab-content responseTabWrapper' id='pills-tabContent'>
-            <div
-              className='tab-pane fade show active'
-              id={this.isDashboardAndTestingView() ? `response-${this.props.tab.id}` : 'response'}
-              role='tabpanel'
-              aria-labelledby='pills-response-tab'
-            >
-              <div className='hm-panel endpoint-public-response-container '>
-                <DisplayResponse
-                  {...this.props}
-                  loader={this.state?.loader}
-                  timeElapsed={this.state?.timeElapsed}
+              <div
+                className='tab-pane fade show active'
+                id={this.isDashboardAndTestingView() ? `response-${this.props.tab.id}` : 'response'}
+                role='tabpanel'
+                aria-labelledby='pills-response-tab'
+              >
+                <div className='hm-panel endpoint-public-response-container '>
+                  <DisplayResponse
+                    {...this.props}
+                    loader={this.state?.loader}
+                    timeElapsed={this.state?.timeElapsed}
                   response={this.props?.endpointContent?.testResponse}
-                  tests={this.state.tests}
-                  flagResponse={this.props?.endpointContent?.flagResponse}
-                  sample_response_array={this.props?.endpointContent?.sampleResponseArray}
-                  sample_response_flag_array={this.state.sampleResponseFlagArray}
-                  add_sample_response={this.addSampleResponse.bind(this)}
-                  props_from_parent={this.propsFromSampleResponse.bind(this)}
-                  handleCancel={() => {
-                    this.handleCancel()
-                  }}
-                />
+                    tests={this.state.tests}
+                    flagResponse={this.props?.endpointContent?.flagResponse}
+                    sample_response_array={this.props?.endpointContent?.sampleResponseArray}
+                    sample_response_flag_array={this.state.sampleResponseFlagArray}
+                    add_sample_response={this.addSampleResponse.bind(this)}
+                    props_from_parent={this.propsFromSampleResponse.bind(this)}
+                    handleCancel={() => {
+                      this.handleCancel()
+                    }}
+                  />
+                </div>
               </div>
-            </div>
             {getCurrentUser() && (
               <div
                 className='tab-pane fade'
@@ -2130,6 +2133,8 @@ class DisplayEndpoint extends Component {
   }
 
   displayPublicResponse() {
+    const historyId = this.props?.match?.params?.historyId
+
     return (
       <>
         <div className='response-container endpoint-public-response-container endPointRes'>
@@ -2139,7 +2144,7 @@ class DisplayEndpoint extends Component {
             loader={this.state.loader}
             tests={this.state.tests}
             timeElapsed={this.state.timeElapsed}
-            response={this.props?.endpointContent?.testResponse}
+            response={(this.props?.historySnapshots[historyId]?.response) || (this.props?.endpointContent?.testResponse)}
             flagResponse={this.props?.endpointContent?.flagResponse}
             handleCancel={() => {
               this.handleCancel()

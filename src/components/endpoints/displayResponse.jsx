@@ -490,7 +490,7 @@ class DisplayResponse extends Component {
     return (
       <div className='text-center my-5'>
         <div>Could not send request</div>
-        <small className='text-danger'>{this.props.response.data}</small>
+        <small className='text-danger'>{this.props?.response?.data}</small>
       </div>
     )
   }
@@ -504,15 +504,15 @@ class DisplayResponse extends Component {
   render() {
     const { theme } = this.state
     return (
-      <div className='endpoint-response-container overflow-auto mt-4' style={this.state.theme.backgroundStyle}>
+      <div className='endpoint-response-container overflow-auto mt-4' style={this.state?.theme?.backgroundStyle}>
         {this.props.loader ? (
           this.renderLoader()
-        ) : this.props.flagResponse ? (
-          this.props.response.status ? (
+        ) : this.props?.flagResponse ? (
+          this.props?.response?.status ? (
             <div>
               <div className='response-status justify-content-end'>
                 <div className='statusWrapper'>
-                  {this.props.response.status && (
+                  {this.props?.response?.status && (
                     <div id='status'>
                       <div className='response-status-item-name'>Status :</div>
                       {this.renderStatusMessage()}
@@ -521,14 +521,14 @@ class DisplayResponse extends Component {
                   <div id='time'>
                     <div className='response-status-item-name'>Time:</div>
                     <div className='response-status-value' style={{ color: theme }}>
-                      {this.props.timeElapsed} ms
+                      {this.props?.timeElapsed} ms
                     </div>
                   </div>
                   <Overlay target={this.copyDivRef.current} show={this.state.showCopyMessage} placement='top'>
                     <Tooltip id='copy-message'>Copied</Tooltip>
                   </Overlay>
                   <div className='resPubclipboardWrapper' ref={this.copyDivRef} onClick={() => this.showCopyMessage()}>
-                    <CopyToClipboard text={JSON.stringify(this.props.response.data)} onCopy={() => this.setState({ copied: true })}>
+                    <CopyToClipboard text={JSON.stringify(this.props?.response?.data)} onCopy={() => this.setState({ copied: true })}>
                       <button>
                         <svg width='13' height='13' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                           <path
