@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import { store } from '../../store/store'
 import { connect } from 'react-redux'
 import {
@@ -12,7 +12,7 @@ import {
   isOnPublishedPage
 } from '../common/utility'
 import './page.scss'
-import { updatePage } from './redux/pagesActions'
+import { updatePage, updateContent } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 import { isAdmin } from '../auth/authServiceV2'
@@ -22,37 +22,58 @@ import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from 
 import Tiptap from '../tiptapEditor/tiptap'
 import { getPageContent } from '../../services/pageServices'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
-import { useQuery } from 'react-query'
 import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
 import RenderPageContent from './renderPageContent'
 import { IoDocumentTextOutline } from "react-icons/io5";
 import DisplayUserAndModifiedData from '../common/userService'
+import tabService from '../tabs/tabService'
+import * as _ from 'lodash'
+import { updateTab } from '../tabs/redux/tabsActions'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import './page.scss'
+import { toast } from 'react-toastify'
 
-const withQuery = (WrappedComponent) => {
+
+const withQuery =(WrappedComponent) => {
   return (props) => {
+    const queryClient = useQueryClient()
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
-    let { data, error } = useQuery(
-      ['pageContent', pageId],
-      async () => {
-        return isOnPublishedPage()
-          ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
-          : await getPageContent(props?.match?.params?.orgId, pageId)
-      },
-      {
-        refetchOnWindowFocus: false,
-        cacheTime: 5000000,
-        enabled: true,
-        staleTime: 600000,
-        retry: 2
+    let { data, error,refetch, isLoading} = useQuery(['pageContent', pageId], async () => {
+      return isOnPublishedPage()
+        ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
+        : await getPageContent(props?.match?.params?.orgId, pageId)
+    })
+    useEffect(() => {
+      if (pageId) {
+        refetch();
       }
-    )
+    }, [pageId]);
+    const mutation = useMutation(updateContent, {
+      onSuccess:(data) => {
+        queryClient.setQueryData(['pageContent', pageId], data?.contents || '', {
+          refetchOnWindowFocus: false,
+          cacheTime: 5000000,
+          enabled: true,
+          staleTime: 600000
+        })
+      }
+    })
     const tabId = props?.tabs?.tabs?.[pageId]
     if (tabId?.isModified && tabId?.type == 'page' && tabId?.draft) {
       data = tabId?.draft
     }
-    return <WrappedComponent {...props} pageContent={data} currentPageId={pageId} pageContentLoading={data?.isLoading} pageContentError={error} />
+    return (
+      <WrappedComponent
+        {...props}
+        pageContent={data}
+        currentPageId={pageId}
+        pageContentLoading={data?.isLoading}
+        pageContentError={error}
+        mutationFn={mutation}
+      />
+    )
   }
 }
 
@@ -62,7 +83,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     pending_page: (page) => dispatch(pendingPage(page)),
     reject_page: (page) => dispatch(rejectPage(page)),
-    draft_page: (page) => dispatch(draftPage(page))
+    draft_page: (page) => dispatch(draftPage(page)),
+    update_tab: (id, data) => dispatch(updateTab(id, data))
   }
 }
 
@@ -79,10 +101,12 @@ class DisplayPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
+      data: { id: null, name: '', contents: '', state: '' },
       page: null,
-      requestKey: null
+      requestKey: null,
+      showEditor: false
     }
+    this.contents = React.createRef()
   }
 
   fetchPage(pageId) {
@@ -90,16 +114,38 @@ class DisplayPage extends Component {
     const { pages } = store.getState()
     const page = pages[pageId]
     if (page) {
-      const { id, versionId, groupId, name, contents } = page
-      data = { id, versionId, groupId, name, contents }
+      const { id, name, contents, state } = page
+      data = { id, name, contents, state }
       if (this._isMounted) {
         this.setState({ data, page })
       }
     }
   }
 
+  async fetchPage1(pageId) {
+    let data = {}
+    const { pages } = this.props
+    const page = pages[pageId]
+    if (page) {
+      const { id, name, contents, isPublished, state } = page
+      data = {
+        id,
+        name,
+        contents,
+        isPublished,
+        state
+      }
+      let updatedData = _.cloneDeep(data)
+      updatedData.contents = this.props?.pageContentData
+
+      this.setState({ data: updatedData, originalData: data, draftDataSet: true })
+    }
+  }
+
   async componentDidMount() {
     this._isMounted = true
+    await this.setPageData()
+    this.setState({ showEditor: true })
     this.extractPageName()
     if (!this.props?.location?.page) {
       let pageId = ''
@@ -124,12 +170,33 @@ class DisplayPage extends Component {
     }
     if (this.props.pageId && prevProps !== this.props) {
       if (this._isMounted) {
-        this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
+        this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, name: '', contents: '' } })
       }
     }
     // if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
     //   this.fetchPageContent(this.props.match.params.pageId)
     // }
+  }
+
+  async setPageData() {
+    const {
+      tab,
+      pages,
+      match: {
+        params: { pageId }
+      }
+    } = this.props
+    const { draftDataSet } = this.state
+
+    if (tab && pageId) {
+      if (tab.isModified && !draftDataSet) {
+        let data = this.state.data
+        data.contents = this.props.pageContentData
+        this.setState({ ...tab.state, draftDataSet: true, data: data })
+      } else if (pageId !== 'new' && pages[tab.id] && !this.state.originalData?.id) {
+        await this.fetchPage1(tab.id)
+      }
+    }
   }
 
   extractPageName() {
@@ -140,47 +207,37 @@ class DisplayPage extends Component {
     }
   }
 
-  handleEdit(page) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props?.match?.params.orgId}/dashboard/page/${this.props?.match?.params.pageId}/edit`,
-      page: page
-    })
-  }
-
-  checkPageRejected() {
+  checkPageRejected(index) {
     if (this.props.rejected) {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className={`page-wrapper ${isOnPublishedPage() ? "pt-3" : ""}`}>
-          {isOnPublishedPage() && this.props?.pageContent && (<h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>)}
-          {
-            this.props?.pageContent ? (
-              <div className='pageText'>
-                <RenderPageContent pageContent={this.props.pageContent} />
-                {this.props?.pageContent && (<span className='mt-2 Modified-at d-inline-block'><DisplayUserAndModifiedData
-                  isOnPublishedPage={isOnPublishedPage()}
-                  pages={this.props?.pages}
-                  currentPage={this.props?.currentPageId}
-                  users={this.props?.users}
-                /></span>)}
-              </div>
-            ) : (
-              <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
-                <IoDocumentTextOutline size={140} color='gray' />
-                <span className='empty-line'>
-                  {!isOnPublishedPage() ? this.props?.pages?.[this.props?.match?.params?.pageId]?.name : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
-                </span>
-                <span className='mt-1 d-inline-block Modified-at fs-4'><DisplayUserAndModifiedData
-                  isOnPublishedPage={isOnPublishedPage()}
-                  pages={this.props?.pages}
-                  currentPage={this.props?.currentPageId}
-                  users={this.props?.users}
-                /></span>
-              </div>
-            )
-          }
-        </div>
+        <div
+        className={`page-wrapper ${isOnPublishedPage() ? "pt-3" : ""}`}
+        ref={(node) => {
+          this.editorRef = node
+        }}
+      >
+        {isOnPublishedPage() && (
+          <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>
+        )}
+        {!isOnPublishedPage() && (
+          <div
+            className='pageText doc-view p-0 shadow-none'
+            onClick={() => {
+              this.setState({ showEditor: true })
+            }}
+          >
+            {this.renderEditor(this.props.pageContent === null ? '' : this.props.pageContent, index)}
+          </div>
+        )}
+         <div className='pageText'>{isOnPublishedPage() && <RenderPageContent pageContent={this.props?.pageContent || ''} />}</div>
+        {/* <span>
+          {isOnPublishedPage() &&
+            this.props?.pages?.[this.props?.currentPageId]?.updatedAt &&
+            `Modified at ${moment(this.props?.pages?.[this.props?.currentPageId]?.updatedAt).fromNow()}`}
+        </span> */}
+      </div>
       )
     }
   }
@@ -201,6 +258,42 @@ class DisplayPage extends Component {
 
   renderTiptapEditor(contents) {
     return <Tiptap onChange={() => { }} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
+  }
+  renderEditor(contents, index) {
+    return (
+      this.state.showEditor && (
+        <Tiptap
+          onChange={this.handleChange}
+          initial={contents}
+          match={this.props.match}
+          isInlineEditor={false}
+          disabled={false}
+          minHeight
+          key={index}
+        />
+      )
+    )
+  }
+  handleChange = (value) => {
+    const data = { ...this.state.data }
+    data.contents = value
+    let tabId = this.props.tab.id
+
+    this.setState({ data }, () => {
+      if (!this.props.tabs[tabId]?.activeTabId) {
+        tabService.markTabAsModified(this.props.tab.id)
+      }
+      this.updateTabDraftData(value)
+    })
+  }
+
+  updateTabDraftData(value) {
+    if (this.props.tab.id === this.props.tabs.activeTabId) {
+      clearTimeout(this.saveTimeOut)
+      this.saveTimeOut = setTimeout(() => {
+        tabService.updateDraftData(this.props.tab.id, _.cloneDeep(value))
+      }, 1000)
+    }
   }
 
   handleRemovePublicPage(page) {
@@ -243,6 +336,22 @@ class DisplayPage extends Component {
     )
   }
 
+  handleSubmit = (e) => {
+    if (e) e.preventDefault()
+    const editedPage = { ...this.state.data }
+    if (editedPage.name.trim() === '') {
+      toast.error('Page name cannot be empty.')
+      return
+    }
+    if (editedPage.contents.trim() === '<p></p>' || editedPage.contents.trim() === '') {
+        editedPage.contents = '';
+    }
+    delete editedPage['isPublished']
+    this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
+    tabService.markTabAsSaved(this.props.tab.id)
+    tabService.updateDraftData(editedPage?.id, null)
+  }
+
   renderPublishPageOperations() {
     if (isDashboardRoute(this.props)) {
       let pages = { ...this.props.pages }
@@ -279,13 +388,8 @@ class DisplayPage extends Component {
               {getEntityState(pageId, pages)}
             </button>
           )}
-          <button
-            className='btn btn-primary btn-sm fs-4 mt-1'
-            onClick={() => {
-              this.handleEdit(this.state.data)
-            }}
-          >
-            Edit
+          <button className='btn btn-primary btn-sm fs-4 mt-1' onClick={this.handleSubmit}>
+            Save
           </button>
         </div>
       )

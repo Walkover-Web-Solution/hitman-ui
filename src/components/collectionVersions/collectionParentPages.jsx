@@ -189,7 +189,7 @@ class CollectionParentPages extends Component {
 
   handleUpdate(collectionVersion) {
     this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${this.props.collection_id}/pages/${collectionVersion.id}/edit`,
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${this.props.collection_id}/pages/${collectionVersion.id}`,
       editCollectionVersion: collectionVersion
     })
   }

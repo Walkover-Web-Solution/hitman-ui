@@ -77,8 +77,8 @@ class TabContent extends Component {
       case 'page':
         return (
           <Switch>
-            <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' render={(props) => <EditPage {...this.props} {...props} tab={tab} />} />
-            <Route path='/orgs/:orgId/dashboard/page/:pageId' render={(props) => <DisplayPage {...props} tab={tab} />} />
+            {/* <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' render={(props) => <EditPage {...this.props} {...props} tab={tab} />} /> */}
+            <Route path='/orgs/:orgId/dashboard/page/:pageId' render={(props) => <DisplayPage {...this.props} tab={tab} />} />
           </Switch>
         )
       case 'collection':

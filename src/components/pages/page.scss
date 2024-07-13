@@ -48,15 +48,9 @@
 }
 
 .custom-display-page {
-  padding: 10px 30px;
-  margin-left: auto;
-  display: flex;
-  flex-direction: column;
+  padding: 10px;
   height: 100%;
-  max-width: 100%;
-  justify-content: space-between;
-  padding-top: 15px;
-  position: relative;
+  padding-top: 5px;
 
   // min-height: calc(100vh - 70px);
   button {
@@ -74,7 +68,14 @@
 
     .page-wrapper {
       max-width: 800px;
-  
+
+      .page-heading-content {
+        .endpoint-header {
+          padding-left: 16px;
+        }
+        max-width: 800px;
+        margin: auto;
+      }
       &:has(.empty-heading-for-page) {
         display: contents;
       }
