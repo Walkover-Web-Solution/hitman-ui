@@ -707,33 +707,41 @@ button.toggleButton {
   width: 432px;
   min-width: 432px;
   transition: 300ms;
+
   @media screen and (max-width: 1300px) {
-    min-width: 350px ;
-    width: 300px ;
+    min-width: 350px;
+    width: 300px;
   }
+
   .select-code-wrapper {
     flex-direction: row;
     height: 30px;
+
     button {
-      height: 48px;
+      height: 48px !important;
     }
-    .codeTemplateButtonMore{
+
+    .codeTemplateButtonMore {
       height: 38px !important;
       z-index: 1000;
       width: 100px !important;
-      .dropdownMore{
-      border: none !important;
-      }
+    }
+    .dropdown-more {
+      display: flex;
+      flex: 1 1;
     }
   }
+
   .inner-editor {
     height: 100%;
-    
+
     .editor-body-wrapper {
       height: calc(100vh - 140px);
-    @media screen and (max-width: 1160px) {
-      height: 100%;
-    }
+
+      @media screen and (max-width: 1160px) {
+        height: 100%;
+      }
+
       .ace-editor-wrapper {
         height: 100%;
         min-width: 0;
@@ -747,8 +755,9 @@ button.toggleButton {
       }
 
       padding: 0px;
+
       &.editor-body-wrapper-height {
-      height: calc(100vh - 185px) !important;
+        height: calc(100vh - 185px) !important;
       }
     }
   }

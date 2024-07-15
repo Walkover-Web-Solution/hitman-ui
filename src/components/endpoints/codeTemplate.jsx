@@ -175,7 +175,7 @@ class CodeTemplate extends Component {
                     {languages[key].name}
                   </button>
                 ))}
-                <Dropdown >
+                <Dropdown className='dropdown-more'>
                   <Dropdown.Toggle className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore mr-0' : 'dropdownMore mr-0'}>
                     {primaryLanguages.includes(this.selectedLanguage) ? (
                       <div className='d-flex flex-column '>
