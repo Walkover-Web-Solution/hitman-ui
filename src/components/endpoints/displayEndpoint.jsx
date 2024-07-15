@@ -3454,7 +3454,7 @@ class DisplayEndpoint extends Component {
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
                 {
-                  isOnPublishedPage() && (<span className='pl-3 Modified-at upper-Modified-at'>
+                  isOnPublishedPage() && (<span className='pl-3 Modified-at upper-modified-at'>
                     <DisplayUserAndModifiedData
                       isOnPublishedPage={true}
                       pages={this.props.pages}
@@ -3465,7 +3465,7 @@ class DisplayEndpoint extends Component {
                 }
               </div>
               <div className='w-100'>
-                <span className='footer-upper'>
+                <span className='footer-upper mt-5'>
                   {isOnPublishedPage() && (
                     <>
                       <div className='w-100 d-flex justify-content-center'>
@@ -3484,6 +3484,14 @@ class DisplayEndpoint extends Component {
               </div>
             ) : null}
             {this.renderCodeTemplate()}
+              <span className='Modified-at mt-2 lower-modified-at'>
+                <DisplayUserAndModifiedData
+                  isOnPublishedPage={isOnPublishedPage()}
+                  pages={this.props.pages}
+                  currentPage={this.props.currentEndpointId}
+                  users={this.props.users}
+                />
+              </span>
           </div>
         </div>
         {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
@@ -3495,16 +3503,8 @@ class DisplayEndpoint extends Component {
           />
         </span>}
         <div className='w-100'>
-          <span className='footer-lower ml-2 ml-sm-4'>
+          <span className='footer-lower mt-5'>
             <>
-              <span className='pl-3 Modified-at'>
-                <DisplayUserAndModifiedData
-                  isOnPublishedPage={isOnPublishedPage()}
-                  pages={this.props.pages}
-                  currentPage={this.props.currentEndpointId}
-                  users={this.props.users}
-                />
-              </span>
               <div className='w-100 d-flex flex-column align-items-center'>
                 <ApiDocReview {...this.props} />
               </div>

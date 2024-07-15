@@ -7,8 +7,7 @@ function Footer({ theme }) {
   const domainSrc = process.env.REACT_APP_UI_URL + '?src=' + domainName
 
   return (
-    // <footer>
-      <div className='footerWrapper mb-4'>
+      <div className='footerWrapper'>
         <p className='for-public-view' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <span className='poweredByText' style={{ color: 'grey'}}>
             Powered by{' '}
@@ -24,7 +23,6 @@ function Footer({ theme }) {
           </a>
         </p>
       </div>
-    // </footer>
   )
 }
 
