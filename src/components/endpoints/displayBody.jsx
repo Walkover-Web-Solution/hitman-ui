@@ -126,21 +126,27 @@ class BodyContainer extends Component {
     });
   }
   prettifyJson(jsonString) {
-    let indent = 0;
-    const indentString = '  ';
-    return jsonString.replace(/({|}|\[|\]|,)/g, (match) => {
-      if (match === '{' || match === '[') {
-        indent += 1;
-        return match + '\n' + indentString.repeat(indent);
-      } else if (match === '}' || match === ']') {
-        indent -= 1;
-        return '\n' + indentString.repeat(indent) + match;
-      } else if (match === ',') {
-        return match + '\n' + indentString.repeat(indent);
-      }
-      return match;
-    });
+    try {
+      const parsedJson = JSON.parse(jsonString);
+      return JSON.stringify(parsedJson, null, 2);
+    } catch (error) {
+      let indent = 0;
+      const indentString = '  ';
+      return jsonString.replace(/({|}|\[|\]|,)/g, (match) => {
+        if (match === '{' || match === '[') {
+          indent += 1;
+          return match + '\n' + indentString.repeat(indent);
+        } else if (match === '}' || match === ']') {
+          indent -= 1;
+          return '\n' + indentString.repeat(indent) + match;
+        } else if (match === ',') {
+          return match + '\n' + indentString.repeat(indent);
+        }
+        return match;
+      });
+    }
   }
+  
 
   handleSelectBodyType(bodyType, bodyDescription) {
     switch (bodyType) {
