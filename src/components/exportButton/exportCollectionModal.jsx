@@ -63,12 +63,12 @@ const ExportModal = (props) => {
   );
 
   const handleConfirmOpenApi = () => {
-    props.onExport(exportModalEnum.OPENAPI);
+    props.onExport(1);
     removeSelection();
   };
 
   const handleConfirmTechDoc = () => {
-    props.onExport(exportModalEnum.TECHDOC);
+    props.onExport(2);
     removeSelection();
   };
   
