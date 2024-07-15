@@ -20,7 +20,7 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
         if (stopSaveLoader) {
           stopSaveLoader()
         }
-        toast.success("Endpoint updated successfully")
+        toast.success('Endpoint updated successfully')
       })
       .catch((error) => {
         // dispatch(onEndpointUpdatedError(error.response ? error.response.data : error, originalEndpoint))
@@ -49,7 +49,7 @@ export const updatePage = (history, editedPage) => {
       state: editedPage.state,
       collectionId: editedPage.collectionId,
       urlMappingFlag: editedPage.urlMappingFlag,
-      prevUrlName: editedPage.prevUrlName,
+      prevUrlName: editedPage.prevUrlName
     }
     pageApiService
       .updatePage(editedPage.id, dataToSend)
@@ -58,10 +58,10 @@ export const updatePage = (history, editedPage) => {
           const oldUrls = store.getState().pages?.[editedPage.id]?.oldUrls
           oldUrls[response.data.newUrlMapping.id] = response.data.newUrlMapping.oldUrl
           dispatch(onPageUpdated({ ...response.data.updatedPage, oldUrls }))
-          return response.data.updatedPage;
+          return response.data.updatedPage
         }
         dispatch(onPageUpdated(response.data))
-        toast.success("Updated successfully")
+        toast.success('Updated successfully')
         return response.data
       })
       .catch((error) => {
@@ -117,7 +117,7 @@ export const onEndpointUpdated = (response) => {
   }
 }
 
-export const addPage = (history, rootParentId, newPage) => {
+export const addPage = (navigate, rootParentId, newPage) => {
   newPage.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   const orgId = getOrgId()
   return (dispatch) => {
@@ -126,8 +126,7 @@ export const addPage = (history, rootParentId, newPage) => {
       .then((response) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
-        history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
-        toast.success("Page Added successfully")
+        navigate(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
       .catch((error) => {
         dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))
@@ -175,7 +174,7 @@ export const deletePage = (page) => {
             toast.success('Deleted succesfully')
           })
           .catch((error) => {
-            console.errro(error)
+            console.error(error)
           })
       })
       .catch((error) => {
@@ -327,7 +326,7 @@ export const updateDragDrop = (draggedId, droppedOnId, pageIds) => {
             type: pagesActionTypes.ON_DRAG_DROP,
             payload: response.data
           })
-          toast.success("Moved succesfully")
+          toast.success('Moved succesfully')
         } else {
           toast.error(response?.data)
         }

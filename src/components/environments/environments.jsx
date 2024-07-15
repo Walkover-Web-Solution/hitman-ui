@@ -22,6 +22,7 @@ import IconButton from '../common/iconButton';
 import { IoIosArrowDown } from "react-icons/io";
 import ImportEnvironmentModal from './ImportEnvironmentModal';
 import { getCurrentUser } from '../auth/authServiceV2.js';
+import withRouter from '../common/withRouter.jsx';
 
 const mapStateToProps = (state) => {
   return {
@@ -85,7 +86,7 @@ class Environments extends Component {
       this.setState({
         publicEnvironmentName: this.props.environment.environments[environmentId].name
       })
-      this.props.history.push({
+      this.props.navigate({
         Environment: 'setCollectionEnvironment',
         selectedPublicEnvironment: this.props.environment.environments[environmentId]
       })
@@ -93,7 +94,7 @@ class Environments extends Component {
       this.setState({
         publicEnvironmentName: 'No Environment'
       })
-      this.props.history.push({
+      this.props.navigate({
         Environment: 'setCollectionEnvironment',
         selectedPublicEnvironment: null
       })
@@ -223,9 +224,9 @@ class Environments extends Component {
                 onClick={() =>
                   env
                     ? this.handleEnvironmentModal(
-                        'Edit Environment',
-                        this.props.environment.environments[this.props.environment.currentEnvironmentId]
-                      )
+                      'Edit Environment',
+                      this.props.environment.environments[this.props.environment.currentEnvironmentId]
+                    )
                     : null
                 }
                 className={`environment-buttons addEniButton ${env ? 'hover' : ''}`}
@@ -347,4 +348,4 @@ class Environments extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Environments);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Environments));
