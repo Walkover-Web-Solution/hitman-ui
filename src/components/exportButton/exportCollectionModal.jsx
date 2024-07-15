@@ -48,14 +48,14 @@ const ExportModal = (props) => {
   };
 
   const renderChoices = () => (
-    <div className='d-flex justify-content-center'>
+    <div className='choices d-flex justify-content-center'>
       {Object.values(choices).map((choice) => (
         <div
         key={choice.key}
         className={['export-collection-item', choice.disabled ? 'disabled' : '', choiceSelected === choice.key ? 'selected' : ''].join(' ')}
         onClick={() => (choice.disabled ? {} : selectChoice(choice.key))}
       >
-          <div>
+          <div className='d-flex flex-column align-items-center'>
           <div className='choice-logo'>{choice.logo}</div>
             <span>{choice.label}</span>
           </div>
