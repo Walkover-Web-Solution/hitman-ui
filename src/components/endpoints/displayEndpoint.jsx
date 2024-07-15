@@ -376,6 +376,7 @@ class DisplayEndpoint extends Component {
       endpoint: {},
       title: '',
       flagResponse: false,
+      uri:'',
       authorizationData: {
         authorization: {},
         authorizationTypeSelected: ''
@@ -428,7 +429,11 @@ class DisplayEndpoint extends Component {
         : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
-    const { endpointId } = this.props.match.params
+    const { endpointId} = this.props.match.params
+    const historyId = this.props?.match?.params?.historyId
+    if (historyId && historyId !== 'new') {
+      this.setState({ uri: this.props?.historySnapshots[historyId]?.endpoint?.uri })
+    }
     if (endpointId === 'new') this.setUnsavedTabDataInIDB()
     document.addEventListener('keydown', this.handleKeyDown)
     if (isElectron()) {
@@ -617,6 +622,7 @@ class DisplayEndpoint extends Component {
     }
     tempData.data = data
     this.props.setQueryUpdatedData(tempData)
+    this.setState({ uri: e.currentTarget.value })
   }
 
   setUnsavedTabDataInIDB() {
@@ -2153,7 +2159,7 @@ class DisplayEndpoint extends Component {
   }
 
   setHostUri(host, uri, selectedHost) {
-    if (uri !== this.props?.endpointContent?.data?.uri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+    if (uri !== this.props?.endpointContent?.data?.uri) this.handleChange({ currentTarget: { name: 'updatedUri', value: this.state.uri } })
     this.setBaseUrl(host, selectedHost)
   }
 
