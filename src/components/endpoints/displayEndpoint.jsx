@@ -478,9 +478,6 @@ class DisplayEndpoint extends Component {
     ) {
       this.prepareHarObject()
     }
-    if (this.state.endpoint.id !== prevState.endpoint.id) {
-      this.setState({ flagResponse: false })
-    }
 
     if (this.props?.endpointContent && !_.isEqual(this.props.endpointContent, this.state.endpointContentState)) {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
