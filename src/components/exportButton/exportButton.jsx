@@ -28,8 +28,8 @@ const ExportButton = ({ orgId, collectionId, collectionName }) => {
         show={isModalOpen}
         onHide={() => setModalOpen(false)}
         title='Select Export Format'
-        onExport={(format) => {
-          handleExport(format);
+        onExport={(type) => {
+          handleExport(type);
           setModalOpen(false);
         }}
       />
