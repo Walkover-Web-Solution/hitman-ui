@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './exportCollection.scss';
-import { SiOpenapiinitiative } from "react-icons/si";
+
+const techdocLogo= <img src="/maskable_icon_x192.png" alt="Techdoc Logo" height={30}/>
+const openApiLogo = <img src='/placeholder-image_0.jpg' alt= "Open API Logo" height={30}/>
 
 
 const exportModalEnum = {
@@ -14,14 +16,14 @@ const choices = {
   [exportModalEnum.TECHDOC]: {
     key: exportModalEnum.TECHDOC,
     label: 'TechDoc',
-    // logo: techDoclogo,
+    logo: techdocLogo,
     disabled: false,
     modalTitle: 'Export as TechDoc',
   },
   [exportModalEnum.OPENAPI]: {
     key: exportModalEnum.OPENAPI,
     label: 'Open API',
-    logo: <SiOpenapiinitiative />,
+    logo: openApiLogo,
     disabled: false,
     modalTitle: 'Are you sure ?',
     warningText: 'Your version and endpoint description will get deleted if you select Open API.',
