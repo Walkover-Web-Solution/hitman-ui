@@ -81,8 +81,8 @@ const ExportModal = (props) => {
       <div>
         <p>{choices[exportModalEnum.OPENAPI].warningText}</p>
         <div>
-          <button className="btn btn-primary  btn-sm" onClick={handleConfirmOpenApi}>Download</button>
-          <button className="btn btn-secondary  btn-sm" onClick={removeSelection}>Cancel</button>
+          <button className="btn btn-primary btn-sm fs-4 mr-2" onClick={handleConfirmOpenApi}>Download</button>
+          <button className="btn btn-secondary btn-sm fs-4" onClick={removeSelection}>Cancel</button>
         </div>
       </div>
     );
