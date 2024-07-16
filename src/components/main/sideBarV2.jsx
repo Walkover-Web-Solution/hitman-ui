@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react'
+import React, { useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
@@ -14,7 +14,7 @@ import {
 } from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
-import NoFound, { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
+import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
 import './main.scss'
 import './sidebar.scss'
@@ -35,23 +35,13 @@ const SideBar = (props) => {
   const location = useLocation()
   const params = useParams()
 
-  const match = { params: { ...params } }
-
-  const [collectionId, setCollectionId] = useState(null)
   const [selectedCollectionId, setSelectedCollectionId] = useState(null)
-  const [secondarySidebarToggle, setSecondarySidebarToggle] = useState(false)
-  const inputRef = useRef(null)
-  const sidebarRef = useRef(null)
   const [searchData, setSearchData] = useState({ filter: '' })
   const [draggingOverId, setDraggingOverId] = useState(null)
   const [draggedIdSelected, setDraggedIdSelected] = useState(null)
   const [filteredHistorySnapshot, setFilteredHistorySnapshot] = useState([])
   const [filteredEndpoints, setFilteredEndpoints] = useState([])
   const [filteredPages, setFilteredPages] = useState([])
-
-  const getSidebarInteractionClass = () => {
-    return isDashboardRoute({ match, location, navigate }, true) ? 'sidebar' : 'sidebar'
-  }
 
   function compareByCreatedAt(a, b) {
     const t1 = a?.createdAt
@@ -146,7 +136,6 @@ const SideBar = (props) => {
       <div tabIndex={0} className='d-flex align-items-center my-1 search-container'>
         <SearchIcon className='mr-2' />
         <input
-          ref={inputRef}
           value={searchData.filter}
           className='search-input'
           placeholder='Type / to search'
@@ -163,7 +152,7 @@ const SideBar = (props) => {
   }
 
   const openPage = (id) => {
-    if (isDashboardRoute({ match, location, navigate })) {
+    if (isDashboardRoute({ location })) {
       navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
@@ -229,7 +218,7 @@ const SideBar = (props) => {
   }
 
   const openEndpoint = (id) => {
-    if (isDashboardRoute({ match, location, navigate })) {
+    if (isDashboardRoute({ location })) {
       navigate(`/orgs/${params.orgId}/dashboard/endpoint/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
@@ -394,7 +383,6 @@ const SideBar = (props) => {
   // Function to open a collection
   const openCollection = (collectionId) => {
     setSelectedCollectionId(collectionId)
-    setSecondarySidebarToggle(false)
   }
 
   // Rendering collections with handling logic
@@ -412,7 +400,6 @@ const SideBar = (props) => {
         collectionsToRender={collectionsToRender}
         selectedCollectionId={selectedCollectionId}
         empty_filter={emptyFilter}
-        disable_secondary_sidebar={() => setSecondarySidebarToggle(true)}
         collection_selected={openCollection}
         filter={searchData.filter}
       />
@@ -420,20 +407,10 @@ const SideBar = (props) => {
   }
 
   const renderSidebarContent = () => {
-    const selectedCollectionName = collections[collectionId]?.name || ' '
     const collectionId1 = Object.keys(collections)?.[0]
     const rootParentId = collections?.[collectionId1]?.rootParentId || null
     return (
-      <div
-        ref={sidebarRef}
-        onClick={(e) => {
-          // Implement focus logic if required
-        }}
-        onBlur={(e) => {
-          // Implement defocus logic if required
-        }}
-        className={''}
-      >
+      <div>
         {isOnPublishedPage() ? (
           <div className='sidebar-accordion'>
             <CombinedCollections {...props} collectionId={collectionId1} rootParentId={rootParentId} />
@@ -446,7 +423,7 @@ const SideBar = (props) => {
   }
 
   const renderDashboardSidebar = () => {
-    let isOnDashboardPage = isDashboardRoute({ match, location, navigate })
+    let isOnDashboardPage = isDashboardRoute({ location })
     return (
       <>
         {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...props} />}
@@ -465,7 +442,7 @@ const SideBar = (props) => {
   return (
     <>
       {
-        <nav className={getSidebarInteractionClass()}>
+        <nav className='sidebar'>
           <div className='primary-sidebar'>{renderDashboardSidebar()}</div>
         </nav>
       }
