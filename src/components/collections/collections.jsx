@@ -319,14 +319,14 @@ class CollectionsComponent extends Component {
                             <TbDirections size={16} color='grey' /> Redirections
                           </div>
                           <div className='dropdown-item' onClick={() => this.handleApiAutomation(collectionId)}>
-                            <TbSettingsAutomation size={16} color='grey' /> API Automation
+                            <TbSettingsAutomation size={16} color='grey' />API Automation
                           </div>
                           <div className='dropdown-item d-flex align-items-center h-auto'>
-                            <BiExport size={18} color='grey' />
+                            <BiExport className='mb-1' size={18} color='grey' />
                             <ExportButton orgId={this.props.match.params.orgId} collectionId={collectionId} collectionName={this.props.collections[collectionId].name} />
                           </div>
-                          <div className='dropdown-item delete-button-sb text-danger d-flex' onClick={() => { this.openDeleteCollectionModal(collectionId) }}>
-                            <DeleteIcon size={14} /> Delete
+                          <div className='dropdown-item delete-button-sb align-items-center text-danger d-flex' onClick={() => { this.openDeleteCollectionModal(collectionId) }}>
+                            <DeleteIcon className='mb-1' size={14} /> Delete
                           </div>
                         </>
                       )}

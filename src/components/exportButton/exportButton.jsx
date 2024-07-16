@@ -19,7 +19,7 @@ const ExportButton = ({ orgId, collectionId, collectionName }) => {
         }
     };
     return (
-        <button className='h-auto' onClick={handleExport}>Export Collection</button>
+        <button className='h-auto pl-0' onClick={handleExport}>Export Collection</button>
     );
 };
 
