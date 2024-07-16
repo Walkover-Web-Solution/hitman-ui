@@ -2,11 +2,25 @@ import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap'
 import tabService from './tabService'
 import { useQueryClient } from 'react-query'
+import { connect } from 'react-redux'
+import { closeTab } from './redux/tabsActions'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
     return <WrappedComponent {...props} queryClient={queryClient} />
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    endpoints: state.pages
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    close_tab: (tabId) => dispatch(closeTab(tabId)),    
   }
 }
 class SavePromptModal extends Component {
@@ -103,4 +117,4 @@ class SavePromptModal extends Component {
   }
 }
 
-export default withQuery(SavePromptModal)
+export default connect(mapStateToProps, mapDispatchToProps)(withQuery(SavePromptModal))

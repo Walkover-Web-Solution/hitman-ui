@@ -20,18 +20,25 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 
 import { LuHistory } from 'react-icons/lu'
 import { GrGraphQl } from 'react-icons/gr'
+import { setTabsOrder } from './redux/tabsActions.js'
+import withRouter from '../common/withRouter.jsx'
 
 const mapStateToProps = (state) => {
   return {
     responseView: state.responseView,
     pages: state.pages,
     tabState: state.tabs.tabs,
-    tabsOrder: state.tabs.tabsOrder
+    tabsOrder: state.tabs.tabsOrder,
+    tabs: state.tabs,
+    historySnapshots: state.history,
+    collections: state.collections,
+    history: state.history
   }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    set_response_view: (view) => dispatch(onToggle(view))
+    set_response_view: (view) => dispatch(onToggle(view)),
+    set_tabs_order: (tabsOrder) => dispatch(setTabsOrder(tabsOrder))
   }
 }
 const withQuery = (WrappedComponent) => {
@@ -563,4 +570,4 @@ class CustomTabs extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withQuery(CustomTabs))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(CustomTabs)))
