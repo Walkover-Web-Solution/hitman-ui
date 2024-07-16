@@ -44,23 +44,6 @@ const SideBar = (props) => {
   const [filteredPages, setFilteredPages] = useState([])
   const inputRef = useRef(null)
 
-  useEffect(() => {
-    document.addEventListener('keydown', handleShortcutKeys)
-    if (isOnPublishedPage()) {
-      inputRef.current.focus()
-    }
-    return () => {
-      document.removeEventListener('keydown', handleShortcutKeys)
-    }
-  }, [])
-
-  const handleShortcutKeys = (event) => {
-    if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
-      event.preventDefault()
-      inputRef.current.focus()
-    }
-  }
-
   function compareByCreatedAt(a, b) {
     const t1 = a?.createdAt
     const t2 = b?.createdAt
@@ -154,7 +137,6 @@ const SideBar = (props) => {
       <div tabIndex={0} className='d-flex align-items-center my-1 search-container'>
         <SearchIcon className='mr-2' />
         <input
-          ref={inputRef}
           value={searchData.filter}
           className='search-input'
           placeholder='Type / to search'
