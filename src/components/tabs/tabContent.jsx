@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import PublishDocsReview from './../publishDocs/publishDocsReview'
 import { updateContent } from '../pages/redux/pagesActions'
 import withRouter from '../common/withRouter'
+
 const mapDispatchToProps = (dispatch) => {
   return {
     update_collection: (editedCollection) => dispatch(updateCollection(editedCollection))
@@ -22,7 +23,8 @@ const mapStateToProps = (state) => {
     isTabsLoaded: state?.tabs?.loaded,
     tabsOrder: state?.tabs?.tabsOrder,
     activeTabId: state.tabs.activeTabId,
-    tabData: state?.tabs?.tabs
+    tabData: state?.tabs?.tabs,
+    history: state?.history
   }
 }
 
@@ -70,7 +72,7 @@ class TabContent extends Component {
             environment={{}}
             tab={tab}
             historySnapshotFlag
-            historySnapshot={this.props.historySnapshots[tab.id]}
+            historySnapshot={this.props.history[tab.id]}
           />
         )
       case 'endpoint':
@@ -109,10 +111,10 @@ class TabContent extends Component {
       <Tab.Content>
         {getCurrentUser() && this.props.isTabsLoaded
           ? Object.keys(this.props.tabData).map((tabId) => (
-              <Tab.Pane eventKey={tabId} key={tabId}>
-                {this.renderContent(tabId)}
-              </Tab.Pane>
-            ))
+            <Tab.Pane eventKey={tabId} key={tabId}>
+              {this.renderContent(tabId)}
+            </Tab.Pane>
+          ))
           : this.renderEndpoint()}
       </Tab.Content>
     )
