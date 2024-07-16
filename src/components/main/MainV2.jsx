@@ -1,212 +1,150 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import 'react-toastify/dist/ReactToastify.css'
-import ContentPanel from './contentPanel'
-import './main.scss'
-import SideBarV2 from './sideBarV2'
-import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
-import { isDesktop } from 'react-device-detect'
-import OnlineSatus from '../onlineStatus/onlineStatus'
-import DesktopAppDownloadModal from './desktopAppPrompt'
-import UpdateStatus from './updateStatus'
-import CollectionModal from '../collections/collectionsModal'
-import NoCollectionIcon from '../../assets/icons/collection.svg'
-import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
-import { addCollectionAndPages } from '../redux/generalActions'
-import SplitPane from '../splitPane/splitPane'
-import { addUserData } from '../auth/redux/usersRedux/userAction'
-import withRouter from '../common/withRouter'
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { isDesktop } from 'react-device-detect';
+import SplitPane from '../splitPane/splitPane';
 
-const mapStateToProps = (state) => {
-  return {
-    collections: state.collections,
-    versions: state.versions,
-    pages: state.pages,
-    endpoints: state.endpoints
-  }
-}
+import { fetchAllCookies } from '../cookies/redux/cookiesActions';
+import { addCollectionAndPages } from '../redux/generalActions';
+import { addUserData } from '../auth/redux/usersRedux/userAction';
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetch_all_cookies: () => dispatch(fetchAllCookies()),
-    fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
-    add_collection_and_pages: (orgId) => dispatch(addCollectionAndPages(orgId)),
-    add_user: (userData) => dispatch(addUserData(userData))
-  }
-}
+import ContentPanel from './contentPanel';
+import SideBarV2 from './sideBarV2';
+import OnlineStatus from '../onlineStatus/onlineStatus';
+import DesktopAppDownloadModal from './desktopAppPrompt';
+import UpdateStatus from './updateStatus';
+import CollectionModal from '../collections/collectionsModal';
+import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2';
 
-class MainV2 extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      tabs: [],
-      defaultTabIndex: 0,
-      showAddCollectionModal: false,
-      loading: true,
-      showAddCollectionPage: true
-    }
-  }
+import NoCollectionIcon from '../../assets/icons/collection.svg';
+import 'react-toastify/dist/ReactToastify.css';
+import './main.scss';
 
-  async componentDidMount() {
-    const scriptId = 'chatbot-main-script'
-    const chatbot_token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI1OTgyIiwiY2hhdGJvdF9pZCI6IjY2NTQ3OWE4YmQ1MDQxYWU5M2ZjZDNjNSIsInVzZXJfaWQiOiIxMjQifQ.aI4h6OmkVvQP5dyiSNdtKpA4Z1TVNdlKjAe5D8XCrew'
-    const scriptSrc = 'https://chatbot-embed.viasocket.com/chatbot-prod.js'
-    if (chatbot_token && !document.getElementById(scriptId)) {
-      const script = document.createElement('script')
-      script.setAttribute('embedToken', chatbot_token)
-      script.id = scriptId
-      document.head.appendChild(script)
-      script.src = scriptSrc
-    }
-    const token = getProxyToken()
-    if (!token) {
-      this.setState({ loading: false })
-      return
-    }
 
-    let users = await getUserData(token)
-    if (users) this.props.add_user(users)
+const MainV2 = (props) => {
 
-    /** Token Exists */
-    if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
-      /** For Logged in User */
-      let orgId = this.props.params.orgId
-      if (!orgId) {
-        orgId = getOrgList()[0]?.id
-        this.props.navigate(`/orgs/${orgId}/dashboard`)
-      } else {
-        await this.fetchAll()
-        this.props.add_collection_and_pages(orgId)
+  const params = useParams();
+  const dispatch = useDispatch();
+  const collections = useSelector((state) => state.collections);
+
+  const [showAddCollectionModal, setShowAddCollectionModal] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [showAddCollectionPage, setShowAddCollectionPage] = useState(true)
+
+  useEffect(() => {
+    const initialize = async () => {
+      const token = getProxyToken()
+      if (!token) {
+        setLoading(false)
+        return
       }
-    } else {
-      /** Perform Login Procedure for Token */
-      this.props.navigate('/login')
+
+      let users = await getUserData(token)
+      if (users) dispatch(addUserData(users))
+
+      if (getCurrentUser() && getOrgList() && getCurrentOrg()) {
+        let orgId = params.orgId
+        if (!orgId) {
+          orgId = getOrgList()[0]?.id
+          props.history.push({
+            pathname: `/orgs/${orgId}/dashboard`
+          })
+        } else {
+          await fetchAll()
+          dispatch(addCollectionAndPages(orgId))
+        }
+      } else {
+        props.history.push({
+          pathname: '/login'
+        })
+      }
+      setLoading(false)
     }
-    this.setState({ loading: false })
+    initialize()
+  }, [])
+
+  const fetchAll = async () => {
+    dispatch(fetchAllCookies());
   }
 
-  async fetchAll() {
-    this.props.fetch_all_cookies()
-  }
-
-  setVisitedOrgs() {
-    const orgId = this.props.params.orgId
+  const setVisitedOrgs = () => {
+    const orgId = params.orgId
     const org = {}
     org[orgId] = true
     window.localStorage.setItem('visitedOrgs', JSON.stringify(org))
   }
 
-  showCollectionDashboard() {
+  const showCollectionDashboard = () => {
     if (!getCurrentUser()) {
       return false
     }
-    const collectionLength = Object.keys(this.props.collections).length
-    const orgId = this.props.params.orgId
+    const collectionLength = Object.keys(collections).length
+    const orgId = params.orgId
     const temp = JSON.parse(window.localStorage.getItem('visitedOrgs'))
-    if ((temp && temp[orgId]) || collectionLength > 0 || !this.state.showAddCollectionPage) {
-      return false
-    } else {
-      return true
-    }
+    return !(temp && temp[orgId]) && collectionLength === 0 && showAddCollectionPage
   }
 
-  setTabs(tabs, defaultTabIndex) {
-    if (defaultTabIndex >= 0) this.setState({ defaultTabIndex })
-
-    if (tabs) this.setState({ tabs })
-  }
-
-  setEnvironment(environment) {
-    this.setState({ currentEnvironment: environment })
-  }
-
-  addCollectionDialog() {
-    return (
-      this.state.showAddCollectionModal && (
-        <CollectionModal
-          title='Add Collection'
-          onHide={() => {
-            this.setState({ showAddCollectionModal: false })
-          }}
-          show={this.state.showAddCollectionModal}
-        />
-      )
+  const addCollectionDialog = () =>
+    true && (
+      <CollectionModal title='Add Collection' onHide={() => setShowAddCollectionModal(false)} show={showAddCollectionModal} />
     )
-  }
 
-  renderLandingDashboard() {
-    return (
-      <>
-        {this.addCollectionDialog()}
-        <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
-          <img src={NoCollectionIcon} alt='' />
-          <p className='mb-4'>Add your first collection for API testing and Public API Doc</p>
-          <button onClick={() => this.setState({ showAddCollectionModal: true })} className='btn btn-primary'>
-            + Add collection
-          </button>
-          <p className='mt-3'>Or</p>
-          <div
-            className='text-link'
-            onClick={() => {
-              this.setVisitedOrgs()
-              this.setState({ showAddCollectionPage: false })
-            }}
-          >
-            Try Out Without a Collection
+  const renderLandingDashboard = () => (
+    <>
+      {addCollectionDialog()}
+      <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
+        <img src={NoCollectionIcon} alt='' />
+        <p className='mb-4'>Add your first collection for API testing and Public API Doc</p>
+        <button onClick={() => setShowAddCollectionModal(true)} className='btn btn-primary'>
+          + Add collection
+        </button>
+        <p className='mt-3'>Or</p>
+        <div
+          className='text-link'
+          onClick={() => {
+            setVisitedOrgs()
+            setShowAddCollectionPage(false)
+          }}
+        >
+          Try Out Without a Collection
+        </div>
+      </div>
+    </>
+  )
+
+  return (
+    <>
+      {loading ? (
+        <div className='custom-loading-container'>
+          <div className='loading-content'>
+            <button className='spinner-border' />
+            <p className='mt-3'>Loading</p>
           </div>
         </div>
-      </>
-    )
-  }
-
-  render() {
-    return (
-      <>
-        {this.state.loading ? (
-          <div className='custom-loading-container'>
-            <div className='loading-content'>
-              <button className='spinner-border' />
-              <p className='mt-3'>Loading</p>
+      ) : (
+        <div>
+          {!isDesktop && (
+            <div className='mobile-warning'>Looks like you have opened it on a mobile device. It looks better on a desktop device.</div>
+          )}
+          <div className='custom-main-container'>
+            <DesktopAppDownloadModal history={props.history} location={props.location} match={props.match} />
+            <OnlineStatus />
+            <div className='main-panel-wrapper'>
+              <SplitPane split='vertical' className='split-sidebar'>
+                <SideBarV2 />
+                {showCollectionDashboard() ? (
+                  renderLandingDashboard()
+                ) : (
+                  <ContentPanel />
+                )}
+              </SplitPane>
             </div>
+            <UpdateStatus />
           </div>
-        ) : (
-          <div>
-            {!isDesktop && (
-              <div className='mobile-warning'>Looks like you have opened it on a mobile device. It looks better on a desktop device.</div>
-            )}
-            {
-              <div className='custom-main-container'>
-                {/* <Header {...this.props} /> */}
-                <DesktopAppDownloadModal />
-                <OnlineSatus />
-                <div className='main-panel-wrapper'>
-                  <SplitPane split='vertical' className='split-sidebar'>
-                    <SideBarV2
-                      tabs={[...this.state.tabs]}
-                      set_tabs={this.setTabs.bind(this)}
-                      default_tab_index={this.state.defaultTabIndex}
-                    />
-                    {this.showCollectionDashboard() ? (
-                      this.renderLandingDashboard()
-                    ) : (
-                      <ContentPanel
-                        {...this.props}
-                        set_environment={this.setEnvironment.bind(this)}
-                        set_tabs={this.setTabs.bind(this)}
-                        default_tab_index={this.state.defaultTabIndex}
-                      />
-                    )}
-                  </SplitPane>
-                </div>
-                <UpdateStatus />
-              </div>
-            }
-          </div>
-        )}
-      </>
-    )
-  }
+        </div>
+      )}
+    </>
+  )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(MainV2))
+export default MainV2;
