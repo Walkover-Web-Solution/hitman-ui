@@ -16,56 +16,59 @@ import { GrFormClose } from 'react-icons/gr'
 import { IoDocumentTextOutline } from 'react-icons/io5'
 import { LuHistory } from 'react-icons/lu'
 import { GrGraphQl } from 'react-icons/gr'
-import { TbSettingsAutomation } from 'react-icons/tb'
-import Plus from '../../assets/icons/plus.svg'
-import './tabs.scss'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-const CustomTabs = (props) => {
-  const dispatch = useDispatch()
-  const navRef = useRef(null)
-  const scrollRef = useRef({})
-  const draggedItem = useRef(null)
-  const interval = useRef(null)
-
-  const navigate = useNavigate()
-  const params = useParams()
-  const location = useLocation()
-
-  const [showSavePromptFor, setShowSavePromptFor] = useState([])
-  const [leftScroll, setLeftScroll] = useState(0)
-  const [showHistoryContainer, setShowHistoryContainer] = useState(false)
-  const [showPreview, setShowPreview] = useState(false)
-  const [previewId, setPreviewId] = useState(null)
-
-  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history } = useSelector((state) => {
-    return {
-      responseView: state.responseView,
-      pages: state.pages,
-      tabState: state.tabs.tabs,
-      tabsOrder: state.tabs.tabsOrder,
-      tabs: state.tabs,
-      historySnapshots: state.history,
-      collections: state.collections,
-      history: state.history
+const mapStateToProps = (state) => {
+  return {
+    responseView: state.responseView,
+    pages: state.pages,
+    tabState: state.tabs.tabs,
+    tabsOrder: state.tabs.tabsOrder
+  }
+}
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    set_response_view: (view) => dispatch(onToggle(view))
+  }
+}
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    return <WrappedComponent {...props} />
+  }
+}
+class CustomTabs extends Component {
+  constructor(props) {
+    super(props)
+    this.navRef = React.createRef()
+    this.scrollRef = {}
+    this.state = {
+      showSavePromptFor: [],
+      leftScroll: 0,
+      clientScroll: this.navRef.current?.clientWidth,
+      windowScroll: this.navRef.current?.scrollWidth,
+      showHistoryContainer: false
     }
-  })
+  }
 
-  useEffect(() => {
-    const newRef = scrollRef[tabs.activeTabId] || null
-    newRef && newRef.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown)
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.on('TAB_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
-  }, [tabs?.activeTabId])
+  }
 
-  const handleKeyDown = useCallback(
-    (e) => {
-      const activeTabId = tabs?.activeTabId
-      const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0
-      const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown)
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.removeListener('TAB_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
+  }
+
+  handleKeyDown = (e) => {
+    const activeTabId = this.props?.tabs?.activeTabId
+    const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+    const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0
 
       if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
         switch (e.key) {
@@ -525,4 +528,4 @@ const CustomTabs = (props) => {
   )
 }
 
-export default CustomTabs
+export default connect(mapStateToProps, mapDispatchToProps)(withQuery(CustomTabs))
