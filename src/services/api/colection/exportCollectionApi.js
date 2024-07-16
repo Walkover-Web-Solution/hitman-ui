@@ -1,10 +1,10 @@
 import httpService from "../../httpService";
 
-const exportCollectionApi = async (orgId, collectionId) => {
+const exportCollectionApi = async (orgId, collectionId, type) => {
     try {
         const response = await httpService.post(
             `${process.env.REACT_APP_API_URL}/orgs/${orgId}/exportCollection`, 
-            { collectionId }
+            { collectionId, type }
         );
         return response.data;
     } catch (error) {
