@@ -2,12 +2,13 @@ import React, { useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { connect, useDispatch, useSelector } from 'react-redux'
 import shortid from 'shortid'
-import { ToastContainer } from 'react-toastify'
 import { SESSION_STORAGE_KEY, getOrgId, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility'
 import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import AuthServiceV2 from './components/auth/authServiceV2'
@@ -59,10 +60,21 @@ const App = () => {
         </Routes>
       )
     }
-
     return (
       <>
-        <ToastContainer />
+        <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
         <NavigationSetter />
         <Routes>
           <Route exact path='/' element={<IndexWebsite />} />

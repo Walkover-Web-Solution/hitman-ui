@@ -9,6 +9,7 @@ import { getParseCurlData } from '../common/apiUtility'
 import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
+import { HiOutlineExclamationCircle } from "react-icons/hi2";
 
 const hostContainerEnum = {
   hosts: {
@@ -30,7 +31,8 @@ class HostContainer extends Component {
       datalistUri: '',
       // customHost: '',
       environmentHost: '',
-      selectedHost: ''
+      selectedHost: '',
+      showIcon: true,
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -327,6 +329,7 @@ class HostContainer extends Component {
 
   renderHostDatalist() {
     const endpointId = this.props.endpointId
+    const {showIcon } = this.state;
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
         <input
@@ -339,11 +342,13 @@ class HostContainer extends Component {
           onChange={(e) => this.handleInputHostChange(e)}
           autoComplete='off'
           onFocus={() =>
-            this.setState({ showDatalist: true }, () => {
-              document.addEventListener('mousedown', this.handleClickOutside)
+            this.setState({ showDatalist: true, showIcon: false }, () => {
+              document.addEventListener('mousedown', this.handleClickOutside);
             })
           }
+          onBlur={() => this.setState({ showIcon: true })}
         />
+          {showIcon && <HiOutlineExclamationCircle size={20} className='invalid-icon' title='URL cannot be empty'/>}
         <div className={['host-data', this.state.showDatalist ? 'd-block' : 'd-none'].join(' ')}>
           {Object.values(hostContainerEnum.hosts).map(
             (host, index) =>
