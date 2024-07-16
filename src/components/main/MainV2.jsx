@@ -1,31 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { isDesktop } from 'react-device-detect';
-import SplitPane from '../splitPane/splitPane';
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { isDesktop } from 'react-device-detect'
+import SplitPane from '../splitPane/splitPane'
 
-import { fetchAllCookies } from '../cookies/redux/cookiesActions';
-import { addCollectionAndPages } from '../redux/generalActions';
-import { addUserData } from '../auth/redux/usersRedux/userAction';
+import { fetchAllCookies } from '../cookies/redux/cookiesActions'
+import { addCollectionAndPages } from '../redux/generalActions'
+import { addUserData } from '../auth/redux/usersRedux/userAction'
 
-import ContentPanel from './contentPanel';
-import SideBarV2 from './sideBarV2';
-import OnlineStatus from '../onlineStatus/onlineStatus';
-import DesktopAppDownloadModal from './desktopAppPrompt';
-import UpdateStatus from './updateStatus';
-import CollectionModal from '../collections/collectionsModal';
-import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2';
+import ContentPanel from './contentPanel'
+import SideBarV2 from './sideBarV2'
+import OnlineStatus from '../onlineStatus/onlineStatus'
+import DesktopAppDownloadModal from './desktopAppPrompt'
+import UpdateStatus from './updateStatus'
+import CollectionModal from '../collections/collectionsModal'
+import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
 
-import NoCollectionIcon from '../../assets/icons/collection.svg';
-import 'react-toastify/dist/ReactToastify.css';
-import './main.scss';
+import NoCollectionIcon from '../../assets/icons/collection.svg'
+import 'react-toastify/dist/ReactToastify.css'
+import './main.scss'
+import { useNavigate } from 'react-router-dom'
 
-
-const MainV2 = (props) => {
-
-  const params = useParams();
-  const dispatch = useDispatch();
-  const collections = useSelector((state) => state.collections);
+const MainV2 = () => {
+  const params = useParams()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const collections = useSelector((state) => state.collections)
 
   const [showAddCollectionModal, setShowAddCollectionModal] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -46,17 +46,13 @@ const MainV2 = (props) => {
         let orgId = params.orgId
         if (!orgId) {
           orgId = getOrgList()[0]?.id
-          props.history.push({
-            pathname: `/orgs/${orgId}/dashboard`
-          })
+          navigate(`/orgs/${orgId}/dashboard`)
         } else {
           await fetchAll()
           dispatch(addCollectionAndPages(orgId))
         }
       } else {
-        props.history.push({
-          pathname: '/login'
-        })
+        navigate('/login')
       }
       setLoading(false)
     }
@@ -64,7 +60,7 @@ const MainV2 = (props) => {
   }, [])
 
   const fetchAll = async () => {
-    dispatch(fetchAllCookies());
+    dispatch(fetchAllCookies())
   }
 
   const setVisitedOrgs = () => {
@@ -85,9 +81,7 @@ const MainV2 = (props) => {
   }
 
   const addCollectionDialog = () =>
-    true && (
-      <CollectionModal title='Add Collection' onHide={() => setShowAddCollectionModal(false)} show={showAddCollectionModal} />
-    )
+    true && <CollectionModal title='Add Collection' onHide={() => setShowAddCollectionModal(false)} show={showAddCollectionModal} />
 
   const renderLandingDashboard = () => (
     <>
@@ -127,16 +121,12 @@ const MainV2 = (props) => {
             <div className='mobile-warning'>Looks like you have opened it on a mobile device. It looks better on a desktop device.</div>
           )}
           <div className='custom-main-container'>
-            <DesktopAppDownloadModal history={props.history} location={props.location} match={props.match} />
+            <DesktopAppDownloadModal />
             <OnlineStatus />
             <div className='main-panel-wrapper'>
               <SplitPane split='vertical' className='split-sidebar'>
                 <SideBarV2 />
-                {showCollectionDashboard() ? (
-                  renderLandingDashboard()
-                ) : (
-                  <ContentPanel />
-                )}
+                {showCollectionDashboard() ? renderLandingDashboard() : <ContentPanel />}
               </SplitPane>
             </div>
             <UpdateStatus />
@@ -147,4 +137,4 @@ const MainV2 = (props) => {
   )
 }
 
-export default MainV2;
+export default MainV2
