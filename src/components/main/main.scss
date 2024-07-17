@@ -3230,7 +3230,7 @@ body .btn-group-custom {
   top: 60px;
   background-color: white;
     span {
-      overflow: hidden;
+      overflow: hidden !important;
       text-overflow: ellipsis;
       white-space: nowrap;
       &:hover {

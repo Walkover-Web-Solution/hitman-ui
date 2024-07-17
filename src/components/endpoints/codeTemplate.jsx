@@ -151,7 +151,7 @@ class CodeTemplate extends Component {
           )}
           <div
             className={
-              this.props.params.endpointId
+              this.props.match.params.endpointId
                 ? 'show-curl-endpoint pubCodeWrapper'
                 : this.props.curlSlider
                 ? 'pubCodeWrapper-hide pubCodeWrapper'
@@ -177,7 +177,7 @@ class CodeTemplate extends Component {
                   {primaryLanguages.map((key) => (
                     <button
                       key={key}
-                      className={`${this.props.params.endpointId ? 'btn btn-outline-dark' : ''}  ${this.getClassForLanguages(key)}`}
+                      className={`${this.props.match.params.endpointId ? 'btn btn-outline-dark' : ''}  ${this.getClassForLanguages(key)}`}
                       onClick={() => {
                         this.makeCodeTemplate(key)
                       }}
@@ -186,7 +186,7 @@ class CodeTemplate extends Component {
                       {languages[key].name}
                     </button>
                   ))}
-                  <Dropdown>
+                  <Dropdown className='dropdown-more'>
                     <Dropdown.Toggle
                       className={secondaryLanguages.includes(this.selectedLanguage) ? 'active dropdownMore mr-0' : 'dropdownMore mr-0'}
                     >
