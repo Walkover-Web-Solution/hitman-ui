@@ -252,7 +252,7 @@ const fetchHistory = (historyId, props) => {
   let draftData = props?.tabs[historyId]?.draft
   // showing data from draft if data is modified
   if (props?.tabs[historyId]?.isModified && draftData) {
-    return {...draftData, flagResponse:true}
+    return { ...draftData, flagResponse: true }
   }
   return { ...utilityFunctions.modifyEndpointContent(_.cloneDeep(data), _.cloneDeep(untitledEndpointData)), flagResponse: true }
 }
@@ -464,8 +464,8 @@ class DisplayEndpoint extends Component {
       this.extractEndpointName()
     }
 
-    if (this.props.endpointId !== prevProps.endpointId ) {
-      this.setState({flagResponse:false})
+    if (this.props.endpointId !== prevProps.endpointId) {
+      this.setState({ flagResponse: false })
     }
     if (
       this.props?.endpointContent &&
@@ -535,7 +535,7 @@ class DisplayEndpoint extends Component {
       }
     }
   }
-  
+
   updateDimensions = () => {
     this.setState({ publicEndpointWidth: window.innerWidth, publicEndpointHeight: window.innerHeight })
     this.isMobileView()
@@ -910,7 +910,7 @@ class DisplayEndpoint extends Component {
       authorizationData: this.props.endpointContent.authorizationData,
       protocolType: this.props?.endpointContent.protocolType
     }
-    const response = { ...this.props?.endpointContent?.testResponse };
+    const response = { ...this.props?.endpointContent?.testResponse }
     const createdAt = new Date()
     const timeElapsed = this.state.timeElapsed
     delete response.request
@@ -1087,11 +1087,11 @@ class DisplayEndpoint extends Component {
     const path = this.setPathVariableValues()
     const url = BASE_URL + path + queryparams
     if (!url) {
-      this.setState({ addUrlClass: true });
+      this.setState({ addUrlClass: true })
       setTimeout(() => {
-        this.setState({ loader: false });
-      }, 500);
-      return;
+        this.setState({ loader: false })
+      }, 500)
+      return
     }
     /** Prepare Body & Modify Headers */
     let body, headers
@@ -1157,7 +1157,7 @@ class DisplayEndpoint extends Component {
           runSendRequest: null,
           requestKey: null
         })
-        this.setState({ addUrlClass: false });
+        this.setState({ addUrlClass: false })
         /** Add to History */
         isDashboardRoute(this.props) && this.setData()
         return
@@ -1772,7 +1772,6 @@ class DisplayEndpoint extends Component {
     this.propsFromChild('Params', updatedParams)
   }
 
-
   setHeaders(value, title, authorizationFlag = undefined, tokenIdToSave) {
     const originalHeaders = this.props.endpointContent.originalHeaders
     const updatedHeaders = []
@@ -1781,7 +1780,7 @@ class DisplayEndpoint extends Component {
       key: '',
       value: '',
       description: '',
-      type: 'enable',
+      type: 'enable'
     }
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
@@ -1823,8 +1822,7 @@ class DisplayEndpoint extends Component {
         ...dummyData?.authorizationData?.authorization?.oauth2,
         selectedTokenId: tokenIdToSave
       }
-    }
-    else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
+    } else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
       const basicAuth = dummyData?.authorizationData?.authorization?.basicAuth
       if (basicAuth) {
         dummyData.authorizationData.authorization.user = basicAuth.username
@@ -2092,7 +2090,7 @@ class DisplayEndpoint extends Component {
   }
 
   displayResponseAndSampleResponse() {
-        return (
+    return (
       <>
         <div className='custom-tabs clear-both response-container mb-2'>
           <div className='d-flex justify-content-between align-items-center'>
@@ -2128,30 +2126,30 @@ class DisplayEndpoint extends Component {
             </ul>
           </div>
           <div className='tab-content responseTabWrapper' id='pills-tabContent'>
-              <div
-                className='tab-pane fade show active'
-                id={this.isDashboardAndTestingView() ? `response-${this.props.tab.id}` : 'response'}
-                role='tabpanel'
-                aria-labelledby='pills-response-tab'
-              >
-                <div className='hm-panel endpoint-public-response-container '>
-                  <DisplayResponse
-                    {...this.props}
-                    loader={this.state?.loader}
-                    timeElapsed={this.state?.timeElapsed}
+            <div
+              className='tab-pane fade show active'
+              id={this.isDashboardAndTestingView() ? `response-${this.props.tab.id}` : 'response'}
+              role='tabpanel'
+              aria-labelledby='pills-response-tab'
+            >
+              <div className='hm-panel endpoint-public-response-container '>
+                <DisplayResponse
+                  {...this.props}
+                  loader={this.state?.loader}
+                  timeElapsed={this.state?.timeElapsed}
                   response={this.props?.endpointContent?.testResponse}
-                    tests={this.state.tests}
-                    flagResponse={this.props?.endpointContent?.flagResponse}
-                    sample_response_array={this.props?.endpointContent?.sampleResponseArray}
-                    sample_response_flag_array={this.state.sampleResponseFlagArray}
-                    add_sample_response={this.addSampleResponse.bind(this)}
-                    props_from_parent={this.propsFromSampleResponse.bind(this)}
-                    handleCancel={() => {
-                      this.handleCancel()
-                    }}
-                  />
-                </div>
+                  tests={this.state.tests}
+                  flagResponse={this.props?.endpointContent?.flagResponse}
+                  sample_response_array={this.props?.endpointContent?.sampleResponseArray}
+                  sample_response_flag_array={this.state.sampleResponseFlagArray}
+                  add_sample_response={this.addSampleResponse.bind(this)}
+                  props_from_parent={this.propsFromSampleResponse.bind(this)}
+                  handleCancel={() => {
+                    this.handleCancel()
+                  }}
+                />
               </div>
+            </div>
             {getCurrentUser() && (
               <div
                 className='tab-pane fade'
@@ -2186,7 +2184,7 @@ class DisplayEndpoint extends Component {
   }
 
   displayPublicResponse() {
-    const historyId = this.props?.match?.params?.historyId
+    const historyId = this.props?.params?.historyId
 
     return (
       <>
@@ -2197,7 +2195,7 @@ class DisplayEndpoint extends Component {
             loader={this.state.loader}
             tests={this.state.tests}
             timeElapsed={this.state.timeElapsed}
-            response={(this.props?.historySnapshots[historyId]?.response) || (this.props?.endpointContent?.testResponse)}
+            response={this.props?.historySnapshots[historyId]?.response || this.props?.endpointContent?.testResponse}
             flagResponse={this.props?.endpointContent?.flagResponse}
             handleCancel={() => {
               this.handleCancel()
@@ -2640,8 +2638,8 @@ class DisplayEndpoint extends Component {
       POST: 'post-button',
       PUT: 'put-button',
       PATCH: 'patch-button',
-      DELETE: 'delete-button',
-    };
+      DELETE: 'delete-button'
+    }
     return (
       <div className='input-group-prepend'>
         {this.checkProtocolType(1) && (
@@ -2659,7 +2657,11 @@ class DisplayEndpoint extends Component {
             </button>
             <div className='dropdown-menu dropdown-url' aria-labelledby='dropdownMenuButton'>
               {this.state.methodList.map((methodName) => (
-                <button  className={`dropdown-item fs-4 ${methodClassMap[methodName]}`} onClick={() => this.setMethod(methodName)} key={methodName}>
+                <button
+                  className={`dropdown-item fs-4 ${methodClassMap[methodName]}`}
+                  onClick={() => this.setMethod(methodName)}
+                  key={methodName}
+                >
                   {methodName}
                 </button>
               ))}
@@ -3583,16 +3585,16 @@ class DisplayEndpoint extends Component {
                 {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) && (
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
-                {
-                  isOnPublishedPage() && (<span className='pl-3 Modified-at upper-modified-at'>
+                {isOnPublishedPage() && (
+                  <span className='pl-3 Modified-at upper-modified-at'>
                     <DisplayUserAndModifiedData
                       isOnPublishedPage={true}
                       pages={this.props.pages}
                       currentPage={this.props.currentEndpointId}
                       users={this.props.users}
                     />
-                  </span>)
-                }
+                  </span>
+                )}
               </div>
               <div className='w-100'>
                 <span className='footer-upper mt-5'>
@@ -3614,24 +3616,26 @@ class DisplayEndpoint extends Component {
               </div>
             ) : null}
             {this.renderCodeTemplate()}
-              <span className='Modified-at mt-2 lower-modified-at'>
-                <DisplayUserAndModifiedData
-                  isOnPublishedPage={isOnPublishedPage()}
-                  pages={this.props.pages}
-                  currentPage={this.props.currentEndpointId}
-                  users={this.props.users}
-                />
-              </span>
+            <span className='Modified-at mt-2 lower-modified-at'>
+              <DisplayUserAndModifiedData
+                isOnPublishedPage={isOnPublishedPage()}
+                pages={this.props.pages}
+                currentPage={this.props.currentEndpointId}
+                users={this.props.users}
+              />
+            </span>
           </div>
         </div>
-        {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
-          <DisplayUserAndModifiedData
-            isOnPublishedPage={isOnPublishedPage()}
-            pages={this.props.pages}
-            currentPage={this.props.currentEndpointId}
-            users={this.props.users}
-          />
-        </span>}
+        {!isOnPublishedPage() && (
+          <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
+            <DisplayUserAndModifiedData
+              isOnPublishedPage={isOnPublishedPage()}
+              pages={this.props.pages}
+              currentPage={this.props.currentEndpointId}
+              users={this.props.users}
+            />
+          </span>
+        )}
         <div className='w-100'>
           <span className='footer-lower mt-5'>
             <>

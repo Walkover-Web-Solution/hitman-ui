@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
@@ -154,7 +154,9 @@ const SideBar = (props) => {
           type='text'
           name='filter'
           id='search'
-          onChange={handleOnChange}
+          onChange={(e) => {
+            handleOnChange(e)
+          }}
         />
       </div>
     )
