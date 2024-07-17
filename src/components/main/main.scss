@@ -184,7 +184,7 @@ html body {
   padding: 0 2px;
   border-radius: 2px;
   width: max-content;
-  font-size: 1.75rem;
+  font-size: 20px;
   font-weight: 600;
   border: 1px solid transparent;
   color: $text-color-dark;
@@ -1175,7 +1175,7 @@ body .form-control {
 
   &:focus {
     outline: none;
-    border: 1px solid $theme-color;
+    border: 1px solid $theme-color !important;
     box-shadow: none;
   }
 
@@ -2482,6 +2482,31 @@ span.endpointNameWrapper {
 
   .url-container {
     width: 100%;
+    position: relative;
+    .url-icons {
+      .invalid-icon {
+        display: none;
+        position: absolute;
+        right: 10px;
+        top: -27px;
+        color: red;
+      }
+      span {
+        display: none;
+        right: -37px;
+        top: 3px;
+        padding: 4px;
+        border-radius: 4px;
+        color: #000000c7;
+        background-color: #80808052;
+        font-size: 12px;
+      }
+      &:hover {
+        span {
+          display: inline;
+        }
+      }
+    }
   }
 
   .host-data {
@@ -4147,4 +4172,24 @@ body .tox {
 .ai-button-editor {
   right: 17px;
   z-index: 9;
+}
+.active {
+  .Url-invalid {
+    input {
+      border-color: red;
+      background-repeat: no-repeat;
+      background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+      padding-right: calc(1.5em + 0.75rem);
+    }
+    .invalid-icon {
+      display: block !important;
+    }
+  }
+}
+#InValidIcon {
+ background: unset !important;
+ fill: none !important;
+ padding: 0 !important;
+ color: unset !important;
+ border: unset !important;
 }
