@@ -144,7 +144,7 @@ class ContentPanel extends Component {
       }
     }
 
-    if (this.props.tabs.loaded && this.props.location.pathname === `/orgs/${this.props.params.orgId}/dashboard/`) {
+    if (this.props.tabs.loaded && window.location.pathname === `/orgs/${this.props.params.orgId}/dashboard`) {
       const { orgId } = this.props.params
       if (this.props.tabs?.tabsOrder?.length) {
         const { tabs, activeTabId, tabsOrder } = this.props.tabs
