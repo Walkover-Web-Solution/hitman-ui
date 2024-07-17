@@ -35,7 +35,7 @@ const TrashPage = () => {
   }, [orgId])
 
   const handleBack = () => {
-    navigate(`/orgs/${orgId}/dashboard/`)
+    navigate(`/orgs/${orgId}/dashboard`)
   }
 
   const handleRestore = async (collectionId, collectionName) => {
