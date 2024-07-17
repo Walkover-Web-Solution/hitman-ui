@@ -21,6 +21,12 @@ import { useNavigate } from 'react-router-dom'
 import ImportCollectionModal from '../importCollection/importColectionModel'
 
 const UserProfile = () => {
+  const historySnapshot = useSelector((state) => state.history)
+  const tabs = useSelector((state) => state.tabs)
+  const organizationList = useSelector((state) => state.organizations.orgList)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const [orgName, setOrgName] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -30,12 +36,6 @@ const UserProfile = () => {
   const inputRef = useRef(null)
   const [switchOrCreate, setSwitchOrCreate] = useState(false)
   const [currentOrg, setCurrentOrg] = useState('')
-
-  const historySnapshot = useSelector((state) => state.history)
-  const tabs = useSelector((state) => state.tabs)
-  const organizationList = useSelector((state) => state.organizations.orgList)
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   const validateName = (orgName) => {
     const regex = /^[a-zA-Z0-9_]+$/
