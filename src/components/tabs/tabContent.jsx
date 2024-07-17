@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {  useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useQueryClient } from 'react-query';
 import { Tab } from 'react-bootstrap';
 import DisplayEndpoint from '../endpoints/displayEndpoint';
@@ -103,7 +103,7 @@ const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag
             />
           );
         } else {
-          return <PublishDocsReview selected_collection_id={tabId} />;
+          return <PublishDocsReview />;
         }
       default:
         break;

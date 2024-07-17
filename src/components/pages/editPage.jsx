@@ -171,7 +171,7 @@ class EditPage extends Component {
       return
     }
     if (editedPage?.contents?.trim() === '<p></p>' || editedPage?.contents?.trim() === '') {
-      editedPage.contents = ''
+      editedPage.contents = '';
     }
     delete editedPage['isPublished']
     this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
