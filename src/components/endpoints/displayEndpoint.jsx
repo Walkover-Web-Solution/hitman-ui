@@ -396,7 +396,9 @@ class DisplayEndpoint extends Component {
       showEndpointFormModal: false,
       optionalParams: false,
       titleChange: false,
-      activeTab: 'default'
+      activeTab: 'default',
+      fileDownloaded: false,
+      sendClickec: false
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this);
@@ -439,14 +441,15 @@ class DisplayEndpoint extends Component {
     this.setState({
       theme: { backgroundStyle },
     });
+    this.setState({ fileDownloaded: false });
   }
 
   componentDidUpdate(prevProps, prevState) {
-  const userid = getCurrentUser()?.id
-  if (typeof window.SendDataToChatbot === 'function') {
+    const userid = getCurrentUser()?.id
+    if (typeof window.SendDataToChatbot === 'function') {
     window.SendDataToChatbot({ bridgeName: 'api', threadId: `${userid}`,
     variables: {Proxy_auth_token : getProxyToken(), endpoint: this.props.endpointContent}});
-  }
+    }
     // window.closeChatbot()
     window.addEventListener('resize', this.updateDimensions)
     if (prevState.isMobileView !== this.state.isMobileView) {
@@ -1040,11 +1043,20 @@ class DisplayEndpoint extends Component {
     return { newHeaders: headers, newUrl: url }
   }
 
+  isBase64(response) {
+    if (typeof response !== 'string') {
+      return false;
+    }
+    const base64Pattern = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
+    return base64Pattern.test(response);
+  }
+
   handleSend = async () => {
     const keyForRequest = shortid.generate()
     const runSendRequest = Axios.CancelToken.source()
     const startTime = new Date().getTime()
     const response = {}
+    this.setState({ sendClicked: true });
     this.setState({
       startTime,
       response,
@@ -1159,6 +1171,7 @@ class DisplayEndpoint extends Component {
     } catch (error) {
       console.error(error)
     }
+
     this.setState({ loader: false })
 
     setTimeout(() => {
@@ -1170,6 +1183,8 @@ class DisplayEndpoint extends Component {
 
   runScript(code, environment, request, responseJson) {
     let response
+
+
     if (responseJson) {
       const { status, statusText, response: body, headers } = responseJson.data
       response = { status, statusText, body, headers }
@@ -2175,6 +2190,37 @@ class DisplayEndpoint extends Component {
   }
 
   displayPublicResponse() {
+    const testResponse = this.props?.endpointContent?.testResponse;
+
+    if (this.isBase64(testResponse?.data)) {
+
+      if ( this.state.sendClicked && !this.state.fileDownloaded) {
+        try{
+          const byteCharacters = atob(testResponse?.data);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+
+          const blob = new Blob([byteArray.buffer], { type: 'application/pdf' });
+  
+          const url = URL.createObjectURL(blob);
+  
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'file.pdf';
+          a.style.display = 'none';
+          document.body.appendChild(a);
+          a.click();
+  
+          window.URL.revokeObjectURL(url);
+          this.setState({ fileDownloaded: true });
+        } catch(error) {
+          console.error(error,"errors")
+        }
+      }
+    }
     return (
       <>
         <div className='response-container endpoint-public-response-container endPointRes'>
@@ -2184,7 +2230,7 @@ class DisplayEndpoint extends Component {
             loader={this.state.loader}
             tests={this.state.tests}
             timeElapsed={this.state.timeElapsed}
-            response={this.props?.endpointContent?.testResponse}
+            response={testResponse}
             flagResponse={this.props?.endpointContent?.flagResponse}
             handleCancel={() => {
               this.handleCancel()
@@ -2192,7 +2238,7 @@ class DisplayEndpoint extends Component {
           />
         </div>
       </>
-    )
+    );
   }
 
   setHostUri(host, uri, selectedHost) {
@@ -3594,14 +3640,14 @@ class DisplayEndpoint extends Component {
               </div>
             ) : null}
             {this.renderCodeTemplate()}
-              <span className='Modified-at mt-2 lower-modified-at'>
-                <DisplayUserAndModifiedData
-                  isOnPublishedPage={isOnPublishedPage()}
-                  pages={this.props.pages}
-                  currentPage={this.props.currentEndpointId}
-                  users={this.props.users}
-                />
-              </span>
+            <span className='Modified-at mt-2 lower-modified-at'>
+              <DisplayUserAndModifiedData
+                isOnPublishedPage={isOnPublishedPage()}
+                pages={this.props.pages}
+                currentPage={this.props.currentEndpointId}
+                users={this.props.users}
+              />
+            </span>
           </div>
         </div>
         {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
