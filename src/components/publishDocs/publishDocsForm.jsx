@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 import CustomColorPicker from './customColorPicker'
 import Joi from 'joi-browser'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
@@ -14,11 +15,10 @@ import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
 import { IoInformationCircleOutline } from 'react-icons/io5'
 import { FiCopy } from 'react-icons/fi'
-import { FaRegTimesCircle } from "react-icons/fa"
+import { FaRegTimesCircle } from 'react-icons/fa'
 import { updateTab } from '../tabs/redux/tabsActions'
 
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
-
 const publishDocFormEnum = {
   NULL_STRING: '',
   LABELS: {
@@ -31,6 +31,8 @@ const publishDocFormEnum = {
 
 const PublishDocForm = (props) => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const params = useParams()
 
   const { collections, isPublishSliderOpen, tabs, pages } = useSelector((state) => ({
     collections: state.collections,
@@ -334,14 +336,10 @@ const PublishDocForm = (props) => {
     const collectionId = props.selected_collection_id
     const activeTab = tabs.activeTabId
     dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
-    props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+    navigate(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/feedback`)
   }
 
-  const openPublishSidebars = () => (
-    <>
-      {isPublishSliderOpen && <PublishSidebar {...props} closePublishSidebar={closePublishSidebar} />}
-    </>
-  )
+  const openPublishSidebars = () => <>{isPublishSliderOpen && <PublishSidebar {...props} closePublishSidebar={closePublishSidebar} />}</>
 
   const closePublishSidebar = () => {
     setOpenPublishSidebar(false)
@@ -416,20 +414,19 @@ const PublishDocForm = (props) => {
 
           {publishCheck && renderPublicUrl()}
           <div className='small-input mt-2'>
-            {renderInput('title',false, 'brand name',false)}
-            {renderInput('domain', false, 'docs.example.com',false)}
+            {renderInput('title', false, 'brand name', false)}
+            {renderInput('domain', false, 'docs.example.com', false)}
           </div>
           <div className='d-flex favicon mb-4'>
             <div className='form-group mb-0'>
-              <label>Fav Icon</label>
+              <label> Fav Icon </label>
               <div className='favicon-uploader'>{renderUploadBox('icon')}</div>
             </div>
             <div className='or-wrap d-flex align-items-center'>
               <p className='mb-0'>OR</p>
             </div>
-            {renderInput('logoUrl', false, false, binaryFile,'')}
+            {renderInput('logoUrl', false, false, binaryFile, '')}
           </div>
-
           <div className='color-picker'>{renderColorPicker()}</div>
           {renderActionButtons(publishCheck)}
         </div>

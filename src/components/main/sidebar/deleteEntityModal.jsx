@@ -5,7 +5,7 @@ import { closeModal } from '../../modals/redux/modalsActions'
 import { DELETE_CONFIRMATION } from '../../modals/modalTypes'
 import { connect } from 'react-redux'
 import confirmationModalEnum from '../../common/confirmationModalEnum'
-import { withRouter } from 'react-router'
+import withRouter from '../../common/withRouter'
 
 const mapDispatchToProps = (dispatch) => {
   return {

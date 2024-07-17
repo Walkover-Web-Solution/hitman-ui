@@ -4,6 +4,8 @@ import { closeModal } from '../modals/redux/modalsActions'
 import { connect } from 'react-redux'
 import { DESKTOP_APP_DOWNLOAD } from '../modals/modalTypes'
 import { toast } from 'react-toastify'
+import withRouter from '../common/withRouter'
+import { useNavigate } from 'react-router-dom'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -19,6 +21,7 @@ const mapStateToProps = (state) => {
 }
 
 function DesktopAppDownloadModal(props) {
+  const navigate = useNavigate()
   const [isAppInstalled, setIsAppInstalled] = useState(false)
   const shouldShowModal = !window.matchMedia('(display-mode: standalone)').matches
   const handleDownloadClick = () => {
@@ -40,10 +43,8 @@ function DesktopAppDownloadModal(props) {
   const show = props.modals.activeModal === DESKTOP_APP_DOWNLOAD ? true : false
 
   const onHide = () => {
-    const { orgId } = props.match.params
-    props.history.replace({
-      pathname: `/orgs/${orgId}/dashboard/`
-    })
+    const { orgId } = props.params
+    navigate(`/orgs/${orgId}/dashboard`, { replace: true })
     props.close_modal()
   }
   return (
@@ -74,4 +75,4 @@ function DesktopAppDownloadModal(props) {
   )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DesktopAppDownloadModal)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DesktopAppDownloadModal))

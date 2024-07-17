@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Auth2Configurations from './authConfiguration/auth2Configurations'
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 import { useQuery, useQueryClient } from 'react-query'
 import { useSelector } from 'react-redux'
 import _, { cloneDeep } from 'lodash'
@@ -126,17 +126,14 @@ export default function Authorization(props) {
     if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestHeaders) {
       props.set_authorization_headers(selectedTokenValue, 'Authorization.oauth_2')
       props.delete_params()
-    }
-    else if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestUrl) {
+    } else if (addAuthorizationDataTypes[key] === addAuthorizationDataTypes.requestUrl) {
       props.set_authoriztaion_params(selectedTokenValue, 'access_token')
       props.delete_headers()
-    }
-    else{
+    } else {
       props.delete_headers()
       props.delete_params()
     }
-    setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes[key]);
-   
+    setAddAuthorizationDataToForAuth2(addAuthorizationDataTypes[key])
   }
 
   function handleShowPassword() {

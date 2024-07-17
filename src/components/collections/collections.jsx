@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 import shortId from 'shortid'
 import { isDashboardRoute, openExternalLink, isOnPublishedPage } from '../common/utility'
@@ -29,9 +28,10 @@ import { BsThreeDots } from 'react-icons/bs'
 import { LuFolder } from 'react-icons/lu'
 import { RiShareForward2Line } from 'react-icons/ri'
 import { TbDirections } from 'react-icons/tb'
-import { TbSettingsAutomation } from "react-icons/tb";
+import { TbSettingsAutomation } from 'react-icons/tb'
 import ExportButton from '../exportButton/exportButton'
-import { BiExport } from "react-icons/bi";
+import { BiExport } from 'react-icons/bi'
+import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
   return {
@@ -57,7 +57,7 @@ const mapDispatchToProps = (dispatch) => {
 class CollectionsComponent extends Component {
   constructor(props) {
     super(props)
-    this.handleOrgModalClose = this.handleOrgModalClose.bind(this);
+    this.handleOrgModalClose = this.handleOrgModalClose.bind(this)
     this.state = {
       showCollectionForm: false,
       collectionFormName: '',
@@ -69,7 +69,7 @@ class CollectionsComponent extends Component {
       selectedCollectionIds: [],
       showOrgModal: false,
       showRunAutomationModal: false,
-      automationSelectedCollectionId: null,
+      automationSelectedCollectionId: null
     }
     this.names = {}
     this.handleApiAutomation = this.handleApiAutomation.bind(this)
@@ -129,10 +129,7 @@ class CollectionsComponent extends Component {
   }
 
   handlePublicCollectionDescription(collection) {
-    this.props.history.push({
-      pathname: `/p/${collection.id}/description/${collection.name}`,
-      collection
-    })
+    this.props.navigate(`/p/${collection.id}/description/${collection.name}`)
   }
 
   handlePublic(collection) {
@@ -203,7 +200,7 @@ class CollectionsComponent extends Component {
 
   async openPublishSettings(collectionId) {
     if (collectionId) {
-      this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
+      this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
   }
 
@@ -236,10 +233,10 @@ class CollectionsComponent extends Component {
   }
 
   openRedirectionsPage(collection) {
-    this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collection.id}/redirections`)
+    this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/collection/${collection.id}/redirections`)
   }
   handleApiAutomation(collectionId) {
-    this.props.history.push(`/orgs/${this.props.match.params.orgId}/automation/${collectionId}`)
+    this.props.navigate(`/orgs/${this.props.params.orgId}/automation/${collectionId}`)
   }
 
   renderBody(collectionId, collectionState) {
@@ -319,14 +316,24 @@ class CollectionsComponent extends Component {
                             <TbDirections size={16} color='grey' /> Redirections
                           </div>
                           <div className='dropdown-item' onClick={() => this.handleApiAutomation(collectionId)}>
-                            <TbSettingsAutomation size={16} color='grey' />API Automation
+                            <TbSettingsAutomation size={16} color='grey' />
+                            API Automation
                           </div>
                           <div className='dropdown-item d-flex align-items-center h-auto'>
-                            <BiExport className='mb-1' size={18} color='grey' />
-                            <ExportButton orgId={this.props.match.params.orgId} collectionId={collectionId} collectionName={this.props.collections[collectionId].name} />
+                            <BiExport size={18} color='grey' />
+                            <ExportButton
+                              orgId={this.props.params.orgId}
+                              collectionId={collectionId}
+                              collectionName={this.props.collections[collectionId].name}
+                            />
                           </div>
-                          <div className='dropdown-item delete-button-sb align-items-center text-danger d-flex' onClick={() => { this.openDeleteCollectionModal(collectionId) }}>
-                            <DeleteIcon className='mb-1' size={14} /> Delete
+                          <div
+                            className='dropdown-item delete-button-sb text-danger d-flex'
+                            onClick={() => {
+                              this.openDeleteCollectionModal(collectionId)
+                            }}
+                          >
+                            <DeleteIcon size={14} /> Delete
                           </div>
                         </>
                       )}
@@ -368,7 +375,7 @@ class CollectionsComponent extends Component {
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
-                  // isPublishData={false}
+                    // isPublishData={false}
                   />
                 }
               </Card.Body>
@@ -381,14 +388,10 @@ class CollectionsComponent extends Component {
 
   openPublishDocs(collection) {
     if (collection?.id) {
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`
-      })
+      this.props.navigate(`/orgs/${this.props.params.orgId}/admin/publish`, { search: `?collectionId=${collection.id}` })
     } else {
       const collection = this.props.collections[Object.keys(this.props.collections)[0]]
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
+      this.props.navigate(`/orgs/${this.props.params.orgId}/admin/publish`, {
         search: `?collectionId=${collection.id}`
       })
     }
@@ -469,7 +472,9 @@ class CollectionsComponent extends Component {
                 )}
               {this.openTagManagerModal()}
               {this.showDeleteCollectionModal()}
-              {this.state.showOrgModal && <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />}
+              {this.state.showOrgModal && (
+                <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />
+              )}
             </div>
           </div>
           {this.props.collectionsToRender.length > 0 ? (
@@ -496,4 +501,4 @@ class CollectionsComponent extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CollectionsComponent))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CollectionsComponent))

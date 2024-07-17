@@ -52,9 +52,7 @@ class HostContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.environmentHost !== this.props.environmentHost 
-    ) {
+    if (prevProps.environmentHost !== this.props.environmentHost) {
       this.setHosts()
     }
     if (!_.isEqual(prevProps.updatedUri, this.props.updatedUri)) {
@@ -136,12 +134,11 @@ class HostContainer extends Component {
       try {
         parsedData.data = JSON.parse(parsedData.data)
       } catch (e) {}
-      const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase();
-      if(contentType.includes('application/json')){
-        untitledEndpointData.data.body.type = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.value = typeof(parsedData.data)=== 'object' ? JSON.stringify(parsedData.data) : parsedData.data;
-
+      const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase()
+      if (contentType.includes('application/json')) {
+        untitledEndpointData.data.body.type = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.value = typeof parsedData.data === 'object' ? JSON.stringify(parsedData.data) : parsedData.data
 
         // setting body description
         untitledEndpointData.bodyDescription = {
@@ -178,26 +175,27 @@ class HostContainer extends Component {
           : parsedData.headers?.['Content-Type'] || 'application/x-www-form-urlencoded')
 
         // 'multipart/form-data' and 'application/x-www-form-urlencoded' both contains body values description
-        let keyValuePairs = parsedData.data.split('&')
-        let keys = []
-        let values = []
-        // Iterate over each key-value pair
-        keyValuePairs.forEach((pair) => {
-          let [key, value] = pair.split('=')
-          keys.push(key)
-          values.push(value)
-        })
-        for (let key in values) {
-          let eachData = {
-            checked: 'true',
-            key: keys[key],
-            value: values[key],
-            description: '',
-            type: 'text'
+        if (typeof parsedData.data === 'string') {
+          let keyValuePairs = parsedData.data.split('&')
+          let keys = []
+          let values = []
+          keyValuePairs.forEach((pair) => {
+            let [key, value] = pair.split('=')
+            keys.push(key)
+            values.push(value)
+          })
+          for (let key in values) {
+            let eachData = {
+              checked: 'true',
+              key: keys[key],
+              value: values[key],
+              description: '',
+              type: 'text'
+            }
+            untitledEndpointData.data.body[bodyType].push(eachData)
           }
-          untitledEndpointData.data.body[bodyType].push(eachData)
+          untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1))
         }
-        untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1))
       }
     }
 
