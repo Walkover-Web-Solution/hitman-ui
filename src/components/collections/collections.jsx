@@ -316,7 +316,8 @@ class CollectionsComponent extends Component {
                             <TbDirections size={16} color='grey' /> Redirections
                           </div>
                           <div className='dropdown-item' onClick={() => this.handleApiAutomation(collectionId)}>
-                            <TbSettingsAutomation size={16} color='grey' /> API Automation
+                            <TbSettingsAutomation size={16} color='grey' />
+                            API Automation
                           </div>
                           <div className='dropdown-item d-flex align-items-center h-auto'>
                             <BiExport size={18} color='grey' />
