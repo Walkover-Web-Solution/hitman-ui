@@ -44,7 +44,7 @@ function DesktopAppDownloadModal(props) {
 
   const onHide = () => {
     const { orgId } = props.params
-    navigate(`/orgs/${orgId}/dashboard/`, { replace: true })
+    navigate(`/orgs/${orgId}/dashboard`, { replace: true })
     props.close_modal()
   }
   return (
