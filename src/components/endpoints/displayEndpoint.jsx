@@ -395,8 +395,8 @@ class DisplayEndpoint extends Component {
       endpointContentState: null,
       showEndpointFormModal: false,
       optionalParams: false,
-      titleChange: false,
-      activeTab: 'default'
+      activeTab: 'default',
+      addUrlClass: false
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this);
@@ -1053,7 +1053,8 @@ class DisplayEndpoint extends Component {
       tests: null,
       loader: true,
       requestKey: keyForRequest,
-      runSendRequest
+      runSendRequest,
+      addUrlClass: false
     })
 
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
@@ -1075,13 +1076,12 @@ class DisplayEndpoint extends Component {
     const path = this.setPathVariableValues()
     const url = BASE_URL + path + queryparams
     if (!url) {
-      toast.error('Request URL is empty')
+      this.setState({ addUrlClass: true });
       setTimeout(() => {
-        this.setState({ loader: false })
-      }, 500)
-      return
+        this.setState({ loader: false });
+      }, 500);
+      return;
     }
-
     /** Prepare Body & Modify Headers */
     let body, headers
     if (this.checkProtocolType(1)) {
@@ -1146,6 +1146,7 @@ class DisplayEndpoint extends Component {
           runSendRequest: null,
           requestKey: null
         })
+        this.setState({ addUrlClass: false });
         /** Add to History */
         isDashboardRoute(this.props) && this.setData()
         return
@@ -2622,6 +2623,13 @@ class DisplayEndpoint extends Component {
   }
 
   renderHost() {
+    const methodClassMap = {
+      GET: 'get-button',
+      POST: 'post-button',
+      PUT: 'put-button',
+      PATCH: 'patch-button',
+      DELETE: 'delete-button',
+    };
     return (
       <div className='input-group-prepend'>
         {this.checkProtocolType(1) && (
@@ -2637,16 +2645,16 @@ class DisplayEndpoint extends Component {
             >
               {this.props?.endpointContent?.data?.method}
             </button>
-            <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+            <div className='dropdown-menu dropdown-url' aria-labelledby='dropdownMenuButton'>
               {this.state.methodList.map((methodName) => (
-                <button className='dropdown-item' onClick={() => this.setMethod(methodName)} key={methodName}>
+                <button  className={`dropdown-item fs-4 ${methodClassMap[methodName]}`} onClick={() => this.setMethod(methodName)} key={methodName}>
                   {methodName}
                 </button>
               ))}
             </div>
           </div>
         )}
-        <div className='d-flex w-100 dashboard-url'>
+        <div className={`d-flex w-100 dashboard-url ${this.state.addUrlClass ? 'Url-invalid' : ''}`}>
           <HostContainer
             {...this.props}
             endpointId={this.state.endpoint.id}

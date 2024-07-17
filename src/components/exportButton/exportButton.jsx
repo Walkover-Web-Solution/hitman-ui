@@ -23,7 +23,7 @@ const ExportButton = ({ orgId, collectionId, collectionName }) => {
 
     return (
         <>
-        <button className='h-auto' onClick={() => setModalOpen(true)}>Export Collection</button>
+        <button className='h-auto pl-0' onClick={() => setModalOpen(true)}>Export Collection</button>
         <ExportModal
         show={isModalOpen}
         onHide={() => setModalOpen(false)}

@@ -4,7 +4,8 @@ import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, toast, Slide } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 import {
   SESSION_STORAGE_KEY,
   getOrgId,
@@ -81,10 +82,21 @@ class App extends Component {
         </Switch>
       )
     }
-
     return (
       <>
-        <ToastContainer />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Slide}
+        />
         <Switch>
           <Route exact path='/' component={IndexWebsite} />
           {/* Error Page Routes */}
