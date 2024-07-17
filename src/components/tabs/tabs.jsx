@@ -285,7 +285,7 @@ const CustomTabs = (props) => {
         break
       case 'collection': {
         const collectionName = collections[tabId]?.name || 'Collection'
-        if (props.location.pathname.split('/')[6] === 'settings') {
+        if (props.location?.pathname?.split('/')?.[6] === 'settings') {
           return (
             <>
               <span className='d-flex align-items-center'>
@@ -294,7 +294,7 @@ const CustomTabs = (props) => {
               </span>
             </>
           )
-        }else if (props.location.pathname.split('/')[6] === 'runner'){
+        }else if (props.location?.pathname?.split('/')?.[6] === 'runner'){
           return (
             <div className='d-flex align-items-center'>
               <TbSettingsAutomation size={18} className='setting-icons mr-1 mb-1' /> 
