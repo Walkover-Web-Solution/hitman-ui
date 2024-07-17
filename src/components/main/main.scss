@@ -2381,12 +2381,29 @@ span.endpointNameWrapper {
   .url-container {
     width: 100%;
     position: relative;
-    .invalid-icon {
-      display: none;
-      position: absolute;
-      right: 10px;
-      top: 8px;
-      color: red;
+    .url-icons {
+      .invalid-icon {
+        display: none;
+        position: absolute;
+        right: 10px;
+        top: -27px;
+        color: red;
+      }
+      span {
+        display: none;
+        right: -37px;
+        top: 3px;
+        padding: 4px;
+        border-radius: 4px;
+        color: #000000c7;
+        background-color: #80808052;
+        font-size: 12px;
+      }
+      &:hover {
+        span {
+          display: inline;
+        }
+      }
     }
   }
   .host-data {
@@ -3910,4 +3927,11 @@ body .tox {
       display: block !important;
     }
   }
+}
+#InValidIcon {
+ background: unset !important;
+ fill: none !important;
+ padding: 0 !important;
+ color: unset !important;
+ border: unset !important;
 }
