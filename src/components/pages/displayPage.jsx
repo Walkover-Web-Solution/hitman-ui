@@ -180,7 +180,7 @@ class DisplayPage extends Component {
               <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
                 <IoDocumentTextOutline size={140} color='gray' />
                 <span className='empty-line'>
-                  {!isOnPublishedPage() ? this.props?.pages?.[this.props?.match?.params?.pageId]?.name : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
+                  {!isOnPublishedPage() ? this.props?.pages?.[this.props?.params?.pageId]?.name : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
                 </span>
                 <span className='mt-1 d-inline-block Modified-at fs-4'><DisplayUserAndModifiedData
                   isOnPublishedPage={isOnPublishedPage()}
