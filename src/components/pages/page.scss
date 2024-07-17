@@ -154,7 +154,7 @@
 .pageText {
   width: 100%;
   background: inherit;
-  min-height: 55vh;
+  min-height: calc(100vh - 200px);
   word-break: break-all;
 
   * {
@@ -203,9 +203,15 @@
 }
 .Modified-at {
   color: $footer-color;
-  &.upper-Modified-at {
+  &.upper-modified-at {
     @media screen and (max-width: 1160px) {
       display: none;
+    }
+  }
+  &.lower-modified-at {
+    display: none;
+    @media screen and (max-width: 1160px) {
+      display: inline-block;
     }
   }
 }
