@@ -210,7 +210,7 @@ class DisplayPage extends Component {
   }
 
   renderTiptapEditor(contents) {
-    return <Tiptap onChange={() => { }} initial={contents} isInlineEditor disabled key={Math.random()} />
+    return <Tiptap onChange={() => {}} initial={contents} isInlineEditor disabled key={Math.random()} />
   }
 
   handleRemovePublicPage(page) {
