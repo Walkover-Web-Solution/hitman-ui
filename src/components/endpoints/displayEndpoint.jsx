@@ -395,7 +395,6 @@ class DisplayEndpoint extends Component {
       endpointContentState: null,
       showEndpointFormModal: false,
       optionalParams: false,
-      titleChange: false,
       activeTab: 'default',
       addUrlClass: false
     }

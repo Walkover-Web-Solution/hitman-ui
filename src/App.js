@@ -4,7 +4,7 @@ import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
-import { ToastContainer, toast, Bounce } from 'react-toastify'
+import { ToastContainer, toast, Slide } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import {
   SESSION_STORAGE_KEY,
@@ -95,7 +95,7 @@ class App extends Component {
           draggable
           pauseOnHover
           theme="light"
-          transition={Bounce}
+          transition={Slide}
         />
         <Switch>
           <Route exact path='/' component={IndexWebsite} />
