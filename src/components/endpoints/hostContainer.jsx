@@ -10,6 +10,7 @@ import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 const hostContainerEnum = {
   hosts: {
@@ -348,7 +349,9 @@ class HostContainer extends Component {
           }
           onBlur={() => this.setState({ showIcon: true })}
         />
-          {showIcon && <HiOutlineExclamationCircle size={20} className='invalid-icon' title='URL cannot be empty'/>}
+        {showIcon &&<div className='position-relative url-icons'> <HiOutlineExclamationCircle size={20} className='invalid-icon'/>
+          <span className='position-absolute'>URL cannot be empty</span>
+          </div>}
         <div className={['host-data', this.state.showDatalist ? 'd-block' : 'd-none'].join(' ')}>
           {Object.values(hostContainerEnum.hosts).map(
             (host, index) =>
