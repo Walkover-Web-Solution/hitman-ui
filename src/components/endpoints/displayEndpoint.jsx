@@ -210,8 +210,8 @@ const getEndpointContent = async (props) => {
   let endpointId = isUserOnPublishedPage
     ? currentIdToShow
     : props.params.endpointId !== 'new'
-    ? props.params?.endpointId
-    : props?.activeTabId
+      ? props.params?.endpointId
+      : props?.activeTabId
 
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
@@ -424,8 +424,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
     const { endpointId } = this.props.params
@@ -1719,13 +1719,6 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(tempData)
   }
 
-  makeFunctionNonEditable(val) {
-    const readOnlyFunction = document.createElement('textarea')
-    readOnlyFunction.value = JSON.stringify(val, null, 2)
-    readOnlyFunction.setAttribute('readonly', true)
-    document.body.appendChild(readOnlyFunction)
-  }
-
   setParams(value, title, authorizationFlag, tokenIdToSave) {
     const originalParams = this.props.endpointContent.originalParams
     const updatedParams = []
@@ -1751,7 +1744,6 @@ class DisplayEndpoint extends Component {
         description: '',
         type: 'disable'
       })
-      this.makeFunctionNonEditable(updatedParams[0].key)
     }
     updatedParams.push(emptyParam)
     const dummyData = this.props.endpointContent
@@ -1810,7 +1802,6 @@ class DisplayEndpoint extends Component {
         description: '',
         type: 'disable'
       })
-      this.makeFunctionNonEditable(updatedHeaders[0].key)
     }
     if (title === 'content-type') {
       updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(value)
@@ -3017,8 +3008,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
 
     if (this.props.save_endpoint_flag && this.props.tab.id === this.props.selected_tab_id) {
       this.props.handle_save_endpoint(false)
@@ -3035,17 +3026,16 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-            ? 'mainContentWrapperPublic hideCodeEditor'
-            : 'mainContentWrapperPublic '
+              ? 'mainContentWrapperPublic hideCodeEditor'
+              : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${
-                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-              }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+                }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
