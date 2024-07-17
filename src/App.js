@@ -83,6 +83,7 @@ const App = () => {
             <Route path='/orgs/:orgId/dashboard/page/:pageId' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/history/:historyId' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/history/:historyId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/trash' element={<TrashPage />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/redirections' element={<Redirections />} />
           </Route>
