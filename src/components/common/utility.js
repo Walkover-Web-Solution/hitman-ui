@@ -715,6 +715,42 @@ function addItsParent(flattenData, singleId, dataToPublishSet) {
   }
 }
 
+// Define the function with parameters it depends on
+export const generateCronExpression = (runFrequency, runTime) => {
+  const timeParts = runTime.split(':');
+  const hour = timeParts[0];
+  const minute = timeParts[1];
+  let dayOfWeek = '*';
+
+  switch (runFrequency) {
+      case 'Every day':
+          return `${minute} ${hour} * * *`;
+      case 'Every week':
+          return `${minute} ${hour} * * 1`;
+      case 'Every month':
+          return `${minute} ${hour} 1 * *`;
+      case 'Every weekday (Monday-Friday)':
+          return `${minute} ${hour} * * 1-5`;
+      case 'Every Monday':
+          dayOfWeek = '1';
+          break;
+      case 'Every Tuesday':
+          dayOfWeek = '2';
+          break;
+      case 'Every Wednesday':
+          dayOfWeek = '3';
+          break;
+      case 'Every Thursday':
+          dayOfWeek = '4';
+          break;
+      case 'Every Friday':
+          dayOfWeek = '5';
+          break;
+      default:
+          return `${minute} ${hour} * * ${dayOfWeek}`;
+  }
+};
+
 export default {
   isDashboardRoute,
   isElectron,

@@ -117,27 +117,12 @@ const ContentPanel = () => {
             state: { pageType }
           }))
         }
-      }
-
-      if (window.location.pathname === `/orgs/${params.orgId}/dashboard`) {
-        const { orgId } = params
-        if (tabs?.tabsOrder?.length) {
-          const { tabs: tabsData, activeTabId, tabsOrder } = tabs
-
-          let tabId = activeTabId
-          if (!tabsData[tabId]) tabId = tabsOrder[0]
-
-          const tab = tabsData[tabId]
-          if (tabId !== activeTabId) dispatch(setActiveTabId(tabId))
-
-          const collectionLength = Object.keys(collections).length
-          if (collectionLength > 0) {
-            navigate(
-              tab.type !== 'collection'
-                ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '/edit' : ''}`
-                : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
-            )
-          }
+      } else if (this.props.collections && this.props.collections[collectionId]) {
+        let pageType
+        if (this.props.location.pathname.split('/')[6] === 'settings') {
+          pageType = 'SETTINGS'
+        } else if (this.props.location.pathname.split('/')[6] === 'runs') {
+          pageType = 'RUNS'
         } else {
           dispatch(addNewTab())
         }

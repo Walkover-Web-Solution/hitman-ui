@@ -282,26 +282,34 @@ const CustomTabs = (props) => {
           }
         }
         break
-      case 'collection': {
-        const collectionName = collections[tabId]?.name || 'Collection'
-        if (props.location.pathname.split('/')[6] === 'settings') {
-          return (
-            <>
-              <span className='d-flex align-items-center'>
-                <CiSettings size={18} className='setting-icons mr-1 mb-1' />
+        case 'collection': {
+          const collectionName = this.props.collections[tabId]?.name || 'Collection'
+          const pathSection = this.props.location.pathname.split('/')[6];
+          if (pathSection === 'settings') {
+            return (
+              <>
+                <span className='d-flex align-items-center'>
+                  <CiSettings  size={18} className='setting-icons mr-1 mb-1' />
+                  <span>{collectionName}</span>
+                </span>
+              </>
+            )
+          } else if (pathSection === 'runCollection') { // Added condition for 'runCollection'
+            return (
+              <div className='d-flex align-items-center'>
+                <TbSettingsAutomation size={18} className='setting-icons mr-1 mb-1' /> 
                 <span>{collectionName}</span>
-              </span>
-            </>
-          )
-        } else {
-          return (
-            <div className='d-flex align-items-center'>
-              <CiSettings size={18} className='setting-icons mr-1 mb-1' />
-              <span>{collectionName}</span>
-            </div>
-          )
+              </div>
+            )
+          } else {
+            return (
+              <div className='d-flex align-items-center'>
+                <CiSettings  size={18} className='setting-icons mr-1 mb-1' />
+                <span>{collectionName}</span>
+              </div>
+            )
+          }
         }
-      }
       case 'feedback': {
         return (
           <>
