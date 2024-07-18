@@ -1087,11 +1087,11 @@ class DisplayEndpoint extends Component {
     const path = this.setPathVariableValues()
     const url = BASE_URL + path + queryparams
     if (!url) {
-      this.setState({ addUrlClass: true });
+      this.setState({ addUrlClass: true })
       setTimeout(() => {
-        this.setState({ loader: false });
-      }, 500);
-      return;
+        this.setState({ loader: false })
+      }, 500)
+      return
     }
     /** Prepare Body & Modify Headers */
     let body, headers
@@ -1157,7 +1157,7 @@ class DisplayEndpoint extends Component {
           runSendRequest: null,
           requestKey: null
         })
-        this.setState({ addUrlClass: false });
+        this.setState({ addUrlClass: false })
         /** Add to History */
         isDashboardRoute(this.props) && this.setData()
         return
@@ -1772,7 +1772,6 @@ class DisplayEndpoint extends Component {
     this.propsFromChild('Params', updatedParams)
   }
 
-
   setHeaders(value, title, authorizationFlag = undefined, tokenIdToSave) {
     const originalHeaders = this.props.endpointContent.originalHeaders
     const updatedHeaders = []
@@ -1781,7 +1780,7 @@ class DisplayEndpoint extends Component {
       key: '',
       value: '',
       description: '',
-      type: 'enable',
+      type: 'enable'
     }
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
@@ -1823,8 +1822,7 @@ class DisplayEndpoint extends Component {
         ...dummyData?.authorizationData?.authorization?.oauth2,
         selectedTokenId: tokenIdToSave
       }
-    }
-    else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
+    } else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
       const basicAuth = dummyData?.authorizationData?.authorization?.basicAuth
       if (basicAuth) {
         dummyData.authorizationData.authorization.user = basicAuth.username
@@ -2186,7 +2184,7 @@ class DisplayEndpoint extends Component {
   }
 
   displayPublicResponse() {
-    const historyId = this.props?.match?.params?.historyId
+    const historyId = this.props?.params?.historyId
 
     return (
       <>
@@ -2640,8 +2638,8 @@ class DisplayEndpoint extends Component {
       POST: 'post-button',
       PUT: 'put-button',
       PATCH: 'patch-button',
-      DELETE: 'delete-button',
-    };
+      DELETE: 'delete-button'
+    }
     return (
       <div className='input-group-prepend'>
         {this.checkProtocolType(1) && (
@@ -2659,7 +2657,11 @@ class DisplayEndpoint extends Component {
             </button>
             <div className='dropdown-menu dropdown-url' aria-labelledby='dropdownMenuButton'>
               {this.state.methodList.map((methodName) => (
-                <button  className={`dropdown-item fs-4 ${methodClassMap[methodName]}`} onClick={() => this.setMethod(methodName)} key={methodName}>
+                <button
+                  className={`dropdown-item fs-4 ${methodClassMap[methodName]}`}
+                  onClick={() => this.setMethod(methodName)}
+                  key={methodName}
+                >
                   {methodName}
                 </button>
               ))}

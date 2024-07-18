@@ -166,12 +166,12 @@ class EditPage extends Component {
   handleSubmit = (e) => {
     if (e) e.preventDefault()
     const editedPage = { ...this.state.data }
-    if (editedPage.name.trim() === '') {
+    if (editedPage?.name?.trim() === '') {
       toast.error('Page name cannot be empty.')
       return
     }
-    if (editedPage.contents.trim() === '<p></p>' || editedPage.contents.trim() === '') {
-        editedPage.contents = '';
+    if (editedPage?.contents?.trim() === '<p></p>' || editedPage?.contents?.trim() === '') {
+      editedPage.contents = ''
     }
     delete editedPage['isPublished']
     this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
