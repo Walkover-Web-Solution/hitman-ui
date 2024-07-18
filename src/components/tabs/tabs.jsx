@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import withRouter from '../common/withRouter.jsx'
 import SavePromptModal from './savePromptModal'
 import { setTabsOrder } from './redux/tabsActions.js'
 import tabService from './tabService'
@@ -19,7 +18,7 @@ import { GrGraphQl } from 'react-icons/gr'
 import { TbSettingsAutomation } from 'react-icons/tb'
 import Plus from '../../assets/icons/plus.svg'
 import './tabs.scss'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const CustomTabs = (props) => {
   const dispatch = useDispatch()
@@ -30,7 +29,6 @@ const CustomTabs = (props) => {
 
   const navigate = useNavigate()
   const params = useParams()
-  const location = useLocation()
 
   const [showSavePromptFor, setShowSavePromptFor] = useState([])
   const [leftScroll, setLeftScroll] = useState(0)
