@@ -11,6 +11,7 @@ import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
 import withRouter from '../common/withRouter'
 import { useNavigate, useParams } from 'react-router-dom'
+import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -232,6 +233,7 @@ class EditPage extends Component {
   }
 
   render() {
+    const pageId = this.props?.params.pageId
     return (
       <div className='parent-page-display'>
         <div className='custom-edit-page page-display mt-3'>
@@ -248,18 +250,9 @@ class EditPage extends Component {
 
           <div className='form-group'>
             <div className='d-flex justify-content-between align-items-center'>
-              <label htmlFor='name'>Page Name</label>
+            <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
               {this.renderEditPageOperations()}
             </div>
-            <input
-              name='name'
-              id='name'
-              value={this.state.data.name}
-              onChange={this.handleNameChange}
-              type='text'
-              className='form-control'
-              placeholder='Page Name'
-            />
           </div>
 
           <div>{this.renderTiptapEditor()}</div>

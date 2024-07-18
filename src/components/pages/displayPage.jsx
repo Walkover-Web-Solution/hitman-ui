@@ -151,19 +151,20 @@ class DisplayPage extends Component {
     }
   }
 
-  handleEdit(page) {
-    const { orgId, pageId } = this.props.params
+  
+handleEdit(page) {
+  const { orgId, pageId } = this.props.params
     this.props.navigate(`/orgs/${orgId}/dashboard/page/${pageId}/edit`, {
       state: { page: page }
     })
-  }
+}
 
   checkPageRejected() {
     if (this.props.rejected) {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className={`page-wrapper ${isOnPublishedPage() ? 'pt-3' : ''}`}>
+        <div className={`page-wrapper ${isOnPublishedPage() ? 'pt-3' : ''}`} onClick={() => this.handleEdit(this.state.data)}>
           {isOnPublishedPage() && this.props?.pageContent && (
             <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>
           )}
@@ -174,7 +175,7 @@ class DisplayPage extends Component {
                 <span className='mt-2 Modified-at d-inline-block'>
                   <DisplayUserAndModifiedData
                     isOnPublishedPage={isOnPublishedPage()}
-                    pages={this.props?.pages}
+                    pages={this.props?.pages} 
                     currentPage={this.props?.currentPageId}
                     users={this.props?.users}
                   />
@@ -297,14 +298,6 @@ class DisplayPage extends Component {
               {getEntityState(pageId, pages)}
             </button>
           )}
-          <button
-            className='btn btn-primary btn-sm fs-4'
-            onClick={() => {
-              this.handleEdit(this.state.data)
-            }}
-          >
-            Edit
-          </button>
         </div>
       )
     }
