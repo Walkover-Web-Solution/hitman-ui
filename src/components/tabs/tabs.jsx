@@ -1,111 +1,66 @@
-// add useCallbacks in the end
-import React, { useRef, useState, useEffect } from 'react'
-import { Nav } from 'react-bootstrap'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import withRouter from '../common/withRouter.jsx'
 import SavePromptModal from './savePromptModal'
 import { setTabsOrder } from './redux/tabsActions.js'
 import tabService from './tabService'
 import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
 import History from '../history/history.jsx'
 import TabOptions from './tabOptions'
-import Plus from '../../assets/icons/plus.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
-import { connect } from 'react-redux'
 import IconButtons from '../common/iconButton'
+import { Nav } from 'react-bootstrap'
 import { IoIosChatboxes } from 'react-icons/io'
 import { CiSettings } from 'react-icons/ci'
 import { GrFormClose } from 'react-icons/gr'
 import { IoDocumentTextOutline } from 'react-icons/io5'
 import { LuHistory } from 'react-icons/lu'
 import { GrGraphQl } from 'react-icons/gr'
-import withRouter from '../common/withRouter.jsx'
+import Plus from '../../assets/icons/plus.svg'
 import './tabs.scss'
 
-const mapStateToProps = (state) => {
-  return {
-    responseView: state.responseView,
-    pages: state.pages,
-    tabState: state.tabs.tabs,
-    tabsOrder: state.tabs.tabsOrder,
-    tabs: state.tabs,
-    historySnapshots: state.history,
-    collections: state.collections,
-    history: state.history
-  }
-}
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    set_response_view: (view) => dispatch(onToggle(view)),
-    set_tabs_order: (tabsOrder) => dispatch(setTabsOrder(tabsOrder))
-  }
-}
-const withQuery = (WrappedComponent) => {
-  return (props) => {
-    return <WrappedComponent {...props} />
-  }
-}
 const CustomTabs = (props) => {
 
-  const sideBar = {
-    position: 'fixed',
-    background: 'white',
-    top: '40px',
-    right: '0px',
-    height: '95vh',
-    width: '24%',
-    float: 'right'
-  }
-  const history = {
-    position: 'fixed',
-    background: '#f7f6f3',
-    top: '41px',
-    right: '0px',
-    height: '95vh',
-    width: '445px',
-    float: 'right',
-    zIndex: '9999'
-  }
-  const Heading = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '10px',
-    borderBottom: '0.5px solid #ddd'
-  }
-  const closeButton = {
-    background: 'none',
-    border: 'none',
-    fontSize: '1.5em',
-    cursor: 'pointer'
-  }
-
+  const dispatch = useDispatch();
   const navRef = useRef(null);
   const scrollRef = useRef({});
+  const draggedItem = useRef(null);
+  const interval = useRef(null)
+  const { navigate, params } = props;
+
   const [showSavePromptFor, setShowSavePromptFor] = useState([]);
   const [leftScroll, setLeftScroll] = useState(0);
-  const [clientScroll, setClientScroll] = useState(navRef.current?.clientWidth);
-  const [windowScroll, setWindowScroll] = useState(navRef.current?.scrollWidth);
   const [showHistoryContainer, setShowHistoryContainer] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [previewId, setPreviewId] = useState(null);
 
-  const draggedItem = useRef(null);
-  const interval = useRef(null)
+  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history } = useSelector((state) => {
+    return {
+      responseView: state.responseView,
+      pages: state.pages,
+      tabState: state.tabs.tabs,
+      tabsOrder: state.tabs.tabsOrder,
+      tabs: state.tabs,
+      historySnapshots: state.history,
+      collections: state.collections,
+      history: state.history,
+    }
+  })
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown)
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [props.tabs.activeTabId])
+  }, [tabs?.activeTabId])
 
   useEffect(() => {
-    const newRef = scrollRef[props.tabs.activeTabId] || null
+    const newRef = scrollRef[tabs.activeTabId] || null
     newRef && newRef.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
-  }, [props.tabs.activeTabId])
+  }, [tabs.activeTabId])
 
-  // useCallback
-  const handleKeyDown = (e) => {
-    const activeTabId = props?.tabs?.activeTabId
+  const handleKeyDown = useCallback((e) => {
+    const activeTabId = tabs?.activeTabId
     const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0
     const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0
 
@@ -127,34 +82,128 @@ const CustomTabs = (props) => {
           break
       }
     }
-  }
+  }, [tabs.activeTabId, tabsOrder])
 
-  // useCallback
   const openTabAtIndex = (index) => {
-    const { tabsOrder } = props.tabs
-    if (tabsOrder[index]) tabService.selectTab({ ...props }, tabsOrder[index])
+    const { tabsOrder } = tabs
+    if (tabsOrder[index]) tabService.selectTab({ navigate, params }, tabsOrder[index])
   }
 
   const handleOpenNextTab = () => {
-    const { activeTabId, tabsOrder } = props.tabs
+    const { activeTabId, tabsOrder } = tabs
     const index = (tabsOrder.indexOf(activeTabId) + 1) % tabsOrder.length
     openTabAtIndex(index)
   }
 
+  const closeSavePrompt = useCallback(() => {
+    setShowSavePromptFor([]);
+  }, [])
 
+  const onDragStart = useCallback((tId) => {
+    draggedItem.current = tId
+  }, [])
+
+  const handleOnDragOver = useCallback((e) => {
+    e.preventDefault()
+  }, [])
+
+  const onDrop = useCallback((e, droppedOnItem) => {
+    e.preventDefault()
+    if (draggedItem.current === droppedOnItem) {
+      draggedItem.current = null
+      return
+    }
+    const tabsOrder = tabs.tabsOrder.filter((item) => item !== draggedItem.current)
+    const index = tabs.tabsOrder.findIndex((tId) => tId === droppedOnItem)
+    tabsOrder.splice(index, 0, draggedItem.current)
+    dispatch(setTabsOrder(tabsOrder))
+  }, [tabsOrder, dispatch])
+
+  const handleNav = useCallback((dir) => {
+    if (dir === 'left') {
+      if (navRef.current) navRef.current.scrollLeft -= 200
+    } else {
+      if (navRef.current) navRef.current.scrollLeft += 200
+    }
+  }, [navRef])
+
+  const handleMouseEnter = useCallback((dir) => {
+    interval.current = setInterval(() => handleNav(dir), 500)
+  }, [handleNav])
+
+  const handleMouseLeave = useCallback(() => {
+    if (interval.current) {
+      clearInterval(interval.current)
+      interval.current = null
+    }
+  }, [])
+
+
+  const scrollLength = useCallback(() => {
+    setLeftScroll(navRef.current?.scrollLeft);
+  }, [navRef])
+
+  const leftHideTabs = useCallback(() => {
+    return Number.parseInt(leftScroll / 200)
+  }, [leftScroll])
+
+
+  const rightHideTabs = useCallback(() => {
+    return Number.parseInt((navRef.current?.scrollWidth - navRef.current?.clientWidth - leftScroll) / 200)
+  }, [navRef, leftScroll])
+
+  const handleAddTab = useCallback(() => {
+    scrollLength()
+    tabService.newTab()
+  }, [scrollLength])
+
+  const showScrollButton = useCallback(() => {
+    return navRef.current?.scrollWidth > navRef.current?.clientWidth + 10
+  }, [navRef])
+
+  const handleHistoryClick = () => {
+    if (responseView === 'right' && showHistoryContainer === false) {
+      dispatch(onToggle('bottom'))
+    }
+    setShowHistoryContainer(!showHistoryContainer)
+  }
+
+  const handleCloseTabs = (tabIds) => {
+    const showSavePromptFor = []
+    const tabsData = tabs.tabs
+
+    for (let i = 0; i < tabIds.length; i++) {
+      const tabData = tabsData[tabIds[i]]
+
+      if (tabData?.isModified) {
+        showSavePromptFor.push(tabIds[i])
+      } else {
+        // Check if there's only one tab left before removing
+        if (Object.keys(tabsData).length > 1) {
+          tabService.removeTab(tabIds[i], { navigate, params })
+        }
+      }
+    }
+    setShowSavePromptFor(showSavePromptFor)
+  }
+
+  const handleOnConfirm = (tabId) => {
+    const show_save_prompt_for = showSavePromptFor.filter((tab) => tab != tabId)
+    setShowSavePromptFor(show_save_prompt_for)
+  }
 
   const renderTabName = (tabId) => {
-    const tab = props.tabState[tabId]
+    const tab = tabState[tabId]
     if (!tab) return
     switch (tab.type) {
       case 'history':
-        if (props.historySnapshots[tabId]) {
+        if (historySnapshots[tabId]) {
           if (tab.previewMode) {
             return (
               <>
                 <div className='d-flex mr-2'>
                   <LuHistory />
-                  {props.historySnapshots[tabId].endpoint.name}
+                  {historySnapshots[tabId].endpoint.name}
                 </div>
               </>
             )
@@ -163,8 +212,8 @@ const CustomTabs = (props) => {
               <>
                 <div className='d-flex'>
                   <LuHistory className='mr-1' size={16} />
-                  {props.historySnapshots[tabId].endpoint.name ||
-                    props.historySnapshots[tabId].endpoint.BASE_URL + props.historySnapshots[tabId].endpoint.uri ||
+                  {historySnapshots[tabId].endpoint.name ||
+                    historySnapshots[tabId].endpoint.BASE_URL + historySnapshots[tabId].endpoint.uri ||
                     'Random Trigger'}
                 </div>
               </>
@@ -175,35 +224,35 @@ const CustomTabs = (props) => {
         }
 
       case 'endpoint':
-        if (props.pages[tabId]) {
-          const endpoint = props.pages[tabId]
+        if (pages[tabId]) {
+          const endpoint = pages[tabId]
           if (tab.previewMode) {
             return (
               <div className='d-flex justify-content-center align-items-center'>
                 {endpoint.protocolType === 1 && (
-                  <div className={`${props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
-                    {props.tabState[tabId]?.draft?.data?.method}
+                  <div className={`${tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
+                    {tabState[tabId]?.draft?.data?.method}
                   </div>
                 )}
                 {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
-                <span>{props.pages[tabId]?.name}</span>
+                <span>{pages[tabId]?.name}</span>
               </div>
             )
           } else {
             return (
               <div className='d-flex justify-content-center align-items-center'>
                 {endpoint.protocolType === 1 && (
-                  <div className={`${props.tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
-                    {props.tabState[tabId]?.draft?.data?.method}
+                  <div className={`${tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
+                    {tabState[tabId]?.draft?.data?.method}
                   </div>
                 )}
                 {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
-                <span>{props.pages[tabId]?.name}</span>
+                <span>{pages[tabId]?.name}</span>
               </div>
             )
           }
         } else {
-          const endpoint = props?.tabState?.[tabId]
+          const endpoint = tabState?.[tabId]
           return (
             <div className='d-flex align-items-center'>
               {endpoint?.draft?.protocolType === 1 && (
@@ -216,8 +265,8 @@ const CustomTabs = (props) => {
         }
 
       case 'page':
-        if (props.pages[tabId]) {
-          const page = props.pages[tabId]
+        if (pages[tabId]) {
+          const page = pages[tabId]
           if (tab.previewMode) {
             return (
               <div className='d-flex align-items-center'>
@@ -236,7 +285,7 @@ const CustomTabs = (props) => {
         }
         break
       case 'collection': {
-        const collectionName = props.collections[tabId]?.name || 'Collection'
+        const collectionName = collections[tabId]?.name || 'Collection'
         if (props.location.pathname.split('/')[6] === 'settings') {
           return (
             <>
@@ -268,73 +317,6 @@ const CustomTabs = (props) => {
       default:
     }
   }
-
-  const closeSavePrompt = () => {
-    setShowSavePromptFor([]);
-  }
-
-  const onDragStart = (tId) => {
-    draggedItem.current = tId
-  }
-
-  const handleOnDragOver = (e) => {
-    e.preventDefault()
-  }
-
-  const onDrop = (e, droppedOnItem) => {
-    e.preventDefault()
-    if (draggedItem.current === droppedOnItem) {
-      draggedItem.current = null
-      return
-    }
-    const tabsOrder = props.tabs.tabsOrder.filter((item) => item !== draggedItem.current)
-    const index = props.tabs.tabsOrder.findIndex((tId) => tId === droppedOnItem)
-    tabsOrder.splice(index, 0, draggedItem.current)
-    props.set_tabs_order(tabsOrder)
-  }
-
-  const handleMouseEnter = (dir) => {
-    interval.current = setInterval(handleNav(dir), 500)
-  }
-
-  const handleMouseLeave = () => {
-    if (interval.current) {
-      clearInterval(interval.current)
-      interval.current = null
-    }
-  }
-
-  const handleNav = (dir) => {
-    if (dir === 'left') {
-      if (navRef.current) navRef.current.scrollLeft -= 200
-    } else {
-      if (navRef.current) navRef.current.scrollLeft += 200
-    }
-  }
-
-  const scrollLength = () => {
-    setLeftScroll(navRef.current?.scrollLeft);
-    setWindowScroll(navRef.current?.scrollWidth);
-    setClientScroll(navRef.current?.clientWidth)
-  }
-
-  const leftHideTabs = () => {
-    return Number.parseInt(leftScroll / 200)
-  }
-
-  const rightHideTabs = () => {
-    return Number.parseInt((navRef.current?.scrollWidth - navRef.current?.clientWidth - leftScroll) / 200)
-  }
-
-  const handleAddTab = () => {
-    scrollLength()
-    tabService.newTab({ ...props })
-  }
-
-  const showScrollButton = () => {
-    return navRef.current?.scrollWidth > navRef.current?.clientWidth + 10
-  }
-
   const renderHoverTab = (tabId) => {
     let x = 1
     const y = 1
@@ -342,31 +324,31 @@ const CustomTabs = (props) => {
     const styles = {
       transform: `translate(${x}px, ${y}px)`
     }
-    const tab = props.tabs.tabs[tabId]
+    const tab = tabs.tabs[tabId]
     if (!tab) return
     if (tab.type === 'page') {
-      if (props.pages[tabId]) {
-        const page = props.pages[tabId]
+      if (pages[tabId]) {
+        const page = pages[tabId]
         return (
           <div className='hover-div' style={styles}>
-            {/* <div className='group-name'>{props.pages[props.pages?.[tabId]?.parentId]?.name}</div> */}
+            {/* <div className='group-name'>{pages[pages?.[tabId]?.parentId]?.name}</div> */}
             <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>Page</div>
           </div>
         )
       }
     } else if (tab.type === 'endpoint') {
-      if (props.pages[tabId]) {
-        const endpoint = props.pages[tabId]
+      if (pages[tabId]) {
+        const endpoint = pages[tabId]
         return (
           <div className='hover-div' style={styles}>
             <div className='d-flex align-items-center'>
               {endpoint.protocolType === 1 && (
-                <div className={`api-label ${props.tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
-                  {props.tabState[tabId]?.draft?.data?.method}{' '}
+                <div className={`api-label ${tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
+                  {tabState[tabId]?.draft?.data?.method}{' '}
                 </div>
               )}
               {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
-              <div className='endpoint-name ml-1'>{props.pages[tabId].name}</div>
+              <div className='endpoint-name ml-1'>{pages[tabId].name}</div>
             </div>
           </div>
         )
@@ -407,37 +389,6 @@ const CustomTabs = (props) => {
     }
   }
 
-  const handleHistoryClick = () => {
-    if (props.responseView === 'right' && showHistoryContainer === false) {
-      props.set_response_view('bottom')
-    }
-    setShowHistoryContainer(!showHistoryContainer)
-  }
-
-  const handleCloseTabs = (tabIds) => {
-    const showSavePromptFor = []
-    const tabsData = props.tabs.tabs
-
-    for (let i = 0; i < tabIds.length; i++) {
-      const tabData = tabsData[tabIds[i]]
-
-      if (tabData?.isModified) {
-        showSavePromptFor.push(tabIds[i])
-      } else {
-        // Check if there's only one tab left before removing
-        if (Object.keys(tabsData).length > 1) {
-          tabService.removeTab(tabIds[i], { ...props })
-        }
-      }
-    }
-    setShowSavePromptFor(showSavePromptFor)
-  }
-
-  const handleOnConfirm = (tabId) => {
-    const show_save_prompt_for = showSavePromptFor.filter((tab) => tab != tabId)
-    setShowSavePromptFor(show_save_prompt_for)
-  }
-
   return (
     <>
       <div className='d-flex navs-container'>
@@ -463,7 +414,8 @@ const CustomTabs = (props) => {
           <div>
             {showSavePromptFor.length > 0 && (
               <SavePromptModal
-                {...props}
+                handle_save_endpoint={props.handle_save_endpoint}
+                handle_save_page={props.handle_save_page}
                 show
                 onHide={() => closeSavePrompt()}
                 onConfirm={handleOnConfirm}
@@ -471,7 +423,7 @@ const CustomTabs = (props) => {
               />
             )}
           </div>
-          {props.tabsOrder.map((tabId, index) => (
+          {tabsOrder.map((tabId) => (
             <div
               className=''
               key={tabId}
@@ -485,15 +437,15 @@ const CustomTabs = (props) => {
                 onDragOver={handleOnDragOver}
                 onDragStart={() => onDragStart(tabId)}
                 onDrop={(e) => onDrop(e, tabId)}
-                className={props.tabs?.activeTabId === tabId ? 'active' : ''}
+                className={tabs?.activeTabId === tabId ? 'active' : ''}
                 onMouseEnter={() => { setShowPreview(true); setPreviewId(tabId) }}
                 onMouseLeave={() => { setShowPreview(false); setPreviewId(null) }}
               >
-                {props?.tabState[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
+                {tabState[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
                 <Nav.Link eventKey={tabId}>
                   <button
                     className='btn truncate'
-                    onClick={() => tabService.selectTab({ ...props }, tabId)}
+                    onClick={() => tabService.selectTab({ navigate, params }, tabId)}
                     onDoubleClick={() => {
                       tabService.disablePreviewMode(tabId)
                     }}
@@ -530,7 +482,7 @@ const CustomTabs = (props) => {
         </Nav.Item>
         <div className='d-flex'>
           <Nav.Item className='tab-buttons' id='options-tab-button'>
-            <TabOptions history={props.history} handleCloseTabs={handleCloseTabs} />
+            <TabOptions history={history} handleCloseTabs={handleCloseTabs} />
           </Nav.Item>
           <Nav.Item className='' id='history-tab-button'>
             <button onClick={handleHistoryClick} className='px-2' style={{ outline: 'none' }}>
@@ -538,16 +490,16 @@ const CustomTabs = (props) => {
             </button>
           </Nav.Item>
           {showHistoryContainer && (
-            <div className='history-main-container' style={history}>
-              <div style={Heading}>
+            <div className='history-main-container'>
+              <div className='heading'>
                 History
-                <div className='d-flex' style={closeButton} onClick={handleHistoryClick} aria-label='Close'>
+                <div className='d-flex close-button' onClick={handleHistoryClick} aria-label='Close'>
                   <IconButtons>
                     <GrFormClose />
                   </IconButtons>
                 </div>
               </div>
-              <History {...props} />
+              <History />
             </div>
           )}
         </div>
@@ -557,4 +509,4 @@ const CustomTabs = (props) => {
 
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(CustomTabs)))
+export default withRouter(CustomTabs)

@@ -4,6 +4,7 @@ import tabService from './tabService'
 import { useQueryClient } from 'react-query'
 import { connect } from 'react-redux'
 import { closeTab } from './redux/tabsActions'
+import withRouter from '../common/withRouter'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -14,13 +15,21 @@ const withQuery = (WrappedComponent) => {
 
 const mapStateToProps = (state) => {
   return {
-    endpoints: state.pages
+    endpoints: state.pages,
+    tabs: state.tabs,
+    responseView: state.responseView,
+    pages: state.pages,
+    tabState: state.tabs.tabs,
+    tabsOrder: state.tabs.tabsOrder,
+    historySnapshots: state.history,
+    collections: state.collections,
+    history: state.history
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    close_tab: (tabId) => dispatch(closeTab(tabId))
+    close_tab: (tabId) => dispatch(closeTab(tabId)),
   }
 }
 class SavePromptModal extends Component {
@@ -117,4 +126,4 @@ class SavePromptModal extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withQuery(SavePromptModal))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(SavePromptModal)))
