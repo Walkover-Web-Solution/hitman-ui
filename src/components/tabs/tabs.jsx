@@ -96,12 +96,12 @@ const CustomTabs = (props) => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [])
+  }, [props.tabs.activeTabId])
 
   useEffect(() => {
     const newRef = scrollRef[props.tabs.activeTabId] || null
     newRef && newRef.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
-  }, [props.tabs.activeTabId])            // use useSelector
+  }, [props.tabs.activeTabId])
 
   // useCallback
   const handleKeyDown = (e) => {
