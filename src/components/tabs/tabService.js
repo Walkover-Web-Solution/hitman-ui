@@ -22,7 +22,7 @@ function removeTab(tabId, props) {
     if (activeTabId === tabId) {
       const tabsCount = Object.keys(tabs).length
       if (tabsCount === 1) {
-        newTab(props)
+        newTab()
       } else {
         const index = tabsOrder.indexOf(tabId)
         if (index > 0) {

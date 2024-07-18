@@ -27,7 +27,7 @@ const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag
   const queryClient = useQueryClient();
   const location = useLocation();
 
-  const { isTabsLoaded, tabData, history, pages, collections, } = useSelector((state) => ({
+  const { isTabsLoaded, tabData, history, pages, collections } = useSelector((state) => ({
     isTabsLoaded: state?.tabs?.loaded,
     tabsOrder: state?.tabs?.tabsOrder,
     activeTabId: state.tabs.activeTabId,
