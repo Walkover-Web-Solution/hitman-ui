@@ -169,7 +169,7 @@ const CustomTabs = (props) => {
     setShowHistoryContainer(!showHistoryContainer)
   }
 
-  const handleCloseTabs = (tabIds) => {
+  const handleCloseTabs = useCallback((tabIds) => {
     const showSavePromptFor = []
     const tabsData = tabs.tabs
 
@@ -186,7 +186,7 @@ const CustomTabs = (props) => {
       }
     }
     setShowSavePromptFor(showSavePromptFor)
-  }
+  }, [])
 
   const handleOnConfirm = (tabId) => {
     const show_save_prompt_for = showSavePromptFor.filter((tab) => tab != tabId)
