@@ -104,7 +104,8 @@ const mapStateToProps = (state) => {
     tabs: state?.tabs?.tabs,
     tokenDetails: state?.tokenData?.tokenDetails,
     curlSlider: state.modals?.curlSlider || false,
-    users: state.users.usersList
+    users: state.users.usersList,
+    pages: state.pages
   }
 }
 
@@ -421,7 +422,8 @@ class DisplayEndpoint extends Component {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
     }
     this.extractEndpointName()
-    this.endpointId = this.props.endpointId
+    // this.endpointId = this.props.endpointId
+    this.endpointId = this.props.params.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
         ? this.props.location.pathname.split('/')[5]
@@ -2678,9 +2680,7 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOperations() {
-    const endpoints = this.props.endpointContent
     const endpointss = this.props.pages[this.endpointId]
-    // const endpointPublish = this.props.endpoints
     const endpointId = this.endpointId
     if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpointss) {
       const approvedOrRejected = isStateApproved(endpointId, endpointss) || isStateReject(this.endpointId, endpointss)
