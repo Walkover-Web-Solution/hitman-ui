@@ -210,8 +210,8 @@ const getEndpointContent = async (props) => {
   let endpointId = isUserOnPublishedPage
     ? currentIdToShow
     : props.params.endpointId !== 'new'
-    ? props.params?.endpointId
-    : props?.activeTabId
+      ? props.params?.endpointId
+      : props?.activeTabId
 
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
@@ -424,8 +424,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
     const { endpointId } = this.props.params
@@ -467,10 +467,6 @@ class DisplayEndpoint extends Component {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.extractEndpointName()
     }
-
-    if (this.props.endpointId !== prevProps.endpointId) {
-      this.setState({ flagResponse: false })
-    }
     if (
       this.props?.endpointContent &&
       (!_.isEqual(this.state?.endpointContentState?.data, this.props?.endpointContent?.data) ||
@@ -480,6 +476,10 @@ class DisplayEndpoint extends Component {
         !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
     ) {
       this.prepareHarObject()
+    }
+
+    if (this.props.endpointId !== prevProps.endpointId && !this?.props?.location?.pathname?.includes('history')) {
+      this.setState({ flagResponse: false })
     }
 
     if (this.props?.endpointContent && !_.isEqual(this.props.endpointContent, this.state.endpointContentState)) {
@@ -1087,11 +1087,11 @@ class DisplayEndpoint extends Component {
     const path = this.setPathVariableValues()
     const url = BASE_URL + path + queryparams
     if (!url) {
-      this.setState({ addUrlClass: true });
+      this.setState({ addUrlClass: true })
       setTimeout(() => {
-        this.setState({ loader: false });
-      }, 500);
-      return;
+        this.setState({ loader: false })
+      }, 500)
+      return
     }
     /** Prepare Body & Modify Headers */
     let body, headers
@@ -1157,7 +1157,7 @@ class DisplayEndpoint extends Component {
           runSendRequest: null,
           requestKey: null
         })
-        this.setState({ addUrlClass: false });
+        this.setState({ addUrlClass: false })
         /** Add to History */
         isDashboardRoute(this.props) && this.setData()
         return
@@ -1719,13 +1719,6 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(tempData)
   }
 
-  makeFunctionNonEditable(val) {
-    const readOnlyFunction = document.createElement('textarea')
-    readOnlyFunction.value = JSON.stringify(val, null, 2)
-    readOnlyFunction.setAttribute('readonly', true)
-    document.body.appendChild(readOnlyFunction)
-  }
-
   setParams(value, title, authorizationFlag, tokenIdToSave) {
     const originalParams = this.props.endpointContent.originalParams
     const updatedParams = []
@@ -1751,7 +1744,6 @@ class DisplayEndpoint extends Component {
         description: '',
         type: 'disable'
       })
-      this.makeFunctionNonEditable(updatedParams[0].key)
     }
     updatedParams.push(emptyParam)
     const dummyData = this.props.endpointContent
@@ -1772,7 +1764,6 @@ class DisplayEndpoint extends Component {
     this.propsFromChild('Params', updatedParams)
   }
 
-
   setHeaders(value, title, authorizationFlag = undefined, tokenIdToSave) {
     const originalHeaders = this.props.endpointContent.originalHeaders
     const updatedHeaders = []
@@ -1781,7 +1772,7 @@ class DisplayEndpoint extends Component {
       key: '',
       value: '',
       description: '',
-      type: 'enable',
+      type: 'enable'
     }
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
@@ -1811,7 +1802,6 @@ class DisplayEndpoint extends Component {
         description: '',
         type: 'disable'
       })
-      this.makeFunctionNonEditable(updatedHeaders[0].key)
     }
     if (title === 'content-type') {
       updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(value)
@@ -1823,8 +1813,7 @@ class DisplayEndpoint extends Component {
         ...dummyData?.authorizationData?.authorization?.oauth2,
         selectedTokenId: tokenIdToSave
       }
-    }
-    else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
+    } else if (dummyData?.authorizationData?.authorizationTypeSelected == 'basicAuth') {
       const basicAuth = dummyData?.authorizationData?.authorization?.basicAuth
       if (basicAuth) {
         dummyData.authorizationData.authorization.user = basicAuth.username
@@ -2186,7 +2175,7 @@ class DisplayEndpoint extends Component {
   }
 
   displayPublicResponse() {
-    const historyId = this.props?.match?.params?.historyId
+    const historyId = this?.props?.params.historyId
 
     return (
       <>
@@ -2640,8 +2629,8 @@ class DisplayEndpoint extends Component {
       POST: 'post-button',
       PUT: 'put-button',
       PATCH: 'patch-button',
-      DELETE: 'delete-button',
-    };
+      DELETE: 'delete-button'
+    }
     return (
       <div className='input-group-prepend'>
         {this.checkProtocolType(1) && (
@@ -2659,7 +2648,11 @@ class DisplayEndpoint extends Component {
             </button>
             <div className='dropdown-menu dropdown-url' aria-labelledby='dropdownMenuButton'>
               {this.state.methodList.map((methodName) => (
-                <button  className={`dropdown-item fs-4 ${methodClassMap[methodName]}`} onClick={() => this.setMethod(methodName)} key={methodName}>
+                <button
+                  className={`dropdown-item fs-4 ${methodClassMap[methodName]}`}
+                  onClick={() => this.setMethod(methodName)}
+                  key={methodName}
+                >
                   {methodName}
                 </button>
               ))}
@@ -3015,8 +3008,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
 
     if (this.props.save_endpoint_flag && this.props.tab.id === this.props.selected_tab_id) {
       this.props.handle_save_endpoint(false)
@@ -3033,17 +3026,16 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-            ? 'mainContentWrapperPublic hideCodeEditor'
-            : 'mainContentWrapperPublic '
+              ? 'mainContentWrapperPublic hideCodeEditor'
+              : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${
-                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-              }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+                }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}

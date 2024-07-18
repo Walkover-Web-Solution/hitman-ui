@@ -8,7 +8,7 @@ import Logout from './components/auth/logout'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import { ToastContainer, toast, Slide } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
 import AuthServiceV2 from './components/auth/authServiceV2'
@@ -63,18 +63,18 @@ const App = () => {
     return (
       <>
         <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Slide}
-      />
+          position='bottom-right'
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme='light'
+          transition={Slide}
+        />
         <NavigationSetter />
         <Routes>
           <Route exact path='/' element={<IndexWebsite />} />
@@ -95,6 +95,7 @@ const App = () => {
             <Route path='/orgs/:orgId/dashboard/page/:pageId' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/history/:historyId' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/history/:historyId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/trash' element={<TrashPage />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/redirections' element={<Redirections />} />
           </Route>
