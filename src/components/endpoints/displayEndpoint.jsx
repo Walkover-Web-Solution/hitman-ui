@@ -467,10 +467,6 @@ class DisplayEndpoint extends Component {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.extractEndpointName()
     }
-
-    if (this.props.endpointId !== prevProps.endpointId) {
-      this.setState({ flagResponse: false })
-    }
     if (
       this.props?.endpointContent &&
       (!_.isEqual(this.state?.endpointContentState?.data, this.props?.endpointContent?.data) ||
@@ -480,6 +476,10 @@ class DisplayEndpoint extends Component {
         !_.isEqual(this.state?.endpointContentState?.host, this.props?.endpointContent?.host))
     ) {
       this.prepareHarObject()
+    }
+
+    if (this.props.endpointId !== prevProps.endpointId && !this?.props?.location?.pathname?.includes('history')) {
+      this.setState({ flagResponse: false })
     }
 
     if (this.props?.endpointContent && !_.isEqual(this.props.endpointContent, this.state.endpointContentState)) {
@@ -2184,7 +2184,7 @@ class DisplayEndpoint extends Component {
   }
 
   displayPublicResponse() {
-    const historyId = this.props?.params?.historyId
+    const historyId = this?.props?.params.historyId
 
     return (
       <>
