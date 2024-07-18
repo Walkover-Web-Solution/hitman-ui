@@ -20,7 +20,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    close_tab: (tabId) => dispatch(closeTab(tabId)),    
+    close_tab: (tabId) => dispatch(closeTab(tabId))
   }
 }
 class SavePromptModal extends Component {
@@ -33,7 +33,7 @@ class SavePromptModal extends Component {
     const { tabs } = this.props.tabs
     const currentTabIdClicked = this.props.tab_id
     const tab = tabs[currentTabIdClicked]
-    switch (tab.type) {
+    switch (tab?.type) {
       case 'page':
         await this.props.handle_save_page(true, currentTabIdClicked)
         break
