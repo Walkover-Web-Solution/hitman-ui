@@ -48,16 +48,14 @@ const CustomTabs = (props) => {
   })
 
   useEffect(() => {
+    const newRef = scrollRef[tabs.activeTabId] || null
+    newRef && newRef.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
+
     document.addEventListener('keydown', handleKeyDown)
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [tabs?.activeTabId])
-
-  useEffect(() => {
-    const newRef = scrollRef[tabs.activeTabId] || null
-    newRef && newRef.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
-  }, [tabs.activeTabId])
 
   const handleKeyDown = useCallback((e) => {
     const activeTabId = tabs?.activeTabId
@@ -117,7 +115,7 @@ const CustomTabs = (props) => {
     const index = tabs.tabsOrder.findIndex((tId) => tId === droppedOnItem)
     tabsOrder.splice(index, 0, draggedItem.current)
     dispatch(setTabsOrder(tabsOrder))
-  }, [tabsOrder, dispatch])
+  }, [])
 
   const handleNav = useCallback((dir) => {
     if (dir === 'left') {
@@ -125,11 +123,11 @@ const CustomTabs = (props) => {
     } else {
       if (navRef.current) navRef.current.scrollLeft += 200
     }
-  }, [navRef])
+  }, [])
 
   const handleMouseEnter = useCallback((dir) => {
     interval.current = setInterval(() => handleNav(dir), 500)
-  }, [handleNav])
+  }, [])
 
   const handleMouseLeave = useCallback(() => {
     if (interval.current) {
@@ -141,25 +139,25 @@ const CustomTabs = (props) => {
 
   const scrollLength = useCallback(() => {
     setLeftScroll(navRef.current?.scrollLeft);
-  }, [navRef])
+  }, [])
 
   const leftHideTabs = useCallback(() => {
     return Number.parseInt(leftScroll / 200)
-  }, [leftScroll])
+  }, [])
 
 
   const rightHideTabs = useCallback(() => {
     return Number.parseInt((navRef.current?.scrollWidth - navRef.current?.clientWidth - leftScroll) / 200)
-  }, [navRef, leftScroll])
+  }, [])
 
   const handleAddTab = useCallback(() => {
     scrollLength()
     tabService.newTab()
-  }, [scrollLength])
+  }, [])
 
   const showScrollButton = useCallback(() => {
     return navRef.current?.scrollWidth > navRef.current?.clientWidth + 10
-  }, [navRef])
+  }, [])
 
   const handleHistoryClick = () => {
     if (responseView === 'right' && showHistoryContainer === false) {
@@ -168,7 +166,7 @@ const CustomTabs = (props) => {
     setShowHistoryContainer(!showHistoryContainer)
   }
 
-  const handleCloseTabs = (tabIds) => {
+  const handleCloseTabs = useCallback((tabIds) => {
     const showSavePromptFor = []
     const tabsData = tabs.tabs
 
@@ -185,7 +183,7 @@ const CustomTabs = (props) => {
       }
     }
     setShowSavePromptFor(showSavePromptFor)
-  }
+  }, [])
 
   const handleOnConfirm = (tabId) => {
     const show_save_prompt_for = showSavePromptFor.filter((tab) => tab != tabId)
