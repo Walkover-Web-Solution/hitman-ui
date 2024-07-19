@@ -14,6 +14,7 @@ import { IoIosChatboxes } from 'react-icons/io'
 import { CiSettings } from 'react-icons/ci'
 import { GrFormClose } from 'react-icons/gr'
 import { IoDocumentTextOutline } from 'react-icons/io5'
+import { TbSettingsAutomation } from "react-icons/tb";
 import { LuHistory } from 'react-icons/lu'
 import { GrGraphQl } from 'react-icons/gr'
 import Plus from '../../assets/icons/plus.svg'
