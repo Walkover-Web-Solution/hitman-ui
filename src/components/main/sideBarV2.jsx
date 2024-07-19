@@ -457,6 +457,7 @@ const SideBar = (props) => {
   }
 
   return (
+    //rendering start here
     <>
       {
         <nav className='sidebar'>
