@@ -61,13 +61,11 @@ function selectTab(props, tabId) {
     tab?.state?.pageType === 'SETTINGS'
       ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/settings`)
       : props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/feedback`)
-  } else if (tab?.type === 'page' && tab?.id) {
-    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}/edit`)
   } else {
     if (!(tab?.type && tab?.id)) {
       return props.navigate(`/orgs/${getOrgId()}/dashboard/endpoint/new`)
     }
-    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}`)
+    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${(tab.isModified)?'/edit':''}`)
   }
   store.dispatch(setActiveTabId(tabId))
 }
