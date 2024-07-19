@@ -20,7 +20,6 @@
     .page-text-render {
       gap: 120px;
       :first-child {
-       overflow: auto;
        max-width: 800px;
        table {
         width: 100% !important;
@@ -68,9 +67,6 @@
     }
   }
 
-  p {
-    margin-bottom: 0;
-  }
 
     .page-wrapper {
       max-width: 800px;
@@ -81,7 +77,6 @@
   
       .page-text-render {
         :first-child {
-          overflow: auto;
           max-width: 800px;
   
           img {
@@ -158,8 +153,6 @@
   word-break: break-all;
 
   * {
-    font-size: revert;
-    margin-bottom: 0;
     word-break: break-word;
   }
 }
