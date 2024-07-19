@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { getCronByCollection } from '../../../services/cronJobs'; // Adjust the path as necessary
+import { getCronByCollection, deleteCron, cronStatus } from '../../../services/cronJobs'
 import './RunTabs.scss';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
+import IconButtons from '../../common/iconButton'
+import { BsThreeDots } from 'react-icons/bs'
+import { MdOutlineMotionPhotosPaused } from "react-icons/md";
+import { RiDeleteBinLine } from 'react-icons/ri'
+import { ReactComponent as Rename } from '../../../assets/icons/renameSign.svg'
+import { GrResume } from "react-icons/gr";
 
 const RunTabs = () => {
-    const params = useParams();
+  const params = useParams();
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('functional');
   const [scheduledRuns, setScheduledRuns] = useState([]);
-
-  const runs = [
-    { id: 1, date: 'Jul 10, 2024 15:30:52', source: 'Runner', duration: '1s 122ms', tests: 0, passed: 0, failed: 0, skipped: 0, avgRespTime: '63 ms' },
-    { id: 2, date: 'Jul 06, 2024 11:46:30', source: 'Runner', duration: '1s 18ms', tests: 0, passed: 0, failed: 0, skipped: 0, avgRespTime: '61 ms' },
-    // Add more runs as needed
-  ];
 
   useEffect(() => {
     if (activeTab === 'scheduled') {
       const fetchScheduledRuns = async () => {
-        const collectionId = params?.collectionId; // Replace with actual collection ID
+        const collectionId = params?.collectionId;
         try {
           const data = await getCronByCollection(collectionId);
-            setScheduledRuns(data.data);
-         
+          setScheduledRuns(data.data);
+
         } catch (error) {
           console.error('Failed to fetch scheduled runs:', error);
         }
@@ -31,41 +32,39 @@ const RunTabs = () => {
     }
   }, [activeTab]);
 
+  const deleteCronById = async (cronId) => {
+    try {
+      await deleteCron(cronId);
+    } catch (error) {
+      console.error('Failed to fetch scheduled runs:', error);
+    }
+  };
+
+  const updateCronStatus = async (cronId, status) => {
+    try {
+      await cronStatus(cronId, status);
+    } catch (error) {
+      console.error('Failed to fetch scheduled runs:', error);
+    }
+  };
+
+  const openEditCron = async (cronId) => {
+    const collectionId = params?.collectionId
+    navigate(`/collection/${collectionId}/cron/${cronId}/edit`);
+  };
+
   return (
     <div>
       <div className="tabs">
         <button onClick={() => setActiveTab('functional')} className={activeTab === 'functional' ? 'active' : ''}>Manual</button>
         <button onClick={() => setActiveTab('scheduled')} className={activeTab === 'scheduled' ? 'active' : ''}>Scheduled</button>
-        <button onClick={() => setActiveTab('performance')} className={activeTab === 'performance' ? 'active' : ''}>Webhook</button>
+        <button onClick={() => setActiveTab('webhook')} className={activeTab === 'webhook' ? 'active' : ''}>Webhook</button>
       </div>
       <div className="content">
         {activeTab === 'functional' && (
           <table>
-            <thead>
-              <tr>
-                <th>Start time</th>
-                <th>Source</th>
-                <th>Duration</th>
-                <th>All tests</th>
-                <th>Passed</th>
-                <th>Failed</th>
-                <th>Skipped</th>
-                <th>Avg. Resp. Time</th>
-              </tr>
-            </thead>
             <tbody>
-              {runs.map(run => (
-                <tr key={run.id}>
-                  <td>{run.date}</td>
-                  <td>{run.source}</td>
-                  <td>{run.duration}</td>
-                  <td>{run.tests}</td>
-                  <td>{run.passed}</td>
-                  <td>{run.failed}</td>
-                  <td>{run.skipped}</td>
-                  <td>{run.avgRespTime}</td>
-                </tr>
-              ))}
+              Logs feature coming soon...
             </tbody>
           </table>
         )}
@@ -84,10 +83,40 @@ const RunTabs = () => {
                   <td>{run?.cron_expression}</td>
                   <td>{run?.cron_name}</td>
                   <td>{run?.environmentId}</td>
+                  <div className='position-relative'>
+
+                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                      <IconButtons>
+                        <BsThreeDots />
+                      </IconButtons>
+                    </div>
+                    <div className='dropdown-menu dropdown-menu-right'>
+                      <div className='dropdown-item d-flex align-items-center' onClick={() => updateCronStatus(run?.cron_id, run?.status === 1 ? 0 : 1)}>
+                        {run?.status === 1 ? <MdOutlineMotionPhotosPaused /> : <GrResume />}
+                        <span className="ml-2">{run?.status === 1 ? 'Pause' : 'Resume'}</span>
+                      </div>
+                      <div className='dropdown-item d-flex align-items-center' onClick={() => openEditCron(run?.cron_id)}>
+                        <Rename /><span className="ml-2">Edit</span>
+                      </div>
+                      <div
+                        className='dropdown-item text-danger d-flex align-items-center'
+                        onClick={() => { deleteCronById(run?.cron_id) }}
+                      >
+                        <RiDeleteBinLine /><span className="ml-2">Delete</span>
+                      </div>
+                    </div>
+                  </div>
                 </tr>
               ))}
             </tbody>
-            </table>
+          </table>
+        )}
+        {activeTab === 'webhook' && (
+          <table>
+            <tbody>
+              Logs feature coming soon...
+            </tbody>
+          </table>
         )}
       </div>
     </div>

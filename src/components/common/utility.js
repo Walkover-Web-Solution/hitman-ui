@@ -715,41 +715,36 @@ function addItsParent(flattenData, singleId, dataToPublishSet) {
   }
 }
 
-// Define the function with parameters it depends on
-export const generateCronExpression = (runFrequency, runTime) => {
-  const timeParts = runTime.split(':');
-  const hour = timeParts[0];
-  const minute = timeParts[1];
-  let dayOfWeek = '*';
 
-  switch (runFrequency) {
-      case 'Every day':
-          return `${minute} ${hour} * * *`;
-      case 'Every week':
-          return `${minute} ${hour} * * 1`;
-      case 'Every month':
-          return `${minute} ${hour} 1 * *`;
-      case 'Every weekday (Monday-Friday)':
-          return `${minute} ${hour} * * 1-5`;
-      case 'Every Monday':
-          dayOfWeek = '1';
-          break;
-      case 'Every Tuesday':
-          dayOfWeek = '2';
-          break;
-      case 'Every Wednesday':
-          dayOfWeek = '3';
-          break;
-      case 'Every Thursday':
-          dayOfWeek = '4';
-          break;
-      case 'Every Friday':
-          dayOfWeek = '5';
-          break;
-      default:
-          return `${minute} ${hour} * * ${dayOfWeek}`;
+export const generateCronExpression = (basicRunFrequency, runFrequency, runTime) => {
+  const [hour, minute] = runTime.split(':').map(num => parseInt(num, 10));
+  if (basicRunFrequency === 'Hourly') {
+      return `${minute} * * * *`;
+  } else if (basicRunFrequency === 'Daily') {
+      return `${minute} ${hour} * * *`;
+  } else if (basicRunFrequency === 'Weekly') {
+      switch (runFrequency) {
+          case 'Every weekday (Monday-Friday)':
+              return `${minute} ${hour} * * 1-5`;
+          case 'Every Monday':
+              return `${minute} ${hour} * * 1`;
+          case 'Every Tuesday':
+              return `${minute} ${hour} * * 2`;
+          case 'Every Wednesday':
+              return `${minute} ${hour} * * 3`;
+          case 'Every Thursday':
+              return `${minute} ${hour} * * 4`;
+          case 'Every Friday':
+              return `${minute} ${hour} * * 5`;
+          default:
+              // Fallback to every day if no match
+              return `${minute} ${hour} * * *`;
+      }
+  } else {
+      // Fallback to daily if no basic frequency matches
+      return `${minute} ${hour} * * *`;
   }
-};
+}
 
 export default {
   isDashboardRoute,
