@@ -537,19 +537,20 @@ class CollectionParentPages extends Component {
                   // [info] options not to show on publihsed page
                   isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
                     <div className='sidebar-item-action d-flex align-items-center'>
-                      <div
-                        className='d-flex align-items-center'
-                        onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
-                      >
-                        <IconButtons>
-                          <FiPlus />
-                        </IconButtons>
+                     <div className='dropdown'>
+                  <Dropdown.Toggle className="p-0"  onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)} type="button" data-toggle="dropdown" aria-expanded="false">
+                      <IconButtons>
+                        <FiPlus />
+                      </IconButtons>
+                      </Dropdown.Toggle>
+                      {this.showAddPageEndpointModal()}
                       </div>
-                      <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                      <div className='dropdown'>
+                      <Dropdown.Toggle className='p-0 d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                         <IconButtons>
                           <BsThreeDots />
                         </IconButtons>
-                      </div>
+                      </Dropdown.Toggle>
                       <div className='dropdown-menu dropdown-menu-right'>
                         <div className='dropdown-item d-flex' onClick={() => this.openEditPageForm(pageId)}>
                           <Rename /> Rename
@@ -574,6 +575,7 @@ class CollectionParentPages extends Component {
                         >
                           <DeleteIcon /> Delete
                         </div>
+                      </div>
                       </div>
                     </div>
                   ) : null

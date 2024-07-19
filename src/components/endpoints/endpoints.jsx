@@ -27,6 +27,8 @@ import '../../../src/components/styles.scss'
 import { importPostmanEnvironment } from '../environments/environmentsApiService'
 import {  hexToRgb} from '../common/utility'
 import {background} from '../backgroundColor.js'
+import Dropdown from 'react-bootstrap/Dropdown';
+
 
 // 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
 const endpointsEnum = {
@@ -299,9 +301,9 @@ class Endpoints extends Component {
   displayEndpointOptions(endpointId) {
     return (
       <div className='sidebar-item-action'>
-        <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+        <Dropdown.Toggle className='d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
           <IconButtons><BsThreeDots /></IconButtons>
-        </div>
+        </Dropdown.Toggle>
 
         <div className='dropdown-menu dropdown-menu-right'>
           <div className='dropdown-item d-flex' onClick={() => this.openEditEndpointForm(endpointId)}>

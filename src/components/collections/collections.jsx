@@ -32,6 +32,7 @@ import { TbDirections } from 'react-icons/tb'
 import { TbSettingsAutomation } from "react-icons/tb";
 import ExportButton from '../exportButton/exportButton'
 import { BiExport } from "react-icons/bi";
+import Dropdown from 'react-bootstrap/Dropdown';
 
 const mapStateToProps = (state) => {
   return {
@@ -215,6 +216,7 @@ class CollectionsComponent extends Component {
       }
     })
   }
+  debugger
   showAddPageEndpointModal() {
     return (
       this.state.showAddCollectionModal && (
@@ -279,68 +281,73 @@ class CollectionsComponent extends Component {
               //  [info] options not to show on publihsed page
               isOnDashboardPage && (
                 <div className='d-flex align-items-center'>
-                  <div className='sidebar-item-action  d-flex align-items-center'>
-                    <div className='d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
-                      <IconButtons>
-                        <FiPlus />
-                      </IconButtons>
+                  <div className='sidebar-item-action d-flex align-items-center'>
+                    <div className='dropdown'>
+                      <Dropdown.Toggle className="p-0" onClick={() => this.openAddPageEndpointModal(collectionId)} type="button" data-toggle="dropdown" aria-expanded="false">
+                        <IconButtons>
+                          <FiPlus />
+                        </IconButtons>
+                      </Dropdown.Toggle>
+                      {this.showAddPageEndpointModal()}
                     </div>
-                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                      <IconButtons>
-                        <BsThreeDots />
-                      </IconButtons>
-                    </div>
-                    <div className='dropdown-menu dropdown-menu-right'>
-                      {!this.props.collections[collectionId]?.importedFromMarketPlace && (
-                        <>
-                          <div className='dropdown-item d-flex' onClick={() => this.openEditCollectionForm(collectionId)}>
-                            <EditIcon /> Rename
-                          </div>
-                          {this.props.collections[collectionId].isPublic && (
-                            <div className='dropdown-item d-flex' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
-                              <GoToDocs /> Go to API Documentation
+                    <div className='dropdown'>
+                      <Dropdown.Toggle className='p-0 d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                        <IconButtons>
+                          <BsThreeDots />
+                        </IconButtons>
+                      </Dropdown.Toggle>
+                      <div className='dropdown-menu dropdown-menu-right'>
+                        {!this.props.collections[collectionId]?.importedFromMarketPlace && (
+                          <>
+                            <div className='dropdown-item d-flex' onClick={() => this.openEditCollectionForm(collectionId)}>
+                              <EditIcon /> Rename
                             </div>
-                          )}
+                            {this.props.collections[collectionId].isPublic && (
+                              <div className='dropdown-item d-flex' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
+                                <GoToDocs /> Go to API Documentation
+                              </div>
+                            )}
+                            <div
+                              className='dropdown-item d-flex'
+                              onClick={() => {
+                                this.TagManagerModal(collectionId)
+                              }}
+                            >
+                              <AddGoogleTag /> Add Google Tag Manager
+                            </div>
+                            <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
+                              <RiShareForward2Line size={16} color='grey' /> Move
+                            </div>
+                            <div
+                              className='dropdown-item d-flex'
+                              onClick={() => this.openRedirectionsPage(this.props.collections[collectionId])}
+                            >
+                              <TbDirections size={16} color='grey' /> Redirections
+                            </div>
+                            <div className='dropdown-item' onClick={() => this.handleApiAutomation(collectionId)}>
+                              <TbSettingsAutomation size={16} color='grey' /> API Automation
+                            </div>
+                            <div className='dropdown-item d-flex align-items-center h-auto'>
+                              <BiExport size={18} color='grey' />
+                              <ExportButton orgId={this.props.match.params.orgId} collectionId={collectionId} collectionName={this.props.collections[collectionId].name} />
+                            </div>
+                            <div className='dropdown-item delete-button-sb text-danger d-flex' onClick={() => { this.openDeleteCollectionModal(collectionId) }}>
+                              <DeleteIcon size={14} /> Delete
+                            </div>
+                          </>
+                        )}
+                        {this.props.collections[collectionId]?.importedFromMarketPlace && (
                           <div
-                            className='dropdown-item d-flex'
+                            className='dropdown-item d-flex align-items-center justify-content-between'
                             onClick={() => {
-                              this.TagManagerModal(collectionId)
+                              this.removeImporedPublicCollection(collectionId)
                             }}
                           >
-                            <AddGoogleTag /> Add Google Tag Manager
+                            <div className='marketplace-icon mr-2'> M </div>
+                            <div> Remove Public Collection </div>
                           </div>
-                          <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
-                            <RiShareForward2Line size={16} color='grey' /> Move
-                          </div>
-                          <div
-                            className='dropdown-item d-flex'
-                            onClick={() => this.openRedirectionsPage(this.props.collections[collectionId])}
-                          >
-                            <TbDirections size={16} color='grey' /> Redirections
-                          </div>
-                          <div className='dropdown-item' onClick={() => this.handleApiAutomation(collectionId)}>
-                            <TbSettingsAutomation size={16} color='grey' /> API Automation
-                          </div>
-                          <div className='dropdown-item d-flex align-items-center h-auto'>
-                            <BiExport size={18} color='grey' />
-                            <ExportButton orgId={this.props.match.params.orgId} collectionId={collectionId} collectionName={this.props.collections[collectionId].name} />
-                          </div>
-                          <div className='dropdown-item delete-button-sb text-danger d-flex' onClick={() => { this.openDeleteCollectionModal(collectionId) }}>
-                            <DeleteIcon size={14} /> Delete
-                          </div>
-                        </>
-                      )}
-                      {this.props.collections[collectionId]?.importedFromMarketPlace && (
-                        <div
-                          className='dropdown-item d-flex align-items-center justify-content-between'
-                          onClick={() => {
-                            this.removeImporedPublicCollection(collectionId)
-                          }}
-                        >
-                          <div className='marketplace-icon mr-2'> M </div>
-                          <div> Remove Public Collection </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className='theme-color d-flex transition counts ml-1 f-12'>

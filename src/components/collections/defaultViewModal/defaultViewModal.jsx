@@ -26,7 +26,7 @@ export class DefaultViewModal extends Form {
     this.inputRef = React.createRef();
     this.state = {
       showPageForm: {
-        addPage: true
+        addPage: false
       },
       data: {
         name: ''
@@ -99,32 +99,54 @@ export class DefaultViewModal extends Form {
 
   renderCollectionDetailsForm() {
     return (
-      <div className='p-2 d-flex align-items-center'>
-        {this.renderInput('name', 'Name', this.props.title, 'Page name', false, false, '*name accepts min 1 & max 100 characters')}
-        <div className='mb-3 ml-1'>
-          <Button className='btn btn-primary btn-sm' onClick={this.handleSubmit}>Submit</Button>
+      <>
+        <div className='dropdown-item p-0'>
+          {this.renderInput('name', 'Name', this.props.title, 'Page name', false, false, '*name accepts min 1 & max 100 characters')}
         </div>
-      </div>
+       {this.state.dropdownVisible && (
+        <div className='dropdown-item  btn btn-primary btn-sm mt-2 fs-4' onClick={this.handleSubmit}>
+          Submit
+        </div>
+           )}
+      </>
     );
   }
 
   renderInModal() {
     return (
       <div
+        className='dropdown-menu page-dropdown-menu'
         onKeyPress={(e) => {
           onEnter(e, this.handleKeyPress.bind(this));
         }}
       >
-        {this.renderCollectionDetailsForm()}
+        <div className='dropdown-item p-0'>
+          {this.renderInput('name', 'Name', this.props.title, 'Page name', false, false, '*name accepts min 1 & max 100 characters')}
+        </div>
+        <div className='btn btn-primary btn-sm mt-2 fs-4' onClick={this.handleSubmit}>
+          Submit
+        </div>
       </div>
     );
   }
 
   render() {
     return (
-      <div className='collecton-page show'>
-        {this.renderInModal()}
+      <>
+      <div
+        className='dropdown-menu page-dropdown-menu'
+        onKeyPress={(e) => {
+          onEnter(e, this.handleKeyPress.bind(this));
+        }}
+      >
+        <div className='dropdown-item p-0'>
+          {this.renderInput('name', 'Name', this.props.title, 'Page name', false, false, '*name accepts min 1 & max 100 characters')}
+        </div>
+        <div className='btn btn-primary btn-sm mt-2 fs-4' onClick={this.handleSubmit}>
+          Submit
+        </div>
       </div>
+      </>
     );
   }
 }

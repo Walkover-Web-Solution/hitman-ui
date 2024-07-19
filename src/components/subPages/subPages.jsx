@@ -18,6 +18,8 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './subpages.scss'
+import Dropdown from 'react-bootstrap/Dropdown';
+
 
 
 const SubPage = (props) => {
@@ -164,25 +166,30 @@ const SubPage = (props) => {
 
             {isDashboardRoute(props, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action d-flex align-items-center'>
-                <div onClick={() => openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
-                  <IconButtons>
-                    <FiPlus />
-                  </IconButtons>
+                <div className='dropdown'>
+                  <Dropdown.Toggle className="p-0" onClick={() => openAddSubPageModal(subPageId)} type="button" data-toggle="dropdown" aria-expanded="false">
+                    <IconButtons>
+                      <FiPlus />
+                    </IconButtons>
+                  </Dropdown.Toggle>
+                  {showAddPageEndpointModal()}
                 </div>
-                <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                  <IconButtons>
-                    <BsThreeDots />
-                  </IconButtons>
-                </div>
-                <div className='dropdown-menu dropdown-menu-right'>
-                  <div className='dropdown-item d-flex' onClick={() => openEditSubPageForm(pages[subPageId])}>
-                    <EditSign /> Rename
-                  </div>
-                  <div
-                    className='dropdown-item text-danger d-flex'
-                    onClick={() => openDeleteSubPageModal(subPageId)}
-                  >
-                    <DeleteIcon /> Delete
+                <div className='dropdown'>
+                  <Dropdown.Toggle className='p-0 d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <IconButtons>
+                      <BsThreeDots />
+                    </IconButtons>
+                  </Dropdown.Toggle>
+                  <div className='dropdown-menu dropdown-menu-right'>
+                    <div className='dropdown-item d-flex' onClick={() => openEditSubPageForm(pages[subPageId])}>
+                      <EditSign /> Rename
+                    </div>
+                    <div
+                      className='dropdown-item text-danger d-flex'
+                      onClick={() => openDeleteSubPageModal(subPageId)}
+                    >
+                      <DeleteIcon /> Delete
+                    </div>
                   </div>
                 </div>
               </div>
@@ -218,7 +225,6 @@ const SubPage = (props) => {
 
   return (
     <>
-      {showAddPageEndpointModal()}
       {showEditPageModal()}
       {showDeleteModal && groupsService.showDeleteGroupModal(props, closeDeleteGroupModal, 'Delete Page', `Are you sure you wish to delete this page? All your pages and endpoints present in this page will be deleted.`, pages[props.rootParentId])}
       <div className='linkWith'>{renderBody(props.rootParentId)}</div>

@@ -354,13 +354,11 @@ body .sidebar {
 
         .sidebar-item-action {
           padding: 0 0.7rem;
-          z-index: 19;
+          // z-index: 19;
 
-          > div {
-            &:not(.dropdown-menu) {
+           .sidebar-item-action-btn, .dropdown-toggle  {
               opacity: 0;
               visibility: hidden;
-            }
           }
 
           .sidebar-item-action-btn[aria-expanded='true'] {
@@ -423,9 +421,11 @@ body .sidebar {
         }
 
         &:hover {
-          .sidebar-item-action > div {
-            visibility: visible;
-            opacity: 1;
+          .sidebar-item-action {
+            .sidebar-item-action-btn, .dropdown-toggle {
+              visibility: visible;
+              opacity: 1;
+            }
           }
 
           .counts {
@@ -840,7 +840,7 @@ input[type='text']:focus {
   cursor: pointer;
 }
 .linkWrapper button {
-  padding-left: 7px !important;
+  padding-left: 7px;
 }
 
 .sidebar-add-btn {
@@ -994,5 +994,25 @@ input[type='text']:focus {
   svg {
     height: 16px;
     width: 16px;
+  }
+}
+.sidebar-item-action {
+  .dropdown-toggle {
+    &::after {
+      all: unset;
+    }
+  }
+}
+.page-dropdown-menu {
+  .dropdown-item {
+    &:hover {
+      background-color: unset !important;
+    }
+    .form-group {
+    margin-bottom: 0;
+    .alert{
+      margin-bottom: 0;
+    }
+    }
   }
 }
