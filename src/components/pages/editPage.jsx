@@ -11,14 +11,14 @@ import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
 import withRouter from '../common/withRouter'
 import { useNavigate, useParams } from 'react-router-dom'
+import pagesActionTypes from './redux/pagesActionTypes'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
-    const navigate = useNavigate()
     const params = useParams()
+    const dispatch = useDispatch()
     const queryClient = useQueryClient()
     const pageId = params.pageId
-    const orgId = params.orgId
     const pageContentData = useQuery(['pageContent', pageId])
     const mutation = useMutation(updateContent, {
       onSuccess: (data) => {
@@ -28,7 +28,7 @@ const withQuery = (WrappedComponent) => {
           enabled: true,
           staleTime: 600000
         })
-        navigate(`/orgs/${orgId}/dashboard/page/${pageId}`)
+        dispatch({ type: pagesActionTypes.UPDATE_PAGE_DATA, payload: { data: { state: data.state }, pageId } })
       }
     })
     const tabId = props?.tabs?.tabs?.[pageId]
@@ -118,7 +118,7 @@ class EditPage extends Component {
   }
 
   handleChange = (value) => {
-    const data = { ...this.state.data }
+    const data = { ...this.state.data, state: 1 }
     data.contents = value
     let tabId = this.props.tab.id
 
@@ -171,12 +171,14 @@ class EditPage extends Component {
       return
     }
     if (editedPage?.contents?.trim() === '<p></p>' || editedPage?.contents?.trim() === '') {
-      editedPage.contents = ''
+      editedPage.contents = '';
     }
     delete editedPage['isPublished']
     this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
     tabService.markTabAsSaved(this.props?.tab?.id)
     tabService.updateDraftData(editedPage?.id, null)
+    const orgId = this.props.params.orgId
+    this.props.navigate(`/orgs/${orgId}/dashboard/page/${this.props.params.pageId}`)
   }
 
   handleCancel() {
