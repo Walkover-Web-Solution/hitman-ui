@@ -1,203 +1,176 @@
-import React from 'react'
-import { Modal } from 'react-bootstrap'
-import Joi from 'joi-browser'
-import Form from '../common/form'
-import { onEnter, validate } from '../common/utility'
-import shortid from 'shortid'
-import { connect } from 'react-redux'
-import { addCollection, updateCollection } from './redux/collectionsActions'
-import { moveToNextStep } from '../../services/widgetService'
-import { defaultViewTypes } from './defaultViewModal/defaultViewModal'
-import withRouter from '../common/withRouter'
+import React, { useState, useEffect, useRef } from 'react';
+import { Modal } from 'react-bootstrap';
+import Joi from 'joi-browser';
+import {
+  handleBlurInUrlField,
+  handleChangeInUrlField,
+  onEnter,
+  validate,
+} from '../common/utility';   
+import shortid from 'shortid';
+import { useDispatch } from 'react-redux';
+import { addCollection, updateCollection } from './redux/collectionsActions';
+import { moveToNextStep } from '../../services/widgetService';
+import { defaultViewTypes } from './defaultViewModal/defaultViewModal';
+import withRouter from '../common/withRouter';
+import RenderInput from '../common/formComponents/renderInput';
+import RenderSaveButton from '../common/formComponents/renderSaveButton';
 
-const mapStateToProps = (state) => {
-  return {
-    collections: state.collections
-  }
-}
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    add_collection: (newCollection, openSelectedCollection, callback) =>
-      dispatch(addCollection(newCollection, openSelectedCollection, callback)),
-    update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback))
-  }
-}
+const CollectionForm = (props) => {
+  const dataRef = useRef({
+    name : '',
+    description : '',
+    defaultView : defaultViewTypes.TESTING
+  })
 
-class CollectionForm extends Form {
-  constructor(props) {
-    super(props)
-    this.state = {
-      data: {
-        name: '',
-        description: '',
-        defaultView: defaultViewTypes.TESTING
-      },
-      collectionId: '',
-      errors: {},
-      show: true,
-      step: 1,
-      viewLoader: {
-        testing: false,
-        doc: false
-      },
-      updating: false
-    }
+  const dispatch = useDispatch();
+  const [collectionId, setCollectionId] = useState('');
+  const [errors, setErrors] = useState({});
+  const inputRef = useRef();
+  const step = 1;
 
-    this.schema = {
-      name: Joi.string().min(3).max(50).trim().required().label('Collection Name'),
-      description: Joi.string().allow(null, '').label('Description'),
-      defaultView: Joi.string().allow(null, '').label('Default View')
-    }
-  }
 
-  async componentDidMount() {
-    if (!this.props.show || this.props.title === 'Add new Collection') return
-    let data = {}
-    const collectionId = this.props.edited_collection.id
-    if (this.props.edited_collection) {
-      const { name, description } = this.props.edited_collection
-      data = {
-        name,
-        description
-      }
-    }
-    this.setState({ data, collectionId })
-  }
+  const schema = {
+    name: Joi.string().min(3).max(50).trim().required().label('Collection Name'),
+    description: Joi.string().allow(null, '').label('Description'),
+    defaultView: Joi.string().allow(null, '').label('Default View'),
+  };
 
-  async onEditCollectionSubmit(defaultView) {
-    this.props.update_collection(
-      {
-        ...this.state.data,
-        id: this.state.collectionId,
-        defaultView
-      },
-      null,
-      this.redirectToCollection.bind(this)
-    )
-  }
+  useEffect(() => {
+    if (!props.show || props.title === 'Add new Collection') return;
+  }, []);
 
-  redirectToCollection(collection) {
-    const { viewLoader } = this.state
+  const redirectToCollection = (collection) => {
     if (!collection.data) {
-      console.error('collection.data is undefined')
-      return // or handle this case appropriately
+      console.error('collection.data is undefined');
+      return;
     }
-    const { id: collectionId } = collection.data
+    const { id: collectionId } = collection.data;
     if (collection.success) {
-      const { orgId } = this.props.params
-      this.props.navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/settings`)
+      const { orgId } = props.params;
+      props.navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/settings`);
     }
-    if (this.props.setDropdownList) this.props.setDropdownList(collection.data)
-    this.props.onHide()
-  }
+    if (props.setDropdownList) props.setDropdownList(collection.data);
+    props.onHide();
+  };
 
-  async onAddCollectionSubmit(defaultView) {
-    const requestId = shortid.generate()
+  const onEditCollectionSubmit = async (defaultView) => {
+
+    dispatch(updateCollection({
+      ...dataRef.current,
+      id: collectionId,
+      defaultView,
+    }, null, redirectToCollection))
+  };
+
+  const onAddCollectionSubmit = async (defaultView) => {
+    const requestId = shortid.generate();
     const defaultDocProperties = {
       defaultLogoUrl: '',
-      defaultTitle: this.state?.data?.title
-    }
-    this.props.add_collection(
-      { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
-      null,
-      this.redirectToCollection.bind(this)
-    )
-    this.setState({
-      data: {
-        name: '',
-        description: '',
-        defaultView: defaultViewTypes.TESTING
-      }
-    })
-    moveToNextStep(1)
-  }
+      defaultTitle: dataRef.current.name,
+    };
 
-  setViewLoader(type, flag) {
-    if (flag === 'edit') this.setState({ updating: true })
-    else {
-      const { viewLoader } = this.state
-      this.setState({ viewLoader: { ...viewLoader, [type]: flag } })
-    }
-  }
+    dispatch(addCollection({ ...dataRef.current, docProperties: defaultDocProperties, requestId, defaultView }, null, redirectToCollection))
 
-  async doSubmit(defaultView) {
-    const errors = validate({ name: this.state.data.name }, this.schema)
+    dataRef.current = {
+      name: '',
+      description: '',
+      defaultView: defaultViewTypes.TESTING,
+    };
+    moveToNextStep(1);
+  };
+
+  const doSubmit = async (defaultView) => {
+    const errors = validate({ name: dataRef.current.name }, schema);
     if (errors) {
-      this.setState({ errors })
-      return null
+      setErrors(errors);
+      return null;
     }
-    const body = this.state.data
-    body.name = body.name.trim()
-    if (this.props.title === 'Edit Collection') {
-      this.onEditCollectionSubmit(defaultView)
+    if (props.title === 'Edit Collection') {
+      onEditCollectionSubmit(defaultView);
     }
-    if (this.props.title === 'Add new Collection') {
-      this.onAddCollectionSubmit(defaultView)
-      if (this.props.setDropdownList) this.props.onHide()
+    if (props.title === 'Add new Collection') {
+      onAddCollectionSubmit(defaultView);
+      if (props.setDropdownList) props.onHide();
     }
-  }
+  };
 
-  saveCollection(defaultView, flag) {
-    this.setViewLoader(defaultView, flag)
-    this.doSubmit(defaultViewTypes.TESTING)
-  }
+  const handleBlur = (e, isURLInput = false) => {
+    const updatedData = { ...dataRef.current };
+    if (isURLInput) {
+      updatedData[e.currentTarget.name] = handleBlurInUrlField(updatedData[e.currentTarget.name]);
+    }
+    dataRef.current = updatedData
+    setErrors({});
+  };
 
-  renderCollectionDetailsForm() {
-    return (
-      <>
-        {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 50 characters')}
-        {this.renderSaveButton()}
-      </>
-    )
-  }
+  // use useRef
+  const handleChange = (e, isURLInput = false) => {
+    const updatedData = { ...dataRef.current };
+    updatedData[e.currentTarget.name] = e.currentTarget.value;
+    if (isURLInput) {
+      updatedData[e.currentTarget.name] = handleChangeInUrlField(updatedData[e.currentTarget.name]);
+    }
+    dataRef.current = updatedData
+    setErrors({});
+  };
 
-  renderSaveButton() {
-    return (
-      <button className='btn btn-primary btn-sm fs-4' onClick={() => this.saveCollection(defaultViewTypes.TESTING, 'edit')}>
-        Save
-      </button>
-    )
-  }
+  const validateForm = () => {
+    return null;
+  };
 
-  renderForm() {
-    const { step } = this.state
-    return <>{step === 1 && this.renderCollectionDetailsForm()}</>
-  }
+  const handleKeyPress = () => {
+    const errors = validateForm();
+    setErrors(errors || {});
+    if (errors) return;
+    doSubmit();
+  };
 
-  handleCancel(e) {
-    e.preventDefault()
-    this.props.showOnlyForm ? this.props.onCancel() : this.props.onHide()
-  }
-
-  renderInModal() {
-    return (
-      <div
-        onKeyPress={(e) => {
-          onEnter(e, this.handleKeyPress.bind(this))
-        }}
+  return (
+    <div
+      onKeyPress={(e) => {
+        onEnter(e, handleKeyPress);
+      }}
+    >
+      <Modal
+        size="sm"
+        animation={false}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        onHide={props.onHide}
+        show={props.show}
       >
-        <Modal
-          size='sm'
-          animation={false}
-          aria-labelledby='contained-modal-title-vcenter'
-          centered
-          onHide={this.props.onHide}
-          show={this.props.show}
-        >
-          <div>
-            <Modal.Header className='custom-collection-modal-container' closeButton>
-              <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{this.renderForm()}</Modal.Body>
-          </div>
-        </Modal>
-      </div>
-    )
-  }
+        <div>
+          <Modal.Header className="custom-collection-modal-container" closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">{props.title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {step === 1 && (
+              <>
+                <RenderInput
+                  name="name"
+                  urlName="Name"
+                  label="Collection Name"
+                  placeholder="Collection Name"
+                  mandatory={true}
+                  isURLInput={true}
+                  note="*collection name accepts min 3 and max 50 characters"
+                  inputRef={inputRef}
+                  data={dataRef.current}
+                  errors={errors}
+                  handleChange={handleChange}
+                  handleBlur={handleBlur}
+                />
 
-  render() {
-    return this.props.showOnlyForm ? this.renderForm() : this.renderInModal()
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CollectionForm))
+                <RenderSaveButton saveCollection={doSubmit} defaultViewTypes={defaultViewTypes.TESTING} />
+              </>
+            )}
+          </Modal.Body>
+        </div>
+      </Modal>
+    </div>
+  );
+};
+
+export default withRouter(CollectionForm)
