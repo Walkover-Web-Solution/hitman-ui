@@ -60,6 +60,7 @@ function selectTab(props, tabId) {
   } else if (tab?.type === 'collection') {
     tab?.state?.pageType === 'SETTINGS'
       ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/settings`)
+      : tab?.state?.pageType === 'RUNS' ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/runs`)
       : props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/feedback`)
   } else {
     if (!(tab?.type && tab?.id)) {
