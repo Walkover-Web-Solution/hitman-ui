@@ -7,10 +7,9 @@ import DisplayEndpoint from '../endpoints/displayEndpoint';
 import DisplayPage from '../pages/displayPage';
 import EditPage from '../pages/editPage';
 import { getCurrentUser } from '../auth/authServiceV2';
-import PublishDocsForm from './../publishDocs/publishDocsForm';
 import { updateCollection } from '../collections/redux/collectionsActions';
-import PublishDocsReview from './../publishDocs/publishDocsReview';
 import { updateContent } from '../pages/redux/pagesActions';
+import CollectionTabs from '../collections/collectionTabs';
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -92,19 +91,30 @@ const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag
           selected_tab_id={selected_tab_id}
           tab={tab} />;
       case 'collection':
-        const loc = location.pathname.split('/')[6];
-        if (loc === 'settings') {
-          return (
-            <PublishDocsForm
-              isCollectionPublished={() => collections[tabId]?.isPublic || false}
-              unPublishCollection={() => unPublishCollection(tabId)}
-              selected_collection_id={tabId}
-              onTab
-            />
-          );
-        } else {
-          return <PublishDocsReview />;
+        const pathSection = window.location.pathname.split('/')[6];
+        let activeTab = '';
+        switch (pathSection) {
+          case 'settings':
+            activeTab = 'settings';
+            break;
+          case 'runs':
+            activeTab = 'runs';
+            break;
+          case 'feedback':
+            activeTab = 'feedback';
+            break;
+          default:
+            activeTab = 'settings';
+            break;
         }
+
+        return (
+          <CollectionTabs
+            collectionId={tabId}
+            activeTab={activeTab}
+            onHide={() => { }} // Pass the appropriate onHide handler if needed
+          />
+        );
       default:
         break;
     }

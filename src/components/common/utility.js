@@ -715,6 +715,37 @@ function addItsParent(flattenData, singleId, dataToPublishSet) {
   }
 }
 
+
+export const generateCronExpression = (basicRunFrequency, runFrequency, runTime) => {
+  const [hour, minute] = runTime.split(':').map(num => parseInt(num, 10));
+  if (basicRunFrequency === 'Hourly') {
+      return `${minute} * * * *`;
+  } else if (basicRunFrequency === 'Daily') {
+      return `${minute} ${hour} * * *`;
+  } else if (basicRunFrequency === 'Weekly') {
+      switch (runFrequency) {
+          case 'Every weekday (Monday-Friday)':
+              return `${minute} ${hour} * * 1-5`;
+          case 'Every Monday':
+              return `${minute} ${hour} * * 1`;
+          case 'Every Tuesday':
+              return `${minute} ${hour} * * 2`;
+          case 'Every Wednesday':
+              return `${minute} ${hour} * * 3`;
+          case 'Every Thursday':
+              return `${minute} ${hour} * * 4`;
+          case 'Every Friday':
+              return `${minute} ${hour} * * 5`;
+          default:
+              // Fallback to every day if no match
+              return `${minute} ${hour} * * *`;
+      }
+  } else {
+      // Fallback to daily if no basic frequency matches
+      return `${minute} ${hour} * * *`;
+  }
+}
+
 export default {
   isDashboardRoute,
   isElectron,
