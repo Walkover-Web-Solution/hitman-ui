@@ -1,40 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { getCronByCollection, deleteCron, cronStatus } from '../../../services/cronJobs'
-import './RunTabs.scss';
+import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
+import { useQuery, useQueryClient } from 'react-query';
+import { getCronByCollection, deleteCron, cronStatus } from '../../../services/cronJobs'
 import IconButtons from '../../common/iconButton'
 import { BsThreeDots } from 'react-icons/bs'
 import { MdOutlineMotionPhotosPaused } from "react-icons/md";
 import { RiDeleteBinLine } from 'react-icons/ri'
 import { ReactComponent as Rename } from '../../../assets/icons/renameSign.svg'
 import { GrResume } from "react-icons/gr";
+import './collectionRuns.scss';
 
-const RunTabs = () => {
+const CollectionRuns = () => {
   const params = useParams();
   const navigate = useNavigate()
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('functional');
-  const [scheduledRuns, setScheduledRuns] = useState([]);
 
-  useEffect(() => {
-    if (activeTab === 'scheduled') {
-      const fetchScheduledRuns = async () => {
-        const collectionId = params?.collectionId;
-        try {
-          const data = await getCronByCollection(collectionId);
-          setScheduledRuns(data.data);
-
-        } catch (error) {
-          console.error('Failed to fetch scheduled runs:', error);
-        }
-      };
-
-      fetchScheduledRuns();
+  const { data: scheduledRuns = [], isError, error } = useQuery(
+    ['scheduledRuns', params.collectionId],
+    () => getCronByCollection(params.collectionId),
+    {
+      enabled: activeTab === 'scheduled',
+      staleTime: Infinity
     }
-  }, [activeTab]);
+  );
+
+  if (isError) {
+    console.error('Failed to fetch scheduled runs:', error);
+    return <div>Error fetching scheduled runs.</div>;
+  }
 
   const deleteCronById = async (cronId) => {
     try {
       await deleteCron(cronId);
+      queryClient.setQueryData(['scheduledRuns', params.collectionId], oldRuns => {
+        return oldRuns.filter(run => run.id !== cronId);
+      });
     } catch (error) {
       console.error('Failed to fetch scheduled runs:', error);
     }
@@ -43,6 +44,14 @@ const RunTabs = () => {
   const updateCronStatus = async (cronId, status) => {
     try {
       await cronStatus(cronId, status);
+      queryClient.setQueryData(['scheduledRuns', params.collectionId], oldRuns => {
+        return oldRuns.map(run => {
+          if (run.id === cronId) {
+            return { ...run, status: status };
+          }
+          return run; 
+        });
+      });
     } catch (error) {
       console.error('Failed to fetch scheduled runs:', error);
     }
@@ -79,10 +88,10 @@ const RunTabs = () => {
             </thead>
             <tbody>
               {scheduledRuns.map(run => (
-                <tr key={run?.cron_id}>
-                  <td>{run?.cron_expression}</td>
-                  <td>{run?.cron_name}</td>
-                  <td>{run?.environmentId}</td>
+                <tr key={run.id}>
+                  <td>{run.cron_expression}</td>
+                  <td>{run.cron_name}</td>
+                  <td>{run.environmentId}</td>
                   <div className='position-relative'>
 
                     <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
@@ -91,16 +100,16 @@ const RunTabs = () => {
                       </IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
-                      <div className='dropdown-item d-flex align-items-center' onClick={() => updateCronStatus(run?.cron_id, run?.status === 1 ? 0 : 1)}>
+                      <div className='dropdown-item d-flex align-items-center' onClick={() => updateCronStatus(run?.id, run?.status === 1 ? 0 : 1)}>
                         {run?.status === 1 ? <MdOutlineMotionPhotosPaused /> : <GrResume />}
                         <span className="ml-2">{run?.status === 1 ? 'Pause' : 'Resume'}</span>
                       </div>
-                      <div className='dropdown-item d-flex align-items-center' onClick={() => openEditCron(run?.cron_id)}>
+                      <div className='dropdown-item d-flex align-items-center' onClick={() => openEditCron(run?.id)}>
                         <Rename /><span className="ml-2">Edit</span>
                       </div>
                       <div
                         className='dropdown-item text-danger d-flex align-items-center'
-                        onClick={() => { deleteCronById(run?.cron_id) }}
+                        onClick={() => { deleteCronById(run?.id) }}
                       >
                         <RiDeleteBinLine /><span className="ml-2">Delete</span>
                       </div>
@@ -123,4 +132,4 @@ const RunTabs = () => {
   );
 };
 
-export default RunTabs;
+export default CollectionRuns;

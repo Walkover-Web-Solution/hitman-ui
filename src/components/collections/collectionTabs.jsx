@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PublishDocForm from '../publishDocs/publishDocsForm';
-import RunTabs from './showRuns/collectionRuns';
+import CollectionRuns from './showRuns/collectionRuns';
 import PublishDocsReview from '../publishDocs/publishDocsReview';
 
 const CollectionTabs = ({ collectionId, onHide }) => {
@@ -13,7 +13,7 @@ const CollectionTabs = ({ collectionId, onHide }) => {
       case 'feedback':
         return <PublishDocsReview selected_collection_id={collectionId} />;
       case 'runs':
-        return <RunTabs collection_id={collectionId} />;
+        return <CollectionRuns collection_id={collectionId} />;
       default:
         return null;
     }

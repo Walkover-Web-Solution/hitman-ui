@@ -13,7 +13,12 @@ export const updateCron = async (cron) => {
 }
 
 export const getCronByCollection = async (collectionId) => {
-  return await http.get(`${apiUrl}/cron_schedulers/collection/${collectionId}`)
+  const response = await http.get(`${apiUrl}/cron_schedulers/collection/${collectionId}`)
+  // console.log(response)
+  // if (!response.ok) {
+  //   throw new Error('Network response was not ok');
+  // }
+  return response?.data;
 }
 
 export const cronStatus = async (cronId, status) => {

@@ -108,11 +108,11 @@ const ContentPanel = () => {
           }
         } else if (collections && collections[collectionId]) {
           let pageType 
-          if (this.props.location.pathname.split('/')[6] === 'settings') {
+          if (location.pathname.split('/')[6] === 'settings') {
             pageType = 'SETTINGS'
-          } else if (this.props.location.pathname.split('/')[6] === 'runs') {
+          } else if (location.pathname.split('/')[6] === 'runs') {
             pageType = 'RUNS'
-          } else if (this.props.location.pathname.split('/')[6] === 'runner') {
+          } else if (location.pathname.split('/')[6] === 'runner') {
             pageType = 'RUNNER'
           }
           dispatch(openInNewTab({
