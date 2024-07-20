@@ -1,7 +1,7 @@
-import jQuery from 'jquery'
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Modal, Table } from 'react-bootstrap'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import jQuery from 'jquery'
 import '../../styles/environmentVariables.scss'
 import { addEnvironment, updateEnvironment } from './redux/environmentsActions'
 import Joi from 'joi-browser'
@@ -9,291 +9,269 @@ import { validate, onEnter } from '../common/utility'
 import './environments.scss'
 import { getCurrentUser } from '../auth/authServiceV2'
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    add_environment: (newEnvironment) => dispatch(addEnvironment(newEnvironment)),
-    update_environment: (editedEnvironment) => dispatch(updateEnvironment(editedEnvironment))
-  }
-}
-
-class EnvironmentVariables extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      environment: {
-        name: '',
-        variables: {
-          BASE_URL: { initialValue: '', currentValue: '' },
-          1: { initialValue: '', currentValue: '' }
-        }
-      },
-      originalVariableNames: ['BASE_URL', '1'],
-      updatedVariableNames: ['BASE_URL', '']
+const EnvironmentVariables = ({ title, show, onHide, environment: initialEnvironment }) => {
+  const [environment, setEnvironment] = useState({
+    name: '',
+    variables: {
+      BASE_URL: { initialValue: '', currentValue: '' },
+      1: { initialValue: '', currentValue: '' }
     }
+  })
+  const [originalVariableNames, setOriginalVariableNames] = useState(['BASE_URL', '1'])
+  const [updatedVariableNames, setUpdatedVariableNames] = useState(['BASE_URL', ''])
+  const [errors, setErrors] = useState(null)
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (title === 'Add new Environment') return
+
+    let environmentCopy = jQuery.extend(true, {}, initialEnvironment)
+    const originalVars = Object.keys(environmentCopy.variables)
+    const len = originalVars.length
+    originalVars.push(len.toString())
+    const updatedVars = [...Object.keys(environmentCopy.variables), '']
+    environmentCopy.variables[len.toString()] = { initialValue: '', currentValue: '' }
+
+    setEnvironment(environmentCopy)
+    setOriginalVariableNames(originalVars)
+    setUpdatedVariableNames(updatedVars)
+  }, [title, initialEnvironment])
+
+  const schema = {
+    name: Joi.string().min(3).max(50).trim().required().label('Environment Name')
   }
 
-  async componentDidMount() {
-    if (this.props.title === 'Add new Environment') return
-    let environment = {}
-    environment = jQuery.extend(true, {}, this.props.environment)
-    const originalVariableNames = Object.keys(environment.variables)
-    const len = originalVariableNames.length
-    originalVariableNames.push(len.toString())
-    const updatedVariableNames = [...Object.keys(environment.variables), '']
-    environment.variables[len.toString()] = {
-      initialValue: '',
-      currentValue: ''
-    }
-    this.setState({
-      environment,
-      originalVariableNames,
-      updatedVariableNames
-    })
-  }
-
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    this.doSubmit()
+    doSubmit()
   }
 
-  schema = {
-    name: Joi.string().min(3).max(50).trim().required().label('Evironment Name')
-  }
-
-  doSubmit() {
-    const errors = validate({ name: this.state.environment.name }, this.schema)
-    if (errors) {
-      this.setState({ errors })
+  const doSubmit = () => {
+    const validationErrors = validate({ name: environment.name }, schema)
+    if (validationErrors) {
+      setErrors(validationErrors)
       return null
     }
-    this.props.onHide()
-    const environment = { ...this.state.environment }
-    const originalVariableNames = [...this.state.originalVariableNames]
-    const updatedVariableNames = [...this.state.updatedVariableNames]
-    delete environment.variables[originalVariableNames.pop()]
-    updatedVariableNames.pop()
+
+    onHide()
+    const envCopy = { ...environment }
+    const originalVars = [...originalVariableNames]
+    const updatedVars = [...updatedVariableNames]
+    delete envCopy.variables[originalVars.pop()]
+    updatedVars.pop()
 
     const updatedVariables = {}
-    for (let i = 0; i < updatedVariableNames.length; i++) {
-      const variableName = updatedVariableNames[i].trim()
+    for (let i = 0; i < updatedVars.length; i++) {
+      const variableName = updatedVars[i].trim()
       if (variableName && variableName !== 'deleted') {
-        updatedVariables[variableName] = environment.variables[originalVariableNames[i]]
+        updatedVariables[variableName] = envCopy.variables[originalVars[i]]
       }
     }
-    const updatedEnvironment = { ...this.state.environment, variables: updatedVariables }
-
+    const updatedEnvironment = { variables: updatedVariables }
     const userId = getCurrentUser()?.id
-    if (this.props.title === 'Add new Environment') {
-      this.props.onHide()
-      this.props.add_environment({ ...updatedEnvironment, userId })
-      this.setState({
-        environment: { name: '', variables: {} },
-        originalVariableNames: [],
-        updatedVariableNames: []
-      })
+
+    if (title === 'Add new Environment') {
+      dispatch(addEnvironment({ name: environment.name, ...updatedEnvironment, userId }))
+      setEnvironment({ name: '', variables: {} })
+      setOriginalVariableNames([])
+      setUpdatedVariableNames([])
     } else {
-      const originalEnvironment = jQuery.extend(true, {}, this.props.environment)
-      if (JSON.stringify(originalEnvironment) !== JSON.stringify(updatedEnvironment)) {
-        this.props.update_environment({
-          ...updatedEnvironment,
-          userId
-        })
+      const originalEnvCopy = jQuery.extend(true, {}, initialEnvironment)
+      if (JSON.stringify(originalEnvCopy) !== JSON.stringify(updatedEnvironment)) {
+        dispatch(updateEnvironment({ id: environment.id, name: environment.name, ...updatedEnvironment, userId }))
       }
     }
   }
 
-  handleAdd() {
-    const environment = { ...this.state.environment }
-    const len = this.state.originalVariableNames.length
-    const originalVariableNames = [...this.state.originalVariableNames, len.toString()]
-    const updatedVariableNames = [...this.state.updatedVariableNames, '']
-    if (originalVariableNames[len.toString() - 1] !== '') {
-      environment.variables[len.toString()] = {
-        initialValue: '',
-        currentValue: ''
-      }
+  const handleAdd = () => {
+    const envCopy = { ...environment }
+    const len = originalVariableNames.length
+    const originalVars = [...originalVariableNames, len.toString()]
+    const updatedVars = [...updatedVariableNames, '']
+    if (originalVars[len.toString() - 1] !== '') {
+      envCopy.variables[len.toString()] = { initialValue: '', currentValue: '' }
     }
-    this.setState({ environment, originalVariableNames, updatedVariableNames })
+    setEnvironment(envCopy)
+    setOriginalVariableNames(originalVars)
+    setUpdatedVariableNames(updatedVars)
   }
 
-  handleChangeEnv = (e) => {
-    const environment = { ...this.state.environment }
-    environment[e.currentTarget.name] = e.currentTarget.value
-    this.setState({ environment, errors: null })
+  const handleChangeEnv = (e) => {
+    const envCopy = { ...environment }
+    envCopy[e.currentTarget.name] = e.currentTarget.value
+    setEnvironment(envCopy)
+    setErrors(null)
   }
 
-  handleChange = (e) => {
+  const handleChange = (e) => {
     const name = e.currentTarget.name.split('.')
-    const lastIndex = this.state.originalVariableNames.length - 1
+    const lastIndex = originalVariableNames.length - 1
 
-    const originalVariableNames = [...this.state.originalVariableNames]
-    const updatedVariableNames = [...this.state.updatedVariableNames]
+    const originalVars = [...originalVariableNames]
+    const updatedVars = [...updatedVariableNames]
     let data = {}
     if (name[1] === 'name') {
-      updatedVariableNames[name[0]] = e.currentTarget.value
-      data = { updatedVariableNames }
+      updatedVars[name[0]] = e.currentTarget.value
+      data = { updatedVariableNames: updatedVars }
     } else {
-      const environment = { ...this.state.environment }
-      environment.variables[originalVariableNames[name[0]]][name[1]] = e.currentTarget.value
-      data = { environment }
+      const envCopy = { ...environment }
+      envCopy.variables[originalVars[name[0]]][name[1]] = e.currentTarget.value
+      data = { environment: envCopy }
     }
 
-    this.setState(data, () => {
-      if (name[0] === lastIndex.toString()) {
-        this.handleAdd()
-      }
-    })
+    setEnvironment((prev) => ({ ...prev, ...data }))
+    setUpdatedVariableNames(updatedVars)
+    setOriginalVariableNames(originalVars)
+
+    if (name[0] === lastIndex.toString()) {
+      handleAdd()
+    }
   }
 
-  handleDelete(index) {
-    const updatedVariableNames = this.state.updatedVariableNames
-    updatedVariableNames[index] = 'deleted'
-    this.setState({ updatedVariableNames })
+  const handleDelete = (index) => {
+    const updatedVars = [...updatedVariableNames]
+    updatedVars[index] = 'deleted'
+    setUpdatedVariableNames(updatedVars)
   }
 
-  render() {
-    return (
-      <div onKeyPress={(e) => onEnter(e, this.doSubmit.bind(this))}>
-        <Modal
-          show={this.props.show}
-          onHide={this.props.onHide}
-          size='lg'
-          animation={false}
-          aria-labelledby='contained-modal-title-vcenter'
-          centered
-          className='custom-environment'
-        >
-          <form onSubmit={this.handleSubmit}>
-            <div className='custom-environment-modal-container'>
-              <Modal.Header className='custom-collection-modal-container p-3' closeButton>
-                <Modal.Title id='contained-modal-title-vcenter'>{this.props.title}</Modal.Title>
-              </Modal.Header>
-              <Modal.Body className='p-3'>
-                <div className='form-group mb-0'>
-                  <label htmlFor='custom-environment-input'>
-                    Environment Name<span className='mx-1 alert alert-danger'>*</span>
-                  </label>
-                  <input
-                    name='name'
-                    value={this.state.environment.name}
-                    onChange={this.handleChangeEnv}
-                    type='text'
-                    id='custom-environment-input'
-                    className='form-control'
-                    placeholder='Environment Name'
-                  />
-                  <div>
-                    <small className='muted-text'>*environment name accepts min 3 and max 50 characters</small>
-                  </div>
-                  {this.state.errors?.name && <div className='alert alert-danger'>{this.state.errors?.name}</div>}
+  return (
+    <div onKeyDown={(e) => onEnter(e, doSubmit)}>
+      <Modal
+        show={show}
+        onHide={onHide}
+        size='lg'
+        animation={false}
+        aria-labelledby='contained-modal-title-vcenter'
+        centered
+        className='custom-environment'
+      >
+        <form onSubmit={handleSubmit}>
+          <div className='custom-environment-modal-container'>
+            <Modal.Header className='custom-collection-modal-container p-3' closeButton>
+              <Modal.Title id='contained-modal-title-vcenter'>{title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className='p-3'>
+              <div className='form-group mb-0'>
+                <label htmlFor='custom-environment-input'>
+                  Environment Name<span className='mx-1 alert alert-danger'>*</span>
+                </label>
+                <input
+                  name='name'
+                  value={environment.name}
+                  onChange={handleChangeEnv}
+                  type='text'
+                  id='custom-environment-input'
+                  className='form-control'
+                  placeholder='Environment Name'
+                />
+                <div>
+                  <small className='muted-text'>*environment name accepts min 3 and max 50 characters</small>
                 </div>
-                <div className='custom-table-container env-table'>
-                  <Table size='sm' className='my-1'>
-                    <thead>
-                      <tr>
-                        <th className='custom-td'>Variable</th>
-                        <th className='custom-td'>Initial Value</th>
-                        <th className='custom-td'>Current Value</th>
-                        <th className='custom-td'>Action</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      {this.state.updatedVariableNames.map((variable, index) =>
-                        variable !== 'deleted' ? (
-                          <tr key={index}>
+                {errors?.name && <div className='alert alert-danger'>{errors?.name}</div>}
+              </div>
+              <div className='custom-table-container env-table'>
+                <Table size='sm' className='my-1'>
+                  <thead>
+                    <tr>
+                      <th className='custom-td'>Variable</th>
+                      <th className='custom-td'>Initial Value</th>
+                      <th className='custom-td'>Current Value</th>
+                      <th className='custom-td'>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {updatedVariableNames.map((variable, index) =>
+                      variable !== 'deleted' ? (
+                        <tr key={index}>
+                          <td className='custom-td'>
+                            <input
+                              name={index + '.name'}
+                              value={variable}
+                              onChange={handleChange}
+                              type='text'
+                              style={{ border: 'none' }}
+                              className='form-control'
+                            />
+                          </td>
+                          <td className='custom-td'>
+                            <input
+                              name={index + '.initialValue'}
+                              value={environment.variables[originalVariableNames[index]].initialValue}
+                              onChange={handleChange}
+                              type='text'
+                              className='form-control'
+                              style={{ border: 'none' }}
+                            />
+                          </td>
+                          <td className='custom-td'>
+                            <input
+                              name={index + '.currentValue'}
+                              value={environment.variables[originalVariableNames[index]].currentValue}
+                              onChange={handleChange}
+                              type='text'
+                              style={{ border: 'none' }}
+                              className='form-control'
+                            />
+                          </td>
+                          {updatedVariableNames.length - 1 !== index && (
                             <td className='custom-td'>
-                              <input
-                                name={index + '.name'}
-                                value={variable}
-                                onChange={this.handleChange}
-                                type='text'
-                                style={{ border: 'none' }}
-                                className='form-control'
-                              />
+                              <button type='button' className='btn btn-light btn-sm btn-block' onClick={() => handleDelete(index)}>
+                                <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                                  <path
+                                    d='M2.25 4.5H3.75H15.75'
+                                    stroke='#E98A36'
+                                    strokeWidth='1.5'
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                  />
+                                  <path
+                                    d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
+                                    stroke='#E98A36'
+                                    strokeWidth='1.5'
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                  />
+                                  <path
+                                    d='M7.5 8.25V12.75'
+                                    stroke='#E98A36'
+                                    strokeWidth='1.5'
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                  />
+                                  <path
+                                    d='M10.5 8.25V12.75'
+                                    stroke='#E98A36'
+                                    strokeWidth='1.5'
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                  />
+                                </svg>
+                              </button>
                             </td>
-                            <td className='custom-td'>
-                              {' '}
-                              <input
-                                name={index + '.initialValue'}
-                                value={this.state.environment.variables[this.state.originalVariableNames[index]].initialValue}
-                                onChange={this.handleChange}
-                                type='text'
-                                className='form-control'
-                                style={{ border: 'none' }}
-                              />
-                            </td>
-                            <td className='custom-td'>
-                              {' '}
-                              <input
-                                name={index + '.currentValue'}
-                                value={this.state.environment.variables[this.state.originalVariableNames[index]].currentValue}
-                                onChange={this.handleChange}
-                                type='text'
-                                style={{ border: 'none' }}
-                                className='form-control'
-                              />
-                            </td>
-                            {this.state.updatedVariableNames.length - 1 !== index && (
-                              <td className='custom-td'>
-                                <button type='button' className='btn btn-light btn-sm btn-block' onClick={() => this.handleDelete(index)}>
-                                  <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                                    <path
-                                      d='M2.25 4.5H3.75H15.75'
-                                      stroke='#E98A36'
-                                      strokeWidth='1.5'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                    />
-                                    <path
-                                      d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
-                                      stroke='#E98A36'
-                                      strokeWidth='1.5'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                    />
-                                    <path
-                                      d='M7.5 8.25V12.75'
-                                      stroke='#E98A36'
-                                      strokeWidth='1.5'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                    />
-                                    <path
-                                      d='M10.5 8.25V12.75'
-                                      stroke='#E98A36'
-                                      strokeWidth='1.5'
-                                      strokeLinecap='round'
-                                      strokeLinejoin='round'
-                                    />
-                                  </svg>
-                                </button>
-                              </td>
-                            )}
-                          </tr>
-                        ) : null
-                      )}
-                    </tbody>
-                  </Table>
-                </div>
-              </Modal.Body>
-                <div className='custom-table-footer p-3'>
-                  <div className='text-left'>
-                    <button className='btn btn-primary btn-sm fs-4 mr-2' id='add_env_save_btn'>
-                      Save
-                    </button>
-
-                    <button className='btn btn-secondary outline btn-sm fs-4' onClick={this.props.onHide}>
-                      Cancel
-                    </button>
-                  </div>
-                </div>
+                          )}
+                        </tr>
+                      ) : null
+                    )}
+                  </tbody>
+                </Table>
+              </div>
+            </Modal.Body>
+            <div className='custom-table-footer p-3'>
+              <div className='text-left'>
+                <button className='btn btn-primary btn-sm fs-4 mr-2' id='add_env_save_btn'>
+                  Save
+                </button>
+                <button className='btn btn-secondary outline btn-sm fs-4' onClick={onHide}>
+                  Cancel
+                </button>
+              </div>
             </div>
-          </form>
-        </Modal>
-      </div>
-    )
-  }
+          </div>
+        </form>
+      </Modal>
+    </div>
+  )
 }
 
-export default connect(null, mapDispatchToProps)(EnvironmentVariables)
+export default EnvironmentVariables

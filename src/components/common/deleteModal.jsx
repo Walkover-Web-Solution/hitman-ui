@@ -3,10 +3,12 @@ import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { closeTab } from '../tabs/redux/tabsActions'
 import { onEnter } from './utility'
+import { deleteEnvironment } from '../environments/redux/environmentsActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    close_tab: (tabId) => dispatch(closeTab(tabId))
+    close_tab: (tabId) => dispatch(closeTab(tabId)),
+    delete_environment: (deletedEnvironment) => dispatch(deleteEnvironment(deletedEnvironment))
   }
 }
 class DeleteModal extends Component {
