@@ -21,6 +21,7 @@ import IndexWebsite from './components/indexWebsite/indexWebsite.js'
 import Redirections from './components/collections/Redirections.jsx'
 import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
 import NavigationSetter from './history.js'
+import CollectionTabs from './components/collections/collectionTabs.jsx'
 
 const App = () => {
   const navigate = useNavigate()
@@ -91,8 +92,8 @@ const App = () => {
             <Route path='/orgs/:orgId/dashboard/endpoint/:endpointId' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/endpoint/:endpointId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/settings' element={<MainV2 />} />
-            <Route path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' element={MainV2 } />
-            <Route path='/orgs/:orgId/dashboard/collection/:collectionId/runs' element={MainV2} />
+            <Route path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/collection/:collectionId/runs' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/history/:historyId' element={<MainV2 />} />
