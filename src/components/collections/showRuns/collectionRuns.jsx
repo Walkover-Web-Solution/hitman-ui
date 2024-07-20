@@ -9,13 +9,17 @@ import { RiDeleteBinLine } from 'react-icons/ri'
 import { ReactComponent as Rename } from '../../../assets/icons/renameSign.svg'
 import { GrResume } from "react-icons/gr";
 import './collectionRuns.scss';
+import { useSelector } from 'react-redux';
+import cronstrue from 'cronstrue';
 
 const CollectionRuns = () => {
   const params = useParams();
   const navigate = useNavigate()
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('functional');
-
+  const { environments } = useSelector((state) => {
+    return { environments: state.environment.environments }
+  })
   const { data: scheduledRuns = [], isError, error } = useQuery(
     ['scheduledRuns', params.collectionId],
     () => getCronByCollection(params.collectionId),
@@ -27,7 +31,6 @@ const CollectionRuns = () => {
 
   if (isError) {
     console.error('Failed to fetch scheduled runs:', error);
-    return <div>Error fetching scheduled runs.</div>;
   }
 
   const deleteCronById = async (cronId) => {
@@ -89,9 +92,9 @@ const CollectionRuns = () => {
             <tbody>
               {scheduledRuns.map(run => (
                 <tr key={run.id}>
-                  <td>{run.cron_expression}</td>
+                 <td> {run.status === 1 ? cronstrue.toString(run.cron_expression) : <MdOutlineMotionPhotosPaused />}</td>
                   <td>{run.cron_name}</td>
-                  <td>{run.environmentId}</td>
+                  <td>{environments[run.environmentId]?.name || 'Unknown'}</td>
                   <div className='position-relative'>
 
                     <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>

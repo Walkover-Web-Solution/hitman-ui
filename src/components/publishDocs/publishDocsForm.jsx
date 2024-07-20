@@ -71,6 +71,15 @@ const PublishDocForm = (props) => {
     }
   }
 
+  const unPublishCollection = (selectedCollection) => {
+    // const selectedCollection = collections[collectionId];
+    if (selectedCollection?.isPublic === true) {
+      const editedCollection = { ...selectedCollection };
+      editedCollection.isPublic = false;
+      dispatch(updateCollection(editedCollection));
+    }
+  };
+
   const handleChange = (e, isURLInput = false) => {
     const newData = { ...data }
     newData[e.currentTarget.name] = e.currentTarget.value
@@ -339,7 +348,6 @@ const PublishDocForm = (props) => {
     const isNotPublished = !isCollectionPublished(selectedCollection)
     const rootParentId = collections[props.selected_collection_id]?.rootParentId
     const disableCondition = pages[rootParentId]?.child?.length > 0
-
     return (
       <div className='mt-2'>
         <Button
@@ -368,7 +376,7 @@ const PublishDocForm = (props) => {
             variant='btn btn-outline-danger btn-sm fs-4'
             className='m-1 btn-sm fs-4'
             onClick={() => {
-              props.unPublishCollection()
+              unPublishCollection(selectedCollection)
               setRepublishNeeded(false)
             }}
           >
@@ -379,12 +387,12 @@ const PublishDocForm = (props) => {
     )
   }
 
-  const publishCheck = (props.isSidebar || props.onTab) && props.isCollectionPublished()
+  const publishCheck = collections[tabs?.activeTabId]?.isPublic
 
   return (
     <>
       <div className='d-flex justify-content-center'>
-        <div className={props.onTab && 'publish-on-tab'}>
+        <div className={'publish-on-tab'}>
           <div className='d-flex justify-content-between align-item-center'>
             <div className='d-flex align-items-center'>
               <h3 className='page-title mb-0'>Publish Collection Settings</h3>

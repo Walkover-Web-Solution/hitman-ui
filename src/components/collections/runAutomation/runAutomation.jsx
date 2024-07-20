@@ -10,6 +10,7 @@ import './runAutomation.scss';
 import { addCron, addWebhook } from '../../../services/cronJobs';
 import { generateCronExpression } from '../../common/utility';
 import { RiAiGenerate } from "react-icons/ri";
+import { FaRegCopy } from "react-icons/fa6";
 
 export default function RunAutomation() {
 
@@ -38,12 +39,14 @@ export default function RunAutomation() {
     const [runTime, setRunTime] = useState('12:00');
     const [currentEnvironment, setCurrentEnvironmentId] = useState('');
     const [emailInput, setEmailInput] = useState([]);
-    const [filteredSuggestions, setFilteredSuggestions] = useState([]);
     const [basicRunFrequency, setBasicRunFrequency] = useState('Daily');
     const [webhookResponse, setWebhookResponse] = useState('');
+    const [tokenGenerationInProgress, setTokenGenerationInProgress] = useState(false);
     useEffect(() => {
         filterEndpointsOfCollection();
-        setCurrentEnvironmentId(currentEnvironment);
+        if (runType !== 'webhook') {
+            setTokenGenerationInProgress(false);
+        }
     }, [params?.collectionId]);
 
     const filterEndpointsOfCollection = () => {
@@ -65,20 +68,9 @@ export default function RunAutomation() {
 
     const handleEmailInputChange = (e) => {
         const inputValue = e.target.value;
-        // Last character to check if it ends with a semicolon
         const lastChar = inputValue[inputValue.length - 1];
         const emailsArray = inputValue.split(',').map(email => email.trim());
         setEmailInput(emailsArray);
-
-        if (lastChar === ',' && inputValue) {
-            const lastTypedWord = emailsArray[emailsArray.length - 1];
-            const suggestions = users.filter(user =>
-                user.email.toLowerCase().includes(lastTypedWord.toLowerCase())
-            ).map(user => user.email);
-            setFilteredSuggestions(suggestions);
-        } else {
-            setFilteredSuggestions([]);
-        }
     };
 
     const handleSelectAndDeselectAll = (isSelectAll) => {
@@ -176,6 +168,7 @@ export default function RunAutomation() {
             endpointIds: filteredEndpointIds
         };
         setAutomationLoading(true)
+        setTokenGenerationInProgress(true); 
         try {
             const responseData = await addWebhook(inputString);
             if (responseData.status === 200) {
@@ -288,7 +281,8 @@ export default function RunAutomation() {
                         </div>
                         <Form.Group>
                             <Form.Label className='muted-text'>Environment</Form.Label>
-                            <Form.Control as="select" value={currentEnvironment || "No environment selected"} onChange={(e) => setCurrentEnvironmentId(e.target.value)}>
+                            <Form.Control as="select" value={currentEnvironment || ""} onChange={(e) => setCurrentEnvironmentId(e.target.value)}>
+                                <option value="">Select environment</option> // Add this line
                                 {allEnviroments && Object.keys(allEnviroments).map(envId => (
                                     <option key={envId} value={envId}>
                                         {allEnviroments[envId].name || "Unnamed Environment"}
@@ -313,7 +307,8 @@ export default function RunAutomation() {
                         <span>Automate using webhook</span>
                         <Form.Group>
                             <Form.Label className='muted-text'>Environment</Form.Label>
-                            <Form.Control as="select" value={currentEnvironment || "No environment selected"} onChange={(e) => setCurrentEnvironmentId(e.target.value)}>
+                            <Form.Control as="select" value={currentEnvironment || ""} onChange={(e) => setCurrentEnvironmentId(e.target.value)}>
+                                <option value="">Select environment</option> // Add this line
                                 {allEnviroments && Object.keys(allEnviroments).map(envId => (
                                     <option key={envId} value={envId}>
                                         {allEnviroments[envId].name || "Unnamed Environment"}
@@ -336,7 +331,7 @@ export default function RunAutomation() {
                                     <Form.Label className='muted-text'>Generated Token</Form.Label>
                                     <div className="d-flex">
                                         <Form.Control type="text" readOnly value={webhookResponse} />
-                                        <button className="btn btn-outline-secondary ml-2" onClick={() => navigator.clipboard.writeText(webhookResponse)}>Copy</button>
+                                        <button className="btn btn-outline-secondary ml-2" onClick={() => navigator.clipboard.writeText(webhookResponse)}><FaRegCopy /></button>
                                     </div>
                                     <span style={{ color: 'red' }}>Make sure to copy your personal access token now as you will not be able to see this again.</span>
                                 </Form.Group>
@@ -362,7 +357,7 @@ export default function RunAutomation() {
                             <span>Schedule Run</span>
                         </button>
                         :
-                        <button onClick={generateToken} className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'>
+                        <button onClick={generateToken} disabled={tokenGenerationInProgress} className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'>
                             <RiAiGenerate className='mr-1' />
                             <span>Generate Token</span>
                         </button>

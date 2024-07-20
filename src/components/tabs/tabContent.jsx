@@ -1,13 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 import { useQueryClient } from 'react-query';
 import { Tab } from 'react-bootstrap';
 import DisplayEndpoint from '../endpoints/displayEndpoint';
 import DisplayPage from '../pages/displayPage';
 import EditPage from '../pages/editPage';
 import { getCurrentUser } from '../auth/authServiceV2';
-import { updateCollection } from '../collections/redux/collectionsActions';
 import { updateContent } from '../pages/redux/pagesActions';
 import CollectionTabs from '../collections/collectionTabs';
 
@@ -22,31 +20,19 @@ const withQuery = (WrappedComponent) => {
 };
 
 const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag, save_page_flag, selected_tab_id }) => {
-  const dispatch = useDispatch();
   const queryClient = useQueryClient();
-  const location = useLocation();
 
-  const { isTabsLoaded, tabData, history, pages, collections } = useSelector((state) => ({
+  const { isTabsLoaded, tabData, history, pages } = useSelector((state) => ({
     isTabsLoaded: state?.tabs?.loaded,
     tabsOrder: state?.tabs?.tabsOrder,
     activeTabId: state.tabs.activeTabId,
     tabData: state?.tabs?.tabs,
     history: state?.history,
-    pages: state?.pages,
-    collections: state?.collections,
+    pages: state?.pages
   }));
 
   const deleteFromReactQueryByKey = (id) => {
     queryClient.removeQueries(['pageContent', id]);
-  };
-
-  const unPublishCollection = (collectionId) => {
-    const selectedCollection = collections[collectionId];
-    if (selectedCollection?.isPublic === true) {
-      const editedCollection = { ...selectedCollection };
-      editedCollection.isPublic = false;
-      dispatch(updateCollection(editedCollection));
-    }
   };
 
   const renderContent = (tabId) => {
@@ -112,7 +98,7 @@ const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag
           <CollectionTabs
             collectionId={tabId}
             activeTab={activeTab}
-            onHide={() => { }} // Pass the appropriate onHide handler if needed
+            onHide={() => { }}
           />
         );
       default:

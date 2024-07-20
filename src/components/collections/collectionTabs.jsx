@@ -21,7 +21,7 @@ const CollectionTabs = ({ collectionId, onHide }) => {
   const renderTabContent = () => {
     switch (pageType) {
       case 'SETTINGS':
-        return <PublishDocForm collection_id={collectionId} show onHide={onHide} />
+        return <PublishDocForm selected_collection_id={collectionId} show onHide={onHide} />
       case 'FEEDBACK':
         return <PublishDocsReview selected_collection_id={collectionId} />
       case 'RUNS':
