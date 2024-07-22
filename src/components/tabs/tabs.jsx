@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import SavePromptModal from './savePromptModal'
 import { setTabsOrder } from './redux/tabsActions.js'
@@ -26,6 +27,10 @@ const CustomTabs = (props) => {
   const scrollRef = useRef({})
   const draggedItem = useRef(null)
   const interval = useRef(null)
+  
+  const location = useLocation();
+  const navigate = useNavigate()
+  const params = useParams()
 
   const navigate = useNavigate()
   const params = useParams()

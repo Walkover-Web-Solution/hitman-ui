@@ -29,7 +29,7 @@ import { TbLogin2 } from 'react-icons/tb'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 import { background } from '../backgroundColor.js'
 
-const SideBar = (props) => {
+const SideBar = () => {
   const collections = useSelector((state) => state.collections)
   const pages = useSelector((state) => state.pages)
   const historySnapshot = useSelector((state) => state.history)
@@ -413,7 +413,6 @@ const SideBar = (props) => {
     const collectionsToRender = Object.keys(collections || {})
     return (
       <Collections
-        {...props}
         handleOnDragOver={handleOnDragOver}
         onDragEnter={onDragEnter}
         onDragEnd={onDragEnd}
@@ -436,7 +435,7 @@ const SideBar = (props) => {
       <div>
         {isOnPublishedPage() ? (
           <div className='sidebar-accordion'>
-            <CombinedCollections {...props} collectionId={collectionId1} rootParentId={rootParentId} />
+            <CombinedCollections collectionId={collectionId1} rootParentId={rootParentId} />
           </div>
         ) : (
           renderCollections()
@@ -449,7 +448,7 @@ const SideBar = (props) => {
     let isOnDashboardPage = isDashboardRoute({ location })
     return (
       <>
-        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...props} />}
+        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 />}
         <div className='plr-3 pt-2'>
           {isOnPublishedPage() && renderCollectionName()}
           {renderSearch()}
