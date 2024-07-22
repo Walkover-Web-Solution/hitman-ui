@@ -21,6 +21,7 @@ import IndexWebsite from './components/indexWebsite/indexWebsite.js'
 import Redirections from './components/collections/Redirections.jsx'
 import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
 import NavigationSetter from './history.js'
+import CollectionTabs from './components/collections/collectionTabs.jsx'
 
 const App = () => {
   const navigate = useNavigate()
@@ -81,7 +82,7 @@ const App = () => {
           <Route exact path='/login' element={<LoginV2 />} />
           <Route path='/logout' element={<Logout />} />
           <Route path='/proxy/auth' element={<AuthServiceV2 />} />
-          <Route path='/orgs/:orgId/automation/:collectionId' element={<RunAutomation />} />
+          <Route path='orgs/:orgId/dashboard/collection/:collectionId/runner' element={<RunAutomation />} />
           <Route path='/404_PAGE' element={<ERROR_404_PAGE />} />
           <Route path='/403_PAGE' element={<ERROR_403_PAGE />} />
           <Route path='/auth/redirect' element={<OauthPage />} />
@@ -92,6 +93,7 @@ const App = () => {
             <Route path='/orgs/:orgId/dashboard/endpoint/:endpointId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/settings' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/collection/:collectionId/runs' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/history/:historyId' element={<MainV2 />} />

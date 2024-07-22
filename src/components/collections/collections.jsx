@@ -34,6 +34,7 @@ import { BiExport } from 'react-icons/bi'
 import withRouter from '../common/withRouter'
 import CustomModal from '../customModal/customModal'
 import CollectionForm from './collectionForm'
+import CollectionTabs from './collectionTabs'
 
 const mapStateToProps = (state) => {
   return {
@@ -237,8 +238,9 @@ class CollectionsComponent extends Component {
   openRedirectionsPage(collection) {
     this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/collection/${collection.id}/redirections`)
   }
+  
   handleApiAutomation(collectionId) {
-    this.props.navigate(`/orgs/${this.props.params.orgId}/automation/${collectionId}`)
+    this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/collection/${collectionId}/runner`)
   }
 
   renderBody(collectionId, collectionState) {
@@ -400,7 +402,7 @@ class CollectionsComponent extends Component {
   }
 
   showPublishDocsModal(onHide) {
-    return <PublishDocsModal {...this.props} show onHide={onHide} collection_id={this.state.selectedCollection} />
+    return <CollectionTabs collection_id={this.state.selectedCollection} onHide={onHide} />;
   }
 
   addGTM(gtmId) {

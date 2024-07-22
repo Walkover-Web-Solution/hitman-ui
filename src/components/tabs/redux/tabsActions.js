@@ -144,3 +144,10 @@ export const replaceTabForUntitled = (newTabId, currentActiveTabId) => {
 export const setIntrospectionSchema = (tabId, schemaData) => {
   return { type: tabsActionTypes.SET_INTROSPECTION_SCHEMA, payload: { schemaData, tabId } }
 }
+
+export const setPageType = (tabId, pageType) => {
+  return {
+    type: tabsActionTypes.SET_PAGE_TYPE,
+    payload: { tabId, pageType }
+  }
+}

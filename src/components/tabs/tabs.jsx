@@ -18,6 +18,7 @@ import { LuHistory } from 'react-icons/lu'
 import { GrGraphQl } from 'react-icons/gr'
 import Plus from '../../assets/icons/plus.svg'
 import './tabs.scss'
+import { TbSettingsAutomation } from "react-icons/tb";
 
 const CustomTabs = (props) => {
 
@@ -295,7 +296,15 @@ const CustomTabs = (props) => {
               </span>
             </>
           )
-        } else {
+        }else if (props.location.pathname.split('/')[6] === 'runner'){
+          return (
+            <div className='d-flex align-items-center'>
+              <TbSettingsAutomation size={18} className='setting-icons mr-1 mb-1' /> 
+              <span>{collectionName}</span>
+            </div>
+          )
+        } 
+        else {
           return (
             <div className='d-flex align-items-center'>
               <CiSettings size={18} className='setting-icons mr-1 mb-1' />
