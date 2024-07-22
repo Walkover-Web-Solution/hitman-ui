@@ -1,10 +1,9 @@
 import { Dropdown } from 'react-bootstrap'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import EnvironmentModal from './environmentModal.jsx'
 import './environments.scss'
 import environmentsService from './environmentsService.js'
 import { isDashboardRoute } from '../common/utility.js'
-import { setEnvironmentId } from './redux/environmentsActions.js'
 import { ReactComponent as EyeIcon } from '../../assets/icons/eye.svg'
 import { ReactComponent as EyeDisabledIcon } from '../../assets/icons/eyeDisabled.svg'
 import IconButton from '../common/iconButton.jsx'
@@ -12,14 +11,15 @@ import { IoIosArrowDown } from 'react-icons/io'
 import ImportEnvironmentModal from './ImportEnvironmentModal.js'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { fetchEnvironments, fetchEnvironmentsFromLocalStorage, setEnvironmentId } from './redux/environmentsActions'
+import collectionsApiService from '../collections/collectionsApiService.js'
 
 const Environments = (props) => {
   const environment = useSelector((state) => state.environment)
   const dispatch = useDispatch()
+  const fetch_environments = () => dispatch(fetchEnvironments())
+  const fetch_environments_from_local = () => dispatch(fetchEnvironmentsFromLocalStorage())
   const set_environment_id = (environmentId) => dispatch(setEnvironmentId(environmentId))
-
-  const location = useLocation()
-  const navigate = useNavigate()
 
   const [publicCollectionEnvironmentId, setPublicCollectionEnvironmentId] = useState(null)
   const [publicEnvironmentName, setPublicEnvironmentName] = useState('')
@@ -28,6 +28,40 @@ const Environments = (props) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedEnvironment, setSelectedEnvironment] = useState(null)
   const [showImportModal, setShowImportModal] = useState(false)
+  const [originalEnvironmentReplica, setOriginalEnvironmentReplica] = useState(undefined)
+
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const fetchCollection = async (collectionId) => {
+    try {
+      const collection = await collectionsApiService.getCollection(collectionId)
+      if (collection.data.environment != null) {
+        setPublicCollectionEnvironmentId(collection.data.environment.id)
+        setOriginalEnvironmentReplica(collection.data.environment)
+      }
+    } catch (error) {
+      console.error('Error fetching collection:', error)
+    }
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!navigator.onLine) {
+        fetch_environments_from_local()
+      } else {
+        fetch_environments()
+      }
+      const currentEnvironmentId = localStorage.getItem('currentEnvironmentId')
+      handleEnv(currentEnvironmentId)
+      if (!isDashboardRoute({ location }, true)) {
+        const collectionIdentifier = location.pathname.split('/')[2]
+        fetchCollection(collectionIdentifier)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   const handlePublicEnv = async (environmentId) => {
     if (environmentId != null) {
@@ -69,6 +103,10 @@ const Environments = (props) => {
     : publicCollectionEnvironmentId != null
     ? environment.environments[publicCollectionEnvironmentId]
     : null
+
+  if (env === undefined && publicCollectionEnvironmentId != null) {
+    env = originalEnvironmentReplica
+  }
 
   if (isDashboardRoute({ location }) && location.Environment === 'setCollectionEnvironment' && !location.dashboardEnvironment) {
     if (!location.publishedCollectionEnv) {
@@ -178,7 +216,7 @@ const Environments = (props) => {
     if (!isDashboardRoute({ location })) {
       return (
         <div className='environment-container'>
-          {publicCollectionEnvironmentId !== null && env !== undefined && (
+          {publicCollectionEnvironmentId !== null && originalEnvironmentReplica !== undefined && env !== undefined && (
             <div className='environment-buttons'>
               <Dropdown className='float-right'>
                 <Dropdown.Toggle bsPrefix='dropdown' variant='default' id='dropdown-basic'>
@@ -215,6 +253,15 @@ const Environments = (props) => {
                       </div>
                     ))}
                 </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          )}
+          {originalEnvironmentReplica !== undefined && (
+            <div className='select-environment-dropdown'>
+              <Dropdown className='float-right'>
+                <Dropdown.Toggle variant='default' id='dropdown-basic'>
+                  {originalEnvironmentReplica !== undefined ? originalEnvironmentReplica.name : 'No Environment'}
+                </Dropdown.Toggle>
               </Dropdown>
             </div>
           )}
