@@ -6,7 +6,6 @@ import IconButtons from '../../common/iconButton'
 import { BsThreeDots } from 'react-icons/bs'
 import { MdOutlineMotionPhotosPaused } from "react-icons/md";
 import { RiDeleteBinLine } from 'react-icons/ri'
-import { ReactComponent as Rename } from '../../../assets/icons/renameSign.svg'
 import { GrResume } from "react-icons/gr";
 import './collectionRuns.scss';
 import { useSelector } from 'react-redux';
@@ -94,7 +93,7 @@ const CollectionRuns = () => {
                 <tr key={run.id}>
                  <td> {run.status === 1 ? cronstrue.toString(run.cron_expression) : <MdOutlineMotionPhotosPaused />}</td>
                   <td>{run.cron_name}</td>
-                  <td>{environments[run.environmentId]?.name || 'Unknown'}</td>
+                  <td>{environments[run.environmentId]?.name || 'N/A'}</td>
                   <div className='position-relative'>
 
                     <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
@@ -106,9 +105,6 @@ const CollectionRuns = () => {
                       <div className='dropdown-item d-flex align-items-center' onClick={() => updateCronStatus(run?.id, run?.status === 1 ? 0 : 1)}>
                         {run?.status === 1 ? <MdOutlineMotionPhotosPaused /> : <GrResume />}
                         <span className="ml-2">{run?.status === 1 ? 'Pause' : 'Resume'}</span>
-                      </div>
-                      <div className='dropdown-item d-flex align-items-center' onClick={() => openEditCron(run?.id)}>
-                        <Rename /><span className="ml-2">Edit</span>
                       </div>
                       <div
                         className='dropdown-item text-danger d-flex align-items-center'
