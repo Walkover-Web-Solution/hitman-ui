@@ -138,9 +138,6 @@ class DisplayPage extends Component {
         this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
       }
     }
-    // if (this.props.params.pageId !== prevProps.params.pageId) {
-    //   this.fetchPageContent(this.props.params.pageId)
-    // }
   }
 
   extractPageName() {

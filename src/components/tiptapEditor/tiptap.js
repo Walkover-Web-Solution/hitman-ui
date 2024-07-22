@@ -17,36 +17,14 @@ import { Color } from '@tiptap/extension-color'
 
 export default function Tiptap({ initial, onChange, disabled, isInlineEditor, minHeight }) {
   const editor = useEditor({
-    editorProps: {
-      attributes: {
-        class: minHeight ? 'textEditor minHeight' : 'textEditor'
-      }
-    },
-    extensions: [
-      StarterKit,
-      Underline,
-      Highlight,
-      Image,
-      TextStyle,
-      Color,
-      Text,
-      Placeholder.configure({
-        placeholder: 'Write your text here …'
-      }),
-      Table.configure({
-        resizable: true,
-        HTMLAttributes: {
-          class: 'my-custom-class'
-        }
-      }),
+    editorProps: { attributes: { class: minHeight ? 'textEditor minHeight' : 'textEditor' } },
+    extensions: [StarterKit, Underline, Highlight, Image, TextStyle, Color, Text,
+      Placeholder.configure({ placeholder: 'Write your text here …' }),
+      Table.configure({ resizable: true, HTMLAttributes: { class: 'my-custom-class' } }),
       TableCell,
       TableRow,
       TableHeader,
-      Link.configure({
-        linkOnPaste: true,
-        openOnClick: true,
-        autolink: false
-      })
+      Link.configure({ linkOnPaste: true, openOnClick: true, autolink: false })
     ],
     content: initial,
     onUpdate: ({ editor }) => {
@@ -57,11 +35,14 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
   })
 
   useEffect(() => {
-    // Cleanup function
+    if (editor) {
+      editor.commands.setContent(initial)
+    }
+  }, [initial, editor])
+
+  useEffect(() => {
     return () => {
-      if (editor && editor.destroy) {
-        editor.destroy()
-      }
+      if (editor && editor.destroy) editor.destroy()
     }
   }, [editor])
 

@@ -1,274 +1,111 @@
-import React, { Component } from 'react'
-import { connect, useDispatch } from 'react-redux'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
+import React, { useState, useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import WarningModal from '../common/warningModal'
-import { updateContent, updatePage } from '../pages/redux/pagesActions'
-import './page.scss'
 import { toast } from 'react-toastify'
 import * as _ from 'lodash'
-import { updateTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
-import withRouter from '../common/withRouter'
 import { useNavigate, useParams } from 'react-router-dom'
+import pageServices from '../../services/pageServices'
+import { useMutation, useQueryClient } from 'react-query'
+import { updateContent } from './redux/pagesActions'
 import pagesActionTypes from './redux/pagesActionTypes'
+import './page.scss'
 
-const withQuery = (WrappedComponent) => {
-  return (props) => {
-    const params = useParams()
-    const dispatch = useDispatch()
-    const queryClient = useQueryClient()
+const EditPage = (props) => {
+
+  const { tabs, pages } = useSelector((state) => {
+    return {
+      tabs: state.tabs,
+      pages: state.pages,
+    }
+  })
+
+  const saveTimeOut = useRef()
+  const pageNameRef = useRef()
+
+  const params = useParams()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const queryClient = useQueryClient()
+
+  const [warningModalFlag, setWarningModalFlag] = useState(false)
+  const [pageContent, setPageContent] = useState('')
+
+  const mutation = useMutation(updateContent, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['pageContent', params?.pageId], data?.contents || '')
+      dispatch({ type: pagesActionTypes.UPDATE_PAGE_DATA, payload: { data: { state: isModified() ? 1 : tabs.tabs[params.pageId]?.state, name: data.name }, pageId: params.pageId } })
+    }
+  })
+
+  const fetchPage = async () => {
+    const data = await pageServices.getPageContent(params.orgId, params.pageId)
+    setPageContent(data)
+  }
+
+  useEffect(() => {
+    if (isModified()) return;
+    fetchPage()
+  }, [params.pageId])
+
+  const handleChange = (value) => {
+    if (!tabs[props.tab.id]?.activeTabId) tabService.markTabAsModified(props.tab.id)
+    if (props.tab.id === tabs.activeTabId) {
+      clearTimeout(saveTimeOut.current)
+      saveTimeOut.current = setTimeout(() => {
+        tabService.updateDraftData(props.tab.id, _.cloneDeep(value))
+      }, 1000)
+    }
+  }
+
+  const handleSubmit = () => {
+    const contents = tabs.tabs[params.pageId]?.isModified ? tabs.tabs?.[params.pageId]?.draft : pageContent;
+    const state = tabs.tabs[params.pageId]?.isModified ? 1 : pages[params.pageId].state;
+    if (pageNameRef?.current?.value?.trim() === '') return toast.error('Page name cannot be empty.');
+    if (contents === '<p></p>' || contents === '') contents = '';
+    const editedPage = { name: pageNameRef.current.value, state, contents }
+    mutation.mutate({ pageData: editedPage, id: params.pageId })
+    tabService.markTabAsSaved(params.pageId)
+    tabService.updateDraftData(params.pageId, null)
+    navigate(`/orgs/${params.orgId}/dashboard/page/${params.pageId}`)
+  }
+
+  const handleCancel = () => {
     const pageId = params.pageId
-    const pageContentData = useQuery(['pageContent', pageId])
-    const mutation = useMutation(updateContent, {
-      onSuccess: (data) => {
-        queryClient.setQueryData(['pageContent', pageId], data?.contents || '', {
-          refetchOnWindowFocus: false,
-          cacheTime: 5000000,
-          enabled: true,
-          staleTime: 600000
-        })
-        dispatch({ type: pagesActionTypes.UPDATE_PAGE_DATA, payload: { data: { state: data.state }, pageId } })
-      }
-    })
-    const tabId = props?.tabs?.tabs?.[pageId]
-    //if tab is Modified then show the data from the tab
-    if (tabId?.isModified && tabId?.type == 'page' && tabId?.draft) {
-      pageContentData.data = tabId?.draft
-    }
-    return <WrappedComponent {...props} pageContentData={pageContentData.data} mutationFn={mutation} />
-  }
-}
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
-    update_tab: (id, data) => dispatch(updateTab(id, data))
-  }
-}
-
-const mapStateToProps = (state) => {
-  return {
-    tabs: state.tabs,
-    pages: state.pages
-  }
-}
-
-class EditPage extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      data: { id: null, name: '', contents: '', state: '' },
-      showEditor: false
-    }
-    this.name = React.createRef()
-    this.contents = React.createRef()
-  }
-
-  async fetchPage(pageId) {
-    let data = {}
-    const { pages } = this.props
-    const page = pages[pageId]
-    if (page) {
-      const { id, name, contents, isPublished, state } = page
-      data = {
-        id,
-        name,
-        contents,
-        isPublished,
-        state
-      }
-      let updatedData = _.cloneDeep(data)
-      updatedData.contents = this.props?.pageContentData
-
-      this.setState({ data: updatedData, originalData: data, draftDataSet: true })
-    }
-  }
-
-  async componentDidMount() {
-    await this.setPageData()
-    this.setState({ showEditor: true })
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    this.setPageData()
-    const { save_page_flag: prevSavePageFlag } = prevProps
-    const { save_page_flag: savePageFlag, tab, handle_save_page: handleSavePage } = this.props
-    if (savePageFlag !== prevSavePageFlag) {
-      if (savePageFlag) {
-        this.handleSubmit()
-        handleSavePage(false, tab.id)
-      }
-    }
-  }
-
-  async setPageData() {
-    const { tab, pages } = this.props
-    const { draftDataSet } = this.state
-
-    if (tab && this.props?.params?.pageId) {
-      if (tab.isModified && !draftDataSet) {
-        let data = this.state.data
-        data.contents = this.props.pageContentData
-        this.setState({ ...tab.state, draftDataSet: true, data: data })
-      } else if (this.props?.params?.pageId !== 'new' && pages[tab.id] && !this.state.originalData?.id) {
-        await this.fetchPage(tab.id)
-      }
-    }
-  }
-
-  handleChange = (value) => {
-    const data = { ...this.state.data, state: 1 }
-    data.contents = value
-    let tabId = this.props.tab.id
-
-    this.setState({ data }, () => {
-      if (!this.props.tabs[tabId]?.activeTabId) {
-        tabService.markTabAsModified(this.props.tab.id)
-      }
-      this.updateTabDraftData(value)
-    })
-  }
-
-  updateTabDraftData(value) {
-    if (this.props.tab.id === this.props.tabs.activeTabId) {
-      clearTimeout(this.saveTimeOut)
-      this.saveTimeOut = setTimeout(() => {
-        tabService.updateDraftData(this.props.tab.id, _.cloneDeep(value))
-      }, 1000)
-    }
-  }
-
-  setUnsavedTabDataInIDB() {
-    if (this.props.tab.id === this.props.tabs.activeTabId) {
-      clearTimeout(this.saveTimeOut)
-      this.saveTimeOut = setTimeout(() => {
-        this.props.update_tab(this.props.tab.id, { state: _.cloneDeep(this.state) })
-      }, 1000)
-    }
-  }
-
-  handleNameChange = (e) => {
-    const data = { ...this.state.data }
-    const newPageName = e.currentTarget.value
-
-    if (newPageName !== this.state.originalData.name) {
-      data.name = newPageName
-      this.setState({ data }, () => {
-        if (!this.isModified()) {
-          tabService.markTabAsModified(this.props.tab.id)
-        }
-        this.setUnsavedTabDataInIDB()
-      })
-    }
-  }
-
-  handleSubmit = (e) => {
-    if (e) e.preventDefault()
-    const editedPage = { ...this.state.data }
-    if (editedPage?.name?.trim() === '') {
-      toast.error('Page name cannot be empty.')
-      return
-    }
-    if (editedPage?.contents?.trim() === '<p></p>' || editedPage?.contents?.trim() === '') {
-      editedPage.contents = '';
-    }
-    delete editedPage['isPublished']
-    this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
-    tabService.markTabAsSaved(this.props?.tab?.id)
-    tabService.updateDraftData(editedPage?.id, null)
-    const orgId = this.props.params.orgId
-    this.props.navigate(`/orgs/${orgId}/dashboard/page/${this.props.params.pageId}`)
-  }
-
-  handleCancel() {
-    const pageId = this.props.params.pageId
     if (pageId) {
-      // Redirect to displayPage Route Component
-      tabService.unmarkTabAsModified(this.props.tab.id)
-      this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/page/${pageId}`)
+      tabService.unmarkTabAsModified(props.tab.id)
+      navigate(`/orgs/${params.orgId}/dashboard/page/${pageId}`)
     }
   }
 
-  isModified() {
-    let tabId = this.props.tab.id
-    return this.props.tabs[tabId]?.activeTabId
+  const isModified = () => {
+    return tabs.tabs[params.pageId]?.isModified
   }
 
-  renderTiptapEditor(item, index) {
-    return (
-      this.state.showEditor && (
-        <Tiptap
-          onChange={this.handleChange}
-          initial={this.props?.pageContentData}
-          isInlineEditor={false}
-          disabled={false}
-          minHeight
-          key={index}
-        />
-      )
-    )
-  }
-
-  renderEditPageOperations() {
-    return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <div className='d-flex flex-row justify-content-end mb-2'>
-            <button onSubmit={this.handleSubmit} type='submit' className='btn btn-primary btn-sm fs-4 mr-2'>
-              Save
-            </button>
-            <button
-              onClick={() => {
-                this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel()
-              }}
-              type='button'
-              className='btn btn-secondary outline btn-sm fs-4'
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    )
-  }
-
-  render() {
-    return (
-      <div className='parent-page-display'>
-        <div className='custom-edit-page page-display mt-3'>
-          <WarningModal
-            show={this.state.warningModalFlag}
-            onHide={() => {
-              this.setState({ warningModalFlag: false })
-            }}
-            ignoreButtonCallback={() => {
-              this.handleCancel()
-            }}
-            message='Your unsaved changes will be lost.'
-          />
-
-          <div className='form-group'>
-            <div className='d-flex justify-content-between align-items-center'>
-              <label htmlFor='name'>Page Name</label>
-              {this.renderEditPageOperations()}
+  return (
+    <div className='parent-page-display'>
+      <div className='custom-edit-page page-display mt-3'>
+        <div className='form-group'>
+          <div className='d-flex justify-content-between align-items-center'>
+            <label htmlFor='name'>Page Name</label>
+            <div className='d-flex flex-row justify-content-end mb-2'>
+              <button onClick={handleSubmit} type='submit' className='btn btn-primary btn-sm fs-4 mr-2'>
+                Save
+              </button>
+              <button onClick={() => isModified() ? setWarningModalFlag(true) : handleCancel()} type='button' className='btn btn-secondary outline btn-sm fs-4'>
+                Cancel
+              </button>
+              <WarningModal show={warningModalFlag} onHide={() => setWarningModalFlag(false)} ignoreButtonCallback={handleCancel} message='Your unsaved changes will be lost.' />
             </div>
-            <input
-              name='name'
-              id='name'
-              value={this.state.data.name}
-              onChange={this.handleNameChange}
-              type='text'
-              className='form-control'
-              placeholder='Page Name'
-            />
           </div>
-
-          <div>{this.renderTiptapEditor()}</div>
+          <input key={params.pageId} ref={pageNameRef} name='name' id='name' defaultValue={pages?.[params.pageId]?.name} type='text' className='form-control' placeholder='Page Name' />
         </div>
+        {console.log(isModified() ? tabs.tabs[params.pageId]?.draft : pageContent)}
+        <Tiptap onChange={handleChange} initial={isModified() ? tabs.tabs[params.pageId]?.draft : pageContent} isInlineEditor={false} disabled={false} minHeight key={params.pageId} />
       </div>
-    )
-  }
+    </div>
+  )
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(EditPage)))
+export default EditPage
