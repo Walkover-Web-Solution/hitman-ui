@@ -107,7 +107,14 @@ const ContentPanel = () => {
             dispatch(setActiveTabId(collectionId))
           }
         } else if (collections && collections[collectionId]) {
-          let pageType = location.pathname.split('/')[6] === 'settings' ? 'SETTINGS' : 'FEEDBACK'
+          let pageType 
+          if (location.pathname.split('/')[6] === 'settings') {
+            pageType = 'SETTINGS'
+          } else if (location.pathname.split('/')[6] === 'runs') {
+            pageType = 'RUNS'
+          } else if (location.pathname.split('/')[6] === 'runner') {
+            pageType = 'RUNNER'
+          }
           dispatch(openInNewTab({
             id: collectionId,
             type: 'collection',
@@ -115,9 +122,8 @@ const ContentPanel = () => {
             previewMode: false,
             isModified: false,
             state: { pageType }
-          }))
+          }))}
         }
-      }
 
       if (window.location.pathname === `/orgs/${params.orgId}/dashboard`) {
         const { orgId } = params
