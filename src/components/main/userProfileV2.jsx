@@ -19,6 +19,7 @@ import { MdSwitchLeft } from 'react-icons/md'
 import { FiUser } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import ImportCollectionModal from '../importCollection/importColectionModel'
+import CustomModal from '../customModal/customModal'
 
 const UserProfile = () => {
   const historySnapshot = useSelector((state) => state.history)
@@ -140,13 +141,9 @@ const UserProfile = () => {
               handleImportClick()
             }}
           />
-          <CollectionForm
-            show={showNewCollectionModal}
-            title='Add new Collection'
-            onHide={() => {
-              handleAddNewClick()
-            }}
-          />
+          <CustomModal size='sm' modalShow={showNewCollectionModal} hideModal={handleAddNewClick}>
+            <CollectionForm title='Add new Collection' onHide={handleAddNewClick} />
+          </CustomModal>
         </div>
       </div>
     )

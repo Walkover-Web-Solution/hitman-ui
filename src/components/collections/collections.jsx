@@ -32,6 +32,8 @@ import { TbSettingsAutomation } from 'react-icons/tb'
 import ExportButton from '../exportButton/exportButton'
 import { BiExport } from 'react-icons/bi'
 import withRouter from '../common/withRouter'
+import CustomModal from '../customModal/customModal'
+import CollectionForm from './collectionForm'
 import CollectionTabs from './collectionTabs'
 
 const mapStateToProps = (state) => {
@@ -377,7 +379,7 @@ class CollectionsComponent extends Component {
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
-                    // isPublishData={false}
+                  // isPublishData={false}
                   />
                 }
               </Card.Body>
@@ -465,17 +467,15 @@ class CollectionsComponent extends Component {
           <div className='App-Nav'>
             <div className='tabs'>
               {this.showAddPageEndpointModal()}
-              {this.state.showCollectionForm &&
-                collectionsService.showCollectionForm(
-                  this.props,
-                  this.closeCollectionForm.bind(this),
-                  this.state.collectionFormName,
-                  this.state.selectedCollection
-                )}
               {this.openTagManagerModal()}
               {this.showDeleteCollectionModal()}
               {this.state.showOrgModal && (
                 <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />
+              )}
+              {this.state.showCollectionForm && (
+                <CustomModal size='sm' modalShow={this.state.showCollectionForm} hideModal={this.closeCollectionForm.bind(this)}>
+                  <CollectionForm title='Edit Collection' isEdit={true} collectionId={this.state.selectedCollection?.id} onHide={this.closeCollectionForm.bind(this)} />
+                </CustomModal>
               )}
             </div>
           </div>
