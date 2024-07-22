@@ -4,9 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Joi from 'joi-browser';
 import { onEnter, validate } from '../common/utility';
 import { useDispatch } from 'react-redux';
-import { addCollection } from './redux/collectionsActions';
-import { defaultViewTypes } from './defaultViewModal/defaultViewModal';
-import RenderSaveButton from '../common/formComponents/renderSaveButton';
+import { addCollection, updateCollection } from './redux/collectionsActions';
 import Input from '../common/input';
 
 const CollectionForm = (props) => {
@@ -32,6 +30,11 @@ const CollectionForm = (props) => {
   const doSubmit = async () => {
     const errors = validate({ name: inputRef.current.value }, schema);
     if (errors) return setErrors(errors)
+    if (props?.isEdit) {
+      dispatch(updateCollection({ name: inputRef.current.value, id: props.collectionId }))
+      props.onHide();
+      return;
+    }
     dispatch(addCollection({ name: inputRef.current.value }, null, redirectToCollection))
   }
 
@@ -42,7 +45,7 @@ const CollectionForm = (props) => {
       </Modal.Header>
       <Modal.Body>
         <Input name="name" urlName="Name" label="Collection Name" placeholder="Collection Name" mandatory={true} isURLInput={true} note="*collection name accepts min 3 and max 50 characters" ref={inputRef} errors={errors} />
-        <RenderSaveButton saveCollection={doSubmit} defaultViewTypes={defaultViewTypes.TESTING} />
+        <button className='btn btn-primary btn-sm fs-4' onClick={doSubmit}>Save</button>
       </Modal.Body>
     </div>
   );
