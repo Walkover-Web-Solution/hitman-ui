@@ -137,15 +137,7 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
 
   return (
     <div onKeyDown={(e) => onEnter(e, doSubmit)}>
-      <Modal
-        show={show}
-        onHide={onHide}
-        size='lg'
-        animation={false}
-        aria-labelledby='contained-modal-title-vcenter'
-        centered
-        className='custom-environment'
-      >
+      <Modal show={show} onHide={onHide} size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered className='custom-environment'>
         <form onSubmit={handleSubmit}>
           <div className='custom-environment-modal-container'>
             <Modal.Header className='custom-collection-modal-container p-3' closeButton>
