@@ -362,11 +362,6 @@ export default function RunAutomation() {
                   <br />
                 </Form.Group>
                 For detailed information, please refer to the documentation section.{' '}
-                <a href='/docView'>
-                  {' '}
-                  <FaExclamationCircle className='m-1' />
-                  Learn more.
-                </a>
               </div>
             )}
           </div>
@@ -389,14 +384,20 @@ export default function RunAutomation() {
             <span>Schedule Run</span>
           </button>
         ) : (
-          <button
-            onClick={generateToken}
-            disabled={tokenGenerationInProgress}
-            className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'
-          >
-            <RiAiGenerate className='mr-1' />
-            <span>Generate Token</span>
-          </button>
+          <div className='d-flex justify-content-between'>
+            <button
+              onClick={generateToken}
+              disabled={tokenGenerationInProgress}
+              className='btn btn-primary btn-sm fs-4 d-flex justify-content-center align-items-center'
+            >
+              <RiAiGenerate className='mr-1' />
+              <span>Generate Token</span>
+            </button>
+            <a href='https://techdoc.walkover.in/p/webhook?collectionId=lkm5WVs2Hc-2' target='_blank' rel='noopener noreferrer'>
+              <FaExclamationCircle className='m-1' />
+              Learn more.
+            </a>
+          </div>
         )}
       </div>
     </div>
