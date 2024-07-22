@@ -39,21 +39,10 @@ const EnvironmentModal = (props) => {
   const renderManageEnvironmentModal = () => {
     return Object.keys(environment.environments).map((environmentId) => (
       <div className='mb-2 d-flex justify-content-center' key={environmentId}>
-        <ListGroup.Item
-          style={{ width: '98%', float: 'left' }}
-          key={environmentId}
-          onClick={() => handleEdit(environment.environments[environmentId])}
-        >
+        <ListGroup.Item style={{ width: '98%', float: 'left' }} key={environmentId} onClick={() => handleEdit(environment.environments[environmentId])}>
           {environment.environments[environmentId]?.name}
         </ListGroup.Item>
-        <button
-          className='btn'
-          onClick={() => {
-            props.open_delete_environment_modal(environmentId)
-          }}
-        >
-          <DeleteIcon />
-        </button>
+        <button className='btn' onClick={() => { props.open_delete_environment_modal(environmentId) }}><DeleteIcon /></button>
       </div>
     ))
   }
