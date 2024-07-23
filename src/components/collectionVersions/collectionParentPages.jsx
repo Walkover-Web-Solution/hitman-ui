@@ -36,7 +36,8 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     clientData: state.clientData,
-    modals: state.modals
+    modals: state.modals,
+    collections: state.collections
   }
 }
 
@@ -462,7 +463,7 @@ class CollectionParentPages extends Component {
         : ''
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
-    var collectionTheme = this.props.collections[collectionId]?.theme
+    var collectionTheme = this.props?.collections[collectionId]?.theme
     const dynamicColor = hexToRgb(collectionTheme, 0.15)
     const staticColor = background['background_hover']
 
