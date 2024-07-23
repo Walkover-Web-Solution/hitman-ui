@@ -36,7 +36,16 @@ const CollectionForm = (props) => {
       props.onHide();
       return;
     }
-    dispatch(addCollection({ name: inputRef.current.value }, null, redirectToCollection))
+    const dataToSend = {
+      name: inputRef.current.value,
+      description: '',
+      defaultView: 'testing',
+      docProperties: {
+        defaultLogoUrl: '',
+        defaultTitle: inputRef.current.value,
+      }
+    }
+    dispatch(addCollection(dataToSend, null, redirectToCollection))
   }
 
   return (
