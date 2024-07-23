@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import Joi from 'joi-browser';
 import { onEnter, validate } from '../common/utility';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addCollection, updateCollection } from './redux/collectionsActions';
 import Input from '../common/input';
 
@@ -13,10 +13,11 @@ const CollectionForm = (props) => {
   const params = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const [errors, setErrors] = useState({});
+  const collections = useSelector(state => state.collections);
 
   const schema = { name: Joi.string().min(3).max(50).trim().required().label('Collection Name') };
+
 
   const redirectToCollection = (collection) => {
     if (!collection.data) {
@@ -44,7 +45,7 @@ const CollectionForm = (props) => {
         <Modal.Title id="contained-modal-title-vcenter">{props.title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Input name="name" urlName="Name" label="Collection Name" placeholder="Collection Name" mandatory={true} isURLInput={true} note="*collection name accepts min 3 and max 50 characters" ref={inputRef} errors={errors} />
+        <Input defaultValue={collections[props?.collectionId]?.name} name="name" urlName="Name" label="Collection Name" placeholder="Collection Name" mandatory={true} isURLInput={true} note="*collection name accepts min 3 and max 50 characters" ref={inputRef} errors={errors} />
         <button className='btn btn-primary btn-sm fs-4' onClick={doSubmit}>Save</button>
       </Modal.Body>
     </div>
