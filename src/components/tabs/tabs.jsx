@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import SavePromptModal from './savePromptModal'
 import { setTabsOrder } from './redux/tabsActions.js'
@@ -296,7 +296,7 @@ const CustomTabs = (props) => {
               </span>
             </>
           )
-        }else if (props.location.pathname.split('/')[6] === 'runner'){
+        }else if (location.pathname.split('/')[6] === 'runner'){
           return (
             <div className='d-flex align-items-center'>
               <TbSettingsAutomation size={18} className='setting-icons mr-1 mb-1' /> 
