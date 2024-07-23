@@ -27,14 +27,10 @@ const CustomTabs = (props) => {
   const scrollRef = useRef({})
   const draggedItem = useRef(null)
   const interval = useRef(null)
-  
-  const location = useLocation();
-  const navigate = useNavigate()
-  const params = useParams()
 
-  const navigate = useNavigate()
   const params = useParams()
   const location = useLocation()
+  const navigate = useNavigate()
 
   const [showSavePromptFor, setShowSavePromptFor] = useState([])
   const [leftScroll, setLeftScroll] = useState(0)
