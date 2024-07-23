@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
+import withRouter from '../common/withRouter.jsx'
 import SavePromptModal from './savePromptModal'
 import { setTabsOrder } from './redux/tabsActions.js'
 import tabService from './tabService'
@@ -27,9 +27,7 @@ const CustomTabs = (props) => {
   const scrollRef = useRef({});
   const draggedItem = useRef(null);
   const interval = useRef(null)
-  const location = useLocation();
-  const navigate = useNavigate()
-  const params = useParams()
+  const { navigate, params } = props;
 
   const [showSavePromptFor, setShowSavePromptFor] = useState([]);
   const [leftScroll, setLeftScroll] = useState(0);
@@ -287,7 +285,7 @@ const CustomTabs = (props) => {
         break
       case 'collection': {
         const collectionName = collections[tabId]?.name || 'Collection'
-        if (location.pathname.split('/')[6] === 'settings') {
+        if (props.location.pathname.split('/')[6] === 'settings') {
           return (
             <>
               <span className='d-flex align-items-center'>
@@ -518,4 +516,4 @@ const CustomTabs = (props) => {
 
 }
 
-export default CustomTabs
+export default withRouter(CustomTabs)

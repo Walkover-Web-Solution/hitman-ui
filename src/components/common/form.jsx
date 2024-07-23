@@ -32,6 +32,14 @@ class Form extends Component {
 
   validate() {
     return null
+    // const options = { abortEarly: false }
+    // const { error } = Joi.validate(this.trimmedData(), this.schema, options)
+    // if (!error) return null
+    // const errors = {}
+    // for (const item of error.details) {
+    //   if (!errors[item.path[0]]) { errors[item.path[0]] = item.message }
+    // }
+    // return errors
   }
 
   componentDidMount() {
