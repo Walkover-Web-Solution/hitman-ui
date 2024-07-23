@@ -2,7 +2,7 @@ import React from 'react';
 import PublishDocForm from '../publishDocs/publishDocsForm';
 import CollectionRuns from './showRuns/collectionRuns';
 import PublishDocsReview from '../publishDocs/publishDocsReview';
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import { getOrgId } from '../common/utility'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPageType } from '../tabs/redux/tabsActions'
@@ -14,7 +14,7 @@ const CollectionTabs = ({ collectionId, onHide }) => {
     const activeTabId = state.tabs.activeTabId
     return {
       activeTabId,
-      pageType: state.tabs.tabs[activeTabId].state.pageType
+      pageType: state.tabs.tabs?.[activeTabId]?.state?.pageType
     }
   })
 

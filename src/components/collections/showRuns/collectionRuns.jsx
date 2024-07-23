@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from 'react-query';
 import { getCronByCollection, deleteCron, cronStatus } from '../../../services/cronJobs'
 import IconButtons from '../../common/iconButton'
