@@ -9,6 +9,7 @@ const Input = forwardRef((props, ref) => {
       </label>
       {props?.mandatory && <span className='alert alert-danger'>*</span>}
       <input
+      defaultValue={props?.defaultValue}
         ref={ref}
         onChange={props?.onChange}
         onBlur={props?.onBlur}
