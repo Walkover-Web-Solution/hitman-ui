@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import withRouter from '../common/withRouter.jsx'
 import SavePromptModal from './savePromptModal'
 import { setTabsOrder } from './redux/tabsActions.js'
 import tabService from './tabService'
@@ -16,25 +17,23 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 import { LuHistory } from 'react-icons/lu'
 import { GrGraphQl } from 'react-icons/gr'
 import Plus from '../../assets/icons/plus.svg'
-import { TbSettingsAutomation } from 'react-icons/tb'
-import { useNavigate, useParams } from 'react-router-dom'
 import './tabs.scss'
+import { TbSettingsAutomation } from "react-icons/tb";
 
 const CustomTabs = (props) => {
-  const dispatch = useDispatch()
-  const navRef = useRef(null)
-  const scrollRef = useRef({})
-  const draggedItem = useRef(null)
+
+  const dispatch = useDispatch();
+  const navRef = useRef(null);
+  const scrollRef = useRef({});
+  const draggedItem = useRef(null);
   const interval = useRef(null)
+  const { navigate, params } = props;
 
-  const navigate = useNavigate()
-  const params = useParams()
-
-  const [showSavePromptFor, setShowSavePromptFor] = useState([])
-  const [leftScroll, setLeftScroll] = useState(0)
-  const [showHistoryContainer, setShowHistoryContainer] = useState(false)
-  const [showPreview, setShowPreview] = useState(false)
-  const [previewId, setPreviewId] = useState(null)
+  const [showSavePromptFor, setShowSavePromptFor] = useState([]);
+  const [leftScroll, setLeftScroll] = useState(0);
+  const [showHistoryContainer, setShowHistoryContainer] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewId, setPreviewId] = useState(null);
 
   const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history } = useSelector((state) => {
     return {
@@ -45,7 +44,7 @@ const CustomTabs = (props) => {
       tabs: state.tabs,
       historySnapshots: state.history,
       collections: state.collections,
-      history: state.history
+      history: state.history,
     }
   })
 
@@ -59,33 +58,30 @@ const CustomTabs = (props) => {
     }
   }, [tabs?.activeTabId])
 
-  const handleKeyDown = useCallback(
-    (e) => {
-      const activeTabId = tabs?.activeTabId
-      const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0
-      const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0
+  const handleKeyDown = useCallback((e) => {
+    const activeTabId = tabs?.activeTabId
+    const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+    const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0
 
-      if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
-        switch (e.key) {
-          case 't':
-            e.preventDefault()
-            handleOpenNextTab()
-            break
-          case 'w':
-            e.preventDefault()
-            handleCloseTabs([activeTabId])
-            break
-          case 'n':
-            e.preventDefault()
-            handleAddTab()
-            break
-          default:
-            break
-        }
+    if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
+      switch (e.key) {
+        case 't':
+          e.preventDefault()
+          handleOpenNextTab()
+          break
+        case 'w':
+          e.preventDefault()
+          handleCloseTabs([activeTabId])
+          break
+        case 'n':
+          e.preventDefault()
+          handleAddTab()
+          break
+        default:
+          break
       }
-    },
-    [tabs.activeTabId, tabsOrder]
-  )
+    }
+  }, [tabs.activeTabId, tabsOrder])
 
   const openTabAtIndex = (index) => {
     const { tabsOrder } = tabs
@@ -99,7 +95,7 @@ const CustomTabs = (props) => {
   }
 
   const closeSavePrompt = useCallback(() => {
-    setShowSavePromptFor([])
+    setShowSavePromptFor([]);
   }, [])
 
   const onDragStart = useCallback((tId) => {
@@ -141,13 +137,15 @@ const CustomTabs = (props) => {
     }
   }, [])
 
+
   const scrollLength = useCallback(() => {
-    setLeftScroll(navRef.current?.scrollLeft)
+    setLeftScroll(navRef.current?.scrollLeft);
   }, [])
 
   const leftHideTabs = useCallback(() => {
     return Number.parseInt(leftScroll / 200)
   }, [])
+
 
   const rightHideTabs = useCallback(() => {
     return Number.parseInt((navRef.current?.scrollWidth - navRef.current?.clientWidth - leftScroll) / 200)
@@ -169,7 +167,7 @@ const CustomTabs = (props) => {
     setShowHistoryContainer(!showHistoryContainer)
   }
 
-  const handleCloseTabs = (tabIds) => {
+  const handleCloseTabs = useCallback((tabIds) => {
     const showSavePromptFor = []
     const tabsData = tabs.tabs
 
@@ -186,7 +184,7 @@ const CustomTabs = (props) => {
       }
     }
     setShowSavePromptFor(showSavePromptFor)
-  }
+  }, [])
 
   const handleOnConfirm = (tabId) => {
     const show_save_prompt_for = showSavePromptFor.filter((tab) => tab != tabId)
@@ -296,14 +294,15 @@ const CustomTabs = (props) => {
               </span>
             </>
           )
-        } else if (props.location?.pathname?.split('/')?.[6] === 'runner') {
+        }else if (props.location?.pathname?.split('/')?.[6] === 'runner'){
           return (
             <div className='d-flex align-items-center'>
-              <TbSettingsAutomation size={18} className='setting-icons mr-1 mb-1' />
+              <TbSettingsAutomation size={18} className='setting-icons mr-1 mb-1' /> 
               <span>{collectionName}</span>
             </div>
           )
-        } else {
+        } 
+        else {
           return (
             <div className='d-flex align-items-center'>
               <CiSettings size={18} className='setting-icons mr-1 mb-1' />
@@ -446,14 +445,8 @@ const CustomTabs = (props) => {
                 onDragStart={() => onDragStart(tabId)}
                 onDrop={(e) => onDrop(e, tabId)}
                 className={tabs?.activeTabId === tabId ? 'active' : ''}
-                onMouseEnter={() => {
-                  setShowPreview(true)
-                  setPreviewId(tabId)
-                }}
-                onMouseLeave={() => {
-                  setShowPreview(false)
-                  setPreviewId(null)
-                }}
+                onMouseEnter={() => { setShowPreview(true); setPreviewId(tabId) }}
+                onMouseLeave={() => { setShowPreview(false); setPreviewId(null) }}
               >
                 {tabState[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
                 <Nav.Link eventKey={tabId}>
@@ -520,6 +513,7 @@ const CustomTabs = (props) => {
       </div>
     </>
   )
+
 }
 
-export default CustomTabs
+export default withRouter(CustomTabs)
