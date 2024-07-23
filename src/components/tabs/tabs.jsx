@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import SavePromptModal from './savePromptModal'
 import { setTabsOrder } from './redux/tabsActions.js'
@@ -18,7 +18,6 @@ import { LuHistory } from 'react-icons/lu'
 import { GrGraphQl } from 'react-icons/gr'
 import Plus from '../../assets/icons/plus.svg'
 import { TbSettingsAutomation } from 'react-icons/tb'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import './tabs.scss'
 
 const CustomTabs = (props) => {
