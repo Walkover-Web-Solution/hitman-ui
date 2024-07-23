@@ -490,7 +490,7 @@ const CustomTabs = (props) => {
         </Nav.Item>
         <div className='d-flex'>
           <Nav.Item className='tab-buttons' id='options-tab-button'>
-            <TabOptions history={history} handleCloseTabs={handleCloseTabs} />
+            <TabOptions handleCloseTabs={handleCloseTabs} />
           </Nav.Item>
           <Nav.Item className='' id='history-tab-button'>
             <button onClick={handleHistoryClick} className='px-2' style={{ outline: 'none' }}>
