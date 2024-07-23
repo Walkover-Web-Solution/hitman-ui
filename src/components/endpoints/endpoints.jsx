@@ -221,8 +221,8 @@ class Endpoints extends Component {
       isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId
         ? 'selected'
         : isDashboardRoute && this.props.params.endpointId === endpointId
-        ? 'selected'
-        : ''
+          ? 'selected'
+          : ''
     return (
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
@@ -361,11 +361,11 @@ class Endpoints extends Component {
       isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId
         ? 'selected'
         : isDashboardRoute && this.props.params.endpointId === endpointId
-        ? 'selected'
-        : ''
+          ? 'selected'
+          : ''
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
-    var collectionTheme = this.props.collections[collectionId]?.theme
+    var collectionTheme = this?.props?.collections[collectionId]?.theme
     const dynamicColor = hexToRgb(collectionTheme, 0.15)
     const staticColor = background['background_hover']
 
