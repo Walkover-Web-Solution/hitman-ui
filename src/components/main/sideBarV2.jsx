@@ -23,13 +23,15 @@ import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
 import './main.scss'
 import './sidebar.scss'
+import CollectionModal from '../collections/collectionsModal'
+import { openModal } from '../modals/redux/modalsActions'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from 'react-icons/tb'
 import { updateDragDrop } from '../pages/redux/pagesActions'
 import { background } from '../backgroundColor.js'
 
-const SideBar = () => {
+const SideBar = (props) => {
   const collections = useSelector((state) => state.collections)
   const pages = useSelector((state) => state.pages)
   const historySnapshot = useSelector((state) => state.history)
@@ -413,6 +415,7 @@ const SideBar = () => {
     const collectionsToRender = Object.keys(collections || {})
     return (
       <Collections
+        {...props}
         handleOnDragOver={handleOnDragOver}
         onDragEnter={onDragEnter}
         onDragEnd={onDragEnd}
@@ -435,7 +438,7 @@ const SideBar = () => {
       <div>
         {isOnPublishedPage() ? (
           <div className='sidebar-accordion'>
-            <CombinedCollections collectionId={collectionId1} rootParentId={rootParentId} />
+            <CombinedCollections {...props} collectionId={collectionId1} rootParentId={rootParentId} />
           </div>
         ) : (
           renderCollections()
@@ -448,7 +451,7 @@ const SideBar = () => {
     let isOnDashboardPage = isDashboardRoute({ location })
     return (
       <>
-        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 />}
+        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...props} />}
         <div className='plr-3 pt-2'>
           {isOnPublishedPage() && renderCollectionName()}
           {renderSearch()}

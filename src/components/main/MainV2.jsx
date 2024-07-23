@@ -13,13 +13,13 @@ import SideBarV2 from './sideBarV2'
 import OnlineStatus from '../onlineStatus/onlineStatus'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import UpdateStatus from './updateStatus'
+import CollectionModal from '../collections/collectionsModal'
 import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
+
 import NoCollectionIcon from '../../assets/icons/collection.svg'
 import 'react-toastify/dist/ReactToastify.css'
 import './main.scss'
 import { useNavigate } from 'react-router-dom'
-import CollectionForm from '../collections/collectionForm'
-import CustomModal from '../customModal/customModal'
 
 const MainV2 = () => {
   const params = useParams()
@@ -90,8 +90,12 @@ const MainV2 = () => {
     return !(temp && temp[orgId]) && collectionLength === 0 && showAddCollectionPage
   }
 
+  const addCollectionDialog = () =>
+    true && <CollectionModal title='Add Collection' onHide={() => setShowAddCollectionModal(false)} show={showAddCollectionModal} />
+
   const renderLandingDashboard = () => (
     <>
+      {addCollectionDialog()}
       <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
         <img src={NoCollectionIcon} alt='' />
         <p className='mb-4'>Add your first collection for API testing and Public API Doc</p>
@@ -111,10 +115,6 @@ const MainV2 = () => {
       </div>
     </>
   )
-
-  const handleAddNewClick = () => {
-    setShowAddCollectionModal(prev => !prev)
-  }
 
   return (
     <>
@@ -143,9 +143,6 @@ const MainV2 = () => {
           </div>
         </div>
       )}
-      <CustomModal size='sm' modalShow={showAddCollectionModal} hideModal={handleAddNewClick}>
-        <CollectionForm title='Add new Collection' onHide={handleAddNewClick} />
-      </CustomModal>
     </>
   )
 }

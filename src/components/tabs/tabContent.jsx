@@ -9,6 +9,16 @@ import { getCurrentUser } from '../auth/authServiceV2';
 import { updateContent } from '../pages/redux/pagesActions';
 import CollectionTabs from '../collections/collectionTabs';
 
+const withQuery = (WrappedComponent) => {
+  return (props) => {
+    const queryClient = useQueryClient();
+    const deleteFromReactQueryByKey = (id) => {
+      queryClient.removeQueries(['pageContent', id]);
+    };
+    return <WrappedComponent {...props} deleteFromReactQueryByKey={deleteFromReactQueryByKey} />;
+  };
+};
+
 const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag, save_page_flag, selected_tab_id }) => {
   const queryClient = useQueryClient();
 
@@ -117,4 +127,4 @@ const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag
   );
 };
 
-export default TabContent
+export default withQuery(TabContent);
