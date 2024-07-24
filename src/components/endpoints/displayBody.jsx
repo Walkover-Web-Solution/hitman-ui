@@ -98,10 +98,19 @@ class BodyContainer extends Component {
       this.showRawBodyType = false;
     }
 
+    const rawBody = body?.raw?.value || '';
+    let formattedRawBody = rawBody;
+
+    try {
+      const parsedBody = JSON.parse(rawBody);
+      formattedRawBody = this.prettifyJson(JSON.stringify(parsedBody));
+    } catch (e) {
+    }
+
     const data = {
       data: body?.[bodyTypesEnums['multipart/form-data']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
       urlencoded: body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
-      raw: body?.raw?.value || ''
+      raw: formattedRawBody,
     };
 
     this.rawBodyType = body?.raw?.rawType || rawTypesEnums.TEXT;
@@ -116,6 +125,28 @@ class BodyContainer extends Component {
       data
     });
   }
+  prettifyJson(jsonString) {
+    try {
+      const parsedJson = JSON.parse(jsonString);
+      return JSON.stringify(parsedJson, null, 2);
+    } catch (error) {
+      let indent = 0;
+      const indentString = '  ';
+      return jsonString.replace(/({|}|\[|\]|,)/g, (match) => {
+        if (match === '{' || match === '[') {
+          indent += 1;
+          return match + '\n' + indentString.repeat(indent);
+        } else if (match === '}' || match === ']') {
+          indent -= 1;
+          return '\n' + indentString.repeat(indent) + match;
+        } else if (match === ',') {
+          return match + '\n' + indentString.repeat(indent);
+        }
+        return match;
+      });
+    }
+  }
+  
 
   handleSelectBodyType(bodyType, bodyDescription) {
     switch (bodyType) {
@@ -197,17 +228,15 @@ class BodyContainer extends Component {
   }
 
   makeJson(body) {
-    if (typeof body === 'string') return body
-    if (!this.alteredBody) {
+    if (typeof body === 'string') {
       try {
-        const parsedBody = JSON.stringify(JSON.parse(body), null, 2)
-        return parsedBody
+        const parsedBody = JSON.stringify(JSON.parse(body), null, 2);
+        return parsedBody;
       } catch (e) {
-        return body
+        return body;
       }
-    } else {
-      return body
     }
+    return body;
   }
 
   setRawBodyType(rawBodyType) {
