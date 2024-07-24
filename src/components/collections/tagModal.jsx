@@ -3,6 +3,20 @@ import { Modal } from 'react-bootstrap'
 import Form from '../common/form'
 import { onEnter } from '../common/utility'
 import Joi from 'joi-browser'
+import { connect } from 'react-redux'
+import { updateCollection } from '../collections/redux/collectionsActions'
+
+const mapStateToProps = (state) => {
+  return {
+    collections: state.collections
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    update_collection: (editedCollection) => dispatch(updateCollection(editedCollection))
+  }
+}
 
 class TagManagerModal extends Form {
   constructor(props) {
@@ -63,4 +77,4 @@ class TagManagerModal extends Form {
   }
 }
 
-export default TagManagerModal
+export default connect(mapStateToProps, mapDispatchToProps)(TagManagerModal)
