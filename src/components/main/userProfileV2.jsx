@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 import { closeAllTabs } from '../tabs/redux/tabsActions'
 import { onHistoryRemoved } from '../history/redux/historyAction'
 import { ReactComponent as Users } from '../../assets/icons/users.svg'
-import { MdDeleteOutline } from 'react-icons/md'
+import { MdDeleteOutline} from 'react-icons/md'
 import IconButton from '../common/iconButton'
 import { IoIosArrowDown } from 'react-icons/io'
 import CollectionForm from '../collections/collectionForm'
@@ -19,6 +19,8 @@ import { MdSwitchLeft } from 'react-icons/md'
 import { FiUser } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import ImportCollectionModal from '../importCollection/importColectionModel'
+import { MdAdd } from "react-icons/md";
+import { BsThreeDots } from 'react-icons/bs'
 
 const UserProfile = () => {
   const historySnapshot = useSelector((state) => state.history)
@@ -128,9 +130,6 @@ const UserProfile = () => {
           </IconButton>
         </div>
         <div className='add-button d-flex align-items-center'>
-          <button className='mr-1 px-1 btn btn-light' onClick={handleAddNewClick}>
-            New
-          </button>
           <button className='btn btn-light px-1' onClick={handleImportClick}>
             Import
           </button>
@@ -251,6 +250,15 @@ const UserProfile = () => {
     )
   }
 
+  const renderAddCollection = () => {
+    return (
+      <div className='px-2 pb-2' onClick={handleAddNewClick}>
+        <MdAdd className='mr-2' size={17}/>
+        <span className='mr-2'>Add collection</span>
+      </div>
+    )
+  }
+
   const handleClose = () => {
     setModalForTabs(false)
     setShowModal(false)
@@ -331,6 +339,8 @@ const UserProfile = () => {
                 <Dropdown.Item>{renderTrash()}</Dropdown.Item>
                 <Dropdown.Item>{renderLogout()}</Dropdown.Item>
               </div>
+              <div className="custom-divider" />
+              <Dropdown.Item>{renderAddCollection()}</Dropdown.Item>
             </div>
           </Dropdown.Menu>
         </Dropdown>
