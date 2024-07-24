@@ -14,7 +14,7 @@ const CollectionTabs = ({ collectionId, onHide }) => {
     const activeTabId = state.tabs.activeTabId
     return {
       activeTabId,
-      pageType: state.tabs.tabs[activeTabId].state.pageType
+      pageType: state.tabs.tabs?.[activeTabId]?.state?.pageType
     }
   })
 
