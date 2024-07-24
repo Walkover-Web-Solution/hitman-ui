@@ -36,7 +36,8 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     clientData: state.clientData,
-    modals: state.modals
+    modals: state.modals,
+    collections: state.collections
   }
 }
 
