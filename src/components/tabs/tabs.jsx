@@ -60,33 +60,30 @@ const CustomTabs = (props) => {
     }
   }, [tabs?.activeTabId])
 
-  const handleKeyDown = useCallback(
-    (e) => {
-      const activeTabId = tabs?.activeTabId
-      const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0
-      const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0
+  const handleKeyDown = (e) => {
+    const activeTabId = tabs?.activeTabId
+    const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+    const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0
 
-      if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
-        switch (e.key) {
-          case 't':
-            e.preventDefault()
-            handleOpenNextTab()
-            break
-          case 'w':
-            e.preventDefault()
-            handleCloseTabs([activeTabId])
-            break
-          case 'n':
-            e.preventDefault()
-            handleAddTab()
-            break
-          default:
-            break
-        }
+    if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
+      switch (e.key) {
+        case 't':
+          e.preventDefault()
+          handleOpenNextTab()
+          break
+        case 'w':
+          e.preventDefault()
+          handleCloseTabs([activeTabId])
+          break
+        case 'n':
+          e.preventDefault()
+          handleAddTab()
+          break
+        default:
+          break
       }
-    },
-    [tabs.activeTabId, tabsOrder]
-  )
+    }
+  }
 
   const openTabAtIndex = (index) => {
     const { tabsOrder } = tabs
@@ -99,19 +96,13 @@ const CustomTabs = (props) => {
     openTabAtIndex(index)
   }
 
-  const closeSavePrompt = useCallback(() => {
-    setShowSavePromptFor([])
-  }, [])
+  const closeSavePrompt = () => setShowSavePromptFor([])
 
-  const onDragStart = useCallback((tId) => {
-    draggedItem.current = tId
-  }, [])
+  const onDragStart = (tId) => draggedItem.current = tId
 
-  const handleOnDragOver = useCallback((e) => {
-    e.preventDefault()
-  }, [])
+  const handleOnDragOver = (e) => e.preventDefault()
 
-  const onDrop = useCallback((e, droppedOnItem) => {
+  const onDrop = (e, droppedOnItem) => {
     e.preventDefault()
     if (draggedItem.current === droppedOnItem) {
       draggedItem.current = null
@@ -120,48 +111,49 @@ const CustomTabs = (props) => {
     const tabsOrder = tabs.tabsOrder.filter((item) => item !== draggedItem.current)
     const index = tabs.tabsOrder.findIndex((tId) => tId === droppedOnItem)
     tabsOrder.splice(index, 0, draggedItem.current)
+    console.log('tabsOrder', tabsOrder)
     dispatch(setTabsOrder(tabsOrder))
-  }, [])
+  }
 
-  const handleNav = useCallback((dir) => {
+  const handleNav = (dir) => {
     if (dir === 'left') {
       if (navRef.current) navRef.current.scrollLeft -= 200
     } else {
       if (navRef.current) navRef.current.scrollLeft += 200
     }
-  }, [])
+  }
 
-  const handleMouseEnter = useCallback((dir) => {
+  const handleMouseEnter = (dir) => {
     interval.current = setInterval(() => handleNav(dir), 500)
-  }, [])
+  }
 
-  const handleMouseLeave = useCallback(() => {
+  const handleMouseLeave = () => {
     if (interval.current) {
       clearInterval(interval.current)
       interval.current = null
     }
-  }, [])
+  }
 
-  const scrollLength = useCallback(() => {
+  const scrollLength = () => {
     setLeftScroll(navRef.current?.scrollLeft)
-  }, [])
+  }
 
-  const leftHideTabs = useCallback(() => {
+  const leftHideTabs = () => {
     return Number.parseInt(leftScroll / 200)
-  }, [])
+  }
 
-  const rightHideTabs = useCallback(() => {
+  const rightHideTabs = () => {
     return Number.parseInt((navRef.current?.scrollWidth - navRef.current?.clientWidth - leftScroll) / 200)
-  }, [])
+  }
 
-  const handleAddTab = useCallback(() => {
+  const handleAddTab = () => {
     scrollLength()
     tabService.newTab()
-  }, [])
+  }
 
-  const showScrollButton = useCallback(() => {
+  const showScrollButton = () => {
     return navRef.current?.scrollWidth > navRef.current?.clientWidth + 10
-  }, [])
+  }
 
   const handleHistoryClick = () => {
     if (responseView === 'right' && showHistoryContainer === false) {
