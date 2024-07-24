@@ -17,6 +17,7 @@ import { installModal } from './components/modals/redux/modalsActions'
 import { initConn, resetConn } from './services/webSocket/webSocketService.js'
 import OauthPage from './components/OauthPage/OauthPage.js'
 import TrashPage from './components/main/Trash/trashPage.jsx'
+import OnBoarding from './components/onBoard/onBoarding.jsx'
 import IndexWebsite from './components/indexWebsite/indexWebsite.js'
 import Redirections from './components/collections/Redirections.jsx'
 import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
@@ -102,8 +103,7 @@ const App = () => {
             <Route path='/orgs/:orgId/dashboard/history/:historyId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/trash' element={<TrashPage />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/redirections' element={<Redirections />} />
-            
-            
+            <Route path='/onBoarding' element={<OnBoarding />} />
           </Route>
 
           <Route path='/orgs/:orgId/invite' element={<InviteTeam />} />
