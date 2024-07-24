@@ -187,7 +187,7 @@ const PublishDocForm = (props) => {
   const renderUploadModule = (disabled) => (
     <>
       <div>
-        <label style={getDisabledStyle(disabled)} htmlFor='upload-button'>
+        <label className='mb-0 d-flex align-items-center px-3 py-1' style={getDisabledStyle(disabled)} htmlFor='upload-button'>
           <UploadIcon />
         </label>
         <input
@@ -207,13 +207,13 @@ const PublishDocForm = (props) => {
     return (
       <>
         <div className='d-flex'>
-          <div className='uploadBox' style={getDisabledStyle(data.logoUrl)}>
+          <div className='uploadBox overflow-hidden cursor-pointer' style={getDisabledStyle(data.logoUrl)}>
             {!binaryFile && <div className='d-flex align-items-center'>{renderUploadModule(data.logoUrl)}</div>}
-            {binaryFile && <img src={`data:image/png;base64,${binaryFile}`} height='60' width='60' alt='data' />}
-            <div className='uplod-info d-none'>
+            {binaryFile && <img className='d-flex align-items-center justify-content-center' src={`data:image/png;base64,${binaryFile}`} height='60' width='60' alt='data' />}
+            <div className='uplod-info position-absolute d-none'>
               {binaryFile && (
                 <span
-                  style={{ cursor: 'pointer' }}
+                  className='cursor-pointer'
                   onClick={() => {
                     const newErrors = { ...errors }
                     delete newErrors.icon
@@ -228,7 +228,7 @@ const PublishDocForm = (props) => {
             </div>
           </div>
         </div>
-        {error && <small className='text-danger'>{error}</small>}
+        {error && <small className='text-danger position-absolute text-truncate'>{error}</small>}
       </>
     )
   }
@@ -305,13 +305,14 @@ const PublishDocForm = (props) => {
           }
         >
           <div
-            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4 ${
-              isDisabled ? 'text-disable' : 'disabled-link'
-            }`}
+            className={`sidebar-public-url d-flex align-items-center justify-content-between mb-4 ml-0 overflow-auto cursor-pointer bg-white rounded px-2 py-1 ${isDisabled ? 'text-disable' : 'disabled-link'
+              }`}
           >
-            <HiOutlineExternalLink className='mr-1' size={13} />
-            <span onClick={() => isDisabled && openExternalLink(url)}>{url}</span>
-            <button className='copy-button-link ml-2 border-0 bg-white' onClick={() => copyToClipboard(url)} title='Copy URL'>
+            <div>
+              <HiOutlineExternalLink className='mr-1' size={13} />
+              <span onClick={() => isDisabled && openExternalLink(url)}>{url}</span>
+            </div>
+            <button className='copy-button-link border-0 bg-white' onClick={() => copyToClipboard(url)} title='Copy URL'>
               <FiCopy size={13} />
             </button>
           </div>
@@ -402,12 +403,11 @@ const PublishDocForm = (props) => {
               <h3 className='page-title mb-0'>Publish Collection Settings</h3>
             </div>
             <span
-              className='hover'
+              className='hover d-inline-flex align-items-center cursor-pointer'
               onClick={handleSeeFeedbacks}
-              style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}
             >
-              <IoInformationCircleOutline style={{ color: 'inherit', marginRight: '1px', fontSize: '20px' }} />
-              <span style={{ fontSize: '16px' }}>Feedbacks</span>
+              <IoInformationCircleOutline className='mr-1' size={20} />
+              <span className='fs-3'>Feedbacks</span>
             </span>
           </div>
           <span className='mt-2 d-inline-block'>Completing this step will make your collection available at a public URL.</span>
@@ -417,12 +417,12 @@ const PublishDocForm = (props) => {
             {renderInput('title', false, 'brand name', false)}
             {renderInput('domain', false, 'docs.example.com', false)}
           </div>
-          <div className='d-flex favicon mb-4'>
+          <div className='favicon d-flex flex-wrap position-relative mb-4'>
             <div className='form-group mb-0'>
               <label> Fav Icon </label>
               <div className='favicon-uploader'>{renderUploadBox('icon')}</div>
             </div>
-            <div className='or-wrap d-flex align-items-center'>
+            <div className='or-wrap d-flex align-items-center mx-3'>
               <p className='mb-0'>OR</p>
             </div>
             {renderInput('logoUrl', false, false, binaryFile, '')}

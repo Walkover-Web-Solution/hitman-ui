@@ -344,7 +344,7 @@ class CollectionsComponent extends Component {
                             this.removeImporedPublicCollection(collectionId)
                           }}
                         >
-                          <div className='marketplace-icon mr-2'> M </div>
+                          <div className='marketplace-icon d-flex align-items-center justify-content-center text-white mr-2'> M </div>
                           <div> Remove Public Collection </div>
                         </div>
                       )}
@@ -352,7 +352,7 @@ class CollectionsComponent extends Component {
                   </div>
                   <div className='theme-color d-flex transition counts ml-1 f-12'>
                     {this.props.collections[collectionId]?.importedFromMarketPlace ? (
-                      <div className='marketplace-icon mr-1'> M </div>
+                      <div className='marketplace-icon d-flex align-items-center justify-content-center text-white mr-1'> M </div>
                     ) : null}
                     <span className={this.props.collections[collectionId].isPublic ? 'published' : ''}></span>
                   </div>
@@ -375,7 +375,7 @@ class CollectionsComponent extends Component {
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
-                    // isPublishData={false}
+                  // isPublishData={false}
                   />
                 }
               </Card.Body>

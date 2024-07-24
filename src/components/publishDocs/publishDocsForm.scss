@@ -1,113 +1,84 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 @import '../main/variables.scss';
 
-.uploadBox {
-  cursor: pointer;
-  overflow: hidden;
+.usploadBox {
   label {
-    margin-bottom: 0;
-    padding: 0.35rem 1rem;
     border: 1px dashed #bdbdbd;
     height: 2.25rem;
-    display: flex;
-    align-items: center;
     border-radius: $border-radius;
+
     &:hover {
       border-color: #f1a147;
     }
   }
+
   &:hover {
     .uplod-info {
       display: inline !important;
     }
   }
+
+  img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+  }
+
+  .uplod-info {
+    left: 30px;
+    top: 16px;
+  }
 }
 
 .domain-info {
   width: max-content;
+
   a {
     color: #dc3545;
   }
 }
 
-.upload-box-text {
-  font-size: 12px;
-  text-align: center;
-}
-
-.fav-icon-text {
-  color: $text-color;
-  font-size: 14px !important;
-  margin: 0;
-  font-weight: 500 !important;
-  position: relative;
-  top: 5px;
-}
-
 .favicon {
-  display: flex;
-  flex-wrap: wrap;
-  position: relative;
   input {
     max-width: 26rem;
   }
-  small.text-danger {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+
+  small {
+    &.text-danger {
+      bottom: 0;
+      left: 0;
+    }
   }
+
   span {
-    font-size: 14px;
     color: #eb5757;
     font-weight: 400;
   }
-  .or-wrap {
-    margin: 0 1.45rem 0 1rem;
-  }
-  .form-group:last-child {
-    flex-grow: 1;
-  }
-}
 
-.uploadBox img {
-  width: 34px;
-  height: 34px;
-  object-fit: contain;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.uplod-info {
-  position: absolute;
-  left: 30px;
-  top: 16px;
-  p {
-    max-width: 5rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: #828282;
-    font-size: 14px;
-    margin: 0;
+  .form-group {
+    &:last-child {
+      flex-grow: 1;
+    }
   }
 }
 
 .publish-on-tab {
   padding: 20px;
   width: 660px;
+
   input {
     max-width: 100%;
   }
+
   .cta-buton {
     .form-group>div input:first-child {
       max-width: 12rem;
     }
   }
+
   .page-title {
     border: unset !important;
+
     &:hover {
       background-color: unset !important;
       border: unset !important;
@@ -115,6 +86,7 @@
     }
   }
 }
+
 .doc-title {
   font-style: normal;
   font-weight: 600;
@@ -124,13 +96,13 @@
 }
 
 .public-title {
-  font-size: 14px;
   font-weight: 500;
 }
 
-.text-disable{
+.text-disable {
   color: #3b7837;
-  &:hover{
+
+  &:hover {
     text-decoration: underline;
   }
 }
@@ -138,22 +110,13 @@
 .disabled-link {
   opacity: 0.5;
 }
-.hover {
-  :hover{color: blue;
-  text-decoration: underline;}
-}
+
 .copy-button-link {
   &:focus {
-outline: unset !important;
+    outline: unset !important;
   }
 }
+
 .sidebar-public-url {
-  margin-left: 0px;
-  overflow: scroll;
-  cursor: pointer;
-  background-color: white;
-  padding: 5px 10px 1px 10px;
-  width: fit-content;
   border: 1px solid #ced4da;
-  border-radius: 4px;
 }
