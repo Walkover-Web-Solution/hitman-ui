@@ -266,7 +266,7 @@ class DisplayPage extends Component {
           {isStatePending(pageId, pages) && isAdmin() && (
             <ApproveRejectEntity {...this.props} entity={pages} entityId={pageId} entityName='page' />
           )}
-          {isAdmin() && !isStatePending(pageId, pages)&& !isPublicPage  && (
+          {isAdmin() && !isStatePending(pageId, pages) && (
             <span>
               {' '}
               {approvedOrRejected ? this.renderInOverlay(this.renderPublishPage.bind(this), pageId) : this.renderPublishPage(pageId, pages)}
