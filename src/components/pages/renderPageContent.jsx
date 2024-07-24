@@ -33,7 +33,7 @@ export default function RenderPageContent(props) {
         <>
             {innerText.length > 0 &&
                 <div className={`page-text-render w-100 d-flex flex-lg-row flex-column-reverse`}>
-                    <div dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
+                    <div className='page-content-body' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
                     {isOnPublishedPage() && headings.length > 0 && (
                         <>
                             <div className='editor-headings d-flex flex-column h-100'>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
 import CustomColorPicker from './customColorPicker'
 import Joi from 'joi-browser'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
@@ -13,10 +12,8 @@ import { moveToNextStep } from '../../services/widgetService'
 import { publishData } from '../modals/redux/modalsActions'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
-import { IoInformationCircleOutline } from 'react-icons/io5'
 import { FiCopy } from 'react-icons/fi'
 import { FaRegTimesCircle } from 'react-icons/fa'
-import { updateTab } from '../tabs/redux/tabsActions'
 
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
@@ -31,8 +28,6 @@ const publishDocFormEnum = {
 
 const PublishDocForm = (props) => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const params = useParams()
 
   const { collections, isPublishSliderOpen, tabs, pages } = useSelector((state) => ({
     collections: state.collections,
@@ -75,6 +70,15 @@ const PublishDocForm = (props) => {
       }
     }
   }
+
+  const unPublishCollection = (selectedCollection) => {
+    // const selectedCollection = collections[collectionId];
+    if (selectedCollection?.isPublic === true) {
+      const editedCollection = { ...selectedCollection };
+      editedCollection.isPublic = false;
+      dispatch(updateCollection(editedCollection));
+    }
+  };
 
   const handleChange = (e, isURLInput = false) => {
     const newData = { ...data }
@@ -332,13 +336,6 @@ const PublishDocForm = (props) => {
     return false
   }
 
-  const handleSeeFeedbacks = () => {
-    const collectionId = props.selected_collection_id
-    const activeTab = tabs.activeTabId
-    dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
-    navigate(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/feedback`)
-  }
-
   const openPublishSidebars = () => <>{isPublishSliderOpen && <PublishSidebar {...props} closePublishSidebar={closePublishSidebar} />}</>
 
   const closePublishSidebar = () => {
@@ -351,7 +348,6 @@ const PublishDocForm = (props) => {
     const isNotPublished = !isCollectionPublished(selectedCollection)
     const rootParentId = collections[props.selected_collection_id]?.rootParentId
     const disableCondition = pages[rootParentId]?.child?.length > 0
-
     return (
       <div className='mt-2'>
         <Button
@@ -380,7 +376,7 @@ const PublishDocForm = (props) => {
             variant='btn btn-outline-danger btn-sm fs-4'
             className='m-1 btn-sm fs-4'
             onClick={() => {
-              props.unPublishCollection()
+              unPublishCollection(selectedCollection)
               setRepublishNeeded(false)
             }}
           >
@@ -391,24 +387,16 @@ const PublishDocForm = (props) => {
     )
   }
 
-  const publishCheck = (props.isSidebar || props.onTab) && props.isCollectionPublished()
+  const publishCheck = collections[tabs?.activeTabId]?.isPublic
 
   return (
     <>
       <div className='d-flex justify-content-center'>
-        <div className={props.onTab && 'publish-on-tab'}>
+        <div className={'publish-on-tab'}>
           <div className='d-flex justify-content-between align-item-center'>
             <div className='d-flex align-items-center'>
               <h3 className='page-title mb-0'>Publish Collection Settings</h3>
             </div>
-            <span
-              className='hover'
-              onClick={handleSeeFeedbacks}
-              style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}
-            >
-              <IoInformationCircleOutline style={{ color: 'inherit', marginRight: '1px', fontSize: '20px' }} />
-              <span style={{ fontSize: '16px' }}>Feedbacks</span>
-            </span>
           </div>
           <span className='mt-2 d-inline-block'>Completing this step will make your collection available at a public URL.</span>
 
