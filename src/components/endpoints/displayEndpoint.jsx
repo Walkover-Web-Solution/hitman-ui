@@ -402,7 +402,9 @@ class DisplayEndpoint extends Component {
       showEndpointFormModal: false,
       optionalParams: false,
       activeTab: 'default',
-      addUrlClass: false
+      addUrlClass: false,
+      fileDownloaded: false,
+      sendClickec: false
     }
     this.setActiveTab = this.setActiveTab.bind(this)
     this.setBody = this.setBody.bind(this)
@@ -444,8 +446,9 @@ class DisplayEndpoint extends Component {
     }
 
     this.setState({
-      theme: { backgroundStyle }
-    })
+      theme: { backgroundStyle },
+    });
+    this.setState({ fileDownloaded: false });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -1053,11 +1056,20 @@ class DisplayEndpoint extends Component {
     return { newHeaders: headers, newUrl: url }
   }
 
+  isBase64(response) {
+    if (typeof response !== 'string') {
+      return false;
+    }
+    const base64Pattern = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
+    return base64Pattern.test(response);
+  }
+
   handleSend = async () => {
     const keyForRequest = shortid.generate()
     const runSendRequest = Axios.CancelToken.source()
     const startTime = new Date().getTime()
     const response = {}
+    this.setState({ sendClicked: true });
     this.setState({
       startTime,
       response,
@@ -1173,6 +1185,7 @@ class DisplayEndpoint extends Component {
     } catch (error) {
       console.error(error)
     }
+
     this.setState({ loader: false })
 
     setTimeout(() => {
@@ -1184,6 +1197,8 @@ class DisplayEndpoint extends Component {
 
   runScript(code, environment, request, responseJson) {
     let response
+
+
     if (responseJson) {
       const { status, statusText, response: body, headers } = responseJson.data
       response = { status, statusText, body, headers }
@@ -2178,7 +2193,37 @@ class DisplayEndpoint extends Component {
 
   displayPublicResponse() {
     const historyId = this.props?.params?.historyId
+    const testResponse = this.props?.endpointContent?.testResponse;
 
+    if (this.isBase64(testResponse?.data)) {
+
+      if ( this.state.sendClicked && !this.state.fileDownloaded) {
+        try{
+          const byteCharacters = atob(testResponse?.data);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+
+          const blob = new Blob([byteArray.buffer], { type: 'application/pdf' });
+  
+          const url = URL.createObjectURL(blob);
+  
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'file.pdf';
+          a.style.display = 'none';
+          document.body.appendChild(a);
+          a.click();
+  
+          window.URL.revokeObjectURL(url);
+          this.setState({ fileDownloaded: true });
+        } catch(error) {
+          console.error(error,"errors")
+        }
+      }
+    }
     return (
       <>
         <div className='response-container endpoint-public-response-container endPointRes'>
@@ -2188,7 +2233,7 @@ class DisplayEndpoint extends Component {
             loader={this.state.loader}
             tests={this.state.tests}
             timeElapsed={this.state.timeElapsed}
-            response={this.props?.historySnapshots[historyId]?.response || this.props?.endpointContent?.testResponse}
+            response={this.props?.historySnapshots[historyId]?.response || testResponse}
             flagResponse={this.props?.endpointContent?.flagResponse}
             handleCancel={() => {
               this.handleCancel()
@@ -2196,7 +2241,7 @@ class DisplayEndpoint extends Component {
           />
         </div>
       </>
-    )
+    );
   }
 
   setHostUri(host, uri, selectedHost) {
@@ -2700,7 +2745,7 @@ class DisplayEndpoint extends Component {
           >
             {isPublicEndpoint ? 'Save Draft' : 'Save'}
           </button>
-          {isAdmin() && !isStatePending(endpointId, endpointss) && (
+          {isAdmin() && !isStatePending(endpointId, endpointss)&& !isPublicEndpoint && (
             <span>
               {' '}
               {approvedOrRejected
@@ -3616,16 +3661,14 @@ class DisplayEndpoint extends Component {
             </span>
           </div>
         </div>
-        {!isOnPublishedPage() && (
-          <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
-            <DisplayUserAndModifiedData
-              isOnPublishedPage={isOnPublishedPage()}
-              pages={this.props.pages}
-              currentPage={this.props.currentEndpointId}
-              users={this.props.users}
-            />
-          </span>
-        )}
+        {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
+          <DisplayUserAndModifiedData
+            isOnPublishedPage={isOnPublishedPage()}
+            pages={this.props.pages}
+            currentPage={this.props.currentEndpointId}
+            users={this.props.users}
+          />
+        </span>}
         <div className='w-100'>
           <span className='footer-lower mt-5'>
             <>
