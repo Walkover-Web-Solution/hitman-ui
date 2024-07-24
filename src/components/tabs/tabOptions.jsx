@@ -1,83 +1,44 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Dropdown } from 'react-bootstrap'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { ReactComponent as MoreVerticalIcon } from '../../assets/icons/more-vertical.svg'
-import { openInNewTab, setActiveTabId } from '../tabs/redux/tabsActions'
-import shortid from 'shortid'
-import tabStatusTypes from '../tabs/tabStatusTypes'
-import * as _ from 'lodash'
-import withRouter from '../common/withRouter'
 
-const mapStateToProps = (state) => {
-  return {
-    tabs: state.tabs
-  }
-}
+const TabOptions = ({ handleCloseTabs }) => {
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    set_active_tab_id: (tabId) => dispatch(setActiveTabId(tabId))
-  }
-}
+  const tabs = useSelector((state) => state.tabs)
 
-class TabOptions extends Component {
-  state = {}
-
-  renderMenuOptions() {
-    const { tabs, activeTabId } = this.props.tabs
-    const options = [
-      { title: 'Close all tabs', handleOnClick: this.handleCloseAllTabs.bind(this), show: true },
-      { title: 'Close all tabs but current', handleOnClick: this.handleCloseAllButCurrent.bind(this), show: true }
-      // { title: 'Duplicate Current Tab', handleOnClick: this.handleDuplicateTab.bind(this), show: tabs[activeTabId]?.type !== 'page' }
-    ]
-    return options.map(
-      (option, index) =>
-        option.show && (
-          <Dropdown.Item disabled={option.disabled} key={index} onClick={option.handleOnClick}>
-            {option.title}
-          </Dropdown.Item>
-        )
-    )
+  const handleCloseAllTabs = async () => {
+    const tabIdsToClose = tabs.tabsOrder
+    handleCloseTabs(tabIdsToClose)
   }
 
-  handleDuplicateTab() {
-    const { orgId } = this.props.params
-    const { tabs, activeTabId } = this.props.tabs
-    const tab = _.cloneDeep(tabs[activeTabId])
-    tab.id = shortid.generate()
-    tab.status = tabStatusTypes.NEW
-    tab.previewMode = false
-    tab.isModified = true
-    tab.state.endpoint = {}
-    tab.state.data.name = tab.state.data.name + ' Copy'
-
-    this.props.open_in_new_tab(tab)
-
-    this.props.navigate(`/orgs/${orgId}/dashboard/${tab.type}/new`)
-  }
-
-  async handleCloseAllTabs() {
-    const tabIdsToClose = this.props.tabs.tabsOrder
-    this.props.handleCloseTabs(tabIdsToClose)
-  }
-
-  handleCloseAllButCurrent() {
-    const { tabsOrder, activeTabId } = this.props.tabs
+  const handleCloseAllButCurrent = () => {
+    const { tabsOrder, activeTabId } = tabs
     const tabIdsToClose = tabsOrder.filter((tabId) => tabId !== activeTabId)
-    this.props.handleCloseTabs(tabIdsToClose)
+    handleCloseTabs(tabIdsToClose)
   }
 
-  render() {
-    return (
-      <Dropdown>
-        <Dropdown.Toggle bsPrefix='dropdown' variant='default' id='dropdown-basic'>
-          <MoreVerticalIcon />
-        </Dropdown.Toggle>
-        <Dropdown.Menu className='tab-options-drop-down p-1'>{this.renderMenuOptions()}</Dropdown.Menu>
-      </Dropdown>
-    )
-  }
+  const options = [
+    { title: 'Close all tabs', handleOnClick: handleCloseAllTabs, show: true },
+    { title: 'Close all tabs but current', handleOnClick: handleCloseAllButCurrent, show: true }
+  ]
+
+  return (
+    <Dropdown>
+      <Dropdown.Toggle bsPrefix='dropdown' variant='default' id='dropdown-basic'>
+        <MoreVerticalIcon />
+      </Dropdown.Toggle>
+      <Dropdown.Menu className='tab-options-drop-down p-1'>
+        {options.map((option, index) =>
+          option.show && (
+            <Dropdown.Item disabled={option.disabled} key={index} onClick={option.handleOnClick}>
+              {option.title}
+            </Dropdown.Item>
+          )
+        )}
+      </Dropdown.Menu>
+    </Dropdown>
+  )
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TabOptions))
+export default TabOptions
