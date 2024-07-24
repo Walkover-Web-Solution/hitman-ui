@@ -18,10 +18,7 @@ import { LuFolder } from 'react-icons/lu'
 import { RiShareForward2Line } from 'react-icons/ri'
 import { TbDirections, TbSettingsAutomation } from 'react-icons/tb'
 import { BiExport } from 'react-icons/bi'
-<<<<<<< HEAD
 import CollectionTabs from './collectionTabs'
-=======
->>>>>>> 84d0985de (Refactored collections)
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
 import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
@@ -163,11 +160,7 @@ const Collections = (props) => {
   }
 
   const handleApiAutomation = (collectionId) => {
-<<<<<<< HEAD
     navigate(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/runner`)
-=======
-    navigate(`/orgs/${params.orgId}/automation/${collectionId}`)
->>>>>>> 84d0985de (Refactored collections)
   }
 
   const renderBody = (collectionId, collectionState) => {
