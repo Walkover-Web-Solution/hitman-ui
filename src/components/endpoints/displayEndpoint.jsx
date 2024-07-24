@@ -126,7 +126,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     unPublish_endpoint: (endpointId) => dispatch(draftEndpoint(endpointId)),
     update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate)),
     update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload)),
-    // set_chat_view : (view) => dispatch(onChatResponseToggle(view))
     update_pre_post_script: (tabId, executionData) => dispatch(updatePostPreScriptExecutedData(tabId, executionData))
   }
 }
@@ -410,7 +409,6 @@ class DisplayEndpoint extends Component {
     this.setBody = this.setBody.bind(this)
     this.uri = React.createRef()
     this.paramKey = React.createRef()
-    this.setCurrentReponseView()
     this.rawBodyTypes = Object.keys(rawTypesEnums)
   }
 
@@ -558,11 +556,6 @@ class DisplayEndpoint extends Component {
     this.setState({ sslMode: !this.state.sslMode }, () => {
       setCurrentUserSSLMode(this.state.sslMode)
     })
-  }
-
-  setCurrentReponseView() {
-    const currentView = window.localStorage.getItem('response-view')
-    // this.props.set_response_view(currentView || 'bottom')
   }
 
   extractEndpointName() {
@@ -2070,22 +2063,6 @@ class DisplayEndpoint extends Component {
         </div>
       )
     }
-  }
-
-  handletoggle(type) {
-    // const currentView = type
-    // window.localStorage.setItem('response-view', currentView)
-    // this.props.set_response_view(currentView)
-  }
-
-  renderToggle(type) {
-    return (
-      <div className={`icon-set ${this.props.responseView === type ? 'active' : ''}`} onClick={() => this.handletoggle(type)}>
-        <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Doc to {type}</Tooltip>}>
-          <div className='icon-bx' />
-        </OverlayTrigger>
-      </div>
-    )
   }
 
   checkProtocolType(protocolType = 1) {
