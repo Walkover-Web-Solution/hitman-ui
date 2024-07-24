@@ -19,6 +19,8 @@ import { MdSwitchLeft } from 'react-icons/md'
 import { FiUser } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import ImportCollectionModal from '../importCollection/importColectionModel'
+import { BsThreeDots } from "react-icons/bs";
+import IconButtons from '../common/iconButton'
 
 const UserProfile = () => {
   const historySnapshot = useSelector((state) => state.history)
@@ -154,14 +156,30 @@ const UserProfile = () => {
 
   const renderUserDetails = () => {
     const { email } = getUserDetails()
+    const handleCreateOrganizationClick = () => {
+      navigate('/onBoarding')
+    };
     return (
-      <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center py-1'>
-        <div className='user-icon mr-2'>
-          <FiUser size={16} />
+      <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center justify-content-between py-1'>
+        <div className='d-flex align-items-center'>
+          <div className='user-icon mr-2'>
+            <FiUser size={12} />
+          </div>
+          <div className='profile-details-user-name'>
+            <span className='profile-details-label-light fs-4'>{email}</span>
+          </div>
         </div>
-        <div className='profile-details-user-name'>
-          <span className='profile-details-label-light'>{email}</span>
-        </div>
+        <Dropdown>
+          <Dropdown.Toggle id="dropdown-basic">
+            <IconButtons>
+              <BsThreeDots className='text-dark'/>
+            </IconButtons>
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={handleCreateOrganizationClick}>Create organization</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </div>
     )
   }
