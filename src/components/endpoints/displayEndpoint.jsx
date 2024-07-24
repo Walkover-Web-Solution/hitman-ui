@@ -2723,7 +2723,7 @@ class DisplayEndpoint extends Component {
           >
             {isPublicEndpoint ? 'Save Draft' : 'Save'}
           </button>
-          {isAdmin() && !isStatePending(endpointId, endpointss) && !isPublicEndpoint && (
+          {isAdmin() && !isStatePending(endpointId, endpointss)&& (
             <span>
               {' '}
               {approvedOrRejected
