@@ -73,7 +73,7 @@ export class DefaultViewModal extends Form {
     let { name } = { ...this.state?.data }
     name = toTitleCase(name)
     if (this.props.title === 'Add Parent Page' || this.props.addEntity) {
-    const rootParentId = collections?.rootParentId
+      const rootParentId = collections?.rootParentId
       const data = { ...this.state.data, name }
       const newPage = {
         ...data,
@@ -83,9 +83,9 @@ export class DefaultViewModal extends Form {
       }
       this.props.add_page(rootParentId, newPage)
     }
-  
+
     if (this.props?.title === 'Add Page' || this.props?.title === 'Add Sub Page' || this.props?.addEntity) {
-    const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
+      const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
       const ParentId = selectedId
       const data = { ...this.state.data }
       const newPage = {
@@ -96,7 +96,8 @@ export class DefaultViewModal extends Form {
         state: 0
       }
       this.props.add_page(ParentId, newPage)
-      }}
+    }
+  }
   renderCollectionDetailsForm() {
     return (
       <div className='mt-5'>
@@ -111,7 +112,7 @@ export class DefaultViewModal extends Form {
   renderTestingButton() {
     return (
       <button
-        className='block-view-btn mr-3'
+        className='block-view-btn mr-3 d-flex justify-content-center align-items-center flex-column rounded'
         onClick={() => {
           this.props.add_new_tab()
           this.props.onHide()
@@ -126,7 +127,7 @@ export class DefaultViewModal extends Form {
   renderDocButton() {
     return (
       <button
-        className='block-view-btn'
+        className='block-view-btn d-flex justify-content-center align-items-center flex-column rounded'
         onClick={() => {
           this.setState({ showPageForm: { addPage: true } })
         }}
@@ -145,7 +146,7 @@ export class DefaultViewModal extends Form {
           {this.renderDocButton()}
         </div>
         {this.state.showPageForm.addPage && this.renderCollectionDetailsForm()}
-        <div className='info mt-5 d-flex align-items-center'>
+        <div className='info fs-4 mt-5 d-flex align-items-center'>
           <img src={InfoIcon} className='mr-2' alt='' />
           <span>You can always choose to Test the API's or make the Testing API description</span>
         </div>
