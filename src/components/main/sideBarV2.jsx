@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
-import Collections from '../collections/collections1'
+import Collections from '../collections/collections'
 import './main.scss'
 import {
   isDashboardRoute,
