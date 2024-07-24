@@ -597,6 +597,11 @@ body .sidebar {
           width: 100%;
         }
       }
+      .custom-divider {
+        height: 0.5px; // Adjust height for visibility
+        background-color: #dcdcdc; // Change color as needed
+        margin: 0.5rem 0; // Adjust margin for spacing
+      }
     }
   }
 }
@@ -1050,3 +1055,4 @@ input[type='text']:focus {
     width: 16px;
   }
 }
+
