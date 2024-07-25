@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import withRouter from '../common/withRouter.jsx'
 import SavePromptModal from './savePromptModal'
 import { setTabsOrder } from './redux/tabsActions.js'
 import tabService from './tabService'
@@ -19,7 +19,6 @@ import { GrGraphQl } from 'react-icons/gr'
 import { TbSettingsAutomation } from 'react-icons/tb'
 import Plus from '../../assets/icons/plus.svg'
 import './tabs.scss'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 const CustomTabs = (props) => {
   const dispatch = useDispatch()
@@ -27,10 +26,9 @@ const CustomTabs = (props) => {
   const scrollRef = useRef({})
   const draggedItem = useRef(null)
   const interval = useRef(null)
-
+  const location = useLocation();
   const navigate = useNavigate()
   const params = useParams()
-  const location = useLocation()
 
   const [showSavePromptFor, setShowSavePromptFor] = useState([])
   const [leftScroll, setLeftScroll] = useState(0)
@@ -171,7 +169,7 @@ const CustomTabs = (props) => {
     setShowHistoryContainer(!showHistoryContainer)
   }
 
-  const handleCloseTabs = (tabIds) => {
+  const handleCloseTabs = useCallback((tabIds) => {
     const showSavePromptFor = []
     const tabsData = tabs.tabs
 
@@ -188,7 +186,7 @@ const CustomTabs = (props) => {
       }
     }
     setShowSavePromptFor(showSavePromptFor)
-  }
+  }, [])
 
   const handleOnConfirm = (tabId) => {
     const show_save_prompt_for = showSavePromptFor.filter((tab) => tab != tabId)
@@ -289,7 +287,7 @@ const CustomTabs = (props) => {
         break
       case 'collection': {
         const collectionName = collections[tabId]?.name || 'Collection'
-        if (props.location?.pathname?.split('/')?.[6] === 'settings') {
+        if (location.pathname.split('/')[6] === 'settings') {
           return (
             <>
               <span className='d-flex align-items-center'>
@@ -298,14 +296,14 @@ const CustomTabs = (props) => {
               </span>
             </>
           )
-        }else if (props.location?.pathname?.split('/')?.[6] === 'runner'){
+        } else if (location?.pathname?.split('/')?.[6] === 'runner') {
           return (
             <div className='d-flex align-items-center'>
-              <TbSettingsAutomation size={18} className='setting-icons mr-1 mb-1' /> 
+              <TbSettingsAutomation size={18} className='setting-icons mr-1 mb-1' />
               <span>{collectionName}</span>
             </div>
           )
-        } 
+        }
         else {
           return (
             <div className='d-flex align-items-center'>

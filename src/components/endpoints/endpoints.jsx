@@ -12,11 +12,11 @@ import { deleteEndpoint, duplicateEndpoint, addEndpoint } from './redux/endpoint
 import AddEntity from '../main/addEntity/addEntity'
 import { updataForIsPublished } from '../../store/clientData/clientDataActions'
 import SubPageForm from '../subPages/subPageForm'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import { ReactComponent as Duplicate } from '../../assets/icons/duplicateSign.svg'
 import { ReactComponent as Approved } from '../../assets/icons/approvedSign.svg'
 import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.svg'
 import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import { ReactComponent as Duplicate } from '../../assets/icons/duplicateSign.svg'
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 import endpointService from './endpointService'
 import { bodyTypesEnums } from '../common/bodyTypeEnums'
@@ -221,8 +221,8 @@ class Endpoints extends Component {
       isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId
         ? 'selected'
         : isDashboardRoute && this.props.params.endpointId === endpointId
-        ? 'selected'
-        : ''
+          ? 'selected'
+          : ''
     return (
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
@@ -361,11 +361,11 @@ class Endpoints extends Component {
       isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId
         ? 'selected'
         : isDashboardRoute && this.props.params.endpointId === endpointId
-        ? 'selected'
-        : ''
+          ? 'selected'
+          : ''
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
-    var collectionTheme = this.props.collections[collectionId]?.theme
+    var collectionTheme = this?.props?.collections[collectionId]?.theme
     const dynamicColor = hexToRgb(collectionTheme, 0.15)
     const staticColor = background['background_hover']
 

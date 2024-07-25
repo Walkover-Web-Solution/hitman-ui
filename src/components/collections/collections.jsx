@@ -25,6 +25,8 @@ import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTags
 import { Card } from 'react-bootstrap'
 import 'react-toastify/dist/ReactToastify.css'
 import './collections.scss'
+import CollectionForm from './collectionForm'
+import CustomModal from '../customModal/customModal'
 
 const Collections = (props) => {
   const collections = useSelector((state) => state.collections)
@@ -330,7 +332,9 @@ const Collections = (props) => {
           <div className='tabs'>
             {showAddCollectionModal && showAddPageEndpointModal()}
             {showCollectionForm &&
-              collectionsService.showCollectionForm(props, closeCollectionForm, collectionFormName, selectedCollection)}
+                 <CustomModal size='sm' modalShow={showCollectionForm} hideModal={closeCollectionForm}>
+                  <CollectionForm title='Edit Collection' isEdit={true} collectionId={selectedCollection?.id} onHide={closeCollectionForm} />
+              </CustomModal>}
             {openTagManagerModal()}
             {showDeleteCollectionModal()}
             {showOrgModal && <MoveModal moveCollection={selectedCollection} onHide={handleOrgModalClose} show={showOrgModal} />}
