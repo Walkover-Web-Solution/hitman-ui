@@ -10,7 +10,13 @@ export const dislike = async (feedback) => {
   await http.post(apiUrl + `/feedback/negative`, {pageId, comment, email})
 }
 
+export const getFeedbacks = async(collectionId) => {
+  const response = await http.get(apiUrl + `/feedback/${collectionId}`) 
+  return response.data.feedbacks;
+}
+
 export default {
     like,
-    dislike
+    dislike,
+    getFeedbacks
 }

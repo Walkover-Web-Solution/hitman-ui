@@ -2,43 +2,7 @@ import collectionVersionsApiService from '../collectionVersionsApiService'
 import versionActionTypes from './collectionVersionsActionTypes'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 import { SESSION_STORAGE_KEY } from '../../common/utility'
-
-export const updateVersion = (editedVersion) => {
-  return (dispatch) => {
-    dispatch(updateVersionRequest(editedVersion))
-    const { number, host, id } = editedVersion
-    collectionVersionsApiService
-      .updateCollectionVersion(id, { number, host })
-      .then((response) => {
-        dispatch(onVersionUpdated(response.data))
-      })
-      .catch((error) => {
-        dispatch(onVersionUpdatedError(error.response ? error.response.data : error))
-      })
-  }
-}
-
-export const updateVersionRequest = (editedVersion) => {
-  return {
-    type: versionActionTypes.UPDATE_VERSION_REQUEST,
-    editedVersion
-  }
-}
-
-export const onVersionUpdated = (response) => {
-  return {
-    type: versionActionTypes.ON_VERSION_UPDATED,
-    response
-  }
-}
-
-export const onVersionUpdatedError = (error, originalVersion) => {
-  return {
-    type: versionActionTypes.ON_VERSION_UPDATED_ERROR,
-    error,
-    originalVersion
-  }
-}
+import collectionVersionsActionTypes from './collectionVersionsActionTypes'
 
 export const addParentPageVersion = (newVersion, pageId, customCallback) => {
   newVersion.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
@@ -72,3 +36,28 @@ export const onVersionAddedError = (error, newVersion) => {
   }
 }
 
+export const onDefaultVersion = (orgId, versionData) => {
+  versionData.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
+  return (dispatch) => {
+    collectionVersionsApiService
+      .setDefaultVersion(orgId, versionData)
+      .then(() => {
+        dispatch(onSetDefaultVersion(versionData))
+      })
+      .catch((error) => {
+        dispatch(onSetDefaultVersionError(error.response ? error.response.data : error))
+      })
+  }
+}
+export const onSetDefaultVersion = (versionData) => {
+  return {
+    type: collectionVersionsActionTypes.ON_DEFAULT_VERSION,
+    versionData
+  }
+}
+export const onSetDefaultVersionError = (error) => {
+  return {
+    type: collectionVersionsActionTypes.ON_DEFAULT_VERSION_ERROR,
+    error
+  }
+}
