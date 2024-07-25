@@ -52,7 +52,7 @@ class PublicBodyContainer extends Component {
     });
   }
   collapseEditor(event) {
-    event.stopPropagation();
+    event.stopPropagation(); // Prevent the click event from bubbling up to the parent div
     this.setState({
       editorHeight: '250px',
       isExpanded: false,
@@ -108,6 +108,57 @@ class PublicBodyContainer extends Component {
   setBody(data) {
     this.props.set_body_description(data.bodyDescription)
     this.props.set_public_body(data.body)
+  }
+
+  prettifyJson(jsonString) {
+    try {
+      const parsedJson = JSON.parse(jsonString);
+      return JSON.stringify(parsedJson, null, 2);
+    } catch (error) {
+      let indent = 0;
+      const indentString = '  ';
+      const regex = /({|}|\[|\]|,|:)/g;
+
+      return jsonString
+        .replace(regex, (match) => {
+          let result = match;
+
+          switch (match) {
+            case '{':
+            case '[':
+              indent += 1;
+              result = match + '\n' + indentString.repeat(indent);
+              break;
+
+            case '}':
+            case ']':
+              indent -= 1;
+              result = '\n' + indentString.repeat(indent) + match;
+              break;
+
+            case ',':
+              result = match + '\n' + indentString.repeat(indent);
+              break;
+
+            case ':':
+              result = match + ' ';
+              break;
+
+            default:
+              break;
+          }
+
+          return result;
+        })
+        .replace(/\\'/g, "'");
+    }
+  }
+
+
+  prettifyContent() {
+    const { raw } = this.props.body || {};
+    const prettifiedContent = this.prettifyJson(raw?.value || '');
+    this.handleChangeBodyDescription(prettifiedContent);
   }
 
   handleChangeBodyDescription = (data) => {
@@ -237,7 +288,7 @@ class PublicBodyContainer extends Component {
     };
     return (
       <div className='hm-public-table'>
-        {this.props.endpointContent?.data?.body?.query && <div className="mt-3">
+        {this.props.Content?.data?.body?.query && <div className="mt-3">
           <div className='public-generic-table-title-container'>
             Query
           </div>
@@ -296,35 +347,8 @@ class PublicBodyContainer extends Component {
       </div>
     )
   }
-  prettifyJson(jsonString) {
-    let indent = 0;
-    const indentString = '  ';
-    return jsonString.replace(/({|}|\[|\]|,)/g, (match) => {
-      if (match === '{' || match === '[') {
-        indent += 1;
-        return match + '\n' + indentString.repeat(indent);
-      } else if (match === '}' || match === ']') {
-        indent -= 1;
-        return '\n' + indentString.repeat(indent) + match;
-      } else if (match === ',') {
-        return match + '\n' + indentString.repeat(indent);
-      }
-      return match;
-    });
-  }
 
   render() {
-    const { body } = this.props;
-    const rawBody = body?.raw?.value || '';
-    let formattedRawBody = rawBody;
-
-    // Try to format the raw body as JSON if possible
-    try {
-      const parsedBody = JSON.parse(rawBody);
-      formattedRawBody = this.prettifyJson(JSON.stringify(parsedBody));
-    } catch (e) {
-      // If parsing fails, keep the raw body as is
-    }
     this.bodyDescription = this.props.body_description
     if (this.props.body && this.props.endpointContent?.protocolType === 2) return this.graphqlBody();
     if (this.props.body && this.props.body.type === 'none') return null;
@@ -375,30 +399,33 @@ class PublicBodyContainer extends Component {
                   Body description
                 </li>
               </ul>
+              <div className="prettify-button" >
+                <span  onClick={()=>{this.prettifyContent()}}>Prettify</span>
+              </div>
               {this.state.showBodyCodeEditor ? (
-                   <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>
-                   {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
-                   <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
-                     <AceEditor
-                       className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
-                       mode='json'
-                       theme='github'
-                       value={formattedRawBody}
-                       onChange={this.handleChangeBodyDescription.bind(this)}
-                       style={{ height: this.state.editorHeight }}
-                       setOptions={{
-                         showLineNumbers: true,
-                       }}
-                       editorProps={{
-                         $blockScrolling: false,
-                       }}
-                       onLoad={(editor) => {
-                         editor.getSession().setUseWrapMode(true);
-                         editor.setShowPrintMargin(false);
-                       }}
-                     />
-                   </div>
-                 </div>
+                <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>
+                  {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
+                  <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
+                    <AceEditor
+                      className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
+                      mode='json'
+                      theme='github'
+                      value={this.props.body?.raw?.value}
+                      onChange={this.handleChangeBodyDescription.bind(this)}
+                      style={{ height: this.state.editorHeight }}
+                      setOptions={{
+                        showLineNumbers: true,
+                      }}
+                      editorProps={{
+                        $blockScrolling: false,
+                      }}
+                      onLoad={(editor) => {
+                        editor.getSession().setUseWrapMode(true);
+                        editor.setShowPrintMargin(false);
+                      }}
+                    />
+                  </div>
+                </div>
               ) : (
                 <div className='body-description-container' style={this.state.theme.backgroundStyle}>
                   {/* Previous Body Description Layout */}
@@ -417,7 +444,7 @@ class PublicBodyContainer extends Component {
                 className='custom-raw-editor'
                 mode={this.props.body.type.toLowerCase()}
                 theme='github'
-                value={this.props.body?.raw?.value || ''}
+                value={this.makeJson(this.props.body?.raw?.value || '')}
                 onChange={(value) => this.props.set_body(this.props.body.type, value)}
                 setOptions={{
                   showLineNumbers: true

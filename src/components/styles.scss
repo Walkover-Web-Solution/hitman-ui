@@ -516,6 +516,21 @@ button.btn {
     background: unset !important;
   }
 }
+.prettify-button {
+  text-align: right;
+  color: #f2994a; /* Assuming blue text */
+  font-size: 14px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  span {
+    transition: background-color 0.3s ease; // Add transition for the span
+  }
+}
+
+.prettify-button:hover span {
+  background-color: rgba(195, 191, 191, 0.4);
+}
 .custom-raw-editor {
   width: 100% !important;
   height: 250px !important;
