@@ -19,7 +19,6 @@ import { GrGraphQl } from 'react-icons/gr'
 import { TbSettingsAutomation } from 'react-icons/tb'
 import Plus from '../../assets/icons/plus.svg'
 import './tabs.scss'
-import { useNavigate, useParams } from 'react-router-dom'
 
 const CustomTabs = (props) => {
   const dispatch = useDispatch()
