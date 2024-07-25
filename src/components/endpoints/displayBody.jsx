@@ -132,18 +132,38 @@ class BodyContainer extends Component {
     } catch (error) {
       let indent = 0;
       const indentString = '  ';
-      return jsonString.replace(/({|}|\[|\]|,)/g, (match) => {
-        if (match === '{' || match === '[') {
-          indent += 1;
-          return match + '\n' + indentString.repeat(indent);
-        } else if (match === '}' || match === ']') {
-          indent -= 1;
-          return '\n' + indentString.repeat(indent) + match;
-        } else if (match === ',') {
-          return match + '\n' + indentString.repeat(indent);
+      const regex = /({|}|\[|\]|,|:)/g;
+    
+      return jsonString.replace(regex, (match) => {
+        let result = match;
+    
+        switch (match) {
+          case '{':
+          case '[':
+            indent += 1;
+            result = match + '\n' + indentString.repeat(indent);
+            break;
+    
+          case '}':
+          case ']':
+            indent -= 1;
+            result = '\n' + indentString.repeat(indent) + match;
+            break;
+    
+          case ',':
+            result = match + '\n' + indentString.repeat(indent);
+            break;
+    
+          case ':':
+            result = match + ' ';
+            break;
+    
+          default:
+            break;
         }
-        return match;
-      });
+    
+        return result;
+      }).replace(/\\'/g, "'");
     }
   }
   

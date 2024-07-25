@@ -4,18 +4,19 @@ import GenericTable from './genericTable'
 import AceEditor from 'react-ace'
 import { willHighlight } from './highlightChangesHelper'
 import './publicEndpoint.scss'
-import { Badge} from 'react-bootstrap'
+import { Badge } from 'react-bootstrap'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
 import { hexToRgb, isOnPublishedPage } from '../common/utility'
-import {background} from '../backgroundColor.js'
+import { background } from '../backgroundColor.js'
 import { FaLongArrowAltUp } from 'react-icons/fa'
 class PublicBodyContainer extends Component {
   constructor(props) {
     super(props)
-    this.state = {theme: {
-      publicCollectionTheme: this.props.publicCollectionTheme,
-      backgroundStyle: {}
-    },
+    this.state = {
+      theme: {
+        publicCollectionTheme: this.props.publicCollectionTheme,
+        backgroundStyle: {}
+      },
       showBodyCodeEditor: true,
       data: {
         data: [
@@ -297,20 +298,45 @@ class PublicBodyContainer extends Component {
     )
   }
   prettifyJson(jsonString) {
-    let indent = 0;
-    const indentString = '  ';
-    return jsonString.replace(/({|}|\[|\]|,)/g, (match) => {
-      if (match === '{' || match === '[') {
-        indent += 1;
-        return match + '\n' + indentString.repeat(indent);
-      } else if (match === '}' || match === ']') {
-        indent -= 1;
-        return '\n' + indentString.repeat(indent) + match;
-      } else if (match === ',') {
-        return match + '\n' + indentString.repeat(indent);
-      }
-      return match;
-    });
+    try {
+      const parsedJson = JSON.parse(jsonString);
+      return JSON.stringify(parsedJson, null, 2);
+    } catch (error) {
+      let indent = 0;
+      const indentString = '  ';
+      const regex = /({|}|\[|\]|,|:)/g;
+    
+      return jsonString.replace(regex, (match) => {
+        let result = match;
+    
+        switch (match) {
+          case '{':
+          case '[':
+            indent += 1;
+            result = match + '\n' + indentString.repeat(indent);
+            break;
+    
+          case '}':
+          case ']':
+            indent -= 1;
+            result = '\n' + indentString.repeat(indent) + match;
+            break;
+    
+          case ',':
+            result = match + '\n' + indentString.repeat(indent);
+            break;
+    
+          case ':':
+            result = match + ' ';
+            break;
+    
+          default:
+            break;
+        }
+    
+        return result;
+      }).replace(/\\'/g, "'");
+    }
   }
 
   render() {
@@ -376,29 +402,29 @@ class PublicBodyContainer extends Component {
                 </li>
               </ul>
               {this.state.showBodyCodeEditor ? (
-                   <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>
-                   {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
-                   <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
-                     <AceEditor
-                       className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
-                       mode='json'
-                       theme='github'
-                       value={formattedRawBody}
-                       onChange={this.handleChangeBodyDescription.bind(this)}
-                       style={{ height: this.state.editorHeight }}
-                       setOptions={{
-                         showLineNumbers: true,
-                       }}
-                       editorProps={{
-                         $blockScrolling: false,
-                       }}
-                       onLoad={(editor) => {
-                         editor.getSession().setUseWrapMode(true);
-                         editor.setShowPrintMargin(false);
-                       }}
-                     />
-                   </div>
-                 </div>
+                <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>
+                  {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
+                  <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
+                    <AceEditor
+                      className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
+                      mode='json'
+                      theme='github'
+                      value={formattedRawBody}
+                      onChange={this.handleChangeBodyDescription.bind(this)}
+                      style={{ height: this.state.editorHeight }}
+                      setOptions={{
+                        showLineNumbers: true,
+                      }}
+                      editorProps={{
+                        $blockScrolling: false,
+                      }}
+                      onLoad={(editor) => {
+                        editor.getSession().setUseWrapMode(true);
+                        editor.setShowPrintMargin(false);
+                      }}
+                    />
+                  </div>
+                </div>
               ) : (
                 <div className='body-description-container' style={this.state.theme.backgroundStyle}>
                   {/* Previous Body Description Layout */}
