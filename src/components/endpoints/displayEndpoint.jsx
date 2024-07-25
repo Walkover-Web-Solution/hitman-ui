@@ -451,7 +451,7 @@ class DisplayEndpoint extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const userid = getCurrentUser()?.id
-    if (typeof window.SendDataToChatbot === 'function') {
+    if (typeof window.SendDataToChatbot === 'function' && this.props?.tabs[this.props?.activeTabId]?.type === 'endpoint') {
       window.SendDataToChatbot({
         bridgeName: 'api',
         threadId: `${userid}`,

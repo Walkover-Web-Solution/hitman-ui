@@ -1,21 +1,27 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Accordion, Card, Button } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchFeedbacks } from './redux/publishDocsActions'
+import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { useQuery } from 'react-query'
+import { getFeedbacks } from '../../services/feedbackService'
 
 const PublishDocsReview = () => {
   const { collectionId } = useParams()
-  const dispatch = useDispatch()
-
-  const feedbacks = useSelector((state) => state.feedbacks)
-  const pages = useSelector((state) => state.pages)
-
-  useEffect(() => {
-    if (collectionId) {
-      dispatch(fetchFeedbacks(collectionId))
+  const { activeTabId, tabs, pages } = useSelector((state) => {
+    return {  activeTabId: state?.tabs?.activeTabId, tabs: state?.tabs?.tabs , pages: state?.pages}
+  })
+  const { data: feedbacks = [], isError, error } = useQuery(
+    ['feedback', collectionId],
+    () => getFeedbacks(collectionId),
+    {
+      enabled: tabs[activeTabId]?.state?.pageType == 'FEEDBACK',
+      staleTime: 600000
     }
-  }, [collectionId, dispatch])
+  );
+  
+  if (isError) {
+    console.error('Failed to fetch scheduled runs:', error);
+  }
 
   const renderHostedApiHeading = (heading) => (
     <div className='page-title mb-3'>

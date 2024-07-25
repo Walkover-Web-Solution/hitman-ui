@@ -17,18 +17,12 @@ export function saveParentPageVersion(pageId, collectionParentPage) {
   return http.post(collectionParentPagesUrl(pageId), collectionParentPage)
 }
 
-export function updateCollectionVersion(versionId, collectionVersion) {
+export function setDefaultVersion(orgId, versionData) {
   const apiUrl = getApiUrl()
-  return http.put(`${apiUrl}/versions/${versionId}`, collectionVersion)
-}
-
-export function duplicateVersion(versionId) {
-  const apiUrl = getApiUrl()
-  return http.post(`${apiUrl}/duplicateVersions/${versionId}`)
+  return http.put(`${apiUrl}/defaultVersion`, versionData)
 }
 
 export default {
-  updateCollectionVersion,
-  duplicateVersion,
-  saveParentPageVersion
+  saveParentPageVersion,
+  setDefaultVersion
 }

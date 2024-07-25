@@ -6,7 +6,7 @@ import { Button } from 'react-bootstrap'
 import { updatePage } from '../../pages/redux/pagesActions'
 import { addParentPageVersion } from '../redux/collectionVersionsActions'
 import { deletePage } from '../../pages/redux/pagesActions'
-import { onDefaultVersion } from '../../publishDocs/redux/publishDocsActions'
+import { onDefaultVersion } from '../redux/collectionVersionsActions'
 import OutsideClickHandler from 'react-outside-click-handler';
 import './selectVersion.scss'
 import { toast } from 'react-toastify'

@@ -7,8 +7,6 @@ import Modal from 'react-bootstrap/Modal';
 import { BiLike, BiDislike, BiSolidLike, BiSolidDislike } from 'react-icons/bi'
 import './apiDocReview.scss'
 import { dislike, like } from '../../services/feedbackService'
-import { LuAsterisk } from 'react-icons/lu'
-import { SlLike } from "react-icons/sl";
 import { VscStarFull } from "react-icons/vsc";
 import { useParams } from 'react-router-dom'
 
