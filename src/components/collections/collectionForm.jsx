@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef} from 'react';
 import { Modal } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import Joi from 'joi-browser';
@@ -17,7 +17,7 @@ const CollectionForm = (props) => {
   const collections = useSelector(state => state.collections);
 
   const schema = { name: Joi.string().min(3).max(50).trim().required().label('Collection Name') };
-
+  
 
   const redirectToCollection = (collection) => {
     if (!collection.data) {
