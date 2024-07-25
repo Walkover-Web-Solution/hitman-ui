@@ -6,7 +6,7 @@ import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpoin
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import generalActionsTypes from '../../redux/generalActionTypes'
 import { statesEnum } from '../../common/utility'
-import publishDocsActionTypes from '../../publishDocs/redux/publishDocsActionTypes'
+import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 
 const initialState = {}
 
@@ -279,7 +279,7 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action?.response?.id]: action?.response
       }
-    case publishDocsActionTypes.ON_DEFAULT_VERSION:
+    case collectionVersionsActionTypes.ON_DEFAULT_VERSION:
       pages = { ...state }
       pages[action?.versionData?.newVersionId].state = 1
       pages[action.versionData?.oldVersionId].state = 0
