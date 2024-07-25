@@ -192,6 +192,57 @@ class BodyContainer extends Component {
     }
   }
 
+  handlePrettifyJson() {
+    const { raw } = this.state.data;
+    const prettifiedRaw = this.prettifyJson(raw);
+    this.handleChange(prettifiedRaw);
+  }
+
+
+  prettifyJson(jsonString) {
+    try {
+      const parsedJson = JSON.parse(jsonString);
+      return JSON.stringify(parsedJson, null, 2);
+    } catch (error) {
+      let indent = 0;
+      const indentString = '  ';
+      const regex = /({|}|\[|\]|,|:)/g;
+
+      return jsonString
+        .replace(regex, (match) => {
+          let result = match;
+
+          switch (match) {
+            case '{':
+            case '[':
+              indent += 1;
+              result = match + '\n' + indentString.repeat(indent);
+              break;
+
+            case '}':
+            case ']':
+              indent -= 1;
+              result = '\n' + indentString.repeat(indent) + match;
+              break;
+
+            case ',':
+              result = match + '\n' + indentString.repeat(indent);
+              break;
+
+            case ':':
+              result = match + ' ';
+              break;
+
+            default:
+              break;
+          }
+
+          return result;
+        })
+        .replace(/\\'/g, "'");
+    }
+  }
+
   handleChangeGraphqlQuery() {
     this.props.setQueryTabBody({ query: this.queryRef.current.editor.getValue(), variables: this.variablesRef.current.editor.getValue() })
   }
@@ -247,6 +298,9 @@ class BodyContainer extends Component {
         default:
           return (
             <div>
+              <div className="prettify-button" >
+                <span onClick={this.handlePrettifyJson.bind(this)}>Prettify</span>
+              </div>
               {' '}
               <AceEditor
                 className='custom-raw-editor'
@@ -268,6 +322,7 @@ class BodyContainer extends Component {
                 enableLiveAutocompletion
                 enableBasicAutocompletion
               />
+
             </div>
           )
       }
@@ -460,6 +515,7 @@ class BodyContainer extends Component {
             {...editorOptions}
 
           />
+
         </div>}
       </div>
     )
