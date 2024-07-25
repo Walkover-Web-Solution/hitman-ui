@@ -15,7 +15,7 @@ import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
 import ApiDocReview from '../apiDocReview/apiDocReview'
-import { isAdmin } from '../auth/authServiceV2'
+import { getCurrentUser, getProxyToken, isAdmin } from '../auth/authServiceV2'
 import { approvePage, pendingPage, rejectPage, draftPage } from '../publicEndpoint/redux/publicEndpointsActions'
 import ConfirmationModal from '../common/confirmationModal'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
@@ -130,6 +130,14 @@ class DisplayPage extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const userid = getCurrentUser()?.id
+    if (typeof window.SendDataToChatbot === 'function' && this.props?.tabs?.tabs[this.props?.tabs?.activeTabId]?.type === 'page') {
+      window.SendDataToChatbot({
+        bridgeName: 'page',
+        threadId: `${userid}`,
+        variables: { Proxy_auth_token: getProxyToken(), content: this.props.pageContent }
+      })
+    }
     if (this.props?.location?.pathname !== prevProps?.location?.pathname) {
       this.extractPageName()
     }

@@ -227,11 +227,11 @@ class Endpoints extends Component {
       <>
         {this.props.isPublishData && this.props.modals.publishData ? (
           <div className='sidebar-accordion-item'>
-            <input
+            {/* <input
               type='checkbox'
               checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
               onChange={this.handleCheckboxChange}
-            />
+            /> */}
             {this.props.endpointContent.protocolType === 1 && (
               <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
                 {this.props.endpoints[endpointId].requestType}

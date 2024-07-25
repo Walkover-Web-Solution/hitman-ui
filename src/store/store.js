@@ -8,7 +8,6 @@ import cookiesReducer from '../components/cookies/redux/cookiesReducer'
 import modalsReducer from '../components/modals/redux/modalsReducer'
 import historyReducer from '../components/history/redux/historyReducer'
 import toggleResponseReducer from '../components/common/redux/toggleResponse/toggleResponseReducer'
-import publishDocsReducer from '../components/publishDocs/redux/publishDocsReducer'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import clientDataReducer from './clientData/clientDataReducer'
@@ -27,7 +26,6 @@ const rootReducer = combineReducers({
   cookies: cookiesReducer,
   modals: modalsReducer,
   responseView: toggleResponseReducer,
-  feedbacks: publishDocsReducer,
   clientData: clientDataReducer,
   tokenData: tokenDataReducer,
   users: userReducer,

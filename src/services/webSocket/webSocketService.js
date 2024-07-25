@@ -13,7 +13,7 @@ import { formatResponseToSend } from '../../components/endpoints/redux/endpoints
 import pagesActionTypes from '../../components/pages/redux/pagesActionTypes'
 import { onEndpointStateSuccess } from '../../components/publicEndpoint/redux/publicEndpointsActions'
 import { onParentPageVersionAdded } from '../../components/collectionVersions/redux/collectionVersionsActions'
-import { onSetDefaultVersion } from '../../components/publishDocs/redux/publishDocsActions'
+import { onSetDefaultVersion } from '../../components/collectionVersions/redux/collectionVersionsActions'
 
 var CLIENT, CHANNEL
 
