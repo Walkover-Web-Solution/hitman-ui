@@ -21,6 +21,7 @@ const OnBoarding = () => {
     const [orgName, setOrgName] = useState('')
     const tabs = useSelector((state) => state.tabs)
     const historySnapshot = useSelector((state) => state.history)
+    const [isContinue, setIsContinue] = useState(true);
 
     const handleCardClick = (index) => {
         setSelectedIndex(index);
@@ -28,10 +29,15 @@ const OnBoarding = () => {
     };
 
     const handleContinueClick = () => {
-        setShowInput(true);
-        setTimeout(() => {
+        if (isContinue) {
+            setShowInput(true);
             setIsInputVisible(true);
-        }, 500);
+            setIsContinue(false);
+        } else {
+            setShowInput(false);
+            setIsInputVisible(false);
+            setIsContinue(true);
+        }
     };
 
     const handleKeyPress = (event) => {
@@ -74,44 +80,43 @@ const OnBoarding = () => {
     }
 
     return (
-        <div className="onboarding-container">
-            <div className={`on-boarding d-flex flex-column align-items-center justify-content-center ${showInput ? 'slide-out' : ''}`}>
+        <div className="onboarding-container position-relative">
+            <div className={`on-boarding d-flex flex-column align-items-center justify-content-center p-2 ${showInput ? 'slide-out' : ''}`}>
                 <h2 className='mb-5'>
                     How do you want to use techdoc?
                 </h2>
-                <div className='d-flex'>
-                    {[
-                        'Light',
-                        'Light'
-                    ].map((variant, index) => (
-                        <div key={index} className='mr-2 d-flex flex-column align-items-center justify-content-cente'>
+                <div className='card-container d-flex flex-column flex-sm-row'>
+                    {['Light', 'Light'].map((variant, index) => (
+                        <div key={index} className='d-flex flex-column align-items-center justify-content-center'>
                             <Card
                                 bg={variant.toLowerCase()}
                                 text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
-                                className={`card-main cursor-pointer ${selectedIndex === index ? 'active-tab' : ''}`}
+                                className={`card-main cursor-pointer ${selectedIndex === index ? 'active-tab bg-white' : ''}`}
                                 onClick={() => handleCardClick(index)}
                             >
                                 <Card.Body>
-                                    <Card.Text className='d-flex flex-column justify-content-center align-items-center'>
+                                    <Card.Text className={`card-text d-flex flex-column justify-content-center align-items-center h-100 ${selectedIndex === index ? 'text-black' : 'text-black-50'}`}>
                                         {index === 0 ? (
-                                            <IoDocumentTextOutline size={40} />
+                                            <div className='d-flex flex-column align-items-center'>
+                                                <IoDocumentTextOutline size={40} />
+                                                <div className='mt-3'>Use Documentation</div>
+                                            </div>
                                         ) : (
                                             <>
                                                 <div className='d-flex align-items-center'>
                                                     <IoDocumentTextOutline size={40} />
-                                                    <FaPlus size={16} />
+                                                    <FaPlus size={16} className='mx-2' />
                                                     <MdOutlineApi className='ml-1' size={40} />
                                                 </div>
+                                                <div className='mt-3'>Use Documentation with API</div>
                                             </>
                                         )}
-
-                                        {index === 0 ? 'Documentation' : 'Documentation & page'}
                                     </Card.Text>
                                 </Card.Body>
                             </Card>
                             <Form.Check
-                                type="radio"
-                                aria-label={`radio ${index + 1}`}
+                                className='mt-2'
+                                aria-label={`option ${index + 1}`}
                                 name="radio-group"
                                 checked={selectedIndex === index}
                                 onChange={() => handleCardClick(index)}
@@ -119,19 +124,13 @@ const OnBoarding = () => {
                         </div>
                     ))}
                 </div>
-                <button
-                    className='btn btn-primary mt-3'
-                    disabled={!isContinueEnabled}
-                    onClick={() => { handleContinueClick() }}
-                >
-                    Continue
-                </button>
             </div>
-            <div className={`input-container ${showInput ? 'visible' : ''}`}>
+            <div className={`input-container position-absolute d-flex align-items-center flex-column p-2 ${showInput ? 'show-in' : ''}`}>
                 {isInputVisible && (
-                    <>
+                    <div className='input-group'>
                         <InputGroup className='mb-3'>
                             <Form.Control
+                                className='rounded'
                                 placeholder='Enter Organization Name'
                                 type='text'
                                 aria-label='Organization name'
@@ -143,17 +142,26 @@ const OnBoarding = () => {
                                 }}
                                 isInvalid={orgName && !validateName(orgName)}
                             />
-                            <Button onClick={() => { handleAddOrg() }} variant='outline-secondary' id='button-addon2'>
+                            <Button className='ml-2' onClick={() => { handleAddOrg() }} variant='outline-secondary' id='button-addon2'>
                                 Create
                             </Button>
                         </InputGroup>
                         <div className='d-flex'>
                             <small className='muted-text'>**Organization name accepts min 3 and max 50 characters</small>
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
+            <Button
+            variant="secondary"
+            className='btn-Continue btn-btn-lg px-5 mt-5'
+            disabled={!isContinueEnabled}
+            onClick={handleContinueClick}
+        >
+            {isContinue ? 'Continue' : 'Back'}
+        </Button>
         </div>
+
     )
 }
 
