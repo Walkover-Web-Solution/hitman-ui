@@ -159,7 +159,7 @@ const Collections = (props) => {
   }
 
   const handleApiAutomation = (collectionId) => {
-    navigate(`/orgs/${this.props.params.orgId}/dashboard/collection/${collectionId}/runner`)
+    navigate(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/runner`)
   }
 
   const renderBody = (collectionId, collectionState) => {
