@@ -80,8 +80,8 @@ const OnBoarding = () => {
     }
 
     return (
-        <div className="onboarding-container position-relative">
-            <div className={`on-boarding d-flex flex-column align-items-center justify-content-center p-2 ${showInput ? 'slide-out' : ''}`}>
+        <div className="onboarding-container position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
+            <div className={`on-boarding d-flex flex-column align-items-center justify-content-center p-2 w-100 ${showInput ? 'slide-out' : ''}`}>
                 <h2 className='mb-5'>
                     How do you want to use techdoc?
                 </h2>
@@ -125,7 +125,7 @@ const OnBoarding = () => {
                     ))}
                 </div>
             </div>
-            <div className={`input-container position-absolute d-flex align-items-center flex-column p-2 ${showInput ? 'show-in' : ''}`}>
+            <div className={`input-container position-absolute d-flex align-items-center flex-column p-2 w-100 ${showInput ? 'show-in' : ''}`}>
                 {isInputVisible && (
                     <div className='input-group'>
                         <InputGroup className='mb-3'>
