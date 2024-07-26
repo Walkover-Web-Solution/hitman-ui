@@ -400,7 +400,7 @@ class PublicBodyContainer extends Component {
                 </li>
               </ul>
               <div className="prettify-button" >
-                <span  onClick={()=>{this.prettifyContent()}}>Prettify</span>
+                <span  onClick={()=>{this.prettifyContent()}}>Beautify</span>
               </div>
               {this.state.showBodyCodeEditor ? (
                 <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>

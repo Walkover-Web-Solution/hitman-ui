@@ -518,23 +518,31 @@ button.btn {
 }
 .prettify-button {
   text-align: right;
-  color: #f2994a; /* Assuming blue text */
-  font-size: 14px;
+  color: #f2994a;
+  font-size: var(--text-size-m);
+  font-weight: 500;
+  background-color: transparent;
   padding: 5px 10px;
   cursor: pointer;
   transition: color 0.3s ease;
   span {
-    transition: background-color 0.3s ease; // Add transition for the span
+    transition: background-color 0.3s ease;
+    border-radius: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 }
 
 .prettify-button:hover span {
   background-color: rgba(195, 191, 191, 0.4);
+ 
 }
 .custom-raw-editor {
   width: 100% !important;
   height: 250px !important;
   border-radius: 4px;
+  border-radius: $border-radius;
+  border: 1px solid $lightblackborder;
 }
 
 .custom-radio-input {
