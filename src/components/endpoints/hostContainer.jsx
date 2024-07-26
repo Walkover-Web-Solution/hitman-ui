@@ -133,7 +133,7 @@ class HostContainer extends Component {
       // parsedData.data is in the format of json string then convert it to object format
       try {
         parsedData.data = JSON.parse(parsedData.data)
-      } catch (e) {}
+      } catch (e) { }
       const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase()
       if (contentType.includes('application/json')) {
         /* contentType = 'application/json' */
@@ -292,7 +292,7 @@ class HostContainer extends Component {
   }
 
   splitUrlHelper(e) {
-    const value = e?.target?.value?.trim() || e?.url?.trim() || ''
+    const value = e?.target?.value || e?.url || ''
     const hostName = this.checkExistingHosts(value)
     let uri = ''
     const data = {
@@ -330,7 +330,7 @@ class HostContainer extends Component {
 
   renderHostDatalist() {
     const endpointId = this.props.endpointId
-    const {showIcon } = this.state;
+    const { showIcon } = this.state;
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
         <input
@@ -349,9 +349,9 @@ class HostContainer extends Component {
           }
           onBlur={() => this.setState({ showIcon: true })}
         />
-        {showIcon &&<div className='position-relative url-icons'> <HiOutlineExclamationCircle size={20} className='invalid-icon'/>
+        {showIcon && <div className='position-relative url-icons'> <HiOutlineExclamationCircle size={20} className='invalid-icon' />
           <span className='position-absolute'>URL cannot be empty</span>
-          </div>}
+        </div>}
         <div className={['host-data', this.state.showDatalist ? 'd-block' : 'd-none'].join(' ')}>
           {Object.values(hostContainerEnum.hosts).map(
             (host, index) =>
