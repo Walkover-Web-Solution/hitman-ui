@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { closeAllTabs } from '../tabs/redux/tabsActions'
 import { createOrg } from '../../services/orgApiService'
 import { onHistoryRemoved } from '../history/redux/historyAction'
+import { addCollection } from '../collections/redux/collectionsActions';
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
@@ -65,7 +66,13 @@ const OnBoarding = () => {
             dispatch(closeAllTabs(tabIdsToClose))
             dispatch(onHistoryRemoved(historySnapshot))
             await createOrg(orgName)
+            createUntitledcollection()
         }
+    }
+
+    const createUntitledcollection = () => {
+        const newCollection = {name:'untitled'}
+        dispatch(addCollection(newCollection))
     }
 
     const removeFromLocalStorage = (tabIds) => {
