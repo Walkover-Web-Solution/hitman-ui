@@ -456,7 +456,7 @@ const CustomTabs = (props) => {
                     onDoubleClick={() => {
                       tabService.disablePreviewMode(tabId)
                     }}
-                  >
+                >
                     {renderTabName(tabId)}
                   </button>
                   <button className=' close' onClick={() => handleCloseTabs([tabId])}>
