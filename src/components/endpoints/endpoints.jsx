@@ -1,171 +1,523 @@
-import React, { useState } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { Component } from 'react'
+import withRouter from '../common/withRouter.jsx'
+import { connect } from 'react-redux'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
+import { approveEndpoint, draftEndpoint, pendingEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
-import { deleteEndpoint, duplicateEndpoint } from './redux/endpointsActions'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, hexToRgb } from '../common/utility'
 import tabService from '../tabs/tabService'
 import tabStatusTypes from '../tabs/tabStatusTypes'
+import './endpoints.scss'
+import { deleteEndpoint, duplicateEndpoint, addEndpoint } from './redux/endpointsActions'
+// import GlobeIcon from '../../assets/icons/globe-icon.svg'
+import AddEntity from '../main/addEntity/addEntity'
+import { updataForIsPublished } from '../../store/clientData/clientDataActions'
 import SubPageForm from '../subPages/subPageForm'
-import endpointService from './endpointService'
-import IconButtons from '../common/iconButton'
-import { BsThreeDots } from 'react-icons/bs'
-import { GrGraphQl } from 'react-icons/gr'
-import { background } from '../backgroundColor.js'
+import { ReactComponent as Approved } from '../../assets/icons/approvedSign.svg'
+import { ReactComponent as MakePublic } from '../../assets/icons/makePublicSign.svg'
+import { ReactComponent as CancelRequest } from '../../assets/icons/cancelRequest.svg'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { ReactComponent as Duplicate } from '../../assets/icons/duplicateSign.svg'
 import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
+import endpointService from './endpointService'
+import { bodyTypesEnums } from '../common/bodyTypeEnums'
+import IconButtons from '../common/iconButton'
+import { BsThreeDots } from 'react-icons/bs'
+import { GrGraphQl } from 'react-icons/gr'
 import '../../../src/components/styles.scss'
-import './endpoints.scss'
+import { importPostmanEnvironment } from '../environments/environmentsApiService'
+import { hexToRgb } from '../common/utility'
+import { background } from '../backgroundColor.js'
 
-const Endpoints = (props) => {
-  const [showEndpointForm, setShowEndpointForm] = useState({ addPage: false, edit: false, share: false, delete: false })
-  const [isHovered, setIsHovered] = useState(false)
-  const [selectedEndpoint, setSelectedEndpoint] = useState(null)
+// 0 = pending  , 1 = draft , 2 = approved  , 3 = rejected
+const endpointsEnum = {
+  PENDING_STATE: 0,
+  REJECT_STATE: 3,
+  APPROVED_STATE: 2,
+  DRAFT_STATE: 1
+}
 
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-
-  const { endpoints, tabs, pages, collections } = useSelector((state) => ({
+const mapStateToProps = (state) => {
+  return {
     endpoints: state.pages,
     tabs: state.tabs,
     clientData: state.clientData,
-    pages: state.pages,
     collections: state.collections
-  }))
-
-  const handleDelete = (endpoint) => {
-    dispatch(deleteEndpoint(endpoint))
-    tabService.removeTab(tabs.activeTabId, { navigate, params, location })
   }
+}
 
-  const handleModalActionType = (actionType, endpointId) => {
-    setShowEndpointForm((prev) => ({ ...prev, [actionType]: true }))
-    setSelectedEndpoint(endpoints[endpointId])
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    delete_endpoint: (endpoint) => dispatch(deleteEndpoint(endpoint)),
+    duplicate_endpoint: (endpoint) => dispatch(duplicateEndpoint(endpoint)),
+    pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
+    approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
+    draft_endpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
+    reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
+    close_tab: (tabId) => dispatch(closeTab(tabId)),
+    open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
+    add_endpoint: (newEndpoint, groupId, callback) => dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
+    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload)),
+    import_postman_environment: (openApiObject, importType, website, callback, view) =>
+      dispatch(importPostmanEnvironment(openApiObject, importType, website, callback, view))
   }
+}
 
-  const handleDuplicate = (endpointId) => dispatch(duplicateEndpoint(endpoints[endpointId]))
-
-  const closeDeleteEndpointModal = () => {
-    setShowEndpointForm((prev) => ({ ...prev, delete: false }))
+class Endpoints extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      endpointState: 'Make Public',
+      theme: '',
+      checkboxChecked: false,
+      showEndpointForm: {
+        addPage: false,
+        edit: false,
+        share: false,
+        delete: false
+      },
+      optionalParams: false,
+      isHovered: false
+    }
   }
-
-  const handleDisplay = (endpoint, groupId, collectionId, previewMode) => {
-    window.scroll(0, 0)
-    if (isDashboardRoute({ location, navigate }, true)) {
-      if (!tabs.tabs[endpoint.id]) {
-        const previewTabId = Object.keys(tabs.tabs).filter((tabId) => tabs.tabs[tabId].previewMode === true)[0]
-        if (previewTabId) dispatch(closeTab(previewTabId))
-        dispatch(openInNewTab({ id: endpoint.id, type: 'endpoint', status: tabStatusTypes.SAVED, previewMode, isModified: false, state: {} }))
-      } else if (tabs.tabs[endpoint.id].previewMode === true && previewMode === false) {
-        tabService.disablePreviewMode(endpoint.id)
-      }
-      navigate(`/orgs/${params.orgId}/dashboard/endpoint/${endpoint.id}`, {
-        state: {
-          title: 'update endpoint',
-          endpoint,
-          groupId,
-          collectionId,
-        }
-      })
-    } else {
-      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, endpoint?.id)
-      let pathName = getUrlPathById(endpoint?.id, pages)
-      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      navigate(pathName)
+  handleHover = (isHovered) => {
+    this.setState({ isHovered })
+  }
+  componentDidMount() {
+    if (this.props.theme) {
+      this.setState({ theme: this.props.theme })
     }
   }
 
-  const displayEndpointName = (endpointId) => {
-    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId   ? 'selected'   : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId   ? 'selected'   : ''
+  async handleDelete(endpoint) {
+    await this.props.delete_endpoint(endpoint)
+    tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
+  }
+
+  handleDuplicate(endpoint) {
+    this.props.duplicate_endpoint(endpoint)
+  }
+
+  openEditEndpointForm(selectedEndpoint) {
+    this.setState({
+      showEndpointForm: { edit: true },
+      selectedEndpoint: {
+        ...this.props.endpoints[selectedEndpoint]
+      }
+    })
+  }
+
+  openDeleteEndpointModal(endpointId) {
+    this.setState({
+      showEndpointForm: { delete: true },
+      selectedEndpoint: { ...this.props.endpoints[endpointId] }
+    })
+  }
+
+  closeDeleteEndpointModal() {
+    this.setState({ showEndpointForm: { delete: false } })
+  }
+
+  async handlePublicEndpointState(endpoint) {
+    if (this.isStateDraft(endpoint.id) || this.isStateReject(endpoint.id)) {
+      this.props.pending_endpoint(endpoint)
+    }
+  }
+
+  async handleCancelRequest(endpoint) {
+    this.props.draft_endpoint(endpoint)
+  }
+
+  async handleApproveRequest(endpoint) {
+    this.props.approve_endpoint(endpoint)
+  }
+
+  async handleRejectRequest(endpoint) {
+    this.props.reject_endpoint(endpoint)
+  }
+
+  handleDisplay(endpoint, groupId, collectionId, previewMode) {
+    window.scroll(0, 0)
+    if (isDashboardRoute(this.props, true)) {
+      if (!this.props.tabs.tabs[endpoint.id]) {
+        const previewTabId = Object.keys(this.props.tabs.tabs).filter((tabId) => this.props.tabs.tabs[tabId].previewMode === true)[0]
+        if (previewTabId) this.props.close_tab(previewTabId)
+        this.props.open_in_new_tab({
+          id: endpoint.id,
+          type: 'endpoint',
+          status: tabStatusTypes.SAVED,
+          previewMode,
+          isModified: false,
+          state: {}
+        })
+      } else if (this.props.tabs.tabs[endpoint.id].previewMode === true && previewMode === false) {
+        tabService.disablePreviewMode(endpoint.id)
+      }
+      const { orgId } = this.props.params
+      this.props.navigate(`/orgs/${orgId}/dashboard/endpoint/${endpoint.id}`, {
+        state: {
+          title: 'update endpoint',
+          endpoint: endpoint,
+          groupId: groupId,
+          collectionId
+        }
+      })
+    } else {
+      let id = endpoint?.id
+      sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
+      let pathName = getUrlPathById(id, this.props.pages)
+      pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
+      this.props.navigate(pathName)
+    }
+  }
+
+  extractEndpoints() {
+    const endpoints = {}
+    for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
+      if (
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].parentId &&
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].parentId === this.props.parent_id
+      ) {
+        endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[Object.keys(this.props.endpoints)[i]]
+      }
+    }
+
+    return endpoints
+  }
+
+  handleCheckboxChange = () => {
+    this.props.setIsCheckForParenPage({
+      id: this.props?.endpointId,
+      isChecked: !this.props?.clientData?.[this?.props?.endpointId]?.checkedForPublished
+    })
+  }
+
+  makePositionWiseEndpoints(endpoints) {
+    const positionWiseEndpoints = []
+    for (let i = 0; i < Object.keys(endpoints).length; i++) {
+      positionWiseEndpoints[endpoints[Object.keys(endpoints)[i]].position] = Object.keys(endpoints)[i]
+    }
+    return positionWiseEndpoints
+  }
+
+  isStateApproved(endpointId) {
+    return this.props.endpoints[endpointId].state === endpointsEnum.APPROVED_STATE
+  }
+
+  isStatePending(endpointId) {
+    return this.props.endpoints[endpointId].state === endpointsEnum.PENDING_STATE
+  }
+
+  isStateDraft(endpointId) {
+    return this.props.endpoints[endpointId].state === endpointsEnum.DRAFT_STATE
+  }
+
+  isStateReject(endpointId) {
+    return this.props.endpoints[endpointId].state === endpointsEnum.REJECT_STATE
+  }
+
+  displayEndpointName(endpointId) {
+    let isUserOnPublishedPage = isOnPublishedPage()
+    const isSelected =
+      isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId
+        ? 'selected'
+        : isDashboardRoute && this.props.params.endpointId === endpointId
+          ? 'selected'
+          : ''
     return (
-      <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`}>
-        {endpoints[endpointId]?.protocolType === 1 && (
-          <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
-            {endpoints[endpointId].requestType}
+      <>
+        {this.props.isPublishData && this.props.modals.publishData ? (
+          <div className='sidebar-accordion-item'>
+            {/* <input
+              type='checkbox'
+              checked={this.props?.clientData?.[this.props?.endpointId]?.checkedForPublished || false}
+              onChange={this.handleCheckboxChange}
+            /> */}
+            {this.props.endpointContent.protocolType === 1 && (
+              <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
+                {this.props.endpoints[endpointId].requestType}
+              </div>
+            )}
+            <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
+          </div>
+        ) : (
+          <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`}>
+            {this.props?.endpoints[endpointId]?.protocolType === 1 && (
+              <div
+                className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor ${
+                  !isOnPublishedPage() ? 'in-api-label' : ''
+                }`}
+              >
+                {this.props.endpoints[endpointId].requestType}
+              </div>
+            )}
+            {this.props?.endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
+            <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
           </div>
         )}
-        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
-        <div className='end-point-name truncate'>{endpoints[endpointId].name}</div>
+      </>
+    )
+  }
+
+  displayDeleteOpt(endpointId) {
+    return (
+      <div className='dropdown-item text-danger d-flex' onClick={() => this.openDeleteEndpointModal(endpointId)}>
+        <DeleteIcon /> Delete
       </div>
     )
   }
 
-  const displayEndpointOptions = (endpointId) => (
-    <div className='sidebar-item-action'>
-      <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-        <IconButtons>
-          <BsThreeDots />
-        </IconButtons>
+  displayDuplicateOpt(endpointId) {
+    return (
+      <div className='dropdown-item d-flex' onClick={() => this.handleDuplicate(this.props.endpoints[endpointId])}>
+        <Duplicate /> Duplicate
       </div>
-      <div className='dropdown-menu dropdown-menu-right'>
-        <div className='dropdown-item d-flex' onClick={()=>handleModalActionType('edit', endpointId)}> <RenamedItem /> Rename </div>
-        <div className='dropdown-item d-flex' onClick={() => handleDuplicate(endpointId)}> <Duplicate /> Duplicate </div>
-        <div className='dropdown-item d-flex text-danger' onClick={()=>handleModalActionType('delete', endpointId)}> <DeleteIcon /> Delete </div>
-      </div>
-    </div>
-  )
+    )
+  }
 
-  const displaySingleEndpoint = (endpointId) => {
+  displayApproveOpt() {
+    return (
+      <div className='dropdown-item' disabled>
+        <Approved />
+        Approved
+      </div>
+    )
+  }
+
+  displayMakePublicOpt(endpointId) {
+    return (
+      <div id='make_public_btn' className='dropdown-item' onClick={() => this.handlePublicEndpointState(this.props.endpoints[endpointId])}>
+        <MakePublic />
+        Make Public
+      </div>
+    )
+  }
+
+  displayCancelRequestOpt(endpointId) {
+    return (
+      <div className='dropdown-item' onClick={() => this.handleCancelRequest(this.props.endpoints[endpointId])}>
+        <CancelRequest /> Cancel Request
+      </div>
+    )
+  }
+
+  displayOtherOpt(endpointId) {
+    return (
+      <>
+        {this.isStateDraft(endpointId) || this.isStateReject(endpointId) ? this.displayMakePublicOpt(endpointId) : null}
+
+        {this.isStateApproved(endpointId) ? this.displayApproveOpt() : null}
+
+        {this.isStatePending(endpointId) ? this.displayCancelRequestOpt(endpointId) : null}
+      </>
+    )
+  }
+
+  displayEndpointOptions(endpointId) {
+    return (
+      <div className='sidebar-item-action'>
+        <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+          <IconButtons>
+            <BsThreeDots />
+          </IconButtons>
+        </div>
+
+        <div className='dropdown-menu dropdown-menu-right'>
+          <div className='dropdown-item d-flex' onClick={() => this.openEditEndpointForm(endpointId)}>
+            <RenamedItem /> Rename
+          </div>
+          {this.displayDuplicateOpt(endpointId)}
+          {this.displayDeleteOpt(endpointId)}
+          {/* {this.props.endpoints[endpointId]?.isPublished ? this.displayApproveOpt() : this.displayOtherOpt(endpointId)} */}
+        </div>
+      </div>
+    )
+  }
+  showEditEndpointModal() {
+    return (
+      this.state.showEndpointForm.edit && (
+        <SubPageForm
+          {...this.props}
+          title='Rename'
+          show={this.state.showEndpointForm.edit}
+          onCancel={() => {
+            this.setState({ showEndpointForm: false })
+          }}
+          onHide={() => {
+            this.setState({ showEndpointForm: false })
+          }}
+          selectedEndpoint={this.props?.endpointId}
+          pageType={4}
+          isEndpoint={true}
+          selectedPage={this.props?.endpointId}
+        />
+      )
+    )
+  }
+
+  displaySingleEndpoint(endpointId) {
+    const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     let isUserOnPublishedPage = isOnPublishedPage()
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId ? 'selected' : ''
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    let collectionId = pages?.[idToRender]?.collectionId ?? null
-    var collectionTheme = collections[collectionId]?.theme
+    const isSelected =
+      isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === endpointId
+        ? 'selected'
+        : isDashboardRoute && this.props.params.endpointId === endpointId
+          ? 'selected'
+          : ''
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
+    let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
+    var collectionTheme = this?.props?.collections[collectionId]?.theme
     const dynamicColor = hexToRgb(collectionTheme, 0.15)
     const staticColor = background['background_hover']
 
     const backgroundStyle = {
-      backgroundImage: isHovered || isSelected ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
+      backgroundImage:
+        this.state.isHovered || isSelected
+          ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})`
+          : ''
     }
-
     return (
+      <>
         <div
           key={endpointId}
           draggable={!isUserOnPublishedPage}
-          onDragOver={(e) => e.preventDefault()}
-          onDragStart={() => props.onDragStart(endpointId)}
-          onDrop={(e) => props.onDrop(e, endpointId)}
-          onDragEnter={(e) => props.onDragEnter(e, endpointId)}
-          onDragEnd={(e) => props.onDragEnd(e)}
-          style={props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
+          onDragOver={this.props.handleOnDragOver}
+          onDragStart={() => this.props.onDragStart(endpointId)}
+          onDrop={(e) => this.props.onDrop(e, endpointId)}
+          onDragEnter={(e) => this.props.onDragEnter(e, endpointId)}
+          onDragEnd={(e) => this.props.onDragEnd(e)}
+          style={this.props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
         >
+          <div className={this.props?.endpoints[endpointId]?.state} />
           <div className='sidebar-toggle d-flex justify-content-between mt-1'>
             <button>
-              <div className={`side-bar d-flex align-items-center rounded mr-2 ${isSelected ? 'Selected' : ''}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-                <button tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId],params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId],params.endpointId, collectionId, false)}>
-                  {displayEndpointName(endpointId)}
+              <div
+                className={`side-bar d-flex align-items-center rounded mr-2 ${isSelected ? 'Selected' : ''}`}
+                style={backgroundStyle}
+                onMouseEnter={() => this.handleHover(true)}
+                onMouseLeave={() => this.handleHover(false)}
+              >
+                <button
+                  tabIndex={-1}
+                  onClick={() => {
+                    this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, true)
+                  }}
+                  onDoubleClick={() =>
+                    this.handleDisplay(this.props.endpoints[endpointId], this.props.endpointId, this.props.collection_id, false)
+                  }
+                >
+                  {this.displayEndpointName(endpointId)}
                 </button>
                 <div className='d-flex align-items-center'>
-                  {isDashboardRoute({ navigate, location }, true) && displayEndpointOptions(endpointId)}
+                  {isDashboardRoute(this.props, true) &&
+                    !this.props.collections[this.props.collection_id]?.importedFromMarketPlace &&
+                    this.displayEndpointOptions(endpointId)}
+                  {/* <div className='ml-1 published-icon transition'>
+                    {this.props.endpoints[this.props.params.endpointId]?.isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+                  </div> */}
                 </div>
               </div>
             </button>
           </div>
         </div>
+      </>
     )
   }
 
-  return (
-    <React.Fragment>
-      {showEndpointForm.edit && (
-        <SubPageForm
-          {...props}
-          title='Rename'
-          show={showEndpointForm.edit}
-          onCancel={() => setShowEndpointForm((prev) => ({ ...prev, edit: false }))}
-          onHide={() => setShowEndpointForm((prev) => ({ ...prev, edit: false }))}
-          selectedEndpoint={selectedEndpoint}
-          pageType={4}
-          isEndpoint={true}
-          selectedPage={selectedEndpoint?.id}
-        />
-      )}
-      {showEndpointForm.delete && endpointService.showDeleteEndpointModal({ tabs, dispatch },handleDelete,closeDeleteEndpointModal,'Delete Endpoint',`Are you sure you want to delete this endpoint?`,selectedEndpoint)}
-      {displaySingleEndpoint(props.endpointId)}
-    </React.Fragment>
-  )
+  addEndpoint(endpoint) {
+    this.props.add_endpoint(endpoint, this.props.parent_id, null)
+  }
+
+  renderForm() {
+    const endpoint = {
+      uri: '',
+      name: '',
+      requestType: 'GET',
+      body: { type: bodyTypesEnums['none'], value: null },
+      headers: {},
+      params: {},
+      pathVariables: {},
+      BASE_URL: null,
+      bodyDescription: {}
+    }
+    return (
+      <>
+        {isDashboardRoute(this.props, true) && (
+          <AddEntity placeholder='API Endpoint Name' type='endpoint' endpoint={endpoint} addEndpoint={this.addEndpoint.bind(this)} />
+        )}
+      </>
+    )
+  }
+
+  displayUserEndpoints(endpointId) {
+    return (
+      <>
+        {this.displaySingleEndpoint(endpointId)}
+        {/* {endpoints?.map((endpointId) => (
+          this.displaySingleEndpoint(endpointId)
+        ))} */}
+        {endpointId?.length === 0 && this.renderForm()}
+      </>
+    )
+  }
+
+  filterEndpointIdsByGroup() {
+    const endpointIds = Object.keys(this.props.endpoints).filter(
+      (eId) => this.props.endpoints[eId].parentId && this.props.endpoints[eId].parentId === this.props.parent_id
+    )
+    return endpointIds
+  }
+
+  extractEndpointsFromIds(endpointIds) {
+    let endpointsArray = []
+    for (let index = 0; index < endpointIds.length; index++) {
+      const id = endpointIds[index]
+      const endpoint = this.props.endpoints[id]
+      endpointsArray = [...endpointsArray, endpoint]
+    }
+    endpointsArray.sort(function (a, b) {
+      if (a.name < b.name) {
+        return -1
+      }
+      if (a.name > b.name) {
+        return 1
+      }
+      return 0
+    })
+    return endpointsArray || []
+  }
+
+  getEndpointsEntity(endpointsArray) {
+    const endpoints = {}
+    for (let index = 0; index < endpointsArray.length; index++) {
+      const id = endpointsArray[index].id || endpointsArray[index].requestId
+      endpoints[id] = this.props.endpoints[id]
+    }
+    return endpoints || {}
+  }
+
+  render() {
+    const endpointIds = this.filterEndpointIdsByGroup()
+    let endpointsArray = []
+    endpointsArray = this.extractEndpointsFromIds(endpointIds)
+    let endpoints = {}
+    endpoints = this.getEndpointsEntity(endpointsArray)
+    return (
+      <>
+        {this.showEditEndpointModal()}
+        {this.state.showEndpointForm.delete &&
+          endpointService.showDeleteEndpointModal(
+            this.props,
+            this.handleDelete.bind(this),
+            this.closeDeleteEndpointModal.bind(this),
+            'Delete Endpoint',
+            `Are you sure you want to delete this endpoint?`,
+            this.state.selectedEndpoint
+          )}
+        {this.displayUserEndpoints(this?.props?.endpointId)}
+      </>
+    )
+  }
 }
-export default Endpoints
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Endpoints))
