@@ -264,7 +264,7 @@ const UserProfile = () => {
 
   const renderAddCollection = () => {
     return (
-      <div className='px-2 pb-2' onClick={handleAddNewClick}>
+      <div onClick={handleAddNewClick}>
         <MdAdd className='mr-2' size={17}/>
         <span className='mr-2'>Add collection</span>
       </div>
@@ -326,8 +326,8 @@ const UserProfile = () => {
           <Dropdown.Menu className='p-0'>
             {renderUserDetails()}
             <div className='profile-listing-container'>
-              <div className='px-2 pb-2'>
-                <Dropdown.Item className='mt-2'>{renderInviteTeam()}</Dropdown.Item>
+              <div className='px-2 py-1 border-bottom'>
+                <Dropdown.Item>{renderInviteTeam()}</Dropdown.Item>
                 <Dropdown.Item>
                   <span className='profile-details w-100' onClick={toggleModal} type='button'>
                     <MdSwitchLeft size={18} />
@@ -351,8 +351,9 @@ const UserProfile = () => {
                 <Dropdown.Item>{renderTrash()}</Dropdown.Item>
                 <Dropdown.Item>{renderLogout()}</Dropdown.Item>
               </div>
-              <div className="custom-divider" />
+              <div className='px-2 py-1'>
               <Dropdown.Item>{renderAddCollection()}</Dropdown.Item>
+              </div>
             </div>
           </Dropdown.Menu>
         </Dropdown>
