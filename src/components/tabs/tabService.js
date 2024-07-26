@@ -11,6 +11,7 @@ import {
 import tabStatusTypes from './tabStatusTypes'
 import { getCurrentUser } from '../auth/authServiceV2'
 import { getOrgId } from '../common/utility'
+import { navigateTo, getParams } from '../../navigationService'
 
 function newTab() {
   store.dispatch(addNewTab())
@@ -26,9 +27,9 @@ function removeTab(tabId, props) {
       } else {
         const index = tabsOrder.indexOf(tabId)
         if (index > 0) {
-          selectTab(props, tabsOrder[index - 1])
+          selectTab(tabsOrder[index - 1])
         } else {
-          selectTab(props, tabsOrder[index + 1])
+          selectTab(tabsOrder[index + 1])
         }
       }
     }
@@ -39,34 +40,23 @@ function removeTab(tabId, props) {
   }
 }
 
-function changeRoute(props, tab) {
-  if (tab.isSaved) {
-    props.navigate(`/orgs/${props.params.orgId}/dashboard/${tab.type}/${tab.id}`)
-  } else {
-    props.navigate(`/orgs/${props.params.orgId}/dashboard/${tab.type}/new`)
-  }
-}
-
 function removeAllTabs(props) {
   store.dispatch(closeAllTabs())
   newTab(props)
 }
 
-function selectTab(props, tabId) {
+function selectTab(tabId) {
+  const { orgId } = getParams()
   const { tabs } = store.getState().tabs
   const tab = tabs[tabId]
-  if (tab?.status === 'NEW') {
-    props.navigate(`/orgs/${props.params.orgId}/dashboard/${tab.type}/new`)
-  } else if (tab?.type === 'collection') {
-    tab?.state?.pageType === 'SETTINGS'
-      ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/settings`)
-      : tab?.state?.pageType === 'RUNS' ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/runs`)
-      : props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/feedback`)
+  if (tab?.status === 'NEW') navigateTo(`/orgs/${orgId}/dashboard/${tab.type}/new`)
+    if (tab?.type === 'collection') {
+      if (tab?.state?.pageType === 'SETTINGS') navigateTo(`/orgs/${orgId}/dashboard/collection/${tab.id}/settings`);
+      else if (tab?.state?.pageType === 'RUNS') navigateTo(`/orgs/${orgId}/dashboard/collection/${tab.id}/runs`);
+      navigateTo(`/orgs/${orgId}/dashboard/collection/${tab.id}/feedback`);
   } else {
-    if (!(tab?.type && tab?.id)) {
-      return props.navigate(`/orgs/${getOrgId()}/dashboard/endpoint/new`)
-    }
-    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${(tab.isModified)?'/edit':''}`)
+    if (!(tab?.type && tab?.id)) return navigateTo(`/orgs/${getOrgId()}/dashboard/endpoint/new`)
+    return navigateTo(`/orgs/${orgId}/dashboard/${tab?.type}/${tab?.id}${(tab.isModified) ? '/edit' : ''}`)
   }
   store.dispatch(setActiveTabId(tabId))
 }
@@ -112,7 +102,6 @@ function updateDraftData(pageId, data) {
 export default {
   newTab,
   removeTab,
-  changeRoute,
   removeAllTabs,
   selectTab,
   disablePreviewMode,
