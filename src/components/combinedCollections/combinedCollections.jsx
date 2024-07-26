@@ -26,23 +26,13 @@ function CombinedCollections(props) {
           draggingOverId: props.draggingOverId,
           onDragEnd: props.onDragEnd
         }
-
-        const endpointProps = {
-          key: singleId,
-          onDragStart: props.onDragStart,
-          onDrop: props.onDrop,
-          onDragEnter: props.onDragEnter,
-          draggingOverId: props.draggingOverId,
-          onDragEnd: props.onDragEnd
-        }
-
         switch (type) {
           case 1:
             return <CollectionParentPages {...commonProps} rootParentId={singleId} />
           case 3:
             return <Groups {...commonProps} rootParentId={singleId} />
           case 4:
-            return <Endpoints {...endpointProps} endpointId={singleId} />
+            return <Endpoints {...commonProps} endpointId={singleId} />
           default:
             break
         }
