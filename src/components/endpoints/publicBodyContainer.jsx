@@ -111,48 +111,9 @@ class PublicBodyContainer extends Component {
   }
 
   prettifyJson(jsonString) {
-    try {
-      const parsedJson = JSON.parse(jsonString);
-      return JSON.stringify(parsedJson, null, 2);
-    } catch (error) {
-      let indent = 0;
-      const indentString = '  ';
-      const regex = /({|}|\[|\]|,|:)/g;
-
-      return jsonString
-        .replace(regex, (match) => {
-          let result = match;
-
-          switch (match) {
-            case '{':
-            case '[':
-              indent += 1;
-              result = match + '\n' + indentString.repeat(indent);
-              break;
-
-            case '}':
-            case ']':
-              indent -= 1;
-              result = '\n' + indentString.repeat(indent) + match;
-              break;
-
-            case ',':
-              result = match + '\n' + indentString.repeat(indent);
-              break;
-
-            case ':':
-              result = match + ' ';
-              break;
-
-            default:
-              break;
-          }
-
-          return result;
-        })
-        .replace(/\\'/g, "'");
-    }
-  }
+    const parsedJson = JSON.parse(jsonString);
+    return JSON.stringify(parsedJson, null, 2);
+}
 
 
   prettifyContent() {
