@@ -452,7 +452,7 @@ const CustomTabs = (props) => {
                 <Nav.Link eventKey={tabId}>
                   <button
                     className='btn truncate'
-                    onClick={() => tabService.selectTab({ navigate, params }, tabId)}
+                    onClick={() => tabService.selectTab(tabId)}
                     onDoubleClick={() => {
                       tabService.disablePreviewMode(tabId)
                     }}
