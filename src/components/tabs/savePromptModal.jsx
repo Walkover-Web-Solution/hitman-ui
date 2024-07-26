@@ -57,7 +57,7 @@ class SavePromptModal extends Component {
     if (endpointStatus !== 'NEW') {
       tabService.removeTab(currentTabIdClicked, { ...this.props })
     } else {
-      tabService.selectTab(currentTabIdClicked, { ...this.props })
+      tabService.selectTab({ ...this.props }, currentTabIdClicked)
     }
   }
 
