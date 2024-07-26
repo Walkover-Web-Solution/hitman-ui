@@ -299,7 +299,7 @@ class BodyContainer extends Component {
           return (
             <div>
               <div className="prettify-button" >
-                <span onClick={this.handlePrettifyJson.bind(this)}>Prettify</span>
+                <span onClick={this.handlePrettifyJson.bind(this)}>Beautify</span>
               </div>
               {' '}
               <AceEditor
@@ -339,7 +339,7 @@ class BodyContainer extends Component {
       <React.Fragment>
         <span style={{ fontWeight: 600 }}>Body</span>
         <div className='button-panel-wrapper'>
-          <form className='body-select d-flex align-items-center mb-4'>
+          <form className='body-select d-flex align-items-center mb-2'>
             <label className='customRadio'>
               <input
                 type='radio'
@@ -428,7 +428,7 @@ class BodyContainer extends Component {
           {isSavedEndpoint(this.props) &&
             this.state.selectedRawBodyType === rawTypesEnums.JSON &&
             (this.state.selectedBodyType === bodyTypesEnums['raw'] || this.state.selectedBodyType === rawTypesEnums.JSON) && (
-              <div className='btn-group btn-group-toggle customBtnGroup mb-4' data-toggle='buttons' style={{ float: 'right' }}>
+              <div className='btn-group btn-group-toggle customBtnGroup mb-2' data-toggle='buttons' style={{ float: 'right' }}>
                 <label className='btn btn-secondary active' id={`toggle-raw-${this.props.endpoint_id}`}>
                   <input
                     type='radio'
