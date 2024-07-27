@@ -286,7 +286,7 @@ class EndpointBreadCrumb extends Component {
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
               {this.collectionName && <span className='collection-name-path'>{`${this.collectionName}/`}</span>}
               {
-                <span>
+                <span className='text-nowrap-heading'>
                   {getOnlyUrlPathById(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages, 'internal')}
                 </span>
               }

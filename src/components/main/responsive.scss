@@ -55,14 +55,6 @@
   }
 }
 
-@media (max-width: 1400px) {
-  .mid-part {
-    max-width: 50rem;
-  }
-  .response-right .response-container-main {
-    max-width: 21rem;
-  }
-}
 
 @media (max-width: 1365px) {
   .customRadio {
@@ -98,12 +90,6 @@
     display: none;
   }
   
-  .response-bottom {
-    .response-container-main {
-      width: 100%;
-      max-width: 33rem;
-    }
-  }
   .response-right {
     .response-container-main {
       width: 100%;
@@ -140,9 +126,6 @@
     .sample-response-item {
       margin-bottom: 1rem;
     }
-  }
-  .mid-part {
-    width: 72%;
   }
   .custom-tabs .nav-tabs .nav-item .nav-link {
     white-space: nowrap;
