@@ -44,16 +44,16 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     delete_page: (page) => dispatch(deletePage(page)),
-    duplicate_page: (page) => dispatch(duplicatePage(page)),
+    duplicate_page: (page) => dispatch(duplicatePage(page)), //
     pending_page: (page) => dispatch(pendingPage(page)),
     approve_page: (page) => dispatch(approvePage(page)),
     draft_page: (page) => dispatch(draftPage(page)),
     reject_page: (page) => dispatch(rejectPage(page)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    update_isExpand_for_pages: (payload) => dispatch(addIsExpandedAction(payload)),
-    set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload)),
-    set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData)),
+    update_isExpand_for_pages: (payload) => dispatch(addIsExpandedAction(payload)), //
+    set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload)), //
+    set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData)), //
     setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
   }
 }
