@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import SavePromptModal from './savePromptModal'
@@ -59,33 +59,30 @@ const CustomTabs = (props) => {
     }
   }, [tabs?.activeTabId])
 
-  const handleKeyDown = useCallback(
-    (e) => {
-      const activeTabId = tabs?.activeTabId
-      const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0
-      const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0
+  const handleKeyDown = (e) => {
+    const activeTabId = tabs?.activeTabId
+    const isMacOS = navigator.platform.toUpperCase().indexOf('MAC') >= 0
+    const isWindows = navigator.platform.toUpperCase().indexOf('WIN') >= 0
 
-      if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
-        switch (e.key) {
-          case 't':
-            e.preventDefault()
-            handleOpenNextTab()
-            break
-          case 'w':
-            e.preventDefault()
-            handleCloseTabs([activeTabId])
-            break
-          case 'n':
-            e.preventDefault()
-            handleAddTab()
-            break
-          default:
-            break
-        }
+    if ((isMacOS && (e.metaKey || e.ctrlKey)) || (isWindows && e.altKey)) {
+      switch (e.key) {
+        case 't':
+          e.preventDefault()
+          handleOpenNextTab()
+          break
+        case 'w':
+          e.preventDefault()
+          handleCloseTabs([activeTabId])
+          break
+        case 'n':
+          e.preventDefault()
+          handleAddTab()
+          break
+        default:
+          break
       }
-    },
-    [tabs.activeTabId, tabsOrder]
-  )
+    }
+  }
 
   const openTabAtIndex = (index) => {
     const { tabsOrder } = tabs
@@ -98,19 +95,13 @@ const CustomTabs = (props) => {
     openTabAtIndex(index)
   }
 
-  const closeSavePrompt = useCallback(() => {
-    setShowSavePromptFor([])
-  }, [])
+  const closeSavePrompt = () => setShowSavePromptFor([])
 
-  const onDragStart = useCallback((tId) => {
-    draggedItem.current = tId
-  }, [])
+  const onDragStart = (tId) => draggedItem.current = tId
 
-  const handleOnDragOver = useCallback((e) => {
-    e.preventDefault()
-  }, [])
+  const handleOnDragOver = (e) => e.preventDefault()
 
-  const onDrop = useCallback((e, droppedOnItem) => {
+  const onDrop = (e, droppedOnItem) => {
     e.preventDefault()
     if (draggedItem.current === droppedOnItem) {
       draggedItem.current = null
@@ -120,47 +111,47 @@ const CustomTabs = (props) => {
     const index = tabs.tabsOrder.findIndex((tId) => tId === droppedOnItem)
     tabsOrder.splice(index, 0, draggedItem.current)
     dispatch(setTabsOrder(tabsOrder))
-  }, [])
+  }
 
-  const handleNav = useCallback((dir) => {
+  const handleNav = (dir) => {
     if (dir === 'left') {
       if (navRef.current) navRef.current.scrollLeft -= 200
     } else {
       if (navRef.current) navRef.current.scrollLeft += 200
     }
-  }, [])
+  }
 
-  const handleMouseEnter = useCallback((dir) => {
+  const handleMouseEnter = (dir) => {
     interval.current = setInterval(() => handleNav(dir), 500)
-  }, [])
+  }
 
-  const handleMouseLeave = useCallback(() => {
+  const handleMouseLeave = () => {
     if (interval.current) {
       clearInterval(interval.current)
       interval.current = null
     }
-  }, [])
+  }
 
-  const scrollLength = useCallback(() => {
+  const scrollLength = () => {
     setLeftScroll(navRef.current?.scrollLeft)
-  }, [])
+  }
 
-  const leftHideTabs = useCallback(() => {
+  const leftHideTabs = () => {
     return Number.parseInt(leftScroll / 200)
-  }, [])
+  }
 
-  const rightHideTabs = useCallback(() => {
+  const rightHideTabs = () => {
     return Number.parseInt((navRef.current?.scrollWidth - navRef.current?.clientWidth - leftScroll) / 200)
-  }, [])
+  }
 
-  const handleAddTab = useCallback(() => {
+  const handleAddTab = () => {
     scrollLength()
     tabService.newTab()
-  }, [])
+  }
 
-  const showScrollButton = useCallback(() => {
+  const showScrollButton = () => {
     return navRef.current?.scrollWidth > navRef.current?.clientWidth + 10
-  }, [])
+  }
 
   const handleHistoryClick = () => {
     if (responseView === 'right' && showHistoryContainer === false) {
@@ -169,13 +160,11 @@ const CustomTabs = (props) => {
     setShowHistoryContainer(!showHistoryContainer)
   }
 
-  const handleCloseTabs = useCallback((tabIds) => {
+  const handleCloseTabs = (tabIds) => {
     const showSavePromptFor = []
     const tabsData = tabs.tabs
-
     for (let i = 0; i < tabIds.length; i++) {
       const tabData = tabsData[tabIds[i]]
-
       if (tabData?.isModified) {
         showSavePromptFor.push(tabIds[i])
       } else {
@@ -186,7 +175,7 @@ const CustomTabs = (props) => {
       }
     }
     setShowSavePromptFor(showSavePromptFor)
-  }, [])
+  }
 
   const handleOnConfirm = (tabId) => {
     const show_save_prompt_for = showSavePromptFor.filter((tab) => tab != tabId)
@@ -460,7 +449,7 @@ const CustomTabs = (props) => {
                 <Nav.Link eventKey={tabId}>
                   <button
                     className='btn truncate'
-                    onClick={() => tabService.selectTab({ navigate, params }, tabId)}
+                    onClick={() => tabService.selectTab(tabId, { navigate, params })}
                     onDoubleClick={() => {
                       tabService.disablePreviewMode(tabId)
                     }}
@@ -497,7 +486,7 @@ const CustomTabs = (props) => {
         </Nav.Item>
         <div className='d-flex'>
           <Nav.Item className='tab-buttons' id='options-tab-button'>
-            <TabOptions history={history} handleCloseTabs={handleCloseTabs} />
+            <TabOptions handleCloseTabs={handleCloseTabs} />
           </Nav.Item>
           <Nav.Item className='' id='history-tab-button'>
             <button onClick={handleHistoryClick} className='px-2' style={{ outline: 'none' }}>
