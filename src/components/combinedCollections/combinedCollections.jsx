@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import CollectionParentPages from '../collectionVersions/collectionParentPages'
+import CollectionParentPages from '../collectionVersions/collectionParentPages1'
 import Groups from '../subPages/subPages'
 import Endpoints from '../endpoints/endpoints'
 

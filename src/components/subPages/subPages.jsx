@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useLocation, useNavigate } from 'react-router-dom'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility.js'
 import groupsService from './subPageService.js'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
@@ -18,7 +18,6 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './subpages.scss'
-import { useParams } from 'react-router-dom'
 
 const SubPage = (props) => {
   const { pages, clientData, collections } = useSelector((state) => ({
@@ -31,6 +30,7 @@ const SubPage = (props) => {
 
   const navigate = useNavigate()
   const params = useParams()
+  const location = useLocation()
 
   const [showSubPageForm, setShowSubPageForm] = useState({ addPage: false, edit: false, share: false })
   const [theme, setTheme] = useState('')
@@ -41,9 +41,9 @@ const SubPage = (props) => {
 
   useEffect(() => {
     if (!theme) {
-      setTheme(props.collections[props.collection_id]?.theme)
+      setTheme(collections[props.collection_id]?.theme)
     }
-  }, [theme, props.collections, props.collection_id])
+  }, [theme, collections, props.collection_id])
 
   const handleHover = (hovered) => {
     setIsHovered(hovered)
@@ -168,7 +168,7 @@ const SubPage = (props) => {
               <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{pages[subPageId]?.name}</div>
             </div>
 
-            {isDashboardRoute(props, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
+            {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
               <div className='sidebar-item-action d-flex align-items-center'>
                 <div onClick={() => openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
                   <IconButtons>
@@ -204,7 +204,7 @@ const SubPage = (props) => {
   }
 
   const handleRedirect = (id) => {
-    if (isDashboardRoute(props)) navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
+    if (isDashboardRoute({ location })) navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
     else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
