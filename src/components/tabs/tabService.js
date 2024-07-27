@@ -61,16 +61,15 @@ function selectTab(props, tabId) {
     tab?.state?.pageType === 'SETTINGS'
       ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/settings`)
       : tab?.state?.pageType === 'RUNS' ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/runs`)
-      : props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/feedback`)
-  }else if (tab?.type === 'manual-runs'){
-    console.log(tab,"tabs of manual runs")
-   props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${props.params.collectionId}/runs/${tab.id}`)
+        : props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/feedback`)
+  } else if (tab?.type === 'manual-runs') {
+    props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${props.params.collectionId}/runs/${tab.id}`)
   }
-   else {
+  else {
     if (!(tab?.type && tab?.id)) {
       return props.navigate(`/orgs/${getOrgId()}/dashboard/endpoint/new`)
     }
-    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${(tab.isModified)?'/edit':''}`)
+    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${(tab.isModified) ? '/edit' : ''}`)
   }
   store.dispatch(setActiveTabId(tabId))
 }

@@ -17,6 +17,7 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 import { LuHistory } from 'react-icons/lu'
 import { GrGraphQl } from 'react-icons/gr'
 import { TbSettingsAutomation } from 'react-icons/tb'
+import { BsPlayBtn } from "react-icons/bs";
 import Plus from '../../assets/icons/plus.svg'
 import './tabs.scss'
 
@@ -329,7 +330,7 @@ const CustomTabs = (props) => {
         return (
           <>
             <div className='d-flex align-items-center'>
-              <IoIosChatboxes className='mr-1' size={16} />
+              <BsPlayBtn className='mr-1' size={16} />
               <span>Runs</span>
             </div>
           </>

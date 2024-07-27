@@ -95,7 +95,7 @@ const App = () => {
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/settings' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/runs' element={<MainV2 />} />
-            <Route path='/orgs/:orgId/dashboard/collection/:collectionId/runs/:runId' element={<ManualRuns />} />
+            <Route path='/orgs/:orgId/dashboard/collection/:collectionId/runs/:runId' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/history/:historyId' element={<MainV2 />} />

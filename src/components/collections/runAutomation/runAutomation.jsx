@@ -120,7 +120,6 @@ export default function RunAutomation() {
         runType
       }))
       if (responseData.status === 200) {
-        console.log(responseData)
         setAutomationLoading(false)
         return toast.success('Automation ran successfully!')
       }

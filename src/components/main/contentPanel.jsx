@@ -102,7 +102,6 @@ const ContentPanel = () => {
       }
 
       if (collectionId && runId) {
-        debugger
         if (tabs.tabs[runId]) {
           if (tabs.activeTabId !== runId) {
             dispatch(setActiveTabId(runId))

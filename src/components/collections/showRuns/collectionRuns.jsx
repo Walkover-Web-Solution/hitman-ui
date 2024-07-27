@@ -12,8 +12,10 @@ import './collectionRuns.scss';
 import cronstrue from 'cronstrue';
 import { HiDocumentReport } from "react-icons/hi";
 import { getOrgId } from '../../common/utility';
-import { openInNewTab } from '../../tabs/redux/tabsActions';
+import { openInNewTab, updateTab } from '../../tabs/redux/tabsActions';
 import tabStatusTypes from '../../tabs/tabStatusTypes';
+import moment from 'moment'
+
 
 const CollectionRuns = () => {
   const params = useParams();
@@ -79,8 +81,9 @@ const CollectionRuns = () => {
       isModified: false,
       state: {}
     }))
-
-    // navigate(`${runId}`);
+    if (collectionId) {
+     navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/runs/${runId}`)
+    }
   };
 
   return (
@@ -103,7 +106,7 @@ const CollectionRuns = () => {
             <tbody>
               {Object.entries(automation).map(([id, runDetails]) => (
                 <tr key={id}>
-                  <td>{runDetails.date}</td>
+                  <td>{moment(runDetails.date).format('MMMM D, YYYY [at] HH:mm:ss')}</td>
                   <td>{'Runner'}</td>
                   <td>{runDetails.responseTime} ms</td>
                   <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' onClick={() => openEditCron(id)}>
