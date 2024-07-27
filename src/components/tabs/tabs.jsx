@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import SavePromptModal from './savePromptModal'
@@ -161,13 +161,11 @@ const CustomTabs = (props) => {
     setShowHistoryContainer(!showHistoryContainer)
   }
 
-  const handleCloseTabs = useCallback((tabIds) => {
+  const handleCloseTabs = (tabIds) => {
     const showSavePromptFor = []
     const tabsData = tabs.tabs
-
     for (let i = 0; i < tabIds.length; i++) {
       const tabData = tabsData[tabIds[i]]
-
       if (tabData?.isModified) {
         showSavePromptFor.push(tabIds[i])
       } else {
@@ -178,7 +176,7 @@ const CustomTabs = (props) => {
       }
     }
     setShowSavePromptFor(showSavePromptFor)
-  }, [])
+  }
 
   const handleOnConfirm = (tabId) => {
     const show_save_prompt_for = showSavePromptFor.filter((tab) => tab != tabId)
