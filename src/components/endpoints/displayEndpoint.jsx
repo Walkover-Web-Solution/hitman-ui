@@ -489,6 +489,9 @@ class DisplayEndpoint extends Component {
     if (this.props?.endpointContent && !_.isEqual(this.props.endpointContent, this.state.endpointContentState)) {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
     }
+
+    if (this?.state?.showEndpointFormModal && prevProps.params !== this.props.params) this.setState({ showEndpointFormModal: false })
+
   }
 
   componentWillUnmount() {
@@ -527,17 +530,19 @@ class DisplayEndpoint extends Component {
   handleKeyDown = (event) => {
     const activeTabId = this.props.activeTabId
     const status = this.props.tabs?.[activeTabId]?.status
-    if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
-      this.handleSend()
-    } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) {
+    if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) {
       event.preventDefault()
-      if (status === 'NEW') {
-        this.setState({ saveAsFlag: true }, () => {
-          this.openEndpointFormModal()
-        })
-      } else {
-        this.handleSave()
+      if (this.props.tab.id === activeTabId) {
+        if (status === 'NEW') {
+          this.setState({ saveAsFlag: true }, () => {
+            this.openEndpointFormModal()
+          })
+        } else {
+          this.handleSave()
+        }
       }
+    } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
+      this.handleSend()
     }
   }
 
@@ -1310,7 +1315,7 @@ class DisplayEndpoint extends Component {
         protocolType: endpointContent?.protocolType || null,
         description: endpointContent?.description || ''
       }
-      if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
+      if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
       else if (currentTabId && !this.props.pages[currentTabId]) {
         endpoint.requestId = currentTabId
@@ -3592,14 +3597,14 @@ class DisplayEndpoint extends Component {
             ) : null}
             {this.renderCodeTemplate()}
             {isOnPublishedPage() && (
-            <span className='Modified-at mt-2 lower-modified-at'>
-              <DisplayUserAndModifiedData
-                isOnPublishedPage={isOnPublishedPage()}
-                pages={this.props.pages}
-                currentPage={this.props.currentEndpointId}
-                users={this.props.users}
-              />
-            </span>
+              <span className='Modified-at mt-2 lower-modified-at'>
+                <DisplayUserAndModifiedData
+                  isOnPublishedPage={isOnPublishedPage()}
+                  pages={this.props.pages}
+                  currentPage={this.props.currentEndpointId}
+                  users={this.props.users}
+                />
+              </span>
             )}
           </div>
         </div>
