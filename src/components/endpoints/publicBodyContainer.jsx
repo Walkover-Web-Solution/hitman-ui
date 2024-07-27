@@ -110,18 +110,6 @@ class PublicBodyContainer extends Component {
     this.props.set_public_body(data.body)
   }
 
-  prettifyJson(jsonString) {
-    const parsedJson = JSON.parse(jsonString);
-    return JSON.stringify(parsedJson, null, 2);
-}
-
-
-  prettifyContent() {
-    const { raw } = this.props.body || {};
-    const prettifiedContent = this.prettifyJson(raw?.value || '');
-    this.handleChangeBodyDescription(prettifiedContent);
-  }
-
   handleChangeBodyDescription = (data) => {
     try {
       const body = data;
@@ -360,9 +348,6 @@ class PublicBodyContainer extends Component {
                   Body description
                 </li>
               </ul>
-              <div className="prettify-button" >
-                <span  onClick={()=>{this.prettifyContent()}}>Beautify</span>
-              </div>
               {this.state.showBodyCodeEditor ? (
                 <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>
                   {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
