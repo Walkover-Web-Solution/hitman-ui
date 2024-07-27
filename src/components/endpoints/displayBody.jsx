@@ -98,19 +98,10 @@ class BodyContainer extends Component {
       this.showRawBodyType = false;
     }
 
-    const rawBody = body?.raw?.value || '';
-    let formattedRawBody = rawBody;
-
-    try {
-      const parsedBody = JSON.parse(rawBody);
-      formattedRawBody = this.prettifyJson(JSON.stringify(parsedBody));
-    } catch (e) {
-    }
-
     const data = {
       data: body?.[bodyTypesEnums['multipart/form-data']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
       urlencoded: body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }],
-      raw: formattedRawBody,
+      raw: body?.raw?.value || ''
     };
 
     this.rawBodyType = body?.raw?.rawType || rawTypesEnums.TEXT;
@@ -123,22 +114,6 @@ class BodyContainer extends Component {
       selectedRawBodyType: body?.raw?.rawType || rawTypesEnums.TEXT,
       selectedBodyType,
       data
-    });
-  }
-  prettifyJson(jsonString) {
-    let indent = 0;
-    const indentString = '  ';
-    return jsonString.replace(/({|}|\[|\]|,)/g, (match) => {
-      if (match === '{' || match === '[') {
-        indent += 1;
-        return match + '\n' + indentString.repeat(indent);
-      } else if (match === '}' || match === ']') {
-        indent -= 1;
-        return '\n' + indentString.repeat(indent) + match;
-      } else if (match === ',') {
-        return match + '\n' + indentString.repeat(indent);
-      }
-      return match;
     });
   }
 
@@ -217,6 +192,19 @@ class BodyContainer extends Component {
     }
   }
 
+  handlePrettifyJson() {
+    const { raw } = this.state.data;
+    const prettifiedRaw = this.prettifyJson(raw);
+    this.handleChange(prettifiedRaw);
+  }
+
+
+  prettifyJson(jsonString) {
+      const parsedJson = JSON.parse(jsonString);
+      return JSON.stringify(parsedJson, null, 2);
+   
+  }
+
   handleChangeGraphqlQuery() {
     this.props.setQueryTabBody({ query: this.queryRef.current.editor.getValue(), variables: this.variablesRef.current.editor.getValue() })
   }
@@ -272,6 +260,9 @@ class BodyContainer extends Component {
         default:
           return (
             <div>
+              <div className="prettify-button" >
+                <span onClick={this.handlePrettifyJson.bind(this)}>Beautify</span>
+              </div>
               {' '}
               <AceEditor
                 className='custom-raw-editor'
@@ -293,6 +284,7 @@ class BodyContainer extends Component {
                 enableLiveAutocompletion
                 enableBasicAutocompletion
               />
+
             </div>
           )
       }
@@ -309,7 +301,7 @@ class BodyContainer extends Component {
       <React.Fragment>
         <span style={{ fontWeight: 600 }}>Body</span>
         <div className='button-panel-wrapper'>
-          <form className='body-select d-flex align-items-center mb-4'>
+          <form className='body-select d-flex align-items-center mb-2'>
             <label className='customRadio'>
               <input
                 type='radio'
@@ -398,7 +390,7 @@ class BodyContainer extends Component {
           {isSavedEndpoint(this.props) &&
             this.state.selectedRawBodyType === rawTypesEnums.JSON &&
             (this.state.selectedBodyType === bodyTypesEnums['raw'] || this.state.selectedBodyType === rawTypesEnums.JSON) && (
-              <div className='btn-group btn-group-toggle customBtnGroup mb-4' data-toggle='buttons' style={{ float: 'right' }}>
+              <div className='btn-group btn-group-toggle customBtnGroup mb-2' data-toggle='buttons' style={{ float: 'right' }}>
                 <label className='btn btn-secondary active' id={`toggle-raw-${this.props.endpoint_id}`}>
                   <input
                     type='radio'
@@ -485,6 +477,7 @@ class BodyContainer extends Component {
             {...editorOptions}
 
           />
+
         </div>}
       </div>
     )
