@@ -12,11 +12,11 @@ const DragAndDropUploader = ({ onClose, view, importType }) => {
   const [fileName, setFileName] = useState('');
   const dispatch = useDispatch();
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = (acceptedFiles) => {
     const uploadedFile = acceptedFiles[0];
     setFile(uploadedFile);
     setFileName(uploadedFile.name);
-  }, []);
+  }
 
   const handleImport = () => {
     const uploadedFile = new FormData()

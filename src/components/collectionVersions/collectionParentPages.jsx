@@ -232,7 +232,7 @@ class CollectionParentPages extends Component {
   openManageVersionModal() {
     return (
       this.state.showVersionForm && (
-        <CustomModal modalShow={this.state.showVersionForm} setModal={() => this.hideModalVersion()}>
+        <CustomModal modalShow={this.state.showVersionForm} hideModal={() => this.hideModalVersion()}>
           <SelectVersion parentPageId={this.props?.rootParentId} />
         </CustomModal>
       )
@@ -429,8 +429,8 @@ class CollectionParentPages extends Component {
     return this.props.pages?.[this.props.rootParentId]?.child?.length === 1
       ? versionName
       : this.state.selectedVersionName.length > 10
-      ? `${this.state.selectedVersionName.substring(0, 7)} ... `
-      : this.state.selectedVersionName
+        ? `${this.state.selectedVersionName.substring(0, 7)} ... `
+        : this.state.selectedVersionName
   }
 
   versionDropDown(rootId) {
@@ -459,8 +459,8 @@ class CollectionParentPages extends Component {
       isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId
         ? 'selected'
         : isDashboardRoute && this.props.params.pageId === pageId
-        ? 'selected'
-        : ''
+          ? 'selected'
+          : ''
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
     let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = this.props?.collections[collectionId]?.theme
