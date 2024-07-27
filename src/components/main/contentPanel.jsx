@@ -47,7 +47,7 @@ const ContentPanel = () => {
   }, [dispatch])
 
   useEffect(() => {
-    const { endpointId, pageId, historyId, collectionId } = params
+    const { endpointId, pageId, historyId, collectionId, runId } = params
 
     if (tabs.loaded) {
       if (endpointId && endpointId !== 'new') {
@@ -101,11 +101,28 @@ const ContentPanel = () => {
         }
       }
 
+      if (collectionId && runId) {
+        debugger
+        if (tabs.tabs[runId]) {
+          if (tabs.activeTabId !== runId) {
+            dispatch(setActiveTabId(runId))
+          }
+        } else if (runId) {
+          dispatch(openInNewTab({
+            id: runId,
+            type: 'manual-runs',
+            status: tabStatusTypes.SAVED,
+            previewMode: false,
+            isModified: false,
+            state: {  }
+          }))}
+        }
+
       if (collectionId) {
         if (tabs.tabs[collectionId]) {
-          if (tabs.activeTabId !== collectionId) {
-            dispatch(setActiveTabId(collectionId))
-          }
+          // if (tabs.activeTabId !== collectionId) {
+          //   dispatch(setActiveTabId(collectionId))
+          // }
         } else if (collections && collections[collectionId]) {
           let pageType 
           if (location.pathname.split('/')[6] === 'settings') {
@@ -124,7 +141,8 @@ const ContentPanel = () => {
             state: { pageType }
           }))}
         }
-
+      
+        }
       if (window.location.pathname === `/orgs/${params.orgId}/dashboard`) {
         const { orgId } = params
         if (tabs?.tabsOrder?.length) {
@@ -138,12 +156,15 @@ const ContentPanel = () => {
 
           const collectionLength = Object.keys(collections).length
           if (collectionLength > 0) {
-            navigate(
-              tab.type !== 'collection'
-                ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '/edit' : ''}`
-                : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
-            )
-          }
+            if (tab.type === 'manual-runs') {
+              navigate(`/orgs/${orgId}/dashboard/collection/${tab.collectionId}/run/${tabId}`);
+            } else {
+              navigate(
+                tab.type !== 'collection'
+                  ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '/edit' : ''}`
+                  : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+              );
+            }
         } else {
           dispatch(addNewTab())
         }

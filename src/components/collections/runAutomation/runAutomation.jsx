@@ -5,13 +5,13 @@ import { Form } from 'react-bootstrap'
 import { IoIosPlay } from 'react-icons/io'
 import { updateEndpointCheckStatus, updateAllEndpointCheckStatus } from '../../../store/clientData/clientDataActions'
 import { toast } from 'react-toastify'
-import { runAutomation } from '../../../services/generalApiService'
 import './runAutomation.scss'
 import { addCron, addWebhook } from '../../../services/cronJobs'
 import { generateCronExpression } from '../../common/utility'
 import { RiAiGenerate } from 'react-icons/ri'
 import { FaRegCopy } from 'react-icons/fa6'
 import { FaExclamationCircle } from 'react-icons/fa'
+import { runAutomations } from './redux/runAutomationActions'
 
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
@@ -111,15 +111,16 @@ export default function RunAutomation() {
     const organizedEnv = organizeSelectedEnv()
     setAutomationLoading(true)
     try {
-      const responseData = await runAutomation({
+      const responseData = await dispatch(runAutomations({
         endpointIds: filteredEndpointIds,
         collectionId: params?.collectionId,
         userEmail,
         collectionName,
         environments: organizedEnv,
         runType
-      })
+      }))
       if (responseData.status === 200) {
+        console.log(responseData)
         setAutomationLoading(false)
         return toast.success('Automation ran successfully!')
       }

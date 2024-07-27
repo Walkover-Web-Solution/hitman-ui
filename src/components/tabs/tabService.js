@@ -62,7 +62,11 @@ function selectTab(props, tabId) {
       ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/settings`)
       : tab?.state?.pageType === 'RUNS' ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/runs`)
       : props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/feedback`)
-  } else {
+  }else if (tab?.type === 'manual-runs'){
+    console.log(tab,"tabs of manual runs")
+   props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${props.params.collectionId}/runs/${tab.id}`)
+  }
+   else {
     if (!(tab?.type && tab?.id)) {
       return props.navigate(`/orgs/${getOrgId()}/dashboard/endpoint/new`)
     }

@@ -36,7 +36,7 @@ const CustomTabs = (props) => {
   const [showPreview, setShowPreview] = useState(false)
   const [previewId, setPreviewId] = useState(null)
 
-  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history } = useSelector((state) => {
+  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history, automation } = useSelector((state) => {
     return {
       responseView: state.responseView,
       pages: state.pages,
@@ -45,7 +45,8 @@ const CustomTabs = (props) => {
       tabs: state.tabs,
       historySnapshots: state.history,
       collections: state.collections,
-      history: state.history
+      history: state.history,
+      automation : state.automation
     }
   })
 
@@ -322,6 +323,17 @@ const CustomTabs = (props) => {
             </div>
           </>
         )
+      }
+      case 'manual-runs': {
+        if (automation[tabId]) {
+        return (
+          <>
+            <div className='d-flex align-items-center'>
+              <IoIosChatboxes className='mr-1' size={16} />
+              <span>Runs</span>
+            </div>
+          </>
+        )}
       }
       default:
     }

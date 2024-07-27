@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useQuery, useQueryClient } from 'react-query';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCronByCollection, deleteCron, cronStatus } from '../../../services/cronJobs'
 import IconButtons from '../../common/iconButton'
 import { BsThreeDots } from 'react-icons/bs'
@@ -8,16 +9,24 @@ import { MdOutlineMotionPhotosPaused } from "react-icons/md";
 import { RiDeleteBinLine } from 'react-icons/ri'
 import { GrResume } from "react-icons/gr";
 import './collectionRuns.scss';
-import { useSelector } from 'react-redux';
 import cronstrue from 'cronstrue';
+import { HiDocumentReport } from "react-icons/hi";
+import { getOrgId } from '../../common/utility';
+import { openInNewTab } from '../../tabs/redux/tabsActions';
+import tabStatusTypes from '../../tabs/tabStatusTypes';
 
 const CollectionRuns = () => {
   const params = useParams();
   const navigate = useNavigate()
+  const dispatch = useDispatch();
+
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('functional');
-  const { environments } = useSelector((state) => {
-    return { environments: state.environment.environments }
+  const { environments, automation } = useSelector((state) => {
+    return {
+      environments: state.environment.environments,
+      automation: state.automation
+    }
   })
   const { data: scheduledRuns = [], isError, error } = useQuery(
     ['scheduledRuns', params.collectionId],
@@ -51,7 +60,7 @@ const CollectionRuns = () => {
           if (run.id === cronId) {
             return { ...run, status: status };
           }
-          return run; 
+          return run;
         });
       });
     } catch (error) {
@@ -59,9 +68,19 @@ const CollectionRuns = () => {
     }
   };
 
-  const openEditCron = async (cronId) => {
+  const openEditCron = async (runId) => {
     const collectionId = params?.collectionId
-    navigate(`/collection/${collectionId}/cron/${cronId}/edit`);
+    const orgId = getOrgId()
+    dispatch(openInNewTab({
+      id: runId,
+      type: 'manual-runs',
+      status: tabStatusTypes.SAVED,
+      previewMode: true,
+      isModified: false,
+      state: {}
+    }))
+
+    // navigate(`${runId}`);
   };
 
   return (
@@ -74,8 +93,26 @@ const CollectionRuns = () => {
       <div className="content">
         {activeTab === 'functional' && (
           <table>
+            <thead>
+              <tr>
+                <th>Start time</th>
+                <th>Source</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
             <tbody>
-              Logs feature coming soon...
+              {Object.entries(automation).map(([id, runDetails]) => (
+                <tr key={id}>
+                  <td>{runDetails.date}</td>
+                  <td>{'Runner'}</td>
+                  <td>{runDetails.responseTime} ms</td>
+                  <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' onClick={() => openEditCron(id)}>
+                    <IconButtons>
+                      <HiDocumentReport />
+                    </IconButtons>
+                  </div>
+                </tr>
+              ))}
             </tbody>
           </table>
         )}
@@ -91,7 +128,7 @@ const CollectionRuns = () => {
             <tbody>
               {scheduledRuns.map(run => (
                 <tr key={run.id}>
-                 <td> {run.status === 1 ? cronstrue.toString(run.cron_expression) : <MdOutlineMotionPhotosPaused />}</td>
+                  <td> {run.status === 1 ? cronstrue.toString(run.cron_expression) : <MdOutlineMotionPhotosPaused />}</td>
                   <td>{run.cron_name}</td>
                   <td>{environments[run.environmentId]?.name || 'N/A'}</td>
                   <div className='position-relative'>
