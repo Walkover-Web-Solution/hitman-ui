@@ -10,6 +10,7 @@ import { GrResume } from "react-icons/gr";
 import './collectionRuns.scss';
 import { useSelector } from 'react-redux';
 import cronstrue from 'cronstrue';
+import { MdModeEdit } from "react-icons/md";
 
 const CollectionRuns = () => {
   const params = useParams();
@@ -61,7 +62,7 @@ const CollectionRuns = () => {
 
   const openEditCron = async (cronId) => {
     const collectionId = params?.collectionId
-    navigate(`/collection/${collectionId}/cron/${cronId}/edit`);
+    navigate(`/orgs/:orgId/dashboard/collection/${collectionId}/cron/${cronId}/edit`);
   };
 
   return (
@@ -105,6 +106,9 @@ const CollectionRuns = () => {
                       <div className='dropdown-item d-flex align-items-center' onClick={() => updateCronStatus(run?.id, run?.status === 1 ? 0 : 1)}>
                         {run?.status === 1 ? <MdOutlineMotionPhotosPaused /> : <GrResume />}
                         <span className="ml-2">{run?.status === 1 ? 'Pause' : 'Resume'}</span>
+                      </div>
+                      <div className='dropdown-item d-flex align-items-center' onClick={() => openEditCron(run?.id)} >
+                      <MdModeEdit /><span className="ml-2">Edit</span>
                       </div>
                       <div
                         className='dropdown-item text-danger d-flex align-items-center'

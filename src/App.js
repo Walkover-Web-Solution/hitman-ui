@@ -22,6 +22,7 @@ import Redirections from './components/collections/Redirections.jsx'
 import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
 import NavigationSetter from './history.js'
 import CollectionTabs from './components/collections/collectionTabs.jsx'
+import EditRuns from './components/collections/showRuns/editRuns.jsx'
 
 const App = () => {
   const navigate = useNavigate()
@@ -83,6 +84,7 @@ const App = () => {
           <Route path='/logout' element={<Logout />} />
           <Route path='/proxy/auth' element={<AuthServiceV2 />} />
           <Route path='orgs/:orgId/dashboard/collection/:collectionId/runner' element={<RunAutomation />} />
+          <Route path='/orgs/:orgId/dashboard/collection/:collectionId/cron/:cronId/edit' element={<EditRuns />} />
           <Route path='/404_PAGE' element={<ERROR_404_PAGE />} />
           <Route path='/403_PAGE' element={<ERROR_403_PAGE />} />
           <Route path='/auth/redirect' element={<OauthPage />} />
@@ -100,6 +102,8 @@ const App = () => {
             <Route path='/orgs/:orgId/dashboard/history/:historyId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/trash' element={<TrashPage />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/redirections' element={<Redirections />} />
+            
+            
           </Route>
 
           <Route path='/orgs/:orgId/invite' element={<InviteTeam />} />
