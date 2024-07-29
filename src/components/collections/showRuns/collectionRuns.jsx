@@ -25,7 +25,7 @@ const CollectionRuns = () => {
     () => getCronByCollection(params.collectionId),
     {
       enabled: activeTab === 'scheduled',
-      staleTime: Infinity
+      staleTime: 10
     }
   );
 
