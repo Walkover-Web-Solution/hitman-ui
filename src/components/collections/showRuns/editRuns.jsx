@@ -2,8 +2,8 @@
   import { Form } from 'react-bootstrap'
   import { useDispatch, useSelector } from 'react-redux'
   import { useParams } from 'react-router'
-  import { updateAllEndpointCheckStatus, updateEndpointCheckStatus } from '../../../store/clientData/clientDataActions'
-  import { useQueryClient, useQuery } from 'react-query'
+  import { updateAllEndpointCheckStatus } from '../../../store/clientData/clientDataActions'
+  import {useQuery } from 'react-query'
   import { parseCronExpression, generateCronExpression } from '../../common/utility'
   import { updateCron } from '../../../services/cronJobs'
   import { toast } from 'react-toastify'
@@ -11,18 +11,14 @@
   const EditRuns = () => {
     const params = useParams()
     const dispatch = useDispatch()
-    const queryClient = useQueryClient();
 
-    const { allPages, collectionName, clientData, currentEnvironmentId, allEnviroments, currentUser, users } = useSelector((state) => {
+    const { allPages, collectionName, clientData, allEnviroments } = useSelector((state) => {
       return {
         allPages: state.pages,
         collectionName: state.collections?.[params?.collectionId]?.name || 'collection',
         clientData: state.clientData,
         collections: state.collections,
-        currentEnvironmentId: state?.environment.currentEnvironmentId,
         allEnviroments: state?.environment?.environments,
-        currentUser: state?.users?.currentUser,
-        users: state?.users?.usersList
       }
     })
 
@@ -41,7 +37,7 @@
     const [runFrequency, setRunFrequency] = useState('')
     const [runTime, setRunTime] = useState('')
     const [currentEnvironment, setCurrentEnvironmentId] = useState('')
-    const [selectedEndpoints, setSelectedEndpoints] = useState([]);
+    const [emailInput, setEmailInput] = useState([])
 
     useEffect(() => {
       filterEndpointsOfCollection()
@@ -56,6 +52,7 @@
           setRunFrequency(runFrequency);
           setRunTime(runTime);
           setCurrentEnvironmentId(environmentId)
+          setEmailInput(matchingCron.emails)
         }
       }
     }, [params?.collectionId, cronData, params?.cronId])
@@ -72,10 +69,6 @@
       dispatch(updateAllEndpointCheckStatus({ isSelectAll, endpointsIds }))
     }
 
-    const handleChangeEndpointCheckStatus = (endpointId) => {
-      dispatch(updateEndpointCheckStatus({ id: endpointId, check: !clientData?.[endpointId]?.automationCheck }))
-    }
-
     const renderEndpointName = (endpointId) => {
       return (
         <div className='d-flex justify-content-center align-items-center'>
@@ -87,18 +80,12 @@
       )
     }
 
-    const handleEndpointChange = (endpointId) => {
-      setSelectedEndpointIds((prevSelected) => {
-          if (prevSelected.includes(endpointId)) {
-              // If already selected, deselect it
-              return prevSelected.filter(id => id !== endpointId);
-          } else {
-              // If not selected, add it
-              return [...prevSelected, endpointId];
-          }
-      });
-  };
-
+    const handleEmailInputChange = (e) => {
+      const inputValue = e.target.value
+      const lastChar = inputValue[inputValue.length - 1]
+      const emailsArray = inputValue.split(',').map((email) => email.trim())
+      setEmailInput(emailsArray)
+    }
 
     const handleSaveChanges = async () => { 
       const id = params?.cronId
@@ -108,6 +95,7 @@
         cron_name: scheduleName,
         cron_expression: generateCronExpression(basicRunFrequency, runFrequency, runTime),
         environmentId: currentEnvironment,
+        emails: emailInput,
         // endpointsIds: selectedEndpointIds,
         status
       };
@@ -223,7 +211,7 @@
             <Form.Group>
               <Form.Label className='muted-text'>Email notifications</Form.Label>
               <Form.Control type='text' placeholder='Add recipient'
-              // value={emailInput} onChange={handleEmailInputChange} 
+              value={emailInput} onChange={handleEmailInputChange} 
               />
             </Form.Group>
           </div>
