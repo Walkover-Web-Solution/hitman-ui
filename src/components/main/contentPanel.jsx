@@ -117,11 +117,11 @@ const ContentPanel = () => {
           }))}
         }
 
-      if (collectionId) {
-        if (tabs.tabs[collectionId]) {
-          // if (tabs.activeTabId !== collectionId) {
-          //   dispatch(setActiveTabId(collectionId))
-          // }
+      if (collectionId && !runId) {
+        if (tabs.tabs[collectionId] ) {
+          if (tabs.activeTabId !== collectionId) {
+            dispatch(setActiveTabId(collectionId))
+          }
         } else if (collections && collections[collectionId]) {
           let pageType 
           if (location.pathname.split('/')[6] === 'settings') {
@@ -156,7 +156,8 @@ const ContentPanel = () => {
           const collectionLength = Object.keys(collections).length
           if (collectionLength > 0) {
             if (tab.type === 'manual-runs') {
-              navigate(`/orgs/${orgId}/dashboard/collection/${tab.collectionId}/run/${tabId}`);
+              console.log(tab,"tab")
+              navigate(`/orgs/${orgId}/dashboard/collection/${tab.collectionId}/runs/${tabId}`);
             } else {
               navigate(
                 tab.type !== 'collection'

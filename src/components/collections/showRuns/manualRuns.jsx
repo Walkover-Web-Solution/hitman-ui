@@ -16,7 +16,9 @@ function ManualRuns() {
     }
   })
   const collectionId = params?.collectionId
-  const averageResponseTime = (automation[activeTabId]?.responseTime)/(automation[activeTabId]?.executionOrder.length || 1);
+  const averageResponseTime = 1345
+  // const averageResponseTime = (automation[activeTabId]?.responseTime)/(automation[activeTabId]?.executionOrder.length || 1);
+  
   return (
     <div className="manual-runs-container">
       <h1> {collections[collectionId]?.name} - Run results</h1>
@@ -51,9 +53,11 @@ function ManualRuns() {
         <div className="iteration-details">
           {automation[activeTabId]?.executionOrder.map(id => (
             <div key={id}>
-               <span className={`${pages[id]?.requestType} request-type-bgcolor mr-2`}>{pages[id]?.requestType}</span>{pages[id]?.name}
-              <span>{automation[activeTabId]?.executedScriptResponses[id]?.responseTime}</span>
+            <div className="run-details" >
+              <span className={`${pages[id]?.requestType} request-type-bgcolor mr-2`}>{pages[id]?.requestType}</span>{pages[id]?.name}
+              <span>{automation[activeTabId]?.executedScriptResponses[id]?.requestDuration}</span>
               <span>{automation[activeTabId]?.executedScriptResponses[id]?.status}</span>
+            </div>
               <div>{automation[activeTabId]?.executedScriptResponses[id]?.errorMessage}</div>
             </div>
           ))}

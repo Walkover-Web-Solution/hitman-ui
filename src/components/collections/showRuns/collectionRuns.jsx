@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useQuery, useQueryClient } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button } from 'react-bootstrap'
 import { getCronByCollection, deleteCron, cronStatus } from '../../../services/cronJobs'
 import IconButtons from '../../common/iconButton'
 import { BsThreeDots } from 'react-icons/bs'
@@ -26,18 +27,20 @@ const CollectionRuns = () => {
   const [activeTab, setActiveTab] = useState('functional');
   const { environments, automation } = useSelector((state) => {
     return {
-      environments: state.environment.environments,
-      automation: state.automation
+      environments: state?.environment?.environments,
+      automation: state?.automation
     }
   })
   const { data: scheduledRuns = [], isError, error } = useQuery(
-    ['scheduledRuns', params.collectionId],
+    ['scheduledRuns', params?.collectionId],
     () => getCronByCollection(params.collectionId),
     {
       enabled: activeTab === 'scheduled',
       staleTime: Infinity
     }
   );
+  const collectionId = params?.collectionId
+  const orgId = getOrgId()
 
   if (isError) {
     console.error('Failed to fetch scheduled runs:', error);
@@ -71,8 +74,6 @@ const CollectionRuns = () => {
   };
 
   const openEditCron = async (runId) => {
-    const collectionId = params?.collectionId
-    const orgId = getOrgId()
     dispatch(openInNewTab({
       id: runId,
       type: 'manual-runs',
@@ -81,10 +82,12 @@ const CollectionRuns = () => {
       isModified: false,
       state: {}
     }))
-    if (collectionId) {
      navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/runs/${runId}`)
-    }
   };
+
+  const navigateToScheduleRuns = () => {
+    navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/runner`);
+  }
 
   return (
     <div>
@@ -104,7 +107,7 @@ const CollectionRuns = () => {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(automation).map(([id, runDetails]) => (
+              {Object.entries(automation).filter(([id, runDetails]) => runDetails.collectionId === params.collectionId).map(([id, runDetails]) => (
                 <tr key={id}>
                   <td>{moment(runDetails.date).format('MMMM D, YYYY [at] HH:mm:ss')}</td>
                   <td>{'Runner'}</td>
@@ -119,7 +122,7 @@ const CollectionRuns = () => {
             </tbody>
           </table>
         )}
-        {activeTab === 'scheduled' && (
+               {activeTab === 'scheduled' && scheduledRuns.length > 0 && (
           <table>
             <thead>
               <tr>
@@ -135,7 +138,6 @@ const CollectionRuns = () => {
                   <td>{run.cron_name}</td>
                   <td>{environments[run.environmentId]?.name || 'N/A'}</td>
                   <div className='position-relative'>
-
                     <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                       <IconButtons>
                         <BsThreeDots />
@@ -158,6 +160,13 @@ const CollectionRuns = () => {
               ))}
             </tbody>
           </table>
+        )}
+        {activeTab === 'scheduled' && scheduledRuns.length === 0 && (
+          <div className='text-center mt-5'>
+            <strong>No scheduled runs for this collection.</strong>
+            <p>You can schedule runs for this collection to periodically run it at a certain time or frequency on the Techdoc Cloud.</p>
+            <Button className='btn btn-primary fs-sm mr-1' onClick={navigateToScheduleRuns}>Schedule Runs</Button>
+          </div>
         )}
         {activeTab === 'webhook' && (
           <table>

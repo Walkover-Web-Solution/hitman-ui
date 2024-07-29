@@ -1,12 +1,12 @@
 import runAutomationTypes from './runAutomationTypes'
 import generalApiService from '../../../../services/generalApiService'
 
-export const runAutomations = (details) => {
+export const runAutomations = (details, collectionId) => {
   return (dispatch) => {
     generalApiService
       .runAutomation(details)
       .then((response) => {
-        dispatch(onRunAutomationCompleted(response.data))
+        dispatch(onRunAutomationCompleted(response.data, collectionId))
       })
       .catch((error) => {
         dispatch(onRunAutomationFetchedError(error.response ? error.response.data : error))
@@ -14,10 +14,11 @@ export const runAutomations = (details) => {
   }
 }
 
-export const onRunAutomationCompleted = (data) => {
+export const onRunAutomationCompleted = (data, collectionId) => {
   return {
     type: runAutomationTypes.ON_AUTOMATION_RUN,
-    payload : data
+    payload : data, 
+    collectionId
   }
 }
 

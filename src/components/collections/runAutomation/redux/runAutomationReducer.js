@@ -10,7 +10,8 @@ function automationReducer(state = initialState, action) {
         date: new Date().toISOString(),
         executedScriptResponses: action.payload.executedScriptResponses,
         executionOrder: action.payload.executionOrder,
-        responseTime: action.payload.responseTime
+        responseTime: action.payload.responseTime,
+        collectionId: action.collectionId
       };
     
       return {

@@ -95,20 +95,10 @@ export default function RunAutomation() {
     return endpointsIds.filter((endpointId) => clientData?.[endpointId]?.automationCheck === true)
   }
 
-  const organizeSelectedEnv = () => {
-    if (!currentEnvironmentId) return
-    let arrangedEnv = {}
-    Object.keys(allEnviroments?.[currentEnvironmentId]?.variables || {}).forEach((envKey) => {
-      arrangedEnv[envKey] = allEnviroments[currentEnvironmentId]?.variables?.[envKey]?.currentValue || ''
-    })
-    return arrangedEnv
-  }
-
   const handleRunAutomation = async () => {
     const filteredEndpointIds = filterSelectedEndpointIds()
     if (Object.keys(filteredEndpointIds).length === 0) return toast.warn('Please select endpoints')
     if (filteredEndpointIds.length === 0) return toast.error('Please select at least one endpoint to run the automation')
-    const organizedEnv = organizeSelectedEnv()
     setAutomationLoading(true)
     try {
       const responseData = await dispatch(runAutomations({
@@ -116,9 +106,9 @@ export default function RunAutomation() {
         collectionId: params?.collectionId,
         userEmail,
         collectionName,
-        environments: organizedEnv,
+        environmentId: currentEnvironmentId || '',
         runType
-      }))
+      },params?.collectionId))
       if (responseData.status === 200) {
         setAutomationLoading(false)
         return toast.success('Automation ran successfully!')
