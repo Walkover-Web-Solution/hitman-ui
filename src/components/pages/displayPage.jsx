@@ -173,7 +173,7 @@ class DisplayPage extends Component {
       return (
         <div className={`page-wrapper ${isOnPublishedPage() ? 'pt-3' : ''}`}>
           {isOnPublishedPage() && this.props?.pageContent && (
-            <h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>
+            <h1 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h1>
           )}
           {this.props?.pageContent ? (
             <div className='pageText'>
