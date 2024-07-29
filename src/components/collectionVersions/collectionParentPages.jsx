@@ -1,488 +1,248 @@
-import React, { Component } from 'react'
+import React from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import withRouter from '../common/withRouter.jsx'
 import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
-import './collectionVersions.scss'
-import AddEntity from '../main/addEntity/addEntity'
-import NoFound from '../../assets/icons/noCollectionsIcon.svg'
-import { deletePage, duplicatePage } from '../pages/redux/pagesActions'
-import { approvePage, draftPage, pendingPage, rejectPage } from '../publicEndpoint/publicPageService'
-import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
-import CombinedCollections from '../combinedCollections/combinedCollections'
-import { addIsExpandedAction, setDefaultversionId, updataForIsPublished } from '../../store/clientData/clientDataActions'
+import { addIsExpandedAction, setDefaultversionId } from '../../store/clientData/clientDataActions'
 import pageService from '../pages/pageService'
-import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
-import { onDefaultVersion } from './redux/collectionVersionsActions.js'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import { toast } from 'react-toastify'
 import SubPageForm from '../subPages/subPageForm'
-import { ReactComponent as Rename } from '../../assets/icons/renameSign.svg'
 import SelectVersion from './selectVersion/selectVersion'
-import CustomModal from '../customModal/customModal'
-import { MdOutlineSettings } from 'react-icons/md'
-import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
-import { MdExpandMore } from 'react-icons/md'
+import CombinedCollections from '../combinedCollections/combinedCollections'
 import IconButtons from '../common/iconButton'
+import CustomModal from '../customModal/customModal'
+import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
+import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
+import { ReactComponent as Rename } from '../../assets/icons/renameSign.svg'
+import { MdExpandMore } from 'react-icons/md'
+import { MdOutlineSettings } from 'react-icons/md'
 import { FiPlus } from 'react-icons/fi'
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { BsThreeDots } from 'react-icons/bs'
 import { IoDocumentTextOutline } from 'react-icons/io5'
 import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
+import './collectionVersions.scss'
 
-const mapStateToProps = (state) => {
-  return {
-    endpoints: state.endpoints,
-    versions: state.versions,
-    pages: state.pages,
-    clientData: state.clientData,
-    modals: state.modals,
-    collections: state.collections
-  }
-}
+const CollectionParentPages = (props) => {
+  const pages = useSelector((state) => state.pages)
+  const clientData = useSelector((state) => state.clientData)
+  const collections = useSelector((state) => state.collections)
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    delete_page: (page) => dispatch(deletePage(page)),
-    duplicate_page: (page) => dispatch(duplicatePage(page)), //
-    pending_page: (page) => dispatch(pendingPage(page)),
-    approve_page: (page) => dispatch(approvePage(page)),
-    draft_page: (page) => dispatch(draftPage(page)),
-    reject_page: (page) => dispatch(rejectPage(page)),
-    close_tab: (tabId) => dispatch(closeTab(tabId)),
-    open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-    update_isExpand_for_pages: (payload) => dispatch(addIsExpandedAction(payload)), //
-    set_Default_version_Id: (payload) => dispatch(setDefaultversionId(payload)), //
-    set_Default_Version: (orgId, versionData) => dispatch(onDefaultVersion(orgId, versionData)), //
-    setIsCheckForParenPage: (payload) => dispatch(updataForIsPublished(payload))
-  }
-}
+  const dispatch = useDispatch()
 
-class CollectionParentPages extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      selectedParentPageIds: {},
-      showDeleteModal: false,
-      pageFormName: '',
-      selectedPage: {},
-      showPageForm: {
-        addEndpoint: false,
-        addPage: false,
-        share: false,
-        edit: false
-      },
-      showVersionForm: false,
-      versionFormName: '',
-      theme: '',
-      filter: '',
-      selectedParentPageIndex: '',
-      results: {
-        pages: [],
-        endpoints: []
-      },
-      value: '',
-      searchLoader: false,
-      selectedVersionId: '',
-      selectedVersionName: '',
-      defaultVersionName: '',
-      defaultVersionId: '',
-      publishDefaultVersionName: '',
-      clickedList: [],
-      selectedCheckbox: null,
-      isListVisible: false,
-      publishVersion: '',
-      optionalParams: false,
-      isHovered: false,
-      isHover: false
+  const update_isExpand_for_pages = (payload) => dispatch(addIsExpandedAction(payload))
+  const set_Default_version_Id = (payload) => dispatch(setDefaultversionId(payload))
+
+  const navigate = useNavigate()
+  const params = useParams()
+  const location = useLocation()
+
+  const versionDropDownRef = useRef(null)
+  const [showAddCollectionModal, setShowAddCollectionModal] = useState(false)
+  const [selectedVersionName, setSelectedVersionName] = useState('')
+  const [defaultVersionName, setDefaultVersionName] = useState('')
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showVersionForm, setShowVersionForm] = useState(false)
+  const [selectedPage, setSelectedPage] = useState({})
+  const [selectedVersionId, setSelectedVersionId] = useState('')
+  const [defaultVersionId, setDefaultVersionId] = useState('')
+  const [isHovered, setIsHovered] = useState(false)
+  const [theme, setTheme] = useState('')
+  const [showPageForm, setShowPageForm] = useState({
+    edit: false
+  })
+
+  useEffect(() => {
+    if (!theme) {
+      setTheme(collections[props.collection_id]?.theme)
     }
-    this.filterFlag = false
-    this.eventkey = {}
-    this.versionDropDownRef = React.createRef()
-  }
-  handleHover = (isHovered) => {
-    this.setState({ isHovered })
-  }
-  handleHovers = (isHover) => {
-    this.setState({ isHover })
-  }
-  componentDidMount() {
-    if (!this.state.theme) {
-      this.setState({
-        theme: this.props.collections[this.props.collection_id]?.theme
-      })
-    }
-    const defaultVersion = this.findDefaultVersion()
+    const defaultVersion = findDefaultVersion()
     if (defaultVersion) {
-      this.setState({
-        defaultVersionName: defaultVersion.name,
-        selectedVersionId: defaultVersion.id,
-        defaultVersionId: defaultVersion.id,
-        selectedVersionName: defaultVersion.name,
-        selectedCheckbox: defaultVersion.name || null
-      })
+      setDefaultVersionName(defaultVersion.name)
+      setSelectedVersionId(defaultVersion.id)
+      setDefaultVersionId(defaultVersion.id)
+      setSelectedVersionName(defaultVersion.name)
     }
-  }
+  }, [theme, props.collection_id])
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
-      this.setState({ selectedParentPageIds: {} })
-    }
-    if (prevProps?.pages?.[this.props?.rootParentId]?.child !== this.props?.pages?.[this.props?.rootParentId]?.child) {
-      let check = this.checkIfSelectedVersionIdIsPresent()
-      if (!check) {
-        for (let index = 0; index < this.props?.pages?.[this.props?.rootParentId]?.child?.length; index++) {
-          const versionId = this.props?.pages?.[this.props?.rootParentId]?.child?.[index]
-          if (this.props?.pages?.[versionId]?.state === 1) {
-            this.setState({
-              selectedVersionId: versionId,
-              selectedVersionName: this.props?.pages?.[versionId]?.name,
-              defaultVersionId: versionId,
-              defaultVersionName: this.props?.pages?.[versionId]?.name
-            })
-            break
-          }
-        }
-      }
-    }
-
-    if (
-      this.props?.pages?.[this.state.selectedVersionId] &&
-      this.props?.pages?.[this.state.selectedVersionId]?.name !== prevState.selectedVersionName
-    ) {
-      if (prevState.selectedVersionId === prevState.defaultVersionId) {
-        this.setState({
-          selectedVersionName: this.props.pages?.[this.state.selectedVersionId]?.name,
-          defaultVersionName: this.props.pages?.[this.state.selectedVersionId]?.name
-        })
+  useEffect(() => {
+    if (pages[selectedVersionId]?.name !== selectedVersionName) {
+      if (selectedVersionId === defaultVersionId) {
+        setSelectedVersionName(pages[selectedVersionId]?.name)
+        setDefaultVersionName(pages[selectedVersionId]?.name)
       } else {
-        this.setState({ selectedVersionName: this.props.pages?.[this.state.selectedVersionId]?.name })
+        setSelectedVersionName(pages[selectedVersionId]?.name)
       }
     }
-  }
+  }, [pages, selectedVersionId, selectedVersionName, defaultVersionId])
 
-  checkIfSelectedVersionIdIsPresent() {
-    for (let index = 0; index < this.props?.pages?.[this.props?.rootParentId]?.child.length; index++) {
-      const elementId = this.props?.pages?.[this.props?.rootParentId]?.child?.[index]
-      if (elementId === this.state.selectedVersionId) {
-        return true
-      }
-    }
-    return false
-  }
-
-  findDefaultVersion = () => {
-    const { pages, rootParentId } = this.props
+  const findDefaultVersion = () => {
+    const { rootParentId } = props
     const children = pages[rootParentId]?.child || []
     return children.map((childId) => pages[childId]).find((page) => page?.state === 1)
   }
 
-  setSelectedVersionId(id, value) {
-    if (id && this.state.selectedParentPageIds[id] !== value) {
-      this.setState({
-        selectedParentPageIds: {
-          ...this.state.selectedParentPageIds,
-          [id]: value
-        }
-      })
-    }
-  }
-
-  handleUpdate(collectionVersion) {
-    const { orgId } = this.props.params
-    const { collection_id } = this.props
-    this.props.navigate(`/orgs/${orgId}/dashboard/${collection_id}/pages/${collectionVersion.id}/edit`, {
-      state: { editCollectionVersion: collectionVersion }
-    })
-  }
-
-  handleAddPage(pageId, collectionId) {
-    const { orgId } = this.props.params
-    this.props.navigate(`/orgs/${orgId}/dashboard/${collectionId}/versions/${pageId}/pages/new`, {
-      state: { pageId: pageId }
-    })
-  }
-
-  handleDuplicate(page) {
-    this.props.duplicate_page(page)
-  }
-  closeCollectionForm() {
-    this.setState({ showCollectionForm: false })
-  }
-  openAddVersionForm(page) {
-    this.setState({
-      showVersionForm: true,
-      versionFormName: 'Add New Version',
-      selectedParentPage: page
-    })
-  }
-
-  manageVersion() {
-    this.setState({
-      showVersionForm: true
-    })
-  }
-
-  hideModalVersion() {
-    this.setState({
-      showVersionForm: false
-    })
-  }
-
-  openManageVersionModal() {
+  const showAddPageEndpointModal = () => {
     return (
-      this.state.showVersionForm && (
-        <CustomModal modalShow={this.state.showVersionForm} setModal={() => this.hideModalVersion()}>
-          <SelectVersion parentPageId={this.props?.rootParentId} />
-        </CustomModal>
-      )
-    )
-  }
-
-  openAddPageEndpointModal(pageId) {
-    this.setState({
-      showAddCollectionModal: true,
-      selectedPage: {
-        ...this.props.pages[pageId]
-      }
-    })
-  }
-
-  openShareParentPageForm(pageId) {
-    this.setState({
-      showPageForm: { share: true },
-      pageFormName: 'Share Parent Page',
-      selectedPage: { ...this.props.pages[pageId] }
-    })
-  }
-
-  openDeletePageModal(pageId) {
-    this.setState({
-      showDeleteModal: true,
-      selectedPage: {
-        ...this.props.pages[pageId]
-      }
-    })
-  }
-
-  showAddPageEndpointModal() {
-    return (
-      this.state.showAddCollectionModal && (
+      showAddCollectionModal && (
         <DefaultViewModal
-          {...this.props}
+          {...props}
           title='Add Page'
-          show={this.state.showAddCollectionModal}
+          show={showAddCollectionModal}
           onCancel={() => {
-            this.setState({ showAddCollectionModal: false })
+            setShowAddCollectionModal(false)
           }}
           onHide={() => {
-            this.setState({ showAddCollectionModal: false })
+            setShowAddCollectionModal(false)
           }}
-          selectedVersion={this.state.selectedVersionId ? this.state.selectedVersionId : this.state.defaultVersionId}
+          selectedVersion={selectedVersionId ? selectedVersionId : defaultVersionId}
           pageType={3}
         />
       )
     )
   }
 
-  showEditPageModal() {
+  const openManageVersionModal = () => {
     return (
-      this.state.showPageForm.edit && (
+      showVersionForm && (
+        <CustomModal modalShow={showVersionForm} onHide={() => setShowVersionForm(false)}>
+          <SelectVersion parentPageId={props?.rootParentId} />
+        </CustomModal>
+      )
+    )
+  }
+
+  const showEditPageModal = () => {
+    return (
+      showPageForm.edit && (
         <SubPageForm
-          {...this.props}
+          {...props}
           title='Rename'
-          show={this.state.showPageForm.edit}
+          show={showPageForm.edit}
           onCancel={() => {
-            this.setState({ showPageForm: false })
+            setShowPageForm({ ...showPageForm, edit: false })
           }}
           onHide={() => {
-            this.setState({ showPageForm: false })
+            setShowPageForm({ ...showPageForm, edit: false })
           }}
-          selectedPage={this.props?.rootParentId}
+          selectedPage={props?.rootParentId}
           pageType={1}
         />
       )
     )
   }
 
-  openEditPageForm(pageId) {
-    this.setState({
-      showPageForm: { edit: true },
-      selectedPage: pageId
-    })
+  const closeDeleteVersionModal = () => {
+    setShowDeleteModal(false)
   }
 
-  closePageForm() {
-    this.setState({ showPageForm: { share: false, addEndpoint: false, addPage: false } })
+  const closeDeletePageModal = () => {
+    setShowDeleteModal(false)
   }
 
-  closeVersionForm() {
-    this.setState({ showVersionForm: false })
-  }
-  closeDeletePageModal() {
-    this.setState({ showDeleteModal: false })
-  }
-  closeDeletePageModal() {
-    this.setState({ showDeleteModal: false })
+  const handleHover = (isHovered) => {
+    setIsHovered(isHovered)
   }
 
-  setSelectedParentPage(e) {
-    this.setState({
-      selectedParentPageIndex: e.currentTarget.value
-    })
-  }
-  handleRedirect(id) {
-    if (isDashboardRoute(this.props)) {
-      this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/page/${id}`)
+  const handleRedirect = (id) => {
+    if (isDashboardRoute({ location })) {
+      navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
-      let pathName = getUrlPathById(id, this.props.pages)
+      let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      this.props.navigate(pathName)
+      navigate(pathName)
     }
   }
 
-  handleToggle(e, id) {
+  const handleToggle = (e, id) => {
     e.stopPropagation()
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-    this.props.update_isExpand_for_pages({
+    const isExpanded = clientData?.[id]?.isExpanded ?? isOnPublishedPage()
+    update_isExpand_for_pages({
       value: !isExpanded,
       id: id
     })
   }
 
-  handleDropdownItemClick(id, rootId) {
-    const selectedVersionName = this.props?.pages[id]?.name
-    const defaultVersionId = this.state.defaultVersionId
-    const defaultVersionName = this.state.defaultVersionName
-    this.setState({ selectedVersionName: selectedVersionName })
-    this.props.set_Default_version_Id({
-      value: id,
-      defaultVersionId: defaultVersionId,
-      selectedVersionName: selectedVersionName,
-      defaultVersionName: defaultVersionName,
-      rootId: rootId
-    })
-    this.setState({ selectedVersionId: id })
-  }
-
-  handleButton(rootparentId) {
-    const object = this.props.pages
-    const list = object[rootparentId].child
-    this.renderListButtons(list)
-  }
-  renderListButtons(list) {
-    const object = this.props.pages
-    const namesAndIds = list.map((itemId) => ({
-      id: object[itemId].id,
-      name: object[itemId].name
-    }))
-    this.setState({ clickedList: namesAndIds })
-    this.toggleListVisibility()
-  }
-
-  handleListButton(name) {
-    this.setState({ publishVersion: name })
-    // You can perform other actions here
-  }
-
-  openEditVersionForm(pageId) {
-    this.setState({
-      selectedVersion: {
-        ...this.props.pages[pageId]
-      }
-    })
-  }
-
-  toggleListVisibility() {
-    this.setState((prevState) => ({
-      isListVisible: !prevState.isListVisible
-    }))
-  }
-  closeDefaultVersionForm() {
-    this.setState({ setDefaultVersion: false })
-  }
-
-  closeDeleteVersionModal() {
-    this.setState({ showDeleteVersion: false })
-  }
-
-  openDeleteVersionModal(versionId) {
-    this.setState({
-      showDeleteVersion: true,
-      selectedVersion: {
-        ...this.props.pages[versionId]
-      }
-    })
-  }
-
-  handleDeleteVersion(id) {
-    if (this.state.defaultVersionId === id) {
-      toast.error("Default version can't be deleted")
-    } else {
-      this.openDeleteVersionModal(id)
-    }
-  }
-  versionName() {
-    const versionName =
-      this.state.defaultVersionName.length > 10 ? `${this.state.defaultVersionName.substring(0, 7)} ... ` : this.state.defaultVersionName
-    return this.props.pages?.[this.props.rootParentId]?.child?.length === 1
+  const versionName = () => {
+    const versionName = defaultVersionName?.length > 10 ? `${defaultVersionName.substring(0, 7)} ... ` : defaultVersionName
+    return pages?.[props.rootParentId]?.child?.length === 1
       ? versionName
-      : this.state.selectedVersionName.length > 10
-      ? `${this.state.selectedVersionName.substring(0, 7)} ... `
-      : this.state.selectedVersionName
+      : selectedVersionName?.length > 10
+      ? `${selectedVersionName.substring(0, 7)} ... `
+      : selectedVersionName
   }
 
-  versionDropDown(rootId) {
+  const versionDropDown = (rootId) => {
     return (
-      <DropdownButton
-        className='version-dropdown'
-        ref={this.versionDropDownRef}
-        id='dropdown-basic-button'
-        // onClick={(e) => e.stopPropagation()}
-        title={this.versionName()}
-      >
-        {this.props.pages[rootId].child.map((childId, index) => (
-          <Dropdown.Item key={index} onClick={(e) => this.handleDropdownItemClick(childId, rootId)}>
-            {this.props.pages[childId]?.name}
+      <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()}>
+        {pages[rootId].child.map((childId, index) => (
+          <Dropdown.Item key={index} onClick={(e) => handleDropdownItemClick(childId, rootId)}>
+            {pages[childId]?.name}
           </Dropdown.Item>
         ))}
       </DropdownButton>
     )
   }
-  renderBody(pageId, index) {
+
+  const openAddPageEndpointModal = (pageId) => {
+    setShowAddCollectionModal(true)
+    setSelectedPage({
+      ...pages[pageId]
+    })
+  }
+
+  const openEditPageForm = (pageId) => {
+    setShowPageForm({ edit: true })
+    setSelectedPage(pageId)
+  }
+
+  const openDeletePageModal = (pageId) => {
+    setShowDeleteModal(true)
+    setSelectedPage({
+      ...pages[pageId]
+    })
+  }
+
+  const handleDropdownItemClick = (id, rootId) => {
+    const newSelectedVersionName = pages[id]?.name
+    setSelectedVersionName(newSelectedVersionName)
+    setSelectedVersionId(id)
+
+    set_Default_version_Id({
+      value: id,
+      defaultVersionId: defaultVersionId,
+      selectedVersionName: newSelectedVersionName,
+      defaultVersionName: defaultVersionName,
+      rootId: rootId
+    })
+  }
+
+  const renderBody = (pageId) => {
     let isUserOnPublishedPage = isOnPublishedPage()
-    const expanded = this.props?.clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
-    const publishData = this.props.modals.publishData
+    const expanded = clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const rootId = pageId
     const isSelected =
       isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId
         ? 'selected'
-        : isDashboardRoute && this.props.params.pageId === pageId
+        : isDashboardRoute && params.pageId === pageId
         ? 'selected'
         : ''
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
-    let collectionId = this.props?.pages?.[idToRender]?.collectionId ?? null
-    var collectionTheme = this.props?.collections[collectionId]?.theme
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+    let collectionId = pages?.[idToRender]?.collectionId ?? null
+    var collectionTheme = collections[collectionId]?.theme
     const dynamicColor = hexToRgb(collectionTheme, 0.15)
     const staticColor = background['background_hover']
 
     const backgroundStyle = {
       backgroundImage:
-        this.state.isHovered || isSelected
+        isHovered || isSelected
           ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
         linear-gradient(to right, ${staticColor}, ${staticColor})`
           : ''
     }
-    const dynamicColors = hexToRgb(collectionTheme, 0.3)
-    const staticColors = background['background_hover']
 
-    const backgroundStyles = {
-      backgroundImage: this.state.isHover
-        ? `linear-gradient(to right, ${dynamicColors}, ${dynamicColors}),
-        linear-gradient(to right, ${staticColors}, ${staticColors})`
-        : ''
-    }
     return (
       <>
         <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
@@ -491,42 +251,42 @@ class CollectionParentPages extends Component {
               <div
                 className={`active-select d-flex align-items-center justify-content-between rounded mr-2 ${isSelected ? ' selected' : ''}`}
                 style={backgroundStyle}
-                onMouseEnter={() => this.handleHover(true)}
-                onMouseLeave={() => this.handleHover(false)}
+                onMouseEnter={() => handleHover(true)}
+                onMouseLeave={() => handleHover(false)}
               >
                 <div
                   className={`d-flex align-items-center cl-name `}
                   onClick={(e) => {
-                    this.handleRedirect(this.props.rootParentId)
+                    handleRedirect(props.rootParentId)
                     if (!expanded) {
-                      this.handleToggle(e, this.props.rootParentId)
+                      handleToggle(e, props.rootParentId)
                     }
                   }}
                 >
                   <div className='d-flex cl-name ml-1 align-items-baseline'>
-                    <span className='versionChovron' onClick={(e) => this.handleToggle(e, this.props.rootParentId)}>
+                    <span className='versionChovron' onClick={(e) => handleToggle(e, props.rootParentId)}>
                       <MdExpandMore size={13} className='collection-icons-arrow d-none' />
                       <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1' />
                     </span>
                     <div
                       className='d-flex justify-content-between align-items-center name-parent-page'
                       draggable={!isUserOnPublishedPage}
-                      onDragOver={this.props.handleOnDragOver}
-                      onDragStart={() => this.props.onDragStart(pageId)}
-                      onDrop={(e) => this.props.onDrop(e, pageId)}
-                      onDragEnter={(e) => this.props.onDragEnter(e, pageId)}
-                      onDragEnd={(e) => this.props.onDragEnd(e)}
-                      style={this.props.draggingOverId === pageId ? { border: '3px solid red' } : null}
+                      onDragOver={props.handleOnDragOver}
+                      onDragStart={() => props.onDragStart(pageId)}
+                      onDrop={(e) => props.onDrop(e, pageId)}
+                      onDragEnter={(e) => props.onDragEnter(e, pageId)}
+                      onDragEnd={(e) => props.onDragEnd(e)}
+                      style={props.draggingOverId === pageId ? { border: '3px solid red' } : null}
                     >
-                      <div className='text-truncate d-inline'>{this.props.pages[pageId]?.name}</div>
+                      <div className='text-truncate d-inline'>{pages[pageId]?.name}</div>
                       {!isUserOnPublishedPage ? (
-                        this.versionDropDown(rootId)
+                        versionDropDown(rootId)
                       ) : (
                         <PublishedVersionDropDown
-                          handleDropdownItemClick={this.handleDropdownItemClick.bind(this)}
-                          rootParentId={this.props?.rootParentId}
-                          defaultVersionName={this.state.defaultVersionName}
-                          selectedVersionName={this.state.selectedVersionName}
+                          handleDropdownItemClick={handleDropdownItemClick}
+                          rootParentId={props?.rootParentId}
+                          defaultVersionName={defaultVersionName}
+                          selectedVersionName={selectedVersionName}
                         />
                       )}
                     </div>
@@ -535,11 +295,11 @@ class CollectionParentPages extends Component {
 
                 {
                   // [info] options not to show on publihsed page
-                  isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace ? (
+                  isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
                     <div className='sidebar-item-action d-flex align-items-center'>
                       <div
                         className='d-flex align-items-center'
-                        onClick={() => this.openAddPageEndpointModal(this.state.selectedVersionId || this.state.defaultVersionId)}
+                        onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}
                       >
                         <IconButtons>
                           <FiPlus />
@@ -551,13 +311,13 @@ class CollectionParentPages extends Component {
                         </IconButtons>
                       </div>
                       <div className='dropdown-menu dropdown-menu-right'>
-                        <div className='dropdown-item d-flex' onClick={() => this.openEditPageForm(pageId)}>
+                        <div className='dropdown-item d-flex' onClick={() => openEditPageForm(pageId)}>
                           <Rename /> Rename
                         </div>
                         <div
                           className='dropdown-item d-flex'
                           onClick={() => {
-                            this.manageVersion(true)
+                            setShowVersionForm(true)
                           }}
                         >
                           <MdOutlineSettings size={20} color='#f2994a' />
@@ -569,7 +329,7 @@ class CollectionParentPages extends Component {
                         <div
                           className='dropdown-item text-danger d-flex'
                           onClick={() => {
-                            this.openDeletePageModal(pageId)
+                            openDeletePageModal(pageId)
                           }}
                         >
                           <DeleteIcon /> Delete
@@ -585,13 +345,9 @@ class CollectionParentPages extends Component {
                 <Card.Body>
                   <div className='linkWrapper versionPages'>
                     <CombinedCollections
-                      {...this.props}
+                      {...props}
                       page_id={pageId}
-                      rootParentId={
-                        this.props.pages[this.props.rootParentId].child.length === 1
-                          ? this.state.defaultVersionId
-                          : this.state.selectedVersionId
-                      }
+                      rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId}
                     />
                   </div>
                 </Card.Body>
@@ -603,206 +359,32 @@ class CollectionParentPages extends Component {
     )
   }
 
-  searchFunction() {
-    const value = this.state.value || ''
-    const pages = Object.values(this.props.pages)
-    const endpoints = Object.values(this.props.endpoints)
-    const filteredEndpoints = endpoints.filter((o) => o.name.match(new RegExp(value, 'i')))
-    const filteredPages = pages.filter((o) => o.name.match(new RegExp(value, 'i')))
-    const results = {
-      pages: [],
-      endpoints: []
-    }
-    filteredPages.forEach((page) => {
-      results.pages.push({ name: page.name, type: 'page', id: page.id })
-    })
-    filteredEndpoints.forEach((endpoint) => {
-      results.endpoints.push({
-        name: endpoint.name,
-        type: 'endpoint',
-        id: endpoint.id,
-        requestType: endpoint.requestType
-      })
-    })
-    this.setState({ results, searchLoader: false })
-  }
+  return (
+    <>
+      {showAddPageEndpointModal()}
 
-  renderResponses() {
-    return (
-      <div className='hm-sidebar-outer-block'>
-        {!this.state.searchLoader ? (
-          this.state.results.pages.length !== 0 || this.state.results.endpoints.length !== 0 ? (
-            <>
-              {this.state.results.pages.length !== 0 && (
-                <div className='my-3'>
-                  <div className='hm-sidebar-label my-3'>Pages</div>
-                  {this.state.results.pages.map((result) => this.renderListItem(result))}
-                </div>
-              )}
-              {this.state.results.endpoints.length !== 0 && (
-                <div className='my-3'>
-                  <div className='hm-sidebar-label my-3'>Endpoints</div>
-                  {this.state.results.endpoints.map((result) => this.renderListItem(result))}
-                </div>
-              )}
-            </>
-          ) : (
-            <div className='d-flex justify-content-center align-items-center h-100 flex-d-col'>
-              <img src={NoFound} alt='' />
-              <span className='font-weight-700'>No Results</span>
-            </div>
-          )
-        ) : (
-          <div className='text-center'>Searching...</div>
+      {showVersionForm && openManageVersionModal()}
+      {showEditPageModal()}
+
+      {showDeleteModal &&
+        pageService.showDeletePageModal(
+          props,
+          closeDeleteVersionModal,
+          'Delete Version',
+          `Are you sure you want to delete this Version?
+          All your subpages and endpoints present in this version will be deleted.`
         )}
-      </div>
-    )
-  }
-
-  renderListItem(item) {
-    switch (item.type) {
-      case 'endpoint':
-        return (
-          <div
-            className='hm-sidebar-item'
-            onClick={() => {
-              this.openLink(item)
-            }}
-          >
-            <div className={`api-label ${item.requestType}`}>
-              <div className='endpoint-request-div'>{item.requestType}</div>
-            </div>
-            <span className='ml-2'>{item.name}</span>
-          </div>
-        )
-      case 'page':
-        return (
-          <div
-            className='hm-sidebar-item'
-            onClick={() => {
-              this.openLink(item)
-            }}
-          >
-            <i className='uil uil-file-alt' />
-            <span className='mx-1'>{item.name}</span>
-          </div>
-        )
-      default:
-        break
-    }
-  }
-
-  openLink(item) {
-    const collectionId = this.props.params.collectionId
-    const collectionName = this.props.collectionName
-    let link = ''
-    switch (item.type) {
-      case 'endpoint':
-        link = `/p/${collectionId}/e/${item.id}/${collectionName}`
-        break
-      case 'page':
-        link = `/p/${collectionId}/pages/${item.id}/${collectionName}`
-        break
-      default:
-        break
-    }
-    if (link.length) {
-      this.props.navigate(link)
-    }
-  }
-
-  handleChange(e) {
-    clearTimeout(this.typingTimeout)
-    this.typingTimeout = setTimeout(this.searchFunction.bind(this), 1000)
-    this.setState({
-      value: e.target.value,
-      results: { pages: [], endpoints: [] },
-      searchLoader: true
-    })
-  }
-
-  renderPublicSearchBar() {
-    return (
-      <div
-        className='search-box'
-        onClick={() => {
-          this.myInputRef.focus()
-          this.setState({ enableSearch: true })
-        }}
-      >
-        <input
-          ref={(c) => (this.myInputRef = c)}
-          value={this.state.value || ''}
-          type='text'
-          name='filter'
-          id='search'
-          placeholder='Search'
-          onChange={(e) => this.handleChange(e)}
-          autoComplete='off'
-          onBlur={() => {
-            if (!this.state.value) {
-              this.setState({ enableSearch: false })
-            }
-          }}
-        />
-      </div>
-    )
-  }
-
-  getVersionsCount(filteredPages) {
-    const versionsCount = Object.keys(filteredPages || {}).filter(
-      (pageId) => filteredPages[pageId].collectionId === this.props.collection_id
-    ).length
-
-    return versionsCount
-  }
-
-  renderForm(versionsCount) {
-    return (
-      <>
-        {(versionsCount === 0 && isDashboardRoute(this.props, true)) ||
-          (!this.props.isPublishData && !this.props.modals.publishData && (
-            <AddEntity placeholder='Version 1' type='version' entity={this.props.collection_id} addNewEntity={this.props.addVersion} />
-          ))}
-      </>
-    )
-  }
-
-  render() {
-    if (this.filterFlag === false || this.props.filter === '' || this.state.filter !== this.props.filter) {
-      this.filteredPages = { ...this.props.pages }
-      this.eventkey = {}
-    }
-
-    const versionsCount = this.getVersionsCount(this.filteredPages)
-    return (
-      <>
-        {this.showAddPageEndpointModal()}
-
-        {this.state.showVersionForm && this.openManageVersionModal()}
-        {this.showEditPageModal()}
-
-        {this.state.showDeleteVersion &&
-          pageService.showDeletePageModal(
-            this.props,
-            this.closeDeleteVersionModal.bind(this),
-            'Delete Version',
-            `Are you sure you want to delete this Version?
-        All your subpages and endpoints present in this version will be deleted.`,
-            this.state.selectedVersion
-          )}
-        {this.state.showDeleteModal &&
-          pageService.showDeletePageModal(
-            this.props,
-            this.closeDeletePageModal.bind(this),
-            'Delete Page',
-            `Are you sure you want to delete this pages?
-        All your versions,subpages and endpoints present in this page will be deleted.`,
-            this.state.selectedPage
-          )}
-        {this.renderBody(this.props.rootParentId)}
-      </>
-    )
-  }
+      {showDeleteModal &&
+        pageService.showDeletePageModal(
+          props,
+          closeDeletePageModal,
+          'Delete Page',
+          `Are you sure you want to delete this pages?
+          All your versions,subpages and endpoints present in this page will be deleted.`,
+          selectedPage
+        )}
+      {renderBody(props.rootParentId)}
+    </>
+  )
 }
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withRouter(CollectionParentPages)))
+export default CollectionParentPages
