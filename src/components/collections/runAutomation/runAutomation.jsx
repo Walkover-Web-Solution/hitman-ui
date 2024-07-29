@@ -9,9 +9,10 @@ import { runAutomation } from '../../../services/generalApiService'
 import './runAutomation.scss'
 import { addCron, addWebhook } from '../../../services/cronJobs'
 import { generateCronExpression } from '../../common/utility'
-import { RiAiGenerate } from 'react-icons/ri'
+import { RiAiGenerate, RiCheckboxMultipleLine } from 'react-icons/ri'
 import { FaRegCopy } from 'react-icons/fa6'
 import { FaExclamationCircle } from 'react-icons/fa'
+import { FiCopy } from 'react-icons/fi'
 
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
@@ -43,6 +44,9 @@ export default function RunAutomation() {
   const [basicRunFrequency, setBasicRunFrequency] = useState('Daily')
   const [webhookResponse, setWebhookResponse] = useState('')
   const [tokenGenerationInProgress, setTokenGenerationInProgress] = useState(false)
+  const [webhookUrlCopied, setwebhookUrlCopied] = useState(false)
+  const [webhookResponseCopied, setwebhookResponseCopied] = useState(false)
+
   useEffect(() => {
     filterEndpointsOfCollection()
     if (runType !== 'webhook') {
@@ -181,6 +185,18 @@ export default function RunAutomation() {
       setAutomationLoading(false)
       return toast.error('Error occurred while generating token')
     }
+  }
+
+  const copyWebhookUrl = (text) => {
+    navigator.clipboard.writeText(webhookURL)
+    setwebhookUrlCopied(true);
+    setTimeout(() => setwebhookUrlCopied(false), 1000);
+  }
+
+  const copyWebhookResponse = (text) => {
+    navigator.clipboard.writeText(webhookResponse)
+    setwebhookResponseCopied(true);
+    setTimeout(() => setwebhookResponseCopied(false), 1000);
   }
 
   return (
@@ -336,8 +352,12 @@ export default function RunAutomation() {
                   <br />
                   <div className='mt-4 mb-6'>
                     <span>Webhook URL: {webhookURL}</span>
-                    <button className='btn btn-outline-secondary ml-2' onClick={() => navigator.clipboard.writeText(webhookURL)}>
-                      <FaRegCopy />
+                    <button className='btn btn-outline-secondary ml-2' onClick={() => copyWebhookUrl()}>
+                      {webhookUrlCopied ? (
+                        <RiCheckboxMultipleLine size={17} color='black' />
+                      ) : (
+                        <FiCopy size={17} />
+                      )}
                     </button>
                   </div>
                   <span style={{ color: '#ff8000' }}>
@@ -345,8 +365,12 @@ export default function RunAutomation() {
                   </span>
                   <div className='d-flex mb-3'>
                     <Form.Control type='text' readOnly value={webhookResponse} />
-                    <button className='btn btn-outline-secondary ml-2' onClick={() => navigator.clipboard.writeText(webhookResponse)}>
-                      <FaRegCopy />
+                    <button className='btn btn-outline-secondary ml-2' onClick={() => copyWebhookResponse()}>
+                      {webhookResponseCopied ? (
+                        <RiCheckboxMultipleLine size={17} color='black' />
+                      ) : (
+                        <FiCopy size={17} />
+                      )}
                     </button>
                     <br />
                   </div>
