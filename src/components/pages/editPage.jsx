@@ -165,7 +165,8 @@ class EditPage extends Component {
 
   handleSubmit = (e) => {
     if (e) e.preventDefault()
-    const editedPage = { ...this.state.data }
+    let collectionId = this.props.pages[this.props.params.pageId].collectionId
+    const editedPage = { ...this.state.data, collectionId }
     if (editedPage?.name?.trim() === '') {
       toast.error('Page name cannot be empty.')
       return
