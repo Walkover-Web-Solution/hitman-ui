@@ -47,7 +47,7 @@ export const fetchCollection = (collectionId) => {
   }
 }
 
-export const addCollection = (newCollection, openSelectedCollection, customCallback) => {
+export const addCollection = (newCollection, customCallback) => {
   newCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     collectionsApiService
@@ -63,10 +63,6 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           }
         }
         dispatch(onParentPageAdded(inivisiblePageData))
-        toast.success("Collection added successfully")
-        if (openSelectedCollection) {
-          openSelectedCollection(response.data.id)
-        }
         if (customCallback) {
           customCallback({ success: true, data: response.data })
         }
