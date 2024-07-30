@@ -1,24 +1,24 @@
-import './endpoints.scss'
 import React, { useState, useEffect, useRef } from 'react'
+import { useParams } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { Dropdown, Col } from 'react-bootstrap'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { updateStateOfCurlSlider } from '../modals/redux/modalsActions'
+import { languages, primaryLanguages, secondaryLanguages } from './languages'
+import IconButton from '../common/iconButton'
+import { hexToRgb, isOnPublishedPage } from '../common/utility'
+import { background } from '../backgroundColor.js'
+import { RiCloseLine } from 'react-icons/ri'
+import { RiCheckboxMultipleLine } from 'react-icons/ri'
+import { RiCheckboxMultipleBlankLine } from 'react-icons/ri'
+import { BsThreeDots } from 'react-icons/bs'
+import { FaChevronRight } from 'react-icons/fa'
 import 'ace-builds'
 import AceEditor from 'react-ace'
 import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import 'ace-builds/src-noconflict/theme-github'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { languages, primaryLanguages, secondaryLanguages } from './languages'
-import { RiCloseLine } from 'react-icons/ri'
-import { RiCheckboxMultipleLine } from 'react-icons/ri'
-import { RiCheckboxMultipleBlankLine } from 'react-icons/ri'
-import IconButton from '../common/iconButton'
-import { BsThreeDots } from 'react-icons/bs'
-import { hexToRgb, isOnPublishedPage } from '../common/utility'
-import { background } from '../backgroundColor.js'
-import { FaChevronRight } from 'react-icons/fa'
-import { useDispatch } from 'react-redux'
-import { updateStateOfCurlSlider } from '../modals/redux/modalsActions'
-import { useParams } from 'react-router-dom'
+import './endpoints.scss'
 
 const HTTPSnippet = require('httpsnippet')
 
@@ -89,7 +89,6 @@ const CodeTemplate = (props) => {
         linear-gradient(to right, ${staticColor}, ${staticColor})
       `
     }
-
     setTheme({ backgroundStyle })
   }, [props.harObject])
 
@@ -106,10 +105,6 @@ const CodeTemplate = (props) => {
       setEditorHeight(`${newHeight}px`)
     }
   }, [codeSnippet])
-
-  const handleCloseClick = () => {
-    dispatch(updateStateOfCurlSlider(false))
-  }
 
   const getClassForLanguages = (key) => {
     const commonClass = 'mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center'
@@ -143,7 +138,13 @@ const CodeTemplate = (props) => {
                 {props.showClosebtn && (
                   <div className='d-flex justify-content-end flex-grow-1'>
                     <IconButton>
-                      <RiCloseLine color='black' className='cur-pointer' onClick={handleCloseClick} />
+                      <RiCloseLine
+                        color='black'
+                        className='cur-pointer'
+                        onClick={() => {
+                          dispatch(updateStateOfCurlSlider(false))
+                        }}
+                      />
                     </IconButton>
                   </div>
                 )}
