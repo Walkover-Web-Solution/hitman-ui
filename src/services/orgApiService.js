@@ -48,7 +48,7 @@ export async function switchOrg(orgId) {
   try {
     await http.post(proxyUrl + '/switchCompany', { company_ref_id: orgId })
     updateOrgDataByOrgId(orgId)
-    redirectToDashboard(orgId)
+    // redirectToDashboard(orgId)
   } catch (error) {
     console.error('Error while calling switchCompany API:', error)
   }

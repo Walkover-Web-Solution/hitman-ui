@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Card, Form } from 'react-bootstrap';
 import './onBoarding.scss'
 import { IoDocumentTextOutline } from "react-icons/io5";
@@ -6,7 +8,6 @@ import { MdOutlineApi } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import InputGroup from 'react-bootstrap/InputGroup'
 import { toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
 import { closeAllTabs } from '../tabs/redux/tabsActions'
 import { createOrg } from '../../services/orgApiService'
 import { onHistoryRemoved } from '../history/redux/historyAction'
@@ -15,7 +16,7 @@ import { addPage } from '../pages/redux/pagesActions';
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
-
+    const navigate = useNavigate() 
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [isContinueEnabled, setIsContinueEnabled] = useState(false);
     const [showInput, setShowInput] = useState(false);
@@ -61,40 +62,39 @@ const OnBoarding = () => {
     }
 
     const handleNewOrgClick = async () => {
-        const tabIdsToClose = tabs.tabsOrder
-        if (tabIdsToClose.length === 1 || tabIdsToClose.length === 0) {
-            removeFromLocalStorage(tabIdsToClose)
-            dispatch(closeAllTabs(tabIdsToClose))
-            dispatch(onHistoryRemoved(historySnapshot))
-            await createOrg(orgName)
-            const collection = await createUntitledCollection();
-            console.log(collection,"collection")
-            await createUntitledPage(collection.data.rootParentId);
+        const tabIdsToClose = tabs.tabsOrder;
+        if (tabIdsToClose.length <= 1) {
+            removeFromLocalStorage(tabIdsToClose);
+            dispatch(closeAllTabs(tabIdsToClose));
+            dispatch(onHistoryRemoved(historySnapshot));
+            await createOrg(orgName);
+            const collection = await createUntitledCollection(); 
+            const rootParentId = collection?.rootParentId
+            await createUntitledPage(rootParentId);
+
         }
-    }
+    };
 
-    const createUntitledCollection = () => {
+    const createUntitledCollection = async () => {
         const newCollection = { name: 'untitled' };
-        const newPage = { name: 'untitled' };
-        return new Promise((resolve, reject) => {
-            dispatch(addCollection(newCollection)).then((result) => {
-                dispatch(addPage(result.data.data.rootParentId, newPage))
-                resolve(result.payload)
-            })
-        })
-    }
-
-    const createUntitledPage = (id) => {
-        const newPage = { name: 'untitled' };
-        return new Promise((resolve, reject) => {
-            dispatch(addPage(id, newPage)).then((result) => {
-                resolve(result.payload);
-            }).catch((error) => {
-                reject(error);
-            });
-        });
-    }
-
+        try {
+            const actionResult = await dispatch(addCollection(newCollection));
+            return actionResult; 
+        } catch (error) {
+            console.error("Error creating collection:", error);
+            throw error; 
+        }
+    };
+    
+    const createUntitledPage = async (rootParentId) => {
+        const newPage = { name: 'untitled', pageType: 1};
+        try {
+        await dispatch(addPage(navigate, rootParentId, newPage));
+        } catch (error) {
+            console.error("Error creating page:", error);
+            throw error; 
+        }
+    };
     const removeFromLocalStorage = (tabIds) => {
         tabIds.forEach((key) => {
             localStorage.removeItem(key)
