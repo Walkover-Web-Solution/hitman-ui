@@ -80,7 +80,7 @@ const CollectionRuns = () => {
       status: tabStatusTypes.SAVED,
       previewMode: true,
       isModified: false,
-      state: {}
+      state: {collectionId: collectionId}
     }))
      navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/runs/${runId}`)
   };
@@ -112,11 +112,11 @@ const CollectionRuns = () => {
                   <td>{moment(runDetails.date).format('MMMM D, YYYY [at] HH:mm:ss')}</td>
                   <td>{'Runner'}</td>
                   <td>{runDetails.responseTime} ms</td>
-                  <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' onClick={() => openEditCron(id)}>
-                    <IconButtons>
+                  <td onClick={() => openEditCron(id)}>
+                  <IconButtons>
                       <HiDocumentReport />
                     </IconButtons>
-                  </div>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -63,7 +63,7 @@ function selectTab(props, tabId) {
       : tab?.state?.pageType === 'RUNS' ? props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/runs`)
         : props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.id}/feedback`)
   } else if (tab?.type === 'manual-runs') {
-    props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${props.params.collectionId}/runs/${tab.id}`)
+    props.navigate(`/orgs/${props.params.orgId}/dashboard/collection/${tab.state.collectionId}/runs/${tab.id}`)
   }
   else {
     if (!(tab?.type && tab?.id)) {

@@ -113,17 +113,18 @@ const ContentPanel = () => {
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
-            state: {  }
-          }))}
+            state: {}
+          }))
         }
+      }
 
       if (collectionId && !runId) {
-        if (tabs.tabs[collectionId] ) {
+        if (tabs.tabs[collectionId]) {
           if (tabs.activeTabId !== collectionId) {
             dispatch(setActiveTabId(collectionId))
           }
         } else if (collections && collections[collectionId]) {
-          let pageType 
+          let pageType
           if (location.pathname.split('/')[6] === 'settings') {
             pageType = 'SETTINGS'
           } else if (location.pathname.split('/')[6] === 'runs') {
@@ -138,33 +139,29 @@ const ContentPanel = () => {
             previewMode: false,
             isModified: false,
             state: { pageType }
-          }))}
+          }))
         }
-      
-        }
-      if (window.location.pathname === `/orgs/${params.orgId}/dashboard`) {
-        const { orgId } = params
-        if (tabs?.tabsOrder?.length) {
-          const { tabs: tabsData, activeTabId, tabsOrder } = tabs
+      }
 
-          let tabId = activeTabId
-          if (!tabsData[tabId]) tabId = tabsOrder[0]
+    }
+    if (window.location.pathname === `/orgs/${params.orgId}/dashboard`) {
+      const { orgId } = params
+      if (tabs?.tabsOrder?.length) {
+        const { tabs: tabsData, activeTabId, tabsOrder } = tabs
 
-          const tab = tabsData[tabId]
-          if (tabId !== activeTabId) dispatch(setActiveTabId(tabId))
+        let tabId = activeTabId
+        if (!tabsData[tabId]) tabId = tabsOrder[0]
 
-          const collectionLength = Object.keys(collections).length
-          if (collectionLength > 0) {
-            if (tab.type === 'manual-runs') {
-              console.log(tab,"tab")
-              navigate(`/orgs/${orgId}/dashboard/collection/${tab.collectionId}/runs/${tabId}`);
-            } else {
-              navigate(
-                tab.type !== 'collection'
-                  ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '/edit' : ''}`
-                  : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
-              );
-            }
+        const tab = tabsData[tabId]
+        if (tabId !== activeTabId) dispatch(setActiveTabId(tabId))
+
+        const collectionLength = Object.keys(collections).length
+        if (collectionLength > 0) {
+          navigate(
+            tab.type !== 'collection'
+              ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '/edit' : ''}`
+              : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+          );
         } else {
           dispatch(addNewTab())
         }

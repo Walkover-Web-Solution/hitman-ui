@@ -1,5 +1,5 @@
 import React from 'react';
-import './manualRuns.scss'; 
+import './manualRuns.scss';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import moment from 'moment'
@@ -10,21 +10,20 @@ function ManualRuns() {
   const { automation, activeTabId, collections, pages } = useSelector((state) => {
     return {
       automation: state.automation,
-      activeTabId : state.tabs.activeTabId,
-      collections : state.collections,
-      pages : state.pages
+      activeTabId: state.tabs.activeTabId,
+      collections: state.collections,
+      pages: state.pages
     }
   })
   const collectionId = params?.collectionId
-  const averageResponseTime = 1345
-  // const averageResponseTime = (automation[activeTabId]?.responseTime)/(automation[activeTabId]?.executionOrder.length || 1);
-  
+  const averageResponseTime = (automation[activeTabId]?.responseTime) / (automation[activeTabId]?.executionOrder.length || 1);
+
   return (
     <div className="manual-runs-container">
       <h1> {collections[collectionId]?.name} - Run results</h1>
       <div className="run-details">
-      <span>Ran on {moment(automation[activeTabId]?.date).format('MMMM D, YYYY [at] HH:mm:ss')}</span>
-        <a href="/runs">View all runs</a>
+        <span>Ran on {moment(automation[activeTabId]?.date).format('MMMM D, YYYY [at] HH:mm:ss')}</span>
+        <a className='ml-2' href="/runs">View all runs</a>
       </div>
       <table>
         <thead>
@@ -52,14 +51,19 @@ function ManualRuns() {
         <h2>All Tests</h2>
         <div className="iteration-details">
           {automation[activeTabId]?.executionOrder.map(id => (
-            <div key={id}>
-            <div className="run-details" >
-              <span className={`${pages[id]?.requestType} request-type-bgcolor mr-2`}>{pages[id]?.requestType}</span>{pages[id]?.name}
-              <span>{automation[activeTabId]?.executedScriptResponses[id]?.requestDuration}</span>
-              <span>{automation[activeTabId]?.executedScriptResponses[id]?.status}</span>
-            </div>
+            <>
+              <div className='iteration-details-api d-flex justify-content-between' key={id}>
+                <div>
+                  <span className={`${pages[id]?.requestType} request-type-bgcolor mr-2`}>{pages[id]?.requestType} </span>
+                  <span>{pages[id]?.name}</span>
+                </div>
+                <div className="run-details" >
+                  <span>{automation[activeTabId]?.executedScriptResponses[id]?.requestDuration}ms</span>
+                  <span className='ml-1'>{automation[activeTabId]?.executedScriptResponses[id]?.status}</span>
+                </div>
+              </div>
               <div>{automation[activeTabId]?.executedScriptResponses[id]?.errorMessage}</div>
-            </div>
+            </>
           ))}
         </div>
       </div>
