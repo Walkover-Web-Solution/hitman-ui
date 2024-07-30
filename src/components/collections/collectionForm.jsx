@@ -18,8 +18,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_collection: (newCollection, openSelectedCollection, callback) =>
-      dispatch(addCollection(newCollection, openSelectedCollection, callback)),
+    add_collection: (newCollection, callback) =>
+      dispatch(addCollection(newCollection, callback)),
     update_collection: (editedCollection, setLoader, callback) => dispatch(updateCollection(editedCollection, setLoader, callback))
   }
 }
@@ -77,21 +77,6 @@ class CollectionForm extends Form {
     )
   }
 
-  redirectToCollection(collection) {
-    const { viewLoader } = this.state
-    if (!collection.data) {
-      console.error('collection.data is undefined')
-      return // or handle this case appropriately
-    }
-    const { id: collectionId } = collection.data
-    if (collection.success) {
-      const { orgId } = this.props.params
-      this.props.navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/settings`)
-    }
-    if (this.props.setDropdownList) this.props.setDropdownList(collection.data)
-    this.props.onHide()
-  }
-
   async onAddCollectionSubmit(defaultView) {
     const requestId = shortid.generate()
     const defaultDocProperties = {
@@ -100,8 +85,7 @@ class CollectionForm extends Form {
     }
     this.props.add_collection(
       { ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView },
-      null,
-      this.redirectToCollection.bind(this)
+      null
     )
     this.setState({
       data: {

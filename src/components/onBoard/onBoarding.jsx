@@ -11,6 +11,7 @@ import { closeAllTabs } from '../tabs/redux/tabsActions'
 import { createOrg } from '../../services/orgApiService'
 import { onHistoryRemoved } from '../history/redux/historyAction'
 import { addCollection } from '../collections/redux/collectionsActions';
+import { addPage } from '../pages/redux/pagesActions';
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
@@ -66,13 +67,32 @@ const OnBoarding = () => {
             dispatch(closeAllTabs(tabIdsToClose))
             dispatch(onHistoryRemoved(historySnapshot))
             await createOrg(orgName)
-            createUntitledcollection()
+            const collection = await createUntitledCollection();
+            console.log(collection,"collection")
+            await createUntitledPage(collection.data.rootParentId);
         }
     }
 
-    const createUntitledcollection = () => {
-        const newCollection = {name:'untitled'}
-        dispatch(addCollection(newCollection))
+    const createUntitledCollection = () => {
+        const newCollection = { name: 'untitled' };
+        const newPage = { name: 'untitled' };
+        return new Promise((resolve, reject) => {
+            dispatch(addCollection(newCollection)).then((result) => {
+                dispatch(addPage(result.data.data.rootParentId, newPage))
+                resolve(result.payload)
+            })
+        })
+    }
+
+    const createUntitledPage = (id) => {
+        const newPage = { name: 'untitled' };
+        return new Promise((resolve, reject) => {
+            dispatch(addPage(id, newPage)).then((result) => {
+                resolve(result.payload);
+            }).catch((error) => {
+                reject(error);
+            });
+        });
     }
 
     const removeFromLocalStorage = (tabIds) => {
@@ -160,13 +180,13 @@ const OnBoarding = () => {
                 )}
             </div>
             <Button
-            variant="secondary"
-            className='btn-Continue btn-btn-lg px-5 mt-5'
-            disabled={!isContinueEnabled}
-            onClick={handleContinueClick}
-        >
-            {isContinue ? 'Continue' : 'Back'}
-        </Button>
+                variant="secondary"
+                className='btn-Continue btn-btn-lg px-5 mt-5'
+                disabled={!isContinueEnabled}
+                onClick={handleContinueClick}
+            >
+                {isContinue ? 'Continue' : 'Back'}
+            </Button>
         </div>
 
     )
