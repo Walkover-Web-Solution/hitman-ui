@@ -48,33 +48,37 @@ export const fetchCollection = (collectionId) => {
 }
 
 export const addCollection = (newCollection, customCallback) => {
-  newCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
+  newCollection.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID);
   return (dispatch) => {
-    collectionsApiService
-      .saveCollection(newCollection)
-      .then((response) => {
-        dispatch(onCollectionAdded(response.data))
-        const inivisiblePageData = {
-          page: {
-            id: response.data.rootParentId,
-            type: 0,
-            child: [],
-            collectionId: response.data.id
+    return new Promise((resolve, reject) => {
+      collectionsApiService
+        .saveCollection(newCollection)
+        .then((response) => {
+          dispatch(onCollectionAdded(response.data));
+          const invisiblePageData = {
+            page: {
+              id: response.data.rootParentId,
+              type: 0,
+              child: [],
+              collectionId: response.data.id,
+            },
+          };
+          dispatch(onParentPageAdded(invisiblePageData));
+          if (customCallback) {
+            customCallback({ success: true, data: response.data });
           }
-        }
-        dispatch(onParentPageAdded(inivisiblePageData))
-        if (customCallback) {
-          customCallback({ success: true, data: response.data })
-        }
-      })
-      .catch((error) => {
-        dispatch(onCollectionAddedError(error.response ? error.response.data : error, newCollection))
-        if (customCallback) {
-          customCallback({ success: false })
-        }
-      })
-  }
-}
+          resolve(response.data);
+        })
+        .catch((error) => {
+          dispatch(onCollectionAddedError(error.response ? error.response.data : error, newCollection));
+          if (customCallback) {
+            customCallback({ success: false });
+          }
+          reject(error);
+        });
+    });
+  };
+};
 
 export const addCollectionRequest = (newCollection) => {
   return {

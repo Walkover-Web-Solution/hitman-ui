@@ -2,11 +2,12 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
+import {operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import { navigateTo } from '../../../navigationService'
+import { getCurrentOrg } from '../../auth/authServiceV2'
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -120,7 +121,7 @@ export const onEndpointUpdated = (response) => {
 
 export const addPage = (navigate, rootParentId, newPage) => {
   newPage.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
-  const orgId = getOrgId()
+  const orgId = getCurrentOrg()?.id
   return (dispatch) => {
     pageApiService
       .saveCollectionPage(rootParentId, newPage)
