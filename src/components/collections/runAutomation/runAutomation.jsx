@@ -116,7 +116,7 @@ export default function RunAutomation() {
         collectionId: params?.collectionId,
         userEmail,
         collectionName,
-        environments: organizedEnv,
+        environmentId: currentEnvironmentId,
         runType
       })
       if (responseData.status === 200) {

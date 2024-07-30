@@ -135,7 +135,7 @@ class DisplayPage extends Component {
       window.SendDataToChatbot({
         bridgeName: 'page',
         threadId: `${userid}`,
-        variables: { Proxy_auth_token: getProxyToken(), content: this.props.pageContent }
+        variables: { Proxy_auth_token: getProxyToken(), content: this.props.pageContent, collectionId: this.props.pages[this.props?.params?.pageId]?.collectionId}
       })
     }
     if (this.props?.location?.pathname !== prevProps?.location?.pathname) {
