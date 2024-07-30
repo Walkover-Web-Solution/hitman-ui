@@ -5,12 +5,14 @@ import { closeTab } from '../tabs/redux/tabsActions'
 import { onEnter } from './utility'
 import { deleteEnvironment } from '../environments/redux/environmentsActions'
 import { deleteCollection } from '../collections/redux/collectionsActions'
+import { deletePage } from '../pages/redux/pagesActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
     close_tab: (tabId) => dispatch(closeTab(tabId)),
     delete_environment: (deletedEnvironment) => dispatch(deleteEnvironment(deletedEnvironment)),
-    delete_collection: (collection) => dispatch(deleteCollection(collection))
+    delete_collection: (collection) => dispatch(deleteCollection(collection)),
+    delete_page: (page) => dispatch(deletePage(page))
   }
 }
 

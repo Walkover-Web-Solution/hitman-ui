@@ -73,7 +73,7 @@ import DisplayUserAndModifiedData from '../common/userService.jsx'
 import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
 import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
-import { Tab, Nav, Row, Col } from 'react-bootstrap';
+import { Tab, Nav, Row, Col } from 'react-bootstrap'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -211,8 +211,8 @@ const getEndpointContent = async (props) => {
   let endpointId = isUserOnPublishedPage
     ? currentIdToShow
     : props.params.endpointId !== 'new'
-      ? props.params?.endpointId
-      : props?.activeTabId
+    ? props.params?.endpointId
+    : props?.activeTabId
 
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
@@ -423,8 +423,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.params.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-        ? this.props.location.pathname.split('/')[5]
-        : this.props.location.pathname.split('/')[4]
+      ? this.props.location.pathname.split('/')[5]
+      : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
     const { endpointId } = this.props.params
@@ -445,9 +445,9 @@ class DisplayEndpoint extends Component {
     }
 
     this.setState({
-      theme: { backgroundStyle },
-    });
-    this.setState({ fileDownloaded: false });
+      theme: { backgroundStyle }
+    })
+    this.setState({ fileDownloaded: false })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -488,6 +488,7 @@ class DisplayEndpoint extends Component {
     if (this.props?.endpointContent && !_.isEqual(this.props.endpointContent, this.state.endpointContentState)) {
       this.setState({ endpointContentState: _.cloneDeep(this.props.endpointContent) })
     }
+    if (this?.state?.showEndpointFormModal && prevProps.params !== this.props.params) this.setState({ showEndpointFormModal: false })
   }
 
   componentWillUnmount() {
@@ -526,17 +527,19 @@ class DisplayEndpoint extends Component {
   handleKeyDown = (event) => {
     const activeTabId = this.props.activeTabId
     const status = this.props.tabs?.[activeTabId]?.status
-    if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
-      this.handleSend()
-    } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) {
+    if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) {
       event.preventDefault()
-      if (status === 'NEW') {
-        this.setState({ saveAsFlag: true }, () => {
-          this.openEndpointFormModal()
-        })
-      } else {
-        this.handleSave()
+      if (this.props.tab.id === activeTabId) {
+        if (status === 'NEW') {
+          this.setState({ saveAsFlag: true }, () => {
+            this.openEndpointFormModal()
+          })
+        } else {
+          this.handleSave()
+        }
       }
+    } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
+      this.handleSend()
     }
   }
 
@@ -1052,10 +1055,10 @@ class DisplayEndpoint extends Component {
 
   isBase64(response) {
     if (typeof response !== 'string') {
-      return false;
+      return false
     }
     const base64Pattern = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/
-    return base64Pattern.test(response);
+    return base64Pattern.test(response)
   }
 
   handleSend = async () => {
@@ -1063,7 +1066,7 @@ class DisplayEndpoint extends Component {
     const runSendRequest = Axios.CancelToken.source()
     const startTime = new Date().getTime()
     const response = {}
-    this.setState({ sendClicked: true });
+    this.setState({ sendClicked: true })
     this.setState({
       startTime,
       response,
@@ -1192,7 +1195,6 @@ class DisplayEndpoint extends Component {
   runScript(code, environment, request, responseJson) {
     let response
 
-
     if (responseJson) {
       const { status, statusText, response: body, headers } = responseJson.data
       response = { status, statusText, body, headers }
@@ -1310,7 +1312,7 @@ class DisplayEndpoint extends Component {
         protocolType: endpointContent?.protocolType || null,
         description: endpointContent?.description || ''
       }
-      if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
+      if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
       else if (currentTabId && !this.props.pages[currentTabId]) {
         endpoint.requestId = currentTabId
@@ -2171,34 +2173,33 @@ class DisplayEndpoint extends Component {
 
   displayPublicResponse() {
     const historyId = this.props?.params?.historyId
-    const testResponse = this.props?.endpointContent?.testResponse;
+    const testResponse = this.props?.endpointContent?.testResponse
 
     if (this.isBase64(testResponse?.data)) {
-
       if (this.state.sendClicked && !this.state.fileDownloaded) {
         try {
-          const byteCharacters = atob(testResponse?.data);
-          const byteNumbers = new Array(byteCharacters.length);
+          const byteCharacters = atob(testResponse?.data)
+          const byteNumbers = new Array(byteCharacters.length)
           for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+            byteNumbers[i] = byteCharacters.charCodeAt(i)
           }
-          const byteArray = new Uint8Array(byteNumbers);
+          const byteArray = new Uint8Array(byteNumbers)
 
-          const blob = new Blob([byteArray.buffer], { type: 'application/pdf' });
+          const blob = new Blob([byteArray.buffer], { type: 'application/pdf' })
 
-          const url = URL.createObjectURL(blob);
+          const url = URL.createObjectURL(blob)
 
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'file.pdf';
-          a.style.display = 'none';
-          document.body.appendChild(a);
-          a.click();
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'file.pdf'
+          a.style.display = 'none'
+          document.body.appendChild(a)
+          a.click()
 
-          window.URL.revokeObjectURL(url);
-          this.setState({ fileDownloaded: true });
+          window.URL.revokeObjectURL(url)
+          this.setState({ fileDownloaded: true })
         } catch (error) {
-          console.error(error, "errors")
+          console.error(error, 'errors')
         }
       }
     }
@@ -2219,7 +2220,7 @@ class DisplayEndpoint extends Component {
           />
         </div>
       </>
-    );
+    )
   }
 
   setHostUri(host, uri, selectedHost) {
@@ -2723,7 +2724,7 @@ class DisplayEndpoint extends Component {
           >
             {isPublicEndpoint ? 'Save Draft' : 'Save'}
           </button>
-          {isAdmin() && !isStatePending(endpointId, endpointss)&& (
+          {isAdmin() && !isStatePending(endpointId, endpointss) && (
             <span>
               {' '}
               {approvedOrRejected
@@ -3031,8 +3032,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-        ? this.props.location.pathname.split('/')[5]
-        : this.props.location.pathname.split('/')[4]
+      ? this.props.location.pathname.split('/')[5]
+      : this.props.location.pathname.split('/')[4]
 
     if (this.props.save_endpoint_flag && this.props.tab.id === this.props.selected_tab_id) {
       this.props.handle_save_endpoint(false)
@@ -3049,16 +3050,17 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-              ? 'mainContentWrapperPublic hideCodeEditor'
-              : 'mainContentWrapperPublic '
+            ? 'mainContentWrapperPublic hideCodeEditor'
+            : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-                }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${
+                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
@@ -3291,13 +3293,13 @@ class DisplayEndpoint extends Component {
                                       Headers
                                     </a>
                                   </li>
-                                  <li className="nav-item">
+                                  <li className='nav-item'>
                                     <a
                                       className={`nav-link ${this.state.activeTab === 'g-script' ? 'active' : ''}`}
                                       id={`pillss-script-tab-${this.props.tab.id}`}
-                                      data-toggle="pill"
+                                      data-toggle='pill'
                                       href={`#g-script-${this.props.tab.id}`}
-                                      role="tab"
+                                      role='tab'
                                       aria-controls={`g-script-${this.props.tab.id}`}
                                       aria-selected={this.state.activeTab === 'g-script'}
                                       onClick={() => this.setState({ activeTab: 'g-script' })}
@@ -3522,7 +3524,6 @@ class DisplayEndpoint extends Component {
                                         scriptText={this.props?.endpointContent?.preScriptText}
                                         endpointContent={this.props?.endpointContent}
                                         key={this.props.activeTabId}
-
                                       />
                                     </div>
                                   </div>
@@ -3539,7 +3540,6 @@ class DisplayEndpoint extends Component {
                                         scriptText={this.props?.endpointContent?.postScriptText}
                                         endpointContent={this.props?.endpointContent}
                                         key={this.props.activeTabId}
-
                                       />
                                     </div>
                                   </div>
@@ -3657,25 +3657,27 @@ class DisplayEndpoint extends Component {
             ) : null}
             {this.renderCodeTemplate()}
             {isOnPublishedPage() && (
-            <span className='Modified-at mt-2 lower-modified-at'>
-              <DisplayUserAndModifiedData
-                isOnPublishedPage={isOnPublishedPage()}
-                pages={this.props.pages}
-                currentPage={this.props.currentEndpointId}
-                users={this.props.users}
-              />
-            </span>
+              <span className='Modified-at mt-2 lower-modified-at'>
+                <DisplayUserAndModifiedData
+                  isOnPublishedPage={isOnPublishedPage()}
+                  pages={this.props.pages}
+                  currentPage={this.props.currentEndpointId}
+                  users={this.props.users}
+                />
+              </span>
             )}
           </div>
         </div>
-        {!isOnPublishedPage() && <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
-          <DisplayUserAndModifiedData
-            isOnPublishedPage={isOnPublishedPage()}
-            pages={this.props.pages}
-            currentPage={this.props.currentEndpointId}
-            users={this.props.users}
-          />
-        </span>}
+        {!isOnPublishedPage() && (
+          <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
+            <DisplayUserAndModifiedData
+              isOnPublishedPage={isOnPublishedPage()}
+              pages={this.props.pages}
+              currentPage={this.props.currentEndpointId}
+              users={this.props.users}
+            />
+          </span>
+        )}
         {isOnPublishedPage() && (
           <div className='w-100'>
             <span className='footer-lower mt-5'>

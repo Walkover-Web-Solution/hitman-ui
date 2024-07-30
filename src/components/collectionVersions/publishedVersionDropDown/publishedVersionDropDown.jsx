@@ -9,28 +9,27 @@ export default function PublishedVersionDropDown(props) {
     }
   })
 
-  const [show, setShow] = useState([]);
-  const [title, setTitle] = useState('');
+  const [show, setShow] = useState([])
+  const [title, setTitle] = useState('')
   useEffect(() => {
-    const { rootParentId, defaultVersionName, selectedVersionName } = props;
+    const { rootParentId, defaultVersionName, selectedVersionName } = props
 
-    const data = showDropDown();
-    setShow(data);
+    const data = showDropDown()
+    setShow(data)
 
     const versionName = (name) => {
-        return name.length > 10 ? `${name.substring(0, 7)} ... ` : name;
-    };
+      return name?.length > 10 ? `${name.substring(0, 7)} ... ` : name
+    }
 
-    const versionToDisplay = pages?.[rootParentId]?.child?.length === 1 ? defaultVersionName : selectedVersionName;
+    const versionToDisplay = pages?.[rootParentId]?.child?.length === 1 ? defaultVersionName : selectedVersionName
 
-    setTitle(versionName(versionToDisplay));
-}, [props.rootParentId, props.defaultVersionName, props.selectedVersionName, pages]);
-
+    setTitle(versionName(versionToDisplay))
+  }, [props.rootParentId, props.defaultVersionName, props.selectedVersionName, pages])
 
   function checkIfVersionHasPublishedChild(versionId) {
     if (!pages?.[versionId]) return false
 
-    for (let index = 0; index < pages[versionId].child.length; index++) {
+    for (let index = 0; index < pages[versionId].child?.length; index++) {
       if (pages?.[pages[versionId].child[index]] && pages?.[pages[versionId].child[index]]?.isPublished) {
         return true
       }
@@ -44,21 +43,23 @@ export default function PublishedVersionDropDown(props) {
       const value = checkIfVersionHasPublishedChild(versionId)
       if (pages?.[versionId] && pages?.[versionId]?.isPublished && value) {
         return versionId
-      }
-      else if(pages?.[versionId]?.state === 1){
-        return  versionId
+      } else if (pages?.[versionId]?.state === 1) {
+        return versionId
       }
     })
   }
 
   if (show?.length <= 1 && pages[show[0]]?.isPublished) {
-    return null;
+    return null
   }
 
-  if (show.length === 1 && pages[show[0]]?.isPublished) {
-    return <div className='version-dropdown' id={`dropdown-basic-button-${props?.rootParentId}`}>{title}</div>;
+  if (show?.length === 1 && pages[show[0]]?.isPublished) {
+    return (
+      <div className='version-dropdown' id={`dropdown-basic-button-${props?.rootParentId}`}>
+        {title}
+      </div>
+    )
   }
-
 
   return (
     <DropdownButton
