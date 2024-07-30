@@ -135,7 +135,7 @@ class DisplayPage extends Component {
       window.SendDataToChatbot({
         bridgeName: 'page',
         threadId: `${userid}`,
-        variables: { Proxy_auth_token: getProxyToken(), content: this.props.pageContent }
+        variables: { Proxy_auth_token: getProxyToken(), content: this.props.pageContent, collectionId: this.props.pages[this.props?.params?.pageId]?.collectionId}
       })
     }
     if (this.props?.location?.pathname !== prevProps?.location?.pathname) {
@@ -171,25 +171,33 @@ class DisplayPage extends Component {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className={`page-wrapper ${isOnPublishedPage() ? "pt-3" : ""}`}>
-          {isOnPublishedPage() && this.props?.pageContent && (<h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>)}
-          {
-            this.props?.pageContent ? (
-              <div className='pageText'>
-                <RenderPageContent pageContent={this.props.pageContent} />
-                {this.props?.pageContent && (<span className='mt-2 Modified-at d-inline-block'><DisplayUserAndModifiedData
-                  isOnPublishedPage={isOnPublishedPage()}
-                  pages={this.props?.pages}
-                  currentPage={this.props?.currentPageId}
-                  users={this.props?.users}
-                /></span>)}
-              </div>
-            ) : (
-            <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
-                <IoDocumentTextOutline size={140} color='gray' />
-                <span className='empty-line'>
-                  {!isOnPublishedPage() ? this.props?.pages?.[this.props?.params?.pageId]?.name : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
+        <div className={`page-wrapper ${isOnPublishedPage() ? 'pt-3' : ''}`}>
+          {isOnPublishedPage() && this.props?.pageContent && (
+            <h1 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h1>
+          )}
+          {this.props?.pageContent ? (
+            <div className='pageText'>
+              <RenderPageContent pageContent={this.props.pageContent} />
+              {this.props?.pageContent && (
+                <span className='mt-2 Modified-at d-inline-block'>
+                  <DisplayUserAndModifiedData
+                    isOnPublishedPage={isOnPublishedPage()}
+                    pages={this.props?.pages}
+                    currentPage={this.props?.currentPageId}
+                    users={this.props?.users}
+                  />
                 </span>
+              )}
+            </div>
+          ) : (
+            <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
+              <IoDocumentTextOutline size={140} color='gray' />
+              <span className='empty-line'>
+                {!isOnPublishedPage()
+                  ? this.props?.pages?.[this.props?.params?.pageId]?.name
+                  : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}{' '}
+                is empty
+              </span>
               <span className='mt-1 d-inline-block Modified-at fs-4'>
                 <DisplayUserAndModifiedData
                   isOnPublishedPage={isOnPublishedPage()}
