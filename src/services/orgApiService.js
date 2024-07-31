@@ -22,8 +22,8 @@ export async function fetchOrganizations() {
 
 export async function leaveOrganization(orgId) {
   try {
-    const response = await http.post(`${proxyUrl}/inviteAction/leave`, {company_id: orgId});
-    if (orgId == getCurrentOrg()?.id){
+    const response = await http.post(`${proxyUrl}/inviteAction/leave`, { company_id: orgId });
+    if (orgId == getCurrentOrg()?.id) {
       const newOrg = getOrgList()?.[0]?.id;
       switchOrg(newOrg);
     }
@@ -44,11 +44,13 @@ export function updateOrgDataByOrgId(OrgId) {
   store.dispatch(setCurrentorganization(currentOrganisation))
 }
 
-export async function switchOrg(orgId) {
+export async function switchOrg(orgId, redirect= true) {
   try {
     await http.post(proxyUrl + '/switchCompany', { company_ref_id: orgId })
     updateOrgDataByOrgId(orgId)
-    // redirectToDashboard(orgId)
+    if (redirect) {
+      redirectToDashboard(orgId)
+    }
   } catch (error) {
     console.error('Error while calling switchCompany API:', error)
   }
@@ -58,14 +60,14 @@ async function createOrganizationAndRunCode() {
   toast.success('Organization Successfully Created')
 }
 
-export async function createOrg(name, type) {
+export async function createOrg(name, type, redirect) {
   try {
-    const data = { company: { name, meta: { type} } }
+    const data = { company: { name, meta: { type } } }
     const newOrg = await http.post(proxyUrl + '/createCompany', data)
     await getDataFromProxyAndSetDataToLocalStorage()
     updateOrgDataByOrgId(newOrg?.data?.data?.id)
     await createOrganizationAndRunCode()
-    await switchOrg(newOrg?.data?.data?.id)
+    await switchOrg(newOrg?.data?.data?.id, redirect)
   } catch (e) {
     toast.error(e?.response?.data?.message ? e?.response?.data?.message : "Something went wrong")
   }
@@ -73,7 +75,7 @@ export async function createOrg(name, type) {
 
 export async function updateOrg(name, type) {
   try {
-    const data = { company: { name, meta: { type} } }
+    const data = { company: { name, meta: { type } } }
     const updateOrg = await http.post(proxyUrl + '/{featureId}/updateDetails', data)
     await getDataFromProxyAndSetDataToLocalStorage()
     updateOrgDataByOrgId(updateOrg?.data?.data?.id)
@@ -85,7 +87,7 @@ export async function updateOrg(name, type) {
 }
 
 export async function inviteMembers(name, email) {
-  try{
+  try {
     const data = {
       user: {
         name: name,
@@ -111,16 +113,16 @@ function proxyGooglereferenceMapping() {
 }
 
 export async function removeUser(userId) {
-  try{
+  try {
     const feature_id = proxyGooglereferenceMapping();
     const data = {
-        feature_id: feature_id,
-        company_id: getCurrentOrg()?.id
+      feature_id: feature_id,
+      company_id: getCurrentOrg()?.id
     }
     const headers = {
       authkey: 'ebc1437c957484fcc548ee8b22449305'
     };
-    const res = await http.post(`https://routes.msg91.com/api/clientUsers/${userId}/remove`, data, {headers})
+    const res = await http.post(`https://routes.msg91.com/api/clientUsers/${userId}/remove`, data, { headers })
     return res
   } catch (e) {
     console.error(e)

@@ -49,25 +49,25 @@ const OnBoarding = () => {
         }
     }
 
-    const handleAddOrg = async () => {
+    const handleAddOrg = async (selectedIndex) => {
         try {
             if (!validateName(orgName)) {
                 toast.error('Invalid organization name')
                 return
             }
-            await handleNewOrgClick()
+            await handleNewOrgClick(selectedIndex)
         } catch (e) {
             toast.error('Something went wrong')
         }
     }
 
-    const handleNewOrgClick = async () => {
+    const handleNewOrgClick = async (selectedIndex) => {
         const tabIdsToClose = tabs.tabsOrder;
         if (tabIdsToClose.length <= 1) {
             removeFromLocalStorage(tabIdsToClose);
             dispatch(closeAllTabs(tabIdsToClose));
             dispatch(onHistoryRemoved(historySnapshot));
-            await createOrg(orgName);
+            await createOrg(orgName, selectedIndex, false);
             const collection = await createUntitledCollection(); 
             const rootParentId = collection?.rootParentId
             await createUntitledPage(rootParentId);
@@ -169,7 +169,7 @@ const OnBoarding = () => {
                                 }}
                                 isInvalid={orgName && !validateName(orgName)}
                             />
-                            <Button className='ml-2' onClick={() => { handleAddOrg() }} variant='outline-secondary' id='button-addon2'>
+                            <Button className='ml-2' onClick={() => { handleAddOrg(selectedIndex) }} variant='outline-secondary' id='button-addon2'>
                                 Create
                             </Button>
                         </InputGroup>

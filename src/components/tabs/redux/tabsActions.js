@@ -34,22 +34,22 @@ export const addNewTab = () => {
 
   tabsOrder.push(id)
   const orgId = getOrgId()
+    return async (dispatch) => {
+      dispatch({
+        type: tabsActionTypes.ADD_NEW_TAB,
+        newTab: {
+          id,
+          type: 'endpoint',
+          status: tabStatusTypes.NEW,
+          previewMode: false,
+          isModified: false,
+          state: {}
+        }
+      })
+      dispatch(setActiveTabId(id))
+      navigateTo(`/orgs/${orgId}/dashboard/endpoint/new`)
+    }
 
-  return async (dispatch) => {
-    dispatch({
-      type: tabsActionTypes.ADD_NEW_TAB,
-      newTab: {
-        id,
-        type: 'endpoint',
-        status: tabStatusTypes.NEW,
-        previewMode: false,
-        isModified: false,
-        state: {}
-      }
-    })
-    dispatch(setActiveTabId(id))
-    navigateTo(`/orgs/${orgId}/dashboard/endpoint/new`)
-  }
 }
 
 export const closeTab = (tabId, history) => {

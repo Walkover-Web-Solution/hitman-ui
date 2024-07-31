@@ -27,10 +27,12 @@ import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTags
 import { Card } from 'react-bootstrap'
 import 'react-toastify/dist/ReactToastify.css'
 import './collections.scss'
+import { addPage } from '../pages/redux/pagesActions'
 
 const Collections = (props) => {
   const collections = useSelector((state) => state.collections)
   const clientData = useSelector((state) => state.clientData)
+  const organizations = useSelector((state) => state.organizations)
   const dispatch = useDispatch()
 
   const location = useLocation()
@@ -132,10 +134,15 @@ const Collections = (props) => {
   }
 
   const openAddPageEndpointModal = (collectionId) => {
-    setShowAddCollectionModal(true)
-    setSelectedCollection({
-      ...collections[collectionId]
-    })
+    const newPage = {name:'untitled' , pageType: 1};
+    if(props?.organizations?.currentOrg?.meta?.type === 0 ){
+      dispatch(addPage(navigate, props?.collections[collectionId].rootParentId,newPage))
+    }else{
+      setShowAddCollectionModal(true)
+      setSelectedCollection({
+        ...collections[collectionId]
+      })
+    }
   }
 
   const showAddPageEndpointModal = () => {

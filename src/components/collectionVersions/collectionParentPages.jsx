@@ -25,11 +25,12 @@ import { background } from '../backgroundColor.js'
 import './collectionVersions.scss'
 
 const CollectionParentPages = (props) => {
-  const { pages, clientData, collections } = useSelector((state) => {
+  const { pages, clientData, collections,organizations} = useSelector((state) => {
     return {
       pages: state.pages,
       clientData: state.clientData,
-      collections: state.collections
+      collections: state.collections,
+      organizations: state.organizations
     }
   })
 
@@ -166,8 +167,13 @@ const CollectionParentPages = (props) => {
   }
 
   const openAddPageEndpointModal = (pageId) => {
+    const newPage = {name:'untitled' , pageType: 3};
+    if(props?.organizations?.currentOrg?.meta?.type === 0 ){
+      dispatch(addPage(navigate, props?.pages[pageId].versionId,newPage))
+    }else{
     setShowAddCollectionModal(true)
     setSelectedPage({ ...pages[pageId] })
+    }
   }
 
   const openEditPageForm = (pageId) => {
