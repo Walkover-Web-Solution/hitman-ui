@@ -125,10 +125,6 @@ const CollectionParentPages = (props) => {
     setShowDeleteModal(false)
   }
 
-  const handleHover = (isHovered) => {
-    setIsHovered(isHovered)
-  }
-
   const handleRedirect = (id) => {
     if (isDashboardRoute({ location })) return navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
     sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
@@ -150,7 +146,11 @@ const CollectionParentPages = (props) => {
 
   const versionName = () => {
     const versionName = defaultVersionName?.length > 10 ? `${defaultVersionName.substring(0, 7)} ... ` : defaultVersionName
-    return pages?.[props.rootParentId]?.child?.length === 1 ? versionName : selectedVersionName?.length > 10 ? `${selectedVersionName.substring(0, 7)} ... ` : selectedVersionName;
+    return pages?.[props.rootParentId]?.child?.length === 1
+      ? versionName
+      : selectedVersionName?.length > 10
+      ? `${selectedVersionName.substring(0, 7)} ... `
+      : selectedVersionName
   }
 
   const versionDropDown = (rootId) => {
@@ -198,13 +198,26 @@ const CollectionParentPages = (props) => {
     let isUserOnPublishedPage = isOnPublishedPage()
     const expanded = clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const rootId = pageId
-    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : isDashboardRoute && params.pageId === pageId ? 'selected' : '';
+    const isSelected =
+      isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId
+        ? 'selected'
+        : isDashboardRoute && params.pageId === pageId
+        ? 'selected'
+        : ''
+
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     let collectionId = pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = collections[collectionId]?.theme
     const dynamicColor = hexToRgb(collectionTheme, 0.15)
     const staticColor = background['background_hover']
-    const backgroundImage = (isHovered || isSelected) ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
+
+    const backgroundStyle = {
+      backgroundImage:
+        isHovered || isSelected
+          ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColor}, ${staticColor})`
+          : ''
+    }
 
     return (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
@@ -212,9 +225,9 @@ const CollectionParentPages = (props) => {
           <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''}`}>
             <div
               className={`active-select d-flex align-items-center justify-content-between rounded mr-2 ${isSelected ? ' selected' : ''}`}
-              style={{ backgroundStyle: backgroundImage }}
-              onMouseEnter={() => handleHover(true)}
-              onMouseLeave={() => handleHover(false)}
+              style={backgroundStyle}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
             >
               <div className={`d-flex align-items-center cl-name `} onClick={(e) => handleParentPageClick(e, expanded)}>
                 <div className='d-flex cl-name ml-1 align-items-baseline'>
@@ -233,41 +246,51 @@ const CollectionParentPages = (props) => {
                     style={props.draggingOverId === pageId ? { border: '3px solid red' } : null}
                   >
                     <div className='text-truncate d-inline'>{pages[pageId]?.name}</div>
-                    {!isUserOnPublishedPage ? versionDropDown(rootId) : <PublishedVersionDropDown handleDropdownItemClick={handleDropdownItemClick} rootParentId={props?.rootParentId} defaultVersionName={defaultVersionName} selectedVersionName={selectedVersionName} />}
+                    {!isUserOnPublishedPage ? (
+                      versionDropDown(rootId)
+                    ) : (
+                      <PublishedVersionDropDown
+                        handleDropdownItemClick={handleDropdownItemClick}
+                        rootParentId={props?.rootParentId}
+                        defaultVersionName={defaultVersionName}
+                        selectedVersionName={selectedVersionName}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
 
-              {
-                isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
-                  <div className='sidebar-item-action d-flex align-items-center'>
-                    <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
-                      <IconButtons>
-                        <FiPlus />
-                      </IconButtons>
+              {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
+                <div className='sidebar-item-action d-flex align-items-center'>
+                  <div
+                    className='d-flex align-items-center'
+                    onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}
+                  >
+                    <IconButtons>
+                      <FiPlus />
+                    </IconButtons>
+                  </div>
+                  <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                    <IconButtons>
+                      <BsThreeDots />
+                    </IconButtons>
+                  </div>
+                  <div className='dropdown-menu dropdown-menu-right'>
+                    <div className='dropdown-item d-flex' onClick={() => openEditPageForm(pageId)}>
+                      <Rename /> Rename
                     </div>
-                    <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-                      <IconButtons>
-                        <BsThreeDots />
-                      </IconButtons>
+                    <div className='dropdown-item d-flex' onClick={() => setShowVersionForm(true)}>
+                      <MdOutlineSettings size={20} color='#f2994a' /> Manage Version
                     </div>
-                    <div className='dropdown-menu dropdown-menu-right'>
-                      <div className='dropdown-item d-flex' onClick={() => openEditPageForm(pageId)}>
-                        <Rename /> Rename
-                      </div>
-                      <div className='dropdown-item d-flex' onClick={() => setShowVersionForm(true)}>
-                        <MdOutlineSettings size={20} color='#f2994a' /> Manage Version
-                      </div>
-                      <div className='dropdown-item text-danger d-flex' onClick={() => openDeletePageModal(pageId)}>
-                        <DeleteIcon /> Delete
-                      </div>
+                    <div className='dropdown-item text-danger d-flex' onClick={() => openDeletePageModal(pageId)}>
+                      <DeleteIcon /> Delete
                     </div>
                   </div>
-                ) : null
-              }
+                </div>
+              ) : null}
             </div>
           </button>
-          {expanded &&
+          {expanded && (
             <div className='version-collapse'>
               <Card.Body>
                 <div className='linkWrapper versionPages'>
@@ -278,7 +301,8 @@ const CollectionParentPages = (props) => {
                   />
                 </div>
               </Card.Body>
-            </div>}
+            </div>
+          )}
         </div>
       </div>
     )
@@ -289,8 +313,21 @@ const CollectionParentPages = (props) => {
       {showAddPageEndpointModal()}
       {showEditPageModal()}
       {showVersionForm && openManageVersionModal()}
-      {showDeleteModal && pageService.showDeletePageModal(props, closeDeleteVersionModal, 'Delete Version', `Are you sure you want to delete this Version?All your subpages and endpoints present in this version will be deleted.`)}
-      {showDeleteModal && pageService.showDeletePageModal(props, closeDeletePageModal, 'Delete Page', `Are you sure you want to delete this pages? All your versions,subpages and endpoints present in this page will be deleted.`, selectedPage)}
+      {showDeleteModal &&
+        pageService.showDeletePageModal(
+          props,
+          closeDeleteVersionModal,
+          'Delete Version',
+          `Are you sure you want to delete this Version?All your subpages and endpoints present in this version will be deleted.`
+        )}
+      {showDeleteModal &&
+        pageService.showDeletePageModal(
+          props,
+          closeDeletePageModal,
+          'Delete Page',
+          `Are you sure you want to delete this pages? All your versions,subpages and endpoints present in this page will be deleted.`,
+          selectedPage
+        )}
       {renderBody(props.rootParentId)}
     </React.Fragment>
   )
