@@ -164,9 +164,9 @@ const UserProfile = () => {
         </div>
         <Dropdown>
           <Dropdown.Toggle id="dropdown-basic">
-            <IconButtons>
+            <IconButton>
               <BsThreeDots className='text-dark'/>
-            </IconButtons>
+            </IconButton>
           </Dropdown.Toggle>
 
           <Dropdown.Menu>

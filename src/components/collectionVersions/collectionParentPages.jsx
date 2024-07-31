@@ -23,6 +23,7 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './collectionVersions.scss'
+import { addPage } from '../pages/redux/pagesActions.js'
 
 const CollectionParentPages = (props) => {
   const { pages, clientData, collections,organizations} = useSelector((state) => {
