@@ -9,7 +9,7 @@ function Footer({ theme }) {
   return (
       <div className='footerWrapper'>
         <p className='for-public-view' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <span className='poweredByText' style={{ color: 'grey'}}>
+          <span className='poweredByText'>
             Powered by{' '}
           </span>
           <a
@@ -18,6 +18,7 @@ function Footer({ theme }) {
             target='_blank'
             href={domainSrc}
             style={{ backgroundColor: hexToRgb(theme, '1') }}
+            aria-label="hitman-link"
           >
             <TECHDOCPUBLISH className='techdoc-svg' />
           </a>
