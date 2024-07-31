@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
-import { connect, useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import shortid from 'shortid'
 import { SESSION_STORAGE_KEY, getOrgId, isElectron, isOnPublishedPage, isTechdocOwnDomain } from './components/common/utility'
 import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
-import { ToastContainer, toast, Slide } from 'react-toastify'
+import { ToastContainer, Slide } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
@@ -21,7 +21,7 @@ import IndexWebsite from './components/indexWebsite/indexWebsite.js'
 import Redirections from './components/collections/Redirections.jsx'
 import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
 import NavigationSetter from './history.js'
-import CollectionTabs from './components/collections/collectionTabs.jsx'
+import EditRuns from './components/collections/showRuns/editRuns.jsx'
 
 const App = () => {
   const navigate = useNavigate()
@@ -83,6 +83,7 @@ const App = () => {
           <Route path='/logout' element={<Logout />} />
           <Route path='/proxy/auth' element={<AuthServiceV2 />} />
           <Route path='orgs/:orgId/dashboard/collection/:collectionId/runner' element={<RunAutomation />} />
+          <Route path='/orgs/:orgId/dashboard/collection/:collectionId/cron/:cronId/edit' element={<EditRuns />} />
           <Route path='/404_PAGE' element={<ERROR_404_PAGE />} />
           <Route path='/403_PAGE' element={<ERROR_403_PAGE />} />
           <Route path='/auth/redirect' element={<OauthPage />} />
@@ -94,12 +95,15 @@ const App = () => {
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/settings' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/runs' element={<MainV2 />} />
+            <Route path='/orgs/:orgId/dashboard/collection/:collectionId/runs/:runId' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/history/:historyId' element={<MainV2 />} />
             <Route path='/orgs/:orgId/dashboard/history/:historyId/edit' element={<MainV2 />} />
             <Route path='/orgs/:orgId/trash' element={<TrashPage />} />
             <Route path='/orgs/:orgId/dashboard/collection/:collectionId/redirections' element={<Redirections />} />
+            
+            
           </Route>
 
           <Route path='/orgs/:orgId/invite' element={<InviteTeam />} />
