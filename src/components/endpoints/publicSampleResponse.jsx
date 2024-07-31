@@ -63,15 +63,16 @@ class PublicSampleResponse extends Component {
           .sample-response nav.nav.nav-tabs a.active {
                 background: ${this.props.publicCollectionTheme};
                 color:#fff;
+                opacity: 0.9;
               } 
           `}
         </Style>
         <div className='pubSampleResponse'>
-          <h3 className='heading-2 pt-1 mt-4'>
+          <div className='heading-2 pt-1 mt-4 font-16 mb-2'>
             <span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span>
-          </h3>
+          </div>
           <div className='sample-response mb-1' style={this.state.theme.backgroundStyle}>
-            <Tabs id='uncontrolled-tab-example'>
+            <Tabs id='uncontrolled-tab-example' aria-hidden="true">
               {this.props.sample_response_array.map((sampleResponse, key) => (
                 <Tab
                 key={key}
