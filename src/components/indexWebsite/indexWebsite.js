@@ -13,13 +13,6 @@ import content from './indexWebsite.json'
 import './indexWebsite.scss'
 
 export default function IndexWebsite() {
-
-  const navigate = useNavigate()
-
-  const handleGoToLogin = () => {
-    navigate('/login')
-  }
-
   return (
     <>
       <div className='web_body'>
@@ -28,10 +21,10 @@ export default function IndexWebsite() {
           <div className='navigation d-flex justify-content-between container'>
             <Logo className='web_logo' />
             <div className='d-flex align-items-center nav-menu'>
-              <a onClick={handleGoToLogin}>
+              <a href='/login'>
                 <button className='btn web_btn-login web_btn-rg web_btn'>Login</button>
               </a>
-              <a onClick={handleGoToLogin}>
+              <a href='/login'>
                 <button className='btn web_btn-primary web_btn-rg web_btn '>Signup</button>
               </a>
             </div>
@@ -137,6 +130,7 @@ export default function IndexWebsite() {
                       target='_blank'
                       key={i}
                       className={`${i == 2 || i == 3 ? 'col_span_2' : 'col_span-1'} grid_col`}
+                      aria-label="website icons"
                     >
                       {LogoComponent}
                     </a>

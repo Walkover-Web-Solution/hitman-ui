@@ -20,6 +20,7 @@ const secondaryLanguages = ['c', 'csharp', 'clojure', 'go', 'http', 'java', 'jav
 const languages = {
   node: {
     name: 'Node',
+    title: 'node-image',
     mode: 'javascript',
     imagePath: node
   },
@@ -30,6 +31,7 @@ const languages = {
   },
   python: {
     name: 'Python',
+    title: 'Python-image',
     mode: 'python',
     imagePath: python
   },
@@ -40,6 +42,7 @@ const languages = {
   },
   php: {
     name: 'PHP',
+    title: 'PHP-image',
     mode: 'php',
     imagePath: php
   },
@@ -50,6 +53,7 @@ const languages = {
   },
   shell: {
     name: 'Shell',
+    title: 'Shell-image',
     mode: 'sh',
     imagePath: shell
   },
@@ -100,6 +104,7 @@ const languages = {
   },
   axiosNode: {
     name: 'Axios',
+    title: 'Axios-image',
     mode: 'javascript',
     imagePath: node
   }

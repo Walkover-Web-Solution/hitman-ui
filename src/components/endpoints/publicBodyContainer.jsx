@@ -4,18 +4,19 @@ import GenericTable from './genericTable'
 import AceEditor from 'react-ace'
 import { willHighlight } from './highlightChangesHelper'
 import './publicEndpoint.scss'
-import { Badge} from 'react-bootstrap'
+import { Badge } from 'react-bootstrap'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
 import { hexToRgb, isOnPublishedPage } from '../common/utility'
-import {background} from '../backgroundColor.js'
+import { background } from '../backgroundColor.js'
 import { FaLongArrowAltUp } from 'react-icons/fa'
 class PublicBodyContainer extends Component {
   constructor(props) {
     super(props)
-    this.state = {theme: {
-      publicCollectionTheme: this.props.publicCollectionTheme,
-      backgroundStyle: {}
-    },
+    this.state = {
+      theme: {
+        publicCollectionTheme: this.props.publicCollectionTheme,
+        backgroundStyle: {}
+      },
       showBodyCodeEditor: true,
       data: {
         data: [
@@ -362,14 +363,14 @@ class PublicBodyContainer extends Component {
               <ul className='public-endpoint-tabs'>
                 <li
                   className={this.state.showBodyCodeEditor ? 'active' : ''}
-                  style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                  style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
                   onClick={() => this.setState({ showBodyCodeEditor: true })}
                 >
                   Raw
                 </li>
                 <li
                   className={!this.state.showBodyCodeEditor ? 'active' : ''}
-                  style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                  style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
                   onClick={() => this.setState({ showBodyCodeEditor: false })}
                 >
                   Body description
@@ -395,6 +396,11 @@ class PublicBodyContainer extends Component {
                        onLoad={(editor) => {
                          editor.getSession().setUseWrapMode(true);
                          editor.setShowPrintMargin(false);
+                         const textarea = editor.renderer.textarea;
+                         if (textarea) {
+                           textarea.setAttribute('type', 'text');
+                           textarea.setAttribute('aria-label', 'Search');
+                         }
                        }}
                      />
                    </div>

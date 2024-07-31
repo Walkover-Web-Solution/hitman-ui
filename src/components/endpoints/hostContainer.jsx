@@ -370,6 +370,8 @@ class HostContainer extends Component {
   renderPublicHost() {
     return (
       <input
+        type="text"
+        aria-label="Search"
         disabled
         className='form-control'
         value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}
