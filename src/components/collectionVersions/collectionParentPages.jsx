@@ -751,7 +751,7 @@ class CollectionParentPages extends Component {
 
   getVersionsCount(filteredPages) {
     const versionsCount = Object.keys(filteredPages || {}).filter(
-      (pageId) => filteredPages[pageId].collectionId === this.props.collection_id
+      (pageId) => filteredPages[pageId]?.collectionId === this.props.collection_id
     ).length
 
     return versionsCount

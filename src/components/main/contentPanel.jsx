@@ -79,7 +79,7 @@ const ContentPanel = () => {
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
-            state: {}
+            state: {},
           }))
         }
       }
@@ -107,7 +107,7 @@ const ContentPanel = () => {
             dispatch(setActiveTabId(collectionId))
           }
         } else if (collections && collections[collectionId]) {
-          let pageType 
+          let pageType
           if (location.pathname.split('/')[6] === 'settings') {
             pageType = 'SETTINGS'
           } else if (location.pathname.split('/')[6] === 'runs') {
@@ -122,8 +122,9 @@ const ContentPanel = () => {
             previewMode: false,
             isModified: false,
             state: { pageType }
-          }))}
+          }))
         }
+      }
 
       if (window.location.pathname === `/orgs/${params.orgId}/dashboard`) {
         const { orgId } = params
