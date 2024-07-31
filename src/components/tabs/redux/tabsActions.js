@@ -25,6 +25,8 @@ export const fetchTabsFromRedux = () => {
 }
 
 export const addNewTab = () => {
+  // debugger
+  const state = store.getState()
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
   const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
@@ -34,6 +36,23 @@ export const addNewTab = () => {
 
   tabsOrder.push(id)
   const orgId = getOrgId()
+  if (state.organizations?.currentOrg?.meta?.type === 0) {
+    return async (dispatch) => {
+      dispatch({
+        type: tabsActionTypes.ADD_NEW_TAB,
+        newTab: {
+          id,
+          type: 'page',
+          status: tabStatusTypes.NEW,
+          previewMode: false,
+          isModified: false,
+          name:'untitled'
+        }
+      })
+      dispatch(setActiveTabId(id))
+      navigateTo(`/orgs/${orgId}/dashboard/page/new/edit`)
+    }
+  } else {
     return async (dispatch) => {
       dispatch({
         type: tabsActionTypes.ADD_NEW_TAB,
@@ -49,7 +68,7 @@ export const addNewTab = () => {
       dispatch(setActiveTabId(id))
       navigateTo(`/orgs/${orgId}/dashboard/endpoint/new`)
     }
-
+  }
 }
 
 export const closeTab = (tabId, history) => {

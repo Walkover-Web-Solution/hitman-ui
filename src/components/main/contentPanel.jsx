@@ -67,22 +67,21 @@ const ContentPanel = () => {
         }
       }
 
-      if (pageId) {
-        if (tabs.tabs[pageId]) {
-          if (tabs.activeTabId !== pageId) {
-            dispatch(setActiveTabId(pageId))
+        if (pageId && pageId !== 'new') {
+          if (tabs.tabs[pageId]) {
+            if (tabs.activeTabId !== pageId) {
+              dispatch(setActiveTabId(pageId))
+            }
+          } else if (pages && pages[pageId]) {
+            dispatch(openInNewTab({
+              id: pageId,
+              type: 'page',
+              status: tabStatusTypes.SAVED,
+              previewMode: false,
+              isModified: false,
+            }))
           }
-        } else if (pages && pages[pageId]) {
-          dispatch(openInNewTab({
-            id: pageId,
-            type: 'page',
-            status: tabStatusTypes.SAVED,
-            previewMode: false,
-            isModified: false,
-            state: {}
-          }))
         }
-      }
 
       if (historyId) {
         if (tabs.tabs[historyId]) {
@@ -107,7 +106,7 @@ const ContentPanel = () => {
             dispatch(setActiveTabId(collectionId))
           }
         } else if (collections && collections[collectionId]) {
-          let pageType 
+          let pageType
           if (location.pathname.split('/')[6] === 'settings') {
             pageType = 'SETTINGS'
           } else if (location.pathname.split('/')[6] === 'runs') {
@@ -122,8 +121,9 @@ const ContentPanel = () => {
             previewMode: false,
             isModified: false,
             state: { pageType }
-          }))}
+          }))
         }
+      }
 
       if (window.location.pathname === `/orgs/${params.orgId}/dashboard`) {
         const { orgId } = params

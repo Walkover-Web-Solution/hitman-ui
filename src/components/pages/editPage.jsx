@@ -58,7 +58,7 @@ class EditPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: { id: null, name: '', contents: '', state: '' },
+      data: { id: null, name: 'Untitled', contents: '', state: '' },
       showEditor: false
     }
     this.name = React.createRef()
@@ -149,10 +149,11 @@ class EditPage extends Component {
   }
 
   handleNameChange = (e) => {
+    debugger
     const data = { ...this.state.data }
     const newPageName = e.currentTarget.value
 
-    if (newPageName !== this.state.originalData.name) {
+    if (newPageName !== this.state.data.name) {
       data.name = newPageName
       this.setState({ data }, () => {
         if (!this.isModified()) {
