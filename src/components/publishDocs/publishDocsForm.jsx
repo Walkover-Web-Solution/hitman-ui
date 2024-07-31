@@ -14,6 +14,7 @@ import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
 import { FiCopy } from 'react-icons/fi'
 import { FaRegTimesCircle } from 'react-icons/fa'
+import { RiCheckboxMultipleLine } from 'react-icons/ri'
 
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
@@ -48,6 +49,7 @@ const PublishDocForm = (props) => {
   const [loader, setLoader] = useState(false)
   const [openPublishSidebar, setOpenPublishSidebar] = useState(false)
   const [republishNeeded, setRepublishNeeded] = useState(false)
+  const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
     setSelectedCollection()
@@ -285,6 +287,8 @@ const PublishDocForm = (props) => {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text)
+    setIsCopied(true); // Set copied status to true
+    setTimeout(() => setIsCopied(false), 1000);
   }
 
   const renderPublicUrl = () => {
@@ -309,15 +313,19 @@ const PublishDocForm = (props) => {
           }
         >
           <div
-            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4 ${
-              isDisabled ? 'text-disable' : 'disabled-link'
-            }`}
+            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4`}
           >
             <HiOutlineExternalLink className='mr-1' size={13} />
-            <span onClick={() => isDisabled && openExternalLink(url)}>{url}</span>
-            <button className='copy-button-link ml-2 border-0 bg-white' onClick={() => copyToClipboard(url)} title='Copy URL'>
-              <FiCopy size={13} />
-            </button>
+            <span onClick={() => isDisabled && openExternalLink(url)} className={isDisabled ? 'text-disable' : 'disabled-link'}>{url}</span>
+            <div className='ml-2'>
+              <button className='copy-button-link ml-2 border-0 bg-white' onClick={() => copyToClipboard(url)} title='Copy URL' onMouseDown={(e) => e.preventDefault()}>
+              {isCopied ? ( 
+                  <RiCheckboxMultipleLine size={13} color='black' />
+                ) : (
+                  <FiCopy size={13} />
+                )}
+              </button>
+            </div>
           </div>
         </OverlayTrigger>
       </div>

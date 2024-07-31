@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import './manualRuns.scss';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import moment from 'moment'
 
-
+const formatDate = (date) => moment(date).format('MMMM D, YYYY [at] HH:mm:ss');
 function ManualRuns() {
   const params = useParams()
   const { automation, activeTabId, collections, pages } = useSelector((state) => {
@@ -16,13 +16,17 @@ function ManualRuns() {
     }
   })
   const collectionId = params?.collectionId
-  const averageResponseTime = (automation[activeTabId]?.responseTime) / (automation[activeTabId]?.executionOrder.length || 1);
+  const averageResponseTime = useMemo(() => {
+    const responseTime = automation[activeTabId]?.responseTime || 0;
+    const executionOrderLength = automation[activeTabId]?.executionOrder.length || 1;
+    return responseTime / executionOrderLength;
+  }, [automation, activeTabId]);
 
   return (
     <div className="manual-runs-container">
       <h1> {collections[collectionId]?.name} - Run results</h1>
       <div className="run-details">
-        <span>Ran on {moment(automation[activeTabId]?.date).format('MMMM D, YYYY [at] HH:mm:ss')}</span>
+        <span>Ran on {formatDate(automation[activeTabId]?.date)}</span>
         <a className='ml-2' href="/runs">View all runs</a>
       </div>
       <table>

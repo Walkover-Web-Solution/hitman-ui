@@ -156,6 +156,10 @@ const ContentPanel = () => {
         if (tabId !== activeTabId) dispatch(setActiveTabId(tabId))
 
         const collectionLength = Object.keys(collections).length
+        if (tab?.type === 'manual-runs') {
+          navigate(`/orgs/${orgId}/dashboard/collection/${tab?.state?.collectionId}/runs/${tab?.id}`)
+          return;
+        }
         if (collectionLength > 0) {
           navigate(
             tab.type !== 'collection'
