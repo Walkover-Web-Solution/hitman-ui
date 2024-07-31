@@ -1,68 +1,59 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { useQuery, useQueryClient } from 'react-query';
-import { getCronByCollection, deleteCron, cronStatus } from '../../../services/cronJobs'
-import IconButtons from '../../common/iconButton'
+import { useDispatch, useSelector } from 'react-redux';
+import { Button } from 'react-bootstrap'
+import { ScheduledRunsActions } from './scheduleRunActions';
+import { getOrgId } from '../../common/utility';
+import { openInNewTab } from '../../tabs/redux/tabsActions';
+import tabStatusTypes from '../../tabs/tabStatusTypes';
+import cronstrue from 'cronstrue';
+import moment from 'moment'
 import { BsThreeDots } from 'react-icons/bs'
 import { MdOutlineMotionPhotosPaused } from "react-icons/md";
 import { RiDeleteBinLine } from 'react-icons/ri'
 import { GrResume } from "react-icons/gr";
+import { HiDocumentReport } from "react-icons/hi";
+import { MdModeEdit } from "react-icons/md";
+import IconButtons from '../../common/iconButton'
 import './collectionRuns.scss';
-import { useSelector } from 'react-redux';
-import cronstrue from 'cronstrue';
 
 const CollectionRuns = () => {
   const params = useParams();
   const navigate = useNavigate()
-  const queryClient = useQueryClient();
+  const dispatch = useDispatch();
+
   const [activeTab, setActiveTab] = useState('functional');
-  const { environments } = useSelector((state) => {
-    return { environments: state.environment.environments }
+  const { environments, automation } = useSelector((state) => {
+    return {
+      environments: state?.environment?.environments,
+      automation: state?.automation
+    }
   })
-  const { data: scheduledRuns = [], isError, error } = useQuery(
-    ['scheduledRuns', params.collectionId],
-    () => getCronByCollection(params.collectionId),
-    {
-      enabled: activeTab === 'scheduled',
-      staleTime: Infinity
-    }
-  );
 
-  if (isError) {
-    console.error('Failed to fetch scheduled runs:', error);
+  const { scheduledRuns, deleteCronById, updateCronStatus } = ScheduledRunsActions(params?.collectionId, activeTab);
+  const collectionId = params?.collectionId
+  const orgId = getOrgId()
+
+  const openManualLogs = async (runId) => {
+    dispatch(openInNewTab({
+      id: runId,
+      type: 'manual-runs',
+      status: tabStatusTypes.SAVED,
+      previewMode: true,
+      isModified: false,
+      state: { collectionId: collectionId }
+    }))
+    navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/runs/${runId}`)
   }
-
-  const deleteCronById = async (cronId) => {
-    try {
-      await deleteCron(cronId);
-      queryClient.setQueryData(['scheduledRuns', params.collectionId], oldRuns => {
-        return oldRuns.filter(run => run.id !== cronId);
-      });
-    } catch (error) {
-      console.error('Failed to fetch scheduled runs:', error);
-    }
-  };
-
-  const updateCronStatus = async (cronId, status) => {
-    try {
-      await cronStatus(cronId, status);
-      queryClient.setQueryData(['scheduledRuns', params.collectionId], oldRuns => {
-        return oldRuns.map(run => {
-          if (run.id === cronId) {
-            return { ...run, status: status };
-          }
-          return run; 
-        });
-      });
-    } catch (error) {
-      console.error('Failed to fetch scheduled runs:', error);
-    }
-  };
 
   const openEditCron = async (cronId) => {
     const collectionId = params?.collectionId
-    navigate(`/collection/${collectionId}/cron/${cronId}/edit`);
+    navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/cron/${cronId}/edit`);
   };
+
+  const navigateToScheduleRuns = () => {
+    navigate(`/orgs/${orgId}/dashboard/collection/${collectionId}/runner`);
+  }
 
   return (
     <div>
@@ -74,12 +65,30 @@ const CollectionRuns = () => {
       <div className="content">
         {activeTab === 'functional' && (
           <table>
+            <thead>
+              <tr>
+                <th>Start time</th>
+                <th>Source</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
             <tbody>
-              Logs feature coming soon...
+              {Object.entries(automation).filter(([id, runDetails]) => runDetails.collectionId === params.collectionId).map(([id, runDetails]) => (
+                <tr key={id}>
+                  <td>{moment(runDetails.date).format('MMMM D, YYYY [at] HH:mm:ss')}</td>
+                  <td>{'Runner'}</td>
+                  <td>{runDetails.responseTime} ms</td>
+                  <td onClick={() => openManualLogs(id)}>
+                    <IconButtons>
+                      <HiDocumentReport />
+                    </IconButtons>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         )}
-        {activeTab === 'scheduled' && (
+        {activeTab === 'scheduled' && scheduledRuns.length > 0 && (
           <table>
             <thead>
               <tr>
@@ -91,11 +100,10 @@ const CollectionRuns = () => {
             <tbody>
               {scheduledRuns.map(run => (
                 <tr key={run.id}>
-                 <td> {run.status === 1 ? cronstrue.toString(run.cron_expression) : <MdOutlineMotionPhotosPaused />}</td>
+                  <td> {run.status === 1 ? cronstrue.toString(run.cron_expression) : <MdOutlineMotionPhotosPaused />}</td>
                   <td>{run.cron_name}</td>
                   <td>{environments[run.environmentId]?.name || 'N/A'}</td>
                   <div className='position-relative'>
-
                     <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                       <IconButtons>
                         <BsThreeDots />
@@ -105,6 +113,9 @@ const CollectionRuns = () => {
                       <div className='dropdown-item d-flex align-items-center' onClick={() => updateCronStatus(run?.id, run?.status === 1 ? 0 : 1)}>
                         {run?.status === 1 ? <MdOutlineMotionPhotosPaused /> : <GrResume />}
                         <span className="ml-2">{run?.status === 1 ? 'Pause' : 'Resume'}</span>
+                      </div>
+                      <div className='dropdown-item d-flex align-items-center' onClick={() => openEditCron(run?.id)} >
+                        <MdModeEdit /><span className="ml-2">Edit</span>
                       </div>
                       <div
                         className='dropdown-item text-danger d-flex align-items-center'
@@ -118,6 +129,13 @@ const CollectionRuns = () => {
               ))}
             </tbody>
           </table>
+        )}
+        {activeTab === 'scheduled' && scheduledRuns.length === 0 && (
+          <div className='text-center mt-5'>
+            <strong>No scheduled runs for this collection.</strong>
+            <p>You can schedule runs for this collection to periodically run it at a certain time or frequency on the Techdoc Cloud.</p>
+            <Button className='btn btn-primary fs-sm mr-1' onClick={navigateToScheduleRuns}>Schedule Runs</Button>
+          </div>
         )}
         {activeTab === 'webhook' && (
           <table>
