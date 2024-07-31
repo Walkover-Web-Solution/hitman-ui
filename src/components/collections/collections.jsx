@@ -33,17 +33,20 @@ import ExportButton from '../exportButton/exportButton'
 import { BiExport } from 'react-icons/bi'
 import withRouter from '../common/withRouter'
 import CollectionTabs from './collectionTabs'
+import { addPage } from '../pages/redux/pagesActions'
+import shortid from 'shortid'
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
     pages: state.pages,
     endpoints: state.endpoints,
-    clientData: state.clientData
+    clientData: state.clientData,
+    organizations: state.organizations
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_collection: (newCollection) => dispatch(addCollection(newCollection)),
     update_collection: (editedCollection) => dispatch(updateCollection(editedCollection)),
@@ -51,6 +54,7 @@ const mapDispatchToProps = (dispatch) => {
     duplicate_collection: (collection) => dispatch(duplicateCollection(collection)),
     add_custom_domain: (collectionId, domain) => dispatch(addCustomDomain(collectionId, domain)),
     add_new_tab: () => dispatch(addNewTab()),
+    add_page: (navigate,rootParentId, newPage) => dispatch(addPage(navigate,rootParentId, newPage)),
     update_isExpand_for_collection: (payload) => dispatch(addIsExpandedAction(payload))
   }
 }
@@ -206,12 +210,18 @@ class CollectionsComponent extends Component {
   }
 
   openAddPageEndpointModal(collectionId) {
-    this.setState({
-      showAddCollectionModal: true,
-      selectedCollection: {
-        ...this.props.collections[collectionId]
-      }
-    })
+    const newPage = { name: 'untitled', pageType: 1 };
+    if (this.props?.organizations?.currentOrg?.meta?.type === 0) {
+      this.props.add_page(this.props.navigate,this.props.collections[collectionId].rootParentId, newPage)
+    }
+    else {
+      this.setState({
+        showAddCollectionModal: true,
+        selectedCollection: {
+          ...this.props.collections[collectionId]
+        }
+      })
+    }
   }
   showAddPageEndpointModal() {
     return (
@@ -236,7 +246,7 @@ class CollectionsComponent extends Component {
   openRedirectionsPage(collection) {
     this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/collection/${collection.id}/redirections`)
   }
-  
+
   handleApiAutomation(collectionId) {
     this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/collection/${collectionId}/runner`)
   }
@@ -377,7 +387,7 @@ class CollectionsComponent extends Component {
                     collection_id={collectionId}
                     selectedCollection
                     rootParentId={this.props.collections[collectionId].rootParentId}
-                    // isPublishData={false}
+                  // isPublishData={false}
                   />
                 }
               </Card.Body>

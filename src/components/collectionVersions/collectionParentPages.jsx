@@ -239,12 +239,18 @@ class CollectionParentPages extends Component {
   }
 
   openAddPageEndpointModal(pageId) {
-    this.setState({
-      showAddCollectionModal: true,
-      selectedPage: {
-        ...this.props.pages[pageId]
-      }
-    })
+    const newPage = { name: 'untitled', pageType: 3 };
+    if (this.props?.organizations?.currentOrg?.meta?.type === 0) {
+      this.props.add_page(this.props.navigate,this.props.pages[pageId].versionId  , newPage)
+    }
+    else{
+      this.setState({
+        showAddCollectionModal: true,
+        selectedPage: {
+          ...this.props.pages[pageId]
+        }
+      })
+    }
   }
 
   openShareParentPageForm(pageId) {
