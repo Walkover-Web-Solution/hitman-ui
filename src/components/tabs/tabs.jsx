@@ -16,8 +16,9 @@ import { GrFormClose } from 'react-icons/gr'
 import { IoDocumentTextOutline } from 'react-icons/io5'
 import { LuHistory } from 'react-icons/lu'
 import { GrGraphQl } from 'react-icons/gr'
-import Plus from '../../assets/icons/plus.svg'
 import { TbSettingsAutomation } from 'react-icons/tb'
+import { BsPlayBtn } from "react-icons/bs";
+import Plus from '../../assets/icons/plus.svg'
 import './tabs.scss'
 
 const CustomTabs = (props) => {
@@ -37,7 +38,7 @@ const CustomTabs = (props) => {
   const [showPreview, setShowPreview] = useState(false)
   const [previewId, setPreviewId] = useState(null)
 
-  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history } = useSelector((state) => {
+  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history, automation } = useSelector((state) => {
     return {
       responseView: state.responseView,
       pages: state.pages,
@@ -46,7 +47,8 @@ const CustomTabs = (props) => {
       tabs: state.tabs,
       historySnapshots: state.history,
       collections: state.collections,
-      history: state.history
+      history: state.history,
+      automation : state.automation
     }
   })
 
@@ -314,6 +316,17 @@ const CustomTabs = (props) => {
             </div>
           </>
         )
+      }
+      case 'manual-runs': {
+        if (automation[tabId]) {
+        return (
+          <>
+            <div className='d-flex align-items-center'>
+              <BsPlayBtn className='mr-1' size={16} />
+              <span>Runs</span>
+            </div>
+          </>
+        )}
       }
       default:
     }

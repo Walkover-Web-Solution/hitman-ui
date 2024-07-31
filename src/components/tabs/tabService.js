@@ -45,18 +45,32 @@ function removeAllTabs(props) {
 }
 
 function selectTab(tabId, props) {
-  const { tabs } = store.getState().tabs
-  const tab = tabs[tabId]
-  if (tab?.status === 'NEW') props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab.type}/new`)
-    if (tab?.type === 'collection') {
-      if (tab?.state?.pageType === 'SETTINGS') props.navigate(`/orgs/${props?.params?.orgId}/dashboard/collection/${tab.id}/settings`);
-      else if (tab?.state?.pageType === 'RUNS') props.navigate(`/orgs/${props?.params?.orgId}/dashboard/collection/${tab.id}/runs`);
-      props.navigate(`/orgs/${props?.params?.orgId}/dashboard/collection/${tab.id}/feedback`);
-  } else {
-    if (!(tab?.type && tab?.id)) return props.navigate(`/orgs/${getOrgId()}/dashboard/endpoint/new`)
-    return props.navigate(`/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${(tab.isModified) ? '/edit' : ''}`)
+  const { tabs } = store.getState().tabs;
+  const tab = tabs[tabId];
+  let navigatePath = `/orgs/${getOrgId()}/dashboard/endpoint/new`;
+
+  if (tab?.type && tab?.id) {
+    switch (tab?.type) {
+      case 'NEW':
+        navigatePath = `/orgs/${props.params.orgId}/dashboard/${tab?.type}/new`;
+        break;
+      case 'collection':
+        const pageTypePath = {
+          'SETTINGS': `/orgs/${props.params.orgId}/dashboard/collection/${tab?.id}/settings`,
+          'RUNS': `/orgs/${props.params.orgId}/dashboard/collection/${tab?.id}/runs`,
+          'FEEDBACK': `/orgs/${props.params.orgId}/dashboard/collection/${tab?.id}/feedback`
+        };
+        navigatePath = tab?.state?.pageType ? pageTypePath[tab?.state?.pageType] : navigatePath;
+        break;
+      case 'manual-runs':
+        navigatePath = `/orgs/${props.params.orgId}/dashboard/collection/${tab?.state?.collectionId}/runs/${tab?.id}`;
+        break;
+      default:
+        navigatePath = `/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${tab?.isModified ? '/edit' : ''}`;
+    }
   }
-  store.dispatch(setActiveTabId(tabId))
+  props.navigate(navigatePath);
+  store.dispatch(setActiveTabId(tabId));
 }
 
 function disablePreviewMode(tabId) {
