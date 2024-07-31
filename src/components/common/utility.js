@@ -485,15 +485,23 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.data.uri = endpoint.uri
   untitled.data.updatedUri = endpoint.uri
   untitled.authorizationData = endpoint?.authorizationData || untitled.authorizationData
-  const headersData = Object.keys(endpoint.headers).map((key) => {
-    return { key, ...endpoint.headers[key] }
-  })
-  const paramsData = Object.keys(endpoint.params).map((key) => {
-    return { key, ...endpoint.params[key] }
-  })
-  const path = Object.keys(endpoint.pathVariables).map((key) => {
-    return { key, ...endpoint.pathVariables[key] }
-  })
+  const headersData = endpoint.headers
+    ? Object.keys(endpoint.headers).map((key) => {
+        return { key, ...endpoint.headers[key] }
+      })
+    : []
+
+  const paramsData = endpoint.params
+    ? Object.keys(endpoint.params).map((key) => {
+        return { key, ...endpoint.params[key] }
+      })
+    : []
+
+  const path = endpoint.pathVariables
+    ? Object.keys(endpoint.pathVariables).map((key) => {
+        return { key, ...endpoint.pathVariables[key] }
+      })
+    : []
   if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
     untitled.docViewData = [
       { type: 'host' },
@@ -715,34 +723,33 @@ function addItsParent(flattenData, singleId, dataToPublishSet) {
   }
 }
 
-
 export const generateCronExpression = (basicRunFrequency, runFrequency, runTime) => {
-  const [hour, minute] = runTime.split(':').map(num => parseInt(num, 10));
+  const [hour, minute] = runTime.split(':').map((num) => parseInt(num, 10))
   if (basicRunFrequency === 'Hourly') {
-      return `${minute} * * * *`;
+    return `${minute} * * * *`
   } else if (basicRunFrequency === 'Daily') {
-      return `${minute} ${hour} * * *`;
+    return `${minute} ${hour} * * *`
   } else if (basicRunFrequency === 'Weekly') {
-      switch (runFrequency) {
-          case 'Every weekday (Monday-Friday)':
-              return `${minute} ${hour} * * 1-5`;
-          case 'Every Monday':
-              return `${minute} ${hour} * * 1`;
-          case 'Every Tuesday':
-              return `${minute} ${hour} * * 2`;
-          case 'Every Wednesday':
-              return `${minute} ${hour} * * 3`;
-          case 'Every Thursday':
-              return `${minute} ${hour} * * 4`;
-          case 'Every Friday':
-              return `${minute} ${hour} * * 5`;
-          default:
-              // Fallback to every day if no match
-              return `${minute} ${hour} * * *`;
-      }
+    switch (runFrequency) {
+      case 'Every weekday (Monday-Friday)':
+        return `${minute} ${hour} * * 1-5`
+      case 'Every Monday':
+        return `${minute} ${hour} * * 1`
+      case 'Every Tuesday':
+        return `${minute} ${hour} * * 2`
+      case 'Every Wednesday':
+        return `${minute} ${hour} * * 3`
+      case 'Every Thursday':
+        return `${minute} ${hour} * * 4`
+      case 'Every Friday':
+        return `${minute} ${hour} * * 5`
+      default:
+        // Fallback to every day if no match
+        return `${minute} ${hour} * * *`
+    }
   } else {
-      // Fallback to daily if no basic frequency matches
-      return `${minute} ${hour} * * *`;
+    // Fallback to daily if no basic frequency matches
+    return `${minute} ${hour} * * *`
   }
 }
 
