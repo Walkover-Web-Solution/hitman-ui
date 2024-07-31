@@ -8,8 +8,8 @@ export const addCron = async (cronScheduler) => {
 }
 
 export const updateCron = async (cron) => {
-  const { cronId } = cron
-  await http.put(`${apiUrl}/cron/${cronId}`, cron)
+  const { id } = cron
+  await http.put(`${apiUrl}/cron/${id}`, cron)
 }
 
 export const getCronByCollection = async (collectionId) => {
