@@ -2,8 +2,9 @@ import publicEndpointsService from '../publicEndpointsService.js'
 import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'
 import { SESSION_STORAGE_KEY } from '../../common/utility.js'
+import { navigateTo } from '../../../navigationService.js'
 
-export const fetchAllPublicEndpoints = (navigate, collectionIdentifier, domain) => {
+export const fetchAllPublicEndpoints = (collectionIdentifier, domain) => {
   return (dispatch) => {
     publicEndpointsService
       .fetchAll(collectionIdentifier, domain)
@@ -12,7 +13,7 @@ export const fetchAllPublicEndpoints = (navigate, collectionIdentifier, domain) 
       })
       .catch((error) => {
         dispatch(onPublicEndpointsFetchedError(error.response ? error.response.data : error))
-        navigate({ pathname: '/p/error', collection: true })
+        navigateTo({ pathname: '/p/error', collection: true })
       })
   }
 }

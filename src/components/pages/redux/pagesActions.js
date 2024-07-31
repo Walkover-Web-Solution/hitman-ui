@@ -6,6 +6,7 @@ import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryDa
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { navigateTo } from '../../../navigationService'
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -124,7 +125,7 @@ export const addPage = (navigate, rootParentId, newPage) => {
       .then((response) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
-        navigate(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
+        navigateTo(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
       })
       .catch((error) => {
         dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))

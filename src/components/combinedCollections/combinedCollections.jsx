@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import CollectionParentPages from '../collectionVersions/collectionParentPages'
-import Groups from '../subPages/subPages'
+import SubPage from '../subPages/subPages'
 import Endpoints from '../endpoints/endpoints'
 
 function CombinedCollections(props) {
@@ -40,7 +40,7 @@ function CombinedCollections(props) {
           case 1:
             return <CollectionParentPages {...commonProps} rootParentId={singleId} />
           case 3:
-            return <Groups {...commonProps} rootParentId={singleId} />
+            return <SubPage {...commonProps} rootParentId={singleId} />
           case 4:
             return <Endpoints {...endpointProps} endpointId={singleId} />
           default:

@@ -9,7 +9,7 @@ function ERROR_404_PAGE() {
     <div className='text-center errorPage'>
       <h4>OOPS! 404</h4>
       {message ? <h3>{message}</h3> : null}
-      <button onClick={() => navigate({ pathname: '/' })} mat-button>
+      <button onClick={() => navigate('/')} mat-button>
         Return to Dashboard
       </button>
     </div>
