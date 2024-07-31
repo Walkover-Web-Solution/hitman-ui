@@ -38,7 +38,7 @@ const CustomTabs = (props) => {
   const [showPreview, setShowPreview] = useState(false)
   const [previewId, setPreviewId] = useState(null)
 
-  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history, automation } = useSelector((state) => {
+  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history,organizations, automation } = useSelector((state) => {
     return {
       responseView: state.responseView,
       pages: state.pages,
@@ -48,7 +48,8 @@ const CustomTabs = (props) => {
       historySnapshots: state.history,
       collections: state.collections,
       history: state.history,
-      automation : state.automation
+      automation : state.automation,
+      organizations: state.organizations,
     }
   })
 
@@ -278,6 +279,13 @@ const CustomTabs = (props) => {
               </div>
             )
           }
+        }else{
+          return (
+            <div className='d-flex align-items-center'>
+              <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
+              <span>{'Untiled'}</span>
+            </div>
+          )
         }
         break
       case 'collection': {
@@ -403,6 +411,16 @@ const CustomTabs = (props) => {
     }
   }
 
+  const handleHistoryButton = () => {
+    if (organizations?.currentOrg?.meta?.type !== 0) {
+      return (
+        <button onClick={() => handleHistoryClick()} className='px-2' style={{ outline: 'none' }}>
+          <HistoryIcon className='p-1' />{' '}
+        </button>
+      );
+    }
+  }
+
   return (
     <>
       <div className='d-flex navs-container'>
@@ -505,9 +523,7 @@ const CustomTabs = (props) => {
             <TabOptions handleCloseTabs={handleCloseTabs} />
           </Nav.Item>
           <Nav.Item className='' id='history-tab-button'>
-            <button onClick={handleHistoryClick} className='px-2' style={{ outline: 'none' }}>
-              <HistoryIcon className='p-1' />{' '}
-            </button>
+          {handleHistoryButton()}
           </Nav.Item>
           {showHistoryContainer && (
             <div className='history-main-container'>
