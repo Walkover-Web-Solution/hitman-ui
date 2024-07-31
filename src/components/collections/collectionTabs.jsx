@@ -11,7 +11,7 @@ const CollectionTabs = ({ collectionId, onHide }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { activeTabId, pageType } = useSelector((state) => {
-    const activeTabId = state.tabs.activeTabId
+    const activeTabId = state?.tabs?.activeTabId
     return {
       activeTabId,
       pageType: state.tabs?.tabs?.[activeTabId]?.state?.pageType

@@ -5,13 +5,13 @@ import { Form } from 'react-bootstrap'
 import { IoIosPlay } from 'react-icons/io'
 import { updateEndpointCheckStatus, updateAllEndpointCheckStatus } from '../../../store/clientData/clientDataActions'
 import { toast } from 'react-toastify'
-import { runAutomation } from '../../../services/generalApiService'
 import './runAutomation.scss'
 import { addCron, addWebhook } from '../../../services/cronJobs'
 import { generateCronExpression } from '../../common/utility'
-import { RiAiGenerate } from 'react-icons/ri'
-import { FaRegCopy } from 'react-icons/fa6'
+import { RiAiGenerate, RiCheckboxMultipleLine } from 'react-icons/ri'
 import { FaExclamationCircle } from 'react-icons/fa'
+import { runAutomations } from './redux/runAutomationActions'
+import { FiCopy } from 'react-icons/fi'
 
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
@@ -43,6 +43,9 @@ export default function RunAutomation() {
   const [basicRunFrequency, setBasicRunFrequency] = useState('Daily')
   const [webhookResponse, setWebhookResponse] = useState('')
   const [tokenGenerationInProgress, setTokenGenerationInProgress] = useState(false)
+  const [webhookUrlCopied, setwebhookUrlCopied] = useState(false)
+  const [webhookResponseCopied, setwebhookResponseCopied] = useState(false)
+
   useEffect(() => {
     filterEndpointsOfCollection()
     if (runType !== 'webhook') {
@@ -95,30 +98,20 @@ export default function RunAutomation() {
     return endpointsIds.filter((endpointId) => clientData?.[endpointId]?.automationCheck === true)
   }
 
-  const organizeSelectedEnv = () => {
-    if (!currentEnvironmentId) return
-    let arrangedEnv = {}
-    Object.keys(allEnviroments?.[currentEnvironmentId]?.variables || {}).forEach((envKey) => {
-      arrangedEnv[envKey] = allEnviroments[currentEnvironmentId]?.variables?.[envKey]?.currentValue || ''
-    })
-    return arrangedEnv
-  }
-
   const handleRunAutomation = async () => {
     const filteredEndpointIds = filterSelectedEndpointIds()
     if (Object.keys(filteredEndpointIds).length === 0) return toast.warn('Please select endpoints')
     if (filteredEndpointIds.length === 0) return toast.error('Please select at least one endpoint to run the automation')
-    const organizedEnv = organizeSelectedEnv()
     setAutomationLoading(true)
     try {
-      const responseData = await runAutomation({
+      const responseData = await dispatch(runAutomations({
         endpointIds: filteredEndpointIds,
         collectionId: params?.collectionId,
         userEmail,
         collectionName,
-        environmentId: currentEnvironmentId,
+        environmentId: currentEnvironmentId || '',
         runType
-      })
+      },params?.collectionId))
       if (responseData.status === 200) {
         setAutomationLoading(false)
         return toast.success('Automation ran successfully!')
@@ -181,6 +174,18 @@ export default function RunAutomation() {
       setAutomationLoading(false)
       return toast.error('Error occurred while generating token')
     }
+  }
+
+  const copyWebhookUrl = (text) => {
+    navigator.clipboard.writeText(webhookURL)
+    setwebhookUrlCopied(true);
+    setTimeout(() => setwebhookUrlCopied(false), 1000);
+  }
+
+  const copyWebhookResponse = (text) => {
+    navigator.clipboard.writeText(webhookResponse)
+    setwebhookResponseCopied(true);
+    setTimeout(() => setwebhookResponseCopied(false), 1000);
   }
 
   return (
@@ -336,8 +341,12 @@ export default function RunAutomation() {
                   <br />
                   <div className='mt-4 mb-6'>
                     <span>Webhook URL: {webhookURL}</span>
-                    <button className='btn btn-outline-secondary ml-2' onClick={() => navigator.clipboard.writeText(webhookURL)}>
-                      <FaRegCopy />
+                    <button className='btn btn-outline-secondary ml-2' onClick={() => copyWebhookUrl()}>
+                      {webhookUrlCopied ? (
+                        <RiCheckboxMultipleLine size={17} color='black' />
+                      ) : (
+                        <FiCopy size={17} />
+                      )}
                     </button>
                   </div>
                   <span style={{ color: '#ff8000' }}>
@@ -345,8 +354,12 @@ export default function RunAutomation() {
                   </span>
                   <div className='d-flex mb-3'>
                     <Form.Control type='text' readOnly value={webhookResponse} />
-                    <button className='btn btn-outline-secondary ml-2' onClick={() => navigator.clipboard.writeText(webhookResponse)}>
-                      <FaRegCopy />
+                    <button className='btn btn-outline-secondary ml-2' onClick={() => copyWebhookResponse()}>
+                      {webhookResponseCopied ? (
+                        <RiCheckboxMultipleLine size={17} color='black' />
+                      ) : (
+                        <FiCopy size={17} />
+                      )}
                     </button>
                     <br />
                   </div>

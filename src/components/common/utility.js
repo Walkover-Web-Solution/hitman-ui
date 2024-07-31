@@ -723,6 +723,48 @@ function addItsParent(flattenData, singleId, dataToPublishSet) {
   }
 }
 
+export const parseCronExpression = (cronExpression) => {
+  const [minute, hour, , , dayOfWeek] = cronExpression.split(' ').map(num => (num === '*' ? '*' : parseInt(num, 10)));
+
+  let basicRunFrequency;
+  let runFrequency = null;
+  let runTime = `${hour === '*' ? '00' : String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+
+  if (hour === '*' && minute !== '*') {
+    basicRunFrequency = 'Hourly';
+  } else if (dayOfWeek === '*') {
+    basicRunFrequency = 'Daily';
+  } else {
+    basicRunFrequency = 'Weekly';
+    switch (dayOfWeek) {
+      case '1-5':
+        runFrequency = 'Every weekday (Monday-Friday)';
+        break;
+      case 1:
+        runFrequency = 'Every Monday';
+        break;
+      case 2:
+        runFrequency = 'Every Tuesday';
+        break;
+      case 3:
+        runFrequency = 'Every Wednesday';
+        break;
+      case 4:
+        runFrequency = 'Every Thursday';
+        break;
+      case 5:
+        runFrequency = 'Every Friday';
+        break;
+      default:
+        runFrequency = 'Every day';
+        break;
+    }
+  }
+
+  return { basicRunFrequency, runFrequency, runTime };
+};
+
+
 export const generateCronExpression = (basicRunFrequency, runFrequency, runTime) => {
   const [hour, minute] = runTime.split(':').map((num) => parseInt(num, 10))
   if (basicRunFrequency === 'Hourly') {

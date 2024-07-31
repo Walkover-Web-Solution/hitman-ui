@@ -47,7 +47,7 @@ const ContentPanel = () => {
   }, [dispatch])
 
   useEffect(() => {
-    const { endpointId, pageId, historyId, collectionId } = params
+    const { endpointId, pageId, historyId, collectionId, runId } = params
 
     if (tabs.loaded) {
       if (endpointId && endpointId !== 'new') {
@@ -101,13 +101,30 @@ const ContentPanel = () => {
         }
       }
 
-      if (collectionId) {
+      if (collectionId && runId) {
+        if (tabs.tabs[runId]) {
+          if (tabs.activeTabId !== runId) {
+            dispatch(setActiveTabId(runId))
+          }
+        } else if (runId) {
+          dispatch(openInNewTab({
+            id: runId,
+            type: 'manual-runs',
+            status: tabStatusTypes.SAVED,
+            previewMode: false,
+            isModified: false,
+            state: {}
+          }))
+        }
+      }
+
+      if (collectionId && !runId) {
         if (tabs.tabs[collectionId]) {
           if (tabs.activeTabId !== collectionId) {
             dispatch(setActiveTabId(collectionId))
           }
         } else if (collections && collections[collectionId]) {
-          let pageType 
+          let pageType
           if (location.pathname.split('/')[6] === 'settings') {
             pageType = 'SETTINGS'
           } else if (location.pathname.split('/')[6] === 'runs') {
@@ -122,28 +139,33 @@ const ContentPanel = () => {
             previewMode: false,
             isModified: false,
             state: { pageType }
-          }))}
+          }))
         }
+      }
 
-      if (window.location.pathname === `/orgs/${params.orgId}/dashboard`) {
-        const { orgId } = params
-        if (tabs?.tabsOrder?.length) {
-          const { tabs: tabsData, activeTabId, tabsOrder } = tabs
+    }
+    if (window.location.pathname === `/orgs/${params.orgId}/dashboard`) {
+      const { orgId } = params
+      if (tabs?.tabsOrder?.length) {
+        const { tabs: tabsData, activeTabId, tabsOrder } = tabs
 
-          let tabId = activeTabId
-          if (!tabsData[tabId]) tabId = tabsOrder[0]
+        let tabId = activeTabId
+        if (!tabsData[tabId]) tabId = tabsOrder[0]
 
-          const tab = tabsData[tabId]
-          if (tabId !== activeTabId) dispatch(setActiveTabId(tabId))
+        const tab = tabsData[tabId]
+        if (tabId !== activeTabId) dispatch(setActiveTabId(tabId))
 
-          const collectionLength = Object.keys(collections).length
-          if (collectionLength > 0) {
-            navigate(
-              tab.type !== 'collection'
-                ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '/edit' : ''}`
-                : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
-            )
-          }
+        const collectionLength = Object.keys(collections).length
+        if (tab?.type === 'manual-runs') {
+          navigate(`/orgs/${orgId}/dashboard/collection/${tab?.state?.collectionId}/runs/${tab?.id}`)
+          return;
+        }
+        if (collectionLength > 0) {
+          navigate(
+            tab.type !== 'collection'
+              ? `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}${tab.isModified ? '/edit' : ''}`
+              : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+          );
         } else {
           dispatch(addNewTab())
         }
