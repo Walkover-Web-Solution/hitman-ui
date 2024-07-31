@@ -18,6 +18,28 @@
 .fs-5 {
   font-size: $font-extra-small !important;
 }
+.font-16 {
+  font-size: $font-normal-n !important;
+}
+
+.gap-1 {
+  gap: $gap-small !important;
+}
+.gap-2 {
+  gap: $gap-medium !important;
+}
+.gap-3 {
+  gap: $gap-normal !important;
+}
+.gap-4 {
+  gap: $gap-small-large !important;
+}
+.gap-5 {
+  gap: $gap-large !important;
+}
+.gap-6 {
+  gap: $gap-extra-large !important;
+}
 
 .mobile-warning {
   position: sticky;
@@ -2623,6 +2645,7 @@ main.mainpublic-endpoint-main .for-public-view {
   justify-content: center;
   padding: 0;
   .poweredByText {
+    color: #777272;
     display: flex;
     justify-content: center;
     font-size: 14px;

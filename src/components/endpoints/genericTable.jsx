@@ -286,6 +286,7 @@ class GenericTable extends Component {
                 value={currentItem.checked}
                 checked={isChecked}
                 type='checkbox'
+                aria-label="checkbox"
                 className='Checkbox'
                 onChange={this.handleChange}
               />
@@ -405,6 +406,7 @@ class GenericTable extends Component {
                 value={dataArray[index].checked}
                 checked={dataArray[index].checked === 'true'}
                 type='checkbox'
+                aria-label="checkbox"
                 className='Checkbox'
                 onChange={this.handleChange}
               />

@@ -122,7 +122,7 @@ class CodeTemplate extends Component {
   }
 
   getClassForLanguages = (key) => {
-    const commonClass = 'mr-2 d-flex d-md-flex flex-column justify-content-center align-items-center'
+    const commonClass = 'd-flex d-md-flex gap-1 mr-0 flex-column justify-content-center align-items-center'
     let classToReturn = key === this.selectedLanguage ? 'active ' + commonClass : commonClass
     return this.props.theme !== 'light' ? classToReturn + ' ' : classToReturn
   }
@@ -145,6 +145,7 @@ class CodeTemplate extends Component {
               className={`pubCode-icon btn mt-4 position-absolute rounded-circle px-1 py-0 bg-white${
                 this.props.curlSlider ? ' active' : ''
               }`}
+              aria-label="sample code open close"
             >
               <FaChevronRight size={12} />
             </button>
@@ -173,7 +174,7 @@ class CodeTemplate extends Component {
                     </div>
                   )}
                 </div>
-                <div className='select-code-wrapper d-flex align-items-center mb-3 img'>
+                <div className='select-code-wrapper d-flex align-items-center gap-1 mb-3 img'>
                   {primaryLanguages.map((key) => (
                     <button
                       key={key}
@@ -182,8 +183,8 @@ class CodeTemplate extends Component {
                         this.makeCodeTemplate(key)
                       }}
                     >
-                      <img src={languages[key].imagePath} alt={languages[key].name} width={15} />
-                      {languages[key].name}
+                      <img src={languages[key].imagePath} alt={languages[key].title} width={20} />
+                      <span>{languages[key].name}</span>
                     </button>
                   ))}
                   <Dropdown className='dropdown-more'>
@@ -225,6 +226,7 @@ class CodeTemplate extends Component {
                       text={this.state.codeSnippet ? this.state.codeSnippet : this.codeSnippet}
                       onCopy={() => this.setState({ copied: true }, () => setTimeout(() => this.setState({ copied: false }), 1000))}
                       className='copy-to-clipboard mt-1'
+                      aria-label="copy-button"
                     >
                       <button>
                         {this.state.copied ? (
@@ -256,6 +258,11 @@ class CodeTemplate extends Component {
                     onLoad={(editor) => {
                       editor.getSession().setUseWrapMode(true)
                       editor.setShowPrintMargin(false)
+                      const textarea = editor.renderer.textarea;
+                        if (textarea) {
+                          textarea.setAttribute('type', 'text');
+                          textarea.setAttribute('aria-label', 'Search');
+                        }
                     }}
                   />
                   <div id='code-window-body' className={!isOnPublishedPage() ? 'empty-div-light' : 'empty-div-dark'}></div>

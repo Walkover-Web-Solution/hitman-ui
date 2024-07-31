@@ -3121,7 +3121,10 @@ class DisplayEndpoint extends Component {
                                     ? 'btn custom-theme-btn btn-lg buttonLoader'
                                     : 'btn btn-lg custom-theme-btn px-md-4 px-3'
                                 }
-                                style={{ backgroundColor: this.props.publicCollectionTheme }}
+                                style={{ 
+                                  backgroundColor: this.props.publicCollectionTheme, 
+                                  opacity: 0.9
+                              }}
                                 type='submit'
                                 id='send-request-button'
                                 onClick={() => this.handleSend()}
