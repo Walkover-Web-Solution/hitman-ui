@@ -6,6 +6,8 @@ import { navigateTo } from '../../../navigationService'
 import { getOrgId, isElectron } from '../../common/utility'
 import { openModal } from '../../modals/redux/modalsActions'
 import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
+import { getPageContent } from '../../../services/pageServices'
+import { toast } from 'react-toastify'
 
 export const fetchTabsFromRedux = () => {
   return async (dispatch) => {
@@ -15,12 +17,29 @@ export const fetchTabsFromRedux = () => {
       activeTabId: state.tabs.activeTabId,
       tabsOrder: state.tabs.tabsOrder
     }
-
     dispatch({
       type: tabsActionTypes.FETCH_TABS_FROM_REDUX,
       tabsList,
       tabsMetadata
     })
+  }
+}
+
+export const fetchTabContent = (tabId) => {
+  return async (dispatch) => {
+    const orgId = getOrgId()
+    try {
+      const response = await getPageContent(orgId, tabId)
+      const payloadData = { id: tabId, data: response }
+      dispatch({
+        type: tabsActionTypes.FETCH_PAGE_CONTENT_SUCCESS,
+        payload: payloadData
+      })
+      return response.data
+    } catch (error) {
+      toast.error('Failed to fetch page content')
+      throw error
+    }
   }
 }
 

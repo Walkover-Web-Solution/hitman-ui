@@ -81,6 +81,15 @@ const ContentPanel = () => {
               isModified: false,
             }))
           }
+        } else if (pages && pages[pageId]) {
+          dispatch(openInNewTab({
+            id: pageId,
+            type: 'page',
+            status: tabStatusTypes.SAVED,
+            previewMode: false,
+            isModified: false,
+            state: {},
+          }))
         }
 
       if (historyId) {
