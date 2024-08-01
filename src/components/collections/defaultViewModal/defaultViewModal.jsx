@@ -73,7 +73,7 @@ export class DefaultViewModal extends Form {
     let { name } = { ...this.state?.data }
     name = toTitleCase(name)
     if (this.props.title === 'Add Parent Page' || this.props.addEntity) {
-    const rootParentId = collections?.rootParentId
+      const rootParentId = collections?.rootParentId
       const data = { ...this.state.data, name }
       const newPage = {
         ...data,
@@ -83,9 +83,9 @@ export class DefaultViewModal extends Form {
       }
       this.props.add_page(rootParentId, newPage)
     }
-  
+
     if (this.props?.title === 'Add Page' || this.props?.title === 'Add Sub Page' || this.props?.addEntity) {
-    const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
+      const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
       const ParentId = selectedId
       const data = { ...this.state.data }
       const newPage = {
@@ -96,7 +96,8 @@ export class DefaultViewModal extends Form {
         state: 0
       }
       this.props.add_page(ParentId, newPage)
-      }}
+    }
+  }
   renderCollectionDetailsForm() {
     return (
       <div className='mt-5'>

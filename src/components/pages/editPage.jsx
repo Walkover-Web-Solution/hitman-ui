@@ -10,7 +10,7 @@ import { updateTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
 import withRouter from '../common/withRouter'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import pagesActionTypes from './redux/pagesActionTypes'
 
 const withQuery = (WrappedComponent) => {
@@ -172,7 +172,7 @@ class EditPage extends Component {
       return
     }
     if (editedPage?.contents?.trim() === '<p></p>' || editedPage?.contents?.trim() === '') {
-      editedPage.contents = '';
+      editedPage.contents = ''
     }
     delete editedPage['isPublished']
     this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
