@@ -10,7 +10,7 @@ import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
 import SplitPane from '../splitPane/splitPane.js'
 import '../collectionVersions/collectionVersions.scss'
-import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
+import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
 import { addCollectionAndPages } from '../redux/generalActions'
@@ -468,7 +468,7 @@ class PublicEndpoint extends Component {
                       this.setState({ isSticky: false })
                     }
                   }}
-                  className='display-component'
+                  className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}
                 >
                   {type == 4 && (
                     <DisplayEndpoint
