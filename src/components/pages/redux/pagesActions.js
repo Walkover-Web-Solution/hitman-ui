@@ -6,12 +6,9 @@ import {operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
-<<<<<<< HEAD
 import { navigateTo } from '../../../navigationService'
 import { getCurrentOrg } from '../../auth/authServiceV2'
-=======
 import { getPageContent } from '../../../services/pageServices'
->>>>>>> 828d1c00 (data saved to draft on api call)
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {

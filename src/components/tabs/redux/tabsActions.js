@@ -75,7 +75,7 @@ export const addNewTab = () => {
         }
       })
       dispatch(setActiveTabId(id))
-      navigateTo(`/orgs/${orgId}/dashboard/page/new/edit`)
+      navigateTo(`/orgs/${orgId}/dashboard/page/new`)
     }
   } else {
     return async (dispatch) => {
