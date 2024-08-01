@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchTabContent, updateDraft } from '../../components/tabs/redux/tabsActions'
-import Tiptap from '../../components/tiptapEditor/tiptap'
-import { debounce } from 'lodash'
+import React, { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTabContent, updateDraft } from "../../components/tabs/redux/tabsActions";
+import Tiptap from "../../components/tiptapEditor/tiptap";
+import { debounce } from "lodash";
 import './page.scss'
-import { updatePage } from '../../components/pages/redux/pagesActions'
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { BsThreeDots } from 'react-icons/bs'
 import moment from 'moment'
+import { updatePageII } from '../../components/pages/redux/pagesActions'
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1'
 
 const Page = () => {
@@ -18,22 +18,21 @@ const Page = () => {
 
     const [editorKey, setEditorKey] = useState(0)
     const [sidebar, setSidebar] = useState(false)
-    const pages = useSelector((state) => state.pages)
-    const users = useSelector((state) => state.users.usersList)
-    const { draftContent, page } = useSelector((state) => ({
+
+    const { draftContent, page, pages, users } = useSelector((state) => ({
         draftContent: state.tabs.tabs[pageId]?.draft,
-        page: state?.pages[pageId]
+        page: state?.pages[pageId],
+        pages: state.pages,
+        users: state.users.usersList
     }))
+
     const [pageName, setPageName] = useState(page?.name)
     const updatedById = pages?.[pageId]?.updatedBy
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null
     const user = users?.find((user) => user.id === updatedById)
 
     useEffect(() => {
-        if (params.route && !params?.route?.includes('new')) {
-            if (draftContent === undefined) dispatch(fetchTabContent(pageId))
-            
-        }
+        if (draftContent === undefined || (params.route && !params?.route?.includes('new')) )  dispatch(fetchTabContent(pageId))
         setPageName(page?.name)
     }, [pageId, draftContent, page])
 
@@ -42,6 +41,10 @@ const Page = () => {
             setEditorKey((prevKey) => prevKey + 1)
         }, 1000)
     }, [pageId])
+
+    const handleSavePage = () => {
+        dispatch(updatePageII(page.id, draftContent, pageName))
+    }
 
     const debounceUpdateDraft = useCallback(
         debounce((pageId, content) => {
@@ -97,7 +100,7 @@ const Page = () => {
                         </OverlayTrigger>
                     </div>
                     <div className='button'>
-                        <button onClick={() => setSidebar(true)}>Save</button>
+                        <button onClick={handleSavePage} >Save</button>
                     </div>
                     <div className='inner-operations'>
                         <Dropdown>
@@ -134,17 +137,20 @@ const Page = () => {
                     />
                 </div>
             </div>
-            {sidebar && (
-                <SaveAsPageSidebar
-                    name="Anya's first page"
-                    onHide={() => setSidebar(false)}
-                    handleSubmit={() => {
-                        console.log('Page saved')
-                        setSidebar(false)
-                    }}
-                />
-            )}
-        </div>
+            {
+                sidebar && (
+                    <SaveAsPageSidebar
+                        name="Anya's first page"
+                        onHide={() => setSidebar(false)}
+                        handleSubmit={() => {
+                            console.log('Page saved')
+                            setSidebar(false)
+                        }}
+                    />
+                )
+            }
+        </div >
     )
 }
+
 export default Page
