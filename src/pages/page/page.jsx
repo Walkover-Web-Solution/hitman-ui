@@ -10,6 +10,7 @@ import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { BsThreeDots } from 'react-icons/bs'
 import moment from 'moment'
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1'
+import IconButton from '../../components/common/iconButton'
 
 const Page = () => {
     const dispatch = useDispatch()
@@ -93,17 +94,17 @@ const Page = () => {
                                 </Tooltip>
                             }
                         >
-                            <button>Edited By</button>
+                            <button className='text-black-50'>Edited By</button>
                         </OverlayTrigger>
                     </div>
                     <div className='button'>
-                        <button onClick={() => setSidebar(true)}>Save</button>
+                    <IconButton><button onClick={() => setSidebar(true)}>Save</button></IconButton>
                     </div>
                     <div className='inner-operations'>
                         <Dropdown>
                             <Dropdown.Toggle as='div' id='dropdown-basic' className='button-style button'>
                                 <div className='text-dark'>
-                                    <BsThreeDots />
+                                <IconButton><BsThreeDots size={18}/></IconButton>
                                 </div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
