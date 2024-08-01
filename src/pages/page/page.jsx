@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+    import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTabContent, updateDraft } from "../../components/tabs/redux/tabsActions";
@@ -10,6 +10,7 @@ import { BsThreeDots } from 'react-icons/bs'
 import moment from 'moment'
 import { updatePageII } from '../../components/pages/redux/pagesActions'
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1'
+import IconButton from '../../components/common/iconButton'
 
 const Page = () => {
     const dispatch = useDispatch()
@@ -32,7 +33,7 @@ const Page = () => {
     const user = users?.find((user) => user.id === updatedById)
 
     useEffect(() => {
-        if (draftContent === undefined || (params.route && !params?.route?.includes('new')) )  dispatch(fetchTabContent(pageId))
+        if (draftContent === undefined || (params.route && !params?.route?.includes('new'))) dispatch(fetchTabContent(pageId))
         setPageName(page?.name)
     }, [pageId, draftContent, page])
 
@@ -96,17 +97,17 @@ const Page = () => {
                                 </Tooltip>
                             }
                         >
-                            <button>Edited By</button>
+                            <button className='text-black-50'>Edited By</button>
                         </OverlayTrigger>
                     </div>
                     <div className='button'>
-                        <button onClick={handleSavePage} >Save</button>
-                    </div>
+                        <IconButton><button onClick={handleSavePage} >Save</button></IconButton>
+                    </div >
                     <div className='inner-operations'>
                         <Dropdown>
                             <Dropdown.Toggle as='div' id='dropdown-basic' className='button-style button'>
                                 <div className='text-dark'>
-                                    <BsThreeDots />
+                                    <IconButton><BsThreeDots size={18} /></IconButton>
                                 </div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -115,8 +116,8 @@ const Page = () => {
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
-                </div>
-            </div>
+                </div >
+            </div >
             <div className='page-container'>
                 <input
                     className='page-name'

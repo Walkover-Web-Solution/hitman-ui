@@ -15,15 +15,14 @@
     width: 100%;
 
     .header-page-name {
-      text-align: center;
       border: none;
-      border-radius: 5px;
+      border-radius: 3px;
       padding: 2.5px 5px;
       transition: background-color 0.2s;
 
       &:hover,
       &:focus {
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: #d6d2d28f;
         outline: none;
       }
     }
@@ -37,7 +36,6 @@
     .header-operations > div {
       background: transparent;
       border: none;
-      margin: 0px 8px;
       display: flex;
       align-items: center;
     }
@@ -50,7 +48,6 @@
       cursor: pointer;
       border-radius: 5px;
 
-      &:hover,
       &:focus {
         background-color: rgba(0, 0, 0, 0.1);
       }
@@ -62,7 +59,7 @@
       outline: none;
       color: inherit;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 3px;
       padding: 1px 5px;
       &:hover,
       &:focus {
@@ -78,10 +75,6 @@
       background: transparent;
       box-shadow: none;
     }
-
-    .inner-operations {
-      margin: 5px 10px;
-    }
   }
 
   .page-container {
@@ -89,8 +82,7 @@
     flex-direction: column;
     padding: 20px;
     box-sizing: border-box;
-    width: 65%;
-    min-width: 600px;
+    max-width: 800px;
     height: 100%;
 
     .page-name {
