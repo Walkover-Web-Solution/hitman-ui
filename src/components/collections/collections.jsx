@@ -135,8 +135,8 @@ const Collections = (props) => {
 
   const openAddPageEndpointModal = (collectionId) => {
     const newPage = {name:'untitled' , pageType: 1};
-    if(props?.organizations?.currentOrg?.meta?.type === 0 ){
-      dispatch(addPage(navigate, props?.collections[collectionId].rootParentId,newPage))
+    if(organizations?.currentOrg?.meta?.type === 0 ){
+      dispatch(addPage(navigate, collections[collectionId].rootParentId,newPage))
     }else{
       setShowAddCollectionModal(true)
       setSelectedCollection({

@@ -21,7 +21,7 @@ import './subpages.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
 
 const SubPage = (props) => {
-  const { pages, clientData, collections } = useSelector((state) => ({
+  const { pages, clientData, collections, organizations } = useSelector((state) => ({
     pages: state.pages,
     clientData: state.clientData,
     collections: state.collections,
@@ -88,8 +88,8 @@ const SubPage = (props) => {
 
   const openAddSubPageModal = (subPageId) => {
     const newPage = { name: 'untitled', pageType: 3 };
-    if (props?.organizations?.currentOrg?.meta?.type === 0) {
-      dispatch(addPage(navigate, props.pages[subPageId].versionId, newPage))
+    if (organizations?.currentOrg?.meta?.type === 0) {
+      dispatch(addPage(navigate, pages[subPageId].versionId, newPage))
     }
     else {
       setShowAddCollectionModal(true)

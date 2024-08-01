@@ -26,7 +26,7 @@ import './collectionVersions.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
 
 const CollectionParentPages = (props) => {
-  const { pages, clientData, collections,organizations} = useSelector((state) => {
+  const { pages, clientData, collections, organizations} = useSelector((state) => {
     return {
       pages: state.pages,
       clientData: state.clientData,
@@ -169,8 +169,8 @@ const CollectionParentPages = (props) => {
 
   const openAddPageEndpointModal = (pageId) => {
     const newPage = {name:'untitled' , pageType: 3};
-    if(props?.organizations?.currentOrg?.meta?.type === 0 ){
-      dispatch(addPage(navigate, props?.pages[pageId].versionId,newPage))
+    if(organizations?.currentOrg?.meta?.type === 0 ){
+      dispatch(addPage(navigate, pages[pageId].versionId,newPage))
     }else{
     setShowAddCollectionModal(true)
     setSelectedPage({ ...pages[pageId] })

@@ -8,7 +8,6 @@ import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import { navigateTo } from '../../../navigationService'
 import { getCurrentOrg } from '../../auth/authServiceV2'
-import { getPageContent } from '../../../services/pageServices'
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {

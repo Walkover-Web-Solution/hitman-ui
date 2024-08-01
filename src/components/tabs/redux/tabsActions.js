@@ -51,6 +51,7 @@ export const updateDraft = (tabId, draftContent) => {
 }
 
 export const addNewTab = () => {
+  const draft = ''
   const state = store.getState()
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
@@ -71,9 +72,9 @@ export const addNewTab = () => {
           status: tabStatusTypes.NEW,
           previewMode: false,
           isModified: false,
-          name:'untitled'
         }
       })
+      dispatch(updateTabDraft(id,draft))
       dispatch(setActiveTabId(id))
       navigateTo(`/orgs/${orgId}/dashboard/page/new`)
     }
