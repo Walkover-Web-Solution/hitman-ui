@@ -1310,7 +1310,7 @@ class DisplayEndpoint extends Component {
         protocolType: endpointContent?.protocolType || null,
         description: endpointContent?.description || ''
       }
-      if (trimString(endpoint.name) === '' || trimString(endpoint.name).toLowerCase() === 'untitled')
+      if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
       else if (currentTabId && !this.props.pages[currentTabId]) {
         endpoint.requestId = currentTabId
