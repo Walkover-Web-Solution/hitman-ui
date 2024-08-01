@@ -45,7 +45,7 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
   }
 }
 
-export const updatePage = (history, editedPage) => {
+export const updatePage = (editedPage) => {
   editedPage.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     const dataToSend = {

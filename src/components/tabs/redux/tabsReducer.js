@@ -1,5 +1,6 @@
 import tabsActionTypes from './tabsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { toast } from 'react-toastify'
 
 const initialState = {
   tabs: {},
@@ -137,17 +138,20 @@ function tabsReducer(state = initialState, action) {
     }
 
     case tabsActionTypes.FETCH_PAGE_CONTENT_SUCCESS:
-      // console.log("payload : ", action.payload.data)
-      tabs = { ...state };
-      if (tabs.tabs[action.payload.id]) {
-        tabs.tabs[action.payload.id] = {
-          ...tabs.tabs[action.payload.id],
-          draft: action.payload.data
-        };
-      } else {
-        console.warn(`Tab with id ${action.payload.id} not found in FETCH_PAGE_CONTENT_SUCCESS`);
+      tabs = { ...state }
+      tabs.tabs[action.payload.id] = {
+        ...tabs.tabs[action.payload.id],
+        draft: action.payload.data
       }
       return tabs
+
+    case tabsActionTypes.UPDATE_DRAFT_CONTENT:
+      tabs = { ...state }
+      tabs.tabs[action.payload.id] = {
+        ...tabs.tabs[action.payload.id],
+        draft: action.payload.data
+      }
+      return tabs;
 
     default:
       return state

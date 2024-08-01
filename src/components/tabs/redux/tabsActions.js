@@ -43,6 +43,13 @@ export const fetchTabContent = (tabId) => {
   }
 }
 
+export const updateDraft = (tabId, draftContent) => {
+  const payload = { data: draftContent, id: tabId }
+  return async (dispatch) => {
+    dispatch({ type: tabsActionTypes.UPDATE_DRAFT_CONTENT, payload })
+  }
+}
+
 export const addNewTab = () => {
   const state = store.getState()
   const id = shortid.generate()
@@ -88,6 +95,7 @@ export const addNewTab = () => {
     }
   }
 }
+
 
 export const closeTab = (tabId, history) => {
   return async (dispatch) => {
