@@ -40,8 +40,22 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
     originalEndpoint
   }
 }
-export const updatePageII = (id, content, name) => {
-  return async () => {
+
+export const updatePageName = (id, updatedName) => {
+  const dataToSend = { name: updatedName }
+  return async (dispatch) => {
+    const res = await pageApiService.updatePage(id, dataToSend)
+    if (res) {
+      dispatch({
+        type: pagesActionTypes.ON_PAGE_RENAME,
+        payload: { id, updatedName }
+      })
+    }
+  }
+}
+
+export const updatePageContent = (id, content, name) => {
+  return async (dispatch) => {
     const dataToSend = {
       name,
       contents: content,

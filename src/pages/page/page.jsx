@@ -1,16 +1,16 @@
-    import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTabContent, updateDraft } from "../../components/tabs/redux/tabsActions";
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
-import './page.scss'
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { BsThreeDots } from 'react-icons/bs'
 import moment from 'moment'
-import { updatePageII } from '../../components/pages/redux/pagesActions'
+import { updatePageContent, updatePageName } from '../../components/pages/redux/pagesActions'
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1'
 import IconButton from '../../components/common/iconButton'
+import './page.scss'
 
 const Page = () => {
     const dispatch = useDispatch()
@@ -35,16 +35,14 @@ const Page = () => {
     useEffect(() => {
         if (draftContent === undefined || (params.route && !params?.route?.includes('new'))) dispatch(fetchTabContent(pageId))
         setPageName(page?.name)
-    }, [pageId, draftContent, page])
-
-    useEffect(() => {
         setTimeout(() => {
             setEditorKey((prevKey) => prevKey + 1)
         }, 1000)
     }, [pageId])
 
     const handleSavePage = () => {
-        dispatch(updatePageII(page.id, draftContent, pageName))
+        dispatch(updatePageContent(page.id, draftContent, pageName))
+        dispatch(updatePageName(page.id, pageName))
     }
 
     const debounceUpdateDraft = useCallback(
@@ -68,6 +66,7 @@ const Page = () => {
             if (editorInput) {
                 editorInput.focus()
             }
+            dispatch(updatePageName(page.id, pageName))
         }
     }
 
@@ -126,6 +125,7 @@ const Page = () => {
                     placeholder='Untitled'
                     onChange={handlePageNameChange}
                     onKeyDown={handlePageNameKeyDown}
+                    onBlur={() => dispatch(updatePageName(page.id, pageName))}
                 />
 
                 <div id='tiptap-editor' className='page-content'>
