@@ -52,7 +52,7 @@ export default function RenderPageContent(props) {
                             </div>
                         </>
                     )}
-                </div> 
+                </div>
             }
         </>
     )
