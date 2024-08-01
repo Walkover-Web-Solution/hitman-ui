@@ -2,7 +2,7 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import {operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
+import { operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
@@ -38,6 +38,15 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
     type: endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR,
     error,
     originalEndpoint
+  }
+}
+export const updatePageII = (id, content, name) => {
+  return async () => {
+    const dataToSend = {
+      name,
+      contents: content,
+    }
+    const res = await pageApiService.updatePage(id, dataToSend)
   }
 }
 
