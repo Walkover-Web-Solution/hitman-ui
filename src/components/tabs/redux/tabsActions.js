@@ -43,6 +43,13 @@ export const fetchTabContent = (tabId) => {
   }
 }
 
+export const updateDraft = (tabId, draftContent) => {
+  const payload = { data: draftContent, id: tabId }
+  return async (dispatch) => {
+    dispatch({ type: tabsActionTypes.UPDATE_DRAFT_CONTENT, payload })
+  }
+}
+
 export const addNewTab = () => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
@@ -70,6 +77,7 @@ export const addNewTab = () => {
     navigateTo(`/orgs/${orgId}/dashboard/endpoint/new`)
   }
 }
+
 
 export const closeTab = (tabId, history) => {
   return async (dispatch) => {

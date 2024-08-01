@@ -62,7 +62,7 @@ const ContentPanel = () => {
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
-            state: {}
+            state: {},
           }))
         }
       }

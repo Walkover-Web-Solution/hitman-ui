@@ -1,40 +1,42 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTabContent } from "../../components/tabs/redux/tabsActions";
+import { fetchTabContent, updateDraft } from "../../components/tabs/redux/tabsActions";
 import Tiptap from "../../components/tiptapEditor/tiptap";
+import { debounce } from "lodash";
 import './page.scss'
+import { updatePage } from "../../components/pages/redux/pagesActions";
 
 const Page = () => {
+
     const dispatch = useDispatch();
     const { pageId } = useParams();
-    const { pageContent, page } = useSelector((state) => {
-        return {
-            pageContent: state?.tabs?.tabs[pageId]?.draft,
-            page: state?.pages[pageId]
-        }
-    })
+    const { draftContent, page } = useSelector((state) => ({
+        draftContent: state.tabs.tabs[pageId]?.draft,
+        page: state?.pages[pageId],
+    }))
 
+    const [editorKey, setEditorKey] = useState(0);
     const [pageName, setPageName] = useState(page?.name)
-    const [content, setcontent] = useState(pageContent)
 
     useEffect(() => {
-        dispatch(fetchTabContent(pageId))
-        setcontent(pageContent)
+        if (draftContent === undefined) dispatch(fetchTabContent(pageId))
         setPageName(page?.name)
-    }, [pageId, dispatch, page?.name, pageContent])
+    }, [pageId, draftContent, page])
 
-    const renderEditor = (pageContent) => {
-        return (
-            <div >
-                <Tiptap
-                    // onChange={this.handleChange}
-                    initial={pageContent}
-                    isInlineEditor={false}
-                    disabled={false}
-                />
-            </div>
-        )
+    useEffect(() => {
+        setTimeout(() => { setEditorKey(prevKey => prevKey + 1) }, 1000);
+    }, [pageId])
+
+    const debounceUpdateDraft = useCallback(
+        debounce((pageId, content) => {
+            dispatch(updateDraft(pageId, content));
+        }, 500),
+        [dispatch]
+    )
+
+    const handleContentChange = (newContent) => {
+        debounceUpdateDraft(pageId, newContent)
     }
 
     const handlePageNameChange = (event) => {
@@ -54,10 +56,9 @@ const Page = () => {
         <div className="parent-page-container" >
             <div className="page-header" >
                 <input className="header-page-name" value={pageName} type="text" onChange={handlePageNameChange} />
-
                 <div className="header-operations" >
                     <button>Edited By</button>
-                    <button>Save</button>
+                    <button >Save</button>
                     <button>...</button>
                 </div>
             </div>
@@ -70,9 +71,14 @@ const Page = () => {
                     onChange={handlePageNameChange}
                     onKeyDown={handlePageNameKeyDown}
                 />
-
                 <div id="tiptap-editor" className="page-content" >
-                    {renderEditor(pageContent)}
+                    <Tiptap
+                        key={`${pageId}-${editorKey}`}
+                        onChange={handleContentChange}
+                        initial={draftContent}
+                        isInlineEditor={false}
+                        disabled={false}
+                    />
                 </div>
             </div>
         </div>
