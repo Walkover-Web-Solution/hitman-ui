@@ -455,7 +455,7 @@ class DisplayEndpoint extends Component {
     if (typeof window.SendDataToChatbot === 'function' && this.props?.tabs[this.props?.activeTabId]?.type === 'endpoint') {
       window.SendDataToChatbot({
         bridgeName: 'api',
-        threadId: `${userid}`,
+        threadId: `${userid}-${this.props?.params?.endpointId}`,
         variables: { Proxy_auth_token: getProxyToken(), endpoint: this.props.endpointContent }
       })
     }
