@@ -18,17 +18,18 @@ function InviteTeam() {
   const inputRef = useRef(null)
   const orgId = getCurrentOrg()?.id
 
-  const { users } = useSelector((state) => {
-    return { users: state.users.usersList }
+  const { users, currentUserEmail, currentOrgName } = useSelector((state) => {
+    return { users: state.users.usersList, currentUserEmail: state.users.currentUser.email, currentOrgName: state.organizations.currentOrg.name }
   })
 
   useEffect(() => {
+    console.log(currentUserEmail, currentOrgName)
     if (typeof window.SendDataToChatbot === 'function') {
       const userId = getCurrentUser()?.id
       window.SendDataToChatbot({
         bridgeName: 'LandingPage',
         threadId: `${userId}`,
-        variables: { Proxy_auth_token: getProxyToken() }
+        variables: { Proxy_auth_token: getProxyToken(), senderEmail: currentUserEmail, organizationName: currentOrgName }
       })
     }
   }, [])
