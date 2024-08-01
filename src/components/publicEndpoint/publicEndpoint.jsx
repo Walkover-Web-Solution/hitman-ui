@@ -19,6 +19,7 @@ import { useQueryClient, useMutation } from 'react-query'
 import { MdDehaze, MdClose } from 'react-icons/md'
 import { background } from '../backgroundColor.js'
 import withRouter from '../common/withRouter.jsx'
+import PublicPage from '../../pages/publicPage/publicPage.jsx'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -478,7 +479,7 @@ class PublicEndpoint extends Component {
                   )}
 
                   {(type == 1 || type == 3) && (
-                    <DisplayPage
+                    <PublicPage
                       {...this.props}
                       fetch_entity_name={this.fetchEntityName.bind(this)}
                       publicCollectionTheme={collectionTheme}
