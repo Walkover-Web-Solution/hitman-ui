@@ -24,36 +24,59 @@ const Page = () => {
         setPageName(page?.name)
     }, [pageId, dispatch, page?.name, pageContent])
 
-
-    return <div className="parent-page-container" >
-        <div className="page-header" >
-            <input className="header-page-name" value={pageName} type="text" />
-
-            <div className="header-operations" >
-                <button>Edited By</button>
-                <button>Save</button>
-                <button>...</button>
-            </div>
-        </div>
-        <div className="page-container" >
-            <input
-                className="page-name"
-                type="text"
-                value={pageName}
-                placeholder="Untitled"
-            />
-
-            <div className="page-content" >
+    const renderEditor = (pageContent) => {
+        return (
+            <div >
                 <Tiptap
-                    isInlineEditor
-                    initial={content}
+                    // onChange={this.handleChange}
+                    initial={pageContent}
+                    isInlineEditor={false}
+                    disabled={false}
+                />
+            </div>
+        )
+    }
+
+    const handlePageNameChange = (event) => {
+        setPageName(event.target.value)
+    }
+
+    const handlePageNameKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            const editorInput = document.querySelector('#tiptap-editor [contenteditable="true"]');
+            if (editorInput) {
+                editorInput.focus();
+            }
+        }
+    }
+
+    return (
+        <div className="parent-page-container" >
+            <div className="page-header" >
+                <input className="header-page-name" value={pageName} type="text" onChange={handlePageNameChange} />
+
+                <div className="header-operations" >
+                    <button>Edited By</button>
+                    <button>Save</button>
+                    <button>...</button>
+                </div>
+            </div>
+            <div className="page-container" >
+                <input
+                    className="page-name"
+                    type="text"
+                    value={pageName}
+                    placeholder="Untitled"
+                    onChange={handlePageNameChange}
+                    onKeyDown={handlePageNameKeyDown}
                 />
 
-                <br />
-                {content ? content : 'write here'}
+                <div id="tiptap-editor" className="page-content" >
+                    {renderEditor(pageContent)}
+                </div>
             </div>
         </div>
-    </div>
+    )
 }
 
 export default Page
