@@ -129,7 +129,7 @@ const UserProfile = () => {
           </IconButton>
         </div>
         <div className='add-button d-flex align-items-center'>
-          <button className='mr-1 px-1 btn btn-light' onClick={handleAddNewClick}>
+          <button className='mr-1 px-1 btn btn-light' onClick={() => setShowNewCollectionModal(true)}>
             New
           </button>
           <button className='btn btn-light px-1' onClick={handleImportClick}>
@@ -141,7 +141,7 @@ const UserProfile = () => {
               handleImportClick()
             }}
           />
-          <CustomModal size='sm' modalShow={showNewCollectionModal} hideModal={handleAddNewClick}>
+          <CustomModal size='sm' modalShow={showNewCollectionModal} onHide={() => setShowNewCollectionModal(false)}>
             <CollectionForm title='Add new Collection' onHide={handleAddNewClick} />
           </CustomModal>
         </div>
