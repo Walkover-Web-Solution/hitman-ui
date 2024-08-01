@@ -25,7 +25,7 @@ export async function leaveOrganization(orgId) {
     const response = await http.post(`${proxyUrl}/inviteAction/leave`, { company_id: orgId });
     if (orgId == getCurrentOrg()?.id) {
       const newOrg = getOrgList()?.[0]?.id;
-      switchOrg(newOrg);
+      switchOrg(newOrg, true);
     }
     if (response.status === 200) {
       store.dispatch(removeOrganizationById(orgId));
@@ -44,13 +44,14 @@ export function updateOrgDataByOrgId(OrgId) {
   store.dispatch(setCurrentorganization(currentOrganisation))
 }
 
-export async function switchOrg(orgId, redirect= true) {
+export async function switchOrg(orgId, redirect) {
   try {
     await http.post(proxyUrl + '/switchCompany', { company_ref_id: orgId })
     updateOrgDataByOrgId(orgId)
-    if (redirect) {
-      redirectToDashboard(orgId)
+    if(redirect) {
+        redirectToDashboard(orgId)
     }
+
   } catch (error) {
     console.error('Error while calling switchCompany API:', error)
   }
@@ -60,14 +61,14 @@ async function createOrganizationAndRunCode() {
   toast.success('Organization Successfully Created')
 }
 
-export async function createOrg(name, type, redirect) {
+export async function createOrg(name, type) {
   try {
     const data = { company: { name, meta: { type } } }
     const newOrg = await http.post(proxyUrl + '/createCompany', data)
-    await getDataFromProxyAndSetDataToLocalStorage()
+    await getDataFromProxyAndSetDataToLocalStorage(null,false)
     updateOrgDataByOrgId(newOrg?.data?.data?.id)
     await createOrganizationAndRunCode()
-    await switchOrg(newOrg?.data?.data?.id, redirect)
+    await switchOrg(newOrg?.data?.data?.id, false)
   } catch (e) {
     toast.error(e?.response?.data?.message ? e?.response?.data?.message : "Something went wrong")
   }
@@ -80,7 +81,7 @@ export async function updateOrg(name, type) {
     await getDataFromProxyAndSetDataToLocalStorage()
     updateOrgDataByOrgId(updateOrg?.data?.data?.id)
     await createOrganizationAndRunCode()
-    await switchOrg(updateOrg?.data?.data?.id)
+    await switchOrg(updateOrg?.data?.data?.id, true)
   } catch (e) {
     toast.error(e?.response?.data?.message ? e?.response?.data?.message : "Something went wrong")
   }

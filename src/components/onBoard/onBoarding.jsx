@@ -13,6 +13,7 @@ import { createOrg } from '../../services/orgApiService'
 import { onHistoryRemoved } from '../history/redux/historyAction'
 import { addCollection } from '../collections/redux/collectionsActions';
 import { addPage } from '../pages/redux/pagesActions';
+import { log } from 'joi-browser';
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
@@ -50,6 +51,7 @@ const OnBoarding = () => {
     }
 
     const handleAddOrg = async (selectedIndex) => {
+        console.log("in handle add org")
         try {
             if (!validateName(orgName)) {
                 toast.error('Invalid organization name')
@@ -62,17 +64,17 @@ const OnBoarding = () => {
     }
 
     const handleNewOrgClick = async (selectedIndex) => {
+        console.log('in handle new add org click');
         const tabIdsToClose = tabs.tabsOrder;
-        if (tabIdsToClose.length <= 1) {
             removeFromLocalStorage(tabIdsToClose);
             dispatch(closeAllTabs(tabIdsToClose));
             dispatch(onHistoryRemoved(historySnapshot));
-            await createOrg(orgName, selectedIndex, false);
+            console.log("before create org");
+            await createOrg(orgName, selectedIndex);
+            console.log("after creating org");
             const collection = await createUntitledCollection(); 
             const rootParentId = collection?.rootParentId
             await createUntitledPage(rootParentId);
-
-        }
     };
 
     const createUntitledCollection = async () => {
@@ -89,7 +91,7 @@ const OnBoarding = () => {
     const createUntitledPage = async (rootParentId) => {
         const newPage = { name: 'untitled', pageType: 1};
         try {
-        await dispatch(addPage(navigate, rootParentId, newPage));
+       await dispatch(addPage(navigate, rootParentId, newPage));
         } catch (error) {
             console.error("Error creating page:", error);
             throw error; 

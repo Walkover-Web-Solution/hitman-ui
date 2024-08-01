@@ -149,7 +149,6 @@ class EditPage extends Component {
   }
 
   handleNameChange = (e) => {
-    debugger
     const data = { ...this.state.data }
     const newPageName = e.currentTarget.value
 

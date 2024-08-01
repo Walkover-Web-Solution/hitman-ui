@@ -25,7 +25,6 @@ export const fetchTabsFromRedux = () => {
 }
 
 export const addNewTab = () => {
-  // debugger
   const state = store.getState()
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]

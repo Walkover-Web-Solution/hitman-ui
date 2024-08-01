@@ -200,7 +200,7 @@ const UserProfile = () => {
       toast.error('This organization is already selected')
     } else if (org.id !== selectedOrg.id && (tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
       setModalForTabs(false)
-      switchOrg(org.id)
+      switchOrg(org.id, true)
       removeFromLocalStorage(tabIdsToClose)
       dispatch(closeAllTabs(tabIdsToClose))
       dispatch(onHistoryRemoved(historySnapshot))
@@ -287,7 +287,7 @@ const UserProfile = () => {
       if (switchOrCreate) {
         createOrg(orgName)
       } else {
-        switchOrg(currentOrg.id)
+        switchOrg(currentOrg.id, true)
       }
     } else if (value === 'no') {
       setOrgName('')
