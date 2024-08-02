@@ -74,5 +74,5 @@ export default {
   ON_DRAG_DROP,
   ADD_OLD_URL,
   DELETE_OLD_URL,
-  ON_PAGE_RENAME
+  ON_PAGE_RENAME,
 }

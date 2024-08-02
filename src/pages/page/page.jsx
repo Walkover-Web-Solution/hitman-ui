@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTabContent, updateDraft } from "../../components/tabs/redux/tabsActions";
+import { fetchTabContent, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -21,7 +21,8 @@ const Page = () => {
     const [sidebar, setSidebar] = useState(false)
 
     const { draftContent, page, pages, users, activeTabId, tabs } = useSelector((state) => ({
-        draftContent: !pageId?.includes('new') ? state.tabs.tabs[pageId]?.draft : '',
+        // draftContent: pageId && !pageId?.includes('new') ? '' : ,
+        draftContent: pageId ? (!pageId?.includes('new') ? state.tabs.tabs[pageId]?.draft : '') : '',
         page: state?.pages[pageId],
         pages: state.pages,
         users: state.users.usersList,
@@ -35,19 +36,22 @@ const Page = () => {
     const user = users?.find((user) => user.id === updatedById)
 
     useEffect(() => {
-        if (draftContent === undefined && !pageId.includes('new')) {
-            toast.success("API called")
-            dispatch(fetchTabContent(activeTabId))
+        if (draftContent === undefined && (pageId ? (!pageId.includes('new') ? true : false) : false)) {
+            // toast.success("API called")
+            dispatch(fetchTabContent(pageId))
         }
         setPageName(page?.name || 'Untitled')
+        if (tabs[activeTabId].status === "SAVED") setPageName(page?.name);
+        else if (tabs[activeTabId].status === "NEW") setPageName(tabs[activeTabId]?.name || 'Untitled')
+
         setTimeout(() => {
             setEditorKey((prevKey) => prevKey + 1)
         }, 1000)
     }, [pageId, activeTabId])
 
     const handleSavePage = () => {
-        if (pageId.includes('new')) setSidebar(true)
-        else dispatch(updatePageContent(page.id, draftContent, pageName))
+        if (pageId?.includes('new')) setSidebar(true)
+        dispatch(updatePageContent(activeTabId, draftContent, pageName))
     }
 
     const debounceUpdateDraft = useCallback(
@@ -57,18 +61,29 @@ const Page = () => {
         [dispatch]
     )
 
+    const debounceUpdateName = useCallback(
+        debounce((activeTabId, name) => {
+            dispatch(updateNewTabName(activeTabId, name))
+        }, 500),
+        [dispatch]
+    )
+
     const handleContentChange = (newContent) => {
         debounceUpdateDraft(activeTabId, newContent)
     }
 
+
     const handlePageNameChange = (event) => {
-        setPageName(event.target.value)
+        const newName = event.target.value;
+        setPageName(newName)
+        if (tabs[activeTabId].status === "NEW") {
+            debounceUpdateName(activeTabId, newName)
+        }
     }
 
     const handleSavePageName = () => {
         if (tabs[activeTabId].status === "SAVED") dispatch(updatePageName(page.id, pageName))
     }
-
 
     const handlePageNameKeyDown = (event) => {
         if (event.key === 'Enter') {

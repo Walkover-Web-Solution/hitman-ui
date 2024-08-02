@@ -8,6 +8,7 @@ import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import { navigateTo } from '../../../navigationService'
 import { getCurrentOrg } from '../../auth/authServiceV2'
+import tabsActionTypes from '../../tabs/redux/tabsActionTypes'
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -60,7 +61,9 @@ export const updatePageContent = (id, content, name) => {
       name,
       contents: content,
     }
+    console.log("id : ", id)
     const res = await pageApiService.updatePage(id, dataToSend)
+    dispatch({ type: tabsActionTypes.DELETE_TAB_NAME, payload: { id } })
   }
 }
 
