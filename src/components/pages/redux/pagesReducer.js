@@ -51,7 +51,7 @@ function pagesReducer(state = initialState, action) {
       if (action.page.type === 1) {
         const versionData = { ...action.version }
         delete versionData.requestId
-        pages[action.version.id] = versionData
+        pages[action?.version?.id] = versionData
       }
 
       if (action.page.parentId) {
@@ -266,10 +266,9 @@ function pagesReducer(state = initialState, action) {
       let pages = { ...state }
       let updatedPageDataObjects = action.payload
       for (let pageId in updatedPageDataObjects) {
+        const pageData = updatedPageDataObjects[pageId]
 
-        const pageData = updatedPageDataObjects[pageId];
-
-        pages[pageId] = { ...pages[pageId], ...pageData };
+        pages[pageId] = { ...pages[pageId], ...pageData }
       }
       return pages
     }
@@ -298,7 +297,7 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.ON_PAGE_RENAME:
       pages = { ...state }
       pages[action.payload.id].name = action.payload.updatedName
-      console.log("pages[action.payload.id].name", pages[action.payload.id].name)
+      console.log('pages[action.payload.id].name', pages[action.payload.id].name)
       return pages
 
     default:
