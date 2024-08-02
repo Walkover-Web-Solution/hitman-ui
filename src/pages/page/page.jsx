@@ -11,20 +11,22 @@ import { updatePageContent, updatePageName } from '../../components/pages/redux/
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1'
 import IconButton from '../../components/common/iconButton'
 import './page.scss'
+import { toast } from "react-toastify";
 
 const Page = () => {
     const dispatch = useDispatch()
-    const params = useParams()
     const { pageId } = useParams()
 
     const [editorKey, setEditorKey] = useState(0)
     const [sidebar, setSidebar] = useState(false)
 
-    const { draftContent, page, pages, users } = useSelector((state) => ({
-        draftContent: state.tabs.tabs[pageId]?.draft,
+    const { draftContent, page, pages, users, activeTabId, tabs } = useSelector((state) => ({
+        draftContent: !pageId?.includes('new') ? state.tabs.tabs[pageId]?.draft : '',
         page: state?.pages[pageId],
         pages: state.pages,
-        users: state.users.usersList
+        users: state.users.usersList,
+        activeTabId: state.tabs.activeTabId,
+        tabs: state.tabs.tabs,
     }))
 
     const [pageName, setPageName] = useState(page?.name)
@@ -33,31 +35,40 @@ const Page = () => {
     const user = users?.find((user) => user.id === updatedById)
 
     useEffect(() => {
-        if (draftContent === undefined || (params.route && !params?.route?.includes('new'))) dispatch(fetchTabContent(pageId))
-        setPageName(page?.name)
+        if (draftContent === undefined && !pageId.includes('new')) {
+            toast.success("API called")
+            dispatch(fetchTabContent(activeTabId))
+        }
+        setPageName(page?.name || 'Untitled')
         setTimeout(() => {
             setEditorKey((prevKey) => prevKey + 1)
         }, 1000)
-    }, [pageId])
+    }, [pageId, activeTabId])
 
     const handleSavePage = () => {
-        dispatch(updatePageContent(page.id, draftContent, pageName))
+        if (pageId.includes('new')) setSidebar(true)
+        else dispatch(updatePageContent(page.id, draftContent, pageName))
     }
 
     const debounceUpdateDraft = useCallback(
-        debounce((pageId, content) => {
-            dispatch(updateDraft(pageId, content))
+        debounce((activeTabId, content) => {
+            dispatch(updateDraft(activeTabId, content))
         }, 500),
         [dispatch]
     )
 
     const handleContentChange = (newContent) => {
-        debounceUpdateDraft(pageId, newContent)
+        debounceUpdateDraft(activeTabId, newContent)
     }
 
     const handlePageNameChange = (event) => {
         setPageName(event.target.value)
     }
+
+    const handleSavePageName = () => {
+        if (tabs[activeTabId].status === "SAVED") dispatch(updatePageName(page.id, pageName))
+    }
+
 
     const handlePageNameKeyDown = (event) => {
         if (event.key === 'Enter') {
@@ -65,7 +76,7 @@ const Page = () => {
             if (editorInput) {
                 editorInput.focus()
             }
-            dispatch(updatePageName(page.id, pageName))
+            handleSavePageName();
         }
     }
 
@@ -154,7 +165,7 @@ const Page = () => {
                     placeholder='Untitled'
                     onChange={handlePageNameChange}
                     onKeyDown={handlePageNameKeyDown}
-                    onBlur={() => dispatch(updatePageName(page.id, pageName))}
+                    onBlur={handleSavePageName}
                 />
 
                 <div id='tiptap-editor' className='page-content '>

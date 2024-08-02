@@ -822,7 +822,7 @@ button.is_active {
     border-radius: $border-radius;
     display: block !important;
     .ProseMirror {
-      padding: 1rem;
+      padding: 0.5rem;
       &.ProseMirror-focused {
         outline: none;
       }
