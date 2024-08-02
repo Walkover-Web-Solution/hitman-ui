@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility'
 import { addIsExpandedAction, setDefaultversionId } from '../../store/clientData/clientDataActions'
 import pageService from '../pages/pageService'
 import SubPageForm from '../subPages/subPageForm'
@@ -156,7 +156,7 @@ const CollectionParentPages = (props) => {
   }
 
   const versionDropDown = (rootId) => {
-    if (organizations?.currentOrg?.meta?.type !== 0) {
+    if (isOrgDocType()) {
       return (
         <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()}>
           {pages[rootId].child.map((childId, index) => (
@@ -171,21 +171,11 @@ const CollectionParentPages = (props) => {
 
   const openAddPageEndpointModal = (pageId) => {
     const newPage = { name: 'untitled', pageType: 3 };
-    if (organizations?.currentOrg?.meta?.type === 0) {
+    if (!isOrgDocType) {
       dispatch(addPage(navigate, pages[pageId].versionId, newPage))
     } else {
       setShowAddCollectionModal(true)
       setSelectedPage({ ...pages[pageId] })
-    }
-  }
-
-  const showManageVersion = () => {
-    if (organizations?.currentOrg?.meta?.type !== 0) {
-      return (
-        <div className='dropdown-item d-flex' onClick={() => setShowVersionForm(true)}>
-          <MdOutlineSettings size={20} color='#f2994a' /> Manage Version
-        </div>
-      )
     }
   }
 
@@ -298,7 +288,9 @@ const CollectionParentPages = (props) => {
                     <div className='dropdown-item d-flex' onClick={() => openEditPageForm(pageId)}>
                       <Rename /> Rename
                     </div>
-                    {showManageVersion()}
+                    {isOrgDocType() && <div className='dropdown-item d-flex' onClick={() => setShowVersionForm(true)}>
+                      <MdOutlineSettings size={20} color='#f2994a' /> Manage Version
+                    </div>}
                     <div className='dropdown-item text-danger d-flex' onClick={() => openDeletePageModal(pageId)}>
                       <DeleteIcon /> Delete
                     </div>

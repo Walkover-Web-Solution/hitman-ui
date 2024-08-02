@@ -11,7 +11,6 @@ import { updatePageContent, updatePageName } from '../../components/pages/redux/
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1'
 import IconButton from '../../components/common/iconButton'
 import './page.scss'
-import { toast } from "react-toastify";
 
 const Page = () => {
     const dispatch = useDispatch()
