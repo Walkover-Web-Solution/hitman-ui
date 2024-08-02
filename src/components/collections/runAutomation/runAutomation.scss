@@ -72,3 +72,29 @@
         }
     }
 }
+.checkbox-container {
+    position: relative;
+  }
+  
+  .filtered-endpoints {
+    position: absolute;
+    left: 21%;
+    top: 12%;
+    transform: translateY(-50%);
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 10px;
+    z-index: 1000;
+    width: auto; 
+  }
+  
+  .filtered-endpoints ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  
+  .filtered-endpoints li {
+    margin: 5px 0;
+  }
+  

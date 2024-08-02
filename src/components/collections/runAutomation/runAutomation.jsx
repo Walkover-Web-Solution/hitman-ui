@@ -12,6 +12,7 @@ import { RiAiGenerate, RiCheckboxMultipleLine } from 'react-icons/ri'
 import { FaExclamationCircle } from 'react-icons/fa'
 import { runAutomations } from './redux/runAutomationActions'
 import { FiCopy } from 'react-icons/fi'
+import { GoDotFill } from "react-icons/go";
 
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
@@ -45,6 +46,7 @@ export default function RunAutomation() {
   const [tokenGenerationInProgress, setTokenGenerationInProgress] = useState(false)
   const [webhookUrlCopied, setwebhookUrlCopied] = useState(false)
   const [webhookResponseCopied, setwebhookResponseCopied] = useState(false)
+  const [showEndpointsDiv, setShowEndpointsDiv] = useState(false)
 
   useEffect(() => {
     filterEndpointsOfCollection()
@@ -59,6 +61,10 @@ export default function RunAutomation() {
       return acc
     }, [])
     setEndpiontsIds(endpointsIds)
+  }
+
+  const filterEndpointsWithFalseValues = () => {
+    return endpointsIds.filter(endpointId => allPages[endpointId]?.description === false || allPages[endpointId]?.sampleResponse === false)
   }
 
   const renderEndpointName = (endpointId) => {
@@ -111,7 +117,7 @@ export default function RunAutomation() {
         collectionName,
         environmentId: currentEnvironmentId || '',
         runType
-      },params?.collectionId))
+      }, params?.collectionId))
       if (responseData.status === 200) {
         setAutomationLoading(false)
         return toast.success('Automation ran successfully!')
@@ -207,6 +213,10 @@ export default function RunAutomation() {
                 <span onClick={() => handleSelectAndDeselectAll(false)} className='ml-1 cursor-pointer'>
                   Deselect All
                 </span>
+                <div className='saperation'></div>
+                <span onClick={() => setShowEndpointsDiv(!showEndpointsDiv)} className='ml-1 cursor-pointer'>
+                  <GoDotFill size={25} color='red' />
+                </span>
               </div>
             </div>
             <div className='mt-1 d-flex flex-column align-items-start justify-content-center'>
@@ -223,6 +233,15 @@ export default function RunAutomation() {
                 )
               })}
             </div>
+            {showEndpointsDiv && (
+              <div className='filtered-endpoints'>
+                <ul>
+                  {filterEndpointsWithFalseValues().map(endpointId => (
+                    <li key={endpointId}>{allPages[endpointId]?.name || 'Unnamed Endpoint'}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
       </div>
