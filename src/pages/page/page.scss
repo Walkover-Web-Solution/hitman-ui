@@ -1,26 +1,17 @@
 .parent-page-container {
   height: 100vh;
-
-  .page-header {
-    .header-page-name {
-      &:hover,
-      &:focus {
-        background-color: #d6d2d28f;
-        outline: none;
-      }
-    }
-
-    .inner-operations {
-      .dropdown {
-        .dropdown-toggle {
-          &::after {
-            all: unset;
-          }
+  .header-page-name {
+    cursor: context-menu;
+  }
+  .inner-operations {
+    .dropdown {
+      .dropdown-toggle {
+        &::after {
+          all: unset;
         }
       }
     }
   }
-
   .page-container {
     max-width: 900px;
   }

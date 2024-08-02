@@ -83,7 +83,7 @@ const Page = () => {
     return (
         <div className='parent-page-container px-3 py-2 d-flex flex-column align-items-center w-100'>
             <div className='page-header d-flex align-items-center justify-content-between w-100'>
-                <input className='header-page-name border-0 rounded px-1' value={pageName} type='text' onChange={handlePageNameChange} />
+                <h1 className="header-page-name fa-1x">{pageName}</h1>
                 <div className='header-operations d-flex align-items-center gap-2'>
                     <div>
                         <OverlayTrigger
@@ -92,12 +92,12 @@ const Page = () => {
                                 <Tooltip id='edited-by-tooltip'>
                                     <div>
                                         {lastModified ? (
-                                            <div className="fs-4 font-weight-bold">
-                                                <span className="text-secondary">Updated by </span>
-                                                {user?.name}
+                                            <div className="fs-4 text-secondary">
+                                                <span>Updated by </span>
+                                                <span className="font-weight-bold text-white">{user?.name}</span>
                                                 <br />
-                                                <span className="text-secondary">Modified At </span>
-                                                {lastModified}
+                                                <span>Modified At </span>
+                                                <span>{lastModified}</span>
                                             </div>
                                         ) : (
                                             <span>No Data</span>
@@ -116,12 +116,10 @@ const Page = () => {
                                 overlay={
                                     <Tooltip id='edited-by-tooltip'>
                                         <div className="fs-4 font-weight-bold">
-                                            <span>Save your Document</span>
-                                            <br />
                                             {window.navigator.platform.toLowerCase().includes("mac") ? (
-                                                <span className="text-secondary">Cmd + S</span>
+                                                <span>control + s</span>
                                             ) : (
-                                                <span className="text-left text-secondary">Ctrl + S</span>
+                                                <span>alt + s</span>
                                             )}
                                         </div>
                                     </Tooltip>
@@ -134,19 +132,8 @@ const Page = () => {
                     <div className='inner-operations'>
                         <Dropdown>
                             <Dropdown.Toggle as='div' id='dropdown-basic'>
-                                <div className='mt-1 icon-button'>
-                                    <OverlayTrigger
-                                        placement='bottom'
-                                        overlay={
-                                            <Tooltip id='edited-by-tooltip'>
-                                                <div className="fs-4 font-weight-bold">
-                                                    Publish/Unpublish
-                                                </div>
-                                            </Tooltip>
-                                        }
-                                    >
-                                        <BsThreeDots color="black" size={18} />
-                                    </OverlayTrigger>
+                                <div className='mt-1'>
+                                <IconButton><BsThreeDots color="black" size={18} /></IconButton>
                                 </div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
