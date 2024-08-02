@@ -12,7 +12,7 @@ import { RiAiGenerate, RiCheckboxMultipleLine } from 'react-icons/ri'
 import { FaExclamationCircle } from 'react-icons/fa'
 import { runAutomations } from './redux/runAutomationActions'
 import { FiCopy } from 'react-icons/fi'
-import { GoDotFill } from "react-icons/go";
+import { FaCircleInfo } from "react-icons/fa6";
 
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
@@ -50,6 +50,7 @@ export default function RunAutomation() {
 
   useEffect(() => {
     filterEndpointsOfCollection()
+    filterEndpointsWithFalseValues()
     if (runType !== 'webhook') {
       setTokenGenerationInProgress(false)
     }
@@ -64,7 +65,8 @@ export default function RunAutomation() {
   }
 
   const filterEndpointsWithFalseValues = () => {
-    return endpointsIds.filter(endpointId => allPages[endpointId]?.description === false || allPages[endpointId]?.sampleResponse === false)
+    debugger
+    return endpointsIds.filter(pageId => allPages[pageId]?.description === false || allPages[pageId]?.sampleResponse === false)
   }
 
   const renderEndpointName = (endpointId) => {
@@ -214,8 +216,8 @@ export default function RunAutomation() {
                   Deselect All
                 </span>
                 <div className='saperation'></div>
-                <span onClick={() => setShowEndpointsDiv(!showEndpointsDiv)} className='ml-1 cursor-pointer'>
-                  <GoDotFill size={25} color='red' />
+                <span onClick={() => setShowEndpointsDiv(!showEndpointsDiv)} className='ml-1 cursor-pointer' title='Endpoints which do not contains description or sample response'>
+                <FaCircleInfo size={15} color='red'/>
                 </span>
               </div>
             </div>
