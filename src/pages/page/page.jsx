@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTabContent, setTabIsModified, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
+import { approvePage, draftPage } from "../../components/publicEndpoint/publicPageService";
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -13,12 +14,14 @@ import IconButton from '../../components/common/iconButton';
 import './page.scss';
 
 const Page = () => {
-    const dispatch = useDispatch()
-    const { pageId } = useParams()
+    const dispatch = useDispatch();
+    const { pageId } = useParams();
+    const params = useParams();
     const textareaRef = useRef(null);
 
     const [editorKey, setEditorKey] = useState(0);
     const [sidebar, setSidebar] = useState(false);
+    const [isPublish, setIsPublish] = useState(false);
 
     const { draftContent, page, pages, users, activeTabId, tabs } = useSelector((state) => ({
         draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
@@ -38,17 +41,19 @@ const Page = () => {
         if (textareaRef.current) {
             autoGrow(textareaRef.current);
         }
-        if (draftContent === undefined && tabs[activeTabId]?.status != 'NEW') {
+        if (draftContent === undefined && tabs[activeTabId]?.status !== 'NEW') {
             dispatch(fetchTabContent(pageId));
         }
         setPageName(page?.name || 'Untitled');
         if (tabs[activeTabId].status === "SAVED") setPageName(page?.name);
         else if (tabs[activeTabId].status === "NEW") setPageName(tabs[activeTabId]?.name || 'Untitled');
 
+        setIsPublish(pages[pageId]?.isPublished);
+
         setTimeout(() => {
             setEditorKey((prevKey) => prevKey + 1);
         }, 1000);
-    }, [pageId, activeTabId]);
+    }, [pageId, activeTabId, draftContent, page, tabs, dispatch, pages]);
 
     const handleSavePage = () => {
         if (tabs[activeTabId]?.status === "NEW") setSidebar(true);
@@ -115,8 +120,36 @@ const Page = () => {
         element.style.height = `${element.scrollHeight}px`;
     };
 
+    const handlePublish = async () => {
+        const pageId = params?.pageId;
+        try {
+            await approvePage(pages[pageId]);
+            setIsPublish(true);
+        } catch (error) {
+            console.error('Error during approve_page:', error);
+        }
+    };
+
+    const handleRemovePublicPage = useCallback((page) => {
+        page.isPublished = false;
+        page.publishedEndpoint = {};
+        page.state = 1;
+        page.position = null;
+        draftPage(page);
+    }, []);
+
+    const handleUnPublish = async () => {
+        const pageId = params?.pageId;
+        try {
+            handleRemovePublicPage(pages[pageId]);
+            setIsPublish(false);
+        } catch (error) {
+            console.error('Error during draft_page:', error);
+        }
+    };
+
     return (
-        <div className='parent-page-container  d-flex flex-column align-items-center w-100'>
+        <div className='parent-page-container d-flex flex-column align-items-center w-100'>
             <div className='page-header position-sticky px-3 py-2 bg-white d-flex align-items-center justify-content-between w-100'>
                 <h1 className="header-page-name fa-1x text-truncate w-25">{pageName}</h1>
                 <div className='header-operations d-flex align-items-center gap-2'>
@@ -176,8 +209,8 @@ const Page = () => {
                                 </div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item onClick={() => console.log('Publish')}>Publish</Dropdown.Item>
-                                <Dropdown.Item onClick={() => console.log('Unpublish')}>UnPublish</Dropdown.Item>
+                                <Dropdown.Item onClick={handlePublish} disabled={isPublish}>Publish</Dropdown.Item>
+                                <Dropdown.Item className="unpublish-btn" onClick={handleUnPublish} disabled={!isPublish}>Unpublish</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
