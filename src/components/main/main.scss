@@ -53,14 +53,14 @@
   overflow: hidden;
   -webkit-box-shadow: 0 0 5px black;
   -moz-box-shadow: 0 0 5px black;
-  sbox-shadow: 0 0 5px black;
+  box-shadow: 0 0 5px black;
 }
 
 // Global Styles
 
 html body {
   background-color: #fff;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: $font-normal;
   color: $text-color;
 }

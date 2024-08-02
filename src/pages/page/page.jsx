@@ -11,20 +11,22 @@ import { updatePageContent, updatePageName } from '../../components/pages/redux/
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1'
 import IconButton from '../../components/common/iconButton'
 import './page.scss'
+import { toast } from "react-toastify";
 
 const Page = () => {
     const dispatch = useDispatch()
-    const params = useParams()
     const { pageId } = useParams()
 
     const [editorKey, setEditorKey] = useState(0)
     const [sidebar, setSidebar] = useState(false)
 
-    const { draftContent, page, pages, users } = useSelector((state) => ({
-        draftContent: state.tabs.tabs[pageId]?.draft,
+    const { draftContent, page, pages, users, activeTabId, tabs } = useSelector((state) => ({
+        draftContent: !pageId?.includes('new') ? state.tabs.tabs[pageId]?.draft : '',
         page: state?.pages[pageId],
         pages: state.pages,
-        users: state.users.usersList
+        users: state.users.usersList,
+        activeTabId: state.tabs.activeTabId,
+        tabs: state.tabs.tabs,
     }))
 
     const [pageName, setPageName] = useState(page?.name)
@@ -33,32 +35,40 @@ const Page = () => {
     const user = users?.find((user) => user.id === updatedById)
 
     useEffect(() => {
-        if (draftContent === undefined || (params.route && !params?.route?.includes('new'))) dispatch(fetchTabContent(pageId))
-        setPageName(page?.name)
+        if (draftContent === undefined && !pageId.includes('new')) {
+            toast.success("API called")
+            dispatch(fetchTabContent(activeTabId))
+        }
+        setPageName(page?.name || 'Untitled')
         setTimeout(() => {
             setEditorKey((prevKey) => prevKey + 1)
         }, 1000)
-    }, [pageId])
+    }, [pageId, activeTabId])
 
     const handleSavePage = () => {
-        dispatch(updatePageContent(page.id, draftContent, pageName))
-        dispatch(updatePageName(page.id, pageName))
+        if (pageId.includes('new')) setSidebar(true)
+        else dispatch(updatePageContent(page.id, draftContent, pageName))
     }
 
     const debounceUpdateDraft = useCallback(
-        debounce((pageId, content) => {
-            dispatch(updateDraft(pageId, content))
+        debounce((activeTabId, content) => {
+            dispatch(updateDraft(activeTabId, content))
         }, 500),
         [dispatch]
     )
 
     const handleContentChange = (newContent) => {
-        debounceUpdateDraft(pageId, newContent)
+        debounceUpdateDraft(activeTabId, newContent)
     }
 
     const handlePageNameChange = (event) => {
         setPageName(event.target.value)
     }
+
+    const handleSavePageName = () => {
+        if (tabs[activeTabId].status === "SAVED") dispatch(updatePageName(page.id, pageName))
+    }
+
 
     const handlePageNameKeyDown = (event) => {
         if (event.key === 'Enter') {
@@ -66,27 +76,27 @@ const Page = () => {
             if (editorInput) {
                 editorInput.focus()
             }
-            dispatch(updatePageName(page.id, pageName))
+            handleSavePageName();
         }
     }
 
     return (
-        <div className='parent-page-container'>
-            <div className='page-header'>
-                <input className='header-page-name' value={pageName} type='text' onChange={handlePageNameChange} />
-                <div className='header-operations'>
-                    <div className='button'>
+        <div className='parent-page-container px-3 py-2 d-flex flex-column align-items-center w-100'>
+            <div className='page-header d-flex align-items-center justify-content-between w-100'>
+                <input className='header-page-name border-0 rounded px-1' value={pageName} type='text' onChange={handlePageNameChange} />
+                <div className='header-operations d-flex align-items-center gap-2'>
+                    <div>
                         <OverlayTrigger
                             placement='bottom'
                             overlay={
                                 <Tooltip id='edited-by-tooltip'>
                                     <div>
                                         {lastModified ? (
-                                            <div>
-                                                Updated by<span> </span>
+                                            <div className="fs-4 font-weight-bold">
+                                                <span className="text-secondary">Updated by </span>
                                                 {user?.name}
                                                 <br />
-                                                Modified At<span> </span>
+                                                <span className="text-secondary">Modified At </span>
                                                 {lastModified}
                                             </div>
                                         ) : (
@@ -96,17 +106,47 @@ const Page = () => {
                                 </Tooltip>
                             }
                         >
-                            <button className='text-black-50'>Edited By</button>
+                            <button className='text-black-50 btn p-0'>Edited By</button>
                         </OverlayTrigger>
                     </div>
-                    <div className='button'>
-                        <IconButton><button onClick={handleSavePage} >Save</button></IconButton>
-                    </div >
+                    <IconButton>
+                        <div className='button'>
+                            <OverlayTrigger
+                                placement='bottom'
+                                overlay={
+                                    <Tooltip id='edited-by-tooltip'>
+                                        <div className="fs-4 font-weight-bold">
+                                            <span>Save your Document</span>
+                                            <br />
+                                            {window.navigator.platform.toLowerCase().includes("mac") ? (
+                                                <span className="text-secondary">Cmd + S</span>
+                                            ) : (
+                                                <span className="text-left text-secondary">Ctrl + S</span>
+                                            )}
+                                        </div>
+                                    </Tooltip>
+                                }
+                            >
+                                <button className="btn p-0" onClick={handleSavePage}>Save</button>
+                            </OverlayTrigger>
+                        </div>
+                    </IconButton>
                     <div className='inner-operations'>
                         <Dropdown>
-                            <Dropdown.Toggle as='div' id='dropdown-basic' className='button-style button'>
-                                <div className='text-dark'>
-                                    <IconButton><BsThreeDots size={18} /></IconButton>
+                            <Dropdown.Toggle as='div' id='dropdown-basic'>
+                                <div className='mt-1 icon-button'>
+                                    <OverlayTrigger
+                                        placement='bottom'
+                                        overlay={
+                                            <Tooltip id='edited-by-tooltip'>
+                                                <div className="fs-4 font-weight-bold">
+                                                    Publish/Unpublish
+                                                </div>
+                                            </Tooltip>
+                                        }
+                                    >
+                                        <BsThreeDots color="black" size={18} />
+                                    </OverlayTrigger>
                                 </div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -117,18 +157,18 @@ const Page = () => {
                     </div>
                 </div >
             </div >
-            <div className='page-container'>
+            <div className='page-container h-100 w-100 p-3'>
                 <input
-                    className='page-name'
+                    className='page-name fa-3x font-weight-bold mt-5 border-0'
                     type='text'
                     value={pageName}
                     placeholder='Untitled'
                     onChange={handlePageNameChange}
                     onKeyDown={handlePageNameKeyDown}
-                    onBlur={() => dispatch(updatePageName(page.id, pageName))}
+                    onBlur={handleSavePageName}
                 />
 
-                <div id='tiptap-editor' className='page-content'>
+                <div id='tiptap-editor' className='page-content '>
                     <Tiptap
                         key={`${pageId}-${editorKey}`}
                         onChange={handleContentChange}
