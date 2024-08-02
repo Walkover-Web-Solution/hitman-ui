@@ -32,7 +32,7 @@ export default function IndexWebsite() {
           {/* navbar */}
           <div className='web_hero container d-flex flex-column gy-4'>
             <div>
-              <p className='web_tagline'>The developer's toolkit</p>
+              <p className='web_tagline'>Ultimate solution for API documentations</p>
               <h1 className='web_h1'>
                 Test & <br />
                 <span className='font-american web_text-primary'>Document APIs</span>

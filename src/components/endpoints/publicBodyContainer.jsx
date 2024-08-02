@@ -351,7 +351,7 @@ class PublicBodyContainer extends Component {
               </ul>
               {this.state.showBodyCodeEditor ? (
                 <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>
-                  {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
+                  {/* {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)} */}
                   <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
                     <AceEditor
                       className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
