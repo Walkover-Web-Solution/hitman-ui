@@ -74,7 +74,7 @@ export const addNewTab = () => {
           isModified: false,
         }
       })
-      dispatch(updateTabDraft(id,draft))
+      dispatch(updateTabDraft(id, draft))
       dispatch(setActiveTabId(id))
       navigateTo(`/orgs/${orgId}/dashboard/page/new`)
     }
@@ -113,6 +113,12 @@ export const openInNewTab = (tab) => {
   return async (dispatch) => {
     dispatch({ type: tabsActionTypes.OPEN_IN_NEW_TAB, tab })
     dispatch(setActiveTabId(tab.id))
+  }
+}
+
+export const updateNewTabName = (tabId, name) => {
+  return (dispatch) => {
+    dispatch({ type: tabsActionTypes.UPDATE_NEW_TAB_NAME, payload: { id: tabId, name } })
   }
 }
 
