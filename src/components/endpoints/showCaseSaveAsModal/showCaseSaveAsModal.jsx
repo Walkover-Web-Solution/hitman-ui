@@ -47,14 +47,7 @@ export default function ShowCaseSaveAsModal(props) {
 
   const handleSave = () => {
     const currentId = pathData[pathData.length - 1]
-    props.save_endpoint(
-      currentId,
-      {
-        endpointName: props?.name || '',
-        endpointDescription: props?.description || ''
-      },
-      'isHistory'
-    )
+    props.save_endpoint(currentId, { endpointName: props?.name || '', endpointDescription: props?.description || '' }, 'isHistory')
     props.onHide()
   }
 

@@ -11,14 +11,11 @@ import { updatePageContent, updatePageName } from '../../components/pages/redux/
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1'
 import IconButton from '../../components/common/iconButton'
 import './page.scss'
-import { toast } from 'react-toastify'
 
 const Page = () => {
+
   const dispatch = useDispatch()
   const { pageId } = useParams()
-
-  const [editorKey, setEditorKey] = useState(0)
-  const [sidebar, setSidebar] = useState(false)
 
   const { draftContent, page, pages, users, activeTabId, tabs } = useSelector((state) => ({
     draftContent: !pageId?.includes('new') ? state.tabs.tabs[pageId]?.draft : '',
@@ -29,24 +26,22 @@ const Page = () => {
     tabs: state.tabs.tabs
   }))
 
+  const [editorKey, setEditorKey] = useState(0)
   const [pageName, setPageName] = useState(page?.name)
+  const [sidebar, setSidebar] = useState(false)
+
   const updatedById = pages?.[pageId]?.updatedBy
   const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null
   const user = users?.find((user) => user.id === updatedById)
 
   useEffect(() => {
-    if (draftContent === undefined && !pageId.includes('new')) {
-      toast.success('API called')
-      dispatch(fetchTabContent(activeTabId))
-    }
+    if (draftContent === undefined && tabs?.[activeTabId]?.status != "NEW") dispatch(fetchTabContent(activeTabId))
     setPageName(page?.name || 'Untitled')
-    setTimeout(() => {
-      setEditorKey((prevKey) => prevKey + 1)
-    }, 1000)
+    setTimeout(() => { setEditorKey((prevKey) => prevKey + 1) }, 1000)
   }, [pageId, activeTabId])
 
   const handleSavePage = () => {
-    if (pageId.includes('new')) setSidebar(true)
+    if (tabs?.[activeTabId]?.status === 'NEW') setSidebar(true)
     else dispatch(updatePageContent(page.id, draftContent, pageName))
   }
 
@@ -150,17 +145,7 @@ const Page = () => {
           />
         </div>
       </div>
-      {sidebar && (
-        <SaveAsPageSidebar
-          name={pageName}
-          setName={setPageName}
-          onHide={() => setSidebar(false)}
-          handleSubmit={() => {
-            console.log('Page saved')
-            setSidebar(false)
-          }}
-        />
-      )}
+      {sidebar && <SaveAsPageSidebar name={pageName} setName={setPageName} onHide={() => setSidebar(false)} handleSubmit={() => setSidebar(false)} />}
     </div>
   )
 }

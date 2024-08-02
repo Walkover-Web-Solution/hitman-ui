@@ -22,7 +22,6 @@ export function getAllPages(id) {
 }
 
 export function saveCollectionPage(rootParentId, page) {
-  console.log(rootParentId, page)
   return http.post(collectionPagesUrl(rootParentId), page)
 }
 

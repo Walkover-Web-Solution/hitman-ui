@@ -170,7 +170,7 @@ const CollectionParentPages = (props) => {
   const openAddPageEndpointModal = (pageId) => {
     const newPage = { name: 'untitled', pageType: 3 }
     if (organizations?.currentOrg?.meta?.type === 0) {
-      dispatch(addPage(pages[pageId].versionId, newPage))
+      dispatch(addPage(pages[pageId]?.versionId, newPage))
     } else {
       setShowAddCollectionModal(true)
       setSelectedPage({ ...pages[pageId] })

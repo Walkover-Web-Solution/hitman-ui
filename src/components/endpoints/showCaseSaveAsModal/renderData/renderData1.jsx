@@ -62,40 +62,26 @@ export default function RenderData(props) {
         const type = getType(singleId)
         if (type === 'collection') {
           return (
-            <div
-              onClick={() => addIdInPathdata(singleId, 'collection')}
-              key={index}
-              className='folder-box d-flex justify-content-start align-items-center p-1'
-            >
+            <div onClick={() => addIdInPathdata(singleId, 'collection')} key={index} className='folder-box d-flex justify-content-start align-items-center p-1'>
               <FaFolder color='#e98a36' size='21px' />
               <div className='ml-1'>{collections?.[singleId]?.name}</div>
             </div>
           )
         } else if (type === 'page') {
           return (
-            <div
-              onClick={() => addIdInPathdata(singleId)}
-              key={index}
-              className='folder-box d-flex justify-content-start align-items-center p-1'
-            >
+            <div onClick={() => addIdInPathdata(singleId)} key={index} className='folder-box d-flex justify-content-start align-items-center p-1'>
               <FaFolder color='#e98a36' size='21px' />
               <div className='ml-1'>{pages?.[singleId]?.name}</div>
             </div>
           )
         } else if (type === 'version') {
           return pages?.[singleId]?.child.map((childId, childIndex) => (
-            <div
-              onClick={() => addIdInPathdata(childId)}
-              key={childIndex}
-              className='folder-box d-flex justify-content-start align-items-center p-1'
-            >
+            <div onClick={() => addIdInPathdata(childId)} key={childIndex} className='folder-box d-flex justify-content-start align-items-center p-1'>
               <FaFolder color='#e98a36' size='21px' />
               <div className='ml-1'>{pages?.[childId]?.name}</div>
             </div>
           ))
-        } else {
-          return null
-        }
+        } else return null
       })}
     </div>
   )

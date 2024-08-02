@@ -144,7 +144,6 @@ export const onEndpointUpdated = (response) => {
 
 export const addPage = (history, rootParentId, newPage) => {
   const orgId = getCurrentOrg()?.id
-  console.log(rootParentId, newPage, '09876')
   return (dispatch) => {
     pageApiService
       .saveCollectionPage(rootParentId, newPage)
