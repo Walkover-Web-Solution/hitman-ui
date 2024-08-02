@@ -19,9 +19,7 @@ const SaveAsPageSidebar = (props) => {
     overflow: 'hidden'
   }
 
-  const [data, setData] = useState({
-    name: ''
-  })
+  const [data, setData] = useState({ name: '' })
 
   const title = data.name
   const saveAsSidebar = useRef(null)
@@ -30,31 +28,18 @@ const SaveAsPageSidebar = (props) => {
   useEffect(() => {
     const newData = { ...data, name: props?.name }
     setData(newData)
+    console.log(props.name,123456798765)
   }, [props?.name])
 
   const handlePageNameChange = (e) => {
     setData((prevState) => ({ ...prevState, name: e?.currentTarget?.value }))
+    props.setName(e?.currentTarget?.value)
   }
 
   const handlePageNameBlur = (e) => {
     if (!trimString(e.currentTarget.value)) {
       setData({ ...data, name: 'Untitled' })
     }
-  }
-
-  const renderPageNameInput = () => {
-    return (
-      <Input
-        ref={inputRef}
-        value={data.name}
-        onChange={handlePageNameChange}
-        onBlur={handlePageNameBlur}
-        placeholder={'Page Name'}
-        mandatory={'mandatory'}
-        firstLetterCapitalize
-        label={'Name'}
-      />
-    )
   }
 
   return (
@@ -68,11 +53,11 @@ const SaveAsPageSidebar = (props) => {
       <div className='drawer-body'>
         <form className='desc-box form-parent' onSubmit={props.handleSubmit}>
           <div className='p-form-group mb-3'>
-            {renderPageNameInput()}
-            {title?.trim() === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
+            <Input ref={inputRef} value={props?.name} onChange={handlePageNameChange} onBlur={handlePageNameBlur} placeholder={'Page Name'} mandatory={'mandatory'} firstLetterCapitalize label={'Name'} />
+            {title === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
           </div>
         </form>
-        <ShowCaseSaveAsModal />
+        <ShowCaseSaveAsModal name={props.name} onHide={props.onHide} />
       </div>
     </div>
   )

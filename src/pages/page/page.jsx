@@ -1,112 +1,124 @@
 import React, { useCallback, useRef, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTabContent, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
+import { fetchTabContent, setTabIsModified, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
-import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { BsThreeDots } from 'react-icons/bs'
-import moment from 'moment'
-import { updatePageContent, updatePageName } from '../../components/pages/redux/pagesActions'
-import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1'
-import IconButton from '../../components/common/iconButton'
-import './page.scss'
-import { toast } from "react-toastify";
+import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { BsThreeDots } from 'react-icons/bs';
+import moment from 'moment';
+import { updatePageContent, updatePageName } from '../../components/pages/redux/pagesActions';
+import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1';
+import IconButton from '../../components/common/iconButton';
+import './page.scss';
+import { toast } from 'react-toastify';
 
 const Page = () => {
     const dispatch = useDispatch()
     const { pageId } = useParams()
     const textareaRef = useRef(null);
 
-    const [editorKey, setEditorKey] = useState(0)
-    const [sidebar, setSidebar] = useState(false)
+    const [editorKey, setEditorKey] = useState(0);
+    const [sidebar, setSidebar] = useState(false);
 
     const { draftContent, page, pages, users, activeTabId, tabs } = useSelector((state) => ({
-        // draftContent: pageId && !pageId?.includes('new') ? '' : ,
-        draftContent: pageId ? (!pageId?.includes('new') ? state.tabs.tabs[pageId]?.draft : '') : '',
+        draftContent: !pageId?.includes('new') ? state.tabs.tabs[pageId]?.draft : '',
         page: state?.pages[pageId],
         pages: state.pages,
         users: state.users.usersList,
         activeTabId: state.tabs.activeTabId,
-        tabs: state.tabs.tabs,
-    }))
+        tabs: state.tabs.tabs
+    }));
 
-    const [pageName, setPageName] = useState(page?.name)
-    const updatedById = pages?.[pageId]?.updatedBy
-    const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null
-    const user = users?.find((user) => user.id === updatedById)
+    const [pageName, setPageName] = useState(page?.name);
+    const updatedById = pages?.[pageId]?.updatedBy;
+    const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
+    const user = users?.find((user) => user.id === updatedById);
 
     useEffect(() => {
         if (textareaRef.current) {
             autoGrow(textareaRef.current);
-          }
-        if (draftContent === undefined && (pageId ? (!pageId.includes('new') ? true : false) : false)) {
-            // toast.success("API called")
-            dispatch(fetchTabContent(pageId))
         }
-        setPageName(page?.name || 'Untitled')
+        if (draftContent === undefined && (pageId ? (!pageId.includes('new') ? true : false) : false)) {
+            dispatch(fetchTabContent(pageId));
+        }
+        setPageName(page?.name || 'Untitled');
         if (tabs[activeTabId].status === "SAVED") setPageName(page?.name);
-        else if (tabs[activeTabId].status === "NEW") setPageName(tabs[activeTabId]?.name || 'Untitled')
+        else if (tabs[activeTabId].status === "NEW") setPageName(tabs[activeTabId]?.name || 'Untitled');
 
         setTimeout(() => {
-            setEditorKey((prevKey) => prevKey + 1)
-        }, 1000)
-    }, [pageId, activeTabId])
+            setEditorKey((prevKey) => prevKey + 1);
+        }, 1000);
+    }, [pageId, activeTabId]);
 
     const handleSavePage = () => {
-        if (pageId?.includes('new')) setSidebar(true)
-        dispatch(updatePageContent(activeTabId, draftContent, pageName))
-    }
+        if (pageId?.includes('new')) setSidebar(true);
+        else dispatch(updatePageContent(page.id, draftContent, pageName));
+    };
+
+    useEffect(() => {
+        const handleSaveKeydown = (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+                event.preventDefault();
+                handleSavePage();
+            }
+        };
+
+        window.addEventListener('keydown', handleSaveKeydown);
+        return () => {
+            window.removeEventListener('keydown', handleSaveKeydown);
+        };
+    }, [handleSavePage]);
 
     const debounceUpdateDraft = useCallback(
         debounce((activeTabId, content) => {
-            dispatch(updateDraft(activeTabId, content))
+            dispatch(updateDraft(activeTabId, content));
         }, 500),
         [dispatch]
-    )
+    );
 
     const debounceUpdateName = useCallback(
         debounce((activeTabId, name) => {
-            dispatch(updateNewTabName(activeTabId, name))
+            dispatch(updateNewTabName(activeTabId, name));
         }, 500),
         [dispatch]
-    )
+    );
 
     const handleContentChange = (newContent) => {
-        debounceUpdateDraft(activeTabId, newContent)
-    }
-
+        if (tabs[activeTabId]?.isModified === false) dispatch(setTabIsModified(activeTabId, true));
+        debounceUpdateDraft(activeTabId, newContent);
+    };
 
     const handlePageNameChange = (event) => {
         const newName = event.target.value;
-        setPageName(newName)
+        setPageName(newName);
         if (tabs[activeTabId].status === "NEW") {
-            debounceUpdateName(activeTabId, newName)
+            debounceUpdateName(activeTabId, newName);
         }
-    }
+    };
 
     const handleSavePageName = () => {
-        if (tabs[activeTabId].status === "SAVED") dispatch(updatePageName(page.id, pageName))
-    }
+        if (tabs[activeTabId].status === "SAVED") dispatch(updatePageName(page.id, pageName));
+    };
 
     const handlePageNameKeyDown = (event) => {
         if (event.key === 'Enter') {
-            const editorInput = document.querySelector('#tiptap-editor [contenteditable="true"]')
+            const editorInput = document.querySelector('#tiptap-editor [contenteditable="true"]');
             if (editorInput) {
-                editorInput.focus()
+                editorInput.focus();
             }
             handleSavePageName();
         }
-    }
+    };
     const autoGrow = (element) => {
         element.style.height = '5px';
         element.style.height = `${element.scrollHeight}px`;
-      };
+    };
 
     return (
-        <div className='parent-page-container d-flex flex-column align-items-center w-100'>
-            <div className='page-header d-flex align-items-center justify-content-between w-100 py-2 px-3 position-sticky bg-white'>
-                <h1 className="header-page-name fa-1x w-25 text-truncate">{pageName}</h1>
+        <div className='parent-page-container px-3 py-2 d-flex flex-column align-items-center w-100'>
+            <div className='page-header d-flex align-items-center justify-content-between w-100'>
+                <h1 className="header-page-name fa-1x text-truncate w-25">{pageName}</h1>
                 <div className='header-operations d-flex align-items-center gap-2'>
                     <div>
                         <OverlayTrigger
@@ -140,15 +152,19 @@ const Page = () => {
                                     <Tooltip id='edited-by-tooltip'>
                                         <div className="fs-4 font-weight-bold">
                                             {window.navigator.platform.toLowerCase().includes("mac") ? (
-                                                <span>control + s</span>
+                                                <span>Cmd + S</span>
                                             ) : (
-                                                <span>alt + s</span>
+                                                <span>Ctrl + S</span>
                                             )}
                                         </div>
                                     </Tooltip>
                                 }
                             >
-                                <button className="btn p-0" onClick={handleSavePage}>Save</button>
+                                {tabs[activeTabId]?.isModified ? (
+                                    <button className="btn p-0" onClick={handleSavePage} >Save &nbsp;</button>
+                                ) : (
+                                    <button className="btn p-0 text-black-60 disabled" >Saved</button>
+                                )}
                             </OverlayTrigger>
                         </div>
                     </IconButton>
@@ -169,8 +185,8 @@ const Page = () => {
             </div >
             <div className='page-container h-100 w-100 p-3'>
                 <textarea
-                 ref={textareaRef}
-                 onInput={() => autoGrow(textareaRef.current)}
+                    ref={textareaRef}
+                    onInput={() => autoGrow(textareaRef.current)}
                     className='page-name fa-3x font-weight-bold mt-5 border-0 w-100'
                     type='text'
                     value={pageName}
@@ -190,20 +206,9 @@ const Page = () => {
                     />
                 </div>
             </div>
-            {
-                sidebar && (
-                    <SaveAsPageSidebar
-                        name="Anya's first page"
-                        onHide={() => setSidebar(false)}
-                        handleSubmit={() => {
-                            console.log('Page saved')
-                            setSidebar(false)
-                        }}
-                    />
-                )
-            }
-        </div >
-    )
-}
+            {sidebar && <SaveAsPageSidebar name={pageName} setName={setPageName} onHide={() => setSidebar(false)} handleSubmit={() => setSidebar(false)} />}
+        </div>
+    );
+};
 
-export default Page
+export default Page;

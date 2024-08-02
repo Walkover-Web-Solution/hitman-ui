@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility.js'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility.js'
 import groupsService from './subPageService.js'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
@@ -88,8 +88,8 @@ const SubPage = (props) => {
 
   const openAddSubPageModal = (subPageId) => {
     const newPage = { name: 'untitled', pageType: 3 };
-    if (organizations?.currentOrg?.meta?.type === 0) {
-      dispatch(addPage(navigate, pages[subPageId].versionId, newPage))
+    if (!isOrgDocType()) {
+      dispatch(addPage(navigate, pages[subPageId].id, newPage))
     }
     else {
       setShowAddCollectionModal(true)

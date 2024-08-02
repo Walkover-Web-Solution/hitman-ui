@@ -3,7 +3,7 @@ import { store } from '../../../store/store'
 import tabStatusTypes from '../tabStatusTypes'
 import tabsActionTypes from './tabsActionTypes'
 import { navigateTo } from '../../../navigationService'
-import { getOrgId, isElectron } from '../../common/utility'
+import { getOrgId, isElectron, isOrgDocType } from '../../common/utility'
 import { openModal } from '../../modals/redux/modalsActions'
 import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
 import { getPageContent } from '../../../services/pageServices'
@@ -21,6 +21,15 @@ export const fetchTabsFromRedux = () => {
       type: tabsActionTypes.FETCH_TABS_FROM_REDUX,
       tabsList,
       tabsMetadata
+    })
+  }
+}
+
+export const setTabIsModified = (tabId, flag) => {
+  return async (dispatch) => {
+    dispatch({
+      type: tabsActionTypes.SET_TAB_MODIFIED,
+      payload: { id: tabId, flag }
     })
   }
 }
@@ -62,7 +71,7 @@ export const addNewTab = () => {
 
   tabsOrder.push(id)
   const orgId = getOrgId()
-  if (state.organizations?.currentOrg?.meta?.type === 0) {
+  if (!isOrgDocType()) {
     return async (dispatch) => {
       dispatch({
         type: tabsActionTypes.ADD_NEW_TAB,

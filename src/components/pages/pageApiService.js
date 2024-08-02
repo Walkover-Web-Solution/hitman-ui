@@ -9,6 +9,7 @@ function getApiUrl() {
 }
 
 function collectionPagesUrl(pageId) {
+  console.log(pageId)
   const apiUrl = getApiUrl()
   return `${apiUrl}/pages/${pageId}`
 }

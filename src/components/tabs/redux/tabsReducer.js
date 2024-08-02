@@ -164,7 +164,12 @@ function tabsReducer(state = initialState, action) {
       tabs = { ...state }
       delete tabs.tabs[action.payload.id].name
       return tabs
-      
+
+    case tabsActionTypes.SET_TAB_MODIFIED:
+      tabs = { ...state }
+      tabs.tabs[action.payload.id].isModified = action.payload.flag
+      return tabs
+
     default:
       return state
   }
