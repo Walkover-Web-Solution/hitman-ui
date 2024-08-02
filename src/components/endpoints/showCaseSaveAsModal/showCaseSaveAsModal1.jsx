@@ -1,41 +1,27 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import RenderData from './renderData/renderData1'
 import { addPage } from '../../pages/redux/pagesActions'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import './showCaseSaveAsModal.scss'
-import shortid from 'shortid'
 
 const ShowCaseSaveAsModal = (props) => {
-  const params = useParams()
-  const { pageId } = params
+
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   const { collections, currentOrg, pages, draftContent } = useSelector((state) => {
     return {
       collections: state.collections,
       currentOrg: state.organizations.currentOrg,
       pages: state.pages,
-      draftContent: state.tabs.tabs[pageId]?.draft
+      draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft
     }
   })
 
   const [pathData, setPathData] = useState(['currentOrganisation'])
-  const [selectedId, setSelectedId] = useState('')
 
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (pathData.length > 0) {
-      const lastId = pathData[pathData.length - 1]
-      const type = pages?.[lastId]?.type
-      if (type === 0) {
-        const parentId = pages?.[lastId]?.collectionId
-        setSelectedId(parentId)
-      } else {
-        setSelectedId(pages?.[lastId]?.id)
-      }
-    }
-  }, [pathData, pages])
+  const currentId = pathData?.[pathData?.length - 1];
 
   const getName = (id) => {
     const type = pages?.[id]?.type
@@ -56,21 +42,18 @@ const ShowCaseSaveAsModal = (props) => {
     }
   }
 
+  const getPageType = (currentId) => {
+    if (pages?.[currentId]?.type === 2) return 3;
+    else if (pages?.[currentId].type === 0) return 1;
+    return 3;
+  }
+
   const handleSave = () => {
+    const currentId = pathData[pathData.length - 1];
+    let rootParentId = currentId;
     const data = { name: props.name, contents: draftContent }
-    let rootParentId = collections[selectedId]?.rootParentId
-    let c1 = 0
-    if (rootParentId === undefined) {
-      rootParentId = pages[selectedId]?.parentId
-      console.log(rootParentId)
-      c1++
-    }
-    const newPage = {
-      ...data,
-      requestId: shortid.generate(),
-      versionId: shortid.generate(),
-      pageType: c1 == 0 ? 1 : 3
-    }
+    if (pages?.[currentId]?.type === 1) rootParentId = pages?.[currentId]?.child?.[0]
+    const newPage = { ...data, pageType: getPageType(rootParentId) }
     dispatch(addPage(navigate, rootParentId, newPage))
   }
 
@@ -92,7 +75,7 @@ const ShowCaseSaveAsModal = (props) => {
       <div className='showcase_modal_container'>
         <RenderData data={pathData} setPathData={setPathData} />
         <div className='mt-5 d-flex align-items-center justify-content-end pb-2 pr-1'>
-          <button onClick={handleSave} className='btn btn-primary mr-2 btn-sm'>
+          <button onClick={handleSave} className='btn btn-primary mr-2 btn-sm' disabled={currentId === 'currentOrganisation'} >
             Save
           </button>
           <button onClick={props.onHide} className='btn btn-secondary outline api-cancel-btn btn-sm'>

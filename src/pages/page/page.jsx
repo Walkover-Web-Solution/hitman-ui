@@ -196,17 +196,7 @@ const Page = () => {
           />
         </div>
       </div>
-      {sidebar && (
-        <SaveAsPageSidebar
-          name={pageName}
-          setName={setPageName}
-          onHide={() => setSidebar(false)}
-          handleSubmit={() => {
-            console.log('Page saved');
-            setSidebar(false);
-          }}
-        />
-      )}
+      {sidebar && <SaveAsPageSidebar name={pageName} setName={setPageName} onHide={() => setSidebar(false)} handleSubmit={() => setSidebar(false)} />}
     </div>
   );
 };
