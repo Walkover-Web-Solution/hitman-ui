@@ -132,28 +132,28 @@ const Page = () => {
                         </div>
                     </IconButton>
                     <div className='inner-operations'>
-                        <OverlayTrigger
-                            placement='bottom'
-                            overlay={
-                                <Tooltip id='edited-by-tooltip'>
-                                    <div className="fs-4 font-weight-bold">
-                                        Publish/Unpublish
-                                    </div>
-                                </Tooltip>
-                            }
-                        >
-                            <Dropdown>
-                                <Dropdown.Toggle as='div' id='dropdown-basic'>
-                                    <div className='mt-1'>
-                                        <IconButton><BsThreeDots color="black" size={18} /></IconButton>
-                                    </div>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => console.log('Publish')}>Publish</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => console.log('Unpublish')}>UnPublish</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </OverlayTrigger>
+                        <Dropdown>
+                            <Dropdown.Toggle as='div' id='dropdown-basic'>
+                                <div className='mt-1 icon-button'>
+                                    <OverlayTrigger
+                                        placement='bottom'
+                                        overlay={
+                                            <Tooltip id='edited-by-tooltip'>
+                                                <div className="fs-4 font-weight-bold">
+                                                    Publish/Unpublish
+                                                </div>
+                                            </Tooltip>
+                                        }
+                                    >
+                                        <BsThreeDots color="black" size={18} />
+                                    </OverlayTrigger>
+                                </div>
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => console.log('Publish')}>Publish</Dropdown.Item>
+                                <Dropdown.Item onClick={() => console.log('Unpublish')}>UnPublish</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </div>
                 </div >
             </div >
