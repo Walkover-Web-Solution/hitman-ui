@@ -89,7 +89,7 @@ const SubPage = (props) => {
   const openAddSubPageModal = (subPageId) => {
     const newPage = { name: 'untitled', pageType: 3 };
     if (!isOrgDocType()) {
-      dispatch(addPage(navigate, pages[subPageId].versionId, newPage))
+      dispatch(addPage(navigate, pages[subPageId].id, newPage))
     }
     else {
       setShowAddCollectionModal(true)

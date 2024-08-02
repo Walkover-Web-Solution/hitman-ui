@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom'
 import ImportCollectionModal from '../importCollection/importColectionModel'
 import CustomModal from '../customModal/customModal'
 import { BsThreeDots } from 'react-icons/bs'
+import { isOrgDocType } from '../common/utility'
 
 const UserProfile = () => {
   const historySnapshot = useSelector((state) => state.history)
@@ -130,9 +131,9 @@ const UserProfile = () => {
           </IconButton>
         </div>
         <div className='add-button d-flex align-items-center'>
-          <button className='btn btn-light px-1' onClick={handleImportClick}>
+          {isOrgDocType() && <button className='btn btn-light px-1' onClick={handleImportClick}>
             Import
-          </button>
+          </button>}
           <ImportCollectionModal
             show={showImportModal}
             onClose={() => {

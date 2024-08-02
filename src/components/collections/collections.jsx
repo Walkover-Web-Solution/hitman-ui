@@ -246,14 +246,14 @@ const Collections = (props) => {
                             <TbSettingsAutomation size={16} color='grey' />
                             API Automation
                           </div>}
-                          <div className='dropdown-item d-flex align-items-center h-auto'>
+                          {isOrgDocType() && <div className='dropdown-item d-flex align-items-center h-auto'>
                             <BiExport className='mb-1' size={18} color='grey' />
                             <ExportButton
                               orgId={params.orgId}
                               collectionId={collectionId}
                               collectionName={collections[collectionId].name}
                             />
-                          </div>
+                          </div>}
                           <div
                             className='dropdown-item delete-button-sb align-items-center text-danger d-flex'
                             onClick={() => openDeleteCollectionModal(collectionId)}
