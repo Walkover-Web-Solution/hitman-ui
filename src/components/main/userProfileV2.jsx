@@ -170,7 +170,7 @@ const UserProfile = () => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item onClick={handleCreateOrganizationClick}>Create organization</Dropdown.Item>
+            <Dropdown.Item className='pl-1' onClick={handleCreateOrganizationClick}>Create organization</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>
