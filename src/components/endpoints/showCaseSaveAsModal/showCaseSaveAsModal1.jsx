@@ -55,6 +55,7 @@ const ShowCaseSaveAsModal = (props) => {
     if (pages?.[currentId]?.type === 1) rootParentId = pages?.[currentId]?.child?.[0]
     const newPage = { ...data, pageType: getPageType(rootParentId) }
     dispatch(addPage(navigate, rootParentId, newPage))
+    props.onHide();
   }
 
   return (
