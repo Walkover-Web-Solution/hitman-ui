@@ -34,6 +34,7 @@ const SaveAsPageSidebar = (props) => {
 
   const handlePageNameChange = (e) => {
     setData((prevState) => ({ ...prevState, name: e?.currentTarget?.value }))
+    props.setName((prevState) => ({ ...prevState, name: e?.currentTarget?.value }))
   }
 
   const handlePageNameBlur = (e) => {
@@ -46,7 +47,7 @@ const SaveAsPageSidebar = (props) => {
     return (
       <Input
         ref={inputRef}
-        value={data.name}
+        value={props.name}
         onChange={handlePageNameChange}
         onBlur={handlePageNameBlur}
         placeholder={'Page Name'}
@@ -69,10 +70,10 @@ const SaveAsPageSidebar = (props) => {
         <form className='desc-box form-parent' onSubmit={props.handleSubmit}>
           <div className='p-form-group mb-3'>
             {renderPageNameInput()}
-            {title?.trim() === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
+            {title === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
           </div>
         </form>
-        <ShowCaseSaveAsModal />
+        <ShowCaseSaveAsModal name={props.name} />
       </div>
     </div>
   )

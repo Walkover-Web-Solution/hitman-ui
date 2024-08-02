@@ -134,10 +134,17 @@ const Collections = (props) => {
   }
 
   const openAddPageEndpointModal = (collectionId) => {
+<<<<<<< HEAD
     const newPage = {name:'untitled' , pageType: 1};
     if(!isOrgDocType()){
       dispatch(addPage(navigate, collections[collectionId].rootParentId,newPage))
     }else{
+=======
+    const newPage = { name: 'untitled', pageType: 1 }
+    if (organizations?.currentOrg?.meta?.type === 0) {
+      dispatch(addPage(navigate, collections[collectionId].rootParentId, newPage))
+    } else {
+>>>>>>> afe29c5cb (first commit)
       setShowAddCollectionModal(true)
       setSelectedCollection({
         ...collections[collectionId]
@@ -337,10 +344,11 @@ const Collections = (props) => {
         <div className='App-Nav'>
           <div className='tabs'>
             {showAddCollectionModal && showAddPageEndpointModal()}
-            {showCollectionForm && (<CustomModal size='sm' modalShow={showCollectionForm} hideModal={closeCollectionForm}>
-                  <CollectionForm title='Edit Collection' isEdit={true} collectionId={selectedCollection?.id} onHide={closeCollectionForm} />
-                </CustomModal>
-              )}
+            {showCollectionForm && (
+              <CustomModal size='sm' modalShow={showCollectionForm} hideModal={closeCollectionForm}>
+                <CollectionForm title='Edit Collection' isEdit={true} collectionId={selectedCollection?.id} onHide={closeCollectionForm} />
+              </CustomModal>
+            )}
             {openTagManagerModal()}
             {showDeleteCollectionModal()}
             {showOrgModal && <MoveModal moveCollection={selectedCollection} onHide={handleOrgModalClose} show={showOrgModal} />}

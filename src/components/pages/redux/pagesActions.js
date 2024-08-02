@@ -59,7 +59,7 @@ export const updatePageContent = (id, content, name) => {
   return async (dispatch) => {
     const dataToSend = {
       name,
-      contents: content,
+      contents: content
     }
     console.log("id : ", id)
     const res = await pageApiService.updatePage(id, dataToSend)
@@ -146,16 +146,16 @@ export const onEndpointUpdated = (response) => {
   }
 }
 
-export const addPage = (navigate, rootParentId, newPage) => {
-  newPage.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
+export const addPage = (history, rootParentId, newPage) => {
   const orgId = getCurrentOrg()?.id
+  console.log(rootParentId, newPage, '09876')
   return (dispatch) => {
     pageApiService
       .saveCollectionPage(rootParentId, newPage)
       .then((response) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
-        navigateTo(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
+        navigateTo(`/orgs/${orgId}/dashboard/page/${data.id}`)
       })
       .catch((error) => {
         dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))

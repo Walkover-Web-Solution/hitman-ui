@@ -9,6 +9,7 @@ function getApiUrl() {
 }
 
 function collectionPagesUrl(pageId) {
+  console.log(pageId)
   const apiUrl = getApiUrl()
   return `${apiUrl}/pages/${pageId}`
 }
@@ -21,6 +22,7 @@ export function getAllPages(id) {
 }
 
 export function saveCollectionPage(rootParentId, page) {
+  console.log(rootParentId, page)
   return http.post(collectionPagesUrl(rootParentId), page)
 }
 
