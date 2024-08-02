@@ -28,7 +28,6 @@ const SaveAsPageSidebar = (props) => {
   useEffect(() => {
     const newData = { ...data, name: props?.name }
     setData(newData)
-    console.log(props.name,123456798765)
   }, [props?.name])
 
   const handlePageNameChange = (e) => {
@@ -57,7 +56,7 @@ const SaveAsPageSidebar = (props) => {
             {title === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
           </div>
         </form>
-        <ShowCaseSaveAsModal name={props.name} onHide={props.onHide} />
+        <ShowCaseSaveAsModal pageId={props.pageId} name={props.name} onHide={props.onHide} />
       </div>
     </div>
   )

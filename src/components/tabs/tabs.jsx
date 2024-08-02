@@ -114,7 +114,6 @@ const CustomTabs = (props) => {
     const tabsOrder = tabs.tabsOrder.filter((item) => item !== draggedItem.current)
     const index = tabs.tabsOrder.findIndex((tId) => tId === droppedOnItem)
     tabsOrder.splice(index, 0, draggedItem.current)
-    console.log('tabsOrder', tabsOrder)
     dispatch(setTabsOrder(tabsOrder))
   }
 

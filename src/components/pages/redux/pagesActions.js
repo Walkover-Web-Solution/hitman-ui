@@ -61,7 +61,6 @@ export const updatePageContent = (id, content, name) => {
       name,
       contents: content
     }
-    console.log("id : ", id)
     const res = await pageApiService.updatePage(id, dataToSend)
     dispatch({ type: tabsActionTypes.DELETE_TAB_NAME, payload: { id } })
     dispatch({ type: tabsActionTypes.SET_TAB_MODIFIED, payload: { id, flag: false } })
@@ -146,7 +145,7 @@ export const onEndpointUpdated = (response) => {
   }
 }
 
-export const addPage = (history, rootParentId, newPage) => {
+export const addPage = (history, rootParentId, newPage, pageId) => {
   const orgId = getCurrentOrg()?.id
   return (dispatch) => {
     pageApiService
@@ -154,6 +153,8 @@ export const addPage = (history, rootParentId, newPage) => {
       .then((response) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
+        const newTab = { id: data.id, type: "page", status: "SAVED", previewMode: false, isModified: false, draft: data.content }
+        dispatch({ type: tabsActionTypes.REPLACE_TAB, oldTabId: pageId, newTab })
         navigateTo(`/orgs/${orgId}/dashboard/page/${data.id}`)
       })
       .catch((error) => {

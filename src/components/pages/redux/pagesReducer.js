@@ -297,7 +297,6 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.ON_PAGE_RENAME:
       pages = { ...state }
       pages[action.payload.id].name = action.payload.updatedName
-      console.log('pages[action.payload.id].name', pages[action.payload.id].name)
       return pages
 
     default:
