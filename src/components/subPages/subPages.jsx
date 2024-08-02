@@ -19,6 +19,7 @@ import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './subpages.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
+import { openInNewTab } from '../tabs/redux/tabsActions.js'
 
 const SubPage = (props) => {
   const { pages, clientData, collections, organizations } = useSelector((state) => ({
@@ -90,6 +91,12 @@ const SubPage = (props) => {
     const newPage = { name: 'untitled', pageType: 3 };
     if (!isOrgDocType()) {
       dispatch(addPage(navigate, pages[subPageId].id, newPage))
+      dispatch(openInNewTab({
+        type: 'page',
+        previewMode: false,
+        isModified: false,
+        state: {},
+      }))
     }
     else {
       setShowAddCollectionModal(true)

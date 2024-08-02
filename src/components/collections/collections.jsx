@@ -28,6 +28,7 @@ import { Card } from 'react-bootstrap'
 import 'react-toastify/dist/ReactToastify.css'
 import './collections.scss'
 import { addPage } from '../pages/redux/pagesActions'
+import { openInNewTab } from '../tabs/redux/tabsActions'
 
 const Collections = (props) => {
   const collections = useSelector((state) => state.collections)
@@ -134,10 +135,16 @@ const Collections = (props) => {
   }
 
   const openAddPageEndpointModal = (collectionId) => {
-    const newPage = {name:'untitled' , pageType: 1};
-    if(!isOrgDocType()){
-      dispatch(addPage(navigate, collections[collectionId].rootParentId,newPage))
-    }else{
+    const newPage = { name: 'untitled', pageType: 1 };
+    if (!isOrgDocType()) {
+      dispatch(addPage(navigate, collections[collectionId].rootParentId, newPage))
+      dispatch(openInNewTab({
+        type: 'page',
+        previewMode: false,
+        isModified: false,
+        state: {},
+      }))
+    } else {
       setShowAddCollectionModal(true)
       setSelectedCollection({
         ...collections[collectionId]
