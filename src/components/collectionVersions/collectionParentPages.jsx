@@ -26,7 +26,7 @@ import './collectionVersions.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
 
 const CollectionParentPages = (props) => {
-  const { pages, clientData, collections, organizations} = useSelector((state) => {
+  const { pages, clientData, collections, organizations } = useSelector((state) => {
     return {
       pages: state.pages,
       clientData: state.clientData,
@@ -151,29 +151,41 @@ const CollectionParentPages = (props) => {
     return pages?.[props.rootParentId]?.child?.length === 1
       ? versionName
       : selectedVersionName?.length > 10
-      ? `${selectedVersionName.substring(0, 7)} ... `
-      : selectedVersionName
+        ? `${selectedVersionName.substring(0, 7)} ... `
+        : selectedVersionName
   }
 
   const versionDropDown = (rootId) => {
-    return (
-      <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()}>
-        {pages[rootId].child.map((childId, index) => (
-          <Dropdown.Item key={index} onClick={(e) => handleDropdownItemClick(childId, rootId)}>
-            {pages[childId]?.name}
-          </Dropdown.Item>
-        ))}
-      </DropdownButton>
-    )
+    if (organizations?.currentOrg?.meta?.type !== 0) {
+      return (
+        <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()}>
+          {pages[rootId].child.map((childId, index) => (
+            <Dropdown.Item key={index} onClick={(e) => handleDropdownItemClick(childId, rootId)}>
+              {pages[childId]?.name}
+            </Dropdown.Item>
+          ))}
+        </DropdownButton>
+      )
+    }
   }
 
   const openAddPageEndpointModal = (pageId) => {
-    const newPage = {name:'untitled' , pageType: 3};
-    if(organizations?.currentOrg?.meta?.type === 0 ){
-      dispatch(addPage(navigate, pages[pageId].versionId,newPage))
-    }else{
-    setShowAddCollectionModal(true)
-    setSelectedPage({ ...pages[pageId] })
+    const newPage = { name: 'untitled', pageType: 3 };
+    if (organizations?.currentOrg?.meta?.type === 0) {
+      dispatch(addPage(navigate, pages[pageId].versionId, newPage))
+    } else {
+      setShowAddCollectionModal(true)
+      setSelectedPage({ ...pages[pageId] })
+    }
+  }
+
+  const showManageVersion = () => {
+    if (organizations?.currentOrg?.meta?.type !== 0) {
+      return (
+        <div className='dropdown-item d-flex' onClick={() => setShowVersionForm(true)}>
+          <MdOutlineSettings size={20} color='#f2994a' /> Manage Version
+        </div>
+      )
     }
   }
 
@@ -209,8 +221,8 @@ const CollectionParentPages = (props) => {
       isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId
         ? 'selected'
         : isDashboardRoute && params.pageId === pageId
-        ? 'selected'
-        : ''
+          ? 'selected'
+          : ''
 
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     let collectionId = pages?.[idToRender]?.collectionId ?? null
@@ -286,9 +298,7 @@ const CollectionParentPages = (props) => {
                     <div className='dropdown-item d-flex' onClick={() => openEditPageForm(pageId)}>
                       <Rename /> Rename
                     </div>
-                    <div className='dropdown-item d-flex' onClick={() => setShowVersionForm(true)}>
-                      <MdOutlineSettings size={20} color='#f2994a' /> Manage Version
-                    </div>
+                    {showManageVersion()}
                     <div className='dropdown-item text-danger d-flex' onClick={() => openDeletePageModal(pageId)}>
                       <DeleteIcon /> Delete
                     </div>
