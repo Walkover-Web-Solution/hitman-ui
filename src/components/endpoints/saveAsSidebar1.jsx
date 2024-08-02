@@ -57,11 +57,7 @@ const SaveAsPageSidebar = (props) => {
             {title === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
           </div>
         </form>
-<<<<<<< Updated upstream
-        <ShowCaseSaveAsModal name={props.name} />
-=======
         <ShowCaseSaveAsModal name={props.name} onHide={props.onHide} />
->>>>>>> Stashed changes
       </div>
     </div>
   )
