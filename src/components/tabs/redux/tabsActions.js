@@ -25,6 +25,15 @@ export const fetchTabsFromRedux = () => {
   }
 }
 
+export const setTabIsModified = (tabId, flag) => {
+  return async (dispatch) => {
+    dispatch({
+      type: tabsActionTypes.SET_TAB_MODIFIED,
+      payload: { id: tabId, flag }
+    })
+  }
+}
+
 export const fetchTabContent = (tabId) => {
   return async (dispatch) => {
     const orgId = getOrgId()

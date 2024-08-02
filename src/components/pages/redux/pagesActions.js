@@ -64,6 +64,7 @@ export const updatePageContent = (id, content, name) => {
     console.log("id : ", id)
     const res = await pageApiService.updatePage(id, dataToSend)
     dispatch({ type: tabsActionTypes.DELETE_TAB_NAME, payload: { id } })
+    dispatch({ type: tabsActionTypes.SET_TAB_MODIFIED, payload: { id, flag: false } })
   }
 }
 

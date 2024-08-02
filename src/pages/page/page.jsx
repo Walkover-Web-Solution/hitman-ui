@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTabContent, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
+import { fetchTabContent, setTabIsModified, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -53,6 +53,20 @@ const Page = () => {
         dispatch(updatePageContent(activeTabId, draftContent, pageName))
     }
 
+    useEffect(() => {
+        const handleSaveKeydown = (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+                event.preventDefault();
+                handleSavePage();
+            }
+        }
+
+        window.addEventListener('keydown', handleSaveKeydown)
+        return () => {
+            window.removeEventListener('keydown', handleSaveKeydown)
+        }
+    }, [handleSavePage])
+
     const debounceUpdateDraft = useCallback(
         debounce((activeTabId, content) => {
             dispatch(updateDraft(activeTabId, content))
@@ -68,6 +82,7 @@ const Page = () => {
     )
 
     const handleContentChange = (newContent) => {
+        if (tabs[activeTabId]?.isModified === false) dispatch(setTabIsModified(activeTabId, true))
         debounceUpdateDraft(activeTabId, newContent)
     }
 
@@ -131,15 +146,21 @@ const Page = () => {
                                     <Tooltip id='edited-by-tooltip'>
                                         <div className="fs-4 font-weight-bold">
                                             {window.navigator.platform.toLowerCase().includes("mac") ? (
-                                                <span>control + s</span>
+                                                <span>Cmd + S</span>
                                             ) : (
-                                                <span>alt + s</span>
+                                                <span>Ctrl + S</span>
                                             )}
                                         </div>
                                     </Tooltip>
                                 }
                             >
-                                <button className="btn p-0" onClick={handleSavePage}>Save</button>
+                                {
+                                    tabs[activeTabId]?.isModified ? (
+                                        <button className="btn p-0" onClick={handleSavePage} >Save &nbsp;</button>
+                                    ) : (
+                                        <button className="btn p-0 text-black-60 disabled" >Saved</button>
+                                    )
+                                }
                             </OverlayTrigger>
                         </div>
                     </IconButton>
@@ -147,7 +168,7 @@ const Page = () => {
                         <Dropdown>
                             <Dropdown.Toggle as='div' id='dropdown-basic'>
                                 <div className='mt-1'>
-                                <IconButton><BsThreeDots color="black" size={18} /></IconButton>
+                                    <IconButton><BsThreeDots color="black" size={18} /></IconButton>
                                 </div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
