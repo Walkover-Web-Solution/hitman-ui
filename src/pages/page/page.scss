@@ -1,18 +1,30 @@
 .parent-page-container {
-  height: 100vh;
-  .header-page-name {
-    cursor: context-menu;
-  }
-  .inner-operations {
-    .dropdown {
-      .dropdown-toggle {
-        &::after {
-          all: unset;
+  .page-header {
+    top: 0;
+    z-index: 9;
+    .header-page-name {
+      cursor: context-menu;
+    }
+    .inner-operations {
+      .dropdown {
+        .dropdown-toggle {
+          &::after {
+            all: unset;
+          }
         }
       }
     }
   }
+  
   .page-container {
     max-width: 900px;
+    textarea  {
+      resize: none;
+      min-height: 50px;
+      max-height: 300px;
+      &:focus {
+        outline: unset;
+      }
+    }
   }
 }

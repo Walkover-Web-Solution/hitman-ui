@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useRef, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTabContent, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 const Page = () => {
     const dispatch = useDispatch()
     const { pageId } = useParams()
+    const textareaRef = useRef(null);
 
     const [editorKey, setEditorKey] = useState(0)
     const [sidebar, setSidebar] = useState(false)
@@ -36,6 +37,9 @@ const Page = () => {
     const user = users?.find((user) => user.id === updatedById)
 
     useEffect(() => {
+        if (textareaRef.current) {
+            autoGrow(textareaRef.current);
+          }
         if (draftContent === undefined && (pageId ? (!pageId.includes('new') ? true : false) : false)) {
             // toast.success("API called")
             dispatch(fetchTabContent(pageId))
@@ -94,11 +98,15 @@ const Page = () => {
             handleSavePageName();
         }
     }
+    const autoGrow = (element) => {
+        element.style.height = '5px';
+        element.style.height = `${element.scrollHeight}px`;
+      };
 
     return (
-        <div className='parent-page-container px-3 py-2 d-flex flex-column align-items-center w-100'>
-            <div className='page-header d-flex align-items-center justify-content-between w-100'>
-                <h1 className="header-page-name fa-1x">{pageName}</h1>
+        <div className='parent-page-container d-flex flex-column align-items-center w-100'>
+            <div className='page-header d-flex align-items-center justify-content-between w-100 py-2 px-3 position-sticky bg-white'>
+                <h1 className="header-page-name fa-1x w-25 text-truncate">{pageName}</h1>
                 <div className='header-operations d-flex align-items-center gap-2'>
                     <div>
                         <OverlayTrigger
@@ -148,7 +156,7 @@ const Page = () => {
                         <Dropdown>
                             <Dropdown.Toggle as='div' id='dropdown-basic'>
                                 <div className='mt-1'>
-                                <IconButton><BsThreeDots color="black" size={18} /></IconButton>
+                                    <IconButton><BsThreeDots color="black" size={18} /></IconButton>
                                 </div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -160,8 +168,10 @@ const Page = () => {
                 </div >
             </div >
             <div className='page-container h-100 w-100 p-3'>
-                <input
-                    className='page-name fa-3x font-weight-bold mt-5 border-0'
+                <textarea
+                 ref={textareaRef}
+                 onInput={() => autoGrow(textareaRef.current)}
+                    className='page-name fa-3x font-weight-bold mt-5 border-0 w-100'
                     type='text'
                     value={pageName}
                     placeholder='Untitled'
