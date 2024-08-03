@@ -42,7 +42,7 @@ const Page = () => {
         if (typeof window.SendDataToChatbot === 'function' && tabs[activeTabId]?.type === 'page') {
             window.SendDataToChatbot({
                 bridgeName: 'page',
-                threadId: `${users.currentUser.id}`,
+                threadId: `${users.currentUser.id}-${pageId}`,
                 variables: { Proxy_auth_token: getProxyToken(), collectionId: page?.collectionId }
             })
         }
@@ -51,10 +51,13 @@ const Page = () => {
     useEffect(() => {
         if (textareaRef.current) autoGrow(textareaRef.current);
         if (draftContent === undefined && tabs[activeTabId]?.status !== 'NEW') dispatch(fetchTabContent(pageId));
-        setPageName(page?.name || 'Untitled');
-        if (tabs[activeTabId].status === "SAVED") setPageName(page?.name);
-        else if (tabs[activeTabId].status === "NEW") setPageName(tabs[activeTabId]?.name || 'Untitled');
     }, [pageId]);
+
+    useEffect(() => {
+        if (tabs[activeTabId].status === "NEW") return setPageName(tabs[activeTabId]?.name || 'Untitled');
+        setPageName(page?.name || 'Untitled');
+    }, [page?.name])
+
 
     const handleSavePage = () => {
         if (tabs[activeTabId]?.status === "NEW") setSidebar(true);
@@ -137,20 +140,17 @@ const Page = () => {
                             placement='bottom'
                             overlay={
                                 <Tooltip id='edited-by-tooltip'>
-                                    <div>
-                                        {lastModified ? (
-                                            <div className="fs-4 text-secondary">
-                                                <span>Updated by </span>
-                                                <span className="font-weight-bold text-white">{user?.name}</span>
-                                                <br />
-                                                <span>Modified At </span>
-                                                <span>{lastModified}</span>
-                                            </div>) : <span>No Data</span>}
-                                    </div>
+                                    {lastModified &&
+                                        <div className="fs-4 text-secondary">
+                                            <span>Edited by </span>
+                                            <span className="font-weight-bold text-white">{user?.name}</span>
+                                            <span>&nbsp;{lastModified}</span>
+                                        </div>
+                                    }
                                 </Tooltip>
                             }
                         >
-                            <button className='text-black-50 btn p-0'>Edited By</button>
+                            <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
                         </OverlayTrigger>
                     </div>}
                     <IconButton>
@@ -159,7 +159,7 @@ const Page = () => {
                                 placement='bottom'
                                 overlay={
                                     <Tooltip id='edited-by-tooltip'>
-                                        <div className="fs-4 font-weight-bold">{window.navigator.platform.toLowerCase().includes("mac") ? <span>cmd + s</span> : <span>ctrl + s</span>}</div>
+                                        <div className="fs-4 text-secondary">{window.navigator.platform.toLowerCase().includes("mac") ? <span>cmd + s</span> : <span>ctrl + s</span>}</div>
                                     </Tooltip>
                                 }
                             >

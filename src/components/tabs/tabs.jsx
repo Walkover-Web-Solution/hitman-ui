@@ -38,7 +38,7 @@ const CustomTabs = (props) => {
   const [showPreview, setShowPreview] = useState(false)
   const [previewId, setPreviewId] = useState(null)
 
-  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history,organizations, automation } = useSelector((state) => {
+  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history, organizations, automation } = useSelector((state) => {
     return {
       responseView: state.responseView,
       pages: state.pages,
@@ -48,7 +48,7 @@ const CustomTabs = (props) => {
       historySnapshots: state.history,
       collections: state.collections,
       history: state.history,
-      automation : state.automation,
+      automation: state.automation,
       organizations: state.organizations,
     }
   })
@@ -90,7 +90,7 @@ const CustomTabs = (props) => {
 
   const openTabAtIndex = (index) => {
     const { tabsOrder } = tabs
-    if (tabsOrder[index]) tabService.selectTab({ navigate, params }, tabsOrder[index])
+    if (tabsOrder[index]) tabService.selectTab(tabsOrder[index], { navigate, params })
   }
 
   const handleOpenNextTab = () => {
@@ -278,7 +278,7 @@ const CustomTabs = (props) => {
               </div>
             )
           }
-        }else{
+        } else {
           return (
             <div className='d-flex align-items-center'>
               <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
@@ -326,14 +326,15 @@ const CustomTabs = (props) => {
       }
       case 'manual-runs': {
         if (automation[tabId]) {
-        return (
-          <>
-            <div className='d-flex align-items-center'>
-              <BsPlayBtn className='mr-1' size={16} />
-              <span>Runs</span>
-            </div>
-          </>
-        )}
+          return (
+            <>
+              <div className='d-flex align-items-center'>
+                <BsPlayBtn className='mr-1' size={16} />
+                <span>Runs</span>
+              </div>
+            </>
+          )
+        }
       }
       default:
     }
@@ -522,7 +523,7 @@ const CustomTabs = (props) => {
             <TabOptions handleCloseTabs={handleCloseTabs} />
           </Nav.Item>
           <Nav.Item className='' id='history-tab-button'>
-          {handleHistoryButton()}
+            {handleHistoryButton()}
           </Nav.Item>
           {showHistoryContainer && (
             <div className='history-main-container'>

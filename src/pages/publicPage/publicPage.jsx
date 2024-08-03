@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { isOnPublishedPage, SESSION_STORAGE_KEY } from '../../components/common/utility'
 import RenderPageContent from '../../components/pages/renderPageContent'
 import DisplayUserAndModifiedData from '../../components/common/userService'
@@ -20,8 +20,9 @@ const queryConfig = {
 function PublicPage() {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
 
-    const { pages } = useSelector((state) => ({
+    const { pages, users } = useSelector((state) => ({
         pages: state.pages,
+        users: state.users,
     }))
 
     const getPagePublishedData = async () => {
@@ -31,29 +32,41 @@ function PublicPage() {
 
     let { data } = useQuery(['pageContent', currentIdToShow], getPagePublishedData, queryConfig)
 
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
+    useEffect(() => {
+        if (isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && (pages?.[idToRender]?.type === 1 || pages?.[idToRender]?.type === 3)) {
+            window.SendDataToChatbot({
+                bridgeName: 'page',
+                threadId: `${users?.currentUser?.id}-${idToRender}`,
+                variables: { collectionId: pages[idToRender]?.collectionId }
+            })
+        }
+    }, [idToRender])
+
+
     return (
         <div className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}>
-        <div className='page-wrapper d-flex flex-column justify-content-between'>
-            {data ? (
-                <div className='pageText d-flex justify-content-center aling-items-start'>
-                    <RenderPageContent pageContent={data} />
+            <div className='page-wrapper d-flex flex-column justify-content-between'>
+                {data ? (
+                    <div className='pageText d-flex justify-content-center aling-items-start'>
+                        <RenderPageContent pageContent={data} />
+                    </div>
+                ) : (
+                    <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
+                        <IoDocumentTextOutline size={140} color='gray' />
+                        <span className='empty-line'>
+                            {pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
+                        </span>
+                        <span className='mt-1 d-inline-block Modified-at fs-4'>
+                            <DisplayUserAndModifiedData />
+                        </span>
+                    </div>
+                )}
+                <div>
+                    <ApiDocReview />
+                    <Footer />
                 </div>
-            ) : (
-                <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
-                    <IoDocumentTextOutline size={140} color='gray' />
-                    <span className='empty-line'>
-                        {pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
-                    </span>
-                    <span className='mt-1 d-inline-block Modified-at fs-4'>
-                        <DisplayUserAndModifiedData />
-                    </span>
-                </div>
-            )}
-            <div>
-            <ApiDocReview />
-            <Footer />
             </div>
-        </div>
         </div>
     )
 }
