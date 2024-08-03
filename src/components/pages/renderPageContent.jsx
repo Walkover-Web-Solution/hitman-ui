@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
 import { isOnPublishedPage } from '../common/utility'
+import DisplayUserAndModifiedData from '../common/userService';
 
 export default function RenderPageContent(props) {
+
+    const { pages } = useSelector((state) => ({
+        pages: state.pages,
+    }))
 
     const [headings, setHeadings] = useState([]);
     const [htmlWithIds, setHtmlWithIds] = useState(props?.pageContent || '');
@@ -15,7 +21,7 @@ export default function RenderPageContent(props) {
             const id = `heading-${index}`;
             h2.setAttribute('id', id);
             return { id, text: h2.innerText };
-        });
+        })
         setHeadings(h2Headings);
         setInnerText(doc.body.innerText)
         return doc.body.innerHTML;
@@ -30,32 +36,35 @@ export default function RenderPageContent(props) {
     }
 
     return (
-        <>
-            {innerText.length > 0 &&
-                <div className={`page-text-render w-100 d-flex justify-content-center`}>
-                    <div className='page-content-body w-50' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
-                    {isOnPublishedPage() && headings.length > 0 && (
-                        <>
-                        <div className='heading-main position-absolute w-25'>
-                            <div className='editor-headings position-fixed d-flex flex-column'>
-                                <span className='pb-2 text-dark d-inline-block font-weight-bold fs-3'> On this page</span>
-                                <div className='border border-2 p-2 rounded-lg h-100'>
-                                    <div>
-                                        {headings.map((heading) => (
-                                            <div key={heading.id}>
-                                                <span onClick={() => scrollToHeading(heading.id)} className='d-block w-100 py-1 cursor-pointer'>
-                                                    {heading.text}
-                                                </span>
-                                            </div>
-                                        ))}
+        <React.Fragment>
+            {innerText?.length > 0 &&
+                <div className='d-flex flex-column justify-content-center align-items-center w-50'>
+                    <div className='mb-4 page-text-render w-100 d-flex justify-content-between align-items-center'>
+                        <span className='page-header d-flex align-items-center'>{pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</span>
+                        <DisplayUserAndModifiedData />
+                    </div>
+                    <div className="page-text-render w-100 d-flex justify-content-center">
+                        <div className='page-content-body' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
+                        {isOnPublishedPage() && headings.length > 0 && (
+                            <div className='heading-main position-absolute w-25'>
+                                <div className='editor-headings position-fixed d-flex flex-column'>
+                                    <div className='border border-2 p-2 rounded-lg h-100'>
+                                        <div>
+                                            {headings.map((heading) => (
+                                                <div key={heading.id}>
+                                                    <span onClick={() => scrollToHeading(heading.id)} className='d-block w-100 py-1 cursor-pointer'>
+                                                        {heading.text}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                        </>
-                    )}
-                </div> 
+                        )}
+                    </div>
+                </div>
             }
-        </>
+        </React.Fragment>
     )
 }
