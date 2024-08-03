@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import DisplayUserAndModifiedData from '../common/userService';
 import HoverBox from './hoverBox/hoverBox';
 
 export default function RenderPageContent(props) {
@@ -38,13 +37,12 @@ export default function RenderPageContent(props) {
     return (
         <React.Fragment>
             {innerText?.length > 0 &&
-                <div className='main-page-content d-flex flex-column justify-content-center align-items-center w-50'>
+                <div className='main-page-content d-flex flex-column justify-content-start align-items-start w-50'>
                     <div className='mb-4 page-text-render w-100 d-flex justify-content-between align-items-center'>
-                        <span className='page-header d-flex align-items-center'>{pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</span>
-                        <DisplayUserAndModifiedData />
+                        <span className='page-name fa-3x font-weight-bold mt-5 border-0 w-100 d-flex align-items-center'>{pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</span>
                     </div>
                     <div className="page-text-render w-100 d-flex justify-content-center">
-                        <div className='page-content-body' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
+                        <div className='w-100'><div dangerouslySetInnerHTML={{ __html: htmlWithIds }} /></div>
                         <HoverBox scrollToHeading={scrollToHeading} headings={headings} />
                     </div>
                 </div>

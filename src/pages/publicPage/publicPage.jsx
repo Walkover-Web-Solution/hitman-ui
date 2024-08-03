@@ -8,7 +8,6 @@ import { useQuery } from 'react-query'
 import { IoDocumentTextOutline } from 'react-icons/io5'
 import Footer from '../../components/main/Footer'
 import ApiDocReview from '../../components/apiDocReview/apiDocReview'
-// import '../../components/pages/page.scss'
 import './publicPage.scss'
 
 const queryConfig = {
@@ -35,7 +34,7 @@ function PublicPage() {
     return (
         <div className='page-wrapper'>
             {data ? (
-                <div className='pageText d-flex justify-content-center'>
+                <div className='pageText d-flex justify-content-center aling-items-start'>
                     <RenderPageContent pageContent={data} />
                 </div>
             ) : (

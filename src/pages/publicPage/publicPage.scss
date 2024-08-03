@@ -61,7 +61,7 @@
                 .editor-headings {
                     width: 200px;
                     height: fit-content;
-                    top: 100px;
+                    top: 200px;
                     right: 0;
                     background-color: white;
                     transform: translateX(300px);
@@ -73,7 +73,7 @@
                         text-overflow: ellipsis;
                         white-space: nowrap;
                         font-size: 12px;
-                        color: grey;
+                        color: #787774;
                         border-radius: 4px;
 
                         &:hover {
