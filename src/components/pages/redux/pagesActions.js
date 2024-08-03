@@ -9,6 +9,7 @@ import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishAction
 import { navigateTo } from '../../../navigationService'
 import { getCurrentOrg } from '../../auth/authServiceV2'
 import tabsActionTypes from '../../tabs/redux/tabsActionTypes'
+import { onPageStateSuccess } from '../../publicEndpoint/redux/publicEndpointsActions'
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -57,13 +58,11 @@ export const updatePageName = (id, updatedName) => {
 
 export const updatePageContent = (id, content, name) => {
   return async (dispatch) => {
-    const dataToSend = {
-      name,
-      contents: content
-    }
-    const res = await pageApiService.updatePage(id, dataToSend)
+    const dataToSend = { name, contents: content }
+    await pageApiService.updatePage(id, dataToSend)
     dispatch({ type: tabsActionTypes.DELETE_TAB_NAME, payload: { id } })
     dispatch({ type: tabsActionTypes.SET_TAB_MODIFIED, payload: { id, flag: false } })
+    dispatch(onPageStateSuccess({ id, isPublished: false }))
   }
 }
 

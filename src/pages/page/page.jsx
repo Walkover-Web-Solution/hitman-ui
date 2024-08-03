@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTabContent, setTabIsModified, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
-import { approvePage, draftPage } from "../../components/publicEndpoint/publicPageService";
+import { approvePage, draftPage } from "../../components/publicEndpoint/redux/publicEndpointsActions";
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -14,46 +14,36 @@ import IconButton from '../../components/common/iconButton';
 import './page.scss';
 
 const Page = () => {
+
     const dispatch = useDispatch();
     const { pageId } = useParams();
-    const params = useParams();
+
     const textareaRef = useRef(null);
 
-    const [editorKey, setEditorKey] = useState(0);
-    const [sidebar, setSidebar] = useState(false);
-    const [isPublish, setIsPublish] = useState(false);
-
-    const { draftContent, page, pages, users, activeTabId, tabs } = useSelector((state) => ({
+    const { draftContent, page, pages, users, activeTabId, tabs, isPublished } = useSelector((state) => ({
         draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
         page: state?.pages[pageId],
         pages: state.pages,
         users: state.users.usersList,
         activeTabId: state.tabs.activeTabId,
-        tabs: state.tabs.tabs
+        tabs: state.tabs.tabs,
+        isPublished: state?.pages[pageId]?.isPublished
     }));
 
+    const [sidebar, setSidebar] = useState(false);
     const [pageName, setPageName] = useState(page?.name);
+
     const updatedById = pages?.[pageId]?.updatedBy;
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
     const user = users?.find((user) => user.id === updatedById);
 
     useEffect(() => {
-        if (textareaRef.current) {
-            autoGrow(textareaRef.current);
-        }
-        if (draftContent === undefined && tabs[activeTabId]?.status !== 'NEW') {
-            dispatch(fetchTabContent(pageId));
-        }
+        if (textareaRef.current) autoGrow(textareaRef.current);
+        if (draftContent === undefined && tabs[activeTabId]?.status !== 'NEW') dispatch(fetchTabContent(pageId));
         setPageName(page?.name || 'Untitled');
         if (tabs[activeTabId].status === "SAVED") setPageName(page?.name);
         else if (tabs[activeTabId].status === "NEW") setPageName(tabs[activeTabId]?.name || 'Untitled');
-
-        setIsPublish(pages[pageId]?.isPublished);
-
-        setTimeout(() => {
-            setEditorKey((prevKey) => prevKey + 1);
-        }, 1000);
-    }, [pageId, activeTabId, draftContent, page, tabs, dispatch, pages]);
+    }, [pageId]);
 
     const handleSavePage = () => {
         if (tabs[activeTabId]?.status === "NEW") setSidebar(true);
@@ -67,25 +57,22 @@ const Page = () => {
                 handleSavePage();
             }
         };
-
         window.addEventListener('keydown', handleSaveKeydown);
-        return () => {
-            window.removeEventListener('keydown', handleSaveKeydown);
-        };
+        return () => window.removeEventListener('keydown', handleSaveKeydown);
     }, [handleSavePage]);
 
     const debounceUpdateDraft = useCallback(
         debounce((activeTabId, content) => {
             dispatch(updateDraft(activeTabId, content));
         }, 500),
-        [dispatch]
+        []
     );
 
     const debounceUpdateName = useCallback(
         debounce((activeTabId, name) => {
             dispatch(updateNewTabName(activeTabId, name));
         }, 500),
-        [dispatch]
+        []
     );
 
     const handleContentChange = (newContent) => {
@@ -108,9 +95,7 @@ const Page = () => {
     const handlePageNameKeyDown = (event) => {
         if (event.key === 'Enter') {
             const editorInput = document.querySelector('#tiptap-editor [contenteditable="true"]');
-            if (editorInput) {
-                editorInput.focus();
-            }
+            if (editorInput) editorInput.focus();
             handleSavePageName();
         }
     };
@@ -121,39 +106,22 @@ const Page = () => {
     };
 
     const handlePublish = async () => {
-        const pageId = params?.pageId;
-        try {
-            await approvePage(pages[pageId]);
-            setIsPublish(true);
-        } catch (error) {
-            console.error('Error during approve_page:', error);
-        }
+        dispatch(approvePage(pages[pageId]))
     };
-
-    const handleRemovePublicPage = useCallback((page) => {
+    
+    const handleUnPublish = async () => {
         page.isPublished = false;
         page.publishedEndpoint = {};
         page.state = 1;
-        page.position = null;
-        draftPage(page);
-    }, []);
-
-    const handleUnPublish = async () => {
-        const pageId = params?.pageId;
-        try {
-            handleRemovePublicPage(pages[pageId]);
-            setIsPublish(false);
-        } catch (error) {
-            console.error('Error during draft_page:', error);
-        }
+        dispatch(draftPage(page))
     };
 
     return (
         <div className='parent-page-container d-flex flex-column align-items-center w-100'>
             <div className='page-header position-sticky px-3 py-2 bg-white d-flex align-items-center justify-content-between w-100'>
-                <h1 className="header-page-name fa-1x text-truncate w-25">{pageName}</h1>
+                <h1 className="header-page-name fa-1x text-truncate w-25">{pageName?.length > 0 ? pageName : <span>Untitled</span>}</h1>
                 <div className='header-operations d-flex align-items-center gap-2'>
-                    <div>
+                    {tabs?.[activeTabId]?.status !== "NEW" && <div>
                         <OverlayTrigger
                             placement='bottom'
                             overlay={
@@ -166,56 +134,42 @@ const Page = () => {
                                                 <br />
                                                 <span>Modified At </span>
                                                 <span>{lastModified}</span>
-                                            </div>
-                                        ) : (
-                                            <span>No Data</span>
-                                        )}
+                                            </div>) : <span>No Data</span>}
                                     </div>
                                 </Tooltip>
                             }
                         >
                             <button className='text-black-50 btn p-0'>Edited By</button>
                         </OverlayTrigger>
-                    </div>
+                    </div>}
                     <IconButton>
                         <div className='button'>
                             <OverlayTrigger
                                 placement='bottom'
                                 overlay={
                                     <Tooltip id='edited-by-tooltip'>
-                                        <div className="fs-4 font-weight-bold">
-                                            {window.navigator.platform.toLowerCase().includes("mac") ? (
-                                                <span>cmd + s</span>
-                                            ) : (
-                                                <span>ctrl + s</span>
-                                            )}
-                                        </div>
+                                        <div className="fs-4 font-weight-bold">{window.navigator.platform.toLowerCase().includes("mac") ? <span>cmd + s</span> : <span>ctrl + s</span>}</div>
                                     </Tooltip>
                                 }
                             >
-                                {tabs[activeTabId]?.isModified ? (
-                                    <button className="btn p-0" onClick={handleSavePage} >Save &nbsp;</button>
-                                ) : (
-                                    <button className="btn p-0 text-black-60 disabled" >Saved</button>
-                                )}
+                                {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs[activeTabId].status === "NEW" ? 'Unsaved' : "Saved"}</button>}
                             </OverlayTrigger>
                         </div>
                     </IconButton>
-                    <div className='inner-operations'>
+                    {tabs?.[activeTabId]?.status !== 'NEW' && <div className='inner-operations'>
                         <Dropdown>
                             <Dropdown.Toggle as='div' id='dropdown-basic'>
-                                <div className='mt-1'>
-                                    <IconButton><BsThreeDots color="black" size={18} /></IconButton>
-                                </div>
+                                <IconButton className='mt-1'><BsThreeDots color="black" size={18} /></IconButton>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item onClick={handlePublish} disabled={isPublish}>Publish</Dropdown.Item>
-                                <Dropdown.Item className={`${!isPublish ? 'disable-unpublish' : 'unpublish-btn'}`} onClick={handleUnPublish} disabled={!isPublish}>Unpublish</Dropdown.Item>
+                                <Dropdown.Item onClick={handlePublish} disabled={isPublished}>Publish</Dropdown.Item>
+                                <Dropdown.Item className={`${!isPublished ? 'disable-unpublish' : 'unpublish-btn'}`} onClick={handleUnPublish} disabled={!isPublished}>Unpublish</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-                    </div>
-                </div >
-            </div >
+                    </div>}
+                </div>
+            </div>
+            
             <div className='page-container h-100 w-100 p-3'>
                 <textarea
                     ref={textareaRef}
@@ -228,15 +182,13 @@ const Page = () => {
                     onKeyDown={handlePageNameKeyDown}
                     onBlur={handleSavePageName}
                 />
-
                 <div id='tiptap-editor' className='page-content '>
                     <Tiptap
-                        key={`${pageId}-${editorKey}`}
+                        key={pageId}
                         onChange={handleContentChange}
                         initial={draftContent}
                         isInlineEditor={false}
-                        disabled={false}
-                    />
+                        disabled={false} />
                 </div>
             </div>
             {sidebar && <SaveAsPageSidebar pageId={activeTabId} name={pageName} setName={setPageName} onHide={() => setSidebar(false)} handleSubmit={() => setSidebar(false)} />}
