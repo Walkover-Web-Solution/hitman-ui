@@ -10,9 +10,11 @@ import { addCron, addWebhook } from '../../../services/cronJobs'
 import { generateCronExpression } from '../../common/utility'
 import { RiAiGenerate, RiCheckboxMultipleLine } from 'react-icons/ri'
 import { FaExclamationCircle } from 'react-icons/fa'
-import { runAutomations } from './redux/runAutomationActions'
+import { runAutomations, generateDescription } from './redux/runAutomationActions'
 import { FiCopy } from 'react-icons/fi'
-import { FaCircleInfo } from "react-icons/fa6";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { FaMeta } from "react-icons/fa6";
+import { IoInformationCircle } from "react-icons/io5";
 
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
@@ -46,14 +48,18 @@ export default function RunAutomation() {
   const [tokenGenerationInProgress, setTokenGenerationInProgress] = useState(false)
   const [webhookUrlCopied, setwebhookUrlCopied] = useState(false)
   const [webhookResponseCopied, setwebhookResponseCopied] = useState(false)
-  const [showEndpointsDiv, setShowEndpointsDiv] = useState(false)
+  const [showAiIcon, setShowAiIcon] = useState(false)
 
   useEffect(() => {
     filterEndpointsOfCollection()
-    filterEndpointsWithFalseValues()
+    renderEndpointName()
     if (runType !== 'webhook') {
       setTokenGenerationInProgress(false)
     }
+    const hasIssues = Object.keys(allPages).some(pageId =>
+      allPages?.[pageId]?.description || allPages?.[pageId]?.sampleResponse
+    );
+    setShowAiIcon(hasIssues);
   }, [params?.collectionId])
 
   const filterEndpointsOfCollection = () => {
@@ -64,18 +70,21 @@ export default function RunAutomation() {
     setEndpiontsIds(endpointsIds)
   }
 
-  const filterEndpointsWithFalseValues = () => {
-    debugger
-    return endpointsIds.filter(pageId => allPages[pageId]?.description === false || allPages[pageId]?.sampleResponse === false)
+  const getEndpointsWithoutDescriptionOrResponse = () => {
+    return Object.keys(allPages).filter(pageId => 
+      allPages?.[pageId]?.description && allPages?.[pageId]?.sampleResponse
+    );
   }
 
   const renderEndpointName = (endpointId) => {
+    const hasIssues = allPages?.[endpointId]?.description || allPages?.[endpointId]?.sampleResponse;
     return (
       <div className='d-flex justify-content-center align-items-center'>
         <span className={`api-label ${allPages?.[endpointId]?.requestType} request-type-bgcolor mr-2`}>
           {allPages?.[endpointId]?.requestType}
         </span>
         <span>{allPages?.[endpointId]?.name || 'Endpoint'}</span>
+        {hasIssues && <span title='No description and sample response' className='ml-2'><AiOutlineExclamationCircle color='red' size={15} /></span>}
       </div>
     )
   }
@@ -128,6 +137,17 @@ export default function RunAutomation() {
       console.error(error)
       setAutomationLoading(false)
       return toast.error('Error occurred while running automation')
+    }
+  }
+
+  const handleAskAi = async () => {
+    const endpointIdsWithoutDescriptionAndSampleResponse = getEndpointsWithoutDescriptionOrResponse()
+    try {
+      await dispatch(generateDescription(endpointIdsWithoutDescriptionAndSampleResponse));
+      toast.success('Description generation request successful!');
+    } catch (error) {
+      console.error(error);
+      toast.error('Error occurred while generating descriptions.');
     }
   }
 
@@ -199,7 +219,12 @@ export default function RunAutomation() {
   return (
     <div className='run-automation-container'>
       <div className='endpoints-container'>
-        <h3 className='text-left'>Run Automation for {`${collectionName}`}</h3>
+        <div >
+        <span className='mr-2'><IoInformationCircle size={18} color='#7fbaff' /></span>
+        <span className='small-text'>If descriptions and sample responses are not provided, AI will not generate the order, and automation will fail.</span>
+        <div className='separation'></div>
+          <h3 className='text-left'>Run Automation for {`${collectionName}`}</h3>
+        </div>
         {endpointsIds.length === 0 ? (
           <div className='p-3 d-flex flex-column justify-content-center'>
             <span className='data-message'>No Endpoint has been found...</span>
@@ -211,14 +236,11 @@ export default function RunAutomation() {
                 <span onClick={() => handleSelectAndDeselectAll(true)} className='ml-1 select-all mr-1 cursor-pointer'>
                   Select All
                 </span>
-                <div className='saperation'></div>
+                <div className='separation'></div>
                 <span onClick={() => handleSelectAndDeselectAll(false)} className='ml-1 cursor-pointer'>
                   Deselect All
                 </span>
-                <div className='saperation'></div>
-                <span onClick={() => setShowEndpointsDiv(!showEndpointsDiv)} className='ml-1 cursor-pointer' title='Endpoints which do not contains description or sample response'>
-                <FaCircleInfo size={15} color='red'/>
-                </span>
+                <div className='separation'></div>
               </div>
             </div>
             <div className='mt-1 d-flex flex-column align-items-start justify-content-center'>
@@ -235,16 +257,13 @@ export default function RunAutomation() {
                 )
               })}
             </div>
-            {showEndpointsDiv && (
-              <div className='filtered-endpoints'>
-                <ul>
-                  {filterEndpointsWithFalseValues().map(endpointId => (
-                    <li key={endpointId}>{allPages[endpointId]?.name || 'Unnamed Endpoint'}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
           </div>
+        )}
+        {showAiIcon && (
+          <button className='btn btn-primary mt-2 ask-ai' title='Write your endpoint descriptions through AI' onClick={handleAskAi}>
+            <span className='mr-1'><FaMeta /></span>
+            Ask AI
+          </button>
         )}
       </div>
       <div className='options-container'>
