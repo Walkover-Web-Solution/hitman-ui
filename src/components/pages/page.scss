@@ -44,7 +44,7 @@
 
         &:hover {
           .editor-headings {
-            transform: translateX(-30px);
+            transform: translateX(-20px);
             transition: 0.4s;
           }
         }
@@ -52,12 +52,12 @@
         .editor-headings {
           width: 200px;
           height: fit-content;
-          top: 200px;
+          top: 100px;
           right: 0;
           background-color: white;
           transform: translateX(300px);
-          transition: 0.5s;
-          box-shadow: rgba(15, 15, 15, 0.04) 0px 0px 0px 1px, rgba(15, 15, 15, 0.03) 0px 3px 6px, rgba(15, 15, 15, 0.06) 0px 9px 24px;
+          transition: 0.2s all;
+          box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
 
           span {
             overflow: hidden !important;

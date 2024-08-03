@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import DisplayUserAndModifiedData from '../common/userService';
-import HoverBox from './hoverBox';
+import HoverBox from './hoverBox/hoverBox';
 
 export default function RenderPageContent(props) {
 
