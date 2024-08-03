@@ -1,5 +1,5 @@
 import React from 'react'
-import { SESSION_STORAGE_KEY } from '../../components/common/utility'
+import { isOnPublishedPage, SESSION_STORAGE_KEY } from '../../components/common/utility'
 import RenderPageContent from '../../components/pages/renderPageContent'
 import DisplayUserAndModifiedData from '../../components/common/userService'
 import { useSelector } from 'react-redux'
@@ -32,7 +32,8 @@ function PublicPage() {
     let { data } = useQuery(['pageContent', currentIdToShow], getPagePublishedData, queryConfig)
 
     return (
-        <div className='page-wrapper'>
+        <div className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}>
+        <div className='page-wrapper d-flex flex-column justify-content-between'>
             {data ? (
                 <div className='pageText d-flex justify-content-center aling-items-start'>
                     <RenderPageContent pageContent={data} />
@@ -48,8 +49,11 @@ function PublicPage() {
                     </span>
                 </div>
             )}
+            <div>
             <ApiDocReview />
             <Footer />
+            </div>
+        </div>
         </div>
     )
 }

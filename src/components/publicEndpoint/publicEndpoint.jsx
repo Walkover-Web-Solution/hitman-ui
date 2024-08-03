@@ -468,7 +468,6 @@ class PublicEndpoint extends Component {
                       this.setState({ isSticky: false })
                     }
                   }}
-                  className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}
                 >
                   {type == 4 && (
                     <DisplayEndpoint
