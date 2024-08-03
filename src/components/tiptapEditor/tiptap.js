@@ -18,6 +18,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import CodeBlock from '@tiptap/extension-code-block';
 import { BsThreeDots } from "react-icons/bs";
 import '../styles.scss'
+import './tiptap.scss'
 import {
   FaBold,
   FaItalic,
@@ -213,7 +214,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
 
       {editor && (
 
-        <BubbleMenu className='bubble-menu' tippyOptions={{ duration: 100 }} editor={editor} >
+        <BubbleMenu className='bubble-menu px-2 border-0 d-flex align-items-center' tippyOptions={{ duration: 100 }} editor={editor} >
           <button onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'is-active' : ''}>
             <FaBold />
           </button>
@@ -241,7 +242,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
             <FaLink />
           </button>
           <Dropdown>
-            <Dropdown.Toggle variant="light" id="alignment-dropdown">
+            <Dropdown.Toggle className='text-direction' variant="light" id="alignment-dropdown">
               {alignment === 'left' && <FaAlignLeft />}
               {alignment === 'center' && <FaAlignCenter />}
               {alignment === 'right' && <FaAlignRight />}
@@ -263,7 +264,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
             </Dropdown.Menu>
           </Dropdown>
           <Dropdown className='create-table'>
-            <Dropdown.Toggle className='btn-light'>
+            <Dropdown.Toggle className='btn-light text-direction'>
               <BiFontColor />
             </Dropdown.Toggle>
             <Dropdown.Menu>
@@ -271,7 +272,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
             </Dropdown.Menu>
           </Dropdown>
           <Dropdown className='create-table'>
-            <Dropdown.Toggle className='btn-light'>
+            <Dropdown.Toggle className='btn-light text-direction'>
               <FaTable />
             </Dropdown.Toggle>
             <Dropdown.Menu>
@@ -306,7 +307,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
             </Dropdown.Menu>
           </Dropdown>
           <Dropdown>
-            <Dropdown.Toggle variant="light" id="heading-dropdown">
+            <Dropdown.Toggle className='text-direction' variant="light" id="heading-dropdown">
               <HeadingIcon level={activeHeading} />
             </Dropdown.Toggle>
             <Dropdown.Menu>
@@ -323,7 +324,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
             </Dropdown.Menu>
           </Dropdown>
           <Dropdown>
-            <Dropdown.Toggle variant="light" id="additional-options-dropdown">
+            <Dropdown.Toggle className='text-direction' variant="light" id="additional-options-dropdown">
               <BsThreeDots />
             </Dropdown.Toggle>
             <Dropdown.Menu>
