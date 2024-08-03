@@ -2,9 +2,11 @@
   .page-header {
     top: 0;
     z-index: 9;
+
     .header-page-name {
       cursor: context-menu;
     }
+
     .inner-operations {
       .dropdown {
         .dropdown-toggle {
@@ -12,27 +14,35 @@
             all: unset;
           }
         }
+
         .unpublish-btn {
-          color : rgb(235, 87, 87);
+          color: rgb(235, 87, 87);
         }
+
         .disable-unpublish {
-          color: rgb(235, 87, 87,0.5);
+          color: rgb(235, 87, 87, 0.5);
         }
       }
 
     }
   }
-  
+
   .page-container {
     max-width: 900px;
-    textarea  {
+
+    textarea {
       resize: none;
       min-height: 50px;
       max-height: 300px;
+
       &:focus {
         outline: unset;
       }
     }
+
+    @media screen and (max-width: 1500px) {
+      max-width: 700px;
+    }
   }
-  
+
 }

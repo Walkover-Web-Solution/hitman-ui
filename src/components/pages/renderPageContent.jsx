@@ -42,7 +42,7 @@ export default function RenderPageContent(props) {
                         <span className='page-name fa-3x font-weight-bold mt-5 border-0 w-100 d-flex align-items-center'>{pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</span>
                     </div>
                     <div className="page-text-render w-100 d-flex justify-content-center">
-                        <div className='w-100'><div dangerouslySetInnerHTML={{ __html: htmlWithIds }} /></div>
+                        <div className='w-100'><div className='page-content-body' dangerouslySetInnerHTML={{ __html: htmlWithIds }} /></div>
                         <HoverBox scrollToHeading={scrollToHeading} headings={headings} />
                     </div>
                 </div>
