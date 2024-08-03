@@ -11,6 +11,7 @@ import moment from 'moment';
 import { updatePageContent, updatePageName } from '../../components/pages/redux/pagesActions';
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1';
 import IconButton from '../../components/common/iconButton';
+import { getProxyToken } from "../../components/auth/authServiceV2";
 import './page.scss';
 
 const Page = () => {
@@ -24,7 +25,7 @@ const Page = () => {
         draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
         page: state?.pages[pageId],
         pages: state.pages,
-        users: state.users.usersList,
+        users: state.users,
         activeTabId: state.tabs.activeTabId,
         tabs: state.tabs.tabs,
         isPublished: state?.pages[pageId]?.isPublished
@@ -35,7 +36,17 @@ const Page = () => {
 
     const updatedById = pages?.[pageId]?.updatedBy;
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
-    const user = users?.find((user) => user.id === updatedById);
+    const user = users?.usersList?.find((user) => user.id === updatedById);
+
+    useEffect(() => {
+        if (typeof window.SendDataToChatbot === 'function' && tabs[activeTabId]?.type === 'page') {
+            window.SendDataToChatbot({
+                bridgeName: 'page',
+                threadId: `${users.currentUser.id}`,
+                variables: { Proxy_auth_token: getProxyToken(), collectionId: page?.collectionId }
+            })
+        }
+    }, []);
 
     useEffect(() => {
         if (textareaRef.current) autoGrow(textareaRef.current);
@@ -108,7 +119,7 @@ const Page = () => {
     const handlePublish = async () => {
         dispatch(approvePage(pages[pageId]))
     };
-    
+
     const handleUnPublish = async () => {
         page.isPublished = false;
         page.publishedEndpoint = {};
@@ -169,7 +180,7 @@ const Page = () => {
                     </div>}
                 </div>
             </div>
-            
+
             <div className='page-container h-100 w-100 p-3'>
                 <textarea
                     ref={textareaRef}
