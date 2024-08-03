@@ -172,7 +172,7 @@ const CollectionParentPages = (props) => {
 
   const openAddPageEndpointModal = (pageId) => {
     const newPage = { name: 'untitled', pageType: 3 };
-    if (isOrgDocType()) {
+    if (!isOrgDocType()) {
       dispatch(addPage(pages[pageId].versionId, newPage))
       dispatch(openInNewTab({ type: 'page', previewMode: false, isModified: false, state: {} }))
     } else {
