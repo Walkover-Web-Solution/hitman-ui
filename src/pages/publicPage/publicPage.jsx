@@ -8,7 +8,8 @@ import { useQuery } from 'react-query'
 import { IoDocumentTextOutline } from 'react-icons/io5'
 import Footer from '../../components/main/Footer'
 import ApiDocReview from '../../components/apiDocReview/apiDocReview'
-import '../../components/pages/page.scss'
+// import '../../components/pages/page.scss'
+import './publicPage.scss'
 
 const queryConfig = {
     refetchOnWindowFocus: false,
