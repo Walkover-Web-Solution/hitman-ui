@@ -468,7 +468,7 @@ const CustomTabs = (props) => {
                 onDragOver={handleOnDragOver}
                 onDragStart={() => onDragStart(tabId)}
                 onDrop={(e) => onDrop(e, tabId)}
-                className={tabs?.activeTabId === tabId ? 'active' : ''}
+                className={tabs?.activeTabId === tabId ? 'active text-black' : 'text-black-50'}
                 onMouseEnter={() => {
                   setShowPreview(true)
                   setPreviewId(tabId)
