@@ -185,9 +185,9 @@ const Page = () => {
                                     <Tooltip id='edited-by-tooltip'>
                                         <div className="fs-4 font-weight-bold">
                                             {window.navigator.platform.toLowerCase().includes("mac") ? (
-                                                <span>Cmd + S</span>
+                                                <span>cmd + s</span>
                                             ) : (
-                                                <span>Ctrl + S</span>
+                                                <span>ctrl + s</span>
                                             )}
                                         </div>
                                     </Tooltip>
@@ -210,7 +210,7 @@ const Page = () => {
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <Dropdown.Item onClick={handlePublish} disabled={isPublish}>Publish</Dropdown.Item>
-                                <Dropdown.Item className="unpublish-btn" onClick={handleUnPublish} disabled={!isPublish}>Unpublish</Dropdown.Item>
+                                <Dropdown.Item className={`${!isPublish ? 'disable-unpublish' : 'unpublish-btn'}`} onClick={handleUnPublish} disabled={!isPublish}>Unpublish</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>

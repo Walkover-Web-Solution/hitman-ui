@@ -12,10 +12,12 @@
             all: unset;
           }
         }
-        // .unpublish-btn {
-        //   border : 1px solid rgb(235, 87, 87);
-        //   color : rgb(235, 87, 87);
-        // }
+        .unpublish-btn {
+          color : rgb(235, 87, 87);
+        }
+        .disable-unpublish {
+          color: rgb(235, 87, 87,0.5);
+        }
       }
 
     }
