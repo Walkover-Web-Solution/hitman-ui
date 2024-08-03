@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { isOnPublishedPage } from '../common/utility'
 import DisplayUserAndModifiedData from '../common/userService';
+import HoverBox from './hoverBox';
 
 export default function RenderPageContent(props) {
 
@@ -45,23 +45,7 @@ export default function RenderPageContent(props) {
                     </div>
                     <div className="page-text-render w-100 d-flex justify-content-center">
                         <div className='page-content-body' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
-                        {isOnPublishedPage() && headings.length > 0 && (
-                            <div className='heading-main position-fixed w-25'>
-                                <div className='editor-headings position-fixed d-flex flex-column'>
-                                    <div className='border border-2 p-2 rounded-lg h-100'>
-                                        <div>
-                                            {headings.map((heading) => (
-                                                <div key={heading.id}>
-                                                    <span onClick={() => scrollToHeading(heading.id)} className='d-block w-100 py-1 cursor-pointer'>
-                                                        {heading.text}
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                        <HoverBox scrollToHeading={scrollToHeading} headings={headings} />
                     </div>
                 </div>
             }
