@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import SavePromptModal from './savePromptModal'
-import { setTabsOrder } from './redux/tabsActions.js'
+import { setTabsOrder, updateDraft } from './redux/tabsActions.js'
 import tabService from './tabService'
 import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
 import History from '../history/history.jsx'
@@ -38,7 +38,7 @@ const CustomTabs = (props) => {
   const [showPreview, setShowPreview] = useState(false)
   const [previewId, setPreviewId] = useState(null)
 
-  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history, automation } = useSelector((state) => {
+  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history, organizations, automation } = useSelector((state) => {
     return {
       responseView: state.responseView,
       pages: state.pages,
@@ -48,7 +48,8 @@ const CustomTabs = (props) => {
       historySnapshots: state.history,
       collections: state.collections,
       history: state.history,
-      automation : state.automation
+      automation: state.automation,
+      organizations: state.organizations,
     }
   })
 
@@ -89,7 +90,7 @@ const CustomTabs = (props) => {
 
   const openTabAtIndex = (index) => {
     const { tabsOrder } = tabs
-    if (tabsOrder[index]) tabService.selectTab({ navigate, params }, tabsOrder[index])
+    if (tabsOrder[index]) tabService.selectTab(tabsOrder[index], { navigate, params })
   }
 
   const handleOpenNextTab = () => {
@@ -113,7 +114,6 @@ const CustomTabs = (props) => {
     const tabsOrder = tabs.tabsOrder.filter((item) => item !== draggedItem.current)
     const index = tabs.tabsOrder.findIndex((tId) => tId === droppedOnItem)
     tabsOrder.splice(index, 0, draggedItem.current)
-    console.log('tabsOrder', tabsOrder)
     dispatch(setTabsOrder(tabsOrder))
   }
 
@@ -278,6 +278,13 @@ const CustomTabs = (props) => {
               </div>
             )
           }
+        } else {
+          return (
+            <div className='d-flex align-items-center'>
+              <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
+              <span>{'Untiled'}</span>
+            </div>
+          )
         }
         break
       case 'collection': {
@@ -319,14 +326,15 @@ const CustomTabs = (props) => {
       }
       case 'manual-runs': {
         if (automation[tabId]) {
-        return (
-          <>
-            <div className='d-flex align-items-center'>
-              <BsPlayBtn className='mr-1' size={16} />
-              <span>Runs</span>
-            </div>
-          </>
-        )}
+          return (
+            <>
+              <div className='d-flex align-items-center'>
+                <BsPlayBtn className='mr-1' size={16} />
+                <span>Runs</span>
+              </div>
+            </>
+          )
+        }
       }
       default:
     }
@@ -403,6 +411,16 @@ const CustomTabs = (props) => {
     }
   }
 
+  const handleHistoryButton = () => {
+    if (organizations?.currentOrg?.meta?.type !== 0) {
+      return (
+        <button onClick={() => handleHistoryClick()} className='px-2' style={{ outline: 'none' }}>
+          <HistoryIcon className='p-1' />{' '}
+        </button>
+      );
+    }
+  }
+
   return (
     <>
       <div className='d-flex navs-container'>
@@ -451,7 +469,7 @@ const CustomTabs = (props) => {
                 onDragOver={handleOnDragOver}
                 onDragStart={() => onDragStart(tabId)}
                 onDrop={(e) => onDrop(e, tabId)}
-                className={tabs?.activeTabId === tabId ? 'active' : ''}
+                className={tabs?.activeTabId === tabId ? 'active text-black' : 'text-black-50'}
                 onMouseEnter={() => {
                   setShowPreview(true)
                   setPreviewId(tabId)
@@ -505,9 +523,7 @@ const CustomTabs = (props) => {
             <TabOptions handleCloseTabs={handleCloseTabs} />
           </Nav.Item>
           <Nav.Item className='' id='history-tab-button'>
-            <button onClick={handleHistoryClick} className='px-2' style={{ outline: 'none' }}>
-              <HistoryIcon className='p-1' />{' '}
-            </button>
+            {handleHistoryButton()}
           </Nav.Item>
           {showHistoryContainer && (
             <div className='history-main-container'>

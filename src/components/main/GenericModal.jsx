@@ -8,7 +8,6 @@ import Form from 'react-bootstrap/Form'
 function GenericModal({
   email,
   validateEmail,
-  validateName,
   keyboard,
   loading,
   centered,
@@ -21,15 +20,9 @@ function GenericModal({
   handleCloseModal,
   showModal,
   title,
-  showInput,
-  handleAddOrg,
-  setName,
-  orgName
 }) {
   const [createOrg, setcreateOrg] = useState(false)
-  const handleClick = () => {
-    setcreateOrg(!createOrg)
-  }
+
   const handleClose = () => {
     handleCloseModal()
     setcreateOrg(false)
@@ -56,8 +49,6 @@ function GenericModal({
                   isInvalid={email && !validateEmail(email)}
                 />
               </InputGroup>
-
-              {/* show loading in invite org */}
              
               {loading ? (
                       <div class='spinner-border spinner-border-sm text-success p-2' role='status'>
@@ -72,46 +63,7 @@ function GenericModal({
           )}
           {modalBody}
         </Modal.Body>
-        {/* for create organization */}
-          {showInput && (
-        <Modal.Footer>
-            <>
-              <div className='m-2 d-grid gap-2 col-6 mx-auto create-org'>
-                {/* <div className='d-flex justify-content-center'> */}
-                {!createOrg && (
-                  <Button className='' variant='btn btn-outline' onClick={handleClick}>
-                    {' '}
-                    + Create Organization
-                  </Button>
-                )}
-              </div>
-              {createOrg && (
-                <>
-                  <InputGroup className='mb-3'>
-                    <Form.Control
-                      placeholder='Enter Organization Name'
-                      type='text'
-                      aria-label='Organization name'
-                      aria-describedby='basic-addon2'
-                      value={orgName}
-                      onChange={(e) => setName(e.target.value)}
-                      onKeyDown={(e) => {
-                        handleKeyPress(e)
-                      }}
-                      isInvalid={orgName && !validateName(orgName)}
-                    />
-                    <Button onClick={handleAddOrg} variant='outline-secondary' id='button-addon2'>
-                      Create
-                    </Button>
-                  </InputGroup>
-                  <div className='d-flex'>
-                    <small className='muted-text'>**Organization name accepts min 3 and max 50 characters</small>
-                  </div>
-                </>
-              )}
-            </>
-        </Modal.Footer>
-          )}
+        
       </Modal>
     </div>
   )

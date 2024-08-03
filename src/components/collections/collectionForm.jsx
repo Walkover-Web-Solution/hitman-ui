@@ -50,7 +50,7 @@ const CollectionForm = (props) => {
 
   return (
     <div onKeyPress={(e) => { onEnter(e, doSubmit) }}>
-      <Modal.Header className="custom-collection-modal-container" closeButton>
+      <Modal.Header className="custom-collection-modal-container" onClick={props.onHide} closeButton>
         <Modal.Title id="contained-modal-title-vcenter">{props.title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>

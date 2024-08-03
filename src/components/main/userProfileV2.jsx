@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 import { closeAllTabs } from '../tabs/redux/tabsActions'
 import { onHistoryRemoved } from '../history/redux/historyAction'
 import { ReactComponent as Users } from '../../assets/icons/users.svg'
-import { MdDeleteOutline } from 'react-icons/md'
+import { MdAdd, MdDeleteOutline} from 'react-icons/md'
 import IconButton from '../common/iconButton'
 import { IoIosArrowDown } from 'react-icons/io'
 import CollectionForm from '../collections/collectionForm'
@@ -20,6 +20,8 @@ import { FiUser } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import ImportCollectionModal from '../importCollection/importColectionModel'
 import CustomModal from '../customModal/customModal'
+import { BsThreeDots } from 'react-icons/bs'
+import { isOrgDocType } from '../common/utility'
 
 const UserProfile = () => {
   const historySnapshot = useSelector((state) => state.history)
@@ -129,12 +131,9 @@ const UserProfile = () => {
           </IconButton>
         </div>
         <div className='add-button d-flex align-items-center'>
-          <button className='mr-1 px-1 btn btn-light' onClick={handleAddNewClick}>
-            New
-          </button>
-          <button className='btn btn-light px-1' onClick={handleImportClick}>
+          {isOrgDocType() && <button className='btn btn-light px-1' onClick={handleImportClick}>
             Import
-          </button>
+          </button>}
           <ImportCollectionModal
             show={showImportModal}
             onClose={() => {
@@ -151,14 +150,30 @@ const UserProfile = () => {
 
   const renderUserDetails = () => {
     const { email } = getUserDetails()
+    const handleCreateOrganizationClick = () => {
+      navigate('/onBoarding')
+    };
     return (
-      <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center py-1'>
-        <div className='user-icon mr-2'>
-          <FiUser size={16} />
+      <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center justify-content-between py-1'>
+        <div className='d-flex align-items-center'>
+          <div className='user-icon mr-2'>
+            <FiUser size={12} />
+          </div>
+          <div className='profile-details-user-name'>
+            <span className='profile-details-label-light fs-4'>{email}</span>
+          </div>
         </div>
-        <div className='profile-details-user-name'>
-          <span className='profile-details-label-light'>{email}</span>
-        </div>
+        <Dropdown>
+          <Dropdown.Toggle id="dropdown-basic">
+            <IconButton>
+              <BsThreeDots className='text-dark'/>
+            </IconButton>
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item className='pl-1' onClick={handleCreateOrganizationClick}>Create organization</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </div>
     )
   }
@@ -186,7 +201,7 @@ const UserProfile = () => {
       toast.error('This organization is already selected')
     } else if (org.id !== selectedOrg.id && (tabIdsToClose.length === 1 || tabIdsToClose.length === 0)) {
       setModalForTabs(false)
-      switchOrg(org.id)
+      switchOrg(org.id, true)
       removeFromLocalStorage(tabIdsToClose)
       dispatch(closeAllTabs(tabIdsToClose))
       dispatch(onHistoryRemoved(historySnapshot))
@@ -248,6 +263,15 @@ const UserProfile = () => {
     )
   }
 
+  const renderAddCollection = () => {
+    return (
+      <div onClick={handleAddNewClick}>
+        <MdAdd className='mr-2' size={17}/>
+        <span className='mr-2'>Add collection</span>
+      </div>
+    )
+  }
+
   const handleClose = () => {
     setModalForTabs(false)
     setShowModal(false)
@@ -264,7 +288,7 @@ const UserProfile = () => {
       if (switchOrCreate) {
         createOrg(orgName)
       } else {
-        switchOrg(currentOrg.id)
+        switchOrg(currentOrg.id, true)
       }
     } else if (value === 'no') {
       setOrgName('')
@@ -303,8 +327,8 @@ const UserProfile = () => {
           <Dropdown.Menu className='p-0'>
             {renderUserDetails()}
             <div className='profile-listing-container'>
-              <div className='px-2 pb-2'>
-                <Dropdown.Item className='mt-2'>{renderInviteTeam()}</Dropdown.Item>
+              <div className='px-2 py-1 border-bottom'>
+                <Dropdown.Item>{renderInviteTeam()}</Dropdown.Item>
                 <Dropdown.Item>
                   <span className='profile-details w-100' onClick={toggleModal} type='button'>
                     <MdSwitchLeft size={18} />
@@ -327,6 +351,9 @@ const UserProfile = () => {
                 </Dropdown.Item>
                 <Dropdown.Item>{renderTrash()}</Dropdown.Item>
                 <Dropdown.Item>{renderLogout()}</Dropdown.Item>
+              </div>
+              <div className='px-2 py-1'>
+              <Dropdown.Item>{renderAddCollection()}</Dropdown.Item>
               </div>
             </div>
           </Dropdown.Menu>

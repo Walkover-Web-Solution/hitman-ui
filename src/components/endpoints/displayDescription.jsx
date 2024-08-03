@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import EndpointBreadCrumb from './endpointBreadCrumb'
 import './endpointBreadCrumb.scss'
@@ -6,6 +6,12 @@ import './endpointBreadCrumb.scss'
 function DisplayDescription(props) {
 
   const [description, setDescription] = useState(props?.endpoint?.description || '');
+
+  useEffect(() => {
+    if (props.endpointId === props.currentEndpointId) {
+      setDescription(props?.endpoint?.description || '');
+    }
+  }, [props.endpointId, props.currentEndpointId, props.endpoint]);
 
   const handleChangeDescription = (e) => {
     const value = e.currentTarget.value

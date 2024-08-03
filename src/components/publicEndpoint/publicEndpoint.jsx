@@ -10,7 +10,7 @@ import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
 import SplitPane from '../splitPane/splitPane.js'
 import '../collectionVersions/collectionVersions.scss'
-import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
+import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
 import { addCollectionAndPages } from '../redux/generalActions'
@@ -19,6 +19,7 @@ import { useQueryClient, useMutation } from 'react-query'
 import { MdDehaze, MdClose } from 'react-icons/md'
 import { background } from '../backgroundColor.js'
 import withRouter from '../common/withRouter.jsx'
+import PublicPage from '../../pages/publicPage/publicPage.jsx'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -467,7 +468,6 @@ class PublicEndpoint extends Component {
                       this.setState({ isSticky: false })
                     }
                   }}
-                  className='display-component'
                 >
                   {type == 4 && (
                     <DisplayEndpoint
@@ -478,7 +478,7 @@ class PublicEndpoint extends Component {
                   )}
 
                   {(type == 1 || type == 3) && (
-                    <DisplayPage
+                    <PublicPage
                       {...this.props}
                       fetch_entity_name={this.fetchEntityName.bind(this)}
                       publicCollectionTheme={collectionTheme}

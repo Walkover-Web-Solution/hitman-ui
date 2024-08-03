@@ -50,7 +50,7 @@
           &.active {
             background-color: $light-grey !important;
             border-bottom: 0;
-            color: $theme-color;
+            font-weight: 700;
             position: relative;
             &::after {
               content: '';
@@ -68,12 +68,18 @@
                 padding-left: 19px;
               }
               svg {
-                color: #f2994ab0;
+                color: black;
               }
             }
           }
           &:hover {
             background-color: $secondary-color;
+            color: black;
+            .btn {
+              svg {
+                color: black;
+              }
+            }
             .close {
               opacity: 1;
             }
