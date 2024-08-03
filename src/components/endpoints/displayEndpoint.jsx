@@ -211,8 +211,8 @@ const getEndpointContent = async (props) => {
   let endpointId = isUserOnPublishedPage
     ? currentIdToShow
     : props.params.endpointId !== 'new'
-    ? props.params?.endpointId
-    : props?.activeTabId
+      ? props.params?.endpointId
+      : props?.activeTabId
 
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
@@ -423,8 +423,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.params.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
     const { endpointId } = this.props.params
@@ -455,7 +455,7 @@ class DisplayEndpoint extends Component {
     if (typeof window.SendDataToChatbot === 'function' && this.props?.tabs[this.props?.activeTabId]?.type === 'endpoint') {
       window.SendDataToChatbot({
         bridgeName: 'api',
-        threadId: `${userid}`,
+        threadId: `${userid}-${this.props?.params?.endpointId}`,
         variables: { Proxy_auth_token: getProxyToken(), endpoint: this.props.endpointContent }
       })
     }
@@ -3040,8 +3040,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
 
     if (this.props.save_endpoint_flag && this.props.tab.id === this.props.selected_tab_id) {
       this.props.handle_save_endpoint(false)
@@ -3058,17 +3058,16 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-            ? 'mainContentWrapperPublic hideCodeEditor'
-            : 'mainContentWrapperPublic '
+              ? 'mainContentWrapperPublic hideCodeEditor'
+              : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
           <div className={`innerContainer ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${
-                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-              }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+                }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
@@ -3131,10 +3130,10 @@ class DisplayEndpoint extends Component {
                                     ? 'btn custom-theme-btn btn-lg buttonLoader'
                                     : 'btn btn-lg custom-theme-btn px-md-4 px-3'
                                 }
-                                style={{ 
-                                  backgroundColor: this.props.publicCollectionTheme, 
+                                style={{
+                                  backgroundColor: this.props.publicCollectionTheme,
                                   opacity: 0.9
-                              }}
+                                }}
                                 type='submit'
                                 id='send-request-button'
                                 onClick={() => this.handleSend()}
