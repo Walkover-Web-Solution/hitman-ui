@@ -1,34 +1,32 @@
 import React from 'react'
 import moment from 'moment'
+import { isOnPublishedPage, SESSION_STORAGE_KEY } from './utility'
+import { useSelector } from 'react-redux'
 
-const DisplayUserAndModifiedData = ({ isOnPublishedPage, pages, currentPage, users }) => {
-  const updatedById = pages?.[currentPage]?.updatedBy
-  const lastModified = pages?.[currentPage]?.updatedAt ? moment(pages[currentPage].updatedAt).fromNow() : null
+const DisplayUserAndModifiedData = () => {
+  let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
 
-  const user = users?.find((user) => user.id === updatedById)
+  const { usersList, pages } = useSelector((state) => {
+    return {
+      users: state.users.usersList,
+      pages: state.pages,
+    }
+  })
 
-  if (isOnPublishedPage) {
-    return (
-      <div>
-        {lastModified && (
-          <>
-            Modified at <span>{lastModified}</span>
-          </>
-        )}
-      </div>
-    )
-  }
+  const updatedById = pages?.[currentIdToShow]?.updatedBy
+  const lastModified = pages?.[currentIdToShow]?.updatedAt ? moment(pages[currentIdToShow].updatedAt).fromNow() : null
+  const user = usersList?.find((user) => user.id === updatedById)
+
+  if (isOnPublishedPage()) return (lastModified && <span>Modified at {lastModified}</span>)
 
   return (
     <div className='page-user-data'>
-      {lastModified ? (
+      {lastModified && (
         <div>
-          Updated by <span>{user?.name || 'Unknown'}</span>
+          <span>Updated by  {user?.name || 'Unknown'}</span>
           <br />
-          Modified at <span>{lastModified}</span>
+          <span>Modified at  {lastModified}</span>
         </div>
-      ) : (
-        <span></span>
       )}
     </div>
   )

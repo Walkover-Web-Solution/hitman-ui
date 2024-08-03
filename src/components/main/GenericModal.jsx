@@ -8,7 +8,6 @@ import Form from 'react-bootstrap/Form'
 function GenericModal({
   email,
   validateEmail,
-  validateName,
   keyboard,
   loading,
   centered,
@@ -21,15 +20,9 @@ function GenericModal({
   handleCloseModal,
   showModal,
   title,
-  showInput,
-  handleAddOrg,
-  setName,
-  orgName
 }) {
   const [createOrg, setcreateOrg] = useState(false)
-  const handleClick = () => {
-    setcreateOrg(!createOrg)
-  }
+
   const handleClose = () => {
     handleCloseModal()
     setcreateOrg(false)
@@ -56,8 +49,6 @@ function GenericModal({
                   isInvalid={email && !validateEmail(email)}
                 />
               </InputGroup>
-
-              {/* show loading in invite org */}
              
               {loading ? (
                       <div class='spinner-border spinner-border-sm text-success p-2' role='status'>

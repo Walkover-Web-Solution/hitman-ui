@@ -7,13 +7,13 @@ import { onEnter, ADD_GROUP_MODAL_NAME, validate, getOnlyUrlPathById, getUrlPath
 import withRouter from '../common/withRouter'
 import { updatePage } from '../pages/redux/pagesActions'
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    update_page: (page) => dispatch(updatePage(ownProps.history, page))
+    update_page: (page) => dispatch(updatePage(page))
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   return {
     pages: state.pages
   }
@@ -77,7 +77,7 @@ class SubPageForm extends Form {
         urlMappingFlag: this.state.data.prevUrlName === this.state.data.urlName ? false : true,
         id: subPage?.id || endpoint?.id,
         state: subPage?.state || endpoint?.state,
-        collectionId: subPage?.collectionId
+        collectionId: subPage?.collectionId || ' '
       }
       this.props.update_page(editedPage)
     }

@@ -67,9 +67,9 @@ const withQuery = (WrappedComponent) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
+    update_page: (editedPage, pageId) => dispatch(updatePage(editedPage, pageId)),
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     pending_page: (page) => dispatch(pendingPage(page)),
     reject_page: (page) => dispatch(rejectPage(page)),
@@ -129,13 +129,21 @@ class DisplayPage extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const userid = getCurrentUser()?.id
-    if (typeof window.SendDataToChatbot === 'function' && this.props?.tabs?.tabs[this.props?.tabs?.activeTabId]?.type === 'page') {
+    if (!isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && this.props?.tabs?.tabs[this.props?.tabs?.activeTabId]?.type === 'page') {
       window.SendDataToChatbot({
         bridgeName: 'page',
-        threadId: `${userid}`,
-        variables: { Proxy_auth_token: getProxyToken(), content: this.props.pageContent, collectionId: this.props.pages[this.props?.params?.pageId]?.collectionId}
+        threadId: `${userid}-${this.props?.params?.pageId}`,
+        variables: { Proxy_auth_token: getProxyToken(), collectionId: this.props.pages[this.props?.params?.pageId]?.collectionId }
+      })
+    }
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
+    if (isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && (this.props?.pages?.[idToRender]?.type === 1 || this.props?.pages?.[idToRender]?.type === 3)) {
+      window.SendDataToChatbot({
+        bridgeName: 'page',
+        threadId: `${userid}-${idToRender}`,
+        variables: { Proxy_auth_token: getProxyToken(), collectionId: this.props.pages[idToRender]?.collectionId }
       })
     }
     if (this.props?.location?.pathname !== prevProps?.location?.pathname) {
@@ -153,7 +161,7 @@ class DisplayPage extends Component {
 
   extractPageName() {
     if (!isDashboardRoute(this.props, true) && this.props.pages) {
-      const pageName = this.props?.pages?.[this.props?.params?.pageId]?.name
+      const pageName = this.props?.pages?.[this.props?.params?.pageId]?.name 
       if (pageName) this.props.fetch_entity_name(pageName)
       else this.props.fetch_entity_name()
     }
@@ -226,7 +234,7 @@ class DisplayPage extends Component {
   }
 
   renderTiptapEditor(contents) {
-    return <Tiptap onChange={() => {}} initial={contents} isInlineEditor disabled key={Math.random()} />
+    return <Tiptap onChange={() => { }} initial={contents} isInlineEditor disabled key={Math.random()} />
   }
 
   handleRemovePublicPage(page) {

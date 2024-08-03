@@ -1,103 +1,10 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 @import '../../components/main/variables.scss';
+
 #page-button {
   float: right;
 }
 
-.custom-display-public-page {
-  max-width: 100% !important;
-
-  .page-wrapper {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 800px !important;
-
-    &:has(.editor-headings) {
-      margin-right: unset !important;
-      max-width: 1300px !important;
-    }
-
-    .page-text-render {
-      gap: 120px;
-      .page-content-body{
-       overflow: auto;
-       max-width: 800px;
-       table {
-        width: 100% !important;
-        max-width: inherit !important;
-        min-width: inherit !important;
-        td {
-          min-width: unset !important;
-          width: 100px;
-          padding: 6px !important;
-        }
-       };
-      }
-    @media screen and (max-width:1600px) {
-      gap: 50px;
-    }
-    }
-    &:has(.empty-heading-for-page) {
-      display: block !important;
-    }
-  }
-}
-
-.custom-display-page {
-  padding: 10px 30px;
-  margin-left: auto;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  max-width: 100%;
-  justify-content: space-between;
-  padding-top: 15px;
-  position: relative;
-
-  // min-height: calc(100vh - 70px);
-  button {
-    margin-bottom: 15px;
-    float: right;
-
-    &.btn-outline.orange {
-      pointer-events: none;
-    }
-  }
-
-    .page-wrapper {
-      max-width: 800px;
-  
-      &:has(.empty-heading-for-page) {
-        display: contents;
-      }
-  
-      .page-text-render {
-        .page-content-body {
-          overflow: auto;
-          max-width: 800px;
-  
-          img {
-            max-width: 100%;
-            overflow: auto;
-          }
-        }
-      }
-    }
-  .page-button-inner {
-    position: absolute;
-    right: 18px;
-    @media screen and (max-width: 900px) {
-      position: static;
-    }
-  }
-  .page-heading-content {
-    max-width: 800px;
-    margin: auto;
-  }
-  &:has(.page-text-render) {
-    display: block !important;
-  }
-}
 
 .custom-edit-page {
   // margin: 30px;
@@ -185,21 +92,25 @@
 .empty-heading-for-page {
   height: 70vh;
 
-  .empty-line { 
+  .empty-line {
     font-size: 14px;
     font-weight: bolder;
     color: #777272;
   }
 }
+
 .Modified-at {
   color: $footer-color;
+
   &.upper-modified-at {
     @media screen and (max-width: 1160px) {
       display: none;
     }
   }
+
   &.lower-modified-at {
     display: none;
+
     @media screen and (max-width: 1160px) {
       display: inline-block;
     }

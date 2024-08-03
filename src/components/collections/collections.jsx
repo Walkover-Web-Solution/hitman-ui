@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { isDashboardRoute, openExternalLink, isOnPublishedPage } from '../common/utility'
+import { isDashboardRoute, openExternalLink, isOnPublishedPage, isOrgDocType } from '../common/utility'
 import collectionsService from './collectionsService'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
@@ -27,10 +27,13 @@ import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTags
 import { Card } from 'react-bootstrap'
 import 'react-toastify/dist/ReactToastify.css'
 import './collections.scss'
+import { addPage } from '../pages/redux/pagesActions'
+import { openInNewTab } from '../tabs/redux/tabsActions'
 
 const Collections = (props) => {
   const collections = useSelector((state) => state.collections)
   const clientData = useSelector((state) => state.clientData)
+  const organizations = useSelector((state) => state.organizations)
   const dispatch = useDispatch()
 
   const location = useLocation()
@@ -132,10 +135,21 @@ const Collections = (props) => {
   }
 
   const openAddPageEndpointModal = (collectionId) => {
-    setShowAddCollectionModal(true)
-    setSelectedCollection({
-      ...collections[collectionId]
-    })
+    const newPage = { name: 'untitled', pageType: 1 };
+    if (!isOrgDocType()) {
+      dispatch(addPage(collections[collectionId].rootParentId, newPage))
+      dispatch(openInNewTab({
+        type: 'page',
+        previewMode: false,
+        isModified: false,
+        state: {},
+      }))
+    } else {
+      setShowAddCollectionModal(true)
+      setSelectedCollection({
+        ...collections[collectionId]
+      })
+    }
   }
 
   const showAddPageEndpointModal = () => {
@@ -235,18 +249,18 @@ const Collections = (props) => {
                           <div className='dropdown-item d-flex' onClick={() => openRedirectionsPage(collections[collectionId])}>
                             <TbDirections size={16} color='grey' /> Redirections
                           </div>
-                          <div className='dropdown-item' onClick={() => handleApiAutomation(collectionId)}>
+                          {isOrgDocType() && <div className='dropdown-item' onClick={() => handleApiAutomation(collectionId)}>
                             <TbSettingsAutomation size={16} color='grey' />
                             API Automation
-                          </div>
-                          <div className='dropdown-item d-flex align-items-center h-auto'>
+                          </div>}
+                          {isOrgDocType() && <div className='dropdown-item d-flex align-items-center h-auto'>
                             <BiExport className='mb-1' size={18} color='grey' />
                             <ExportButton
                               orgId={params.orgId}
                               collectionId={collectionId}
                               collectionName={collections[collectionId].name}
                             />
-                          </div>
+                          </div>}
                           <div
                             className='dropdown-item delete-button-sb align-items-center text-danger d-flex'
                             onClick={() => openDeleteCollectionModal(collectionId)}
@@ -330,10 +344,11 @@ const Collections = (props) => {
         <div className='App-Nav'>
           <div className='tabs'>
             {showAddCollectionModal && showAddPageEndpointModal()}
-            {showCollectionForm && (<CustomModal size='sm' modalShow={showCollectionForm} hideModal={closeCollectionForm}>
-                  <CollectionForm title='Edit Collection' isEdit={true} collectionId={selectedCollection?.id} onHide={closeCollectionForm} />
-                </CustomModal>
-              )}
+            {showCollectionForm && (
+              <CustomModal size='sm' modalShow={showCollectionForm} hideModal={closeCollectionForm}>
+                <CollectionForm title='Edit Collection' isEdit={true} collectionId={selectedCollection?.id} onHide={closeCollectionForm} />
+              </CustomModal>
+            )}
             {openTagManagerModal()}
             {showDeleteCollectionModal()}
             {showOrgModal && <MoveModal moveCollection={selectedCollection} onHide={handleOrgModalClose} show={showOrgModal} />}

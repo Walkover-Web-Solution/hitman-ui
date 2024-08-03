@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility.js'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility.js'
 import groupsService from './subPageService.js'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
@@ -18,12 +18,15 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './subpages.scss'
+import { addPage } from '../pages/redux/pagesActions.js'
+import { openInNewTab } from '../tabs/redux/tabsActions.js'
 
 const SubPage = (props) => {
-  const { pages, clientData, collections } = useSelector((state) => ({
+  const { pages, clientData, collections, organizations } = useSelector((state) => ({
     pages: state.pages,
     clientData: state.clientData,
-    collections: state.collections
+    collections: state.collections,
+    organizations : state.organizations,
   }))
 
   const dispatch = useDispatch()
@@ -84,8 +87,21 @@ const SubPage = (props) => {
     setShowDeleteModal(false)
   }
 
-  const openAddSubPageModal = () => {
-    setShowAddCollectionModal(true)
+  const openAddSubPageModal = (subPageId) => {
+    const newPage = { name: 'untitled', pageType: 3 };
+    if (!isOrgDocType()) {
+      dispatch(addPage(pages[subPageId].id, newPage))
+      dispatch(openInNewTab({
+        type: 'page',
+        previewMode: false,
+        isModified: false,
+        state: {},
+      }))
+    }
+    else {
+      setShowAddCollectionModal(true)
+    }
+
   }
 
   const showAddPageEndpointModal = () => {
@@ -112,8 +128,8 @@ const SubPage = (props) => {
       isUserOnPublishedPage && isUserOnTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId
         ? 'selected'
         : isDashboardRoute && params.pageId === subPageId
-        ? 'selected'
-        : ''
+          ? 'selected'
+          : ''
     const idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const collectionId = pages?.[idToRender]?.collectionId ?? null
     const collectionTheme = collections[collectionId]?.theme
