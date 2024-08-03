@@ -9,6 +9,7 @@ import { getCurrentUser } from '../auth/authServiceV2';
 import { updateContent } from '../pages/redux/pagesActions';
 import CollectionTabs from '../collections/collectionTabs';
 import ManualRuns from '../collections/showRuns/manualRuns';
+import Page from '../../pages/page/page';
 
 const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag, save_page_flag, selected_tab_id }) => {
   const queryClient = useQueryClient();
@@ -56,17 +57,22 @@ const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag
           selected_tab_id={selected_tab_id}
           environment={{}} tab={tab} />;
       case 'page':
-        if (window.location.pathname.includes('/edit')) return <EditPage
-          handle_save_page={handle_save_page}
-          save_page_flag={save_page_flag}
-          tab={tab}
-        />;
+        // if (window.location.pathname.includes('/edit')) return <EditPage
+        //   handle_save_page={handle_save_page}
+        //   save_page_flag={save_page_flag}
+        //   tab={tab}
+        // />;
 
-        else return <DisplayPage
-          handle_save_endpoint={handle_save_endpoint}
-          save_endpoint_flag={save_endpoint_flag}
-          selected_tab_id={selected_tab_id}
-          tab={tab} />;
+        // else return <DisplayPage
+        //   handle_save_page={handle_save_page}
+        //   save_page_flag={save_page_flag}
+        //   handle_save_endpoint={handle_save_endpoint}
+        //   save_endpoint_flag={save_endpoint_flag}
+        //   selected_tab_id={selected_tab_id}
+        //   tab={tab} />;
+
+        return <Page />
+
       case 'collection':
         const pathSection = window.location.pathname.split('/')[6];
         let activeTab = '';

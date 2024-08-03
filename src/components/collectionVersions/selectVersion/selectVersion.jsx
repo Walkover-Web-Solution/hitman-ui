@@ -32,7 +32,7 @@ const VersionInput = (props) => {
     } catch (error) {
       return toast.error('Version Name already Exist!')
     }
-    dispatch(updatePage(null, { ...pages?.[versionId], name: versionNameInputRef.current.value }))
+    dispatch(updatePage({ ...pages?.[versionId], name: versionNameInputRef.current.value }))
     props.setShowEdit(null)
   }
 

@@ -135,6 +135,41 @@ function tabsReducer(state = initialState, action) {
         },
       };
     }
+
+    case tabsActionTypes.FETCH_PAGE_CONTENT_SUCCESS:
+      tabs = { ...state }
+      tabs.tabs[action.payload.id] = {
+        ...tabs.tabs[action.payload.id],
+        draft: action.payload.data
+      }
+      return tabs
+
+    case tabsActionTypes.UPDATE_DRAFT_CONTENT:
+      tabs = { ...state }
+      tabs.tabs[action.payload.id] = {
+        ...tabs.tabs[action.payload.id],
+        draft: action.payload.data
+      }
+      return tabs;
+
+    case tabsActionTypes.UPDATE_NEW_TAB_NAME:
+      tabs = { ...state }
+      tabs.tabs[action.payload.id] = {
+        ...tabs.tabs[action.payload.id],
+        name: action.payload.name
+      }
+      return tabs
+
+    case tabsActionTypes.DELETE_TAB_NAME:
+      tabs = { ...state }
+      delete tabs.tabs[action.payload.id].name
+      return tabs
+
+    case tabsActionTypes.SET_TAB_MODIFIED:
+      tabs = { ...state }
+      tabs.tabs[action.payload.id].isModified = action.payload.flag
+      return tabs
+
     default:
       return state
   }
