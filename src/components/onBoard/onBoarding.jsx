@@ -50,7 +50,6 @@ const OnBoarding = () => {
     }
 
     const handleAddOrg = async (selectedIndex) => {
-        console.log("in handle add org")
         try {
             if (!validateName(orgName)) {
                 toast.error('Invalid organization name')
@@ -63,14 +62,11 @@ const OnBoarding = () => {
     }
 
     const handleNewOrgClick = async (selectedIndex) => {
-        console.log('in handle new add org click');
         const tabIdsToClose = tabs.tabsOrder;
             removeFromLocalStorage(tabIdsToClose);
             dispatch(closeAllTabs(tabIdsToClose));
             dispatch(onHistoryRemoved(historySnapshot));
-            console.log("before create org");
             await createOrg(orgName, selectedIndex);
-            console.log("after creating org");
             const collection = await createUntitledCollection(); 
             const rootParentId = collection?.rootParentId
             await createUntitledPage(rootParentId);
