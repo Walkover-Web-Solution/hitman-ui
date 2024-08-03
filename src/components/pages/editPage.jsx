@@ -40,9 +40,9 @@ const withQuery = (WrappedComponent) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
+    update_page: (editedPage, pageId) => dispatch(updatePage(editedPage, pageId)),
     update_tab: (id, data) => dispatch(updateTab(id, data))
   }
 }

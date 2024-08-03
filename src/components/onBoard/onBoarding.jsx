@@ -13,7 +13,6 @@ import { createOrg } from '../../services/orgApiService'
 import { onHistoryRemoved } from '../history/redux/historyAction'
 import { addCollection } from '../collections/redux/collectionsActions';
 import { addPage } from '../pages/redux/pagesActions';
-import { log } from 'joi-browser';
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
@@ -91,7 +90,7 @@ const OnBoarding = () => {
     const createUntitledPage = async (rootParentId) => {
         const newPage = { name: 'untitled', pageType: 1};
         try {
-       await dispatch(addPage(navigate, rootParentId, newPage));
+       await dispatch(addPage(rootParentId, newPage));
         } catch (error) {
             console.error("Error creating page:", error);
             throw error; 

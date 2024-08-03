@@ -20,7 +20,7 @@ export const defaultViewTypes = {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_new_tab: () => dispatch(addNewTab()),
-    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.navigate, rootParentId, newPage))
+    add_page: (rootParentId, newPage) => dispatch(addPage(rootParentId, newPage))
   }
 }
 export class DefaultViewModal extends Form {

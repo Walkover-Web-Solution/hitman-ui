@@ -2,12 +2,9 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import RenderData from './renderData/renderData1'
 import { addPage } from '../../pages/redux/pagesActions'
-import { useNavigate } from 'react-router-dom'
 import './showCaseSaveAsModal.scss'
 
 const ShowCaseSaveAsModal = (props) => {
-
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const { collections, currentOrg, pages, draftContent } = useSelector((state) => {
@@ -54,7 +51,7 @@ const ShowCaseSaveAsModal = (props) => {
     const data = { name: props.name, contents: draftContent }
     if (pages?.[currentId]?.type === 1) rootParentId = pages?.[currentId]?.child?.[0]
     const newPage = { ...data, pageType: getPageType(rootParentId) }
-    dispatch(addPage(navigate, rootParentId, newPage, props.pageId))
+    dispatch(addPage(rootParentId, newPage, props.pageId))
     props.onHide();
   }
 
