@@ -137,7 +137,7 @@ const Collections = (props) => {
   const openAddPageEndpointModal = (collectionId) => {
     const newPage = { name: 'untitled', pageType: 1 };
     if (!isOrgDocType()) {
-      dispatch(addPage(navigate, collections[collectionId].rootParentId, newPage))
+      dispatch(addPage(collections[collectionId].rootParentId, newPage))
       dispatch(openInNewTab({
         type: 'page',
         previewMode: false,

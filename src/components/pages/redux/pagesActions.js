@@ -144,7 +144,8 @@ export const onEndpointUpdated = (response) => {
   }
 }
 
-export const addPage = (history, rootParentId, newPage, pageId) => {
+export const addPage = (rootParentId, newPage, pageId) => {
+  newPage.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   const orgId = getCurrentOrg()?.id
   return (dispatch) => {
     pageApiService

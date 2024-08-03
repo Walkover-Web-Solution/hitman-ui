@@ -90,7 +90,7 @@ const SubPage = (props) => {
   const openAddSubPageModal = (subPageId) => {
     const newPage = { name: 'untitled', pageType: 3 };
     if (!isOrgDocType()) {
-      dispatch(addPage(navigate, pages[subPageId].id, newPage))
+      dispatch(addPage(pages[subPageId].id, newPage))
       dispatch(openInNewTab({
         type: 'page',
         previewMode: false,
