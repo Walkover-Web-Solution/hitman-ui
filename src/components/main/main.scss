@@ -6,18 +6,23 @@
 .fs-1 {
   font-size: $font-extra-large !important;
 }
+
 .fs-2 {
   font-size: $font-large-l !important;
 }
+
 .fs-3 {
   font-size: $font-medium-m !important;
 }
+
 .fs-4 {
   font-size: $font-small-s !important;
 }
+
 .fs-5 {
   font-size: $font-extra-small !important;
 }
+
 .font-16 {
   font-size: $font-normal-n !important;
 }
@@ -25,18 +30,23 @@
 .gap-1 {
   gap: $gap-small !important;
 }
+
 .gap-2 {
   gap: $gap-medium !important;
 }
+
 .gap-3 {
   gap: $gap-normal !important;
 }
+
 .gap-4 {
   gap: $gap-small-large !important;
 }
+
 .gap-5 {
   gap: $gap-large !important;
 }
+
 .gap-6 {
   gap: $gap-extra-large !important;
 }
@@ -80,6 +90,7 @@ html body {
 .float-left {
   float: left;
 }
+
 .version-dropdown {
   .dropdown-toggle {
     font-size: 14px !important;
@@ -106,19 +117,22 @@ html body {
       border-left: 4.8px solid transparent !important;
       display: none !important;
     }
+
     &:hover {
       &::after {
         display: block !important;
       }
     }
   }
-  .dropdown-menu{
+
+  .dropdown-menu {
     min-width: 80px !important;
     max-width: 200px !important;
-   .dropdown-item {
-    padding: auto 4px !important;
-    font-size: 11px !important;
-   }
+
+    .dropdown-item {
+      padding: auto 4px !important;
+      font-size: 11px !important;
+    }
   }
 
   .dropdown-menu {
@@ -134,7 +148,7 @@ html body {
     }
   }
 }
-  
+
 .dropdown {
   font-size: $font-normal !important;
   font-weight: 400;
@@ -174,6 +188,7 @@ html body {
       align-items: center;
       // padding: 0.35rem 1rem;
       font-size: $font-normal;
+
       &:hover {
         background-color: rgba(128, 128, 128, 0.123);
       }
@@ -210,11 +225,13 @@ html body {
   font-weight: 600;
   border: 1px solid transparent;
   color: $text-color-dark;
+
   &:hover {
     border-color: rgba(128, 128, 128, 0.356);
     background-color: white;
   }
-  &:focus-visible{
+
+  &:focus-visible {
     outline: 1px solid rgba(128, 128, 128, 0.356) !important;
   }
 }
@@ -955,6 +972,7 @@ label.data-type {
 
 .ace-editor-wrapper {
   border: none;
+
   .ace-github {
     background: #252d30;
     color: #ffe05a;
@@ -971,7 +989,7 @@ label.data-type {
 
     .ace_gutter {
       display: none !important;
-    background: unset !important;
+      background: unset !important;
     }
   }
 }
@@ -1240,11 +1258,13 @@ button.btn.btn-secondary {
     color: #fff;
   }
 }
+
 .get-access-token {
   .modal-lg {
     max-width: 700px !important;
   }
 }
+
 .modal {
   .modal-dialog {
     // width: fit-content !important;
@@ -1252,6 +1272,7 @@ button.btn.btn-secondary {
     align-items: center;
     height: 100%;
     margin: auto;
+
     &.modal-lg {
       max-width: 500px;
     }
@@ -1269,10 +1290,12 @@ button.btn.btn-secondary {
         border: none;
         padding: 12px;
         border-bottom: 1px solid #e5e5e5;
+
         &.no-header {
-        border-bottom: unset !important;
-        padding: 15px !important;
+          border-bottom: unset !important;
+          padding: 15px !important;
         }
+
         &.not-loggedin {
           padding: 1rem 1rem 1.35rem 1rem;
         }
@@ -1299,13 +1322,16 @@ button.btn.btn-secondary {
           margin: 0 !important;
           opacity: unset;
           z-index: 5;
+
           span {
             font-weight: 400;
             color: black;
           }
+
           &:focus {
             outline: none;
           }
+
           &:hover {
             background-color: #d6d2d28f;
           }
@@ -1385,10 +1411,12 @@ button.editBtn {
   #custom-generic-table {
     padding-left: 12px;
     padding-right: 12px;
+
     &:has(.custom-th) {
       padding-bottom: 12px;
     }
   }
+
   &:has(.custom-th) {
     border: 1px solid $lightblackborder;
   }
@@ -1727,14 +1755,15 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
   width: 100%;
   margin-top: 0px;
   height: 100%;
-  // padding-left: 24px;
   @media screen and (max-width:992px) {
     padding-right: 24px;
     padding-left: 24px;
   }
+
   @media screen and (max-width:767px) {
-  padding-top: 3rem;
+    padding-top: 3rem;
   }
+
   @media screen and (max-width:568px) {
     padding-right: 12px;
     padding-left: 12px;
@@ -1867,7 +1896,7 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
     display: none;
     transition: 200ms;
   }
- 
+
 
   .primary-sidebar .nav-tabs {
     border-top: 1px solid #d3ccc5;
@@ -1892,6 +1921,7 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
     margin: 5px auto 0;
   }
 }
+
 .app-name {
   svg {
     margin: 5px 10px 5px 0;
@@ -1952,7 +1982,7 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
     }
   }
 
-    width: 100% !important;
+  width: 100% !important;
 }
 
 footer {
@@ -2360,6 +2390,7 @@ button[name='cta-1'] {
 
 .ace-editor-wrapper {
   min-width: 300px;
+
   .ace_editor {
     width: 350px !important;
   }
@@ -2505,6 +2536,7 @@ span.endpointNameWrapper {
   .url-container {
     width: 100%;
     position: relative;
+
     .url-icons {
       .invalid-icon {
         display: none;
@@ -2513,6 +2545,7 @@ span.endpointNameWrapper {
         top: -27px;
         color: red;
       }
+
       span {
         display: none;
         right: -37px;
@@ -2523,6 +2556,7 @@ span.endpointNameWrapper {
         background-color: #80808052;
         font-size: 12px;
       }
+
       &:hover {
         span {
           display: inline;
@@ -2773,8 +2807,9 @@ main.mainpublic-endpoint-main .for-public-view {
   .techdoc-svg {
     display: flex;
     width: 120px;
+
     @media screen and (max-width:768px) {
-     width: 100px;
+      width: 100px;
     }
   }
 }
@@ -2800,6 +2835,7 @@ a.cta-type {
   .cookie-modal form {
     padding: 0 !important;
   }
+
   form {
     padding: 0 !important;
   }
@@ -3120,6 +3156,7 @@ li.nav-item.cookie-tab a {
       position: absolute;
       right: 15px;
       z-index: 9;
+
       @media screen and (max-width:480px) {
         position: static !important;
         padding-bottom: 10px;
@@ -3177,9 +3214,10 @@ div#steve-parent-accordion {
   top: 1.4rem;
   width: 20px;
   border-radius: 3px 3px;
-    &:hover {
-      background-color: #d6d2d28f !important;
-    }
+
+  &:hover {
+    background-color: #d6d2d28f !important;
+  }
 }
 
 .fileInput {
@@ -3356,18 +3394,21 @@ ul.react-autoComplete-input {
       font-size: 20px;
       width: max-content;
     }
-    .page-title{
+
+    .page-title {
       text-overflow: ellipsis;
       overflow: hidden;
       border: 1px solid transparent !important;
       width: max-content;
       font-size: 20px;
       border-radius: 2px;
+
       &:hover {
         border-color: rgba(128, 128, 128, 0.356) !important;
         background-color: white !important;
       }
-      &:focus-visible{
+
+      &:focus-visible {
         outline: 1px solid rgba(128, 128, 128, 0.356) !important;
       }
     }
@@ -3482,8 +3523,8 @@ body .btn-group-custom {
       }
     }
     @media screen and (max-width: 992px) {
-      position: static;
       width: 100%;
+      position: static;
     }
   }
 .tox-editor-container {
@@ -3631,6 +3672,7 @@ body .doc-secs-container {
   .response-container-main {
     width: 90%;
     padding: 1.25rem 1.25rem;
+
     h4 {
       height: 3.25rem;
       margin: 0;
@@ -3638,6 +3680,7 @@ body .doc-secs-container {
 
     .response-viewer {
       margin: 0;
+
       .custom-tabs {
         .nav-tabs {
           margin-top: 0;
@@ -3717,15 +3760,15 @@ body .doc-secs-container {
 
 //page display for edit
 
-  // position: relative;
-  // overflow: auto; /* Add this line to enable scrolling */
-  .page-display {
-    max-width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    float: unset !important;
-    position: relative;
-  }
+// position: relative;
+// overflow: auto; /* Add this line to enable scrolling */
+.page-display {
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  float: unset !important;
+  position: relative;
+}
 
 
 
@@ -3818,7 +3861,7 @@ body .tox {
 
 .textEditorContainer {
   position: relative;
-.menuBar{
+  .menuBar{
     position: sticky;
     top: -2px;
     z-index: 1;
@@ -3840,7 +3883,7 @@ body .tox {
 .Pane {
   overflow: scroll !important;
 }
-.create-org {
+.create-org{
 
   display: flex;
   justify-content: center;
@@ -3855,9 +3898,11 @@ body .tox {
 .name-sub-page {
   overflow-wrap: anywhere;
   max-width: 180px !important;
-    @media (max-width: 1400px) and (min-width: 400px){
-      max-width: 120px !important;
-    }
+
+  @media (max-width: 1400px) and (min-width: 400px) {
+    max-width: 120px !important;
+  }
+
   .page-title-name {
 
     .endpoint-title,
@@ -3867,27 +3912,30 @@ body .tox {
     }
   }
   }
-
 .pubCodeWrapper {
   @media only screen and (max-width: 1160px) {
     position: static !important;
     width: 100% !important;
     min-width: 100% !important;
+
     .closeEditor {
       transition: 450ms;
     }
   }
-.endpoint-title,
-.page-title {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  &:hover {
-    border-color: rgba(128, 128, 128, 0.356) !important;
-    background-color: white !important;
+
+  .endpoint-title,
+  .page-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    &:hover {
+      border-color: rgba(128, 128, 128, 0.356) !important;
+      background-color: white !important;
+    }
   }
 }
-}
-.hamburger-for-sidebar{
+
+.hamburger-for-sidebar {
   display: none !important;
 
   @media screen and (max-width: 768px) {
@@ -3918,8 +3966,6 @@ body .tox {
     }
   }
 }
-
-
   .loading {
     max-width: 1000px;
     min-width: 296px;
@@ -4016,21 +4062,21 @@ body .tox {
       height: 36px;
     }
   }
+
   .edit {
     width: 50px;
     height: 34px;
 }
-
 .unpublish {
     width: 125px;
     height: 34px;
 }
-
 .publish {
     width: 106px;
     height: 34px;
+  }
 }
-}
+
 .team {
   margin-left: auto;
   margin-right: auto;
@@ -4066,14 +4112,18 @@ body .tox {
     height: 36px;
   }
 }
+
 .footer-upper {
   display: block;
+
   @media screen and (max-width: 1160px) {
     display: none;
   }
 }
+
 .footer-lower {
   display: none;
+
   @media screen and (max-width: 1160px) {
     display: block;
   }
@@ -4102,9 +4152,11 @@ body .tox {
     font-size: 20px;
   }
 }
- .linkWrapper {
+
+.linkWrapper {
   position: relative;
-  &::before{
+
+  &::before {
     content: '';
     display: block;
     border-left: 1px solid $indentation;
@@ -4113,12 +4165,14 @@ body .tox {
     top: -3px;
     left: 30px;
   }
- }
- .expanded {
+}
+
+.expanded {
   #collection-collapse {
     position: relative;
     padding-left: 6px;
-    &::before{
+
+    &::before {
       content: '';
       display: block;
       border-left: 1px solid $indentation;
@@ -4127,37 +4181,42 @@ body .tox {
       top: 0;
       left: 16px;
     }
-   }
- }
- .tab-options-drop-down {
+  }
+}
+
+.tab-options-drop-down {
   .dropdown-item {
     &:hover {
       background-color: rgba(128, 128, 128, 0.123);
     }
   }
- }
- .custom-collection {
+}
+
+.custom-collection {
   :first-child {
     max-width: 800px !important;
   }
- }
- .custom-collection-modal-container {
+}
+
+.custom-collection-modal-container {
   button {
     padding-left: 4px !important;
     padding-right: 4px !important;
     border-radius: 3px 3px;
-      &:hover {
-        background-color:#d6d2d28f;
-      }
+
+    &:hover {
+      background-color: #d6d2d28f;
+    }
   }
- }
- .enpoint-title {
+}
+
+.enpoint-title {
   width: fit-content;
- }
- 
+}
+
 
 .danger-color {
-   color: #eb5757;
+  color: #eb5757;
 }
 
 .graphql-icon {
@@ -4167,21 +4226,26 @@ body .tox {
 .cursor-text {
   cursor: text !important;
 }
+
 .Script-content {
   &.active {
     display: flex !important;
   }
+
   .Script-button {
     width: 100px;
+
     &:hover {
       background-color: rgba(128, 128, 128, 0.089) !important;
     }
+
     &.active {
       color: #e98a36 !important;
       background-color: rgba(128, 128, 128, 0.089) !important;
     }
   }
 }
+
 .body-ace-editer {
   .close-button {
     right: 3px;
@@ -4189,10 +4253,12 @@ body .tox {
     z-index: 9;
   }
 }
+
 .ai-button-editor {
   right: 17px;
   z-index: 9;
 }
+
 .active {
   .Url-invalid {
     input {
@@ -4201,15 +4267,17 @@ body .tox {
       background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
       padding-right: calc(1.5em + 0.75rem);
     }
+
     .invalid-icon {
       display: block !important;
     }
   }
 }
+
 #InValidIcon {
- background: unset !important;
- fill: none !important;
- padding: 0 !important;
- color: unset !important;
- border: unset !important;
+  background: unset !important;
+  fill: none !important;
+  padding: 0 !important;
+  color: unset !important;
+  border: unset !important;
 }

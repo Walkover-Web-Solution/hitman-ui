@@ -32,11 +32,12 @@ export default function RenderPageContent(props) {
     return (
         <>
             {innerText.length > 0 &&
-                <div className={`page-text-render w-100 d-flex flex-lg-row flex-column-reverse`}>
-                    <div className='page-content-body' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
+                <div className={`page-text-render w-100 d-flex justify-content-center`}>
+                    <div className='page-content-body w-50' dangerouslySetInnerHTML={{ __html: htmlWithIds }} />
                     {isOnPublishedPage() && headings.length > 0 && (
                         <>
-                            <div className='editor-headings d-flex flex-column h-100'>
+                        <div className='heading-main position-absolute w-25'>
+                            <div className='editor-headings position-fixed d-flex flex-column'>
                                 <span className='pb-2 text-dark d-inline-block font-weight-bold fs-3'> On this page</span>
                                 <div className='border border-2 p-2 rounded-lg h-100'>
                                     <div>
@@ -49,6 +50,7 @@ export default function RenderPageContent(props) {
                                         ))}
                                     </div>
                                 </div>
+                            </div>
                             </div>
                         </>
                     )}
