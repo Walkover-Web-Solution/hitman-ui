@@ -107,6 +107,13 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
     },
     editable: !disabled
   })
+
+  useEffect(() => {
+    if (editor && initial !== editor.getHTML()) {
+      editor.commands.setContent(initial, false);
+    }
+  }, [initial, editor]);
+  
   const toggleHeading = (level) => {
     if (editor) {
       editor.chain().focus().toggleHeading({ level }).run();

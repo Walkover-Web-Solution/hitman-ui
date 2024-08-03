@@ -172,14 +172,9 @@ const CollectionParentPages = (props) => {
 
   const openAddPageEndpointModal = (pageId) => {
     const newPage = { name: 'untitled', pageType: 3 };
-    if (isOrgDocType) {
+    if (isOrgDocType()) {
       dispatch(addPage(pages[pageId].versionId, newPage))
-      dispatch(openInNewTab({
-        type: 'page',
-        previewMode: false,
-        isModified: false,
-        state: {},
-      }))
+      dispatch(openInNewTab({ type: 'page', previewMode: false, isModified: false, state: {} }))
     } else {
       setShowAddCollectionModal(true)
       setSelectedPage({ ...pages[pageId] })
@@ -214,13 +209,7 @@ const CollectionParentPages = (props) => {
     let isUserOnPublishedPage = isOnPublishedPage()
     const expanded = clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const rootId = pageId
-    const isSelected =
-      isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId
-        ? 'selected'
-        : isDashboardRoute && params.pageId === pageId
-          ? 'selected'
-          : ''
-
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : isDashboardRoute && params.pageId === pageId ? 'selected' : ''
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     let collectionId = pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = collections[collectionId]?.theme
@@ -228,11 +217,7 @@ const CollectionParentPages = (props) => {
     const staticColor = background['background_hover']
 
     const backgroundStyle = {
-      backgroundImage:
-        isHovered || isSelected
-          ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
-        linear-gradient(to right, ${staticColor}, ${staticColor})`
-          : ''
+      backgroundImage: isHovered || isSelected ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
     }
 
     return (
@@ -265,12 +250,7 @@ const CollectionParentPages = (props) => {
                     {!isUserOnPublishedPage ? (
                       versionDropDown(rootId)
                     ) : (
-                      <PublishedVersionDropDown
-                        handleDropdownItemClick={handleDropdownItemClick}
-                        rootParentId={props?.rootParentId}
-                        defaultVersionName={defaultVersionName}
-                        selectedVersionName={selectedVersionName}
-                      />
+                      <PublishedVersionDropDown handleDropdownItemClick={handleDropdownItemClick} rootParentId={props?.rootParentId} defaultVersionName={defaultVersionName} selectedVersionName={selectedVersionName} />
                     )}
                   </div>
                 </div>
@@ -278,10 +258,7 @@ const CollectionParentPages = (props) => {
 
               {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
                 <div className='sidebar-item-action d-flex align-items-center'>
-                  <div
-                    className='d-flex align-items-center'
-                    onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}
-                  >
+                  <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
                     <IconButtons>
                       <FiPlus />
                     </IconButtons>
@@ -310,11 +287,7 @@ const CollectionParentPages = (props) => {
             <div className='version-collapse'>
               <Card.Body>
                 <div className='linkWrapper versionPages'>
-                  <CombinedCollections
-                    {...props}
-                    page_id={pageId}
-                    rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId}
-                  />
+                  <CombinedCollections {...props} page_id={pageId} rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId} />
                 </div>
               </Card.Body>
             </div>
@@ -329,23 +302,11 @@ const CollectionParentPages = (props) => {
       {showAddPageEndpointModal()}
       {showEditPageModal()}
       {showVersionForm && openManageVersionModal()}
-      {showDeleteModal &&
-        pageService.showDeletePageModal(
-          props,
-          closeDeleteVersionModal,
-          'Delete Version',
-          `Are you sure you want to delete this Version?All your subpages and endpoints present in this version will be deleted.`
-        )}
-      {showDeleteModal &&
-        pageService.showDeletePageModal(
-          props,
-          closeDeletePageModal,
-          'Delete Page',
-          `Are you sure you want to delete this pages? All your versions,subpages and endpoints present in this page will be deleted.`,
-          selectedPage
-        )}
+      {showDeleteModal && pageService.showDeletePageModal(props, closeDeleteVersionModal, 'Delete Version', `Are you sure you want to delete this Version?All your subpages and endpoints present in this version will be deleted.`)}
+      {showDeleteModal && pageService.showDeletePageModal(props, closeDeletePageModal, 'Delete Page', `Are you sure you want to delete this pages? All your versions,subpages and endpoints present in this page will be deleted.`, selectedPage)}
       {renderBody(props.rootParentId)}
     </React.Fragment>
   )
 }
+
 export default CollectionParentPages

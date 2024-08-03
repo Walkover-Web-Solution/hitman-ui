@@ -16,20 +16,19 @@ import './page.scss';
 
 const Page = () => {
 
-    const dispatch = useDispatch();
-    const { pageId } = useParams();
-
-    const textareaRef = useRef(null);
-
     const { draftContent, page, pages, users, activeTabId, tabs, isPublished } = useSelector((state) => ({
         draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
-        page: state?.pages[pageId],
+        page: state?.pages[state.tabs.activeTabId],
         pages: state.pages,
         users: state.users,
         activeTabId: state.tabs.activeTabId,
         tabs: state.tabs.tabs,
-        isPublished: state?.pages[pageId]?.isPublished
+        isPublished: state?.pages[state.tabs.activeTabId]?.isPublished
     }));
+
+    const dispatch = useDispatch();
+    const { pageId } = useParams();
+    const textareaRef = useRef(null);
 
     const [sidebar, setSidebar] = useState(false);
     const [pageName, setPageName] = useState(page?.name);
@@ -49,15 +48,14 @@ const Page = () => {
     }, []);
 
     useEffect(() => {
-        if (textareaRef.current) autoGrow(textareaRef.current);
         if (draftContent === undefined && tabs[activeTabId]?.status !== 'NEW') dispatch(fetchTabContent(pageId));
-    }, [pageId]);
+    }, [pageId, draftContent]);
 
     useEffect(() => {
+        if (textareaRef.current) autoGrow(textareaRef.current);
         if (tabs[activeTabId].status === "NEW") return setPageName(tabs[activeTabId]?.name || 'Untitled');
         setPageName(page?.name || 'Untitled');
-    }, [page?.name])
-
+    }, [page?.name, tabs?.activeTabId?.name, pageId])
 
     const handleSavePage = () => {
         if (tabs[activeTabId]?.status === "NEW") setSidebar(true);
