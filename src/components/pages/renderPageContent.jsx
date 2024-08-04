@@ -15,14 +15,14 @@ export default function RenderPageContent(props) {
     const addIdsToHeadings = (html) => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
-        const h2Elements = doc.querySelectorAll('h2');
-        const h2Headings = Array.from(h2Elements).map((h2, index) => {
+        const headingElements = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        const headings = Array.from(headingElements).map((heading, index) => {
             const id = `heading-${index}`;
-            h2.setAttribute('id', id);
-            return { id, text: h2.innerText };
-        })
-        setHeadings(h2Headings);
-        setInnerText(doc.body.innerText)
+            heading.setAttribute('id', id);
+            return { id, text: heading.innerText, tag: heading.tagName.toLowerCase() };
+        });
+        setHeadings(headings);
+        setInnerText(doc.body.innerText);
         return doc.body.innerHTML;
     };
 
