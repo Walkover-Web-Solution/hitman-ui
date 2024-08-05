@@ -1,4 +1,6 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
+@import '../src/components/main/variables.scss';
+
 .main {
   width: 100%;
   padding: 0;
@@ -29,9 +31,6 @@ body .logoBox .dropdown .dropdown-toggle {
 
 .menu-trigger-box {
   .org-button {
-    &:hover {
-      background-color: #d6d2d28f;
-    }
     .sb-avatar__text {
       span {
         span {
@@ -44,6 +43,17 @@ body .logoBox .dropdown .dropdown-toggle {
     &.user-notification-badge {
       right: 0.25rem;
       top: 0.75rem;
+    }
+  }
+  &:hover {
+    background-color: rgba(128, 128, 128, 0.178);
+    .org-name {
+      color: $text-color !important;
+    }
+    .add-button {
+      button {
+      color: $text-color !important;
+      }
     }
   }
 }
