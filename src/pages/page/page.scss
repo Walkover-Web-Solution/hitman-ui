@@ -13,6 +13,9 @@
           &::after {
             all: unset;
           }
+          svg {
+            color: rgba(55, 53, 47, 0.85);
+          }
         }
 
         .unpublish-btn {
