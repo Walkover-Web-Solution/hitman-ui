@@ -107,11 +107,12 @@ const CustomTabs = (props) => {
 
   const onDrop = (e, droppedOnItem) => {
     e.preventDefault()
-    if (draggedItem.current === droppedOnItem) {
+    let tabsOrder = tabs.tabsOrder;
+    if (draggedItem.current === droppedOnItem || !draggedItem.current || !tabsOrder.includes(draggedItem.current)) {
       draggedItem.current = null
       return
     }
-    const tabsOrder = tabs.tabsOrder.filter((item) => item !== draggedItem.current)
+    tabsOrder = tabs.tabsOrder.filter((item) => item !== draggedItem.current)
     const index = tabs.tabsOrder.findIndex((tId) => tId === droppedOnItem)
     tabsOrder.splice(index, 0, draggedItem.current)
     dispatch(setTabsOrder(tabsOrder))
