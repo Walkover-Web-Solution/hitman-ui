@@ -10,6 +10,7 @@ import { navigateTo } from '../../../navigationService'
 import { getCurrentOrg } from '../../auth/authServiceV2'
 import tabsActionTypes from '../../tabs/redux/tabsActionTypes'
 import { onPageStateSuccess } from '../../publicEndpoint/redux/publicEndpointsActions'
+import { replaceTab } from '../../tabs/redux/tabsActions'
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -152,8 +153,8 @@ export const addPage = (rootParentId, newPage, pageId) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
         const newTab = { id: data.id, type: "page", status: "SAVED", previewMode: false, isModified: false }
-        if (data.content) newTab.draft = data.content
-        dispatch({ type: tabsActionTypes.REPLACE_TAB, oldTabId: pageId, newTab })
+        newTab.draft = data.contents
+        dispatch(replaceTab(pageId, newTab))
         navigateTo(`/orgs/${orgId}/dashboard/page/${data.id}`)
       })
       .catch((error) => {
