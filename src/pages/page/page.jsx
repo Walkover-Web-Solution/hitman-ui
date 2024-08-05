@@ -17,7 +17,7 @@ import './page.scss';
 
 const Page = () => {
 
-    const { draftContent, page, pages, users, activeTabId, tabs, isPublished, collections } = useSelector((state) => ({
+    const { draftContent, page, pages, users, activeTabId, tabs, isPublished } = useSelector((state) => ({
         draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
         page: state?.pages[state.tabs.activeTabId],
         pages: state.pages,
@@ -50,11 +50,8 @@ const Page = () => {
 
     useEffect(() => {
         window.addEventListener('keydown', handleSaveKeydown);
-        return () => window.removeEventListener('keydown', handleSaveKeydown);
-    }, [pageId]);
-
-    useEffect(() => {
         if (draftContent === undefined && tabs[activeTabId]?.status === 'SAVED') dispatch(fetchTabContent(pageId));
+        return () => window.removeEventListener('keydown', handleSaveKeydown);
     }, [pageId, draftContent]);
 
     useEffect(() => {
@@ -75,12 +72,6 @@ const Page = () => {
         else dispatch(updatePageContent(page.id, draftContent, pageName));
     };
 
-    const debounceUpdateDraft = useCallback(
-        debounce((activeTabId, content) => {
-            dispatch(updateDraft(activeTabId, content));
-        }, 500)
-    );
-
     const debounceUpdateName = useCallback(
         debounce((activeTabId, name) => {
             dispatch(updateNewTabName(activeTabId, name));
@@ -89,7 +80,7 @@ const Page = () => {
 
     const handleContentChange = (newContent) => {
         if (tabs[activeTabId]?.isModified === false) dispatch(setTabIsModified(activeTabId, true));
-        debounceUpdateDraft(activeTabId, newContent);
+        dispatch(updateDraft(activeTabId, newContent))
     };
 
     const handlePageNameChange = (event) => {
@@ -207,7 +198,6 @@ const Page = () => {
                 />
                 <div id='tiptap-editor' className='page-content '>
                     <Tiptap
-                        key={pageId}
                         onChange={handleContentChange}
                         initial={draftContent}
                         isInlineEditor={false}
