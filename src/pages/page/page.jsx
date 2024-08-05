@@ -53,12 +53,12 @@ const Page = () => {
 
     useEffect(() => {
         if (textareaRef.current) autoGrow(textareaRef.current);
-        if (tabs[activeTabId].status === "NEW") return setPageName(tabs[activeTabId]?.name || 'Untitled');
+        if (tabs?.[activeTabId]?.status === "NEW") return setPageName(tabs[activeTabId]?.name || 'Untitled');
         setPageName(page?.name || 'Untitled');
     }, [page?.name, tabs?.activeTabId?.name, pageId])
 
     const handleSavePage = () => {
-        if (tabs[activeTabId]?.status === "NEW") setSidebar(true);
+        if (tabs?.[activeTabId]?.status === "NEW") setSidebar(true);
         else dispatch(updatePageContent(page.id, draftContent, pageName));
     };
 
@@ -95,13 +95,13 @@ const Page = () => {
     const handlePageNameChange = (event) => {
         const newName = event.target.value;
         setPageName(newName);
-        if (tabs[activeTabId].status === "NEW") {
+        if (tabs?.[activeTabId]?.status === "NEW") {
             debounceUpdateName(activeTabId, newName);
         }
     };
 
     const handleSavePageName = () => {
-        if (tabs[activeTabId].status === "SAVED") dispatch(updatePageName(page.id, pageName));
+        if (tabs?.[activeTabId]?.status === "SAVED") dispatch(updatePageName(page.id, pageName));
     };
 
     const handlePageNameKeyDown = (event) => {
@@ -161,7 +161,7 @@ const Page = () => {
                                     </Tooltip>
                                 }
                             >
-                                {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs[activeTabId].status === "NEW" ? 'Unsaved' : "Saved"}</button>}
+                                {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs?.[activeTabId]?.status === "NEW" ? 'Unsaved' : "Saved"}</button>}
                             </OverlayTrigger>
                         </div>
                     </IconButton>
