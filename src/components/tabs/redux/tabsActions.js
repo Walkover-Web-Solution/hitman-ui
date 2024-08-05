@@ -173,20 +173,11 @@ export const setTabsOrder = (tabsOrder) => {
 export const replaceTab = (oldTabId, newTab) => {
   const tabsOrder = store.getState().tabs.tabsOrder.filter((tId) => tId !== oldTabId)
   const isDesktopModalOpen = store.getState().modals.activeModal === DESKTOP_APP_DOWNLOAD
-  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) {
-    return openModal(DESKTOP_APP_DOWNLOAD)
-  }
+  if (!isElectron() && tabsOrder.length >= 10 && !isDesktopModalOpen) return openModal(DESKTOP_APP_DOWNLOAD)
   tabsOrder.push(newTab.id)
   return async (dispatch) => {
-    dispatch({
-      type: tabsActionTypes.REPLACE_TAB,
-      oldTabId,
-      newTab
-    })
-    dispatch({
-      type: tabsActionTypes.SET_TABS_ORDER,
-      tabsOrder
-    })
+    dispatch({ type: tabsActionTypes.REPLACE_TAB, oldTabId, newTab })
+    dispatch({ type: tabsActionTypes.SET_TABS_ORDER, tabsOrder })
   }
 }
 

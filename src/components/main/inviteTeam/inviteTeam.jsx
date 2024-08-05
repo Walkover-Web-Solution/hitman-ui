@@ -23,7 +23,6 @@ function InviteTeam() {
   })
 
   useEffect(() => {
-    console.log(currentUserEmail, currentOrgName)
     if (typeof window.SendDataToChatbot === 'function') {
       const userId = getCurrentUser()?.id
       window.SendDataToChatbot({

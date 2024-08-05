@@ -49,18 +49,12 @@ const Page = () => {
     }, []);
 
     useEffect(() => {
-        const handleSaveKeydown = (event) => {
-            if ((event.ctrlKey || event.metaKey) && event.key === 's') {
-                event.preventDefault();
-                handleSavePage();
-            }
-        };
         window.addEventListener('keydown', handleSaveKeydown);
         return () => window.removeEventListener('keydown', handleSaveKeydown);
     }, [pageId]);
 
     useEffect(() => {
-        if (draftContent === undefined && tabs[activeTabId]?.status !== 'NEW') dispatch(fetchTabContent(pageId));
+        if (draftContent === undefined && tabs[activeTabId]?.status === 'SAVED') dispatch(fetchTabContent(pageId));
     }, [pageId, draftContent]);
 
     useEffect(() => {
@@ -68,6 +62,13 @@ const Page = () => {
         if (tabs?.[activeTabId]?.status === "NEW") return setPageName(tabs[activeTabId]?.name || 'Untitled');
         setPageName(page?.name || 'Untitled');
     }, [page?.name, tabs?.activeTabId?.name, pageId])
+
+    const handleSaveKeydown = (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+            event.preventDefault();
+            handleSavePage();
+        }
+    };
 
     const handleSavePage = () => {
         if (tabs?.[activeTabId]?.status === "NEW") setSidebar(true);
