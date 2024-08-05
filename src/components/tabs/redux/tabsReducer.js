@@ -69,11 +69,9 @@ function tabsReducer(state = initialState, action) {
       return tabs
 
     case tabsActionTypes.REPLACE_TAB: {
-      tabs = {
-        ...state
-      }
+      tabs = {...state}
       delete tabs.tabs[action.oldTabId]
-      tabs.tabs[action.newTab.id] = action.newTab
+      tabs.tabs[action.newTab.id] = { ...action.newTab }
       const index = tabs.tabsOrder.findIndex((t) => t === action.oldTabId)
       tabs.tabsOrder[index] = action.newTab.id
       return tabs
