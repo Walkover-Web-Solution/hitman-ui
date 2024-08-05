@@ -4,7 +4,8 @@
     z-index: 9;
 
     .header-page-name {
-      cursor: context-menu;
+      padding: 0px !important;
+      margin: 0px !important;
     }
 
     .inner-operations {
@@ -45,4 +46,8 @@
     }
   }
 
+}
+
+.live-tooltip {
+  font-size: 10px;
 }

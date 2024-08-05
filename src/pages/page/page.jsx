@@ -12,11 +12,12 @@ import { updatePageContent, updatePageName } from '../../components/pages/redux/
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1';
 import IconButton from '../../components/common/iconButton';
 import { getProxyToken } from "../../components/auth/authServiceV2";
+import { GoDotFill } from "react-icons/go";
 import './page.scss';
 
 const Page = () => {
 
-    const { draftContent, page, pages, users, activeTabId, tabs, isPublished } = useSelector((state) => ({
+    const { draftContent, page, pages, users, activeTabId, tabs, isPublished, collections } = useSelector((state) => ({
         draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
         page: state?.pages[state.tabs.activeTabId],
         pages: state.pages,
@@ -48,6 +49,17 @@ const Page = () => {
     }, []);
 
     useEffect(() => {
+        const handleSaveKeydown = (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+                event.preventDefault();
+                handleSavePage();
+            }
+        };
+        window.addEventListener('keydown', handleSaveKeydown);
+        return () => window.removeEventListener('keydown', handleSaveKeydown);
+    }, [pageId]);
+
+    useEffect(() => {
         if (draftContent === undefined && tabs[activeTabId]?.status !== 'NEW') dispatch(fetchTabContent(pageId));
     }, [pageId, draftContent]);
 
@@ -62,29 +74,16 @@ const Page = () => {
         else dispatch(updatePageContent(page.id, draftContent, pageName));
     };
 
-    useEffect(() => {
-        const handleSaveKeydown = (event) => {
-            if ((event.ctrlKey || event.metaKey) && event.key === 's') {
-                event.preventDefault();
-                handleSavePage();
-            }
-        };
-        window.addEventListener('keydown', handleSaveKeydown);
-        return () => window.removeEventListener('keydown', handleSaveKeydown);
-    }, [handleSavePage]);
-
     const debounceUpdateDraft = useCallback(
         debounce((activeTabId, content) => {
             dispatch(updateDraft(activeTabId, content));
-        }, 500),
-        []
+        }, 500)
     );
 
     const debounceUpdateName = useCallback(
         debounce((activeTabId, name) => {
             dispatch(updateNewTabName(activeTabId, name));
-        }, 500),
-        []
+        }, 500)
     );
 
     const handleContentChange = (newContent) => {
@@ -95,9 +94,7 @@ const Page = () => {
     const handlePageNameChange = (event) => {
         const newName = event.target.value;
         setPageName(newName);
-        if (tabs?.[activeTabId]?.status === "NEW") {
-            debounceUpdateName(activeTabId, newName);
-        }
+        if (tabs?.[activeTabId]?.status === "NEW") debounceUpdateName(activeTabId, newName);
     };
 
     const handleSavePageName = () => {
@@ -128,39 +125,55 @@ const Page = () => {
         dispatch(draftPage(page))
     };
 
+    const showTooltips = (tooltipType) => {
+        switch (tooltipType) {
+            case "EditedBy":
+                return (
+                    <Tooltip id='edited-by-tooltip'>
+                        {lastModified &&
+                            <div className="fs-4 text-secondary">
+                                <span>Edited by </span>
+                                <span className="font-weight-bold text-white">{user?.name}</span>
+                                <span>&nbsp;{lastModified}</span>
+                            </div>
+                        }
+                    </Tooltip>
+                )
+            case "Live":
+                return <Tooltip id='edited-by-tooltip' className="fs-4 text-secondary"><span className="live-tooltip">Live</span></Tooltip>
+            case "shortcut":
+                return (
+                    <Tooltip id='edited-by-tooltip'>
+                        <div className="fs-4 text-secondary">
+                            {window.navigator.platform.toLowerCase().includes("mac") ? <span>cmd + s</span> : <span>ctrl + s</span>}
+                        </div>
+                    </Tooltip>
+                )
+        }
+    }
+
     return (
         <div className='parent-page-container d-flex flex-column align-items-center w-100'>
             <div className='page-header position-sticky px-3 py-2 bg-white d-flex align-items-center justify-content-between w-100'>
-                <h1 className="header-page-name fa-1x text-truncate w-25">{pageName?.length > 0 ? pageName : <span>Untitled</span>}</h1>
-                <div className='header-operations d-flex align-items-center gap-2'>
-                    {tabs?.[activeTabId]?.status !== "NEW" && <div>
-                        <OverlayTrigger
-                            placement='bottom'
-                            overlay={
-                                <Tooltip id='edited-by-tooltip'>
-                                    {lastModified &&
-                                        <div className="fs-4 text-secondary">
-                                            <span>Edited by </span>
-                                            <span className="font-weight-bold text-white">{user?.name}</span>
-                                            <span>&nbsp;{lastModified}</span>
-                                        </div>
-                                    }
-                                </Tooltip>
-                            }
-                        >
-                            <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
+                <div className="d-flex justify-content-start align-items-center w-50">
+                    <h1 className="header-page-name fa-1x text-truncate">{pageName?.length > 0 ? pageName : <span>Untitled</span>}</h1>
+                    {pages?.[pageId]?.isPublished &&
+                        <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
+                            <GoDotFill size={14} color="green" />
                         </OverlayTrigger>
-                    </div>}
+                    }
+                </div>
+                <div className='header-operations d-flex align-items-center gap-2'>
+                    {tabs?.[activeTabId]?.status !== "NEW" &&
+                        <div>
+                            <OverlayTrigger placement='bottom' overlay={showTooltips("EditedBy")}>
+                                <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
+                            </OverlayTrigger>
+                        </div>
+                    }
                     <IconButton>
                         <div className='button'>
-                            <OverlayTrigger
-                                placement='bottom'
-                                overlay={
-                                    <Tooltip id='edited-by-tooltip'>
-                                        <div className="fs-4 text-secondary">{window.navigator.platform.toLowerCase().includes("mac") ? <span>cmd + s</span> : <span>ctrl + s</span>}</div>
-                                    </Tooltip>
-                                }
-                            >
+                            <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
                                 {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs?.[activeTabId]?.status === "NEW" ? 'Unsaved' : "Saved"}</button>}
                             </OverlayTrigger>
                         </div>
@@ -172,7 +185,7 @@ const Page = () => {
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <Dropdown.Item onClick={handlePublish} disabled={isPublished}>Publish</Dropdown.Item>
-                                <Dropdown.Item className={`${!isPublished ? 'disable-unpublish' : 'unpublish-btn'}`} onClick={handleUnPublish} disabled={!isPublished}>Unpublish</Dropdown.Item>
+                                <Dropdown.Item onClick={handleUnPublish} disabled={!isPublished}>Unpublish</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>}
@@ -197,10 +210,19 @@ const Page = () => {
                         onChange={handleContentChange}
                         initial={draftContent}
                         isInlineEditor={false}
-                        disabled={false} />
+                        disabled={false}
+                    />
                 </div>
             </div>
-            {sidebar && <SaveAsPageSidebar pageId={activeTabId} name={pageName} setName={setPageName} onHide={() => setSidebar(false)} handleSubmit={() => setSidebar(false)} />}
+            {sidebar &&
+                <SaveAsPageSidebar
+                    pageId={activeTabId}
+                    name={pageName}
+                    setName={setPageName}
+                    onHide={() => setSidebar(false)}
+                    handleSubmit={() => setSidebar(false)}
+                />
+            }
         </div>
     );
 };
