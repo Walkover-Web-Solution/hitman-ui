@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import './main.scss'
@@ -23,6 +23,8 @@ import { updateDragDrop } from '../pages/redux/pagesActions'
 import './main.scss'
 import './sidebar.scss'
 import "../../pages/page/page.scss"
+import { ReactComponent as Logo } from '../../assets/web/favicon.svg'
+
 
 
 const SideBar = () => {
@@ -83,41 +85,42 @@ const SideBar = () => {
     const publishedCollectionTitle = firstCollection.docProperties?.defaultTitle || ''
 
     return (
-      <div className='hm-sidebar-header d-flex align-items-center'>
-        {(collections[collectionKeys[0]]?.favicon || collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
-          <div className='hm-sidebar-logo'>
-            <img
-              id='publicLogo'
-              alt='public-logo'
-              src={
-                collections[collectionKeys[0]]?.favicon
-                  ? `data:image/png;base64,${collections[collectionKeys[0]]?.favicon}`
-                  : collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl
-              }
-              width='60'
-              height='60'
-            />
+      <>
+        <div className='hm-sidebar-header d-flex justify-content-between'>
+          <div className='td-header gap-2 d-flex align-items-center'>
+            {(collections[collectionKeys[0]]?.favicon || collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
+              <div className='hm-sidebar-logo'>
+                <img
+                  id='publicLogo'
+                  alt='public-logo'
+                  src={
+                    collections[collectionKeys[0]]?.favicon
+                      ? `data:image/png;base64,${collections[collectionKeys[0]]?.favicon}`
+                      : collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl
+                  }
+                  width='60'
+                  height='60'
+                />
+              </div>
+            )}
+            <h4 className='hm-sidebar-title'>
+              {publishedCollectionTitle || collectionName || ''}
+              <span>API Documentation</span>
+            </h4>
           </div>
-        )}
-        <h4 className='hm-sidebar-title'>
-          {publishedCollectionTitle || collectionName || ''}
-          <span>API Documentation</span>
-        </h4>
         {isTechdocOwnDomain() && (
-          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5'>
-            <TbLogin2 className='text-black' />
-            <button
-              type='button'
-              className='btn btn-lg'
-              data-bs-toggle='tooltip'
-              data-bs-placement='top'
-              data-bs-title='Login to manage this docs'
-            >
-              Login to manage this docs
-            </button>
-          </a>
+          <Link href='/login' target='_blank' className='login-button btn btn-sm btn-light d-flex align-items-center h-100 bg-none border'
+            type='button'
+            data-bs-toggle='tooltip'
+            data-bs-placement='top'
+            data-bs-title='Login to manage this docs'
+          >
+            Built with
+            <Logo className='logo-techdoc' />
+          </Link>
         )}
-      </div>
+        </div>
+      </>
     )
   }
 
@@ -446,7 +449,7 @@ const SideBar = () => {
     return (
       <>
         {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 />}
-        <div className='plr-3 pt-2'>
+        <div className='plr-3 pt-1'>
           {isOnPublishedPage() && renderCollectionName()}
           {renderSearch()}
         </div>
