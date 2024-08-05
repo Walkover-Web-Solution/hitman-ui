@@ -266,22 +266,22 @@ const CustomTabs = (props) => {
           const page = pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='d-flex align-items-center'>
+              <div className='d-flex'>
                 <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
                 <span>{page.name}</span>
               </div>
             )
           } else {
             return (
-              <div className='d-flex align-items-center'>
-                <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
+              <div className='d-flex'>
+                <IoDocumentTextOutline size={14} className='mr-1' />
                 <span>{page.name}</span>
               </div>
             )
           }
         } else {
           return (
-            <div className='d-flex align-items-center'>
+            <div className='d-flex'>
               <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
               <span>{'Untiled'}</span>
             </div>
@@ -293,23 +293,23 @@ const CustomTabs = (props) => {
         if (location?.pathname?.split('/')?.[6] === 'settings') {
           return (
             <>
-              <span className='d-flex align-items-center'>
-                <CiSettings size={18} className='setting-icons mr-1 mb-1' />
+              <span className='d-flex'>
+                <CiSettings size={18} className='setting-icons mr-1' />
                 <span>{collectionName}</span>
               </span>
             </>
           )
         } else if (location?.pathname?.split('/')?.[6] === 'runner') {
           return (
-            <div className='d-flex align-items-center'>
-              <TbSettingsAutomation size={18} className='setting-icons mr-1 mb-1' />
+            <div className='d-flex'>
+              <TbSettingsAutomation size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
           )
         } else {
           return (
-            <div className='d-flex align-items-center'>
-              <CiSettings size={18} className='setting-icons mr-1 mb-1' />
+            <div className='d-flex'>
+              <CiSettings size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
           )
@@ -470,7 +470,7 @@ const CustomTabs = (props) => {
                 onDragOver={handleOnDragOver}
                 onDragStart={() => onDragStart(tabId)}
                 onDrop={(e) => onDrop(e, tabId)}
-                className={tabs?.activeTabId === tabId ? 'active text-black' : 'text-black-50'}
+                className={tabs?.activeTabId === tabId ? 'active' : 'text-black-50'}
                 onMouseEnter={() => {
                   setShowPreview(true)
                   setPreviewId(tabId)
@@ -481,9 +481,9 @@ const CustomTabs = (props) => {
                 }}
               >
                 {tabState[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
-                <Nav.Link eventKey={tabId}>
+                <Nav.Link className='p-0 pr-1' eventKey={tabId}>
                   <button
-                    className='btn truncate'
+                    className='btn truncate bg-white'
                     onClick={() => tabService.selectTab(tabId, { navigate, params })}
                     onDoubleClick={() => {
                       tabService.disablePreviewMode(tabId)
@@ -491,7 +491,7 @@ const CustomTabs = (props) => {
                   >
                     {renderTabName(tabId)}
                   </button>
-                  <button className=' close' onClick={() => handleCloseTabs([tabId])}>
+                  <button className='bg-white close' onClick={() => handleCloseTabs([tabId])}>
                     <IconButtons>
                       <i className='uil uil-multiply' />
                     </IconButtons>

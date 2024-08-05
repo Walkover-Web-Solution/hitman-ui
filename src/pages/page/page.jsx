@@ -173,7 +173,7 @@ const Page = () => {
                     {tabs?.[activeTabId]?.status !== 'NEW' && <div className='inner-operations'>
                         <Dropdown>
                             <Dropdown.Toggle as='div' id='dropdown-basic'>
-                                <IconButton className='mt-1'><BsThreeDots color="black" size={18} /></IconButton>
+                                <IconButton variant="sm" className='mt-1'><BsThreeDots size={25} /></IconButton>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <Dropdown.Item onClick={handlePublish} disabled={isPublished}>Publish</Dropdown.Item>
@@ -188,7 +188,7 @@ const Page = () => {
                 <textarea
                     ref={textareaRef}
                     onInput={() => autoGrow(textareaRef.current)}
-                    className='page-name fa-3x font-weight-bold mt-5 border-0 w-100'
+                    className='page-name text-black fa-3x font-weight-bold mt-5 border-0 w-100'
                     type='text'
                     value={pageName}
                     placeholder='Untitled'
