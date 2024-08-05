@@ -18,31 +18,29 @@ const queryConfig = {
 }
 
 function PublicPage() {
-    let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
 
-    const { pages, users } = useSelector((state) => ({
+    let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW);
+
+    const { pages } = useSelector((state) => ({
         pages: state.pages,
-        users: state.users,
     }))
-
-    const getPagePublishedData = async () => {
-        const data = await getPublishedContentByIdAndType(currentIdToShow, pages?.[currentIdToShow]?.type)
-        return data;
-    }
 
     let { data } = useQuery(['pageContent', currentIdToShow], getPagePublishedData, queryConfig)
 
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     useEffect(() => {
-        if (isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && (pages?.[idToRender]?.type === 1 || pages?.[idToRender]?.type === 3)) {
+        if (isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && (pages?.[currentIdToShow]?.type === 1 || pages?.[currentIdToShow]?.type === 3)) {
             window.SendDataToChatbot({
                 bridgeName: 'page',
-                threadId: `${users?.currentUser?.id}-${idToRender}`,
-                variables: { collectionId: pages[idToRender]?.collectionId }
+                threadId: `${currentIdToShow}`,
+                variables: { collectionId: pages[currentIdToShow]?.collectionId }
             })
         }
-    }, [idToRender])
+    }, [currentIdToShow])
 
+    async function getPagePublishedData() {
+        const data = await getPublishedContentByIdAndType(currentIdToShow, pages?.[currentIdToShow]?.type)
+        return data;
+    }
 
     return (
         <div className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}>
