@@ -16,12 +16,14 @@ import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
-import './main.scss'
-import './sidebar.scss'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from 'react-icons/tb'
 import { updateDragDrop } from '../pages/redux/pagesActions'
+import './main.scss'
+import './sidebar.scss'
+import "../../pages/page/page.scss"
+
 
 const SideBar = () => {
   const collections = useSelector((state) => state.collections)
@@ -55,7 +57,8 @@ const SideBar = () => {
   }, [])
 
   const handleShortcutKeys = (event) => {
-    if (event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+    const isPageFocused = document.activeElement.closest('.parent-page-container')
+    if (!isPageFocused && event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
       event.preventDefault()
       inputRef.current.focus()
     }
