@@ -292,7 +292,7 @@ const Redirections = () => {
       <div className='d-flex justify-content-start sidebar-pages-container mb-4'>
         <div className='p-4'>{renderAllPagesOfParent(childIds)}</div>
       </div>
-      <div className='saperation'></div>
+      <div className='separation'></div>
       <div className='d-flex justify-content-center redirection-table-container mt-4'>
         <div className='main-container'>
           <h3>

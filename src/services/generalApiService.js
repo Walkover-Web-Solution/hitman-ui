@@ -25,10 +25,16 @@ export async function runAutomation(details) {
   return data;
 }
 
+export async function generateDescription(endpointIds) {
+  let data = await http.post(apiUrl + '/generate-description', {endpointIds})
+  return data;
+}
+
 export default {
   getCollectionsAndPages,
   getPublishedContentByPath,
   getPublishedContentByIdAndType,
   moveCollectionsAndPages,
   runAutomation,
+  generateDescription,
 }

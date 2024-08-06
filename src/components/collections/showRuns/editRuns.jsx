@@ -123,7 +123,7 @@
                   <span onClick={() => handleSelectAndDeselectAll(true)} className='ml-1 select-all mr-1 cursor-pointer'>
                     Select All
                   </span>
-                  <div className='saperation'></div>
+                  <div className='separation'></div>
                   <span onClick={() => handleSelectAndDeselectAll(false)} className='ml-1 cursor-pointer'>
                     Deselect All
                   </span>
