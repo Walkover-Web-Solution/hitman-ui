@@ -258,7 +258,7 @@ const fetchHistory = (historyId, props) => {
   return { ...utilityFunctions.modifyEndpointContent(_.cloneDeep(data), _.cloneDeep(untitledEndpointData)), flagResponse: true }
 }
 
-const withQuery = (WrappedComponent) => {
+const withQuery = (WrappedComponent) => {  
   return (props) => {
     const params = useParams()
     const queryClient = useQueryClient()
@@ -1318,7 +1318,8 @@ class DisplayEndpoint extends Component {
         postScript: endpointContent?.postScriptText,
         docViewData: endpointContent?.docViewData,
         protocolType: endpointContent?.protocolType || null,
-        description: endpointContent?.description || ''
+        description: endpointContent?.description ? true :false,
+        sampleResponse : endpointContent?.sampleResponseArray ? true: false
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
