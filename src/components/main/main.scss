@@ -3904,36 +3904,35 @@ body .tox {
   }
 }
 
-.linkWrapper {
-  position: relative;
+// .linkWrapper {
+//   position: relative;
 
-  &::before {
-    content: '';
-    display: block;
-    border-left: 1px solid $indentation;
-    height: 97%;
-    position: absolute;
-    top: -3px;
-    left: 30px;
-  }
-}
+//   &::before {
+//     content: '';
+//     display: block;
+//     border-left: 1px solid $indentation;
+//     height: 97%;
+//     position: absolute;
+//     top: -3px;
+//     left: 30px;
+//   }
+// }
 
-.expanded {
-  #collection-collapse {
-    position: relative;
-    padding-left: 6px;
+// .expanded {
+//   #collection-collapse {
+//     position: relative;
 
-    &::before {
-      content: '';
-      display: block;
-      border-left: 1px solid $indentation;
-      height: 97%;
-      position: absolute;
-      top: 0;
-      left: 16px;
-    }
-  }
-}
+//     &::before {
+//       content: '';
+//       display: block;
+//       border-left: 1px solid $indentation;
+//       height: 97%;
+//       position: absolute;
+//       top: 0;
+//       left: 16px;
+//     }
+//   }
+// }
 
 .tab-options-drop-down {
   .dropdown-item {

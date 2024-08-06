@@ -580,8 +580,10 @@ button.btn.custom-body-type-button {
     }
   }
 
-  .linkWith .hm-sidebar-block {
-    margin-top: 30px;
+  .linkWith {
+    .hm-sidebar-block {
+      margin-top: 30px;
+    }
   }
 }
 

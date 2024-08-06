@@ -435,7 +435,7 @@ const SideBar = () => {
       <div>
         {isOnPublishedPage() ? (
           <div className='sidebar-accordion'>
-            <CombinedCollections collectionId={collectionId1} rootParentId={rootParentId} />
+            <CombinedCollections level={0} collectionId={collectionId1} rootParentId={rootParentId} />
           </div>
         ) : (
           renderCollections()
@@ -449,7 +449,7 @@ const SideBar = () => {
     return (
       <>
         {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 />}
-        <div className='plr-3 pt-1'>
+        <div className='px-2 mx-1 pt-1'>
           {isOnPublishedPage() && renderCollectionName()}
           {renderSearch()}
         </div>
