@@ -157,7 +157,7 @@ const SubPage = (props) => {
       <div className='sidebar-accordion accordion ' id='child-accordion'>
         <button tabIndex={-1} className={`p-0 ${expanded ? 'expanded' : ''}`}>
           <div
-            className={`active-selected d-flex justify-content-between align-items-center rounded ${isSelected ? ' selected' : ''}`}
+            className={`active-selected d-flex justify-content-between align-items-center rounded ${isSelected ? ' selected' : 'text-secondary'}`}
             style={backgroundStyle}
             onMouseEnter={() => handleHover(true)}
             onMouseLeave={() => handleHover(false)}

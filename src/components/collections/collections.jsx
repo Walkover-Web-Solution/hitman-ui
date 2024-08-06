@@ -182,7 +182,7 @@ const Collections = (props) => {
 
     return (
       <React.Fragment key={collectionId}>
-        <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion px-2 expanded' : 'sidebar-accordion px-2'}>
+        <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion px-2 mb-4 expanded' : 'sidebar-accordion px-2'}>
           <button tabIndex={-1} variant='default' className={`sidebar-hower px-2 rounded ${expanded ? 'expanded' : ''}`}>
             <div
               className='inner-container'
@@ -190,16 +190,12 @@ const Collections = (props) => {
             >
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
-                  {/* <span className='versionChovron' onClick={(e) => toggleSelectedCollectionIds(e, collectionId)}>
-                    <MdExpandMore size={13} className='collection-icons-arrow d-none' />
-                    <LuFolder size={13} className='collection-icons d-inline' />
-                  </span> */}
                   {collectionState === 'singleCollection' ? (
                     <div className='sidebar-accordion-item' onClick={() => openSelectedCollection(collectionId)}>
                       <div className='text-truncate'>{collections[collectionId].name}</div>
                     </div>
                   ) : (
-                    <span className='truncate collect-length'> {collections[collectionId].name} </span>
+                    <span className='truncate collect-length collection-box'> {collections[collectionId].name} </span>
                   )}
                 </div>
               </div>
@@ -300,7 +296,7 @@ const Collections = (props) => {
                   collection_id={collectionId}
                   selectedCollection
                   rootParentId={collections[collectionId].rootParentId}
-                  level={0}
+                  level={-1}
                 />
               </Card.Body>
             </div>

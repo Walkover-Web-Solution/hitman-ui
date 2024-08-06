@@ -121,6 +121,12 @@ body .sidebar {
     .inner-container {
       max-width: 70%;
       width: 100%;
+
+      .collection-box {
+        font-size: 12px;
+        font-weight: 500;
+        color: rgb(145, 145, 145);
+      }
     }
   }
 
@@ -136,7 +142,7 @@ body .sidebar {
       border-radius: 5px 5px;
 
       &:hover {
-        background-color: #dfdcd5;
+        background-color: rgb(128 128 128 / 18%);
       }
     }
   }
@@ -299,7 +305,7 @@ body .sidebar {
 
             .versionChovron {
               .collection-icons-arrow {
-                background-color: white;
+                background-color: rgb(128 128 128 / 18%);
                 display: inline-block !important;
               }
 
@@ -354,7 +360,7 @@ body .sidebar {
             .versionChovron {
               .collection-icons-arrow {
                 display: inline-block !important;
-                background-color: white;
+                background-color: rgb(128 128 128 / 18%);
               }
 
               .collection-icons {
@@ -455,7 +461,7 @@ body .sidebar {
             .versionChovron {
               .collection-icons-arrow {
                 display: inline-block !important;
-                background-color: white;
+                background-color: rgb(128 128 128 / 18%);
               }
 
               .collection-icons {
