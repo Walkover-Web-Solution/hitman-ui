@@ -1006,15 +1006,13 @@ input[type='text']:focus {
   }
 
   .login-button {
-    width: 104px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    @media screen and (max-width: 992px) {
-      width: 136px;
-    }
-
+    width: 33px;
     .logo-techdoc {
       width: 25px;
       height: 25px;
+    }
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.212) !important;
     }
   }
 }

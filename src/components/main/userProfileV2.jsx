@@ -96,7 +96,7 @@ const UserProfile = () => {
   const renderOrgName = () => {
     return (
       <div>
-        <div className='org-name text-secondary'>{getCurrentOrg()?.name || null}</div>
+        <div className='org-name text-black pr-1'>{getCurrentOrg()?.name || null}</div>
       </div>
     )
   }
@@ -126,10 +126,10 @@ const UserProfile = () => {
         >
           <Avatar className='mr-2' color='#343a40' name={getCurrentOrg()?.name} size={18} round='4px' />
           {renderOrgName()}
-          <IoIosArrowDown size={18} color='gray'/>
+          <IoIosArrowDown size={16} className='text-black'/>
         </div>
         <div className='add-button d-flex align-items-center'>
-          {isOrgDocType() && <button className='border-0 btn btn-light px-1 text-secondary' onClick={handleImportClick}>
+          {isOrgDocType() && <button className='border-0 btn btn-light px-1 text-secondary shadow' onClick={handleImportClick}>
             Import
           </button>}
           <ImportCollectionModal
@@ -169,7 +169,7 @@ const UserProfile = () => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item className='pl-1' onClick={handleCreateOrganizationClick}>Create organization</Dropdown.Item>
+            <Dropdown.Item className='px-0 justify-content-center' onClick={handleCreateOrganizationClick}>Create organization</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>
