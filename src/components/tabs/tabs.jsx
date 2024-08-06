@@ -9,8 +9,9 @@ import History from '../history/history.jsx'
 import TabOptions from './tabOptions'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
 import IconButtons from '../common/iconButton'
-import { Nav } from 'react-bootstrap'
+import { Nav, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { IoIosChatboxes } from 'react-icons/io'
+import { VscCloseAll } from "react-icons/vsc";
 import { CiSettings } from 'react-icons/ci'
 import { GrFormClose } from 'react-icons/gr'
 import { IoDocumentTextOutline } from 'react-icons/io5'
@@ -187,6 +188,19 @@ const CustomTabs = (props) => {
   const handleOnConfirm = (tabId) => {
     const show_save_prompt_for = showSavePromptFor.filter((tab) => tab != tabId)
     setShowSavePromptFor(show_save_prompt_for)
+  }
+
+  const showTooltips = (tooltipType) => {
+    switch (tooltipType) {
+      case "close-all":
+        return (
+          <Tooltip id='edited-by-tooltip'>
+            <div className="fs-4 text-secondary">
+              Close All
+            </div>
+          </Tooltip>
+        )
+    }
   }
 
   const renderTabName = (tabId) => {
@@ -426,6 +440,13 @@ const CustomTabs = (props) => {
     }
   }
 
+
+  const handleCloseAllTabs = () => {
+    const { tabsOrder, activeTabId } = tabs
+    const tabIdsToClose = tabsOrder.filter((tabId) => tabId !== activeTabId)
+    handleCloseTabs(tabIdsToClose)
+  }
+
   return (
     <>
       <div className='d-flex navs-container'>
@@ -525,7 +546,13 @@ const CustomTabs = (props) => {
         </Nav.Item>
         <div className='d-flex'>
           <Nav.Item className='tab-buttons' id='options-tab-button'>
-            <TabOptions handleCloseTabs={handleCloseTabs} />
+            {
+              tabs?.tabsOrder?.length > 1 && (
+                <OverlayTrigger placement='bottom' overlay={showTooltips("close-all")}  >
+                  <button className='close-all' onClick={handleCloseAllTabs}  >  <VscCloseAll /></button>
+                </OverlayTrigger>
+              )
+            }
           </Nav.Item>
           <Nav.Item className='' id='history-tab-button'>
             {handleHistoryButton()}
