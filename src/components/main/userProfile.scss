@@ -1,32 +1,65 @@
 .org-listing-container {
   display: flex;
-  min-height: 14vh;
+  height: auto;
   justify-content: center;
+
   .org-listing-column {
+    display: flex;
+    border-radius: 4px;
+    font-size: 14px;
+
+
     .org-listing-button {
-      height: 44px !important;
+      height: 28px !important;
       text-transform: capitalize;
-      border-radius: 8px !important;
       font-weight: 500 !important;
       font-size: 14px !important;
-      transition: ease-in;
+      transition: background-color 0.3s ease-in;
       overflow: hidden;
-      width: 200px;
       text-overflow: ellipsis;
       white-space: nowrap;
-      &.btn-secondary {
-        background-color: #6c757d !important;
-      }
-      &:hover {
-        background-color: #f2994a !important;
-        color: #fff !important;
-      }
-      &.active {
-        background-color: #f2994a !important;
-        color: #fff !important;
-        font-weight: bold !important;
-        cursor: not-allowed;
-      }
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgb(55, 53, 47);
+      white-space: nowrap;
     }
   }
+}
+
+.avatar-org {
+  background: rgba(55, 53, 47, 0.09) !important;
+  color: rgba(55, 53, 47, 0.65) !important;
+  text-transform: uppercase;
+  border-radius: 0.25rem;
+}
+
+.leave-icon {
+  visibility: hidden;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    color: rgba(55, 53, 47, 0.65)
+  }
+}
+
+.name-list {
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  &:hover .leave-icon {
+    visibility: visible;
+  }
+}
+
+.check {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
