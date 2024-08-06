@@ -119,7 +119,7 @@ export default function RunAutomation() {
     } catch (error) {
       console.error(error)
       setAutomationLoading(false)
-      return toast.error('Error occurred while running automation')
+      // return toast.error('Error occurred while running automation')
     }
   }
 

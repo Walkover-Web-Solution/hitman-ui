@@ -13,12 +13,17 @@ import IconButton from '../common/iconButton.jsx'
 
 import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
 import { addNewTab, fetchTabsFromRedux, openInNewTab, setActiveTabId } from '../tabs/redux/tabsActions'
-import { getCurrentUser } from '../auth/authServiceV2'
+import { getCurrentOrg, getCurrentUser } from '../auth/authServiceV2'
 import { updateStateOfCurlSlider } from '../modals/redux/modalsActions.js'
 import { IoCodeSlashOutline } from 'react-icons/io5'
 import './main.scss'
 import 'react-tabs/style/react-tabs.css'
+import { SiAmazonapigateway } from "react-icons/si";
+import { SiCloudflarepages } from "react-icons/si";
+import { IoDocumentTextOutline } from "react-icons/io5";
 
+import { MdHttp } from "react-icons/md";
+import { GrGraphQl } from "react-icons/gr";
 const ContentPanel = () => {
 
   const dispatch = useDispatch()
@@ -187,6 +192,44 @@ const ContentPanel = () => {
     dispatch(updateStateOfCurlSlider(!curlSlider))
   }
 
+  const renderLandingDashboard = () => {
+    const orgMetaType = getCurrentOrg()?.meta?.type;
+    const orgMeta = getCurrentOrg()?.meta;
+    if (orgMeta === null || orgMetaType === 1) {
+      return (
+        <>
+          <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
+            <SiAmazonapigateway  size={100} className='mb-4 text-secondary'/>
+            <p className='mb-4 text-secondary'>Create a new request:</p>
+            <div>
+              <button onClick={() => dispatch(addNewTab())} className='btn text-secondary'>
+                <MdHttp size={30}/>
+              </button>
+              <button onClick={() => { }} className='btn text-secondary'>
+                <GrGraphQl size={30}/>
+              </button>
+            </div>
+          </div>
+        </>
+      );
+    } else if (orgMetaType === 0) {
+      return (
+        <>
+          <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
+            <SiCloudflarepages size={100} className='mb-4 text-secondary'/>
+            <p className='mb-4 text-secondary'>Create a new page:</p>
+            <div>
+              <button onClick={() => dispatch(addNewTab())} className='btn text-secondary'>
+                <IoDocumentTextOutline size={22}/> 
+              </button>
+            </div>
+          </div>
+        </>
+      );
+    }
+    return null;
+  };
+
   return (
     <main role='main' className='main'>
       {showLoginSignupModal && <LoginSignupModal show onHide={() => setShowLoginSignupModal(false)} title='Save Endpoint' />}
@@ -254,7 +297,9 @@ const ContentPanel = () => {
             </div>
           </div>
         )}
-        <div className='main-content'>
+        {tabs?.tabsOrder?.length === 0 ? (
+          renderLandingDashboard()
+        ) : (<div className='main-content'>
           <TabContent
             handle_save_endpoint={handleSaveEndpoint}
             handle_save_page={handleSavePage}
@@ -262,7 +307,7 @@ const ContentPanel = () => {
             save_page_flag={savePageFlag}
             selected_tab_id={selectedTabId}
           />
-        </div>
+        </div>)}
       </Tab.Container>
     </main>
   )
