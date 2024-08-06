@@ -65,7 +65,7 @@ export async function createOrg(name, type) {
   try {
     const data = { company: { name, meta: { type } } }
     const newOrg = await http.post(proxyUrl + '/createCompany', data)
-    await getDataFromProxyAndSetDataToLocalStorage(null, false)
+    await getDataFromProxyAndSetDataToLocalStorage(null, true)
     updateOrgDataByOrgId(newOrg?.data?.data?.id)
     await createOrganizationAndRunCode()
     await switchOrg(newOrg?.data?.data?.id, true)
