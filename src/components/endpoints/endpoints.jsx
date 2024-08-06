@@ -81,7 +81,7 @@ const Endpoints = (props) => {
   const displayEndpointName = (endpointId) => {
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId   ? 'selected'   : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId   ? 'selected'   : ''
     return (
-      <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`}>
+      <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`} style={{paddingLeft: `${props?.level * 8}px`}}>
         {endpoints[endpointId]?.protocolType === 1 && (
           <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
             {endpoints[endpointId].requestType}
@@ -133,8 +133,8 @@ const Endpoints = (props) => {
           style={props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
         >
           <div className='sidebar-toggle d-flex justify-content-between mt-1'>
-            <button>
-              <div className={`side-bar d-flex align-items-center rounded mr-2 ${isSelected ? 'Selected' : ''}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+            <button className='pl-0'>
+              <div className={`side-bar d-flex align-items-center rounded ${isSelected ? 'Selected' : ''}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
                 <button tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId],params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId],params.endpointId, collectionId, false)}>
                   {displayEndpointName(endpointId)}
                 </button>

@@ -118,7 +118,7 @@ const Collections = (props) => {
   }
 
   const toggleSelectedCollectionIds = (e, id) => {
-    e.stopPropagation()
+    // e.stopPropagation()
     const isExpanded = clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     dispatch(
       addIsExpandedAction({
@@ -182,23 +182,18 @@ const Collections = (props) => {
 
     return (
       <React.Fragment key={collectionId}>
-        <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
-          <button tabIndex={-1} variant='default' className={`sidebar-hower ${expanded ? 'expanded' : ''}`}>
+        <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion px-2 expanded' : 'sidebar-accordion px-2'}>
+          <button tabIndex={-1} variant='default' className={`sidebar-hower px-2 rounded ${expanded ? 'expanded' : ''}`}>
             <div
               className='inner-container'
-              onClick={(e) => {
-                openPublishSettings(collectionId)
-                if (!expanded) {
-                  toggleSelectedCollectionIds(e, collectionId)
-                }
-              }}
+              onClick={(e) => toggleSelectedCollectionIds(e, collectionId)}
             >
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
-                  <span className='versionChovron' onClick={(e) => toggleSelectedCollectionIds(e, collectionId)}>
+                  {/* <span className='versionChovron' onClick={(e) => toggleSelectedCollectionIds(e, collectionId)}>
                     <MdExpandMore size={13} className='collection-icons-arrow d-none' />
-                    <LuFolder size={13} className='collection-icons d-inline ml-1' />
-                  </span>
+                    <LuFolder size={13} className='collection-icons d-inline' />
+                  </span> */}
                   {collectionState === 'singleCollection' ? (
                     <div className='sidebar-accordion-item' onClick={() => openSelectedCollection(collectionId)}>
                       <div className='text-truncate'>{collections[collectionId].name}</div>
@@ -212,8 +207,8 @@ const Collections = (props) => {
             {
               //  [info] options not to show on publihsed page
               isOnDashboardPage && (
-                <div className='d-flex align-items-center'>
-                  <div className='sidebar-item-action  d-flex align-items-center'>
+                <div className='d-flex align-items-center justify-content-end' >
+                  <div className='sidebar-item-action d-flex align-items-center justify-content-end pr-0'>
                     <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(collectionId)}>
                       <IconButtons>
                         <FiPlus />
@@ -305,6 +300,7 @@ const Collections = (props) => {
                   collection_id={collectionId}
                   selectedCollection
                   rootParentId={collections[collectionId].rootParentId}
+                  level={0}
                 />
               </Card.Body>
             </div>

@@ -223,9 +223,9 @@ const CollectionParentPages = (props) => {
     return (
       <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-          <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''}`}>
+          <button tabIndex={-1} className={`px-0 ${expanded ? 'expanded' : ''}`}>
             <div
-              className={`active-select d-flex align-items-center justify-content-between rounded mr-2 ${isSelected ? ' selected' : ''}`}
+              className={`active-select d-flex align-items-center justify-content-between rounded ${isSelected ? ' selected text-black' : 'text-secondary'}`}
               style={backgroundStyle}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
@@ -287,7 +287,7 @@ const CollectionParentPages = (props) => {
             <div className='version-collapse'>
               <Card.Body>
                 <div className='linkWrapper versionPages'>
-                  <CombinedCollections {...props} page_id={pageId} rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId} />
+                  <CombinedCollections {...props} level={0} page_id={pageId} rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId} />
                 </div>
               </Card.Body>
             </div>

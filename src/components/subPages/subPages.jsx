@@ -26,7 +26,7 @@ const SubPage = (props) => {
     pages: state.pages,
     clientData: state.clientData,
     collections: state.collections,
-    organizations : state.organizations,
+    organizations: state.organizations,
   }))
 
   const dispatch = useDispatch()
@@ -152,11 +152,12 @@ const SubPage = (props) => {
         : ''
     }
 
+
     return (
-      <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
-        <button tabIndex={-1} className={`${expanded ? 'expanded' : ''}`}>
+      <div className='sidebar-accordion accordion ' id='child-accordion'>
+        <button tabIndex={-1} className={`p-0 ${expanded ? 'expanded' : ''}`}>
           <div
-            className={`active-selected d-flex justify-content-between align-items-center rounded mr-2 ${isSelected ? ' selected' : ''}`}
+            className={`active-selected d-flex justify-content-between align-items-center rounded ${isSelected ? ' selected' : ''}`}
             style={backgroundStyle}
             onMouseEnter={() => handleHover(true)}
             onMouseLeave={() => handleHover(false)}
@@ -168,8 +169,8 @@ const SubPage = (props) => {
               onDrop={(e) => props.onDrop(e, subPageId)}
               onDragEnter={(e) => props.onDragEnter(e, subPageId)}
               onDragEnd={(e) => props.onDragEnd(e)}
-              style={props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
-              className={`d-flex justify-content-center cl-name name-sub-page ml-1`}
+              style={props.draggingOverId === subPageId ? { border: '3px solid red', paddingLeft: `${props?.level * 8}px` } : {paddingLeft: `${props?.level * 8}px`}}
+              className={`d-flex justify-content-center cl-name name-sub-page ml-1 `}
               onClick={(e) => {
                 handleRedirect(subPageId)
                 if (!expanded) {
@@ -211,7 +212,7 @@ const SubPage = (props) => {
         {expanded ? (
           <div className='linkWrapper versionPages'>
             <Card.Body>
-              <CombinedCollections {...props} />
+              <CombinedCollections level={props?.level} {...props} />
             </Card.Body>
           </div>
         ) : null}
