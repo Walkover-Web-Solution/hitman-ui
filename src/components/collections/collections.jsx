@@ -29,6 +29,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import './collections.scss'
 import { addPage } from '../pages/redux/pagesActions'
 import { openInNewTab } from '../tabs/redux/tabsActions'
+import { IoIosSettings } from "react-icons/io";
 
 const Collections = (props) => {
   const collections = useSelector((state) => state.collections)
@@ -117,8 +118,7 @@ const Collections = (props) => {
     })
   }
 
-  const toggleSelectedCollectionIds = (e, id) => {
-    // e.stopPropagation()
+  const toggleSelectedCollectionIds = (id) => {
     const isExpanded = clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     dispatch(
       addIsExpandedAction({
@@ -186,7 +186,7 @@ const Collections = (props) => {
           <button tabIndex={-1} variant='default' className={`sidebar-hower px-2 rounded ${expanded ? 'expanded' : ''}`}>
             <div
               className='inner-container'
-              onClick={(e) => toggleSelectedCollectionIds(e, collectionId)}
+              onClick={() => toggleSelectedCollectionIds(collectionId)}
             >
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
@@ -205,6 +205,11 @@ const Collections = (props) => {
               isOnDashboardPage && (
                 <div className='d-flex align-items-center justify-content-end' >
                   <div className='sidebar-item-action d-flex align-items-center justify-content-end pr-0'>
+                    <div className='d-flex align-items-center' onClick={() => openPublishSettings(collectionId)}>
+                      <IconButtons>
+                        <IoIosSettings />
+                      </IconButtons>
+                    </div>
                     <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(collectionId)}>
                       <IconButtons>
                         <FiPlus />
@@ -347,7 +352,7 @@ const Collections = (props) => {
           </div>
         </div>
         {props.collectionsToRender.length > 0 ? (
-          <div className='App-Side'>{props.collectionsToRender.map((collectionId) => renderBody(collectionId, 'allCollections'))}</div>
+          <div className='App-Side mt-1'>{props.collectionsToRender.map((collectionId) => renderBody(collectionId, 'allCollections'))}</div>
         ) : props.filter === '' ? (
           renderEmptyCollections()
         ) : (
