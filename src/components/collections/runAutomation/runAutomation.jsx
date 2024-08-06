@@ -15,6 +15,7 @@ import { FiCopy } from 'react-icons/fi'
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { FaMeta } from "react-icons/fa6";
 import { IoInformationCircle } from "react-icons/io5";
+import { updateEndpoint } from '../../endpoints/endpointApiService'
 
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
@@ -57,7 +58,7 @@ export default function RunAutomation() {
       setTokenGenerationInProgress(false)
     }
     const hasIssues = Object.keys(allPages).some(pageId =>
-      allPages?.[pageId]?.description || allPages?.[pageId]?.sampleResponse
+      !allPages?.[pageId]?.description || !allPages?.[pageId]?.sampleResponse
     );
     setShowAiIcon(hasIssues);
   }, [params?.collectionId])
@@ -71,13 +72,13 @@ export default function RunAutomation() {
   }
 
   const getEndpointsWithoutDescriptionOrResponse = () => {
-    return Object.keys(allPages).filter(pageId => 
-      allPages?.[pageId]?.description && allPages?.[pageId]?.sampleResponse
+    return endpointsIds.filter(pageId =>
+      !allPages?.[pageId]?.description || !allPages?.[pageId]?.sampleResponse
     );
   }
 
   const renderEndpointName = (endpointId) => {
-    const hasIssues = allPages?.[endpointId]?.description || allPages?.[endpointId]?.sampleResponse;
+    const hasIssues = !allPages?.[endpointId]?.description || !allPages?.[endpointId]?.sampleResponse;
     return (
       <div className='d-flex justify-content-center align-items-center'>
         <span className={`api-label ${allPages?.[endpointId]?.requestType} request-type-bgcolor mr-2`}>
@@ -144,7 +145,14 @@ export default function RunAutomation() {
     const endpointIdsWithoutDescriptionAndSampleResponse = getEndpointsWithoutDescriptionOrResponse()
     try {
       await dispatch(generateDescription(endpointIdsWithoutDescriptionAndSampleResponse));
-      toast.success('Description generation request successful!');
+      //   endpointIdsWithoutDescriptionAndSampleResponse.forEach(endpointId => {
+      //     const updatedData = {
+      //         id: endpointId,
+      //         description: response[endpointId]?.description, 
+      //         sampleResponse: response[endpointId]?.sampleResponse 
+      //     };
+      //     dispatch(updateEndpoint(updatedData));
+      // });
     } catch (error) {
       console.error(error);
       toast.error('Error occurred while generating descriptions.');
@@ -220,9 +228,15 @@ export default function RunAutomation() {
     <div className='run-automation-container'>
       <div className='endpoints-container'>
         <div >
-        <span className='mr-2'><IoInformationCircle size={18} color='#7fbaff' /></span>
-        <span className='small-text'>If descriptions and sample responses are not provided, AI will not generate the order, and automation will fail.</span>
-        <div className='separation'></div>
+          <span className='mr-2'><IoInformationCircle size={15} color='#7fbaff' /></span>
+          <span className='small-text'>If descriptions and sample responses are not provided, AI will not generate the order, and automation will fail.</span>
+          {/* {showAiIcon && (
+            <button className='btn btn-primary btn-sm fs-4' title='Write your endpoint descriptions through AI' onClick={handleAskAi}>
+              <span className='mr-1'><FaMeta /></span>
+              Ask AI
+            </button>
+          )} */}
+          <div className='separation'></div>
           <h3 className='text-left'>Run Automation for {`${collectionName}`}</h3>
         </div>
         {endpointsIds.length === 0 ? (
@@ -259,12 +273,7 @@ export default function RunAutomation() {
             </div>
           </div>
         )}
-        {showAiIcon && (
-          <button className='btn btn-primary mt-2 ask-ai' title='Write your endpoint descriptions through AI' onClick={handleAskAi}>
-            <span className='mr-1'><FaMeta /></span>
-            Ask AI
-          </button>
-        )}
+
       </div>
       <div className='options-container'>
         <h5>Choose how to run your collection</h5>

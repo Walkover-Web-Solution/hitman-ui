@@ -1263,7 +1263,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleSave = async (id, endpointObject, slug) => {
-    debugger
     const { endpointName, endpointDescription } = endpointObject || {}
     let currentTabId = this.props.tab.id
     let parentId = id
