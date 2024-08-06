@@ -24,8 +24,8 @@ import './main.scss'
 import './sidebar.scss'
 import "../../pages/page/page.scss"
 import { ReactComponent as Logo } from '../../assets/web/favicon.svg'
-
-
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 const SideBar = () => {
   const collections = useSelector((state) => state.collections)
@@ -109,15 +109,15 @@ const SideBar = () => {
             </h4>
           </div>
         {isTechdocOwnDomain() && (
-          <Link href='/login' target='_blank' className='login-button btn btn-sm btn-light d-flex align-items-center h-100 bg-none border'
-            type='button'
-            data-bs-toggle='tooltip'
-            data-bs-placement='top'
-            data-bs-title='Login to manage this docs'
+           <OverlayTrigger
+           placement='bottom'
+           overlay={<Tooltip>Built with techdoc</Tooltip>}
+           >
+          <Link href='/login' target='_blank' className='login-button btn btn-sm btn-light d-flex justify-content-center p-0 align-items-center h-100 bg-none border-0'
           >
-            Built with
             <Logo className='logo-techdoc' />
           </Link>
+           </OverlayTrigger>
         )}
         </div>
       </>

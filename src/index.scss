@@ -38,6 +38,9 @@ body .logoBox .dropdown .dropdown-toggle {
         }
       }
     }
+    svg {
+      margin-top: 2px;
+    }
   }
   span {
     &.user-notification-badge {
@@ -46,15 +49,7 @@ body .logoBox .dropdown .dropdown-toggle {
     }
   }
   &:hover {
-    background-color: rgba(128, 128, 128, 0.178);
-    .org-name {
-      color: $text-color !important;
-    }
-    .add-button {
-      button {
-      color: $text-color !important;
-      }
-    }
+    background: rgba(0, 0, 0, 0.05);
   }
 }
 
