@@ -491,7 +491,7 @@ const CustomTabs = (props) => {
                   >
                     {renderTabName(tabId)}
                   </button>
-                  <button className='bg-white close' onClick={() => handleCloseTabs([tabId])}>
+                  <button className='close' onClick={() => handleCloseTabs([tabId])}>
                     <IconButtons>
                       <i className='uil uil-multiply' />
                     </IconButtons>

@@ -13,7 +13,7 @@
     width: 100%;
     position: relative;
     padding-right: 10px;
-    background-color: $secondary-color;
+    background-color: white;
     .navs-container {
       width: calc(100% - 190px);
     }
@@ -39,16 +39,14 @@
         .nav-link {
           height: 100%;
           overflow: hidden;
-          border-right: 1px solid #e6dbd4;
           border-radius: 0;
-          border-bottom: 1px solid #e6dbd4;
           background-color: #fff;
           color: inherit;
           min-width: 5.625rem;
           max-width: 9.25rem;
+          font-weight: 700;
           &.active {
-            border-bottom: 0;
-            font-weight: 700;
+            border-bottom: 2px solid black;
             position: relative;
             color: $text-color !important;
             &::after {
@@ -72,7 +70,7 @@
             }
           }
           &:hover {
-            background-color: white;
+            background-color: $secondary-color;
             color: rgba(0, 0, 0, 0.685);
             .btn {
               svg {
@@ -218,7 +216,10 @@
   text-align: center;
   padding: 0;
   height: 100%;
-  border-right: 1px solid $outline-color;
+
+  &:hover {
+    background-color: $secondary-color;
+  }
 }
 #options-tab-button {
   .btn {
