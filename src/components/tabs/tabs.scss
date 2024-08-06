@@ -9,6 +9,8 @@
   top: 0;
   left: 0;
   z-index: 999;
+  box-shadow:  0px 0.1px 0px rgba(0, 0, 0, 0.4);
+
   .tabs-container {
     width: 100%;
     position: relative;
@@ -20,14 +22,6 @@
     .btn {
       border-radius: 0;
       height: 42px;
-    }
-    &::after {
-      content: '';
-      width: 100%;
-      height: 1px;
-      background: #e6dbd4;
-      position: absolute;
-      bottom: 0px;
     }
     .nav {
       height: 100%;
@@ -45,8 +39,14 @@
           min-width: 5.625rem;
           max-width: 9.25rem;
           font-weight: 700;
-          &.active {
+
+          .tab-name {
+            display: flex;
+            align-items: center;
+            height: 100%;
             border-bottom: 2px solid black;
+          }
+          &.active {
             position: relative;
             color: $text-color !important;
             &::after {
@@ -113,7 +113,7 @@
             display: flex;
             align-items: center;
             opacity: 0;
-            width: 30px;
+            padding: 5px;
             display: flex;
             justify-content: center;
             background-color: $secondary-color;
@@ -131,10 +131,10 @@
         
         .modified-dot-icon {
           position: absolute;
-          right: 0.5rem;
+          right: 0.2rem;
           font-size: 6px;
-          color: #e98a36;
-          top: 60%;
+          color: inherit;
+          top: 62%;
           margin: auto;
           bottom: 0;
           align-items: center;
@@ -156,10 +156,6 @@
           }
           .fa-ellipsis-h {
             font-size: 18px;
-          }
-        }
-        .show.dropdown {
-          .dropdown-menu {
           }
         }
         .btn:hover {
@@ -225,6 +221,10 @@
   .btn {
     width: 2.5rem;
     padding: 0;
+    
+    &:hover {
+      background-color: $secondary-color;
+    }
   }
 }
 

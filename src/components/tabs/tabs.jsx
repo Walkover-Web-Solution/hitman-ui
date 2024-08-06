@@ -268,14 +268,18 @@ const CustomTabs = (props) => {
             return (
               <div className='d-flex'>
                 <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
-                <span>{page.name}</span>
+                <span>
+                  {page.name.length > 10 ? <>{page.name.substring(0, 10)} &nbsp; </> : page.name}
+                </span>
               </div>
             )
           } else {
             return (
               <div className='d-flex'>
                 <IoDocumentTextOutline size={14} className='mr-1' />
-                <span>{page.name}</span>
+                <span>
+                  {page.name.length > 10 ? <>{page.name.substring(0, 10)} &nbsp; </> : page.name}
+                </span>
               </div>
             )
           }
@@ -481,7 +485,7 @@ const CustomTabs = (props) => {
                 }}
               >
                 {tabState[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
-                <Nav.Link className='p-0 pr-1' eventKey={tabId}>
+                <Nav.Link className='p-0' eventKey={tabId}>
                   <button
                     className='btn truncate bg-white'
                     onClick={() => tabService.selectTab(tabId, { navigate, params })}
@@ -489,12 +493,12 @@ const CustomTabs = (props) => {
                       tabService.disablePreviewMode(tabId)
                     }}
                   >
-                    {renderTabName(tabId)}
+                    <div className={`d-flex ${tabs?.activeTabId === tabId ? 'tab-name' : ''}`} >
+                      {renderTabName(tabId)}
+                    </div>
                   </button>
                   <button className='close' onClick={() => handleCloseTabs([tabId])}>
-                    <IconButtons>
-                      <i className='uil uil-multiply' />
-                    </IconButtons>
+                    <i className='uil uil-multiply' />
                   </button>
                 </Nav.Link>
               </Nav.Item>

@@ -9,14 +9,14 @@ import { FaPlus } from "react-icons/fa";
 import InputGroup from 'react-bootstrap/InputGroup'
 import { toast } from 'react-toastify';
 import { closeAllTabs } from '../tabs/redux/tabsActions'
-import { createOrg } from '../../services/orgApiService'
+import { createOrg, switchOrg } from '../../services/orgApiService'
 import { onHistoryRemoved } from '../history/redux/historyAction'
 import { addCollection } from '../collections/redux/collectionsActions';
 import { addPage } from '../pages/redux/pagesActions';
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
-    const navigate = useNavigate() 
+    const navigate = useNavigate()
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [isContinueEnabled, setIsContinueEnabled] = useState(false);
     const [showInput, setShowInput] = useState(false);
@@ -63,33 +63,33 @@ const OnBoarding = () => {
 
     const handleNewOrgClick = async (selectedIndex) => {
         const tabIdsToClose = tabs.tabsOrder;
-            removeFromLocalStorage(tabIdsToClose);
-            dispatch(closeAllTabs(tabIdsToClose));
-            dispatch(onHistoryRemoved(historySnapshot));
-            await createOrg(orgName, selectedIndex);
-            const collection = await createUntitledCollection(); 
-            const rootParentId = collection?.rootParentId
-            await createUntitledPage(rootParentId);
+        removeFromLocalStorage(tabIdsToClose);
+        dispatch(closeAllTabs(tabIdsToClose));
+        dispatch(onHistoryRemoved(historySnapshot));
+        await createOrg(orgName, selectedIndex);
+        const collection = await createUntitledCollection();
+        const rootParentId = collection?.rootParentId
+        await createUntitledPage(rootParentId);
     };
 
     const createUntitledCollection = async () => {
         const newCollection = { name: 'untitled' };
         try {
             const actionResult = await dispatch(addCollection(newCollection));
-            return actionResult; 
+            return actionResult;
         } catch (error) {
             console.error("Error creating collection:", error);
-            throw error; 
+            throw error;
         }
     };
-    
+
     const createUntitledPage = async (rootParentId) => {
-        const newPage = { name: 'untitled', pageType: 1};
+        const newPage = { name: 'untitled', pageType: 1 };
         try {
-       await dispatch(addPage(rootParentId, newPage));
+            await dispatch(addPage(rootParentId, newPage));
         } catch (error) {
             console.error("Error creating page:", error);
-            throw error; 
+            throw error;
         }
     };
     const removeFromLocalStorage = (tabIds) => {
