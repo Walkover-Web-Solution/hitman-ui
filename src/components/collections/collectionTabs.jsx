@@ -10,6 +10,7 @@ import { setPageType } from '../tabs/redux/tabsActions'
 const CollectionTabs = ({ collectionId, onHide }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const orgType = getCurrentOrg()?.meta?.type
   const { activeTabId, pageType } = useSelector((state) => {
     const activeTabId = state?.tabs?.activeTabId
     return {
