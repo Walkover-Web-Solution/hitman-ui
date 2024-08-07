@@ -207,17 +207,17 @@ const Collections = (props) => {
                   <div className='sidebar-item-action d-flex align-items-center justify-content-end pr-0'>
                     <div className='d-flex align-items-center' onClick={() => openPublishSettings(collectionId)}>
                       <IconButtons>
-                        <IoIosSettings />
+                        <IoIosSettings color='grey' />
                       </IconButtons>
                     </div>
                     <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(collectionId)}>
                       <IconButtons>
-                        <FiPlus />
+                        <FiPlus color='grey' />
                       </IconButtons>
                     </div>
                     <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                       <IconButtons>
-                        <BsThreeDots />
+                        <BsThreeDots color='grey' />
                       </IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
