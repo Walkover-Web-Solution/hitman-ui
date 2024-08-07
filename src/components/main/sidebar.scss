@@ -140,10 +140,11 @@ body .sidebar {
       justify-content: center;
       transition: all 0.3s ease-in;
       border-radius: 5px 5px;
-
-      &:hover {
-        background-color: rgb(128 128 128 / 18%);
-      }
+      background-color: transparent;
+      
+      // &:hover {
+      //   background-color: rgb(128 128 128 / 18%);
+      // }
     }
   }
 
@@ -709,10 +710,9 @@ input[type='text']:focus {
 
 .versionChovron {
   width: 26px;
-  height: 23px;
-
+  height: 20px;
   .collection-icons-arrow {
-    transition: all 0.3s ease-in;
+    transition: transform 300ms ease-in;
     height: 20px !important;
     width: 20px !important;
     color: #808080;

@@ -81,14 +81,14 @@ const Endpoints = (props) => {
   const displayEndpointName = (endpointId) => {
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId ? 'selected' : ''
     return (
-      <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : 'text-secondary'}`} style={{paddingLeft: `${props?.level * 8}px` }}>
+      <div className={`sidebar-accordion-item ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={{paddingLeft: `${props?.level * 8}px` }}>
         {endpoints[endpointId]?.protocolType === 1 && (
           <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
             {endpoints[endpointId].requestType}
           </div>
         )}
-        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
-        <div className='end-point-name truncate'>{endpoints[endpointId].name}</div>
+        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
+        <div className='end-point-name truncate fw-500'>{endpoints[endpointId].name}</div>
       </div>
     )
   }

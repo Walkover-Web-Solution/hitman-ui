@@ -125,7 +125,7 @@ const UserProfile = () => {
             onClick(e)
           }}
         >
-          <Avatar className='mr-2' color='#343a40' name={getCurrentOrg()?.name} size={18} round='4px' />
+          <Avatar className='mr-2' color='#343a40' name={getCurrentOrg()?.name.split(" ")[0]} size={15} round='4px' />
           {renderOrgName()}
           <IoIosArrowDown size={16} className='text-black'/>
         </div>

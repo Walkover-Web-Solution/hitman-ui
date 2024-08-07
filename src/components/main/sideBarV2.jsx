@@ -447,7 +447,7 @@ const SideBar = () => {
           {renderSearch()}
           {/* {isOnDashboardPage && renderGlobalAddButton()} */}
         </div>
-        <div className='sidebar-content'>
+        <div className={`sidebar-content ${isOnPublishedPage() ? 'px-2 mx-1 pt-1' : ''}`}>
           {searchData.filter !== '' && renderSearchList()}
           {searchData.filter === '' && renderSidebarContent()}
         </div>

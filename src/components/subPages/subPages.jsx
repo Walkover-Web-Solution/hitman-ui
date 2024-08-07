@@ -171,15 +171,19 @@ const SubPage = (props) => {
               onDragEnd={(e) => props.onDragEnd(e)}
               style={props.draggingOverId === subPageId ? { border: '3px solid red', paddingLeft: `${props?.level * 8}px` } : {paddingLeft: `${props?.level * 8}px`}}
               className={`d-flex justify-content-center cl-name name-sub-page ml-1 `}
-              onClick={(e) => {
+              onClick={() => {
                 handleRedirect(subPageId)
-                if (!expanded) {
-                  handleToggle(e, subPageId)
-                }
               }}
             >
               <span className='versionChovron' onClick={(e) => handleToggle(e, subPageId)}>
-                <MdExpandMore size={13} className='collection-icons-arrow d-none' />
+                <IconButtons variant = 'sm'>
+                <MdExpandMore
+                  size={13}
+                  className='collection-icons-arrow d-none'
+                  style={backgroundStyles}
+                  onMouseEnter={() => handleHovers(true)}
+                  onMouseLeave={() => handleHovers(false)}
+                /></IconButtons>
                 <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 ' />
               </span>
               <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{pages[subPageId]?.name}</div>

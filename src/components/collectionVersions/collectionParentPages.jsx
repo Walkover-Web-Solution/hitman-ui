@@ -142,9 +142,8 @@ const CollectionParentPages = (props) => {
     dispatch(addIsExpandedAction({ value: !isExpanded, id: id }))
   }
 
-  const handleParentPageClick = (e, expanded) => {
+  const handleParentPageClick = () => {
     handleRedirect(props.rootParentId)
-    if (!expanded) handleToggle(e, props.rootParentId)
   }
 
   const versionName = () => {
@@ -230,10 +229,10 @@ const CollectionParentPages = (props) => {
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <div className={`d-flex align-items-center cl-name `} onClick={(e) => handleParentPageClick(e, expanded)}>
-                <div className='d-flex cl-name ml-1 align-items-baseline'>
-                  <span className='versionChovron' onClick={(e) => handleToggle(e, props.rootParentId)}>
-                    <MdExpandMore size={13} className='collection-icons-arrow d-none' />
+              <div className={`d-flex align-items-center cl-name `}  onClick={(e) => handleParentPageClick(e, expanded)}>
+                <div className='d-flex cl-name ml-1 align-items-center'>
+                  <span className='versionChovron mr-1' onClick={(e) => handleToggle(e, props.rootParentId)}>
+                    <IconButtons variant='sm'><MdExpandMore size={13} className='collection-icons-arrow d-none' /></IconButtons>
                     <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1' />
                   </span>
                   <div

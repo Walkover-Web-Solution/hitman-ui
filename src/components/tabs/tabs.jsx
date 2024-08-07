@@ -245,7 +245,7 @@ const CustomTabs = (props) => {
                     {tabState[tabId]?.draft?.data?.method}
                   </div>
                 )}
-                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
+                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
                 <span>{pages[tabId]?.name}</span>
               </div>
             )
@@ -257,7 +257,7 @@ const CustomTabs = (props) => {
                     {tabState[tabId]?.draft?.data?.method}
                   </div>
                 )}
-                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
+                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
                 <span>{pages[tabId]?.name}</span>
               </div>
             )
@@ -269,7 +269,7 @@ const CustomTabs = (props) => {
               {endpoint?.draft?.protocolType === 1 && (
                 <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>
               )}
-              {endpoint?.draft?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
+              {endpoint?.draft?.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
               {tab.state?.data?.name || 'Untitled'}
             </div>
           )
