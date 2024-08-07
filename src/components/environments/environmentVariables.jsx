@@ -20,6 +20,7 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
   const [originalVariableNames, setOriginalVariableNames] = useState(['BASE_URL', '1'])
   const [updatedVariableNames, setUpdatedVariableNames] = useState(['BASE_URL', ''])
   const [errors, setErrors] = useState(null)
+  const [environmentType, setEnvironmentType] = useState(0)
 
   const dispatch = useDispatch()
 
@@ -135,6 +136,12 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
     setUpdatedVariableNames(updatedVars)
   }
 
+  const handleEnvType = (e) => {
+    const envCopy = { ...environment }
+    envCopy[e.currentTarget.name] = e.currentTarget.value === 'global' ? '1' : '0'; 
+    setEnvironmentType(envCopy)
+  }
+
   return (
     <div onKeyDown={(e) => onEnter(e, doSubmit)}>
       <Modal show={show} onHide={onHide} size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered className='custom-environment'>
@@ -161,6 +168,31 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
                   <small className='muted-text'>*environment name accepts min 3 and max 50 characters</small>
                 </div>
                 {errors?.name && <div className='alert alert-danger'>{errors?.name}</div>}
+              </div>
+              <div className='form-group py-2'>
+                <label htmlFor='custom-environment-input'>Environment Type <span className='mx-1 alert alert-danger'>*</span></label>
+                <div>
+                  <label className='radio-inline pr-4'>
+                    <input
+                      type='radio'
+                      name='environmentType'
+                      value='global'
+                      onChange={handleEnvType}
+                      className='mr-2 pt-2'
+                    />
+                    Global Environment
+                  </label>
+                  <label className='radio-inline ml-3'>
+                    <input
+                      type='radio'
+                      name='environmentType'
+                      value='private'
+                      onChange={handleEnvType}
+                      className='mr-2 pt-2'
+                    />
+                    Private Environment
+                  </label>
+                </div>
               </div>
               <div className='custom-table-container env-table'>
                 <Table size='sm' className='my-1'>

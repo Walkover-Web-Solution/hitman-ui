@@ -11,6 +11,7 @@ import { fetchEnvironments, fetchEnvironmentsFromLocalStorage, setEnvironmentId 
 import EnvironmentVariables from './environmentVariables.jsx'
 import DeleteModal from '../common/deleteModal.jsx'
 import './environments.scss'
+import { FaCheck } from "react-icons/fa6";
 
 const Environments = () => {
 
@@ -77,26 +78,27 @@ const Environments = () => {
           <IconButton>{environment?.environments[currentEnvironmentId] ? <EyeIcon className='cursor-pointer m-1' /> : <EyeDisabledIcon className='m-1' />}</IconButton>
         </div>
 
-        <div className='select-environment-dropdown border-radius-right-none'>
-          <Dropdown>
-            <Dropdown.Toggle variant='default' id='dropdown-basic'>
-              <span className='truncate'>{environment?.environments[environment?.currentEnvironmentId] ? environment.environments[environment.currentEnvironmentId].name : 'No Environment'}</span>
-              <IconButton><IoIosArrowDown className='m-1' /></IconButton>
-            </Dropdown.Toggle>
-            <Dropdown.Menu alignRight>
-              <Dropdown.Item onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
-              {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item onClick={() => handleEnv(environmentId)} key={environmentId}>{environment.environments[environmentId]?.name}</Dropdown.Item>)}
-              <Dropdown.Divider />
-              <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Add new Environment')}>Add Environment</Dropdown.Item>
-              <Dropdown.Item className='dropdown-item' onClick={() => setShowImportModal(true)}>Import Environment</Dropdown.Item>
-              <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Environment modal')}>Manage Environment</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-        <ImportEnvironmentModal show={showImportModal} onClose={() => setShowImportModal(false)} />
+      <div className='select-environment-dropdown border-radius-right-none'>
+        <Dropdown>
+          <Dropdown.Toggle variant='default' id='dropdown-basic'>
+            <span className='truncate'>{environment?.environments[environment?.currentEnvironmentId] ? environment.environments[environment.currentEnvironmentId].name : 'No Environment'}</span>
+            <IconButton><IoIosArrowDown className='m-1' /></IconButton>
+          </Dropdown.Toggle>
+          <Dropdown.Menu alignRight>
+            <Dropdown.Item onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
+            {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item onClick={() => handleEnv(environmentId)} key={environmentId}>{environment.environments[environmentId]?.name}
+            {environmentId === currentEnvironmentId && <span><FaCheck /></span>}
+            </Dropdown.Item>)}
+            <Dropdown.Divider />
+            <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Add new Environment')}>Add Environment</Dropdown.Item>
+            <Dropdown.Item className='dropdown-item' onClick={() => setShowImportModal(true)}>Import Environment</Dropdown.Item>
+            <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Environment modal')}>Manage Environment</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </div>
-
-    )
-  }
+      <ImportEnvironmentModal show={showImportModal} onClose={() => setShowImportModal(false)} />
+    </div>
+  )
+}
 }
 export default Environments
