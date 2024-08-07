@@ -18,12 +18,12 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      margin-bottom: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: rgb(55, 53, 47);
       white-space: nowrap;
+      margin-left: 12px;
     }
   }
 }
@@ -37,6 +37,7 @@
 
 .leave-icon {
   visibility: hidden;
+  padding-right: 10px;
   margin-left: auto;
   display: flex;
   align-items: center;
@@ -48,6 +49,9 @@
 }
 
 .name-list {
+  padding-left: 10px;
+  transition: background-color 0.3s ease;
+
   &:hover {
     background-color: rgba(0, 0, 0, 0.05);
   }
@@ -59,7 +63,50 @@
 
 .check {
   margin-left: auto;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+  display: block;
+  padding-right: 10px;
+}
+
+.invite-user{
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .members {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgb(145, 145, 145);
+    padding-left: 10px;
+  }
+}
+
+.profile-details {
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .trash {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgb(145, 145, 145);
+    padding-left: 10px;
+  }
+}
+
+.collection{
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  .add-collection {
+    font-size: 12px;
+    font-weight: 400;
+    color: rgb(145, 145, 145);
+    padding-left: 10px;
+  }
+}
+
+
+.logout {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgb(145, 145, 145);
+  padding-left: 10px;
 }

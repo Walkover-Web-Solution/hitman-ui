@@ -185,8 +185,8 @@ const UserProfile = () => {
   const renderInviteTeam = () => {
     return (
       <div className='invite-user cursor-pointer' onClick={openAccountAndSettings}>
-        <Users className='mr-2' size={17} />
-        <span>Members</span>
+        {/* <Users className='mr-2' size={17} /> */}
+        <span className='members'>Members</span>
       </div>
     )
   }
@@ -251,8 +251,8 @@ const UserProfile = () => {
   const renderTrash = () => {
     return (
       <div className='profile-details' onClick={handleTrashClick}>
-        <MdDeleteOutline className='mr-2' size={17} />
-        <span className='mr-2'>Trash</span>
+        {/* <MdDeleteOutline className='mr-2' size={17} /> */}
+        <span className='trash mr-2'>Trash</span>
       </div>
     )
   }
@@ -264,17 +264,17 @@ const UserProfile = () => {
   const renderLogout = () => {
     return (
       <div className='profile-details' onClick={() => handleLogout()}>
-        <img src={Power} className='mr-2' size={14} alt='power-icon' />
-        <span className='mr-2'> Logout</span>
+        {/* <img src={Power} className='mr-2' size={14} alt='power-icon' /> */}
+        <span className='logout mr-2'> Logout</span>
       </div>
     )
   }
 
   const renderAddCollection = () => {
     return (
-      <div onClick={handleAddNewClick}>
-        <MdAdd className='mr-2' size={17} />
-        <span className='mr-2'>Add collection</span>
+      <div className='collection' onClick={handleAddNewClick}>
+        {/* <MdAdd className='mr-2' size={17} /> */}
+        <span className='add-collection mr-2'>Add collection</span>
       </div>
     )
   }
@@ -337,11 +337,11 @@ const UserProfile = () => {
               <div className='px-2 py-1 border-bottom'>
                 <div className='p-2'>{renderOrgListDropdown()}</div>
               </div>
-              <div className='px-2 py-1'>
-                <DropdownItem>{renderInviteTeam()}</DropdownItem>
-                <DropdownItem>{renderTrash()}</DropdownItem>
-                <DropdownItem>{renderAddCollection()}</DropdownItem>
-                <DropdownItem>{renderLogout()}</DropdownItem>
+              <div className=' py-2'>
+                <div>{renderInviteTeam()}</div>
+                <div>{renderTrash()}</div>
+                <div>{renderAddCollection()}</div>
+                <div>{renderLogout()}</div>
               </div>
             </div>
           </Dropdown.Menu>
