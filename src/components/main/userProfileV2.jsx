@@ -127,7 +127,7 @@ const UserProfile = () => {
         >
           <Avatar className='mr-2' color='#343a40' name={getCurrentOrg()?.name.split(" ")[0]} size={15} round='4px' />
           {renderOrgName()}
-          <IoIosArrowDown size={16} className='text-secondary'/>
+          <IoIosArrowDown size={16} className='text-secondary' />
         </div>
         <div className='add-button d-flex align-items-center'>
           {isOrgDocType() && <button className='border-0 btn btn-light px-1 text-secondary shadow' onClick={handleImportClick}>
@@ -147,11 +147,11 @@ const UserProfile = () => {
     )
   }
 
+  const handleCreateOrganizationClick = () => {
+    navigate('/onBoarding')
+  };
   const renderUserDetails = () => {
     const { email } = getUserDetails()
-    const handleCreateOrganizationClick = () => {
-      navigate('/onBoarding')
-    };
     return (
       <div className='profile-details border-bottom plr-3 pb-1 d-flex align-items-center justify-content-between py-1'>
         <div className='d-flex align-items-center'>
@@ -162,17 +162,6 @@ const UserProfile = () => {
             <span className='profile-details-label-light fs-4'>{email}</span>
           </div>
         </div>
-        <Dropdown>
-          <Dropdown.Toggle id="dropdown-basic">
-            <IconButton>
-              <BsThreeDots className='text-dark' />
-            </IconButton>
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <Dropdown.Item className='px-0 justify-content-center' onClick={handleCreateOrganizationClick}>Create organization</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
       </div>
     )
   }
@@ -185,8 +174,15 @@ const UserProfile = () => {
   const renderInviteTeam = () => {
     return (
       <div className='invite-user cursor-pointer' onClick={openAccountAndSettings}>
-        {/* <Users className='mr-2' size={17} /> */}
         <span className='members'>Members</span>
+      </div>
+    )
+  }
+
+  const renderAddWorkspace = () => {
+    return (
+      <div className='invite-user cursor-pointer mb-2' onClick={handleCreateOrganizationClick}>
+        <span className='members'>Add Workspace</span>
       </div>
     )
   }
@@ -210,7 +206,7 @@ const UserProfile = () => {
   }
 
   const showTooltips = () => {
-    return <Tooltip  className="fs-4 text-secondary"><span >Leave</span></Tooltip>
+    return <Tooltip className="fs-4 text-secondary"><span >Leave</span></Tooltip>
   }
 
   const renderOrgListDropdown = () => {
@@ -232,7 +228,7 @@ const UserProfile = () => {
               </div>
               {org?.id !== selectedOrg?.id && (
                 <OverlayTrigger placement="bottom" overlay={showTooltips()} >
-                  <span className='leave-icon' onClick={() => leaveOrganization(org.id)}><IoExit size={20}/></span>
+                  <span className='leave-icon' onClick={() => leaveOrganization(org.id)}><IoExit size={20} /></span>
                 </OverlayTrigger>
               )}
               {org.id === selectedOrg?.id && <span className='check' ><FaCheck /></span>}
@@ -338,6 +334,8 @@ const UserProfile = () => {
                 <div className='pt-2 pb-2'>{renderOrgListDropdown()}</div>
               </div>
               <div className=' py-2'>
+                <div>{renderAddWorkspace()}</div>
+                <hr className='p-0 m-0' />
                 <div>{renderInviteTeam()}</div>
                 <div>{renderTrash()}</div>
                 <div>{renderAddCollection()}</div>
