@@ -1788,6 +1788,7 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
   width: 100%;
   margin-top: 0px;
   height: 100%;
+
   @media screen and (max-width:992px) {
     padding-right: 24px;
     padding-left: 24px;
@@ -3359,33 +3360,17 @@ div#steve-parent-accordion {
   opacity: 0.5;
 }
 
-ul.react-autoComplete-input {
-  top: 100% !important;
-  z-index: 1999;
-  border: none;
-  padding: 0;
-  max-height: 8.75rem;
-  overflow: auto;
-  max-width: 100%;
-  left: 0 !important;
-  width: 100%;
-
-  li {
-    font-size: 12px;
-    padding: 0.5rem;
-    border-bottom: 1px solid $border-color;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    &:last-child {
-      border: none;
-    }
-
-    &.active {
-      background: $theme-color;
-    }
-  }
+/* customAutocomplete.css */
+.react-autocomplete-input {
+  padding: 4px;
+  font-size: 13px;
+  margin: 0;
 }
+
+.react-autocomplete-input li:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 
 .twitter-picker {
   box-shadow: none !important;
@@ -3542,24 +3527,29 @@ body .btn-group-custom {
   overflow: hidden;
   max-width: 800px;
 }
-.editor-headings  {
+
+.editor-headings {
   width: 300px;
   position: sticky;
   top: 60px;
   background-color: white;
-    span {
-      overflow: hidden !important;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      &:hover {
-        color: $on-this-page-hover-color;
-      }
-    }
-    @media screen and (max-width: 992px) {
-      width: 100%;
-      position: static;
+
+  span {
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover {
+      color: $on-this-page-hover-color;
     }
   }
+
+  @media screen and (max-width: 992px) {
+    width: 100%;
+    position: static;
+  }
+}
+
 .tox-editor-container {
   .tox-toolbar__group {
     .tox-tbtn {
@@ -3894,7 +3884,8 @@ body .tox {
 
 .textEditorContainer {
   position: relative;
-  .menuBar{
+
+  .menuBar {
     position: sticky;
     top: -2px;
     z-index: 1;
@@ -3916,7 +3907,8 @@ body .tox {
 .Pane {
   overflow: scroll !important;
 }
-.create-org{
+
+.create-org {
 
   display: flex;
   justify-content: center;
@@ -3944,7 +3936,8 @@ body .tox {
       overflow: hidden;
     }
   }
-  }
+}
+
 .pubCodeWrapper {
   @media only screen and (max-width: 1160px) {
     position: static !important;
@@ -3999,77 +3992,78 @@ body .tox {
     }
   }
 }
-  .loading {
-    max-width: 1000px;
-    min-width: 296px;
-    padding-left: 24px;
-    padding-top: 24px;
-    @media screen and (max-width:992px) {
-      padding-top: 0;
-      padding-right: 24px;
-    }
-    @media screen and (max-width:568px) {
-      padding-right: 12px;
-      padding-left: 12px;
-    }
-  
-    .box {
-      width: 126px;
-      height: 36px;
-    }
-  
-    .new {
-      width: 85px;
-      height: 34px;
-    }
-  
-    .live {
-      width: 110px;
-      height: 20px;
-    }
-  
-    .api-call {
-      width: 100%;
-      height: 36px;
-    }
-  
-    .send {
-      width: 100px;
-      height: 36px;
-    }
-  
-    .boxes {
-      width: 50%;
-      height: 36px;
-    }
-  
-    .bulk-edit {
-      width: 100%;
-      height: 130px;
-    }
-  
-    .path-var {
-      width: 100px;
-      height: 20px;
-    }
-  
-    .response {
-      width: 202px;
-      height: 20px;
-    }
-  
-    .hit-send {
-      width: 100%;
-      height: 182px;
-    }
-  
-    .min-box {
-      width: 20px;
-      height: 18px;
-    }
+
+.loading {
+  max-width: 1000px;
+  min-width: 296px;
+  padding-left: 24px;
+  padding-top: 24px;
+
+  @media screen and (max-width:992px) {
+    padding-top: 0;
+    padding-right: 24px;
   }
 
+  @media screen and (max-width:568px) {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
 
+  .box {
+    width: 126px;
+    height: 36px;
+  }
+
+  .new {
+    width: 85px;
+    height: 34px;
+  }
+
+  .live {
+    width: 110px;
+    height: 20px;
+  }
+
+  .api-call {
+    width: 100%;
+    height: 36px;
+  }
+
+  .send {
+    width: 100px;
+    height: 36px;
+  }
+
+  .boxes {
+    width: 50%;
+    height: 36px;
+  }
+
+  .bulk-edit {
+    width: 100%;
+    height: 130px;
+  }
+
+  .path-var {
+    width: 100px;
+    height: 20px;
+  }
+
+  .response {
+    width: 202px;
+    height: 20px;
+  }
+
+  .hit-send {
+    width: 100%;
+    height: 182px;
+  }
+
+  .min-box {
+    width: 20px;
+    height: 18px;
+  }
+}
 
 .container-loading {
   height: 100vh;
@@ -4099,12 +4093,14 @@ body .tox {
   .edit {
     width: 50px;
     height: 34px;
-}
-.unpublish {
+  }
+
+  .unpublish {
     width: 125px;
     height: 34px;
-}
-.publish {
+  }
+
+  .publish {
     width: 106px;
     height: 34px;
   }
@@ -4186,35 +4182,36 @@ body .tox {
   }
 }
 
-// .linkWrapper {
-//   position: relative;
+.linkWrapper {
+  position: relative;
 
-//   &::before {
-//     content: '';
-//     display: block;
-//     border-left: 1px solid $indentation;
-//     height: 97%;
-//     position: absolute;
-//     top: -3px;
-//     left: 30px;
-//   }
-// }
+  &::before {
+    content: '';
+    display: block;
+    border-left: 1px solid $indentation;
+    height: 97%;
+    position: absolute;
+    top: -3px;
+    left: 30px;
+  }
+}
 
-// .expanded {
-//   #collection-collapse {
-//     position: relative;
+.expanded {
+  #collection-collapse {
+    position: relative;
+    padding-left: 6px;
 
-//     &::before {
-//       content: '';
-//       display: block;
-//       border-left: 1px solid $indentation;
-//       height: 97%;
-//       position: absolute;
-//       top: 0;
-//       left: 16px;
-//     }
-//   }
-// }
+    &::before {
+      content: '';
+      display: block;
+      border-left: 1px solid $indentation;
+      height: 97%;
+      position: absolute;
+      top: 0;
+      left: 16px;
+    }
+  }
+}
 
 .tab-options-drop-down {
   .dropdown-item {
