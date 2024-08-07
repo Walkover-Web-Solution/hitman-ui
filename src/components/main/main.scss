@@ -3358,33 +3358,17 @@ div#steve-parent-accordion {
   opacity: 0.5;
 }
 
-ul.react-autoComplete-input {
-  top: 100% !important;
-  z-index: 1999;
-  border: none;
-  padding: 0;
-  max-height: 8.75rem;
-  overflow: auto;
-  max-width: 100%;
-  left: 0 !important;
-  width: 100%;
-
-  li {
-    font-size: 12px;
-    padding: 0.5rem;
-    border-bottom: 1px solid $border-color;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    &:last-child {
-      border: none;
-    }
-
-    &.active {
-      background: $theme-color;
-    }
-  }
+/* customAutocomplete.css */
+.react-autocomplete-input {
+  padding: 4px;
+  font-size: 13px;
+  margin: 0;
 }
+
+.react-autocomplete-input li:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 
 .twitter-picker {
   box-shadow: none !important;
@@ -4075,8 +4059,6 @@ body .tox {
   }
 }
 
-
-
 .container-loading {
   height: 100vh;
   max-width: 778px !important;
@@ -4194,35 +4176,36 @@ body .tox {
   }
 }
 
-// .linkWrapper {
-//   position: relative;
+.linkWrapper {
+  position: relative;
 
-//   &::before {
-//     content: '';
-//     display: block;
-//     border-left: 1px solid $indentation;
-//     height: 97%;
-//     position: absolute;
-//     top: -3px;
-//     left: 30px;
-//   }
-// }
+  &::before {
+    content: '';
+    display: block;
+    border-left: 1px solid $indentation;
+    height: 97%;
+    position: absolute;
+    top: -3px;
+    left: 30px;
+  }
+}
 
-// .expanded {
-//   #collection-collapse {
-//     position: relative;
+.expanded {
+  #collection-collapse {
+    position: relative;
+    padding-left: 6px;
 
-//     &::before {
-//       content: '';
-//       display: block;
-//       border-left: 1px solid $indentation;
-//       height: 97%;
-//       position: absolute;
-//       top: 0;
-//       left: 16px;
-//     }
-//   }
-// }
+    &::before {
+      content: '';
+      display: block;
+      border-left: 1px solid $indentation;
+      height: 97%;
+      position: absolute;
+      top: 0;
+      left: 16px;
+    }
+  }
+}
 
 .tab-options-drop-down {
   .dropdown-item {
