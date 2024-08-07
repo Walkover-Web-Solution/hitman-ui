@@ -29,11 +29,11 @@ export const fetchEnvironmentsFromLocalStorage = () => {
   }
 }
 
-export const addEnvironment = (newEnvironment) => {
+export const addEnvironment = (newEnvironment, type) => {
   return (dispatch) => {
-    dispatch(addEnvironmentRequest(newEnvironment))
+    dispatch(addEnvironmentRequest(newEnvironment, type))
     environmentsApiService
-      .saveEnvironment(newEnvironment)
+      .saveEnvironment(newEnvironment, type)
       .then((response) => {
         dispatch(OnEnvironmentAdded(response.data, newEnvironment))
         toast.success('Environment added successfully')
