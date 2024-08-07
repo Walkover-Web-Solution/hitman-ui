@@ -20,7 +20,7 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
   const [originalVariableNames, setOriginalVariableNames] = useState(['BASE_URL', '1'])
   const [updatedVariableNames, setUpdatedVariableNames] = useState(['BASE_URL', ''])
   const [errors, setErrors] = useState(null)
-  const [environmentType, setEnvironmentType] = useState(0)
+  const [environmentType, setEnvironmentType] = useState(null)
 
   const dispatch = useDispatch()
 
@@ -73,14 +73,14 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
     const userId = getCurrentUser()?.id
 
     if (title === 'Add new Environment') {
-      dispatch(addEnvironment({ name: environment.name, ...updatedEnvironment, userId }))
+      dispatch(addEnvironment({ name: environment.name, ...updatedEnvironment, userId, type:environmentType}))
       setEnvironment({ name: '', variables: {} })
       setOriginalVariableNames([])
       setUpdatedVariableNames([])
     } else {
       const originalEnvCopy = jQuery.extend(true, {}, initialEnvironment)
       if (JSON.stringify(originalEnvCopy) !== JSON.stringify(updatedEnvironment)) {
-        dispatch(updateEnvironment({ id: environment.id, name: environment.name, ...updatedEnvironment, userId }))
+        dispatch(updateEnvironment({ id: environment.id, name: environment.name, ...updatedEnvironment, userId, type:environmentType }))
       }
     }
   }
@@ -137,9 +137,7 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
   }
 
   const handleEnvType = (e) => {
-    const envCopy = { ...environment }
-    envCopy[e.currentTarget.name] = e.currentTarget.value === 'global' ? '1' : '0'; 
-    setEnvironmentType(envCopy)
+    setEnvironmentType(e.currentTarget.value === 'global' ? 0 : 1);
   }
 
   return (
