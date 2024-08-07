@@ -26,7 +26,7 @@ const SubPage = (props) => {
     pages: state.pages,
     clientData: state.clientData,
     collections: state.collections,
-    organizations : state.organizations,
+    organizations: state.organizations,
   }))
 
   const dispatch = useDispatch()
@@ -152,11 +152,12 @@ const SubPage = (props) => {
         : ''
     }
 
+
     return (
-      <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
-        <button tabIndex={-1} className={`${expanded ? 'expanded' : ''}`}>
+      <div className='sidebar-accordion accordion ' id='child-accordion'>
+        <button tabIndex={-1} className={`p-0 ${expanded ? 'expanded' : ''}`}>
           <div
-            className={`active-selected d-flex justify-content-between align-items-center rounded mr-2 ${isSelected ? ' selected' : ''}`}
+            className={`active-selected d-flex justify-content-between align-items-center rounded ${isSelected ? ' selected text-black' : 'text-secondary'}`}
             style={backgroundStyle}
             onMouseEnter={() => handleHover(true)}
             onMouseLeave={() => handleHover(false)}
@@ -168,20 +169,21 @@ const SubPage = (props) => {
               onDrop={(e) => props.onDrop(e, subPageId)}
               onDragEnter={(e) => props.onDragEnter(e, subPageId)}
               onDragEnd={(e) => props.onDragEnd(e)}
-              style={props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
-              className={`d-flex justify-content-center cl-name name-sub-page ml-1`}
-              onClick={(e) => {
+              style={props.draggingOverId === subPageId ? { border: '3px solid red', paddingLeft: `${props?.level * 8}px` } : {paddingLeft: `${props?.level * 8}px`}}
+              className={`d-flex justify-content-center cl-name name-sub-page ml-1 `}
+              onClick={() => {
                 handleRedirect(subPageId)
-                if (!expanded) {
-                  handleToggle(e, subPageId)
-                }
               }}
             >
               <span className='versionChovron' onClick={(e) => handleToggle(e, subPageId)}>
-                <MdExpandMore size={13} className='collection-icons-arrow d-none' />
+                <IconButtons variant = 'sm'>
+                <MdExpandMore
+                  size={13}
+                  className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
+                /></IconButtons>
                 <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 ' />
               </span>
-              <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{pages[subPageId]?.name}</div>
+              <div className='sidebar-accordion-item d-inline sub-page-header text-truncate fw-500'>{pages[subPageId]?.name}</div>
             </div>
 
             {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
@@ -211,7 +213,7 @@ const SubPage = (props) => {
         {expanded ? (
           <div className='linkWrapper versionPages'>
             <Card.Body>
-              <CombinedCollections {...props} />
+              <CombinedCollections level={props?.level} {...props} />
             </Card.Body>
           </div>
         ) : null}

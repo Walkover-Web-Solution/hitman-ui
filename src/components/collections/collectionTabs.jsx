@@ -3,9 +3,10 @@ import PublishDocForm from '../publishDocs/publishDocsForm';
 import CollectionRuns from './showRuns/collectionRuns';
 import PublishDocsReview from '../publishDocs/publishDocsReview';
 import { useNavigate } from 'react-router-dom'
-import { getOrgId } from '../common/utility'
+import { getOrgId, isOrgDocType } from '../common/utility'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPageType } from '../tabs/redux/tabsActions'
+
 
 const CollectionTabs = ({ collectionId, onHide }) => {
   const dispatch = useDispatch()
@@ -60,7 +61,7 @@ const CollectionTabs = ({ collectionId, onHide }) => {
             Feedback
           </a>
         </li>
-        <li className='nav-item cursor-pointer'>
+        {isOrgDocType() && <li className='nav-item cursor-pointer'>
           <a
             className={`nav-link ${pageType === 'RUNS' ? 'active' : ''}`}
             onClick={() => {
@@ -70,7 +71,7 @@ const CollectionTabs = ({ collectionId, onHide }) => {
           >
             Runs
           </a>
-        </li>
+        </li>}
       </ul>
       <div className='tab-content'>{renderTabContent()}</div>
     </div>

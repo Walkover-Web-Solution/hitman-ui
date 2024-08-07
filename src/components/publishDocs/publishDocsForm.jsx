@@ -316,7 +316,7 @@ const PublishDocForm = (props) => {
             className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4`}
           >
             <HiOutlineExternalLink className='mr-1' size={13} />
-            <span onClick={() => isDisabled && openExternalLink(url)} className={isDisabled ? 'text-disable' : 'disabled-link'}>{url}</span>
+            <span onClick={() => isDisabled && openExternalLink(url)} className={isDisabled ? 'text-disable flex-grow-1' : 'disabled-link'}>{url}</span>
             <div className='ml-2'>
               <button className='copy-button-link ml-2 border-0 bg-white' onClick={() => copyToClipboard(url)} title='Copy URL' onMouseDown={(e) => e.preventDefault()}>
               {isCopied ? ( 

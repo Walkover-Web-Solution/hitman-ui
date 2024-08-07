@@ -24,7 +24,8 @@ function CombinedCollections(props) {
           onDrop: props.onDrop,
           onDragEnter: props.onDragEnter,
           draggingOverId: props.draggingOverId,
-          onDragEnd: props.onDragEnd
+          onDragEnd: props.onDragEnd,
+          level: (props?.level + 1),
         }
 
         const endpointProps = {
@@ -33,7 +34,8 @@ function CombinedCollections(props) {
           onDrop: props.onDrop,
           onDragEnter: props.onDragEnter,
           draggingOverId: props.draggingOverId,
-          onDragEnd: props.onDragEnd
+          onDragEnd: props.onDragEnd,
+          level: (props?.level + 1),
         }
 
         switch (type) {

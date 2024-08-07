@@ -48,8 +48,8 @@ export async function switchOrg(orgId, redirect) {
   try {
     await http.post(proxyUrl + '/switchCompany', { company_ref_id: orgId })
     updateOrgDataByOrgId(orgId)
-    if(redirect) {
-        redirectToDashboard(orgId)
+    if (redirect) {
+      redirectToDashboard(orgId)
     }
 
   } catch (error) {
@@ -65,10 +65,10 @@ export async function createOrg(name, type) {
   try {
     const data = { company: { name, meta: { type } } }
     const newOrg = await http.post(proxyUrl + '/createCompany', data)
-    await getDataFromProxyAndSetDataToLocalStorage(null,false)
+    await getDataFromProxyAndSetDataToLocalStorage(null, true)
     updateOrgDataByOrgId(newOrg?.data?.data?.id)
     await createOrganizationAndRunCode()
-    await switchOrg(newOrg?.data?.data?.id, false)
+    await switchOrg(newOrg?.data?.data?.id, true)
   } catch (e) {
     toast.error(e?.response?.data?.message ? e?.response?.data?.message : "Something went wrong")
   }

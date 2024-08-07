@@ -1,6 +1,6 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import './variables.scss';
 
 .fs-1 {
@@ -50,6 +50,33 @@
 .gap-6 {
   gap: $gap-extra-large !important;
 }
+.text-black {
+  color: $text-color;
+}
+
+.fw-400 {
+  font-weight: $font-weight-400;
+}
+
+.fw-500 {
+  font-weight: $font-weight-500;
+}
+
+.fw-600 {
+  font-weight: $font-weight-600;
+}
+
+.fw-700 {
+  font-weight: $font-weight-700;
+}
+
+.fw-800 {
+  font-weight: $font-weight-800;
+}
+
+.fw-900 {
+  font-weight: $font-weight-900;
+}
 
 .mobile-warning {
   position: sticky;
@@ -97,6 +124,12 @@ html body {
     padding: 5px;
     padding-right: 4px !important;
     margin-left: 4px;
+    font-weight: 500 !important;
+    color: #6c757d;
+    opacity: 0;
+    &:hover {
+      color: #6c757d !important;
+    }
 
     @media screen and (max-width:768px) {
       font-size: 16px !important;
@@ -3627,7 +3660,7 @@ body .doc-secs-container {
   }
 
   &:hover {
-    background-color: #f7f6f3;
+    background-color: #f7f7f5;
   }
 }
 
@@ -3696,7 +3729,7 @@ body .doc-secs-container {
 
   .endpoint-response-container {
     padding: 1rem;
-    background-color: #f7f6f3;
+    background-color: #f7f7f5;
     border-radius: $border-radius;
     border: 1px solid $lightblackborder;
   }
@@ -4153,36 +4186,35 @@ body .tox {
   }
 }
 
-.linkWrapper {
-  position: relative;
+// .linkWrapper {
+//   position: relative;
 
-  &::before {
-    content: '';
-    display: block;
-    border-left: 1px solid $indentation;
-    height: 97%;
-    position: absolute;
-    top: -3px;
-    left: 30px;
-  }
-}
+//   &::before {
+//     content: '';
+//     display: block;
+//     border-left: 1px solid $indentation;
+//     height: 97%;
+//     position: absolute;
+//     top: -3px;
+//     left: 30px;
+//   }
+// }
 
-.expanded {
-  #collection-collapse {
-    position: relative;
-    padding-left: 6px;
+// .expanded {
+//   #collection-collapse {
+//     position: relative;
 
-    &::before {
-      content: '';
-      display: block;
-      border-left: 1px solid $indentation;
-      height: 97%;
-      position: absolute;
-      top: 0;
-      left: 16px;
-    }
-  }
-}
+//     &::before {
+//       content: '';
+//       display: block;
+//       border-left: 1px solid $indentation;
+//       height: 97%;
+//       position: absolute;
+//       top: 0;
+//       left: 16px;
+//     }
+//   }
+// }
 
 .tab-options-drop-down {
   .dropdown-item {

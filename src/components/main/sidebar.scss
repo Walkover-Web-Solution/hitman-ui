@@ -118,19 +118,15 @@ body .sidebar {
   }
 
   div#parent-accordion {
-    &.expanded {
-      padding-bottom: 0.5rem;
-    }
-
-    border-bottom: 1px solid #ebe9e8;
-
-    > button {
-      height: 2rem;
-    }
-
     .inner-container {
       max-width: 70%;
       width: 100%;
+
+      .collection-box {
+        font-size: 12px;
+        font-weight: 500;
+        color: rgb(145, 145, 145);
+      }
     }
   }
 
@@ -142,12 +138,7 @@ body .sidebar {
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.3s ease-in;
       border-radius: 5px 5px;
-
-      &:hover {
-        background-color: #dfdcd5;
-      }
     }
   }
 
@@ -297,12 +288,21 @@ body .sidebar {
 
         .active-selected {
           width: 100%;
-          margin-left: 10px;
           margin-top: 4px;
           height: 28px;
 
           &.selected {
             background: $grey;
+            .version-dropdown {
+              .dropdown-toggle {
+                color: $text-color !important;
+              }
+            }
+            .versionChovron {
+              svg {
+                color: $text-color;
+              }
+            }
           }
 
           &:hover {
@@ -310,7 +310,6 @@ body .sidebar {
 
             .versionChovron {
               .collection-icons-arrow {
-                background-color: white;
                 display: inline-block !important;
               }
 
@@ -328,6 +327,16 @@ body .sidebar {
 
           &.selected {
             background: $grey;
+            .version-dropdown {
+              .dropdown-toggle {
+                color: $text-color !important;
+              }
+            }
+            .versionChovron {
+              svg {
+                color: $text-color;
+              }
+            }
           }
 
           &:hover {
@@ -365,7 +374,6 @@ body .sidebar {
             .versionChovron {
               .collection-icons-arrow {
                 display: inline-block !important;
-                background-color: white;
               }
 
               .collection-icons {
@@ -427,14 +435,11 @@ body .sidebar {
         align-items: center;
         border: none;
         background: transparent;
-        color: $text-color;
         padding-right: 0;
         position: relative;
         height: 28px;
         text-align: left;
         justify-content: space-between;
-        margin-top: 1px;
-        margin-bottom: 1px;
 
         &:active,
         &:focus {
@@ -468,7 +473,7 @@ body .sidebar {
             .versionChovron {
               .collection-icons-arrow {
                 display: inline-block !important;
-                background-color: white;
+                background-color: rgb(128 128 128 / 18%);
               }
 
               .collection-icons {
@@ -530,11 +535,10 @@ body .sidebar {
     }
 
     .profile-menu {
+      padding: 0 12px;
       display: block;
       flex: 0 0 auto;
       border-top: 1px solid #dcdcdc;
-      padding: 9px 16px 0;
-
       .profile-details {
         .dropdown {
           .dropdown-toggle {
@@ -565,13 +569,11 @@ body .sidebar {
           svg {
             width: 15px;
           }
-        }
+        } 
       }
 
       .org-name {
         font-weight: 600;
-        color: $text-color-dark;
-        margin-bottom: -0.35rem;
         font-size: $font-normal;
         display: block;
         max-width: 100px;
@@ -718,8 +720,7 @@ input[type='text']:focus {
 
 .versionChovron {
   width: 26px;
-  height: 23px;
-
+  height: 20px;
   .collection-icons-arrow {
     transition: all 0.3s ease-in;
     height: 20px !important;
@@ -756,6 +757,13 @@ input[type='text']:focus {
       font-size: 16px;
     }
   }
+  &.Selected {
+    .in-api-label {
+      &.POST, &.GET, &.PUT, &.PATCH, &.DELETE {
+        color: $text-color !important;
+      }
+    }
+  }
 }
 
 .side-bar,
@@ -763,6 +771,11 @@ input[type='text']:focus {
 .active-select {
   &:hover {
     background: $grey;
+    .version-dropdown {
+      button {
+        opacity: 1;
+      }
+    }
   }
 
   &.Selected {
@@ -790,23 +803,17 @@ input[type='text']:focus {
   transition: 200ms;
 }
 
-// .expanded {
-//   #collection-collapse {
 .card-body {
   button {
     margin-bottom: 2px;
 
     .side-bar {
-      padding-left: 6px !important;
       width: 100%;
       height: 28px;
-      margin-left: 8px;
     }
   }
 }
 
-//   }
-// }
 .secondary-sidebar {
   font-size: 14px;
   color: #999;
@@ -901,10 +908,6 @@ input[type='text']:focus {
   cursor: pointer;
 }
 
-.linkWrapper button {
-  padding-left: 7px !important;
-}
-
 .sidebar-add-btn {
   padding: 0 !important;
 }
@@ -924,7 +927,7 @@ input[type='text']:focus {
 
 .search-container {
   border: 1px solid $lightblackborder;
-  padding: 4px 10px;
+  padding: 4px 3px;
   border-radius: 4px;
 
   &:focus-within {
@@ -1002,32 +1005,19 @@ input[type='text']:focus {
   width: 100%;
   height: 100%;
 }
-
-.login-button {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  border-top: 1px solid $lightblackborder;
-  width: 330px;
-  z-index: 9;
-  height: 34px;
-  cursor: pointer;
-
-  @media screen and (max-width: 992px) {
-    width: 280px;
+.hm-sidebar-header {
+  .td-header {
+    width: 180px;
   }
 
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-.hm-sidebar-outer-block {
-  .linkWrapper {
-    button {
-      .side-bar {
-        margin-left: 26px;
-      }
+  .login-button {
+    width: 33px;
+    .logo-techdoc {
+      width: 25px;
+      height: 25px;
+    }
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.212) !important;
     }
   }
 }
@@ -1035,9 +1025,7 @@ input[type='text']:focus {
 .sidebar-accordion {
   button {
     .side-bar {
-      padding-left: 10px;
       width: 100%;
-      margin-left: 10px;
     }
   }
 }
