@@ -334,8 +334,8 @@ const UserProfile = () => {
           <Dropdown.Menu className='p-0'>
             {renderUserDetails()}
             <div className='profile-listing-container'>
-              <div className='px-2 py-1 border-bottom'>
-                <div className='p-2'>{renderOrgListDropdown()}</div>
+              <div className='py-6 border-bottom'>
+                <div className='pt-2 pb-2'>{renderOrgListDropdown()}</div>
               </div>
               <div className=' py-2'>
                 <div>{renderInviteTeam()}</div>
