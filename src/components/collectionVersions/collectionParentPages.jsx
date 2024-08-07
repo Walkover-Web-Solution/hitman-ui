@@ -220,7 +220,7 @@ const CollectionParentPages = (props) => {
     }
 
     return (
-      <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
+      <div className={'hm-sidebar-outer-block my-1'} key={pageId}>
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
           <button tabIndex={-1} className={`px-0 ${expanded ? 'expanded' : ''}`}>
             <div
