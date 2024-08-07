@@ -125,7 +125,7 @@ const CodeTemplate = (props) => {
         )}
         <div
           className={
-            params.endpointId ? 'show-curl-endpoint pubCodeWrapper' : curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper'
+            params.endpointId ? 'show-curl-endpoint pubCodeWrapper bg-white' : curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper'
           }
           style={{
             backgroundColor: hexToRgb(theme?.backgroundStyle, '0.04')

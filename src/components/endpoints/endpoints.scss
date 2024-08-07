@@ -1696,7 +1696,7 @@ table#custom-generic-table {
         div#ace-editor {
           min-height: 200px !important;
           width: 100% !important;
-        }
+        } 
       }
 
       .ace_content {
@@ -1787,6 +1787,11 @@ table#custom-generic-table {
       }
     }
 
+  }
+  .ace-editor-wrapper {
+    .copy-button-light, .ace_editor, .empty-div-light {
+      background-color: #f7f7f5;
+    }
   }
 }
 

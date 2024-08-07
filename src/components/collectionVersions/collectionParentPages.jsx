@@ -224,7 +224,7 @@ const CollectionParentPages = (props) => {
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
           <button tabIndex={-1} className={`px-0 ${expanded ? 'expanded' : ''}`}>
             <div
-              className={`active-select d-flex align-items-center justify-content-between rounded ${isSelected ? ' selected text-black' : 'text-secondary'}`}
+              className={`active-select d-flex align-items-center justify-content-between rounded my-1 ${isSelected ? ' selected text-black' : 'text-secondary'}`}
               style={backgroundStyle}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
@@ -232,7 +232,7 @@ const CollectionParentPages = (props) => {
               <div className={`d-flex align-items-center cl-name `}  onClick={(e) => handleParentPageClick(e, expanded)}>
                 <div className='d-flex cl-name ml-1 align-items-center'>
                   <span className='versionChovron mr-1' onClick={(e) => handleToggle(e, props.rootParentId)}>
-                    <IconButtons variant='sm'><MdExpandMore size={13} className='collection-icons-arrow d-none' /></IconButtons>
+                    <IconButtons variant='sm'><MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} /></IconButtons>
                     <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1' />
                   </span>
                   <div

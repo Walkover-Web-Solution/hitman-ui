@@ -558,7 +558,7 @@ const CustomTabs = (props) => {
             {handleHistoryButton()}
           </Nav.Item>
           {showHistoryContainer && (
-            <div className='history-main-container'>
+            <div className='history-main-container bg-white'>
               <div className='heading'>
                 History
                 <div className='d-flex close-button' onClick={handleHistoryClick} aria-label='Close'>

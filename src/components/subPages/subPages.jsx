@@ -179,10 +179,7 @@ const SubPage = (props) => {
                 <IconButtons variant = 'sm'>
                 <MdExpandMore
                   size={13}
-                  className='collection-icons-arrow d-none'
-                  style={backgroundStyles}
-                  onMouseEnter={() => handleHovers(true)}
-                  onMouseLeave={() => handleHovers(false)}
+                  className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
                 /></IconButtons>
                 <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 ' />
               </span>
