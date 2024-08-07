@@ -11,6 +11,7 @@ import { fetchEnvironments, fetchEnvironmentsFromLocalStorage, setEnvironmentId 
 import EnvironmentVariables from './environmentVariables.jsx'
 import DeleteModal from '../common/deleteModal.jsx'
 import './environments.scss'
+import { FaCheck } from "react-icons/fa6";
 
 const Environments = () => {
 
@@ -83,7 +84,9 @@ const Environments = () => {
           </Dropdown.Toggle>
           <Dropdown.Menu alignRight>
             <Dropdown.Item onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
-            {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item onClick={() => handleEnv(environmentId)} key={environmentId}>{environment.environments[environmentId]?.name}</Dropdown.Item>)}
+            {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item onClick={() => handleEnv(environmentId)} key={environmentId}>{environment.environments[environmentId]?.name}
+            {environmentId === currentEnvironmentId && <span><FaCheck /></span>}
+            </Dropdown.Item>)}
             <Dropdown.Divider />
             <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Add new Environment')}>Add Environment</Dropdown.Item>
             <Dropdown.Item className='dropdown-item' onClick={() => setShowImportModal(true)}>Import Environment</Dropdown.Item>
