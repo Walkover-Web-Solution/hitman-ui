@@ -18,8 +18,8 @@ export function getEnvironment(environmentId) {
   return http.get(environmentUrl(environmentId))
 }
 
-export function saveEnvironment(environment) {
-  return http.post(environmentsUrl(), environment)
+export function saveEnvironment(environment, type) {
+  return http.post(environmentsUrl(), environment, type)
 }
 
 export function updateEnvironment(environmentId, environment) {
