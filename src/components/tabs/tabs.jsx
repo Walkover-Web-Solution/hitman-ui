@@ -283,7 +283,7 @@ const CustomTabs = (props) => {
               <div className='d-flex'>
                 <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
                 <span>
-                  {page.name.length > 10 ? <>{page.name.substring(0, 10)} &nbsp; </> : page.name}
+                   <>{page.name} </>
                 </span>
               </div>
             )
@@ -292,7 +292,7 @@ const CustomTabs = (props) => {
               <div className='d-flex'>
                 <IoDocumentTextOutline size={14} className='mr-1' />
                 <span>
-                  {page.name.length > 10 ? <>{page.name.substring(0, 10)} &nbsp; </> : page.name}
+                <>{page.name} </>
                 </span>
               </div>
             )
@@ -506,9 +506,9 @@ const CustomTabs = (props) => {
                 }}
               >
                 {tabState[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
-                <Nav.Link className='p-0' eventKey={tabId}>
+                <Nav.Link className='p-0 d-flex align-items-center bg-white pr-2' eventKey={tabId}>
                   <button
-                    className='btn truncate bg-white'
+                    className='btn truncate bg-white pr-0'
                     onClick={() => tabService.selectTab(tabId, { navigate, params })}
                     onDoubleClick={() => {
                       tabService.disablePreviewMode(tabId)
@@ -518,7 +518,7 @@ const CustomTabs = (props) => {
                       {renderTabName(tabId)}
                     </div>
                   </button>
-                  <button className='close' onClick={() => handleCloseTabs([tabId])}>
+                  <button className='close ml-1 rounded' onClick={() => handleCloseTabs([tabId])}>
                     <i className='uil uil-multiply' />
                   </button>
                 </Nav.Link>
