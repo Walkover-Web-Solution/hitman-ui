@@ -31,13 +31,17 @@ body .logoBox .dropdown .dropdown-toggle {
 
 .menu-trigger-box {
   .org-button {
+    .sb-avatar--text {
     .sb-avatar__text {
       span {
+        background-color: #aca7a7;
+        border-radius: 4px;
         span {
-          font-size: 10px;
+          font-size: 9px;
         }
       }
     }
+  }
     svg {
       margin-top: 2px;
     }

@@ -97,7 +97,7 @@ const UserProfile = () => {
   const renderOrgName = () => {
     return (
       <div>
-        <div className='org-name text-black pr-1'>{getCurrentOrg()?.name || null}</div>
+        <div className='org-name text-secondary pr-1'>{getCurrentOrg()?.name || null}</div>
       </div>
     )
   }
@@ -119,7 +119,7 @@ const UserProfile = () => {
       <div className='menu-trigger-box d-flex align-items-center justify-content-between w-100 rounded gap-1 px-1 py-1'>
         <div
           ref={ref1}
-          className='org-button d-flex position-relative cursor-pointer flex-grow-1'
+          className='org-button pl-1 d-flex position-relative align-items-center cursor-pointer flex-grow-1 gap-1'
           onClick={(e) => {
             e.preventDefault()
             onClick(e)
@@ -127,7 +127,7 @@ const UserProfile = () => {
         >
           <Avatar className='mr-2' color='#343a40' name={getCurrentOrg()?.name.split(" ")[0]} size={15} round='4px' />
           {renderOrgName()}
-          <IoIosArrowDown size={16} className='text-black'/>
+          <IoIosArrowDown size={16} className='text-secondary'/>
         </div>
         <div className='add-button d-flex align-items-center'>
           {isOrgDocType() && <button className='border-0 btn btn-light px-1 text-secondary shadow' onClick={handleImportClick}>

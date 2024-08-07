@@ -138,13 +138,7 @@ body .sidebar {
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.3s ease-in;
       border-radius: 5px 5px;
-      background-color: transparent;
-      
-      // &:hover {
-      //   background-color: rgb(128 128 128 / 18%);
-      // }
     }
   }
 
@@ -306,7 +300,6 @@ body .sidebar {
 
             .versionChovron {
               .collection-icons-arrow {
-                background-color: rgb(128 128 128 / 18%);
                 display: inline-block !important;
               }
 
@@ -361,7 +354,6 @@ body .sidebar {
             .versionChovron {
               .collection-icons-arrow {
                 display: inline-block !important;
-                background-color: rgb(128 128 128 / 18%);
               }
 
               .collection-icons {
@@ -563,7 +555,6 @@ body .sidebar {
 
       .org-name {
         font-weight: 600;
-        margin-bottom: -0.35rem;
         font-size: $font-normal;
         display: block;
         max-width: 100px;
@@ -712,7 +703,7 @@ input[type='text']:focus {
   width: 26px;
   height: 20px;
   .collection-icons-arrow {
-    transition: transform 300ms ease-in;
+    transition: all 0.3s ease-in;
     height: 20px !important;
     width: 20px !important;
     color: #808080;
@@ -905,7 +896,7 @@ input[type='text']:focus {
 
 .search-container {
   border: 1px solid $lightblackborder;
-  padding: 4px 10px;
+  padding: 4px 3px;
   border-radius: 4px;
 
   &:focus-within {
