@@ -54,6 +54,30 @@
   color: $text-color;
 }
 
+.fw-400 {
+  font-weight: $font-weight-400;
+}
+
+.fw-500 {
+  font-weight: $font-weight-500;
+}
+
+.fw-600 {
+  font-weight: $font-weight-600;
+}
+
+.fw-700 {
+  font-weight: $font-weight-700;
+}
+
+.fw-800 {
+  font-weight: $font-weight-800;
+}
+
+.fw-900 {
+  font-weight: $font-weight-900;
+}
+
 .mobile-warning {
   position: sticky;
   z-index: 1200;
@@ -100,6 +124,12 @@ html body {
     padding: 5px;
     padding-right: 4px !important;
     margin-left: 4px;
+    font-weight: 500 !important;
+    color: #6c757d;
+    opacity: 0;
+    &:hover {
+      color: #6c757d !important;
+    }
 
     @media screen and (max-width:768px) {
       font-size: 16px !important;

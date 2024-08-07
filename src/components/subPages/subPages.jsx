@@ -157,7 +157,7 @@ const SubPage = (props) => {
       <div className='sidebar-accordion accordion ' id='child-accordion'>
         <button tabIndex={-1} className={`p-0 ${expanded ? 'expanded' : ''}`}>
           <div
-            className={`active-selected d-flex justify-content-between align-items-center rounded ${isSelected ? ' selected' : 'text-secondary'}`}
+            className={`active-selected d-flex justify-content-between align-items-center rounded ${isSelected ? ' selected text-black' : 'text-secondary'}`}
             style={backgroundStyle}
             onMouseEnter={() => handleHover(true)}
             onMouseLeave={() => handleHover(false)}
@@ -183,7 +183,7 @@ const SubPage = (props) => {
                 /></IconButtons>
                 <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 ' />
               </span>
-              <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{pages[subPageId]?.name}</div>
+              <div className='sidebar-accordion-item d-inline sub-page-header text-truncate fw-500'>{pages[subPageId]?.name}</div>
             </div>
 
             {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (

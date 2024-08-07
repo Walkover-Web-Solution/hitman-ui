@@ -245,7 +245,7 @@ const CollectionParentPages = (props) => {
                     onDragEnd={(e) => props.onDragEnd(e)}
                     style={props.draggingOverId === pageId ? { border: '3px solid red' } : null}
                   >
-                    <div className='text-truncate d-inline'>{pages[pageId]?.name}</div>
+                    <div className='text-truncate d-inline fw-500'>{pages[pageId]?.name}</div>
                     {!isUserOnPublishedPage ? (
                       versionDropDown(rootId)
                     ) : (

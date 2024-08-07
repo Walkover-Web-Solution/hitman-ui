@@ -134,7 +134,7 @@ const Endpoints = (props) => {
       >
         <div className='sidebar-toggle d-flex justify-content-between mt-1'>
           <button className='pl-0'>
-            <div className={`side-bar d-flex align-items-center rounded ${isSelected ? 'Selected' : ''}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+            <div className={`side-bar d-flex align-items-center rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
               <button tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}>
                 {displayEndpointName(endpointId)}
               </button>

@@ -293,6 +293,16 @@ body .sidebar {
 
           &.selected {
             background: $grey;
+            .version-dropdown {
+              .dropdown-toggle {
+                color: $text-color !important;
+              }
+            }
+            .versionChovron {
+              svg {
+                color: $text-color;
+              }
+            }
           }
 
           &:hover {
@@ -317,6 +327,16 @@ body .sidebar {
 
           &.selected {
             background: $grey;
+            .version-dropdown {
+              .dropdown-toggle {
+                color: $text-color !important;
+              }
+            }
+            .versionChovron {
+              svg {
+                color: $text-color;
+              }
+            }
           }
 
           &:hover {
@@ -415,7 +435,6 @@ body .sidebar {
         align-items: center;
         border: none;
         background: transparent;
-        color: $text-color;
         padding-right: 0;
         position: relative;
         height: 28px;
@@ -738,6 +757,13 @@ input[type='text']:focus {
       font-size: 16px;
     }
   }
+  &.Selected {
+    .in-api-label {
+      &.POST, &.GET, &.PUT, &.PATCH, &.DELETE {
+        color: $text-color !important;
+      }
+    }
+  }
 }
 
 .side-bar,
@@ -745,6 +771,11 @@ input[type='text']:focus {
 .active-select {
   &:hover {
     background: $grey;
+    .version-dropdown {
+      button {
+        opacity: 1;
+      }
+    }
   }
 
   &.Selected {
