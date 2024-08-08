@@ -46,7 +46,6 @@ export async function getEndpoint(endpointId) {
 }
 
 export function saveEndpoint(rootParentId, endpoint) {
-  endpoint.sampleResponse = null
   return http.post(endpointUrlForCollection(rootParentId), endpoint)
 }
 

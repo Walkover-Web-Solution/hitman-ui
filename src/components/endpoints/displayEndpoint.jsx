@@ -1271,6 +1271,7 @@ class DisplayEndpoint extends Component {
   }
 
   handleSave = async (id, endpointObject, slug) => {
+    debugger
     const { endpointName, endpointDescription } = endpointObject || {}
     let currentTabId = this.props.tab.id
     let parentId = id
@@ -1301,7 +1302,7 @@ class DisplayEndpoint extends Component {
         obj[key] = updatedPathVariables[key]
         return obj
       }, {})
-      const endpoint = {
+      let endpoint = {
         id: slug === 'isHistory' ? this.props?.params?.historyId : currentTabId,
         uri: endpointContent?.data.updatedUri,
         name: this.state.saveAsFlag ? endpointName : endpointContent?.data?.name,
@@ -1318,7 +1319,7 @@ class DisplayEndpoint extends Component {
         postScript: endpointContent?.postScriptText,
         docViewData: endpointContent?.docViewData,
         protocolType: endpointContent?.protocolType || null,
-        description: endpointContent?.description || '',
+        description: endpointContent?.description || "",
         sampleResponse : endpointContent?.sampleResponseArray || []
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
