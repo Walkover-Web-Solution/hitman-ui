@@ -1,28 +1,22 @@
-import React, { useState, useRef, forwardRef } from 'react'
+import React, { useState, forwardRef } from 'react'
 import { Button, Dropdown, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Avatar from 'react-avatar'
 import { useSelector, useDispatch } from 'react-redux'
-import Power from '../../assets/icons/power.svg'
 import { getCurrentOrg, getCurrentUser } from '../auth/authServiceV2'
-import { switchOrg, createOrg, fetchOrganizations, leaveOrganization } from '../../services/orgApiService'
-import './userProfile.scss'
+import { switchOrg, fetchOrganizations, leaveOrganization } from '../../services/orgApiService'
 import { toast } from 'react-toastify'
 import { closeAllTabs } from '../tabs/redux/tabsActions'
 import { onHistoryRemoved } from '../history/redux/historyAction'
-import { ReactComponent as Users } from '../../assets/icons/users.svg'
-import { MdAdd, MdDeleteOutline } from 'react-icons/md'
-import IconButton from '../common/iconButton'
 import { IoIosArrowDown } from 'react-icons/io'
 import CollectionForm from '../collections/collectionForm'
 import { FiUser } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import ImportCollectionModal from '../importCollection/importColectionModel'
 import CustomModal from '../customModal/customModal'
-import { BsThreeDots } from 'react-icons/bs'
 import { isOrgDocType } from '../common/utility'
-import DropdownItem from 'react-bootstrap/esm/DropdownItem'
 import { FaCheck } from "react-icons/fa6";
 import { IoExit } from 'react-icons/io5'
+import './userProfile.scss'
 
 const UserProfile = () => {
   const historySnapshot = useSelector((state) => state.history)
@@ -31,26 +25,11 @@ const UserProfile = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const [orgName, setOrgName] = useState('')
   const [showModal, setShowModal] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [modalForTabs, setModalForTabs] = useState(false)
   const [showNewCollectionModal, setShowNewCollectionModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
-  const inputRef = useRef(null)
-  const [switchOrCreate, setSwitchOrCreate] = useState(false)
   const [currentOrg, setCurrentOrg] = useState('')
-
-  const validateName = (orgName) => {
-    const regex = /^[a-zA-Z0-9_]+$/
-    return orgName && regex.test(orgName) && orgName.length >= 3 && orgName.length <= 50
-  }
-
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleAddOrg()
-    }
-  }
 
   const removeFromLocalStorage = (tabIds) => {
     tabIds.forEach((key) => {
@@ -58,48 +37,9 @@ const UserProfile = () => {
     })
   }
 
-  const handleNewOrgClick = async () => {
-    toggleModal()
-    const tabIdsToClose = tabs.tabsOrder
-    if (tabIdsToClose.length === 1 || tabIdsToClose.length === 0) {
-      setModalForTabs(false)
-      removeFromLocalStorage(tabIdsToClose)
-      dispatch(closeAllTabs(tabIdsToClose))
-      dispatch(onHistoryRemoved(historySnapshot))
-      await createOrg(orgName)
-    } else {
-      setModalForTabs(true)
-    }
-  }
-
-  const handleAddOrg = async () => {
-    try {
-      if (!validateName(orgName)) {
-        toast.error('Invalid organization name')
-        return
-      }
-      await handleNewOrgClick()
-      setSwitchOrCreate(true)
-    } catch (e) {
-      toast.error('Something went wrong')
-    }
-  }
-
   const toggleModal = async () => {
     setShowModal(!showModal)
-    setLoading(true)
-    if (!showModal) {
-      await fetchOrganizations()
-      setLoading(false)
-    }
-  }
-
-  const renderOrgName = () => {
-    return (
-      <div>
-        <div className='org-name text-secondary pr-1'>{getCurrentOrg()?.name || null}</div>
-      </div>
-    )
+    if (!showModal) await fetchOrganizations()
   }
 
   const getUserDetails = () => {
@@ -115,6 +55,7 @@ const UserProfile = () => {
   }
 
   const renderAvatarWithOrg = (onClick, ref1) => {
+    const firstLetterCapital = getCurrentOrg()?.name?.[0].toUpperCase();
     return (
       <div className='menu-trigger-box d-flex align-items-center justify-content-between w-100 rounded gap-1 px-1 py-1'>
         <div
@@ -125,8 +66,8 @@ const UserProfile = () => {
             onClick(e)
           }}
         >
-          <Avatar className='mr-2' color='#343a40' name={getCurrentOrg()?.name.split(" ")[0]} size={15} round='4px' />
-          {renderOrgName()}
+          <div className="mr-2 avatar-org px-2 rounded" size={15}>{firstLetterCapital}</div>
+          <div className='org-name text-secondary'>{getCurrentOrg()?.name || null}</div>
           <IoIosArrowDown size={16} className='text-secondary' />
         </div>
         <div className='add-button d-flex align-items-center'>
@@ -147,9 +88,8 @@ const UserProfile = () => {
     )
   }
 
-  const handleCreateOrganizationClick = () => {
-    navigate('/onBoarding')
-  };
+  const handleCreateOrganizationClick = () => navigate('/onBoarding')
+
   const renderUserDetails = () => {
     const { email } = getUserDetails()
     return (
@@ -247,7 +187,6 @@ const UserProfile = () => {
   const renderTrash = () => {
     return (
       <div className='profile-details' onClick={handleTrashClick}>
-        {/* <MdDeleteOutline className='mr-2' size={17} /> */}
         <span className='trash mr-2'>Trash</span>
       </div>
     )
@@ -260,7 +199,6 @@ const UserProfile = () => {
   const renderLogout = () => {
     return (
       <div className='profile-details' onClick={() => handleLogout()}>
-        {/* <img src={Power} className='mr-2' size={14} alt='power-icon' /> */}
         <span className='logout mr-2'> Logout</span>
       </div>
     )
@@ -269,7 +207,6 @@ const UserProfile = () => {
   const renderAddCollection = () => {
     return (
       <div className='collection' onClick={handleAddNewClick}>
-        {/* <MdAdd className='mr-2' size={17} /> */}
         <span className='add-collection mr-2'>Add collection</span>
       </div>
     )
@@ -288,13 +225,8 @@ const UserProfile = () => {
       dispatch(closeAllTabs(tabIdsToClose))
       removeFromLocalStorage(tabIdsToClose)
       dispatch(onHistoryRemoved(history))
-      if (switchOrCreate) {
-        createOrg(orgName)
-      } else {
-        switchOrg(currentOrg.id, true)
-      }
+      switchOrg(currentOrg.id, true)
     } else if (value === 'no') {
-      setOrgName('')
       setModalForTabs(false)
       setShowModal(false)
     }
