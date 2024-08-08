@@ -1318,8 +1318,8 @@ class DisplayEndpoint extends Component {
         postScript: endpointContent?.postScriptText,
         docViewData: endpointContent?.docViewData,
         protocolType: endpointContent?.protocolType || null,
-        description: endpointContent?.description,
-        sampleResponse : endpointContent?.sampleResponseArray
+        description: endpointContent?.description || '',
+        sampleResponse : endpointContent?.sampleResponseArray || []
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
