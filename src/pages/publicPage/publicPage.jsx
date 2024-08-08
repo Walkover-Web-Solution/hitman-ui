@@ -8,6 +8,7 @@ import { useQuery } from 'react-query'
 import { IoDocumentTextOutline } from 'react-icons/io5'
 import Footer from '../../components/main/Footer'
 import ApiDocReview from '../../components/apiDocReview/apiDocReview'
+import { functionTypes } from '../../components/common/functionType'
 import './publicPage.scss'
 
 const queryConfig = {
@@ -34,7 +35,7 @@ function PublicPage() {
                 threadId: `${currentIdToShow}`,
                 variables: {
                     collectionId: pages[currentIdToShow]?.collectionId,
-                    functionType: process.env.REACT_APP_ENV === 'prod' ? urlEnums.prod : urlEnums.dev
+                    functionType: process.env.REACT_APP_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
                 }
             })
         }

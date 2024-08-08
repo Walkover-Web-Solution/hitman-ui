@@ -13,6 +13,7 @@ import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1';
 import IconButton from '../../components/common/iconButton';
 import { getProxyToken } from "../../components/auth/authServiceV2";
 import { GoDotFill } from "react-icons/go";
+import { functionTypes } from "../../components/common/functionType";
 import './page.scss';
 
 const Page = () => {
@@ -46,7 +47,7 @@ const Page = () => {
                 variables: {
                     Proxy_auth_token: getProxyToken(),
                     collectionId: page?.collectionId,
-                    functionType: process.env.REACT_APP_ENV === 'prod' ? urlEnums.prod : urlEnums.dev
+                    functionType: process.env.REACT_APP_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
                 }
             })
         }
