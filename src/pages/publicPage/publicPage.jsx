@@ -32,7 +32,10 @@ function PublicPage() {
             window.SendDataToChatbot({
                 bridgeName: 'page',
                 threadId: `${currentIdToShow}`,
-                variables: { collectionId: pages[currentIdToShow]?.collectionId }
+                variables: {
+                    collectionId: pages[currentIdToShow]?.collectionId,
+                    functionType: process.env.REACT_APP_ENV === 'prod' ? urlEnums.prod : urlEnums.dev
+                }
             })
         }
     }, [currentIdToShow])

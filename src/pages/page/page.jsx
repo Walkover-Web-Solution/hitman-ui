@@ -15,11 +15,6 @@ import { getProxyToken } from "../../components/auth/authServiceV2";
 import { GoDotFill } from "react-icons/go";
 import './page.scss';
 
-const urlEnums = {
-    prod: "production",
-    dev: "development"
-}
-
 const Page = () => {
 
     const { draftContent, page, pages, users, activeTabId, tabs, isPublished } = useSelector((state) => ({
