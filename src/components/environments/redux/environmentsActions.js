@@ -79,12 +79,16 @@ export const updateEnvironment = (editedEnvironment) => {
 
 export const deleteEnvironment = (environment) => {
   return (dispatch) => {
-    dispatch(deleteEnvironmentRequest(environment))
+    dispatch(deleteEnvironmentRequest(environment.id))
     environmentsApiService
       .deleteEnvironment(environment.id)
-      .then(() => {
-        dispatch(OnEnvironmentDeleted())
-        toast.success('Environment deleted successfully')
+      .then((response) => {
+        if (response) { 
+          dispatch(OnEnvironmentDeleted(environment.id))
+          toast.success('Environment deleted successfully')
+        } else {
+          toast.error('Failed to delete environment')
+        }
       })
       .catch((error) => {
         dispatch(OnEnvironmentDeletedError(error.response, environment))
@@ -157,16 +161,17 @@ export const OnEnvironmentUpdatedError = (error, originalEnvironment) => {
   }
 }
 
-export const deleteEnvironmentRequest = (environment) => {
+export const deleteEnvironmentRequest = (environmentId) => {
   return {
     type: environmentsActionTypes.DELETE_ENVIRONMENT_REQUEST,
-    environment
+    environmentId
   }
 }
 
-export const OnEnvironmentDeleted = () => {
+export const OnEnvironmentDeleted = (environmentId) => {
   return {
-    type: environmentsActionTypes.ON_ENVIRONMENT_DELETED
+    type: environmentsActionTypes.ON_ENVIRONMENT_DELETED, 
+    environmentId
   }
 }
 

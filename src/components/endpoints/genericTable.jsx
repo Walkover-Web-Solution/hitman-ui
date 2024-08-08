@@ -9,7 +9,8 @@ import 'react-autocomplete-input/dist/bundle.css'
 import { background } from '../backgroundColor.js'
 import { isOnPublishedPage } from '../common/utility'
 import withRouter from '../common/withRouter.jsx'
-import { RiDeleteBinLine } from 'react-icons/ri'
+import { RiCodeLine, RiDeleteBinLine } from 'react-icons/ri'
+import { Modal } from 'bootstrap'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
@@ -388,6 +389,7 @@ class GenericTable extends Component {
       })
     }
   }
+
 
   renderTableRow(dataArray, index, originalData, title) {
     const valueKey = `${index}.value`
