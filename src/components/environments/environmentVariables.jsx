@@ -34,7 +34,7 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
       originalVars.push(len.toString())
       const updatedVars = [...Object.keys(environmentCopy.variables), '']
       environmentCopy.variables[len.toString()] = { initialValue: '', currentValue: '' }
-  
+
       setEnvironment(environmentCopy)
       setOriginalVariableNames(originalVars)
       setUpdatedVariableNames(updatedVars)
@@ -43,7 +43,7 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
 
   const schema = {
     name: Joi.string().min(3).max(50).trim().required().label('Environment Name'),
-    type: Joi.number().required().label('Environment Type') 
+    type: title === 'Edit Environment' ? Joi.number().optional() : Joi.number().required().label('Environment Type')
   }
 
   const handleSubmit = (e) => {
@@ -52,7 +52,7 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
   }
 
   const doSubmit = () => {
-    const validationErrors = validate({ name: environment.name, type: environmentType }, schema)
+    const validationErrors = validate({ name: environment.name, type: title === 'Edit Environment' ? undefined : environmentType  }, schema)
     if (validationErrors) {
       setErrors(validationErrors)
       return null
@@ -77,14 +77,16 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
     const existingEnvironment = initialEnvironment && initialEnvironment.name === environment.name;
 
     if (title === 'Add new Environment' && !existingEnvironment) {
-      dispatch(addEnvironment({ name: environment.name, ...updatedEnvironment, type:environmentType}))
+      dispatch(addEnvironment({ name: environment.name, ...updatedEnvironment, type: environmentType }))
       setEnvironment({ name: '', variables: {} })
       setOriginalVariableNames([])
       setUpdatedVariableNames([])
     } else {
       const originalEnvCopy = jQuery.extend(true, {}, initialEnvironment)
-      if (JSON.stringify(originalEnvCopy) !== JSON.stringify(updatedEnvironment)) {
-        dispatch(updateEnvironment({ id: environment.id, name: environment.name, ...updatedEnvironment, userId, type:environmentType }))
+      if(environment.id) {
+        if (JSON.stringify(originalEnvCopy) !== JSON.stringify(updatedEnvironment)) {
+          dispatch(updateEnvironment({ id: environment.id, name: environment.name, ...updatedEnvironment }))
+        }
       }
     }
   }
@@ -171,32 +173,34 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
                 </div>
                 {errors?.name && <div className='alert alert-danger'>{errors?.name}</div>}
               </div>
-              <div className='form-group py-2'>
-                <label htmlFor='custom-environment-input'>Environment Type <span className='mx-1 alert alert-danger'>*</span></label>
-                <div>
-                  <label className='radio-inline pr-4'>
-                    <input
-                      type='radio'
-                      name='environmentType'
-                      value='global'
-                      onChange={handleEnvType}
-                      className='mr-2 pt-2'
-                    />
-                    Global Environment
-                  </label>
-                  <label className='radio-inline ml-3'>
-                    <input
-                      type='radio'
-                      name='environmentType'
-                      value='private'
-                      onChange={handleEnvType}
-                      className='mr-2 pt-2'
-                    />
-                    Private Environment
-                  </label>
+              {title === 'Add new Environment' && (
+                <div className='form-group py-2'>
+                  <label htmlFor='custom-environment-input'>Environment Type <span className='mx-1 alert alert-danger'>*</span></label>
+                  <div>
+                    <label className='radio-inline pr-4'>
+                      <input
+                        type='radio'
+                        name='environmentType'
+                        value='global'
+                        onChange={handleEnvType}
+                        className='mr-2 pt-2'
+                      />
+                      Global Environment
+                    </label>
+                    <label className='radio-inline ml-3'>
+                      <input
+                        type='radio'
+                        name='environmentType'
+                        value='private'
+                        onChange={handleEnvType}
+                        className='mr-2 pt-2'
+                      />
+                      Private Environment
+                    </label>
+                  </div>
                 </div>
-              </div>
-              {errors?.type && <div className='alert alert-danger'>{errors?.type}</div>}
+              ) }
+             { errors?.type && <div className='alert alert-danger'>{errors?.type}</div>}
               <div className='custom-table-container env-table'>
                 <Table size='sm' className='my-1'>
                   <thead>

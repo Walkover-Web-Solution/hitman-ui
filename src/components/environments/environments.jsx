@@ -12,6 +12,8 @@ import EnvironmentVariables from './environmentVariables.jsx'
 import DeleteModal from '../common/deleteModal.jsx'
 import './environments.scss'
 import { FaCheck } from "react-icons/fa6";
+import { TbWorld } from "react-icons/tb";
+import { getCurrentUser } from '../auth/authServiceV2.js'
 
 const Environments = () => {
 
@@ -23,6 +25,7 @@ const Environments = () => {
   })
 
   const dispatch = useDispatch()
+  const userId = getCurrentUser()?.id
 
   const [environmentFormName, setEnvironmentFormName] = useState('')
   const [environmentToBeEdited, setEnvironmentToBeEdited] = useState(null)
@@ -62,6 +65,7 @@ const Environments = () => {
   }
 
   return (
+    
     <div className='environment-container d-flex align-items-center transition'>
       {(environmentFormName === 'Add new Environment' || environmentFormName === 'Edit Environment') &&
         <EnvironmentVariables show onHide={handleEnvironmentModal} title={environmentFormName} environment={environmentToBeEdited} />}
@@ -86,6 +90,7 @@ const Environments = () => {
             <Dropdown.Item onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
             {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item onClick={() => handleEnv(environmentId)} key={environmentId}>{environment.environments[environmentId]?.name}
             {environmentId === currentEnvironmentId && <span><FaCheck /></span>}
+            {environment?.environments[environmentId]?.userId === 0 && <span><TbWorld /></span>}
             </Dropdown.Item>)}
             <Dropdown.Divider />
             <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Add new Environment')}>Add Environment</Dropdown.Item>
@@ -98,4 +103,4 @@ const Environments = () => {
     </div>
   )
 }
-export default Environments
+export default Environments 
