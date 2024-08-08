@@ -15,6 +15,11 @@ import { getProxyToken } from "../../components/auth/authServiceV2";
 import { GoDotFill } from "react-icons/go";
 import './page.scss';
 
+const urlEnums = {
+    prod: "production",
+    dev: "development"
+}
+
 const Page = () => {
 
     const { draftContent, page, pages, users, activeTabId, tabs, isPublished } = useSelector((state) => ({
@@ -43,7 +48,11 @@ const Page = () => {
             window.SendDataToChatbot({
                 bridgeName: 'page',
                 threadId: `${users.currentUser.id}-${pageId}`,
-                variables: { Proxy_auth_token: getProxyToken(), collectionId: page?.collectionId }
+                variables: {
+                    Proxy_auth_token: getProxyToken(),
+                    collectionId: page?.collectionId,
+                    functionType: process.env.REACT_APP_ENV === 'prod' ? urlEnums.prod : urlEnums.dev
+                }
             })
         }
     }, []);
