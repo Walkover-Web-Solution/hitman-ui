@@ -29,10 +29,15 @@
 }
 
 .avatar-org {
+  display: flex;
   background: rgba(55, 53, 47, 0.09) !important;
   color: rgba(55, 53, 47, 0.65) !important;
   text-transform: uppercase;
-  border-radius: 0.25rem;
+  font-size: 10px;
+  width: 20px;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
 }
 
 .leave-icon {
@@ -68,10 +73,11 @@
   padding-right: 10px;
 }
 
-.invite-user{
+.invite-user {
   &:hover {
     background-color: rgba(0, 0, 0, 0.05);
   }
+
   .members {
     font-size: 12px;
     font-weight: 400;
@@ -84,6 +90,7 @@
   &:hover {
     background-color: rgba(0, 0, 0, 0.05);
   }
+
   .trash {
     font-size: 12px;
     font-weight: 400;
@@ -92,10 +99,11 @@
   }
 }
 
-.collection{
+.collection {
   &:hover {
     background-color: rgba(0, 0, 0, 0.05);
   }
+
   .add-collection {
     font-size: 12px;
     font-weight: 400;
