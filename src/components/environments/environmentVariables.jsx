@@ -27,20 +27,23 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
   useEffect(() => {
     if (title === 'Add new Environment') return
 
-    let environmentCopy = jQuery.extend(true, {}, initialEnvironment)
-    const originalVars = Object.keys(environmentCopy.variables)
-    const len = originalVars.length
-    originalVars.push(len.toString())
-    const updatedVars = [...Object.keys(environmentCopy.variables), '']
-    environmentCopy.variables[len.toString()] = { initialValue: '', currentValue: '' }
-
-    setEnvironment(environmentCopy)
-    setOriginalVariableNames(originalVars)
-    setUpdatedVariableNames(updatedVars)
+    if (initialEnvironment && Object.keys(initialEnvironment.variables).length > 0) {
+      let environmentCopy = jQuery.extend(true, {}, initialEnvironment)
+      const originalVars = Object.keys(environmentCopy.variables)
+      const len = originalVars.length
+      originalVars.push(len.toString())
+      const updatedVars = [...Object.keys(environmentCopy.variables), '']
+      environmentCopy.variables[len.toString()] = { initialValue: '', currentValue: '' }
+  
+      setEnvironment(environmentCopy)
+      setOriginalVariableNames(originalVars)
+      setUpdatedVariableNames(updatedVars)
+    }
   }, [title, initialEnvironment])
 
   const schema = {
-    name: Joi.string().min(3).max(50).trim().required().label('Environment Name')
+    name: Joi.string().min(3).max(50).trim().required().label('Environment Name'),
+    type: Joi.number().required().label('Environment Type') 
   }
 
   const handleSubmit = (e) => {
@@ -49,7 +52,7 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
   }
 
   const doSubmit = () => {
-    const validationErrors = validate({ name: environment.name }, schema)
+    const validationErrors = validate({ name: environment.name, type: environmentType }, schema)
     if (validationErrors) {
       setErrors(validationErrors)
       return null
@@ -71,9 +74,10 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
     }
     const updatedEnvironment = { variables: updatedVariables }
     const userId = getCurrentUser()?.id
+    const existingEnvironment = initialEnvironment && initialEnvironment.name === environment.name;
 
-    if (title === 'Add new Environment') {
-      dispatch(addEnvironment({ name: environment.name, ...updatedEnvironment, userId, type:environmentType}))
+    if (title === 'Add new Environment' && !existingEnvironment) {
+      dispatch(addEnvironment({ name: environment.name, ...updatedEnvironment, type:environmentType}))
       setEnvironment({ name: '', variables: {} })
       setOriginalVariableNames([])
       setUpdatedVariableNames([])
@@ -192,6 +196,7 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
                   </label>
                 </div>
               </div>
+              {errors?.type && <div className='alert alert-danger'>{errors?.type}</div>}
               <div className='custom-table-container env-table'>
                 <Table size='sm' className='my-1'>
                   <thead>
