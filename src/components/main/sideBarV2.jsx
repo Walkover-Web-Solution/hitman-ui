@@ -101,17 +101,16 @@ const SideBar = () => {
               <span>API Documentation</span>
             </h4>
           </div>
-        {isTechdocOwnDomain() && (
-           <OverlayTrigger
-           placement='bottom'
-           overlay={<Tooltip>Built with techdoc</Tooltip>}
-           >
-          <Link href='/login' target='_blank' className='login-button btn btn-sm btn-light d-flex justify-content-center p-0 align-items-center h-100 bg-none border-0'
-          >
-            <Logo className='logo-techdoc' />
-          </Link>
-           </OverlayTrigger>
-        )}
+          {isTechdocOwnDomain() && (
+            <OverlayTrigger
+              placement='bottom'
+              overlay={<Tooltip>Built with Techdoc</Tooltip>}
+            >
+              <Link to={process.env.REACT_APP_UI_URL} target='_blank' className='login-button btn btn-sm btn-light d-flex justify-content-center p-0 align-items-center h-100 bg-none border-0'>
+                <Logo className='logo-techdoc' />
+              </Link>
+            </OverlayTrigger>
+          )}
         </div>
       </>
     )
