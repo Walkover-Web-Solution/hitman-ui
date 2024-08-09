@@ -4211,16 +4211,7 @@ body .tox {
   #collection-collapse {
     position: relative;
     padding-left: 6px;
-
-    &::before {
-      content: '';
-      display: block;
-      border-left: 1px solid $indentation;
-      height: 97%;
-      position: absolute;
-      top: 0;
-      left: 16px;
-    }
+    
   }
 }
 
