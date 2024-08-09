@@ -330,6 +330,13 @@ $border-color: rgba(227, 228, 230, 0.7);
     color: #6c757d;
   }
 }
+.Selected {
+  .in-api-label {
+    &.POST, &.GET, &.PUT, &.PATCH, &.DELETE {
+      color: $text-color!important;
+    }
+  }
+}
 label.custom-input-label {
   font-size: 14px;
   font-weight: 300;
@@ -518,10 +525,6 @@ button.btn {
   }
 }
 
-.prettify-button:hover span {
-  background-color: rgba(195, 191, 191, 0.4);
- 
-}
 .custom-raw-editor {
   width: 100% !important;
   height: 250px !important;

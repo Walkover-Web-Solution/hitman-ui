@@ -10,6 +10,7 @@ import { background } from '../backgroundColor.js'
 import { isOnPublishedPage } from '../common/utility'
 import withRouter from '../common/withRouter.jsx'
 import { RiDeleteBinLine } from "react-icons/ri"
+import IconButton from '../common/iconButton.jsx'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
@@ -454,17 +455,17 @@ class GenericTable extends Component {
           )}
         </td>
 
-          {isDashboardRoute(this.props) ? (
+        {isDashboardRoute(this.props) ? (
           <div className='delete-icons'>
-              {dataArray.length - 1 === index || !isDashboardRoute(this.props) || title === 'Path Variables' ? null : (
-                <button type='button' className='btn pl-2 pt-1 pr-0 cross-button' onClick={() => this.handleDelete(dataArray, index, title)}>
-                 <RiDeleteBinLine size={20} className='text-link' />
-                </button>
-              )}
-             </div>
-          ) : (
-            dataArray[index].description
-          )}
+            {dataArray.length - 1 === index || !isDashboardRoute(this.props) || title === 'Path Variables' ? null : (
+              <button type='button' className='btn pl-2 pt-1 pr-0 cross-button' onClick={() => this.handleDelete(dataArray, index, title)}>
+                <RiDeleteBinLine size={20} className='text-link' />
+              </button>
+            )}
+          </div>
+        ) : (
+          dataArray[index].description
+        )}
       </tr>
     )
   }
@@ -570,26 +571,19 @@ class GenericTable extends Component {
       // table-bordered
       <div className='hm-public-table position-relative mb-2'>
         {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) ? <div>{title}</div> : null}
-        <div className={isDocView ? 'public-generic-table-title-container mb-2' : 'generic-table-title-container'}>
-          {isDocView && dataArray.length > 0 ? (
-            <span>
-              {this.renderTitle(title)} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}
-            </span>
-          ) : null}
-        </div>
 
         {!this.state.bulkEdit && dataArray.length > 0 ? (
-         <div className={`headParaWraper p-0`} style={this.state.theme.backgroundStyle}>
+          <div className={`headParaWraper p-0`} style={this.state.theme.backgroundStyle}>
             <table className='table' id='custom-generic-table'>
               {isDashboardRoute(this.props) ? (
                 <thead>
                   <tr>
                     <th className='custom-th'> </th>
-                    <th className='custom-th' id='generic-table-key-cell'>
+                    <th className='custom-th text-gray' id='generic-table-key-cell dd'>
                       KEY
                     </th>
-                    <th className='custom-th'>VALUE</th>
-                    <th className='custom-th'>DESCRIPTION</th>
+                    <th className='custom-th text-gray'>VALUE</th>
+                    <th className='custom-th text-gray'>DESCRIPTION</th>
                   </tr>
                 </thead>
               ) : dataArray.length === this.findUncheckedEntityCount() ? (
@@ -604,9 +598,9 @@ class GenericTable extends Component {
                 {dataArray.map((e, index) =>
                   !isDashboardRoute(this.props)
                     ? (dataArray[index]?.checked === 'true' ||
-                        dataArray[index]?.checked === 'notApplicable' ||
-                        this.state.optionalParams) &&
-                      this.renderPublicTableRow(dataArray, index, originalData, title)
+                      dataArray[index]?.checked === 'notApplicable' ||
+                      this.state.optionalParams) &&
+                    this.renderPublicTableRow(dataArray, index, originalData, title)
                     : this.renderTableRow(dataArray, index, originalData, title)
                 )}
               </tbody>
@@ -633,7 +627,7 @@ class GenericTable extends Component {
 
         {title === 'Path Variables' || !isDashboardRoute(this.props) ? null : (
           <div className='generic-table-title-container'>
-            <button className='adddescLink mt-2 addBulk fs-4' onClick={() => this.displayEditButton()}>
+            <button className='adddescLink mt-2 addBulk fs-4 icon-button px-2' onClick={() => this.displayEditButton()}>
               {this.state.editButtonName}
             </button>
           </div>

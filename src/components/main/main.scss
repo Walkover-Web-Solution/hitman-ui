@@ -77,7 +77,9 @@
 .fw-900 {
   font-weight: $font-weight-900;
 }
-
+.text-gray {
+  color: $theme-color !important;
+}
 .mobile-warning {
   position: sticky;
   z-index: 1200;
@@ -1456,7 +1458,7 @@ button.editBtn {
 }
 
 .adddescLink {
-  color: #e98a36;
+  color: $theme-color;
   text-decoration: none;
   cursor: pointer;
   font-size: $font-medium;
@@ -1465,10 +1467,6 @@ button.editBtn {
   outline: none !important;
   margin: 0.5rem 0;
   float: right;
-
-  &:hover {
-    color: #f57a0d;
-  }
 }
 
 .dropdown-item.active,
@@ -1748,9 +1746,9 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
 }
 
 .customBtnGroup .btn {
+  border: 1px solid $border-color;
   box-shadow: none !important;
   outline: none;
-  border: 1px solid #e98a36 !important;
   font-size: $font-medium !important;
   font-weight: 500;
   background: #fff !important;
@@ -1758,10 +1756,14 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
   height: 35px;
   display: flex;
   align-items: center;
+  color: $theme-color;
+  &:hover {
+    color: $text-color;
+  }
 
-  &:hover,
   &.active {
-    background: $theme-color !important;
+    background-color: $button-active-color !important;
+    color: $text-color;
   }
 }
 
@@ -2364,7 +2366,6 @@ button[name='cta-1'] {
   border: 1px solid #e3e9f3;
   padding: 20px;
   margin-top: 30px;
-  border-left: 3px solid #e98a36;
 }
 
 .new-pub-doc .pages-inner-wrapper {
@@ -2889,10 +2890,6 @@ li.nav-item.cookie-tab a {
   color: #828282;
   display: flex;
   cursor: pointer;
-}
-
-.endpoint-headers-container .nav-item a:hover {
-  color: #e98a36 !important;
 }
 
 .profile-dropdown {
@@ -3734,9 +3731,6 @@ body .doc-secs-container {
     border: 1px solid $lightblackborder;
   }
 
-  .testing-view-sample-response {
-    padding: 0 1rem;
-  }
 }
 
 .doc-options {
@@ -4266,14 +4260,15 @@ body .tox {
 
   .Script-button {
     width: 100px;
-
+    color: $theme-color;
+    font-size: $font-small-s;
     &:hover {
-      background-color: rgba(128, 128, 128, 0.089) !important;
+      background-color: $button-background-hover !important;
     }
 
     &.active {
-      color: #e98a36 !important;
-      background-color: rgba(128, 128, 128, 0.089) !important;
+      color: $text-color !important;
+      background-color: $button-background-hover !important;
     }
   }
 }

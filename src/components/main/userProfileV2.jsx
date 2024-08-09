@@ -125,7 +125,7 @@ const UserProfile = () => {
             onClick(e)
           }}
         >
-          <Avatar className='mr-2' color='#343a40' name={getCurrentOrg()?.name.split(" ")[0]} size={15} round='4px' />
+          <Avatar className='mr-2' color='#343a40' name={getCurrentOrg()?.name?.split(" ")[0]} size={15} round='4px' />
           {renderOrgName()}
           <IoIosArrowDown size={16} className='text-secondary' />
         </div>
@@ -246,7 +246,7 @@ const UserProfile = () => {
 
   const renderTrash = () => {
     return (
-      <div className='profile-details' onClick={handleTrashClick}>
+      <div className='profile-details cursor-pointer' onClick={handleTrashClick}>
         {/* <MdDeleteOutline className='mr-2' size={17} /> */}
         <span className='trash mr-2'>Trash</span>
       </div>
@@ -259,7 +259,7 @@ const UserProfile = () => {
 
   const renderLogout = () => {
     return (
-      <div className='profile-details' onClick={() => handleLogout()}>
+      <div className='profile-details cursor-pointer' onClick={() => handleLogout()}>
         {/* <img src={Power} className='mr-2' size={14} alt='power-icon' /> */}
         <span className='logout mr-2'> Logout</span>
       </div>
@@ -268,7 +268,7 @@ const UserProfile = () => {
 
   const renderAddCollection = () => {
     return (
-      <div className='collection' onClick={handleAddNewClick}>
+      <div className='collection cursor-pointer' onClick={handleAddNewClick}>
         {/* <MdAdd className='mr-2' size={17} /> */}
         <span className='add-collection mr-2'>Add collection</span>
       </div>
