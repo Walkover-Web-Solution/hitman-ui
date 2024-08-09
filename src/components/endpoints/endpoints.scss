@@ -351,6 +351,29 @@ $border-color: rgba(227, 228, 230, 0.7);
             &:hover {
               background-color: rgba(128, 128, 128, 0.123);
             }
+            &.get-button {
+              color: #e98a36;
+            }
+            
+            &.post-button {
+              color: #27ae60;
+            }
+            
+            &.put-button {
+              color: #cca027;
+            }
+            
+            &.patch-button {
+              color: #ce6529;
+            }
+            
+            &.delete-button {
+              color: #d13755;
+            }
+            
+          }
+          &.dropdown-url {
+            min-width: 5rem !important;
           }
         }
       }
@@ -776,6 +799,9 @@ table#custom-generic-table {
       margin-left: 10px;
     }
   }
+  .delete-icons {
+    width: 30px;
+  }
 }
 
 #folder-list {
@@ -861,7 +887,6 @@ table#custom-generic-table {
   justify-content: space-between;
   align-items: center;
 }
-
 .authorization-panel {
   display: flex;
   flex-direction: row;
@@ -1203,7 +1228,6 @@ table#custom-generic-table {
     padding: 0;
     height: 60px;
     width: 300px;
-    background-color: rgb(212, 237, 218);
     display: flex;
     flex-direction: row-reverse;
   }
@@ -1668,7 +1692,7 @@ table#custom-generic-table {
         div#ace-editor {
           min-height: 200px !important;
           width: 100% !important;
-        }
+        } 
       }
 
       .ace_content {
@@ -1695,7 +1719,6 @@ table#custom-generic-table {
   height: 97vh;
   right: 0px;
   top: 40px;
-  background-color: #f7f6f3 !important;
   color: black !important;
   width: 426px !important;
   min-width: unset !important;
@@ -1759,6 +1782,11 @@ table#custom-generic-table {
       }
     }
 
+  }
+  .ace-editor-wrapper {
+    .copy-button-light, .ace_editor, .empty-div-light {
+      background-color: #f7f7f5;
+    }
   }
 }
 

@@ -2,10 +2,15 @@ import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
-import { getOrgId, operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
+import { operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
 import endpointApiService from '../../endpoints/endpointApiService'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { navigateTo } from '../../../navigationService'
+import { getCurrentOrg } from '../../auth/authServiceV2'
+import tabsActionTypes from '../../tabs/redux/tabsActionTypes'
+import { onPageStateSuccess } from '../../publicEndpoint/redux/publicEndpointsActions'
+import { replaceTab } from '../../tabs/redux/tabsActions'
 
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
@@ -38,7 +43,30 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
   }
 }
 
-export const updatePage = (history, editedPage) => {
+export const updatePageName = (id, updatedName) => {
+  const dataToSend = { name: updatedName }
+  return async (dispatch) => {
+    const res = await pageApiService.updatePage(id, dataToSend)
+    if (res) {
+      dispatch({
+        type: pagesActionTypes.ON_PAGE_RENAME,
+        payload: { id, updatedName }
+      })
+    }
+  }
+}
+
+export const updatePageContent = (id, content, name) => {
+  return async (dispatch) => {
+    const dataToSend = { name, contents: content }
+    await pageApiService.updatePage(id, dataToSend)
+    dispatch({ type: tabsActionTypes.DELETE_TAB_NAME, payload: { id } })
+    dispatch({ type: tabsActionTypes.SET_TAB_MODIFIED, payload: { id, flag: false } })
+    dispatch(onPageStateSuccess({ id, isPublished: false }))
+  }
+}
+
+export const updatePage = (editedPage) => {
   editedPage.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
     const dataToSend = {
@@ -48,7 +76,7 @@ export const updatePage = (history, editedPage) => {
       state: editedPage.state,
       collectionId: editedPage.collectionId,
       urlMappingFlag: editedPage.urlMappingFlag,
-      prevUrlName: editedPage.prevUrlName,
+      prevUrlName: editedPage.prevUrlName
     }
     pageApiService
       .updatePage(editedPage.id, dataToSend)
@@ -57,7 +85,7 @@ export const updatePage = (history, editedPage) => {
           const oldUrls = store.getState().pages?.[editedPage.id]?.oldUrls
           oldUrls[response.data.newUrlMapping.id] = response.data.newUrlMapping.oldUrl
           dispatch(onPageUpdated({ ...response.data.updatedPage, oldUrls }))
-          return response.data.updatedPage;
+          return response.data.updatedPage
         }
         dispatch(onPageUpdated(response.data))
         return response.data
@@ -115,16 +143,19 @@ export const onEndpointUpdated = (response) => {
   }
 }
 
-export const addPage = (history, rootParentId, newPage) => {
+export const addPage = (rootParentId, newPage, pageId) => {
   newPage.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
-  const orgId = getOrgId()
+  const orgId = getCurrentOrg()?.id
   return (dispatch) => {
     pageApiService
       .saveCollectionPage(rootParentId, newPage)
       .then((response) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
-        history.push(`/orgs/${orgId}/dashboard/page/${data.id}/edit`)
+        const newTab = { id: data.id, type: "page", status: "SAVED", previewMode: false, isModified: false }
+        newTab.draft = data.contents
+        dispatch(replaceTab(pageId, newTab))
+        navigateTo(`/orgs/${orgId}/dashboard/page/${data.id}`)
       })
       .catch((error) => {
         dispatch(onPageAddedError(error.response ? error.response.data : error, newPage))
@@ -172,7 +203,7 @@ export const deletePage = (page) => {
             toast.success('Deleted succesfully')
           })
           .catch((error) => {
-            console.errro(error)
+            console.error(error)
           })
       })
       .catch((error) => {
@@ -324,7 +355,7 @@ export const updateDragDrop = (draggedId, droppedOnId, pageIds) => {
             type: pagesActionTypes.ON_DRAG_DROP,
             payload: response.data
           })
-          toast.success("Moved succesfully")
+          toast.success('Moved succesfully')
         } else {
           toast.error(response?.data)
         }

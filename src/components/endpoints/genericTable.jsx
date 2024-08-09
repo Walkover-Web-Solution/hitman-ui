@@ -6,8 +6,10 @@ import shortid from 'shortid'
 import _ from 'lodash'
 import TextField from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
-import {background} from '../backgroundColor.js'
+import { background } from '../backgroundColor.js'
 import { isOnPublishedPage } from '../common/utility'
+import withRouter from '../common/withRouter.jsx'
+import { RiDeleteBinLine } from 'react-icons/ri'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
@@ -40,32 +42,32 @@ class GenericTable extends Component {
   }
 
   componentDidMount() {
-    this.setState({theme: this.props.publicCollectionTheme })
-    const { dataArray, originalData } = this.props;
+    this.setState({ theme: this.props.publicCollectionTheme })
+    const { dataArray, originalData } = this.props
     if (dataArray && originalData) {
-    this.setState({
-      dataArray: this.sortData(dataArray),
-      originalData: this.sortData(originalData),
-      optionalParams: false
-    });
-  }
-    const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02);
-    const staticColor = background['background_boxes'];
+      this.setState({
+        dataArray: this.sortData(dataArray),
+        originalData: this.sortData(originalData),
+        optionalParams: false
+      })
+    }
+    const dynamicColor = hexToRgb(this.props.publicCollectionTheme, 0.02)
+    const staticColor = background['background_boxes']
 
     const backgroundStyle = {
       backgroundImage: `
         linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
         linear-gradient(to right, ${staticColor}, ${staticColor})
-      `,
-    };
+      `
+    }
 
     this.setState({
-      theme: { backgroundStyle },
-    });
+      theme: { backgroundStyle }
+    })
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.match.params.endpointId !== prevProps.match.params.endpointId) {
+    if (this.props.params.endpointId !== prevProps.params.endpointId) {
       const randomId = shortid.generate()
       this.setState({ optionalParams: false, randomId })
     }
@@ -266,13 +268,13 @@ class GenericTable extends Component {
   }
 
   renderPublicTableRow(dataArray, index, originalData, title) {
-    const currentItem = dataArray[index];
-    const originalItem = originalData[index];
-    const isChecked = currentItem.checked === 'true';
-    const isNotApplicable = currentItem.checked === 'notApplicable';
-    const isDisabled = originalItem.checked !== 'false';
-    const isEmpty = originalItem.empty;
-  
+    const currentItem = dataArray[index]
+    const originalItem = originalData[index]
+    const isChecked = currentItem.checked === 'true'
+    const isNotApplicable = currentItem.checked === 'notApplicable'
+    const isDisabled = originalItem.checked !== 'false'
+    const isEmpty = originalItem.empty
+
     return (
       <tr key={currentItem.key} id='generic-table-row' className={getHighlightsData(this.props, title, [currentItem.key]) ? 'active' : ''}>
         <td className='custom-td' id='generic-table-key-cell'>
@@ -284,18 +286,20 @@ class GenericTable extends Component {
                 value={currentItem.checked}
                 checked={isChecked}
                 type='checkbox'
+                aria-label="checkbox"
                 className='Checkbox'
                 onChange={this.handleChange}
               />
-              <span className='checkmark' style={{ backgroundColor: this.props.publicCollectionTheme, borderColor: this.props.publicCollectionTheme }} />
+              <span
+                className='checkmark'
+                style={{ backgroundColor: this.props.publicCollectionTheme, borderColor: this.props.publicCollectionTheme }}
+              />
             </label>
           )}
         </td>
         <td className='custom-td keyWrapper'>
           {currentItem.key}
-          <p className='text-muted small'>
-            {isChecked || isNotApplicable ? '' : '(Optional)'}
-          </p>
+          <p className='text-muted small'>{isChecked || isNotApplicable ? '' : '(Optional)'}</p>
         </td>
         <td className='custom-td valueWrapper'>
           <div className='d-flex align-items-center'>
@@ -310,12 +314,10 @@ class GenericTable extends Component {
             />
             {isEmpty && <div className='small mandatory-field-text'>*This field is mandatory</div>}
           </div>
-          {currentItem.description && (
-            <p className='small text-muted'>{`Description: ${currentItem.description}`}</p>
-          )}
+          {currentItem.description && <p className='small text-muted'>{`Description: ${currentItem.description}`}</p>}
         </td>
       </tr>
-    );
+    )
   }
 
   renderTextOrFileInput(dataArray, index) {
@@ -327,7 +329,7 @@ class GenericTable extends Component {
           {...autoCompleterDefaultProps}
           name={key}
           key={key}
-          value = {dataArray[index].key}
+          value={dataArray[index].key}
           onChange={(e) => this.handleChange(e, { name: key, value: e })}
           type='text'
           placeholder='Key'
@@ -339,7 +341,7 @@ class GenericTable extends Component {
           <select
             className='transition cursor-pointer'
             name={index + '.type'}
-            value = 'text'
+            value='text'
             onChange={(e) => {
               this.handleChange(e)
             }}
@@ -395,11 +397,16 @@ class GenericTable extends Component {
           {dataArray[index].checked === 'notApplicable' ? null : (
             <label className='customCheckbox'>
               <input
-                disabled={isDashboardRoute(this.props, true) || originalData[index].checked === 'false' || originalData[index].type!= 'enable' ? null : 'disabled'}
+                disabled={
+                  isDashboardRoute(this.props, true) || originalData[index].checked === 'false' || originalData[index].type != 'enable'
+                    ? null
+                    : 'disabled'
+                }
                 name={index + '.checkbox'}
-                value = {dataArray[index].checked}
+                value={dataArray[index].checked}
                 checked={dataArray[index].checked === 'true'}
                 type='checkbox'
+                aria-label="checkbox"
                 className='Checkbox'
                 onChange={this.handleChange}
               />
@@ -407,10 +414,10 @@ class GenericTable extends Component {
             </label>
           )}
         </td>
-        <td className='custom-td' style={{ width: '200px' }}>
+        <td className='custom-td' style={{ width: '435px' }}>
           {isDashboardRoute(this.props) ? this.renderTextOrFileInput(dataArray, index) : dataArray[index].key}
         </td>
-        <td className='custom-td'>
+        <td className='custom-td' style={{ width: '435px' }}>
           {dataArray[index].type === 'file' ? (
             this.renderSelectFiles(dataArray, index)
           ) : (
@@ -419,7 +426,7 @@ class GenericTable extends Component {
                 {...autoCompleterDefaultProps}
                 name={valueKey}
                 key={valueKey}
-                value = {dataArray[index].type !== 'file' ? dataArray[index].value : ''}
+                value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
                 onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
                 className='form-control'
                 placeholder={dataArray[index].checked === 'notApplicable' ? 'Value' : `Enter ${dataArray[index].key}`}
@@ -430,14 +437,14 @@ class GenericTable extends Component {
             </div>
           )}
         </td>
-        <td className='custom-td' id='generic-table-description-cell'>
+        <td className='custom-td' style={{ width: '435px' }} id='generic-table-description-cell'>
           {isDashboardRoute(this.props) ? (
             <div>
               {/* params description is rendered here */}
               <input
                 disabled={isDashboardRoute(this.props) ? null : 'disabled'}
                 name={index + '.description'}
-                value = {dataArray[index].description}
+                value={dataArray[index].description}
                 onChange={this.handleChange}
                 type='text'
                 placeholder='Description'
@@ -449,30 +456,17 @@ class GenericTable extends Component {
           )}
         </td>
 
-        <td>
-          {isDashboardRoute(this.props) ? (
-            <div>
-              {dataArray.length - 1 === index || !isDashboardRoute(this.props) || title === 'Path Variables' ? null : (
-                <button type='button' className='btn cross-button' onClick={() => this.handleDelete(dataArray, index, title)}>
-                  <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                    <path d='M2.25 4.5H3.75H15.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                    <path
-                      d='M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z'
-                      stroke='#E98A36'
-                      strokeWidth='1.5'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path d='M7.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                    <path d='M10.5 8.25V12.75' stroke='#E98A36' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                  </svg>
-                </button>
-              )}
-            </div>
-          ) : (
-            dataArray[index].description
-          )}
-        </td>
+        {isDashboardRoute(this.props) ? (
+          <div className='delete-icons'>
+            {dataArray.length - 1 === index || !isDashboardRoute(this.props) || title === 'Path Variables' ? null : (
+              <button type='button' className='btn pl-2 pt-1 pr-0 cross-button' onClick={() => this.handleDelete(dataArray, index, title)}>
+                <RiDeleteBinLine size={20} className='text-link' />
+              </button>
+            )}
+          </div>
+        ) : (
+          dataArray[index].description
+        )}
       </tr>
     )
   }
@@ -587,7 +581,7 @@ class GenericTable extends Component {
         </div>
 
         {!this.state.bulkEdit && dataArray.length > 0 ? (
-         <div className={`headParaWraper ${isOnPublishedPage() ? "p-0" : "p-3"}`} style={this.state.theme.backgroundStyle}>
+          <div className={`headParaWraper p-0`} style={this.state.theme.backgroundStyle}>
             <table className='table' id='custom-generic-table'>
               {isDashboardRoute(this.props) ? (
                 <thead>
@@ -630,7 +624,7 @@ class GenericTable extends Component {
               name='contents'
               id='contents'
               rows='9'
-              value= {this.textAreaValue}
+              value={this.textAreaValue}
               onChange={this.handleBulkChange}
               placeholder={
                 'Rows are separated by new lines \\nKeys and values are separated by : \\nPrepend // to any row you want to add but keep disabled'
@@ -641,7 +635,7 @@ class GenericTable extends Component {
 
         {title === 'Path Variables' || !isDashboardRoute(this.props) ? null : (
           <div className='generic-table-title-container'>
-            <button className='adddescLink mt-2 addBulk' onClick={() => this.displayEditButton()}>
+            <button className='adddescLink mt-2 addBulk fs-4' onClick={() => this.displayEditButton()}>
               {this.state.editButtonName}
             </button>
           </div>
@@ -651,4 +645,4 @@ class GenericTable extends Component {
   }
 }
 
-export default GenericTable
+export default withRouter(GenericTable)

@@ -2,11 +2,34 @@ import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap'
 import tabService from './tabService'
 import { useQueryClient } from 'react-query'
+import { connect } from 'react-redux'
+import { closeTab } from './redux/tabsActions'
+import withRouter from '../common/withRouter'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
     const queryClient = useQueryClient()
     return <WrappedComponent {...props} queryClient={queryClient} />
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    endpoints: state.pages,
+    tabs: state.tabs,
+    responseView: state.responseView,
+    pages: state.pages,
+    tabState: state.tabs.tabs,
+    tabsOrder: state.tabs.tabsOrder,
+    historySnapshots: state.history,
+    collections: state.collections,
+    history: state.history
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    close_tab: (tabId) => dispatch(closeTab(tabId)),
   }
 }
 class SavePromptModal extends Component {
@@ -19,7 +42,7 @@ class SavePromptModal extends Component {
     const { tabs } = this.props.tabs
     const currentTabIdClicked = this.props.tab_id
     const tab = tabs[currentTabIdClicked]
-    switch (tab.type) {
+    switch (tab?.type) {
       case 'page':
         await this.props.handle_save_page(true, currentTabIdClicked)
         break
@@ -34,7 +57,7 @@ class SavePromptModal extends Component {
     if (endpointStatus !== 'NEW') {
       tabService.removeTab(currentTabIdClicked, { ...this.props })
     } else {
-      tabService.selectTab({ ...this.props }, currentTabIdClicked)
+      tabService.selectTab(currentTabIdClicked, { ...this.props })
     }
   }
 
@@ -103,4 +126,4 @@ class SavePromptModal extends Component {
   }
 }
 
-export default withQuery(SavePromptModal)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(SavePromptModal)))

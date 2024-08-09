@@ -1,5 +1,5 @@
 import React from 'react'
-import './indexWebsite.scss'
+import { useNavigate } from 'react-router-dom'
 import { ReactComponent as Logo } from '../../assets/web/logo.svg'
 import { ReactComponent as Giddh } from '../../assets/web/logos/giddh.svg'
 import { ReactComponent as Socket } from '../../assets/web/logos/socket.svg'
@@ -7,11 +7,10 @@ import { ReactComponent as Freejun } from '../../assets/web/logos/freejun.svg'
 import { ReactComponent as Msg91 } from '../../assets/web/logos/msg91.svg'
 import { ReactComponent as Dbdash } from '../../assets/web/logos/dbdash.svg'
 import { ReactComponent as Walkover } from '../../assets/web/logos/walkover.svg'
-
 import { MdAccessTimeFilled, MdGroups, MdRocketLaunch, MdApi } from 'react-icons/md'
-
 import heroImg from '../../assets/web/hero_img.png'
 import content from './indexWebsite.json'
+import './indexWebsite.scss'
 
 export default function IndexWebsite() {
   return (
@@ -131,6 +130,7 @@ export default function IndexWebsite() {
                       target='_blank'
                       key={i}
                       className={`${i == 2 || i == 3 ? 'col_span_2' : 'col_span-1'} grid_col`}
+                      aria-label="website icons"
                     >
                       {LogoComponent}
                     </a>

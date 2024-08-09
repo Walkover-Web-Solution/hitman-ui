@@ -4,18 +4,19 @@ import GenericTable from './genericTable'
 import AceEditor from 'react-ace'
 import { willHighlight } from './highlightChangesHelper'
 import './publicEndpoint.scss'
-import { Badge} from 'react-bootstrap'
+import { Badge } from 'react-bootstrap'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
 import { hexToRgb, isOnPublishedPage } from '../common/utility'
-import {background} from '../backgroundColor.js'
+import { background } from '../backgroundColor.js'
 import { FaLongArrowAltUp } from 'react-icons/fa'
 class PublicBodyContainer extends Component {
   constructor(props) {
     super(props)
-    this.state = {theme: {
-      publicCollectionTheme: this.props.publicCollectionTheme,
-      backgroundStyle: {}
-    },
+    this.state = {
+      theme: {
+        publicCollectionTheme: this.props.publicCollectionTheme,
+        backgroundStyle: {}
+      },
       showBodyCodeEditor: true,
       data: {
         data: [
@@ -237,7 +238,7 @@ class PublicBodyContainer extends Component {
     };
     return (
       <div className='hm-public-table'>
-        {this.props.endpointContent?.data?.body?.query && <div className="mt-3">
+        {this.props.Content?.data?.body?.query && <div className="mt-3">
           <div className='public-generic-table-title-container'>
             Query
           </div>
@@ -335,14 +336,14 @@ class PublicBodyContainer extends Component {
               <ul className='public-endpoint-tabs'>
                 <li
                   className={this.state.showBodyCodeEditor ? 'active' : ''}
-                  style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                  style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
                   onClick={() => this.setState({ showBodyCodeEditor: true })}
                 >
                   Raw
                 </li>
                 <li
                   className={!this.state.showBodyCodeEditor ? 'active' : ''}
-                  style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                  style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
                   onClick={() => this.setState({ showBodyCodeEditor: false })}
                 >
                   Body description
@@ -350,28 +351,33 @@ class PublicBodyContainer extends Component {
               </ul>
               {this.state.showBodyCodeEditor ? (
                 <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>
-                {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
-                <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
-                  <AceEditor
-                    className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
-                    mode='json'
-                    theme='github'
-                    value={this.props.body?.raw?.value}
-                    onChange={this.handleChangeBodyDescription.bind(this)}
-                    style={{ height: this.state.editorHeight }}
-                    setOptions={{
-                      showLineNumbers: true,
-                    }}
-                    editorProps={{
-                      $blockScrolling: false,
-                    }}
-                    onLoad={(editor) => {
-                      editor.getSession().setUseWrapMode(true);
-                      editor.setShowPrintMargin(false);
-                    }}
-                  />
+                  {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
+                  <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
+                    <AceEditor
+                      className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
+                      mode='json'
+                      theme='github'
+                      value={this.props.body?.raw?.value}
+                      onChange={this.handleChangeBodyDescription.bind(this)}
+                      style={{ height: this.state.editorHeight }}
+                      setOptions={{
+                        showLineNumbers: true,
+                      }}
+                      editorProps={{
+                        $blockScrolling: false,
+                      }}
+                      onLoad={(editor) => {
+                        editor.getSession().setUseWrapMode(true);
+                        editor.setShowPrintMargin(false);
+                        const textarea = editor.renderer.textarea;
+                        if (textarea) {
+                          textarea.setAttribute('type', 'text');
+                          textarea.setAttribute('aria-label', 'Search');
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
               ) : (
                 <div className='body-description-container' style={this.state.theme.backgroundStyle}>
                   {/* Previous Body Description Layout */}

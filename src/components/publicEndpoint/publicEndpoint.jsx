@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Route, Switch } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
 import DisplayPage from '../pages/displayPage'
@@ -11,14 +10,16 @@ import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
 import SplitPane from '../splitPane/splitPane.js'
 import '../collectionVersions/collectionVersions.scss'
-import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY } from '../common/utility'
+import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
 import { addCollectionAndPages } from '../redux/generalActions'
 import generalApiService from '../../services/generalApiService'
 import { useQueryClient, useMutation } from 'react-query'
-import { MdDehaze, MdClose } from "react-icons/md";
-import {background} from '../backgroundColor.js'
+import { MdDehaze, MdClose } from 'react-icons/md'
+import { background } from '../backgroundColor.js'
+import withRouter from '../common/withRouter.jsx'
+import PublicPage from '../../pages/publicPage/publicPage.jsx'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -69,35 +70,34 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetch_all_public_endpoints: (collectionIdentifier, domain) =>
-      dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain)),
+      dispatch(fetchAllPublicEndpoints(ownProps.navigate, collectionIdentifier, domain)),
     add_collection_and_pages: (orgId, queryParams) => dispatch(addCollectionAndPages(orgId, queryParams))
   }
 }
 
 class PublicEndpoint extends Component {
   constructor() {
- super()
- this.state = {
-  publicCollectionId: '',
-    collectionName: '',
-    collectionTheme: null,
-   isNavBar: false,
-   isSticky: false,
-   likeActive: false,
-   dislikeActive: false,
-   review: {
-    feedback: {},
-    endpoint: {}
-    },
-    openReviewModal: false,
-    idToRenderState: null,
+    super()
+    this.state = {
+      publicCollectionId: '',
+      collectionName: '',
+      collectionTheme: null,
+      isNavBar: false,
+      isSticky: false,
+      likeActive: false,
+      dislikeActive: false,
+      review: {
+        feedback: {},
+        endpoint: {}
+      },
+      openReviewModal: false,
+      idToRenderState: null
     }
- this.iconRef = React.createRef()
- this.hamburgerIconRef = React.createRef()
- this.logoName = React.createRef()
- this.closeIconRef = React.createRef()
+    this.iconRef = React.createRef()
+    this.hamburgerIconRef = React.createRef()
+    this.logoName = React.createRef()
+    this.closeIconRef = React.createRef()
   }
-
 
   async componentDidMount() {
     // [info] => part 1 scroll options
@@ -133,7 +133,7 @@ class PublicEndpoint extends Component {
       // internal case here collectionId will be there always
       queryParamApi2.collectionId = collectionId
       queryParamApi2.path = url.pathname.slice(3) // ignoring '/p/' in pathName
-      this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true})
+      this.props.add_collection_and_pages(null, { collectionId: collectionId, public: true })
     } else if (!isTechdocOwnDomain()) {
       // external case
       queryParamApi2.custom_domain = window.location.hostname // setting hostname
@@ -157,18 +157,16 @@ class PublicEndpoint extends Component {
     // Remove the last '&' character
     queryParamsString = queryParamsString.slice(0, -1)
 
-    try{
+    try {
       const response = await generalApiService.getPublishedContentByPath(queryParamsString)
       this.setDataToReactQueryAndSessionStorage(response)
-    }catch(e){
+    } catch (e) {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, 'undefined')
       this.setState({ idToRenderState: 'undefined' })
     }
-    
   }
 
   async componentDidUpdate(prevState) {
-
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     // before this display page or display endpoint gets called and data gets rendered
     if (!this.props.keyExistInReactQuery(currentIdToShow)) {
@@ -180,7 +178,6 @@ class PublicEndpoint extends Component {
       }
     }
   }
-
 
   setDataToReactQueryAndSessionStorage(response) {
     if (response) {
@@ -200,7 +197,7 @@ class PublicEndpoint extends Component {
   }
 
   getCTALinks() {
-    const collectionId = this.props?.match?.params?.collectionIdentifier
+    const collectionId = this.props?.params?.collectionIdentifier
     let { cta, links } = this.props.collections?.[collectionId]?.docProperties || { cta: [], links: [] }
     cta = cta ? cta.filter((o) => o.name.trim() && o.value.trim()) : []
     links = links ? links.filter((o) => o.name.trim() && o.link.trim()) : []
@@ -265,7 +262,6 @@ class PublicEndpoint extends Component {
 
   toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal })
 
-
   reviewModal() {
     return (
       <div onHide={() => this.props.onHide()} show top>
@@ -305,11 +301,11 @@ class PublicEndpoint extends Component {
 
   setDislike() {
     this.setState({ dislikeActive: !this.state.dislikeActive }, () => {
-      const data = this.props.match.params.endpointId
+      const data = this.props.params.endpointId
       // const endpoint = this.state
       this.setState({ endpoint: data })
       const review = { ...this.state.review.endpoint }
-      review.endpoint = this.props.match.params
+      review.endpoint = this.props.params
       if (this.state.dislikeActive) {
         review.feedback = 'disliked'
       }
@@ -321,7 +317,7 @@ class PublicEndpoint extends Component {
   setLike() {
     this.setState({ likeActive: !this.state.likeActive }, () => {
       const review = { ...this.state.review }
-      review.endpoint = this.props.match.params
+      review.endpoint = this.props.params
       if (this.state.likeActive) {
         review.feedback = 'liked'
       }
@@ -346,30 +342,29 @@ class PublicEndpoint extends Component {
   }
 
   handleShowSideBar() {
-    const splitPaneElement = document.querySelector('.split-sidebar-public');
-    const hamburgerElement = document.querySelector('#hamburgerIcon');
-    const logoElement = document.querySelector('#logoName');
-    const closeElement = document.querySelector('#closeIcon');
+    const splitPaneElement = document.querySelector('.split-sidebar-public')
+    const hamburgerElement = document.querySelector('#hamburgerIcon')
+    const logoElement = document.querySelector('#logoName')
+    const closeElement = document.querySelector('#closeIcon')
     if (this.iconRef.current && splitPaneElement) {
       if (this.iconRef.current.classList.contains('close-icon') && splitPaneElement.classList.contains('open')) {
-        this.iconRef.current.classList.remove('close-icon');
-        splitPaneElement.classList.remove('open');
-        closeElement.classList.add('icon-none');
-        hamburgerElement.classList.remove('icon-none');
+        this.iconRef.current.classList.remove('close-icon')
+        splitPaneElement.classList.remove('open')
+        closeElement.classList.add('icon-none')
+        hamburgerElement.classList.remove('icon-none')
         // logoElement.classList.remove('icon-none');
-      }
-      else {
-        this.iconRef.current.classList.add('close-icon');
-        splitPaneElement.classList.add('open');
-        hamburgerElement.classList.add('icon-none');
+      } else {
+        this.iconRef.current.classList.add('close-icon')
+        splitPaneElement.classList.add('open')
+        hamburgerElement.classList.add('icon-none')
         // logoElement.classList.add('icon-none');
-        closeElement.classList.remove('icon-none');
+        closeElement.classList.remove('icon-none')
       }
     }
   }
 
   render() {
-    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState;
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
     let type = this.props?.pages?.[idToRender]?.type
 
     // [info] part 1  set collection data
@@ -389,15 +384,15 @@ class PublicEndpoint extends Component {
     }
     let collectionKeys = Object.keys(this.props?.collections || {})
     const { isCTAandLinksPresent } = this.getCTALinks()
-    const dynamicColor = hexToRgb(collectionTheme, 0.04);
-    const staticColor = background['background_sideBar'];
+    const dynamicColor = hexToRgb(collectionTheme, 0.04)
+    const staticColor = background['background_sideBar']
 
     const backgroundStyle = {
       backgroundImage: `
         linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
         linear-gradient(to right, ${staticColor}, ${staticColor})
-      `,
-    };
+      `
+    }
 
     return (
       <>
@@ -417,10 +412,22 @@ class PublicEndpoint extends Component {
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
-        <span ref={this.iconRef} className={'hamberger-icon'}>
-          <MdDehaze id='hamburgerIcon' className='icon-active fw-bold' onClick={() => { this.handleShowSideBar() }} />
-          <MdClose id='closeIcon' className='icon-none' onClick={() => { this.handleShowSideBar() }} />
-          {/* <span className='logo-name' id="logoName"> 
+          <span ref={this.iconRef} className={'hamberger-icon'}>
+            <MdDehaze
+              id='hamburgerIcon'
+              className='icon-active fw-bold'
+              onClick={() => {
+                this.handleShowSideBar()
+              }}
+            />
+            <MdClose
+              id='closeIcon'
+              className='icon-none'
+              onClick={() => {
+                this.handleShowSideBar()
+              }}
+            />
+            {/* <span className='logo-name' id="logoName"> 
              {this.props.collections[collectionKeys[0]]?.favicon && (
                 <img
                     className='hamberger-img'
@@ -436,7 +443,7 @@ class PublicEndpoint extends Component {
                     height='20'
                   />
                  )} */}
-              {/* <span className="icon-name">{this.props.collections[collectionId]?.name}</span> */}
+            {/* <span className="icon-name">{this.props.collections[collectionId]?.name}</span> */}
 
             {/* </span> */}
             {/* Original icons */}
@@ -461,7 +468,6 @@ class PublicEndpoint extends Component {
                       this.setState({ isSticky: false })
                     }
                   }}
-                  className='display-component'
                 >
                   {type == 4 && (
                     <DisplayEndpoint
@@ -472,7 +478,7 @@ class PublicEndpoint extends Component {
                   )}
 
                   {(type == 1 || type == 3) && (
-                    <DisplayPage
+                    <PublicPage
                       {...this.props}
                       fetch_entity_name={this.fetchEntityName.bind(this)}
                       publicCollectionTheme={collectionTheme}
@@ -494,8 +500,8 @@ class PublicEndpoint extends Component {
                 </div>
               ) : (
                 <>
-                <div className='custom-loading-container'>
-                <progress class="pure-material-progress-linear w-25"/>
+                  <div className='custom-loading-container'>
+                    <progress class='pure-material-progress-linear w-25' />
                   </div>
                 </>
               )}
@@ -507,4 +513,4 @@ class PublicEndpoint extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withQuery(PublicEndpoint))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(PublicEndpoint)))

@@ -1,8 +1,11 @@
 import React from 'react'
 import { isStateReject, isStateApproved } from '../common/utility'
+import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
 export function ApproveRejectEntity(props) {
   const { entity, entityId, entityName } = props
+
   return (
     <span>
       <button
@@ -25,15 +28,18 @@ export function ApproveRejectEntity(props) {
 
 export function PublishEntityButton(props) {
   const { entity, entityId, publishLoader, entityName } = props
-  const approvedOrRejected = isStateApproved(entityId, entity) || isStateReject(entityId, entity)
+  const params = useParams()
+  const { pages } = useSelector((state) => {
+    return {
+      pages: state.pages
+    }
+  })
   return (
     <button
-      className={
-        'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange btn-sm fs-4' : 'btn btn-secondary outline ml-2 orange btn-sm fs-4 mt-1')
-      }
+      className={'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange btn-sm fs-4' : 'btn btn-secondary outline ml-2 orange btn-sm fs-4')}
       type='button'
       onClick={() => props.open_publish_confirmation_modal()}
-      disabled={approvedOrRejected}
+      disabled={pages[params.pageId]?.state === 2 ? true : false}
     >
       Publish {entityName}
     </button>
@@ -51,9 +57,7 @@ export function UnPublishEntityButton(props) {
   }
   return (
     <button
-      className={
-        'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange btn-sm fs-4' : 'btn btn-secondary outline ml-2 orange btn-sm fs-4 mt-1')
-      }
+      className={'ml-2 ' + (publishLoader ? 'btn buttonLoader btn-secondary outline ml-2 orange btn-sm fs-4' : 'btn btn-secondary outline ml-2 orange btn-sm fs-4')}
       type='button'
       onClick={handleClick}
     >

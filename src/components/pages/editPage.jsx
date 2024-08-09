@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { withRouter } from 'react-router-dom'
 import WarningModal from '../common/warningModal'
 import { updateContent, updatePage } from '../pages/redux/pagesActions'
 import './page.scss'
@@ -10,12 +9,16 @@ import * as _ from 'lodash'
 import { updateTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
+import withRouter from '../common/withRouter'
+import { useParams } from 'react-router-dom'
+import pagesActionTypes from './redux/pagesActionTypes'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
+    const params = useParams()
+    const dispatch = useDispatch()
     const queryClient = useQueryClient()
-    const pageId = props.match.params.pageId
-    const orgId = props.match.params.orgId
+    const pageId = params.pageId
     const pageContentData = useQuery(['pageContent', pageId])
     const mutation = useMutation(updateContent, {
       onSuccess: (data) => {
@@ -25,7 +28,7 @@ const withQuery = (WrappedComponent) => {
           enabled: true,
           staleTime: 600000
         })
-        props.history.push(`/orgs/${orgId}/dashboard/page/${pageId}`)
+        dispatch({ type: pagesActionTypes.UPDATE_PAGE_DATA, payload: { data: { state: data.state }, pageId } })
       }
     })
     const tabId = props?.tabs?.tabs?.[pageId]
@@ -37,9 +40,9 @@ const withQuery = (WrappedComponent) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
+    update_page: (editedPage, pageId) => dispatch(updatePage(editedPage, pageId)),
     update_tab: (id, data) => dispatch(updateTab(id, data))
   }
 }
@@ -55,7 +58,7 @@ class EditPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: { id: null, name: '', contents: '', state: '' },
+      data: { id: null, name: 'Untitled', contents: '', state: '' },
       showEditor: false
     }
     this.name = React.createRef()
@@ -100,28 +103,22 @@ class EditPage extends Component {
   }
 
   async setPageData() {
-    const {
-      tab,
-      pages,
-      match: {
-        params: { pageId }
-      }
-    } = this.props
+    const { tab, pages } = this.props
     const { draftDataSet } = this.state
 
-    if (tab && pageId) {
+    if (tab && this.props?.params?.pageId) {
       if (tab.isModified && !draftDataSet) {
         let data = this.state.data
         data.contents = this.props.pageContentData
         this.setState({ ...tab.state, draftDataSet: true, data: data })
-      } else if (pageId !== 'new' && pages[tab.id] && !this.state.originalData?.id) {
+      } else if (this.props?.params?.pageId !== 'new' && pages[tab.id] && !this.state.originalData?.id) {
         await this.fetchPage(tab.id)
       }
     }
   }
 
   handleChange = (value) => {
-    const data = { ...this.state.data }
+    const data = { ...this.state.data, state: 1 }
     data.contents = value
     let tabId = this.props.tab.id
 
@@ -155,7 +152,7 @@ class EditPage extends Component {
     const data = { ...this.state.data }
     const newPageName = e.currentTarget.value
 
-    if (newPageName !== this.state.originalData.name) {
+    if (newPageName !== this.state.data.name) {
       data.name = newPageName
       this.setState({ data }, () => {
         if (!this.isModified()) {
@@ -168,28 +165,29 @@ class EditPage extends Component {
 
   handleSubmit = (e) => {
     if (e) e.preventDefault()
-    const editedPage = { ...this.state.data }
-    if (editedPage.name.trim() === '') {
+    let collectionId = this.props.pages[this.props.params.pageId].collectionId
+    const editedPage = { ...this.state.data, collectionId }
+    if (editedPage?.name?.trim() === '') {
       toast.error('Page name cannot be empty.')
       return
     }
-    if (editedPage.contents.trim() === '<p></p>' || editedPage.contents.trim() === '') {
-        editedPage.contents = '';
+    if (editedPage?.contents?.trim() === '<p></p>' || editedPage?.contents?.trim() === '') {
+      editedPage.contents = ''
     }
     delete editedPage['isPublished']
     this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })
-    tabService.markTabAsSaved(this.props.tab.id)
+    tabService.markTabAsSaved(this.props?.tab?.id)
     tabService.updateDraftData(editedPage?.id, null)
+    const orgId = this.props.params.orgId
+    this.props.navigate(`/orgs/${orgId}/dashboard/page/${this.props.params.pageId}`)
   }
 
   handleCancel() {
-    const pageId = this.props.match.params.pageId
+    const pageId = this.props.params.pageId
     if (pageId) {
       // Redirect to displayPage Route Component
       tabService.unmarkTabAsModified(this.props.tab.id)
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${pageId}`
-      })
+      this.props.navigate(`/orgs/${this.props.params.orgId}/dashboard/page/${pageId}`)
     }
   }
 
@@ -204,7 +202,6 @@ class EditPage extends Component {
         <Tiptap
           onChange={this.handleChange}
           initial={this.props?.pageContentData}
-          match={this.props.match}
           isInlineEditor={false}
           disabled={false}
           minHeight

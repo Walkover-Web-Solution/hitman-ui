@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import http from "../../services/httpService";
 import { switchOrg } from "../../services/orgApiService";
 import axios from "axios";
@@ -107,7 +107,7 @@ function getProxyToken() {
   return window.localStorage.getItem(tokenKey) || "";
 }
 
-async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
+async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null, redirect=true) {
   if (!proxyAuthToken) { proxyAuthToken = getProxyToken() }
 
   window.localStorage.setItem(tokenKey, proxyAuthToken);
@@ -128,7 +128,7 @@ async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
     store.dispatch(setOrganizationList(userInfo.c_companies));
     store.dispatch(setCurrentorganization(userInfo.currentCompany));
     const currentOrgId = userInfo.currentCompany?.id;
-    if (currentOrgId) { switchOrg(currentOrgId) }
+    if (currentOrgId) { switchOrg(currentOrgId, redirect) }
   } catch (e) {
     console.error('Error:', e);
   }
@@ -136,7 +136,7 @@ async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
 
 function AuthServiceV2() {
   const query = useQuery();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -146,7 +146,7 @@ function AuthServiceV2() {
           await getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken);
         }
       } catch (err) {
-        history.push("/logout");
+        navigate("/logout");
       }
     };
 

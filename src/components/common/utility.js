@@ -3,11 +3,11 @@ import * as _ from 'lodash'
 import * as Sentry from '@sentry/react'
 import { store } from '../../store/store'
 import Joi from 'joi-browser'
-import history from '../../history'
 import jwtDecode from 'jwt-decode'
 import { cloneDeep } from 'lodash'
-import { getCurrentUser} from '../auth/authServiceV2'
+import { getCurrentUser } from '../auth/authServiceV2'
 import { bodyTypesEnums, rawTypesEnums } from './bodyTypeEnums'
+import { navigateTo } from '../../navigationService'
 export const ADD_GROUP_MODAL_NAME = 'Add Page'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const ADD_PAGE_MODAL_NAME = 'Add Parent Page'
@@ -97,10 +97,10 @@ export function isDashboardRoute(props, sidebar = false) {
   // now our own domain will only be considered as dashboard route
   if (
     isTechdocOwnDomain() &&
-    (props.match.path.includes('/dashboard') ||
-      props.match.path.includes('/orgs/:orgId/dashboard') ||
-      (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish')) ||
-      (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/feedback')))
+    (props.location.pathname.includes('/dashboard') ||
+      props.location.pathname.includes('/orgs/:orgId/dashboard') ||
+      (sidebar === true && props.location.pathname.includes('/orgs/:orgId/admin/publish')) ||
+      (sidebar === true && props.location.pathname.includes('/orgs/:orgId/admin/feedback')))
   ) {
     return true
   } else return false
@@ -210,8 +210,8 @@ export function toTitleCase(str) {
 }
 
 export function getOrgId() {
-  const state = store.getState();
-  const currentOrganization = state?.organizations?.currentOrg;
+  const state = store.getState()
+  const currentOrganization = state?.organizations?.currentOrg
   return currentOrganization?.id
 }
 
@@ -450,43 +450,58 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   if (endpoint?.protocolType === 2) {
     untitled.protocolType = 2
     untitled.data.body = { query: endpoint.body.query, variables: endpoint.body.variables }
-  }
-  else {
-    const bodyType = endpoint.body?.type || '';
-    if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) && endpoint.body.raw) {
-      untitled.data.body = endpoint.body;
-    } else if ([rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)) {
-      untitled.data.body = { ...untitled.data.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } };
+  } else {
+    const bodyType = endpoint.body?.type || ''
+    if (
+      [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) &&
+      endpoint.body.raw
+    ) {
+      untitled.data.body = endpoint.body
+    } else if (
+      [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType)
+    ) {
+      untitled.data.body = { ...untitled.data.body, type: bodyType, raw: { rawType: bodyType, value: endpoint?.body?.value } }
     } else if (bodyType === bodyTypesEnums['application/x-www-form-urlencoded'] || bodyType === bodyTypesEnums['multipart/form-data']) {
       if (endpoint.body[bodyType]) {
-        untitled.data.body = endpoint.body;
+        untitled.data.body = endpoint.body
       } else {
-        untitled.data.body = { ...untitled.data.body, type: bodyType, [bodyType]: endpoint.body?.value || [] };
+        untitled.data.body = { ...untitled.data.body, type: bodyType, [bodyType]: endpoint.body?.value || [] }
       }
     } else if (bodyType === bodyTypesEnums['none']) {
-      if (endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] || endpoint.body?.[bodyTypesEnums['multipart/form-data']] || endpoint.body?.[bodyTypesEnums['raw']]) {
-        untitled.data.body = endpoint.body;
-      }
-      else {
+      if (
+        endpoint.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] ||
+        endpoint.body?.[bodyTypesEnums['multipart/form-data']] ||
+        endpoint.body?.[bodyTypesEnums['raw']]
+      ) {
+        untitled.data.body = endpoint.body
+      } else {
         untitled.data.body = { ...untitled.data.body, ...endpoint.body }
       }
-      delete endpoint.body?.value;
+      delete endpoint.body?.value
     } // ends here
   }
-  delete endpoint.body?.value;
+  delete endpoint.body?.value
 
   untitled.data.uri = endpoint.uri
   untitled.data.updatedUri = endpoint.uri
-  untitled.authorizationData = endpoint?.authorizationData || untitled.authorizationData;
-  const headersData = Object.keys(endpoint.headers).map((key) => {
-    return { key, ...endpoint.headers[key] }
-  })
-  const paramsData = Object.keys(endpoint.params).map((key) => {
-    return { key, ...endpoint.params[key] }
-  })
-  const path = Object.keys(endpoint.pathVariables).map((key) => {
-    return { key, ...endpoint.pathVariables[key] }
-  })
+  untitled.authorizationData = endpoint?.authorizationData || untitled.authorizationData
+  const headersData = endpoint.headers
+    ? Object.keys(endpoint.headers).map((key) => {
+      return { key, ...endpoint.headers[key] }
+    })
+    : []
+
+  const paramsData = endpoint.params
+    ? Object.keys(endpoint.params).map((key) => {
+      return { key, ...endpoint.params[key] }
+    })
+    : []
+
+  const path = endpoint.pathVariables
+    ? Object.keys(endpoint.pathVariables).map((key) => {
+      return { key, ...endpoint.pathVariables[key] }
+    })
+    : []
   if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
     untitled.docViewData = [
       { type: 'host' },
@@ -510,7 +525,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.preScriptText = endpoint.preScript
   untitled.host['BASE_URL'] = endpoint.BASE_URL
   untitled.testResponse = {}
-  untitled.flagResponse = false;
+  untitled.flagResponse = false
   untitled.bodyDescription = endpointData.bodyDescription
   untitled.description = endpointData.description
   return { ...untitled }
@@ -565,7 +580,7 @@ export function isOnPublishedPage() {
 }
 
 export function isOnRedirectionPage() {
-  return window.location.pathname.includes('/redirections');
+  return window.location.pathname.includes('/redirections')
 }
 
 const deleteSidebarData = (pages, tabs, pageId, deletedTabIds, deletedIds) => {
@@ -604,14 +619,12 @@ export const deleteAllPagesAndTabsAndReactQueryData = async (pageId, collectionI
     tabs = _.cloneDeep(tabs)
 
     if (collectionId && tabs.tabs?.[collectionId]) {
-      delete tabs.tabs[collectionId];
-      tabs.tabsOrder = tabs.tabsOrder.filter(tab => tab !== collectionId);
+      delete tabs.tabs[collectionId]
+      tabs.tabsOrder = tabs.tabsOrder.filter((tab) => tab !== collectionId)
       if (tabs?.activeTabId == collectionId) {
         foundActiveTabId = true
       }
-
     }
-
 
     // update the parent's child
     let parentId = pages?.[pageId]?.parentId
@@ -662,11 +675,11 @@ function deleteFromReactQuery(deletedIds) {
 export const operationsAfterDeletion = (data) => {
   // if path needs to be changed with new activeId if tabsOrder length > 0
   if (data?.changePath && data?.tabs?.tabsOrder?.length > 0) {
-    history.push(`/orgs/${getOrgId()}/dashboard`)
+    navigateTo(`/orgs/${getOrgId()}/dashboard`)
   }
   // when no tabs are opened then redirect to new tab and open new tab
   if (data?.openNewTab) {
-    history.push(`/orgs/${getOrgId()}/dashboard`)
+    navigateTo(`/orgs/${getOrgId()}/dashboard`)
   }
 }
 
@@ -710,6 +723,83 @@ function addItsParent(flattenData, singleId, dataToPublishSet) {
   }
 }
 
+export const parseCronExpression = (cronExpression) => {
+  const [minute, hour, , , dayOfWeek] = cronExpression.split(' ').map(num => (num === '*' ? '*' : parseInt(num, 10)));
+
+  let basicRunFrequency;
+  let runFrequency = null;
+  let runTime = `${hour === '*' ? '00' : String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+
+  if (hour === '*' && minute !== '*') {
+    basicRunFrequency = 'Hourly';
+  } else if (dayOfWeek === '*') {
+    basicRunFrequency = 'Daily';
+  } else {
+    basicRunFrequency = 'Weekly';
+    switch (dayOfWeek) {
+      case '1-5':
+        runFrequency = 'Every weekday (Monday-Friday)';
+        break;
+      case 1:
+        runFrequency = 'Every Monday';
+        break;
+      case 2:
+        runFrequency = 'Every Tuesday';
+        break;
+      case 3:
+        runFrequency = 'Every Wednesday';
+        break;
+      case 4:
+        runFrequency = 'Every Thursday';
+        break;
+      case 5:
+        runFrequency = 'Every Friday';
+        break;
+      default:
+        runFrequency = 'Every day';
+        break;
+    }
+  }
+
+  return { basicRunFrequency, runFrequency, runTime };
+};
+
+
+export const generateCronExpression = (basicRunFrequency, runFrequency, runTime) => {
+  const [hour, minute] = runTime.split(':').map((num) => parseInt(num, 10))
+  if (basicRunFrequency === 'Hourly') {
+    return `${minute} * * * *`
+  } else if (basicRunFrequency === 'Daily') {
+    return `${minute} ${hour} * * *`
+  } else if (basicRunFrequency === 'Weekly') {
+    switch (runFrequency) {
+      case 'Every weekday (Monday-Friday)':
+        return `${minute} ${hour} * * 1-5`
+      case 'Every Monday':
+        return `${minute} ${hour} * * 1`
+      case 'Every Tuesday':
+        return `${minute} ${hour} * * 2`
+      case 'Every Wednesday':
+        return `${minute} ${hour} * * 3`
+      case 'Every Thursday':
+        return `${minute} ${hour} * * 4`
+      case 'Every Friday':
+        return `${minute} ${hour} * * 5`
+      default:
+        // Fallback to every day if no match
+        return `${minute} ${hour} * * *`
+    }
+  } else {
+    // Fallback to daily if no basic frequency matches
+    return `${minute} ${hour} * * *`
+  }
+}
+
+export const isOrgDocType = () => {
+  const state = store.getState();
+  return state?.organizations?.currentOrg?.meta?.type === 0 ? false : true
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -750,5 +840,6 @@ export default {
   operationsAfterDeletion,
   trimString,
   modifyDataForBulkPublish,
-  isOnRedirectionPage
+  isOnRedirectionPage,
+  isOrgDocType,
 }

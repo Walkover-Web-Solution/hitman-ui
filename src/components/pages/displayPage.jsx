@@ -15,7 +15,7 @@ import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
 import ApiDocReview from '../apiDocReview/apiDocReview'
-import { isAdmin } from '../auth/authServiceV2'
+import { getCurrentUser, getProxyToken, isAdmin } from '../auth/authServiceV2'
 import { approvePage, pendingPage, rejectPage, draftPage } from '../publicEndpoint/redux/publicEndpointsActions'
 import ConfirmationModal from '../common/confirmationModal'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
@@ -26,19 +26,22 @@ import { useQuery } from 'react-query'
 import { SESSION_STORAGE_KEY } from '../common/utility'
 import Footer from '../main/Footer'
 import RenderPageContent from './renderPageContent'
-import { IoDocumentTextOutline } from "react-icons/io5";
+import { IoDocumentTextOutline } from 'react-icons/io5'
 import DisplayUserAndModifiedData from '../common/userService'
+import withRouter from '../common/withRouter'
+import { useParams } from 'react-router-dom'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
+    const params = useParams()
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
-    const pageId = !isOnPublishedPage() ? props?.match?.params?.pageId : currentIdToShow
+    const pageId = !isOnPublishedPage() ? params?.pageId : currentIdToShow
     let { data, error } = useQuery(
       ['pageContent', pageId],
       async () => {
         return isOnPublishedPage()
           ? await getPublishedContentByIdAndType(currentIdToShow, props?.pages?.[currentIdToShow]?.type)
-          : await getPageContent(props?.match?.params?.orgId, pageId)
+          : await getPageContent(props?.params?.orgId, pageId)
       },
       {
         refetchOnWindowFocus: false,
@@ -52,13 +55,21 @@ const withQuery = (WrappedComponent) => {
     if (tabId?.isModified && tabId?.type == 'page' && tabId?.draft) {
       data = tabId?.draft
     }
-    return <WrappedComponent {...props} pageContent={data} currentPageId={pageId} pageContentLoading={data?.isLoading} pageContentError={error} />
+    return (
+      <WrappedComponent
+        {...props}
+        pageContent={data}
+        currentPageId={pageId}
+        pageContentLoading={data?.isLoading}
+        pageContentError={error}
+      />
+    )
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
+    update_page: (editedPage, pageId) => dispatch(updatePage(editedPage, pageId)),
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     pending_page: (page) => dispatch(pendingPage(page)),
     reject_page: (page) => dispatch(rejectPage(page)),
@@ -118,7 +129,23 @@ class DisplayPage extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
+    const userid = getCurrentUser()?.id
+    if (!isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && this.props?.tabs?.tabs[this.props?.tabs?.activeTabId]?.type === 'page') {
+      window.SendDataToChatbot({
+        bridgeName: 'page',
+        threadId: `${userid}-${this.props?.params?.pageId}`,
+        variables: { Proxy_auth_token: getProxyToken(), collectionId: this.props.pages[this.props?.params?.pageId]?.collectionId }
+      })
+    }
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
+    if (isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && (this.props?.pages?.[idToRender]?.type === 1 || this.props?.pages?.[idToRender]?.type === 3)) {
+      window.SendDataToChatbot({
+        bridgeName: 'page',
+        threadId: `${userid}-${idToRender}`,
+        variables: { Proxy_auth_token: getProxyToken(), collectionId: this.props.pages[idToRender]?.collectionId }
+      })
+    }
     if (this.props?.location?.pathname !== prevProps?.location?.pathname) {
       this.extractPageName()
     }
@@ -127,23 +154,23 @@ class DisplayPage extends Component {
         this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
       }
     }
-    // if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
-    //   this.fetchPageContent(this.props.match.params.pageId)
+    // if (this.props.params.pageId !== prevProps.params.pageId) {
+    //   this.fetchPageContent(this.props.params.pageId)
     // }
   }
 
   extractPageName() {
     if (!isDashboardRoute(this.props, true) && this.props.pages) {
-      const pageName = this.props?.pages?.[this.props?.match?.params?.pageId]?.name
+      const pageName = this.props?.pages?.[this.props?.params?.pageId]?.name 
       if (pageName) this.props.fetch_entity_name(pageName)
       else this.props.fetch_entity_name()
     }
   }
 
   handleEdit(page) {
-    this.props.history.push({
-      pathname: `/orgs/${this.props?.match?.params.orgId}/dashboard/page/${this.props?.match?.params.pageId}/edit`,
-      page: page
+    const { orgId, pageId } = this.props.params
+    this.props.navigate(`/orgs/${orgId}/dashboard/page/${pageId}/edit`, {
+      state: { page: page }
     })
   }
 
@@ -152,55 +179,62 @@ class DisplayPage extends Component {
       return <div className='pageText doc-view mt-2'>{this.renderTiptapEditor(this.props.pageContent)}</div>
     } else {
       return (
-        <div className={`page-wrapper ${isOnPublishedPage() ? "pt-3" : ""}`}>
-          {isOnPublishedPage() && this.props?.pageContent && (<h2 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h2>)}
-          {
-            this.props?.pageContent ? (
-              <div className='pageText'>
-                <RenderPageContent pageContent={this.props.pageContent} />
-                {this.props?.pageContent && (<span className='mt-2 Modified-at d-inline-block'><DisplayUserAndModifiedData
-                  isOnPublishedPage={isOnPublishedPage()}
-                  pages={this.props?.pages}
-                  currentPage={this.props?.currentPageId}
-                  users={this.props?.users}
-                /></span>)}
-              </div>
-            ) : (
-              <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
-                <IoDocumentTextOutline size={140} color='gray' />
-                <span className='empty-line'>
-                  {!isOnPublishedPage() ? this.props?.pages?.[this.props?.match?.params?.pageId]?.name : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name} is empty
+        <div className={`page-wrapper ${isOnPublishedPage() ? 'pt-3' : ''}`}>
+          {isOnPublishedPage() && this.props?.pageContent && (
+            <h1 className='page-header'>{this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}</h1>
+          )}
+          {this.props?.pageContent ? (
+            <div className='pageText'>
+              <RenderPageContent pageContent={this.props.pageContent} />
+              {this.props?.pageContent && (
+                <span className='mt-2 Modified-at d-inline-block'>
+                  <DisplayUserAndModifiedData
+                    isOnPublishedPage={isOnPublishedPage()}
+                    pages={this.props?.pages}
+                    currentPage={this.props?.currentPageId}
+                    users={this.props?.users}
+                  />
                 </span>
-                <span className='mt-1 d-inline-block Modified-at fs-4'><DisplayUserAndModifiedData
+              )}
+            </div>
+          ) : (
+            <div className='d-flex flex-column justify-content-center align-items-center empty-heading-for-page'>
+              <IoDocumentTextOutline size={140} color='gray' />
+              <span className='empty-line'>
+                {!isOnPublishedPage()
+                  ? this.props?.pages?.[this.props?.params?.pageId]?.name
+                  : this.props?.pages?.[sessionStorage.getItem('currentPublishIdToShow')]?.name}{' '}
+                is empty
+              </span>
+              <span className='mt-1 d-inline-block Modified-at fs-4'>
+                <DisplayUserAndModifiedData
                   isOnPublishedPage={isOnPublishedPage()}
                   pages={this.props?.pages}
                   currentPage={this.props?.currentPageId}
                   users={this.props?.users}
-                /></span>
-              </div>
-            )
-          }
+                />
+              </span>
+            </div>
+          )}
         </div>
       )
     }
   }
 
   renderPageName() {
-    const pageId = this.props?.match?.params.pageId
+    const pageId = this.props?.params.pageId
     if (!this.state.page && pageId) {
       this.fetchPage(pageId)
     }
     return isOnPublishedPage() ? (
-      <>
-        {this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}
-      </>
+      <>{this.state.data?.name && <h3 className='page-heading-pub'>{this.state.data?.name}</h3>}</>
     ) : (
       <EndpointBreadCrumb {...this.props} page={this.state.page} pageId={pageId} isEndpoint={false} />
     )
   }
 
   renderTiptapEditor(contents) {
-    return <Tiptap onChange={() => { }} initial={contents} match={this.props.match} isInlineEditor disabled key={Math.random()} />
+    return <Tiptap onChange={() => { }} initial={contents} isInlineEditor disabled key={Math.random()} />
   }
 
   handleRemovePublicPage(page) {
@@ -246,7 +280,7 @@ class DisplayPage extends Component {
   renderPublishPageOperations() {
     if (isDashboardRoute(this.props)) {
       let pages = { ...this.props.pages }
-      const pageId = this.props?.match.params?.pageId
+      const pageId = this.props?.params?.pageId
       pages = pages[pageId]
       const isPublicPage = pages?.isPublished
 
@@ -280,7 +314,7 @@ class DisplayPage extends Component {
             </button>
           )}
           <button
-            className='btn btn-primary btn-sm fs-4 mt-1'
+            className='btn btn-primary btn-sm fs-4'
             onClick={() => {
               this.handleEdit(this.state.data)
             }}
@@ -340,7 +374,7 @@ class DisplayPage extends Component {
   }
 
   async handleApprovePageRequest() {
-    const pageId = this.props?.match?.params?.pageId
+    const pageId = this.props?.params?.pageId
 
     // Check if the component is still mounted before updating the state
     if (this._isMounted) {
@@ -362,7 +396,7 @@ class DisplayPage extends Component {
   }
 
   async handleDraftPageRequest() {
-    const pageId = this.props?.match?.params?.pageId
+    const pageId = this.props?.params?.pageId
     if (this._isMounted) {
       this.setState({ publishLoader: true })
     }
@@ -382,42 +416,41 @@ class DisplayPage extends Component {
     if (this.props?.pageContentLoading) {
       return (
         <>
-          <div className="container-loading p-4">
+          <div className='container-loading p-4'>
             {!isOnPublishedPage() && (
               <>
-                <div className="d-flex justify-content-end gap-5 mb-5 1806">
-                  <div className="edit bg rounded-1 ms-5"></div>
-                  <div className="unpublish bg rounded-1 ms-5"></div>
-                  <div className="publish bg rounded-1 ms-5"></div>
+                <div className='d-flex justify-content-end gap-5 mb-5 1806'>
+                  <div className='edit bg rounded-1 ms-5'></div>
+                  <div className='unpublish bg rounded-1 ms-5'></div>
+                  <div className='publish bg rounded-1 ms-5'></div>
                 </div>
               </>
             )}
-            <div className="page bg rounded-1"></div>
-            <div className="details d-flex flex-column justify-content-between align-items-center mt-5">
-              <div className="page-box bg"></div>
-              <div className="page-footer text-center bg"></div>
-
+            <div className='page bg rounded-1'></div>
+            <div className='details d-flex flex-column justify-content-between align-items-center mt-5'>
+              <div className='page-box bg'></div>
+              <div className='page-footer text-center bg'></div>
             </div>
           </div>
         </>
       )
     }
     return (
-      <div className={`custom-display-page ${isOnPublishedPage() ? "custom-display-public-page" : ""}`}>
+      <div className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}>
         {this.renderPublishConfirmationModal()}
         {this.renderUnPublishConfirmationModal()}
         {this.renderPublishPageOperations()}
-        <div className={`${!isOnPublishedPage() ? "page-heading-content" : ""}`}>
-        {this.props?.pageContent && (this.renderPageName())}
-        {this.checkPageRejected()}
+        <div className={`${!isOnPublishedPage() ? 'page-heading-content' : ''}`}>
+          {this.props?.pageContent && this.renderPageName()}
+          {this.checkPageRejected()}
         </div>
         <div>
-        {this.props?.pageContent && ( <ApiDocReview {...this.props} />)}
-        {isOnPublishedPage() && <Footer />}
+          {this.props?.pageContent && <ApiDocReview {...this.props} />}
+          {isOnPublishedPage() && <Footer />}
         </div>
       </div>
     )
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayPage))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(DisplayPage)))

@@ -1,6 +1,6 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import './main.scss'
@@ -14,16 +14,20 @@ import {
 } from '../common/utility'
 import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authServiceV2'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
-import NoFound, { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
+import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
-import './main.scss'
-import './sidebar.scss'
 import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from 'react-icons/tb'
 import { updateDragDrop } from '../pages/redux/pagesActions'
+import './main.scss'
+import './sidebar.scss'
+import "../../pages/page/page.scss"
+import { ReactComponent as Logo } from '../../assets/web/favicon.svg'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
-const SideBar = (props) => {
+const SideBar = () => {
   const collections = useSelector((state) => state.collections)
   const pages = useSelector((state) => state.pages)
   const historySnapshot = useSelector((state) => state.history)
@@ -31,24 +35,35 @@ const SideBar = (props) => {
 
   const update_drag_and_drop = (draggedId, droppedOnId, pageIds) => dispatch(updateDragDrop(draggedId, droppedOnId, pageIds))
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const location = useLocation()
-  const match = useRouteMatch()
+  const params = useParams()
 
-  const [collectionId, setCollectionId] = useState(null)
   const [selectedCollectionId, setSelectedCollectionId] = useState(null)
-  const [secondarySidebarToggle, setSecondarySidebarToggle] = useState(false)
-  const inputRef = useRef(null)
-  const sidebarRef = useRef(null)
   const [searchData, setSearchData] = useState({ filter: '' })
   const [draggingOverId, setDraggingOverId] = useState(null)
   const [draggedIdSelected, setDraggedIdSelected] = useState(null)
   const [filteredHistorySnapshot, setFilteredHistorySnapshot] = useState([])
   const [filteredEndpoints, setFilteredEndpoints] = useState([])
   const [filteredPages, setFilteredPages] = useState([])
+  const inputRef = useRef(null)
 
-  const getSidebarInteractionClass = () => {
-    return isDashboardRoute({ match, location, history }, true) ? 'sidebar' : 'sidebar'
+  useEffect(() => {
+    document.addEventListener('keydown', handleShortcutKeys)
+    if (isOnPublishedPage()) {
+      inputRef.current.focus()
+    }
+    return () => {
+      document.removeEventListener('keydown', handleShortcutKeys)
+    }
+  }, [])
+
+  const handleShortcutKeys = (event) => {
+    const isPageFocused = document.activeElement.closest('.parent-page-container')
+    if (!isPageFocused && event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+      event.preventDefault()
+      inputRef.current.focus()
+    }
   }
 
   function compareByCreatedAt(a, b) {
@@ -70,41 +85,42 @@ const SideBar = (props) => {
     const publishedCollectionTitle = firstCollection.docProperties?.defaultTitle || ''
 
     return (
-      <div className='hm-sidebar-header d-flex align-items-center'>
-        {(collections[collectionKeys[0]]?.favicon || collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
-          <div className='hm-sidebar-logo'>
-            <img
-              id='publicLogo'
-              alt='public-logo'
-              src={
-                collections[collectionKeys[0]]?.favicon
-                  ? `data:image/png;base64,${collections[collectionKeys[0]]?.favicon}`
-                  : collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl
-              }
-              width='60'
-              height='60'
-            />
+      <>
+        <div className='hm-sidebar-header d-flex justify-content-between'>
+          <div className='td-header gap-2 d-flex align-items-center'>
+            {(collections[collectionKeys[0]]?.favicon || collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
+              <div className='hm-sidebar-logo'>
+                <img
+                  id='publicLogo'
+                  alt='public-logo'
+                  src={
+                    collections[collectionKeys[0]]?.favicon
+                      ? `data:image/png;base64,${collections[collectionKeys[0]]?.favicon}`
+                      : collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl
+                  }
+                  width='60'
+                  height='60'
+                />
+              </div>
+            )}
+            <h4 className='hm-sidebar-title'>
+              {publishedCollectionTitle || collectionName || ''}
+              <span>API Documentation</span>
+            </h4>
           </div>
-        )}
-        <h4 className='hm-sidebar-title'>
-          {publishedCollectionTitle || collectionName || ''}
-          <span>API Documentation</span>
-        </h4>
         {isTechdocOwnDomain() && (
-          <a href='/login' target='_blank' className='login-button position-fixed d-flex gap-5 ps-5'>
-            <TbLogin2 className='text-black' />
-            <button
-              type='button'
-              className='btn btn-lg'
-              data-bs-toggle='tooltip'
-              data-bs-placement='top'
-              data-bs-title='Login to manage this docs'
-            >
-              Login to manage this docs
-            </button>
-          </a>
+           <OverlayTrigger
+           placement='bottom'
+           overlay={<Tooltip>Built with techdoc</Tooltip>}
+           >
+          <Link href='/login' target='_blank' className='login-button btn btn-sm btn-light d-flex justify-content-center p-0 align-items-center h-100 bg-none border-0'
+          >
+            <Logo className='logo-techdoc' />
+          </Link>
+           </OverlayTrigger>
         )}
-      </div>
+        </div>
+      </>
     )
   }
 
@@ -152,22 +168,20 @@ const SideBar = (props) => {
           type='text'
           name='filter'
           id='search'
-          onChange={handleOnChange}
+          onChange={(e) => handleOnChange(e)}
         />
       </div>
     )
   }
 
   const openPage = (id) => {
-    if (isDashboardRoute({ match, location, history })) {
-      history.push({
-        pathname: `/orgs/${match.params.orgId}/dashboard/page/${id}`
-      })
+    if (isDashboardRoute({ location })) {
+      navigate(`/orgs/${params.orgId}/dashboard/page/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      history.push(pathName)
+      navigate(pathName)
     }
   }
 
@@ -227,15 +241,13 @@ const SideBar = (props) => {
   }
 
   const openEndpoint = (id) => {
-    if (isDashboardRoute({ match, location, history })) {
-      history.push({
-        pathname: `/orgs/${match.params.orgId}/dashboard/endpoint/${id}`
-      })
+    if (isDashboardRoute({ location })) {
+      navigate(`/orgs/${params.orgId}/dashboard/endpoint/${id}`)
     } else {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, id)
       let pathName = getUrlPathById(id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
-      history.push(pathName)
+      navigate(pathName)
     }
   }
 
@@ -269,10 +281,7 @@ const SideBar = (props) => {
   }
 
   const openHistorySnapshot = (id) => {
-    history.push({
-      pathname: `/orgs/${match.params.orgId}/dashboard/history/${id}`,
-      historySnapshotId: id
-    })
+    navigate(`/orgs/${params.orgId}/dashboard/history/${id}`, { state: { historySnapshotId: id } })
   }
 
   const renderHistoryItem = (history) => {
@@ -397,7 +406,6 @@ const SideBar = (props) => {
   // Function to open a collection
   const openCollection = (collectionId) => {
     setSelectedCollectionId(collectionId)
-    setSecondarySidebarToggle(false)
   }
 
   // Rendering collections with handling logic
@@ -405,7 +413,6 @@ const SideBar = (props) => {
     const collectionsToRender = Object.keys(collections || {})
     return (
       <Collections
-        {...props}
         handleOnDragOver={handleOnDragOver}
         onDragEnter={onDragEnter}
         onDragEnd={onDragEnd}
@@ -415,7 +422,6 @@ const SideBar = (props) => {
         collectionsToRender={collectionsToRender}
         selectedCollectionId={selectedCollectionId}
         empty_filter={emptyFilter}
-        disable_secondary_sidebar={() => setSecondarySidebarToggle(true)}
         collection_selected={openCollection}
         filter={searchData.filter}
       />
@@ -423,23 +429,13 @@ const SideBar = (props) => {
   }
 
   const renderSidebarContent = () => {
-    const selectedCollectionName = collections[collectionId]?.name || ' '
     const collectionId1 = Object.keys(collections)?.[0]
     const rootParentId = collections?.[collectionId1]?.rootParentId || null
     return (
-      <div
-        ref={sidebarRef}
-        onClick={(e) => {
-          // Implement focus logic if required
-        }}
-        onBlur={(e) => {
-          // Implement defocus logic if required
-        }}
-        className={''}
-      >
+      <div>
         {isOnPublishedPage() ? (
           <div className='sidebar-accordion'>
-            <CombinedCollections {...props} collectionId={collectionId1} rootParentId={rootParentId} />
+            <CombinedCollections level={0} collectionId={collectionId1} rootParentId={rootParentId} />
           </div>
         ) : (
           renderCollections()
@@ -449,15 +445,15 @@ const SideBar = (props) => {
   }
 
   const renderDashboardSidebar = () => {
-    let isOnDashboardPage = isDashboardRoute({ match, location, history })
+    let isOnDashboardPage = isDashboardRoute({ location })
     return (
       <>
-        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 {...props} />}
-        <div className='plr-3 pt-2'>
+        {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 />}
+        <div className='px-2 mx-1 pt-1'>
           {isOnPublishedPage() && renderCollectionName()}
           {renderSearch()}
         </div>
-        <div className='sidebar-content'>
+        <div className={`sidebar-content ${isOnPublishedPage() ? 'px-2 mx-1 pt-1' : ''}`}>
           {searchData.filter !== '' && renderSearchList()}
           {searchData.filter === '' && renderSidebarContent()}
         </div>
@@ -466,9 +462,10 @@ const SideBar = (props) => {
   }
 
   return (
+    //rendering start here
     <>
       {
-        <nav className={getSidebarInteractionClass()}>
+        <nav className='sidebar'>
           <div className='primary-sidebar'>{renderDashboardSidebar()}</div>
         </nav>
       }

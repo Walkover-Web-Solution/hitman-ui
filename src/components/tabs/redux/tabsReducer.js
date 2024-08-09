@@ -44,7 +44,7 @@ function tabsReducer(state = initialState, action) {
         ...action.payload.data
       }
       return tabs
-        
+
     case tabsActionTypes.UPDATE_TAB_DRAFT:
       tabs = { ...state }
       tabs.tabs[action.payload.tabId].draft = action?.payload?.draft
@@ -69,11 +69,9 @@ function tabsReducer(state = initialState, action) {
       return tabs
 
     case tabsActionTypes.REPLACE_TAB: {
-      tabs = {
-        ...state
-      }
+      tabs = {...state}
       delete tabs.tabs[action.oldTabId]
-      tabs.tabs[action.newTab.id] = action.newTab
+      tabs.tabs[action.newTab.id] = { ...action.newTab }
       const index = tabs.tabsOrder.findIndex((t) => t === action.oldTabId)
       tabs.tabsOrder[index] = action.newTab.id
       return tabs
@@ -99,12 +97,12 @@ function tabsReducer(state = initialState, action) {
       newTabs[action.payload?.newTabId] = data
       delete newTabs[action.payload.currentActiveTabId]
       const newOrder = state.tabsOrder.map((item) => {
-        if(item === action.payload.currentActiveTabId) return action.payload.newTabId
+        if (item === action.payload.currentActiveTabId) return action.payload.newTabId
         else return item
       })
       tabs = { ...state, tabsOrder: newOrder, activeTabId: action.payload.newTabId, tabs: newTabs }
       return tabs
-      
+
     case tabsActionTypes.UPDATE_PRE_POST_SCRIPT:
       tabs = { ...state }
       tabs.tabs[action.payload.tabId].postScriptExecutedData = action.payload?.executedData?.postScriptExecution || ''
@@ -118,6 +116,58 @@ function tabsReducer(state = initialState, action) {
       tabs = { ...state }
       tabs.tabs[action.payload.tabId].introspectionSchemaData = action.payload?.schemaData || null
       return tabs
+
+    case tabsActionTypes.SET_PAGE_TYPE: {
+      const { tabId, pageType } = action.payload;
+      return {
+        ...state,
+        tabs: {
+          ...state.tabs,
+          [tabId]: {
+            ...state.tabs[tabId],
+            state: {
+              ...state.tabs[tabId].state,
+              pageType,
+            },
+          },
+        },
+      };
+    }
+
+    case tabsActionTypes.FETCH_PAGE_CONTENT_SUCCESS:
+      tabs = { ...state }
+      tabs.tabs[action.payload.id] = {
+        ...tabs.tabs[action.payload.id],
+        draft: action.payload.data
+      }
+      return tabs
+
+    case tabsActionTypes.UPDATE_DRAFT_CONTENT:
+      tabs = { ...state }
+      tabs.tabs[action.payload.id] = {
+        ...tabs.tabs[action.payload.id],
+        draft: action.payload.data
+      }
+      return tabs;
+
+    case tabsActionTypes.UPDATE_NEW_TAB_NAME:
+      tabs = { ...state }
+      tabs.tabs[action.payload.id] = {
+        ...tabs.tabs[action.payload.id],
+        name: action.payload.name
+      }
+      return tabs
+
+    case tabsActionTypes.DELETE_TAB_NAME:
+      tabs = { ...state }
+      delete tabs.tabs[action.payload.id].name
+      return tabs
+
+    case tabsActionTypes.SET_TAB_MODIFIED:
+      tabs = { ...state }
+      tabs.tabs[action.payload.id].isModified = action.payload.flag
+      return tabs
+
     default:
       return state
   }

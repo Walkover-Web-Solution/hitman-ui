@@ -1,124 +1,129 @@
-import React, { Component } from 'react'
-import { useQueryClient } from 'react-query'
-import { Tab } from 'react-bootstrap'
-import { Route, Switch } from 'react-router-dom'
-import DisplayEndpoint from '../endpoints/displayEndpoint'
-import DisplayPage from '../pages/displayPage'
-import EditPage from '../pages/editPage'
-import { getCurrentUser } from '../auth/authServiceV2'
-import PublishDocsForm from './../publishDocs/publishDocsForm'
-import { updateCollection } from '../collections/redux/collectionsActions'
-import { connect } from 'react-redux'
-import PublishDocsReview from './../publishDocs/publishDocsReview'
-import { updateContent } from '../pages/redux/pagesActions'
-import { withRouter } from 'react-router'
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useQueryClient } from 'react-query';
+import { Tab } from 'react-bootstrap';
+import DisplayEndpoint from '../endpoints/displayEndpoint';
+import DisplayPage from '../pages/displayPage';
+import EditPage from '../pages/editPage';
+import { getCurrentUser } from '../auth/authServiceV2';
+import { updateContent } from '../pages/redux/pagesActions';
+import CollectionTabs from '../collections/collectionTabs';
+import ManualRuns from '../collections/showRuns/manualRuns';
+import Page from '../../pages/page/page';
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    update_collection: (editedCollection) => dispatch(updateCollection(editedCollection))
-  }
-}
+const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag, save_page_flag, selected_tab_id }) => {
+  const queryClient = useQueryClient();
 
-const mapStateToProps = (state) => {
-  return {
+  const { isTabsLoaded, tabData, history, pages } = useSelector((state) => ({
     isTabsLoaded: state?.tabs?.loaded,
     tabsOrder: state?.tabs?.tabsOrder,
     activeTabId: state.tabs.activeTabId,
-    tabData: state?.tabs?.tabs
-  }
-}
+    tabData: state?.tabs?.tabs,
+    history: state?.history,
+    pages: state?.pages
+  }));
 
-const withQuery = (WrappedComponent) => {
-  return (props) => {
-     const queryClient = useQueryClient(); 
-     const deleteFromReactQueryByKey = (id) => {
-      queryClient.removeQueries(['pageContent', id]);
-    };
-    return <WrappedComponent {...props} deleteFromReactQueryByKey={deleteFromReactQueryByKey} />
-  }
-}
+  const deleteFromReactQueryByKey = (id) => {
+    queryClient.removeQueries(['pageContent', id]);
+  };
 
-class TabContent extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {}
-  }
-
-  unPublishCollection(collectionId) {
-    const selectedCollection = this.props.collections[collectionId]
-    if (selectedCollection?.isPublic === true) {
-      const editedCollection = { ...selectedCollection }
-      editedCollection.isPublic = false
-      this.props.update_collection(editedCollection)
-    }
-  }
-
-  renderContent(tabId) {
-    const tab = this.props.tabData?.[tabId]
-    // to save changes to backend if tab is closed from not active tab
-    if (this.props.save_page_flag && tabId === this.props.selected_tab_id) {
-      this.props.handle_save_page(false);
-      updateContent({ pageData: { id: tabId, contents: tab.draft , state : this.props.pages?.[tabId]?.state, name : this.props.pages?.[tabId]?.name}, id: tabId });
-      this.props.deleteFromReactQueryByKey(tabId);
+  const renderContent = (tabId) => {
+    const tab = tabData?.[tabId];
+    if (save_page_flag && tabId === selected_tab_id) {
+      handle_save_page(false)
+      updateContent({
+        pageData: { id: tabId, contents: tab.draft, state: pages?.[tabId]?.state, name: pages?.[tabId]?.name },
+        id: tabId,
+      });
+      deleteFromReactQueryByKey(tabId);
     }
     switch (tab?.type) {
       case 'history':
         return (
           <DisplayEndpoint
-            {...this.props}
+            handle_save_endpoint={handle_save_endpoint}
+            save_endpoint_flag={save_endpoint_flag}
+            selected_tab_id={selected_tab_id}
             environment={{}}
             tab={tab}
             historySnapshotFlag
-            historySnapshot={this.props.historySnapshots[tab.id]}
+            historySnapshot={history[tab.id]}
           />
-        )
+        );
       case 'endpoint':
-        return <DisplayEndpoint {...this.props} environment={{}} tab={tab} />
+        return <DisplayEndpoint
+          handle_save_endpoint={handle_save_endpoint}
+          save_endpoint_flag={save_endpoint_flag}
+          selected_tab_id={selected_tab_id}
+          environment={{}} tab={tab} />;
       case 'page':
-        return (
-          <Switch>
-            <Route path='/orgs/:orgId/dashboard/page/:pageId/edit' render={(props) => <EditPage {...this.props} {...props} tab={tab} />} />
-            <Route path='/orgs/:orgId/dashboard/page/:pageId' render={(props) => <DisplayPage {...props} tab={tab} />} />
-          </Switch>
-        )
+        // if (window.location.pathname.includes('/edit')) return <EditPage
+        //   handle_save_page={handle_save_page}
+        //   save_page_flag={save_page_flag}
+        //   tab={tab}
+        // />;
+
+        // else return <DisplayPage
+        //   handle_save_page={handle_save_page}
+        //   save_page_flag={save_page_flag}
+        //   handle_save_endpoint={handle_save_endpoint}
+        //   save_endpoint_flag={save_endpoint_flag}
+        //   selected_tab_id={selected_tab_id}
+        //   tab={tab} />;
+
+        return <Page />
+
       case 'collection':
-        if (this.props.location.pathname.split('/')[6] === 'settings') {
-          return (
-            <PublishDocsForm
-              {...this.props}
-              isCollectionPublished={() => {
-                return this.props.collections[tabId]?.isPublic || false
-              }}
-              unPublishCollection={() => this.unPublishCollection(tabId)}
-              selected_collection_id={tabId}
-              onTab
-            />
-          )
-        }else {
-            return <PublishDocsReview {...this.props} selected_collection_id={tabId} />
-          } 
+        const pathSection = window.location.pathname.split('/')[6];
+        let activeTab = '';
+        switch (pathSection) {
+          case 'settings':
+            activeTab = 'settings';
+            break;
+          case 'runs':
+            activeTab = 'runs';
+            break;
+          case 'feedback':
+            activeTab = 'feedback';
+            break;
+          default:
+            activeTab = 'settings';
+            break;
+        }
+        return (
+          <CollectionTabs
+            collectionId={tabId}
+            activeTab={activeTab}
+            onHide={() => { }}
+          />
+        );
+        case 'manual-runs':
+          return <ManualRuns/>
+            
       default:
-        break
+        break;
     }
-  }
+  };
 
-  renderEndpoint() {
-    return <DisplayEndpoint {...this.props} environment={{}} tab='' />
-  }
+  const renderEndpoint = () => {
+    return <DisplayEndpoint
+      handle_save_endpoint={handle_save_endpoint}
+      save_endpoint_flag={save_endpoint_flag}
+      selected_tab_id={selected_tab_id}
+      environment={{}} tab='' />;
+  };
 
-  render() {
-    return (
-      <Tab.Content>
-        {getCurrentUser() && this.props.isTabsLoaded
-          ? Object.keys(this.props.tabData).map((tabId) => (
-              <Tab.Pane eventKey={tabId} key={tabId}>
-                {this.renderContent(tabId)}
-              </Tab.Pane>
-            ))
-          : this.renderEndpoint()}
-      </Tab.Content>
-    )
-  }
-}
+  return (
+    <Tab.Content>
+      {getCurrentUser() && isTabsLoaded
+        ? Object.keys(tabData).map((tabId) => (
+          <Tab.Pane eventKey={tabId} key={tabId}>
+            {renderContent(tabId)}
+          </Tab.Pane>
+        ))
+        : renderEndpoint()}
+    </Tab.Content>
+  );
+};
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withQuery(TabContent)))
+export default TabContent

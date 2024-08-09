@@ -6,8 +6,8 @@ import { Button } from 'react-bootstrap'
 import { updatePage } from '../../pages/redux/pagesActions'
 import { addParentPageVersion } from '../redux/collectionVersionsActions'
 import { deletePage } from '../../pages/redux/pagesActions'
-import { onDefaultVersion } from '../../publishDocs/redux/publishDocsActions'
-import OutsideClickHandler from 'react-outside-click-handler';
+import { onDefaultVersion } from '../redux/collectionVersionsActions'
+import OutsideClickHandler from 'react-outside-click-handler'
 import './selectVersion.scss'
 import { toast } from 'react-toastify'
 import { getOrgId } from '../../common/utility'
@@ -32,13 +32,15 @@ const VersionInput = (props) => {
     } catch (error) {
       return toast.error('Version Name already Exist!')
     }
-    dispatch(updatePage(null, { ...pages?.[versionId], name: versionNameInputRef.current.value }))
+    dispatch(updatePage({ ...pages?.[versionId], name: versionNameInputRef.current.value }))
     props.setShowEdit(null)
   }
 
   const handleEditClick = () => {
     props.setShowEdit(props?.index)
-    setTimeout(() => { if (versionNameInputRef.current) versionNameInputRef.current.focus() }, 100);
+    setTimeout(() => {
+      if (versionNameInputRef.current) versionNameInputRef.current.focus()
+    }, 100)
   }
 
   const handleOutsideClickOfInputField = () => {
@@ -154,37 +156,37 @@ export default function SelectVersion(props) {
     <div className='version-modal-container'>
       <h4 className='version-modal-header mb-0'>Manage Versions</h4>
       <div className='version-modal-body'>
-      {pages[props?.parentPageId]?.child?.map((singleChildId, index) => {
-        return (
-          <div>
-            <div className='d-flex justify-content-between align-items-center'>
-              <VersionInput {...props} setShowEdit={setShowEdit} showEdit={showEdit} index={index} singleChildId={singleChildId} />
-              <div>
-                {pages?.[singleChildId]?.state !== 1 && (
-                  <Button
-                    variant='btn btn-outline ml-1'
-                    className='btn-sm fs-4'
-                    onClick={() => {
-                      handleDefaultVersion(singleChildId)
-                    }}
-                  >
-                    Default
-                  </Button>
-                )}
-                {pages?.[singleChildId]?.state !== 1 && (
-                  <DeleteIcon
-                    className='ml-2 cursor-pointer'
-                    size={22}
-                    onClick={() => {
-                      handleDeleteVersion(singleChildId)
-                    }}
-                  />
-                )}
+        {pages[props?.parentPageId]?.child?.map((singleChildId, index) => {
+          return (
+            <div>
+              <div className='d-flex justify-content-between align-items-center'>
+                <VersionInput {...props} setShowEdit={setShowEdit} showEdit={showEdit} index={index} singleChildId={singleChildId} />
+                <div>
+                  {pages?.[singleChildId]?.state !== 1 && (
+                    <Button
+                      variant='btn btn-outline ml-1'
+                      className='btn-sm fs-4'
+                      onClick={() => {
+                        handleDefaultVersion(singleChildId)
+                      }}
+                    >
+                      Default
+                    </Button>
+                  )}
+                  {pages?.[singleChildId]?.state !== 1 && (
+                    <DeleteIcon
+                      className='ml-2 cursor-pointer'
+                      size={22}
+                      onClick={() => {
+                        handleDeleteVersion(singleChildId)
+                      }}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )
-      })}
+          )
+        })}
       </div>
       <AddVersion {...props} />
     </div>

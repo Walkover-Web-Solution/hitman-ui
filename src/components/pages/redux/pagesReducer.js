@@ -6,7 +6,7 @@ import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpoin
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import generalActionsTypes from '../../redux/generalActionTypes'
 import { statesEnum } from '../../common/utility'
-import publishDocsActionTypes from '../../publishDocs/redux/publishDocsActionTypes'
+import collectionVersionsActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 
 const initialState = {}
 
@@ -51,7 +51,7 @@ function pagesReducer(state = initialState, action) {
       if (action.page.type === 1) {
         const versionData = { ...action.version }
         delete versionData.requestId
-        pages[action.version.id] = versionData
+        pages[action?.version?.id] = versionData
       }
 
       if (action.page.parentId) {
@@ -161,8 +161,7 @@ function pagesReducer(state = initialState, action) {
 
     case publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS:
       return {
-        ...state,
-        [action.data.id]: action.data
+        ...state, [action.data.id]: {...state[action.data.id], ...action.data}
       }
 
     case publicEndpointsActionTypes.ON_PAGE_STATE_ERROR:
@@ -220,12 +219,6 @@ function pagesReducer(state = initialState, action) {
       }
       return { ...state }
 
-    case pagesActionTypes.UPDATE_PAGE_DATA:
-      if (state[action.payload.pageId]) {
-        state[action.payload.pageId] = { ...state[action.payload.pageId], ...action.payload.data }
-      }
-      return { ...state }
-
     case pagesActionTypes.ADD_CHILD_IN_PARENT:
       if (state[action.payload.parentId]) {
         state[action.payload.parentId].child.push(action.payload.id)
@@ -272,10 +265,9 @@ function pagesReducer(state = initialState, action) {
       let pages = { ...state }
       let updatedPageDataObjects = action.payload
       for (let pageId in updatedPageDataObjects) {
+        const pageData = updatedPageDataObjects[pageId]
 
-        const pageData = updatedPageDataObjects[pageId];
-
-        pages[pageId] = { ...pages[pageId], ...pageData };
+        pages[pageId] = { ...pages[pageId], ...pageData }
       }
       return pages
     }
@@ -285,7 +277,7 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action?.response?.id]: action?.response
       }
-    case publishDocsActionTypes.ON_DEFAULT_VERSION:
+    case collectionVersionsActionTypes.ON_DEFAULT_VERSION:
       pages = { ...state }
       pages[action?.versionData?.newVersionId].state = 1
       pages[action.versionData?.oldVersionId].state = 0
@@ -299,6 +291,11 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.DELETE_OLD_URL:
       pages = { ...state }
       delete pages[action.payload.pageId].oldUrls[action.payload.pathId]
+      return pages
+
+    case pagesActionTypes.ON_PAGE_RENAME:
+      pages = { ...state }
+      pages[action.payload.id].name = action.payload.updatedName
       return pages
 
     default:

@@ -7,11 +7,11 @@ import Joi from 'joi-browser'
 import './defaultViewModal.scss'
 import { Modal, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import { addNewTab } from '../../tabs/redux/tabsActions'
 import { onEnter, toTitleCase, validate } from '../../common/utility'
 import Form from '../../common/form'
 import { addPage } from '../../pages/redux/pagesActions'
+import withRouter from '../../common/withRouter'
 export const defaultViewTypes = {
   TESTING: 'testing',
   DOC: 'doc'
@@ -20,7 +20,7 @@ export const defaultViewTypes = {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_new_tab: () => dispatch(addNewTab()),
-    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage))
+    add_page: (rootParentId, newPage) => dispatch(addPage(rootParentId, newPage))
   }
 }
 export class DefaultViewModal extends Form {
@@ -73,7 +73,7 @@ export class DefaultViewModal extends Form {
     let { name } = { ...this.state?.data }
     name = toTitleCase(name)
     if (this.props.title === 'Add Parent Page' || this.props.addEntity) {
-    const rootParentId = collections?.rootParentId
+      const rootParentId = collections?.rootParentId
       const data = { ...this.state.data, name }
       const newPage = {
         ...data,
@@ -83,9 +83,9 @@ export class DefaultViewModal extends Form {
       }
       this.props.add_page(rootParentId, newPage)
     }
-  
+
     if (this.props?.title === 'Add Page' || this.props?.title === 'Add Sub Page' || this.props?.addEntity) {
-    const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
+      const selectedId = this.props?.title === 'Add Page' ? this.props?.selectedVersion : this.props?.selectedPage
       const ParentId = selectedId
       const data = { ...this.state.data }
       const newPage = {
@@ -96,7 +96,8 @@ export class DefaultViewModal extends Form {
         state: 1
       }
       this.props.add_page(ParentId, newPage)
-      }}
+    }
+  }
   renderCollectionDetailsForm() {
     return (
       <div className='mt-5'>
@@ -184,4 +185,4 @@ export class DefaultViewModal extends Form {
   }
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(DefaultViewModal))
+export default connect(null, mapDispatchToProps)(withRouter(DefaultViewModal))

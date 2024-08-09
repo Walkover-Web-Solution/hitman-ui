@@ -8,9 +8,9 @@ import Form from '../common/form'
 import { addPage } from '../pages/redux/pagesActions'
 import { onEnter, toTitleCase } from '../common/utility'
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage))
+    add_page: (rootParentId, newPage) => dispatch(addPage(rootParentId, newPage))
   }
 }
 

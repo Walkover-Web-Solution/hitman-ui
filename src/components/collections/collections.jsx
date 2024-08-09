@@ -1,276 +1,203 @@
-import React, { Component } from 'react'
-import { Card } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import 'react-toastify/dist/ReactToastify.css'
-import shortId from 'shortid'
-import { isDashboardRoute, openExternalLink, isOnPublishedPage } from '../common/utility'
+import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { isDashboardRoute, openExternalLink, isOnPublishedPage, isOrgDocType } from '../common/utility'
 import collectionsService from './collectionsService'
-import { addCollection, deleteCollection, duplicateCollection, updateCollection, addCustomDomain } from './redux/collectionsActions'
-import './collections.scss'
-import PublishDocsModal from '../publicEndpoint/publishDocsModal'
-import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
-import hitmanLogo from '../../assets/icons/hitman.svg'
-import { addNewTab } from '../tabs/redux/tabsActions'
 import CombinedCollections from '../combinedCollections/combinedCollections'
-import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
-import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
-import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTagsign.svg'
-import { MdExpandMore } from 'react-icons/md'
 import MoveModal from '../common/moveModal/moveModal'
+import ExportButton from '../exportButton/exportButton'
 import IconButtons from '../common/iconButton'
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
+import { MdExpandMore } from 'react-icons/md'
 import { FiPlus } from 'react-icons/fi'
 import { BsThreeDots } from 'react-icons/bs'
 import { LuFolder } from 'react-icons/lu'
 import { RiShareForward2Line } from 'react-icons/ri'
-import { TbDirections } from 'react-icons/tb'
-import { TbSettingsAutomation } from "react-icons/tb";
-import ExportButton from '../exportButton/exportButton'
-import { BiExport } from "react-icons/bi";
+import { TbDirections, TbSettingsAutomation } from 'react-icons/tb'
+import { BiExport } from 'react-icons/bi'
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
+import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
+import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTagsign.svg'
+import { Card } from 'react-bootstrap'
+import 'react-toastify/dist/ReactToastify.css'
+import './collections.scss'
+import CollectionForm from './collectionForm'
+import CustomModal from '../customModal/customModal'
+import { addPage } from '../pages/redux/pagesActions'
+import { openInNewTab } from '../tabs/redux/tabsActions'
+import { IoIosSettings } from "react-icons/io";
 
-const mapStateToProps = (state) => {
-  return {
-    collections: state.collections,
-    pages: state.pages,
-    endpoints: state.endpoints,
-    clientData: state.clientData
-  }
-}
+const Collections = (props) => {
+  const collections = useSelector((state) => state.collections)
+  const clientData = useSelector((state) => state.clientData)
+  const organizations = useSelector((state) => state.organizations)
+  const dispatch = useDispatch()
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    add_collection: (newCollection) => dispatch(addCollection(newCollection)),
-    update_collection: (editedCollection) => dispatch(updateCollection(editedCollection)),
-    delete_collection: (collection) => dispatch(deleteCollection(collection)),
-    duplicate_collection: (collection) => dispatch(duplicateCollection(collection)),
-    add_custom_domain: (collectionId, domain) => dispatch(addCustomDomain(collectionId, domain)),
-    add_new_tab: () => dispatch(addNewTab()),
-    update_isExpand_for_collection: (payload) => dispatch(addIsExpandedAction(payload))
-  }
-}
+  const location = useLocation()
+  const params = useParams()
+  const navigate = useNavigate()
 
-class CollectionsComponent extends Component {
-  constructor(props) {
-    super(props)
-    this.handleOrgModalClose = this.handleOrgModalClose.bind(this);
-    this.state = {
-      showCollectionForm: false,
-      collectionFormName: '',
-      selectedCollection: {},
-      showPublishDocsModal: false,
-      defaultPublicLogo: hitmanLogo,
-      publicLogoError: false,
-      showRemoveModal: false,
-      selectedCollectionIds: [],
-      showOrgModal: false,
-      showRunAutomationModal: false,
-      automationSelectedCollectionId: null,
-    }
-    this.names = {}
-    this.handleApiAutomation = this.handleApiAutomation.bind(this)
+  const [showCollectionForm, setShowCollectionForm] = useState(false)
+  const [collectionFormName, setCollectionFormName] = useState('')
+  const [selectedCollection, setSelectedCollection] = useState({})
+  const [showRemoveModal, setShowRemoveModal] = useState(false)
+  const [showAddCollectionModal, setShowAddCollectionModal] = useState(false)
+  const [showOrgModal, setShowOrgModal] = useState(false)
+  const [automationSelectedCollectionId, setAutomationSelectedCollectionId] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [gtmId, setGtmId] = useState('')
+
+  const closeCollectionForm = () => {
+    setShowCollectionForm(false)
   }
 
-  closeCollectionForm() {
-    this.setState({ showCollectionForm: false })
+  const handleOrgModalOpen = (collection) => {
+    setShowOrgModal(true)
+    setSelectedCollection(collection)
   }
 
-  async handleAddCollection(newCollection) {
-    newCollection.requestId = shortId.generate()
-    this.props.add_collection(newCollection)
+  const handleOrgModalClose = () => {
+    setShowOrgModal(false)
   }
 
-  async handleUpdateCollection(editedCollection) {
-    this.props.update_collection(editedCollection)
-  }
-
-  async handleDuplicateCollection(collectionCopy) {
-    this.props.duplicate_collection(collectionCopy)
-  }
-
-  async handleOrgModalOpen(collection) {
-    this.setState({ showOrgModal: true })
-    this.setState({ moveCollection: collection })
-  }
-
-  handleOrgModalClose() {
-    this.setState({ showOrgModal: false })
-  }
-
-  handleGoToDocs(collection) {
+  const handleGoToDocs = (collection) => {
     const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p?collectionId=${collection.id}`
     openExternalLink(publicDocsUrl)
   }
 
-  openEditCollectionForm(collectionId) {
-    this.setState({
-      showCollectionForm: true,
-      collectionFormName: 'Edit Collection',
-      selectedCollection: {
-        ...this.props.collections[collectionId]
-      }
+  const openEditCollectionForm = (collectionId) => {
+    setShowCollectionForm(true)
+    setCollectionFormName('Edit Collection')
+    setSelectedCollection({
+      ...collections[collectionId]
     })
   }
 
-  openDeleteCollectionModal(collectionId) {
-    if (this.state.openSelectedCollection === true) {
-      this.setState({ openSelectedCollection: false })
-    }
-    this.setState({
-      showDeleteModal: true,
-      selectedCollection: {
-        ...this.props.collections[collectionId]
-      }
+  const openDeleteCollectionModal = (collectionId) => {
+    setShowDeleteModal(true)
+    setSelectedCollection({
+      ...collections[collectionId]
     })
   }
 
-  handlePublicCollectionDescription(collection) {
-    this.props.history.push({
-      pathname: `/p/${collection.id}/description/${collection.name}`,
-      collection
-    })
+  const closeDeleteCollectionModal = () => {
+    setShowDeleteModal(false)
+    setShowRemoveModal(false)
   }
 
-  handlePublic(collection) {
-    collection.isPublic = !collection.isPublic
-    this.props.update_collection({ ...collection })
+  const openSelectedCollection = (collectionId) => {
+    props.empty_filter()
+    props.collection_selected(collectionId)
   }
 
-  closeDeleteCollectionModal() {
-    this.setState({ showRemoveModal: false, showDeleteModal: false })
+  const TagManagerModalOpen = (collectionId) => {
+    setGtmId(collectionId)
+    setAutomationSelectedCollectionId(true)
   }
 
-  openSelectedCollection(collectionId) {
-    this.props.empty_filter()
-    this.props.collection_selected(collectionId)
-    this.collectionId = collectionId
-    this.setState({ openSelectedCollection: true })
-    // this.openPublishSettings(collectionId)
-  }
-
-  openAllCollections() {
-    this.props.empty_filter()
-    this.collectionId = null
-    this.setState({ openSelectedCollection: false })
-  }
-
-  TagManagerModal(collectionId) {
-    this.setState({ TagManagerCollectionId: collectionId })
-  }
-
-  openTagManagerModal() {
+  const openTagManagerModal = () => {
     return (
-      this.state.TagManagerCollectionId && (
+      automationSelectedCollectionId && (
         <TagManagerModal
-          {...this.props}
+          {...props}
           show
-          onHide={() => this.setState({ TagManagerCollectionId: false })}
+          onHide={() => setAutomationSelectedCollectionId(false)}
           title='Google Tag Manager'
-          collection_id={this.state.TagManagerCollectionId}
+          collection_id={gtmId}
         />
       )
     )
   }
 
-  dataFetched() {
-    return this.props.collections && this.props.endpoints && this.props.pages
-  }
-
-  removeImporedPublicCollection(collectionId) {
-    if (this.state.openSelectedCollection === true) {
-      this.setState({ openSelectedCollection: false })
-    }
-    this.setState({
-      showRemoveModal: true,
-      selectedCollection: {
-        ...this.props.collections[collectionId]
-      }
+  const removeImporedPublicCollection = (collectionId) => {
+    setShowRemoveModal(true)
+    setSelectedCollection({
+      ...collections[collectionId]
     })
   }
 
-  toggleSelectedColelctionIds(e, id) {
-    e.stopPropagation()
-    const isExpanded = this.props?.clientData?.[id]?.isExpanded ?? isOnPublishedPage()
-    this.props.update_isExpand_for_collection({
-      value: !isExpanded,
-      id
-    })
+  const toggleSelectedCollectionIds = (id) => {
+    const isExpanded = clientData?.[id]?.isExpanded ?? isOnPublishedPage()
+    dispatch(
+      addIsExpandedAction({
+        value: !isExpanded,
+        id
+      })
+    )
   }
 
-  async openPublishSettings(collectionId) {
+  const openPublishSettings = (collectionId) => {
     if (collectionId) {
-      this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
+      navigate(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
   }
 
-  openAddPageEndpointModal(collectionId) {
-    this.setState({
-      showAddCollectionModal: true,
-      selectedCollection: {
-        ...this.props.collections[collectionId]
-      }
-    })
+  const openAddPageEndpointModal = (collectionId) => {
+    const newPage = { name: 'untitled', pageType: 1 };
+    if (!isOrgDocType()) {
+      dispatch(addPage(collections[collectionId].rootParentId, newPage))
+      dispatch(openInNewTab({
+        type: 'page',
+        previewMode: false,
+        isModified: false,
+        state: {},
+      }))
+    } else {
+      setShowAddCollectionModal(true)
+      setSelectedCollection({
+        ...collections[collectionId]
+      })
+    }
   }
-  showAddPageEndpointModal() {
+
+  const showAddPageEndpointModal = () => {
     return (
-      this.state.showAddCollectionModal && (
+      showAddCollectionModal && (
         <DefaultViewModal
-          {...this.props}
+          {...props}
           title='Add Parent Page'
-          show={this.state.showAddCollectionModal}
-          onCancel={() => {
-            this.setState({ showAddCollectionModal: false })
-          }}
-          onHide={() => {
-            this.setState({ showAddCollectionModal: false })
-          }}
-          selectedCollection={this.state.selectedCollection}
+          show={showAddCollectionModal}
+          onCancel={() => setShowAddCollectionModal(false)}
+          onHide={() => setShowAddCollectionModal(false)}
+          selectedCollection={selectedCollection}
           pageType={1}
         />
       )
     )
   }
 
-  openRedirectionsPage(collection) {
-    this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collection.id}/redirections`)
-  }
-  handleApiAutomation(collectionId) {
-    this.props.history.push(`/orgs/${this.props.match.params.orgId}/automation/${collectionId}`)
+  const openRedirectionsPage = (collection) => {
+    navigate(`/orgs/${params.orgId}/dashboard/collection/${collection.id}/redirections`)
   }
 
-  renderBody(collectionId, collectionState) {
-    const expanded = this.props.clientData?.[collectionId]?.isExpanded ?? isOnPublishedPage()
-    var isOnDashboardPage = isDashboardRoute(this.props)
+  const handleApiAutomation = (collectionId) => {
+    navigate(`/orgs/${params.orgId}/dashboard/collection/${collectionId}/runner`)
+  }
+
+  const renderBody = (collectionId, collectionState) => {
+    const expanded = clientData?.[collectionId]?.isExpanded ?? isOnPublishedPage()
+    const isOnDashboardPage = isDashboardRoute({ location })
 
     return (
       <React.Fragment key={collectionId}>
-        <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
-          <button tabIndex={-1} variant='default' className={`sidebar-hower ${expanded ? 'expanded' : ''}`}>
+        <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion px-2 mb-4 expanded' : 'sidebar-accordion px-2'}>
+          <button tabIndex={-1} variant='default' className={`sidebar-hower px-2 rounded ${expanded ? 'expanded' : ''}`}>
             <div
               className='inner-container'
-              onClick={(e) => {
-                this.openPublishSettings(collectionId)
-                if (!expanded) {
-                  this.toggleSelectedColelctionIds(e, collectionId)
-                }
-              }}
+              onClick={() => toggleSelectedCollectionIds(collectionId)}
             >
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
-                  <span className='versionChovron' onClick={(e) => this.toggleSelectedColelctionIds(e, collectionId)}>
-                    <MdExpandMore size={13} className='collection-icons-arrow d-none' />
-                    <LuFolder size={13} className='collection-icons d-inline ml-1' />
-                  </span>
                   {collectionState === 'singleCollection' ? (
-                    <div className='sidebar-accordion-item' onClick={() => this.openSelectedCollection(collectionId)}>
-                      <div className='text-truncate'>{this.props.collections[collectionId].name}</div>
+                    <div className='sidebar-accordion-item' onClick={() => openSelectedCollection(collectionId)}>
+                      <div className='text-truncate'>{collections[collectionId].name}</div>
                     </div>
                   ) : (
-                    <span className='truncate collect-length'> {this.props.collections[collectionId].name} </span>
+                    <span className='truncate collect-length collection-box'> {collections[collectionId].name} </span>
                   )}
                 </div>
               </div>
@@ -278,63 +205,73 @@ class CollectionsComponent extends Component {
             {
               //  [info] options not to show on publihsed page
               isOnDashboardPage && (
-                <div className='d-flex align-items-center'>
-                  <div className='sidebar-item-action  d-flex align-items-center'>
-                    <div className='d-flex align-items-center' onClick={() => this.openAddPageEndpointModal(collectionId)}>
+                <div className='d-flex align-items-center justify-content-end' >
+                  <div className='sidebar-item-action d-flex align-items-center justify-content-end pr-0'>
+                    <div className='d-flex align-items-center' onClick={() => openPublishSettings(collectionId)}>
                       <IconButtons>
-                        <FiPlus />
+                        <IoIosSettings color='grey' />
+                      </IconButtons>
+                    </div>
+                    <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(collectionId)}>
+                      <IconButtons>
+                        <FiPlus color='grey' />
                       </IconButtons>
                     </div>
                     <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                       <IconButtons>
-                        <BsThreeDots />
+                        <BsThreeDots color='grey' />
                       </IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
-                      {!this.props.collections[collectionId]?.importedFromMarketPlace && (
+                      {!collections[collectionId]?.importedFromMarketPlace && (
                         <>
-                          <div className='dropdown-item d-flex' onClick={() => this.openEditCollectionForm(collectionId)}>
+                          <div className='dropdown-item d-flex' onClick={() => openEditCollectionForm(collectionId)}>
                             <EditIcon /> Rename
                           </div>
-                          {this.props.collections[collectionId].isPublic && (
-                            <div className='dropdown-item d-flex' onClick={() => this.handleGoToDocs(this.props.collections[collectionId])}>
+                          {collections[collectionId].isPublic && (
+                            <div className='dropdown-item d-flex' onClick={() => handleGoToDocs(collections[collectionId])}>
                               <GoToDocs /> Go to API Documentation
                             </div>
                           )}
                           <div
                             className='dropdown-item d-flex'
                             onClick={() => {
-                              this.TagManagerModal(collectionId)
+                              TagManagerModalOpen(collectionId)
                             }}
                           >
                             <AddGoogleTag /> Add Google Tag Manager
                           </div>
-                          <div className='dropdown-item' onClick={() => this.handleOrgModalOpen(this.props.collections[collectionId])}>
+                          <div className='dropdown-item' onClick={() => handleOrgModalOpen(collections[collectionId])}>
                             <RiShareForward2Line size={16} color='grey' /> Move
                           </div>
-                          <div
-                            className='dropdown-item d-flex'
-                            onClick={() => this.openRedirectionsPage(this.props.collections[collectionId])}
-                          >
+                          <div className='dropdown-item d-flex' onClick={() => openRedirectionsPage(collections[collectionId])}>
                             <TbDirections size={16} color='grey' /> Redirections
                           </div>
-                          <div className='dropdown-item' onClick={() => this.handleApiAutomation(collectionId)}>
-                            <TbSettingsAutomation size={16} color='grey' /> API Automation
-                          </div>
-                          <div className='dropdown-item d-flex align-items-center h-auto'>
-                            <BiExport size={18} color='grey' />
-                            <ExportButton orgId={this.props.match.params.orgId} collectionId={collectionId} collectionName={this.props.collections[collectionId].name} />
-                          </div>
-                          <div className='dropdown-item delete-button-sb text-danger d-flex' onClick={() => { this.openDeleteCollectionModal(collectionId) }}>
+                          {isOrgDocType() && <div className='dropdown-item' onClick={() => handleApiAutomation(collectionId)}>
+                            <TbSettingsAutomation size={16} color='grey' />
+                            API Automation
+                          </div>}
+                          {isOrgDocType() && <div className='dropdown-item d-flex align-items-center h-auto'>
+                            <BiExport className='mb-1' size={18} color='grey' />
+                            <ExportButton
+                              orgId={params.orgId}
+                              collectionId={collectionId}
+                              collectionName={collections[collectionId].name}
+                            />
+                          </div>}
+                          <div
+                            className='dropdown-item delete-button-sb text-danger d-flex'
+                            onClick={() => openDeleteCollectionModal(collectionId)}
+                          >
                             <DeleteIcon size={14} /> Delete
                           </div>
                         </>
                       )}
-                      {this.props.collections[collectionId]?.importedFromMarketPlace && (
+                      {collections[collectionId]?.importedFromMarketPlace && (
                         <div
                           className='dropdown-item d-flex align-items-center justify-content-between'
                           onClick={() => {
-                            this.removeImporedPublicCollection(collectionId)
+                            removeImporedPublicCollection(collectionId)
                           }}
                         >
                           <div className='marketplace-icon mr-2'> M </div>
@@ -344,10 +281,8 @@ class CollectionsComponent extends Component {
                     </div>
                   </div>
                   <div className='theme-color d-flex transition counts ml-1 f-12'>
-                    {this.props.collections[collectionId]?.importedFromMarketPlace ? (
-                      <div className='marketplace-icon mr-1'> M </div>
-                    ) : null}
-                    <span className={this.props.collections[collectionId].isPublic ? 'published' : ''}></span>
+                    {collections[collectionId]?.importedFromMarketPlace ? <div className='marketplace-icon mr-1'> M </div> : null}
+                    <span className={collections[collectionId].isPublic ? 'published' : ''}></span>
                   </div>
                 </div>
               )
@@ -356,21 +291,19 @@ class CollectionsComponent extends Component {
           {expanded ? (
             <div id='collection-collapse'>
               <Card.Body>
-                {
-                  <CombinedCollections
-                    {...this.props}
-                    handleOnDragOver={this.props.handleOnDragOver}
-                    onDragEnter={this.props.onDragEnter}
-                    onDragEnd={this.props.onDragEnd}
-                    onDragStart={this.props.onDragStart}
-                    onDrop={this.props.onDrop}
-                    draggingOverId={this.props.draggingOverId}
-                    collection_id={collectionId}
-                    selectedCollection
-                    rootParentId={this.props.collections[collectionId].rootParentId}
-                  // isPublishData={false}
-                  />
-                }
+                <CombinedCollections
+                  {...props}
+                  handleOnDragOver={props.handleOnDragOver}
+                  onDragEnter={props.onDragEnter}
+                  onDragEnd={props.onDragEnd}
+                  onDragStart={props.onDragStart}
+                  onDrop={props.onDrop}
+                  draggingOverId={props.draggingOverId}
+                  collection_id={collectionId}
+                  selectedCollection
+                  rootParentId={collections[collectionId].rootParentId}
+                  level={-1}
+                />
               </Card.Body>
             </div>
           ) : null}
@@ -379,35 +312,7 @@ class CollectionsComponent extends Component {
     )
   }
 
-  openPublishDocs(collection) {
-    if (collection?.id) {
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`
-      })
-    } else {
-      const collection = this.props.collections[Object.keys(this.props.collections)[0]]
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collection.id}`
-      })
-    }
-  }
-
-  showPublishDocsModal(onHide) {
-    return <PublishDocsModal {...this.props} show onHide={onHide} collection_id={this.state.selectedCollection} />
-  }
-
-  addGTM(gtmId) {
-    if (gtmId) {
-      const tagManagerArgs = {
-        gtmId: gtmId
-      }
-      TagManager.initialize(tagManagerArgs)
-    }
-  }
-
-  renderEmptyCollections() {
+  const renderEmptyCollections = () => {
     return (
       <div className='empty-collections text-center mt-4'>
         <div>
@@ -420,80 +325,49 @@ class CollectionsComponent extends Component {
     )
   }
 
-  showDeleteCollectionModal() {
-    const title = this.state.showRemoveModal ? 'Remove Collection' : 'Delete Collection'
-    const message = this.state.showRemoveModal
+  const showDeleteCollectionModal = () => {
+    const title = showRemoveModal ? 'Remove Collection' : 'Delete Collection'
+    const message = showRemoveModal
       ? 'Are you sure you wish to remove this public collection?'
       : 'Are you sure you wish to delete this collection? All your pages, versions and endpoints present in this collection will be deleted.'
     return (
-      (this.state.showDeleteModal || this.state.showRemoveModal) &&
-      collectionsService.showDeleteCollectionModal(
-        { ...this.props },
-        this.closeDeleteCollectionModal.bind(this),
-        title,
-        message,
-        this.state.selectedCollection
-      )
+      (showDeleteModal || showRemoveModal) &&
+      collectionsService.showDeleteCollectionModal({ ...props }, closeDeleteCollectionModal, title, message, selectedCollection)
     )
   }
 
-  comparison(a, b) {
-    if (this.props.collections[a].name.toLowerCase() < this.props.collections[b].name.toLowerCase()) {
-      return -1
-    } else if (this.props.collections[a].name.toLowerCase() > this.props.collections[b].name.toLowerCase()) {
-      return 1
-    } else {
-      return 0
-    }
-  }
-
-  render() {
-    if (isDashboardRoute(this.props, true)) {
-      return (
-        <div>
-          {this.state.showPublishDocsModal &&
-            this.showPublishDocsModal(() =>
-              this.setState({
-                showPublishDocsModal: false
-              })
+  if (isDashboardRoute({ location }, true)) {
+    return (
+      <div>
+        <div className='App-Nav'>
+          <div className='tabs'>
+            {showAddCollectionModal && showAddPageEndpointModal()}
+            {showCollectionForm && (
+              <CustomModal size='sm' modalShow={showCollectionForm} hideModal={closeCollectionForm}>
+                <CollectionForm title='Edit Collection' isEdit={true} collectionId={selectedCollection?.id} onHide={closeCollectionForm} />
+              </CustomModal>
             )}
-          <div className='App-Nav'>
-            <div className='tabs'>
-              {this.showAddPageEndpointModal()}
-              {this.state.showCollectionForm &&
-                collectionsService.showCollectionForm(
-                  this.props,
-                  this.closeCollectionForm.bind(this),
-                  this.state.collectionFormName,
-                  this.state.selectedCollection
-                )}
-              {this.openTagManagerModal()}
-              {this.showDeleteCollectionModal()}
-              {this.state.showOrgModal && <MoveModal moveCollection={this.state.moveCollection} onHide={this.handleOrgModalClose} show={this.state.showOrgModal} />}
-            </div>
+            {openTagManagerModal()}
+            {showDeleteCollectionModal()}
+            {showOrgModal && <MoveModal moveCollection={selectedCollection} onHide={handleOrgModalClose} show={showOrgModal} />}
           </div>
-          {this.props.collectionsToRender.length > 0 ? (
-            <div className='App-Side'>
-              {this.props.collectionsToRender.map((collectionId, index) => this.renderBody(collectionId, 'allCollections'))}
-              {this.state.showRunAutomationModal && this.renderRunAutomationModal()}
-            </div>
-          ) : this.props.filter === '' ? (
-            this.renderEmptyCollections()
-          ) : (
-            <div className='px-2'>No Collections Found!</div>
-          )}
         </div>
-      )
-    } else {
-      return (
-        <>
-          <div className='App-Side'>
-            {this.props.collectionsToRender.map((collectionId, index) => this.renderBody(collectionId, 'allCollections'))}
-          </div>
-        </>
-      )
-    }
+        {props.collectionsToRender.length > 0 ? (
+          <div className='App-Side mt-1'>{props.collectionsToRender.map((collectionId) => renderBody(collectionId, 'allCollections'))}</div>
+        ) : props.filter === '' ? (
+          renderEmptyCollections()
+        ) : (
+          <div className='px-2'>No Collections Found!</div>
+        )}
+      </div>
+    )
+  } else {
+    return (
+      <>
+        <div className='App-Side'>{props.collectionsToRender.map((collectionId) => renderBody(collectionId, 'allCollections'))}</div>
+      </>
+    )
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CollectionsComponent))
+export default Collections

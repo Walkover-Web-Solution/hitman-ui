@@ -1,5 +1,13 @@
 import { store } from '../../store/store'
-import { addNewTab, closeAllTabs, closeTab, replaceTabForUntitled, setActiveTabId, updateTab, updateTabDraft } from '../tabs/redux/tabsActions'
+import {
+  addNewTab,
+  closeAllTabs,
+  closeTab,
+  replaceTabForUntitled,
+  setActiveTabId,
+  updateTab,
+  updateTabDraft
+} from '../tabs/redux/tabsActions'
 import tabStatusTypes from './tabStatusTypes'
 import { getCurrentUser } from '../auth/authServiceV2'
 import { getOrgId } from '../common/utility'
@@ -14,13 +22,13 @@ function removeTab(tabId, props) {
     if (activeTabId === tabId) {
       const tabsCount = Object.keys(tabs).length
       if (tabsCount === 1) {
-        newTab(props)
+        newTab()
       } else {
         const index = tabsOrder.indexOf(tabId)
         if (index > 0) {
-          selectTab(props, tabsOrder[index - 1])
+          selectTab(tabsOrder[index - 1], props)
         } else {
-          selectTab(props, tabsOrder[index + 1])
+          selectTab(tabsOrder[index + 1], props)
         }
       }
     }
@@ -31,43 +39,38 @@ function removeTab(tabId, props) {
   }
 }
 
-function changeRoute(props, tab) {
-  if (tab.isSaved) {
-    props.history.push({
-      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/${tab.id}`
-    })
-  } else {
-    props.history.push({
-      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
-    })
-  }
-}
-
 function removeAllTabs(props) {
   store.dispatch(closeAllTabs())
   newTab(props)
 }
 
-function selectTab(props, tabId) {
-  const { tabs } = store.getState().tabs
+function selectTab(tabId, props) {
+  const { tabs } = store.getState().tabs;
+  const tab = tabs[tabId];
+  let navigatePath = `/orgs/${getOrgId()}/dashboard/endpoint/new`;
 
-  const tab = tabs[tabId]
-  if (tab?.status === 'NEW') {
-    props.history.push({
-      pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
-    })
-  } else if (tab?.type === 'collection') {
-    tab?.state?.pageType === 'SETTINGS' ? props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
-    : props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
-  } else {
-    if (!(tab?.type && tab?.id)) {
-      return props.history.push({ pathname: `/orgs/${getOrgId()}/dashboard/endpoint/new` })
+  if (tab?.type && tab?.id) {
+    switch (tab?.type) {
+      case 'NEW':
+        navigatePath = `/orgs/${props.params.orgId}/dashboard/${tab?.type}/new`;
+        break;
+      case 'collection':
+        const pageTypePath = {
+          'SETTINGS': `/orgs/${props.params.orgId}/dashboard/collection/${tab?.id}/settings`,
+          'RUNS': `/orgs/${props.params.orgId}/dashboard/collection/${tab?.id}/runs`,
+          'FEEDBACK': `/orgs/${props.params.orgId}/dashboard/collection/${tab?.id}/feedback`
+        };
+        navigatePath = tab?.state?.pageType ? pageTypePath[tab?.state?.pageType] : navigatePath;
+        break;
+      case 'manual-runs':
+        navigatePath = `/orgs/${props.params.orgId}/dashboard/collection/${tab?.state?.collectionId}/runs/${tab?.id}`;
+        break;
+      default:
+        navigatePath = `/orgs/${props?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${tab?.isModified ? '/edit' : ''}`;
     }
-    return props.history.push({
-      pathname: `/orgs/${props?.match?.params?.orgId}/dashboard/${tab?.type}/${tab?.id}${(tab.isModified)?'/edit':''}`
-    })
   }
-  store.dispatch(setActiveTabId(tabId))
+  props.navigate(navigatePath);
+  store.dispatch(setActiveTabId(tabId));
 }
 
 function disablePreviewMode(tabId) {
@@ -111,7 +114,6 @@ function updateDraftData(pageId, data) {
 export default {
   newTab,
   removeTab,
-  changeRoute,
   removeAllTabs,
   selectTab,
   disablePreviewMode,

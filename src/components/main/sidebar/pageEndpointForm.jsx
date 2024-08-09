@@ -16,9 +16,9 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    add_page: (rootParentId, newPage) => dispatch(addPage(ownProps.history, rootParentId, newPage))
+    add_page: (rootParentId, newPage) => dispatch(addPage(rootParentId, newPage))
   }
 }
 

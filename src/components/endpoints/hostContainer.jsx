@@ -9,6 +9,8 @@ import { getParseCurlData } from '../common/apiUtility'
 import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
+import { HiOutlineExclamationCircle } from "react-icons/hi2";
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 const hostContainerEnum = {
   hosts: {
@@ -30,7 +32,8 @@ class HostContainer extends Component {
       datalistUri: '',
       // customHost: '',
       environmentHost: '',
-      selectedHost: ''
+      selectedHost: '',
+      showIcon: true,
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -49,9 +52,7 @@ class HostContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.environmentHost !== this.props.environmentHost 
-    ) {
+    if (prevProps.environmentHost !== this.props.environmentHost) {
       this.setHosts()
     }
     if (!_.isEqual(prevProps.updatedUri, this.props.updatedUri)) {
@@ -132,13 +133,12 @@ class HostContainer extends Component {
       // parsedData.data is in the format of json string then convert it to object format
       try {
         parsedData.data = JSON.parse(parsedData.data)
-      } catch (e) {}
-      const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase();
-      if(contentType.includes('application/json')){
-        untitledEndpointData.data.body.type = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType];
-        untitledEndpointData.data.body.raw.value = typeof(parsedData.data)=== 'object' ? JSON.stringify(parsedData.data) : parsedData.data;
-
+      } catch (e) { }
+      const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase()
+      if (contentType.includes('application/json')) {
+        untitledEndpointData.data.body.type = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType]
+        untitledEndpointData.data.body.raw.value = typeof parsedData.data === 'object' ? JSON.stringify(parsedData.data) : parsedData.data
 
         // setting body description
         untitledEndpointData.bodyDescription = {
@@ -175,26 +175,27 @@ class HostContainer extends Component {
           : parsedData.headers?.['Content-Type'] || 'application/x-www-form-urlencoded')
 
         // 'multipart/form-data' and 'application/x-www-form-urlencoded' both contains body values description
-        let keyValuePairs = parsedData.data.split('&')
-        let keys = []
-        let values = []
-        // Iterate over each key-value pair
-        keyValuePairs.forEach((pair) => {
-          let [key, value] = pair.split('=')
-          keys.push(key)
-          values.push(value)
-        })
-        for (let key in values) {
-          let eachData = {
-            checked: 'true',
-            key: keys[key],
-            value: values[key],
-            description: '',
-            type: 'text'
+        if (typeof parsedData.data === 'string') {
+          let keyValuePairs = parsedData.data.split('&')
+          let keys = []
+          let values = []
+          keyValuePairs.forEach((pair) => {
+            let [key, value] = pair.split('=')
+            keys.push(key)
+            values.push(value)
+          })
+          for (let key in values) {
+            let eachData = {
+              checked: 'true',
+              key: keys[key],
+              value: values[key],
+              description: '',
+              type: 'text'
+            }
+            untitledEndpointData.data.body[bodyType].push(eachData)
           }
-          untitledEndpointData.data.body[bodyType].push(eachData)
+          untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1))
         }
-        untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1))
       }
     }
 
@@ -291,7 +292,7 @@ class HostContainer extends Component {
   }
 
   splitUrlHelper(e) {
-    const value = e?.target?.value?.trim() || e?.url?.trim() || ''
+    const value = e?.target?.value || e?.url || ''
     const hostName = this.checkExistingHosts(value)
     let uri = ''
     const data = {
@@ -329,6 +330,7 @@ class HostContainer extends Component {
 
   renderHostDatalist() {
     const endpointId = this.props.endpointId
+    const { showIcon } = this.state;
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
         <input
@@ -341,11 +343,15 @@ class HostContainer extends Component {
           onChange={(e) => this.handleInputHostChange(e)}
           autoComplete='off'
           onFocus={() =>
-            this.setState({ showDatalist: true }, () => {
-              document.addEventListener('mousedown', this.handleClickOutside)
+            this.setState({ showDatalist: true, showIcon: false }, () => {
+              document.addEventListener('mousedown', this.handleClickOutside);
             })
           }
+          onBlur={() => this.setState({ showIcon: true })}
         />
+        {showIcon && <div className='position-relative url-icons'> <HiOutlineExclamationCircle size={20} className='invalid-icon' />
+          <span className='position-absolute'>URL cannot be empty</span>
+        </div>}
         <div className={['host-data', this.state.showDatalist ? 'd-block' : 'd-none'].join(' ')}>
           {Object.values(hostContainerEnum.hosts).map(
             (host, index) =>
@@ -364,6 +370,8 @@ class HostContainer extends Component {
   renderPublicHost() {
     return (
       <input
+        type="text"
+        aria-label="Search"
         disabled
         className='form-control'
         value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}

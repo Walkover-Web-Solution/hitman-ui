@@ -12,13 +12,11 @@ import { moveToNextStep } from '../../services/widgetService'
 import { publishData } from '../modals/redux/modalsActions'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
-import { IoInformationCircleOutline } from 'react-icons/io5'
 import { FiCopy } from 'react-icons/fi'
-import { FaRegTimesCircle } from "react-icons/fa"
-import { updateTab } from '../tabs/redux/tabsActions'
+import { FaRegTimesCircle } from 'react-icons/fa'
+import { RiCheckboxMultipleLine } from 'react-icons/ri'
 
 const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
-
 const publishDocFormEnum = {
   NULL_STRING: '',
   LABELS: {
@@ -51,6 +49,7 @@ const PublishDocForm = (props) => {
   const [loader, setLoader] = useState(false)
   const [openPublishSidebar, setOpenPublishSidebar] = useState(false)
   const [republishNeeded, setRepublishNeeded] = useState(false)
+  const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
     setSelectedCollection()
@@ -73,6 +72,15 @@ const PublishDocForm = (props) => {
       }
     }
   }
+
+  const unPublishCollection = (selectedCollection) => {
+    // const selectedCollection = collections[collectionId];
+    if (selectedCollection?.isPublic === true) {
+      const editedCollection = { ...selectedCollection };
+      editedCollection.isPublic = false;
+      dispatch(updateCollection(editedCollection));
+    }
+  };
 
   const handleChange = (e, isURLInput = false) => {
     const newData = { ...data }
@@ -279,6 +287,8 @@ const PublishDocForm = (props) => {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text)
+    setIsCopied(true); // Set copied status to true
+    setTimeout(() => setIsCopied(false), 1000);
   }
 
   const renderPublicUrl = () => {
@@ -303,15 +313,19 @@ const PublishDocForm = (props) => {
           }
         >
           <div
-            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4 ${
-              isDisabled ? 'text-disable' : 'disabled-link'
-            }`}
+            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4`}
           >
             <HiOutlineExternalLink className='mr-1' size={13} />
-            <span onClick={() => isDisabled && openExternalLink(url)}>{url}</span>
-            <button className='copy-button-link ml-2 border-0 bg-white' onClick={() => copyToClipboard(url)} title='Copy URL'>
-              <FiCopy size={13} />
-            </button>
+            <span onClick={() => isDisabled && openExternalLink(url)} className={isDisabled ? 'text-disable flex-grow-1' : 'disabled-link'}>{url}</span>
+            <div className='ml-2'>
+              <button className='copy-button-link ml-2 border-0 bg-white' onClick={() => copyToClipboard(url)} title='Copy URL' onMouseDown={(e) => e.preventDefault()}>
+              {isCopied ? ( 
+                  <RiCheckboxMultipleLine size={13} color='black' />
+                ) : (
+                  <FiCopy size={13} />
+                )}
+              </button>
+            </div>
           </div>
         </OverlayTrigger>
       </div>
@@ -330,18 +344,7 @@ const PublishDocForm = (props) => {
     return false
   }
 
-  const handleSeeFeedbacks = () => {
-    const collectionId = props.selected_collection_id
-    const activeTab = tabs.activeTabId
-    dispatch(updateTab(activeTab, { state: { pageType: 'FEEDBACK' } }))
-    props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
-  }
-
-  const openPublishSidebars = () => (
-    <>
-      {isPublishSliderOpen && <PublishSidebar {...props} closePublishSidebar={closePublishSidebar} />}
-    </>
-  )
+  const openPublishSidebars = () => <>{isPublishSliderOpen && <PublishSidebar {...props} closePublishSidebar={closePublishSidebar} />}</>
 
   const closePublishSidebar = () => {
     setOpenPublishSidebar(false)
@@ -353,7 +356,6 @@ const PublishDocForm = (props) => {
     const isNotPublished = !isCollectionPublished(selectedCollection)
     const rootParentId = collections[props.selected_collection_id]?.rootParentId
     const disableCondition = pages[rootParentId]?.child?.length > 0
-
     return (
       <div className='mt-2'>
         <Button
@@ -382,7 +384,7 @@ const PublishDocForm = (props) => {
             variant='btn btn-outline-danger btn-sm fs-4'
             className='m-1 btn-sm fs-4'
             onClick={() => {
-              props.unPublishCollection()
+              unPublishCollection(selectedCollection)
               setRepublishNeeded(false)
             }}
           >
@@ -393,43 +395,34 @@ const PublishDocForm = (props) => {
     )
   }
 
-  const publishCheck = (props.isSidebar || props.onTab) && props.isCollectionPublished()
+  const publishCheck = collections[tabs?.activeTabId]?.isPublic
 
   return (
     <>
       <div className='d-flex justify-content-center'>
-        <div className={props.onTab && 'publish-on-tab'}>
+        <div className={'publish-on-tab'}>
           <div className='d-flex justify-content-between align-item-center'>
             <div className='d-flex align-items-center'>
               <h3 className='page-title mb-0'>Publish Collection Settings</h3>
             </div>
-            <span
-              className='hover'
-              onClick={handleSeeFeedbacks}
-              style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer' }}
-            >
-              <IoInformationCircleOutline style={{ color: 'inherit', marginRight: '1px', fontSize: '20px' }} />
-              <span style={{ fontSize: '16px' }}>Feedbacks</span>
-            </span>
           </div>
           <span className='mt-2 d-inline-block'>Completing this step will make your collection available at a public URL.</span>
 
           {publishCheck && renderPublicUrl()}
           <div className='small-input mt-2'>
-            {renderInput('title',false, 'brand name',false)}
-            {renderInput('domain', false, 'docs.example.com',false)}
+            {renderInput('title', false, 'brand name', false)}
+            {renderInput('domain', false, 'docs.example.com', false)}
           </div>
           <div className='d-flex favicon mb-4'>
             <div className='form-group mb-0'>
-              <label>Fav Icon</label>
+              <label> Fav Icon </label>
               <div className='favicon-uploader'>{renderUploadBox('icon')}</div>
             </div>
             <div className='or-wrap d-flex align-items-center'>
               <p className='mb-0'>OR</p>
             </div>
-            {renderInput('logoUrl', false, false, binaryFile,'')}
+            {renderInput('logoUrl', false, false, binaryFile, '')}
           </div>
-
           <div className='color-picker'>{renderColorPicker()}</div>
           {renderActionButtons(publishCheck)}
         </div>

@@ -4,15 +4,16 @@ import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import Form from '../common/form'
 import { onEnter, ADD_GROUP_MODAL_NAME, validate, getOnlyUrlPathById, getUrlPathById } from '../common/utility'
+import withRouter from '../common/withRouter'
 import { updatePage } from '../pages/redux/pagesActions'
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    update_page: (page) => dispatch(updatePage(ownProps.history, page))
+    update_page: (page) => dispatch(updatePage(page))
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   return {
     pages: state.pages
   }
@@ -49,10 +50,10 @@ class SubPageForm extends Form {
 
   getPrevUrlName(id) {
     const path = getUrlPathById(id, this.props.pages)
-    const questionMarkIndex = path.indexOf('?');
+    const questionMarkIndex = path.indexOf('?')
     if (questionMarkIndex === -1) return path
-    if (questionMarkIndex === 0) return null;
-    const actualPath = path.substring(0, questionMarkIndex);
+    if (questionMarkIndex === 0) return null
+    const actualPath = path.substring(0, questionMarkIndex)
     return actualPath
   }
 
@@ -68,15 +69,15 @@ class SubPageForm extends Form {
     if (this.props.title === 'Rename') {
       const subPage = this.props?.pages?.[this.props.selectedPage]
       const endpoint = this.props?.endpoints?.[this.props.selectedEndpoint]
-      const path = this.getPrevUrlName(this.props.selectedPage);
+      const path = this.getPrevUrlName(this.props.selectedPage)
       const editedPage = {
         prevUrlName: path ?? prevUrlName,
         name,
         urlName,
-        urlMappingFlag: (this.state.data.prevUrlName === this.state.data.urlName) ? false : true,
+        urlMappingFlag: this.state.data.prevUrlName === this.state.data.urlName ? false : true,
         id: subPage?.id || endpoint?.id,
         state: subPage?.state || endpoint?.state,
-        collectionId: subPage?.collectionId,
+        collectionId: subPage?.collectionId || ' '
       }
       this.props.update_page(editedPage)
     }
@@ -86,11 +87,7 @@ class SubPageForm extends Form {
     const nameTitle = this.props.isEndpoint ? 'Endpoint Name' : 'Page Name'
     const redirectUrl = ' Enter URL'
     const pageSlug = 'Page Slug'
-    const tagLine = getOnlyUrlPathById(
-      this.props?.match?.params?.pageId || this.props?.match?.params?.endpointId,
-      this.props.pages,
-      'internal'
-    )
+    const tagLine = getOnlyUrlPathById(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages, 'internal')
     if (this.props.title === 'Rename') {
       return (
         <div
@@ -142,4 +139,4 @@ class SubPageForm extends Form {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SubPageForm)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SubPageForm))
