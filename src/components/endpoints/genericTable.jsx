@@ -7,10 +7,8 @@ import _ from 'lodash'
 import TextField from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
 import { background } from '../backgroundColor.js'
-import { isOnPublishedPage } from '../common/utility'
 import withRouter from '../common/withRouter.jsx'
-import { RiCodeLine, RiDeleteBinLine } from 'react-icons/ri'
-import { Modal } from 'bootstrap'
+import { RiDeleteBinLine } from 'react-icons/ri'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
@@ -320,6 +318,24 @@ class GenericTable extends Component {
       </tr>
     )
   }
+  handleSelect = (selectedOption, name) => {
+    let { dataArray } = this.props;
+    const index = name.split('.')[0];
+    const valueKey = name.split('.')[1];
+    selectedOption = selectedOption.slice(2);
+    selectedOption= selectedOption.trimEnd()
+
+    dataArray[index][valueKey] += `${selectedOption}}}`;
+
+    this.setState({ dataArray });
+
+    if (this.props.title === 'Headers' || this.props.title === 'Params' || this.props.title === 'Path Variables') {
+      this.props.props_from_parent(this.props.title, dataArray);
+    }
+    if (this.props.title === 'formData' || this.props.title === 'x-www-form-urlencoded') {
+      this.props.handle_change_body_data(this.props.title, dataArray);
+    }
+  }
 
   renderTextOrFileInput(dataArray, index) {
     const { title } = this.props
@@ -332,6 +348,7 @@ class GenericTable extends Component {
           key={key}
           value={dataArray[index].key}
           onChange={(e) => this.handleChange(e, { name: key, value: e })}
+          onSelect={(selectedOption) => this.handleSelect(selectedOption, key)}
           type='text'
           placeholder='Key'
           className='form-control'
