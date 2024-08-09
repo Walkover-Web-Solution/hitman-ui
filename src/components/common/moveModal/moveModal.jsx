@@ -10,9 +10,13 @@ import { deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from 
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 const MoveModal = (props) => {
-  const { orgs } = useSelector((state) => {
-    return { orgs: state.organizations.orgList }
+  const { orgs, currentOrgType  } = useSelector((state) => {
+    return { 
+      orgs: state.organizations.orgList,
+      currentOrgType: state.organizations.currentOrg.meta?.type
+     }
   })
+  let orgsList = orgs.filter((org) => (org.meta?.type == currentOrgType))
   const dispatch = useDispatch()
 
   const [selectedOrganization, setSelectedOrganization] = useState(null)
@@ -53,7 +57,7 @@ const MoveModal = (props) => {
 
       <Modal.Body id='custom-delete-modal-body'>
         <div className='d-flex flex-column align-items-center'>
-          {orgs.map((org, index) => (
+          {orgsList.map((org, index) => (
             <div
               className={`organization-box w-100 m-1 p-2 cursor-pointer d-flex justify-content-start align-items-center ${
                 selectedOrganization === org.id && 'selectedOrg'
