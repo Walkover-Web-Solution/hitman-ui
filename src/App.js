@@ -23,9 +23,6 @@ import Redirections from './components/collections/Redirections.jsx'
 import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
 import NavigationSetter from './history.js'
 import EditRuns from './components/collections/showRuns/editRuns.jsx'
-import 'core-js/features/object/from-entries';
-import 'core-js/features/array/includes';
-import 'core-js/features/string/includes';
 
 const App = () => {
   const navigate = useNavigate()

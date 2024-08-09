@@ -22,6 +22,28 @@
 .fs-5 {
   font-size: $font-extra-small !important;
 }
+.font-16 {
+  font-size: $font-normal-n !important;
+}
+
+.gap-1 {
+  gap: $gap-small !important;
+}
+.gap-2 {
+  gap: $gap-medium !important;
+}
+.gap-3 {
+  gap: $gap-normal !important;
+}
+.gap-4 {
+  gap: $gap-small-large !important;
+}
+.gap-5 {
+  gap: $gap-large !important;
+}
+.gap-6 {
+  gap: $gap-extra-large !important;
+}
 
 .font-16 {
   font-size: $font-normal-n !important;
@@ -50,6 +72,7 @@
 .gap-6 {
   gap: $gap-extra-large !important;
 }
+
 .text-black {
   color: $text-color;
 }
@@ -2468,7 +2491,6 @@ span.endpointNameWrapper {
   .url-container {
     width: 100%;
     position: relative;
-
     .url-icons {
       .invalid-icon {
         display: none;
@@ -2477,7 +2499,6 @@ span.endpointNameWrapper {
         top: -27px;
         color: red;
       }
-
       span {
         display: none;
         right: -37px;
@@ -2488,7 +2509,6 @@ span.endpointNameWrapper {
         background-color: #80808052;
         font-size: 12px;
       }
-
       &:hover {
         span {
           display: inline;
@@ -4038,7 +4058,6 @@ body .tox {
   right: 17px;
   z-index: 9;
 }
-
 .active {
   .Url-invalid {
     input {
@@ -4047,7 +4066,6 @@ body .tox {
       background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
       padding-right: calc(1.5em + 0.75rem);
     }
-
     .invalid-icon {
       display: block !important;
     }

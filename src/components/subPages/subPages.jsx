@@ -152,7 +152,6 @@ const SubPage = (props) => {
         : ''
     }
 
-
     return (
       <div className='sidebar-accordion accordion ' id='child-accordion'>
         <button tabIndex={-1} className={`p-0 ${expanded ? 'expanded' : ''}`}>

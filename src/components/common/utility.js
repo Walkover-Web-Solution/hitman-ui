@@ -367,7 +367,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) { }
+        } catch (err) {}
       })
     })
   }
@@ -380,7 +380,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) { }
+        } catch (err) {}
       })
     })
   }
@@ -406,7 +406,7 @@ export function getUserProfile() {
   let user = getCurrentUser()
   try {
     return user
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function getCurrentUserSSLMode() {
@@ -416,7 +416,7 @@ export function getCurrentUserSSLMode() {
     sslModeData = JSON.parse(sslModeData)
     const { identifier } = user
     return sslModeData?.[identifier]
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function setCurrentUserSSLMode(sslModeFlag) {
@@ -427,7 +427,7 @@ export function setCurrentUserSSLMode(sslModeFlag) {
     sslModeData = JSON.parse(sslModeData || '{}')
     const sslMode = { ...sslModeData, [identifier]: sslModeFlag }
     window.localStorage.setItem('ssl-mode', JSON.stringify(sslMode))
-  } catch (e) { }
+  } catch (e) {}
 }
 
 export function compareAlphabetically(a, b, data) {
