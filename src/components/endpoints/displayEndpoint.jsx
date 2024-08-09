@@ -1368,6 +1368,11 @@ class DisplayEndpoint extends Component {
               this.setState({ saveLoader: false })
             }
           )
+          if(endpoint.description !== ''){
+            this.props.endpoints[currentTabId].description= true
+          }else{
+            this.props.endpoints[currentTabId].description= false
+          }
           tabService.markTabAsSaved(currentTabId)
         }
       }
@@ -1931,6 +1936,11 @@ class DisplayEndpoint extends Component {
       id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
+    if(sampleResponseArray){
+      this.props.endpoints[this.props.currentEndpointId].sampleResponse = true
+    }else{
+      this.props.endpoints[this.props.currentEndpointId].sampleResponse = false
+    }
   }
 
   makeFormData(body) {
@@ -2004,6 +2014,11 @@ class DisplayEndpoint extends Component {
       id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
+    if(sampleResponseArray){
+      this.props.endpoints[this.props.currentEndpointId].sampleResponse = true
+    }else{
+      this.props.endpoints[this.props.currentEndpointId].sampleResponse = false
+    }
   }
 
   openBody(index) {
