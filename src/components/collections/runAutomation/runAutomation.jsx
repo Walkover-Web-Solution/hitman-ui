@@ -68,6 +68,9 @@ export default function RunAutomation() {
           {allPages?.[endpointId]?.requestType}
         </span>
         <span>{allPages?.[endpointId]?.name || 'Endpoint'}</span>
+        {hasIssues && <span 
+        title={ !allPages?.[endpointId]?.description && !allPages?.[endpointId]?.sampleResponse?  'No description and sample response' :  !allPages?.[endpointId]?.description ? 'No description' :  'No sample response' } 
+        className='ml-2'><AiOutlineExclamationCircle color='red' size={15} /></span>}
       </div>
     )
   }
