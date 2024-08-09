@@ -4193,19 +4193,6 @@ body .tox {
   }
 }
 
-.linkWrapper {
-  position: relative;
-
-  &::before {
-    content: '';
-    display: block;
-    border-left: 1px solid $indentation;
-    height: 97%;
-    position: absolute;
-    top: -3px;
-    left: 30px;
-  }
-}
 
 .expanded {
   #collection-collapse {
