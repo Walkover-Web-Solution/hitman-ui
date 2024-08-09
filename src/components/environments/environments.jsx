@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dropdown } from 'react-bootstrap'
+import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import EnvironmentModal from './environmentModal.jsx'
 import { ReactComponent as EyeIcon } from '../../assets/icons/eye.svg'
 import { ReactComponent as EyeDisabledIcon } from '../../assets/icons/eyeDisabled.svg'
@@ -12,8 +12,10 @@ import EnvironmentVariables from './environmentVariables.jsx'
 import DeleteModal from '../common/deleteModal.jsx'
 import './environments.scss'
 import { FaCheck } from "react-icons/fa6";
-import { TbWorld } from "react-icons/tb";
 import { getCurrentUser } from '../auth/authServiceV2.js'
+import { BiExport } from 'react-icons/bi'
+import exportEnvironmentApi from './exportEnvironmentApi.js'
+import { FaGlobeAmericas } from 'react-icons/fa'
 
 const Environments = () => {
 
@@ -57,6 +59,28 @@ const Environments = () => {
     setShowDeleteModal(false)
   }
 
+  const showTooltips = () => {
+    return <Tooltip className="fs-4 text-secondary"><span >Export environment</span></Tooltip>
+  }
+
+  const handleExport = async (Id) => {
+    try {
+        const data = await exportEnvironmentApi(Id, organizations?.currentOrg.id);
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${data.name || 'environment'}.json`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error exporting data:', error);
+    }
+};
+
+
   const handleEnv = (environmentId) => {
     dispatch(setEnvironmentId(environmentId))
   }
@@ -81,28 +105,32 @@ const Environments = () => {
           <IconButton>{environment?.environments[currentEnvironmentId] ? <EyeIcon className='cursor-pointer m-1' /> : <EyeDisabledIcon className='m-1' />}</IconButton>
         </div>
 
-      <div className='select-environment-dropdown border-radius-right-none'>
-        <Dropdown>
-          <Dropdown.Toggle variant='default' id='dropdown-basic'>
-            <span className='truncate'>{environment?.environments[environment?.currentEnvironmentId] ? environment.environments[environment.currentEnvironmentId].name : 'No Environment'}</span>
-            <IconButton><IoIosArrowDown className='m-1' /></IconButton>
-          </Dropdown.Toggle>
-          <Dropdown.Menu alignRight>
-            <Dropdown.Item onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
-            {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item onClick={() => handleEnv(environmentId)} key={environmentId}>{environment.environments[environmentId]?.name}
-            {environmentId === currentEnvironmentId && <span><FaCheck /></span>}
-            {environment?.environments[environmentId]?.userId === 0 && <span><TbWorld /></span>}
-            </Dropdown.Item>)}
-            <Dropdown.Divider />
-            <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Add new Environment')}>Add Environment</Dropdown.Item>
-            <Dropdown.Item className='dropdown-item' onClick={() => setShowImportModal(true)}>Import Environment</Dropdown.Item>
-            <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Environment modal')}>Manage Environment</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+        <div className='select-environment-dropdown border-radius-right-none'>
+          <Dropdown>
+            <Dropdown.Toggle variant='default' id='dropdown-basic'>
+              <span className='truncate'>{environment?.environments[environment?.currentEnvironmentId] ? environment.environments[environment.currentEnvironmentId].name : 'No Environment'}</span>
+              <IconButton><IoIosArrowDown className='m-1' /></IconButton>
+            </Dropdown.Toggle>
+            <Dropdown.Menu alignRight>
+              <Dropdown.Item onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
+              {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item onClick={() => handleEnv(environmentId)} key={environmentId}>
+                {environment.environments[environmentId]?.name}
+                {environmentId === currentEnvironmentId && <span className='check-icon'><FaCheck /></span>}
+                <OverlayTrigger placement="bottom" overlay={showTooltips()} >
+                  <span className='export-icon' onClick={(event) => { event.stopPropagation();handleExport(environment?.environments[environment?.currentEnvironmentId].id)}}><BiExport size={18} /></span>
+                </OverlayTrigger>
+                {environment?.environments[environmentId]?.userId === 0 && environment?.environments[environmentId]?.orgId !== null && environmentId !== currentEnvironmentId && <span className='global-icon'><FaGlobeAmericas /></span>}
+              </Dropdown.Item>)}
+              <Dropdown.Divider />
+              <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Add new Environment')}>Add Environment</Dropdown.Item>
+              <Dropdown.Item className='dropdown-item' onClick={() => setShowImportModal(true)}>Import Environment</Dropdown.Item>
+              <Dropdown.Item className='dropdown-item' onClick={() => handleEnvironmentModal('Environment modal')}>Manage Environment</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+        <ImportEnvironmentModal show={showImportModal} onClose={() => setShowImportModal(false)} />
       </div>
-      <ImportEnvironmentModal show={showImportModal} onClose={() => setShowImportModal(false)} />
-    </div>
-  )
-}
+    )
+  }
 }
 export default Environments
