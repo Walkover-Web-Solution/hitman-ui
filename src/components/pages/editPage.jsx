@@ -10,7 +10,7 @@ import { updateTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
 import Tiptap from '../tiptapEditor/tiptap'
 import withRouter from '../common/withRouter'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import pagesActionTypes from './redux/pagesActionTypes'
 
 const withQuery = (WrappedComponent) => {
@@ -40,9 +40,9 @@ const withQuery = (WrappedComponent) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
+    update_page: (editedPage, pageId) => dispatch(updatePage(editedPage, pageId)),
     update_tab: (id, data) => dispatch(updateTab(id, data))
   }
 }
@@ -58,7 +58,7 @@ class EditPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data: { id: null, name: '', contents: '', state: '' },
+      data: { id: null, name: 'Untitled', contents: '', state: '' },
       showEditor: false
     }
     this.name = React.createRef()
@@ -152,7 +152,7 @@ class EditPage extends Component {
     const data = { ...this.state.data }
     const newPageName = e.currentTarget.value
 
-    if (newPageName !== this.state.originalData.name) {
+    if (newPageName !== this.state.data.name) {
       data.name = newPageName
       this.setState({ data }, () => {
         if (!this.isModified()) {
@@ -172,7 +172,7 @@ class EditPage extends Component {
       return
     }
     if (editedPage?.contents?.trim() === '<p></p>' || editedPage?.contents?.trim() === '') {
-      editedPage.contents = '';
+      editedPage.contents = ''
     }
     delete editedPage['isPublished']
     this.props.mutationFn.mutate({ pageData: editedPage, id: editedPage.id })

@@ -254,9 +254,6 @@ form.add-new-domain-form {
   border-right: 1px solid rgba(66, 9, 9, 0.02);
   min-width: 230px;
   max-width: 330px;
-  &:has(.login-button) {
-    padding-bottom: 34px;
-  }
 
   .public-endpoint-sidebar .primary-sidebar {
     border: none;
@@ -377,24 +374,6 @@ form.add-new-domain-form {
       }
     }
   }
-}
-
-// Panel
-.hm-panel {
-  // background-color: #f7f7f7;
-  // border: 1px solid #e5e5e5;
-  // padding: 20px;
-  // margin-bottom: 40px;
-  // border-radius: 3px;
-}
-
-// Sidebar Header
-.hm-sidebar-header {
-  margin-bottom: 10px;
-  display: flex;
-  color: #fff;
-  align-items: center;
-  gap: 9px;
 }
 
 .hm-sidebar-title {

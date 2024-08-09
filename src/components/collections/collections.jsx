@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { isDashboardRoute, openExternalLink, isOnPublishedPage } from '../common/utility'
+import { isDashboardRoute, openExternalLink, isOnPublishedPage, isOrgDocType } from '../common/utility'
 import collectionsService from './collectionsService'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
@@ -27,10 +27,14 @@ import 'react-toastify/dist/ReactToastify.css'
 import './collections.scss'
 import CollectionForm from './collectionForm'
 import CustomModal from '../customModal/customModal'
+import { addPage } from '../pages/redux/pagesActions'
+import { openInNewTab } from '../tabs/redux/tabsActions'
+import { IoIosSettings } from "react-icons/io";
 
 const Collections = (props) => {
   const collections = useSelector((state) => state.collections)
   const clientData = useSelector((state) => state.clientData)
+  const organizations = useSelector((state) => state.organizations)
   const dispatch = useDispatch()
 
   const location = useLocation()
@@ -116,8 +120,7 @@ const Collections = (props) => {
     })
   }
 
-  const toggleSelectedCollectionIds = (e, id) => {
-    e.stopPropagation()
+  const toggleSelectedCollectionIds = (id) => {
     const isExpanded = clientData?.[id]?.isExpanded ?? isOnPublishedPage()
     dispatch(
       addIsExpandedAction({
@@ -134,10 +137,21 @@ const Collections = (props) => {
   }
 
   const openAddPageEndpointModal = (collectionId) => {
-    setShowAddCollectionModal(true)
-    setSelectedCollection({
-      ...collections[collectionId]
-    })
+    const newPage = { name: 'untitled', pageType: 1 };
+    if (!isOrgDocType()) {
+      dispatch(addPage(collections[collectionId].rootParentId, newPage))
+      dispatch(openInNewTab({
+        type: 'page',
+        previewMode: false,
+        isModified: false,
+        state: {},
+      }))
+    } else {
+      setShowAddCollectionModal(true)
+      setSelectedCollection({
+        ...collections[collectionId]
+      })
+    }
   }
 
   const showAddPageEndpointModal = () => {
@@ -170,29 +184,20 @@ const Collections = (props) => {
 
     return (
       <React.Fragment key={collectionId}>
-        <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}>
-          <button tabIndex={-1} variant='default' className={`sidebar-hower ${expanded ? 'expanded' : ''}`}>
+        <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion px-2 mb-4 expanded' : 'sidebar-accordion px-2'}>
+          <button tabIndex={-1} variant='default' className={`sidebar-hower px-2 rounded ${expanded ? 'expanded' : ''}`}>
             <div
               className='inner-container'
-              onClick={(e) => {
-                openPublishSettings(collectionId)
-                if (!expanded) {
-                  toggleSelectedCollectionIds(e, collectionId)
-                }
-              }}
+              onClick={() => toggleSelectedCollectionIds(collectionId)}
             >
               <div className='d-flex justify-content-between'>
                 <div className='w-100 d-flex'>
-                  <span className='versionChovron' onClick={(e) => toggleSelectedCollectionIds(e, collectionId)}>
-                    <MdExpandMore size={13} className='collection-icons-arrow d-none' />
-                    <LuFolder size={13} className='collection-icons d-inline ml-1' />
-                  </span>
                   {collectionState === 'singleCollection' ? (
                     <div className='sidebar-accordion-item' onClick={() => openSelectedCollection(collectionId)}>
                       <div className='text-truncate'>{collections[collectionId].name}</div>
                     </div>
                   ) : (
-                    <span className='truncate collect-length'> {collections[collectionId].name} </span>
+                    <span className='truncate collect-length collection-box'> {collections[collectionId].name} </span>
                   )}
                 </div>
               </div>
@@ -200,16 +205,21 @@ const Collections = (props) => {
             {
               //  [info] options not to show on publihsed page
               isOnDashboardPage && (
-                <div className='d-flex align-items-center'>
-                  <div className='sidebar-item-action  d-flex align-items-center'>
+                <div className='d-flex align-items-center justify-content-end' >
+                  <div className='sidebar-item-action d-flex align-items-center justify-content-end pr-0'>
+                    <div className='d-flex align-items-center' onClick={() => openPublishSettings(collectionId)}>
+                      <IconButtons>
+                        <IoIosSettings color='grey' />
+                      </IconButtons>
+                    </div>
                     <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(collectionId)}>
                       <IconButtons>
-                        <FiPlus />
+                        <FiPlus color='grey' />
                       </IconButtons>
                     </div>
                     <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
                       <IconButtons>
-                        <BsThreeDots />
+                        <BsThreeDots color='grey' />
                       </IconButtons>
                     </div>
                     <div className='dropdown-menu dropdown-menu-right'>
@@ -237,18 +247,18 @@ const Collections = (props) => {
                           <div className='dropdown-item d-flex' onClick={() => openRedirectionsPage(collections[collectionId])}>
                             <TbDirections size={16} color='grey' /> Redirections
                           </div>
-                          <div className='dropdown-item' onClick={() => handleApiAutomation(collectionId)}>
+                          {isOrgDocType() && <div className='dropdown-item' onClick={() => handleApiAutomation(collectionId)}>
                             <TbSettingsAutomation size={16} color='grey' />
                             API Automation
-                          </div>
-                          <div className='dropdown-item d-flex align-items-center h-auto'>
-                            <BiExport size={18} color='grey' />
+                          </div>}
+                          {isOrgDocType() && <div className='dropdown-item d-flex align-items-center h-auto'>
+                            <BiExport className='mb-1' size={18} color='grey' />
                             <ExportButton
                               orgId={params.orgId}
                               collectionId={collectionId}
                               collectionName={collections[collectionId].name}
                             />
-                          </div>
+                          </div>}
                           <div
                             className='dropdown-item delete-button-sb text-danger d-flex'
                             onClick={() => openDeleteCollectionModal(collectionId)}
@@ -292,6 +302,7 @@ const Collections = (props) => {
                   collection_id={collectionId}
                   selectedCollection
                   rootParentId={collections[collectionId].rootParentId}
+                  level={-1}
                 />
               </Card.Body>
             </div>
@@ -331,17 +342,18 @@ const Collections = (props) => {
         <div className='App-Nav'>
           <div className='tabs'>
             {showAddCollectionModal && showAddPageEndpointModal()}
-            {showCollectionForm &&
-                 <CustomModal size='sm' modalShow={showCollectionForm} hideModal={closeCollectionForm}>
-                  <CollectionForm title='Edit Collection' isEdit={true} collectionId={selectedCollection?.id} onHide={closeCollectionForm} />
-              </CustomModal>}
+            {showCollectionForm && (
+              <CustomModal size='sm' modalShow={showCollectionForm} hideModal={closeCollectionForm}>
+                <CollectionForm title='Edit Collection' isEdit={true} collectionId={selectedCollection?.id} onHide={closeCollectionForm} />
+              </CustomModal>
+            )}
             {openTagManagerModal()}
             {showDeleteCollectionModal()}
             {showOrgModal && <MoveModal moveCollection={selectedCollection} onHide={handleOrgModalClose} show={showOrgModal} />}
           </div>
         </div>
         {props.collectionsToRender.length > 0 ? (
-          <div className='App-Side'>{props.collectionsToRender.map((collectionId) => renderBody(collectionId, 'allCollections'))}</div>
+          <div className='App-Side mt-1'>{props.collectionsToRender.map((collectionId) => renderBody(collectionId, 'allCollections'))}</div>
         ) : props.filter === '' ? (
           renderEmptyCollections()
         ) : (

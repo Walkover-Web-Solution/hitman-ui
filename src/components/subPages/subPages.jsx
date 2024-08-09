@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Card } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility.js'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility.js'
 import groupsService from './subPageService.js'
 import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
@@ -18,12 +18,15 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './subpages.scss'
+import { addPage } from '../pages/redux/pagesActions.js'
+import { openInNewTab } from '../tabs/redux/tabsActions.js'
 
 const SubPage = (props) => {
-  const { pages, clientData, collections } = useSelector((state) => ({
+  const { pages, clientData, collections, organizations } = useSelector((state) => ({
     pages: state.pages,
     clientData: state.clientData,
-    collections: state.collections
+    collections: state.collections,
+    organizations: state.organizations,
   }))
 
   const dispatch = useDispatch()
@@ -84,8 +87,21 @@ const SubPage = (props) => {
     setShowDeleteModal(false)
   }
 
-  const openAddSubPageModal = () => {
-    setShowAddCollectionModal(true)
+  const openAddSubPageModal = (subPageId) => {
+    const newPage = { name: 'untitled', pageType: 3 };
+    if (!isOrgDocType()) {
+      dispatch(addPage(pages[subPageId].id, newPage))
+      dispatch(openInNewTab({
+        type: 'page',
+        previewMode: false,
+        isModified: false,
+        state: {},
+      }))
+    }
+    else {
+      setShowAddCollectionModal(true)
+    }
+
   }
 
   const showAddPageEndpointModal = () => {
@@ -112,8 +128,8 @@ const SubPage = (props) => {
       isUserOnPublishedPage && isUserOnTechdocOwnDomain && sessionStorage.getItem('currentPublishIdToShow') === subPageId
         ? 'selected'
         : isDashboardRoute && params.pageId === subPageId
-        ? 'selected'
-        : ''
+          ? 'selected'
+          : ''
     const idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     const collectionId = pages?.[idToRender]?.collectionId ?? null
     const collectionTheme = collections[collectionId]?.theme
@@ -137,10 +153,10 @@ const SubPage = (props) => {
     }
 
     return (
-      <div className='sidebar-accordion accordion pl-3' id='child-accordion'>
-        <button tabIndex={-1} className={`${expanded ? 'expanded' : ''}`}>
+      <div className='sidebar-accordion accordion ' id='child-accordion'>
+        <button tabIndex={-1} className={`p-0 ${expanded ? 'expanded' : ''}`}>
           <div
-            className={`active-selected d-flex justify-content-between align-items-center rounded mr-2 ${isSelected ? ' selected' : ''}`}
+            className={`active-selected d-flex justify-content-between align-items-center rounded ${isSelected ? ' selected text-black' : 'text-secondary'}`}
             style={backgroundStyle}
             onMouseEnter={() => handleHover(true)}
             onMouseLeave={() => handleHover(false)}
@@ -152,26 +168,21 @@ const SubPage = (props) => {
               onDrop={(e) => props.onDrop(e, subPageId)}
               onDragEnter={(e) => props.onDragEnter(e, subPageId)}
               onDragEnd={(e) => props.onDragEnd(e)}
-              style={props.draggingOverId === subPageId ? { border: '3px solid red' } : null}
-              className={`d-flex justify-content-center cl-name name-sub-page ml-1`}
-              onClick={(e) => {
+              style={props.draggingOverId === subPageId ? { border: '3px solid red', paddingLeft: `${props?.level * 8}px` } : {paddingLeft: `${props?.level * 8}px`}}
+              className={`d-flex justify-content-center cl-name name-sub-page ml-1 `}
+              onClick={() => {
                 handleRedirect(subPageId)
-                if (!expanded) {
-                  handleToggle(e, subPageId)
-                }
               }}
             >
               <span className='versionChovron' onClick={(e) => handleToggle(e, subPageId)}>
+                <IconButtons variant = 'sm'>
                 <MdExpandMore
                   size={13}
-                  className='collection-icons-arrow d-none'
-                  style={backgroundStyles}
-                  onMouseEnter={() => handleHovers(true)}
-                  onMouseLeave={() => handleHovers(false)}
-                />
+                  className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
+                /></IconButtons>
                 <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 ' />
               </span>
-              <div className='sidebar-accordion-item d-inline sub-page-header text-truncate'>{pages[subPageId]?.name}</div>
+              <div className='sidebar-accordion-item d-inline sub-page-header text-truncate fw-500'>{pages[subPageId]?.name}</div>
             </div>
 
             {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
@@ -201,7 +212,7 @@ const SubPage = (props) => {
         {expanded ? (
           <div className='linkWrapper versionPages'>
             <Card.Body>
-              <CombinedCollections {...props} />
+              <CombinedCollections level={props?.level} {...props} />
             </Card.Body>
           </div>
         ) : null}

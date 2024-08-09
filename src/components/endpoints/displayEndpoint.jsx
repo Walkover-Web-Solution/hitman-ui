@@ -211,8 +211,8 @@ const getEndpointContent = async (props) => {
   let endpointId = isUserOnPublishedPage
     ? currentIdToShow
     : props.params.endpointId !== 'new'
-    ? props.params?.endpointId
-    : props?.activeTabId
+      ? props.params?.endpointId
+      : props?.activeTabId
 
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
@@ -455,7 +455,15 @@ class DisplayEndpoint extends Component {
     if (typeof window.SendDataToChatbot === 'function' && this.props?.tabs[this.props?.activeTabId]?.type === 'endpoint') {
       window.SendDataToChatbot({
         bridgeName: 'api',
-        threadId: `${userid}`,
+        threadId: `${userid}-${this.props?.params?.endpointId}`,
+        variables: { Proxy_auth_token: getProxyToken(), endpoint: this.props.endpointContent }
+      })
+    }
+    let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) || this.state.idToRenderState
+    if (isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && this.props?.pages?.[idToRender]?.type === 4) {
+      window.SendDataToChatbot({
+        bridgeName: 'api',
+        threadId: `${userid}-${idToRender}`,
         variables: { Proxy_auth_token: getProxyToken(), endpoint: this.props.endpointContent }
       })
     }
@@ -3123,10 +3131,10 @@ class DisplayEndpoint extends Component {
                                     ? 'btn custom-theme-btn btn-lg buttonLoader'
                                     : 'btn btn-lg custom-theme-btn px-md-4 px-3'
                                 }
-                                style={{ 
-                                  backgroundColor: this.props.publicCollectionTheme, 
+                                style={{
+                                  backgroundColor: this.props.publicCollectionTheme,
                                   opacity: 0.9
-                              }}
+                                }}
                                 type='submit'
                                 id='send-request-button'
                                 onClick={() => this.handleSend()}

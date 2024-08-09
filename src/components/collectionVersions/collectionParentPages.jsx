@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Card, Dropdown, DropdownButton } from 'react-bootstrap'
-import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
+import { isDashboardRoute, getUrlPathById, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage, isOrgDocType } from '../common/utility'
 import { addIsExpandedAction, setDefaultversionId } from '../../store/clientData/clientDataActions'
 import pageService from '../pages/pageService'
 import SubPageForm from '../subPages/subPageForm'
@@ -23,13 +23,16 @@ import { IoDocumentTextOutline } from 'react-icons/io5'
 import { hexToRgb } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import './collectionVersions.scss'
+import { addPage } from '../pages/redux/pagesActions.js'
+import { openInNewTab } from '../tabs/redux/tabsActions.js'
 
 const CollectionParentPages = (props) => {
-  const { pages, clientData, collections } = useSelector((state) => {
+  const { pages, clientData, collections, organizations } = useSelector((state) => {
     return {
       pages: state.pages,
       clientData: state.clientData,
-      collections: state.collections
+      collections: state.collections,
+      organizations: state.organizations
     }
   })
 
@@ -139,9 +142,8 @@ const CollectionParentPages = (props) => {
     dispatch(addIsExpandedAction({ value: !isExpanded, id: id }))
   }
 
-  const handleParentPageClick = (e, expanded) => {
+  const handleParentPageClick = () => {
     handleRedirect(props.rootParentId)
-    if (!expanded) handleToggle(e, props.rootParentId)
   }
 
   const versionName = () => {
@@ -149,25 +151,33 @@ const CollectionParentPages = (props) => {
     return pages?.[props.rootParentId]?.child?.length === 1
       ? versionName
       : selectedVersionName?.length > 10
-      ? `${selectedVersionName.substring(0, 7)} ... `
-      : selectedVersionName
+        ? `${selectedVersionName.substring(0, 7)} ... `
+        : selectedVersionName
   }
 
   const versionDropDown = (rootId) => {
-    return (
-      <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()}>
-        {pages[rootId].child.map((childId, index) => (
-          <Dropdown.Item key={index} onClick={(e) => handleDropdownItemClick(childId, rootId)}>
-            {pages[childId]?.name}
-          </Dropdown.Item>
-        ))}
-      </DropdownButton>
-    )
+    if (isOrgDocType()) {
+      return (
+        <DropdownButton className='version-dropdown' ref={versionDropDownRef} id='dropdown-basic-button' title={versionName()}>
+          {pages[rootId].child.map((childId, index) => (
+            <Dropdown.Item key={index} onClick={(e) => handleDropdownItemClick(childId, rootId)}>
+              {pages[childId]?.name}
+            </Dropdown.Item>
+          ))}
+        </DropdownButton>
+      )
+    }
   }
 
   const openAddPageEndpointModal = (pageId) => {
-    setShowAddCollectionModal(true)
-    setSelectedPage({ ...pages[pageId] })
+    const newPage = { name: 'untitled', pageType: 3 };
+    if (!isOrgDocType()) {
+      dispatch(addPage(pages[pageId].versionId, newPage))
+      dispatch(openInNewTab({ type: 'page', previewMode: false, isModified: false, state: {} }))
+    } else {
+      setShowAddCollectionModal(true)
+      setSelectedPage({ ...pages[pageId] })
+    }
   }
 
   const openEditPageForm = (pageId) => {
@@ -198,13 +208,7 @@ const CollectionParentPages = (props) => {
     let isUserOnPublishedPage = isOnPublishedPage()
     const expanded = clientData?.[pageId]?.isExpanded ?? isUserOnPublishedPage
     const rootId = pageId
-    const isSelected =
-      isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId
-        ? 'selected'
-        : isDashboardRoute && params.pageId === pageId
-        ? 'selected'
-        : ''
-
+    const isSelected = isUserOnPublishedPage && sessionStorage.getItem('currentPublishIdToShow') === pageId ? 'selected' : isDashboardRoute && params.pageId === pageId ? 'selected' : ''
     let idToRender = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     let collectionId = pages?.[idToRender]?.collectionId ?? null
     var collectionTheme = collections[collectionId]?.theme
@@ -212,27 +216,23 @@ const CollectionParentPages = (props) => {
     const staticColor = background['background_hover']
 
     const backgroundStyle = {
-      backgroundImage:
-        isHovered || isSelected
-          ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
-        linear-gradient(to right, ${staticColor}, ${staticColor})`
-          : ''
+      backgroundImage: isHovered || isSelected ? `linear-gradient(to right, ${dynamicColor}, ${dynamicColor}), linear-gradient(to right, ${staticColor}, ${staticColor})` : ''
     }
 
     return (
-      <div className={['hm-sidebar-outer-block'].join(' ')} key={pageId}>
+      <div className={'hm-sidebar-outer-block my-1'} key={pageId}>
         <div className='sidebar-accordion versionBoldHeading' id='child-accordion'>
-          <button tabIndex={-1} className={`pl-3 ${expanded ? 'expanded' : ''}`}>
+          <button tabIndex={-1} className={`px-0 ${expanded ? 'expanded' : ''}`}>
             <div
-              className={`active-select d-flex align-items-center justify-content-between rounded mr-2 ${isSelected ? ' selected' : ''}`}
+              className={`active-select d-flex align-items-center justify-content-between rounded my-1 ${isSelected ? ' selected text-black' : 'text-secondary'}`}
               style={backgroundStyle}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <div className={`d-flex align-items-center cl-name `} onClick={(e) => handleParentPageClick(e, expanded)}>
-                <div className='d-flex cl-name ml-1 align-items-baseline'>
-                  <span className='versionChovron' onClick={(e) => handleToggle(e, props.rootParentId)}>
-                    <MdExpandMore size={13} className='collection-icons-arrow d-none' />
+              <div className={`d-flex align-items-center cl-name `}  onClick={(e) => handleParentPageClick(e, expanded)}>
+                <div className='d-flex cl-name ml-1 align-items-center'>
+                  <span className='versionChovron mr-1' onClick={(e) => handleToggle(e, props.rootParentId)}>
+                    <IconButtons variant='sm'><MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} /></IconButtons>
                     <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1' />
                   </span>
                   <div
@@ -245,16 +245,11 @@ const CollectionParentPages = (props) => {
                     onDragEnd={(e) => props.onDragEnd(e)}
                     style={props.draggingOverId === pageId ? { border: '3px solid red' } : null}
                   >
-                    <div className='text-truncate d-inline'>{pages[pageId]?.name}</div>
+                    <div className='text-truncate d-inline fw-500'>{pages[pageId]?.name}</div>
                     {!isUserOnPublishedPage ? (
                       versionDropDown(rootId)
                     ) : (
-                      <PublishedVersionDropDown
-                        handleDropdownItemClick={handleDropdownItemClick}
-                        rootParentId={props?.rootParentId}
-                        defaultVersionName={defaultVersionName}
-                        selectedVersionName={selectedVersionName}
-                      />
+                      <PublishedVersionDropDown handleDropdownItemClick={handleDropdownItemClick} rootParentId={props?.rootParentId} defaultVersionName={defaultVersionName} selectedVersionName={selectedVersionName} />
                     )}
                   </div>
                 </div>
@@ -262,10 +257,7 @@ const CollectionParentPages = (props) => {
 
               {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
                 <div className='sidebar-item-action d-flex align-items-center'>
-                  <div
-                    className='d-flex align-items-center'
-                    onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}
-                  >
+                  <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
                     <IconButtons>
                       <FiPlus />
                     </IconButtons>
@@ -279,9 +271,9 @@ const CollectionParentPages = (props) => {
                     <div className='dropdown-item d-flex' onClick={() => openEditPageForm(pageId)}>
                       <Rename /> Rename
                     </div>
-                    <div className='dropdown-item d-flex' onClick={() => setShowVersionForm(true)}>
+                    {isOrgDocType() && <div className='dropdown-item d-flex' onClick={() => setShowVersionForm(true)}>
                       <MdOutlineSettings size={20} color='#f2994a' /> Manage Version
-                    </div>
+                    </div>}
                     <div className='dropdown-item text-danger d-flex' onClick={() => openDeletePageModal(pageId)}>
                       <DeleteIcon /> Delete
                     </div>
@@ -294,11 +286,7 @@ const CollectionParentPages = (props) => {
             <div className='version-collapse'>
               <Card.Body>
                 <div className='linkWrapper versionPages'>
-                  <CombinedCollections
-                    {...props}
-                    page_id={pageId}
-                    rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId}
-                  />
+                  <CombinedCollections {...props} level={0} page_id={pageId} rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId} />
                 </div>
               </Card.Body>
             </div>
@@ -313,23 +301,11 @@ const CollectionParentPages = (props) => {
       {showAddPageEndpointModal()}
       {showEditPageModal()}
       {showVersionForm && openManageVersionModal()}
-      {showDeleteModal &&
-        pageService.showDeletePageModal(
-          props,
-          closeDeleteVersionModal,
-          'Delete Version',
-          `Are you sure you want to delete this Version?All your subpages and endpoints present in this version will be deleted.`
-        )}
-      {showDeleteModal &&
-        pageService.showDeletePageModal(
-          props,
-          closeDeletePageModal,
-          'Delete Page',
-          `Are you sure you want to delete this pages? All your versions,subpages and endpoints present in this page will be deleted.`,
-          selectedPage
-        )}
+      {showDeleteModal && pageService.showDeletePageModal(props, closeDeleteVersionModal, 'Delete Version', `Are you sure you want to delete this Version?All your subpages and endpoints present in this version will be deleted.`)}
+      {showDeleteModal && pageService.showDeletePageModal(props, closeDeletePageModal, 'Delete Page', `Are you sure you want to delete this pages? All your versions,subpages and endpoints present in this page will be deleted.`, selectedPage)}
       {renderBody(props.rootParentId)}
     </React.Fragment>
   )
 }
+
 export default CollectionParentPages

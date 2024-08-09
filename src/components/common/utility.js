@@ -487,20 +487,20 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.authorizationData = endpoint?.authorizationData || untitled.authorizationData
   const headersData = endpoint.headers
     ? Object.keys(endpoint.headers).map((key) => {
-        return { key, ...endpoint.headers[key] }
-      })
+      return { key, ...endpoint.headers[key] }
+    })
     : []
 
   const paramsData = endpoint.params
     ? Object.keys(endpoint.params).map((key) => {
-        return { key, ...endpoint.params[key] }
-      })
+      return { key, ...endpoint.params[key] }
+    })
     : []
 
   const path = endpoint.pathVariables
     ? Object.keys(endpoint.pathVariables).map((key) => {
-        return { key, ...endpoint.pathVariables[key] }
-      })
+      return { key, ...endpoint.pathVariables[key] }
+    })
     : []
   if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
     untitled.docViewData = [
@@ -795,6 +795,11 @@ export const generateCronExpression = (basicRunFrequency, runFrequency, runTime)
   }
 }
 
+export const isOrgDocType = () => {
+  const state = store.getState();
+  return state?.organizations?.currentOrg?.meta?.type === 0 ? false : true
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -835,5 +840,6 @@ export default {
   operationsAfterDeletion,
   trimString,
   modifyDataForBulkPublish,
-  isOnRedirectionPage
+  isOnRedirectionPage,
+  isOrgDocType,
 }

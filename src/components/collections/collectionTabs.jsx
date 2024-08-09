@@ -6,10 +6,12 @@ import { useNavigate } from 'react-router'
 import { getOrgId } from '../common/utility'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPageType } from '../tabs/redux/tabsActions'
+import { getCurrentOrg } from '../auth/authServiceV2'
 
 const CollectionTabs = ({ collectionId, onHide }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const orgType = getCurrentOrg()?.meta?.type
   const { activeTabId, pageType } = useSelector((state) => {
     const activeTabId = state?.tabs?.activeTabId
     return {
@@ -60,17 +62,21 @@ const CollectionTabs = ({ collectionId, onHide }) => {
             Feedback
           </a>
         </li>
-        <li className='nav-item cursor-pointer'>
-          <a
-            className={`nav-link ${pageType === 'RUNS' ? 'active' : ''}`}
-            onClick={() => {
-              navigate(`/orgs/${getOrgId()}/dashboard/collection/${collectionId}/runs`)
-              handleTabChange('RUNS')
-            }}
-          >
-            Runs
-          </a>
-        </li>
+        {
+          orgType === 1 && (
+            <li className='nav-item cursor-pointer'>
+              <a
+                className={`nav-link ${pageType === 'RUNS' ? 'active' : ''}`}
+                onClick={() => {
+                  navigate(`/orgs/${getOrgId()}/dashboard/collection/${collectionId}/runs`)
+                  handleTabChange('RUNS')
+                }}
+              >
+                Runs
+              </a>
+            </li>
+          )
+        }
       </ul>
       <div className='tab-content'>{renderTabContent()}</div>
     </div>

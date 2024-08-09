@@ -8,7 +8,7 @@ import { BiLike, BiDislike, BiSolidLike, BiSolidDislike } from 'react-icons/bi'
 import './apiDocReview.scss'
 import { dislike, like } from '../../services/feedbackService'
 import { VscStarFull } from "react-icons/vsc";
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -29,6 +29,8 @@ const ApiDocReview = (props) => {
 
   const handleClose = () => setShow(false);
   const params = useParams()
+
+  const location = useLocation()
 
   useEffect(() => {
     setParent()
@@ -208,7 +210,7 @@ const ApiDocReview = (props) => {
   }
   const [liked, setLiked] = useState(false);
   return (
-    !isDashboardRoute(props) && (
+    !isDashboardRoute({ location }) && (
       <>
         <div className='position-relative'>
           <p className='d-flex justify-content-center Modified-at mb-1'>Was this page helpful?</p>

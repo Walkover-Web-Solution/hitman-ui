@@ -107,7 +107,7 @@ function getProxyToken() {
   return window.localStorage.getItem(tokenKey) || "";
 }
 
-async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
+async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null, redirect=true) {
   if (!proxyAuthToken) { proxyAuthToken = getProxyToken() }
 
   window.localStorage.setItem(tokenKey, proxyAuthToken);
@@ -128,7 +128,7 @@ async function getDataFromProxyAndSetDataToLocalStorage(proxyAuthToken = null) {
     store.dispatch(setOrganizationList(userInfo.c_companies));
     store.dispatch(setCurrentorganization(userInfo.currentCompany));
     const currentOrgId = userInfo.currentCompany?.id;
-    if (currentOrgId) { switchOrg(currentOrgId) }
+    if (currentOrgId) { switchOrg(currentOrgId, redirect) }
   } catch (e) {
     console.error('Error:', e);
   }

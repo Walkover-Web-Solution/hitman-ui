@@ -62,15 +62,24 @@ const ContentPanel = () => {
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
-            state: {}
+            state: {},
           }))
         }
       }
 
-      if (pageId) {
-        if (tabs.tabs[pageId]) {
-          if (tabs.activeTabId !== pageId) {
-            dispatch(setActiveTabId(pageId))
+        if (pageId && pageId !== 'new') {
+          if (tabs.tabs[pageId]) {
+            if (tabs.activeTabId !== pageId) {
+              dispatch(setActiveTabId(pageId))
+            }
+          } else if (pages && pages[pageId]) {
+            dispatch(openInNewTab({
+              id: pageId,
+              type: 'page',
+              status: tabStatusTypes.SAVED,
+              previewMode: false,
+              isModified: false,
+            }))
           }
         } else if (pages && pages[pageId]) {
           dispatch(openInNewTab({
@@ -79,10 +88,9 @@ const ContentPanel = () => {
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
-            state: {}
+            state: {},
           }))
         }
-      }
 
       if (historyId) {
         if (tabs.tabs[historyId]) {

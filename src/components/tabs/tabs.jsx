@@ -2,15 +2,16 @@ import React, { useRef, useState, useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import SavePromptModal from './savePromptModal'
-import { setTabsOrder } from './redux/tabsActions.js'
+import { setTabsOrder, updateDraft } from './redux/tabsActions.js'
 import tabService from './tabService'
 import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
 import History from '../history/history.jsx'
 import TabOptions from './tabOptions'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions.js'
 import IconButtons from '../common/iconButton'
-import { Nav } from 'react-bootstrap'
+import { Nav, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { IoIosChatboxes } from 'react-icons/io'
+import { VscCloseAll } from "react-icons/vsc";
 import { CiSettings } from 'react-icons/ci'
 import { GrFormClose } from 'react-icons/gr'
 import { IoDocumentTextOutline } from 'react-icons/io5'
@@ -37,7 +38,7 @@ const CustomTabs = (props) => {
   const [showPreview, setShowPreview] = useState(false)
   const [previewId, setPreviewId] = useState(null)
 
-  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history, automation } = useSelector((state) => {
+  const { responseView, pages, tabState, tabsOrder, tabs, historySnapshots, collections, history, organizations, automation } = useSelector((state) => {
     return {
       responseView: state.responseView,
       pages: state.pages,
@@ -47,7 +48,8 @@ const CustomTabs = (props) => {
       historySnapshots: state.history,
       collections: state.collections,
       history: state.history,
-      automation : state.automation
+      automation: state.automation,
+      organizations: state.organizations,
     }
   })
 
@@ -88,7 +90,7 @@ const CustomTabs = (props) => {
 
   const openTabAtIndex = (index) => {
     const { tabsOrder } = tabs
-    if (tabsOrder[index]) tabService.selectTab({ navigate, params }, tabsOrder[index])
+    if (tabsOrder[index]) tabService.selectTab(tabsOrder[index], { navigate, params })
   }
 
   const handleOpenNextTab = () => {
@@ -105,11 +107,12 @@ const CustomTabs = (props) => {
 
   const onDrop = (e, droppedOnItem) => {
     e.preventDefault()
-    if (draggedItem.current === droppedOnItem) {
+    let tabsOrder = tabs.tabsOrder;
+    if (draggedItem.current === droppedOnItem || !draggedItem.current || !tabsOrder.includes(draggedItem.current)) {
       draggedItem.current = null
       return
     }
-    const tabsOrder = tabs.tabsOrder.filter((item) => item !== draggedItem.current)
+    tabsOrder = tabs.tabsOrder.filter((item) => item !== draggedItem.current)
     const index = tabs.tabsOrder.findIndex((tId) => tId === droppedOnItem)
     tabsOrder.splice(index, 0, draggedItem.current)
     dispatch(setTabsOrder(tabsOrder))
@@ -184,6 +187,19 @@ const CustomTabs = (props) => {
     setShowSavePromptFor(show_save_prompt_for)
   }
 
+  const showTooltips = (tooltipType) => {
+    switch (tooltipType) {
+      case "close-all":
+        return (
+          <Tooltip id='edited-by-tooltip'>
+            <div className="fs-4 text-secondary">
+              Close All
+            </div>
+          </Tooltip>
+        )
+    }
+  }
+
   const renderTabName = (tabId) => {
     const tab = tabState[tabId]
     if (!tab) return
@@ -223,10 +239,10 @@ const CustomTabs = (props) => {
               <div className='d-flex justify-content-center align-items-center'>
                 {endpoint.protocolType === 1 && (
                   <div className={`${tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
-                    {tabState[tabId]?.draft?.data?.method}
+                    {tabState[tabId]?.draft?.data?.method || 'GET'}
                   </div>
                 )}
-                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
+                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
                 <span>{pages[tabId]?.name}</span>
               </div>
             )
@@ -235,10 +251,10 @@ const CustomTabs = (props) => {
               <div className='d-flex justify-content-center align-items-center'>
                 {endpoint.protocolType === 1 && (
                   <div className={`${tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
-                    {tabState[tabId]?.draft?.data?.method}
+                    {tabState[tabId]?.draft?.data?.method || 'GET'}
                   </div>
                 )}
-                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
+                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
                 <span>{pages[tabId]?.name}</span>
               </div>
             )
@@ -250,7 +266,7 @@ const CustomTabs = (props) => {
               {endpoint?.draft?.protocolType === 1 && (
                 <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>
               )}
-              {endpoint?.draft?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
+              {endpoint?.draft?.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
               {tab.state?.data?.name || 'Untitled'}
             </div>
           )
@@ -261,19 +277,30 @@ const CustomTabs = (props) => {
           const page = pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='d-flex align-items-center'>
+              <div className='d-flex'>
                 <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
-                <span>{page.name}</span>
+                <span>
+                   <>{page.name} </>
+                </span>
               </div>
             )
           } else {
             return (
-              <div className='d-flex align-items-center'>
-                <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
-                <span>{page.name}</span>
+              <div className='d-flex'>
+                <IoDocumentTextOutline size={14} className='mr-1' />
+                <span>
+                <>{page.name} </>
+                </span>
               </div>
             )
           }
+        } else {
+          return (
+            <div className='d-flex'>
+              <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
+              <span>{'Untiled'}</span>
+            </div>
+          )
         }
         break
       case 'collection': {
@@ -281,24 +308,24 @@ const CustomTabs = (props) => {
         if (location.pathname.split('/')[6] === 'settings') {
           return (
             <>
-              <span className='d-flex align-items-center'>
-                <CiSettings size={18} className='setting-icons mr-1 mb-1' />
+              <span className='d-flex'>
+                <CiSettings size={18} className='setting-icons mr-1' />
                 <span>{collectionName}</span>
               </span>
             </>
           )
         } else if (location?.pathname?.split('/')?.[6] === 'runner') {
           return (
-            <div className='d-flex align-items-center'>
-              <TbSettingsAutomation size={18} className='setting-icons mr-1 mb-1' />
+            <div className='d-flex'>
+              <TbSettingsAutomation size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
           )
         }
         else {
           return (
-            <div className='d-flex align-items-center'>
-              <CiSettings size={18} className='setting-icons mr-1 mb-1' />
+            <div className='d-flex'>
+              <CiSettings size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
           )
@@ -316,14 +343,15 @@ const CustomTabs = (props) => {
       }
       case 'manual-runs': {
         if (automation[tabId]) {
-        return (
-          <>
-            <div className='d-flex align-items-center'>
-              <BsPlayBtn className='mr-1' size={16} />
-              <span>Runs</span>
-            </div>
-          </>
-        )}
+          return (
+            <>
+              <div className='d-flex align-items-center'>
+                <BsPlayBtn className='mr-1' size={16} />
+                <span>Runs</span>
+              </div>
+            </>
+          )
+        }
       }
       default:
     }
@@ -400,6 +428,23 @@ const CustomTabs = (props) => {
     }
   }
 
+  const handleHistoryButton = () => {
+    if (organizations?.currentOrg?.meta?.type !== 0) {
+      return (
+        <button onClick={() => handleHistoryClick()} className='px-2' style={{ outline: 'none' }}>
+          <HistoryIcon className='p-1' />{' '}
+        </button>
+      );
+    }
+  }
+
+
+  const handleCloseAllTabs = () => {
+    const { tabsOrder, activeTabId } = tabs
+    const tabIdsToClose = tabsOrder.filter((tabId) => tabId !== activeTabId)
+    handleCloseTabs(tabIdsToClose)
+  }
+
   return (
     <>
       <div className='d-flex navs-container'>
@@ -448,7 +493,7 @@ const CustomTabs = (props) => {
                 onDragOver={handleOnDragOver}
                 onDragStart={() => onDragStart(tabId)}
                 onDrop={(e) => onDrop(e, tabId)}
-                className={tabs?.activeTabId === tabId ? 'active' : ''}
+                className={tabs?.activeTabId === tabId ? 'active' : 'text-black-50'}
                 onMouseEnter={() => {
                   setShowPreview(true)
                   setPreviewId(tabId)
@@ -459,20 +504,20 @@ const CustomTabs = (props) => {
                 }}
               >
                 {tabState[tabId]?.isModified ? <i className='fas fa-circle modified-dot-icon' /> : ''}
-                <Nav.Link eventKey={tabId}>
+                <Nav.Link className='p-0 d-flex align-items-center bg-white pr-2' eventKey={tabId}>
                   <button
-                    className='btn truncate'
+                    className='btn truncate bg-white pr-0'
                     onClick={() => tabService.selectTab(tabId, { navigate, params })}
                     onDoubleClick={() => {
                       tabService.disablePreviewMode(tabId)
                     }}
                   >
-                    {renderTabName(tabId)}
+                    <div className={`d-flex ${tabs?.activeTabId === tabId ? 'tab-name' : ''}`} >
+                      {renderTabName(tabId)}
+                    </div>
                   </button>
-                  <button className=' close' onClick={() => handleCloseTabs([tabId])}>
-                    <IconButtons>
-                      <i className='uil uil-multiply' />
-                    </IconButtons>
+                  <button className='close ml-1 rounded' onClick={() => handleCloseTabs([tabId])}>
+                    <i className='uil uil-multiply' />
                   </button>
                 </Nav.Link>
               </Nav.Item>
@@ -499,15 +544,19 @@ const CustomTabs = (props) => {
         </Nav.Item>
         <div className='d-flex'>
           <Nav.Item className='tab-buttons' id='options-tab-button'>
-            <TabOptions handleCloseTabs={handleCloseTabs} />
+            {
+              tabs?.tabsOrder?.length > 1 && (
+                <OverlayTrigger placement='bottom' overlay={showTooltips("close-all")}  >
+                  <button className='close-all' onClick={handleCloseAllTabs}  >  <VscCloseAll /></button>
+                </OverlayTrigger>
+              )
+            }
           </Nav.Item>
           <Nav.Item className='' id='history-tab-button'>
-            <button onClick={handleHistoryClick} className='px-2' style={{ outline: 'none' }}>
-              <HistoryIcon className='p-1' />{' '}
-            </button>
+            {handleHistoryButton()}
           </Nav.Item>
           {showHistoryContainer && (
-            <div className='history-main-container'>
+            <div className='history-main-container bg-white'>
               <div className='heading'>
                 History
                 <div className='d-flex close-button' onClick={handleHistoryClick} aria-label='Close'>

@@ -2,6 +2,7 @@ import React from 'react'
 import { Dropdown } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { ReactComponent as MoreVerticalIcon } from '../../assets/icons/more-vertical.svg'
+import "./tabs.scss"
 
 const TabOptions = ({ handleCloseTabs }) => {
 

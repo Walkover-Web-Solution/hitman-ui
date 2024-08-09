@@ -17,6 +17,7 @@
     "@tiptap/extension-table-header": "^2.3.0",
     "@tiptap/extension-table-row": "^2.3.0",
     "@tiptap/extension-text": "^2.3.0",
+    "@tiptap/extension-text-align": "^2.5.8",
     "@tiptap/extension-text-style": "^2.3.0",
     "@tiptap/extension-underline": "^2.3.0",
     "@tiptap/pm": "^2.3.0",
@@ -121,6 +122,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
     "electron": "^13.1.1",
     "electron-builder": "^22.10.5",
     "husky": "^5.2.0",

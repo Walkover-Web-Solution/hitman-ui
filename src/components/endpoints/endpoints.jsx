@@ -79,16 +79,16 @@ const Endpoints = (props) => {
   }
 
   const displayEndpointName = (endpointId) => {
-    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId   ? 'selected'   : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId   ? 'selected'   : ''
+    const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId ? 'selected' : ''
     return (
-      <div className={`sidebar-accordion-item ${isSelected ? 'Selected' : ''}`}>
+      <div className={`sidebar-accordion-item ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={{paddingLeft: `${props?.level * 8}px` }}>
         {endpoints[endpointId]?.protocolType === 1 && (
           <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
             {endpoints[endpointId].requestType}
           </div>
         )}
-        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
-        <div className='end-point-name truncate'>{endpoints[endpointId].name}</div>
+        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
+        <div className='end-point-name truncate fw-500'>{endpoints[endpointId].name}</div>
       </div>
     )
   }
@@ -101,9 +101,9 @@ const Endpoints = (props) => {
         </IconButtons>
       </div>
       <div className='dropdown-menu dropdown-menu-right'>
-        <div className='dropdown-item d-flex' onClick={()=>handleModalActionType('edit', endpointId)}> <RenamedItem /> Rename </div>
+        <div className='dropdown-item d-flex' onClick={() => handleModalActionType('edit', endpointId)}> <RenamedItem /> Rename </div>
         <div className='dropdown-item d-flex' onClick={() => handleDuplicate(endpointId)}> <Duplicate /> Duplicate </div>
-        <div className='dropdown-item d-flex text-danger' onClick={()=>handleModalActionType('delete', endpointId)}> <DeleteIcon /> Delete </div>
+        <div className='dropdown-item d-flex text-danger' onClick={() => handleModalActionType('delete', endpointId)}> <DeleteIcon /> Delete </div>
       </div>
     </div>
   )
@@ -122,29 +122,29 @@ const Endpoints = (props) => {
     }
 
     return (
-        <div
-          key={endpointId}
-          draggable={!isUserOnPublishedPage}
-          onDragOver={(e) => e.preventDefault()}
-          onDragStart={() => props.onDragStart(endpointId)}
-          onDrop={(e) => props.onDrop(e, endpointId)}
-          onDragEnter={(e) => props.onDragEnter(e, endpointId)}
-          onDragEnd={(e) => props.onDragEnd(e)}
-          style={props.draggingOverId === endpointId ? { borderTop: '3px solid red' } : null}
-        >
-          <div className='sidebar-toggle d-flex justify-content-between mt-1'>
-            <button>
-              <div className={`side-bar d-flex align-items-center rounded mr-2 ${isSelected ? 'Selected' : ''}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-                <button tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId],params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId],params.endpointId, collectionId, false)}>
-                  {displayEndpointName(endpointId)}
-                </button>
-                <div className='d-flex align-items-center'>
-                  {isDashboardRoute({ navigate, location }, true) && displayEndpointOptions(endpointId)}
-                </div>
+      <div
+        key={endpointId}
+        draggable={!isUserOnPublishedPage}
+        onDragOver={(e) => e.preventDefault()}
+        onDragStart={() => props.onDragStart(endpointId)}
+        onDrop={(e) => props.onDrop(e, endpointId)}
+        onDragEnter={(e) => props.onDragEnter(e, endpointId)}
+        onDragEnd={(e) => props.onDragEnd(e)}
+        style={props.draggingOverId === endpointId ? { borderTop: '3px solid red'} : null}
+      >
+        <div className='sidebar-toggle d-flex justify-content-between mt-1'>
+          <button className='pl-0'>
+            <div className={`side-bar d-flex align-items-center rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+              <button tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}>
+                {displayEndpointName(endpointId)}
+              </button>
+              <div className='d-flex align-items-center'>
+                {isDashboardRoute({ navigate, location }, true) && displayEndpointOptions(endpointId)}
               </div>
-            </button>
-          </div>
+            </div>
+          </button>
         </div>
+      </div>
     )
   }
 
@@ -163,7 +163,7 @@ const Endpoints = (props) => {
           selectedPage={selectedEndpoint?.id}
         />
       )}
-      {showEndpointForm.delete && endpointService.showDeleteEndpointModal({ tabs, dispatch },handleDelete,closeDeleteEndpointModal,'Delete Endpoint',`Are you sure you want to delete this endpoint?`,selectedEndpoint)}
+      {showEndpointForm.delete && endpointService.showDeleteEndpointModal({ tabs, dispatch }, handleDelete, closeDeleteEndpointModal, 'Delete Endpoint', `Are you sure you want to delete this endpoint?`, selectedEndpoint)}
       {displaySingleEndpoint(props.endpointId)}
     </React.Fragment>
   )
