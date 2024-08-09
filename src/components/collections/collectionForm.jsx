@@ -37,6 +37,7 @@ const CollectionForm = (props) => {
       return;
     }
     dispatch(addCollection({ name: inputRef.current.value }, null, redirectToCollection))
+    props.onHide();
   }
 
   return (
