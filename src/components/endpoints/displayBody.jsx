@@ -260,8 +260,8 @@ class BodyContainer extends Component {
           return
         default:
           return (
-            <div>
-              <div className="prettify-button" >
+            <>
+              <div className="prettify-button position-absolute" >
                 <IconButton><span className='text-gray' onClick={this.handlePrettifyJson.bind(this)}>Beautify</span></IconButton>
               </div>
               {' '}
@@ -285,8 +285,7 @@ class BodyContainer extends Component {
                 enableLiveAutocompletion
                 enableBasicAutocompletion
               />
-
-            </div>
+              </>
           )
       }
     }
@@ -301,7 +300,7 @@ class BodyContainer extends Component {
     return (
       <React.Fragment>
         <div className='button-panel-wrapper'>
-          <form className='body-select d-flex align-items-center mb-2'>
+          <form className='body-select d-flex align-items-center mb-2 ml-3'>
             <label className='customRadio'>
               <input
                 type='radio'
@@ -311,7 +310,7 @@ class BodyContainer extends Component {
                 onClick={() => this.handleSelectBodyType(bodyTypesEnums['none'])}
                 className='custom-radio-input'
               />
-              <span className='text-gray'>none</span>
+              <span className='text-gray fs-4'>none</span>
               <span className='checkmark' />
             </label>
 
@@ -325,7 +324,7 @@ class BodyContainer extends Component {
                 className='custom-radio-input'
                 checked={this.state.selectedBodyType === bodyTypesEnums['raw']}
               />
-              <span className='text-gray'>raw</span>
+              <span className='text-gray fs-4'>raw</span>
               <span className='checkmark' />
             </label>
             <label className='customRadio'>
@@ -338,7 +337,7 @@ class BodyContainer extends Component {
                 className='custom-radio-input'
                 checked={this.matchCurrentBodyType(`${bodyTypesEnums['multipart/form-data']}-${this.props.endpoint_id}`)}
               />
-              <span className='text-gray'>form-data</span>
+              <span className='text-gray fs-4'>form-data</span>
               <span className='checkmark' />
             </label>
             <label className='customRadio'>
@@ -351,7 +350,7 @@ class BodyContainer extends Component {
                 onChange={() => { }}
                 checked={this.matchCurrentBodyType(`${bodyTypesEnums['application/x-www-form-urlencoded']}-${this.props.endpoint_id}`)}
               />
-              <span className='text-gray'>x-www-form-urlencoded</span>
+              <span className='text-gray fs-4'>x-www-form-urlencoded</span>
               <span className='checkmark' />
             </label>
             {!(this.showRawBodyType && this.flag) && (
@@ -360,7 +359,7 @@ class BodyContainer extends Component {
                   <div>
                     <div className='dropdown'>
                       <button
-                        className='btn dropdown-toggle text-gray'
+                        className='btn dropdown-toggle text-gray fs-4 border-0'
                         type='button'
                         id='dropdownMenuButton'
                         data-toggle='dropdown'
@@ -415,7 +414,7 @@ class BodyContainer extends Component {
               </div>
             )}
         </div>
-        <div className='body-container'>{this.renderBody()}</div>
+        {this.renderBody()}
       </React.Fragment>
     )
   }
@@ -490,7 +489,7 @@ class BodyContainer extends Component {
     }
 
     return (
-      <div className='body-wrapper'>
+      <div className='body-wrapper position-relative'>
         {this.props.endpointContent?.protocolType === 1 && this.endpointBody()}
         {this.props.endpointContent?.protocolType === 2 && this.graphqlBody()}
       </div>

@@ -50,6 +50,7 @@
 .gap-6 {
   gap: $gap-extra-large !important;
 }
+
 .text-black {
   color: $text-color;
 }
@@ -77,9 +78,11 @@
 .fw-900 {
   font-weight: $font-weight-900;
 }
+
 .text-gray {
   color: $theme-color !important;
 }
+
 .mobile-warning {
   position: sticky;
   z-index: 1200;
@@ -129,6 +132,7 @@ html body {
     font-weight: 500 !important;
     color: #6c757d;
     opacity: 0;
+
     &:hover {
       color: #6c757d !important;
     }
@@ -1575,16 +1579,13 @@ body .btn {
   align-items: center;
 
   .dropdown .btn {
-    width: 90px;
     background: #fff;
-    border: 1px solid $theme-color;
     border-radius: $border-radius;
     height: 35px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 8px;
-    font-size: $font-medium !important;
 
     &:after {
       filter: opacity(0.6);
@@ -1625,8 +1626,8 @@ body .btn {
     position: absolute;
     top: 0px;
     left: 0;
-    height: 15px;
-    width: 15px;
+    height: 12px;
+    width: 12px;
     border-radius: 50%;
     box-shadow: inset 0 0 0px 1px #828282;
   }
@@ -1651,10 +1652,10 @@ body .btn {
   }
 
   .checkmark:after {
-    top: 4px;
-    left: 4px;
-    width: 7px;
-    height: 7px;
+    top: 3px;
+    left: 3px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: $theme-color;
   }
@@ -1757,6 +1758,7 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
   display: flex;
   align-items: center;
   color: $theme-color;
+
   &:hover {
     color: $text-color;
   }
@@ -1790,6 +1792,7 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
   width: 100%;
   margin-top: 0px;
   height: 100%;
+
   @media screen and (max-width:992px) {
     padding-right: 24px;
     padding-left: 24px;
@@ -3001,7 +3004,6 @@ li.nav-item.cookie-tab a {
     background: #fff;
     width: 100%;
     left: 0;
-    padding: 0.9rem 0rem 0.9rem;
     top: 0;
   }
 }
@@ -3539,24 +3541,29 @@ body .btn-group-custom {
   overflow: hidden;
   max-width: 800px;
 }
-.editor-headings  {
+
+.editor-headings {
   width: 300px;
   position: sticky;
   top: 60px;
   background-color: white;
-    span {
-      overflow: hidden !important;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      &:hover {
-        color: $on-this-page-hover-color;
-      }
-    }
-    @media screen and (max-width: 992px) {
-      width: 100%;
-      position: static;
+
+  span {
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover {
+      color: $on-this-page-hover-color;
     }
   }
+
+  @media screen and (max-width: 992px) {
+    width: 100%;
+    position: static;
+  }
+}
+
 .tox-editor-container {
   .tox-toolbar__group {
     .tox-tbtn {
@@ -3680,7 +3687,7 @@ body .doc-secs-container {
 }
 
 .mid-part {
-  width: 90%;
+  width: 100%;
   padding: 1.25rem 1.25rem;
 }
 
@@ -3700,11 +3707,10 @@ body .doc-secs-container {
 
 .response-bottom {
   .response-container-main {
-    width: 90%;
+    width: 100%;
     padding: 1.25rem 1.25rem;
 
     h4 {
-      height: 3.25rem;
       margin: 0;
     }
 
@@ -3888,7 +3894,8 @@ body .tox {
 
 .textEditorContainer {
   position: relative;
-  .menuBar{
+
+  .menuBar {
     position: sticky;
     top: -2px;
     z-index: 1;
@@ -3910,7 +3917,8 @@ body .tox {
 .Pane {
   overflow: scroll !important;
 }
-.create-org{
+
+.create-org {
 
   display: flex;
   justify-content: center;
@@ -3938,7 +3946,8 @@ body .tox {
       overflow: hidden;
     }
   }
-  }
+}
+
 .pubCodeWrapper {
   @media only screen and (max-width: 1160px) {
     position: static !important;
@@ -3993,75 +4002,78 @@ body .tox {
     }
   }
 }
-  .loading {
-    max-width: 1000px;
-    min-width: 296px;
-    padding-left: 24px;
-    padding-top: 24px;
-    @media screen and (max-width:992px) {
-      padding-top: 0;
-      padding-right: 24px;
-    }
-    @media screen and (max-width:568px) {
-      padding-right: 12px;
-      padding-left: 12px;
-    }
-  
-    .box {
-      width: 126px;
-      height: 36px;
-    }
-  
-    .new {
-      width: 85px;
-      height: 34px;
-    }
-  
-    .live {
-      width: 110px;
-      height: 20px;
-    }
-  
-    .api-call {
-      width: 100%;
-      height: 36px;
-    }
-  
-    .send {
-      width: 100px;
-      height: 36px;
-    }
-  
-    .boxes {
-      width: 50%;
-      height: 36px;
-    }
-  
-    .bulk-edit {
-      width: 100%;
-      height: 130px;
-    }
-  
-    .path-var {
-      width: 100px;
-      height: 20px;
-    }
-  
-    .response {
-      width: 202px;
-      height: 20px;
-    }
-  
-    .hit-send {
-      width: 100%;
-      height: 182px;
-    }
-  
-    .min-box {
-      width: 20px;
-      height: 18px;
-    }
+
+.loading {
+  max-width: 1000px;
+  min-width: 296px;
+  padding-left: 24px;
+  padding-top: 24px;
+
+  @media screen and (max-width:992px) {
+    padding-top: 0;
+    padding-right: 24px;
   }
+
+  @media screen and (max-width:568px) {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .box {
+    width: 126px;
+    height: 36px;
+  }
+
+  .new {
+    width: 85px;
+    height: 34px;
+  }
+
+  .live {
+    width: 110px;
+    height: 20px;
+  }
+
+  .api-call {
+    width: 100%;
+    height: 36px;
+  }
+
+  .send {
+    width: 100px;
+    height: 36px;
+  }
+
+  .boxes {
+    width: 50%;
+    height: 36px;
+  }
+
+  .bulk-edit {
+    width: 100%;
+    height: 130px;
+  }
+
+  .path-var {
+    width: 100px;
+    height: 20px;
+  }
+
+  .response {
+    width: 202px;
+    height: 20px;
+  }
+
+  .hit-send {
+    width: 100%;
+    height: 182px;
+  }
+
+  .min-box {
+    width: 20px;
+    height: 18px;
+  }
+}
 
 
 
@@ -4093,12 +4105,14 @@ body .tox {
   .edit {
     width: 50px;
     height: 34px;
-}
-.unpublish {
+  }
+
+  .unpublish {
     width: 125px;
     height: 34px;
-}
-.publish {
+  }
+
+  .publish {
     width: 106px;
     height: 34px;
   }
@@ -4254,21 +4268,22 @@ body .tox {
 }
 
 .Script-content {
-  &.active {
-    display: flex !important;
-  }
+  .script-button-wrapper {
+    background-color: $button-background-hover;
+    width: fit-content;
 
-  .Script-button {
-    width: 100px;
-    color: $theme-color;
-    font-size: $font-small-s;
-    &:hover {
-      background-color: $button-background-hover !important;
-    }
+    .Script-button {
+      color: $theme-color;
+      font-size: $font-small-s;
 
-    &.active {
-      color: $text-color !important;
-      background-color: $button-background-hover !important;
+      &:hover {
+        color: $text-color;
+      }
+
+      &.active {
+        color: $text-color !important;
+        background-color: $button-background-hover !important;
+      }
     }
   }
 }

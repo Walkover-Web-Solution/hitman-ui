@@ -245,7 +245,7 @@ class DisplayResponse extends Component {
           <div className='tab-content ml-0'>
             {this.state.selectedResponseTab === 'body' && (
               <div>
-                <div className='d-flex justify-content-between mt-2 mb-1'>
+                <div className='d-flex justify-content-between mt-3 ml-2 mb-1'>
                   <ul className='nav nav-pills body-button rounded'>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
                       <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-2 py-1 fs-4 text-black' : 'nav-link px-2 py-1 fs-4 text-gray'}>Pretty</a>
@@ -505,7 +505,7 @@ class DisplayResponse extends Component {
   render() {
     const { theme } = this.state
     return (
-      <div className='endpoint-response-container overflow-auto mt-4' style={this.state?.theme?.backgroundStyle}>
+      <div className='endpoint-response-container overflow-auto mt-2' style={this.state?.theme?.backgroundStyle}>
         {this.props.loader ? (
           this.renderLoader()
         ) : this.props?.flagResponse ? (

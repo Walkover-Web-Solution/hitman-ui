@@ -509,14 +509,14 @@ button.btn {
   }
 }
 .prettify-button {
-  text-align: right;
-  color: #f2994a;
   font-size: var(--text-size-m);
   font-weight: 500;
   background-color: transparent;
   padding: 5px 10px;
   cursor: pointer;
   transition: color 0.3s ease;
+  top: 0px;
+  right: -8px;
   span {
     transition: background-color 0.3s ease;
     border-radius: 4px;
