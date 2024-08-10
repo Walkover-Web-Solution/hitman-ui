@@ -502,7 +502,7 @@ $border-color: rgba(227, 228, 230, 0.7);
         padding: 0.35rem 0.75rem !important;
         border: none;
         color: $text-color;
-        font-size: $font-medium;
+        font-size: $font-normal-n;
         border-radius: 0;
         transition: all 0.3s ease-in;
         cursor: pointer;
@@ -515,7 +515,7 @@ $border-color: rgba(227, 228, 230, 0.7);
         border-radius: 4px 4px 0 0;
 
         &.active {
-          border-bottom: 2px solid $text-color;
+          border-bottom: 3px solid $text-color;
           color: $text-color !important;
           background-color: unset;
         }
