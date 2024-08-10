@@ -282,6 +282,7 @@ class BodyContainer extends Component {
                   editor.getSession().setUseWrapMode(true)
                   editor.setShowPrintMargin(false)
                 }}
+                style={{ fontFamily: 'monospace' }}
                 enableLiveAutocompletion
                 enableBasicAutocompletion
               />
@@ -449,6 +450,7 @@ class BodyContainer extends Component {
             enableLiveAutocompletion
             enableBasicAutocompletion
             {...editorOptions}
+            style={{ fontFamily: 'monospace' }}
           />
         </div>}
         {this.props.endpointContent?.data?.body?.variables && <div className='mt-2'>
@@ -474,7 +476,7 @@ class BodyContainer extends Component {
             enableLiveAutocompletion
             enableBasicAutocompletion
             {...editorOptions}
-
+            style={{ fontFamily: 'monospace' }}
           />
 
         </div>}

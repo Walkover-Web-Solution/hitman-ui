@@ -111,6 +111,7 @@ export default function QueryTab(props) {
                             editor.getSession().setUseWrapMode(true);
                             editor.setShowPrintMargin(false);
                         }}
+                        style={{ fontFamily: 'monospace' }}
                         {...editorOptions}
                     />
                 </div>
@@ -130,6 +131,7 @@ export default function QueryTab(props) {
                             editor.getSession().setUseWrapMode(true);
                             editor.setShowPrintMargin(false);
                         }}
+                        style={{ fontFamily: 'monospace' }}
                         {...editorOptions}
                     />
                 </div>
