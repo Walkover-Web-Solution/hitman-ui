@@ -16,9 +16,6 @@ const mapDispatchToProps = (dispatch) => {
 
   }
 }
-const mapStateToProps = (state) => ({
-  pages: state.page
-})
 
 class DeleteModal extends Component {
   constructor(props) {
@@ -61,7 +58,6 @@ class DeleteModal extends Component {
       sampleResponseArray.splice(index, 1)
       sampleResponseFlagArray.splice(index, 1)
       this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray)
-      this.props.pages[this.props.endpointContent.id].sampleResponse= false
     }
 
     if (title === 'Delete Domain' || title === 'Delete Cookie') {
@@ -97,4 +93,4 @@ class DeleteModal extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteModal)
+export default connect(null, mapDispatchToProps)(DeleteModal)

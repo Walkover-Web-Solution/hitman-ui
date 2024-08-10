@@ -1271,7 +1271,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleSave = async (id, endpointObject, slug) => {
-    debugger
     const { endpointName, endpointDescription } = endpointObject || {}
     let currentTabId = this.props.tab.id
     let parentId = id
@@ -2015,7 +2014,7 @@ class DisplayEndpoint extends Component {
       id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
-    if(sampleResponseArray){
+    if(sampleResponseArray.length>0){
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = true
     }else{
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = false
