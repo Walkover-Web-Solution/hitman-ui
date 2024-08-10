@@ -518,6 +518,7 @@ button.btn {
   right: 0px;
   z-index: 1;
   bottom: 4px;
+  font-size: 10px;
   span {
     transition: background-color 0.3s ease;
     border-radius: 4px;
@@ -622,7 +623,7 @@ button.btn.custom-body-type-button {
 
   label {
     color: #4f4f4f;
-    font-size: 13px !important;
+    font-size: $font-medium !important;
     margin: 0;
     font-weight: 400 !important;
   }
@@ -639,7 +640,7 @@ button.btn.custom-body-type-button {
       flex: 1.6 1;
       height: 36px;
       border: 1px solid #e0e0e0;
-      font-size: 13px;
+      font-size: $font-medium;
       font-weight: 400;
       color: #000;
       border-radius: 4px;

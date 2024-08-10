@@ -245,16 +245,16 @@ class DisplayResponse extends Component {
           <div className='tab-content ml-0'>
             {this.state.selectedResponseTab === 'body' && (
               <div>
-                <div className='d-flex justify-content-between mt-3 ml-2 mb-1'>
+                <div className='d-flex justify-content-between align-items-center mt-3 mb-1'>
                   <ul className='nav nav-pills body-button rounded'>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
-                      <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-2 py-1 fs-4 text-black' : 'nav-link px-2 py-1 fs-4 text-gray'}>Pretty</a>
+                      <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-gray'}>Pretty</a>
                     </li>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'raw' })}>
-                      <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-2 py-1 fs-4 text-black' : 'nav-link px-2 py-1 fs-4 text-gray'}>Raw</a>
+                      <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-gray'}>Raw</a>
                     </li>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'preview' })}>
-                      <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-2 py-1 fs-4 text-black' : 'nav-link px-2 py-1 fs-4 text-gray'}>Preview</a>
+                      <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-gray'}>Preview</a>
                     </li>
                   </ul>
                   {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
@@ -263,7 +263,7 @@ class DisplayResponse extends Component {
                       className='add-to-sample-response'
                     >
                       <div className='adddescLink d-flex align-items-center gap-1 icon-button px-2 py-1' onClick={() => this.addSampleResponse(this.props.response)}>
-                      <FaPlus /> Add to Sample Response
+                        <FaPlus /> Add to Sample Response
                       </div>
                     </div>
                   ) : null}
@@ -447,15 +447,15 @@ class DisplayResponse extends Component {
 
     return (
       <div className='w-100'>
-        <div className='console-button mt-3 ml-2 mb-1 rounded'>
+        <div className='console-button mt-3 mb-1 rounded'>
           <button
-            className={classNames('script-button rounded-0 fs-4 btn-sm btn', { active: showPreScript })}
+            className={classNames('script-button rounded fs-5 btn-sm btn', { active: showPreScript })}
             onClick={this.handlePreScriptClick}
           >
             Pre-Script
           </button>
           <button
-            className={classNames('script-button rounded-0 fs-4 btn-sm btn', { active: !showPreScript })}
+            className={classNames('script-button rounded fs-5 btn-sm btn', { active: !showPreScript })}
             onClick={this.handlePostScriptClick}
           >
             Post-Script
