@@ -5,6 +5,7 @@ import environmentsApiService from './environmentsApiService'
 import { useNavigate, useLocation } from 'react-router-dom'
 import './environments.scss'
 import { useSelector } from 'react-redux'
+import { RiDeleteBinLine } from "react-icons/ri";
 
 const EnvironmentModal = (props) => {
   const environment = useSelector((state) => state.environment)
@@ -42,7 +43,7 @@ const EnvironmentModal = (props) => {
         <ListGroup.Item style={{ width: '98%', float: 'left' }} key={environmentId} onClick={() => handleEdit(environment.environments[environmentId])}>
           {environment.environments[environmentId]?.name}
         </ListGroup.Item>
-        <button className='btn' onClick={() => { props.open_delete_environment_modal(environmentId) }}><DeleteIcon /></button>
+        <button className='btn' onClick={() => { props.open_delete_environment_modal(environmentId) }}><RiDeleteBinLine className='text-color' size={18} /></button>
       </div>
     ))
   }

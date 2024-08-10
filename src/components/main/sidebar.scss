@@ -22,7 +22,7 @@
 }
 
 .split-sidebar > div:first-child {
-  min-width: 300px !important;
+  min-width: 250px !important;
   max-width: 330px !important;
   background-color: $secondary-color;
 }
@@ -298,7 +298,7 @@ body .sidebar {
                 color: $text-color !important;
               }
             }
-            .versionChovron {
+            .icon-header {
               svg {
                 color: $text-color;
               }
@@ -332,7 +332,7 @@ body .sidebar {
                 color: $text-color !important;
               }
             }
-            .versionChovron {
+            .icon-header {
               svg {
                 color: $text-color;
               }
@@ -755,13 +755,6 @@ input[type='text']:focus {
   .truncate {
     @media screen and (max-width: 768px) {
       font-size: 16px;
-    }
-  }
-  &.Selected {
-    .in-api-label {
-      &.POST, &.GET, &.PUT, &.PATCH, &.DELETE {
-        color: $text-color !important;
-      }
     }
   }
 }

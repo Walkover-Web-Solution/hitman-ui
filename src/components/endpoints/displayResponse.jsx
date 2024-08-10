@@ -16,6 +16,7 @@ import { connect } from 'react-redux'
 import AceEditor from 'react-ace'
 import { background } from '../backgroundColor'
 import classNames from 'classnames';
+import { FaPlus } from 'react-icons/fa'
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
@@ -182,10 +183,10 @@ class DisplayResponse extends Component {
     return (
       <>
         <div className='custom-tabs' ref={this.myRef}>
-          <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
+          <ul className='nav nav-tabs  respTabsListing border-0 rounded-0 w-100' id='myTab' role='tablist'>
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'body' }) }}>
               <a
-                className={this.state.selectedResponseTab === 'body' ? 'nav-link active' : 'nav-link'}
+                className={this.state.selectedResponseTab === 'body' ? 'nav-link active text-black' : 'nav-link text-gray'}
                 style={this.state.selectedResponseTab === 'body' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
                 id='pills-response-tab'
                 data-toggle='pill'
@@ -198,7 +199,7 @@ class DisplayResponse extends Component {
             </li>
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'header' }) }}>
               <a
-                className={this.state.selectedResponseTab === 'header' ? 'nav-link active' : 'nav-link'}
+                className={this.state.selectedResponseTab === 'header' ? 'nav-link active text-black' : 'nav-link text-gray'}
                 style={this.state.selectedResponseTab === 'header' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
                 id='pills-header-tab'
                 data-toggle='pill'
@@ -213,7 +214,7 @@ class DisplayResponse extends Component {
               <>
                 <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'testResults' }) }}>
                   <a
-                    className={this.state.selectedResponseTab === 'testResults' ? 'nav-link active' : 'nav-link'}
+                    className={this.state.selectedResponseTab === 'testResults' ? 'nav-link active text-black' : 'nav-link text-gray'}
                     id='pills-testResults-tab'
                     data-toggle='pill'
                     aria-selected='false'
@@ -225,7 +226,7 @@ class DisplayResponse extends Component {
                 </li>
                 <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'console' }) }}>
                   <a
-                    className={this.state.selectedResponseTab === 'console' ? 'nav-link active' : 'nav-link'}
+                    className={this.state.selectedResponseTab === 'console' ? 'nav-link active text-black' : 'nav-link text-gray'}
                     style={this.state.selectedResponseTab === 'console' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
                     id='pills-console-tab'
                     data-toggle='pill'
@@ -244,16 +245,16 @@ class DisplayResponse extends Component {
           <div className='tab-content ml-0'>
             {this.state.selectedResponseTab === 'body' && (
               <div>
-                <div className='d-flex justify-content-between mt-2 mb-1'>
-                  <ul className='nav nav-pills body-button'>
+                <div className='d-flex justify-content-between mt-3 ml-2 mb-1'>
+                  <ul className='nav nav-pills body-button rounded'>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
-                      <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-2 py-1 fs-4' : 'nav-link px-2 py-1 fs-4'}>Pretty</a>
+                      <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-2 py-1 fs-4 text-black' : 'nav-link px-2 py-1 fs-4 text-gray'}>Pretty</a>
                     </li>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'raw' })}>
-                      <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'}>Raw</a>
+                      <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-2 py-1 fs-4 text-black' : 'nav-link px-2 py-1 fs-4 text-gray'}>Raw</a>
                     </li>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'preview' })}>
-                      <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-2 py-1 fs-4 ml-2' : 'nav-link px-2 py-1 fs-4 ml-2'}>Preview</a>
+                      <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-2 py-1 fs-4 text-black' : 'nav-link px-2 py-1 fs-4 text-gray'}>Preview</a>
                     </li>
                   </ul>
                   {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
@@ -261,8 +262,8 @@ class DisplayResponse extends Component {
                       // style={{ float: "right" }}
                       className='add-to-sample-response'
                     >
-                      <div className='adddescLink' onClick={() => this.addSampleResponse(this.props.response)}>
-                        <img src={addtosample} /> Add to Sample Response
+                      <div className='adddescLink d-flex align-items-center gap-1 icon-button px-2 py-1' onClick={() => this.addSampleResponse(this.props.response)}>
+                      <FaPlus /> Add to Sample Response
                       </div>
                     </div>
                   ) : null}
@@ -446,15 +447,15 @@ class DisplayResponse extends Component {
 
     return (
       <div className='w-100'>
-        <div className='console-button'>
+        <div className='console-button mt-3 ml-2 mb-1 rounded'>
           <button
-            className={classNames('btn', 'btn-sm', 'fs-4', 'mr-2', { active: showPreScript })}
+            className={classNames('script-button rounded-0 fs-4 btn-sm btn', { active: showPreScript })}
             onClick={this.handlePreScriptClick}
           >
             Pre-Script
           </button>
           <button
-            className={classNames('btn', 'btn-sm', 'fs-4', { active: !showPreScript })}
+            className={classNames('script-button rounded-0 fs-4 btn-sm btn', { active: !showPreScript })}
             onClick={this.handlePostScriptClick}
           >
             Post-Script
@@ -504,7 +505,7 @@ class DisplayResponse extends Component {
   render() {
     const { theme } = this.state
     return (
-      <div className='endpoint-response-container overflow-auto mt-4' style={this.state?.theme?.backgroundStyle}>
+      <div className='endpoint-response-container overflow-auto mt-2' style={this.state?.theme?.backgroundStyle}>
         {this.props.loader ? (
           this.renderLoader()
         ) : this.props?.flagResponse ? (

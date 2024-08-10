@@ -27,7 +27,6 @@ export const formatResponseToSend = (response) => {
 }
 
 export const addEndpoint = (navigate, newEndpoint, rootParentId, customCallback, props) => {
-  debugger
   newEndpoint.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   const orgId = getOrgId()
   const requestId = shortid.generate()

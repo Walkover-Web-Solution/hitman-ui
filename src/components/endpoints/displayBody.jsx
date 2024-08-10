@@ -15,6 +15,7 @@ import GenericTable from './genericTable'
 import { isSavedEndpoint } from '../common/utility'
 import _ from 'lodash'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
+import IconButton from '../common/iconButton'
 
 class BodyContainer extends Component {
   _isMounted = false // Add a flag to track if the component is mounted
@@ -138,8 +139,8 @@ class BodyContainer extends Component {
     } else {
       this.flag = false
       if (document.getElementById(`toggle-raw-${this.props.endpoint_id}`)) {
-        document.getElementById(`toggle-raw-${this.props.endpoint_id}`).className = 'btn btn-secondary active'
-        document.getElementById(`toggle-body-description-${this.props.endpoint_id}`).className = 'btn btn-secondary '
+        document.getElementById(`toggle-raw-${this.props.endpoint_id}`).className = 'btn active'
+        document.getElementById(`toggle-body-description-${this.props.endpoint_id}`).className = 'btn '
       }
       if (bodyType === bodyTypesEnums['raw']) {
         this.showRawBodyType = true
@@ -259,9 +260,9 @@ class BodyContainer extends Component {
           return
         default:
           return (
-            <div>
-              <div className="prettify-button" >
-                <span onClick={this.handlePrettifyJson.bind(this)}>Beautify</span>
+            <>
+              <div className="prettify-button position-absolute" >
+                <IconButton><span className='text-gray' onClick={this.handlePrettifyJson.bind(this)}>Beautify</span></IconButton>
               </div>
               {' '}
               <AceEditor
@@ -284,8 +285,7 @@ class BodyContainer extends Component {
                 enableLiveAutocompletion
                 enableBasicAutocompletion
               />
-
-            </div>
+              </>
           )
       }
     }
@@ -299,19 +299,17 @@ class BodyContainer extends Component {
   endpointBody() {
     return (
       <React.Fragment>
-        <span style={{ fontWeight: 600 }}>Body</span>
         <div className='button-panel-wrapper'>
-          <form className='body-select d-flex align-items-center mb-2'>
+          <form className='body-select d-flex align-items-center mb-2 ml-3'>
             <label className='customRadio'>
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
                 id={`${bodyTypesEnums['none']}-${this.props.endpoint_id}`}
-                defaultChecked={!this.state.selectedBodyType}
                 onClick={() => this.handleSelectBodyType(bodyTypesEnums['none'])}
                 className='custom-radio-input'
               />
-              <span>none</span>
+              <span className='text-gray fs-4'>none</span>
               <span className='checkmark' />
             </label>
 
@@ -319,13 +317,14 @@ class BodyContainer extends Component {
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
+                defaultChecked={!this.state.selectedBodyType}
                 id={`raw-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType(bodyTypesEnums['raw'])}
                 onChange={() => { }}
                 className='custom-radio-input'
                 checked={this.state.selectedBodyType === bodyTypesEnums['raw']}
               />
-              <span>raw</span>
+              <span className='text-gray fs-4'>raw</span>
               <span className='checkmark' />
             </label>
             <label className='customRadio'>
@@ -338,7 +337,7 @@ class BodyContainer extends Component {
                 className='custom-radio-input'
                 checked={this.matchCurrentBodyType(`${bodyTypesEnums['multipart/form-data']}-${this.props.endpoint_id}`)}
               />
-              <span>form-data</span>
+              <span className='text-gray fs-4'>form-data</span>
               <span className='checkmark' />
             </label>
             <label className='customRadio'>
@@ -351,7 +350,7 @@ class BodyContainer extends Component {
                 onChange={() => { }}
                 checked={this.matchCurrentBodyType(`${bodyTypesEnums['application/x-www-form-urlencoded']}-${this.props.endpoint_id}`)}
               />
-              <span>x-www-form-urlencoded</span>
+              <span className='text-gray fs-4'>x-www-form-urlencoded</span>
               <span className='checkmark' />
             </label>
             {!(this.showRawBodyType && this.flag) && (
@@ -360,7 +359,7 @@ class BodyContainer extends Component {
                   <div>
                     <div className='dropdown'>
                       <button
-                        className='btn dropdown-toggle'
+                        className='btn dropdown-toggle text-gray fs-4 border-0'
                         type='button'
                         id='dropdownMenuButton'
                         data-toggle='dropdown'
@@ -391,7 +390,7 @@ class BodyContainer extends Component {
             this.state.selectedRawBodyType === rawTypesEnums.JSON &&
             (this.state.selectedBodyType === bodyTypesEnums['raw'] || this.state.selectedBodyType === rawTypesEnums.JSON) && (
               <div className='btn-group btn-group-toggle customBtnGroup mb-2' data-toggle='buttons' style={{ float: 'right' }}>
-                <label className='btn btn-secondary active' id={`toggle-raw-${this.props.endpoint_id}`}>
+                <label className='btn active' id={`toggle-raw-${this.props.endpoint_id}`}>
                   <input
                     type='radio'
                     name='options'
@@ -415,7 +414,7 @@ class BodyContainer extends Component {
               </div>
             )}
         </div>
-        <div className='body-container'>{this.renderBody()}</div>
+        {this.renderBody()}
       </React.Fragment>
     )
   }
@@ -490,7 +489,7 @@ class BodyContainer extends Component {
     }
 
     return (
-      <div className='body-wrapper'>
+      <div className='body-wrapper position-relative'>
         {this.props.endpointContent?.protocolType === 1 && this.endpointBody()}
         {this.props.endpointContent?.protocolType === 2 && this.graphqlBody()}
       </div>
