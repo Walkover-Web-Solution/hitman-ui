@@ -306,7 +306,6 @@ class BodyContainer extends Component {
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
                 id={`${bodyTypesEnums['none']}-${this.props.endpoint_id}`}
-                defaultChecked={!this.state.selectedBodyType}
                 onClick={() => this.handleSelectBodyType(bodyTypesEnums['none'])}
                 className='custom-radio-input'
               />
@@ -318,6 +317,7 @@ class BodyContainer extends Component {
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
+                defaultChecked={!this.state.selectedBodyType}
                 id={`raw-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType(bodyTypesEnums['raw'])}
                 onChange={() => { }}

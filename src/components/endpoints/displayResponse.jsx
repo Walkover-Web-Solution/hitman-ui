@@ -447,7 +447,7 @@ class DisplayResponse extends Component {
 
     return (
       <div className='w-100'>
-        <div className='console-button rounded'>
+        <div className='console-button mt-3 ml-2 mb-1 rounded'>
           <button
             className={classNames('script-button rounded-0 fs-4 btn-sm btn', { active: showPreScript })}
             onClick={this.handlePreScriptClick}

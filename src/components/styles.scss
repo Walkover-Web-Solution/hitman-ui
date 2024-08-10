@@ -515,8 +515,9 @@ button.btn {
   padding: 5px 10px;
   cursor: pointer;
   transition: color 0.3s ease;
-  top: 0px;
-  right: -8px;
+  right: 0px;
+  z-index: 1;
+  bottom: 4px;
   span {
     transition: background-color 0.3s ease;
     border-radius: 4px;

@@ -583,6 +583,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     flex-wrap: wrap;
     position: absolute;
     right: 32px;
+    margin-right: 25px;
 
     @media screen and (max-width:992px) {
       position: static;
@@ -1881,6 +1882,7 @@ table#custom-generic-table {
   .console-button {
     width: fit-content;
     background-color: $button-background-hover;
+    margin-left: 10px;
 
     .script-button {
       border: unset !important;

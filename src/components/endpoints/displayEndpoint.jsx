@@ -137,8 +137,8 @@ const untitledEndpointData = {
     name: 'Untitled',
     method: 'GET',
     body: {
-      type: bodyTypesEnums['none'],
-      [bodyTypesEnums['raw']]: { rawType: rawTypesEnums.TEXT, value: '' },
+      type: rawTypesEnums.JSON,
+      [bodyTypesEnums['raw']]: { rawType: rawTypesEnums.JSON, value: '' },
       [bodyTypesEnums['application/x-www-form-urlencoded']]: [
         { checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }
       ],
