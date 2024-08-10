@@ -170,7 +170,7 @@ html body {
 
     .dropdown-item {
       padding: auto 4px !important;
-      font-size: 11px !important;
+      font-size: 10px !important;
     }
   }
 
@@ -225,8 +225,7 @@ html body {
       display: flex;
       -webkit-display: flex;
       align-items: center;
-      // padding: 0.35rem 1rem;
-      font-size: $font-normal;
+      font-size: $font-medium;
 
       &:hover {
         background-color: rgba(128, 128, 128, 0.123);
@@ -1245,7 +1244,7 @@ body .form-group {
 body .form-control {
   height: 36px;
   border: 1px solid $lightblackborder;
-  font-size: $font-normal;
+  font-size: $font-medium;
   font-weight: 400;
   color: #000;
   box-sizing: border-box;
@@ -1283,7 +1282,7 @@ body .form-control {
 button.btn.btn-secondary {
   background: #bdbdbd;
   border: none;
-  font-size: 14px;
+  font-size: $font-medium;
   font-weight: 600;
 
   &.orange {
@@ -1750,11 +1749,11 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
   border: 1px solid $border-color;
   box-shadow: none !important;
   outline: none;
-  font-size: $font-medium !important;
+  font-size: $font-small !important;
   font-weight: 500;
   background: #fff !important;
   color: $text-color;
-  height: 35px;
+  height: 28px;
   display: flex;
   align-items: center;
   color: $theme-color;
@@ -2529,7 +2528,7 @@ span.endpointNameWrapper {
     padding: 0.7rem 1rem !important;
     display: flex;
     align-items: center;
-    font-size: 14px;
+    font-size: 12px;
     background-color: inherit;
 
     &:hover {
@@ -2979,10 +2978,10 @@ li.nav-item.cookie-tab a {
   overflow-x: auto;
   background: #fff;
   padding: 0px 20px 10px;
-
+  
   >div {
     color: $theme-color;
-    font-size: $font-normal;
+    font-size: $font-medium;
     margin-bottom: 5px;
     border-bottom: 1px solid whitesmoke;
     padding-bottom: 5px;
@@ -4274,7 +4273,7 @@ body .tox {
 
     .Script-button {
       color: $theme-color;
-      font-size: $font-small-s;
+      font-size: $font-extra-small;
 
       &:hover {
         color: $text-color;

@@ -567,10 +567,8 @@ class GenericTable extends Component {
     const isDocView = !isDashboardRoute(this.props) || !isDashboardAndTestingView(this.props, this.props.currentView)
     this.autoFillBulkEdit()
     return (
-      // "generic-table-container"
-      // table-bordered
       <div className='hm-public-table position-relative mb-2'>
-        {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) ? <div>{title}</div> : null}
+        {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) ? <div className='fs-4'>{title}</div> : null}
 
         {!this.state.bulkEdit && dataArray.length > 0 ? (
           <div className={`headParaWraper p-0`} style={this.state.theme.backgroundStyle}>
@@ -627,7 +625,7 @@ class GenericTable extends Component {
 
         {title === 'Path Variables' || !isDashboardRoute(this.props) ? null : (
           <div className='generic-table-title-container'>
-            <button className='adddescLink mt-2 addBulk fs-4 icon-button px-2' onClick={() => this.displayEditButton()}>
+            <button className='adddescLink mt-2 addBulk icon-button px-2' onClick={() => this.displayEditButton()}>
               {this.state.editButtonName}
             </button>
           </div>

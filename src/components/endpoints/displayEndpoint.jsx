@@ -3379,10 +3379,10 @@ class DisplayEndpoint extends Component {
                                 role='tabpanel'
                                 aria-labelledby={`pills-script-tab-${this.props.tab.id}`}
                               >
-                                <ul className='nav nav-tabs mt-0 border border-0 script-button-wrapper rounded mb-2 ml-2' id='pills-sub-tab' role='tablist'>
+                                <ul className='nav nav-tabs mt-0 border border-0 script-button-wrapper rounded mb-2' id='pills-sub-tab' role='tablist'>
                                   <li className='nav-item'>
                                     <a
-                                      className='nav-link active px-1 mb-0 py-1 border border-0 Script-button rounded-0'
+                                      className='nav-link active px-2 mb-0 py-1 border border-0 Script-button rounded'
                                       id='pills-pre-script-tab'
                                       data-toggle='pill'
                                       href={`#pre-script-${this.props.tab.id}`}
@@ -3396,7 +3396,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className='nav-link px-1 py-1 border border-0 Script-button mb-0 rounded-0'
+                                      className='nav-link px-2 py-1 border border-0 Script-button mb-0 rounded'
                                       id='pills-post-script-tab'
                                       data-toggle='pill'
                                       href={`#post-script-${this.props.tab.id}`}

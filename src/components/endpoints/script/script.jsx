@@ -75,7 +75,7 @@ export class Script extends Component {
     return (
       <div className='col-8 position-relative'>
         {' '}
-        <button className='ai-button-editor position-absolute ' onClick={() => window.openChatbot()}><BiSolidBot /></button>
+        {/* <button className='ai-button-editor position-absolute ' onClick={() => window.openChatbot()}><BiSolidBot /></button> */}
         <AceEditor
           className='custom-raw-editor'
           mode='javascript'
