@@ -13,8 +13,12 @@ const mapDispatchToProps = (dispatch) => {
     delete_environment: (deletedEnvironment) => dispatch(deleteEnvironment(deletedEnvironment)),
     delete_collection: (collection) => dispatch(deleteCollection(collection)),
     delete_page: (page) => dispatch(deletePage(page))
+
   }
 }
+const mapStateToProps = (state) => ({
+  pages: state.page
+})
 
 class DeleteModal extends Component {
   constructor(props) {
@@ -57,6 +61,7 @@ class DeleteModal extends Component {
       sampleResponseArray.splice(index, 1)
       sampleResponseFlagArray.splice(index, 1)
       this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray)
+      this.props.pages[this.props.endpointContent.id].sampleResponse= false
     }
 
     if (title === 'Delete Domain' || title === 'Delete Cookie') {
@@ -92,4 +97,4 @@ class DeleteModal extends Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(DeleteModal)
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteModal)

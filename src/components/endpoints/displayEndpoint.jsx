@@ -1937,7 +1937,7 @@ class DisplayEndpoint extends Component {
       id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
-    if(sampleResponseArray){
+    if(sampleResponseArray.length>0){
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = true
     }else{
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = false

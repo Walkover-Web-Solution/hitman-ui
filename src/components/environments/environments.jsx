@@ -113,7 +113,7 @@ const Environments = () => {
             </Dropdown.Toggle>
             <Dropdown.Menu alignRight>
               <Dropdown.Item onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
-              {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item onClick={() => handleEnv(environmentId)} key={environmentId}>
+              {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item className='px-2' onClick={() => handleEnv(environmentId)} key={environmentId}>
                 {environment.environments[environmentId]?.name}
                 {environmentId === currentEnvironmentId && <span className='check-icon'><FaCheck /></span>}
                 <OverlayTrigger placement="bottom" overlay={showTooltips()} >
