@@ -271,7 +271,7 @@ class DisplayResponse extends Component {
                 <div className='tab-content'>
                   {this.state.selectedBodyTab === 'pretty' && <div>
                     <AceEditor
-                      style={{ border: '1px solid rgb(206 213 218)' }}
+                      style={{ border: '1px solid rgb(206 213 218)', fontFamily: 'monospace'  }}
                       className='custom-raw-editor'
                       mode='json'
                       theme='github'
@@ -423,7 +423,7 @@ class DisplayResponse extends Component {
       return (
         <div className='p-2'>
           <AceEditor
-            style={{ border: '1px solid rgb(206 213 218)' }}
+            style={{ border: '1px solid rgb(206 213 218)',fontFamily: 'Inter' }}
             className='custom-raw-editor'
             mode='json'
             theme='github'
