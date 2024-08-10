@@ -46,6 +46,7 @@ const CollectionForm = (props) => {
       }
     }
     dispatch(addCollection(dataToSend, null, redirectToCollection))
+    props.onHide();
   }
 
   return (
