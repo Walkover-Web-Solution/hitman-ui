@@ -3,6 +3,7 @@ import TokenGenerator from '../newTokenGenerator'
 import { useSelector } from 'react-redux'
 import AccessTokenManager from '../displayTokenManager'
 import './auth2Configurations.scss'
+import IconButton from '../../common/iconButton'
 
 export default function Auth2Configurations(props) {
 
@@ -40,7 +41,7 @@ export default function Auth2Configurations(props) {
                 <form>
                     <div className='input-field-wrapper form-group d-block mb-1'>
                         <div>
-                            <label className='basic-auth-label'>Access Token</label>
+                            <label className='basic-auth-label text-secondary'>Access Token</label>
                         </div>
                         <div className='basic-auth-input'>
                             <input onChange={handleTokenValueChange} value={props?.selectedTokenValue ?? ''} name='accessToken' className='form-control' />
@@ -59,7 +60,7 @@ export default function Auth2Configurations(props) {
                                             Manage Tokens
                                         </button> :
                                         <button type='button' className='dropdown-item p-1 fs-4' >
-                                            No Tokens Available
+                                            No Tokens
                                         </button>
                                     }
                                 </div>
@@ -68,9 +69,9 @@ export default function Auth2Configurations(props) {
                     </div>
                     <div className='input-field-wrapper d-block'>
                         <div className='basic-auth-input'>
-                            <button className='btn btn-outline orange' type='button' onClick={handleGenerateToken} >
+                            <IconButton variant='sm'><button className='btn fs-4 text-gray' type='button' onClick={handleGenerateToken} >
                                 Get New Access Token
-                            </button>
+                            </button></IconButton>
                         </div>
                     </div>
                 </form>

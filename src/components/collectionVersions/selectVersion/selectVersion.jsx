@@ -11,6 +11,7 @@ import OutsideClickHandler from 'react-outside-click-handler'
 import './selectVersion.scss'
 import { toast } from 'react-toastify'
 import { getOrgId } from '../../common/utility'
+import { RiDeleteBinLine } from "react-icons/ri";
 
 const VersionInput = (props) => {
   const { pages } = useSelector((state) => {
@@ -174,8 +175,8 @@ export default function SelectVersion(props) {
                     </Button>
                   )}
                   {pages?.[singleChildId]?.state !== 1 && (
-                    <DeleteIcon
-                      className='ml-2 cursor-pointer'
+                    <RiDeleteBinLine
+                      className='ml-2 cursor-pointe text-gray'
                       size={22}
                       onClick={() => {
                         handleDeleteVersion(singleChildId)

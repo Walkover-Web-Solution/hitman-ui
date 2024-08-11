@@ -247,7 +247,7 @@ class PublicBodyContainer extends Component {
             className={`${isOnPublishedPage() ? "custom-raw-editor-public" : "custom-raw-editor"}`}
             mode={'json'}
             theme='github'
-            style={this.state.theme.backgroundStyle}
+            style={{ fontFamily: 'monospace' }}
             value={this.props.endpointContent?.data?.body?.query || ''}
             onChange={this.handleSetQueryData.bind(this)}
             setOptions={{
@@ -275,7 +275,7 @@ class PublicBodyContainer extends Component {
             className={`${isOnPublishedPage() ? "custom-raw-editor-public" : "custom-raw-editor"}`}
             mode={'json'}
             theme='github'
-            style={this.state.theme.backgroundStyle}
+            style={{ fontFamily: 'monospace' }}
             value={this.props.endpointContent?.data?.body?.variables || ''}
             onChange={this.handleSetQueryData.bind(this)}
             setOptions={{
@@ -359,7 +359,7 @@ class PublicBodyContainer extends Component {
                       theme='github'
                       value={this.props.body?.raw?.value}
                       onChange={this.handleChangeBodyDescription.bind(this)}
-                      style={{ height: this.state.editorHeight }}
+                      style={{ height: this.state.editorHeight, fontFamily: 'monospace'  }}
                       setOptions={{
                         showLineNumbers: true,
                       }}
@@ -393,6 +393,7 @@ class PublicBodyContainer extends Component {
                 {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
               </div>
               <AceEditor
+              style={{ fontFamily: 'monospace' }}
                 className='custom-raw-editor'
                 mode={this.props.body.type.toLowerCase()}
                 theme='github'

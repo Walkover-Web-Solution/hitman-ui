@@ -356,77 +356,77 @@ const CustomTabs = (props) => {
       default:
     }
   }
-  const renderHoverTab = (tabId) => {
-    let x = 1
-    const y = 1
-    x -= navRef.current.scrollLeft
-    const styles = {
-      transform: `translate(${x}px, ${y}px)`
-    }
-    const tab = tabs.tabs[tabId]
-    if (!tab) return
-    if (tab.type === 'page') {
-      if (pages[tabId]) {
-        const page = pages[tabId]
-        return (
-          <div className='hover-div' style={styles}>
-            {/* <div className='group-name'>{pages[pages?.[tabId]?.parentId]?.name}</div> */}
-            <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>Page</div>
-          </div>
-        )
-      }
-    } else if (tab.type === 'endpoint') {
-      if (pages[tabId]) {
-        const endpoint = pages[tabId]
-        return (
-          <div className='hover-div' style={styles}>
-            <div className='d-flex align-items-center'>
-              {endpoint.protocolType === 1 && (
-                <div className={`api-label ${tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
-                  {tabState[tabId]?.draft?.data?.method}{' '}
-                </div>
-              )}
-              {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
-              <div className='endpoint-name ml-1'>{pages[tabId].name}</div>
-            </div>
-          </div>
-        )
-      }
-    } else if (tab.type === 'collection') {
-      return (
-        <>
-          <div className='hover-div' style={styles}>
-            <div className='page-name'>Setting</div>
-          </div>
-          <div className='hover-div' style={styles}>
-            <div className='page-name'>Setting</div>
-          </div>
-        </>
-      )
-    } else if (tab.type === 'history') {
-      return (
-        <>
-          <div className='hover-div' style={styles}>
-            <div className='page-name'>history</div>
-          </div>
-          <div className='hover-div' style={styles}>
-            <div className='page-name'>history</div>
-          </div>
-        </>
-      )
-    } else if (tab.type === 'feedback') {
-      return (
-        <>
-          <div className='hover-div' style={styles}>
-            <div className='page-name'>feedback</div>
-          </div>
-          <div className='hover-div' style={styles}>
-            <div className='page-name'>feedback</div>
-          </div>
-        </>
-      )
-    }
-  }
+  // const renderHoverTab = (tabId) => {
+  //   let x = 1
+  //   const y = 1
+  //   x -= navRef.current.scrollLeft
+  //   const styles = {
+  //     transform: `translate(${x}px, ${y}px)`
+  //   }
+  //   const tab = tabs.tabs[tabId]
+  //   if (!tab) return
+  //   if (tab.type === 'page') {
+  //     if (pages[tabId]) {
+  //       const page = pages[tabId]
+  //       return (
+  //         <div className='hover-div' style={styles}>
+  //           {/* <div className='group-name'>{pages[pages?.[tabId]?.parentId]?.name}</div> */}
+  //           <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>Page</div>
+  //         </div>
+  //       )
+  //     }
+  //   } else if (tab.type === 'endpoint') {
+  //     if (pages[tabId]) {
+  //       const endpoint = pages[tabId]
+  //       return (
+  //         <div className='hover-div' style={styles}>
+  //           <div className='d-flex align-items-center'>
+  //             {endpoint.protocolType === 1 && (
+  //               <div className={`api-label ${tabState[tabId]?.draft?.data?.method} request-type-bgcolor ml-4 mt-1 arrow-top`}>
+  //                 {tabState[tabId]?.draft?.data?.method}{' '}
+  //               </div>
+  //             )}
+  //             {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
+  //             <div className='endpoint-name ml-1'>{pages[tabId].name}</div>
+  //           </div>
+  //         </div>
+  //       )
+  //     }
+  //   } else if (tab.type === 'collection') {
+  //     return (
+  //       <>
+  //         <div className='hover-div' style={styles}>
+  //           <div className='page-name'>Setting</div>
+  //         </div>
+  //         <div className='hover-div' style={styles}>
+  //           <div className='page-name'>Setting</div>
+  //         </div>
+  //       </>
+  //     )
+  //   } else if (tab.type === 'history') {
+  //     return (
+  //       <>
+  //         <div className='hover-div' style={styles}>
+  //           <div className='page-name'>history</div>
+  //         </div>
+  //         <div className='hover-div' style={styles}>
+  //           <div className='page-name'>history</div>
+  //         </div>
+  //       </>
+  //     )
+  //   } else if (tab.type === 'feedback') {
+  //     return (
+  //       <>
+  //         <div className='hover-div' style={styles}>
+  //           <div className='page-name'>feedback</div>
+  //         </div>
+  //         <div className='hover-div' style={styles}>
+  //           <div className='page-name'>feedback</div>
+  //         </div>
+  //       </>
+  //     )
+  //   }
+  // }
 
   const handleHistoryButton = () => {
     if (organizations?.currentOrg?.meta?.type !== 0) {
@@ -521,7 +521,6 @@ const CustomTabs = (props) => {
                   </button>
                 </Nav.Link>
               </Nav.Item>
-              {showPreview && tabId === previewId && renderHoverTab(tabId)}
             </div>
           ))}
         </Nav>

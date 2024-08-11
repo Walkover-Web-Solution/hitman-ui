@@ -165,7 +165,7 @@ class Form extends Component {
           {label}
         </label>
         <AceEditor
-          style={{ border: '1px solid rgb(206 213 218)' }}
+          style={{ border: '1px solid rgb(206 213 218)', fontFamily: 'monospace' }}
           className='custom-raw-editor'
           mode='json'
           theme='github'

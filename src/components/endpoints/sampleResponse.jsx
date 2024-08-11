@@ -6,6 +6,7 @@ import SampleResponseForm from './sampleResponseForm'
 import DeleteModal from '../common/deleteModal'
 import DownArrow from '../../assets/icons/downChevron.svg'
 import addToSample from '../../assets/icons/addToSamplesign.svg'
+import { FaPlus } from "react-icons/fa6";
 
 class SampleResponse extends Component {
   constructor(props) {
@@ -139,8 +140,8 @@ class SampleResponse extends Component {
       >
         {isDashboardRoute(this.props) ? (
           <div className='add-sample-response'>
-            <button className='adddescLink align-left' onClick={() => this.openAddForm({}, null, 'Add Sample Response')}>
-              <img src={addToSample} /> Add Sample Response
+            <button className='adddescLink align-left d-flex align-items-center gap-1 icon-button px-2 py-1' onClick={() => this.openAddForm({}, null, 'Add Sample Response')}>
+            <FaPlus /> Add Sample Response
             </button>
           </div>
         ) : null}

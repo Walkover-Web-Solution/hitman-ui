@@ -119,7 +119,7 @@ const OnBoarding = () => {
                                 onClick={() => handleCardClick(index)}
                             >
                                 <Card.Body>
-                                    <Card.Text className={`card-text d-flex flex-column justify-content-center align-items-center h-100 ${selectedIndex === index ? 'text-black' : 'text-black-50'}`}>
+                                    <Card.Text className={`card-text d-flex flex-column justify-content-center align-items-center h-100 ${selectedIndex === index ? 'text-dark' : 'text-black-50'}`}>
                                         {index === 0 ? (
                                             <div className='d-flex flex-column align-items-center'>
                                                 <IoDocumentTextOutline size={40} />

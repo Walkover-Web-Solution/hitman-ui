@@ -43,9 +43,10 @@ $border-color: rgba(227, 228, 230, 0.7);
     &.custom-td {
       padding: 0 10px !important;
       border: none;
+
       .form-control {
         height: 38px !important;
-    }
+      }
     }
 
     input.form-control {
@@ -95,10 +96,14 @@ $border-color: rgba(227, 228, 230, 0.7);
       width: 100%;
 
       .btn {
-        height: 42px;
+        height: 28px;
         background-color: inherit;
         border: none;
         padding-right: 0;
+
+        &:hover {
+          background-color: unset;
+        }
 
         &::after {
           content: "";
@@ -106,7 +111,6 @@ $border-color: rgba(227, 228, 230, 0.7);
         }
 
         span {
-          max-width: 4.65rem;
           text-align: left;
           padding-right: 4px;
         }
@@ -122,9 +126,6 @@ $border-color: rgba(227, 228, 230, 0.7);
           &.dropdown-item.addEnv {
             border-bottom: 1px solid #e0e0e0;
             padding: 8px 0px 8px 8px;
-          }
-          &:hover {
-            background-color: rgba(128, 128, 128, 0.123);
           }
           svg {
             margin: 0px;

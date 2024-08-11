@@ -250,6 +250,7 @@ const ContentPanel = () => {
                   handle_save_endpoint={handleSaveEndpoint}
                   handle_save_page={handleSavePage}
                 />
+                <div className='d-flex'>
                 <Environments />
                 {params.endpointId && (
                   <div
@@ -258,6 +259,7 @@ const ContentPanel = () => {
                   >
                     <IconButton>
                       <IoCodeSlashOutline
+                       className='m-1'
                         type='button'
                         data-bs-toggle='offcanvas'
                         data-bs-target='#offcanvasRight'
@@ -267,6 +269,7 @@ const ContentPanel = () => {
                     </IconButton>
                   </div>
                 )}
+                </div>
               </div>
             </div>
           </>
