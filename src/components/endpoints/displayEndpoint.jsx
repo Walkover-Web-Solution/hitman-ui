@@ -74,6 +74,7 @@ import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
 import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
 import { Tab, Nav, Row, Col } from 'react-bootstrap'
+import { FaPlus } from 'react-icons/fa'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -136,8 +137,8 @@ const untitledEndpointData = {
     name: 'Untitled',
     method: 'GET',
     body: {
-      type: bodyTypesEnums['none'],
-      [bodyTypesEnums['raw']]: { rawType: rawTypesEnums.TEXT, value: '' },
+      type: rawTypesEnums.JSON,
+      [bodyTypesEnums['raw']]: { rawType: rawTypesEnums.JSON, value: '' },
       [bodyTypesEnums['application/x-www-form-urlencoded']]: [
         { checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }
       ],
@@ -1270,7 +1271,7 @@ class DisplayEndpoint extends Component {
     return data
   }
 
-  handleSave = async (id, endpointObject, slug) => {
+  handleSave = async (id, endpointObject, slug) => {    
     const { endpointName, endpointDescription } = endpointObject || {}
     let currentTabId = this.props.tab.id
     let parentId = id
@@ -2089,11 +2090,11 @@ class DisplayEndpoint extends Component {
     return (
       <>
         <div className='custom-tabs clear-both response-container mb-2'>
-          <div className='d-flex justify-content-between align-items-center'>
-            <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
+          <div className='d-flex justify-content-between align-items-center w-100'>
+            <ul className='nav nav-tabs respTabsListing w-100 rounded-0 border-0' id='myTab' role='tablist'>
               <li className='nav-item'>
                 <a
-                  className='nav-link active'
+                  className='nav-link bg-none active text-secondary'
                   id='pills-response-tab'
                   data-toggle='pill'
                   href={this.isDashboardAndTestingView() ? `#response-${this.props.tab.id}` : '#response'}
@@ -2107,7 +2108,7 @@ class DisplayEndpoint extends Component {
               {getCurrentUser() && (
                 <li className='nav-item'>
                   <a
-                    className='nav-link'
+                    className='nav-link text-secondary'
                     id='pills-sample-tab'
                     data-toggle='pill'
                     href={this.isDashboardAndTestingView() ? `#sample-${this.props.tab.id}` : '#sample'}
@@ -2214,7 +2215,7 @@ class DisplayEndpoint extends Component {
     return (
       <>
         <div className='response-container endpoint-public-response-container endPointRes'>
-          <h4>Response</h4>
+          <span className='text-gray'>Response</span>
           <DisplayResponse
             {...this.props}
             loader={this.state.loader}
@@ -2474,7 +2475,7 @@ class DisplayEndpoint extends Component {
         <div>
           <Dropdown>
             <Dropdown.Toggle variant='' id='dropdown-basic' className='doc-plus'>
-              <img src={PlusIcon} className='mr-2 cursor-pointer' onClick={() => this.showDocOptions()} alt='' />
+              <FaPlus className='mr-2 cursor-pointer text-gray' size={14} onClick={() => this.showDocOptions()}/>
             </Dropdown.Toggle>
             <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>
               <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
@@ -2885,20 +2886,20 @@ class DisplayEndpoint extends Component {
                 id='api_save_btn'
                 className={
                   this.state.saveLoader
-                    ? 'btn btn-outline orange buttonLoader btn-sm d-flex align-items-center'
-                    : 'btn btn-outline orange btn-sm d-flex align-items-center'
+                    ? 'btn btn-outline-secondary buttonLoader btn-sm d-flex align-items-center'
+                    : 'btn btn-outline-secondary btn-sm d-flex align-items-center save-button-endpoint'
                 }
                 type='button'
                 disabled={!this.props?.tabs[this.props?.activeTabId]?.isModified}
                 onClick={() => this.handleSave()}
                 title={!this.props?.tabs[this.props?.activeTabId]?.isModified ? 'No changes in this request' : 'Save request'}
               >
-                <LiaSaveSolid className='save-icon mr-1' size={16} />
+                <LiaSaveSolid className='save-icon mr-1' size={18} />
                 <span>Save</span>
               </button>
               {getCurrentUser() ? (
                 <>
-                  <Dropdown.Toggle className='btn-outline' split variant='' />
+                  <Dropdown.Toggle className='btn-outline-secondary save-button-endpoint' split variant='' />
                   <Dropdown.Menu className=''>
                     <Dropdown.Item
                       onClick={() =>
@@ -2917,14 +2918,14 @@ class DisplayEndpoint extends Component {
             <button
               className={
                 this.state.saveLoader
-                  ? 'btn btn-outline orange buttonLoader btn-sm fs-4 d-flex align-items-center'
-                  : 'btn btn-outline orange btn-sm fs-4 d-flex align-items-center'
+                  ? 'btn btn-outline-secondary buttonLoader btn-sm fs-4 d-flex align-items-center'
+                  : 'btn btn-outline-secondary save-button-endpoint btn-sm fs-4 d-flex align-items-center'
               }
               type='button'
               id='save-endpoint-button'
               onClick={() => this.handleSave()}
             >
-              <LiaSaveSolid className='save-icon mr-1' size={16} />
+              <LiaSaveSolid className='save-icon mr-1' size={18} />
               <span>Save</span>
             </button>
           )
@@ -3063,8 +3064,8 @@ class DisplayEndpoint extends Component {
         }
         style={this.state.theme.backgroundStyle}
       >
-        <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
-          <div className={`innerContainer ${'response-bottom'}`}>
+        <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper d-flex'}>
+          <div className={`innerContainer w-100 ${'response-bottom'}`}>
             <div
               className={`hm-endpoint-container mid-part endpoint-container ${
                 this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
@@ -3086,7 +3087,7 @@ class DisplayEndpoint extends Component {
                         {this.renderToggleView()}
                         {this.renderDocViewOperations()}
                       </div>
-                      <div className='d-flex justify-content-between align-items-center'>
+                      <div className='d-flex justify-content-between align-items-end'>
                         {this.state.showEndpointFormModal && (
                           <SaveAsSidebar
                             {...this.props}
@@ -3152,9 +3153,9 @@ class DisplayEndpoint extends Component {
                   {this.isDashboardAndTestingView() && (
                     <div className='endpoint-url-container'>
                       {this.renderHost()}
-                      <div className='d-flex uriContainerWrapper'>
+                      <div className='uriContainerWrapper'>
                         <button
-                          className={this.state.loader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
+                          className={this.state.loader ? 'btn btn-primary buttonLoader' : 'btn bg-primary text-white'}
                           type='submit'
                           id='api-send-button'
                           onClick={() => this.handleSend()}
@@ -3174,13 +3175,13 @@ class DisplayEndpoint extends Component {
                     <div className='main-table-wrapper'>
                       {this.isDashboardAndTestingView() ? (
                         <div className='d-flex justify-content-between align-items-center'>
-                          <div className='headers-params-wrapper custom-tabs'>
-                            <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
+                          <div className='headers-params-wrapper custom-tabs w-100'>
+                            <ul className='nav nav-tabs border-0 border-bottom w-100 rounded-0 mb-2' id='pills-tab' role='tablist'>
                               {this.checkProtocolType(1) && (
                                 <>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'default' ? 'active' : ''}`}
+                                      className={`nav-link bg-none ${this.state.activeTab === 'default' ? 'active text-black' : 'text-secondary'}`}
                                       id={`pills-params-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#params-${this.props.tab.id}`}
@@ -3194,7 +3195,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'authorization' ? 'active' : ''}`}
+                                      className={`nav-link bg-none ${this.state.activeTab === 'authorization' ? 'active text-black' : 'text-secondary'}`}
                                       id={`pills-authorization-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#authorization-${this.props.tab.id}`}
@@ -3208,7 +3209,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'headers' ? 'active' : ''}`}
+                                      className={`nav-link bg-none ${this.state.activeTab === 'headers' ? 'active text-black' : 'text-secondary'}`}
                                       id={`pills-headers-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#headers-${this.props.tab.id}`}
@@ -3222,7 +3223,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'body' ? 'active' : ''}`}
+                                      className={`nav-link bg-none ${this.state.activeTab === 'body' ? 'active text-black' : 'text-secondary'}`}
                                       id={`pills-body-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#body-${this.props.tab.id}`}
@@ -3236,7 +3237,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'script' ? 'active' : ''}`}
+                                      className={`nav-link bg-none ${this.state.activeTab === 'script' ? 'active text-black' : 'text-secondary'}`}
                                       id={`pills-script-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#script-${this.props.tab.id}`}
@@ -3251,7 +3252,7 @@ class DisplayEndpoint extends Component {
                                   {getCurrentUser() && (
                                     <li className='nav-item cookie-tab'>
                                       <a
-                                        className={`nav-link ${this.state.activeTab === 'cookies' ? 'active' : ''}`}
+                                        className={`nav-link bg-none ${this.state.activeTab === 'cookies' ? 'active text-black' : 'text-secondary'}`}
                                         onClick={() => this.setState({ showCookiesModal: true })}
                                       >
                                         Cookies
@@ -3264,7 +3265,7 @@ class DisplayEndpoint extends Component {
                                 <>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'default' ? 'active' : ''}`}
+                                      className={`nav-link ${this.state.activeTab === 'default' ? 'active text-back' : 'text-gray'}`}
                                       id={`pills-query-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#query-${this.props.tab.id}`}
@@ -3278,7 +3279,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'authorization' ? 'active' : ''}`}
+                                      className={`nav-link ${this.state.activeTab === 'authorization' ? 'active text-black' : 'text-gray'}`}
                                       id={`pills-authorization-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#authorization-${this.props.tab.id}`}
@@ -3292,7 +3293,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'headers' ? 'active' : ''}`}
+                                      className={`nav-link ${this.state.activeTab === 'headers' ? 'active text-black' : 'text-gray'}`}
                                       id={`pills-headers-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#headers-${this.props.tab.id}`}
@@ -3306,7 +3307,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'g-script' ? 'active' : ''}`}
+                                      className={`nav-link ${this.state.activeTab === 'g-script' ? 'active text-black' : 'text-gray'}`}
                                       id={`pillss-script-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#g-script-${this.props.tab.id}`}
@@ -3339,7 +3340,7 @@ class DisplayEndpoint extends Component {
                                 <div>{this.renderPathVariables()}</div>
                               </div>
                               <div
-                                className={`tab-pane fade ${this.state.activeTab === 'authorization' ? 'show active' : ''}`}
+                                className={`tab-pane fade border rounded ${this.state.activeTab === 'authorization' ? 'show active' : ''}`}
                                 id={`authorization-${this.props.tab.id}`}
                                 role='tabpanel'
                                 aria-labelledby={`pills-authorization-tab-${this.props.tab.id}`}
@@ -3365,7 +3366,7 @@ class DisplayEndpoint extends Component {
                                 <div>{this.renderHeaders()}</div>
                               </div>
                               <div
-                                className={`tab-pane fade ${this.state.activeTab === 'body' ? 'show active' : ''}`}
+                                className={`tab-pane fade rounded ${this.state.activeTab === 'body' ? 'show active' : ''}`}
                                 id={`body-${this.props.tab.id}`}
                                 role='tabpanel'
                                 aria-labelledby={`pills-body-tab-${this.props.tab.id}`}
@@ -3378,10 +3379,10 @@ class DisplayEndpoint extends Component {
                                 role='tabpanel'
                                 aria-labelledby={`pills-script-tab-${this.props.tab.id}`}
                               >
-                                <ul className='nav nav-tabs flex-column mt-0 border border-0' id='pills-sub-tab' role='tablist'>
+                                <ul className='nav nav-tabs mt-0 border border-0 script-button-wrapper rounded mb-2' id='pills-sub-tab' role='tablist'>
                                   <li className='nav-item'>
                                     <a
-                                      className='nav-link active px-1 py-2 border border-0 Script-button rounded-0'
+                                      className='nav-link active px-2 mb-0 py-1 border border-0 Script-button rounded'
                                       id='pills-pre-script-tab'
                                       data-toggle='pill'
                                       href={`#pre-script-${this.props.tab.id}`}
@@ -3395,7 +3396,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className='nav-link px-1 py-2 border border-0 Script-button rounded-0'
+                                      className='nav-link px-2 py-1 border border-0 Script-button mb-0 rounded'
                                       id='pills-post-script-tab'
                                       data-toggle='pill'
                                       href={`#post-script-${this.props.tab.id}`}
@@ -3491,10 +3492,10 @@ class DisplayEndpoint extends Component {
                                 role='tabpanel'
                                 aria-labelledby={`pills-script-tab-${this.props.tab.id}`}
                               >
-                                <ul className='nav nav-tabs flex-column mt-0 border border-0' id='pills-sub-tab' role='tablist'>
+                                <ul className='nav nav-tabs mt-0 script-button-wrapper rounded mb-2 border border-0' id='pills-sub-tab' role='tablist'>
                                   <li className='nav-item'>
                                     <a
-                                      className='nav-link active px-1 py-2 border border-0 Script-button rounded-0'
+                                      className='nav-link active px-2 py-1 mb-0 rounded border border-0 Script-button'
                                       id='pills-pre-script-tab'
                                       data-toggle='pill'
                                       href={`#pre-script-${this.props.tab.id}`}
@@ -3508,7 +3509,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className='nav-link px-1 py-2 border border-0 Script-button rounded-0'
+                                      className='nav-link px-2 py-1 mb-0 border rounded border-0 Script-button'
                                       id='pills-post-script-tab'
                                       data-toggle='pill'
                                       href={`#post-script-${this.props.tab.id}`}
@@ -3666,7 +3667,7 @@ class DisplayEndpoint extends Component {
                 {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
               </div>
             ) : null}
-            {this.renderCodeTemplate()}
+            {isOnPublishedPage() && (this.renderCodeTemplate())}
             {isOnPublishedPage() && (
               <span className='Modified-at mt-2 lower-modified-at'>
                 <DisplayUserAndModifiedData
@@ -3674,10 +3675,11 @@ class DisplayEndpoint extends Component {
                   pages={this.props.pages}
                   currentPage={this.props.currentEndpointId}
                   users={this.props.users}
-                />
+                  />
               </span>
             )}
           </div>
+          {!isOnPublishedPage() && (this.renderCodeTemplate())}
         </div>
         {!isOnPublishedPage() && (
           <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
@@ -3686,7 +3688,7 @@ class DisplayEndpoint extends Component {
               pages={this.props.pages}
               currentPage={this.props.currentEndpointId}
               users={this.props.users}
-            />
+              />
           </span>
         )}
         {isOnPublishedPage() && (

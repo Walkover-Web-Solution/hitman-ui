@@ -186,7 +186,7 @@ const UserProfile = () => {
 
   const renderTrash = () => {
     return (
-      <div className='profile-details' onClick={handleTrashClick}>
+      <div className='profile-details cursor-pointer' onClick={handleTrashClick}>
         <span className='trash mr-2'>Trash</span>
       </div>
     )
@@ -198,7 +198,7 @@ const UserProfile = () => {
 
   const renderLogout = () => {
     return (
-      <div className='profile-details' onClick={() => handleLogout()}>
+      <div className='profile-details cursor-pointer' onClick={() => handleLogout()}>
         <span className='logout mr-2'> Logout</span>
       </div>
     )
@@ -206,7 +206,7 @@ const UserProfile = () => {
 
   const renderAddCollection = () => {
     return (
-      <div className='collection' onClick={handleAddNewClick}>
+      <div className='collection cursor-pointer' onClick={handleAddNewClick}>
         <span className='add-collection mr-2'>Add collection</span>
       </div>
     )

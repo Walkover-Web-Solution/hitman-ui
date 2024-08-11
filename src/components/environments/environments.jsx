@@ -77,12 +77,13 @@ const Environments = () => {
           <IconButton>{environment?.environments[currentEnvironmentId] ? <EyeIcon className='cursor-pointer m-1' /> : <EyeDisabledIcon className='m-1' />}</IconButton>
         </div>
 
-        <div className='select-environment-dropdown border-radius-right-none'>
-          <Dropdown>
-            <Dropdown.Toggle variant='default' id='dropdown-basic'>
+        <div className='select-environment-dropdown border-radius-right-none align-content-center'>
+          <Dropdown className='ml-1'>
+          <IconButton variant='sm'>
+            <Dropdown.Toggle className='p-0 pl-1' variant='default' id='dropdown-basic'>
               <span className='truncate'>{environment?.environments[environment?.currentEnvironmentId] ? environment.environments[environment.currentEnvironmentId].name : 'No Environment'}</span>
-              <IconButton><IoIosArrowDown className='m-1' /></IconButton>
-            </Dropdown.Toggle>
+             <IoIosArrowDown className='m-1' />
+            </Dropdown.Toggle></IconButton>
             <Dropdown.Menu alignRight>
               <Dropdown.Item onClick={() => handleEnv(null)} key='no-environment'>No Environment</Dropdown.Item>
               {Object.keys(environment.environments).map((environmentId) => <Dropdown.Item onClick={() => handleEnv(environmentId)} key={environmentId}>{environment.environments[environmentId]?.name}</Dropdown.Item>)}

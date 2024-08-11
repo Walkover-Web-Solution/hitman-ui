@@ -14,8 +14,8 @@ export class Script extends Component {
       selectedRawBodyType: 'javascript',
       scriptEditorText: props.scriptText || '',
       preScriptText: '',
-      postScriptText:''
-     
+      postScriptText: ''
+
     }
     this.scriptEditor = ''
     this.scriptFetched = false
@@ -27,7 +27,7 @@ export class Script extends Component {
       this.setState({ scriptEditorText: this.props.scriptText })
     }
   }
-  
+
   componentDidUpdate(prevProps, prevState) {
     if (this.props.scriptText && !this.scriptFetched && this.props.scriptText !== prevProps.scriptText) {
       this.setState({ scriptEditorText: this.props.scriptText || '' })
@@ -56,16 +56,16 @@ export class Script extends Component {
 
     const snippetText = `${snippet?.value}\n`;
     const updatedScriptText =
-    scriptEditorText.substring(0,  editor.session.getDocument().positionToIndex(nextLinePosition)) +
-    snippetText +
-    scriptEditorText.substring( editor.session.getDocument().positionToIndex(nextLinePosition));
+      scriptEditorText.substring(0, editor.session.getDocument().positionToIndex(nextLinePosition)) +
+      snippetText +
+      scriptEditorText.substring(editor.session.getDocument().positionToIndex(nextLinePosition));
 
-  this.setState({ scriptEditorText: updatedScriptText });
-  this.props.handleScriptChange(updatedScriptText, this.props.type)
-  const endOfInsertedSnippetPosition = {
-    row: nextLinePosition.row + snippetText.split('\n').length - 2, // Adjust for the newline character
-    column: snippetText.split('\n')[snippetText.split('\n').length - 2].length // Column position of the end of the last line of the snippet
-  };
+    this.setState({ scriptEditorText: updatedScriptText });
+    this.props.handleScriptChange(updatedScriptText, this.props.type)
+    const endOfInsertedSnippetPosition = {
+      row: nextLinePosition.row + snippetText.split('\n').length - 2, // Adjust for the newline character
+      column: snippetText.split('\n')[snippetText.split('\n').length - 2].length // Column position of the end of the last line of the snippet
+    };
     editor.gotoLine(endOfInsertedSnippetPosition.row + 1, endOfInsertedSnippetPosition.column);
     editor.scrollToLine(endOfInsertedSnippetPosition.row);
     editor.focus();
@@ -75,7 +75,7 @@ export class Script extends Component {
     return (
       <div className='col-8 position-relative'>
         {' '}
-        <button className='ai-button-editor position-absolute ' onClick={() => window.openChatbot()}><BiSolidBot /></button>
+        {/* <button className='ai-button-editor position-absolute ' onClick={() => window.openChatbot()}><BiSolidBot /></button> */}
         <AceEditor
           className='custom-raw-editor'
           mode='javascript'
@@ -83,16 +83,21 @@ export class Script extends Component {
           value={this.state.scriptEditorText}
           onChange={this.handleChange.bind(this)}
           setOptions={{
-            showLineNumbers: true
+            showLineNumbers: true,
+            fontSize: '12px'
           }}
           editorProps={{
             $blockScrolling: false
           }}
+          style={{ fontFamily: 'monospace' }}
           ref={this.scriptEditorRef}
           onLoad={(editor) => {
             editor.focus()
             editor.getSession().setUseWrapMode(true)
             editor.setShowPrintMargin(false)
+            editor.renderer.setOptions({
+              fontFamily: 'monospace'
+            })
           }}
         />
       </div>
@@ -133,8 +138,8 @@ export class Script extends Component {
       </div>
     )
   }
- 
-}                                                                                                                                                                             
+
+}
 
 
 export default Script

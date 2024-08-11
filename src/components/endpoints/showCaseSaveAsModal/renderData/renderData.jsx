@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { FaFolder } from 'react-icons/fa'
+import { FaRegFolderClosed } from "react-icons/fa6";
+import { IoDocumentTextOutline } from 'react-icons/io5'
+
+
 
 export default function RenderData(props) {
   const { pages, collections } = useSelector((state) => {
@@ -63,8 +66,8 @@ export default function RenderData(props) {
                 key={index}
                 className='folder-box d-flex justify-content-start align-items-center p-1'
               >
-                <FaFolder color='#e98a36' size='21px' />
-                <div className='ml-1'>{collections?.[singleId]?.name}</div>
+                <FaRegFolderClosed className='text-gray' size='14px' />
+                <div className='ml-1 fs-4'>{collections?.[singleId]?.name}</div>
               </div>
             )
           case 'page':
@@ -74,8 +77,8 @@ export default function RenderData(props) {
                 key={index}
                 className='folder-box d-flex justify-content-start align-items-center p-1'
               >
-                <FaFolder color='#e98a36' size='21px' />
-                <div className='ml-1'>{pages?.[singleId]?.name}</div>
+                <IoDocumentTextOutline className='text-gray' size='14px' />
+                <div className='ml-1 fs-4'>{pages?.[singleId]?.name}</div>
               </div>
             )
           case 'version':
@@ -85,15 +88,15 @@ export default function RenderData(props) {
                 key={index}
                 className='folder-box d-flex justify-content-start align-items-center p-1'
               >
-                <FaFolder color='#e98a36' size='21px' />
-                <div className='ml-1'>{pages?.[singleId]?.name}</div>
+                <IoDocumentTextOutline className='text-gray' size='14px' />
+                <div className='ml-1 fs-4'>{pages?.[singleId]?.name}</div>
               </div>
             )
           case 'endpoint':
             return (
               <div key={index} className='folder-box d-flex justify-content-start align-items-center p-1'>
                 <div className={`api-label ${pages?.[singleId]?.requestType} request-type-bgcolor`}>{pages?.[singleId]?.requestType}</div>
-                <div className='ml-1'>{pages?.[singleId]?.name}</div>
+                <div className='ml-1 fs-4'>{pages?.[singleId]?.name}</div>
               </div>
             )
           default:

@@ -68,9 +68,9 @@ export default function QueryTab(props) {
                     </div>
                     :
                     <div className='query-schema d-flex flex-column align-items-center justify-content-center'>
-                        <VscServerProcess size={100} />
-                        <span className='f-bold'>Explore data available from server</span>
-                        <span>Enter server URL to load schema using introspection and refresh it.</span>
+                        <VscServerProcess className='text-gray' size={100} />
+                        <span className='text-gray'>Explore data available from server</span>
+                        <span className='text-gray'>Enter server URL to load schema using introspection and refresh it.</span>
                     </div>}
             </React.Fragment>
         )
@@ -87,9 +87,9 @@ export default function QueryTab(props) {
         <div className='d-flex justify-content-start w-100 graphql-container p-3'>
             <div className='w-50 h-100 p-2 schema-container bg-white mr-2'>
                 <div className='d-flex justify-content-between align-items-center query-schema-head ml-1'>
-                    <h6>Schema</h6>
+                    <h6 className='text-gray'>Schema</h6>
                     <IconButton>
-                        <MdOutlineRefresh size={18} onClick={callIntrospectionQueryAPI} />
+                        <MdOutlineRefresh className='text-gray' size={18} onClick={callIntrospectionQueryAPI} />
                     </IconButton>
                 </div>
                 {(introspectionSchemaData && !loadingStateForSchema) ? <ShowIndentedSchema loadedSchema={introspectionSchemaData} /> : <ShowSchemaMessage />}
@@ -111,6 +111,7 @@ export default function QueryTab(props) {
                             editor.getSession().setUseWrapMode(true);
                             editor.setShowPrintMargin(false);
                         }}
+                        style={{ fontFamily: 'monospace' }}
                         {...editorOptions}
                     />
                 </div>
@@ -130,6 +131,7 @@ export default function QueryTab(props) {
                             editor.getSession().setUseWrapMode(true);
                             editor.setShowPrintMargin(false);
                         }}
+                        style={{ fontFamily: 'monospace' }}
                         {...editorOptions}
                     />
                 </div>

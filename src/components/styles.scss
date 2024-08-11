@@ -330,6 +330,13 @@ $border-color: rgba(227, 228, 230, 0.7);
     color: #6c757d;
   }
 }
+.Selected {
+  .in-api-label {
+    &.POST, &.GET, &.PUT, &.PATCH, &.DELETE {
+      color: $text-color!important;
+    }
+  }
+}
 label.custom-input-label {
   font-size: 14px;
   font-weight: 300;
@@ -502,14 +509,16 @@ button.btn {
   }
 }
 .prettify-button {
-  text-align: right;
-  color: #f2994a;
   font-size: var(--text-size-m);
   font-weight: 500;
   background-color: transparent;
   padding: 5px 10px;
   cursor: pointer;
   transition: color 0.3s ease;
+  right: 0px;
+  z-index: 1;
+  bottom: 4px;
+  font-size: 10px;
   span {
     transition: background-color 0.3s ease;
     border-radius: 4px;
@@ -518,10 +527,6 @@ button.btn {
   }
 }
 
-.prettify-button:hover span {
-  background-color: rgba(195, 191, 191, 0.4);
- 
-}
 .custom-raw-editor {
   width: 100% !important;
   height: 250px !important;
@@ -618,7 +623,7 @@ button.btn.custom-body-type-button {
 
   label {
     color: #4f4f4f;
-    font-size: 13px !important;
+    font-size: $font-medium !important;
     margin: 0;
     font-weight: 400 !important;
   }
@@ -635,7 +640,7 @@ button.btn.custom-body-type-button {
       flex: 1.6 1;
       height: 36px;
       border: 1px solid #e0e0e0;
-      font-size: 13px;
+      font-size: $font-medium;
       font-weight: 400;
       color: #000;
       border-radius: 4px;

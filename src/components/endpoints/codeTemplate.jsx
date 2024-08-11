@@ -125,7 +125,7 @@ const CodeTemplate = (props) => {
         )}
         <div
           className={
-            params.endpointId ? 'show-curl-endpoint pubCodeWrapper bg-white' : curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper'
+            params.endpointId ? 'show-curl-endpoint pubCodeWrapper bg-white pb-1 mb-4' : curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper'
           }
           style={{
             backgroundColor: hexToRgb(theme?.backgroundStyle, '0.04')
@@ -153,7 +153,7 @@ const CodeTemplate = (props) => {
                 {primaryLanguages.map((key) => (
                   <button
                     key={key}
-                    className={`${params.endpointId ? 'btn btn-outline-dark' : ''}  ${getClassForLanguages(key)}`}
+                    className={`${params.endpointId ? 'btn' : ''}  ${getClassForLanguages(key)}`}
                     onClick={() => {
                       makeCodeTemplate(key)
                     }}
