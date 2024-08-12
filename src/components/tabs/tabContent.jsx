@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useQueryClient } from 'react-query';
 import { Tab } from 'react-bootstrap';
 import DisplayEndpoint from '../endpoints/displayEndpoint';
@@ -97,14 +97,13 @@ const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag
             onHide={() => { }}
           />
         );
-        case 'manual-runs':
-          return <ManualRuns/>
-            
+      case 'manual-runs':
+        return <ManualRuns />
+
       default:
         break;
     }
   };
-
 
   const memoizedContent = useMemo(() => {
     if (!getCurrentUser() || !isTabsLoaded) {

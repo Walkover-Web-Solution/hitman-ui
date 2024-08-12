@@ -200,6 +200,7 @@ const Page = () => {
                     onChange={handlePageNameChange}
                     onKeyDown={handlePageNameKeyDown}
                     onBlur={handleSavePageName}
+                    maxLength={255}
                 />
                 <div id='tiptap-editor' className='page-content '>
                     <Tiptap

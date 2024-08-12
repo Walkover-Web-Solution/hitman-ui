@@ -283,7 +283,7 @@ const CustomTabs = (props) => {
               <div className='d-flex'>
                 <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
                 <span>
-                   <>{page.name} </>
+                  <>{page.name.length > 10 ? `${page.name.substring(0, 10)}...` : page.name} </>
                 </span>
               </div>
             )
@@ -292,7 +292,7 @@ const CustomTabs = (props) => {
               <div className='d-flex'>
                 <IoDocumentTextOutline size={14} className='mr-1' />
                 <span>
-                <>{page.name} </>
+                  <>{page.name.length > 10 ? `${page.name.substring(0, 10)}...` : page.name} </>
                 </span>
               </div>
             )
