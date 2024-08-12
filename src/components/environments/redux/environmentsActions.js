@@ -3,6 +3,7 @@ import environmentsActionTypes from './environmentsActionTypes'
 import { store } from '../../../store/store'
 import { toast } from 'react-toastify'
 
+
 export const fetchEnvironments = () => {
   return (dispatch) => {
     environmentsApiService
@@ -13,6 +14,7 @@ export const fetchEnvironments = () => {
       })
       .catch((error) => {
         dispatch(OnEnvironmentsFetchedError(error.response ? error.response.data : error))
+        toast.error("Failed to fetch Environments!")
       })
   }
 }
@@ -109,7 +111,7 @@ export const OnEnvironmentsFetched = (environments) => {
 export const OnEnvironmentsFetchedError = (error) => {
   return {
     type: environmentsActionTypes.ON_ENVIRONMENTS_FETCHED_ERROR,
-    error
+    // error
   }
 }
 
