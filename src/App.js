@@ -7,7 +7,7 @@ import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
-import { ToastContainer, Bounce } from 'react-toastify'
+import { ToastContainer, Bounce, Slide} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
@@ -91,17 +91,18 @@ const App = () => {
     return (
       <>
         <ToastContainer
-          position='bottom-left'
-          autoClose={3000}
-          hideProgressBar={false}
+          position='bottom-right'
+          autoClose={5000}
+          hideProgressBar={true}
           newestOnTop={false}
           closeOnClick
           rtl={false}
           pauseOnFocusLoss={false}
           draggable
           pauseOnHover
-          theme="colored"
-          transition={Bounce}
+          theme='light'
+          transition={Slide}
+          toastClassName = 'custom-class'
         />
         <NavigationSetter />
         <Routes>

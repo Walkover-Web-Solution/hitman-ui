@@ -90,39 +90,27 @@ body .content-header .tabs-container .nav .nav-item .nav-link.active~.btn {
   font-family: american !important;
 }
 
-
-.Toastify__toast--error {
+.custom-class{
+  font-weight: 300 !important;
+  color: black !important;
   background-color:#f7f7f5 !important;
-  height: 30px !important;
-  width: 250px !important;
-  font-weight: 400;
-  color: black;
+  height: auto !important;
+  width: auto !important;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1215686275);
+  box-shadow: none;
 }
-
-.Toastify__toast--success {
-  background-color: #f7f7f5 !important;
-  height: 30px !important;
-  width: 250px !important;
-  font-weight: 400;
-  color: black;
+.Toastify__toast--success{
+  border-left: 5px solid rgb(30, 202, 58);
 }
-
-.Toastify__progress-bar--error {
-  background-color: red !important;
-}
-.Toastify__progress-bar--success {
-  background-color: green !important;
+.Toastify__toast--error{
+  border-left: 5px solid #dd2f23;
 }
 .Toastify__close-button {
   color: black;
   position: absolute !important; 
-  top: 5px; 
+  top: 18px; 
   right: 5px; 
+  font-weight: lighter;
+  padding-right: 5px;
 }
-// .Toastify__icon {
-//   // background-image: url('./assets/icons/success-icon.svg'); // Success icon
-//   background-size: contain;
-//   width: 20px; // Adjust size as needed
-//   height: 20px; // Adjust size as needed
-//   margin-right: 8px; // Space between icon and text
-// } 
