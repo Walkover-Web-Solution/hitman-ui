@@ -32,24 +32,27 @@ body .logoBox .dropdown .dropdown-toggle {
 .menu-trigger-box {
   .org-button {
     .sb-avatar--text {
-    .sb-avatar__text {
-      span {
+      .sb-avatar__text {
         span {
-          font-size: 9px;
+          span {
+            font-size: 9px;
+          }
         }
       }
     }
-  }
+
     svg {
       margin-top: 2px;
     }
   }
+
   span {
     &.user-notification-badge {
       right: 0.25rem;
       top: 0.75rem;
     }
   }
+
   &:hover {
     background: rgba(0, 0, 0, 0.05);
   }
@@ -86,3 +89,40 @@ body .content-header .tabs-container .nav .nav-item .nav-link.active~.btn {
 .font-american {
   font-family: american !important;
 }
+
+
+.Toastify__toast--error {
+  background-color:#f7f7f5 !important;
+  height: 30px !important;
+  width: 250px !important;
+  font-weight: 400;
+  color: black;
+}
+
+.Toastify__toast--success {
+  background-color: #f7f7f5 !important;
+  height: 30px !important;
+  width: 250px !important;
+  font-weight: 400;
+  color: black;
+}
+
+.Toastify__progress-bar--error {
+  background-color: red !important;
+}
+.Toastify__progress-bar--success {
+  background-color: green !important;
+}
+.Toastify__close-button {
+  color: black;
+  position: absolute !important; 
+  top: 5px; 
+  right: 5px; 
+}
+// .Toastify__icon {
+//   // background-image: url('./assets/icons/success-icon.svg'); // Success icon
+//   background-size: contain;
+//   width: 20px; // Adjust size as needed
+//   height: 20px; // Adjust size as needed
+//   margin-right: 8px; // Space between icon and text
+// } 

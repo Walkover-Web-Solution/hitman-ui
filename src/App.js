@@ -7,7 +7,7 @@ import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
-import { ToastContainer, Slide } from 'react-toastify'
+import { ToastContainer, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
@@ -23,6 +23,7 @@ import Redirections from './components/collections/Redirections.jsx'
 import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
 import NavigationSetter from './history.js'
 import EditRuns from './components/collections/showRuns/editRuns.jsx'
+import './index.scss'
 
 const App = () => {
   const navigate = useNavigate()
@@ -90,17 +91,17 @@ const App = () => {
     return (
       <>
         <ToastContainer
-          position='bottom-right'
-          autoClose={5000}
+          position='bottom-left'
+          autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
           rtl={false}
-          pauseOnFocusLoss
+          pauseOnFocusLoss={false}
           draggable
           pauseOnHover
-          theme='light'
-          transition={Slide}
+          theme="colored"
+          transition={Bounce}
         />
         <NavigationSetter />
         <Routes>
