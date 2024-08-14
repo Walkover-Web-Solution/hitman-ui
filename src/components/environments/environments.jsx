@@ -117,7 +117,7 @@ const Environments = () => {
                 {environment.environments[environmentId]?.name}
                 {environmentId === currentEnvironmentId && <span className='check-icon'><FaCheck /></span>}
                 <OverlayTrigger placement="bottom" overlay={showTooltips()} >
-                  <span className='export-icon' onClick={(event) => { event.stopPropagation();handleExport(environment?.environments[environment?.currentEnvironmentId].id)}}><BiExport size={18} /></span>
+                  <span className='export-icon' onClick={(event) => { event.stopPropagation();handleExport(environment?.environments[environmentId].id)}}><BiExport size={18} /></span>
                 </OverlayTrigger>
                 {environment?.environments[environmentId]?.userId === 0 && environment?.environments[environmentId]?.orgId !== null && environmentId !== currentEnvironmentId && <span className='global-icon'><FaGlobeAmericas /></span>}
               </Dropdown.Item>)}
