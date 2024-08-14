@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTabContent, setTabIsModified, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
 import { approvePage, draftPage } from "../../components/publicEndpoint/redux/publicEndpointsActions";
@@ -14,7 +14,8 @@ import IconButton from '../../components/common/iconButton';
 import { getProxyToken } from "../../components/auth/authServiceV2";
 import { GoDotFill } from "react-icons/go";
 import { functionTypes } from "../../components/common/functionType";
-import './page.scss';
+import { getOrgId } from "../../components/common/utility";
+import './page.scss'
 
 const Page = () => {
 
@@ -29,6 +30,7 @@ const Page = () => {
     }));
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { pageId } = useParams();
     const textareaRef = useRef(null);
 
@@ -148,12 +150,41 @@ const Page = () => {
                 )
         }
     }
+    const apiUrl = process.env.REACT_APP_API_URL
+    const orgId = getOrgId()
+
+    const getPath = (id, sidebar) => {
+        let path = []
+        while (sidebar?.[id]?.type > 0) {
+            const itemName = sidebar[id].name
+            path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id:id })
+            id = sidebar?.[id]?.parentId
+        }
+        return path.reverse()
+    }
+
+    const pathWithUrls = getPath(pageId, pages)
+
+    const renderPathLinks = () => {
+        // debugger
+        return pathWithUrls.map((item, index) => {
+            if (pages?.[item.id]?.type === 2) return null;
+            return (
+                <span key={index} onClick={() => navigate(`/${item.path}`, { replace: true })}  >
+                    {item.name}
+                    {index < pathWithUrls.length - 1 && '/'}
+                </span>
+            )
+        })
+    }
 
     return (
         <div className='parent-page-container d-flex flex-column align-items-center w-100'>
             <div className='page-header position-sticky px-3 py-2 bg-white d-flex align-items-center justify-content-between w-100'>
                 <div className="d-flex justify-content-start align-items-center w-50">
-                    <h1 className="header-page-name fa-1x text-truncate">{pageName?.length > 0 ? pageName : <span>Untitled</span>}</h1>
+                    <h1 className="header-page-name fa-1x text-truncate">{pageName?.length > 0 ?
+                        renderPathLinks()
+                        : <span>Untitled</span>}</h1>
                     {pages?.[pageId]?.isPublished &&
                         <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
                             <GoDotFill size={14} color="green" />
