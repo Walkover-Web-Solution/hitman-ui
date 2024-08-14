@@ -3358,32 +3358,27 @@ div#steve-parent-accordion {
   opacity: 0.5;
 }
 
-ul.react-autoComplete-input {
-  top: 100% !important;
-  z-index: 1999;
-  border: none;
-  padding: 0;
-  max-height: 8.75rem;
-  overflow: auto;
-  max-width: 100%;
-  left: 0 !important;
-  width: 100%;
+.react-autocomplete-input {
+  padding: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+  padding-right: 0;
+  background-color: #fff;
+}
 
-  li {
-    font-size: 12px;
-    padding: 0.5rem;
-    border-bottom: 1px solid $border-color;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.react-autocomplete-input li {
+  line-height: 0.3;
+  border-bottom: 1px solid #e0e0e0; 
+}
 
-    &:last-child {
-      border: none;
-    }
+.react-autocomplete-input li:last-child {
+  border-bottom: none
+}
 
-    &.active {
-      background: $theme-color;
-    }
-  }
+.react-autocomplete-input li.active {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #000;
 }
 
 .twitter-picker {
@@ -4075,8 +4070,6 @@ body .tox {
   }
 }
 
-
-
 .container-loading {
   height: 100vh;
   max-width: 778px !important;
@@ -4194,35 +4187,14 @@ body .tox {
   }
 }
 
-// .linkWrapper {
-//   position: relative;
 
-//   &::before {
-//     content: '';
-//     display: block;
-//     border-left: 1px solid $indentation;
-//     height: 97%;
-//     position: absolute;
-//     top: -3px;
-//     left: 30px;
-//   }
-// }
-
-// .expanded {
-//   #collection-collapse {
-//     position: relative;
-
-//     &::before {
-//       content: '';
-//       display: block;
-//       border-left: 1px solid $indentation;
-//       height: 97%;
-//       position: absolute;
-//       top: 0;
-//       left: 16px;
-//     }
-//   }
-// }
+.expanded {
+  #collection-collapse {
+    position: relative;
+    padding-left: 6px;
+    
+  }
+}
 
 .tab-options-drop-down {
   .dropdown-item {
