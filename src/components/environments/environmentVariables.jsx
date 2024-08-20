@@ -21,30 +21,26 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
   const [originalVariableNames, setOriginalVariableNames] = useState(['BASE_URL', '1'])
   const [updatedVariableNames, setUpdatedVariableNames] = useState(['BASE_URL', ''])
   const [errors, setErrors] = useState(null)
-  const [environmentType, setEnvironmentType] = useState(null)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (title === 'Add new Environment') return
 
-    if (initialEnvironment && Object.keys(initialEnvironment.variables).length > 0) {
-      let environmentCopy = jQuery.extend(true, {}, initialEnvironment)
-      const originalVars = Object.keys(environmentCopy.variables)
-      const len = originalVars.length
-      originalVars.push(len.toString())
-      const updatedVars = [...Object.keys(environmentCopy.variables), '']
-      environmentCopy.variables[len.toString()] = { initialValue: '', currentValue: '' }
+    let environmentCopy = jQuery.extend(true, {}, initialEnvironment)
+    const originalVars = Object.keys(environmentCopy.variables)
+    const len = originalVars.length
+    originalVars.push(len.toString())
+    const updatedVars = [...Object.keys(environmentCopy.variables), '']
+    environmentCopy.variables[len.toString()] = { initialValue: '', currentValue: '' }
 
-      setEnvironment(environmentCopy)
-      setOriginalVariableNames(originalVars)
-      setUpdatedVariableNames(updatedVars)
-    }
+    setEnvironment(environmentCopy)
+    setOriginalVariableNames(originalVars)
+    setUpdatedVariableNames(updatedVars)
   }, [title, initialEnvironment])
 
   const schema = {
-    name: Joi.string().min(3).max(50).trim().required().label('Environment Name'),
-    type: title === 'Edit Environment' ? Joi.number().optional() : Joi.number().required().label('Environment Type')
+    name: Joi.string().min(3).max(50).trim().required().label('Environment Name')
   }
 
   const handleSubmit = (e) => {
@@ -53,7 +49,7 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
   }
 
   const doSubmit = () => {
-    const validationErrors = validate({ name: environment.name, type: title === 'Edit Environment' ? undefined : environmentType  }, schema)
+    const validationErrors = validate({ name: environment.name }, schema)
     if (validationErrors) {
       setErrors(validationErrors)
       return null
@@ -75,19 +71,16 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
     }
     const updatedEnvironment = { variables: updatedVariables }
     const userId = getCurrentUser()?.id
-    const existingEnvironment = initialEnvironment && initialEnvironment.name === environment.name;
 
-    if (title === 'Add new Environment' && !existingEnvironment) {
-      dispatch(addEnvironment({ name: environment.name, ...updatedEnvironment, type: environmentType }))
+    if (title === 'Add new Environment') {
+      dispatch(addEnvironment({ name: environment.name, ...updatedEnvironment, userId }))
       setEnvironment({ name: '', variables: {} })
       setOriginalVariableNames([])
       setUpdatedVariableNames([])
     } else {
       const originalEnvCopy = jQuery.extend(true, {}, initialEnvironment)
-      if(environment.id) {
-        if (JSON.stringify(originalEnvCopy) !== JSON.stringify(updatedEnvironment)) {
-          dispatch(updateEnvironment({ id: environment.id, name: environment.name, ...updatedEnvironment }))
-        }
+      if (JSON.stringify(originalEnvCopy) !== JSON.stringify(updatedEnvironment)) {
+        dispatch(updateEnvironment({ id: environment.id, name: environment.name, ...updatedEnvironment, userId }))
       }
     }
   }
@@ -143,10 +136,6 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
     setUpdatedVariableNames(updatedVars)
   }
 
-  const handleEnvType = (e) => {
-    setEnvironmentType(e.currentTarget.value === 'global' ? 0 : 1);
-  }
-
   return (
     <div onKeyDown={(e) => onEnter(e, doSubmit)}>
       <Modal show={show} onHide={onHide} size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered className='custom-environment'>
@@ -174,34 +163,6 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
                 </div>
                 {errors?.name && <div className='alert alert-danger'>{errors?.name}</div>}
               </div>
-              {title === 'Add new Environment' && (
-                <div className='form-group py-2'>
-                  <label htmlFor='custom-environment-input'>Environment Type <span className='mx-1 alert alert-danger'>*</span></label>
-                  <div>
-                    <label className='radio-inline pr-4'>
-                      <input
-                        type='radio'
-                        name='environmentType'
-                        value='global'
-                        onChange={handleEnvType}
-                        className='mr-2 pt-2'
-                      />
-                      Global Environment
-                    </label>
-                    <label className='radio-inline ml-3'>
-                      <input
-                        type='radio'
-                        name='environmentType'
-                        value='private'
-                        onChange={handleEnvType}
-                        className='mr-2 pt-2'
-                      />
-                      Private Environment
-                    </label>
-                  </div>
-                </div>
-              ) }
-             { errors?.type && <div className='alert alert-danger'>{errors?.type}</div>}
               <div className='custom-table-container env-table'>
                 <Table size='sm' className='my-1'>
                   <thead>

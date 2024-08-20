@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import { IoIosPlay } from 'react-icons/io'
 import { updateEndpointCheckStatus, updateAllEndpointCheckStatus } from '../../../store/clientData/clientDataActions'
 import { toast } from 'react-toastify'
@@ -12,7 +12,6 @@ import { RiAiGenerate, RiCheckboxMultipleLine } from 'react-icons/ri'
 import { FaExclamationCircle } from 'react-icons/fa'
 import { runAutomations } from './redux/runAutomationActions'
 import { FiCopy } from 'react-icons/fi'
-import { AiOutlineExclamationCircle } from "react-icons/ai";
 
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
@@ -63,31 +62,12 @@ export default function RunAutomation() {
   }
 
   const renderEndpointName = (endpointId) => {
-    const hasIssues = !allPages?.[endpointId]?.description || !allPages?.[endpointId]?.sampleResponse;
     return (
       <div className='d-flex justify-content-center align-items-center'>
         <span className={`api-label ${allPages?.[endpointId]?.requestType} request-type-bgcolor mr-2`}>
           {allPages?.[endpointId]?.requestType}
         </span>
         <span>{allPages?.[endpointId]?.name || 'Endpoint'}</span>
-        {hasIssues && (
-          <OverlayTrigger
-            placement="right"
-            overlay={
-              <Tooltip>
-                {!allPages?.[endpointId]?.description && !allPages?.[endpointId]?.sampleResponse
-                  ? 'No description and sample response'
-                  : !allPages?.[endpointId]?.description
-                  ? 'No description'
-                  : 'No sample response'}
-              </Tooltip>
-            }
-          >
-            <span className='ml-2'>
-              <AiOutlineExclamationCircle color='red' size={15} />
-            </span>
-          </OverlayTrigger>
-        )}
       </div>
     )
   }
