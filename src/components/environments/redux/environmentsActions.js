@@ -29,11 +29,11 @@ export const fetchEnvironmentsFromLocalStorage = () => {
   }
 }
 
-export const addEnvironment = (newEnvironment, type) => {
+export const addEnvironment = (newEnvironment) => {
   return (dispatch) => {
-    dispatch(addEnvironmentRequest(newEnvironment, type))
+    dispatch(addEnvironmentRequest(newEnvironment))
     environmentsApiService
-      .saveEnvironment(newEnvironment, type)
+      .saveEnvironment(newEnvironment)
       .then((response) => {
         dispatch(OnEnvironmentAdded(response.data, newEnvironment))
         toast.success('Environment added successfully')
@@ -79,16 +79,12 @@ export const updateEnvironment = (editedEnvironment) => {
 
 export const deleteEnvironment = (environment) => {
   return (dispatch) => {
-    dispatch(deleteEnvironmentRequest(environment.id))
+    dispatch(deleteEnvironmentRequest(environment))
     environmentsApiService
       .deleteEnvironment(environment.id)
-      .then((response) => {
-        if (response) { 
-          dispatch(OnEnvironmentDeleted(environment.id))
-          toast.success('Environment deleted successfully')
-        } else {
-          toast.error('Failed to delete environment')
-        }
+      .then(() => {
+        dispatch(OnEnvironmentDeleted())
+        toast.success('Environment deleted successfully')
       })
       .catch((error) => {
         dispatch(OnEnvironmentDeletedError(error.response, environment))
@@ -161,17 +157,16 @@ export const OnEnvironmentUpdatedError = (error, originalEnvironment) => {
   }
 }
 
-export const deleteEnvironmentRequest = (environmentId) => {
+export const deleteEnvironmentRequest = (environment) => {
   return {
     type: environmentsActionTypes.DELETE_ENVIRONMENT_REQUEST,
-    environmentId
+    environment
   }
 }
 
-export const OnEnvironmentDeleted = (environmentId) => {
+export const OnEnvironmentDeleted = () => {
   return {
-    type: environmentsActionTypes.ON_ENVIRONMENT_DELETED, 
-    environmentId
+    type: environmentsActionTypes.ON_ENVIRONMENT_DELETED
   }
 }
 

@@ -1,14 +1,13 @@
 import http from '../../services/httpService'
-import { getOrgId } from '../common/utility'
 
 const apiUrl = process.env.REACT_APP_API_URL
 
 function environmentsUrl() {
-  return `${apiUrl}/orgs/${getOrgId()}/environments`
+  return `${apiUrl}/environments`
 }
 
 function environmentUrl(environmentId) {
-  return `${apiUrl}/orgs/${getOrgId()}/environments/${environmentId}`
+  return `${apiUrl}/environments/${environmentId}`
 }
 
 export function getEnvironments() {
@@ -19,8 +18,8 @@ export function getEnvironment(environmentId) {
   return http.get(environmentUrl(environmentId))
 }
 
-export function saveEnvironment(environment, type) {
-  return http.post(environmentsUrl(), environment, type)
+export function saveEnvironment(environment) {
+  return http.post(environmentsUrl(), environment)
 }
 
 export function updateEnvironment(environmentId, environment) {
@@ -32,7 +31,7 @@ export function deleteEnvironment(environmentId) {
 }
 
 export function importPostmanEnvironment(environment) {
-  return http.post(`${apiUrl}/import/environment`, environment)
+  return http.post(`${apiUrl}/import/postmanEnvironment`, environment)
 }
 
 export default {

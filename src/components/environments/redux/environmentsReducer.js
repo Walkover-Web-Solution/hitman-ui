@@ -76,19 +76,12 @@ function environmentsReducer(state = initialState, action) {
       }
 
     case environmentsActionTypes.DELETE_ENVIRONMENT_REQUEST:
-      const { environmentId } = action; // Get the environmentId from the action
-      const newEnvironments = { ...state.environments };
-      delete newEnvironments[environmentId];
-      return { ...state, environments: newEnvironments }
+      environments = { ...state.environments }
+      delete environments[action.environment.id]
+      return { ...state, environments }
 
     case environmentsActionTypes.ON_ENVIRONMENT_DELETED:
-      const { Id } = action; 
-      const newEnv = { ...state.environments };
-      delete newEnv[Id]; 
-      return {
-        ...state,
-        environments: newEnv,
-      };
+      return state
 
     case environmentsActionTypes.ON_ENVIRONMENT_DELETED_ERROR:
       toast.error(action.error.data)
