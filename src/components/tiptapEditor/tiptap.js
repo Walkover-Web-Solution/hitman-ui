@@ -361,7 +361,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
                 <FaListOl /> Numbered List
               </Dropdown.Item>
               <Dropdown.Item onClick={() => editor.chain().focus().toggleTaskList().run()} className={editor.isActive('taskList') ? 'is-active' : ''}>
-                <GoTasklist /> Task list
+                <GoTasklist /> Checklist
               </Dropdown.Item>
               <Dropdown.Item onClick={() => editor.chain().focus().setHorizontalRule().run()}>
                 <FaRulerHorizontal /> Horizontal Rule
@@ -401,7 +401,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
                 <FaListOl /> Numbered List
               </Dropdown.Item>
               <Dropdown.Item onClick={() => editor.chain().focus().toggleTaskList().run()} className={editor.isActive('taskList') ? 'is-active' : ''}>
-                <GoTasklist /> Task list
+                <GoTasklist /> Checklist
               </Dropdown.Item>
               <Dropdown.Item onClick={() => setShowImage(true)}>
                 <FaImage /> Images
