@@ -5,6 +5,7 @@ import { CiImport } from "react-icons/ci";
 import './dragAndDropUploader.scss';
 import { importEnvironment } from '../../environments/redux/environmentsActions';
 import { importCollection } from '../../collections/redux/collectionsActions';
+import { addIsExpandedAction } from '../../../store/clientData/clientDataActions';
 
 
 const DragAndDropUploader = ({ onClose, view, importType }) => {
@@ -18,16 +19,17 @@ const DragAndDropUploader = ({ onClose, view, importType }) => {
     setFileName(uploadedFile.name);
   }
 
-  const handleImport = () => {
+  const handleImport = async() => {
     const uploadedFile = new FormData()
     uploadedFile.append('myFile', file, fileName)
     if (importType == 'environment') {
       dispatch(importEnvironment(uploadedFile, onClose))
-    }
+    } 
     if (importType === 'collection') {
       const uploadedFile = new FormData()
       uploadedFile.append('myFile', file, fileName)
-      dispatch(importCollection(uploadedFile, view, onClose, 'testing'));
+       const {collection} = await dispatch(importCollection(uploadedFile, view, onClose, 'testing'));
+      dispatch(addIsExpandedAction({value:true, id:collection.id}))
     }
   };
 

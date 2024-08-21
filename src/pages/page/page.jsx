@@ -16,13 +16,13 @@ import { GoDotFill } from "react-icons/go";
 import { functionTypes } from "../../components/common/functionType";
 import { getOrgId } from "../../components/common/utility";
 import './page.scss'
-import { getOnlyUrlPathById } from "../../components/common/utility";
 
 const Page = () => {
 
-    const { draftContent, page, pages, users, activeTabId, tabs, isPublished } = useSelector((state) => ({
+    const { draftContent, page, pages, users, activeTabId, tabs, isPublished, collection } = useSelector((state) => ({
         draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
         page: state?.pages[state.tabs.activeTabId],
+        collection: state.collection,
         pages: state.pages,
         users: state.users,
         activeTabId: state.tabs.activeTabId,
@@ -39,6 +39,7 @@ const Page = () => {
     const [pageName, setPageName] = useState(page?.name);
 
     const updatedById = pages?.[pageId]?.updatedBy;
+    const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
     const user = users?.usersList?.find((user) => user.id === updatedById);
 
@@ -132,9 +133,16 @@ const Page = () => {
                     <Tooltip id='edited-by-tooltip'>
                         {lastModified &&
                             <div className="fs-4 text-secondary">
-                                <span>Edited by </span>
-                                <span className="font-weight-bold text-white">{user?.name}</span>
-                                <span>&nbsp;{lastModified}</span>
+                                <div>
+                                    <span>Edited by </span>
+                                    <span className="font-weight-bold text-white">{user?.name}</span>
+                                    <span>&nbsp;{lastModified}</span>
+                                </div>
+                                <div>
+                                    <span>Created by </span>
+                                    <span className="font-weight-bold text-white">{user?.name}</span>
+                                    <span>&nbsp;{createdAt}</span>
+                                </div>
                             </div>
                         }
                     </Tooltip>
@@ -151,14 +159,13 @@ const Page = () => {
                 )
         }
     }
-    const apiUrl = process.env.REACT_APP_API_URL
     const orgId = getOrgId()
 
     const getPath = (id, sidebar) => {
         let path = []
         while (sidebar?.[id]?.type > 0) {
             const itemName = sidebar[id].name
-            path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id:id })
+            path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id })
             id = sidebar?.[id]?.parentId
         }
         return path.reverse()
@@ -167,23 +174,30 @@ const Page = () => {
     const pathWithUrls = getPath(pageId, pages)
 
     const renderPathLinks = () => {
-        // debugger
         return pathWithUrls.map((item, index) => {
             if (pages?.[item.id]?.type === 2) return null;
             return (
-                <span key={index} onClick={() => navigate(`/${item.path}`, { replace: true })}  >
+                <span style={{ cursor: 'pointer' }} key={index} onClick={() => navigate(`/${item.path}`, { replace: true })}  >
                     {item.name}
                     {index < pathWithUrls.length - 1 && '/'}
                 </span>
             )
         })
     }
+    // const collectionId = pages[pageId].collectionId
+    // const collectionName = collection[collectionId].name
+    // const path = `orgs/${orgId}/dashboard/collection/${collectionId}/settings`
 
     return (
         <div className='parent-page-container d-flex flex-column align-items-center w-100'>
             <div className='page-header position-sticky px-3 py-2 bg-white d-flex align-items-center justify-content-between w-100'>
                 <div className="d-flex justify-content-start align-items-center w-50">
-                    <h1 className="header-page-name fa-1x text-truncate">{pageName?.length > 0 ?  getOnlyUrlPathById(pageId , pages, 'internal') : <span>Untitled</span>}</h1>
+                    {/* {collectionName && <span className='collection-name-path'
+                        onClick={() => navigate(`/${path}`, { replace: true })}
+                        style={{ cursor: 'pointer' }}>{`${collectionName}/`}</span>} */}
+                    {<h1 className="header-page-name fa-1x text-truncate">{pageName?.length > 0 ?
+                        renderPathLinks()
+                        : <span>Untitled</span>}</h1>}
                     {pages?.[pageId]?.isPublished &&
                         <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
                             <GoDotFill size={14} color="green" />

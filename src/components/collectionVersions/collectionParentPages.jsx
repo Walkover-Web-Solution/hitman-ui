@@ -170,10 +170,11 @@ const CollectionParentPages = (props) => {
     }
   }
 
-  const openAddPageEndpointModal = (pageId) => {
+  const openAddPageEndpointModal = async(pageId) => {
     const newPage = { name: 'untitled', pageType: 3 };
     if (!isOrgDocType()) {
-      dispatch(addPage(pages[pageId].versionId, newPage))
+       dispatch(addPage(pages[pageId].versionId, newPage))
+       dispatch(addIsExpandedAction({value:true, id:pageId}))
       dispatch(openInNewTab({ type: 'page', previewMode: false, isModified: false, state: {} }))
     } else {
       setShowAddCollectionModal(true)
