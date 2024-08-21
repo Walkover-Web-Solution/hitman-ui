@@ -446,7 +446,6 @@ class DisplayPage extends Component {
         </div>
         <div>
           {this.props?.pageContent && <ApiDocReview {...this.props} />}
-          {isOnPublishedPage() && <Footer />}
         </div>
       </div>
     )

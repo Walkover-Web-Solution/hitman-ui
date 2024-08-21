@@ -2868,6 +2868,7 @@ class DisplayEndpoint extends Component {
                   <Dropdown.Toggle className='btn save-button-endpoint px-1' split variant='' />
                   <Dropdown.Menu className=''>
                     <Dropdown.Item
+                    className='px-2'
                       onClick={() =>
                         this.setState({ saveAsFlag: true }, () => {
                           this.openEndpointFormModal()
@@ -3080,7 +3081,7 @@ class DisplayEndpoint extends Component {
                               endpointContent={this.props?.endpointContent}
                             />
                           )}
-                          {isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpointss && (
+                          {isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpointss &&  (
                             <IconButton> <button
                               id='api_save_btn'
                               className={
@@ -3094,9 +3095,11 @@ class DisplayEndpoint extends Component {
 
                           {this.renderSaveButton()}
                           <Dropdown className='publish-unpublish-button'>
+                            { this.props.location.pathname.split('/')[5] !== 'new' && (
                             <Dropdown.Toggle as='div' id='dropdown-basic'>
                               <IconButton variant="sm" className='mt-1'><BsThreeDots className='text-gray' size={25} /></IconButton>
                             </Dropdown.Toggle>
+                            )}
                             <Dropdown.Menu>
                               {isAdmin() && !isStatePending(endpointId, endpointss) && (
                                 <Dropdown.Item className='p-0'>
