@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { isDashboardRoute } from '../common/utility'
-import EndpointBreadCrumb from './endpointBreadCrumb'
 import './endpointBreadCrumb.scss'
 
 function DisplayDescription(props) {
@@ -23,7 +22,6 @@ function DisplayDescription(props) {
   return (
     <div className='endpoint-header flex-grow-1'>
       <div className={isDashboardRoute(props) ? 'panel-endpoint-name-container' : 'endpoint-name-container'}>
-        {isDashboardRoute(props) && <>{props.endpoint && <EndpointBreadCrumb setActiveTab={props.setActiveTab} {...props} isEndpoint />}</>}
         {isDashboardRoute(props) && props.endpoint && <input placeholder='Write Description' value={description} onChange={handleChangeDescription} className='endpoint-description w-100' />}
       </div>
     </div>
