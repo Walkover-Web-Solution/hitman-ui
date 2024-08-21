@@ -75,6 +75,7 @@ import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
 import { Tab, Nav, Row, Col } from 'react-bootstrap'
 import { FaPlus } from 'react-icons/fa'
+import DocViewContent from './displaydocData.jsx'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -2320,74 +2321,17 @@ class DisplayEndpoint extends Component {
     window.localStorage.setItem('endpointView', JSON.stringify(endpointView))
   }
 
-  removePublicItem(item, index) {
-    const showRemoveButton = !['body', 'host', 'params', 'pathVariables', 'headers', 'sampleResponse'].includes(item.type)
-    const handleOnClick = () => {
-      const docData = [...this.props?.endpointContent?.docViewData]
-      docData.splice(index, 1)
-      this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: docData })
-    }
-    return (
-      showRemoveButton && (
-        <div className='' onClick={handleOnClick.bind(this)}>
-          {' '}
-          <img src={DeleteIcon} alt='' />{' '}
-        </div>
-      )
-    )
-  }
-
   renderDocView = () => {
-    if (!this.props?.endpointContent?.docViewData) return
-    if (isDashboardRoute(this.props)) {
-      return (
-        <SortableList
-          lockAxis='y'
-          useDragHandle
-          onSortEnd={({ oldIndex, newIndex }) => {
-            this.onSortEnd(oldIndex, newIndex)
-          }}
-        >
-          <div>
-            {this.props?.endpointContent?.docViewData.map((item, index) => (
-              <SortableItem key={index} index={index}>
-                <div className='doc-secs-container mb-3'>
-                  <div className='doc-secs'>{this.renderPublicItem(item, index)}</div>
-                  <div className='addons'>
-                    {this.renderDragHandle(item)}
-                    {this.removePublicItem(item, index)}
-                  </div>
-                </div>
-              </SortableItem>
-            ))}
-          </div>
-        </SortableList>
-      )
-    } else {
-      return this.props?.endpointContent?.docViewData?.map((item, index) => <div key={index}>{this.renderPublicItem(item, index)}</div>)
-    }
-  }
-
-  renderDragHandle(item) {
-    if (item.type === 'pathVariables') {
-      if (this.props?.endpointContent?.pathVariables && this.props?.endpointContent?.pathVariables.length) return <DragHandle />
-      return
-    }
-    return <DragHandle />
-  }
-
-  onSortEnd = (oldIndex, newIndex) => {
-    const docViewData = [...this.props?.endpointContent?.docViewData]
-    if (newIndex !== oldIndex) {
-      const newData = []
-      docViewData.forEach((data, index) => {
-        index !== oldIndex && newData.push(data)
-      })
-      newData.splice(newIndex, 0, docViewData[oldIndex])
-      this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: newData })
-    }
-  }
-
+    return (
+      <DocViewContent
+        docViewData={this.props?.endpointContent?.docViewData}
+        renderPublicItem={this.renderPublicItem}
+        endpointContent={this.props?.endpointContent}
+        setQueryUpdatedData={this.props.setQueryUpdatedData}
+      />
+    );
+  };
+  
   saveData = (index, data) => {
     const updatedDocViewData = [...this.props.endpointContent.docViewData]
     updatedDocViewData[index] = { ...updatedDocViewData[index], data: data }
