@@ -9,8 +9,8 @@ import IconButton from '../common/iconButton'
 import { hexToRgb, isOnPublishedPage } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import { RiCloseLine } from 'react-icons/ri'
-import { RiCheckboxMultipleLine } from 'react-icons/ri'
-import { RiCheckboxMultipleBlankLine } from 'react-icons/ri'
+import { TbCopy } from "react-icons/tb";
+import { FaCheck } from "react-icons/fa6";
 import { BsThreeDots } from 'react-icons/bs'
 import { FaChevronRight } from 'react-icons/fa'
 import 'ace-builds'
@@ -125,7 +125,7 @@ const CodeTemplate = (props) => {
         )}
         <div
           className={
-            params.endpointId ? 'show-curl-endpoint pubCodeWrapper bg-white pb-1 mb-4' : curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper'
+            params.endpointId ? 'show-curl-endpoint pubCodeWrapper bg-white pb-1' : curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper'
           }
           style={{
             backgroundColor: hexToRgb(theme?.backgroundStyle, '0.04')
@@ -140,7 +140,7 @@ const CodeTemplate = (props) => {
                     <IconButton>
                       <RiCloseLine
                         color='black'
-                        className='cur-pointer'
+                        className='cursor-pointer'
                         onClick={() => {
                           dispatch(updateStateOfCurlSlider(false))
                         }}
@@ -206,11 +206,11 @@ const CodeTemplate = (props) => {
                       {copied ? (
                         <IconButton>
                           {' '}
-                          <RiCheckboxMultipleLine color={props.theme === 'light' ? 'black' : 'white'} />{' '}
+                          <FaCheck color={props.theme === 'light' ? 'black' : 'white'} />{' '}
                         </IconButton>
                       ) : (
                         <IconButton>
-                          <RiCheckboxMultipleBlankLine className='cur-pointer' color={props.theme === 'light' ? 'black' : 'white'} />
+                          <TbCopy size={18} className='cursor-pointer' color={props.theme === 'light' ? 'black' : 'white'} />
                         </IconButton>
                       )}
                     </button>

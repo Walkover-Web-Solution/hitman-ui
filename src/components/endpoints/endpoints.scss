@@ -261,6 +261,14 @@ $border-color: rgba(227, 228, 230, 0.7);
       outline: none;
       border: none;
       background: inherit;
+      &.empty {
+        &::before {
+          content: 'write description';
+          position: absolute;
+          top: 3px;
+          left: 1px;
+        }
+      }
     }
   }
 
@@ -527,12 +535,16 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 }
 
-.hm-panel.endpoint-public-response-container {
-  &.public-doc {
-    .nav-item {
-      .nav-link {
-        &:hover {
-          opacity: 0.6;
+.hm-panel {
+  top: 0;
+  z-index: 9;
+  &.endpoint-public-response-container {
+    &.public-doc {
+      .nav-item {
+        .nav-link {
+          &:hover {
+            opacity: 0.6;
+          }
         }
       }
     }
@@ -1441,11 +1453,6 @@ table#custom-generic-table {
 
 .end-point-name {
   overflow-wrap: anywhere;
-  max-width: 155px;
-
-  @media (max-width: 1400px) and (min-width: 400px) {
-    max-width: 170px !important;
-  }
 }
 
 .dropdown-label {
@@ -1806,11 +1813,11 @@ table#custom-generic-table {
   }
 
   .save-button-endpoint {
-    border-color: rgba(128, 128, 128, 0.527);
+    padding-top: 2px;
+    padding-bottom: 2px;
 
     &:hover {
-      background-color: $theme-color;
-      border-color: rgba(128, 128, 128, 0.527);
+      background-color: $button-background-hover;
     }
 
     &:disabled {
@@ -1896,6 +1903,14 @@ table#custom-generic-table {
         background-color: $button-active-color !important;
         color: $text-color;
       }
+    }
+  }
+}
+
+.publish-unpublish-button {
+  .dropdown-toggle {
+    &:after {
+      all: unset !important;
     }
   }
 }

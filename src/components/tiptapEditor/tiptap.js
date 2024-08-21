@@ -381,7 +381,7 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
       {editor && (
         <FloatingMenu className='floating-menu' tippyOptions={{ duration: 100 }} editor={editor}>
           <Dropdown>
-            <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon'>
+            <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon px-1'>
               <BiPlus />
             </Dropdown.Toggle>
             <Dropdown.Menu>

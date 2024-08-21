@@ -313,7 +313,7 @@ class GenericTable extends Component {
             />
             {isEmpty && <div className='small mandatory-field-text'>*This field is mandatory</div>}
           </div>
-          {currentItem.description && <p className='small text-muted'>{`Description: ${currentItem.description}`}</p>}
+          {currentItem.description && <p className='small text-muted'>{`${currentItem.description}`}</p>}
         </td>
       </tr>
     )

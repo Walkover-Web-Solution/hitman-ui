@@ -21,7 +21,7 @@
   }
 }
 
-.split-sidebar > div:first-child {
+.split-sidebar>div:first-child {
   min-width: 250px !important;
   max-width: 330px !important;
   background-color: $secondary-color;
@@ -51,7 +51,7 @@
 @media screen and (max-width: 767px) {
   .split-sidebar-public {
     &.open {
-      & > {
+      &> {
         div {
           &:first-child {
             transform: translateX(0) !important;
@@ -83,6 +83,7 @@
 
 body .sidebar {
   height: 100%;
+
   // background-color: $secondary-color;
 
   .switch-products {
@@ -105,11 +106,6 @@ body .sidebar {
 
   .collect-length {
     line-height: 1.5rem;
-    width: 196px;
-  }
-
-  .sub-page-header {
-    width: 110px;
   }
 
   .globe-img {
@@ -119,7 +115,6 @@ body .sidebar {
 
   div#parent-accordion {
     .inner-container {
-      max-width: 70%;
       width: 100%;
 
       .collection-box {
@@ -139,6 +134,11 @@ body .sidebar {
       align-items: center;
       justify-content: center;
       border-radius: 5px 5px;
+      margin-right: 2.5px;
+
+      &:hover {
+        background-color: rgb(128 128 128 / 18%);
+      }
     }
   }
 
@@ -258,7 +258,7 @@ body .sidebar {
         text-overflow: ellipsis;
       }
 
-      &.expanded > button {
+      &.expanded>button {
         .versionChovron {
           .collection-icons-arrow {
             transform: rotate(0);
@@ -288,16 +288,17 @@ body .sidebar {
 
         .active-selected {
           width: 100%;
-          margin-top: 4px;
           height: 28px;
 
           &.selected {
             background: $grey;
+
             .version-dropdown {
               .dropdown-toggle {
                 color: $text-color !important;
               }
             }
+
             .icon-header {
               svg {
                 color: $text-color;
@@ -305,8 +306,16 @@ body .sidebar {
             }
           }
 
+          .cl-public-page {
+            width: calc(100% - 5px);
+          }
+
           &:hover {
             background: $grey;
+
+            .name-sub-page {
+              width: calc(100% - 20% - 12px);
+            }
 
             .versionChovron {
               .collection-icons-arrow {
@@ -317,21 +326,26 @@ body .sidebar {
                 display: none !important;
               }
             }
+
+            .sidebar-item-action {
+              display: flex !important;
+            }
           }
         }
 
         .active-select {
-          width: 100%;
-          margin-top: 4px;
+          width: 100%;    
           height: 28px;
 
           &.selected {
             background: $grey;
+
             .version-dropdown {
               .dropdown-toggle {
                 color: $text-color !important;
               }
             }
+
             .icon-header {
               svg {
                 color: $text-color;
@@ -339,25 +353,39 @@ body .sidebar {
             }
           }
 
+          .cl-public-page {
+            .td-name {
+              width: calc(100% - 2px);
+            }
+
+          }
+
           &:hover {
             background: $grey;
+
+            .sidebar-item-action {
+              display: flex !important;
+            }
+
+            .cl-name {
+              width: calc(100% - 62px);
+            }
           }
 
           .cl-name {
-            width: 100%;
+            width: calc(100% - 1px);
+
+            .td-name {
+              width: calc(100% - 6px);
+            }
 
             .name-parent-page {
               overflow-wrap: anywhere;
-              max-width: 240px !important;
-
-              @media (max-width: 1400px) and (min-width: 400px) {
-                max-width: 180px !important;
-              }
+              width: 100%;
 
               .text-truncate {
                 font-size: 14px;
                 padding-left: 0 !important;
-                max-width: 115px;
 
                 @media screen and (max-width: 768px) {
                   font-size: 16px;
@@ -396,8 +424,9 @@ body .sidebar {
 
         .sidebar-item-action {
           padding: 0 0.7rem;
+          display: none;
 
-          > div {
+          >div {
             &:not(.dropdown-menu) {
               opacity: 0;
               visibility: hidden;
@@ -424,6 +453,19 @@ body .sidebar {
               }
 
               &:hover {
+                .sidebar-item-action>div {
+                  visibility: visible;
+                  opacity: 1;
+                }
+
+                .counts {
+                  opacity: 0;
+                }
+
+                .sidebar-item-action-btn[aria-expanded='true'] {
+                  background-color: $grey;
+                }
+
                 background-color: rgba(128, 128, 128, 0.123);
               }
             }
@@ -440,6 +482,7 @@ body .sidebar {
         height: 28px;
         text-align: left;
         justify-content: space-between;
+        margin-bottom: 2px;
 
         &:active,
         &:focus {
@@ -452,7 +495,7 @@ body .sidebar {
         }
 
         &:hover {
-          .sidebar-item-action > div {
+          .sidebar-item-action>div {
             visibility: visible;
             opacity: 1;
           }
@@ -480,9 +523,12 @@ body .sidebar {
                 display: none !important;
               }
             }
-
+            .inner-container {
+              max-width: 70%;
+            }
             .sidebar-toggle {
               transition: all 0.3s ease-in;
+              margin-top: 1px !important;
 
               &:hover {
                 background: #ebebeb;
@@ -539,18 +585,21 @@ body .sidebar {
       display: block;
       flex: 0 0 auto;
       border-top: 1px solid #dcdcdc;
+
       .profile-details {
         .dropdown {
           .dropdown-toggle {
-          all: unset !important;
-          &.btn-primary {
             all: unset !important;
-          }
-          &::after {
-            all: unset !important;
+
+            &.btn-primary {
+              all: unset !important;
+            }
+
+            &::after {
+              all: unset !important;
+            }
           }
         }
-       }
       }
 
       .profile-listing-container .dropdown-item {
@@ -569,7 +618,7 @@ body .sidebar {
           svg {
             width: 15px;
           }
-        } 
+        }
       }
 
       .org-name {
@@ -673,7 +722,7 @@ body .sidebar {
   flex-grow: 1;
 }
 
-.search-box > label {
+.search-box>label {
   position: absolute;
   left: 10px;
   top: 0;
@@ -686,7 +735,7 @@ body .sidebar {
   z-index: 9;
 }
 
-.search-box > input[type='text'] {
+.search-box>input[type='text'] {
   width: 100%;
   border-radius: 4px;
   border-color: rgba(9, 30, 66, 0.1) !important;
@@ -702,7 +751,7 @@ input[type='text']:focus {
   box-shadow: none;
 }
 
-.primary-sidebar .sidebar-accordion.active > {
+.primary-sidebar .sidebar-accordion.active> {
   button {
     background: #ebebeb;
     border-color: #f1eee5;
@@ -721,6 +770,7 @@ input[type='text']:focus {
 .versionChovron {
   width: 26px;
   height: 20px;
+
   .collection-icons-arrow {
     transition: all 0.3s ease-in;
     height: 20px !important;
@@ -764,7 +814,10 @@ input[type='text']:focus {
 .active-select {
   &:hover {
     background: $grey;
+
     .version-dropdown {
+      display: block;
+
       button {
         opacity: 1;
       }
@@ -776,7 +829,7 @@ input[type='text']:focus {
   }
 }
 
-.sidebar-accordion .sidebar-accordion-item > i {
+.sidebar-accordion .sidebar-accordion-item>i {
   display: inline-block;
   width: 30px;
 }
@@ -803,6 +856,16 @@ input[type='text']:focus {
     .side-bar {
       width: 100%;
       height: 28px;
+
+      &:hover {
+        .sidebar-item-action {
+          display: block !important;
+        }
+
+        .sidebar-accordion-item {
+          width: 88%;
+        }
+      }
     }
   }
 }
@@ -998,17 +1061,20 @@ input[type='text']:focus {
   width: 100%;
   height: 100%;
 }
+
 .hm-sidebar-header {
   .td-header {
-    width: 180px;
+    width: 250px;
   }
 
   .login-button {
     width: 33px;
+
     .logo-techdoc {
       width: 25px;
       height: 25px;
     }
+
     &:hover {
       background-color: rgba(128, 128, 128, 0.212) !important;
     }
@@ -1034,10 +1100,10 @@ input[type='text']:focus {
     box-shadow: 2px 2px;
   }
 }
+
 .delete-button-sb {
   svg {
     height: 16px;
     width: 16px;
   }
 }
-

@@ -254,7 +254,7 @@ class EndpointBreadCrumb extends Component {
     this.props.isEndpoint ? this.setEndpointData() : this.setPageData()
     return (
       <div className='endpoint-header'>
-        <div className='panel-endpoint-name-container'>
+        <div className='panel-endpoint-name-container d-flex'>
           <div className='page-title-name d-flex align-items-center'>
             {this.props?.params?.endpointId === 'new' && this.switchProtocolTypeDropdown()}
             {this.props?.params?.endpointId != 'new' &&
@@ -267,7 +267,7 @@ class EndpointBreadCrumb extends Component {
               this.state?.protocols?.[1]?.icon && (
                 <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[1]?.icon}</button>
               )}
-            <input
+            {/* <input
               name='enpoint-title'
               ref={this.nameInputRef}
               style={{ textTransform: 'capitalize' }}
@@ -280,7 +280,7 @@ class EndpointBreadCrumb extends Component {
                     this.props?.endpointContent?.data?.name
                   : this.props?.pages?.[this.props?.params?.pageId]?.name
               }
-            />
+            /> */}
           </div>
           {this.props.location.pathname.split('/')[5] !== 'new' && (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>

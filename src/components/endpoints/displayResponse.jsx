@@ -186,7 +186,7 @@ class DisplayResponse extends Component {
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'body' }) }}>
               <a
                 className={this.state.selectedResponseTab === 'body' ? 'nav-link active text-black' : 'nav-link text-gray'}
-                style={this.state.selectedResponseTab === 'body' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                style={this.state.selectedResponseTab === 'body' ? { borderColor: this.props.publicCollectionTheme } : {}}
                 id='pills-response-tab'
                 data-toggle='pill'
                 role='tab'
@@ -199,7 +199,7 @@ class DisplayResponse extends Component {
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'header' }) }}>
               <a
                 className={this.state.selectedResponseTab === 'header' ? 'nav-link active text-black' : 'nav-link text-gray'}
-                style={this.state.selectedResponseTab === 'header' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                style={this.state.selectedResponseTab === 'header' ? { borderColor: this.props.publicCollectionTheme } : {}}
                 id='pills-header-tab'
                 data-toggle='pill'
                 aria-selected='false'

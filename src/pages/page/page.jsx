@@ -16,6 +16,7 @@ import { GoDotFill } from "react-icons/go";
 import { functionTypes } from "../../components/common/functionType";
 import { getOrgId } from "../../components/common/utility";
 import './page.scss'
+import { getOnlyUrlPathById } from "../../components/common/utility";
 
 const Page = () => {
 
@@ -182,9 +183,7 @@ const Page = () => {
         <div className='parent-page-container d-flex flex-column align-items-center w-100'>
             <div className='page-header position-sticky px-3 py-2 bg-white d-flex align-items-center justify-content-between w-100'>
                 <div className="d-flex justify-content-start align-items-center w-50">
-                    <h1 className="header-page-name fa-1x text-truncate">{pageName?.length > 0 ?
-                        renderPathLinks()
-                        : <span>Untitled</span>}</h1>
+                    <h1 className="header-page-name fa-1x text-truncate">{pageName?.length > 0 ?  getOnlyUrlPathById(pageId , pages, 'internal') : <span>Untitled</span>}</h1>
                     {pages?.[pageId]?.isPublished &&
                         <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
                             <GoDotFill size={14} color="green" />

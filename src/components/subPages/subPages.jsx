@@ -170,9 +170,12 @@ const SubPage = (props) => {
               onDragEnter={(e) => props.onDragEnter(e, subPageId)}
               onDragEnd={(e) => props.onDragEnd(e)}
               style={props.draggingOverId === subPageId ? { border: '3px solid red', paddingLeft: `${props?.level * 8}px` } : {paddingLeft: `${props?.level * 8}px`}}
-              className={`d-flex justify-content-center cl-name name-sub-page ml-1 `}
-              onClick={() => {
+              className={`d-flex justify-content-center cl-name  ml-1 ${isOnPublishedPage() ? 'cl-public-page' : 'name-sub-page'}`}
+              onClick={(e) => {
                 handleRedirect(subPageId)
+                if (!expanded) {
+                  handleToggle(e, subPageId)
+                }
               }}
             >
               <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'}`} onClick={(e) => handleToggle(e, subPageId)}>
@@ -187,7 +190,7 @@ const SubPage = (props) => {
             </div>
 
             {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
-              <div className='sidebar-item-action d-flex align-items-center'>
+              <div className='sidebar-item-action align-items-center'>
                 <div onClick={() => openAddSubPageModal(subPageId)} className='d-flex align-items-center'>
                   <IconButtons>
                     <FiPlus />
