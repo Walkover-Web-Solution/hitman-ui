@@ -53,7 +53,7 @@ class PublicBodyContainer extends Component {
     });
   }
   collapseEditor(event) {
-    event.stopPropagation(); // Prevent the click event from bubbling up to the parent div
+    event.stopPropagation()
     this.setState({
       editorHeight: '250px',
       isExpanded: false,
@@ -333,6 +333,7 @@ class PublicBodyContainer extends Component {
                 Body <small className='text-muted'>({this.props.body.type})</small>{' '}
                 {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
               </div>
+              <div className='d-flex justify-content-between'>
               <ul className='public-endpoint-tabs'>
                 <li
                   className={this.state.showBodyCodeEditor ? 'active' : ''}
@@ -349,9 +350,10 @@ class PublicBodyContainer extends Component {
                   Body description
                 </li>
               </ul>
+              {this.state.isExpanded && (<button className='btn btn-sm close-button py-0 pb-1 border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
+              </div>
               {this.state.showBodyCodeEditor ? (
-                <div className='position-relative body-ace-editer' onClick={this.toggleEditor}>
-                  {this.state.isExpanded && (<button className='btn btn-sm position-absolute close-button border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
+                <div className='body-ace-editer' onClick={this.toggleEditor}>
                   <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
                     <AceEditor
                       className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}

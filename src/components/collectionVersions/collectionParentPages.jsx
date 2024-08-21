@@ -142,8 +142,9 @@ const CollectionParentPages = (props) => {
     dispatch(addIsExpandedAction({ value: !isExpanded, id: id }))
   }
 
-  const handleParentPageClick = () => {
+  const handleParentPageClick = (e, expanded) => {
     handleRedirect(props.rootParentId)
+    if (!expanded) handleToggle(e, props.rootParentId)
   }
 
   const versionName = () => {
@@ -229,14 +230,14 @@ const CollectionParentPages = (props) => {
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <div className={`d-flex align-items-center cl-name `}  onClick={(e) => handleParentPageClick(e, expanded)}>
-                <div className='d-flex cl-name ml-1 align-items-center'>
+              <div className={`d-flex align-items-center ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `}  onClick={(e) => handleParentPageClick(e, expanded)}>
+                <div className='d-flex td-name ml-1 align-items-center'>
                   <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header mr-1'}`} onClick={(e) => handleToggle(e, props.rootParentId)}>
                     <IconButtons variant='sm'><MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} /></IconButtons>
                     <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1' />
                   </span>
                   <div
-                    className='d-flex justify-content-between align-items-center name-parent-page'
+                    className='d-flex justify-content-between align-items-center name-parent-page text-truncate'
                     draggable={!isUserOnPublishedPage}
                     onDragOver={props.handleOnDragOver}
                     onDragStart={() => props.onDragStart(pageId)}
@@ -256,7 +257,7 @@ const CollectionParentPages = (props) => {
               </div>
 
               {isDashboardRoute({ location }, true) && !collections[props.collection_id]?.importedFromMarketPlace ? (
-                <div className='sidebar-item-action d-flex align-items-center'>
+                <div className='sidebar-item-action align-items-center'>
                   <div className='d-flex align-items-center' onClick={() => openAddPageEndpointModal(selectedVersionId || defaultVersionId)}>
                     <IconButtons>
                       <FiPlus />

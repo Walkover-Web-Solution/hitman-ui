@@ -212,7 +212,7 @@ const ApiDocReview = (props) => {
   return (
     !isDashboardRoute({ location }) && (
       <>
-        <div className='position-relative'>
+        <div className='position-relative mb-4'>
           <p className='d-flex justify-content-center Modified-at mb-1'>Was this page helpful?</p>
           <div className='d-flex justify-content-center like-unline fs-2'>
             <OverlayTrigger placement='bottom' overlay={<Tooltip id='like-tooltip'>Helpful</Tooltip>}>

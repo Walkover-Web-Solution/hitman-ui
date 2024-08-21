@@ -142,6 +142,7 @@ html body {
 }
 
 .version-dropdown {
+  display: none;
   .dropdown-toggle {
     font-size: 14px !important;
     padding: 5px;
@@ -1940,6 +1941,7 @@ table#custom-generic-table tbody input[value='true'] + span.checkmark {
 }
 
 .footerWrapper {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   border-top: 0;
   span {
     justify-content: center;
@@ -2750,11 +2752,7 @@ main.mainpublic-endpoint-main .for-public-view {
   }
   .techdoc-svg {
     display: flex;
-    width: 120px;
-
-    @media screen and (max-width:768px) {
-      width: 100px;
-    }
+    width: 92px;
   }
 }
 .mainpublic-endpoint-main .footerWrapper {
@@ -3068,8 +3066,6 @@ li.nav-item.cookie-tab a {
     }
   }
   .doc-fix-width {
-    margin: auto;
-    max-width: 51rem;
     width: 100%;
   }
 }
@@ -3341,9 +3337,6 @@ div#steve-parent-accordion {
   color: $theme-color;
 }
 body .btn-group-custom {
-  border: 1px solid $outline-color;
-  border-radius: $border-radius;
-  padding: 4px;
   .btn {
     background: none;
     color: #212121;
@@ -3351,11 +3344,13 @@ body .btn-group-custom {
     border: none;
     padding: 0.25rem 0.5rem;
     border-radius: 3px !important;
-    min-width: 3.5rem;
     &.active {
       background: #fff !important;
       color: #212121 !important;
       box-shadow: 0px 0px 4px 0px #00000029 !important;
+    }
+    &:hover {
+      color: $text-color !important;
     }
   }
 }
@@ -3704,13 +3699,9 @@ body .tox {
     height: 44px !important;
   }
 }
-.name-sub-page{
+.name-sub-page {
   overflow-wrap: anywhere;
-  max-width: 180px !important;
-
-  @media (max-width: 1400px) and (min-width: 400px) {
-    max-width: 120px !important;
-  }
+  width: calc(100% - 5px);
 
   .page-title-name {
 
@@ -3954,10 +3945,6 @@ body .tox {
   color: black !important;
 }
 
-.cur-pointer {
-  cursor: pointer !important;
-}
-
 .back-to-workspace {
   svg {
     font-size: 20px;
@@ -4069,4 +4056,15 @@ body .tox {
   padding: 0 !important;
   color: unset !important;
   border: unset !important;
+}
+.floating-menu .biplus-icon {
+  &:after {
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+    transform: rotate(0);
+    top: 0;
+  }
 }

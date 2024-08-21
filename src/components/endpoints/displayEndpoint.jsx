@@ -75,6 +75,9 @@ import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
 import { Tab, Nav, Row, Col } from 'react-bootstrap'
 import { FaPlus } from 'react-icons/fa'
+import EndpointBreadCrumb from './endpointBreadCrumb'
+import { BsThreeDots } from 'react-icons/bs';
+import IconButton from '../common/iconButton.jsx'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -407,7 +410,7 @@ class DisplayEndpoint extends Component {
       fileDownloaded: false,
       sendClickec: false
     }
-    this.setActiveTab = this.setActiveTab.bind(this)
+    this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
     this.uri = React.createRef()
     this.paramKey = React.createRef()
@@ -424,8 +427,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.params.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
     const { endpointId } = this.props.params
@@ -1271,7 +1274,7 @@ class DisplayEndpoint extends Component {
     return data
   }
 
-  handleSave = async (id, endpointObject, slug) => {    
+  handleSave = async (id, endpointObject, slug) => {
     const { endpointName, endpointDescription } = endpointObject || {}
     let currentTabId = this.props.tab.id
     let parentId = id
@@ -1368,10 +1371,10 @@ class DisplayEndpoint extends Component {
               this.setState({ saveLoader: false })
             }
           )
-          if(endpoint.description !== ''){
-            this.props.endpoints[currentTabId].description= true
-          }else{
-            this.props.endpoints[currentTabId].description= false
+          if (endpoint.description !== '') {
+            this.props.endpoints[currentTabId].description = true
+          } else {
+            this.props.endpoints[currentTabId].description = false
           }
           tabService.markTabAsSaved(currentTabId)
         }
@@ -1936,9 +1939,9 @@ class DisplayEndpoint extends Component {
       id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
-    if(sampleResponseArray){
+    if (sampleResponseArray) {
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = true
-    }else{
+    } else {
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = false
     }
   }
@@ -2014,9 +2017,9 @@ class DisplayEndpoint extends Component {
       id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
-    if(sampleResponseArray){
+    if (sampleResponseArray) {
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = true
-    }else{
+    } else {
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = false
     }
   }
@@ -2469,14 +2472,14 @@ class DisplayEndpoint extends Component {
   renderToggleView() {
     if (isSavedEndpoint(this.props)) {
       return (
-        <ButtonGroup className='btn-group-custom mb-3' aria-label='Basic example'>
+        <ButtonGroup className='btn-group-custom' aria-label='Basic example'>
           <Button
-            className={'mr-1 ' + (this.props?.endpointContent?.currentView === 'testing' ? 'active' : '')}
+            className={(this.props?.endpointContent?.currentView === 'testing' ? 'active text-black' : 'text-gray')}
             onClick={() => this.switchView('testing')}
           >
             Testing
           </Button>
-          <Button className={this.props?.endpointContent?.currentView === 'doc' ? 'active' : ''} onClick={() => this.switchView('doc')}>
+          <Button className={this.props?.endpointContent?.currentView === 'doc' ? 'active text-black' : 'text-gray'} onClick={() => this.switchView('doc')}>
             Doc
           </Button>
         </ButtonGroup>
@@ -2490,7 +2493,7 @@ class DisplayEndpoint extends Component {
         <div>
           <Dropdown>
             <Dropdown.Toggle variant='' id='dropdown-basic' className='doc-plus'>
-              <FaPlus className='mr-2 cursor-pointer text-gray' size={14} onClick={() => this.showDocOptions()}/>
+              <FaPlus className='mr-2 cursor-pointer text-gray' size={14} onClick={() => this.showDocOptions()} />
             </Dropdown.Toggle>
             <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>
               <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
@@ -2727,57 +2730,6 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  renderDocViewOperations() {
-    const endpointss = this.props.pages[this.endpointId]
-    const endpointId = this.endpointId
-    if (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpointss) {
-      const approvedOrRejected = isStateApproved(endpointId, endpointss) || isStateReject(this.endpointId, endpointss)
-      const isPublicEndpoint = endpointss?.isPublished
-      return (
-        <div>
-          {isStatePending(endpointId, endpointss) && isAdmin() && (
-            <ApproveRejectEntity {...this.props} entity={endpointss} entityId={endpointId} entityName='endpoint' />
-          )}
-          <button
-            id='api_save_btn'
-            className={
-              this.state.saveLoader ? 'ml-2 btn btn-outline orange buttonLoader btn-sm fs-4' : 'ml-2 btn btn-outline orange btn-sm fs-4'
-            }
-            type='button'
-            onClick={() => this.handleSave()}
-          >
-            {isPublicEndpoint ? 'Save Draft' : 'Save'}
-          </button>
-          {isAdmin() && !isStatePending(endpointId, endpointss) && (
-            <span>
-              {' '}
-              {approvedOrRejected
-                ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
-                : this.renderPublishEndpoint(endpointId, endpointss)}
-            </span>
-          )}
-          {isAdmin() && isPublicEndpoint && (
-            <span>
-              {' '}
-              {isStateApproved(endpointId, endpointss)
-                ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
-                : this.renderUnPublishEndpoint(endpointId, endpointss)}
-            </span>
-          )}
-          {!isAdmin() && (
-            <button
-              className={'ml-2 ' + (isStateDraft(endpointId, endpointss) ? 'btn btn-outline orange' : 'btn text-link')}
-              type='button'
-              onClick={() => (isStateDraft(endpointId, endpointss) ? this.handlePublicEndpointState(this.props.pages[endpointId]) : null)}
-            >
-              {getEntityState(endpointId, endpointss)}
-            </button>
-          )}
-        </div>
-      )
-    }
-  }
-
   renderInOverlay(method, endpointId) {
     const endpoints = { ...this.props.pages[endpointId] }
     return (
@@ -2901,20 +2853,19 @@ class DisplayEndpoint extends Component {
                 id='api_save_btn'
                 className={
                   this.state.saveLoader
-                    ? 'btn btn-outline-secondary buttonLoader btn-sm d-flex align-items-center'
-                    : 'btn btn-outline-secondary btn-sm d-flex align-items-center save-button-endpoint'
+                    ? 'btn buttonLoader btn-sm d-flex align-items-center'
+                    : 'btn btn-sm d-flex align-items-center save-button-endpoint px-1'
                 }
                 type='button'
                 disabled={!this.props?.tabs[this.props?.activeTabId]?.isModified}
                 onClick={() => this.handleSave()}
                 title={!this.props?.tabs[this.props?.activeTabId]?.isModified ? 'No changes in this request' : 'Save request'}
               >
-                <LiaSaveSolid className='save-icon mr-1' size={18} />
-                <span>Save</span>
+                <span className='text-gray'>Save</span>
               </button>
               {getCurrentUser() ? (
                 <>
-                  <Dropdown.Toggle className='btn-outline-secondary save-button-endpoint' split variant='' />
+                  <Dropdown.Toggle className='btn save-button-endpoint px-1' split variant='' />
                   <Dropdown.Menu className=''>
                     <Dropdown.Item
                       onClick={() =>
@@ -2934,13 +2885,12 @@ class DisplayEndpoint extends Component {
               className={
                 this.state.saveLoader
                   ? 'btn btn-outline-secondary buttonLoader btn-sm fs-4 d-flex align-items-center'
-                  : 'btn btn-outline-secondary save-button-endpoint btn-sm fs-4 d-flex align-items-center'
+                  : 'btn save-button-endpoint px-1 btn-sm fs-4 d-flex align-items-center'
               }
               type='button'
               id='save-endpoint-button'
               onClick={() => this.handleSave()}
             >
-              <LiaSaveSolid className='save-icon mr-1' size={18} />
               <span>Save</span>
             </button>
           )
@@ -2994,7 +2944,7 @@ class DisplayEndpoint extends Component {
         <div>
           {lastModified && (
             <>
-              Modified At <span>{lastModified}</span>
+              Modified <span>{lastModified}</span>
             </>
           )}
         </div>
@@ -3007,7 +2957,7 @@ class DisplayEndpoint extends Component {
               Updated by<span> </span>
               {user?.name}
               <br />
-              Modified At<span> </span>
+              Modified <span> </span>
               {lastModified}
             </div>
           ) : (
@@ -3056,8 +3006,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
 
     if (this.props.save_endpoint_flag && this.props.tab.id === this.props.selected_tab_id) {
       this.props.handle_save_endpoint(false)
@@ -3066,6 +3016,10 @@ class DisplayEndpoint extends Component {
 
     const { theme, codeEditorVisibility } = this.state
     const { responseView } = this.props
+    const endpointss = this.props.pages[this.endpointId]
+    const endpointId = this.endpointId
+    const approvedOrRejected = isStateApproved(endpointId, endpointss) || isStateReject(this.endpointId, endpointss)
+    const isPublicEndpoint = endpointss?.isPublished
     return (isDashboardRoute(this.props) && this.props?.endpointContent?.currentView) ||
       !isDashboardRoute(this.props) ||
       !isSavedEndpoint(this.props) ? (
@@ -3074,17 +3028,16 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-            ? 'mainContentWrapperPublic hideCodeEditor'
-            : 'mainContentWrapperPublic '
+              ? 'mainContentWrapperPublic hideCodeEditor'
+              : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper d-flex'}>
           <div className={`innerContainer w-100 ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${
-                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-              }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${isOnPublishedPage() ? 'pt-3' : 'pt-0'} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+                }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
@@ -3097,42 +3050,103 @@ class DisplayEndpoint extends Component {
               {getCurrentUser() ? (
                 <>
                   {isDashboardRoute(this.props) && (
-                    <div className='hm-panel'>
+                    <div className='hm-panel py-2 position-sticky bg-white'>
                       <div className='d-flex justify-content-between'>
-                        {this.renderToggleView()}
-                        {this.renderDocViewOperations()}
-                      </div>
-                      <div className='d-flex justify-content-between align-items-end'>
-                        {this.state.showEndpointFormModal && (
-                          <SaveAsSidebar
-                            {...this.props}
-                            onHide={() => this.closeEndpointFormModal()}
-                            name={this.props.endpointContent.data.name}
-                            description={this.props.endpointContent.data.description}
-                            save_endpoint={this.handleSave.bind(this)}
-                            saveAsLoader={this.state.saveAsLoader}
-                            endpointContent={this.props?.endpointContent}
-                          />
-                        )}
-                        {this.isDashboardAndTestingView() && (
-                          <DisplayDescription
-                            {...this.props}
-                            endpointId={this.props?.currentEndpointId}
-                            endpoint={this.props.endpointContent}
-                            data={this.state.data}
-                            old_description={this.state.oldDescription}
-                            props_from_parent={this.propsFromDescription.bind(this)}
-                            alterEndpointName={(name) => this.alterEndpointName(name)}
-                            setActiveTab={this.setActiveTab}
-                          />
-                        )}
-                        {this.renderSaveButton()}
+                        <EndpointBreadCrumb
+                          setActiveTab={this.setActiveTab}
+                          {...this.props}
+                          isEndpoint
+                        />
+                        <div className='d-flex gap-1 align-items-center'>
+                          {this.renderToggleView()}
+                          {!isOnPublishedPage() && (
+                            <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
+                              <DisplayUserAndModifiedData
+                                isOnPublishedPage={isOnPublishedPage()}
+                                pages={this.props.pages}
+                                currentPage={this.props.currentEndpointId}
+                                users={this.props.users}
+                              />
+                            </span>
+                          )}
+                          {this.state.showEndpointFormModal && (
+                            <SaveAsSidebar
+                              {...this.props}
+                              onHide={() => this.closeEndpointFormModal()}
+                              name={this.props.endpointContent.data.name}
+                              description={this.props.endpointContent.data.description}
+                              save_endpoint={this.handleSave.bind(this)}
+                              saveAsLoader={this.state.saveAsLoader}
+                              endpointContent={this.props?.endpointContent}
+                            />
+                          )}
+                          {isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpointss && (
+                            <IconButton> <button
+                              id='api_save_btn'
+                              className={
+                                this.state.saveLoader ? 'ml-2 btn buttonLoader btn-sm fs-4' : 'p-0 btn btn-sm fs-4 text-gray'
+                              }
+                              type='button'
+                              onClick={() => this.handleSave()}
+                            >
+                              {isPublicEndpoint ? 'Save' : 'Save'}
+                            </button></IconButton>)}
+
+                          {this.renderSaveButton()}
+                          <Dropdown className='publish-unpublish-button'>
+                            <Dropdown.Toggle as='div' id='dropdown-basic'>
+                              <IconButton variant="sm" className='mt-1'><BsThreeDots className='text-gray' size={25} /></IconButton>
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                              {isAdmin() && !isStatePending(endpointId, endpointss) && (
+                                <Dropdown.Item className='p-0'>
+                                  <span>
+                                    {' '}
+                                    {approvedOrRejected
+                                      ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
+                                      : this.renderPublishEndpoint(endpointId, endpointss)}
+                                  </span>
+                                </Dropdown.Item>)}
+                              {isAdmin() && isPublicEndpoint && (
+                                <Dropdown.Item className='p-0'>
+                                  <span>
+                                    {' '}
+                                    {isStateApproved(endpointId, endpointss)
+                                      ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
+                                      : this.renderUnPublishEndpoint(endpointId, endpointss)}
+                                  </span>
+                                </Dropdown.Item>)}
+                              {!isAdmin() && (<Dropdown.Item>
+                                <button
+                                  className={(isStateDraft(endpointId, endpointss) ? 'btn' : 'btn text-link')}
+                                  type='button'
+                                  onClick={() => (isStateDraft(endpointId, endpointss) ? this.handlePublicEndpointState(this.props.pages[endpointId]) : null)}
+                                >
+                                  {getEntityState(endpointId, endpointss)}
+                                </button>
+                              </Dropdown.Item>)}
+
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        </div>
                       </div>
                     </div>
                   )}
                 </>
               ) : null}
-              <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
+              {this.isDashboardAndTestingView() && (
+                <DisplayDescription
+                  {...this.props}
+                  endpointId={this.props?.currentEndpointId}
+                  endpoint={this.props.endpointContent}
+                  data={this.state.data}
+                  old_description={this.state.oldDescription}
+                  props_from_parent={this.propsFromDescription.bind(this)}
+                  alterEndpointName={(name) => this.alterEndpointName(name)}
+                  setActiveTab={this.setActiveTab}
+                />
+              )}
+              <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view m-auto' : 'testing-view')}>
                 <div className='endpoint-header'>
                   {this.isNotDashboardOrDocView() && (
                     <div className='d-flex endpoint-name-container justify-content-between mb-3'>
@@ -3667,10 +3681,9 @@ class DisplayEndpoint extends Component {
                 <div className='w-100'>
                   <span className='footer-upper mt-5'>
                     <>
-                      <div className='w-100 d-flex justify-content-center'>
+                      <div className='w-100 d-flex justify-content-center mb-4'>
                         <ApiDocReview {...this.props} />
                       </div>
-                      <Footer />
                     </>
                   </span>
                 </div>
@@ -3690,30 +3703,19 @@ class DisplayEndpoint extends Component {
                   pages={this.props.pages}
                   currentPage={this.props.currentEndpointId}
                   users={this.props.users}
-                  />
+                />
               </span>
             )}
           </div>
           {!isOnPublishedPage() && (this.renderCodeTemplate())}
         </div>
-        {!isOnPublishedPage() && (
-          <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
-            <DisplayUserAndModifiedData
-              isOnPublishedPage={isOnPublishedPage()}
-              pages={this.props.pages}
-              currentPage={this.props.currentEndpointId}
-              users={this.props.users}
-              />
-          </span>
-        )}
         {isOnPublishedPage() && (
           <div className='w-100'>
             <span className='footer-lower mt-5'>
               <>
-                <div className='w-100 d-flex flex-column align-items-center'>
+                <div className='w-100 d-flex flex-column align-items-center mb-4'>
                   <ApiDocReview {...this.props} />
                 </div>
-                <Footer />
               </>
             </span>
           </div>
