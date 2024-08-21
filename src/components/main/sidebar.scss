@@ -509,6 +509,7 @@ body .sidebar {
         }
 
         &.sidebar-hower {
+          padding-left: 10px;
           &:hover {
             background: $grey;
 
@@ -794,8 +795,6 @@ input[type='text']:focus {
   width: 100%;
 
   .api-label {
-    margin-right: 5px;
-
     @media screen and (max-width: 768px) {
       font-size: 12px;
     }

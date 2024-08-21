@@ -185,7 +185,7 @@ const Collections = (props) => {
     return (
       <React.Fragment key={collectionId}>
         <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion px-2 expanded' : 'sidebar-accordion px-2'}>
-          <button tabIndex={-1} variant='default' className={`sidebar-hower px-2 rounded ${expanded ? 'expanded' : ''}`}>
+          <button tabIndex={-1} variant='default' className={`sidebar-hower pr-2 rounded ${expanded ? 'expanded' : ''}`}>
             <div
               className='inner-container'
               onClick={() => toggleSelectedCollectionIds(collectionId)}

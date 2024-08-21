@@ -12,7 +12,7 @@ const SaveAsSidebar = (props) => {
     position: 'fixed',
     background: 'white',
     zIndex: '1050',
-    top: '0px',
+    top: '41px',
     right: '0px',
     height: '100vh',
     width: '35vw',
