@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
-import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
-import { getOnlyUrlPathById, isElectron, trimString } from '../common/utility'
-import { onPageUpdated, updateNameOfPages } from '../pages/redux/pagesActions'
+import { getOrgId, isElectron, trimString } from '../common/utility'
+import { updateNameOfPages } from '../pages/redux/pagesActions'
 import { MdHttp } from 'react-icons/md'
 import { GrGraphQl } from 'react-icons/gr'
 import { updateTab } from '../tabs/redux/tabsActions'
-import { prototype } from 'form-data'
 import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
@@ -250,7 +248,34 @@ class EndpointBreadCrumb extends Component {
     )
   }
 
+
+  getPath(id, sidebar) {
+    const orgId = getOrgId()
+    let path = []
+    while (sidebar?.[id]?.type > 0) {
+      const itemName = sidebar[id].name
+      path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id })
+      id = sidebar?.[id]?.parentId
+    }
+    return path.reverse()
+  }
+
+  renderPathLinks() {
+    const pathWithUrls = this.getPath(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages)
+    return pathWithUrls.map((item, index) => {
+      if (this.props.pages?.[item.id]?.type === 2) return null;
+      return (
+        <span key={index}  style={{ cursor: 'pointer' }} onClick={() => this.props.navigate(`/${item.path}`, { replace: true })}  >
+          {item.name}
+          {index < pathWithUrls.length - 1 && '/'}
+        </span>
+      )
+    })
+  }
+
   render() {
+    const orgId = getOrgId()
+    const path = `orgs/${orgId}/dashboard/collection/${this.collectionId}/settings`
     this.props.isEndpoint ? this.setEndpointData() : this.setPageData()
     return (
       <div className='endpoint-header'>
@@ -281,13 +306,15 @@ class EndpointBreadCrumb extends Component {
                   : this.props?.pages?.[this.props?.params?.pageId]?.name
               }
             /> */}
-          </div>
+          </div>  
           {this.props.location.pathname.split('/')[5] !== 'new' && (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
-              {this.collectionName && <span className='collection-name-path'>{`${this.collectionName}/`}</span>}
+              {this.collectionName && <span className='collection-name-path' 
+              onClick={() => this.props.navigate(`/${path}`, { replace: true })} 
+                style={{ cursor: 'pointer' }}>{`${this.collectionName}/`}</span>}
               {
                 <span className='text-nowrap-heading'>
-                  {getOnlyUrlPathById(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages, 'internal')}
+                  {this.renderPathLinks() }
                 </span>
               }
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
