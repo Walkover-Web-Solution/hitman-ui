@@ -101,6 +101,7 @@ class EndpointBreadCrumb extends Component {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
+    document.addEventListener('mousedown', this.handleClickOutside);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -161,6 +162,7 @@ class EndpointBreadCrumb extends Component {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
+    document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
   handleShortcuts = (e, actionType) => {
@@ -171,6 +173,12 @@ class EndpointBreadCrumb extends Component {
     }
   }
 
+  handleClickOutside = (event) => {
+    if (this.nameInputRef.current && !this.nameInputRef.current.contains(event.target)) {
+      this.setState({ nameEditable: false }); // Close the input field on outside click
+    }
+  };
+
   changeEndpointName() {
     const endpoint = this.props.endpoint
     if (endpoint && !endpoint.id && this.props.data.name === '') {
@@ -180,7 +188,7 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    this.setState({ changesMade: true })
+    this.setState({ changesMade: true, endpointTitle: e.currentTarget.value })
     if (this.props?.isEndpoint) {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = e.currentTarget.value
@@ -262,15 +270,39 @@ class EndpointBreadCrumb extends Component {
 
   renderPathLinks() {
     const pathWithUrls = this.getPath(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages)
-    return pathWithUrls.map((item, index) => {
-      if (this.props.pages?.[item.id]?.type === 2) return null;
-      return (
-        <span key={index}  style={{ cursor: 'pointer' }} onClick={() => this.props.navigate(`/${item.path}`, { replace: true })}  >
-          {item.name}
-          {index < pathWithUrls.length - 1 && '/'}
-        </span>
-      )
-    })
+      return pathWithUrls.map((item, index) => {
+        if (this.props.pages?.[item.id]?.type === 2) return null;
+        const isEditing = this.state.endpointTitle === item.name;
+        return (
+          <span key={index} style={{ cursor: 'pointer' }} onClick={() => {
+            if (isEditing) {
+              this.setState({ nameEditable: true }, () => {
+                this.nameInputRef.current.focus();
+            });
+            }
+            else{
+              this.props.navigate(`/${item.path}`, { replace: true })
+            }
+          }} >
+            {this.state.nameEditable && isEditing ? (
+                      <input
+                          name='enpoint-title'
+                          value={item.name}
+                          ref={this.nameInputRef}
+                          onChange={this.handleInputChange.bind(this)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              this.setState({ nameEditable: false });
+                            }
+                          }}
+                      />
+                  ) : (
+                      item.name
+                  )}
+            {index < pathWithUrls.length - 1 && '/'}
+          </span>
+        ) 
+      })
   }
 
   render() {
@@ -292,30 +324,16 @@ class EndpointBreadCrumb extends Component {
               this.state?.protocols?.[1]?.icon && (
                 <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[1]?.icon}</button>
               )}
-            {/* <input
-              name='enpoint-title'
-              ref={this.nameInputRef}
-              style={{ textTransform: 'capitalize' }}
-              className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
-              onChange={this.handleInputChange.bind(this)}
-              value={
-                this.props?.isEndpoint
-                  ? this.props?.pages?.[this.props?.params?.endpointId]?.name ||
-                    this.props?.history?.[this.props?.params?.historyId]?.endpoint?.name ||
-                    this.props?.endpointContent?.data?.name
-                  : this.props?.pages?.[this.props?.params?.pageId]?.name
-              }
-            /> */}
-          </div>  
+          </div>
           {this.props.location.pathname.split('/')[5] !== 'new' && (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
-              {this.collectionName && <span className='collection-name-path' 
-              onClick={() => this.props.navigate(`/${path}`, { replace: true })} 
+              {this.collectionName && <span className='collection-name-path'
+                onClick={() => this.props.navigate(`/${path}`, { replace: true })}
                 style={{ cursor: 'pointer' }}>{`${this.collectionName}/`}</span>}
               {
                 <span className='text-nowrap-heading'>
-                  {this.renderPathLinks() }
-                </span>
+                  {  this.renderPathLinks() }
+                </span> 
               }
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
                 <div className='api-label POST request-type-bgcolor ml-2'> Live </div>

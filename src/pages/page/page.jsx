@@ -39,6 +39,7 @@ const Page = () => {
     const [pageName, setPageName] = useState(page?.name);
 
     const updatedById = pages?.[pageId]?.updatedBy;
+    const createdAt = pages?.[pageId]?.createdAt ? moment(pages[pageId].updatedAt).fromNow() : null
     const lastModified = pages?.[pageId]?.updatedAt ? moment(pages[pageId].updatedAt).fromNow() : null;
     const user = users?.usersList?.find((user) => user.id === updatedById);
 
@@ -132,9 +133,16 @@ const Page = () => {
                     <Tooltip id='edited-by-tooltip'>
                         {lastModified &&
                             <div className="fs-4 text-secondary">
-                                <span>Edited by </span>
-                                <span className="font-weight-bold text-white">{user?.name}</span>
-                                <span>&nbsp;{lastModified}</span>
+                                <div>
+                                    <span>Edited by </span>
+                                    <span className="font-weight-bold text-white">{user?.name}</span>
+                                    <span>&nbsp;{lastModified}</span>
+                                </div>
+                                <div>
+                                    <span>Created by </span>
+                                    <span className="font-weight-bold text-white">{user?.name}</span>
+                                    <span>&nbsp;{createdAt}</span>
+                                </div>
                             </div>
                         }
                     </Tooltip>

@@ -2932,9 +2932,11 @@ class DisplayEndpoint extends Component {
       }
     }
   }
+
   renderEndpointUserData(isOnPublishedPage) {
     const { pages, currentEndpointId, users } = this.props
     const updatedById = pages?.[currentEndpointId]?.updatedBy
+    const createdAt = pages?.[currentEndpointId]?.createdAt ? moment(pages[currentEndpointId].updatedAt).fromNow() : null
     const lastModified = pages?.[currentEndpointId]?.updatedAt ? moment(pages[currentEndpointId].updatedAt).fromNow() : null
 
     const user = users?.find((user) => user.id === updatedById)
@@ -2951,18 +2953,25 @@ class DisplayEndpoint extends Component {
       )
     } else {
       return (
-        <div className='page-user-data mt-2'>
-          {lastModified ? (
-            <div>
-              Updated by<span> </span>
-              {user?.name}
-              <br />
-              Modified <span> </span>
-              {lastModified}
-            </div>
-          ) : (
-            <span></span>
-          )}
+        <div >
+          <OverlayTrigger placement='bottom' overlay={<Tooltip id='edited-by-tooltip'>
+            {lastModified &&
+              <div className="fs-4 text-secondary">
+                <div>
+                  <span>Modified by </span>
+                  <span className="font-weight-bold text-white">{user?.name}</span>
+                  <span>&nbsp;{lastModified}</span>
+                </div>
+                <div>
+                <span>Created by </span>
+                  <span className="font-weight-bold text-white">{user?.name}</span>
+                  <span>&nbsp;{createdAt}</span>
+                </div>
+              </div>
+            }
+          </Tooltip>}>
+            <button className='text-black-50 btn p-0'> Updated {lastModified}</button>
+          </OverlayTrigger>
         </div>
       )
     }
@@ -3091,6 +3100,7 @@ class DisplayEndpoint extends Component {
                             >
                               {isPublicEndpoint ? 'Save' : 'Save'}
                             </button></IconButton>)}
+                          {this.renderEndpointUserData()}
 
                           {this.renderSaveButton()}
                           <Dropdown className='publish-unpublish-button'>
