@@ -2938,7 +2938,7 @@ class DisplayEndpoint extends Component {
           )}
         </div>
       )
-    } else {
+    } else if (this.props.location.pathname.split('/')[5] !== 'new') {
       return (
         <div className='page-user-data mt-2'>
           {lastModified ? (
