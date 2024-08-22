@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
-import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
-import { getOnlyUrlPathById, isElectron, trimString } from '../common/utility'
-import { onPageUpdated, updateNameOfPages } from '../pages/redux/pagesActions'
+import { getOrgId, isElectron, trimString } from '../common/utility'
+import { updateNameOfPages } from '../pages/redux/pagesActions'
 import { MdHttp } from 'react-icons/md'
 import { GrGraphQl } from 'react-icons/gr'
 import { updateTab } from '../tabs/redux/tabsActions'
-import { prototype } from 'form-data'
 import withRouter from '../common/withRouter'
 
 const mapStateToProps = (state) => {
