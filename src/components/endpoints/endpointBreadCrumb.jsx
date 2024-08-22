@@ -101,6 +101,7 @@ class EndpointBreadCrumb extends Component {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
+    document.addEventListener('mousedown', this.handleClickOutside);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -161,6 +162,7 @@ class EndpointBreadCrumb extends Component {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
+    document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
   handleShortcuts = (e, actionType) => {
@@ -171,6 +173,12 @@ class EndpointBreadCrumb extends Component {
     }
   }
 
+  handleClickOutside = (event) => {
+    if (this.nameInputRef.current && !this.nameInputRef.current.contains(event.target)) {
+      this.setState({ nameEditable: false }); // Close the input field on outside click
+    }
+  };
+
   changeEndpointName() {
     const endpoint = this.props.endpoint
     if (endpoint && !endpoint.id && this.props.data.name === '') {
@@ -180,7 +188,7 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    this.setState({ changesMade: true })
+    this.setState({ changesMade: true, endpointTitle: e.currentTarget.value })
     if (this.props?.isEndpoint) {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = e.currentTarget.value
@@ -262,39 +270,39 @@ class EndpointBreadCrumb extends Component {
 
   renderPathLinks() {
     const pathWithUrls = this.getPath(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages)
-    return pathWithUrls.map((item, index) => {
-      if (this.props.pages?.[item.id]?.type === 2) return null;
-      const isEditing = this.state.endpointTitle === item.name;
-      return (
-        <span key={index} style={{ cursor: 'pointer' }} onClick={() => {
-          if (isEditing) {
-            this.setState({ nameEditable: true }, () => {
-              this.nameInputRef.current.focus();
+      return pathWithUrls.map((item, index) => {
+        if (this.props.pages?.[item.id]?.type === 2) return null;
+        const isEditing = this.state.endpointTitle === item.name;
+        return (
+          <span key={index} style={{ cursor: 'pointer' }} onClick={() => {
+            if (isEditing) {
+              this.setState({ nameEditable: true }, () => {
+                this.nameInputRef.current.focus();
             });
-          }
-          else {
-            this.props.navigate(`/${item.path}`, { replace: true })
-          }
-        }} >
-          {this.state.nameEditable && isEditing ? (
-            <input
-              name='enpoint-title'
-              value={item.name}
-              ref={this.nameInputRef}
-              onChange={this.handleInputChange.bind(this)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  this.setState({ nameEditable: false });
-                }
-              }}
-            />
-          ) : (
-            item.name
-          )}
-          {index < pathWithUrls.length - 1 && '/'}
-        </span>
-      )
-    })
+            }
+            else{
+              this.props.navigate(`/${item.path}`, { replace: true })
+            }
+          }} >
+            {this.state.nameEditable && isEditing ? (
+                      <input
+                          name='enpoint-title'
+                          value={item.name}
+                          ref={this.nameInputRef}
+                          onChange={this.handleInputChange.bind(this)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              this.setState({ nameEditable: false });
+                            }
+                          }}
+                      />
+                  ) : (
+                      item.name
+                  )}
+            {index < pathWithUrls.length - 1 && '/'}
+          </span>
+        ) 
+      })
   }
 
   render() {

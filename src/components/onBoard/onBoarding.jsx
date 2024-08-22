@@ -13,6 +13,7 @@ import { createOrg, switchOrg } from '../../services/orgApiService'
 import { onHistoryRemoved } from '../history/redux/historyAction'
 import { addCollection } from '../collections/redux/collectionsActions';
 import { addPage } from '../pages/redux/pagesActions';
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions';
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
@@ -70,6 +71,7 @@ const OnBoarding = () => {
         dispatch(onHistoryRemoved(historySnapshot));
         await createOrg(orgName, selectedIndex);
         const collection = await createUntitledCollection();
+        dispatch(addIsExpandedAction({value:true, id:collection.id}))
         const rootParentId = collection?.rootParentId
         await createUntitledPage(rootParentId);
     };

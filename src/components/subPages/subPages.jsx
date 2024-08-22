@@ -87,10 +87,12 @@ const SubPage = (props) => {
     setShowDeleteModal(false)
   }
 
-  const openAddSubPageModal = (subPageId) => {
+  const openAddSubPageModal = async(subPageId) => {
+    debugger
     const newPage = { name: 'untitled', pageType: 3 };
     if (!isOrgDocType()) {
-      dispatch(addPage(pages[subPageId].id, newPage))
+     dispatch(addPage(pages[subPageId].id, newPage))
+     dispatch(addIsExpandedAction({value:true, id:subPageId}))
       dispatch(openInNewTab({
         type: 'page',
         previewMode: false,

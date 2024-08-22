@@ -267,6 +267,7 @@ export const importCollection = (collection, uniqueTabId, customCallback, defaul
       if (customCallback) {
         customCallback({ success: true });
       }
+      return response.data
     } catch (error) {
       const errorMessage = error?.response?.data || error.message || 'An error occurred';
       toast.error(errorMessage);
