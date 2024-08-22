@@ -6,6 +6,7 @@ import { onEnter, validate } from '../common/utility';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCollection, updateCollection } from './redux/collectionsActions';
 import Input from '../common/input';
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions';
 
 const CollectionForm = (props) => {
 
@@ -36,7 +37,8 @@ const CollectionForm = (props) => {
       props.onHide();
       return;
     }
-    dispatch(addCollection({ name: inputRef.current.value }, null, redirectToCollection))
+     const collection = await dispatch(addCollection({ name: inputRef.current.value }, null, redirectToCollection))
+    dispatch(addIsExpandedAction({value:true, id:collection.id}))
     props.onHide();
   }
 
