@@ -34,7 +34,7 @@ class EndpointBreadCrumb extends Component {
     this.nameInputRef = React.createRef()
     this.state = {
       nameEditable: false,
-      endpointTitle: '',
+      endpointTitle: 'Untitled',
       previousTitle: '',
       groupName: null,
       versionName: null,
@@ -270,45 +270,47 @@ class EndpointBreadCrumb extends Component {
 
   renderPathLinks() {
     const pathWithUrls = this.getPath(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages)
-      return pathWithUrls.map((item, index) => {
-        if (this.props.pages?.[item.id]?.type === 2) return null;
-        const isEditing = this.state.endpointTitle === item.name;
-        return (
-          <span key={index} style={{ cursor: 'pointer' }} onClick={() => {
-            if (isEditing) {
-              this.setState({ nameEditable: true }, () => {
-                this.nameInputRef.current.focus();
+    return pathWithUrls.map((item, index) => {
+      if (this.props.pages?.[item.id]?.type === 2) return null;
+      const isEditing = this.state.endpointTitle === item.name;
+      return (
+        <span key={index} style={{ cursor: 'pointer' }} onClick={() => {
+          if (isEditing) {
+            this.setState({ nameEditable: true }, () => {
+              this.nameInputRef.current.focus();
             });
-            }
-            else{
-              this.props.navigate(`/${item.path}`, { replace: true })
-            }
-          }} >
-            {this.state.nameEditable && isEditing ? (
-                      <input
-                          name='enpoint-title'
-                          value={item.name}
-                          ref={this.nameInputRef}
-                          onChange={this.handleInputChange.bind(this)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              this.setState({ nameEditable: false });
-                            }
-                          }}
-                      />
-                  ) : (
-                      item.name
-                  )}
-            {index < pathWithUrls.length - 1 && '/'}
-          </span>
-        ) 
-      })
+          }
+          else {
+            this.props.navigate(`/${item.path}`, { replace: true })
+          }
+        }} >
+          {this.state.nameEditable && isEditing ? (
+            <input
+              name='enpoint-title'
+              value={item.name}
+              ref={this.nameInputRef}
+              onChange={this.handleInputChange.bind(this)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  this.setState({ nameEditable: false });
+                }
+              }}
+            />
+          ) : (
+            item.name
+          )}
+          {index < pathWithUrls.length - 1 && '/'}
+        </span>
+      )
+    })
   }
 
   render() {
-    const orgId = getOrgId()
-    const path = `orgs/${orgId}/dashboard/collection/${this.collectionId}/settings`
-    this.props.isEndpoint ? this.setEndpointData() : this.setPageData()
+    const orgId = getOrgId();
+    const path = `orgs/${orgId}/dashboard/collection/${this.collectionId}/settings`;
+    const isEditing = this.state.endpointTitle === this.props?.params?.pageId || this.props?.params?.endpointId;
+    this.props.isEndpoint ? this.setEndpointData() : this.setPageData();
+    
     return (
       <div className='endpoint-header'>
         <div className='panel-endpoint-name-container d-flex'>
@@ -325,23 +327,42 @@ class EndpointBreadCrumb extends Component {
                 <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[1]?.icon}</button>
               )}
           </div>
-          {this.props.location.pathname.split('/')[5] !== 'new' && (
+          {this.props.tabState[this.props.activeTabId].status !== 'NEW' ? (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
-              {this.collectionName && <span className='collection-name-path'
-                onClick={() => this.props.navigate(`/${path}`, { replace: true })}
-                style={{ cursor: 'pointer' }}>{`${this.collectionName}/`}</span>}
-              {
-                <span className='text-nowrap-heading'>
-                  {  this.renderPathLinks() }
-                </span> 
-              }
+              {this.collectionName && (
+                <span
+                  className='collection-name-path'
+                  onClick={() => this.props.navigate(`/${path}`, { replace: true })}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {`${this.collectionName}/`}
+                </span>
+              )}
+              <span className='text-nowrap-heading'>
+                {this.renderPathLinks()}
+              </span>
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
-                <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
+                <div className='api-label POST request-type-bgcolor ml-2'>Live</div>
               )}
               {this.props.pages?.[this.props?.params?.pageId]?.isPublished && (
-                <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
+                <div className='api-label POST request-type-bgcolor ml-2'>Live</div>
               )}
             </div>
+          ) : (
+            <input
+            name='enpoint-title'
+            ref={this.nameInputRef}
+            style={{ textTransform: 'capitalize' }}
+            className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
+            onChange={this.handleInputChange.bind(this)}
+            value={
+              this.props?.isEndpoint
+                ? this.props?.pages?.[this.props?.params?.endpointId]?.name ||
+                  this.props?.history?.[this.props?.params?.historyId]?.endpoint?.name ||
+                  this.props?.endpointContent?.data?.name
+                : this.props?.pages?.[this.props?.params?.pageId]?.name
+            }
+          />
           )}
         </div>
       </div>
