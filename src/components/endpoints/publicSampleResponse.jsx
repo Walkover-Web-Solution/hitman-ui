@@ -104,38 +104,40 @@ class PublicSampleResponse extends Component {
           `}
         </Style>
         <div className='pubSampleResponse'>
-          <div className='heading-2 pt-1 mt-4 font-16 mb-2'>
+          <div className='heading-2 pt-1 mt-4 font-14 mb-2'>
             <span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span>
-            <Tabs id='uncontrolled-tab-example' aria-hidden="true" >
-              {this.props.sample_response_array.map((sampleResponse, key) => (
-                <Tab
-                  key={key}
-                  eventKey={sampleResponse.status}
-                  title={
-                    getHighlightsData(this.props, 'sampleResponse', sampleResponse.status) ? (
-                      <span>
-                        {sampleResponse.status}
-                        <i className='fas fa-circle' />
-                      </span>
-                    ) : (
-                      sampleResponse.status
-                    )
-                  }
-                >
-                  <div className='sample-response mb-1' style={this.state.theme.backgroundStyle}>
-                    <div ref={this.contentRef}  style={contentStyle}>
-                      <div>{sampleResponse.description}</div>
-                      <div>{this.showSampleResponseBody(sampleResponse.data)}</div>
-                    </div>
-                    {showExpandButton && (
-                      <div className="expand-btn " onClick={this.toggleExpand}>
-                        {isExpanded ? 'Show Less' : 'Show More'}
-                      </div>
-                    )}
+          </div>
+          <div className='sample-response mb-1' style={this.state.theme.backgroundStyle}>
+          <Tabs id='uncontrolled-tab-example' aria-hidden="true" >
+            {this.props.sample_response_array.map((sampleResponse, key) => (
+              <Tab
+                key={key}
+                eventKey={sampleResponse.status}
+                title={
+                  getHighlightsData(this.props, 'sampleResponse', sampleResponse.status) ? (
+                    <span>
+                      {sampleResponse.status}
+                      <i className='fas fa-circle' />
+                    </span>
+                  ) : (
+                    sampleResponse.status
+                  )
+                }
+              >
+                
+                  <div ref={this.contentRef} style={contentStyle}>
+                    <div>{sampleResponse.description}</div>
+                    <div>{this.showSampleResponseBody(sampleResponse.data)}</div>
                   </div>
-                </Tab>
-              ))} 
-            </Tabs>
+                  {showExpandButton && (
+                    <div className="expand-btn " onClick={this.toggleExpand}>
+                      {isExpanded ? 'Show Less' : 'Show More'}
+                    </div>
+                  )}
+                
+              </Tab>
+            ))}
+          </Tabs>
           </div>
         </div>
       </>

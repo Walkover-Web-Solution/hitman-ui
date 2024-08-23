@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { getOrgId, isOrgDocType } from '../common/utility'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPageType } from '../tabs/redux/tabsActions'
+import { getCurrentOrg } from '../auth/authServiceV2';
 
 
 const CollectionTabs = ({ collectionId, onHide }) => {
