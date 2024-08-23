@@ -157,7 +157,7 @@ const UserProfile = () => {
         <div className='org-listing-column d-flex flex-column gap-1 w-100'>
           {organizations.map((org, key) => (
             <div key={key} className='d-flex name-list cursor-pointer'>
-              <div className='d-flex '>
+              <div className='org-collection-name d-flex'>
                 <Avatar className='mr-2 avatar-org' name={org.name} size={32} />
                 <span
                   className={`org-listing-button mr-1 ${org.id === selectedOrg?.id ? 'selected-org' : ''}`}

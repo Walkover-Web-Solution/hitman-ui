@@ -13,6 +13,7 @@ import { createOrg, switchOrg } from '../../services/orgApiService'
 import { onHistoryRemoved } from '../history/redux/historyAction'
 import { addCollection } from '../collections/redux/collectionsActions';
 import { addPage } from '../pages/redux/pagesActions';
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions';
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
@@ -25,10 +26,12 @@ const OnBoarding = () => {
     const tabs = useSelector((state) => state.tabs)
     const historySnapshot = useSelector((state) => state.history)
     const [isContinue, setIsContinue] = useState(true);
+    const [isCardClicked, setCardClicked] = useState(false);
 
     const handleCardClick = (index) => {
         setSelectedIndex(index);
         setIsContinueEnabled(true);
+        setCardClicked(true);
     };
 
     const handleContinueClick = () => {
@@ -68,6 +71,7 @@ const OnBoarding = () => {
         dispatch(onHistoryRemoved(historySnapshot));
         await createOrg(orgName, selectedIndex);
         const collection = await createUntitledCollection();
+        dispatch(addIsExpandedAction({value:true, id:collection.id}))
         const rootParentId = collection?.rootParentId
         await createUntitledPage(rootParentId);
     };
@@ -99,93 +103,93 @@ const OnBoarding = () => {
     }
 
     const validateName = (orgName) => {
-        const regex = /^[a-zA-Z0-9_]+$/
+        const regex = /^[a-zA-Z0-9_ ]+$/
         return orgName && regex.test(orgName) && orgName.length >= 3 && orgName.length <= 50
     }
 
     return (
-        <div className="onboarding-container position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
-            <div className={`on-boarding d-flex flex-column align-items-center justify-content-center p-2 w-100 ${showInput ? 'slide-out' : ''}`}>
-                <h2 className='mb-5'>
-                    How do you want to use techdoc?
-                </h2>
-                <div className='card-container d-flex flex-column flex-sm-row'>
-                    {['Light', 'Light'].map((variant, index) => (
-                        <div key={index} className='d-flex flex-column align-items-center justify-content-center'>
-                            <Card
-                                bg={variant.toLowerCase()}
-                                text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
-                                className={`card-main cursor-pointer ${selectedIndex === index ? 'active-tab bg-white' : ''}`}
-                                onClick={() => handleCardClick(index)}
-                            >
-                                <Card.Body>
-                                    <Card.Text className={`card-text d-flex flex-column justify-content-center align-items-center h-100 ${selectedIndex === index ? 'text-dark' : 'text-black-50'}`}>
-                                        {index === 0 ? (
-                                            <div className='d-flex flex-column align-items-center'>
-                                                <IoDocumentTextOutline size={40} />
-                                                <div className='mt-3'>Use Documentation</div>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                <div className='d-flex align-items-center'>
-                                                    <IoDocumentTextOutline size={40} />
-                                                    <FaPlus size={16} className='mx-2' />
-                                                    <MdOutlineApi className='ml-1' size={40} />
+        <>
+            <div className="onboarding-container position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
+                <div className={`on-boarding d-flex flex-column align-items-center justify-content-center p-2 w-100 ${showInput ? 'slide-out' : ''}`}>
+                    <h2 className='mb-5'>
+                        How do you want to use techdoc?
+                    </h2>
+                    <div className='card-container d-flex flex-column flex-sm-row'>
+                        {['Light', 'Light'].map((variant, index) => (
+                            <div key={index} className='d-flex flex-column align-items-center justify-content-center'>
+                                <Card
+                                    bg={variant.toLowerCase()}
+                                    text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
+                                    className={`card-main cursor-pointer ${selectedIndex === index ? 'active-tab bg-white' : ''}`}
+                                    onClick={() => handleCardClick(index)}
+                                >
+                                    <Card.Body >
+                                        <Card.Text className={`card-text d-flex flex-column justify-content-center align-items-center h-100 ${selectedIndex === index ? 'text-dark' : 'text-black-50'}`}>
+                                            {index === 0 ? (
+                                                <div className='d-flex flex-column align-items-center'>
+                                                    <IoDocumentTextOutline size={80} />
+                                                    <div className='mt-3'>Documentation</div>
                                                 </div>
-                                                <div className='mt-3'>Use Documentation with API</div>
-                                            </>
-                                        )}
-                                    </Card.Text>
-                                </Card.Body>
-                            </Card>
-                            <Form.Check
-                                className='mt-2'
-                                aria-label={`option ${index + 1}`}
-                                name="radio-group"
-                                checked={selectedIndex === index}
-                                onChange={() => handleCardClick(index)}
-                            />
-                        </div>
-                    ))}
-                </div>
-            </div>
-            <div className={`input-container position-absolute d-flex align-items-center flex-column p-2 w-100 ${showInput ? 'show-in' : ''}`}>
-                {isInputVisible && (
-                    <div className='input-group'>
-                        <InputGroup className='mb-3'>
-                            <Form.Control
-                                className='rounded'
-                                placeholder='Enter Organization Name'
-                                type='text'
-                                aria-label='Organization name'
-                                aria-describedby='basic-addon2'
-                                value={orgName}
-                                onChange={(e) => setOrgName(e.target.value)}
-                                onKeyDown={(e) => {
-                                    handleKeyPress(e)
-                                }}
-                                isInvalid={orgName && !validateName(orgName)}
-                            />
-                            <Button className='ml-2' onClick={() => { handleAddOrg(selectedIndex) }} variant='outline-secondary' id='button-addon2'>
-                                Create
-                            </Button>
-                        </InputGroup>
-                        <div className='d-flex'>
-                            <small className='muted-text'>**Organization name accepts min 3 and max 50 characters</small>
-                        </div>
+                                            ) : (
+                                                <>
+                                                    <div className='d-flex align-items-center'>
+                                                        <div className='d-flex flex-column align-items-center'>
+                                                            <IoDocumentTextOutline size={80} />
+                                                            <span className='mt-3'>Documentation</span>
+                                                        </div>
+                                                        <FaPlus size={16} className='mx-2' />
+                                                        <div className='d-flex flex-column align-items-center'>
+                                                            <MdOutlineApi className='ml-1' size={80} />
+                                                            <span className='mt-3'>API</span>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </Card.Text>
+                                    </Card.Body>
+                                </Card>
+                            </div>
+                        ))}
                     </div>
-                )}
+                </div>
+                <div className={`input-container position-absolute d-flex align-items-center flex-column p-2 w-100 ${showInput ? 'show-in' : ''}`}>
+                    {isInputVisible && (
+                        <div className='input-group'>
+                            <InputGroup className='mb-3'>
+                                <Form.Control
+                                    className='rounded'
+                                    placeholder='Enter Organization Name'
+                                    type='text'
+                                    aria-label='Organization name'
+                                    aria-describedby='basic-addon2'
+                                    value={orgName}
+                                    onChange={(e) => setOrgName(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        handleKeyPress(e)
+                                    }}
+                                    isInvalid={orgName && !validateName(orgName)}
+                                    autoFocus
+                                />
+                                <Button className='ml-2' onClick={() => { handleAddOrg(selectedIndex) }} variant='outline-secondary' id='button-addon2'>
+                                    Create
+                                </Button>
+                            </InputGroup>
+                            <div className='d-flex'>
+                                <small className='muted-text'>**Organization name accepts min 3 and max 50 characters</small>
+                            </div>
+                        </div>
+                    )}
+                </div>
+                <Button
+                    variant="secondary"
+                    className={`btn-Continue btn-btn-lg px-5 mt-5 ${isCardClicked ? 'bg-dark' : ''}`}
+                    disabled={!isContinueEnabled}
+                    onClick={handleContinueClick}
+                >
+                    {isContinue ? 'Continue' : 'Back'}
+                </Button>
             </div>
-            <Button
-                variant="secondary"
-                className='btn-Continue btn-btn-lg px-5 mt-5'
-                disabled={!isContinueEnabled}
-                onClick={handleContinueClick}
-            >
-                {isContinue ? 'Continue' : 'Back'}
-            </Button>
-        </div>
-
+        </>
     )
 }
 

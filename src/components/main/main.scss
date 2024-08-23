@@ -23,7 +23,7 @@
   font-size: $font-extra-small !important;
 }
 
-.font-16 {
+.font-14 {
   font-size: $font-normal-n !important;
 }
 
@@ -132,6 +132,7 @@ html body {
     font-weight: 500 !important;
     color: #6c757d;
     opacity: 0;
+    display: none !important;
 
     &:hover {
       color: #6c757d !important;
@@ -1998,6 +1999,7 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
 }
 
 .footerWrapper {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   border-top: 0;
 
   span {
@@ -2843,11 +2845,7 @@ main.mainpublic-endpoint-main .for-public-view {
 
   .techdoc-svg {
     display: flex;
-    width: 120px;
-
-    @media screen and (max-width:768px) {
-      width: 100px;
-    }
+    width: 92px;
   }
 }
 
@@ -3203,8 +3201,6 @@ li.nav-item.cookie-tab a {
   }
 
   .doc-fix-width {
-    margin: auto;
-    max-width: 51rem;
     width: 100%;
   }
 }
@@ -3507,10 +3503,7 @@ div#steve-parent-accordion {
 }
 
 body .btn-group-custom {
-  border: 1px solid $outline-color;
-  border-radius: $border-radius;
-  padding: 4px;
-
+  margin-top: 1px;
   .btn {
     background: none;
     color: #212121;
@@ -3518,12 +3511,13 @@ body .btn-group-custom {
     border: none;
     padding: 0.25rem 0.5rem;
     border-radius: 3px !important;
-    min-width: 3.5rem;
-
     &.active {
       background: #fff !important;
       color: #212121 !important;
       box-shadow: 0px 0px 4px 0px #00000029 !important;
+    }
+    &:hover {
+      color: $text-color !important;
     }
   }
 }
@@ -3924,14 +3918,9 @@ body .tox {
     height: 44px !important;
   }
 }
-
 .name-sub-page {
   overflow-wrap: anywhere;
-  max-width: 180px !important;
-
-  @media (max-width: 1400px) and (min-width: 400px) {
-    max-width: 120px !important;
-  }
+  width: calc(100% - 5px);
 
   .page-title-name {
 
@@ -4177,10 +4166,6 @@ body .tox {
   color: black !important;
 }
 
-.cur-pointer {
-  cursor: pointer !important;
-}
-
 .back-to-workspace {
   svg {
     font-size: 20px;
@@ -4191,8 +4176,6 @@ body .tox {
 .expanded {
   #collection-collapse {
     position: relative;
-    padding-left: 6px;
-    
   }
 }
 
@@ -4294,4 +4277,15 @@ body .tox {
   padding: 0 !important;
   color: unset !important;
   border: unset !important;
+}
+.floating-menu .biplus-icon {
+  &:after {
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+    transform: rotate(0);
+    top: 0;
+  }
 }

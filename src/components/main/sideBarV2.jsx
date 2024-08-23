@@ -18,6 +18,7 @@ import '../../pages/page/page.scss'
 import { ReactComponent as Logo } from '../../assets/web/favicon.svg'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import Footer from './Footer'
 
 const SideBar = () => {
   const collections = useSelector((state) => state.collections)
@@ -78,7 +79,7 @@ const SideBar = () => {
 
     return (
       <>
-        <div className='hm-sidebar-header d-flex justify-content-between'>
+        <div className='hm-sidebar-header d-flex justify-content-between mb-2 align-items-center'>
           <div className='td-header gap-2 d-flex align-items-center'>
             {(collections[collectionKeys[0]]?.favicon || collections[collectionKeys[0]]?.docProperties?.defaultLogoUrl) && (
               <div className='hm-sidebar-logo'>
@@ -95,21 +96,10 @@ const SideBar = () => {
                 />
               </div>
             )}
-            <h4 className='hm-sidebar-title'>
+            <h1 className='hm-sidebar-title mb-0 fs-1 fw-800'>
               {publishedCollectionTitle || collectionName || ''}
-              <span>API Documentation</span>
-            </h4>
+            </h1>
           </div>
-          {isTechdocOwnDomain() && (
-            <OverlayTrigger
-              placement='bottom'
-              overlay={<Tooltip>Built with Techdoc</Tooltip>}
-            >
-              <Link to={process.env.REACT_APP_UI_URL} target='_blank' className='login-button btn btn-sm btn-light d-flex justify-content-center p-0 align-items-center h-100 bg-none border-0'>
-                <Logo className='logo-techdoc' />
-              </Link>
-            </OverlayTrigger>
-          )}
         </div>
       </>
     )
@@ -440,15 +430,16 @@ const SideBar = () => {
     return (
       <>
         {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 />}
-        <div className='px-2 mx-1 pt-1'>
+        <div className='px-2 mx-1 pt-3'>
           {isOnPublishedPage() && renderCollectionName()}
           {renderSearch()}
           {/* {isOnDashboardPage && renderGlobalAddButton()} */}
         </div>
-        <div className={`sidebar-content ${isOnPublishedPage() ? 'px-2 mx-1 pt-1' : ''}`}>
+        <div className={`sidebar-content ${isOnPublishedPage() ? 'px-2 mx-1' : 'mb-3'}`}>
           {searchData.filter !== '' && renderSearchList()}
           {searchData.filter === '' && renderSidebarContent()}
         </div>
+        {isOnPublishedPage() && isTechdocOwnDomain() && (<Footer />)}
       </>
     )
   }
