@@ -7,6 +7,9 @@ import { MdHttp } from 'react-icons/md'
 import { GrGraphQl } from 'react-icons/gr'
 import { updateTab } from '../tabs/redux/tabsActions'
 import withRouter from '../common/withRouter'
+import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { GoDotFill } from 'react-icons/go'
+
 
 const mapStateToProps = (state) => {
   return {
@@ -356,10 +359,13 @@ class EndpointBreadCrumb extends Component {
                 {this.renderPathLinks()}
               </span>
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
-                <div className='api-label POST request-type-bgcolor ml-2'>Live</div>
-              )}
-              {this.props.pages?.[this.props?.params?.pageId]?.isPublished && (
-                <div className='api-label POST request-type-bgcolor ml-2'>Live</div>
+                <OverlayTrigger
+                placement="right"
+                overlay={<Tooltip id="tooltip-right">Live</Tooltip>}
+                trigger={['hover', 'focus']}
+              >
+                <GoDotFill size={14} color="green" />
+              </OverlayTrigger>
               )}
             </div>
           ) : (
