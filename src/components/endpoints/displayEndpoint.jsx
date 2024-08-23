@@ -53,13 +53,11 @@ import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle
 import { pendingEndpoint, approveEndpoint, rejectEndpoint, draftEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
-import PlusIcon from '../../assets/icons/plus.svg'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import { useQuery, useQueryClient } from 'react-query'
 import utilityFunctions from '../common/utility.js'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
-import Footer from '../main/Footer.jsx'
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
 import { statesEnum } from '../common/utility'
 import { addAuthorizationDataTypes, grantTypesEnums } from '../common/authorizationEnums.js'
@@ -73,7 +71,6 @@ import DisplayUserAndModifiedData from '../common/userService.jsx'
 import ApiDocReview from '../apiDocReview/apiDocReview.jsx'
 import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
-import { Tab, Nav, Row, Col } from 'react-bootstrap'
 import { FaPlus } from 'react-icons/fa'
 import EndpointBreadCrumb from './endpointBreadCrumb'
 import { BsThreeDots } from 'react-icons/bs';
@@ -2892,6 +2889,7 @@ class DisplayEndpoint extends Component {
               id='save-endpoint-button'
               onClick={() => this.handleSave()}
             >
+                <LiaSaveSolid className='mb-1' size={17} />
               <span>Save</span>
             </button>
           )
@@ -3061,7 +3059,7 @@ class DisplayEndpoint extends Component {
                 <>
                   {isDashboardRoute(this.props) && (
                     <div className='hm-panel py-2 position-sticky bg-white'>
-                      <div className='d-flex justify-content-between'>
+                      <div className='d-flex justify-content-between align-items-center'>
                         <EndpointBreadCrumb
                           setActiveTab={this.setActiveTab}
                           {...this.props}
@@ -3069,16 +3067,6 @@ class DisplayEndpoint extends Component {
                         />
                         <div className='d-flex gap-1 align-items-center'>
                           {this.renderToggleView()}
-                          {!isOnPublishedPage() && (
-                            <span className='pl-3 ml-1 mb-2 d-inline-block Modified-at'>
-                              <DisplayUserAndModifiedData
-                                isOnPublishedPage={isOnPublishedPage()}
-                                pages={this.props.pages}
-                                currentPage={this.props.currentEndpointId}
-                                users={this.props.users}
-                              />
-                            </span>
-                          )}
                           {this.state.showEndpointFormModal && (
                             <SaveAsSidebar
                               {...this.props}

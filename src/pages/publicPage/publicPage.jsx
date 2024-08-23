@@ -64,7 +64,7 @@ function PublicPage() {
                         </span>
                     </div>
                 )}
-                <div className='mb-5'>
+                <div className='my-5'>
                     <ApiDocReview />
                 </div>
             </div>

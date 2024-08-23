@@ -88,7 +88,6 @@ const SubPage = (props) => {
   }
 
   const openAddSubPageModal = async(subPageId) => {
-    debugger
     const newPage = { name: 'untitled', pageType: 3 };
     if (!isOrgDocType()) {
      dispatch(addPage(pages[subPageId].id, newPage))
