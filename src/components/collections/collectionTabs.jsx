@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router'
 import { getOrgId } from '../common/utility'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPageType } from '../tabs/redux/tabsActions'
-import { getCurrentOrg } from '../auth/authServiceV2'
+import { getCurrentOrg } from '../auth/authServiceV2';
 
 const CollectionTabs = ({ collectionId, onHide }) => {
   const dispatch = useDispatch()
