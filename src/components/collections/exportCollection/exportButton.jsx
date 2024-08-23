@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import exportCollectionApi from '../../services/api/colection/exportCollectionApi';
+import exportCollectionApi from '../../../services/api/colection/exportCollectionApi';
 import ExportModal from './exportCollectionModal';
 
 const ExportButton = ({ orgId, collectionId, collectionName }) => {

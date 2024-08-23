@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
-import DragAndDropUploader from '../common/dragAndDropModel/DragAndDropUploader';
+import DragAndDropUploader from '../../common/dragAndDropModel/DragAndDropUploader';
 
 const ImportCollectionModal = ({ show, onClose }) => {
   return (
