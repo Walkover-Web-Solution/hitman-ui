@@ -1809,6 +1809,7 @@ table#custom-generic-table {
 }
 
 .save-endpoint {
+  margin-top: 3px;
   .btn {
     font-size: 12px;
   }
@@ -1911,6 +1912,7 @@ table#custom-generic-table {
 }
 
 .publish-unpublish-button {
+  margin-top: 2px;
   .dropdown-toggle {
     &:after {
       all: unset !important;

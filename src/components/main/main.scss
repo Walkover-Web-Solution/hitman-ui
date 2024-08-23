@@ -126,7 +126,6 @@ html body {
 }
 
 .version-dropdown {
-  display: none;
   .dropdown-toggle {
     font-size: 14px !important;
     padding: 5px;
@@ -135,6 +134,7 @@ html body {
     font-weight: 500 !important;
     color: #6c757d;
     opacity: 0;
+    display: none;
 
     &:hover {
       color: #6c757d !important;
@@ -3321,6 +3321,7 @@ div#steve-parent-accordion {
   color: $theme-color;
 }
 body .btn-group-custom {
+  margin-top: 1px;
   .btn {
     background: none;
     color: #212121;

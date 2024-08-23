@@ -238,7 +238,7 @@ const CollectionParentPages = (props) => {
                     <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1' />
                   </span>
                   <div
-                    className='d-flex justify-content-between align-items-center name-parent-page text-truncate'
+                    className={`d-flex align-items-center name-parent-page ${isOnPublishedPage() ? 'text-truncate' : ''}`}
                     draggable={!isUserOnPublishedPage}
                     onDragOver={props.handleOnDragOver}
                     onDragStart={() => props.onDragStart(pageId)}

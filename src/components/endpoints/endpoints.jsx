@@ -94,7 +94,7 @@ const Endpoints = (props) => {
   }
 
   const displayEndpointOptions = (endpointId) => (
-    <div className='sidebar-item-action'>
+    <div className=''>
       <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
         <IconButtons>
           <BsThreeDots />
@@ -134,13 +134,13 @@ const Endpoints = (props) => {
       >
         <div className='sidebar-toggle d-flex justify-content-between'>
           <button className='pl-0'>
-            <div className={`side-bar  rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-              <button className='d-flex align-items-center' tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}>
+            <div className={`side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+              <button className={`d-flex align-items-center ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`} tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}>
                 {displayEndpointName(endpointId)}
-              <div className='d-flex align-items-center'>
+              </button>
+              <div className='endpoint-icons align-items-center'>
                 {isDashboardRoute({ navigate, location }, true) && displayEndpointOptions(endpointId)}
               </div>
-              </button>
             </div>
           </button>
         </div>
