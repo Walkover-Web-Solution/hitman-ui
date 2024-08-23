@@ -2950,7 +2950,7 @@ class DisplayEndpoint extends Component {
           )}
         </div>
       )
-    } else if (this.props.location.pathname.split('/')[5] !== 'new') {
+    } else if (this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' ) {
       return (
         <div >
           <OverlayTrigger placement='bottom' overlay={<Tooltip id='edited-by-tooltip'>
@@ -3066,7 +3066,7 @@ class DisplayEndpoint extends Component {
                           isEndpoint
                         />
                         <div className='d-flex gap-1 align-items-center'>
-                          {this.renderToggleView()}
+                          {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && this.renderToggleView()}
                           {this.state.showEndpointFormModal && (
                             <SaveAsSidebar
                               {...this.props}
@@ -3093,7 +3093,7 @@ class DisplayEndpoint extends Component {
 
                           {this.renderSaveButton()}
                           <Dropdown className='publish-unpublish-button'>
-                            { this.props.location.pathname.split('/')[5] !== 'new' && (
+                            { this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (
                             <Dropdown.Toggle as='div' id='dropdown-basic'>
                               <IconButton variant="sm" className='mt-1'><BsThreeDots className='text-gray' size={25} /></IconButton>
                             </Dropdown.Toggle>
