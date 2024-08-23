@@ -19,7 +19,8 @@ import { LuHistory } from 'react-icons/lu'
 import { GrGraphQl } from 'react-icons/gr'
 import { TbSettingsAutomation } from 'react-icons/tb'
 import { BsPlayBtn } from "react-icons/bs";
-import Plus from '../../assets/icons/plus.svg'
+import { LuPlus } from "react-icons/lu";
+
 import './tabs.scss'
 
 const CustomTabs = (props) => {
@@ -538,7 +539,7 @@ const CustomTabs = (props) => {
         ) : null}
         <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
           <button className='btn' onClick={() => handleAddTab()}>
-            <img className='p-1' src={Plus} alt='' />
+          <LuPlus />
           </button>
         </Nav.Item>
         <div className='d-flex'>

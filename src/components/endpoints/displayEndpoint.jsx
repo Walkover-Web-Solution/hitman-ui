@@ -35,7 +35,6 @@ import PublicBodyContainer from './publicBodyContainer'
 import { addEndpoint } from './redux/endpointsActions'
 import { addHistory } from '../history/redux/historyAction'
 import Authorization from './displayAuthorization'
-import LoginSignupModal from '../main/loginSignupModal'
 import PublicSampleResponse from './publicSampleResponse'
 import bodyDescriptionService from './bodyDescriptionService'
 import { moveToNextStep } from '../../services/widgetService'
@@ -1275,11 +1274,6 @@ class DisplayEndpoint extends Component {
     const { endpointName, endpointDescription } = endpointObject || {}
     let currentTabId = this.props.tab.id
     let parentId = id
-    if (!getCurrentUser()) {
-      this.setState({
-        showLoginSignupModal: true
-      })
-    }
     if (
       (currentTabId && !this.props.pages[currentTabId] && !this.state.showEndpointFormModal) ||
       (this.props?.params?.historyId && slug !== 'isHistory')
@@ -2031,12 +2025,6 @@ class DisplayEndpoint extends Component {
     const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
     sampleResponseFlagArray[index] = false
     this.setState({ sampleResponseFlagArray })
-  }
-
-  closeLoginSignupModal() {
-    this.setState({
-      showLoginSignupModal: false
-    })
   }
 
   handleCancel() {
@@ -3052,9 +3040,6 @@ class DisplayEndpoint extends Component {
               {this.renderPublishConfirmationModal()}
               {this.renderUnPublishConfirmationModal()}
               {this.renderWarningModal()}
-              {this.state.showLoginSignupModal && (
-                <LoginSignupModal show onHide={() => this.closeLoginSignupModal()} title='Save Endpoint' />
-              )}
               {getCurrentUser() ? (
                 <>
                   {isDashboardRoute(this.props) && (
