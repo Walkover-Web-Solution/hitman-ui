@@ -2833,7 +2833,7 @@ class DisplayEndpoint extends Component {
     return (
       <div className='save-endpoint'>
         {this.isDashboardAndTestingView() ? (
-          this.props.location.pathname.split('/')[5] !== 'new' ? (
+          this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW'  ? (
             <Dropdown as={ButtonGroup}>
               <button
                 id='api_save_btn'
