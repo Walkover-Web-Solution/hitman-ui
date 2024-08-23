@@ -7,12 +7,11 @@ class SampleResponseForm extends Form {
   constructor(props) {
     super(props)
     this.state = {
-      data: { status: '', description: '', body: '', title: '' },
+      data: { status: '', description: '', body: '' },
       errors: {}
     }
 
     this.schema = {
-      title: Joi.string().required().max(5).label('Title: '),
       status: Joi.number().min(100).max(599).label('Status: '),
       description: Joi.string().allow(null, '').label('Description: '),
       body: Joi.string().max(2000).allow(null, '', 'null').label('Body: ')
@@ -22,10 +21,9 @@ class SampleResponseForm extends Form {
   async componentDidMount() {
     let data = {}
     if (this.props.selectedSampleResponse) {
-      let { title, status, description, data: body } = this.props.selectedSampleResponse
+      let { status, description, data: body } = this.props.selectedSampleResponse
       body = JSON.stringify(body, null, 2)
       data = {
-        title,
         status: status ? String(status) : '',
         description,
         body
@@ -35,14 +33,14 @@ class SampleResponseForm extends Form {
   }
 
   editSampleResponse() {
-    let { status, description, body: data, title } = this.state.data
+    let { status, description, body: data} = this.state.data
     try {
       data = JSON.parse(data)
     } catch (error) {
       data = null
     }
     const index = this.props.index
-    const sampleResponse = { status, description, data, title }
+    const sampleResponse = { status, description, data }
     const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array]
     sampleResponseArray[index] = sampleResponse
@@ -50,50 +48,22 @@ class SampleResponseForm extends Form {
   }
 
   addSampleResponse() {
-    let { title, status, description, body: data } = this.state.data
+    let { status, description, body: data } = this.state.data
     try {
       data = JSON.parse(data)
     } catch (error) {
       data = null
     }
-
-    const sampleResponse = { title, status, description, data }
+    const sampleResponse = { status, description, data }
     const sampleResponseArray = [...this.props.endpointContent.sampleResponseArray, sampleResponse]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array, false]
     this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray)
   }
 
   async doSubmit() {
-    if (this.checkDuplicateName()) {
       this.props.onHide()
-      if (this.props.title === 'Add Sample Response') {
-        this.addSampleResponse()
-      }
-      if (this.props.title === 'Edit Sample Response') {
-        this.editSampleResponse()
-      }
-    }
-  }
-
-  checkDuplicateName() {
-    if (this.props && this.props.endpoints) {
-      const usedTitles = []
-      // const endpointId = this.props.location.pathname.split('/')[5]
-      // const endpoint = this.props.endpoints[endpointId] || []
-      const sampleResponse = this.props.endpointContent.sampleResponseArray || []
-      sampleResponse.map((key) => {
-        return usedTitles.push(key.title)
-      })
-
-      if (this.props.title === 'Edit Sample Response') {
-        usedTitles.splice(usedTitles.indexOf(sampleResponse[this.props.index].title), 1)
-      }
-
-      if (usedTitles.includes(this.state.data.title)) {
-        this.setState({ errors: { ...this.state.errors, title: 'Title must be unique' } })
-        return false
-      } else return true
-    }
+      if (this.props.title === 'Add Sample Response') this.addSampleResponse()
+      if (this.props.title === 'Edit Sample Response')  this.editSampleResponse()
   }
 
   render() {
@@ -112,7 +82,6 @@ class SampleResponseForm extends Form {
         </Modal.Header>
         <Modal.Body className='p-3'>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput('title', 'Title: ', 'Enter Title ', false, false, false)}
             {this.renderInput('status', 'Status: ', 'Enter Status ', false, false, false)}
             {this.renderInput('description', 'Description: ', 'Enter Descripton')}
             {this.renderAceEditor('body', 'Body: ')}

@@ -3,8 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useQueryClient } from 'react-query';
 import { Tab } from 'react-bootstrap';
 import DisplayEndpoint from '../endpoints/displayEndpoint';
-import DisplayPage from '../pages/displayPage';
-import EditPage from '../pages/editPage';
 import { getCurrentUser } from '../auth/authServiceV2';
 import { updateContent } from '../pages/redux/pagesActions';
 import CollectionTabs from '../collections/collectionTabs';

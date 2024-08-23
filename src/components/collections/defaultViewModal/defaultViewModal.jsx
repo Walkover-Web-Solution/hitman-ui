@@ -119,7 +119,7 @@ export class DefaultViewModal extends Form {
         }}
       >
         <img src={ApiIcon} alt='' />
-        {'Create Endpoint'}
+        {'Create API'}
       </button>
     )
   }
