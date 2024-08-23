@@ -12,11 +12,11 @@ import IconButtons from '../common/iconButton'
 import { BsThreeDots } from 'react-icons/bs'
 import { GrGraphQl } from 'react-icons/gr'
 import { background } from '../backgroundColor.js'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import { ReactComponent as Duplicate } from '../../assets/icons/duplicateSign.svg'
-import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 import '../../../src/components/styles.scss'
 import './endpoints.scss'
+import { FiEdit2 } from 'react-icons/fi'
+import { MdOutlineContentCopy } from 'react-icons/md'
+import { RiDeleteBinLine } from 'react-icons/ri'
 
 const Endpoints = (props) => {
   const [showEndpointForm, setShowEndpointForm] = useState({ addPage: false, edit: false, share: false, delete: false })
@@ -101,9 +101,9 @@ const Endpoints = (props) => {
         </IconButtons>
       </div>
       <div className='dropdown-menu dropdown-menu-right'>
-        <div className='dropdown-item d-flex' onClick={() => handleModalActionType('edit', endpointId)}> <RenamedItem /> Rename </div>
-        <div className='dropdown-item d-flex' onClick={() => handleDuplicate(endpointId)}> <Duplicate /> Duplicate </div>
-        <div className='dropdown-item d-flex text-danger' onClick={() => handleModalActionType('delete', endpointId)}> <DeleteIcon /> Delete </div>
+        <div className='dropdown-item d-flex' onClick={() => handleModalActionType('edit', endpointId)}> <FiEdit2  className='text-gray'size={18} /> Rename </div>
+        <div className='dropdown-item d-flex' onClick={() => handleDuplicate(endpointId)}> <MdOutlineContentCopy className='text-gray'size={18} /> Duplicate </div>
+        <div className='dropdown-item d-flex text-danger' onClick={() => handleModalActionType('delete', endpointId)}> <RiDeleteBinLine size={20} /> Delete </div>
       </div>
     </div>
   )

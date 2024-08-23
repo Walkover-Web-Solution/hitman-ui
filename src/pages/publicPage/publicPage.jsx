@@ -64,9 +64,11 @@ function PublicPage() {
                         </span>
                     </div>
                 )}
+                 {data ? (
                 <div className='my-5'>
                     <ApiDocReview />
                 </div>
+                 ) : (<></>)}
             </div>
         </div>
     )
