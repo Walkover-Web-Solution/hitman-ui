@@ -311,7 +311,11 @@ body .sidebar {
 
           &:hover {
             background: $grey;
-
+            .version-dropdown {
+              .dropdown-toggle {
+                display: flex !important;
+              }
+            }
             .name-sub-page {
               width: calc(100% - 20% - 12px);
             }
@@ -815,7 +819,7 @@ input[type='text']:focus {
 
     .version-dropdown {
       .dropdown-toggle {
-        display: flex;
+        display: flex !important;
       }
 
       button {
