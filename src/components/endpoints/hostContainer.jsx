@@ -10,13 +10,6 @@ import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-
-const hostContainerEnum = {
-  hosts: {
-    environmentHost: { key: 'environmentHost', label: 'Environment Host' }
-  }
-}
 
 const mapStateToProps = (state) => {
   return {
@@ -30,9 +23,6 @@ class HostContainer extends Component {
     this.state = {
       datalistHost: this.props?.endpointContent?.host?.BASE_URL,
       datalistUri: '',
-      // customHost: '',
-      environmentHost: '',
-      selectedHost: '',
       showIcon: true,
     }
     this.wrapperRef = React.createRef()
@@ -44,7 +34,6 @@ class HostContainer extends Component {
       document.removeEventListener('mousedown', this.handleClickOutside)
       this.setState({ showDatalist: false, showInputHost: false })
     }
-    // this.props.ON_PUBLISH_DOC(false)
   }
 
   componentDidMount() {
@@ -52,9 +41,6 @@ class HostContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.environmentHost !== this.props.environmentHost) {
-      this.setHosts()
-    }
     if (!_.isEqual(prevProps.updatedUri, this.props.updatedUri)) {
       this.setState({ datalistUri: this.props.updatedUri })
     }
@@ -65,20 +51,12 @@ class HostContainer extends Component {
 
   setHostAndUri() {
     const endpointUri = this.props?.updatedUri || ''
-    const topPriorityHost = this.customFindTopPriorityHost()
-    const selectedHost = topPriorityHost
-    const host = this.props?.endpointContent?.host?.BASE_URL || this.state[selectedHost] || this.state?.datalistHost || ''
-    this.setState({ datalistUri: endpointUri, datalistHost: host, selectedHost }, () => this.setParentHostAndUri())
+    const host = this.props?.endpointContent?.host?.BASE_URL || this.state?.datalistHost || ''
+    this.setState({ datalistUri: endpointUri, datalistHost: host }, () => this.setParentHostAndUri())
   }
 
   setParentHostAndUri() {
-    this.props.set_host_uri(this.state.datalistHost, this.state.datalistUri, this.state.selectedHost)
-  }
-
-  customFindTopPriorityHost() {
-    const selectedHost = ''
-    if (this.state.environmentHost) return 'environmentHost'
-    return selectedHost
+    this.props.set_host_uri(this.state.datalistHost, this.state.datalistUri)
   }
 
   fetchPublicEndpointHost() {
@@ -99,8 +77,7 @@ class HostContainer extends Component {
     untitledEndpointData.data.uri = data?.datalistUri
     untitledEndpointData.data.updatedUri = data?.datalistUri
     untitledEndpointData.host = {
-      BASE_URL: data?.datalistHost,
-      selectedHost: ''
+      BASE_URL: data?.datalistHost
     }
 
     if (parsedData.auth_type == 'basic') {
@@ -268,7 +245,6 @@ class HostContainer extends Component {
       {
         datalistHost: host || this.props?.endpointContent?.host?.BASE_URL,
         showDatalist: false,
-        selectedHost: type,
         Flag: true
       },
       () => this.setParentHostAndUri()
@@ -298,27 +274,16 @@ class HostContainer extends Component {
     const data = {
       datalistHost: '',
       datalistUri: '',
-      selectedHost: '',
       Flag: true
     }
     if (hostName) {
-      const selectedHost = this.selectCurrentHost(hostName)
-      // if (selectedHost === 'customHost') data.customHost = hostName
       data.datalistHost = hostName
-      data.selectedHost = selectedHost
       uri = value.replace(hostName, '')
     } else {
-      // data.selectedHost = 'customHost'
       uri = value
     }
     data.datalistUri = uri
     return data
-  }
-
-  selectCurrentHost(hostname) {
-    // if (hostname === this.state.customHost) return 'customHost'
-    if (hostname === this.state.environmentHost) return 'environmentHost'
-    return 'environmentHost'
   }
 
   setHosts() {
@@ -352,17 +317,6 @@ class HostContainer extends Component {
         {showIcon && <div className='position-relative url-icons'> <HiOutlineExclamationCircle size={20} className='invalid-icon' />
           <span className='position-absolute'>URL cannot be empty</span>
         </div>}
-        <div className={['host-data', this.state.showDatalist ? 'd-block' : 'd-none'].join(' ')}>
-          {Object.values(hostContainerEnum.hosts).map(
-            (host, index) =>
-              this.state[host.key] && (
-                <div key={index} className='host-data-item' onClick={(e) => this.handleClickHostOptions(this.state[host.key], host.key)}>
-                  <div>{this.state[host.key]}</div>
-                  <small className='text-muted font-italic'>{host.label}</small>
-                </div>
-              )
-          )}
-        </div>
       </div>
     )
   }

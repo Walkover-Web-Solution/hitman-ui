@@ -3,27 +3,24 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { Tab, Nav, Dropdown } from 'react-bootstrap'
 
-import History from '../history/history.jsx'
 import TabContent from '../tabs/tabContent'
 import CustomTabs from '../tabs/tabs'
 import tabStatusTypes from '../tabs/tabStatusTypes'
-import LoginSignupModal from './loginSignupModal'
 import Environments from '../environments/environments'
 import IconButton from '../common/iconButton.jsx'
-
-import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
 import { addNewTab, fetchTabsFromRedux, openInNewTab, setActiveTabId } from '../tabs/redux/tabsActions'
 import { getCurrentOrg, getCurrentUser } from '../auth/authServiceV2'
 import { updateStateOfCurlSlider } from '../modals/redux/modalsActions.js'
-import { IoCodeSlashOutline } from 'react-icons/io5'
+
 import './main.scss'
 import 'react-tabs/style/react-tabs.css'
+import { IoCodeSlashOutline } from 'react-icons/io5'
 import { SiAmazonapigateway } from "react-icons/si";
 import { SiCloudflarepages } from "react-icons/si";
 import { IoDocumentTextOutline } from "react-icons/io5";
-
 import { MdHttp } from "react-icons/md";
 import { GrGraphQl } from "react-icons/gr";
+
 const ContentPanel = () => {
 
   const dispatch = useDispatch()
@@ -33,7 +30,6 @@ const ContentPanel = () => {
 
   const [saveEndpointFlag, setSaveEndpointFlag] = useState(false)
   const [savePageFlag, setSavePageFlag] = useState(false)
-  const [showLoginSignupModal, setShowLoginSignupModal] = useState(false)
   const [selectedTabId, setSelectedTabId] = useState(null)
 
   const { endpoints, collections, pages, tabs, historySnapshots, curlSlider } = useSelector((state) => ({
@@ -72,19 +68,10 @@ const ContentPanel = () => {
         }
       }
 
-        if (pageId && pageId !== 'new') {
-          if (tabs.tabs[pageId]) {
-            if (tabs.activeTabId !== pageId) {
-              dispatch(setActiveTabId(pageId))
-            }
-          } else if (pages && pages[pageId]) {
-            dispatch(openInNewTab({
-              id: pageId,
-              type: 'page',
-              status: tabStatusTypes.SAVED,
-              previewMode: false,
-              isModified: false,
-            }))
+      if (pageId && pageId !== 'new') {
+        if (tabs.tabs[pageId]) {
+          if (tabs.activeTabId !== pageId) {
+            dispatch(setActiveTabId(pageId))
           }
         } else if (pages && pages[pageId]) {
           dispatch(openInNewTab({
@@ -93,9 +80,18 @@ const ContentPanel = () => {
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
-            state: {},
           }))
         }
+      } else if (pages && pages[pageId]) {
+        dispatch(openInNewTab({
+          id: pageId,
+          type: 'page',
+          status: tabStatusTypes.SAVED,
+          previewMode: false,
+          isModified: false,
+          state: {},
+        }))
+      }
 
       if (historyId) {
         if (tabs.tabs[historyId]) {
@@ -207,14 +203,14 @@ const ContentPanel = () => {
       return (
         <>
           <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
-            <SiAmazonapigateway  size={100} className='mb-4 text-secondary'/>
+            <SiAmazonapigateway size={100} className='mb-4 text-secondary' />
             <p className='mb-4 text-secondary'>Create a new request:</p>
             <div>
               <button onClick={() => dispatch(addNewTab())} className='btn text-secondary'>
-                <MdHttp size={30}/>
+                <MdHttp size={30} />
               </button>
               <button onClick={() => { }} className='btn text-secondary'>
-                <GrGraphQl size={30}/>
+                <GrGraphQl size={30} />
               </button>
             </div>
           </div>
@@ -224,11 +220,11 @@ const ContentPanel = () => {
       return (
         <>
           <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
-            <SiCloudflarepages size={100} className='mb-4 text-secondary'/>
+            <SiCloudflarepages size={100} className='mb-4 text-secondary' />
             <p className='mb-4 text-secondary'>Create a new page:</p>
             <div>
               <button onClick={() => dispatch(addNewTab())} className='btn text-secondary'>
-                <IoDocumentTextOutline size={22}/> 
+                <IoDocumentTextOutline size={22} />
               </button>
             </div>
           </div>
@@ -240,7 +236,6 @@ const ContentPanel = () => {
 
   return (
     <main role='main' className='main'>
-      {showLoginSignupModal && <LoginSignupModal show onHide={() => setShowLoginSignupModal(false)} title='Save Endpoint' />}
       <Tab.Container id='left-tabs-example' defaultActiveKey={tabs.activeTabId} activeKey={tabs.activeTabId}>
         {getCurrentUser() ? (
           <>
@@ -251,24 +246,24 @@ const ContentPanel = () => {
                   handle_save_page={handleSavePage}
                 />
                 <div className='d-flex'>
-                <Environments />
-                {params.endpointId && (
-                  <div
-                    className='d-flex justify-content-center align-items-center code-curl-icon'
-                    onClick={handleCodeCurlClick}
-                  >
-                    <IconButton>
-                      <IoCodeSlashOutline
-                       className='m-1'
-                        type='button'
-                        data-bs-toggle='offcanvas'
-                        data-bs-target='#offcanvasRight'
-                        aria-controls='offcanvasRight'
-                        size={18}
-                      />
-                    </IconButton>
-                  </div>
-                )}
+                  <Environments />
+                  {params.endpointId && (
+                    <div
+                      className='d-flex justify-content-center align-items-center code-curl-icon'
+                      onClick={handleCodeCurlClick}
+                    >
+                      <IconButton>
+                        <IoCodeSlashOutline
+                          className='m-1'
+                          type='button'
+                          data-bs-toggle='offcanvas'
+                          data-bs-target='#offcanvasRight'
+                          aria-controls='offcanvasRight'
+                          size={18}
+                        />
+                      </IconButton>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -283,28 +278,6 @@ const ContentPanel = () => {
                   </Nav.Link>
                 </Nav.Item>
               </Nav>
-              <div className='custom-btn-group d-flex'>
-                <button
-                  className='btn'
-                  onClick={() => setShowLoginSignupModal(true)}
-                >
-                  <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                    <path d='M9 3V15' stroke='#808080' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                    <path d='M3 9H15' stroke='#808080' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' />
-                  </svg>
-                </button>
-                <div className='btn-divider' />
-                {getCurrentUser() && (
-                  <Dropdown>
-                    <Dropdown.Toggle bsPrefix='dropdown' variant='default' id='dropdown-basic'>
-                      <HistoryIcon />
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu className='history-drop-down'>
-                      <History />
-                    </Dropdown.Menu>
-                  </Dropdown>
-                )}
-              </div>
             </div>
           </div>
         )}
