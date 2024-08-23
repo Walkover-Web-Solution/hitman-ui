@@ -1,9 +1,8 @@
 // created a generic modalFile for all modals
 import React from 'react'
-import { Modal, Button } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import InputGroup from 'react-bootstrap/InputGroup'
 import './main.scss'
-import { useState } from 'react'
 import Form from 'react-bootstrap/Form'
 function GenericModal({
   email,
@@ -21,11 +20,9 @@ function GenericModal({
   showModal,
   title,
 }) {
-  const [createOrg, setcreateOrg] = useState(false)
 
   const handleClose = () => {
     handleCloseModal()
-    setcreateOrg(false)
   }
   return (
     <div>
