@@ -66,7 +66,6 @@ function PublicPage() {
                 )}
                 <div className='mb-5'>
                     <ApiDocReview />
-                    <Footer />
                 </div>
             </div>
         </div>

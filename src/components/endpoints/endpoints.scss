@@ -1453,6 +1453,7 @@ table#custom-generic-table {
 
 .end-point-name {
   overflow-wrap: anywhere;
+  width: calc(100% - 42px);
 }
 
 .dropdown-label {
@@ -1811,7 +1812,9 @@ table#custom-generic-table {
   .btn {
     font-size: 12px;
   }
-
+.dropdown-menu {
+  min-width: fit-content;
+}
   .save-button-endpoint {
     padding-top: 2px;
     padding-bottom: 2px;
