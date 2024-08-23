@@ -11,7 +11,8 @@ import { getCurrentOrg } from '../auth/authServiceV2'
 const CollectionTabs = ({ collectionId, onHide }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const orgType = getCurrentOrg()?.meta?.type
+  const orgType = getCurrentOrg()?.meta?.type 
+  const metaType = getCurrentOrg()?.meta
   const { activeTabId, pageType } = useSelector((state) => {
     const activeTabId = state?.tabs?.activeTabId
     return {
@@ -38,11 +39,11 @@ const CollectionTabs = ({ collectionId, onHide }) => {
   }
 
   return (
-    <div>
-      <ul className='nav nav-pills body-button'>
+    <div className='custom-tabs w-100'>
+      <ul className='nav nav-tabs border-0 border-bottom w-100 rounded-0 mb-2'>
         <li className='nav-item cursor-pointer'>
           <a
-            className={`nav-link ${pageType === 'SETTINGS' ? 'active' : ''}`}
+            className={`nav-link bg-none ${pageType === 'SETTINGS' ? 'active text-black' : 'text-secondary'}`}
             onClick={() => {
               navigate(`/orgs/${getOrgId()}/dashboard/collection/${collectionId}/settings`)
               handleTabChange('SETTINGS')
@@ -53,7 +54,7 @@ const CollectionTabs = ({ collectionId, onHide }) => {
         </li>
         <li className='nav-item cursor-pointer'>
           <a
-            className={`nav-link ${pageType === 'FEEDBACK' ? 'active' : ''}`}
+            className={`nav-link bg-none ${pageType === 'FEEDBACK' ? 'active text-black' : 'text-secondary'}`}
             onClick={() => {
               navigate(`/orgs/${getOrgId()}/dashboard/collection/${collectionId}/feedback`)
               handleTabChange('FEEDBACK')
@@ -63,10 +64,10 @@ const CollectionTabs = ({ collectionId, onHide }) => {
           </a>
         </li>
         {
-          orgType === 1 && (
+          (orgType === 1 || metaType === null) && (
             <li className='nav-item cursor-pointer'>
               <a
-                className={`nav-link ${pageType === 'RUNS' ? 'active' : ''}`}
+                className={`nav-link bg-none ${pageType === 'RUNS' ? 'active text-black' : 'text-secondary'}`}
                 onClick={() => {
                   navigate(`/orgs/${getOrgId()}/dashboard/collection/${collectionId}/runs`)
                   handleTabChange('RUNS')
