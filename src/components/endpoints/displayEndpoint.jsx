@@ -2889,7 +2889,7 @@ class DisplayEndpoint extends Component {
               id='save-endpoint-button'
               onClick={() => this.handleSave()}
             >
-                <LiaSaveSolid className='mb-1' size={17} />
+                <LiaSaveSolid size={17} />
               <span>Save</span>
             </button>
           )
@@ -2957,7 +2957,7 @@ class DisplayEndpoint extends Component {
             {lastModified &&
               <div className="fs-4 text-secondary">
                 <div>
-                  <span>Modified by </span>
+                  <span> Updated by </span>
                   <span className="font-weight-bold text-white">{user?.name}</span>
                   <span>&nbsp;{lastModified}</span>
                 </div>
@@ -3150,7 +3150,7 @@ class DisplayEndpoint extends Component {
               <div className={'clear-both ' + (this.props?.endpointContent?.currentView === 'doc' ? 'doc-view m-auto' : 'testing-view')}>
                 <div className='endpoint-header'>
                   {this.isNotDashboardOrDocView() && (
-                    <div className='d-flex endpoint-name-container justify-content-between mb-3'>
+                    <div className='d-flex endpoint-name-container justify-content-between mb-3 align-content-center'>
                       {this.isNotDashboardOrDocView() && (
                         <>
                           <h1 className='endpoint-title mb-0'>{this.props?.endpointContent?.data?.name || ''}</h1>
@@ -3668,7 +3668,7 @@ class DisplayEndpoint extends Component {
                   <div className='doc-options d-flex align-items-center'>{this.renderDocViewOptions()}</div>
                 )}
                 {isOnPublishedPage() && (
-                  <span className='pl-3 Modified-at upper-modified-at'>
+                  <span className='Modified-at upper-modified-at'>
                     <DisplayUserAndModifiedData
                       isOnPublishedPage={true}
                       pages={this.props.pages}
