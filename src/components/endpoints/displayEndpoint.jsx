@@ -76,6 +76,7 @@ import { useParams } from 'react-router-dom'
 import { Tab, Nav, Row, Col } from 'react-bootstrap'
 import { FaPlus } from 'react-icons/fa'
 import DocViewContent from './displaydocData.jsx'
+import { replaceVariables, replaceVariablesInBody, replaceVariablesInJson } from './endpointUtility.js'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -430,7 +431,6 @@ class DisplayEndpoint extends Component {
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
     const { endpointId } = this.props.params
-    if (endpointId === 'new') this.setUnsavedTabDataInIDB()
     document.addEventListener('keydown', this.handleKeyDown)
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
@@ -469,7 +469,6 @@ class DisplayEndpoint extends Component {
         variables: { Proxy_auth_token: getProxyToken(), endpoint: this.props.endpointContent }
       })
     }
-    // window.closeChatbot()
     window.addEventListener('resize', this.updateDimensions)
     if (prevState.isMobileView !== this.state.isMobileView) {
       this.isMobileView()
@@ -504,10 +503,6 @@ class DisplayEndpoint extends Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions)
     document.removeEventListener('keydown', this.handleKeyDown)
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
-    }
   }
 
   handleShortcuts = (event, data) => {
@@ -633,30 +628,6 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(tempData)
   }
 
-  setUnsavedTabDataInIDB() {
-    if (this.props.tab.id === this.props.tabs.activeTabId) {
-      clearTimeout(this.saveTimeOut)
-      this.saveTimeOut = setTimeout(() => {
-        const state = _.cloneDeep(this.state)
-
-        /** clean unnecessary items from state before saving */
-        const unnecessaryStateItems = [
-          'loader',
-          'draftDataSet',
-          'saveLoader',
-          'codeEditorVisibility',
-          'showCookiesModal',
-          'methodList',
-          'theme',
-          'runSendRequest',
-          'requestKey'
-        ]
-        unnecessaryStateItems.forEach((item) => delete state[item])
-        this.props.update_tab(this.props.tab.id, { state })
-      }, 1000)
-    }
-  }
-
   setPathVariables(pathVariableKeys, pathVariableKeysObject) {
     const pathVariables = []
     let counter = 0
@@ -719,65 +690,6 @@ class DisplayEndpoint extends Component {
     return originalParams
   }
 
-  replaceVariables(str, customEnv) {
-    let envVars = this.props.environment.variables
-    if (customEnv) {
-      envVars = customEnv
-    }
-    str = str?.toString() || ''
-    const regexp = /{{((\w|-|\s)+)}}/g
-    let match = regexp.exec(str)
-    const variables = []
-    if (match === null) return str
-
-    if (isDashboardRoute(this.props)) {
-      if (!envVars) {
-        const missingVariable = match[1]
-        return `${missingVariable}`
-      }
-
-      do {
-        variables.push(match[1])
-      } while ((match = regexp.exec(str)) !== null)
-
-      for (let i = 0; i < variables.length; i++) {
-        const envVariable = envVars[variables[i]]
-        if (!envVariable) continue
-        const strToReplace = `{{${variables[i]}}}`
-        if (envVariable?.currentValue) {
-          str = str.replace(strToReplace, envVariable.currentValue)
-        } else if (envVariable?.initialValue) {
-          str = str.replace(strToReplace, envVariable.initialValue)
-        } else {
-          str = str.replace(strToReplace, '')
-        }
-      }
-    }
-    return str
-  }
-
-  replaceVariablesInJson(json, customEnv) {
-    const keys = Object.keys(json)
-    for (let i = 0; i < keys.length; i++) {
-      json[keys[i]] = this.replaceVariables(json[keys[i]], customEnv)
-      const updatedKey = this.replaceVariables(keys[i], customEnv)
-      if (updatedKey !== keys[i]) {
-        json[updatedKey] = json[keys[i]]
-        delete json[keys[i]]
-      }
-    }
-    return json
-  }
-
-  replaceVariablesInBody(body, bodyType, customEnv) {
-    if (bodyType === bodyTypesEnums['multipart/form-data'] || bodyType === bodyTypesEnums['application/x-www-form-urlencoded']) {
-      body = this.replaceVariablesInJson(body, customEnv)
-    } else if (this.rawBodyTypes?.includes(bodyType)) {
-      body = this.replaceVariables(body, customEnv)
-    }
-    return body
-  }
-
   parseBody(rawBody) {
     let body = {}
     try {
@@ -816,15 +728,8 @@ class DisplayEndpoint extends Component {
     const currentEndpointId = this.props.currentEndpointId !== 'new' ? this.props.activeTabId : this.props.currentEndpointId
     let responseJson = {}
     try {
-      if (isElectron()) {
-        // Handle API through Electron Channel
-        const { ipcRenderer } = window.require('electron')
-        const { sslMode } = this.state
-        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest, sslMode })
-      } else {
         // Handle API through Backend
         responseJson = await endpointApiService.apiTest(api, method, body, header, bodyType, cancelToken)
-      }
 
       if (responseJson.data.success) {
         /** request creation was successfull */
@@ -1159,15 +1064,15 @@ class DisplayEndpoint extends Component {
         } = result.data
         this.setState({ tests })
         /** Replace Environemnt Variables */
-        url = this.replaceVariables(url || {}, environment)
+        url = replaceVariables(url || {}, environment, this.props.environment.variables)
         url = this.addhttps(url)
-        headers = this.replaceVariablesInJson(headers || {}, environment)
+        headers = replaceVariablesInJson(headers || {}, environment)
         // Start of Regeneration of AUTH2.0 Token
         const { newHeaders, newUrl } = await this.getRefreshToken(headers, url)
         headers = newHeaders
         url = newUrl
         const bodyType = this.props?.endpointContent?.data?.body?.type
-        body = this.replaceVariablesInBody(body, bodyType, environment)
+        body = replaceVariablesInBody(body, bodyType, environment)
         requestOptions = { ...requestOptions, body, headers, url, bodyType }
         /** Steve Onboarding Step 5 Completed */
         moveToNextStep(5)
@@ -1427,7 +1332,6 @@ class DisplayEndpoint extends Component {
   setModifiedTabData() {
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id)
-      this.setUnsavedTabDataInIDB()
     }
   }
 
@@ -2041,13 +1945,8 @@ class DisplayEndpoint extends Component {
   }
 
   handleCancel() {
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.invoke('request-cancel', this.state.requestKey)
-    } else {
-      const CUSTOM_REQUEST_CANCELLATION = 'Request was cancelled'
-      this.state.runSendRequest.cancel(CUSTOM_REQUEST_CANCELLATION)
-    }
+    const CUSTOM_REQUEST_CANCELLATION = 'Request was cancelled'
+    this.state.runSendRequest.cancel(CUSTOM_REQUEST_CANCELLATION)
     this.setState({
       loader: false,
       runSendRequest: null,
@@ -2426,6 +2325,11 @@ class DisplayEndpoint extends Component {
         </ButtonGroup>
       )
     }
+  }
+  
+  showDocOptions() {
+    const { docOptions } = this.state
+    this.setState({ docOptions: !docOptions })
   }
 
   renderDocViewOptions() {
@@ -2830,11 +2734,6 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  showDocOptions() {
-    const { docOptions } = this.state
-    this.setState({ docOptions: !docOptions })
-  }
-
   renderSaveButton() {
     return (
       <div className='save-endpoint'>
@@ -3123,11 +3022,6 @@ class DisplayEndpoint extends Component {
                           {this.isDashboardAndTestingView() ? 'Send' : 'Try'}
                         </button>
                       </div>
-                    </div>
-                  )}
-                  {isElectron() && (
-                    <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>
-                      SSL certificate verification {this.state.sslMode ? <span className='enabled'>enabled</span> : <span>disabled</span>}{' '}
                     </div>
                   )}
                   <div className={this.isDashboardAndTestingView() ? 'endpoint-headers-container d-flex' : 'hm-public-endpoint-headers'}>
