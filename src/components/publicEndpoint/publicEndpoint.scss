@@ -265,62 +265,76 @@ form.add-new-domain-form {
 .hm-right-content {
   margin: 0 auto;
   height: 100%;
+
   .mid-part {
     max-width: 48rem;
     width: 100%;
   }
+
   .main-table-wrapper {
-    > div {
+    >div {
       &:empty {
         display: none;
       }
     }
   }
+
   .request-button {
     .custom-theme-btn {
       color: white;
       background-color: $theme-color;
+
       &:hover {
         opacity: 0.7;
       }
     }
   }
+
   .innerContainer {
     height: 100vh;
     display: flex;
+
     @media screen and (max-width: 1160px) {
       flex-direction: column;
       padding: 24px;
       height: 100%;
     }
+
     @media screen and (max-width: 992px) {
       padding: 0px;
       padding-top: 24px;
     }
+
     @media screen and (max-width: 767px) {
       padding-top: 0;
     }
   }
+
   .doc-view {
     box-shadow: none;
     background-color: inherit;
     padding: 0;
   }
+
   .custom-display-page {
     padding: 0 1.5rem;
     min-width: 250px;
     height: 100vh;
+
     .page-header {
       line-break: anywhere;
       font-size: 22px;
     }
+
     @media screen and (max-width: 564px) {
       min-width: 15rem;
     }
-    + .public-navbar {
+
+    +.public-navbar {
       max-width: 100% !important;
     }
   }
+
   .hm-endpoint-container {
     transition: 450ms;
     overflow: auto;
@@ -334,15 +348,9 @@ form.add-new-domain-form {
     max-width: 100%;
     align-items: center;
     justify-content: space-between;
-    padding: 24px 66px 24px;
     padding-bottom: 0;
-    @media screen and (max-width: 1400px) {
-      padding: 1.25rem 1.25rem;
-    }
-    @media screen and (max-width: 1160px) {
-      padding: 0;
-    }
-    &::-webkit-scrollbar {
+
+    webkit-scrollbar {
       display: none;
       width: 0px;
       background: transparent;
@@ -382,6 +390,7 @@ form.add-new-domain-form {
   white-space: nowrap;
   overflow: hidden;
 }
+
 .hm-sidebar-logo img {
   // width: 100%;
   width: 100%;
@@ -457,23 +466,28 @@ h4.hm-sidebar-title span {
     font-weight: 600 !important;
     margin-bottom: 8px;
     display: inline-block;
+
     .fa-circle {
       color: #e98a36;
       margin-left: 5px;
       font-size: 12px;
     }
   }
+
   .close-button {
     height: 33px;
   }
+
   .headParaWraper {
     background: $secondary-color;
   }
+
   table#custom-generic-table {
     button.btn.cross-button {
       padding-top: 0;
       padding-bottom: 0;
     }
+
     thead {
       tr {
         th {
@@ -483,6 +497,7 @@ h4.hm-sidebar-title span {
         }
       }
     }
+
     tbody {
       tr {
         &:first-child {
@@ -490,12 +505,14 @@ h4.hm-sidebar-title span {
             border-top: none;
           }
         }
+
         td {
           &.custom-td {
             border-color: #e5e5e5 !important;
             vertical-align: middle;
             opacity: 1;
             color: #232427;
+
             &.keyWrapper {
               width: 150px !important;
               word-break: break-all;
@@ -504,9 +521,11 @@ h4.hm-sidebar-title span {
               color: #333;
             }
           }
+
           &#generic-table-description-cell {
             color: #999999;
           }
+
           &#generic-table-key-cell {
             input.Checkbox {
               height: auto;
@@ -522,35 +541,43 @@ h4.hm-sidebar-title span {
 
 .hm-panel.endpoint-public-response-container.public-doc {
   width: 100%;
+
   .tab-content {
     margin: 0;
   }
+
   .endpoint-response-container {
     background: $secondary-color;
     padding: 1rem;
     border-radius: $border-radius;
+
     pre {
       padding: 1rem;
       border-radius: $border-radius;
     }
   }
 }
+
 .empty-response-container svg {
   width: 80px;
 }
+
 // Public Response container
 .endpoint-public-response-container {
   .empty-response {
     display: none;
   }
+
   pre {
     font-size: $font-small;
   }
+
   .empty-response-container {
     background: transparent;
     border: none;
     height: 150px;
   }
+
   .response-viewer {
     .response-tabs {
       button {
@@ -622,6 +649,7 @@ h4.hm-sidebar-title span {
 .icon-design {
   background-color: #f8f8f8;
 }
+
 button.toggleButton {
   font-size: 0;
   border: none;
@@ -629,25 +657,30 @@ button.toggleButton {
   position: relative;
   z-index: 19;
 }
+
 .mainContentWrapperPublic {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+
   &:not(.hideCodeEditor) {
     .toggleButton {
       background-color: transparent !important;
     }
   }
 }
+
 .hm-right-content {
   height: 100vh;
+
   &.hasPublicNavbar {
     .hideCodeEditor {
       button.toggleButton {
         top: 3.75rem;
       }
     }
+
     .public-navbar {
       position: relative;
       transition: all 500ms ease 0s;
@@ -661,6 +694,7 @@ button.toggleButton {
       left: 0;
       right: 0;
       align-items: center;
+
       &.stickyNav {
         background: #fff;
         left: 0;
@@ -668,23 +702,28 @@ button.toggleButton {
         box-shadow: 0px 10px 20px -13px #e1e1e1;
       }
     }
+
     .display-component {
       padding-top: 0;
     }
   }
+
   .hideCodeEditor {
     transition: all 0.3s ease-in;
     width: 100.5%;
+
     .hm-endpoint-container {
       padding: 0;
       max-width: 52rem;
     }
-    + .public-navbar {
+
+    +.public-navbar {
       margin: 0 auto;
       max-width: 100%;
     }
   }
 }
+
 .pubCodeWrapper {
   z-index: 199;
   width: 432px;
@@ -709,6 +748,7 @@ button.toggleButton {
       z-index: 1000;
       width: 100px !important;
     }
+
     .dropdown-more {
       display: flex;
       flex: 1 1;
@@ -750,10 +790,12 @@ button.toggleButton {
   .mainContentWrapper {
     justify-content: space-between;
   }
+
   .pubCodeWrapper.closeEditor {
     transition: 450ms;
     transform: translate3d(100%, 0, 0);
   }
+
   button.toggleButton {
     font-size: $font-normal;
     background-color: #000000;
@@ -765,9 +807,11 @@ button.toggleButton {
     border-bottom-left-radius: 4px;
     top: 1.25rem;
     height: 2.25rem;
+
     img {
       display: none;
     }
+
     @media only screen and (max-width: 1600px) {
       left: -140px;
       font-size: 12px;
@@ -776,24 +820,29 @@ button.toggleButton {
     }
   }
 }
+
 .copy-button-light {
   border-radius: 4px 4px 0px 0px;
   background-color: #e8e9e8;
 }
+
 .copy-button-dark {
   border-radius: 4px 4px 0px 0px;
   background-color: #222222;
 }
+
 .empty-div-light {
   padding: 10px;
   border-radius: 0px 0px 4px 4px;
   background-color: #e8e9e8;
 }
+
 .empty-div-dark {
   padding: 10px;
   border-radius: 0px 0px 4px 4px;
   background-color: #222222;
 }
+
 $loader-size: 100px;
 $loader-dot-size: calc($loader-size / 5); //20
 $loader-height: $loader-dot-size; //20
@@ -806,7 +855,8 @@ $loader-dot-color: #2196f3;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  > div {
+
+  >div {
     content: ' ';
     width: $loader-dot-size;
     height: $loader-dot-size;
@@ -814,15 +864,19 @@ $loader-dot-color: #2196f3;
     border-radius: 100%;
     position: absolute;
     animation: shift 2s linear infinite;
+
     &:nth-of-type(1) {
       animation-delay: -0.4s;
     }
+
     &:nth-of-type(2) {
       animation-delay: -0.8s;
     }
+
     &:nth-of-type(3) {
       animation-delay: -1.2s;
     }
+
     &:nth-of-type(4) {
       animation-delay: -1.6s;
     }
@@ -865,17 +919,15 @@ $loader-dot-color: #2196f3;
 /* Indeterminate */
 .pure-material-progress-linear:indeterminate {
   background-size: 200% 100%;
-  background-image: linear-gradient(
-    to right,
-    transparent 50%,
-    currentColor 50%,
-    currentColor 60%,
-    transparent 60%,
-    transparent 71.5%,
-    currentColor 71.5%,
-    currentColor 84%,
-    transparent 84%
-  );
+  background-image: linear-gradient(to right,
+      transparent 50%,
+      currentColor 50%,
+      currentColor 60%,
+      transparent 60%,
+      transparent 71.5%,
+      currentColor 71.5%,
+      currentColor 84%,
+      transparent 84%);
   animation: pure-material-progress-linear 2s infinite linear;
 }
 
@@ -892,10 +944,12 @@ $loader-dot-color: #2196f3;
     background-size: 200% 100%;
     background-position: left -31.25% top 0%;
   }
+
   50% {
     background-size: 800% 100%;
     background-position: left -49% top 0%;
   }
+
   100% {
     background-size: 400% 100%;
     background-position: left -102% top 0%;

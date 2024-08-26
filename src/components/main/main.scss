@@ -23,6 +23,34 @@
   font-size: $font-extra-small !important;
 }
 
+.font-16 {
+  font-size: $font-normal-n !important;
+}
+
+.gap-1 {
+  gap: $gap-small !important;
+}
+
+.gap-2 {
+  gap: $gap-medium !important;
+}
+
+.gap-3 {
+  gap: $gap-normal !important;
+}
+
+.gap-4 {
+  gap: $gap-small-large !important;
+}
+
+.gap-5 {
+  gap: $gap-large !important;
+}
+
+.gap-6 {
+  gap: $gap-extra-large !important;
+}
+
 .font-14 {
   font-size: $font-normal-n !important;
 }
@@ -126,20 +154,13 @@ html body {
 .version-dropdown {
   .dropdown-toggle {
     font-size: 14px !important;
-    padding: 5px;
-    padding-right: 4px !important;
     margin-left: 4px;
     font-weight: 500 !important;
     color: #6c757d;
     opacity: 0;
-    display: none !important;
 
     &:hover {
       color: #6c757d !important;
-    }
-
-    @media screen and (max-width:768px) {
-      font-size: 16px !important;
     }
 
     &:active {
@@ -1586,6 +1607,7 @@ body .btn {
     align-items: center;
     justify-content: space-between;
     padding: 0 8px;
+    font-size: $font-medium !important;
 
     &:after {
       filter: opacity(0.6);
@@ -2977,7 +2999,6 @@ li.nav-item.cookie-tab a {
   overflow-x: auto;
   background: #fff;
   padding: 0px 20px 10px;
-  
   >div {
     color: $theme-color;
     font-size: $font-medium;
@@ -3365,7 +3386,7 @@ div#steve-parent-accordion {
 
 .react-autocomplete-input li {
   line-height: 0.3;
-  border-bottom: 1px solid #e0e0e0; 
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .react-autocomplete-input li:last-child {
@@ -3504,6 +3525,7 @@ div#steve-parent-accordion {
 
 body .btn-group-custom {
   margin-top: 1px;
+
   .btn {
     background: none;
     color: #212121;
@@ -3511,11 +3533,13 @@ body .btn-group-custom {
     border: none;
     padding: 0.25rem 0.5rem;
     border-radius: 3px !important;
+
     &.active {
       background: #fff !important;
       color: #212121 !important;
       box-shadow: 0px 0px 4px 0px #00000029 !important;
     }
+
     &:hover {
       color: $text-color !important;
     }
@@ -3697,7 +3721,6 @@ body .doc-secs-container {
 .response-bottom {
   .response-container-main {
     width: 100%;
-    padding: 1.25rem 2.25rem;
 
     h4 {
       margin: 0;
@@ -3918,6 +3941,7 @@ body .tox {
     height: 44px !important;
   }
 }
+
 .name-sub-page {
   overflow-wrap: anywhere;
   width: calc(100% - 5px);
@@ -4278,6 +4302,7 @@ body .tox {
   color: unset !important;
   border: unset !important;
 }
+
 .floating-menu .biplus-icon {
   &:after {
     content: "";

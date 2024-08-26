@@ -41,7 +41,7 @@ export function PublishEntityButton(props) {
       onClick={() => props.open_publish_confirmation_modal()}
       disabled={pages[params.pageId]?.state === 2 ? true : false}
     >
-      Publish {entityName}
+      Publish
     </button>
   )
 }
@@ -61,7 +61,7 @@ export function UnPublishEntityButton(props) {
       type='button'
       onClick={handleClick}
     >
-      UnPublish {entityName}
+      UnPublish
     </button>
   )
 }
