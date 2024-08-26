@@ -76,7 +76,8 @@ import { useParams } from 'react-router-dom'
 import { Tab, Nav, Row, Col } from 'react-bootstrap'
 import { FaPlus } from 'react-icons/fa'
 import DocViewContent from './displaydocData.jsx'
-import { replaceVariables, replaceVariablesInBody, replaceVariablesInJson } from './endpointUtility.js'
+import { prepareBodyForSaving, prepareBodyForSending, prepareHeaderCookies, replaceVariables, replaceVariablesInBody, replaceVariablesInJson } from './endpointUtility.js'
+import EndpointLoading from './endpointLoading.jsx'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -808,7 +809,7 @@ class DisplayEndpoint extends Component {
     if (this.props?.endpointContent?.data?.body?.type === bodyTypesEnums['raw']) {
       body.value = this.parseBody(body.value)
     }
-    body = this.prepareBodyForSending(body)
+    body = prepareBodyForSending(body)
     const headersData = this.doSubmitHeader('save')
     const updatedParams = this.doSubmitParam()
     const updatedPathVariables = this.doSubmitPathVariables()
@@ -884,33 +885,6 @@ class DisplayEndpoint extends Component {
       }
     }
     return url
-  }
-
-  prepareHeaderCookies(url) {
-    if (!url) return null
-    const domainUrl = url.split('/')[2]
-    let cookies
-    Object.values(this.props.cookies || {}).forEach((domain) => {
-      if (domain.domain === domainUrl) {
-        cookies = domain?.cookies
-      }
-    })
-    if (cookies) {
-      let cookieString = ''
-      Object.values(cookies || {}).forEach((cookie) => {
-        let time
-        const expires = cookie.split(';')[2]
-        if (expires.split('=')[1]) {
-          time = expires.split('=')[1]
-        }
-        time = moment(time)
-        if (!(time && moment(time).isBefore(moment().format()))) {
-          cookieString += cookie.split(';')[0] + '; '
-        }
-      })
-      return cookieString
-    }
-    return null
   }
 
   checkTokenExpired(expirationTime, generatedDateTime) {
@@ -1038,7 +1012,7 @@ class DisplayEndpoint extends Component {
     }
 
     /** Add Cookie in Headers */
-    const cookiesString = this.prepareHeaderCookies(BASE_URL)
+    const cookiesString = prepareHeaderCookies(BASE_URL,this.props.cookies)
     if (cookiesString) {
       headers.cookie = cookiesString.trim()
     }
@@ -1157,26 +1131,6 @@ class DisplayEndpoint extends Component {
     return count + 1
   }
 
-  prepareBodyForSaving(body) {
-    const data = _.cloneDeep(body)
-    if (data?.type === bodyTypesEnums['multipart/form-data']) {
-      data[bodyTypesEnums['multipart/form-data']].forEach((item) => {
-        if (item.type === 'file') item.value = {}
-      })
-    }
-    return data
-  }
-
-  prepareBodyForSending(body) {
-    const data = _.cloneDeep(body)
-    if (data.type === bodyTypesEnums['multipart/form-data']) {
-      data[bodyTypesEnums['multipart/form-data']].forEach((item) => {
-        if (item.type === 'file') item.value.srcPath = ''
-      })
-    }
-    return data
-  }
-
   handleSave = async (id, endpointObject, slug) => {    
     const { endpointName, endpointDescription } = endpointObject || {}
     let currentTabId = this.props.tab.id
@@ -1193,7 +1147,7 @@ class DisplayEndpoint extends Component {
       this.openEndpointFormModal()
     } else {
       let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId])
-      const body = this.prepareBodyForSaving(endpointContent?.data?.body)
+      const body = prepareBodyForSaving(endpointContent?.data?.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: endpointContent?.bodyDescription,
         body: body?.value
@@ -2863,38 +2817,7 @@ class DisplayEndpoint extends Component {
 
   render() {
     if (this.props?.endpointContentLoading) {
-      return (
-        <>
-          <div>
-            <div className='loading'>
-              <div className='box bg'></div>
-              <div className='d-flex align-items-center justify-content-between mt-3'>
-                <div>
-                  <div className='new bg rounded-1'></div>
-                  <div className='live bg mt-1'></div>
-                </div>
-                <div className='new bg rounded-1'></div>
-              </div>
-              <div className='d-flex align-items-center gap-3 mt-2'>
-                <div className='api-call bg rounded-1'></div>
-                <div className='bg send rounded-1'></div>
-              </div>
-              <div className='boxes mt-4 bg rounded-1'></div>
-              <div className='bulk-edit bg mt-2 rounded-1'></div>
-              <div className='path-var mt-2 bg rounded-1'></div>
-              <div className='bulk-edit bg mt-2 rounded-1'></div>
-              <div className='d-flex align-items-center justify-content-between mt-4'>
-                <div className='response bg rounded-1'></div>
-                <div className='d-flex align-items-center gap-2'>
-                  <div className='min-box bg rounded-1'></div>
-                  <div className='min-box bg rounded-1'></div>
-                </div>
-              </div>
-              <div className='hit-send bg mt-3 rounded-1'></div>
-            </div>
-          </div>
-        </>
-      )
+      return <EndpointLoading/>
     }
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
