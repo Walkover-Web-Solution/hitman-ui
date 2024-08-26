@@ -74,6 +74,7 @@ import { FaPlus } from 'react-icons/fa'
 import EndpointBreadCrumb from './endpointBreadCrumb'
 import { BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
+import SwitchBtn from '../common/switchBtn/switchBtn.jsx'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -408,6 +409,7 @@ class DisplayEndpoint extends Component {
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
+    this.handleToggle = this.handleToggle.bind(this)
     this.uri = React.createRef()
     this.paramKey = React.createRef()
     this.rawBodyTypes = Object.keys(rawTypesEnums)
@@ -2318,8 +2320,8 @@ class DisplayEndpoint extends Component {
     return (
       showRemoveButton && (
         <div className='' onClick={handleOnClick.bind(this)}>
-          {' '}
-          <img src={DeleteIcon} alt='' />{' '}
+
+
         </div>
       )
     )
@@ -2454,23 +2456,23 @@ class DisplayEndpoint extends Component {
     return isDashboardRoute(this.props) && (this.props?.endpointContent?.currentView === 'testing' || !isSavedEndpoint(this.props))
   }
 
-  renderToggleView() {
-    if (isSavedEndpoint(this.props)) {
-      return (
-        <ButtonGroup className='btn-group-custom' aria-label='Basic example'>
-          <Button
-            className={(this.props?.endpointContent?.currentView === 'testing' ? 'active text-black' : 'text-gray')}
-            onClick={() => this.switchView('testing')}
-          >
-            Testing
-          </Button>
-          <Button className={this.props?.endpointContent?.currentView === 'doc' ? 'active text-black' : 'text-gray'} onClick={() => this.switchView('doc')}>
-            Doc
-          </Button>
-        </ButtonGroup>
-      )
-    }
-  }
+  // renderToggleView() {
+  //   if (isSavedEndpoint(this.props)) {
+  //     return (
+  //       <ButtonGroup className='btn-group-custom' aria-label='Basic example'>
+  //         <Button
+  //           className={(this.props?.endpointContent?.currentView === 'testing' ? 'active text-black' : 'text-gray')}
+  //           onClick={() => this.switchView('testing')}
+  //         >
+  //           Testing
+  //         </Button>
+  //         <Button className={this.props?.endpointContent?.currentView === 'doc' ? 'active text-black' : 'text-gray'} onClick={() => this.switchView('doc')}>
+  //           Doc
+  //         </Button>
+  //       </ButtonGroup>
+  //     )
+  //   }
+  // }
 
   renderDocViewOptions() {
     if (isDashboardRoute(this.props) && this.props?.endpointContent.currentView === 'doc') {
@@ -2750,6 +2752,23 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  handleToggle() {
+    if (this.props?.endpointContent?.currentView === 'doc') {
+      this.switchView('testing')
+    } else {
+      this.switchView('doc')
+    }
+  }
+
+  renderSwitchBtn() {
+    return (
+      <div onClick={this.handleToggle} className='d-flex justify-content-between align-items-center cursor-pointer'>
+        <button className='btn text-gray btn-sm fs-4'>DOC</button>
+        <SwitchBtn isOn={this.props?.endpointContent?.currentView === 'doc'} handleToggle={this.handleToggle} />
+      </div>
+    )
+  }
+
   renderPublishConfirmationModal() {
     return (
       this.state.openPublishConfirmationModal && (
@@ -2832,7 +2851,7 @@ class DisplayEndpoint extends Component {
     return (
       <div className='save-endpoint'>
         {this.isDashboardAndTestingView() ? (
-          this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW'  ? (
+          this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' ? (
             <Dropdown as={ButtonGroup}>
               <button
                 id='api_save_btn'
@@ -2853,7 +2872,7 @@ class DisplayEndpoint extends Component {
                   <Dropdown.Toggle className='btn save-button-endpoint px-1' split variant='' />
                   <Dropdown.Menu className=''>
                     <Dropdown.Item
-                    className='px-2'
+                      className='px-2'
                       onClick={() =>
                         this.setState({ saveAsFlag: true }, () => {
                           this.openEndpointFormModal()
@@ -2877,7 +2896,7 @@ class DisplayEndpoint extends Component {
               id='save-endpoint-button'
               onClick={() => this.handleSave()}
             >
-                <LiaSaveSolid size={17} />
+              <LiaSaveSolid size={17} />
               <span>Save</span>
             </button>
           )
@@ -2938,7 +2957,7 @@ class DisplayEndpoint extends Component {
           )}
         </div>
       )
-    } else if (this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' ) {
+    } else if (this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
       return (
         <div >
           <OverlayTrigger placement='bottom' overlay={<Tooltip id='edited-by-tooltip'>
@@ -2950,7 +2969,7 @@ class DisplayEndpoint extends Component {
                   <span>&nbsp;{lastModified}</span>
                 </div>
                 <div>
-                <span>Created by </span>
+                  <span>Created by </span>
                   <span className="font-weight-bold text-white">{user?.name}</span>
                   <span>&nbsp;{createdAt}</span>
                 </div>
@@ -3032,7 +3051,7 @@ class DisplayEndpoint extends Component {
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper d-flex'}>
           <div className={`innerContainer w-100 ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${isOnPublishedPage() ? 'pt-3' : 'pt-0'} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              className={`hm-endpoint-container px-3 mid-part endpoint-container ${isOnPublishedPage() ? 'pt-3' : 'pt-0'} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
                 }`}
             >
               {this.renderCookiesModal()}
@@ -3051,7 +3070,6 @@ class DisplayEndpoint extends Component {
                           isEndpoint
                         />
                         <div className='d-flex gap-1 align-items-center'>
-                          {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' ? this.renderToggleView() : null}
                           {this.state.showEndpointFormModal && (
                             <SaveAsSidebar
                               {...this.props}
@@ -3063,7 +3081,7 @@ class DisplayEndpoint extends Component {
                               endpointContent={this.props?.endpointContent}
                             />
                           )}
-                          {isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpointss &&  (
+                          {isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpointss && (
                             <IconButton> <button
                               id='api_save_btn'
                               className={
@@ -3078,16 +3096,16 @@ class DisplayEndpoint extends Component {
 
                           {this.renderSaveButton()}
                           <Dropdown className='publish-unpublish-button'>
-                            { this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (
-                            <Dropdown.Toggle as='div' id='dropdown-basic'>
-                              <IconButton variant="sm" className='mt-1'><BsThreeDots className='text-gray' size={25} /></IconButton>
-                            </Dropdown.Toggle>
+                            {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (
+                              <Dropdown.Toggle as='div' id='dropdown-basic'>
+                                <IconButton variant="sm" className='mt-1'><BsThreeDots className='text-gray' size={25} /></IconButton>
+                              </Dropdown.Toggle>
                             )}
                             <Dropdown.Menu>
+                              {this.renderSwitchBtn()}
                               {isAdmin() && !isStatePending(endpointId, endpointss) && (
                                 <Dropdown.Item className='p-0'>
                                   <span>
-                                    {' '}
                                     {approvedOrRejected
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
                                       : this.renderPublishEndpoint(endpointId, endpointss)}
@@ -3096,7 +3114,6 @@ class DisplayEndpoint extends Component {
                               {isAdmin() && isPublicEndpoint && (
                                 <Dropdown.Item className='p-0'>
                                   <span>
-                                    {' '}
                                     {isStateApproved(endpointId, endpointss)
                                       ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
                                       : this.renderUnPublishEndpoint(endpointId, endpointss)}
@@ -3183,7 +3200,7 @@ class DisplayEndpoint extends Component {
                   )}
                   {isElectron() && (
                     <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>
-                      SSL certificate verification {this.state.sslMode ? <span className='enabled'>enabled</span> : <span>disabled</span>}{' '}
+
                     </div>
                   )}
                   <div className={this.isDashboardAndTestingView() ? 'endpoint-headers-container d-flex' : 'hm-public-endpoint-headers'}>
@@ -3677,7 +3694,7 @@ class DisplayEndpoint extends Component {
             </div>
 
             {this.isDashboardAndTestingView() ? (
-              <div className='response-container-main position-relative'>
+              <div className='response-container-main position-relative px-3'>
                 {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
               </div>
             ) : null}
