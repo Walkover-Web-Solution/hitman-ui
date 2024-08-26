@@ -17,6 +17,7 @@ import { isOrgDocType } from '../common/utility'
 import { FaCheck } from "react-icons/fa6";
 import { IoExit } from 'react-icons/io5'
 import { useModal } from '../common/layeredModal/context/ModalContext'
+import LayeredModal from '../common/layeredModal/components/Modal/Modal'
 import './userProfile.scss'
 
 const UserProfile = () => {
@@ -26,7 +27,7 @@ const UserProfile = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const { openModal } = useModal()
+  const { openModal, modalStack } = useModal()
 
   const [showModal, setShowModal] = useState(false)
   const [modalForTabs, setModalForTabs] = useState(false)
@@ -63,7 +64,7 @@ const UserProfile = () => {
       <div className='menu-trigger-box d-flex align-items-center justify-content-between w-100 rounded gap-1 px-1 py-1'>
         <div
           className='org-button pl-1 d-flex position-relative align-items-center cursor-pointer flex-grow-1 gap-1'
-          onClick={(e) => openModal(e, renderOrgsList())}
+          onClick={(e) => openModal(e, renderOrgsList(), "renderOrgs")}
         >
           <div className="mr-2 avatar-org px-2 rounded" size={15}>{firstLetterCapital}</div>
           <div className='org-name text-secondary'>{getCurrentOrg()?.name || null}</div>
@@ -267,6 +268,8 @@ const UserProfile = () => {
             <div>{renderTrash()}</div>
             <div>{renderAddCollection()}</div>
             <div>{renderLogout()}</div>
+
+            <button onClick={(e) => openModal(e, <>lorem ipsum</>, "lorem")} >lorem</button>
           </div>
         </div>
       </div>
@@ -279,6 +282,20 @@ const UserProfile = () => {
         {renderAvatarWithOrg()}
       </div>
       {modalForTabs ? showModalForTabs() : ''}
+
+      {
+        modalStack.find((modal) => modal.modalName = "lorem") && <LayeredModal name="lorem" >
+          <>lorem ipsum</>
+        </LayeredModal>
+      }
+      {
+        modalStack.find((modal) => modal.modalName = "renderOrgs") && <LayeredModal name="renderOrgs" >
+          {renderOrgsList()}
+        </LayeredModal>
+      }
+
+
+
     </>
   )
 }

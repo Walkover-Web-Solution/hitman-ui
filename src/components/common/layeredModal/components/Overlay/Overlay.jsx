@@ -1,12 +1,13 @@
 import React from "react";
 import { useModal } from "../../context/ModalContext";
 import "./Overlay.css"
-const Overlay = ({ zIndex }) => {
-    const { closeModal } = useModal();
+const Overlay = () => {
+    const { closeModal, modalStack } = useModal();
+    console.log("overlay : ", modalStack.length * 2000 - 10)
     return (
         <div
             className="__overlay__"
-            style={{ zIndex }}
+            style={{ zIndex: modalStack.length * 2000 - 10 }}
             onClick={closeModal}
         />
     );
