@@ -12,6 +12,7 @@ import './index.scss';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import '../src/components/main/responsive.scss';
+import { ModalProvider } from './components/common/layeredModal/context/ModalContext';
 
 if (process.env.REACT_APP_ENV !== 'local') {
   sentryIntegration();
@@ -20,14 +21,16 @@ if (process.env.REACT_APP_ENV !== 'local') {
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
-    <Provider store={store}>
+  <Provider store={store}>
+    <BrowserRouter>
       <PersistGate loading={null} persistor={persistor}>
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
-          <App />
+          <ModalProvider  >
+            <App />
+          </ModalProvider>
         </QueryClientProvider>
       </PersistGate>
-    </Provider>
-  </BrowserRouter>
+    </BrowserRouter>
+  </Provider>
 );

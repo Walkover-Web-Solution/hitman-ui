@@ -16,6 +16,7 @@ import CustomModal from '../customModal/customModal'
 import { isOrgDocType } from '../common/utility'
 import { FaCheck } from "react-icons/fa6";
 import { IoExit } from 'react-icons/io5'
+import { useModal } from '../common/layeredModal/context/ModalContext'
 import './userProfile.scss'
 
 const UserProfile = () => {
@@ -24,6 +25,8 @@ const UserProfile = () => {
   const organizationList = useSelector((state) => state.organizations.orgList)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  const { openModal } = useModal()
 
   const [showModal, setShowModal] = useState(false)
   const [modalForTabs, setModalForTabs] = useState(false)
@@ -54,17 +57,13 @@ const UserProfile = () => {
     setShowImportModal((prev) => !prev)
   }
 
-  const renderAvatarWithOrg = (onClick, ref1) => {
+  const renderAvatarWithOrg = () => {
     const firstLetterCapital = getCurrentOrg()?.name?.[0].toUpperCase();
     return (
       <div className='menu-trigger-box d-flex align-items-center justify-content-between w-100 rounded gap-1 px-1 py-1'>
         <div
-          ref={ref1}
           className='org-button pl-1 d-flex position-relative align-items-center cursor-pointer flex-grow-1 gap-1'
-          onClick={(e) => {
-            e.preventDefault()
-            onClick(e)
-          }}
+          onClick={(e) => openModal(e, renderOrgsList())}
         >
           <div className="mr-2 avatar-org px-2 rounded" size={15}>{firstLetterCapital}</div>
           <div className='org-name text-secondary'>{getCurrentOrg()?.name || null}</div>
@@ -84,7 +83,7 @@ const UserProfile = () => {
             <CollectionForm title='Add new Collection' onHide={handleAddNewClick} />
           </CustomModal>
         </div>
-      </div>
+      </div >
     )
   }
 
@@ -150,12 +149,11 @@ const UserProfile = () => {
   }
 
   const renderOrgListDropdown = () => {
-    const organizations = organizationList || []
     const selectedOrg = getCurrentOrg()
     return (
       <div className='org-listing-container'>
         <div className='org-listing-column d-flex flex-column gap-1 w-100'>
-          {organizations.map((org, key) => (
+          {organizationList.map((org, key) => (
             <div key={key} className='d-flex name-list cursor-pointer'>
               <div className='d-flex '>
                 <Avatar className='mr-2 avatar-org' name={org.name} size={32} />
@@ -254,28 +252,31 @@ const UserProfile = () => {
     )
   }
 
+  const renderOrgsList = () => {
+    return (
+      <div className='profile-menu pt-1 px-2' >
+        {renderUserDetails()}
+        <div className='profile-listing-container'>
+          <div className='py-6 border-bottom'>
+            <div className='pt-2 pb-2'>{renderOrgListDropdown()}</div>
+          </div>
+          <div className=' py-2'>
+            <div>{renderAddWorkspace()}</div>
+            <hr className='p-0 m-0' />
+            <div>{renderInviteTeam()}</div>
+            <div>{renderTrash()}</div>
+            <div>{renderAddCollection()}</div>
+            <div>{renderLogout()}</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <>
       <div className='profile-menu pt-1 px-2'>
-        <Dropdown className='d-flex align-items-center'>
-          <Dropdown.Toggle as={forwardRef(({ onClick }, ref) => renderAvatarWithOrg(onClick, ref))} id='dropdown-custom-components' />
-          <Dropdown.Menu className='p-0'>
-            {renderUserDetails()}
-            <div className='profile-listing-container'>
-              <div className='py-6 border-bottom'>
-                <div className='pt-2 pb-2'>{renderOrgListDropdown()}</div>
-              </div>
-              <div className=' py-2'>
-                <div>{renderAddWorkspace()}</div>
-                <hr className='p-0 m-0' />
-                <div>{renderInviteTeam()}</div>
-                <div>{renderTrash()}</div>
-                <div>{renderAddCollection()}</div>
-                <div>{renderLogout()}</div>
-              </div>
-            </div>
-          </Dropdown.Menu>
-        </Dropdown>
+        {renderAvatarWithOrg()}
       </div>
       {modalForTabs ? showModalForTabs() : ''}
     </>
