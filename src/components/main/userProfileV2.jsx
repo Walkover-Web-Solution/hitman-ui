@@ -11,7 +11,7 @@ import { IoIosArrowDown } from 'react-icons/io'
 import CollectionForm from '../collections/collectionForm'
 import { FiUser } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
-import ImportCollectionModal from '../importCollection/importColectionModel'
+import ImportCollectionModal from '../collections/importCollection/importColectionModel'
 import CustomModal from '../customModal/customModal'
 import { isOrgDocType } from '../common/utility'
 import { FaCheck } from "react-icons/fa6";
@@ -157,7 +157,7 @@ const UserProfile = () => {
         <div className='org-listing-column d-flex flex-column gap-1 w-100'>
           {organizations.map((org, key) => (
             <div key={key} className='d-flex name-list cursor-pointer'>
-              <div className='d-flex '>
+              <div className='org-collection-name d-flex'>
                 <Avatar className='mr-2 avatar-org' name={org.name} size={32} />
                 <span
                   className={`org-listing-button mr-1 ${org.id === selectedOrg?.id ? 'selected-org' : ''}`}

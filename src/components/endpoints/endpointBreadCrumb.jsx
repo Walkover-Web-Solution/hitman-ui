@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
-import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
-import { getOnlyUrlPathById, isElectron, trimString } from '../common/utility'
-import { onPageUpdated, updateNameOfPages } from '../pages/redux/pagesActions'
+import { getOrgId, isElectron, trimString } from '../common/utility'
+import { updateNameOfPages } from '../pages/redux/pagesActions'
 import { MdHttp } from 'react-icons/md'
 import { GrGraphQl } from 'react-icons/gr'
 import { updateTab } from '../tabs/redux/tabsActions'
-import { prototype } from 'form-data'
 import withRouter from '../common/withRouter'
+import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { GoDotFill } from 'react-icons/go'
+
 
 const mapStateToProps = (state) => {
   return {
@@ -36,7 +37,7 @@ class EndpointBreadCrumb extends Component {
     this.nameInputRef = React.createRef()
     this.state = {
       nameEditable: false,
-      endpointTitle: '',
+      endpointTitle: 'Untitled',
       previousTitle: '',
       groupName: null,
       versionName: null,
@@ -103,6 +104,7 @@ class EndpointBreadCrumb extends Component {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
+    document.addEventListener('mousedown', this.handleClickOutside);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -163,6 +165,7 @@ class EndpointBreadCrumb extends Component {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
+    document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
   handleShortcuts = (e, actionType) => {
@@ -173,6 +176,12 @@ class EndpointBreadCrumb extends Component {
     }
   }
 
+  handleClickOutside = (event) => {
+    if (this.nameInputRef.current && !this.nameInputRef.current.contains(event.target)) {
+      this.setState({ nameEditable: false }); // Close the input field on outside click
+    }
+  };
+
   changeEndpointName() {
     const endpoint = this.props.endpoint
     if (endpoint && !endpoint.id && this.props.data.name === '') {
@@ -182,7 +191,7 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    this.setState({ changesMade: true })
+    this.setState({ changesMade: true, endpointTitle: e.currentTarget.value })
     if (this.props?.isEndpoint) {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = e.currentTarget.value
@@ -250,11 +259,64 @@ class EndpointBreadCrumb extends Component {
     )
   }
 
+
+  getPath(id, sidebar) {
+    const orgId = getOrgId()
+    let path = []
+    while (sidebar?.[id]?.type > 0) {
+      const itemName = sidebar[id].name
+      path.push({ name: itemName, path: `orgs/${orgId}/dashboard/page/${id}`, id: id })
+      id = sidebar?.[id]?.parentId
+    }
+    return path.reverse()
+  }
+
+  renderPathLinks() {
+    const pathWithUrls = this.getPath(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages)
+      return pathWithUrls.map((item, index) => {
+        if (this.props.pages?.[item.id]?.type === 2) return null;
+        const isEditing = this.state.endpointTitle === item.name;
+        return (
+          <span key={index} style={{ cursor: 'pointer' }} onClick={() => {
+            if (isEditing) {
+              this.setState({ nameEditable: true }, () => {
+                this.nameInputRef.current.focus();
+            });
+            }
+            else{
+              this.props.navigate(`/${item.path}`, { replace: true })
+            }
+          }} >
+            {this.state.nameEditable && isEditing ? (
+                      <input
+                          name='enpoint-title'
+                          value={item.name}
+                          ref={this.nameInputRef}
+                          onChange={this.handleInputChange.bind(this)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              this.setState({ nameEditable: false });
+                            }
+                          }}
+                      />
+                  ) : (
+                      item.name
+                  )}
+            {index < pathWithUrls.length - 1 && '/'}
+          </span>
+        ) 
+      })
+  }
+
   render() {
-    this.props.isEndpoint ? this.setEndpointData() : this.setPageData()
+    const orgId = getOrgId();
+    const path = `orgs/${orgId}/dashboard/collection/${this.collectionId}/settings`;
+    const isEditing = this.state.endpointTitle === this.props?.params?.pageId || this.props?.params?.endpointId;
+    this.props.isEndpoint ? this.setEndpointData() : this.setPageData();
+    
     return (
       <div className='endpoint-header'>
-        <div className='panel-endpoint-name-container'>
+        <div className='panel-endpoint-name-container d-flex'>
           <div className='page-title-name d-flex align-items-center'>
             {this.props?.params?.endpointId === 'new' && this.switchProtocolTypeDropdown()}
             {this.props?.params?.endpointId != 'new' &&
@@ -267,7 +329,7 @@ class EndpointBreadCrumb extends Component {
               this.state?.protocols?.[1]?.icon && (
                 <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[1]?.icon}</button>
               )}
-            <input
+            {/* <input
               name='enpoint-title'
               ref={this.nameInputRef}
               style={{ textTransform: 'capitalize' }}
@@ -280,23 +342,47 @@ class EndpointBreadCrumb extends Component {
                     this.props?.endpointContent?.data?.name
                   : this.props?.pages?.[this.props?.params?.pageId]?.name
               }
-            />
+            /> */}
           </div>
-          {this.props.location.pathname.split('/')[5] !== 'new' && (
+          {this.props.tabState[this.props.activeTabId].status !== 'NEW' ? (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
-              {this.collectionName && <span className='collection-name-path'>{`${this.collectionName}/`}</span>}
-              {
-                <span className='text-nowrap-heading'>
-                  {getOnlyUrlPathById(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages, 'internal')}
+              {this.collectionName && (
+                <span
+                  className='collection-name-path'
+                  onClick={() => this.props.navigate(`/${path}`, { replace: true })}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {`${this.collectionName}/`}
                 </span>
-              }
-              {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
-                <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
               )}
-              {this.props.pages?.[this.props?.params?.pageId]?.isPublished && (
-                <div className='api-label POST request-type-bgcolor ml-2'> Live </div>
+              <span className='text-nowrap-heading'>
+                {this.renderPathLinks()}
+              </span>
+              {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
+                <OverlayTrigger
+                placement="right"
+                overlay={<Tooltip id="tooltip-right">Live</Tooltip>}
+                trigger={['hover', 'focus']}
+              >
+                <GoDotFill size={14} color="green" />
+              </OverlayTrigger>
               )}
             </div>
+          ) : (
+            <input
+            name='enpoint-title'
+            ref={this.nameInputRef}
+            style={{ textTransform: 'capitalize' }}
+            className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
+            onChange={this.handleInputChange.bind(this)}
+            value={
+              this.props?.isEndpoint
+                ? this.props?.pages?.[this.props?.params?.endpointId]?.name ||
+                  this.props?.history?.[this.props?.params?.historyId]?.endpoint?.name ||
+                  this.props?.endpointContent?.data?.name
+                : this.props?.pages?.[this.props?.params?.pageId]?.name
+            }
+          />
           )}
         </div>
       </div>

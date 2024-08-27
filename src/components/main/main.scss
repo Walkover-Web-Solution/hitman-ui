@@ -23,7 +23,7 @@
   font-size: $font-extra-small !important;
 }
 
-.font-16 {
+.font-14 {
   font-size: $font-normal-n !important;
 }
 
@@ -116,6 +116,7 @@ html body {
     font-weight: 500 !important;
     color: #6c757d;
     opacity: 0;
+    display: none !important;
 
     &:hover {
       color: #6c757d !important;
@@ -1982,6 +1983,7 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
 }
 
 .footerWrapper {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   border-top: 0;
 
   span {
@@ -2827,11 +2829,7 @@ main.mainpublic-endpoint-main .for-public-view {
 
   .techdoc-svg {
     display: flex;
-    width: 120px;
-
-    @media screen and (max-width:768px) {
-      width: 100px;
-    }
+    width: 92px;
   }
 }
 
@@ -3187,8 +3185,6 @@ li.nav-item.cookie-tab a {
   }
 
   .doc-fix-width {
-    margin: auto;
-    max-width: 51rem;
     width: 100%;
   }
 }
@@ -3342,32 +3338,27 @@ div#steve-parent-accordion {
   opacity: 0.5;
 }
 
-ul.react-autoComplete-input {
-  top: 100% !important;
-  z-index: 1999;
-  border: none;
-  padding: 0;
-  max-height: 8.75rem;
-  overflow: auto;
-  max-width: 100%;
-  left: 0 !important;
-  width: 100%;
+.react-autocomplete-input {
+  padding: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+  padding-right: 0;
+  background-color: #fff;
+}
 
-  li {
-    font-size: 12px;
-    padding: 0.5rem;
-    border-bottom: 1px solid $border-color;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.react-autocomplete-input li {
+  line-height: 0.3;
+  border-bottom: 1px solid #e0e0e0; 
+}
 
-    &:last-child {
-      border: none;
-    }
+.react-autocomplete-input li:last-child {
+  border-bottom: none
+}
 
-    &.active {
-      background: $theme-color;
-    }
-  }
+.react-autocomplete-input li.active {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #000;
 }
 
 .twitter-picker {
@@ -3496,10 +3487,7 @@ ul.react-autoComplete-input {
 }
 
 body .btn-group-custom {
-  border: 1px solid $outline-color;
-  border-radius: $border-radius;
-  padding: 4px;
-
+  margin-top: 1px;
   .btn {
     background: none;
     color: #212121;
@@ -3507,12 +3495,13 @@ body .btn-group-custom {
     border: none;
     padding: 0.25rem 0.5rem;
     border-radius: 3px !important;
-    min-width: 3.5rem;
-
     &.active {
       background: #fff !important;
       color: #212121 !important;
       box-shadow: 0px 0px 4px 0px #00000029 !important;
+    }
+    &:hover {
+      color: $text-color !important;
     }
   }
 }
@@ -3913,14 +3902,9 @@ body .tox {
     height: 44px !important;
   }
 }
-
 .name-sub-page {
   overflow-wrap: anywhere;
-  max-width: 180px !important;
-
-  @media (max-width: 1400px) and (min-width: 400px) {
-    max-width: 120px !important;
-  }
+  width: calc(100% - 5px);
 
   .page-title-name {
 
@@ -4059,8 +4043,6 @@ body .tox {
   }
 }
 
-
-
 .container-loading {
   height: 100vh;
   max-width: 778px !important;
@@ -4168,45 +4150,18 @@ body .tox {
   color: black !important;
 }
 
-.cur-pointer {
-  cursor: pointer !important;
-}
-
 .back-to-workspace {
   svg {
     font-size: 20px;
   }
 }
 
-// .linkWrapper {
-//   position: relative;
 
-//   &::before {
-//     content: '';
-//     display: block;
-//     border-left: 1px solid $indentation;
-//     height: 97%;
-//     position: absolute;
-//     top: -3px;
-//     left: 30px;
-//   }
-// }
-
-// .expanded {
-//   #collection-collapse {
-//     position: relative;
-
-//     &::before {
-//       content: '';
-//       display: block;
-//       border-left: 1px solid $indentation;
-//       height: 97%;
-//       position: absolute;
-//       top: 0;
-//       left: 16px;
-//     }
-//   }
-// }
+.expanded {
+  #collection-collapse {
+    position: relative;
+  }
+}
 
 .tab-options-drop-down {
   .dropdown-item {
@@ -4307,9 +4262,14 @@ body .tox {
   color: unset !important;
   border: unset !important;
 }
-
-.success-toast-icon {
-  color: #690;
-  display: flex-column;
-  margin-right: 8px;
+.floating-menu .biplus-icon {
+  &:after {
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+    transform: rotate(0);
+    top: 0;
+  }
 }

@@ -19,7 +19,8 @@ import { LuHistory } from 'react-icons/lu'
 import { GrGraphQl } from 'react-icons/gr'
 import { TbSettingsAutomation } from 'react-icons/tb'
 import { BsPlayBtn } from "react-icons/bs";
-import Plus from '../../assets/icons/plus.svg'
+import { LuPlus } from "react-icons/lu";
+
 import './tabs.scss'
 
 const CustomTabs = (props) => {
@@ -246,7 +247,7 @@ const CustomTabs = (props) => {
                   </div>
                 )}
                 {endpoint.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
-                <span>{pages[tabId]?.name}</span>
+                <span className='fs-4'>{pages[tabId]?.name}</span>
               </div>
             )
           } else {
@@ -258,14 +259,14 @@ const CustomTabs = (props) => {
                   </div>
                 )}
                 {endpoint.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
-                <span>{pages[tabId]?.name}</span>
+                <span className='fs-4'>{pages[tabId]?.name}</span>
               </div>
             )
           }
         } else {
           const endpoint = tabState?.[tabId]
           return (
-            <div className='d-flex align-items-center'>
+            <div className='d-flex align-items-center fs-4'>
               {endpoint?.draft?.protocolType === 1 && (
                 <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>
               )}
@@ -282,7 +283,7 @@ const CustomTabs = (props) => {
             return (
               <div className='d-flex'>
                 <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
-                <span>
+                <span className='fs-4'>
                    <>{page.name} </>
                 </span>
               </div>
@@ -291,7 +292,7 @@ const CustomTabs = (props) => {
             return (
               <div className='d-flex'>
                 <IoDocumentTextOutline size={14} className='mr-1' />
-                <span>
+                <span className='fs-4'>
                 <>{page.name} </>
                 </span>
               </div>
@@ -301,7 +302,7 @@ const CustomTabs = (props) => {
           return (
             <div className='d-flex'>
               <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
-              <span>{'Untiled'}</span>
+              <span className='fs-4'>{'Untiled'}</span>
             </div>
           )
         }
@@ -313,7 +314,7 @@ const CustomTabs = (props) => {
             <>
               <span className='d-flex'>
                 <CiSettings size={18} className='setting-icons mr-1' />
-                <span>{collectionName}</span>
+                <span className='fs-4'>{collectionName}</span>
               </span>
             </>
           )
@@ -321,14 +322,14 @@ const CustomTabs = (props) => {
           return (
             <div className='d-flex'>
               <TbSettingsAutomation size={18} className='setting-icons mr-1' />
-              <span>{collectionName}</span>
+              <span className='fs-4'>{collectionName}</span>
             </div>
           )
         } else {
           return (
             <div className='d-flex'>
               <CiSettings size={18} className='setting-icons mr-1' />
-              <span>{collectionName}</span>
+              <span className='fs-4'>{collectionName}</span>
             </div>
           )
         }
@@ -338,7 +339,7 @@ const CustomTabs = (props) => {
           <>
             <div className='d-flex align-items-center'>
               <IoIosChatboxes className='mr-1' size={16} />
-              <span>Feedback</span>
+              <span className='fs-4'>Feedback</span>
             </div>
           </>
         )
@@ -349,7 +350,7 @@ const CustomTabs = (props) => {
             <>
               <div className='d-flex align-items-center'>
                 <BsPlayBtn className='mr-1' size={16} />
-                <span>Runs</span>
+                <span className='fs-4'>Runs</span>
               </div>
             </>
           )
@@ -540,7 +541,7 @@ const CustomTabs = (props) => {
         ) : null}
         <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
           <button className='btn' onClick={() => handleAddTab()}>
-            <img className='p-1' src={Plus} alt='' />
+          <LuPlus />
           </button>
         </Nav.Item>
         <div className='d-flex'>
