@@ -528,6 +528,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.flagResponse = false
   untitled.bodyDescription = endpointData.bodyDescription
   untitled.description = endpointData.description
+  untitled.URL = endpointData.URL
   return { ...untitled }
 }
 

@@ -302,6 +302,7 @@ class HostContainer extends Component {
   }
 
   renderHostDatalist() {
+    const URL = this.props.endpointContent.URL;
     const endpointId = this.props.endpointId
     const { showIcon } = this.state;
     return (
@@ -311,7 +312,7 @@ class HostContainer extends Component {
           suggestions={this.props?.currentEnvironment}
           id='host-container-input'
           className='form-control'
-          initial = {`<span>Google</span>`}
+          initial = {`${URL}`}
           name={`${endpointId}_hosts`}
           placeholder='Enter URL or paste cURL'
           onChange={(e) => this.handleInputHostChange(e)}
