@@ -2870,7 +2870,7 @@ class DisplayEndpoint extends Component {
               {getCurrentUser() ? (
                 <>
                   <Dropdown.Toggle className='save-button-endpoint px-0 bg-none border-0'>
-                    <IconButton variant='sm'><MdExpandMore color='gray' size={20} /></IconButton>
+                    <IconButton variant='sm'><MdExpandMore color='gray' size={17} /></IconButton>
                   </Dropdown.Toggle>
                   <Dropdown.Menu className=''>
                     <Dropdown.Item
@@ -2892,13 +2892,12 @@ class DisplayEndpoint extends Component {
               className={
                 this.state.saveLoader
                   ? 'btn btn-outline-secondary buttonLoader btn-sm fs-4 d-flex align-items-center'
-                  : 'btn save-button-endpoint px-1 btn-sm fs-4 d-flex align-items-center'
+                  : 'btn save-button-endpoint save-button px-1 btn-sm gap-1 d-flex align-items-center'
               }
               type='button'
               id='save-endpoint-button'
               onClick={() => this.handleSave()}
             >
-              <LiaSaveSolid size={17} />
               <span>Save</span>
             </button>
           )

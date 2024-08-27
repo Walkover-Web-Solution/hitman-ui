@@ -191,12 +191,12 @@ class EndpointBreadCrumb extends Component {
   }
 
   handleInputChange(e) {
-    this.setState({ changesMade: true, endpointTitle: e.currentTarget.value })
+    this.setState({ changesMade: true, endpointTitle: e.currentTarget.textContent })
     if (this.props?.isEndpoint) {
       const tempData = this.props?.endpointContent || {}
-      tempData.data.name = e.currentTarget.value
+      tempData.data.name = e.currentTarget.textContent
       this.props.setQueryUpdatedData(tempData)
-      this.props.update_name({ id: this.props?.params?.endpointId, name: e.currentTarget.value })
+      this.props.update_name({ id: this.props?.params?.endpointId, name: e.currentTarget.textContent })
     }
   }
 
@@ -237,7 +237,7 @@ class EndpointBreadCrumb extends Component {
 
   switchProtocolTypeDropdown() {
     return (
-      <div className='dropdown'>
+      <div className='dropdown d-flex'>
         <button
           className='protocol-selected-type border'
           id='dropdownMenuButton'
@@ -272,43 +272,50 @@ class EndpointBreadCrumb extends Component {
   }
 
   renderPathLinks() {
-    const pathWithUrls = this.getPath(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages)
+    this.props.isEndpoint ? this.setEndpointData() : this.setPageData();
+    const pathWithUrls = this.getPath(this.props?.params?.pageId || this.props?.params?.endpointId, this.props.pages);
+  
     return pathWithUrls.map((item, index) => {
       if (this.props.pages?.[item.id]?.type === 2) return null;
-      const isEditing = this.state.endpointTitle === item.name;
+      const isLastItem = index === pathWithUrls.length - 1;
+  
       return (
-        <span key={index} style={{ cursor: 'pointer' }} onClick={() => {
-          if (isEditing) {
+        <div className='d-inline' key={index} style={{ cursor: 'pointer' }} onClick={() => {
+          if (isLastItem) {
             this.setState({ nameEditable: true }, () => {
               this.nameInputRef.current.focus();
             });
+          } else {
+            this.props.navigate(`/${item.path}`, { replace: true });
           }
-          else {
-            this.props.navigate(`/${item.path}`, { replace: true })
-          }
-        }} >
-          {this.state.nameEditable && isEditing ? (
-            <input
-              name='enpoint-title'
-              value={item.name}
-              ref={this.nameInputRef}
-              onChange={this.handleInputChange.bind(this)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  this.setState({ nameEditable: false });
-                }
-              }}
-            />
+        }}>
+          {isLastItem ? (
+            <strong
+            ref={this.nameInputRef}
+            contentEditable={this.state.nameEditable}
+            style={{ textTransform: 'capitalize' }}
+            className={['px-1 mb-0 ml-1 cursor-text', this.state.nameEditable ? '' : 'd-inline'].join(' ')}
+            onBlur={() => this.setState({ nameEditable: false })}
+            onKeyUp={this.handleInputChange.bind(this)}
+          >
+            {this.props?.isEndpoint
+              ? this.props?.pages?.[this.props?.params?.endpointId]?.name ||
+                this.props?.history?.[this.props?.params?.historyId]?.endpoint?.name ||
+                this.props?.endpointContent?.data?.name
+              : this.props?.pages?.[this.props?.params?.pageId]?.name}
+          </strong>
+          
           ) : (
-            item.name
+            <span className='rounded'>{item.name}</span>
           )}
           {index < pathWithUrls.length - 1 && '/'}
-        </span>
-      )
-    })
+        </div>
+      );
+    });
   }
 
   render() {
+    this.props.isEndpoint ? this.setEndpointData() : this.setPageData();
     const orgId = getOrgId();
     const path = `orgs/${orgId}/dashboard/collection/${this.collectionId}/settings`;
     const isEditing = this.state.endpointTitle === this.props?.params?.pageId || this.props?.params?.endpointId;
@@ -333,42 +340,46 @@ class EndpointBreadCrumb extends Component {
           {this.props.tabState[this.props.activeTabId].status !== 'NEW' ? (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
               {this.collectionName && (
+                <>
                 <span
-                  className='collection-name-path'
+                  className='collection-name-path rounded'
                   onClick={() => this.props.navigate(`/${path}`, { replace: true })}
                   style={{ cursor: 'pointer' }}
                 >
-                  {`${this.collectionName}/`}
+                  {`${this.collectionName}`}
                 </span>
+                /
+                </>
               )}
-              <span className='text-nowrap-heading'>
+              <div className='text-nowrap-heading d-inline'>
                 {this.renderPathLinks()}
-              </span>
+              </div>
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
                 <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip id="tooltip-right">Live</Tooltip>}
-                trigger={['hover', 'focus']}
-              >
-                <GoDotFill size={14} color="green" />
-              </OverlayTrigger>
+                  placement="right"
+                  overlay={<Tooltip id="tooltip-right">Live</Tooltip>}
+                  trigger={['hover', 'focus']}
+                >
+                  <GoDotFill size={14} color="green" />
+                </OverlayTrigger>
               )}
             </div>
           ) : (
-            <input
-            name='enpoint-title'
+            <strong
             ref={this.nameInputRef}
+            contentEditable
             style={{ textTransform: 'capitalize' }}
-            className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : ''].join(' ')}
-            onChange={this.handleInputChange.bind(this)}
-            value={
-              this.props?.isEndpoint
-                ? this.props?.pages?.[this.props?.params?.endpointId]?.name ||
-                  this.props?.history?.[this.props?.params?.historyId]?.endpoint?.name ||
-                  this.props?.endpointContent?.data?.name
-                : this.props?.pages?.[this.props?.params?.pageId]?.name
-            }
-          />
+            className={`ml-1 px-1 ${this.state.nameEditable ? '' : 'd-inline'}`}
+            onBlur={() => this.setState({ nameEditable: false })}
+            onInput={this.handleInputChange.bind(this)}
+          >
+            {this.props?.isEndpoint
+              ? this.props?.pages?.[this.props?.params?.endpointId]?.name ||
+                this.props?.history?.[this.props?.params?.historyId]?.endpoint?.name ||
+                this.props?.endpointContent?.data?.name
+              : this.props?.pages?.[this.props?.params?.pageId]?.name}
+          </strong>
+          
           )}
         </div>
       </div>

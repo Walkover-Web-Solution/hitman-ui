@@ -196,12 +196,12 @@ const Page = () => {
                             onKeyDown={handlePageNameKeyDown}
                             onBlur={handleSavePageName}
                             contentEditable
-                            suppressContentEditableWarning
+                            // suppressContentEditableWarning
                         >
                             {item.name} {/* Assuming `item.name` should be shown when content is editable */}
                         </strong>
                     ) : (
-                        <span className="p-1 d-inline-block rounded"> 
+                        <span className="d-inline-block rounded"> 
                             {item.name} 
                         </span>
                     )}
@@ -249,7 +249,7 @@ const Page = () => {
                     </IconButton>
                     {tabs?.[activeTabId]?.status !== 'NEW' && <div className='inner-operations'>
                         <Dropdown>
-                            <Dropdown.Toggle as='div' id='dropdown-basic'>
+                            <Dropdown.Toggle className="mt-1" as='div' id='dropdown-basic'>
                                 <IconButton variant="sm" className='mt-1'><BsThreeDots size={25} /></IconButton>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
