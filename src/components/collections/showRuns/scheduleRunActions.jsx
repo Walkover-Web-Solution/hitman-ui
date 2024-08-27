@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { getCronByCollection, deleteCron, cronStatus } from '../../../services/cronJobs';
+import { getCronByCollection, deleteCron, cronStatus } from '../../../api/cron/cronApi';
 
 export const ScheduledRunsActions = (collectionId, activeTab) => {
     const queryClient = useQueryClient();

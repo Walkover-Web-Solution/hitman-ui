@@ -5,7 +5,7 @@
   import { updateAllEndpointCheckStatus } from '../../../store/clientData/clientDataActions'
   import {useQuery } from 'react-query'
   import { parseCronExpression, generateCronExpression } from '../../common/utility'
-  import { updateCron } from '../../../services/cronJobs'
+  import { updateCron } from '../../../api/cron/cronApi'
   import { toast } from 'react-toastify'
 
   const EditRuns = () => {

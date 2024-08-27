@@ -21,10 +21,20 @@ export function dragAndDropApi(body) {
     return apiRequest.post(`/dragAndDrop`, body);
 }
 
+export function getPublishedContentByPath(queryParamsString = '') {
+    return apiRequest.get(`/getPublishedDataByPath${queryParamsString}`,)
+}
+
+export async function getPublishedContentByIdAndType(id, type) {
+    const data = await apiRequest.get(`/pages/${id}/getPublishedData?type=${type}`)
+    return type == 4 ? data?.data?.publishedContent || '' : data?.data?.publishedContent?.contents || ''
+}
+
 export default {
     updatePage,
     deletePage,
     getAllPages,
     saveCollectionPage,
     dragAndDropApi,
+    getPublishedContentByIdAndType
 };

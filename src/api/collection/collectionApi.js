@@ -44,6 +44,11 @@ export function getCollectionsAndPages(queryParamsString = '') {
   return apiRequest.get(`/getSideBarData${queryParamsString}`)
 }
 
+export function moveCollectionsAndPages(moveToOrgId, collection) {
+  const { id, orgId, name } = collection
+  return apiRequest.post(`/collections/${id}`, { orgId: moveToOrgId, name, collectionMoved: true })
+}
+
 export function exportCollectionApi(collectionId, type) {
   const response = apiRequest.post(`/exportCollection`, { collectionId, type })
   return response.data

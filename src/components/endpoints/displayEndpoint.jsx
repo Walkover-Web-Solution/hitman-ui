@@ -57,7 +57,7 @@ import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from 
 import Tiptap from '../tiptapEditor/tiptap'
 import { useQuery, useQueryClient } from 'react-query'
 import utilityFunctions from '../common/utility.js'
-import { getPublishedContentByIdAndType } from '../../services/generalApiService'
+import { getPublishedContentByIdAndType } from '../../api/page/pageApi.js'
 import Footer from '../main/Footer.jsx'
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
 import { statesEnum } from '../common/utility'

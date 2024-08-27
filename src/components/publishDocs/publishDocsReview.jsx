@@ -3,7 +3,7 @@ import { Accordion, Card, Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import { getFeedbacks } from '../../services/feedbackService'
+import { getFeedbacks } from '../../api/feedback/feedbackApi'
 
 const PublishDocsReview = () => {
   const { collectionId } = useParams()

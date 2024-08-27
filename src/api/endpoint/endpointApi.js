@@ -146,6 +146,10 @@ export async function getSchemaThroughIntrospectionQuery(graphQlAPI) {
   }
 }
 
+export async function runAutomation(details) {
+  return apiRequest.post(`/run/automation`, details);
+}
+
 export default {
   getEndpoints,
   deleteEndpoint,

@@ -3,7 +3,7 @@ import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import Joi from 'joi'
-import { addUrlWithAdditionalPath, deleteMappedUrl } from './redirectionApiServices'
+import { addUrlWithAdditionalPath, deleteMappedUrl } from '../../api/urlMapping/urlMappingApi'
 import { getUrlPathById } from '../common/utility'
 import { addOldUrlOfPage, deleteOldUrlOfPage } from '../pages/redux/pagesActions'
 import { toast } from 'react-toastify'

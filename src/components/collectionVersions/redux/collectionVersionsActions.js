@@ -1,4 +1,4 @@
-import collectionVersionsApiService from '../collectionVersionsApiService'
+import { saveParentPageVersion, setDefaultVersion } from '../../../api/version/versionApi'
 import versionActionTypes from './collectionVersionsActionTypes'
 import pagesActionTypes from '../../pages/redux/pagesActionTypes'
 import { SESSION_STORAGE_KEY } from '../../common/utility'
@@ -7,8 +7,7 @@ import collectionVersionsActionTypes from './collectionVersionsActionTypes'
 export const addParentPageVersion = (newVersion, pageId, customCallback) => {
   newVersion.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
-    collectionVersionsApiService
-      .saveParentPageVersion(pageId, newVersion)
+    saveParentPageVersion(pageId, newVersion)
       .then((response) => {
         dispatch(onParentPageVersionAdded(response.data))
         if (customCallback) {
@@ -39,8 +38,7 @@ export const onVersionAddedError = (error, newVersion) => {
 export const onDefaultVersion = (orgId, versionData) => {
   versionData.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   return (dispatch) => {
-    collectionVersionsApiService
-      .setDefaultVersion(orgId, versionData)
+    setDefaultVersion(orgId, versionData)
       .then(() => {
         dispatch(onSetDefaultVersion(versionData))
       })

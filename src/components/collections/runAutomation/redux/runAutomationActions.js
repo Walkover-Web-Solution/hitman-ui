@@ -1,10 +1,9 @@
+import { runAutomation } from '../../../../api/endpoint/endpointApi'
 import runAutomationTypes from './runAutomationTypes'
-import generalApiService from '../../../../services/generalApiService'
 
 export const runAutomations = (details, collectionId) => {
   return (dispatch) => {
-    generalApiService
-      .runAutomation(details)
+    runAutomation(details)
       .then((response) => {
         dispatch(onRunAutomationCompleted(response.data, collectionId))
       })
@@ -17,7 +16,7 @@ export const runAutomations = (details, collectionId) => {
 export const onRunAutomationCompleted = (data, collectionId) => {
   return {
     type: runAutomationTypes.ON_AUTOMATION_RUN,
-    payload : data, 
+    payload: data,
     collectionId
   }
 }

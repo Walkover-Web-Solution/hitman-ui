@@ -5,6 +5,5 @@ export function saveParentPageVersion(pageId, collectionParentPage) {
 }
 
 export function setDefaultVersion(versionData) {
-    const apiUrl = getApiUrl()
     return apiRequest.put(`/defaultVersion`, versionData)
 }
