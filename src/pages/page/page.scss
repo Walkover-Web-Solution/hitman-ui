@@ -1,3 +1,4 @@
+@import '../../components/main/variables.scss';
 .parent-page-container {
   .page-header {
     top: 0;
@@ -6,6 +7,16 @@
     .header-page-name {
       padding: 0px !important;
       margin: 0px !important;
+      span {
+        &:hover {
+          background-color: $button-background-hover;
+        }
+        &:has(strong) {
+          &:hover{
+            background-color: unset;
+          }
+        }
+      }
     }
 
     .inner-operations {

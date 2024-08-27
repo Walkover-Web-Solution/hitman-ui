@@ -51,7 +51,6 @@ import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import { pendingEndpoint, approveEndpoint, rejectEndpoint, draftEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
-import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import { useQuery, useQueryClient } from 'react-query'
@@ -75,6 +74,7 @@ import EndpointBreadCrumb from './endpointBreadCrumb'
 import { BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
 import SwitchBtn from '../common/switchBtn/switchBtn.jsx'
+import { MdExpandMore } from 'react-icons/md'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -2851,9 +2851,9 @@ class DisplayEndpoint extends Component {
   renderSaveButton() {
     return (
       <div className='save-endpoint'>
-        {this.isDashboardAndTestingView() ? (
-          this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' ? (
-            <Dropdown as={ButtonGroup}>
+        {(
+          this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW'  ? (
+            <Dropdown className='rounded' as={ButtonGroup}>
               <button
                 id='api_save_btn'
                 className={
@@ -2866,11 +2866,13 @@ class DisplayEndpoint extends Component {
                 onClick={() => this.handleSave()}
                 title={!this.props?.tabs[this.props?.activeTabId]?.isModified ? 'No changes in this request' : 'Save request'}
               >
-                <span className='text-gray'>Save</span>
+                <span className='save-color'>Save</span>
               </button>
               {getCurrentUser() ? (
                 <>
-                  <Dropdown.Toggle className='btn save-button-endpoint px-1' split variant='' />
+                  <Dropdown.Toggle className='save-button-endpoint px-0 bg-none border-0'>
+                    <IconButton variant='sm'><MdExpandMore color='gray' size={20} /></IconButton>
+                  </Dropdown.Toggle>
                   <Dropdown.Menu className=''>
                     <Dropdown.Item
                       className='px-2'
@@ -2901,7 +2903,7 @@ class DisplayEndpoint extends Component {
               <span>Save</span>
             </button>
           )
-        ) : null}
+        )}
       </div>
     )
   }
@@ -2977,7 +2979,7 @@ class DisplayEndpoint extends Component {
               </div>
             }
           </Tooltip>}>
-            <button className='text-black-50 btn p-0'> Updated {lastModified}</button>
+            <button className='text-black-50 btn p-0'> Edited  {lastModified}</button>
           </OverlayTrigger>
         </div>
       )
@@ -3082,19 +3084,7 @@ class DisplayEndpoint extends Component {
                               endpointContent={this.props?.endpointContent}
                             />
                           )}
-                          {isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpointss && (
-                            <IconButton> <button
-                              id='api_save_btn'
-                              className={
-                                this.state.saveLoader ? 'ml-2 btn buttonLoader btn-sm fs-4' : 'p-0 btn btn-sm fs-4 text-gray'
-                              }
-                              type='button'
-                              onClick={() => this.handleSave()}
-                            >
-                              {isPublicEndpoint ? 'Save' : 'Save'}
-                            </button></IconButton>)}
                           {this.renderEndpointUserData()}
-
                           {this.renderSaveButton()}
                           <Dropdown className='publish-unpublish-button'>
                             {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (

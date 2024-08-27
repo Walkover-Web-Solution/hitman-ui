@@ -21,6 +21,10 @@
 
                 &.active-tab {
                     box-shadow: rgb(0, 78, 134) 0px 0px 0px 2px, rgba(182, 182, 182, 0.25) 0px 8px 12px;
+
+                    .card-text {
+                        color: black !important;
+                    }
                 }
 
                 &:hover {

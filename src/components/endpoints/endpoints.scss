@@ -261,6 +261,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       outline: none;
       border: none;
       background: inherit;
+
       &.empty {
         &::before {
           content: 'write description';
@@ -538,6 +539,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 .hm-panel {
   top: 0;
   z-index: 9;
+
   &.endpoint-public-response-container {
     &.public-doc {
       .nav-item {
@@ -1810,18 +1812,27 @@ table#custom-generic-table {
 
 .save-endpoint {
   margin-top: 3px;
-  .btn {
-    font-size: 12px;
+
+  .btn-group {
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.123);
+    }
+    .dropdown-toggle {
+      &::after {
+        content: '' !important;
+      }
+    }
   }
-.dropdown-menu {
-  min-width: fit-content;
-}
+
+  .dropdown-menu {
+    min-width: fit-content;
+  }
+
   .save-button-endpoint {
     padding-top: 2px;
     padding-bottom: 2px;
-
-    &:hover {
-      background-color: $button-background-hover;
+    .save-color {
+      color: #212529;
     }
 
     &:disabled {
@@ -1913,19 +1924,21 @@ table#custom-generic-table {
 
 .publish-unpublish-button {
   margin-top: 2px;
+
   .dropdown-toggle {
     &:after {
       all: unset !important;
     }
   }
 }
- .expand-btn {
+
+.expand-btn {
   padding-left: 92%;
   color: steelblue;
   font-size: smaller;
- }
+}
 
- .Modified-at {
+.Modified-at {
   color: $footer-color;
 
   &.upper-modified-at {

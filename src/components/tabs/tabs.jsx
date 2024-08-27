@@ -246,7 +246,7 @@ const CustomTabs = (props) => {
                     {tabState[tabId]?.draft?.data?.method}
                   </div>
                 )}
-                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
+                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2' size={12} />}
                 <span className='fs-4'>{pages[tabId]?.name}</span>
               </div>
             )
@@ -258,7 +258,7 @@ const CustomTabs = (props) => {
                     {tabState[tabId]?.draft?.data?.method}
                   </div>
                 )}
-                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
+                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={12} />}
                 <span className='fs-4'>{pages[tabId]?.name}</span>
               </div>
             )
@@ -270,7 +270,7 @@ const CustomTabs = (props) => {
               {endpoint?.draft?.protocolType === 1 && (
                 <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>
               )}
-              {endpoint?.draft?.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
+              {endpoint?.draft?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={12} />}
               {tab.state?.data?.name || 'Untitled'}
             </div>
           )
@@ -281,8 +281,8 @@ const CustomTabs = (props) => {
           const page = pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='d-flex'>
-                <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
+              <div className='d-flex align-items-center'>
+                <IoDocumentTextOutline size={12} className='mr-1 mb-1' />
                 <span className='fs-4'>
                    <>{page.name} </>
                 </span>
@@ -290,8 +290,8 @@ const CustomTabs = (props) => {
             )
           } else {
             return (
-              <div className='d-flex'>
-                <IoDocumentTextOutline size={14} className='mr-1' />
+              <div className='d-flex align-items-center'>
+                <IoDocumentTextOutline size={12} className='mr-1' />
                 <span className='fs-4'>
                 <>{page.name} </>
                 </span>
@@ -300,8 +300,8 @@ const CustomTabs = (props) => {
           }
         } else {
           return (
-            <div className='d-flex'>
-              <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
+            <div className='d-flex align-items-center'>
+              <IoDocumentTextOutline size={12} className='mr-1 mb-1' />
               <span className='fs-4'>{'Untiled'}</span>
             </div>
           )
@@ -312,7 +312,7 @@ const CustomTabs = (props) => {
         if (location?.pathname?.split('/')?.[6] === 'settings') {
           return (
             <>
-              <span className='d-flex'>
+              <span className='d-flex align-items-center'>
                 <CiSettings size={18} className='setting-icons mr-1' />
                 <span className='fs-4'>{collectionName}</span>
               </span>
@@ -320,14 +320,14 @@ const CustomTabs = (props) => {
           )
         } else if (location?.pathname?.split('/')?.[6] === 'runner') {
           return (
-            <div className='d-flex'>
+            <div className='d-flex align-items-center'>
               <TbSettingsAutomation size={18} className='setting-icons mr-1' />
               <span className='fs-4'>{collectionName}</span>
             </div>
           )
         } else {
           return (
-            <div className='d-flex'>
+            <div className='d-flex align-items-center'>
               <CiSettings size={18} className='setting-icons mr-1' />
               <span className='fs-4'>{collectionName}</span>
             </div>
