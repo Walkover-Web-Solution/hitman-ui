@@ -10,11 +10,13 @@ import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
+import AutoSuggest from 'env-autosuggest'
 
 const mapStateToProps = (state) => {
   return {
     modals: state.modals,
-    tabs: state?.tabs
+    tabs: state?.tabs,
+    currentEnvironment: state?.environment?.environments[state?.environment?.currentEnvironmentId]?.variables || {},
   }
 }
 class HostContainer extends Component {
@@ -26,6 +28,7 @@ class HostContainer extends Component {
       showIcon: true,
     }
     this.wrapperRef = React.createRef()
+    this.hostcontainerRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
   }
 
@@ -38,6 +41,7 @@ class HostContainer extends Component {
 
   componentDidMount() {
     this.setHosts()
+    this.getAllVariableSuggestions();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -53,6 +57,10 @@ class HostContainer extends Component {
     const endpointUri = this.props?.updatedUri || ''
     const host = this.props?.endpointContent?.host?.BASE_URL || this.state?.datalistHost || ''
     this.setState({ datalistUri: endpointUri, datalistHost: host }, () => this.setParentHostAndUri())
+  }
+
+  getAllVariableSuggestions() {
+
   }
 
   setParentHostAndUri() {
@@ -298,11 +306,12 @@ class HostContainer extends Component {
     const { showIcon } = this.state;
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
-        <input
+        <AutoSuggest
+          contentEditableDivRef={this.hostcontainerRef}
+          suggestions={this.props?.currentEnvironment}
           id='host-container-input'
           className='form-control'
-          // value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}  ? to resolve later
-          value={(this.state?.datalistHost ?? '') + (this.state?.datalistUri ?? '') ?? ''}
+          value={this.state.urlHTML ?? ''}
           name={`${endpointId}_hosts`}
           placeholder='Enter URL or paste cURL'
           onChange={(e) => this.handleInputHostChange(e)}
