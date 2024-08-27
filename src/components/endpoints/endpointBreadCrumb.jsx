@@ -44,8 +44,8 @@ class EndpointBreadCrumb extends Component {
       collectionName: null,
       isPagePublished: false,
       protocols: [
-        { type: 'HTTP', icon: <MdHttp color='green' size={16} /> },
-        { type: 'GraphQL', icon: <GrGraphQl color='rgb(170, 51, 106)' size={14} /> }
+        { type: 'HTTP', icon: <MdHttp color='green' className='d-block' size={20} /> },
+        { type: 'GraphQL', icon: <GrGraphQl className='mb-1' color='rgb(170, 51, 106)' size={14} /> }
       ]
     }
   }
@@ -239,7 +239,7 @@ class EndpointBreadCrumb extends Component {
     return (
       <div className='dropdown'>
         <button
-          className='protocol-selected-type mr-2'
+          className='protocol-selected-type border'
           id='dropdownMenuButton'
           data-toggle='dropdown'
           aria-haspopup='true'
@@ -316,18 +316,18 @@ class EndpointBreadCrumb extends Component {
     
     return (
       <div className='endpoint-header'>
-        <div className='panel-endpoint-name-container d-flex'>
+        <div className='panel-endpoint-name-container d-flex align-items-center'>
           <div className='page-title-name d-flex align-items-center'>
             {this.props?.params?.endpointId === 'new' && this.switchProtocolTypeDropdown()}
             {this.props?.params?.endpointId != 'new' &&
               this.props?.endpointContent?.protocolType === 1 &&
               this.state?.protocols?.[0]?.icon && (
-                <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[0]?.icon}</button>
+                <button className='protocol-selected-type border-0 cursor-text mr-1'>{this.state.protocols?.[0]?.icon}</button>
               )}
             {this.props?.params?.endpointId != 'new' &&
               this.props?.endpointContent?.protocolType === 2 &&
               this.state?.protocols?.[1]?.icon && (
-                <button className='protocol-selected-type cursor-text mr-2'>{this.state.protocols?.[1]?.icon}</button>
+                <button className='protocol-selected-type border-0 cursor-text mr-1'>{this.state.protocols?.[1]?.icon}</button>
               )}
             {/* <input
               name='enpoint-title'

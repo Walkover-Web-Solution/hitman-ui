@@ -133,7 +133,6 @@ body .sidebar {
       align-items: center;
       justify-content: center;
       border-radius: 5px 5px;
-      margin-right: 2.5px;
 
       &:hover {
         background-color: rgb(128 128 128 / 18%);
@@ -317,7 +316,7 @@ body .sidebar {
               }
             }
             .name-sub-page {
-              width: calc(100% - 20% - 12px);
+              width: calc(100% - 20%);
             }
 
             .versionChovron {
@@ -450,10 +449,6 @@ body .sidebar {
               font-size: 14px;
               padding: 0.25rem 1rem;
               border-radius: 3px 3px;
-
-              svg {
-                filter: grayscale(1);
-              }
 
               &:hover {
                 .sidebar-item-action>div {
@@ -796,7 +791,7 @@ input[type='text']:focus {
 .sidebar-accordion-item {
   display: flex;
   align-items: center;
-  width: 100%;
+  width: calc(100% - 26px);
 
   .api-label {
     @media screen and (max-width: 768px) {
@@ -867,14 +862,10 @@ input[type='text']:focus {
       &:hover {
         background: $grey;
         .endpoint-name-td {
-        width: 88%;
+        width: 87%;
         }
         .endpoint-icons {
           display: flex !important;
-        }
-
-        .sidebar-accordion-item {
-          width: 88%;
         }
       }
     }

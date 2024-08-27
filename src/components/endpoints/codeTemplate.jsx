@@ -199,18 +199,20 @@ const CodeTemplate = (props) => {
                 <div id='code-window-body' className={!isOnPublishedPage() ? 'copy-button-light' : 'copy-button-dark'}>
                   <CopyToClipboard
                     text={codeSnippet}
-                    onCopy={() => setCopied(true, () => setTimeout(() => setCopied(false), 1000))}
+                    onCopy={() => {
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 1000); // Change back after 5 seconds
+                    }}
                     className='copy-to-clipboard mt-1'
                   >
                     <button>
                       {copied ? (
                         <IconButton>
-                          {' '}
-                          <FaCheck color={props.theme === 'light' ? 'black' : 'white'} />{' '}
+                          <FaCheck color={props.theme === 'light' ? 'black' : 'white'} />
                         </IconButton>
                       ) : (
                         <IconButton>
-                          <TbCopy size={18} className='cursor-pointer' color={props.theme === 'light' ? 'black' : 'white'} />
+                          <TbCopy className='cursor-pointer' color={props.theme === 'light' ? 'black' : 'white'} />
                         </IconButton>
                       )}
                     </button>
