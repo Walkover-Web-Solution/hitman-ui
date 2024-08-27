@@ -116,21 +116,16 @@ const MainV2 = () => {
           </div>
         </div>
       ) : (
-        <div>
-          {!isDesktop && (
-            <div className='mobile-warning'>Looks like you have opened it on a mobile device. It looks better on a desktop device.</div>
-          )}
-          <div className='custom-main-container'>
-            <DesktopAppDownloadModal />
-            <OnlineStatus />
-            <div className='main-panel-wrapper'>
-              <SplitPane split='vertical' className='split-sidebar'>
-                <SideBarV2 />
-                {showCollectionDashboard() ? renderLandingDashboard() : <ContentPanel />}
-              </SplitPane>
-            </div>
-            <UpdateStatus />
+        <div className='custom-main-container'>
+          <DesktopAppDownloadModal />
+          <OnlineStatus />
+          <div className='main-panel-wrapper'>
+            <SplitPane split='vertical' className='split-sidebar'>
+              <SideBarV2 />
+              {showCollectionDashboard() ? renderLandingDashboard() : <ContentPanel />}
+            </SplitPane>
           </div>
+          <UpdateStatus />
         </div>
       )}
       <CustomModal size='sm' modalShow={showAddCollectionModal} hideModal={handleAddNewClick}>

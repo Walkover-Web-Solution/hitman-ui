@@ -24,6 +24,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    height: fit-content;
+    width: fit-content;
 
     &:hover {
         background-color: $button-background-hover;
