@@ -81,7 +81,7 @@ const Endpoints = (props) => {
   const displayEndpointName = (endpointId) => {
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId ? 'selected' : ''
     return (
-      <div className={`sidebar-accordion-item ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark w-100' : 'text-secondary'}`} style={{paddingLeft: `${props?.level * 8}px` }}>
+      <div className={`sidebar-accordion-item gap-2 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark w-100' : 'text-secondary'}`} style={{paddingLeft: `${props?.level * 8}px` }}>
         {endpoints[endpointId]?.protocolType === 1 && (
           <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
             {endpoints[endpointId].requestType}

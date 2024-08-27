@@ -5,7 +5,7 @@ import { Button, Card, Form } from 'react-bootstrap';
 import './onBoarding.scss'
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineApi } from "react-icons/md";
-import { FaPlus } from "react-icons/fa";
+import { FaLongArrowAltLeft, FaPlus } from "react-icons/fa";
 import InputGroup from 'react-bootstrap/InputGroup'
 import { toast } from 'react-toastify';
 import { closeAllTabs } from '../tabs/redux/tabsActions'
@@ -14,6 +14,7 @@ import { onHistoryRemoved } from '../history/redux/historyAction'
 import { addCollection } from '../collections/redux/collectionsActions';
 import { addPage } from '../pages/redux/pagesActions';
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions';
+import { getOrgId, redirectToDashboard } from '../common/utility';
 
 const OnBoarding = () => {
     const dispatch = useDispatch()
@@ -109,6 +110,7 @@ const OnBoarding = () => {
 
     return (
         <>
+        <button className='btn home-button position-absolute btn-dark btn-sm' onClick={() => redirectToDashboard(getOrgId())}><FaLongArrowAltLeft /></button>
             <div className="onboarding-container position-relative d-flex flex-column align-items-center justify-content-center overflow-hidden">
                 <div className={`on-boarding d-flex flex-column align-items-center justify-content-center p-2 w-100 ${showInput ? 'slide-out' : ''}`}>
                     <h2 className='mb-5'>
@@ -124,7 +126,7 @@ const OnBoarding = () => {
                                     onClick={() => handleCardClick(index)}
                                 >
                                     <Card.Body >
-                                        <Card.Text className={`card-text d-flex flex-column justify-content-center align-items-center h-100 ${selectedIndex === index ? 'text-dark' : 'text-black-50'}`}>
+                                        <Card.Text className={`card-text d-flex flex-column justify-content-center align-items-center h-100 ${selectedIndex === index ? 'text-dark' : 'text-gray'}`}>
                                             {index === 0 ? (
                                                 <div className='d-flex flex-column align-items-center'>
                                                     <IoDocumentTextOutline size={80} />

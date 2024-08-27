@@ -769,6 +769,9 @@ input[type='text']:focus {
 .versionChovron {
   width: 26px;
   height: 20px;
+  .page-icons {
+    margin-left: 5px;
+  }
 
   .collection-icons-arrow {
     transition: all 0.3s ease-in;
