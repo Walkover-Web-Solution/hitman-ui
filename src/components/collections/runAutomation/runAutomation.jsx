@@ -6,13 +6,14 @@ import { IoIosPlay } from 'react-icons/io'
 import { updateEndpointCheckStatus, updateAllEndpointCheckStatus } from '../../../store/clientData/clientDataActions'
 import { toast } from 'react-toastify'
 import './runAutomation.scss'
-import { addCron, addWebhook } from '../../../services/cronJobs'
 import { generateCronExpression } from '../../common/utility'
 import { RiAiGenerate, RiCheckboxMultipleLine } from 'react-icons/ri'
 import { FaExclamationCircle } from 'react-icons/fa'
 import { runAutomations } from './redux/runAutomationActions'
 import { FiCopy } from 'react-icons/fi'
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { addCron } from '../../../api/cron/cronApi'
+import { addWebhook } from '../../../api/webhook/webhookApi'
 
 export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'

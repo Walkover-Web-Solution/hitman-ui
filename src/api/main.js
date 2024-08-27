@@ -19,14 +19,14 @@ const makeApiRequest = async (method, path, body = null) => {
     try {
         const response = await axios({
             method: method,
-            url: `${BASE_URL}/orgs/${orgId}/${path}`,
+            url: `${BASE_URL}/orgs/${orgId}${path}`,
             headers: {
                 proxy_auth_token: proxyToken,
-                'Content-Type': 'application/json', // Ensure proper content-type
+                'Content-Type': 'application/json',
             },
             data: body,
         });
-        return response.data;
+        return response;
     } catch (error) {
         console.error(`Error making ${method} request to ${path}:`, error.response || error.message);
         throw error;

@@ -254,7 +254,6 @@ const Collections = (props) => {
                           {isOrgDocType() && <div className='dropdown-item d-flex align-items-center h-auto'>
                             <BiExport className='mb-1' size={18} color='grey' />
                             <ExportButton
-                              orgId={params.orgId}
                               collectionId={collectionId}
                               collectionName={collections[collectionId].name}
                             />

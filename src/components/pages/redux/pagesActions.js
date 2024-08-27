@@ -1,9 +1,9 @@
 import { toast } from 'react-toastify'
 import { store } from '../../../store/store'
-import pageApiService from '../pageApiService'
+import pageApiService from '../../../api/page/pageApi'
 import pagesActionTypes from './pagesActionTypes'
 import { operationsAfterDeletion, deleteAllPagesAndTabsAndReactQueryData, SESSION_STORAGE_KEY } from '../../common/utility'
-import endpointApiService from '../../endpoints/endpointApiService'
+import endpointApiService from '../../../api/endpoint/endpointApi'
 import endpointsActionTypes from '../../endpoints/redux/endpointsActionTypes'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 import { navigateTo } from '../../../navigationService'
@@ -27,7 +27,6 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
         }
       })
       .catch((error) => {
-        // dispatch(onEndpointUpdatedError(error.response ? error.response.data : error, originalEndpoint))
         if (stopSaveLoader) {
           stopSaveLoader()
         }

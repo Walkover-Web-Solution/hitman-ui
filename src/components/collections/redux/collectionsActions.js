@@ -1,5 +1,5 @@
 import { store } from '../../../store/store'
-import collectionsApiService from '../collectionsApiService'
+import collectionsApiService from '../../../api/collection/collectionApi'
 import collectionsActionTypes from './collectionsActionTypes'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import { onParentPageAdded } from '../../pages/redux/pagesActions'

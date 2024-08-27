@@ -8,8 +8,8 @@ export function getAllDeletedCollections() {
   return apiRequest.get(`/deletedCollections`)
 }
 
-export function restoreCollection(data,collectionId) {
-  return apiRequest.put(`/restore/${collectionId}`,{data})
+export function restoreCollection(data, collectionId) {
+  return apiRequest.put(`/restore/${collectionId}`, { data })
 }
 
 export function getCollectionsByCustomDomain(domain) {
@@ -17,7 +17,7 @@ export function getCollectionsByCustomDomain(domain) {
 }
 
 export function getCollection(collectionId) {
-  return apiRequest.get(`/collections${collectionId}`)
+  return apiRequest.get(`/collection/${collectionId}`)
 }
 
 export function saveCollection(collection) {
@@ -25,11 +25,11 @@ export function saveCollection(collection) {
 }
 
 export function updateCollection(collectionId, collection) {
-  return apiRequest.put(`/collections${collectionId}`, collection)
+  return apiRequest.put(`/collections/${collectionId}`, collection)
 }
 
 export function deleteCollection(collectionId, collection) {
-  return apiRequest.delete(`/collections${collectionId}`, { data: collection })
+  return apiRequest.delete(`/collections/${collectionId}`)
 }
 
 export function duplicateCollection(collectionId) {
@@ -41,8 +41,13 @@ export function importCollectionService(openApiObject, uniqueTabId, defaultView)
 }
 
 export function getCollectionsAndPages(queryParamsString = '') {
-    return apiRequest.get(`/getSideBarData${queryParamsString}`)
-  }
+  return apiRequest.get(`/getSideBarData${queryParamsString}`)
+}
+
+export function exportCollectionApi(collectionId, type) {
+  const response = apiRequest.post(`/exportCollection`, { collectionId, type })
+  return response.data
+}
 
 export default {
   getCollections,
@@ -54,5 +59,6 @@ export default {
   duplicateCollection,
   getCollectionsByCustomDomain,
   restoreCollection,
-  importCollectionService
+  importCollectionService,
+  exportCollectionApi
 }
