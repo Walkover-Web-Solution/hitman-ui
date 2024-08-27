@@ -215,7 +215,7 @@ const SubPage = (props) => {
         {expanded &&
           <div className='linkWrapper versionPages'>
             <Card.Body>
-              {pages[props.rootParentId].child?.length > 0 ? <CombinedCollections level={props?.level} {...props} /> : <span>No pages inside</span>}
+              {pages[props.rootParentId].child?.length > 0 ? <CombinedCollections level={props?.level} {...props} /> : <span className='no-page pl-5 mt-1 d-block text-grey'>No pages inside</span>}
             </Card.Body>
           </div>
         }
