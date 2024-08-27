@@ -8,6 +8,7 @@
       padding: 0px !important;
       margin: 0px !important;
       span {
+        padding: 2px 3px;
         &:hover {
           background-color: $button-background-hover;
         }
@@ -15,6 +16,18 @@
           &:hover{
             background-color: unset;
           }
+        }
+      }
+      strong {
+        border-radius: 2px;
+        border: 1px solid transparent;
+        &:hover {
+          background-color: $button-background-hover;
+        }
+        &:focus-visible {
+          outline: unset;
+          border-color: rgba(128, 128, 128, 0.356);
+          background-color: unset;
         }
       }
     }

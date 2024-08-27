@@ -239,6 +239,17 @@ $border-color: rgba(227, 228, 230, 0.7);
 .endpoint-container {
   .panel-endpoint-name-container {
     margin-bottom: 0px;
+    strong {
+      border-radius: 2px;
+      padding: 2px;
+      &:hover {
+        background-color: $button-background-hover;
+      }
+      &:focus-visible {
+        outline: 1px solid rgba(128, 128, 128, 0.356) ;
+        background-color: unset;
+      }
+    }
 
     .public-endpoint-name-input {
       display: flex;
@@ -1839,6 +1850,11 @@ table#custom-generic-table {
       &:hover {
         background-color: rgba(255, 255, 255, 0.178);
         cursor: no-drop;
+      }
+    }
+    &.save-button {
+      &:hover {
+        background-color: $button-background-hover;
       }
     }
   }
