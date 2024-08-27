@@ -25,6 +25,16 @@ export function importPostmanEnvironment(environment) {
   return apiRequest.post(`/import/environment`, environment);
 }
 
+export async function exportEnvironmentApi(environmentId) {
+  try {
+    const response = await apiRequest.post(`/export/environment/${environmentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error calling export environment API:', error);
+    throw error;
+  }
+}
+
 export default {
   getEnvironments,
   getEnvironment,
@@ -32,4 +42,5 @@ export default {
   updateEnvironment,
   deleteEnvironment,
   importPostmanEnvironment,
+  exportEnvironmentApi
 };

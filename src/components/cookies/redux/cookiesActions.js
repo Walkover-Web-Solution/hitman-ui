@@ -1,4 +1,4 @@
-import cookiesApiService from '../cookiesApiService'
+import cookiesApiService from '../../../api/cookie/cookieApi'
 import cookiesActionTypes from './cookiesActionTypes'
 import { store } from '../../../store/store'
 

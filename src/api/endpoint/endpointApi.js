@@ -5,6 +5,13 @@ import { makeHttpRequestThroughAxios } from '../../services/coreRequestService';
 import { grantTypesEnums } from "../../components/common/authorizationEnums";
 import { introspectionQuery } from "../../components/endpoints/commonIntrospectionQuery";
 
+const ENTITY_STATUS = {
+  PENDING: 0,
+  DRAFT: 1,
+  APPROVED: 2,
+  REJECT: 3
+};
+
 export function apiTest(api, method, body, headers, bodyType, cancelToken) {
   if (api.includes('localhost') || api.includes('127.0.0.1')) {
     return makeHttpRequestThroughAxios({ api, method, body, headers, bodyType, cancelToken });
@@ -150,6 +157,26 @@ export async function runAutomation(details) {
   return apiRequest.post(`/run/automation`, details);
 }
 
+export function approveEndpoint(endpointId, uniqueTabId) {
+  return apiRequest.patch(`/endpoints/${endpointId}/state`, { state: ENTITY_STATUS.APPROVED, uniqueTabId })
+}
+
+export function pendingEndpoint(endpoint) {
+
+  return apiRequest.patch(`/endpoints/${endpoint.id}/state`, { state: ENTITY_STATUS.PENDING })
+}
+
+export function draftEndpoint(endpoint, uniqueTabId) {
+
+  return apiRequest.patch(`/endpoints/${endpoint.id}/state`, { state: ENTITY_STATUS.DRAFT, uniqueTabId })
+}
+
+export function rejectEndpoint(endpoint) {
+
+  return apiRequest.patch(`/endpoints/${endpoint.id}/state`, { state: ENTITY_STATUS.REJECT })
+}
+
+
 export default {
   getEndpoints,
   deleteEndpoint,
@@ -163,4 +190,9 @@ export default {
   getTokenAuthorizationCodeAndAuthorizationPKCE,
   getTokenPasswordAndClientGrantType,
   getRefreshToken,
+  runAutomation,
+  approveEndpoint,
+  pendingEndpoint,
+  draftEndpoint,
+  rejectEndpoint
 };

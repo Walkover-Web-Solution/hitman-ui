@@ -44,6 +44,10 @@ export function getCollectionsAndPages(queryParamsString = '') {
   return apiRequest.get(`/getSideBarData${queryParamsString}`)
 }
 
+export function bulkPublishSelectedData(publishData) {
+  return apiRequest.patch(`/bulkPublish`, publishData)
+}
+
 export function moveCollectionsAndPages(moveToOrgId, collection) {
   const { id, orgId, name } = collection
   return apiRequest.post(`/collections/${id}`, { orgId: moveToOrgId, name, collectionMoved: true })

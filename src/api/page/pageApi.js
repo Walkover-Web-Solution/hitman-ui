@@ -1,6 +1,13 @@
 import apiRequest from "../main";
 
 
+const ENTITY_STATUS = {
+    PENDING: 0,
+    DRAFT: 1,
+    APPROVED: 2,
+    REJECT: 3
+};
+
 export function getAllPages(id) {
     return apiRequest.get(`/${id}/page`);
 }
@@ -30,11 +37,36 @@ export async function getPublishedContentByIdAndType(id, type) {
     return type == 4 ? data?.data?.publishedContent || '' : data?.data?.publishedContent?.contents || ''
 }
 
+export function approvePage(page) {
+    return apiRequest.patch(`/pages/${page.id}/state`, { state: ENTITY_STATUS.APPROVED })
+}
+
+export function pendingPage(page) {
+    return apiRequest.patch(`/pages/${page.id}/state`, { state: ENTITY_STATUS.PENDING })
+}
+
+export function draftPage(page) {
+    return apiRequest.patch(`/pages/${page.id}/state`, { state: ENTITY_STATUS.DRAFT })
+}
+
+export function rejectPage(page) {
+    return apiRequest.patch(`/pages/${page.id}/state`, { state: ENTITY_STATUS.REJECT })
+}
+
+export const getPageContent = async (pageId) => {
+    const data = await apiRequest.get(`/pages/${pageId}/content`)
+    return data?.data?.contents || ''
+}
+
 export default {
     updatePage,
     deletePage,
     getAllPages,
     saveCollectionPage,
     dragAndDropApi,
-    getPublishedContentByIdAndType
+    getPublishedContentByIdAndType,
+    approvePage,
+    pendingPage,
+    draftPage,
+    rejectPage
 };
