@@ -437,11 +437,11 @@ const SideBar = () => {
     return (
       <>
         {isOnDashboardPage && getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfileV2 />}
-        <div className='px-2 mx-1 pt-3'>
+        <div className={`px-2 mx-1 ${isOnPublishedPage() ? 'pt-3' : ''}`}>
           {isOnPublishedPage() && renderCollectionName()}
           {renderSearch()}
         </div>
-        <div className={`sidebar-content ${isOnPublishedPage() ? 'px-2 mx-1' : 'mb-3'}`}>
+        <div className={`sidebar-content ${isOnPublishedPage() ? 'px-2 mx-1' : ''}`}>
           {searchData.filter !== '' && renderSearchList()}
           {searchData.filter === '' && renderSidebarContent()}
         </div>

@@ -8,11 +8,9 @@ import CombinedCollections from '../combinedCollections/combinedCollections.jsx'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions.js'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal.jsx'
 import SubPageForm from './subPageForm.jsx'
-import { ReactComponent as EditSign } from '../../assets/icons/editsign.svg'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import { MdExpandMore } from 'react-icons/md'
 import IconButtons from '../common/iconButton.jsx'
-import { FiPlus } from 'react-icons/fi'
+import { FiEdit2, FiPlus } from 'react-icons/fi'
 import { BsThreeDots } from 'react-icons/bs'
 import { IoDocumentTextOutline } from 'react-icons/io5'
 import { hexToRgb } from '../common/utility'
@@ -20,6 +18,7 @@ import { background } from '../backgroundColor.js'
 import './subpages.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
 import { openInNewTab } from '../tabs/redux/tabsActions.js'
+import { RiDeleteBin6Line } from 'react-icons/ri'
 
 const SubPage = (props) => {
   const { pages, clientData, collections, organizations } = useSelector((state) => ({
@@ -202,11 +201,11 @@ const SubPage = (props) => {
                   </IconButtons>
                 </div>
                 <div className='dropdown-menu dropdown-menu-right'>
-                  <div className='dropdown-item d-flex' onClick={() => openEditSubPageForm(pages[subPageId])}>
-                    <EditSign /> Rename
+                  <div className='dropdown-item d-flex align-items-center' onClick={() => openEditSubPageForm(pages[subPageId])}>
+                    <FiEdit2 color='gray' /> Rename
                   </div>
-                  <div className='dropdown-item text-danger d-flex' onClick={() => openDeleteSubPageModal(subPageId)}>
-                    <DeleteIcon /> Delete
+                  <div className='dropdown-item text-danger d-flex align-items-center' onClick={() => openDeleteSubPageModal(subPageId)}>
+                    <RiDeleteBin6Line size={15} /> Delete
                   </div>
                 </div>
               </div>

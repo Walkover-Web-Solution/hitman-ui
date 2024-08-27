@@ -170,20 +170,48 @@ const Page = () => {
         }
         return path.reverse()
     }
+    const handleStrongChange = (e) => {
+        setPageName(e.currentTarget.textContent);
+    };
 
     const pathWithUrls = getPath(pageId, pages)
 
     const renderPathLinks = () => {
         return pathWithUrls.map((item, index) => {
             if (pages?.[item.id]?.type === 2) return null;
+    
+            const isLastItem = index === pathWithUrls.length - 1;
+    
             return (
-                <span style={{ cursor: 'pointer' }} key={index} onClick={() => navigate(`/${item.path}`, { replace: true })}  >
-                    {item.name}
-                    {index < pathWithUrls.length - 1 && '/'}
-                </span>
-            )
-        })
-    }
+                <div
+                    className="cursor-pointer text-black-50 path-name d-inline"
+                    key={index}
+                    onClick={() => navigate(`/${item.path}`, { replace: true })}
+                >
+                    {isLastItem ? (
+                        <strong
+                            className="text-black cursor-text px-1"
+                            onInput={handleStrongChange}
+                            onChange={handlePageNameChange}
+                            onKeyDown={handlePageNameKeyDown}
+                            onBlur={handleSavePageName}
+                            contentEditable
+                            suppressContentEditableWarning
+                        >
+                            {item.name} {/* Assuming `item.name` should be shown when content is editable */}
+                        </strong>
+                    ) : (
+                        <span className="p-1 d-inline-block rounded"> 
+                            {item.name} 
+                        </span>
+                    )}
+                    {!isLastItem && (<p className="d-inline px-1">/</p>)}
+                </div>
+            );
+        });
+    };
+    
+
     // const collectionId = pages[pageId].collectionId
     // const collectionName = collection[collectionId].name
     // const path = `orgs/${orgId}/dashboard/collection/${collectionId}/settings`

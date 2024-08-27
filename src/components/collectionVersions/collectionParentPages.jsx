@@ -13,11 +13,8 @@ import IconButtons from '../common/iconButton'
 import CustomModal from '../customModal/customModal'
 import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 import PublishedVersionDropDown from './publishedVersionDropDown/publishedVersionDropDown'
-import { ReactComponent as Rename } from '../../assets/icons/renameSign.svg'
 import { MdExpandMore } from 'react-icons/md'
-import { MdOutlineSettings } from 'react-icons/md'
-import { FiPlus } from 'react-icons/fi'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
+import { FiEdit2, FiPlus } from 'react-icons/fi'
 import { BsThreeDots } from 'react-icons/bs'
 import { IoDocumentTextOutline } from 'react-icons/io5'
 import { hexToRgb } from '../common/utility'
@@ -25,6 +22,8 @@ import { background } from '../backgroundColor.js'
 import './collectionVersions.scss'
 import { addPage } from '../pages/redux/pagesActions.js'
 import { openInNewTab } from '../tabs/redux/tabsActions.js'
+import { SlSettings } from "react-icons/sl";
+import { RiDeleteBin6Line } from 'react-icons/ri'
 
 const CollectionParentPages = (props) => {
   const { pages, clientData, collections, organizations } = useSelector((state) => {
@@ -233,7 +232,7 @@ const CollectionParentPages = (props) => {
             >
               <div className={`d-flex align-items-center ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `}  onClick={(e) => handleParentPageClick(e, expanded)}>
                 <div className='d-flex td-name ml-1 align-items-center'>
-                  <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header mr-1'}`} onClick={(e) => handleToggle(e, props.rootParentId)}>
+                  <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'}`} onClick={(e) => handleToggle(e, props.rootParentId)}>
                     <IconButtons variant='sm'><MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} /></IconButtons>
                     <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1' />
                   </span>
@@ -270,14 +269,14 @@ const CollectionParentPages = (props) => {
                     </IconButtons>
                   </div>
                   <div className='dropdown-menu dropdown-menu-right'>
-                    <div className='dropdown-item d-flex' onClick={() => openEditPageForm(pageId)}>
-                      <Rename /> Rename
+                    <div className='dropdown-item d-flex align-items-center' onClick={() => openEditPageForm(pageId)}>
+                      <FiEdit2 color='gray'/> Rename
                     </div>
-                    {isOrgDocType() && <div className='dropdown-item d-flex' onClick={() => setShowVersionForm(true)}>
-                      <MdOutlineSettings size={20} color='#f2994a' /> Manage Version
+                    {isOrgDocType() && <div className='dropdown-item d-flex align-items-center' onClick={() => setShowVersionForm(true)}>
+                      <SlSettings color='gray' /> Manage Version
                     </div>}
-                    <div className='dropdown-item text-danger d-flex' onClick={() => openDeletePageModal(pageId)}>
-                      <DeleteIcon /> Delete
+                    <div className='dropdown-item text-danger d-flex align-items-center' onClick={() => openDeletePageModal(pageId)}>
+                      <RiDeleteBin6Line size={15} /> Delete
                     </div>
                   </div>
                 </div>
