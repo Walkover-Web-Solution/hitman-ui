@@ -311,7 +311,7 @@ class HostContainer extends Component {
           suggestions={this.props?.currentEnvironment}
           id='host-container-input'
           className='form-control'
-          value={this.state.urlHTML ?? ''}
+          initial = {`<span>Google</span>`}
           name={`${endpointId}_hosts`}
           placeholder='Enter URL or paste cURL'
           onChange={(e) => this.handleInputHostChange(e)}
