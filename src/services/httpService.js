@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { logout, getProxyToken } from '../components/auth/authServiceV2'
 import { navigateTo } from '../navigationService'
+import { isDashboardRoute } from '../components/common/utility'
 
 // axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
@@ -11,7 +12,7 @@ let instance = axios.create()
 instance.interceptors.response.use(null, (error) => {
   const expectedError = error.response && error.response.status >= 400 && error.response.status < 500
 
-  if (error.response.config.method === 'get' && error.response.status === 404) {
+  if (error.response.config.method === 'get' && error.response.status === 404 && !isDashboardRoute()) {
     navigateTo('/404_PAGE', {
       state: { error: error }
     })
