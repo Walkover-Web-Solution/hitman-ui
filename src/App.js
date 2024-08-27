@@ -7,7 +7,7 @@ import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
-import { ToastContainer, Bounce, Slide} from 'react-toastify'
+import { ToastContainer, Bounce, Slide } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
@@ -24,13 +24,15 @@ import RunAutomation from './components/collections/runAutomation/runAutomation.
 import NavigationSetter from './history.js'
 import EditRuns from './components/collections/showRuns/editRuns.jsx'
 import './index.scss'
+import { MdClose } from 'react-icons/md'
+import IconButton from './components/common/iconButton.jsx'
 
 const App = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   useEffect(() => {
-    
+
     const scriptId = "chatbot-main-script"
     const chatbot_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI1OTgyIiwiY2hhdGJvdF9pZCI6IjY2NTQ3OWE4YmQ1MDQxYWU5M2ZjZDNjNSIsInVzZXJfaWQiOiIxMjQifQ.aI4h6OmkVvQP5dyiSNdtKpA4Z1TVNdlKjAe5D8XCrew"
     const scriptSrc = "https://chatbot-embed.viasocket.com/chatbot-prod.js"
@@ -91,8 +93,8 @@ const App = () => {
     return (
       <>
         <ToastContainer
-          position='bottom-right'
-          autoClose={5000}
+          position='bottom-left'
+          autoClose={1500}
           hideProgressBar={true}
           newestOnTop={false}
           closeOnClick
@@ -100,9 +102,10 @@ const App = () => {
           pauseOnFocusLoss={false}
           draggable
           pauseOnHover
-          theme='light'
+          theme='dark'
           transition={Slide}
-          toastClassName = 'custom-class'
+          toastClassName='custom-class'
+          closeButton={<IconButton variant='sm'><MdClose size={18} /></IconButton>}
         />
         <NavigationSetter />
         <Routes>

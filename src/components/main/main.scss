@@ -83,23 +83,7 @@
   color: $theme-color !important;
 }
 
-.mobile-warning {
-  position: sticky;
-  z-index: 1200;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: #fde073;
-  text-align: center;
-  line-height: 2.5;
-  overflow: hidden;
-  -webkit-box-shadow: 0 0 5px black;
-  -moz-box-shadow: 0 0 5px black;
-  box-shadow: 0 0 5px black;
-}
-
 // Global Styles
-
 html body {
   background-color: #fff;
   font-family: 'Inter', sans-serif;
@@ -2979,7 +2963,7 @@ li.nav-item.cookie-tab a {
   overflow-x: auto;
   background: #fff;
   padding: 0px 20px 10px;
-  
+
   >div {
     color: $theme-color;
     font-size: $font-medium;
@@ -4323,8 +4307,9 @@ body .tox {
   color: unset !important;
   border: unset !important;
 }
+
 .success-toast-icon {
-  color:  #690;
+  color: #690;
   display: flex-column;
   margin-right: 8px;
 }
