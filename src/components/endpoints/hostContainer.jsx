@@ -17,6 +17,7 @@ const mapStateToProps = (state) => {
     modals: state.modals,
     tabs: state?.tabs,
     currentEnvironment: state?.environment?.environments[state?.environment?.currentEnvironmentId]?.variables || {},
+    activeTabId: state?.tabs?.activeTabId
   }
 }
 class HostContainer extends Component {
@@ -32,12 +33,13 @@ class HostContainer extends Component {
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleInputHostChange = this.handleInputHostChange.bind(this);
     this.observer = null;
-    this.URLData = null;
+    this.initalUrlValue = null;
   }
 
   componentDidMount() {
     this.setHosts();
     this.getAllVariableSuggestions();
+    this.setState({ initalUrlValue: this.props?.endpointContent?.data?.URL })
 
     if (this.hostcontainerRef.current) {
       // Set up a MutationObserver to watch for changes to the innerText
@@ -59,7 +61,10 @@ class HostContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this.setState({URLData: this.props.endpointContent.data.URL})
+    debugger
+    if (prevProps.activeTabId !== this.props?.activeTabId) {
+      this.setState({ initalUrlValue: this.props?.endpointContent?.data?.URL })
+    }
     if (!_.isEqual(prevProps.updatedUri, this.props.updatedUri)) {
       this.setState({ datalistUri: this.props.updatedUri });
     }
@@ -93,7 +98,6 @@ class HostContainer extends Component {
 
   setParentHostAndUri() {
     this.props.set_host_uri(this.hostcontainerRef.current.innerHTML)
-    this.hostcontainerRef.current.focus()
   }
 
   fetchPublicEndpointHost() {
@@ -337,7 +341,6 @@ class HostContainer extends Component {
   }
 
   renderHostDatalist() {
-    const URL = this.props.endpointContent.data.URL;
     const endpointId = this.props.endpointId
     const { showIcon } = this.state;
     return (
@@ -345,19 +348,7 @@ class HostContainer extends Component {
         <AutoSuggest
           contentEditableDivRef={this.hostcontainerRef}
           suggestions={this.props?.currentEnvironment}
-          // id='host-container-input'
-          // className='form-control'
-          initial = {(this.state.URLData !== undefined) ? `${this.state.URLData}` : ''}
-          // name={`${endpointId}_hosts`}
-          // placeholder='Enter URL or paste cURL'
-          // onChange={(e) => this.handleInputHostChange(e)}
-          // autoComplete='off'
-          // onFocus={() =>
-          //   this.setState({ showDatalist: true, showIcon: false }, () => {
-          //     document.addEventListener('mousedown', this.handleClickOutside);
-          //   })
-          // }
-          // onBlur={() => this.setState({ showIcon: true })}
+          initial={this.state.initalUrlValue ?? ''}
         />
         {showIcon && <div className='position-relative url-icons'> <HiOutlineExclamationCircle size={20} className='invalid-icon' />
           <span className='position-absolute'>URL cannot be empty</span>
