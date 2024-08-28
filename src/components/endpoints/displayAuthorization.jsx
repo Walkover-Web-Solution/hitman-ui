@@ -202,16 +202,16 @@ export default function Authorization(props) {
 
       {selectedAuthorizationType === authorizationTypes.noAuth && (
         <div className='authorization-editor-wrapper'>
-          <p className='text-gray'> This request does not use any authorization.</p>
+          <p className='text-grey'> This request does not use any authorization.</p>
         </div>
       )}
 
       {selectedAuthorizationType === authorizationTypes.basicAuth && (
         <div className='authorization-editor-wrapper' id='authorization-form'>
           <form className='form-group'>
-            <label className='mb-1 text-gray'>Username</label>
+            <label className='mb-1 text-grey'>Username</label>
             <input className='form-control' name='username' value={basicAuthData.username} onChange={handleChange} />
-            <label className='text-gray' htmlFor='password'>Password</label>
+            <label className='text-grey' htmlFor='password'>Password</label>
             <div className='d-flex flex-row align-items-center'>
               <input
                 className='form-control'
@@ -221,7 +221,7 @@ export default function Authorization(props) {
                 value={basicAuthData.password}
                 onChange={handleChange}
               />
-              <label className='mb-3 ml-3 text-gray'>
+              <label className='mb-3 ml-3 text-grey'>
                 <input className='mr-1' type='checkbox' onClick={handleShowPassword} />
                 Show Password
               </label>

@@ -69,7 +69,7 @@ export default function Auth2Configurations(props) {
                     </div>
                     <div className='input-field-wrapper d-block'>
                         <div className='basic-auth-input'>
-                            <IconButton variant='sm'><button className='btn fs-4 text-gray' type='button' onClick={handleGenerateToken} >
+                            <IconButton variant='sm'><button className='btn fs-4 text-grey' type='button' onClick={handleGenerateToken} >
                                 Get New Access Token
                             </button></IconButton>
                         </div>

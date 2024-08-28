@@ -597,11 +597,11 @@ class GenericTable extends Component {
                 <thead>
                   <tr>
                     <th className='custom-th'> </th>
-                    <th className='custom-th text-gray' id='generic-table-key-cell dd'>
+                    <th className='custom-th text-grey' id='generic-table-key-cell dd'>
                       KEY
                     </th>
-                    <th className='custom-th text-gray'>VALUE</th>
-                    <th className='custom-th text-gray'>DESCRIPTION</th>
+                    <th className='custom-th text-grey'>VALUE</th>
+                    <th className='custom-th text-grey'>DESCRIPTION</th>
                   </tr>
                 </thead>
               ) : dataArray.length === this.findUncheckedEntityCount() ? (

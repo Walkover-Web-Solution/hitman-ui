@@ -262,7 +262,7 @@ class BodyContainer extends Component {
           return (
             <>
               <div className="prettify-button position-absolute" >
-                <IconButton><span className='text-gray' onClick={this.handlePrettifyJson.bind(this)}>Beautify</span></IconButton>
+                <IconButton><span className='text-grey' onClick={this.handlePrettifyJson.bind(this)}>Beautify</span></IconButton>
               </div>
               {' '}
               <AceEditor
@@ -310,7 +310,7 @@ class BodyContainer extends Component {
                 onClick={() => this.handleSelectBodyType(bodyTypesEnums['none'])}
                 className='custom-radio-input'
               />
-              <span className='text-gray fs-4'>none</span>
+              <span className='text-grey fs-4'>none</span>
               <span className='checkmark' />
             </label>
 
@@ -325,7 +325,7 @@ class BodyContainer extends Component {
                 className='custom-radio-input'
                 checked={this.state.selectedBodyType === bodyTypesEnums['raw']}
               />
-              <span className='text-gray fs-4'>raw</span>
+              <span className='text-grey fs-4'>raw</span>
               <span className='checkmark' />
             </label>
             <label className='customRadio'>
@@ -338,7 +338,7 @@ class BodyContainer extends Component {
                 className='custom-radio-input'
                 checked={this.matchCurrentBodyType(`${bodyTypesEnums['multipart/form-data']}-${this.props.endpoint_id}`)}
               />
-              <span className='text-gray fs-4'>form-data</span>
+              <span className='text-grey fs-4'>form-data</span>
               <span className='checkmark' />
             </label>
             <label className='customRadio'>
@@ -351,7 +351,7 @@ class BodyContainer extends Component {
                 onChange={() => { }}
                 checked={this.matchCurrentBodyType(`${bodyTypesEnums['application/x-www-form-urlencoded']}-${this.props.endpoint_id}`)}
               />
-              <span className='text-gray fs-4'>x-www-form-urlencoded</span>
+              <span className='text-grey fs-4'>x-www-form-urlencoded</span>
               <span className='checkmark' />
             </label>
             {!(this.showRawBodyType && this.flag) && (
@@ -360,7 +360,7 @@ class BodyContainer extends Component {
                   <div>
                     <div className='dropdown'>
                       <button
-                        className='btn dropdown-toggle text-gray fs-4 border-0'
+                        className='btn dropdown-toggle text-grey fs-4 border-0'
                         type='button'
                         id='dropdownMenuButton'
                         data-toggle='dropdown'
