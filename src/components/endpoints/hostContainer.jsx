@@ -245,7 +245,6 @@ class HostContainer extends Component {
     }
 
     let inputValue = this.hostcontainerRef.current.innerText;
-
     if (inputValue.trim().startsWith('curl')) {
       try {
         let modifiedCurlCommand = inputValue;
@@ -260,7 +259,6 @@ class HostContainer extends Component {
         parsedData.url = parsedData.url.replace(/^(http:\/\/https?:\/\/)/, '$2');
         parsedData.raw_url = parsedData.raw_url.replace(/^http:\/\/\s/, '');
         parsedData.raw_url = parsedData.raw_url.replace(/^(http:\/\/https?:\/\/)/, '$2');
-
         this.getDataFromParsedData(this.props.untitledEndpointData, parsedData);
         return;
       } catch (e) {
@@ -337,7 +335,6 @@ class HostContainer extends Component {
 
   renderHostDatalist() {
     const URL = this.props.endpointContent.URL;
-    console.log(URL,1234)
     const endpointId = this.props.endpointId
     const { showIcon } = this.state;
     return (
