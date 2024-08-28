@@ -144,7 +144,8 @@ const untitledEndpointData = {
       [bodyTypesEnums['multipart/form-data']]: [{ checked: 'notApplicable', key: '', value: '', description: '', type: 'text' }]
     },
     uri: '',
-    updatedUri: ''
+    updatedUri: '',
+    URL: '',
   },
   pathVariables: [],
   environment: {},
@@ -243,7 +244,6 @@ const getEndpointContent = async (props) => {
     let data = isUserOnPublishedPage ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
     return utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
   }
-
   return _.cloneDeep(untitledEndpointData)
 }
 
@@ -287,9 +287,10 @@ const withQuery = (WrappedComponent) => {
 
     const setOldDataToNewDataForBody = (data) => {
       let endpoint = _.cloneDeep(data.data)
+      console.log(endpoint)
       const bodyType = endpoint.body.type
       const untitled = _.cloneDeep(untitledEndpointData.data)
-
+      console.log(untitled);
       if (
         [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) &&
         endpoint.body.raw
@@ -319,6 +320,7 @@ const withQuery = (WrappedComponent) => {
       delete endpoint.body?.value
 
       untitled.uri = endpoint.uri
+      untitled.URL = endpoint.URL
       untitled.updatedUri = endpoint.updatedUri
       untitled.method = endpoint.method
       untitled.name = endpoint.name
@@ -1270,8 +1272,9 @@ class DisplayEndpoint extends Component {
     return data
   }
 
-  handleSave = async (id, endpointObject, slug) => {    
+  handleSave = async (id, endpointObject, slug) => {  
     const { endpointName, endpointDescription } = endpointObject || {}
+    console.log(endpointObject)
     let currentTabId = this.props.tab.id
     let parentId = id
     if (
@@ -1280,7 +1283,8 @@ class DisplayEndpoint extends Component {
     ) {
       this.openEndpointFormModal()
     } else {
-      let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId])
+      let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId])  
+      console.log(endpointContent)
       const body = this.prepareBodyForSaving(endpointContent?.data?.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: endpointContent?.bodyDescription,
@@ -1298,14 +1302,13 @@ class DisplayEndpoint extends Component {
       }, {})
       const endpoint = {
         id: slug === 'isHistory' ? this.props?.params?.historyId : currentTabId,
-        uri: endpointContent?.data.updatedUri,
+        URL: endpointContent?.data?.URL,
         name: this.state.saveAsFlag ? endpointName : endpointContent?.data?.name,
         requestType: endpointContent?.data?.method,
         body: body,
         headers: headersData,
         params: updatedParams,
         pathVariables: updatedPathVariables,
-        BASE_URL: endpointContent?.host?.BASE_URL || null,
         bodyDescription: endpointContent?.bodyDescription,
         authorizationData: endpointContent?.authorizationData,
         notes: endpointContent?.endpoint.notes,

@@ -442,6 +442,7 @@ export function compareAlphabetically(a, b, data) {
 const modifyEndpointContent = (endpointData, untitledData) => {
   const endpoint = cloneDeep(endpointData)
   const untitled = cloneDeep(untitledData)
+  console.log(endpointData)
   untitled.data.name = endpoint?.name || 'Endpoint'
   untitled.data.method = endpoint?.requestType || 'GET'
 
