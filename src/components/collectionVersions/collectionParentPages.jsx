@@ -169,11 +169,11 @@ const CollectionParentPages = (props) => {
     }
   }
 
-  const openAddPageEndpointModal = async(pageId) => {
+  const openAddPageEndpointModal = async (pageId) => {
     const newPage = { name: 'untitled', pageType: 3 };
     if (!isOrgDocType()) {
-       dispatch(addPage(pages[pageId].versionId, newPage))
-       dispatch(addIsExpandedAction({value:true, id:pageId}))
+      dispatch(addPage(pages[pageId].versionId, newPage))
+      dispatch(addIsExpandedAction({ value: true, id: pageId }))
       dispatch(openInNewTab({ type: 'page', previewMode: false, isModified: false, state: {} }))
     } else {
       setShowAddCollectionModal(true)
@@ -230,7 +230,7 @@ const CollectionParentPages = (props) => {
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <div className={`d-flex align-items-center ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `}  onClick={(e) => handleParentPageClick(e, expanded)}>
+              <div className={`d-flex align-items-center ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
                 <div className='d-flex td-name ml-1 align-items-center'>
                   <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'}`} onClick={(e) => handleToggle(e, props.rootParentId)}>
                     <IconButtons variant='sm'><MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} /></IconButtons>
@@ -270,7 +270,7 @@ const CollectionParentPages = (props) => {
                   </div>
                   <div className='dropdown-menu dropdown-menu-right'>
                     <div className='dropdown-item d-flex align-items-center' onClick={() => openEditPageForm(pageId)}>
-                      <FiEdit2 color='gray'/> Rename
+                      <FiEdit2 color='gray' /> Rename
                     </div>
                     {isOrgDocType() && <div className='dropdown-item d-flex align-items-center' onClick={() => setShowVersionForm(true)}>
                       <SlSettings color='gray' /> Manage Version
@@ -283,15 +283,17 @@ const CollectionParentPages = (props) => {
               ) : null}
             </div>
           </button>
-          {expanded && (
+          {expanded ? (
             <div className='version-collapse'>
               <Card.Body>
                 <div className='linkWrapper versionPages'>
-                  <CombinedCollections {...props} level={0} page_id={pageId} rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId} />
+                  {(pages[pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId]?.child?.length !== 0) ?
+                    <CombinedCollections {...props} level={0} page_id={pageId} rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId} />
+                    : <span>No pages inside</span>}
                 </div>
               </Card.Body>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     )
