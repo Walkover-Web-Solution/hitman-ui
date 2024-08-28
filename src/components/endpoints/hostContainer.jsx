@@ -32,6 +32,7 @@ class HostContainer extends Component {
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleInputHostChange = this.handleInputHostChange.bind(this);
     this.observer = null;
+    this.URLData = null;
   }
 
   componentDidMount() {
@@ -58,6 +59,7 @@ class HostContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    this.setState({URLData: this.props.endpointContent.data.URL})
     if (!_.isEqual(prevProps.updatedUri, this.props.updatedUri)) {
       this.setState({ datalistUri: this.props.updatedUri });
     }
@@ -91,6 +93,7 @@ class HostContainer extends Component {
 
   setParentHostAndUri() {
     this.props.set_host_uri(this.hostcontainerRef.current.innerHTML)
+    this.hostcontainerRef.current.focus()
   }
 
   fetchPublicEndpointHost() {
@@ -334,7 +337,7 @@ class HostContainer extends Component {
   }
 
   renderHostDatalist() {
-    const URL = this.props.endpointContent.URL;
+    const URL = this.props.endpointContent.data.URL;
     const endpointId = this.props.endpointId
     const { showIcon } = this.state;
     return (
@@ -342,19 +345,19 @@ class HostContainer extends Component {
         <AutoSuggest
           contentEditableDivRef={this.hostcontainerRef}
           suggestions={this.props?.currentEnvironment}
-          id='host-container-input'
-          className='form-control'
-          initial = {(URL !== undefined) ? `${URL}` : ''}
-          name={`${endpointId}_hosts`}
-          placeholder='Enter URL or paste cURL'
-          onChange={(e) => this.handleInputHostChange(e)}
-          autoComplete='off'
-          onFocus={() =>
-            this.setState({ showDatalist: true, showIcon: false }, () => {
-              document.addEventListener('mousedown', this.handleClickOutside);
-            })
-          }
-          onBlur={() => this.setState({ showIcon: true })}
+          // id='host-container-input'
+          // className='form-control'
+          initial = {(this.state.URLData !== undefined) ? `${this.state.URLData}` : ''}
+          // name={`${endpointId}_hosts`}
+          // placeholder='Enter URL or paste cURL'
+          // onChange={(e) => this.handleInputHostChange(e)}
+          // autoComplete='off'
+          // onFocus={() =>
+          //   this.setState({ showDatalist: true, showIcon: false }, () => {
+          //     document.addEventListener('mousedown', this.handleClickOutside);
+          //   })
+          // }
+          // onBlur={() => this.setState({ showIcon: true })}
         />
         {showIcon && <div className='position-relative url-icons'> <HiOutlineExclamationCircle size={20} className='invalid-icon' />
           <span className='position-absolute'>URL cannot be empty</span>

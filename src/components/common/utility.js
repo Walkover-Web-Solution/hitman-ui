@@ -484,6 +484,7 @@ const modifyEndpointContent = (endpointData, untitledData) => {
 
   untitled.data.uri = endpoint.uri
   untitled.data.updatedUri = endpoint.uri
+  untitled.data.URL = endpointData?.URL
   untitled.authorizationData = endpoint?.authorizationData || untitled.authorizationData
   const headersData = endpoint.headers
     ? Object.keys(endpoint.headers).map((key) => {
@@ -528,7 +529,6 @@ const modifyEndpointContent = (endpointData, untitledData) => {
   untitled.flagResponse = false
   untitled.bodyDescription = endpointData.bodyDescription
   untitled.description = endpointData.description
-  untitled.URL = endpointData.URL
   return { ...untitled }
 }
 

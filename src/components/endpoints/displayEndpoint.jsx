@@ -219,7 +219,7 @@ const getEndpointContent = async (props) => {
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
   if (!isUserOnPublishedPage && tabId?.isModified && tabId?.type == 'endpoint' && tabId?.draft) {
-    debugger
+    console.log(tabId?.draft?.data.URL);
     return tabId?.draft
   }
 
@@ -276,9 +276,11 @@ const withQuery = (WrappedComponent) => {
       }
     } else {
       queryKey = ['endpoint', endpointId]
-      fetchFunction = () => getEndpointContent(props)
+      fetchFunction = async () => {
+        console.log(345,await getEndpointContent(props))
+        return getEndpointContent(props)
+      };
     }
-
     const data = useQuery(queryKey, fetchFunction, {
       refetchOnWindowFocus: false,
       cacheTime: 5000000,
@@ -339,12 +341,11 @@ const withQuery = (WrappedComponent) => {
       if (callbackFn) {
         callbackFn()
       }
-    }
+    } 
 
     const getDataFromReactQuery = (id) => {
       return queryClient.getQueryData(id)
     }
-    console.log(data.data,'idris')
     return (
       <WrappedComponent
         {...props}
