@@ -1,7 +1,7 @@
 {
-  "name": "hitman",
-  "author": "Hitman",
-  "description": "Hitman App",
+  "name": "Techdoc",
+  "author": "Techdoc",
+  "description": "Techdoc App",
   "version": "0.1.0",
   "private": true,
   "main": "public/electron.js",
