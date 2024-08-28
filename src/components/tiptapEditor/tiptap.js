@@ -63,7 +63,7 @@ export default function Tiptap({ disabled, isInlineEditor, minHeight }) {
   const params = useParams()
   const { orgId } = params
   const { currentUser, activeTabId } = useSelector((state) => ({
-    users: state.users.currentUser,
+    currentUser: state.users.currentUser,
     activeTabId: state.tabs.activeTabId
   }));
   const { ydoc, provider } = useMemo(() => {
