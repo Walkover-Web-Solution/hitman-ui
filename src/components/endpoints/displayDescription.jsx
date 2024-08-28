@@ -22,7 +22,7 @@ function DisplayDescription(props) {
   return (
     <div className='endpoint-header flex-grow-1'>
       <div className={isDashboardRoute(props) ? 'panel-endpoint-name-container' : 'endpoint-name-container'}>
-        {isDashboardRoute(props) && props.endpoint && <input placeholder='Write Description' value={description} onChange={handleChangeDescription} className='endpoint-description w-100' />}
+        {isDashboardRoute(props) && props.endpoint && <input placeholder='Write Description' value={description} onChange={handleChangeDescription} className='endpoint-description text-grey w-100' />}
       </div>
     </div>
   )

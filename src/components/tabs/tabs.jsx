@@ -266,7 +266,7 @@ const CustomTabs = (props) => {
         } else {
           const endpoint = tabState?.[tabId]
           return (
-            <div className='d-flex align-items-center fs-4'>
+            <div className='d-flex align-items-center'>
               {endpoint?.draft?.protocolType === 1 && (
                 <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>
               )}

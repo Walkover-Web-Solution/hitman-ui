@@ -88,9 +88,8 @@ class EndpointBreadCrumb extends Component {
 
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
-      ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
+      // ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
     }
-    document.addEventListener('mousedown', this.handleClickOutside);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -129,27 +128,13 @@ class EndpointBreadCrumb extends Component {
     }
   }
 
-  componentWillUnmount() {
-    if (isElectron()) {
-      const { ipcRenderer } = window.require('electron')
-      ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
-    }
-    document.removeEventListener('mousedown', this.handleClickOutside);
-  }
-
-  handleShortcuts = (e, actionType) => {
-    if (actionType === 'RENAME_ENDPOINT') {
-      this.setState({ nameEditable: true }, () => {
-        this.nameInputRef.current.focus()
-      })
-    }
-  }
-
-  handleClickOutside = (event) => {
-    if (this.nameInputRef.current && !this.nameInputRef.current.contains(event.target)) {
-      this.setState({ nameEditable: false }); // Close the input field on outside click
-    }
-  };
+  // handleShortcuts = (e, actionType) => {
+  //   if (actionType === 'RENAME_ENDPOINT') {
+  //     this.setState({ nameEditable: true }, () => {
+  //       this.nameInputRef.current.focus()
+  //     })
+  //   }
+  // }
 
   changeEndpointName() {
     const endpoint = this.props.endpoint
@@ -165,20 +150,33 @@ class EndpointBreadCrumb extends Component {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = e.currentTarget.textContent
       this.props.setQueryUpdatedData(tempData)
-      this.props.update_name({ id: this.props?.params?.endpointId, name: e.currentTarget.textContent })
     }
   }
 
-  handleInputBlur() {
-    this.setState({ nameEditable: false })
-    if (this.props?.params?.endpointId !== 'new' && trimString(this.props?.endpointContent?.data?.name).length === 0) {
-      const tempData = this.props?.endpointContent || {}
-      tempData.data.name = this.props?.pages?.[this.props?.params?.endpointId]?.name
-      this.props.setQueryUpdatedData(tempData)
-    } else if (this.props?.params?.endpointId === 'new' && !this.props?.endpointContent?.data?.name) {
+  handleInputBlur(event) {
+    if (this.props.tabState[this.props.activeTabId].status !== 'NEW' && trimString(event.currentTarget.textContent).length === 0) {
       const tempData = this.props?.endpointContent || {}
       tempData.data.name = 'Untitled'
       this.props.setQueryUpdatedData(tempData)
+      this.props.update_name({ id: this.props?.params?.endpointId, name: 'Untitled' })
+    }
+    else if (this.props.tabState[this.props.activeTabId].status === 'NEW' && trimString(event.currentTarget.textContent).length === 0) {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = 'Untitled'
+      this.props.setQueryUpdatedData(tempData)
+      this.props.update_name({ id: this.props.activeTabId, name: 'Untitled' })
+    }
+    else if (this.props.tabState[this.props.activeTabId].status === 'NEW') {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = event.currentTarget.textContent
+      this.props.setQueryUpdatedData(tempData)
+      this.props.update_name({ id: this.props.activeTabId, name:  event.currentTarget.textContent})
+    }
+    else {
+      const tempData = this.props?.endpointContent || {}
+      tempData.data.name = event.currentTarget.textContent
+      this.props.setQueryUpdatedData(tempData)
+      this.props.update_name({ id: this.props?.params?.endpointId, name: event.currentTarget.textContent })
     }
   }
 
@@ -236,7 +234,7 @@ class EndpointBreadCrumb extends Component {
 
   handleOnPathVarClick(isLastItem, item) {
     if (isLastItem) {
-      this.setState({ nameEditable: true }, () => this.nameInputRef.current.focus());
+      this.setState({ nameEditable: true })
     } else {
       this.props.navigate(`/${item.path}`, { replace: true });
     }
@@ -253,13 +251,10 @@ class EndpointBreadCrumb extends Component {
         <div className='d-flex align-items-center' onClick={() => this.handleOnPathVarClick(isLastItem, item)}>
           {isLastItem ? (
             <strong
-              ref={this.nameInputRef}
-              contentEditable={this.state.nameEditable}
+              contentEditable
               className='cursor-text fw-500 px-1 py-0'
-              onBlur={() => this.setState({ nameEditable: false })}
-              onKeyUp={this.handleInputChange.bind(this)}
+              onBlur={(e) => this.handleInputBlur(e)}
               onKeyDown={(e) => this.handleKeyDownEvent(e)}
-              tabIndex="0"
               key={index}
             >
               {this.props?.isEndpoint
@@ -283,6 +278,7 @@ class EndpointBreadCrumb extends Component {
       event.preventDefault();
       event.target.blur();
       this.setState({ nameEditable: false });
+      this.handleInputBlur(event);
     }
   }
 
@@ -314,18 +310,16 @@ class EndpointBreadCrumb extends Component {
           ) : (
             <strong
               ref={this.nameInputRef}
-              contentEditable
+              contentEditable={true}
               className='cursor-text fw-500 px-1 py-0 ml-1'
-              onBlur={() => this.setState({ nameEditable: false })}
-              onInput={this.handleInputChange.bind(this)}
+              onBlur={(e) => this.handleInputBlur(e)}
               onKeyDown={(e) => this.handleKeyDownEvent(e)}
-              tabIndex="0"
+              key={this.props.params.endpointId}
             >
-              {this.props?.isEndpoint
-                ? this.props?.pages?.[this.props?.params?.endpointId]?.name ||
+              {this.props?.pages?.[this.props?.params?.endpointId]?.name ||
                 this.props?.history?.[this.props?.params?.historyId]?.endpoint?.name ||
                 this.props?.endpointContent?.data?.name
-                : this.props?.pages?.[this.props?.params?.pageId]?.name}
+                && this.props?.pages?.[this.props?.params?.pageId]?.name  || "Untitled"}
             </strong>
           )}
         </div>

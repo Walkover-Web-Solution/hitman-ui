@@ -105,8 +105,10 @@ const Page = () => {
     };
 
     const autoGrow = (element) => {
+        
         element.style.height = '5px';
         element.style.height = `${element.scrollHeight}px`;
+        setPageName(element.textContent)
     };
 
     const handlePublish = async () => {
@@ -185,6 +187,7 @@ const Page = () => {
                             onKeyDown={handlePageNameKeyDown}
                             onBlur={handleSavePageName}
                             contentEditable
+                            key={index}
                         >
                             {item.name}
                         </strong>
@@ -204,8 +207,8 @@ const Page = () => {
 
     return (
         <div className='parent-page-container d-flex flex-column align-items-center w-100'>
-            <div className='page-header position-sticky px-3 py-2 bg-white d-flex align-items-center justify-content-between w-100'>
-                <div className="d-flex justify-content-start align-items-center w-50">
+            <div className='page-header position-sticky px-3 py-3 bg-white d-flex align-items-center justify-content-between w-100'>
+                <div className="d-flex justify-content-start align-items-center">
                     {tabs?.[activeTabId]?.status === 'SAVED' &&
                         <div className="header-page-name d-flex align-items-center fa-1x text-truncate">
                             <strong className='text-secondary fw-400 px-1 py-0 text-nowrap-heading cursor-pointer' onClick={handleCollectionClick}>
@@ -253,7 +256,10 @@ const Page = () => {
             <div className='page-container h-100 w-100 p-3'>
                 <textarea
                     ref={textareaRef}
-                    onInput={() => autoGrow(textareaRef.current)}
+                    onInput={(e) => {
+                        setPageName(e.target.value)
+                        autoGrow(textareaRef.current)
+                    }}
                     className='page-name text-black fa-3x font-weight-bold mt-5 border-0 w-100'
                     type='text'
                     value={pageName}
