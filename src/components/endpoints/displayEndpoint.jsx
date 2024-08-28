@@ -206,6 +206,7 @@ const updateTabDraftData = (endpointId, data) => {
 }
 
 const getEndpointContent = async (props) => {
+  debugger
   let isUserOnPublishedPage = isOnPublishedPage()
   let currentIdToShow = isUserOnPublishedPage ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
 
@@ -218,6 +219,7 @@ const getEndpointContent = async (props) => {
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
   if (!isUserOnPublishedPage && tabId?.isModified && tabId?.type == 'endpoint' && tabId?.draft) {
+    debugger
     return tabId?.draft
   }
 
@@ -287,10 +289,8 @@ const withQuery = (WrappedComponent) => {
 
     const setOldDataToNewDataForBody = (data) => {
       let endpoint = _.cloneDeep(data.data)
-      console.log(endpoint)
       const bodyType = endpoint.body.type
       const untitled = _.cloneDeep(untitledEndpointData.data)
-      console.log(untitled);
       if (
         [rawTypesEnums.JSON, rawTypesEnums.HTML, rawTypesEnums.JavaScript, rawTypesEnums.XML, rawTypesEnums.TEXT].includes(bodyType) &&
         endpoint.body.raw
@@ -344,7 +344,7 @@ const withQuery = (WrappedComponent) => {
     const getDataFromReactQuery = (id) => {
       return queryClient.getQueryData(id)
     }
-
+    console.log(data.data,'idris')
     return (
       <WrappedComponent
         {...props}
@@ -590,10 +590,8 @@ class DisplayEndpoint extends Component {
   }
 
   handleChange = (e) => {
-    // if(!e?.target?.value) return;
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
-    data.uri = e.currentTarget.value
     let tempData = this.props?.endpointContent || {}
     if (e.currentTarget.name === 'updatedUri') {
       const keys = []
@@ -1274,7 +1272,6 @@ class DisplayEndpoint extends Component {
 
   handleSave = async (id, endpointObject, slug) => {  
     const { endpointName, endpointDescription } = endpointObject || {}
-    console.log(endpointObject)
     let currentTabId = this.props.tab.id
     let parentId = id
     if (
@@ -1284,7 +1281,6 @@ class DisplayEndpoint extends Component {
       this.openEndpointFormModal()
     } else {
       let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId])  
-      console.log(endpointContent)
       const body = this.prepareBodyForSaving(endpointContent?.data?.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: endpointContent?.bodyDescription,
@@ -2238,9 +2234,9 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  setHostUri(host, uri, selectedHost) {
-    if (uri !== this.props?.endpointContent?.data?.uri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
-    this.setBaseUrl(host, selectedHost)
+  setHostUri(innerHTML) {
+    this.handleChange({ currentTarget: { name: 'URL', value: innerHTML } })
+    // this.setBaseUrl(host, selectedHost)
   }
 
   alterEndpointName(name) {

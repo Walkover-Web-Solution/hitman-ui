@@ -90,7 +90,7 @@ class HostContainer extends Component {
   }
 
   setParentHostAndUri() {
-    this.props.set_host_uri(this.state.datalistHost, this.state.datalistUri)
+    this.props.set_host_uri(this.hostcontainerRef.current.innerHTML)
   }
 
   fetchPublicEndpointHost() {
@@ -239,7 +239,6 @@ class HostContainer extends Component {
   }
 
   async handleInputHostChange() {
-    debugger
     if (!this.hostcontainerRef || !this.hostcontainerRef.current) {
       console.error('hostcontainerRef is not set or does not have a current value');
       return;
@@ -338,6 +337,7 @@ class HostContainer extends Component {
 
   renderHostDatalist() {
     const URL = this.props.endpointContent.URL;
+    console.log(URL,1234)
     const endpointId = this.props.endpointId
     const { showIcon } = this.state;
     return (
