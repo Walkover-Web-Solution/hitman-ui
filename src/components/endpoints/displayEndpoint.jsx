@@ -3063,7 +3063,7 @@ class DisplayEndpoint extends Component {
               {getCurrentUser() ? (
                 <>
                   {isDashboardRoute(this.props) && (
-                    <div className='hm-panel py-2 position-sticky bg-white'>
+                    <div className='hm-panel py-3 position-sticky bg-white'>
                       <div className='d-flex justify-content-between align-items-center'>
                         <EndpointBreadCrumb
                           setActiveTab={this.setActiveTab}
