@@ -19,14 +19,15 @@ import './page.scss'
 
 const Page = () => {
 
-    const { page, pages, users, activeTabId, tabs, isPublished, collection } = useSelector((state) => ({
+    const { draftContent, page, pages, users, activeTabId, tabs, collections, isPublished } = useSelector((state) => ({
+        draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
         page: state?.pages[state.tabs.activeTabId],
-        collection: state.collection,
         pages: state.pages,
         users: state.users,
         activeTabId: state.tabs.activeTabId,
         tabs: state.tabs.tabs,
-        isPublished: state?.pages[state.tabs.activeTabId]?.isPublished
+        isPublished: state?.pages[state.tabs.activeTabId]?.isPublished,
+        collections: state.collections
     }));
 
     const dispatch = useDispatch();
@@ -97,8 +98,8 @@ const Page = () => {
 
     const handlePageNameKeyDown = (event) => {
         if (event.key === 'Enter') {
-            const editorInput = document.querySelector('#tiptap-editor [contenteditable="true"]');
-            if (editorInput) editorInput.focus();
+            event.preventDefault();
+            event.target.blur();
             handleSavePageName();
         }
     };
@@ -152,9 +153,9 @@ const Page = () => {
                 )
         }
     }
-    const orgId = getOrgId()
 
     const getPath = (id, sidebar) => {
+        const orgId = getOrgId()
         let path = []
         while (sidebar?.[id]?.type > 0) {
             const itemName = sidebar[id].name
@@ -163,62 +164,59 @@ const Page = () => {
         }
         return path.reverse()
     }
+
     const handleStrongChange = (e) => {
         setPageName(e.currentTarget.textContent);
     };
 
-    const pathWithUrls = getPath(pageId, pages)
 
     const renderPathLinks = () => {
+        const pathWithUrls = getPath(pageId, pages)
         return pathWithUrls.map((item, index) => {
             if (pages?.[item.id]?.type === 2) return null;
-    
             const isLastItem = index === pathWithUrls.length - 1;
-    
             return (
-                <div
-                    className="cursor-pointer text-black-50 path-name d-inline"
-                    key={index}
-                    onClick={() => navigate(`/${item.path}`, { replace: true })}
-                >
+                <div className='d-flex align-items-center' key={index} onClick={() => navigate(`/${item.path}`, { replace: true })}>
                     {isLastItem ? (
                         <strong
-                            className="text-black cursor-text px-1"
+                            className="fw-500 py-0 px-1 cursor-text"
                             onInput={handleStrongChange}
                             onChange={handlePageNameChange}
                             onKeyDown={handlePageNameKeyDown}
                             onBlur={handleSavePageName}
                             contentEditable
-                            // suppressContentEditableWarning
                         >
-                            {item.name} {/* Assuming `item.name` should be shown when content is editable */}
+                            {item.name}
                         </strong>
                     ) : (
-                        <span className="d-inline-block rounded"> 
-                            {item.name} 
-                        </span>
+                        <strong className='cursor-pointer fw-400 px-1 py-0 text-secondary'>{item?.name}</strong>
                     )}
-                    {!isLastItem && (<p className="d-inline px-1">/</p>)}
+                    {index < pathWithUrls.length - 1 && <p className='p-0 m-0 text-secondary fw-400'>/</p>}
                 </div>
             );
         });
     };
-    
 
-    // const collectionId = pages[pageId].collectionId
-    // const collectionName = collection[collectionId].name
-    // const path = `orgs/${orgId}/dashboard/collection/${collectionId}/settings`
+    const handleCollectionClick = () => {
+        const path = `orgs/${getOrgId()}/dashboard/collection/${pages?.[activeTabId]?.collectionId}/settings`;
+        navigate(`/${path}`, { replace: true });
+    }
 
     return (
         <div className='parent-page-container d-flex flex-column align-items-center w-100'>
             <div className='page-header position-sticky px-3 py-2 bg-white d-flex align-items-center justify-content-between w-100'>
                 <div className="d-flex justify-content-start align-items-center w-50">
-                    {/* {collectionName && <span className='collection-name-path'
-                        onClick={() => navigate(`/${path}`, { replace: true })}
-                        style={{ cursor: 'pointer' }}>{`${collectionName}/`}</span>} */}
-                    {<h1 className="header-page-name fa-1x text-truncate">{pageName?.length > 0 ?
-                        renderPathLinks()
-                        : <span>Untitled</span>}</h1>}
+                    {tabs?.[activeTabId]?.status === 'SAVED' &&
+                        <div className="header-page-name d-flex align-items-center fa-1x text-truncate">
+                            <strong className='text-secondary fw-400 px-1 py-0 text-nowrap-heading cursor-pointer' onClick={handleCollectionClick}>
+                                {collections?.[pages?.[activeTabId]?.collectionId]?.name}
+                            </strong>
+                            <p className='p-0 m-0 text-secondary fw-400'>/</p>
+                        </div>
+                    }
+                    <div className="header-page-name d-flex align-items-center fa-1x text-truncate">
+                        {renderPathLinks()}
+                    </div>
                     {pages?.[pageId]?.isPublished &&
                         <OverlayTrigger placement='right' overlay={showTooltips("Live")} >
                             <GoDotFill size={14} color="green" />
@@ -227,30 +225,28 @@ const Page = () => {
                 </div>
                 <div className='header-operations d-flex align-items-center gap-2'>
                     {tabs?.[activeTabId]?.status !== "NEW" &&
-                        <div>
-                            <OverlayTrigger placement='bottom' overlay={showTooltips("EditedBy")}>
-                                <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
-                            </OverlayTrigger>
-                        </div>
+                        <OverlayTrigger placement='bottom' overlay={showTooltips("EditedBy")}>
+                            <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
+                        </OverlayTrigger>
                     }
                     <IconButton>
-                        <div className='button'>
-                            <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
-                                {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs?.[activeTabId]?.status === "NEW" ? 'Unsaved' : "Saved"}</button>}
-                            </OverlayTrigger>
-                        </div>
+                        <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
+                            {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs?.[activeTabId]?.status === "NEW" ? 'Unsaved' : "Saved"}</button>}
+                        </OverlayTrigger>
                     </IconButton>
-                    {tabs?.[activeTabId]?.status !== 'NEW' && <div className='inner-operations'>
-                        <Dropdown>
-                            <Dropdown.Toggle className="mt-1" as='div' id='dropdown-basic'>
-                                <IconButton variant="sm" className='mt-1'><BsThreeDots size={25} /></IconButton>
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Item onClick={handlePublish} disabled={isPublished}>Publish</Dropdown.Item>
-                                <Dropdown.Item onClick={handleUnPublish} disabled={!isPublished}>Unpublish</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </div>}
+                    {tabs?.[activeTabId]?.status !== 'NEW' &&
+                        <div className='inner-operations'>
+                            <Dropdown>
+                                <Dropdown.Toggle as='div' id='dropdown-basic'>
+                                    <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={handlePublish} disabled={isPublished}>Publish</Dropdown.Item>
+                                    <Dropdown.Item onClick={handleUnPublish} disabled={!isPublished}>Unpublish</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </div>
+                    }
                 </div>
             </div>
 

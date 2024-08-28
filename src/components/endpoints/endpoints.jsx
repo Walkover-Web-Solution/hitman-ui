@@ -101,8 +101,8 @@ const Endpoints = (props) => {
         </IconButtons>
       </div>
       <div className='dropdown-menu dropdown-menu-right'>
-        <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleModalActionType('edit', endpointId)}> <FiEdit2  className='text-gray'size={15} /> Rename </div>
-        <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleDuplicate(endpointId)}> <MdOutlineContentCopy className='text-gray'size={15} /> Duplicate </div>
+        <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleModalActionType('edit', endpointId)}> <FiEdit2  className='text-grey'size={15} /> Rename </div>
+        <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleDuplicate(endpointId)}> <MdOutlineContentCopy className='text-grey'size={15} /> Duplicate </div>
         <div className='dropdown-item d-flex text-danger font-14 align-items-center' onClick={() => handleModalActionType('delete', endpointId)}> <RiDeleteBin6Line size={15} /> Delete </div>
       </div>
     </div>

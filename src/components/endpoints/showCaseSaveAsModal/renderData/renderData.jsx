@@ -66,7 +66,7 @@ export default function RenderData(props) {
                 key={index}
                 className='folder-box d-flex justify-content-start align-items-center p-1'
               >
-                <FaRegFolderClosed className='text-gray' size='14px' />
+                <FaRegFolderClosed className='text-grey' size='14px' />
                 <div className='ml-1 fs-4'>{collections?.[singleId]?.name}</div>
               </div>
             )
@@ -77,7 +77,7 @@ export default function RenderData(props) {
                 key={index}
                 className='folder-box d-flex justify-content-start align-items-center p-1'
               >
-                <IoDocumentTextOutline className='text-gray' size='14px' />
+                <IoDocumentTextOutline className='text-grey' size='14px' />
                 <div className='ml-1 fs-4'>{pages?.[singleId]?.name}</div>
               </div>
             )
@@ -88,7 +88,7 @@ export default function RenderData(props) {
                 key={index}
                 className='folder-box d-flex justify-content-start align-items-center p-1'
               >
-                <IoDocumentTextOutline className='text-gray' size='14px' />
+                <IoDocumentTextOutline className='text-grey' size='14px' />
                 <div className='ml-1 fs-4'>{pages?.[singleId]?.name}</div>
               </div>
             )
