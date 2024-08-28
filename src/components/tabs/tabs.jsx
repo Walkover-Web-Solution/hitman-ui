@@ -212,21 +212,17 @@ const CustomTabs = (props) => {
         if (historySnapshots[tabId]) {
           if (tab.previewMode) {
             return (
-              <>
-                <div className='d-flex mr-2'>
-                  <LuHistory />
-                  {historySnapshots[tabId].endpoint.name}
-                </div>
-              </>
+              <div className='d-flex align-items-center '>
+                <LuHistory size={16} />
+                <span className='mr-2 fw-500 fs-4' >{historySnapshots[tabId].endpoint.name}</span>
+              </div>
             )
           } else {
             return (
               <>
-                <div className='d-flex'>
+                <div className='d-flex align-items-center '>
                   <LuHistory className='mr-1' size={16} />
-                  {historySnapshots[tabId].endpoint.name ||
-                    historySnapshots[tabId].endpoint.BASE_URL + historySnapshots[tabId].endpoint.uri ||
-                    'Random Trigger'}
+                  <span className='mr-2 fw-500 fs-4' >{historySnapshots[tabId].endpoint.name || historySnapshots[tabId].endpoint.BASE_URL + historySnapshots[tabId].endpoint.uri || 'Random Trigger'}</span>
                 </div>
               </>
             )
@@ -240,10 +236,10 @@ const CustomTabs = (props) => {
           const endpoint = pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='d-flex justify-content-center align-items-center'>
+              <div className='d-flex justify-content-center fw-500 fs-4 align-items-center'>
                 {endpoint.protocolType === 1 && (
-                  <div className={`${tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
-                    {tabState[tabId]?.draft?.data?.method}
+                  <div className={`${tabState[tabId]?.draft?.data?.method}-TAB mr-2  request-type-bgcolor`}>
+                    {tabState[tabId]?.draft?.data?.method || 'GET'}
                   </div>
                 )}
                 {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={12} />}
@@ -252,7 +248,7 @@ const CustomTabs = (props) => {
             )
           } else {
             return (
-              <div className='d-flex justify-content-center align-items-center'>
+              <div className='d-flex justify-content-center fw-500 fs-4 align-items-center'>
                 {endpoint.protocolType === 1 && (
                   <div className={`${tabState[tabId]?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>
                     {tabState[tabId]?.draft?.data?.method}
@@ -266,7 +262,7 @@ const CustomTabs = (props) => {
         } else {
           const endpoint = tabState?.[tabId]
           return (
-            <div className='d-flex align-items-center'>
+            <div className='d-flex fw-500 fs-4 align-items-center'>
               {endpoint?.draft?.protocolType === 1 && (
                 <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>
               )}
@@ -281,26 +277,26 @@ const CustomTabs = (props) => {
           const page = pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='d-flex align-items-center'>
+              <div className='d-flex fw-500 fs-4 align-items-center'>
                 <IoDocumentTextOutline size={12} className='mr-1 mb-1' />
                 <span>
-                   <>{page.name} </>
+                  <>{page.name} </>
                 </span>
               </div>
             )
           } else {
             return (
-              <div className='d-flex align-items-center'>
+              <div className='d-flex fw-500 fs-4 align-items-center'>
                 <IoDocumentTextOutline size={12} className='mr-1' />
                 <span>
-                <>{page.name} </>
+                  <>{page.name} </>
                 </span>
               </div>
             )
           }
         } else {
           return (
-            <div className='d-flex align-items-center'>
+            <div className='d-flex fw-500 fs-4 align-items-center'>
               <IoDocumentTextOutline size={12} className='mr-1 mb-1' />
               <span>{'Untiled'}</span>
             </div>
@@ -312,7 +308,7 @@ const CustomTabs = (props) => {
         if (location?.pathname?.split('/')?.[6] === 'settings') {
           return (
             <>
-              <span className='d-flex align-items-center'>
+              <span className='d-flex fw-500 fs-4 align-items-center'>
                 <CiSettings size={18} className='setting-icons mr-1' />
                 <span>{collectionName}</span>
               </span>
@@ -320,14 +316,14 @@ const CustomTabs = (props) => {
           )
         } else if (location?.pathname?.split('/')?.[6] === 'runner') {
           return (
-            <div className='d-flex align-items-center'>
+            <div className='d-flex fw-500 fs-4 align-items-center'>
               <TbSettingsAutomation size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
           )
         } else {
           return (
-            <div className='d-flex align-items-center'>
+            <div className='d-flex fw-500 fs-4 align-items-center'>
               <CiSettings size={18} className='setting-icons mr-1' />
               <span>{collectionName}</span>
             </div>
@@ -337,7 +333,7 @@ const CustomTabs = (props) => {
       case 'feedback': {
         return (
           <>
-            <div className='d-flex align-items-center'>
+            <div className='d-flex fw-500 fs-4 align-items-center'>
               <IoIosChatboxes className='mr-1' size={16} />
               <span>Feedback</span>
             </div>
@@ -348,7 +344,7 @@ const CustomTabs = (props) => {
         if (automation[tabId]) {
           return (
             <>
-              <div className='d-flex align-items-center'>
+              <div className='d-flex fw-500 fs-4 align-items-center'>
                 <BsPlayBtn className='mr-1' size={16} />
                 <span>Runs</span>
               </div>
@@ -541,7 +537,7 @@ const CustomTabs = (props) => {
         ) : null}
         <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
           <button className='btn' onClick={() => handleAddTab()}>
-          <LuPlus />
+            <LuPlus />
           </button>
         </Nav.Item>
         <div className='d-flex'>
