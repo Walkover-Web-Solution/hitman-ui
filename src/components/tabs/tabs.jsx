@@ -243,8 +243,8 @@ const CustomTabs = (props) => {
                     {tabState[tabId]?.draft?.data?.method || 'GET'}
                   </div>
                 )}
-                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2' size={12} />}
-                <span className='fs-4'>{pages[tabId]?.name}</span>
+                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={12} />}
+                <span>{pages[tabId]?.name}</span>
               </div>
             )
           } else {
@@ -256,7 +256,7 @@ const CustomTabs = (props) => {
                   </div>
                 )}
                 {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={12} />}
-                <span className='fs-4'>{pages[tabId]?.name}</span>
+                <span>{pages[tabId]?.name}</span>
               </div>
             )
           }
@@ -280,7 +280,7 @@ const CustomTabs = (props) => {
             return (
               <div className='d-flex align-items-center'>
                 <IoDocumentTextOutline size={12} className='mr-1 mb-1' />
-                <span className='fs-4'>
+                <span>
                    <>{page.name} </>
                 </span>
               </div>
@@ -289,7 +289,7 @@ const CustomTabs = (props) => {
             return (
               <div className='d-flex align-items-center'>
                 <IoDocumentTextOutline size={12} className='mr-1' />
-                <span className='fs-4'>
+                <span>
                 <>{page.name} </>
                 </span>
               </div>
@@ -299,7 +299,7 @@ const CustomTabs = (props) => {
           return (
             <div className='d-flex align-items-center'>
               <IoDocumentTextOutline size={12} className='mr-1 mb-1' />
-              <span className='fs-4'>{'Untiled'}</span>
+              <span>{'Untiled'}</span>
             </div>
           )
         }
@@ -311,7 +311,7 @@ const CustomTabs = (props) => {
             <>
               <span className='d-flex align-items-center'>
                 <CiSettings size={18} className='setting-icons mr-1' />
-                <span className='fs-4'>{collectionName}</span>
+                <span>{collectionName}</span>
               </span>
             </>
           )
@@ -319,7 +319,7 @@ const CustomTabs = (props) => {
           return (
             <div className='d-flex align-items-center'>
               <TbSettingsAutomation size={18} className='setting-icons mr-1' />
-              <span className='fs-4'>{collectionName}</span>
+              <span>{collectionName}</span>
             </div>
           )
         }
@@ -327,7 +327,7 @@ const CustomTabs = (props) => {
           return (
             <div className='d-flex align-items-center'>
               <CiSettings size={18} className='setting-icons mr-1' />
-              <span className='fs-4'>{collectionName}</span>
+              <span>{collectionName}</span>
             </div>
           )
         }
@@ -337,7 +337,7 @@ const CustomTabs = (props) => {
           <>
             <div className='d-flex align-items-center'>
               <IoIosChatboxes className='mr-1' size={16} />
-              <span className='fs-4'>Feedback</span>
+              <span>Feedback</span>
             </div>
           </>
         )
@@ -348,7 +348,7 @@ const CustomTabs = (props) => {
             <>
               <div className='d-flex align-items-center'>
                 <BsPlayBtn className='mr-1' size={16} />
-                <span className='fs-4'>Runs</span>
+                <span>Runs</span>
               </div>
             </>
           )

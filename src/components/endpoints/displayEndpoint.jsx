@@ -1315,7 +1315,7 @@ class DisplayEndpoint extends Component {
         postScript: endpointContent?.postScriptText,
         docViewData: endpointContent?.docViewData,
         protocolType: endpointContent?.protocolType || null,
-        description: endpointContent?.description || ''
+        description: endpointContent?.description || '',
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
@@ -2220,7 +2220,7 @@ class DisplayEndpoint extends Component {
     return (
       <>
         <div className='response-container endpoint-public-response-container endPointRes'>
-          <span className='text-gray'>Response</span>
+          <span className='text-grey'>Response</span>
           <DisplayResponse
             {...this.props}
             loader={this.state.loader}
@@ -2461,12 +2461,12 @@ class DisplayEndpoint extends Component {
   //     return (
   //       <ButtonGroup className='btn-group-custom' aria-label='Basic example'>
   //         <Button
-  //           className={(this.props?.endpointContent?.currentView === 'testing' ? 'active text-black' : 'text-gray')}
+  //           className={(this.props?.endpointContent?.currentView === 'testing' ? 'active text-black' : 'text-grey')}
   //           onClick={() => this.switchView('testing')}
   //         >
   //           Testing
   //         </Button>
-  //         <Button className={this.props?.endpointContent?.currentView === 'doc' ? 'active text-black' : 'text-gray'} onClick={() => this.switchView('doc')}>
+  //         <Button className={this.props?.endpointContent?.currentView === 'doc' ? 'active text-black' : 'text-grey'} onClick={() => this.switchView('doc')}>
   //           Doc
   //         </Button>
   //       </ButtonGroup>
@@ -2480,7 +2480,7 @@ class DisplayEndpoint extends Component {
         <div>
           <Dropdown>
             <Dropdown.Toggle variant='' id='dropdown-basic' className='doc-plus'>
-              <FaPlus className='mr-2 cursor-pointer text-gray' size={14} onClick={() => this.showDocOptions()} />
+              <FaPlus className='mr-2 cursor-pointer text-grey' size={14} onClick={() => this.showDocOptions()} />
             </Dropdown.Toggle>
             <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>
               <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
@@ -2763,7 +2763,7 @@ class DisplayEndpoint extends Component {
   renderSwitchBtn() {
     return (
       <div onClick={this.handleToggle} className='d-flex justify-content-between align-items-center cursor-pointer'>
-        <button className='btn text-gray btn-sm fs-4'>DOC</button>
+        <button className='btn text-grey btn-sm fs-4'>DOC</button>
         <SwitchBtn isOn={this.props?.endpointContent?.currentView === 'doc'} handleToggle={this.handleToggle} />
       </div>
     )
@@ -2960,7 +2960,7 @@ class DisplayEndpoint extends Component {
       )
     } else if (this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
       return (
-        <div >
+        <div className='d-flex justify-content-center'>
           <OverlayTrigger placement='bottom' overlay={<Tooltip id='edited-by-tooltip'>
             {lastModified &&
               <div className="fs-4 text-secondary">
@@ -2977,7 +2977,7 @@ class DisplayEndpoint extends Component {
               </div>
             }
           </Tooltip>}>
-            <button className='text-black-50 btn p-0'> Edited  {lastModified}</button>
+            <button className='text-black-50 btn p-0 d-flex justify-content-center'> Edited  {lastModified}</button>
           </OverlayTrigger>
         </div>
       )
@@ -3087,7 +3087,7 @@ class DisplayEndpoint extends Component {
                           <Dropdown className='publish-unpublish-button'>
                             {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (
                               <Dropdown.Toggle as='div' id='dropdown-basic'>
-                                <IconButton variant="sm" className='mt-1'><BsThreeDots className='text-gray' size={25} /></IconButton>
+                                <IconButton variant="sm" className='mt-1'><BsThreeDots className='text-grey' size={25} /></IconButton>
                               </Dropdown.Toggle>
                             )}
                             <Dropdown.Menu>
@@ -3286,7 +3286,7 @@ class DisplayEndpoint extends Component {
                                 <>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'default' ? 'active text-back' : 'text-gray'}`}
+                                      className={`nav-link ${this.state.activeTab === 'default' ? 'active text-back' : 'text-grey'}`}
                                       id={`pills-query-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#query-${this.props.tab.id}`}
@@ -3300,7 +3300,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'authorization' ? 'active text-black' : 'text-gray'}`}
+                                      className={`nav-link ${this.state.activeTab === 'authorization' ? 'active text-black' : 'text-grey'}`}
                                       id={`pills-authorization-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#authorization-${this.props.tab.id}`}
@@ -3314,7 +3314,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'headers' ? 'active text-black' : 'text-gray'}`}
+                                      className={`nav-link ${this.state.activeTab === 'headers' ? 'active text-black' : 'text-grey'}`}
                                       id={`pills-headers-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#headers-${this.props.tab.id}`}
@@ -3328,7 +3328,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'g-script' ? 'active text-black' : 'text-gray'}`}
+                                      className={`nav-link ${this.state.activeTab === 'g-script' ? 'active text-black' : 'text-grey'}`}
                                       id={`pillss-script-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#g-script-${this.props.tab.id}`}

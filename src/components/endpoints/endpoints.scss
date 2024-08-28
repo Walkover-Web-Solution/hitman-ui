@@ -241,7 +241,6 @@ $border-color: rgba(227, 228, 230, 0.7);
     margin-bottom: 0px;
     strong {
       border-radius: 2px;
-      padding: 2px;
       &:hover {
         background-color: $button-background-hover;
       }
@@ -1822,8 +1821,6 @@ table#custom-generic-table {
 }
 
 .save-endpoint {
-  margin-top: 3px;
-
   .btn-group {
     &:hover {
       background-color: rgba(128, 128, 128, 0.123);
@@ -1939,8 +1936,6 @@ table#custom-generic-table {
 }
 
 .publish-unpublish-button {
-  margin-top: 2px;
-
   .dropdown-toggle {
     &:after {
       all: unset !important;

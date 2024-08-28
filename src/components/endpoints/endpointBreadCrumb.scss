@@ -51,9 +51,12 @@
 }
 
 .protocol-selected-type {
-  padding: 0px 4px;
   background-color: white !important;
   border-radius: 4px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  padding: 0px 2px;
+  min-width: 24px;
+  min-height: 20px;
 }
 
 .protocol-type-text {
