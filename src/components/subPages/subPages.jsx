@@ -86,11 +86,11 @@ const SubPage = (props) => {
     setShowDeleteModal(false)
   }
 
-  const openAddSubPageModal = async(subPageId) => {
+  const openAddSubPageModal = async (subPageId) => {
     const newPage = { name: 'untitled', pageType: 3 };
     if (!isOrgDocType()) {
-     dispatch(addPage(pages[subPageId].id, newPage))
-     dispatch(addIsExpandedAction({value:true, id:subPageId}))
+      dispatch(addPage(pages[subPageId].id, newPage))
+      dispatch(addIsExpandedAction({ value: true, id: subPageId }))
       dispatch(openInNewTab({
         type: 'page',
         previewMode: false,
@@ -168,7 +168,7 @@ const SubPage = (props) => {
               onDrop={(e) => props.onDrop(e, subPageId)}
               onDragEnter={(e) => props.onDragEnter(e, subPageId)}
               onDragEnd={(e) => props.onDragEnd(e)}
-              style={props.draggingOverId === subPageId ? { border: '3px solid red', paddingLeft: `${props?.level * 8}px` } : {paddingLeft: `${props?.level * 8}px`}}
+              style={props.draggingOverId === subPageId ? { border: '3px solid red', paddingLeft: `${props?.level * 8}px` } : { paddingLeft: `${props?.level * 8}px` }}
               className={`d-flex justify-content-center cl-name  ml-1 ${isOnPublishedPage() ? 'cl-public-page' : 'name-sub-page'}`}
               onClick={(e) => {
                 handleRedirect(subPageId)
@@ -178,11 +178,11 @@ const SubPage = (props) => {
               }}
             >
               <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'}`} onClick={(e) => handleToggle(e, subPageId)}>
-                <IconButtons variant = 'sm'>
-                <MdExpandMore
-                  size={13}
-                  className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
-                /></IconButtons>
+                <IconButtons variant='sm'>
+                  <MdExpandMore
+                    size={13}
+                    className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
+                  /></IconButtons>
                 <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 ' />
               </span>
               <div className={`sidebar-accordion-item d-inline sub-page-header text-truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{pages[subPageId]?.name}</div>
@@ -212,13 +212,13 @@ const SubPage = (props) => {
             ) : null}
           </div>
         </button>
-        {expanded ? (
+        {expanded &&
           <div className='linkWrapper versionPages'>
             <Card.Body>
               {pages[props.rootParentId].child?.length > 0 ? <CombinedCollections level={props?.level} {...props} /> : <span className='no-page pl-5 mt-1 d-block text-grey'>No pages inside</span>}
             </Card.Body>
           </div>
-        ) : null}
+        }
       </div>
     )
   }
