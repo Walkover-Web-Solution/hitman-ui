@@ -46,9 +46,39 @@ import { Dropdown, Modal } from 'react-bootstrap'
 import { Style } from 'react-style-tag'
 import { LiaSortAlphaDownSolid } from 'react-icons/lia'
 import { SketchPicker } from 'react-color'
+import * as Y from "yjs";
+import { HocuspocusProvider } from "@hocuspocus/provider";
+import Collaboration from '@tiptap/extension-collaboration'
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
+import { useSelector } from 'react-redux'
+import { useParams } from 'react-router'
+import { useMemo } from 'react'
 
+export default function Tiptap({  disabled, isInlineEditor, minHeight }) {
 
-export default function Tiptap({ initial, onChange, disabled, isInlineEditor, minHeight }) {
+  const params = useParams()
+  const { orgId } = params
+  const { currentUser, activeTabId } = useSelector((state) => ({
+    currentUser: state.users.currentUser,
+    activeTabId: state.tabs.activeTabId
+  }));
+  const { ydoc, provider } = useMemo(() => {
+    const ydoc = new Y.Doc();
+    const provider = new HocuspocusProvider({
+      url: "https://doc-rtc-zbdnnceo5q-el.a.run.app",
+      name: `${orgId}_${activeTabId}`,
+      document: ydoc,
+    });
+    return { ydoc, provider };
+  }, []);
+
+  const getRandomColor = () => {
+    const colors = [
+      '#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8',
+      '#94FADB', '#B9F18D', '#C3E2C2', '#EAECCC', '#AFC8AD',
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
   const [linkUrl, setLinkUrl] = useState('')
   const [ImageUrl, setImageUrl] = useState('')
   const [row, setRow] = useState('3')
@@ -91,6 +121,16 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
         }
       }),
       TableCell,
+      CollaborationCursor.configure({
+        provider,
+        user: {
+          name: currentUser?.name || 'Anonymous',
+          color: getRandomColor(),
+        },
+      }),
+      Collaboration.configure({
+        document: ydoc,
+      }),
       TableRow,
       TableHeader,
       Link.configure({
@@ -99,20 +139,15 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
         autolink: false
       })
     ],
-    content: initial,
-    onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      onChange(html);
-      localStorage.setItem('editorContent',html);
-    },
     editable: !disabled
   })
 
   useEffect(() => {
-    if (editor && initial !== editor.getHTML()) {
-      editor.commands.setContent(initial, false);
-    }
-  }, [initial, editor]);
+    return () => {
+      provider.destroy();
+      ydoc.destroy();
+    };
+  }, [provider, ydoc]);
   
   const toggleHeading = (level) => {
     if (editor) {
