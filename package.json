@@ -104,7 +104,6 @@
     "validator": "^13.0.0",
     "vm": "^0.1.0",
     "wait-on": "^5.3.0",
-    "y-prosemirror": "^1.2.12",
     "yjs": "^13.6.18"
   },
   "engines": {
