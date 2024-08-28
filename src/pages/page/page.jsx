@@ -19,8 +19,7 @@ import './page.scss'
 
 const Page = () => {
 
-    const { draftContent, page, pages, users, activeTabId, tabs, isPublished, collection } = useSelector((state) => ({
-        draftContent: state.tabs.tabs[state.tabs.activeTabId]?.draft,
+    const { page, pages, users, activeTabId, tabs, isPublished, collection } = useSelector((state) => ({
         page: state?.pages[state.tabs.activeTabId],
         collection: state.collection,
         pages: state.pages,
@@ -59,9 +58,9 @@ const Page = () => {
 
     useEffect(() => {
         window.addEventListener('keydown', handleSaveKeydown);
-        if (draftContent === undefined && tabs[activeTabId]?.status === 'SAVED') dispatch(fetchTabContent(pageId));
+       
         return () => window.removeEventListener('keydown', handleSaveKeydown);
-    }, [pageId, draftContent]);
+    }, [pageId]);
 
     useEffect(() => {
         if (textareaRef.current) autoGrow(textareaRef.current);
@@ -78,7 +77,6 @@ const Page = () => {
 
     const handleSavePage = () => {
         if (tabs[activeTabId]?.status === "NEW") setSidebar(true);
-        else dispatch(updatePageContent(page.id, draftContent, pageName));
     };
 
     const debounceUpdateName = useCallback(
@@ -86,11 +84,6 @@ const Page = () => {
             dispatch(updateNewTabName(activeTabId, name));
         }, 500)
     );
-
-    const handleContentChange = (newContent) => {
-        if (tabs[activeTabId]?.isModified === false) dispatch(setTabIsModified(activeTabId, true));
-        dispatch(updateDraft(activeTabId, newContent))
-    };
 
     const handlePageNameChange = (event) => {
         const newName = event.target.value;
@@ -247,8 +240,6 @@ const Page = () => {
                 />
                 <div id='tiptap-editor' className='page-content '>
                     <Tiptap
-                        onChange={handleContentChange}
-                        initial={draftContent}
                         isInlineEditor={false}
                         disabled={false}
                     />

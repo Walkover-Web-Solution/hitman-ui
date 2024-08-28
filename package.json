@@ -6,7 +6,10 @@
   "private": true,
   "main": "public/electron.js",
   "dependencies": {
+    "@hocuspocus/provider": "^2.13.5",
     "@sentry/react": "^7.88.0",
+    "@tiptap/extension-collaboration": "^2.6.6",
+    "@tiptap/extension-collaboration-cursor": "^2.6.6",
     "@tiptap/extension-color": "^2.3.0",
     "@tiptap/extension-dropcursor": "^2.6.5",
     "@tiptap/extension-font-family": "^2.6.5",
@@ -100,7 +103,8 @@
     "urijs": "^1.19.2",
     "validator": "^13.0.0",
     "vm": "^0.1.0",
-    "wait-on": "^5.3.0"
+    "wait-on": "^5.3.0",
+    "yjs": "^13.6.18"
   },
   "engines": {
     "node": "18.17",
@@ -121,18 +125,11 @@
     "package:linux": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json --linux --x64 --publish always",
     "package:windows": "npm run build:electron && npx electron-builder build --config ./electron/electron-builder.json --win --ia32 --x64 --publish always"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ],
   "devDependencies": {
     "electron": "^13.1.1",
     "electron-builder": "^22.10.5",

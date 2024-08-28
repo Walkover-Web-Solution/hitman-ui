@@ -51,8 +51,31 @@ import { Dropdown, Modal } from 'react-bootstrap'
 import { SketchPicker } from 'react-color'
 import { GoTasklist } from "react-icons/go";
 import { BiFontFamily } from "react-icons/bi";
+import * as Y from "yjs";
+import { HocuspocusProvider } from "@hocuspocus/provider";
+import Collaboration from '@tiptap/extension-collaboration'
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
+import { useSelector } from 'react-redux'
+import { useParams } from 'react-router'
+import { useMemo } from 'react'
 
-export default function Tiptap({ initial, onChange, disabled, isInlineEditor, minHeight }) {
+export default function Tiptap({ disabled, isInlineEditor, minHeight }) {
+  const params = useParams()
+  const { orgId } = params
+  const { currentUser, activeTabId } = useSelector((state) => ({
+    users: state.users.currentUser,
+    activeTabId: state.tabs.activeTabId
+  }));
+  const { ydoc, provider } = useMemo(() => {
+    const ydoc = new Y.Doc();
+    const provider = new HocuspocusProvider({
+      url: "https://doc-rtc-zbdnnceo5q-el.a.run.app",
+      name: `${orgId}_${activeTabId}`,
+      document: ydoc,
+    });
+    return { ydoc, provider };
+  }, []);
+
   const [linkUrl, setLinkUrl] = useState('')
   const [ImageUrl, setImageUrl] = useState('')
   const [row, setRow] = useState('3')
@@ -63,6 +86,14 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
   const [alignment, setAlignment] = useState('left');
   const [color, setColor] = useState("");
   const [activeHeading, setActiveHeading] = useState(0);
+
+  const getRandomColor = () => {
+    const colors = [
+      '#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8',
+      '#94FADB', '#B9F18D', '#C3E2C2', '#EAECCC', '#AFC8AD',
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
 
   const editor = useEditor({
     editorProps: {
@@ -77,15 +108,16 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
       Highlight,
       Image,
       CodeBlock,
-      Dropcursor,
       TextStyle,
-      TaskList,
-      TaskItem.configure({
-        nested: true,
-        itemTypeName: 'taskItem',
+      CollaborationCursor.configure({
+        provider,
+        user: {
+          name: currentUser?.name || 'Anonymous',
+          color: getRandomColor(),
+        },
       }),
-      FontFamily.configure({
-        types: ['textStyle'],
+      Collaboration.configure({
+        document: ydoc,
       }),
       Color.configure({
         types: ['textStyle'],
@@ -111,22 +143,23 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
         openOnClick: true,
         autolink: false
       }),
-      Typography
     ],
-    content: initial,
-    onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      onChange(html);
-      localStorage.setItem('editorContent', html);
-    },
     editable: !disabled
   })
 
   useEffect(() => {
-    if (editor && initial !== editor.getHTML()) {
-      editor.commands.setContent(initial, false);
+    return () => {
+      provider.destroy();
+      ydoc.destroy();
+    };
+  }, [provider, ydoc]);
+
+  useEffect(() => {
+    if (editor && currentUser) {
+      localStorage.setItem('currentUser', JSON.stringify(currentUser))
+      editor.chain().focus().updateUser(currentUser).run()
     }
-  }, [initial, editor]);
+  }, [editor, currentUser])
 
   const toggleHeading = (level) => {
     if (editor) {
