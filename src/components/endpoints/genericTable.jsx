@@ -287,12 +287,7 @@ class GenericTable extends Component {
         <td className='custom-td' id='generic-table-key-cell'>
           {isNotApplicable ? null : (
             <label className='customCheckbox'>
-              <AutoSuggest
-                contentEditableDivRef={this.genericTableRef}
-                suggestions={this.props?.currentEnvironment}
-                initial={currentItem.type === 'file' ? '' : currentItem.value}
-              />
-              {/* <input
+              <input
                 disabled={isDisabled}
                 name={`${index}.checkbox`}
                 value={currentItem.checked}
@@ -301,7 +296,7 @@ class GenericTable extends Component {
                 aria-label="checkbox"
                 className='Checkbox'
                 onChange={this.handleChange}
-              /> */}
+              />
               <span
                 className='checkmark'
                 style={{ backgroundColor: this.props.publicCollectionTheme, borderColor: this.props.publicCollectionTheme }}
@@ -488,12 +483,7 @@ class GenericTable extends Component {
           {isDashboardRoute(this.props) ? (
             <div>
               {/* params description is rendered here */}
-              <AutoSuggest
-                contentEditableDivRef={this.genericTableRef}
-                suggestions={this.props?.currentEnvironment}
-                initial={'<span></span>'}
-              />
-              {/* <input
+              <input
                 disabled={isDashboardRoute(this.props) ? null : 'disabled'}
                 name={index + '.description'}
                 value={dataArray[index].description}
@@ -501,7 +491,7 @@ class GenericTable extends Component {
                 type='text'
                 placeholder='Description'
                 className='form-control'
-              /> */}
+              />
             </div>
           ) : (
             dataArray[index].description
