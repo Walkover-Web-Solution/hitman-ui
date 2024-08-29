@@ -29,11 +29,10 @@ export const formatResponseToSend = (response) => {
 export const addEndpoint = (navigate, newEndpoint, rootParentId, customCallback, props) => {
   newEndpoint.uniqueTabId = sessionStorage.getItem(SESSION_STORAGE_KEY.UNIQUE_TAB_ID)
   const orgId = getOrgId()
-  const requestId = shortid.generate()
   return (dispatch) => {
     const prevCurrentTabId = store.getState()?.tabs?.activeTabId
     endpointApiService
-      .saveEndpoint(rootParentId, { ...newEndpoint, requestId })
+      .saveEndpoint(rootParentId, { ...newEndpoint })
       .then(async (response) => {
         const responseToSend = formatResponseToSend(response)
         const data = await dispatch(addChildInParent(responseToSend))
