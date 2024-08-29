@@ -2851,21 +2851,17 @@ class DisplayEndpoint extends Component {
     return (
       <div className='save-endpoint'>
         {(
-          this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW'  ? (
+          this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' ? (
             <Dropdown className='rounded' as={ButtonGroup}>
               <button
                 id='api_save_btn'
-                className={
-                  this.state.saveLoader
-                    ? 'btn buttonLoader btn-sm d-flex align-items-center'
-                    : 'btn btn-sm d-flex align-items-center save-button-endpoint px-1'
-                }
+                className='btn btn-sm d-flex align-items-center save-button-endpoint px-1'
                 type='button'
                 disabled={!this.props?.tabs[this.props?.activeTabId]?.isModified}
                 onClick={() => this.handleSave()}
                 title={!this.props?.tabs[this.props?.activeTabId]?.isModified ? 'No changes in this request' : 'Save request'}
               >
-                <span className='save-color'>Save</span>
+                <span className='save-color'>{this.props?.tabs[this.props?.activeTabId]?.isModified ? 'Save' : 'Saved'}</span>
               </button>
               {getCurrentUser() ? (
                 <>
