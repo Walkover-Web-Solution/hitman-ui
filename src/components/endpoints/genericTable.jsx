@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { isDashboardRoute, isElectron, isDashboardAndTestingView, hexToRgb } from '../common/utility'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
@@ -9,11 +9,19 @@ import 'react-autocomplete-input/dist/bundle.css'
 import { background } from '../backgroundColor.js'
 import withRouter from '../common/withRouter.jsx'
 import { RiDeleteBinLine } from 'react-icons/ri'
+import { connect } from 'react-redux'
+import AutoSuggest from 'env-autosuggest'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
   autoComplete: 'off',
   trigger: ['{{']
+}
+
+const mapStateToProps = (state) => {
+  return {
+    currentEnvironment: state?.environment?.environments[state?.environment?.currentEnvironmentId]?.variables || {}, 
+  }
 }
 
 class GenericTable extends Component {
@@ -27,7 +35,7 @@ class GenericTable extends Component {
       originalHeaders: [],
       theme: ''
     }
-
+    this.genericTableRef = createRef();
     this.checkboxFlags = []
     this.textAreaValue = ''
     this.textAreaValueFlag = true
@@ -279,7 +287,12 @@ class GenericTable extends Component {
         <td className='custom-td' id='generic-table-key-cell'>
           {isNotApplicable ? null : (
             <label className='customCheckbox'>
-              <input
+              <AutoSuggest
+                contentEditableDivRef={this.genericTableRef}
+                suggestions={this.props?.currentEnvironment}
+                initial={currentItem.type === 'file' ? '' : currentItem.value}
+              />
+              {/* <input
                 disabled={isDisabled}
                 name={`${index}.checkbox`}
                 value={currentItem.checked}
@@ -288,7 +301,7 @@ class GenericTable extends Component {
                 aria-label="checkbox"
                 className='Checkbox'
                 onChange={this.handleChange}
-              />
+              /> */}
               <span
                 className='checkmark'
                 style={{ backgroundColor: this.props.publicCollectionTheme, borderColor: this.props.publicCollectionTheme }}
@@ -302,7 +315,12 @@ class GenericTable extends Component {
         </td>
         <td className='custom-td valueWrapper'>
           <div className='d-flex align-items-center'>
-            <input
+            <AutoSuggest
+              contentEditableDivRef={this.genericTableRef}
+              suggestions={this.props?.currentEnvironment}
+              initial={currentItem.type === 'file' ? '' : currentItem.value}
+            />
+            {/* <input
               name={`${index}.value`}
               value={currentItem.type === 'file' ? '' : currentItem.value}
               key={`${index}${this.state.randomId}`}
@@ -310,7 +328,7 @@ class GenericTable extends Component {
               type='text'
               placeholder={`Enter ${currentItem.key}`}
               className={`form-control ${isEmpty ? 'empty-params' : ''}`}
-            />
+            /> */}
             {isEmpty && <div className='small mandatory-field-text'>*This field is mandatory</div>}
           </div>
           {currentItem.description && <p className='small text-muted'>{`Description: ${currentItem.description}`}</p>}
@@ -342,7 +360,12 @@ class GenericTable extends Component {
     const key = `${index}.key`
     return (
       <div className='position-relative fileInput'>
-        <TextField
+        <AutoSuggest
+          contentEditableDivRef={this.genericTableRef}
+          suggestions={this.props?.currentEnvironment}
+          initial={'<span></span>'}
+        />
+        {/* <TextField
           {...autoCompleterDefaultProps}
           name={key}
           key={key}
@@ -351,10 +374,10 @@ class GenericTable extends Component {
           onSelect={(selectedOption) => this.handleSelect(selectedOption, key)}
           type='text'
           placeholder='Key'
-          className='form-control'
+          className='form-control aryuan '
           disabled={dataArray[index]?.type === 'disable' ? true : false}
           options={{ '{{': _.keys(this.props.environment.variables) }}
-        />
+        /> */}
         {title === 'formData' && (
           <select
             className='transition cursor-pointer'
@@ -415,7 +438,7 @@ class GenericTable extends Component {
         <td className='custom-td' id='generic-table-key-cell' style={{ marginLeft: '5px' }}>
           {dataArray[index].checked === 'notApplicable' ? null : (
             <label className='customCheckbox'>
-              <input
+                <input
                 disabled={
                   isDashboardRoute(this.props, true) || originalData[index].checked === 'false' || originalData[index].type != 'enable'
                     ? null
@@ -441,7 +464,12 @@ class GenericTable extends Component {
             this.renderSelectFiles(dataArray, index)
           ) : (
             <div className='position-relative'>
-              <TextField
+              <AutoSuggest
+                contentEditableDivRef={this.genericTableRef}
+                suggestions={this.props?.currentEnvironment}
+                initial={'<span></span>'}
+              />
+              {/* <TextField
                 {...autoCompleterDefaultProps}
                 name={valueKey}
                 key={valueKey}
@@ -452,7 +480,7 @@ class GenericTable extends Component {
                 disabled={dataArray[index]?.type === 'disable' ? true : false}
                 options={{ '{{': _.keys(this.props.environment.variables) }}
                 type={dataArray[index].type}
-              />
+              /> */}
             </div>
           )}
         </td>
@@ -460,7 +488,12 @@ class GenericTable extends Component {
           {isDashboardRoute(this.props) ? (
             <div>
               {/* params description is rendered here */}
-              <input
+              <AutoSuggest
+                contentEditableDivRef={this.genericTableRef}
+                suggestions={this.props?.currentEnvironment}
+                initial={'<span></span>'}
+              />
+              {/* <input
                 disabled={isDashboardRoute(this.props) ? null : 'disabled'}
                 name={index + '.description'}
                 value={dataArray[index].description}
@@ -468,7 +501,7 @@ class GenericTable extends Component {
                 type='text'
                 placeholder='Description'
                 className='form-control'
-              />
+              /> */}
             </div>
           ) : (
             dataArray[index].description
@@ -655,4 +688,4 @@ class GenericTable extends Component {
   }
 }
 
-export default withRouter(GenericTable)
+export default connect(mapStateToProps)(withRouter(GenericTable))

@@ -4,13 +4,13 @@ import tabStatusTypes from '../tabs/tabStatusTypes'
 import tabService from '../tabs/tabService'
 import './endpoints.scss'
 import { connect } from 'react-redux'
+import AutoSuggest from 'env-autosuggest'
 import _, { cloneDeep } from 'lodash'
 import { getParseCurlData } from '../common/apiUtility'
 import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
-import AutoSuggest from 'env-autosuggest'
 
 const mapStateToProps = (state) => {
   return {
@@ -61,7 +61,6 @@ class HostContainer extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    debugger
     if (prevProps.activeTabId !== this.props?.activeTabId) {
       this.setState({ initalUrlValue: this.props?.endpointContent?.data?.URL })
     }

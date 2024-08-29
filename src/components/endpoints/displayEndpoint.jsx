@@ -206,7 +206,6 @@ const updateTabDraftData = (endpointId, data) => {
 }
 
 const getEndpointContent = async (props) => {
-  debugger
   let isUserOnPublishedPage = isOnPublishedPage()
   let currentIdToShow = isUserOnPublishedPage ? sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW) : null
 
@@ -966,7 +965,7 @@ class DisplayEndpoint extends Component {
 
   addhttps(url) {
     if (url) {
-      if (this.props?.endpointContent?.data?.updatedUri.includes('localhost') && !url.includes('localhost')) {
+      if (this.props?.endpointContent?.data?.updatedUri?.includes('localhost') && !url?.includes('localhost')) {
         url = 'localhost:' + url
       }
       if (!/^(?:f|ht)tps?:\/\//.test(url)) {
@@ -1105,7 +1104,7 @@ class DisplayEndpoint extends Component {
     const uri = new URI(this.props.endpointContent.data.updatedUri || '')
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
-    const url = BASE_URL + path + queryparams
+    const url = this.props.endpointContent.data.URL;
     if (!url) {
       this.setState({ addUrlClass: true })
       setTimeout(() => {
