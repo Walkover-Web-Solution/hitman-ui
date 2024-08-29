@@ -9,4 +9,4 @@ RUN npm install -g serve
 RUN npm install 
 COPY . .
 RUN npm run build:test
-ENTRYPOINT ["serve","-s","build","-l","3000"]
+ENTRYPOINT ["serve","-s","dist","-l","3000"]
