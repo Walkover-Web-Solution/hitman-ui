@@ -10,20 +10,13 @@ import { background } from '../backgroundColor.js'
 import withRouter from '../common/withRouter.jsx'
 import { RiDeleteBinLine } from 'react-icons/ri'
 import { connect } from 'react-redux'
-import AutoSuggest from 'env-autosuggest'
+import GenericTableAutoSuggest from './genericTableAutoSuggest.jsx'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
   autoComplete: 'off',
   trigger: ['{{']
 }
-
-const mapStateToProps = (state) => {
-  return {
-    currentEnvironment: state?.environment?.environments[state?.environment?.currentEnvironmentId]?.variables || {}, 
-  }
-}
-
 class GenericTable extends Component {
   constructor(props) {
     super(props)
@@ -310,12 +303,7 @@ class GenericTable extends Component {
         </td>
         <td className='custom-td valueWrapper'>
           <div className='d-flex align-items-center'>
-            <AutoSuggest
-              contentEditableDivRef={this.genericTableRef}
-              suggestions={this.props?.currentEnvironment}
-              initial={currentItem.type === 'file' ? '' : currentItem.value}
-            />
-            {/* <input
+            <input
               name={`${index}.value`}
               value={currentItem.type === 'file' ? '' : currentItem.value}
               key={`${index}${this.state.randomId}`}
@@ -323,7 +311,7 @@ class GenericTable extends Component {
               type='text'
               placeholder={`Enter ${currentItem.key}`}
               className={`form-control ${isEmpty ? 'empty-params' : ''}`}
-            /> */}
+            />
             {isEmpty && <div className='small mandatory-field-text'>*This field is mandatory</div>}
           </div>
           {currentItem.description && <p className='small text-muted'>{`Description: ${currentItem.description}`}</p>}
@@ -336,7 +324,7 @@ class GenericTable extends Component {
     const index = name.split('.')[0];
     const valueKey = name.split('.')[1];
     selectedOption = selectedOption.slice(2);
-    selectedOption= selectedOption.trimEnd()
+    selectedOption = selectedOption.trimEnd()
 
     dataArray[index][valueKey] += `${selectedOption}}}`;
 
@@ -355,11 +343,7 @@ class GenericTable extends Component {
     const key = `${index}.key`
     return (
       <div className='position-relative fileInput'>
-        <AutoSuggest
-          contentEditableDivRef={this.genericTableRef}
-          suggestions={this.props?.currentEnvironment}
-          initial={'<span></span>'}
-        />
+        <GenericTableAutoSuggest />
         {/* <TextField
           {...autoCompleterDefaultProps}
           name={key}
@@ -433,7 +417,7 @@ class GenericTable extends Component {
         <td className='custom-td' id='generic-table-key-cell' style={{ marginLeft: '5px' }}>
           {dataArray[index].checked === 'notApplicable' ? null : (
             <label className='customCheckbox'>
-                <input
+              <input
                 disabled={
                   isDashboardRoute(this.props, true) || originalData[index].checked === 'false' || originalData[index].type != 'enable'
                     ? null
@@ -459,11 +443,7 @@ class GenericTable extends Component {
             this.renderSelectFiles(dataArray, index)
           ) : (
             <div className='position-relative'>
-              <AutoSuggest
-                contentEditableDivRef={this.genericTableRef}
-                suggestions={this.props?.currentEnvironment}
-                initial={'<span></span>'}
-              />
+              <GenericTableAutoSuggest />
               {/* <TextField
                 {...autoCompleterDefaultProps}
                 name={valueKey}
@@ -678,4 +658,4 @@ class GenericTable extends Component {
   }
 }
 
-export default connect(mapStateToProps)(withRouter(GenericTable))
+export default withRouter(GenericTable)
