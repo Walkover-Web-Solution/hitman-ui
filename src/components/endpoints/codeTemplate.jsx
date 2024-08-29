@@ -114,7 +114,7 @@ const CodeTemplate = (props) => {
 
   return (
     <>
-      <div className='d-flex position-relative'>
+      <div className={`${isOnPublishedPage() ? 'd-flex position-relative' : 'sample-code-inner position-sticky top-0'}`}>
         {isOnPublishedPage() && (
           <button
             onClick={handleButtonClick}
@@ -124,9 +124,7 @@ const CodeTemplate = (props) => {
           </button>
         )}
         <div
-          className={
-            params.endpointId ? 'show-curl-endpoint pubCodeWrapper bg-white pb-1' : curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper'
-          }
+          className={params.endpointId ? 'show-curl-endpoint h-100 pubCodeWrapper bg-white pb-1' : curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper' }
           style={{
             backgroundColor: hexToRgb(theme?.backgroundStyle, '0.04')
           }}
