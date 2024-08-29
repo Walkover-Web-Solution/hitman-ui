@@ -96,6 +96,7 @@ const mapStateToProps = (state) => {
     endpoints: state.pages,
     environment: state.environment.environments[state.environment.currentEnvironmentId] || { id: null, name: 'No Environment' },
     currentEnvironmentId: state.environment.currentEnvironmentId,
+    currentEnvironment: state?.environment?.environments[state?.environment?.currentEnvironmentId]?.variables || {},
     environments: state.environment.environments,
     historySnapshots: state.history,
     collections: state.collections,
@@ -218,7 +219,6 @@ const getEndpointContent = async (props) => {
   const tabId = props?.tabs[endpointId]
   // showing data from draft if data is modified
   if (!isUserOnPublishedPage && tabId?.isModified && tabId?.type == 'endpoint' && tabId?.draft) {
-    console.log(tabId?.draft?.data.URL);
     return tabId?.draft
   }
 
@@ -276,7 +276,6 @@ const withQuery = (WrappedComponent) => {
     } else {
       queryKey = ['endpoint', endpointId]
       fetchFunction = async () => {
-        console.log(345,await getEndpointContent(props))
         return getEndpointContent(props)
       };
     }
@@ -1069,6 +1068,27 @@ class DisplayEndpoint extends Component {
     return base64Pattern.test(response)
   }
 
+  HtmlUrlToString(htmlString) {
+    const str = htmlString.replace(/<\/?[^>]+(>|$)/g, "");
+    const regex = /{{(.*?)}}/g;
+    let matches = [];
+    let match;
+    while ((match = regex.exec(str)) !== null) {
+      matches.push(match[0]);
+    }
+    let finalString = str;
+    const suggestions = this.props.currentEnvironment;
+    matches.forEach(match => {
+        const variableName = match.slice(2, -2);
+        const suggestion = suggestions[variableName];
+        if (suggestion) {
+            const valueToReplace = suggestion.currentValue || suggestion.initialValue;
+            finalString = finalString.replace(match, valueToReplace);
+        }
+    });
+    return finalString;
+  }
+
   handleSend = async () => {
     const keyForRequest = shortid.generate()
     const runSendRequest = Axios.CancelToken.source()
@@ -1104,7 +1124,8 @@ class DisplayEndpoint extends Component {
     const uri = new URI(this.props.endpointContent.data.updatedUri || '')
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
-    const url = this.props.endpointContent.data.URL;
+    let url = this.props.endpointContent.data.URL;
+    url = this.HtmlUrlToString(url);
     if (!url) {
       this.setState({ addUrlClass: true })
       setTimeout(() => {
