@@ -35,7 +35,7 @@ function PublicPage() {
                 threadId: `${currentIdToShow}`,
                 variables: {
                     collectionId: pages[currentIdToShow]?.collectionId,
-                    functionType: process.env.REACT_APP_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
+                    functionType: import.meta.env.VITE_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
                 }
             })
         }

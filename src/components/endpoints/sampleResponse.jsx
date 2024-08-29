@@ -4,7 +4,7 @@ import JSONPretty from 'react-json-pretty'
 import './endpoints.scss'
 import SampleResponseForm from './sampleResponseForm'
 import DeleteModal from '../common/deleteModal'
-import DownArrow from '../../assets/icons/downChevron.svg'
+import { ReactComponent as DownArrow } from '../../assets/icons/downChevron.svg'
 import { FiEdit } from "react-icons/fi";
 import { FaPlus } from "react-icons/fa6";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -176,11 +176,14 @@ class SampleResponse extends Component {
             <div className='response-item-status'>
               <h2 className='heading-3'>Body</h2> :{' '}
               {!sampleResponseFlagArray[index] && (
-                <img src={DownArrow} alt='down-arrow' className='arrowRight' onClick={() => this.props.open_body(index)} />
+               <DownArrow className="arrowRight" onClick={() => this.props.open_body(index)} />
+
               )}
               {sampleResponseFlagArray[index] && (
                 <>
-                  <img src={DownArrow} alt='down-arrow' onClick={() => this.props.close_body(index)} />
+                <DownArrow className="arrowRight" onClick={() => this.props.close_body(index)} />
+
+                  {/* <img src={DownArrow} alt='down-arrow' onClick={() => this.props.close_body(index)} /> */}
                   {this.showSampleResponseBody(obj.data)}
                 </>
               )}

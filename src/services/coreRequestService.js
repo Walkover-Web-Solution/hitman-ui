@@ -1,8 +1,8 @@
 import { bodyTypesEnums } from '../components/common/bodyTypeEnums'
 
-const querystring = require('querystring')
-const FormData = require('form-data')
-const axios = require('axios')
+import querystring from 'querystring'
+import FormData from 'form-data'
+import axios from 'axios'
 
 export async function makeHttpRequestThroughAxios({ api: url, method, body: data, headers, cancelToken }) {
   headers = headers || {}

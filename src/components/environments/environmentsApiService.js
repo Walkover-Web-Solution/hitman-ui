@@ -1,7 +1,7 @@
 import http from '../../services/httpService'
 import { getOrgId } from '../common/utility'
 
-const apiUrl = process.env.REACT_APP_API_URL
+const apiUrl = import.meta.env.VITE_API_URL
 
 function environmentsUrl() {
   return `${apiUrl}/orgs/${getOrgId()}/environments`

@@ -16,7 +16,7 @@ import { FiCopy } from 'react-icons/fi'
 import { FaRegTimesCircle } from 'react-icons/fa'
 import { RiCheckboxMultipleLine } from 'react-icons/ri'
 
-const MAPPING_DOMAIN = process.env.REACT_APP_TECHDOC_MAPPING_DOMAIN
+const MAPPING_DOMAIN = import.meta.env.VITE_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
   NULL_STRING: '',
   LABELS: {
@@ -294,7 +294,7 @@ const PublishDocForm = (props) => {
   const renderPublicUrl = () => {
     const collectionId = props.selected_collection_id
     const isCollectionPublished = collections[collectionId]?.isPublic
-    const url = process.env.REACT_APP_PUBLIC_UI_URL + '/p?collectionId=' + collectionId
+    const url = import.meta.env.VITE_PUBLIC_UI_URL + '/p?collectionId=' + collectionId
     const isDisabled = IsParentPagePublishedInACollection(collections[collectionId]?.rootParentId)
 
     if (!isCollectionPublished) return null

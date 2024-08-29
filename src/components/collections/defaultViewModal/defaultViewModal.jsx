@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import DocIcon from '../../../assets/icons/doc.svg'
-import ApiIcon from '../../../assets/icons/api.svg'
-import InfoIcon from '../../../assets/icons/info.svg'
+// import DocIcon from '../../../assets/icons/doc.svg'
+// import ApiIcon from '../../../assets/icons/api.svg'
+// import InfoIcon from '../../../assets/icons/info.svg'
 import shortid from 'shortid'
 import Joi from 'joi-browser'
 import './defaultViewModal.scss'
@@ -118,7 +118,7 @@ export class DefaultViewModal extends Form {
           this.props.onHide()
         }}
       >
-        <img src={ApiIcon} alt='' />
+        {/* <img src={ApiIcon} alt='' /> */}
         {'Create API'}
       </button>
     )
@@ -132,7 +132,7 @@ export class DefaultViewModal extends Form {
           this.setState({ showPageForm: { addPage: true } })
         }}
       >
-        <img src={DocIcon} alt='' />
+        {/* <img src={DocIcon} alt='' /> */}
         {'Create Page'}
       </button>
     )
@@ -147,7 +147,7 @@ export class DefaultViewModal extends Form {
         </div>
         {this.state.showPageForm.addPage && this.renderCollectionDetailsForm()}
         <div className='info mt-5 d-flex align-items-center'>
-          <img src={InfoIcon} className='mr-2' alt='' />
+          {/* <img src={InfoIcon} className='mr-2' alt='' /> */}
           <span>You can always choose to Test the API's or make the Testing API description</span>
         </div>
       </>

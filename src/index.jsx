@@ -6,14 +6,14 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { BrowserRouter } from 'react-router-dom'
 import { store, persistor } from './store/store'
-import App from './App'
+import App from './App.jsx'
 import { sentryIntegration } from './components/common/utility'
 import './index.scss'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.js'
 import '../src/components/main/responsive.scss'
 
-if (process.env.REACT_APP_ENV !== 'local') {
+if (import.meta.env.VITE_ENV !== 'local') {
   sentryIntegration()
 }
 
