@@ -51,7 +51,6 @@ import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import { pendingEndpoint, approveEndpoint, rejectEndpoint, draftEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
-import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import { useQuery, useQueryClient } from 'react-query'
@@ -74,6 +73,8 @@ import { FaPlus } from 'react-icons/fa'
 import EndpointBreadCrumb from './endpointBreadCrumb'
 import { BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
+import SwitchBtn from '../common/switchBtn/switchBtn.jsx'
+import { MdExpandMore } from 'react-icons/md'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -408,6 +409,7 @@ class DisplayEndpoint extends Component {
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
+    this.handleToggle = this.handleToggle.bind(this)
     this.uri = React.createRef()
     this.paramKey = React.createRef()
     this.rawBodyTypes = Object.keys(rawTypesEnums)
@@ -2219,7 +2221,7 @@ class DisplayEndpoint extends Component {
     return (
       <>
         <div className='response-container endpoint-public-response-container endPointRes'>
-          <span className='text-gray'>Response</span>
+          <span className='text-grey'>Response</span>
           <DisplayResponse
             {...this.props}
             loader={this.state.loader}
@@ -2319,8 +2321,8 @@ class DisplayEndpoint extends Component {
     return (
       showRemoveButton && (
         <div className='' onClick={handleOnClick.bind(this)}>
-          {' '}
-          <img src={DeleteIcon} alt='' />{' '}
+
+
         </div>
       )
     )
@@ -2455,23 +2457,23 @@ class DisplayEndpoint extends Component {
     return isDashboardRoute(this.props) && (this.props?.endpointContent?.currentView === 'testing' || !isSavedEndpoint(this.props))
   }
 
-  renderToggleView() {
-    if (isSavedEndpoint(this.props)) {
-      return (
-        <ButtonGroup className='btn-group-custom' aria-label='Basic example'>
-          <Button
-            className={(this.props?.endpointContent?.currentView === 'testing' ? 'active text-black' : 'text-gray')}
-            onClick={() => this.switchView('testing')}
-          >
-            Testing
-          </Button>
-          <Button className={this.props?.endpointContent?.currentView === 'doc' ? 'active text-black' : 'text-gray'} onClick={() => this.switchView('doc')}>
-            Doc
-          </Button>
-        </ButtonGroup>
-      )
-    }
-  }
+  // renderToggleView() {
+  //   if (isSavedEndpoint(this.props)) {
+  //     return (
+  //       <ButtonGroup className='btn-group-custom' aria-label='Basic example'>
+  //         <Button
+  //           className={(this.props?.endpointContent?.currentView === 'testing' ? 'active text-black' : 'text-grey')}
+  //           onClick={() => this.switchView('testing')}
+  //         >
+  //           Testing
+  //         </Button>
+  //         <Button className={this.props?.endpointContent?.currentView === 'doc' ? 'active text-black' : 'text-grey'} onClick={() => this.switchView('doc')}>
+  //           Doc
+  //         </Button>
+  //       </ButtonGroup>
+  //     )
+  //   }
+  // }
 
   renderDocViewOptions() {
     if (isDashboardRoute(this.props) && this.props?.endpointContent.currentView === 'doc') {
@@ -2479,7 +2481,7 @@ class DisplayEndpoint extends Component {
         <div>
           <Dropdown>
             <Dropdown.Toggle variant='' id='dropdown-basic' className='doc-plus'>
-              <FaPlus className='mr-2 cursor-pointer text-gray' size={14} onClick={() => this.showDocOptions()} />
+              <FaPlus className='mr-2 cursor-pointer text-grey' size={14} onClick={() => this.showDocOptions()} />
             </Dropdown.Toggle>
             <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>
               <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
@@ -2751,6 +2753,23 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  handleToggle() {
+    if (this.props?.endpointContent?.currentView === 'doc') {
+      this.switchView('testing')
+    } else {
+      this.switchView('doc')
+    }
+  }
+
+  renderSwitchBtn() {
+    return (
+      <div onClick={this.handleToggle} className='d-flex justify-content-between align-items-center cursor-pointer'>
+        <button className='btn text-grey btn-sm fs-4'>DOC</button>
+        <SwitchBtn isOn={this.props?.endpointContent?.currentView === 'doc'} handleToggle={this.handleToggle} />
+      </div>
+    )
+  }
+
   renderPublishConfirmationModal() {
     return (
       this.state.openPublishConfirmationModal && (
@@ -2832,29 +2851,27 @@ class DisplayEndpoint extends Component {
   renderSaveButton() {
     return (
       <div className='save-endpoint'>
-        {this.isDashboardAndTestingView() ? (
-          this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW'  ? (
-            <Dropdown as={ButtonGroup}>
+        {(
+          this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' ? (
+            <Dropdown className='rounded' as={ButtonGroup}>
               <button
                 id='api_save_btn'
-                className={
-                  this.state.saveLoader
-                    ? 'btn buttonLoader btn-sm d-flex align-items-center'
-                    : 'btn btn-sm d-flex align-items-center save-button-endpoint px-1'
-                }
+                className='btn btn-sm d-flex align-items-center save-button-endpoint px-1'
                 type='button'
                 disabled={!this.props?.tabs[this.props?.activeTabId]?.isModified}
                 onClick={() => this.handleSave()}
                 title={!this.props?.tabs[this.props?.activeTabId]?.isModified ? 'No changes in this request' : 'Save request'}
               >
-                <span className='text-gray'>Save</span>
+                <span className='save-color'>{this.props?.tabs[this.props?.activeTabId]?.isModified ? 'Save' : 'Saved'}</span>
               </button>
               {getCurrentUser() ? (
                 <>
-                  <Dropdown.Toggle className='btn save-button-endpoint px-1' split variant='' />
+                  <Dropdown.Toggle className='save-button-endpoint px-0 bg-none border-0'>
+                    <IconButton variant='sm'><MdExpandMore color='gray' size={17} /></IconButton>
+                  </Dropdown.Toggle>
                   <Dropdown.Menu className=''>
                     <Dropdown.Item
-                    className='px-2'
+                      className='px-2'
                       onClick={() =>
                         this.setState({ saveAsFlag: true }, () => {
                           this.openEndpointFormModal()
@@ -2872,17 +2889,16 @@ class DisplayEndpoint extends Component {
               className={
                 this.state.saveLoader
                   ? 'btn btn-outline-secondary buttonLoader btn-sm fs-4 d-flex align-items-center'
-                  : 'btn save-button-endpoint px-1 btn-sm fs-4 d-flex align-items-center'
+                  : 'btn save-button-endpoint save-button px-1 btn-sm gap-1 d-flex align-items-center'
               }
               type='button'
               id='save-endpoint-button'
               onClick={() => this.handleSave()}
             >
-                <LiaSaveSolid size={17} />
               <span>Save</span>
             </button>
           )
-        ) : null}
+        )}
       </div>
     )
   }
@@ -2939,9 +2955,9 @@ class DisplayEndpoint extends Component {
           )}
         </div>
       )
-    } else if (this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' ) {
+    } else if (this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW') {
       return (
-        <div >
+        <div className='d-flex justify-content-center'>
           <OverlayTrigger placement='bottom' overlay={<Tooltip id='edited-by-tooltip'>
             {lastModified &&
               <div className="fs-4 text-secondary">
@@ -2951,14 +2967,14 @@ class DisplayEndpoint extends Component {
                   <span>&nbsp;{lastModified}</span>
                 </div>
                 <div>
-                <span>Created by </span>
+                  <span>Created by </span>
                   <span className="font-weight-bold text-white">{user?.name}</span>
                   <span>&nbsp;{createdAt}</span>
                 </div>
               </div>
             }
           </Tooltip>}>
-            <button className='text-black-50 btn p-0'> Updated {lastModified}</button>
+            <button className='text-black-50 btn p-0 d-flex justify-content-center'> Edited  {lastModified}</button>
           </OverlayTrigger>
         </div>
       )
@@ -3033,7 +3049,7 @@ class DisplayEndpoint extends Component {
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper d-flex'}>
           <div className={`innerContainer w-100 ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${isOnPublishedPage() ? 'pt-3' : 'pt-0'} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+              className={`hm-endpoint-container px-3 mid-part endpoint-container ${isOnPublishedPage() ? 'pt-3' : 'pt-0'} ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
                 }`}
             >
               {this.renderCookiesModal()}
@@ -3044,7 +3060,7 @@ class DisplayEndpoint extends Component {
               {getCurrentUser() ? (
                 <>
                   {isDashboardRoute(this.props) && (
-                    <div className='hm-panel py-2 position-sticky bg-white'>
+                    <div className='hm-panel py-3 position-sticky bg-white'>
                       <div className='d-flex justify-content-between align-items-center'>
                         <EndpointBreadCrumb
                           setActiveTab={this.setActiveTab}
@@ -3052,7 +3068,6 @@ class DisplayEndpoint extends Component {
                           isEndpoint
                         />
                         <div className='d-flex gap-1 align-items-center'>
-                         {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && this.renderToggleView()}
                           {this.state.showEndpointFormModal && (
                             <SaveAsSidebar
                               {...this.props}
@@ -3064,31 +3079,19 @@ class DisplayEndpoint extends Component {
                               endpointContent={this.props?.endpointContent}
                             />
                           )}
-                          {isDashboardRoute(this.props) && this.props?.endpointContent?.currentView === 'doc' && endpointss &&  (
-                            <IconButton> <button
-                              id='api_save_btn'
-                              className={
-                                this.state.saveLoader ? 'ml-2 btn buttonLoader btn-sm fs-4' : 'p-0 btn btn-sm fs-4 text-gray'
-                              }
-                              type='button'
-                              onClick={() => this.handleSave()}
-                            >
-                              {isPublicEndpoint ? 'Save' : 'Save'}
-                            </button></IconButton>)}
                           {this.renderEndpointUserData()}
-
                           {this.renderSaveButton()}
                           <Dropdown className='publish-unpublish-button'>
-                            { this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (
-                            <Dropdown.Toggle as='div' id='dropdown-basic'>
-                              <IconButton variant="sm" className='mt-1'><BsThreeDots className='text-gray' size={25} /></IconButton>
-                            </Dropdown.Toggle>
+                            {this.props?.tabs[this.props?.activeTabId]?.status !== 'NEW' && (
+                              <Dropdown.Toggle as='div' id='dropdown-basic'>
+                                <IconButton variant="sm" className='mt-1'><BsThreeDots className='text-grey' size={25} /></IconButton>
+                              </Dropdown.Toggle>
                             )}
                             <Dropdown.Menu>
+                              {this.renderSwitchBtn()}
                               {isAdmin() && !isStatePending(endpointId, endpointss) && (
                                 <Dropdown.Item className='p-0'>
                                   <span>
-                                    {' '}
                                     {approvedOrRejected
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
                                       : this.renderPublishEndpoint(endpointId, endpointss)}
@@ -3097,7 +3100,6 @@ class DisplayEndpoint extends Component {
                               {isAdmin() && isPublicEndpoint && (
                                 <Dropdown.Item className='p-0'>
                                   <span>
-                                    {' '}
                                     {isStateApproved(endpointId, endpointss)
                                       ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
                                       : this.renderUnPublishEndpoint(endpointId, endpointss)}
@@ -3184,7 +3186,7 @@ class DisplayEndpoint extends Component {
                   )}
                   {isElectron() && (
                     <div className='ssl-mode-toggle cursor-pointer' onClick={() => this.setSslMode()}>
-                      SSL certificate verification {this.state.sslMode ? <span className='enabled'>enabled</span> : <span>disabled</span>}{' '}
+
                     </div>
                   )}
                   <div className={this.isDashboardAndTestingView() ? 'endpoint-headers-container d-flex' : 'hm-public-endpoint-headers'}>
@@ -3281,7 +3283,7 @@ class DisplayEndpoint extends Component {
                                 <>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'default' ? 'active text-back' : 'text-gray'}`}
+                                      className={`nav-link ${this.state.activeTab === 'default' ? 'active text-back' : 'text-grey'}`}
                                       id={`pills-query-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#query-${this.props.tab.id}`}
@@ -3295,7 +3297,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'authorization' ? 'active text-black' : 'text-gray'}`}
+                                      className={`nav-link ${this.state.activeTab === 'authorization' ? 'active text-black' : 'text-grey'}`}
                                       id={`pills-authorization-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#authorization-${this.props.tab.id}`}
@@ -3309,7 +3311,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'headers' ? 'active text-black' : 'text-gray'}`}
+                                      className={`nav-link ${this.state.activeTab === 'headers' ? 'active text-black' : 'text-grey'}`}
                                       id={`pills-headers-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#headers-${this.props.tab.id}`}
@@ -3323,7 +3325,7 @@ class DisplayEndpoint extends Component {
                                   </li>
                                   <li className='nav-item'>
                                     <a
-                                      className={`nav-link ${this.state.activeTab === 'g-script' ? 'active text-black' : 'text-gray'}`}
+                                      className={`nav-link ${this.state.activeTab === 'g-script' ? 'active text-black' : 'text-grey'}`}
                                       id={`pillss-script-tab-${this.props.tab.id}`}
                                       data-toggle='pill'
                                       href={`#g-script-${this.props.tab.id}`}
@@ -3678,7 +3680,7 @@ class DisplayEndpoint extends Component {
             </div>
 
             {this.isDashboardAndTestingView() ? (
-              <div className='response-container-main position-relative'>
+              <div className='response-container-main position-relative px-3'>
                 {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
               </div>
             ) : null}

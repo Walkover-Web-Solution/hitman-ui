@@ -134,11 +134,6 @@ body .sidebar {
       align-items: center;
       justify-content: center;
       border-radius: 5px 5px;
-      margin-right: 2.5px;
-
-      &:hover {
-        background-color: rgb(128 128 128 / 18%);
-      }
     }
   }
 
@@ -312,13 +307,15 @@ body .sidebar {
 
           &:hover {
             background: $grey;
+
             .version-dropdown {
               .dropdown-toggle {
                 display: flex !important;
               }
             }
+
             .name-sub-page {
-              width: calc(100% - 20% - 12px);
+              width: calc(100% - 20%);
             }
 
             .versionChovron {
@@ -338,7 +335,7 @@ body .sidebar {
         }
 
         .active-select {
-          width: 100%;    
+          width: 100%;
           height: 28px;
 
           &.selected {
@@ -452,10 +449,6 @@ body .sidebar {
               padding: 0.25rem 1rem;
               border-radius: 3px 3px;
 
-              svg {
-                filter: grayscale(1);
-              }
-
               &:hover {
                 .sidebar-item-action>div {
                   visibility: visible;
@@ -515,6 +508,7 @@ body .sidebar {
 
         &.sidebar-hower {
           padding-left: 10px;
+
           &:hover {
             background: $grey;
 
@@ -528,9 +522,11 @@ body .sidebar {
                 display: none !important;
               }
             }
+
             .inner-container {
               max-width: 70%;
             }
+
             .sidebar-toggle {
               transition: all 0.3s ease-in;
               margin-top: 1px !important;
@@ -776,6 +772,10 @@ input[type='text']:focus {
   width: 26px;
   height: 20px;
 
+  .page-icons {
+    margin-left: 5px;
+  }
+
   .collection-icons-arrow {
     transition: all 0.3s ease-in;
     height: 20px !important;
@@ -797,7 +797,7 @@ input[type='text']:focus {
 .sidebar-accordion-item {
   display: flex;
   align-items: center;
-  width: 100%;
+  width: calc(100% - 26px);
 
   .api-label {
     @media screen and (max-width: 768px) {
@@ -861,21 +861,20 @@ input[type='text']:focus {
     .side-bar {
       width: 100%;
       height: 28px;
+
       .endpoint-icons {
         display: none;
       }
 
       &:hover {
         background: $grey;
+
         .endpoint-name-td {
-        width: 88%;
-        }
-        .endpoint-icons {
-          display: flex !important;
+          width: 87%;
         }
 
-        .sidebar-accordion-item {
-          width: 88%;
+        .endpoint-icons {
+          display: flex !important;
         }
       }
     }
@@ -1118,4 +1117,9 @@ input[type='text']:focus {
     height: 16px;
     width: 16px;
   }
+}
+
+.no-page {
+  color: rgba(128, 128, 128, 0.7);
+  font-size: 12px;
 }

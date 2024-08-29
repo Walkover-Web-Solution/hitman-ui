@@ -299,36 +299,31 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 
   &.POST {
-    // background-color: $post-background-color;
+    background-color: $post-background-color;
     color: #27ae60;
   }
 
   &.GET {
-    // background-color: $get-background-color;
+    background-color: $get-background-color;
     color: #e98a36;
   }
 
   &.PUT {
-    // background-color: $put-background-color;
+    background-color: $put-background-color;
     color: #cca027;
   }
 
   &.PATCH {
-    // background-color: $patch-background-color;
+    background-color: $patch-background-color;
     color: #ce6529;
   }
 
   &.DELETE {
-    // background-color: $delete-background-color;
+    background-color: $delete-background-color;
     color: #d13755;
   }
 }
-.in-api-label {
-  &.POST, &.GET, &.PUT, &.PATCH, &.DELETE {
-    background-color: rgba(207, 202, 202, 0.062) !important;
-    border: none !important;
-  }
-}
+
 label.custom-input-label {
   font-size: 14px;
   font-weight: 300;
@@ -336,7 +331,6 @@ label.custom-input-label {
 
 input.custom-input::placeholder {
   font-size: 15px;
-  // font-weight: 300;
 }
 
 textarea.custom-input::placeholder {
@@ -898,7 +892,7 @@ button.is_active {
 .POST-TAB {
   color: green;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 500;
   opacity: 0.7;
   display: inline-block;
 }
@@ -906,7 +900,7 @@ button.is_active {
 .GET-TAB {
   color: rgb(255, 123, 0);
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 500;
   opacity: 0.7;
   display: inline-block;
 }
@@ -914,7 +908,7 @@ button.is_active {
 .PUT-TAB {
   color: #cca027;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 500;
   opacity: 0.7;
   display: inline-block;
 }
@@ -922,7 +916,7 @@ button.is_active {
 .PATCH-TAB {
   color: #ce6529;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 500;
   opacity: 0.7;
   display: inline-block;
 }
@@ -930,7 +924,7 @@ button.is_active {
 .DELETE-TAB {
   color: #d13755;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 500;
   opacity: 0.7;
   display: inline-block;
 }
