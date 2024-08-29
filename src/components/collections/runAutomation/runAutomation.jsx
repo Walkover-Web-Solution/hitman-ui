@@ -21,7 +21,7 @@ export default function RunAutomation() {
   const userEmail = JSON.parse(localStorage.getItem('profile'))?.email || 'email not found'
   const dispatch = useDispatch()
   const params = useParams()
-  const webhookURL = `${process.env.REACT_APP_API_URL}/call-webhook`
+  const webhookURL = `${import.meta.env.VITE_API_URL}/call-webhook`
 
   const { allPages, collectionName, clientData, currentEnvironmentId, allEnviroments, currentUser, users } = useSelector((state) => {
     return {

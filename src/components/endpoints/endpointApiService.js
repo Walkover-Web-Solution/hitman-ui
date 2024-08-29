@@ -6,11 +6,11 @@ import { makeHttpRequestThroughAxios } from '../../services/coreRequestService'
 import { grantTypesEnums } from '../common/authorizationEnums'
 import { introspectionQuery } from './commonIntrospectionQuery'
 
-const apiUrlEndpoint = process.env.REACT_APP_API_URL
+const apiUrlEndpoint = import.meta.env.VITE_API_URL
 
 function getApiUrl() {
   const orgId = getOrgId()
-  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+  return import.meta.env.VITE_API_URL + `/orgs/${orgId}`
 }
 
 function endpointUrlForCollection(pageId) {

@@ -256,7 +256,7 @@ export function formatBytes(bytes, decimals = 2) {
 }
 
 export function isValidDomain() {
-  const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+  const domainsList = import.meta.env.VITE_DOMAINS_LIST ? import.meta.env.VITE_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
   const path = window.location.href.split('/')[3]
   return domainsList.includes(currentDomain) && path !== 'p'
@@ -569,7 +569,7 @@ export function getUrlPathById(id, sidebar) {
   return actualPath
 }
 export function isTechdocOwnDomain() {
-  const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+  const domainsList = import.meta.env.VITE_DOMAINS_LIST ? import.meta.env.VITE_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
   return domainsList.includes(currentDomain)
 }

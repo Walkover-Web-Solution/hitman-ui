@@ -40,7 +40,7 @@ function TokenGenerator(props) {
   const [data, setData] = useState({
     tokenName: endpointStoredData?.authorizationData?.authorization?.oauth2?.tokenName || 'Token Name',
     selectedGrantType: endpointStoredData?.authorizationData?.authorization?.oauth2?.selectedGrantType || grantTypesEnums.authorizationCode,
-    callbackUrl: `${process.env.REACT_APP_UI_URL}/auth/redirect` || '',
+    callbackUrl: `${import.meta.env.VITE_UI_URL}/auth/redirect` || '',
     authUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.authUrl || '',
     username: endpointStoredData?.authorizationData?.authorization?.oauth2?.username || '',
     password: endpointStoredData?.authorizationData?.authorization?.oauth2?.password || '',

@@ -1,6 +1,6 @@
 import http from './httpService'
 
-const apiUrl = process.env.REACT_APP_API_URL
+const apiUrl = import.meta.env.VITE_API_URL
 
 export function getCollectionsAndPages(orgId, queryParamsString = '') {
   return http.get(apiUrl + `/orgs/${orgId}/getSideBarData${queryParamsString}`)

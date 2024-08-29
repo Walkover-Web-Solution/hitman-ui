@@ -10,9 +10,9 @@ const LoginV2 = () => {
   const navigate = useNavigate();
 
   const proxyGooglereferenceMapping = {
-    local: process.env.REACT_APP_PROXY_REFERENCE_ID_LOCAL,
-    test: process.env.REACT_APP_PROXY_REFERENCE_ID_TEST,
-    prod: process.env.REACT_APP_PROXY_REFERENCE_ID_PROD,
+    local: import.meta.env.VITE_PROXY_REFERENCE_ID_LOCAL,
+    test: import.meta.env.VITE_PROXY_REFERENCE_ID_TEST,
+    prod: import.meta.env.VITE_PROXY_REFERENCE_ID_PROD,
   };
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const LoginV2 = () => {
     const loadScript = () => {
       const configuration = {
         referenceId:
-          proxyGooglereferenceMapping[process.env.REACT_APP_ENV] || "",
+          proxyGooglereferenceMapping[import.meta.env.VITE_ENV] || "",
         success: (data) => {
           console.log("response", data);
         },
@@ -58,7 +58,7 @@ const LoginV2 = () => {
     };
   }, [navigate, proxyGooglereferenceMapping]);
 
-  const env = process.env.REACT_APP_ENV || "";
+  const env = import.meta.env.VITE_ENV || "";
   const divId = proxyGooglereferenceMapping[env];
 
   return (

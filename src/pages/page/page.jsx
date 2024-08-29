@@ -50,7 +50,7 @@ const Page = () => {
                 variables: {
                     Proxy_auth_token: getProxyToken(),
                     collectionId: page?.collectionId,
-                    functionType: process.env.REACT_APP_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
+                    functionType: import.meta.env.VITE_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
                 }
             })
         }
