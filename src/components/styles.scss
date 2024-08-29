@@ -273,18 +273,17 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 .api-label {
-  width: 45px;
-  height: 20px;
-  font-size: 10px;
+  width: 40px;
+  height: 17px;
+  font-size: 9px;
   line-height: 19px;
-  font-weight: bold;
-  text-transform: uppercase;
+  font-weight: 500;
   text-align: center;
+  text-transform: uppercase;
   margin-right: 0;
   border-radius: 4px;
   opacity: 1;
   display: inline-block;
-  border: 1px solid $lightblackborder !important;
 
   &.api-label-lg {
     font-size: 12px;
@@ -324,19 +323,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     color: #d13755;
   }
 }
-.in-api-label {
-  &.POST, &.GET, &.PUT, &.PATCH, &.DELETE {
-    background-color: rgba(207, 202, 202, 0.062) !important;
-    color: #6c757d;
-  }
-}
-.Selected {
-  .in-api-label {
-    &.POST, &.GET, &.PUT, &.PATCH, &.DELETE {
-      color: $text-color!important;
-    }
-  }
-}
+
 label.custom-input-label {
   font-size: 14px;
   font-weight: 300;
@@ -344,7 +331,6 @@ label.custom-input-label {
 
 input.custom-input::placeholder {
   font-size: 15px;
-  // font-weight: 300;
 }
 
 textarea.custom-input::placeholder {
@@ -490,7 +476,7 @@ button.btn {
   border: 1px solid $lightblackborder;
   border-radius: 4px;
   .custom-raw-editor-public {
-    width: 95% !important;
+    width: 100% !important;
     &.ace-github {
       background: unset;
     }
@@ -903,7 +889,7 @@ button.is_active {
 .POST-TAB {
   color: green;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 500;
   opacity: 0.7;
   display: inline-block;
 }
@@ -911,7 +897,7 @@ button.is_active {
 .GET-TAB {
   color: rgb(255, 123, 0);
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 500;
   opacity: 0.7;
   display: inline-block;
 }
@@ -919,7 +905,7 @@ button.is_active {
 .PUT-TAB {
   color: #cca027;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 500;
   opacity: 0.7;
   display: inline-block;
 }
@@ -927,7 +913,7 @@ button.is_active {
 .PATCH-TAB {
   color: #ce6529;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 500;
   opacity: 0.7;
   display: inline-block;
 }
@@ -935,7 +921,7 @@ button.is_active {
 .DELETE-TAB {
   color: #d13755;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 500;
   opacity: 0.7;
   display: inline-block;
 }
@@ -948,7 +934,7 @@ button.is_active {
   .biplus-icon {
     position: absolute;
     top: 50%;
-    left: -40px;
+    left: -47px;
     transform: translateY(-50%);
   }
 }

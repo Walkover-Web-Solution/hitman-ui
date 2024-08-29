@@ -1,3 +1,4 @@
+@import '../../components/main/variables.scss';
 .parent-page-container {
   .page-header {
     top: 0;
@@ -6,6 +7,35 @@
     .header-page-name {
       padding: 0px !important;
       margin: 0px !important;
+      span {
+        padding: 2px 3px;
+        &:hover {
+          background-color: $button-background-hover;
+        }
+        &:has(strong) {
+          &:hover{
+            background-color: unset;
+          }
+        }
+      }
+      strong {
+        &:not(:last-child) {
+          max-width: 120px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        }
+        border-radius: 2px;
+        border: 1px solid transparent;
+        &:hover {
+          background-color: $button-background-hover;
+        }
+        &:focus-visible {
+          outline: unset;
+          border-color: rgba(128, 128, 128, 0.356);
+          background-color: unset;
+        }
+      }
     }
 
     .inner-operations {
@@ -33,7 +63,7 @@
 
   .page-container {
     max-width: 900px;
-
+    margin-bottom: 30vh;
     textarea {
       resize: none;
       min-height: 50px;

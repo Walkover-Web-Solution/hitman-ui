@@ -98,21 +98,3 @@
     color: #777272;
   }
 }
-
-.Modified-at {
-  color: $footer-color;
-
-  &.upper-modified-at {
-    @media screen and (max-width: 1160px) {
-      display: none;
-    }
-  }
-
-  &.lower-modified-at {
-    display: none;
-
-    @media screen and (max-width: 1160px) {
-      display: inline-block;
-    }
-  }
-}

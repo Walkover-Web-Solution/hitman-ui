@@ -12,11 +12,11 @@ import IconButtons from '../common/iconButton'
 import { BsThreeDots } from 'react-icons/bs'
 import { GrGraphQl } from 'react-icons/gr'
 import { background } from '../backgroundColor.js'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import { ReactComponent as Duplicate } from '../../assets/icons/duplicateSign.svg'
-import { ReactComponent as RenamedItem } from '../../assets/icons/renameSign.svg'
 import '../../../src/components/styles.scss'
 import './endpoints.scss'
+import { FiEdit2 } from 'react-icons/fi'
+import { MdOutlineContentCopy } from 'react-icons/md'
+import { RiDeleteBin6Line } from 'react-icons/ri'
 
 const Endpoints = (props) => {
   const [showEndpointForm, setShowEndpointForm] = useState({ addPage: false, edit: false, share: false, delete: false })
@@ -81,29 +81,29 @@ const Endpoints = (props) => {
   const displayEndpointName = (endpointId) => {
     const isSelected = isOnPublishedPage() && sessionStorage.getItem('currentPublishIdToShow') === endpointId ? 'selected' : isDashboardRoute({ location, navigate }) && params.endpointId === endpointId ? 'selected' : ''
     return (
-      <div className={`sidebar-accordion-item ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark' : 'text-secondary'}`} style={{paddingLeft: `${props?.level * 8}px` }}>
+      <div className={`sidebar-accordion-item gap-2 ${isSelected ? ' selected text-dark' : ''} ${isOnPublishedPage() ? 'text-dark w-100' : 'text-secondary'}`} style={{paddingLeft: `${props?.level * 8}px` }}>
         {endpoints[endpointId]?.protocolType === 1 && (
           <div className={`api-label ${endpoints[endpointId].requestType} request-type-bgcolor ${!isOnPublishedPage() ? 'in-api-label' : ''}`}>
             {endpoints[endpointId].requestType}
           </div>
         )}
-        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='mr-2' size={14} />}
+        {endpoints[endpointId]?.protocolType === 2 && <GrGraphQl className='ml-1 graphql-icon' size={14} />}
         <div className={`end-point-name truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{endpoints[endpointId].name}</div>
       </div>
     )
   }
 
   const displayEndpointOptions = (endpointId) => (
-    <div className='sidebar-item-action'>
+    <div className='sidebar-item-action d-block'>
       <div className='sidebar-item-action-btn d-flex' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
         <IconButtons>
           <BsThreeDots />
         </IconButtons>
       </div>
       <div className='dropdown-menu dropdown-menu-right'>
-        <div className='dropdown-item d-flex' onClick={() => handleModalActionType('edit', endpointId)}> <RenamedItem /> Rename </div>
-        <div className='dropdown-item d-flex' onClick={() => handleDuplicate(endpointId)}> <Duplicate /> Duplicate </div>
-        <div className='dropdown-item d-flex text-danger' onClick={() => handleModalActionType('delete', endpointId)}> <DeleteIcon /> Delete </div>
+        <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleModalActionType('edit', endpointId)}> <FiEdit2  className='text-grey'size={15} /> Rename </div>
+        <div className='dropdown-item d-flex font-14 align-items-center' onClick={() => handleDuplicate(endpointId)}> <MdOutlineContentCopy className='text-grey'size={15} /> Duplicate </div>
+        <div className='dropdown-item d-flex text-danger font-14 align-items-center' onClick={() => handleModalActionType('delete', endpointId)}> <RiDeleteBin6Line size={15} /> Delete </div>
       </div>
     </div>
   )
@@ -132,13 +132,13 @@ const Endpoints = (props) => {
         onDragEnd={(e) => props.onDragEnd(e)}
         style={props.draggingOverId === endpointId ? { borderTop: '3px solid red'} : null}
       >
-        <div className='sidebar-toggle d-flex justify-content-between mt-1'>
+        <div className='sidebar-toggle d-flex justify-content-between'>
           <button className='pl-0'>
-            <div className={`side-bar d-flex align-items-center rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-              <button tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}>
+            <div className={`side-bar align-items-center d-flex rounded ${isSelected ? 'Selected text-black' : 'text-secondary'}`} style={backgroundStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+              <button className={`d-flex align-items-center ${isOnPublishedPage() ? '' : 'endpoint-name-td'}`} tabIndex={-1} onClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, true)} onDoubleClick={() => handleDisplay(endpoints[endpointId], params.endpointId, collectionId, false)}>
                 {displayEndpointName(endpointId)}
               </button>
-              <div className='d-flex align-items-center'>
+              <div className='endpoint-icons align-items-center'>
                 {isDashboardRoute({ navigate, location }, true) && displayEndpointOptions(endpointId)}
               </div>
             </div>

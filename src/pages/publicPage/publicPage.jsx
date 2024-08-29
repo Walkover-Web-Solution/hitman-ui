@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 import { useQuery } from 'react-query'
 import { IoDocumentTextOutline } from 'react-icons/io5'
-import Footer from '../../components/main/Footer'
 import ApiDocReview from '../../components/apiDocReview/apiDocReview'
 import { functionTypes } from '../../components/common/functionType'
 import './publicPage.scss'
@@ -28,18 +27,18 @@ function PublicPage() {
 
     let { data } = useQuery(['pageContent', currentIdToShow], getPagePublishedData, queryConfig)
 
-    // useEffect(() => {
-    //     if (isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && (pages?.[currentIdToShow]?.type === 1 || pages?.[currentIdToShow]?.type === 3)) {
-    //         window.SendDataToChatbot({
-    //             bridgeName: 'page',
-    //             threadId: `${currentIdToShow}`,
-    //             variables: {
-    //                 collectionId: pages[currentIdToShow]?.collectionId,
-    //                 functionType: process.env.REACT_APP_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
-    //             }
-    //         })
-    //     }
-    // }, [currentIdToShow])
+    useEffect(() => {
+        if (isOnPublishedPage() && typeof window.SendDataToChatbot === 'function' && (pages?.[currentIdToShow]?.type === 1 || pages?.[currentIdToShow]?.type === 3)) {
+            window.SendDataToChatbot({
+                bridgeName: 'page',
+                threadId: `${currentIdToShow}`,
+                variables: {
+                    collectionId: pages[currentIdToShow]?.collectionId,
+                    functionType: process.env.REACT_APP_ENV === 'prod' ? functionTypes.prod : functionTypes.dev
+                }
+            })
+        }
+    }, [currentIdToShow])
 
     async function getPagePublishedData() {
         const data = await getPublishedContentByIdAndType(currentIdToShow, pages?.[currentIdToShow]?.type)
@@ -48,7 +47,7 @@ function PublicPage() {
 
     return (
         <div className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}>
-            <div className='page-wrapper d-flex flex-column justify-content-between'>
+            <div className='page-wrapper d-flex flex-column justify-content-center'>
                 {data ? (
                     <div className='pageText d-flex justify-content-center aling-items-start'>
                         <RenderPageContent pageContent={data} />
@@ -64,10 +63,7 @@ function PublicPage() {
                         </span>
                     </div>
                 )}
-                <div>
-                    <ApiDocReview />
-                    <Footer />
-                </div>
+                {data && <div className='my-5'><ApiDocReview /></div>}
             </div>
         </div>
     )

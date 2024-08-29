@@ -13,6 +13,10 @@
     height: calc(100% - 41px);
     overflow: auto;
   }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 body .logoBox .dropdown .dropdown-toggle {
@@ -32,24 +36,27 @@ body .logoBox .dropdown .dropdown-toggle {
 .menu-trigger-box {
   .org-button {
     .sb-avatar--text {
-    .sb-avatar__text {
-      span {
+      .sb-avatar__text {
         span {
-          font-size: 9px;
+          span {
+            font-size: 9px;
+          }
         }
       }
     }
-  }
+
     svg {
       margin-top: 2px;
     }
   }
+
   span {
     &.user-notification-badge {
       right: 0.25rem;
       top: 0.75rem;
     }
   }
+
   &:hover {
     background: rgba(0, 0, 0, 0.05);
   }
