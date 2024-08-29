@@ -291,7 +291,7 @@ class EndpointBreadCrumb extends Component {
         <div className='panel-endpoint-name-container d-flex align-items-center'>
 
           <div className='page-title-name d-flex align-items-center'>
-            {this.props?.params?.endpointId === 'new' && this.switchProtocolTypeDropdown()}
+            {this.props?.tabState[this.props?.activeTabId]?.status === 'NEW' && this.switchProtocolTypeDropdown()}
           </div>
 
           {this.props.tabState[this.props.activeTabId].status !== 'NEW' ? (
