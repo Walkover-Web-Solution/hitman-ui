@@ -19,6 +19,12 @@
         }
       }
       strong {
+        &:not(:last-child) {
+          max-width: 120px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        }
         border-radius: 2px;
         border: 1px solid transparent;
         &:hover {
