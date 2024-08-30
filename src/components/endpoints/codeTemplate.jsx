@@ -15,12 +15,15 @@ import { BsThreeDots } from 'react-icons/bs'
 import { FaChevronRight } from 'react-icons/fa'
 import 'ace-builds'
 import AceEditor from 'react-ace'
-import 'ace-builds/webpack-resolver'
+// import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import 'ace-builds/src-noconflict/theme-github'
 import './endpoints.scss'
 
-const HTTPSnippet = require('httpsnippet')
+// const HTTPSnippet = require('httpsnippet');
+// import {HTTPSnippet} from 'httpsnippet';
+
+
 
 const CodeTemplate = (props) => {
   const [theme, setTheme] = useState('')
@@ -42,14 +45,14 @@ const CodeTemplate = (props) => {
   const makeCodeSnippet = () => {
     const harObject = props.harObject
     let { method, url, httpVersion, cookies, headers, postData } = harObject
-    const snippet = new HTTPSnippet({
-      method,
-      url,
-      httpVersion,
-      cookies,
-      headers,
-      postData
-    })
+    // const snippet = new HTTPSnippet({
+    //   method,
+    //   url,
+    //   httpVersion,
+    //   cookies,
+    //   headers,
+    //   postData
+    // })
     return snippet
   }
 

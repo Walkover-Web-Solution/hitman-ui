@@ -51,6 +51,7 @@ import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import { pendingEndpoint, approveEndpoint, rejectEndpoint, draftEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
+import { RiDeleteBinLine } from "react-icons/ri";
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import { useQuery, useQueryClient } from 'react-query'
@@ -2321,8 +2322,7 @@ class DisplayEndpoint extends Component {
     return (
       showRemoveButton && (
         <div className='' onClick={handleOnClick.bind(this)}>
-
-
+         <RiDeleteBinLine/>
         </div>
       )
     )

@@ -1,7 +1,7 @@
-const vm = require('vm')
-const _ = require('lodash')
-const moment = require('moment')
-const chai = require('chai')
+import vm from 'vm'
+import _ from 'lodash'
+import moment from 'moment'
+import chai from 'chai'
 
 class Environment {
   constructor(env, setCallback) {

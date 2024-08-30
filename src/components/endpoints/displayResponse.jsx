@@ -17,7 +17,7 @@ import { FaPlus } from 'react-icons/fa'
 import { RiCheckboxMultipleBlankLine } from 'react-icons/ri'
 
 
-const JSONPrettyMon = require('react-json-pretty/dist/monikai')
+import JSONPrettyMon from 'react-json-pretty/dist/monikai'
 
 
 const mapStateToProps = (state) => {

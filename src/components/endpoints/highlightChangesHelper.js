@@ -1,4 +1,4 @@
-const isEqual = require('react-fast-compare')
+import isEqual from 'react-fast-compare'
 
 function getHighlightsData(props, title, key) {
   let items = {}

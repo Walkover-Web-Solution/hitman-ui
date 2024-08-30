@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { isDashboardRoute, openExternalLink, isOnPublishedPage, isOrgDocType } from '../common/utility'
 import collectionsService from './collectionsService'
 import TagManagerModal from './tagModal'
-import emptyCollections from '../../assets/icons/emptyCollections.svg'
+import { ReactComponent as EmptyCollections } from '../../assets/icons/emptyCollections.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
 import MoveModal from '../common/moveModal/moveModal'
@@ -59,7 +59,7 @@ const Collections = (props) => {
   }
 
   const handleGoToDocs = (collection) => {
-    const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p?collectionId=${collection.id}`
+    const publicDocsUrl = `${import.meta.env.VITE_PUBLIC_UI_URL}/p?collectionId=${collection.id}`
     openExternalLink(publicDocsUrl)
   }
 
@@ -310,7 +310,8 @@ const Collections = (props) => {
     return (
       <div className='empty-collections text-center mt-4'>
         <div>
-          <img src={emptyCollections} alt='' />
+          <EmptyCollections/>
+          {/* <img src={emptyCollections} alt='' /> */}
         </div>
         <div className='content'>
           <h5>Your collection is Empty.</h5>
