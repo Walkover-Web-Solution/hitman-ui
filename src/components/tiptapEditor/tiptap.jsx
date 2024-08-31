@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react'
 import Underline from '@tiptap/extension-underline'
 import StarterKit from '@tiptap/starter-kit'
@@ -49,32 +49,16 @@ import { LuHeading1, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6,
 import { BiFontColor, BiPlus, BiFontFamily } from 'react-icons/bi'
 import { Dropdown, Modal } from 'react-bootstrap'
 import { SketchPicker } from 'react-color'
-import * as Y from "yjs";
-import { HocuspocusProvider } from "@hocuspocus/provider";
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router'
-import { useMemo } from 'react'
 import { GoTasklist } from "react-icons/go";
 
-export default function Tiptap({  disabled, isInlineEditor, minHeight }) {
+export default function Tiptap({  provider, ydoc, disabled, isInlineEditor, minHeight }) {
 
-  const params = useParams()
-  const { orgId } = params
-  const { currentUser, activeTabId } = useSelector((state) => ({
-    currentUser: state.users.currentUser,
-    activeTabId: state.tabs.activeTabId
+  const { currentUser } = useSelector((state) => ({
+    currentUser: state.users.currentUser
   }));
-  const { ydoc, provider } = useMemo(() => {
-    const ydoc = new Y.Doc();
-    const provider = new HocuspocusProvider({
-      url: "https://doc-rtc-zbdnnceo5q-el.a.run.app",
-      name: `${orgId}_${activeTabId}`,
-      document: ydoc,
-    });
-    return { ydoc, provider };
-  }, [orgId,activeTabId]);
 
   const getRandomColor = () => {
     const colors = [
@@ -110,6 +94,7 @@ export default function Tiptap({  disabled, isInlineEditor, minHeight }) {
       Dropcursor,
       TextStyle,
       TaskList,
+      Typography,
       TaskItem.configure({
         nested: true,
         itemTypeName: 'taskItem',
@@ -155,13 +140,6 @@ export default function Tiptap({  disabled, isInlineEditor, minHeight }) {
     editable: !disabled
   })
 
-  useEffect(() => {
-    return () => {
-      provider.destroy();
-      ydoc.destroy();
-    };
-  }, [provider, ydoc]);
-  
   const toggleHeading = (level) => {
     if (editor) {
       editor.chain().focus().toggleHeading({ level }).run();

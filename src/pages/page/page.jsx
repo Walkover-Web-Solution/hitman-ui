@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect, useState } from "react";
+import React, { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTabContent, setTabIsModified, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
@@ -14,7 +14,8 @@ import IconButton from '../../components/common/iconButton';
 import { getProxyToken } from "../../components/auth/authServiceV2";
 import { GoDotFill } from "react-icons/go";
 import { functionTypes } from "../../components/common/functionType";
-import { getOrgId } from "../../components/common/utility";
+import { HocuspocusProvider } from "@hocuspocus/provider";
+import * as Y from "yjs";
 import './page.scss'
 
 const Page = () => {
@@ -31,7 +32,7 @@ const Page = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { pageId } = useParams();
+    const { pageId, orgId } = useParams();
     const textareaRef = useRef(null);
 
     const [sidebar, setSidebar] = useState(false);
@@ -67,6 +68,24 @@ const Page = () => {
         if (tabs[activeTabId].status === "NEW") return setPageName(tabs[activeTabId]?.name || 'Untitled');
         setPageName(page?.name || 'Untitled');
     }, [page?.name, tabs?.activeTabId?.name, pageId])
+
+    const { ydoc, provider } = useMemo(() => {
+        const ydoc = new Y.Doc();
+        const baseUrl = import.meta.env.VITE_RTC_URL;
+        const provider = new HocuspocusProvider({
+            url: `${baseUrl}?orgId=${orgId}`,
+            name: `${pageId}`,
+            document: ydoc,
+        });
+        return { ydoc, provider };
+    }, [orgId, pageId]);
+
+    useEffect(() => {
+        return () => {
+            provider.destroy();
+            ydoc.destroy();
+        };
+    }, [provider, ydoc, pageId]);
 
     const handleSaveKeydown = (event) => {
         if ((event.ctrlKey || event.metaKey) && event.key === 's') {
@@ -152,7 +171,6 @@ const Page = () => {
                 )
         }
     }
-    const orgId = getOrgId()
 
     const getPath = (id, sidebar) => {
         let path = []
@@ -208,7 +226,7 @@ const Page = () => {
                     <IconButton>
                         <div className='button'>
                             <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
-                                {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs?.[activeTabId]?.status === "NEW" ? 'Unsaved' : "Saved"}</button>}
+                                {<button className="btn p-0 text-black-60 disabled">{tabs?.[activeTabId]?.status === "NEW" ? 'Unsaved' : "Saved"}</button>}
                             </OverlayTrigger>
                         </div>
                     </IconButton>
@@ -218,7 +236,7 @@ const Page = () => {
                                 <IconButton variant="sm" className='mt-1'><BsThreeDots size={25} /></IconButton>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item onClick={handlePublish} disabled={isPublished}>Publish</Dropdown.Item>
+                                <Dropdown.Item onClick={handlePublish}>Publish</Dropdown.Item>
                                 <Dropdown.Item onClick={handleUnPublish} disabled={!isPublished}>Unpublish</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
@@ -240,6 +258,9 @@ const Page = () => {
                 />
                 <div id='tiptap-editor' className='page-content '>
                     <Tiptap
+                        provider={provider}
+                        ydoc={ydoc}
+                        key={pageId}
                         isInlineEditor={false}
                         disabled={false}
                     />
