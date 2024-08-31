@@ -343,7 +343,7 @@ class GenericTable extends Component {
     const key = `${index}.key`
     return (
       <div className='position-relative fileInput'>
-        <GenericTableAutoSuggest />
+        <GenericTableAutoSuggest {...this.props} />
         {/* <TextField
           {...autoCompleterDefaultProps}
           name={key}
@@ -443,7 +443,7 @@ class GenericTable extends Component {
             this.renderSelectFiles(dataArray, index)
           ) : (
             <div className='position-relative'>
-              <GenericTableAutoSuggest />
+              <GenericTableAutoSuggest {...this.props} />
               {/* <TextField
                 {...autoCompleterDefaultProps}
                 name={valueKey}
