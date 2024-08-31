@@ -117,7 +117,7 @@ const CodeTemplate = (props) => {
 
   return (
     <>
-      <div className='d-flex position-relative'>
+      <div className={`${isOnPublishedPage() ? 'd-flex position-relative' : 'sample-code-inner position-sticky top-0'}`}>
         {isOnPublishedPage() && (
           <button
             onClick={handleButtonClick}
@@ -127,9 +127,7 @@ const CodeTemplate = (props) => {
           </button>
         )}
         <div
-          className={
-            params.endpointId ? 'show-curl-endpoint pubCodeWrapper bg-white pb-1' : curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper'
-          }
+          className={params.endpointId ? 'show-curl-endpoint h-100 pubCodeWrapper bg-white pb-1' : curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper' }
           style={{
             backgroundColor: hexToRgb(theme?.backgroundStyle, '0.04')
           }}
@@ -202,18 +200,20 @@ const CodeTemplate = (props) => {
                 <div id='code-window-body' className={!isOnPublishedPage() ? 'copy-button-light' : 'copy-button-dark'}>
                   <CopyToClipboard
                     text={codeSnippet}
-                    onCopy={() => setCopied(true, () => setTimeout(() => setCopied(false), 1000))}
+                    onCopy={() => {
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 1000); // Change back after 5 seconds
+                    }}
                     className='copy-to-clipboard mt-1'
                   >
                     <button>
                       {copied ? (
                         <IconButton>
-                          {' '}
-                          <FaCheck color={props.theme === 'light' ? 'black' : 'white'} />{' '}
+                          <FaCheck color={props.theme === 'light' ? 'black' : 'white'} />
                         </IconButton>
                       ) : (
                         <IconButton>
-                          <TbCopy size={18} className='cursor-pointer' color={props.theme === 'light' ? 'black' : 'white'} />
+                          <TbCopy className='cursor-pointer' color={props.theme === 'light' ? 'black' : 'white'} />
                         </IconButton>
                       )}
                     </button>

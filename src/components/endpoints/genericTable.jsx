@@ -323,7 +323,7 @@ class GenericTable extends Component {
     const index = name.split('.')[0];
     const valueKey = name.split('.')[1];
     selectedOption = selectedOption.slice(2);
-    selectedOption= selectedOption.trimEnd()
+    selectedOption = selectedOption.trimEnd()
 
     dataArray[index][valueKey] += `${selectedOption}}}`;
 
@@ -586,8 +586,8 @@ class GenericTable extends Component {
     this.autoFillBulkEdit()
     return (
       <div className='hm-public-table position-relative mb-2'>
-        {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) ? <div className='fs-4'>{title}</div> : null}
-
+        {title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView) && <div className='fs-4 fw-500 my-1 text-secondary'>{title}</div>}
+        {title === 'Params' && isDashboardAndTestingView(this.props, this.props.currentView) && <div className='fs-4 fw-500 my-1 text-secondary'>Query Params</div>}
         {!this.state.bulkEdit && dataArray.length > 0 ? (
           <div className={`headParaWraper p-0`} style={this.state.theme.backgroundStyle}>
             <table className='table' id='custom-generic-table'>
@@ -595,11 +595,11 @@ class GenericTable extends Component {
                 <thead>
                   <tr>
                     <th className='custom-th'> </th>
-                    <th className='custom-th text-gray' id='generic-table-key-cell dd'>
+                    <th className='custom-th text-grey' id='generic-table-key-cell dd'>
                       KEY
                     </th>
-                    <th className='custom-th text-gray'>VALUE</th>
-                    <th className='custom-th text-gray'>DESCRIPTION</th>
+                    <th className='custom-th text-grey'>VALUE</th>
+                    <th className='custom-th text-grey'>DESCRIPTION</th>
                   </tr>
                 </thead>
               ) : dataArray.length === this.findUncheckedEntityCount() ? (
@@ -643,7 +643,7 @@ class GenericTable extends Component {
 
         {title === 'Path Variables' || !isDashboardRoute(this.props) ? null : (
           <div className='generic-table-title-container'>
-            <button className='adddescLink mt-2 addBulk icon-button px-2' onClick={() => this.displayEditButton()}>
+            <button className={`adddescLink mt-2 ${title === 'Params'? 'addBulk-params' : 'addBulk'} icon-button px-2`} onClick={() => this.displayEditButton()}>
               {this.state.editButtonName}
             </button>
           </div>

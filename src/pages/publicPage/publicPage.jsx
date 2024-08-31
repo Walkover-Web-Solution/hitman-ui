@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux'
 import { getPublishedContentByIdAndType } from '../../services/generalApiService'
 import { useQuery } from 'react-query'
 import { IoDocumentTextOutline } from 'react-icons/io5'
-import Footer from '../../components/main/Footer'
 import ApiDocReview from '../../components/apiDocReview/apiDocReview'
 import { functionTypes } from '../../components/common/functionType'
 import './publicPage.scss'
@@ -64,11 +63,7 @@ function PublicPage() {
                         </span>
                     </div>
                 )}
-                 {data ? (
-                <div className='my-5'>
-                    <ApiDocReview />
-                </div>
-                 ) : (<></>)}
+                {data && <div className='my-5'><ApiDocReview /></div>}
             </div>
         </div>
     )

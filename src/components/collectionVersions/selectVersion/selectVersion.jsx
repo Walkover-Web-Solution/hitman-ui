@@ -177,7 +177,7 @@ export default function SelectVersion(props) {
                   )}
                   {pages?.[singleChildId]?.state !== 1 && (
                     <RiDeleteBinLine
-                      className='ml-2 cursor-pointe text-gray'
+                      className='ml-2 cursor-pointe text-grey'
                       size={22}
                       onClick={() => {
                         handleDeleteVersion(singleChildId)
