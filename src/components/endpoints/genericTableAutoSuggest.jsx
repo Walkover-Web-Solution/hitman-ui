@@ -27,6 +27,3 @@ export default function GenericTableAutoSuggest(props) {
         </div>
     );
 }
-
-
-
