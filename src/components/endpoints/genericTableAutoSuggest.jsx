@@ -10,7 +10,7 @@ export default function GenericTableAutoSuggest(props) {
     const pathVars = extractSubstringsAfterColon(props?.endpointContent?.data?.URL);
     const params = extractKeyValuePairs(props?.endpointContent?.data?.URL);
 
-    console.log(pathVars)
+    console.log(params);
 
     // Apply fixSpanTags on the extracted values
     let path = pathVars.length > 0 ? fixSpanTags(pathVars[0]) : '';
@@ -40,7 +40,7 @@ export default function GenericTableAutoSuggest(props) {
     );
 }
 
-function extractKeyValuePairs(html) {
+    function extractKeyValuePairs(html) {
         let pairs = [];
         let inTag = false;
         let inTemplate = false;
@@ -55,7 +55,7 @@ function extractKeyValuePairs(html) {
 
         for (let i = 0; i < html.length; i++) {
             let char = html[i];
-            
+
             // Handle HTML tags
             if (char === '<') {
                 inTag = true;
@@ -107,7 +107,7 @@ function extractKeyValuePairs(html) {
             // Handle '=' and '&' when processing
             if (startProcessing) {
                 if (char === '=' && readingKey) {
-                    keyEndIndex = i+1;
+                    keyEndIndex = i;
                     valueStartIndex = i + 1;
                     readingKey = false;
                     continue;
@@ -115,6 +115,9 @@ function extractKeyValuePairs(html) {
 
                 if (char === '&' && !readingKey) {
                     valueEndIndex = i - 1;
+                    if (currentKey.trim().startsWith('amp;')) {
+                        currentKey = currentKey.trim().replace('amp;', '');
+                    }
                     pairs.push({
                         key: {
                             html: currentKey.trim(),
@@ -144,6 +147,9 @@ function extractKeyValuePairs(html) {
 
         // Add the last key-value pair if any
         if (currentKey.trim() || currentValue.trim()) {
+            if (currentKey.trim().startsWith('amp;')) {
+                currentKey = currentKey.trim().replace('amp;', '');
+            }
             valueEndIndex = html.length - 1;
             pairs.push({
                 key: {
@@ -161,6 +167,7 @@ function extractKeyValuePairs(html) {
 
         return pairs;
     }
+
     function extractSubstringsAfterColon(html) {
         let finalValue = [];
         let str = '';
