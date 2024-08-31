@@ -39,11 +39,11 @@ function getQueryParamsHTML(html) {
         }
 
         // Handle template {{xyz}}
-        if (char === '{' && html[i + 1] === '{') {
+        /* if (char === '{' && html[i + 1] === '{') {
             inTemplate = true;
         } else if (char === '}' && html[i - 1] === '}') {
             inTemplate = false;
-        }
+        } */
 
         if (inTag || inTemplate) {
             if (startProcessing) {
