@@ -11,6 +11,7 @@ import URI from 'urijs'
 import { toast } from 'react-toastify'
 import { contentTypesEnums } from '../common/bodyTypeEnums'
 import { HiOutlineExclamationCircle } from "react-icons/hi2";
+import { getPathVariableHTML, getQueryParamsHTML } from '../../utilities/htmlConverter'
 
 const mapStateToProps = (state) => {
   return {
@@ -31,6 +32,7 @@ class HostContainer extends Component {
     this.wrapperRef = React.createRef();
     this.hostcontainerRef = React.createRef();
     this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.handleValueChange = this.handleValueChange.bind(this);
     this.handleInputHostChange = this.handleInputHostChange.bind(this);
     this.observer = null;
     this.initalUrlValue = null;
@@ -38,7 +40,6 @@ class HostContainer extends Component {
 
   componentDidMount() {
     this.setHosts();
-    this.getAllVariableSuggestions();
     this.setState({ initalUrlValue: this.props?.endpointContent?.data?.URL })
 
     if (this.hostcontainerRef.current) {
@@ -89,10 +90,6 @@ class HostContainer extends Component {
     const endpointUri = this.props?.updatedUri || ''
     const host = this.props?.endpointContent?.host?.BASE_URL || this.state?.datalistHost || ''
     this.setState({ datalistUri: endpointUri, datalistHost: host }, () => this.setParentHostAndUri())
-  }
-
-  getAllVariableSuggestions() {
-
   }
 
   setParentHostAndUri() {
@@ -339,12 +336,21 @@ class HostContainer extends Component {
     })
   }
 
+  handleValueChange() {
+    const hostContainerHtml = this.hostcontainerRef.current.innerHTML
+    const queryParamsHtmlData = getQueryParamsHTML(hostContainerHtml);
+    const pathVariablesHtmlData = getPathVariableHTML(hostContainerHtml);
+    this.setParentHostAndUri()
+    console.log(queryParamsHtmlData, pathVariablesHtmlData);
+  }
+
   renderHostDatalist() {
     const endpointId = this.props.endpointId
     const { showIcon } = this.state;
     return (
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
         <AutoSuggest
+          handleValueChange={this.handleValueChange}
           contentEditableDivRef={this.hostcontainerRef}
           suggestions={this.props?.currentEnvironment}
           initial={this.state.initalUrlValue ?? ''}

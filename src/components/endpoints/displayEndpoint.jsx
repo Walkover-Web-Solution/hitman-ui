@@ -74,6 +74,7 @@ import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
 import { Tab, Nav, Row, Col } from 'react-bootstrap'
 import { FaPlus } from 'react-icons/fa'
+import { fixSpanTags, getPathVariableHTML, getQueryParamsHTML } from '../../utilities/htmlConverter.js'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -339,7 +340,7 @@ const withQuery = (WrappedComponent) => {
       if (callbackFn) {
         callbackFn()
       }
-    } 
+    }
 
     const getDataFromReactQuery = (id) => {
       return queryClient.getQueryData(id)
@@ -424,8 +425,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.params.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
     if (!this.state.theme) this.setState({ theme: this.props.publicCollectionTheme })
 
     const { endpointId } = this.props.params
@@ -592,7 +593,7 @@ class DisplayEndpoint extends Component {
     const data = { ...this.props?.endpointContent?.data }
     data[e.currentTarget.name] = e.currentTarget.value
     let tempData = this.props?.endpointContent || {}
-    if (e.currentTarget.name === 'updatedUri') {
+    if (e.currentTarget.name === 'URL') {
       const keys = []
       const values = []
       const description = []
@@ -623,7 +624,7 @@ class DisplayEndpoint extends Component {
           }
         }
       }
-      originalParams = this.makeOriginalParams(keys, values, description)
+      originalParams = this.makeOriginalParams(keys, values, description, e.currentTarget.value)
       tempData.originalParams = originalParams
     }
     tempData.data = data
@@ -685,7 +686,8 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData(dummyData)
   }
 
-  makeOriginalParams(keys, values, description, type) {
+  makeOriginalParams(keys, values, description, value) {
+    debugger
     const originalParams = []
     for (let i = 0; i < this.props?.endpointContent?.originalParams?.length; i++) {
       if (this.props?.endpointContent?.originalParams[i].checked === 'false') {
@@ -698,11 +700,14 @@ class DisplayEndpoint extends Component {
         })
       }
     }
-    for (let i = 0; i < keys.length; i++) {
+    const queryParamsHtmlData = getQueryParamsHTML(value);
+    const pathVariablesHtmlData = getPathVariableHTML(value);
+    console.log(queryParamsHtmlData, pathVariablesHtmlData, 234567);
+    for (let i = 0; i < queryParamsHtmlData.length; i++) {
       originalParams.push({
         checked: 'true',
-        key: keys[i],
-        value: values[i],
+        key: fixSpanTags(queryParamsHtmlData[i].key.html),
+        value: fixSpanTags(queryParamsHtmlData[i].value.html),
         description: description[i]
       })
     }
@@ -1079,12 +1084,12 @@ class DisplayEndpoint extends Component {
     let finalString = str;
     const suggestions = this.props.currentEnvironment;
     matches.forEach(match => {
-        const variableName = match.slice(2, -2);
-        const suggestion = suggestions[variableName];
-        if (suggestion) {
-            const valueToReplace = suggestion.currentValue || suggestion.initialValue;
-            finalString = finalString.replace(match, valueToReplace);
-        }
+      const variableName = match.slice(2, -2);
+      const suggestion = suggestions[variableName];
+      if (suggestion) {
+        const valueToReplace = suggestion.currentValue || suggestion.initialValue;
+        finalString = finalString.replace(match, valueToReplace);
+      }
     });
     return finalString;
   }
@@ -1291,7 +1296,7 @@ class DisplayEndpoint extends Component {
     return data
   }
 
-  handleSave = async (id, endpointObject, slug) => {  
+  handleSave = async (id, endpointObject, slug) => {
     const { endpointName, endpointDescription } = endpointObject || {}
     let currentTabId = this.props.tab.id
     let parentId = id
@@ -1301,7 +1306,7 @@ class DisplayEndpoint extends Component {
     ) {
       this.openEndpointFormModal()
     } else {
-      let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId])  
+      let endpointContent = this.props.getDataFromReactQuery(['endpoint', currentTabId])
       const body = this.prepareBodyForSaving(endpointContent?.data?.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: endpointContent?.bodyDescription,
@@ -1382,10 +1387,10 @@ class DisplayEndpoint extends Component {
               this.setState({ saveLoader: false })
             }
           )
-          if(endpoint.description !== ''){
-            this.props.endpoints[currentTabId].description= true
-          }else{
-            this.props.endpoints[currentTabId].description= false
+          if (endpoint.description !== '') {
+            this.props.endpoints[currentTabId].description = true
+          } else {
+            this.props.endpoints[currentTabId].description = false
           }
           tabService.markTabAsSaved(currentTabId)
         }
@@ -1950,9 +1955,9 @@ class DisplayEndpoint extends Component {
       id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
-    if(sampleResponseArray){
+    if (sampleResponseArray) {
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = true
-    }else{
+    } else {
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = false
     }
   }
@@ -2028,9 +2033,9 @@ class DisplayEndpoint extends Component {
       id: this.props.currentEndpointId,
       sampleResponse: sampleResponseArray
     })
-    if(sampleResponseArray){
+    if (sampleResponseArray) {
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = true
-    }else{
+    } else {
       this.props.endpoints[this.props.currentEndpointId].sampleResponse = false
     }
   }
@@ -2257,7 +2262,6 @@ class DisplayEndpoint extends Component {
 
   setHostUri(innerHTML) {
     this.handleChange({ currentTarget: { name: 'URL', value: innerHTML } })
-    // this.setBaseUrl(host, selectedHost)
   }
 
   alterEndpointName(name) {
@@ -2498,7 +2502,7 @@ class DisplayEndpoint extends Component {
         <div>
           <Dropdown>
             <Dropdown.Toggle variant='' id='dropdown-basic' className='doc-plus'>
-              <FaPlus className='mr-2 cursor-pointer text-gray' size={14} onClick={() => this.showDocOptions()}/>
+              <FaPlus className='mr-2 cursor-pointer text-gray' size={14} onClick={() => this.showDocOptions()} />
             </Dropdown.Toggle>
             <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>
               <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
@@ -2646,8 +2650,6 @@ class DisplayEndpoint extends Component {
   renderPublicHost() {
     return (
       <div>
-        {/* do not remove this code */}
-        {/* <h3 className='heading-2'>Endpoint Name</h3> */}
         <div className='hm-endpoint-header'>
           <div className='input-group'>
             {this.checkProtocolType(1) && (
@@ -3064,8 +3066,8 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-      ? this.props.location.pathname.split('/')[5]
-      : this.props.location.pathname.split('/')[4]
+        ? this.props.location.pathname.split('/')[5]
+        : this.props.location.pathname.split('/')[4]
 
     if (this.props.save_endpoint_flag && this.props.tab.id === this.props.selected_tab_id) {
       this.props.handle_save_endpoint(false)
@@ -3082,17 +3084,16 @@ class DisplayEndpoint extends Component {
           !this.isNotDashboardOrDocView()
             ? ''
             : codeEditorVisibility
-            ? 'mainContentWrapperPublic hideCodeEditor'
-            : 'mainContentWrapperPublic '
+              ? 'mainContentWrapperPublic hideCodeEditor'
+              : 'mainContentWrapperPublic '
         }
         style={this.state.theme.backgroundStyle}
       >
         <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper d-flex'}>
           <div className={`innerContainer w-100 ${'response-bottom'}`}>
             <div
-              className={`hm-endpoint-container mid-part endpoint-container ${
-                this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
-              }`}
+              className={`hm-endpoint-container mid-part endpoint-container ${this.props?.endpointContent?.currentView === 'doc' ? 'doc-fix-width' : ''
+                }`}
             >
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
@@ -3687,7 +3688,7 @@ class DisplayEndpoint extends Component {
                 {isSavedEndpoint(this.props) ? this.displayResponseAndSampleResponse() : this.displayPublicResponse()}
               </div>
             ) : null}
-            {isOnPublishedPage() && (this.renderCodeTemplate())} 
+            {isOnPublishedPage() && (this.renderCodeTemplate())}
           </div>
           {!isOnPublishedPage() && (this.renderCodeTemplate())}
         </div>
@@ -3698,7 +3699,7 @@ class DisplayEndpoint extends Component {
               pages={this.props.pages}
               currentPage={this.props.currentEndpointId}
               users={this.props.users}
-              />
+            />
           </span>
         )}
         {isOnPublishedPage() && (
