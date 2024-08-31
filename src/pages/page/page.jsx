@@ -17,6 +17,7 @@ import { functionTypes } from "../../components/common/functionType";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
 import './page.scss'
+import { getOrgId } from "../../components/common/utility";
 
 const Page = () => {
 
