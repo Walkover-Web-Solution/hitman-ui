@@ -47,7 +47,7 @@ function PublicPage() {
 
     return (
         <div className={`custom-display-page ${isOnPublishedPage() ? 'custom-display-public-page' : ''}`}>
-            <div className='page-wrapper d-flex flex-column justify-content-center'>
+            <div className={`page-wrapper d-flex flex-column ${data ? 'justify-content-between' : 'justify-content-center'}`}>
                 {data ? (
                     <div className='pageText d-flex justify-content-center aling-items-start'>
                         <RenderPageContent pageContent={data} />

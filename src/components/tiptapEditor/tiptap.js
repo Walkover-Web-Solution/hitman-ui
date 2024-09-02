@@ -441,8 +441,8 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
       {editor && (
         <FloatingMenu className='floating-menu' tippyOptions={{ duration: 100 }} editor={editor}>
           <Dropdown>
-            <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon px-1'>
-              <BiPlus />
+            <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon p-1 rounded-circle'>
+              <BiPlus size={18} />
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}>
