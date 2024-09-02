@@ -14,7 +14,7 @@ import { ReactComponent as r } from '../../assets/icons/r.svg'
 import { ReactComponent as clojure } from '../../assets/icons/clojure.svg';
 import { ReactComponent as c } from '../../assets/icons/c.svg';
 import { ReactComponent as http } from '../../assets/icons/http.svg';
-import { FaNode } from "react-icons/fa6";
+
 const primaryLanguages = ['shell', 'axiosNode', 'php', 'python','node']
 const secondaryLanguages = ['c', 'csharp', 'clojure', 'go', 'http', 'java', 'javascript', 'objc', 'ocaml', 'r', 'ruby', 'swift']
 const languages = {
