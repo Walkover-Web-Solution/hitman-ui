@@ -1489,7 +1489,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleUpdateUri(originalParams, targetName) {
-    debugger
     const tempdata = this.props.endpointContent
     const index = targetName?.split('.')[0];
     const title = targetName?.split('.')[1];
