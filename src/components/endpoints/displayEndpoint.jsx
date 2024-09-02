@@ -1974,11 +1974,11 @@ class DisplayEndpoint extends Component {
   makeFormData(body) {
     const formData = {}
     for (let i = 0; i < body.length; i++) {
-      if (body[i].key.length !== 0 && body[i].checked === 'true') {
+      if (getInnerText(body[i].key).length !== 0 && body[i].checked === 'true') {
         if (!isElectron() && body[i].type === 'file') {
           continue
         }
-        formData[body[i].key] = body[i].value
+        formData[getInnerText(body[i].key)] = getInnerText(body[i].value)
       }
     }
     return formData
