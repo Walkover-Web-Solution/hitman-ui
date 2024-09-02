@@ -9,21 +9,19 @@ import IconButton from '../common/iconButton'
 import { hexToRgb, isOnPublishedPage } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import { RiCloseLine } from 'react-icons/ri'
-import { TbCopy } from "react-icons/tb";
-import { FaCheck } from "react-icons/fa6";
+import { TbCopy } from 'react-icons/tb'
+import { FaCheck } from 'react-icons/fa6'
 import { BsThreeDots } from 'react-icons/bs'
 import { FaChevronRight } from 'react-icons/fa'
-import 'ace-builds'
 import AceEditor from 'react-ace'
 // import 'ace-builds/webpack-resolver'
+import 'ace-builds'
 import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import 'ace-builds/src-noconflict/theme-github'
 import './endpoints.scss'
+import axios from 'axios'
 
-// const HTTPSnippet = require('httpsnippet');
-// import {HTTPSnippet} from 'httpsnippet';
-
-
+const apiUrl = import.meta.env.VITE_API_URL
 
 const CodeTemplate = (props) => {
   const [theme, setTheme] = useState('')
@@ -42,41 +40,57 @@ const CodeTemplate = (props) => {
     dispatch(updateStateOfCurlSlider(!curlSlider))
   }
 
-  const makeCodeSnippet = () => {
+  const makeCodeTemplate = async (newSelectedLanguage) => {
     const harObject = props.harObject
-    let { method, url, httpVersion, cookies, headers, postData } = harObject
-    // const snippet = new HTTPSnippet({
-    //   method,
-    //   url,
-    //   httpVersion,
-    //   cookies,
-    //   headers,
-    //   postData
-    // })
-    return snippet
+
+    if (!harObject || !harObject.method) {
+      console.error('HAR object is missing or invalid.')
+      return
+    }
+
+    setSelectedLanguage(newSelectedLanguage)
+
+    try {
+      // Generate the code snippet by calling the backend
+      const codeSnippet = await makeCodeSnippet(newSelectedLanguage)
+
+      if (codeSnippet) {
+        let formattedSnippet = codeSnippet
+
+        if (formattedSnippet.includes('///')) {
+          formattedSnippet = formattedSnippet.replace('///', '//')
+        }
+
+        formattedSnippet = decodeURI(formattedSnippet)
+        setCodeSnippet(formattedSnippet)
+        setCopied(false)
+      } else {
+        console.error('Failed to generate code snippet.')
+      }
+    } catch (error) {
+      console.error('Error in makeCodeTemplate:', error)
+    }
   }
 
-  const makeCodeTemplate = (newSelectedLanguage) => {
+  const makeCodeSnippet = async (newSelectedLanguage) => {
     const harObject = props.harObject
-    if (!harObject || !harObject.method) return
-    setSelectedLanguage(newSelectedLanguage)
-    let codeSnippet = ''
-    try {
-      const snippet = makeCodeSnippet()
-      if (newSelectedLanguage === 'axiosNode') {
-        codeSnippet = snippet.convert('node', 'axios')
-      } else {
-        codeSnippet = snippet.convert(newSelectedLanguage)
-      }
-      if (codeSnippet.includes('///')) {
-        codeSnippet = codeSnippet.replace('///', '//')
-      }
-      codeSnippet = decodeURI(codeSnippet)
-    } catch (error) {
-      console.error(error)
+    if (!harObject) {
+      console.error('HAR object is missing.')
+      return null
     }
-    setCodeSnippet(codeSnippet)
-    setCopied(false)
+
+    try {
+      const response = await axios.post(`${apiUrl}/generate-snippet`, {
+        language: newSelectedLanguage === 'axiosNode' ? 'node' : newSelectedLanguage,
+        variant: newSelectedLanguage === 'axiosNode' ? 'axios' : undefined,
+        harObject: harObject
+      })
+
+      return response.data.snippet
+    } catch (error) {
+      console.error('Failed to generate code snippet:', error)
+      return null
+    }
   }
 
   useEffect(() => {
@@ -127,7 +141,13 @@ const CodeTemplate = (props) => {
           </button>
         )}
         <div
-          className={params.endpointId ? 'show-curl-endpoint h-100 pubCodeWrapper bg-white pb-1' : curlSlider ? 'pubCodeWrapper-hide pubCodeWrapper' : 'pubCodeWrapper' }
+          className={
+            params.endpointId
+              ? 'show-curl-endpoint h-100 pubCodeWrapper bg-white pb-1'
+              : curlSlider
+              ? 'pubCodeWrapper-hide pubCodeWrapper'
+              : 'pubCodeWrapper'
+          }
           style={{
             backgroundColor: hexToRgb(theme?.backgroundStyle, '0.04')
           }}
@@ -151,18 +171,19 @@ const CodeTemplate = (props) => {
                 )}
               </div>
               <div className='select-code-wrapper d-flex align-items-center mb-3 img'>
-                {primaryLanguages.map((key) => (
-                  <button
-                    key={key}
-                    className={`${params.endpointId ? 'btn' : ''}  ${getClassForLanguages(key)}`}
-                    onClick={() => {
-                      makeCodeTemplate(key)
-                    }}
-                  >
-                    <img src={languages[key].imagePath} alt={languages[key].name} width={15} />
-                    {languages[key].name}
-                  </button>
-                ))}
+                {primaryLanguages.map((key) => {
+                  const LanguageIcon = languages[key].imagePath;
+                  return (
+                    <button
+                      key={key}
+                      className={`${params.endpointId ? 'btn' : ''} ${getClassForLanguages(key)}`}
+                      onClick={() => makeCodeTemplate(key)}
+                    >
+                      <LanguageIcon width={15} />
+                      {languages[key].name}
+                    </button>
+                  );
+                })}
                 <Dropdown className='dropdown-more'>
                   <Dropdown.Toggle
                     className={secondaryLanguages.includes(selectedLanguage) ? 'active dropdownMore mr-0' : 'dropdownMore mr-0'}
@@ -179,18 +200,19 @@ const CodeTemplate = (props) => {
                     )}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    {secondaryLanguages.map((key) => (
-                      <Dropdown.Item
-                        key={key}
-                        className={key === selectedLanguage ? 'active mb-2 mt-2' : 'mb-2 mt-2'}
-                        onClick={() => {
-                          makeCodeTemplate(key)
-                        }}
-                      >
-                        <img src={languages[key].imagePath} alt={languages[key].name} className='mr-2' />
-                        {languages[key].name}
-                      </Dropdown.Item>
-                    ))}
+                    {secondaryLanguages.map((key) => {
+                      const LanguageIcon = languages[key].imagePath; 
+                      return (
+                        <Dropdown.Item
+                          key={key}
+                          className={key === selectedLanguage ? 'active mb-2 mt-2' : 'mb-2 mt-2'}
+                          onClick={() => makeCodeTemplate(key)}
+                        >
+                          <LanguageIcon className='mr-2' width={20} height={20} />
+                          {languages[key].name}
+                        </Dropdown.Item>
+                      );
+                    })}
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
@@ -201,8 +223,8 @@ const CodeTemplate = (props) => {
                   <CopyToClipboard
                     text={codeSnippet}
                     onCopy={() => {
-                      setCopied(true);
-                      setTimeout(() => setCopied(false), 1000); // Change back after 5 seconds
+                      setCopied(true)
+                      setTimeout(() => setCopied(false), 1000) // Change back after 5 seconds
                     }}
                     className='copy-to-clipboard mt-1'
                   >
