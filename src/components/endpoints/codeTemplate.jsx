@@ -170,18 +170,19 @@ const CodeTemplate = (props) => {
                 )}
               </div>
               <div className='select-code-wrapper d-flex align-items-center mb-3 img'>
-                {primaryLanguages.map((key) => (
-                  <button
-                    key={key}
-                    className={`${params.endpointId ? 'btn' : ''}  ${getClassForLanguages(key)}`}
-                    onClick={() => {
-                      makeCodeTemplate(key)
-                    }}
-                  >
-                    <img src={languages[key].imagePath} alt={languages[key].name} width={15} />
-                    {languages[key].name}
-                  </button>
-                ))}
+                {primaryLanguages.map((key) => {
+                  const LanguageIcon = languages[key].imagePath;
+                  return (
+                    <button
+                      key={key}
+                      className={`${params.endpointId ? 'btn' : ''} ${getClassForLanguages(key)}`}
+                      onClick={() => makeCodeTemplate(key)}
+                    >
+                      <LanguageIcon width={15} />
+                      {languages[key].name}
+                    </button>
+                  );
+                })}
                 <Dropdown className='dropdown-more'>
                   <Dropdown.Toggle
                     className={secondaryLanguages.includes(selectedLanguage) ? 'active dropdownMore mr-0' : 'dropdownMore mr-0'}
@@ -198,18 +199,19 @@ const CodeTemplate = (props) => {
                     )}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    {secondaryLanguages.map((key) => (
-                      <Dropdown.Item
-                        key={key}
-                        className={key === selectedLanguage ? 'active mb-2 mt-2' : 'mb-2 mt-2'}
-                        onClick={() => {
-                          makeCodeTemplate(key)
-                        }}
-                      >
-                        <img src={languages[key].imagePath} alt={languages[key].name} className='mr-2' />
-                        {languages[key].name}
-                      </Dropdown.Item>
-                    ))}
+                    {secondaryLanguages.map((key) => {
+                      const LanguageIcon = languages[key].imagePath; 
+                      return (
+                        <Dropdown.Item
+                          key={key}
+                          className={key === selectedLanguage ? 'active mb-2 mt-2' : 'mb-2 mt-2'}
+                          onClick={() => makeCodeTemplate(key)}
+                        >
+                          <LanguageIcon className='mr-2' width={20} height={20} />
+                          {languages[key].name}
+                        </Dropdown.Item>
+                      );
+                    })}
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
