@@ -1,14 +1,14 @@
 import React, { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTabContent, setTabIsModified, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
+import { updateNewTabName } from "../../components/tabs/redux/tabsActions";
 import { approvePage, draftPage } from "../../components/publicEndpoint/redux/publicEndpointsActions";
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { BsThreeDots } from 'react-icons/bs';
 import moment from 'moment';
-import { updatePageContent, updatePageName } from '../../components/pages/redux/pagesActions';
+import { updatePageName } from '../../components/pages/redux/pagesActions';
 import SaveAsPageSidebar from '../../components/endpoints/saveAsSidebar1';
 import IconButton from '../../components/common/iconButton';
 import { getProxyToken } from "../../components/auth/authServiceV2";
@@ -61,7 +61,7 @@ const Page = () => {
 
     useEffect(() => {
         window.addEventListener('keydown', handleSaveKeydown);
-       
+
         return () => window.removeEventListener('keydown', handleSaveKeydown);
     }, [pageId]);
 
@@ -125,7 +125,7 @@ const Page = () => {
     };
 
     const autoGrow = (element) => {
-        
+
         element.style.height = '5px';
         element.style.height = `${element.scrollHeight}px`;
         setPageName(element.textContent)
@@ -253,9 +253,13 @@ const Page = () => {
                         </OverlayTrigger>
                     }
                     <IconButton>
-                        <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
-                            {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs?.[activeTabId]?.status === "NEW" ? 'Unsaved' : "Saved"}</button>}
-                        </OverlayTrigger>
+                        {tabs[activeTabId]?.status === "NEW" ? (
+                            <button className="btn p-0 text-black-60 disabled">
+                                Unsaved
+                            </button>
+                        ) : (
+                            <></>
+                        )}
                     </IconButton>
                     {tabs?.[activeTabId]?.status !== 'NEW' &&
                         <div className='inner-operations'>
@@ -264,7 +268,7 @@ const Page = () => {
                                     <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={handlePublish} disabled={isPublished}>Publish</Dropdown.Item>
+                                    <Dropdown.Item onClick={handlePublish}>Publish</Dropdown.Item>
                                     <Dropdown.Item onClick={handleUnPublish} disabled={!isPublished}>Unpublish</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
