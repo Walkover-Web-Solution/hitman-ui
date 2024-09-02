@@ -439,7 +439,7 @@ const SideBar = () => {
           {searchData.filter !== '' && renderSearchList()}
           {searchData.filter === '' && renderSidebarContent()}
         </div>
-        {isOnPublishedPage() && isTechdocOwnDomain() && (<Footer />)}
+        {isOnPublishedPage() && (<Footer />)}
       </>
     )
   }

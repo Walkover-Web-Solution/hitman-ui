@@ -289,7 +289,13 @@ const CollectionParentPages = (props) => {
                 <div className='linkWrapper versionPages'>
                   {(pages[pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId]?.child?.length !== 0) ?
                     <CombinedCollections {...props} level={0} page_id={pageId} rootParentId={pages[props.rootParentId].child?.length === 1 ? defaultVersionId : selectedVersionId} />
-                    : <span className='no-page fw-500 pl-5 mt-1 mb-2 d-block'>No pages inside</span>}
+                    : (
+                      !isOnPublishedPage() && (
+                        <span className='no-page fw-500 pl-5 mt-1 mb-2 d-block'>
+                          No pages inside
+                        </span>
+                      )
+                    )}
                 </div>
               </Card.Body>
             </div>
