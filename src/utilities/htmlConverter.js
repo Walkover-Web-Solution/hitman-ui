@@ -136,10 +136,10 @@ function getPathVariableHTML(html) {
 
         if (c1 !== 0 && (html[i] === '/' || html[i] === '?' || i === html.length - 1)) {
             if (inTag || inTemplate) {
-                continue; 
+                continue;
             } else {
                 if (i === html.length - 1 && char !== '/' && char !== '?') {
-                    str += char; 
+                    str += char;
                 }
                 if (html[i] === '/' || html[i] === '?' || html[i] === '>') {
                     str = str.slice(0, -1);
@@ -188,7 +188,8 @@ function fixSpanTags(html) {
 function replaceParamsHtmlInHostContainerHtml(pureHTML, updateParams, startIndex, endIndex) {
     pureHTML = pureHTML.replace(/&amp;/g, '&');
     let beforeStart = pureHTML.substring(0, startIndex);
-    let afterEnd = pureHTML.substring(endIndex + 1);
+    endIndex = endIndex === pureHTML.length - 1 ? endIndex + 1 : endIndex;
+    let afterEnd = pureHTML.substring(endIndex);
     if (!beforeStart.endsWith('</span>')) {
         beforeStart += '</span>';
     }
