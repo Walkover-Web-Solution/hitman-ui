@@ -296,11 +296,14 @@ class EndpointBreadCrumb extends Component {
 
           {this.props.tabState[this.props.activeTabId].status !== 'NEW' ? (
             <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
+              
+              <div className='text-nowrap-heading breadcrumb-main d-flex align-items-center flex-wrap'>
               {this.collectionName && (
                 <strong className='text-secondary fw-400 px-1 py-0 text-nowrap-heading cursor-pointer' onClick={() => this.props.navigate(`/${path}`, { replace: true })}>{this.collectionName}</strong>
               )}
               <p className='p-0 m-0 text-secondary fw-400'>/</p>
-              <div className='text-nowrap-heading d-flex align-items-center'>{this.renderPathLinks()}</div>
+                {this.renderPathLinks()}
+                </div>
               {this.props?.endpoints[this.props.currentEndpointId]?.isPublished && (
                 <OverlayTrigger placement="right" overlay={<Tooltip id="tooltip-right">Live</Tooltip>} trigger={['hover', 'focus']}>
                   <GoDotFill size={14} color="green" />

@@ -2982,6 +2982,7 @@ li.nav-item.cookie-tab a {
   overflow-x: auto;
   background: #fff;
   padding: 0px 20px 10px;
+
   >div {
     color: $theme-color;
     font-size: $font-medium;
@@ -4295,11 +4296,6 @@ body .tox {
 .floating-menu .biplus-icon {
   &:after {
     content: "";
-    border-top: 0.3em solid;
-    border-right: 0.3em solid transparent;
-    border-bottom: 0;
-    border-left: 0.3em solid transparent;
-    transform: rotate(0);
-    top: 0;
+    all: unset;
   }
 }
