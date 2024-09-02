@@ -197,6 +197,7 @@ function replaceParamsHtmlInHostContainerHtml(pureHTML, updateParams, startIndex
     let beforeStart = pureHTML.substring(0, startIndex);
     endIndex = endIndex === pureHTML.length - 1 ? endIndex + 1 : endIndex;
     let afterEnd = pureHTML.substring(endIndex);
+    if (afterEnd.startsWith('>')) afterEnd = afterEnd?.slice(1, afterEnd.length);
     if (!beforeStart.endsWith('</span>')) {
         beforeStart += '</span>';
     }
@@ -215,4 +216,10 @@ function replaceParamsHtmlInHostContainerHtml(pureHTML, updateParams, startIndex
     return newHTML;
 }
 
-export { fixSpanTags, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml };
+function getInnerText(html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+}
+
+export { fixSpanTags, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml, getInnerText };

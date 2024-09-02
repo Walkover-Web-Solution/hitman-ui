@@ -74,7 +74,7 @@ import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
 import { Tab, Nav, Row, Col } from 'react-bootstrap'
 import { FaPlus } from 'react-icons/fa'
-import { fixSpanTags, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
+import { fixSpanTags, getInnerText, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -1122,7 +1122,7 @@ class DisplayEndpoint extends Component {
     const headersData = this.doSubmitHeader('send')
     const headerJson = {}
     Object.keys(headersData).forEach((header) => {
-      headerJson[header] = headersData[header].value
+      headerJson[getInnerText(header)] = getInnerText(headersData[header].value)
     })
 
     /** Prepare URL */
@@ -1344,7 +1344,7 @@ class DisplayEndpoint extends Component {
       if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
       else if (currentTabId && !this.props.pages[currentTabId]) {
-        endpoint.requestId = currentTabId
+        // endpoint.requestId = currentTabId
         this.setState({ saveAsLoader: true })
         this.props.add_endpoint(
           endpoint,
@@ -1519,6 +1519,7 @@ class DisplayEndpoint extends Component {
     //   data.updatedUri = updatedUri
     // }
     // tempdata.data = data
+    if (originalParams.length > queryParamsHtmlData.length + 1) return;
     const hostUrlHtml = tempdata.data.URL;
     const htmlUrl = replaceParamsHtmlInHostContainerHtml(hostUrlHtml, originalParams[index][title], queryParamsHtmlData[index][title].startIndex, queryParamsHtmlData[index][title].endIndex)
     tempdata.data.URL = htmlUrl;
@@ -1997,12 +1998,10 @@ class DisplayEndpoint extends Component {
       case bodyTypesEnums['application/x-www-form-urlencoded']: {
         const urlEncodedData = {}
         for (let i = 0; i < body?.[bodyTypesEnums['application/x-www-form-urlencoded']].length; i++) {
-          if (
-            body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].key.length !== 0 &&
-            body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].checked === 'true'
-          ) {
-            urlEncodedData[body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].key] =
-              body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].value
+          let innerTextKey = getInnerText(body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].key)
+          let innerTextValue = getInnerText(body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].value)
+          if (innerTextKey.length !== 0 && body?.[bodyTypesEnums['application/x-www-form-urlencoded']][i].checked === 'true') {
+            urlEncodedData[innerTextKey] = innerTextValue
           }
         }
         return { body: urlEncodedData, headers }
