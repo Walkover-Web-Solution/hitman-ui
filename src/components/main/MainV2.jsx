@@ -124,10 +124,10 @@ const MainV2 = () => {
             <DesktopAppDownloadModal />
             <OnlineStatus />
             <div className='main-panel-wrapper'>
-              {/* <SplitPane split='vertical' className='split-sidebar'> */}
-                {/* <SideBarV2 /> */}
+              <SplitPane split='vertical' className='split-sidebar'>
+                <SideBarV2 />
                 {showCollectionDashboard() ? renderLandingDashboard() : <ContentPanel />}
-              {/* </SplitPane> */}
+              </SplitPane>
             </div>
             <UpdateStatus />
           </div>
