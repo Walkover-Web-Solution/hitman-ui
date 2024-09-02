@@ -8,7 +8,7 @@ import moment from 'moment'
 import { toast } from 'react-toastify'
 import trashImage from '../../../assets/icons/trash.webp'
 import { getCurrentOrg } from '../../auth/authServiceV2'
-import { getAllDeletedCollections, restoreCollection } from '../../collections/collectionsApiService'
+import { getAllDeletedCollections, restoreCollection } from '../../../api/collection/collectionApi'
 import './trash.scss'
 
 const TrashPage = () => {

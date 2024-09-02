@@ -27,7 +27,7 @@ import DisplayDescription from './displayDescription'
 import DisplayResponse from './displayResponse'
 import SampleResponse from './sampleResponse'
 import { getCurrentUser, getProxyToken, isAdmin } from '../auth/authServiceV2'
-import endpointApiService, { getEndpoint } from './endpointApiService'
+import endpointApiService from '../../api/endpoint/endpointApi'
 import './endpoints.scss'
 import GenericTable from './genericTable'
 import HostContainer from './hostContainer'
@@ -49,14 +49,15 @@ import Axios from 'axios'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-18-sortable-hoc'
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
-import { pendingEndpoint, approveEndpoint, rejectEndpoint, draftEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
+import { pendingEndpoint, approveEndpoint, rejectEndpoint, draftEndpoint } from '../../api/endpoint/endpointApi.js'
 import WarningModal from '../common/warningModal'
 import { RiDeleteBinLine } from "react-icons/ri";
 import { ApproveRejectEntity, PublishEntityButton, UnPublishEntityButton } from '../common/docViewOperations'
 import Tiptap from '../tiptapEditor/tiptap'
 import { useQuery, useQueryClient } from 'react-query'
 import utilityFunctions from '../common/utility.js'
-import { getPublishedContentByIdAndType } from '../../services/generalApiService'
+import { getPublishedContentByIdAndType } from '../../api/page/pageApi.js'
+import Footer from '../main/Footer.jsx'
 import { updateEndpoint } from '../pages/redux/pagesActions.js'
 import { statesEnum } from '../common/utility'
 import { addAuthorizationDataTypes, grantTypesEnums } from '../common/authorizationEnums.js'
@@ -242,7 +243,7 @@ const getEndpointContent = async (props) => {
 
   if (extractedParams?.endpointId !== 'new' && props?.pages?.[endpointId] && endpointId) {
     let type = props?.pages?.[currentIdToShow]?.type
-    let data = isUserOnPublishedPage ? await getPublishedContentByIdAndType(currentIdToShow, type) : await getEndpoint(endpointId)
+    let data = isUserOnPublishedPage ? await getPublishedContentByIdAndType(currentIdToShow, type) : await endpointApiService.getEndpoint(endpointId)
     return utilityFunctions.modifyEndpointContent(data, _.cloneDeep(untitledEndpointData))
   }
 

@@ -1,11 +1,8 @@
 import axios from 'axios'
-import logger from './logService'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { logout, getProxyToken } from '../components/auth/authServiceV2'
 import { navigateTo } from '../navigationService'
-
-// axios.defaults.baseURL = import.meta.env.VITE_API_URL
 
 let instance = axios.create()
 instance.interceptors.response.use(null, (error) => {
@@ -23,10 +20,6 @@ instance.interceptors.response.use(null, (error) => {
     })
   }
 
-  if (!expectedError) {
-    logger.log(!error)
-    toast.error('An unexpected error occur')
-  }
   if (error?.response?.status === 401) {
     toast.error('Session Expired')
     logout(window.location.pathname)

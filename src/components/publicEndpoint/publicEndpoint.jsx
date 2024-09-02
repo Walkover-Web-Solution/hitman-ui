@@ -9,16 +9,24 @@ import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
 import SplitPane from '../splitPane/splitPane.jsx'
 import '../collectionVersions/collectionVersions.scss'
-import { setTitle, setFavicon, comparePositions, hexToRgb, isTechdocOwnDomain, SESSION_STORAGE_KEY, isOnPublishedPage } from '../common/utility'
+import {
+  setTitle,
+  setFavicon,
+  comparePositions,
+  hexToRgb,
+  isTechdocOwnDomain,
+  SESSION_STORAGE_KEY,
+  isOnPublishedPage
+} from '../common/utility'
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
 import { addCollectionAndPages } from '../redux/generalActions'
-import generalApiService from '../../services/generalApiService'
 import { useQueryClient, useMutation } from 'react-query'
 import { MdDehaze, MdClose } from 'react-icons/md'
 import { background } from '../backgroundColor.js'
 import withRouter from '../common/withRouter.jsx'
 import PublicPage from '../../pages/publicPage/publicPage.jsx'
+import { getPublishedContentByIdAndType, getPublishedContentByPath } from '../../api/page/pageApi.js'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -157,7 +165,7 @@ class PublicEndpoint extends Component {
     queryParamsString = queryParamsString.slice(0, -1)
 
     try {
-      const response = await generalApiService.getPublishedContentByPath(queryParamsString)
+      const response = await getPublishedContentByPath(queryParamsString)
       this.setDataToReactQueryAndSessionStorage(response)
     } catch (e) {
       sessionStorage.setItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW, 'undefined')
@@ -169,7 +177,7 @@ class PublicEndpoint extends Component {
     let currentIdToShow = sessionStorage.getItem(SESSION_STORAGE_KEY.CURRENT_PUBLISH_ID_SHOW)
     // before this display page or display endpoint gets called and data gets rendered
     if (!this.props.keyExistInReactQuery(currentIdToShow)) {
-      const response = generalApiService.getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type)
+      const response = getPublishedContentByIdAndType(currentIdToShow, this.props.pages?.[currentIdToShow]?.type)
       if (this.props.pages?.[currentIdToShow]?.type == 4) {
         // this.props.mutationFn.mutate({ type: 'endpoint', id: currentIdToShow, content: response })
       } else if (this.props.pages?.[currentIdToShow]?.type != 4) {

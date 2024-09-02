@@ -16,7 +16,7 @@ const DeleteIcon =() =>( <svg width='18' height='18' viewBox='0 0 18 18' fill='n
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import Joi from 'joi'
-import { addUrlWithAdditionalPath, deleteMappedUrl } from './redirectionApiServices'
+import { addUrlWithAdditionalPath, deleteMappedUrl } from '../../api/urlMapping/urlMappingApi'
 import { getUrlPathById } from '../common/utility'
 import { addOldUrlOfPage, deleteOldUrlOfPage } from '../pages/redux/pagesActions'
 import { toast } from 'react-toastify'

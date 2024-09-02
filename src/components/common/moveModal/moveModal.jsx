@@ -1,22 +1,22 @@
 import React, { useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import { FiUsers } from 'react-icons/fi'
-import generalApiService from '../../../services/generalApiService'
 import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteCollectionRequest } from '../../collections/redux/collectionsActions'
 import './moveModal.scss'
 import { deleteAllPagesAndTabsAndReactQueryData, operationsAfterDeletion } from '../utility'
 import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
+import { moveCollectionsAndPages } from '../../../api/collection/collectionApi'
 
 const MoveModal = (props) => {
-  const { orgs, currentOrgType  } = useSelector((state) => {
-    return { 
+  const { orgs, currentOrgType } = useSelector((state) => {
+    return {
       orgs: state.organizations.orgList,
       currentOrgType: state.organizations.currentOrg.meta?.type
-     }
+    }
   })
-  let orgsList = orgs.filter((org) => (org.meta?.type == currentOrgType))
+  let orgsList = orgs.filter((org) => org.meta?.type == currentOrgType)
   const dispatch = useDispatch()
 
   const [selectedOrganization, setSelectedOrganization] = useState(null)
@@ -28,8 +28,7 @@ const MoveModal = (props) => {
 
   async function handleMoveCollection() {
     setLoader(true)
-    generalApiService
-      .moveCollectionsAndPages(selectedOrganization, props.moveCollection)
+    moveCollectionsAndPages(selectedOrganization, props.moveCollection)
       .then((response) => {
         const rootParentPageId = props.moveCollection.rootParentId
         deleteAllPagesAndTabsAndReactQueryData(rootParentPageId, response.data.id).then((data) => {

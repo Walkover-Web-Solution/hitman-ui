@@ -1,11 +1,10 @@
-import runAutomationTypes from './runAutomationTypes'
-import generalApiService from '../../../../services/generalApiService'
 import { toast } from 'react-toastify'
+import { runAutomation } from '../../../../api/endpoint/endpointApi'
+import runAutomationTypes from './runAutomationTypes'
 
 export const runAutomations = (details, collectionId) => {
   return (dispatch) => {
-    generalApiService
-      .runAutomation(details)
+    runAutomation(details)
       .then((response) => {
         dispatch(onRunAutomationCompleted(response.data, collectionId))
       })
@@ -17,8 +16,7 @@ export const runAutomations = (details, collectionId) => {
 
 export const generateDescription = (endpointIds) => {
   return (dispatch) => {
-    generalApiService
-      .generateDescription(endpointIds) 
+    generateDescription(endpointIds)
       .then((response) => {
         toast.success("Description generated successfully")
         dispatch(onGenerateDescriptionCompleted(response.data));
@@ -33,7 +31,7 @@ export const generateDescription = (endpointIds) => {
 export const onRunAutomationCompleted = (data, collectionId) => {
   return {
     type: runAutomationTypes.ON_AUTOMATION_RUN,
-    payload : data, 
+    payload: data,
     collectionId
   }
 }

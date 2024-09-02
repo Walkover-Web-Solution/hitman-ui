@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Modal } from 'react-bootstrap'
-import endpointApiService from './endpointApiService'
+import endpointApiService from '../../api/endpoint/endpointApi'
 import { useParams } from 'react-router-dom'
 import { useQuery, useQueryClient } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'

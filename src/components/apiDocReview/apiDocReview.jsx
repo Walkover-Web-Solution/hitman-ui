@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import { BiLike, BiDislike, BiSolidLike, BiSolidDislike } from 'react-icons/bi'
 import './apiDocReview.scss'
-import { dislike, like } from '../../services/feedbackService'
+import { dislike, like } from '../../api/feedback/feedbackApi'
 import { VscStarFull } from "react-icons/vsc";
 import { useLocation, useParams } from 'react-router-dom'
 

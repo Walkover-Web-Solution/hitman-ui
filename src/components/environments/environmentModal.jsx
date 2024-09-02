@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { ListGroup, Modal } from 'react-bootstrap'
 import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import environmentsApiService from './environmentsApiService'
+import environmentsApiService from '../../api/environment/environmentApi'
 import { useNavigate, useLocation } from 'react-router-dom'
 import './environments.scss'
 import { useSelector } from 'react-redux'

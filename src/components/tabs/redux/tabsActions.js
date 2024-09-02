@@ -6,7 +6,7 @@ import { navigateTo } from '../../../navigationService'
 import { getOrgId, isElectron, isOrgDocType } from '../../common/utility'
 import { openModal } from '../../modals/redux/modalsActions'
 import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
-import { getPageContent } from '../../../services/pageServices'
+import { getPageContent } from '../../../api/page/pageApi'
 import { toast } from 'react-toastify'
 
 export const fetchTabsFromRedux = () => {
@@ -36,9 +36,8 @@ export const setTabIsModified = (tabId, flag) => {
 
 export const fetchTabContent = (tabId) => {
   return async (dispatch) => {
-    const orgId = getOrgId()
     try {
-      const response = await getPageContent(orgId, tabId)
+      const response = await getPageContent(tabId)
       const payloadData = { id: tabId, data: response }
       dispatch({
         type: tabsActionTypes.FETCH_PAGE_CONTENT_SUCCESS,
