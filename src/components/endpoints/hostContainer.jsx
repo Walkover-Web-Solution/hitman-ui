@@ -63,10 +63,13 @@ class HostContainer extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.activeTabId !== this.props?.activeTabId) {
-      this.setState({ initalUrlValue: this.props?.endpointContent?.data?.URL })
+      this.setState({ initalUrlValue: this.props?.URL })
     }
-    if (!_.isEqual(prevProps.updatedUri, this.props.updatedUri)) {
-      this.setState({ datalistUri: this.props.updatedUri });
+    if (!_.isEqual(prevProps.updatedUri, this.props?.updatedUri)) {
+      this.setState({ datalistUri: this.props?.updatedUri });
+    }
+    if (!_.isEqual(prevProps.URL, this.props?.URL)) {
+      if (document.activeElement !== this.hostcontainerRef?.current) this.setState({ initalUrlValue: this.props?.URL })
     }
     if (!_.isEqual(prevProps?.endpointContent?.host?.BASE_URL, this.props?.endpointContent?.host?.BASE_URL)) {
       this.setState({ datalistHost: this.props?.endpointContent?.host?.BASE_URL });
@@ -337,11 +340,7 @@ class HostContainer extends Component {
   }
 
   handleValueChange() {
-    const hostContainerHtml = this.hostcontainerRef.current.innerHTML
-    const queryParamsHtmlData = getQueryParamsHTML(hostContainerHtml);
-    const pathVariablesHtmlData = getPathVariableHTML(hostContainerHtml);
     this.setParentHostAndUri()
-    console.log(queryParamsHtmlData, pathVariablesHtmlData);
   }
 
   renderHostDatalist() {

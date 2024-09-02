@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
+import { restoreCaretPosition, getCaretPosition } from '../../utilities/caretUtility';
 import AutoSuggest from 'env-autosuggest';
 import { useSelector } from 'react-redux';
 
-export default function GenericTableAutoSuggest(props) {
-
-    const genericAutoSuggestRef = useRef(null);
+function GenericTableAutoSuggest(props) {
 
     const { currentEnvironment } = useSelector((state) => {
         return {
@@ -12,18 +11,25 @@ export default function GenericTableAutoSuggest(props) {
         };
     });
 
-    useEffect(() => {
-        if (genericAutoSuggestRef.current) {
-            genericAutoSuggestRef.current.innerHTML = props?.htmlValue;
-        }
-    }, [props?.htmlValue]);
+    const genericAutoSuggestRef = useRef(null);
+
+    const handleValueChange = () => {
+        const caretPosition = getCaretPosition(genericAutoSuggestRef.current);
+        const value = genericAutoSuggestRef.current.innerHTML;
+        props.handleChange(value, { name: props?.valueKey, value: value });
+        setTimeout(() => restoreCaretPosition(genericAutoSuggestRef.current, caretPosition), 0);
+    }
 
     return (
         <div>
             <AutoSuggest
                 contentEditableDivRef={genericAutoSuggestRef}
                 suggestions={currentEnvironment}
+                handleValueChange={handleValueChange}
+                initial={props?.htmlValue}
             />
         </div>
     );
 }
+
+export default React.memo(GenericTableAutoSuggest)

@@ -77,7 +77,7 @@ class GenericTable extends Component {
     const target = inpTarget || e.currentTarget
     let { dataArray, title, original_data: originalData } = this.props
     dataArray = JSON.parse(JSON.stringify(dataArray))
-    const name = target.name.split('.')
+    const name = target?.name?.split('.')
     const value = target.value
     if (name[1] === 'checkbox') {
       this.checkboxFlags[name[0]] = true
@@ -113,7 +113,7 @@ class GenericTable extends Component {
     }
 
     if (title === 'Headers' || title === 'Params' || title === 'Path Variables') {
-      this.props.props_from_parent(title, dataArray)
+      this.props.props_from_parent(title, dataArray, target?.name)
     }
     if (title === 'formData' || title === 'x-www-form-urlencoded') {
       this.props.handle_change_body_data(title, dataArray)
@@ -343,7 +343,7 @@ class GenericTable extends Component {
     const key = `${index}.key`
     return (
       <div className='position-relative fileInput'>
-        <GenericTableAutoSuggest htmlValue={dataArray[index].key} />
+        <GenericTableAutoSuggest valueKey={key} handleChange={this.handleChange} htmlValue={dataArray[index].key} />
         {/* <TextField
           {...autoCompleterDefaultProps}
           name={key}
@@ -443,7 +443,7 @@ class GenericTable extends Component {
             this.renderSelectFiles(dataArray, index)
           ) : (
             <div className='position-relative'>
-              <GenericTableAutoSuggest htmlValue={dataArray[index].value} />
+              <GenericTableAutoSuggest valueKey={valueKey} handleChange={this.handleChange} htmlValue={dataArray[index].value} />
               {/* <TextField
                 {...autoCompleterDefaultProps}
                 name={valueKey}

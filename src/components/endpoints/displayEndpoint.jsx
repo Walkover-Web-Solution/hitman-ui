@@ -74,7 +74,7 @@ import withRouter from '../common/withRouter.jsx'
 import { useParams } from 'react-router-dom'
 import { Tab, Nav, Row, Col } from 'react-bootstrap'
 import { FaPlus } from 'react-icons/fa'
-import { fixSpanTags, getPathVariableHTML, getQueryParamsHTML } from '../../utilities/htmlConverter.js'
+import { fixSpanTags, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -606,7 +606,7 @@ class DisplayEndpoint extends Component {
       for (let i = 0; i < pathVariableKeys.length; i++) {
         pathVariableKeysObject[pathVariableKeys[i]] = false
       }
-      this.setPathVariables(pathVariableKeys, pathVariableKeysObject)
+      this.setPathVariables(pathVariableKeys, pathVariableKeysObject, e.currentTarget.value)
       const result = URI.parseQuery(updatedUri)
       for (let i = 0; i < Object.keys(result).length; i++) {
         keys.push(Object.keys(result)[i])
@@ -655,31 +655,34 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setPathVariables(pathVariableKeys, pathVariableKeysObject) {
+  setPathVariables(pathVariableKeys, pathVariableKeysObject, value) {
+    const pathVariablesHtmlData = getPathVariableHTML(value);
+    console.log(pathVariablesHtmlData, 12345)
     const pathVariables = []
     let counter = 0
-    for (let i = 0; i < pathVariableKeys.length; i++) {
-      if (pathVariableKeys[i][0] === ':' && pathVariableKeysObject[pathVariableKeys[i]] === false) {
-        pathVariableKeysObject[pathVariableKeys[i]] = true
-        let pathVariableKeyWithoutColon = pathVariableKeys[i].slice(1).trim()
-        if (pathVariableKeyWithoutColon !== '') {
-          pathVariables.push({
-            checked: 'notApplicable',
-            key: pathVariableKeyWithoutColon,
-            value: this.props.endpointContent.pathVariables[counter] // TODO :: correct this index and assign correct value
-              ? this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon
-                ? this.props.endpointContent.pathVariables[counter].value
-                : ''
-              : '',
-            description: this.props.endpointContent.pathVariables[counter]
-              ? this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon
-                ? this.props.endpointContent.pathVariables[counter].description
-                : ''
-              : ''
-          })
-          counter++
-        }
-      }
+    for (let i = 0; i < pathVariablesHtmlData.length; i++) {
+      // if (pathVariableKeys[i][0] === ':' && pathVariableKeysObject[pathVariableKeys[i]] === false) {
+      //   pathVariableKeysObject[pathVariableKeys[i]] = true
+      let pathVariableKeyWithoutColon = pathVariableKeys[i].slice(1).trim()
+      //   if (pathVariableKeyWithoutColon !== '') {
+
+      pathVariables.push({
+        checked: 'notApplicable',
+        key: pathVariablesHtmlData[i],
+        value: this.props.endpointContent.pathVariables[counter]
+          ? this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon
+            ? this.props.endpointContent.pathVariables[counter].value
+            : ''
+          : '',
+        description: this.props.endpointContent.pathVariables[counter]
+          ? this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon
+            ? this.props.endpointContent.pathVariables[counter].description
+            : ''
+          : ''
+      })
+      //   counter++
+      // }
+      // }
     }
     const dummyData = this.props?.endpointContent
     dummyData.pathVariables = pathVariables
@@ -687,7 +690,6 @@ class DisplayEndpoint extends Component {
   }
 
   makeOriginalParams(keys, values, description, value) {
-    debugger
     const originalParams = []
     for (let i = 0; i < this.props?.endpointContent?.originalParams?.length; i++) {
       if (this.props?.endpointContent?.originalParams[i].checked === 'false') {
@@ -701,14 +703,13 @@ class DisplayEndpoint extends Component {
       }
     }
     const queryParamsHtmlData = getQueryParamsHTML(value);
-    const pathVariablesHtmlData = getPathVariableHTML(value);
-    console.log(queryParamsHtmlData, pathVariablesHtmlData, 234567);
     for (let i = 0; i < queryParamsHtmlData.length; i++) {
+      console.log(queryParamsHtmlData[i].value.html)
       originalParams.push({
         checked: 'true',
         key: fixSpanTags(queryParamsHtmlData[i].key.html),
         value: fixSpanTags(queryParamsHtmlData[i].value.html),
-        description: description[i]
+        description: description[i],
       })
     }
     originalParams.push({
@@ -1449,9 +1450,9 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  propsFromChild(name, value) {
+  propsFromChild(name, value, targetName) {
     if (name === 'Params') {
-      this.handleUpdateUri(value)
+      this.handleUpdateUri(value, targetName)
       this.setModifiedTabData()
       const dummyData = this?.props?.endpointContent
       dummyData.originalParams = [...value]
@@ -1487,33 +1488,40 @@ class DisplayEndpoint extends Component {
     this.setState({ data, publicBodyFlag: false })
   }
 
-  handleUpdateUri(originalParams) {
+  handleUpdateUri(originalParams, targetName) {
+    debugger
     const tempdata = this.props.endpointContent
-    if (originalParams.length === 0) {
-      const updatedUri = this.props.endpointContent.data.updatedUri.split('?')[0]
-      const data = { ...this.props?.endpointContent.data }
-      data.updatedUri = updatedUri
-      tempdata.data = data
-      this.props.setQueryUpdatedData(tempdata)
-      return
-    }
-    const originalUri = this.props?.endpointContent.data.updatedUri.split('?')[0] + '?'
-    const parts = {}
-    for (let i = 0; i < originalParams.length; i++) {
-      if (originalParams[i].key.length !== 0 && originalParams[i].checked === 'true') {
-        parts[originalParams[i].key] = originalParams[i].value
-      }
-    }
-    URI.escapeQuerySpace = false
-    let updatedUri = URI.buildQuery(parts)
-    updatedUri = originalUri + URI.decode(updatedUri)
-    const data = { ...this.props?.endpointContent.data }
-    if (Object.keys(parts).length === 0) {
-      data.updatedUri = updatedUri.split('?')[0]
-    } else {
-      data.updatedUri = updatedUri
-    }
-    tempdata.data = data
+    const index = targetName?.split('.')[0];
+    const title = targetName?.split('.')[1];
+    const queryParamsHtmlData = getQueryParamsHTML(tempdata.data.URL);
+    // if (originalParams.length === 0) {
+    //   const updatedUri = this.props.endpointContent.data.updatedUri.split('?')[0]
+    //   const data = { ...this.props?.endpointContent.data }
+    //   data.updatedUri = updatedUri
+    //   tempdata.data = data
+    //   this.props.setQueryUpdatedData(tempdata)
+    //   return
+    // }
+    // const originalUri = this.props?.endpointContent.data.updatedUri.split('?')[0] + '?'
+    // const parts = {}
+    // for (let i = 0; i < originalParams.length; i++) {
+    //   if (originalParams[i].key.length !== 0 && originalParams[i].checked === 'true') {
+    //     parts[originalParams[i].key] = originalParams[i].value
+    //   }
+    // }
+    // URI.escapeQuerySpace = false
+    // let updatedUri = URI.buildQuery(parts)
+    // updatedUri = originalUri + URI.decode(updatedUri)
+    // const data = { ...this.props?.endpointContent.data }
+    // if (Object.keys(parts).length === 0) {
+    //   data.updatedUri = updatedUri.split('?')[0]
+    // } else {
+    //   data.updatedUri = updatedUri
+    // }
+    // tempdata.data = data
+    const hostUrlHtml = tempdata.data.URL;
+    const htmlUrl = replaceParamsHtmlInHostContainerHtml(hostUrlHtml, originalParams[index][title], queryParamsHtmlData[index][title].startIndex, queryParamsHtmlData[index][title].endIndex)
+    tempdata.data.URL = htmlUrl;
     this.props.setQueryUpdatedData(tempdata)
   }
 
@@ -2728,6 +2736,7 @@ class DisplayEndpoint extends Component {
               this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''
             }
             updatedUri={this.props.endpointContent?.data?.updatedUri}
+            URL={this.props.endpointContent?.data?.URL}
             set_host_uri={this.setHostUri.bind(this)}
             set_base_url={this.setBaseUrl.bind(this)}
             props_from_parent={this.propsFromChild.bind(this)}
