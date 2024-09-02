@@ -113,7 +113,9 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:test": "dotenv -e .env.test npm run build",
+    "build:prod": "dotenv -e .env.prod npm run build"
   },
   "browserslist": [
     ">0.2%",
