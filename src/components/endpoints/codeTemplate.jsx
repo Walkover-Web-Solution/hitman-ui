@@ -21,6 +21,8 @@ import 'ace-builds/src-noconflict/theme-github'
 import './endpoints.scss'
 import axios from 'axios'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const CodeTemplate = (props) => {
   const [theme, setTheme] = useState('')
   const [curlSlider, setCurlSlider] = useState(false)
@@ -72,14 +74,13 @@ const CodeTemplate = (props) => {
 
   const makeCodeSnippet = async (newSelectedLanguage) => {
     const harObject = props.harObject
-
     if (!harObject) {
       console.error('HAR object is missing.')
       return null
     }
 
     try {
-      const response = await axios.post('http://localhost:2000/generate-snippet', {
+      const response = await axios.post(`${apiUrl}/generate-snippet`, {
         language: newSelectedLanguage === 'axiosNode' ? 'node' : newSelectedLanguage,
         variant: newSelectedLanguage === 'axiosNode' ? 'axios' : undefined,
         harObject: harObject
