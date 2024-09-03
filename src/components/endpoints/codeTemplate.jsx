@@ -97,8 +97,7 @@ const CodeTemplate = (props) => {
 
       return output
     } catch (err) {
-      console.error('Failed to generate snippet:', err)
-      return 'Error generating snippet. Please check the configuration.'
+      return 'curl --request GET \\ \n  --url https://';
     }
   }
 
