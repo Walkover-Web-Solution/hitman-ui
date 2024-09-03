@@ -8,5 +8,5 @@ RUN npm install -g pm2
 RUN npm install -g serve
 RUN npm install 
 COPY . .
-RUN npm run build:test
+RUN npm run build:prod
 ENTRYPOINT ["serve","-s","dist","-l","3000"]
