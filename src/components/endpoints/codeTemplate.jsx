@@ -19,10 +19,7 @@ import 'ace-builds'
 import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import 'ace-builds/src-noconflict/theme-github'
 import './endpoints.scss'
-import axios from 'axios'
 import { HTTPSnippet } from 'httpsnippet-lite'
-
-const apiUrl = import.meta.env.VITE_API_URL
 
 const CodeTemplate = (props) => {
   const [theme, setTheme] = useState('')
@@ -83,17 +80,15 @@ const CodeTemplate = (props) => {
       const request = {
         method: harObject.method,
         url: harObject.url
-        // You can include other necessary fields from harObject here
       }
 
       const snippet = new HTTPSnippet(request)
 
       // Define options for generating the snippet
-      const options = { indent: '  ' } // or whatever indent you prefer
+      const options = { indent: '  ' }
       const client = newSelectedLanguage === 'axiosNode' ? 'axios' : undefined
       const language = newSelectedLanguage === 'axiosNode' ? 'node' : newSelectedLanguage
 
-      // Generate the code snippet using HTTPSnippet
       const output = await snippet.convert(language, client, options)
 
       return output

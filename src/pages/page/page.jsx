@@ -71,9 +71,15 @@ const Page = () => {
         setPageName(page?.name || 'Untitled');
     }, [page?.name, tabs?.activeTabId?.name, pageId])
 
+    const mapping = {
+        local: import.meta.env.VITE_RTC_URL_LOCAL,
+        test: import.meta.env.VITE_RTC_URL_TEST,
+        prod: import.meta.env.VITE_RTC_URL_PROD,
+      };
+
     const { ydoc, provider } = useMemo(() => {
         const ydoc = new Y.Doc();
-        const baseUrl = import.meta.env.VITE_RTC_URL;
+        const baseUrl = mapping[import.meta.env.VITE_ENV];
         const provider = new HocuspocusProvider({
             url: `${baseUrl}?orgId=${orgId}`,
             name: `${pageId}`,
