@@ -19,7 +19,7 @@
     background-color: white;
 
     .navs-container {
-      width: calc(100% - 190px);
+      width: calc(100% - 205px);
     }
 
     .btn {
@@ -81,6 +81,9 @@
 
               svg {
                 color: $text-color !important;
+                &.graphql-icon {
+                  color: rgb(170, 51, 106) !important;
+                }
               }
             }
           }
@@ -149,7 +152,7 @@
 
         .modified-dot-icon {
           position: absolute;
-          top: 45%;
+          top: 44%;
           right: 16px;
           font-size: 6px;
         }

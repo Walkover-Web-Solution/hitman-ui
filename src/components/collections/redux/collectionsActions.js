@@ -159,7 +159,7 @@ export const deleteCollection = (collection) => {
       .deleteCollection(collection.id, collection)
       .then((res) => {
         const rootParentPageId = collection.rootParentId
-        deleteAllPagesAndTabsAndReactQueryData(rootParentPageId)
+        deleteAllPagesAndTabsAndReactQueryData(rootParentPageId, collection.id)
           .then((data) => {
             dispatch(deleteCollectionRequest(collection))
             dispatch({ type: bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_PAGES, data: data.pages })
@@ -267,6 +267,7 @@ export const importCollection = (collection, uniqueTabId, customCallback, defaul
       if (customCallback) {
         customCallback({ success: true });
       }
+      return response.data
     } catch (error) {
       const errorMessage = error?.response?.data || error.message || 'An error occurred';
       toast.error(errorMessage);

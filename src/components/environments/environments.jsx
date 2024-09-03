@@ -5,14 +5,14 @@ import { ReactComponent as EyeIcon } from '../../assets/icons/eye.svg'
 import { ReactComponent as EyeDisabledIcon } from '../../assets/icons/eyeDisabled.svg'
 import IconButton from '../common/iconButton.jsx'
 import { IoIosArrowDown } from 'react-icons/io'
-import ImportEnvironmentModal from './ImportEnvironmentModal.js'
+import ImportEnvironmentModal from './ImportEnvironmentModal.jsx'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchEnvironments, fetchEnvironmentsFromLocalStorage, setEnvironmentId } from './redux/environmentsActions'
 import EnvironmentVariables from './environmentVariables.jsx'
 import DeleteModal from '../common/deleteModal.jsx'
 import './environments.scss'
 import { FaCheck } from "react-icons/fa6";
-import { getCurrentUser } from '../auth/authServiceV2.js'
+import { getCurrentUser } from '../auth/authServiceV2.jsx'
 import { BiExport } from 'react-icons/bi'
 import exportEnvironmentApi from './exportEnvironmentApi.js'
 import { FaGlobeAmericas } from 'react-icons/fa'
@@ -107,7 +107,7 @@ const Environments = () => {
 
         <div className='select-environment-dropdown border-radius-right-none align-content-center'>
           <Dropdown className='ml-1'>
-          <IconButton variant='sm'><Dropdown.Toggle className='p-0 pl-1' variant='default' id='dropdown-basic'>
+          <IconButton variant='sm'><Dropdown.Toggle className='p-0 pl-1 fs-4' variant='default' id='dropdown-basic'>
               <span className='truncate'>{environment?.environments[environment?.currentEnvironmentId] ? environment.environments[environment.currentEnvironmentId].name : 'No Environment'}</span>
               <IoIosArrowDown className='m-1' />
             </Dropdown.Toggle></IconButton>

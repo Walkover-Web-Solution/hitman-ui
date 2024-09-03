@@ -72,7 +72,6 @@ function InviteTeam() {
   const handleSendInvite = async (e) => {
     e.preventDefault()
     setLoading(true)
-
     try {
       if (!validateEmail(email)) {
         toast.error('Invalid email format')

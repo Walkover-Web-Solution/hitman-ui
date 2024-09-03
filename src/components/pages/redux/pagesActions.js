@@ -25,6 +25,7 @@ export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
         if (stopSaveLoader) {
           stopSaveLoader()
         }
+        toast.success('Endpoint updated successfully')
       })
       .catch((error) => {
         // dispatch(onEndpointUpdatedError(error.response ? error.response.data : error, originalEndpoint))
@@ -88,6 +89,7 @@ export const updatePage = (editedPage) => {
           return response.data.updatedPage
         }
         dispatch(onPageUpdated(response.data))
+        toast.success('Updated successfully')
         return response.data
       })
       .catch((error) => {

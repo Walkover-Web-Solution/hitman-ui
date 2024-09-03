@@ -249,7 +249,7 @@ const EnvironmentVariables = ({ title, show, onHide, environment: initialEnviron
                           {updatedVariableNames.length - 1 !== index && (
                             <td className='custom-td'>
                               <button type='button' className='btn btn-light btn-sm btn-block' onClick={() => handleDelete(index)}>
-                               <RiDeleteBinLine className='text-gray' size={18}/>
+                               <RiDeleteBinLine className='text-grey' size={18}/>
                               </button>
                             </td>
                           )}

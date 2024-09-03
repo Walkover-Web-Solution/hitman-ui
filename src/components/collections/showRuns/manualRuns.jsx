@@ -66,7 +66,12 @@ function ManualRuns() {
                   <span className='ml-1'>{automation[activeTabId]?.executedScriptResponses[id]?.status}</span>
                 </div>
               </div>
-              <div>{automation[activeTabId]?.executedScriptResponses[id]?.errorMessage}</div>
+              <div>
+                {Object.entries(automation[activeTabId]?.executedScriptResponses[id]?.data || {}).map(([key, value]) => (
+                  <div key={key}>{`${key}: ${value}`}</div>
+                ))}
+              </div>
+              <div>{automation[activeTabId]?.executedScriptResponses[id]?.endpointError}</div>
             </>
           ))}
         </div>

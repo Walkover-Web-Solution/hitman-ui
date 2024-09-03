@@ -17,7 +17,7 @@ const DisplayUserAndModifiedData = () => {
   const lastModified = pages?.[currentIdToShow]?.updatedAt ? moment(pages[currentIdToShow].updatedAt).fromNow() : null
   const user = usersList?.find((user) => user.id === updatedById)
 
-  if (isOnPublishedPage()) return (lastModified && <span>Modified at {lastModified}</span>)
+  if (isOnPublishedPage()) return (lastModified && <span>Modified {lastModified}</span>)
 
   return (
     <div className='page-user-data'>
@@ -25,7 +25,7 @@ const DisplayUserAndModifiedData = () => {
         <div>
           <span>Updated by  {user?.name || 'Unknown'}</span>
           <br />
-          <span>Modified at  {lastModified}</span>
+          <span>Modified {lastModified}</span>
         </div>
       )}
     </div>

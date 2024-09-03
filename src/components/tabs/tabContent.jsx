@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useQueryClient } from 'react-query';
 import { Tab } from 'react-bootstrap';
 import DisplayEndpoint from '../endpoints/displayEndpoint';
@@ -12,10 +12,10 @@ import Page from '../../pages/page/page';
 const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag, save_page_flag, selected_tab_id }) => {
   const queryClient = useQueryClient();
 
-  const { isTabsLoaded, tabData, history, pages } = useSelector((state) => ({
+  const { isTabsLoaded, tabData, history, pages, activeTabId } = useSelector((state) => ({
     isTabsLoaded: state?.tabs?.loaded,
     tabsOrder: state?.tabs?.tabsOrder,
-    activeTabId: state.tabs.activeTabId,
+    activeTabId: state?.tabs?.activeTabId,
     tabData: state?.tabs?.tabs,
     history: state?.history,
     pages: state?.pages
@@ -55,6 +55,20 @@ const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag
           selected_tab_id={selected_tab_id}
           environment={{}} tab={tab} />;
       case 'page':
+        // if (window.location.pathname.includes('/edit')) return <EditPage
+        //   handle_save_page={handle_save_page}
+        //   save_page_flag={save_page_flag}
+        //   tab={tab}
+        // />;
+
+        // else return <DisplayPage
+        //   handle_save_page={handle_save_page}
+        //   save_page_flag={save_page_flag}
+        //   handle_save_endpoint={handle_save_endpoint}
+        //   save_endpoint_flag={save_endpoint_flag}
+        //   selected_tab_id={selected_tab_id}
+        //   tab={tab} />;
+
         return <Page />
 
       case 'collection':
@@ -89,25 +103,30 @@ const TabContent = ({ handle_save_endpoint, handle_save_page, save_endpoint_flag
     }
   };
 
-  const renderEndpoint = () => {
-    return <DisplayEndpoint
-      handle_save_endpoint={handle_save_endpoint}
-      save_endpoint_flag={save_endpoint_flag}
-      selected_tab_id={selected_tab_id}
-      environment={{}} tab='' />;
-  };
+
+  const memoizedContent = useMemo(() => {
+    if (!getCurrentUser() || !isTabsLoaded) {
+      return (
+        <DisplayEndpoint
+          handle_save_endpoint={handle_save_endpoint}
+          save_endpoint_flag={save_endpoint_flag}
+          selected_tab_id={selected_tab_id}
+          environment={{}}
+          tab=''
+        />
+      );
+    }
+
+    return renderContent(activeTabId)
+  }, [getCurrentUser(), isTabsLoaded, tabData, save_endpoint_flag, save_page_flag, selected_tab_id, activeTabId]);
 
   return (
     <Tab.Content>
-      {getCurrentUser() && isTabsLoaded
-        ? Object.keys(tabData).map((tabId) => (
-          <Tab.Pane eventKey={tabId} key={tabId}>
-            {renderContent(tabId)}
-          </Tab.Pane>
-        ))
-        : renderEndpoint()}
+      <Tab.Pane eventKey={activeTabId} active>
+        {memoizedContent}
+      </Tab.Pane>
     </Tab.Content>
   );
 };
 
-export default TabContent
+export default React.memo(TabContent)

@@ -47,16 +47,20 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  color: rgba(55, 53, 47, 0.65);
+  color: rgb(206 0 0 / 68%);
 
   &:hover {
-    color: black
+    color: rgb(224 9 9);
   }
 }
 
 .name-list {
   padding-left: 10px;
   transition: background-color 0.3s ease;
+
+  .org-collection-name {
+    width: calc(100% - 35px);
+  }
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.05);
