@@ -7,7 +7,7 @@ import LoginV2 from './components/auth/loginV2'
 import Logout from './components/auth/logout'
 import MainV2 from './components/main/MainV2'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
-import { ToastContainer, Bounce, Slide } from 'react-toastify'
+import { ToastContainer, Slide } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRouteV2 from './components/common/protectedRouteV2'
@@ -15,24 +15,21 @@ import AuthServiceV2 from './components/auth/authServiceV2'
 import InviteTeam from './components/main/inviteTeam/inviteTeam'
 import { installModal } from './components/modals/redux/modalsActions'
 import { initConn, resetConn } from './services/webSocket/webSocketService.js'
-import OauthPage from './components/OauthPage/OauthPage.js'
+import OauthPage from './components/OauthPage/OauthPage.jsx'
 import TrashPage from './components/main/Trash/trashPage.jsx'
 import OnBoarding from './components/onBoard/onBoarding.jsx'
-import IndexWebsite from './components/indexWebsite/indexWebsite.js'
+import IndexWebsite from './components/indexWebsite/indexWebsite.jsx'
 import Redirections from './components/collections/Redirections.jsx'
 import RunAutomation from './components/collections/runAutomation/runAutomation.jsx'
 import NavigationSetter from './history.js'
 import EditRuns from './components/collections/showRuns/editRuns.jsx'
-import './index.scss'
-import { MdClose } from 'react-icons/md'
-import IconButton from './components/common/iconButton.jsx'
 
 const App = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   useEffect(() => {
-
+    
     const scriptId = "chatbot-main-script"
     const chatbot_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI1OTgyIiwiY2hhdGJvdF9pZCI6IjY2NTQ3OWE4YmQ1MDQxYWU5M2ZjZDNjNSIsInVzZXJfaWQiOiIxMjQifQ.aI4h6OmkVvQP5dyiSNdtKpA4Z1TVNdlKjAe5D8XCrew"
     const scriptSrc = "https://chatbot-embed.viasocket.com/chatbot-prod.js"
@@ -61,6 +58,19 @@ const App = () => {
   }, [])
 
   useEffect(() => {
+    const scriptId = "chatbot-main-script"
+    const chatbot_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI1OTgyIiwiY2hhdGJvdF9pZCI6IjY2NTQ3OWE4YmQ1MDQxYWU5M2ZjZDNjNSIsInVzZXJfaWQiOiIxMjQifQ.aI4h6OmkVvQP5dyiSNdtKpA4Z1TVNdlKjAe5D8XCrew"
+    const scriptSrc = "https://chatbot-embed.viasocket.com/chatbot-prod.js"
+    if (chatbot_token && !document.getElementById(scriptId)) {
+      const script = document.createElement("script");
+      script.setAttribute("embedToken", chatbot_token);
+      script.id = scriptId;
+      document.head.appendChild(script);
+      script.src = scriptSrc
+    }
+  }, [])
+
+  useEffect(() => {
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
@@ -80,19 +90,17 @@ const App = () => {
     return (
       <>
         <ToastContainer
-          position='bottom-left'
-          autoClose={1500}
-          hideProgressBar={true}
+          position='bottom-right'
+          autoClose={5000}
+          hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
           rtl={false}
-          pauseOnFocusLoss={false}
+          pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme='dark'
+          theme='light'
           transition={Slide}
-          toastClassName='custom-class'
-          closeButton={<IconButton variant='sm'><MdClose size={18} /></IconButton>}
         />
         <NavigationSetter />
         <Routes>

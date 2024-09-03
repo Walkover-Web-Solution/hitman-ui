@@ -23,24 +23,24 @@ const options = {
 function TokenGenerator(props) {
   const { activeTabId } = useSelector((state) => {
     return {
-      activeTabId: state.tabs.activeTabId
+      activeTabId: state.tabs.activeTabId,
     }
   })
-  const params = useParams()
+  const params = useParams();
 
   const dispatch = useDispatch()
 
   const queryClient = useQueryClient()
 
-  const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId
-  const queryKey = ['endpoint', endpointId]
+  const endpointId = params.endpointId !== 'new' ? params.endpointId : activeTabId;
+  const queryKey = ['endpoint', endpointId];
 
-  const { data: endpointStoredData } = useQuery(queryKey, options)
+  const { data: endpointStoredData } = useQuery(queryKey, options);
 
   const [data, setData] = useState({
     tokenName: endpointStoredData?.authorizationData?.authorization?.oauth2?.tokenName || 'Token Name',
     selectedGrantType: endpointStoredData?.authorizationData?.authorization?.oauth2?.selectedGrantType || grantTypesEnums.authorizationCode,
-    callbackUrl: `${process.env.REACT_APP_UI_URL}/auth/redirect` || '',
+    callbackUrl: `${import.meta.env.VITE_UI_URL}/auth/redirect` || '',
     authUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.authUrl || '',
     username: endpointStoredData?.authorizationData?.authorization?.oauth2?.username || '',
     password: endpointStoredData?.authorizationData?.authorization?.oauth2?.password || '',
@@ -49,14 +49,13 @@ function TokenGenerator(props) {
     clientSecret: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientSecret || '',
     scope: endpointStoredData?.authorizationData?.authorization?.oauth2?.scope || '',
     state: endpointStoredData?.authorizationData?.authorization?.oauth2?.state || '',
-    clientAuthentication:
-      endpointStoredData?.authorizationData?.authorization?.oauth2?.clientAuthentication || clientAuthenticationTypeEnums?.sendOnHeaders,
+    clientAuthentication: endpointStoredData?.authorizationData?.authorization?.oauth2?.clientAuthentication || clientAuthenticationTypeEnums?.sendOnHeaders,
     codeMethod: endpointStoredData?.authorizationData?.authorization?.oauth2?.codeMethod || codeMethodTypesEnums.sh256,
     codeVerifier: endpointStoredData?.authorizationData?.authorization?.oauth2?.codeVerifier || '',
-    refreshTokenUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.refreshTokenUrl || ''
+    refreshTokenUrl: endpointStoredData?.authorizationData?.authorization?.oauth2?.refreshTokenUrl || '',
   })
 
-  const dataRef = useRef(data)
+  const dataRef = useRef(data);
 
   useEffect(() => {
     function receiveMessage(event) {
@@ -65,31 +64,26 @@ function TokenGenerator(props) {
       }
     }
 
-    window.addEventListener('message', receiveMessage, false)
+    window.addEventListener('message', receiveMessage, false);
     return () => {
-      window.removeEventListener('message', receiveMessage)
-    }
+      window.removeEventListener('message', receiveMessage);
+    };
   }, [])
 
   useEffect(() => {
     dataRef.current = data
   }, [data])
 
+
   const getAuthenticationDetails = async (authDetail, configurationDetails) => {
-    const code = authDetail.code
-    const state = authDetail.state
-    if (
-      configurationDetails.selectedGrantType === grantTypesEnums.authorizationCode ||
-      configurationDetails.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce
-    ) {
+    const code = authDetail.code;
+    const state = authDetail.state;
+    if (configurationDetails.selectedGrantType === grantTypesEnums.authorizationCode || configurationDetails.selectedGrantType === grantTypesEnums.authorizationCodeWithPkce) {
       let accessTokenData
       try {
-        accessTokenData = await endpointApiService.getTokenAuthorizationCodeAndAuthorizationPKCE(
-          configurationDetails.accessTokenUrl,
-          code,
-          configurationDetails
-        )
-      } catch (error) {
+        accessTokenData = await endpointApiService.getTokenAuthorizationCodeAndAuthorizationPKCE(configurationDetails.accessTokenUrl, code, configurationDetails)
+      }
+      catch (error) {
         console.error(error)
         return toast.error('Access Token Not Found, Try Again!')
       }
@@ -97,17 +91,20 @@ function TokenGenerator(props) {
       try {
         storeTokenInsideLocalState({ ...accessTokenData, createdTime, state })
         return toast.success('Access Token Added!')
-      } catch (error) {
+      }
+      catch (error) {
         console.error(error)
         return toast.error('Access Token Not Found, Try Again!')
       }
-    } else if (configurationDetails.selectedGrantType === grantTypesEnums.implicit) {
-      if (!authDetail?.implicitDetails?.access_token) return toast.error('could not get the access token')
+    }
+    else if (configurationDetails.selectedGrantType === grantTypesEnums.implicit) {
+      if (!authDetail?.implicitDetails?.access_token) return toast.error('could not get the access token');
       const createdTime = getCurrentTimeOfTokenGeneration()
       try {
         storeTokenInsideLocalState({ ...authDetail?.implicitDetails, createdTime })
         return toast.success('Access Token Added!')
-      } catch (error) {
+      }
+      catch (error) {
         console.error(error)
         return toast.error('Access Token Not Found, Try Again!')
       }
@@ -115,26 +112,27 @@ function TokenGenerator(props) {
   }
 
   const getCurrentTimeOfTokenGeneration = () => {
-    const dateTimeOfTokenGeneration = new Date()
-    dateTimeOfTokenGeneration.setSeconds(dateTimeOfTokenGeneration.getSeconds() - 20)
-    return dateTimeOfTokenGeneration
+    const dateTimeOfTokenGeneration = new Date();
+    dateTimeOfTokenGeneration.setSeconds(dateTimeOfTokenGeneration.getSeconds() - 20);
+    return dateTimeOfTokenGeneration;
   }
 
   const getAcessTokenForPasswordAndClientGrantType = async () => {
     try {
-      const responseData = await endpointApiService.getTokenPasswordAndClientGrantType(data.accessTokenUrl, dataRef.current)
+      const responseData = await endpointApiService.getTokenPasswordAndClientGrantType(data.accessTokenUrl, dataRef.current);
       const createdTime = getCurrentTimeOfTokenGeneration()
       storeTokenInsideLocalState({ ...responseData, createdTime })
       return toast.success('Access Token Added!')
-    } catch (error) {
+    }
+    catch (error) {
       console.error(error)
       return toast.error('Access Token Not Found, Try Again!')
     }
   }
 
   const storeTokenInsideLocalState = (tokenDetails) => {
-    if (!tokenDetails) return
-    const accessTokenUniqueId = shortid.generate()
+    if (!tokenDetails) return;
+    const accessTokenUniqueId = shortid.generate();
     const storeTokenDetails = {
       id: accessTokenUniqueId,
       accessToken: tokenDetails?.access_token || null,
@@ -150,7 +148,7 @@ function TokenGenerator(props) {
       state: tokenDetails?.state || null,
       accessTokenUrl: dataRef.current?.accessTokenUrl || null,
       tokenType: tokenDetails?.token_type || null,
-      createdTime: tokenDetails.createdTime
+      createdTime: tokenDetails.createdTime,
     }
     dispatch(addToken(storeTokenDetails))
   }
@@ -160,11 +158,7 @@ function TokenGenerator(props) {
     let requestApi = ''
     const paramsObject = makeParams(grantType)
     const params = URI.buildQuery(paramsObject)
-    if (
-      grantType === grantTypesEnums.implicit ||
-      grantType === grantTypesEnums.authorizationCode ||
-      grantType === grantTypesEnums.authorizationCodeWithPkce
-    ) {
+    if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
       requestApi = dataRef.current.authUrl + '?' + params
     }
     if (grantType === grantTypesEnums.passwordCredentials || grantType === grantTypesEnums.clientCredentials) {
@@ -175,7 +169,7 @@ function TokenGenerator(props) {
     } else {
       requestApi = requestApi + '&response_type=token'
     }
-    var options = 'width=200,height=200,resizable=yes,scrollbars=yes,status=yes'
+    var options = "width=200,height=200,resizable=yes,scrollbars=yes,status=yes";
     window.open(requestApi, '_blank', options)
   }
 
@@ -195,11 +189,7 @@ function TokenGenerator(props) {
           }
           break
         case 'callbackUrl':
-          if (
-            grantType === grantTypesEnums.implicit ||
-            grantType === grantTypesEnums.authorizationCode ||
-            grantType === grantTypesEnums.authorizationCodeWithPkce
-          ) {
+          if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
             params.redirect_uri = data[keys[i]]
           }
           break
@@ -207,7 +197,10 @@ function TokenGenerator(props) {
           params.client_id = data[keys[i]]
           break
         case 'clientSecret':
-          if (grantType === grantTypesEnums.passwordCredentials || grantType === grantTypesEnums.clientCredentials) {
+          if (
+            grantType === grantTypesEnums.passwordCredentials ||
+            grantType === grantTypesEnums.clientCredentials
+          ) {
             params.client_secret = data[keys[i]]
           }
           break
@@ -215,20 +208,16 @@ function TokenGenerator(props) {
           params[keys[i]] = data[keys[i]]
           break
         case 'state':
-          if (
-            grantType === grantTypesEnums.implicit ||
-            grantType === grantTypesEnums.authorizationCode ||
-            grantType === grantTypesEnums.authorizationCodeWithPkce
-          ) {
+          if (grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.authorizationCodeWithPkce) {
             params[keys[i]] = data[keys[i]]
           }
         case 'codeMethod':
           if (grantType === grantTypesEnums.authorizationCodeWithPkce) {
-            params['code_challenge_method'] = data[keys[i]]
+            params['code_challenge_method'] = data[keys[i]];
           }
         case 'codeVerifier':
           if (grantType === grantTypesEnums.authorizationCodeWithPkce) {
-            params['code_challenge'] = data[keys[i]]
+            params['code_challenge'] = data[keys[i]];
           }
           break
         default:
@@ -239,38 +228,32 @@ function TokenGenerator(props) {
   }
 
   function setClientAuthorization(e) {
-    setData((prev) => {
-      return { ...prev, clientAuthentication: e.target.value }
-    })
+    setData((prev) => { return { ...prev, clientAuthentication: e.target.value } })
   }
 
   function handleGrantTypeClick(key) {
-    setData((prev) => {
-      return { ...prev, selectedGrantType: grantTypesEnums[key] }
-    })
+    setData((prev) => { return { ...prev, selectedGrantType: grantTypesEnums[key] } })
   }
 
   function handleInputFieldChange(e, key) {
-    setData((prev) => {
-      return { ...prev, [key]: e.target.value }
-    })
+    setData((prev) => { return { ...prev, [key]: e.target.value } })
   }
 
   function handleSaveConfiguration() {
     if (data.tokenName.length > 25) return toast.error('Token Name character limit is 25')
-    const endpointDataToSend = endpointStoredData
-    if (!endpointDataToSend?.authorizationData?.authorization?.oauth2) {
+    const endpointDataToSend = endpointStoredData;
+    if (!(endpointDataToSend?.authorizationData?.authorization?.oauth2)) {
       endpointDataToSend.authorizationData.authorization = { oauth2: {} }
     }
     endpointDataToSend.authorizationData.authorization.oauth2 = { ...endpointDataToSend.authorizationData.authorization.oauth2, ...data }
     queryClient.setQueryData(queryKey, endpointDataToSend)
     if (params.endpointId === 'new') {
-      localStorage.setItem(activeTabId, JSON.stringify(endpointDataToSend))
+      localStorage.setItem(activeTabId, JSON.stringify(endpointDataToSend));
       props.handleSaveEndpoint(null, endpointDataToSend)
-      props.onHide()
-      return
+      props.onHide();
+      return;
     }
-    props.onHide()
+    props.onHide();
     props.handleSaveEndpoint(endpointId, endpointDataToSend)
   }
 
@@ -327,20 +310,12 @@ function TokenGenerator(props) {
           </>
         )
       case 'callbackUrl':
-        if (
-          grantType === grantTypesEnums.authorizationCode ||
-          grantType === grantTypesEnums.implicit ||
-          grantType === grantTypesEnums.authorizationCodeWithPkce
-        ) {
+        if (grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCodeWithPkce) {
           return fetchDefaultInputField(key)
         }
         break
       case 'authUrl':
-        if (
-          grantType === grantTypesEnums.authorizationCode ||
-          grantType === grantTypesEnums.implicit ||
-          grantType === grantTypesEnums.authorizationCodeWithPkce
-        ) {
+        if (grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCodeWithPkce) {
           return fetchDefaultInputField(key)
         }
         break
@@ -348,18 +323,14 @@ function TokenGenerator(props) {
         if (grantType === grantTypesEnums.authorizationCodeWithPkce) {
           return codeMethodInputField(key)
         }
-        return null
+        return null;
       case 'codeVerifier':
         if (grantType === grantTypesEnums.authorizationCodeWithPkce) {
           return fetchDefaultInputField(key)
         }
-        return null
+        return null;
       case 'state':
-        if (
-          grantType === grantTypesEnums.authorizationCode ||
-          grantType === grantTypesEnums.implicit ||
-          grantType === grantTypesEnums.authorizationCodeWithPkce
-        ) {
+        if (grantType === grantTypesEnums.authorizationCode || grantType === grantTypesEnums.implicit || grantType === grantTypesEnums.authorizationCodeWithPkce) {
           return fetchDefaultInputField(key)
         }
         break
@@ -431,9 +402,7 @@ function TokenGenerator(props) {
   }
 
   const handleCodeMethodClick = (value) => {
-    setData((prev) => {
-      return { ...prev, codeMethod: value }
-    })
+    setData((prev) => { return { ...prev, codeMethod: value } })
   }
 
   const closeModal = () => {
@@ -441,35 +410,23 @@ function TokenGenerator(props) {
   }
 
   return (
-    <Modal
-      onHide={closeModal}
-      id='modal-new-token-generator'
-      className='get-access-token'
-      size='lg'
-      animation={false}
-      aria-labelledby='contained-modal-title-vcenter'
-      centered
-      show={props?.show}
-    >
+    <Modal onHide={closeModal} id='modal-new-token-generator' className='get-access-token' size='lg' animation={false} aria-labelledby='contained-modal-title-vcenter' centered show={props?.show}>
+
       <Modal.Header className='custom-collection-modal-container' closeButton>
         <Modal.Title id='contained-modal-title-vcenter'>{props?.title}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body className='new-token-generator-modal-body'>
+
         {Object.keys(inputFieldsEnums).map((key) => (
-          <div key={key} className='input-field-wrapper'>
-            {renderInput(key)}
-          </div>
+          <div key={key} className='input-field-wrapper'>{renderInput(key)}</div>
         ))}
 
         <div className='text-right'>
-          <button className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={handleSaveConfiguration}>
-            Save
-          </button>
-          <button className='btn btn-primary btn-sm fs-4 ml-2' type='button' onClick={makeRequest}>
-            Request Token
-          </button>
+          <button className='btn btn-secondary outline btn-sm fs-4 ml-2' onClick={handleSaveConfiguration}>Save</button>
+          <button className='btn btn-primary btn-sm fs-4 ml-2' type='button' onClick={makeRequest}>Request Token</button>
         </div>
+
       </Modal.Body>
     </Modal>
   )

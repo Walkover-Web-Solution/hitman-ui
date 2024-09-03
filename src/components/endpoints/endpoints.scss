@@ -239,6 +239,26 @@ $border-color: rgba(227, 228, 230, 0.7);
 .endpoint-container {
   .panel-endpoint-name-container {
     margin-bottom: 0px;
+    strong {
+      &:not(:last-child) {
+        max-width: 120px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      }
+      border-radius: 2px;
+      &:hover {
+        background-color: $button-background-hover;
+      }
+      &:focus-visible {
+        outline: 1px solid rgba(128, 128, 128, 0.356) ;
+        background-color: white !important;
+      }
+      &:focus {
+        outline: 1px solid rgba(128, 128, 128, 0.356) ;
+        background-color: white;
+      }
+    }
 
     .public-endpoint-name-input {
       display: flex;
@@ -261,6 +281,15 @@ $border-color: rgba(227, 228, 230, 0.7);
       outline: none;
       border: none;
       background: inherit;
+
+      &.empty {
+        &::before {
+          content: 'write description';
+          position: absolute;
+          top: 3px;
+          left: 1px;
+        }
+      }
     }
   }
 
@@ -280,7 +309,6 @@ $border-color: rgba(227, 228, 230, 0.7);
     flex-direction: row;
     justify-content: space-between;
     padding: 10px 0;
-    height: 60px;
 
     .uriContainerWrapper {
       span .dropdown-toggle {
@@ -527,12 +555,21 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 }
 
-.hm-panel.endpoint-public-response-container {
-  &.public-doc {
-    .nav-item {
-      .nav-link {
-        &:hover {
-          opacity: 0.6;
+.hm-panel {
+  top: 0;
+  z-index: 9;
+  
+  .navbar-inner-td {
+    height: 29px;
+  }
+
+  &.endpoint-public-response-container {
+    &.public-doc {
+      .nav-item {
+        .nav-link {
+          &:hover {
+            opacity: 0.6;
+          }
         }
       }
     }
@@ -1276,6 +1313,7 @@ table#custom-generic-table {
     padding: 16px 8px 8px 13px;
     border-radius: $border-radius;
     border: 1px solid $lightblackborder;
+
     .nav-tabs {
       margin: 10px 0 0 !important;
     }
@@ -1440,11 +1478,7 @@ table#custom-generic-table {
 
 .end-point-name {
   overflow-wrap: anywhere;
-  max-width: 155px;
-
-  @media (max-width: 1400px) and (min-width: 400px) {
-    max-width: 170px !important;
-  }
+  width: calc(100% - 42px);
 }
 
 .dropdown-label {
@@ -1645,6 +1679,7 @@ table#custom-generic-table {
 
     .dropdown {
       border: 1px solid transparent;
+
       button {
         color: black !important;
         border: 1px solid $lightblackborder !important;
@@ -1652,6 +1687,7 @@ table#custom-generic-table {
         &::after {
           all: unset !important;
         }
+
         &.active {
           border: revert !important;
         }
@@ -1669,6 +1705,7 @@ table#custom-generic-table {
           }
         }
       }
+
       &.show {
         border-radius: 4px;
       }
@@ -1722,6 +1759,9 @@ table#custom-generic-table {
       }
     }
   }
+}
+.sample-code-inner {
+  height: calc(100vh - 42px) !important;
 }
 
 .show-curl-endpoint {
@@ -1797,22 +1837,37 @@ table#custom-generic-table {
 }
 
 .save-endpoint {
-  .btn {
-    font-size: 12px;
+  .btn-group {
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.123);
+    }
+    .dropdown-toggle {
+      &::after {
+        content: '' !important;
+      }
+    }
+  }
+
+  .dropdown-menu {
+    min-width: fit-content;
   }
 
   .save-button-endpoint {
-    border-color: rgba(128, 128, 128, 0.527);
-
-    &:hover {
-      background-color: $theme-color;
-      border-color: rgba(128, 128, 128, 0.527);
+    padding-top: 2px;
+    padding-bottom: 2px;
+    .save-color {
+      color: #212529;
     }
 
     &:disabled {
       &:hover {
         background-color: rgba(255, 255, 255, 0.178);
         cursor: no-drop;
+      }
+    }
+    &.save-button {
+      &:hover {
+        background-color: $button-background-hover;
       }
     }
   }
@@ -1892,6 +1947,38 @@ table#custom-generic-table {
         background-color: $button-active-color !important;
         color: $text-color;
       }
+    }
+  }
+}
+
+.publish-unpublish-button {
+  .dropdown-toggle {
+    &:after {
+      all: unset !important;
+    }
+  }
+}
+
+.expand-btn {
+  padding-left: 92%;
+  color: steelblue;
+  font-size: smaller;
+}
+
+.Modified-at {
+  color: $footer-color;
+
+  &.upper-modified-at {
+    @media screen and (max-width: 1160px) {
+      display: none;
+    }
+  }
+
+  &.lower-modified-at {
+    display: none;
+
+    @media screen and (max-width: 1160px) {
+      display: inline-block;
     }
   }
 }

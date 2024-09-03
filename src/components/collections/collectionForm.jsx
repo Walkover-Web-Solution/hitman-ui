@@ -1,4 +1,4 @@
-import React, { useState, useRef} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import Joi from 'joi-browser';
@@ -6,6 +6,7 @@ import { onEnter, validate } from '../common/utility';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCollection, updateCollection } from './redux/collectionsActions';
 import Input from '../common/input';
+import { addIsExpandedAction } from '../../store/clientData/clientDataActions';
 
 const CollectionForm = (props) => {
 
@@ -17,7 +18,7 @@ const CollectionForm = (props) => {
   const collections = useSelector(state => state.collections);
 
   const schema = { name: Joi.string().min(3).max(50).trim().required().label('Collection Name') };
-  
+
 
   const redirectToCollection = (collection) => {
     if (!collection.data) {
@@ -36,7 +37,8 @@ const CollectionForm = (props) => {
       props.onHide();
       return;
     }
-    dispatch(addCollection({ name: inputRef.current.value }, null, redirectToCollection))
+     const collection = await dispatch(addCollection({ name: inputRef.current.value }, null, redirectToCollection))
+    dispatch(addIsExpandedAction({value:true, id:collection.id}))
     props.onHide();
   }
 

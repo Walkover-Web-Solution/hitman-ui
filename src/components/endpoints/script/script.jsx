@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import 'ace-builds'
 import 'ace-builds/src-noconflict/mode-javascript'
 import 'ace-builds/src-noconflict/theme-github'
-import 'ace-builds/webpack-resolver'
+// import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
 import { Snippets, preReqSnippets, postReqSnippets } from './snippets'
 import { BiSolidBot } from "react-icons/bi";

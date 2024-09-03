@@ -10,22 +10,14 @@ import SampleResponseForm from './sampleResponseForm'
 import { Overlay, Spinner, Tooltip } from 'react-bootstrap'
 import TestResults from './testResults'
 import { connect } from 'react-redux'
-import {background} from '../backgroundColor.js'
-import 'ace-builds'
-import 'ace-builds/src-noconflict/mode-html'
-import 'ace-builds/src-noconflict/mode-java'
-import 'ace-builds/src-noconflict/mode-javascript'
-import 'ace-builds/src-noconflict/mode-json'
-import 'ace-builds/src-noconflict/mode-xml'
-import 'ace-builds/src-noconflict/theme-github'
-import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
+import { background } from '../backgroundColor'
 import classNames from 'classnames';
 import { FaPlus } from 'react-icons/fa'
 import { RiCheckboxMultipleBlankLine } from 'react-icons/ri'
 
 
-const JSONPrettyMon = require('react-json-pretty/dist/monikai')
+import JSONPrettyMon from 'react-json-pretty/dist/monikai'
 
 
 const mapStateToProps = (state) => {
@@ -193,8 +185,8 @@ class DisplayResponse extends Component {
           <ul className='nav nav-tabs  respTabsListing border-0 rounded-0 w-100' id='myTab' role='tablist'>
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'body' }) }}>
               <a
-                className={this.state.selectedResponseTab === 'body' ? 'nav-link active text-black' : 'nav-link text-gray'}
-                style={this.state.selectedResponseTab === 'body' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                className={this.state.selectedResponseTab === 'body' ? 'nav-link active text-black' : 'nav-link text-grey'}
+                style={this.state.selectedResponseTab === 'body' ? { borderColor: this.props.publicCollectionTheme } : {}}
                 id='pills-response-tab'
                 data-toggle='pill'
                 role='tab'
@@ -206,8 +198,8 @@ class DisplayResponse extends Component {
             </li>
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'header' }) }}>
               <a
-                className={this.state.selectedResponseTab === 'header' ? 'nav-link active text-black' : 'nav-link text-gray'}
-                style={this.state.selectedResponseTab === 'header' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
+                className={this.state.selectedResponseTab === 'header' ? 'nav-link active text-black' : 'nav-link text-grey'}
+                style={this.state.selectedResponseTab === 'header' ? { borderColor: this.props.publicCollectionTheme } : {}}
                 id='pills-header-tab'
                 data-toggle='pill'
                 aria-selected='false'
@@ -221,7 +213,7 @@ class DisplayResponse extends Component {
               <>
                 <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'testResults' }) }}>
                   <a
-                    className={this.state.selectedResponseTab === 'testResults' ? 'nav-link active text-black' : 'nav-link text-gray'}
+                    className={this.state.selectedResponseTab === 'testResults' ? 'nav-link active text-black' : 'nav-link text-grey'}
                     id='pills-testResults-tab'
                     data-toggle='pill'
                     aria-selected='false'
@@ -233,7 +225,7 @@ class DisplayResponse extends Component {
                 </li>
                 <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'console' }) }}>
                   <a
-                    className={this.state.selectedResponseTab === 'console' ? 'nav-link active text-black' : 'nav-link text-gray'}
+                    className={this.state.selectedResponseTab === 'console' ? 'nav-link active text-black' : 'nav-link text-grey'}
                     style={this.state.selectedResponseTab === 'console' ? { backgroundColor: this.props.publicCollectionTheme } : {}}
                     id='pills-console-tab'
                     data-toggle='pill'
@@ -255,13 +247,13 @@ class DisplayResponse extends Component {
                 <div className='d-flex justify-content-between align-items-center mt-3 mb-1'>
                   <ul className='nav nav-pills body-button rounded'>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'pretty' })}>
-                      <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-gray'}>Pretty</a>
+                      <a className={this.state.selectedBodyTab === 'pretty' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-grey'}>Pretty</a>
                     </li>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'raw' })}>
-                      <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-gray'}>Raw</a>
+                      <a className={this.state.selectedBodyTab === 'raw' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-grey'}>Raw</a>
                     </li>
                     <li className='nav-item cursor-pointer' onClick={() => this.setState({ selectedBodyTab: 'preview' })}>
-                      <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-gray'}>Preview</a>
+                      <a className={this.state.selectedBodyTab === 'preview' ? 'nav-link active px-3 py-1 fs-5 text-black' : 'nav-link px-3 py-1 fs-5 text-grey'}>Preview</a>
                     </li>
                   </ul>
                   {getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
@@ -346,33 +338,20 @@ class DisplayResponse extends Component {
   }
   renderResponseHeader() {
     const { originalHeaders } = this.props.endpointContent
-    const filteredHeaders = originalHeaders.reduce((acc, header) => {
-        const existingHeader = acc.find(h => Object.keys(h)[0] === Object.keys(header)[0])
-        if (existingHeader) {
-            if (existingHeader[Object.keys(header)[0]].type !== 'disable') {
-                acc = acc.filter(h => Object.keys(h)[0] !== Object.keys(header)[0])
-                acc.push(header)
-            }
-        } else {
-            acc.push(header)
-        }
-        return acc
-    }, [])
-
     return (
-        <div>
-            {filteredHeaders.map((header, index) => (
-                <div key={index}>
-                    {Object.entries(header).map(([key, value]) => (
-                        <div key={key}>
-                            <strong>{key}:</strong> {JSON.stringify(value)}
-                        </div>
-                    ))}
-                </div>
+      <div>
+        {originalHeaders.map((header, index) => (
+          <div key={index}>
+            {Object.entries(header).map(([key, value]) => (
+              <div key={key}>
+                <strong>{key}:</strong> {JSON.stringify(value)}
+              </div>
             ))}
-        </div>
+          </div>
+        ))}
+      </div>
     )
-}
+  }
 
   displayHeader() {
     if (this.props.response.headers) {

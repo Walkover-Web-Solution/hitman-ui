@@ -101,6 +101,7 @@ const AddVersion = (props) => {
     const parentPageId = props?.parentPageId
     const newVersion = { name: newVersionNameInputRef.current.value.trim(), state: 0 }
     newVersionNameInputRef.current.value = ''
+    toast.success("Version added successfully")
     dispatch(addParentPageVersion(newVersion, parentPageId))
   }
 
@@ -176,7 +177,7 @@ export default function SelectVersion(props) {
                   )}
                   {pages?.[singleChildId]?.state !== 1 && (
                     <RiDeleteBinLine
-                      className='ml-2 cursor-pointe text-gray'
+                      className='ml-2 cursor-pointe text-grey'
                       size={22}
                       onClick={() => {
                         handleDeleteVersion(singleChildId)

@@ -14,7 +14,7 @@ import OnlineStatus from '../onlineStatus/onlineStatus'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import UpdateStatus from './updateStatus'
 import { getCurrentUser, getUserData, getCurrentOrg, getOrgList, getProxyToken } from '../auth/authServiceV2'
-import NoCollectionIcon from '../../assets/icons/collection.svg'
+import { ReactComponent as NoCollectionIcon }  from '../../assets/icons/collection.svg'
 import 'react-toastify/dist/ReactToastify.css'
 import './main.scss'
 import { useNavigate } from 'react-router-dom'
@@ -117,6 +117,9 @@ const MainV2 = () => {
         </div>
       ) : (
         <div>
+          {!isDesktop && (
+            <div className='mobile-warning'>Looks like you have opened it on a mobile device. It looks better on a desktop device.</div>
+          )}
           <div className='custom-main-container'>
             <DesktopAppDownloadModal />
             <OnlineStatus />

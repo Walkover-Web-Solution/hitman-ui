@@ -9,8 +9,8 @@ import { setCurrentUser } from "./redux/usersRedux/userAction";
 
 export const tokenKey = "token";
 export const profileKey = "profile";
-const uiURL = process.env.REACT_APP_UI_URL;
-const proxyUrl = process.env.REACT_APP_PROXY_URL;
+const uiURL = import.meta.env.VITE_UI_URL;
+const proxyUrl = import.meta.env.VITE_PROXY_URL;
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -163,8 +163,8 @@ function AuthServiceV2() {
 export default AuthServiceV2;
 export {
   isAdmin,
-  getCurrentUser,
   getUserData,
+  getCurrentUser,
   getCurrentOrg,
   getOrgList,
   getProxyToken,

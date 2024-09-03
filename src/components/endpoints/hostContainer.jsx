@@ -113,10 +113,10 @@ class HostContainer extends Component {
       } catch (e) { }
       const contentType = (parsedData.headers?.['Content-Type'] || parsedData.headers?.['content-type'])?.toLowerCase()
       if (contentType.includes('application/json')) {
+        /* contentType = 'application/json' */
         untitledEndpointData.data.body.type = contentTypesEnums[contentType]
         untitledEndpointData.data.body.raw.rawType = contentTypesEnums[contentType]
         untitledEndpointData.data.body.raw.value = typeof parsedData.data === 'object' ? JSON.stringify(parsedData.data) : parsedData.data
-
         // setting body description
         untitledEndpointData.bodyDescription = {
           payload: {
@@ -301,8 +301,7 @@ class HostContainer extends Component {
         <input
           id='host-container-input'
           className='form-control'
-          // value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}  ? to resolve later
-          value={(this.state?.datalistHost ?? '') + (this.state?.datalistUri ?? '') ?? ''}
+          value={`${this.state?.datalistHost ?? ''}${this.state?.datalistUri ?? ''}`}
           name={`${endpointId}_hosts`}
           placeholder='Enter URL or paste cURL'
           onChange={(e) => this.handleInputHostChange(e)}
@@ -324,12 +323,12 @@ class HostContainer extends Component {
   renderPublicHost() {
     return (
       <input
-        type="text"
-        aria-label="Search"
-        disabled
-        className='form-control'
-        value={(this.props?.endpointContent?.host?.BASE_URL ?? '') + (this.props?.endpointContent?.data?.updatedUri ?? '') ?? ''}
-      />
+      type='text'
+      aria-label='Search'
+      disabled
+      className='form-control'
+      value={`${this.props?.endpointContent?.host?.BASE_URL ?? ''}${this.props?.endpointContent?.data?.updatedUri ?? ''}`}
+    />   
     )
   }
 

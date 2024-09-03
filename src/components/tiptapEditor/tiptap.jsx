@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react'
 import Underline from '@tiptap/extension-underline'
 import StarterKit from '@tiptap/starter-kit'
@@ -16,6 +16,11 @@ import Placeholder from '@tiptap/extension-placeholder'
 import Color from '@tiptap/extension-color'
 import TextAlign from '@tiptap/extension-text-align';
 import CodeBlock from '@tiptap/extension-code-block';
+import TaskItem from '@tiptap/extension-task-item'
+import TaskList from '@tiptap/extension-task-list'
+import FontFamily from '@tiptap/extension-font-family'
+import Dropcursor from '@tiptap/extension-dropcursor'
+import Typography from '@tiptap/extension-typography'
 import { BsThreeDots } from "react-icons/bs";
 import '../styles.scss'
 import './tiptap.scss'
@@ -40,15 +45,29 @@ import {
   FaHeading,
   FaCode,
 } from 'react-icons/fa'
-import { LuHeading1, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, LuTextQuote, LuListTodo } from "react-icons/lu";
-import { BiCodeBlock, BiFontColor, BiPlus } from 'react-icons/bi'
+import { LuHeading1, LuHeading2, LuHeading3, LuHeading4, LuHeading5, LuHeading6, LuTextQuote } from "react-icons/lu";
+import { BiFontColor, BiPlus, BiFontFamily } from 'react-icons/bi'
 import { Dropdown, Modal } from 'react-bootstrap'
-import { Style } from 'react-style-tag'
-import { LiaSortAlphaDownSolid } from 'react-icons/lia'
 import { SketchPicker } from 'react-color'
+import Collaboration from '@tiptap/extension-collaboration'
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
+import { useSelector } from 'react-redux'
+import { GoTasklist } from "react-icons/go";
+import HorizontalRule from '@tiptap/extension-horizontal-rule'
 
+export default function Tiptap({  provider, ydoc, disabled, isInlineEditor, minHeight }) {
 
-export default function Tiptap({ initial, onChange, disabled, isInlineEditor, minHeight }) {
+  const { currentUser } = useSelector((state) => ({
+    currentUser: state.users.currentUser
+  }));
+
+  const getRandomColor = () => {
+    const colors = [
+      '#958DF1', '#F98181', '#FBBC88', '#FAF594', '#70CFF8',
+      '#94FADB', '#B9F18D', '#C3E2C2', '#EAECCC', '#AFC8AD',
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
   const [linkUrl, setLinkUrl] = useState('')
   const [ImageUrl, setImageUrl] = useState('')
   const [row, setRow] = useState('3')
@@ -73,7 +92,18 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
       Highlight,
       Image,
       CodeBlock,
+      Dropcursor,
+      HorizontalRule,
       TextStyle,
+      TaskList,
+      Typography,
+      TaskItem.configure({
+        nested: true,
+        itemTypeName: 'taskItem',
+      }),
+      FontFamily.configure({
+        types: ['textStyle'],
+      }),
       Color.configure({
         types: ['textStyle'],
       }),
@@ -91,29 +121,27 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
         }
       }),
       TableCell,
+      CollaborationCursor.configure({
+        provider,
+        user: {
+          name: currentUser?.name || 'Anonymous',
+          color: getRandomColor(),
+        },
+      }),
+      Collaboration.configure({
+        document: ydoc,
+      }),
       TableRow,
       TableHeader,
       Link.configure({
         linkOnPaste: true,
         openOnClick: true,
         autolink: false
-      }),
+      })
     ],
-    content: initial,
-    onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      onChange(html);
-      localStorage.setItem('editorContent',html);
-    },
     editable: !disabled
   })
 
-  useEffect(() => {
-    if (editor && initial !== editor.getHTML()) {
-      editor.commands.setContent(initial, false);
-    }
-  }, [initial, editor]);
-  
   const toggleHeading = (level) => {
     if (editor) {
       editor.chain().focus().toggleHeading({ level }).run();
@@ -216,6 +244,11 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
     )
   }
 
+  const activeFontFamily = () => {
+    const fontFamilies = ['Inter', 'Comic Sans', 'serif', 'monospace', 'cursive', 'var(--title-font-family)'];
+    const activeFont = fontFamilies.find(font => editor.isActive('textStyle', { fontFamily: font }));
+    return activeFont;
+  };
 
   return (
     <div className={`textEditorContainer ${!isInlineEditor ? 'editor border border-0' : ''}`}>
@@ -249,6 +282,13 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
           <button onClick={() => setShowLink(true)}>
             <FaLink />
           </button>
+          <button
+            type='button'
+            onClick={() => editor.chain().focus().toggleTaskList().run()}
+            className={editor.isActive('taskList') ? 'is-active' : ''}
+          >
+            <GoTasklist />
+          </button>
           <Dropdown>
             <Dropdown.Toggle className='text-direction' variant="light" id="alignment-dropdown">
               {alignment === 'left' && <FaAlignLeft />}
@@ -268,6 +308,52 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
               </Dropdown.Item>
               <Dropdown.Item onClick={() => { setAlignment('justify'); editor.chain().focus().setTextAlign('justify').run(); }}>
                 <FaAlignJustify /> Justify
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <Dropdown className='create-table'>
+            <Dropdown.Toggle className='btn-light text-direction'>
+              {activeFontFamily()} <BiFontFamily />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('Inter').run()}
+                className={editor.isActive('textStyle', { fontFamily: 'Inter' }) ? 'is-active' : ''}
+                data-test-id="inter">
+                Inter
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('Comic Sans').run()}
+                className={
+                  editor.isActive('textStyle', { fontFamily: 'Comic Sans' })
+                    ? 'is-active'
+                    : ''
+                }
+                data-test-id="comic-sans">
+                Comic Sans
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('serif').run()}
+                className={editor.isActive('textStyle', { fontFamily: 'serif' }) ? 'is-active' : ''}
+                data-test-id="serif">
+                Serif
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('monospace').run()}
+                className={editor.isActive('textStyle', { fontFamily: 'monospace' }) ? 'is-active' : ''}
+                data-test-id="monospace">
+                Monospace
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('cursive').run()}
+                className={editor.isActive('textStyle', { fontFamily: 'cursive' }) ? 'is-active' : ''}
+                data-test-id="cursive">
+                Cursive
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('var(--title-font-family)').run()}
+                className={editor.isActive('textStyle', { fontFamily: 'var(--title-font-family)' }) ? 'is-active' : ''}
+                data-test-id="css-variable">
+                CSS variable
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().setFontFamily('"Comic Sans"').run()}
+                className={editor.isActive('textStyle', { fontFamily: '"Comic Sans"' }) ? 'is-active' : ''}
+                data-test-id="comic-sans-quoted">
+                Comic Sans quoted
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -348,6 +434,9 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
               <Dropdown.Item onClick={() => editor.chain().focus().toggleOrderedList().run()} className={editor.isActive('orderedList') ? 'is-active' : ''}>
                 <FaListOl /> Numbered List
               </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().toggleTaskList().run()} className={editor.isActive('taskList') ? 'is-active' : ''}>
+                <GoTasklist /> Task list
+              </Dropdown.Item>
               <Dropdown.Item onClick={() => editor.chain().focus().setHorizontalRule().run()}>
                 <FaRulerHorizontal /> Horizontal Rule
               </Dropdown.Item>
@@ -366,8 +455,8 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
       {editor && (
         <FloatingMenu className='floating-menu' tippyOptions={{ duration: 100 }} editor={editor}>
           <Dropdown>
-            <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon'>
-              <BiPlus />
+            <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon p-1 rounded-circle'>
+              <BiPlus size={18} />
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}>
@@ -384,6 +473,9 @@ export default function Tiptap({ initial, onChange, disabled, isInlineEditor, mi
               </Dropdown.Item>
               <Dropdown.Item onClick={() => editor.chain().focus().toggleOrderedList().run()} className={editor.isActive('orderedList') ? 'is-active' : ''}>
                 <FaListOl /> Numbered List
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => editor.chain().focus().toggleTaskList().run()} className={editor.isActive('taskList') ? 'is-active' : ''}>
+                <GoTasklist /> Task list
               </Dropdown.Item>
               <Dropdown.Item onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? 'is-active' : ''}>
                 <LuTextQuote /> Quote

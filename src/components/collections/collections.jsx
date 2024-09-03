@@ -4,32 +4,27 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { isDashboardRoute, openExternalLink, isOnPublishedPage, isOrgDocType } from '../common/utility'
 import collectionsService from './collectionsService'
 import TagManagerModal from './tagModal'
-import emptyCollections from '../../assets/icons/emptyCollections.svg'
+import { ReactComponent as EmptyCollections } from '../../assets/icons/emptyCollections.svg'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import DefaultViewModal from './defaultViewModal/defaultViewModal'
 import MoveModal from '../common/moveModal/moveModal'
 import ExportButton from './exportCollection/exportButton'
 import IconButtons from '../common/iconButton'
 import { addIsExpandedAction } from '../../store/clientData/clientDataActions'
-import { MdExpandMore } from 'react-icons/md'
-import { FiPlus } from 'react-icons/fi'
+import { FiEdit2, FiPlus } from 'react-icons/fi'
 import { BsThreeDots } from 'react-icons/bs'
-import { LuFolder } from 'react-icons/lu'
-import { RiShareForward2Line } from 'react-icons/ri'
+import { RiDeleteBin6Line, RiShareForward2Line } from 'react-icons/ri'
 import { TbDirections, TbSettingsAutomation } from 'react-icons/tb'
 import { BiExport } from 'react-icons/bi'
-import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
-import { ReactComponent as EditIcon } from '../../assets/icons/editsign.svg'
-import { ReactComponent as GoToDocs } from '../../assets/icons/gotodocssign.svg'
-import { ReactComponent as AddGoogleTag } from '../../assets/icons/addGoogleTagsign.svg'
+import CustomModal from '../customModal/customModal'
+import CollectionForm from './collectionForm'
 import { Card } from 'react-bootstrap'
 import 'react-toastify/dist/ReactToastify.css'
 import './collections.scss'
-import CollectionForm from './collectionForm'
-import CustomModal from '../customModal/customModal'
 import { addPage } from '../pages/redux/pagesActions'
 import { openInNewTab } from '../tabs/redux/tabsActions'
 import { IoIosSettings } from "react-icons/io";
+import { IoDocumentTextOutline, IoPricetagOutline } from 'react-icons/io5'
 
 const Collections = (props) => {
   const collections = useSelector((state) => state.collections)
@@ -42,7 +37,6 @@ const Collections = (props) => {
   const navigate = useNavigate()
 
   const [showCollectionForm, setShowCollectionForm] = useState(false)
-  const [collectionFormName, setCollectionFormName] = useState('')
   const [selectedCollection, setSelectedCollection] = useState({})
   const [showRemoveModal, setShowRemoveModal] = useState(false)
   const [showAddCollectionModal, setShowAddCollectionModal] = useState(false)
@@ -65,13 +59,12 @@ const Collections = (props) => {
   }
 
   const handleGoToDocs = (collection) => {
-    const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p?collectionId=${collection.id}`
+    const publicDocsUrl = `${import.meta.env.VITE_PUBLIC_UI_URL}/p?collectionId=${collection.id}`
     openExternalLink(publicDocsUrl)
   }
 
   const openEditCollectionForm = (collectionId) => {
     setShowCollectionForm(true)
-    setCollectionFormName('Edit Collection')
     setSelectedCollection({
       ...collections[collectionId]
     })
@@ -184,8 +177,8 @@ const Collections = (props) => {
 
     return (
       <React.Fragment key={collectionId}>
-        <div key={collectionId} id='parent-accordion' className={expanded ? 'sidebar-accordion px-2 mb-4 expanded' : 'sidebar-accordion px-2'}>
-          <button tabIndex={-1} variant='default' className={`sidebar-hower px-2 rounded ${expanded ? 'expanded' : ''}`}>
+        <div key={collectionId} id='parent-accordion' className={`sidebar-accordion px-2 ${expanded ? 'expanded mb-3' : ''}`}>
+          <button tabIndex={-1} variant='default' className={`sidebar-hower pr-2 rounded ${expanded ? 'expanded' : ''}`}>
             <div
               className='inner-container'
               onClick={() => toggleSelectedCollectionIds(collectionId)}
@@ -225,21 +218,21 @@ const Collections = (props) => {
                     <div className='dropdown-menu dropdown-menu-right'>
                       {!collections[collectionId]?.importedFromMarketPlace && (
                         <>
-                          <div className='dropdown-item d-flex' onClick={() => openEditCollectionForm(collectionId)}>
-                            <EditIcon /> Rename
+                          <div className='dropdown-item d-flex align-items-center' onClick={() => openEditCollectionForm(collectionId)}>
+                            <FiEdit2 color='gray' /> Rename
                           </div>
                           {collections[collectionId].isPublic && (
-                            <div className='dropdown-item d-flex' onClick={() => handleGoToDocs(collections[collectionId])}>
-                              <GoToDocs /> Go to API Documentation
+                            <div className='dropdown-item d-flex align-items-center' onClick={() => handleGoToDocs(collections[collectionId])}>
+                              <IoDocumentTextOutline color='gray' /> Go to API Documentation
                             </div>
                           )}
                           <div
-                            className='dropdown-item d-flex'
+                            className='dropdown-item d-flex align-items-center'
                             onClick={() => {
                               TagManagerModalOpen(collectionId)
                             }}
                           >
-                            <AddGoogleTag /> Add Google Tag Manager
+                            <IoPricetagOutline color='gray' /> Add Google Tag Manager
                           </div>
                           <div className='dropdown-item' onClick={() => handleOrgModalOpen(collections[collectionId])}>
                             <RiShareForward2Line size={16} color='grey' /> Move
@@ -260,10 +253,10 @@ const Collections = (props) => {
                             />
                           </div>}
                           <div
-                            className='dropdown-item delete-button-sb text-danger d-flex'
+                            className='dropdown-item delete-button-sb text-danger d-flex align-items-center'
                             onClick={() => openDeleteCollectionModal(collectionId)}
                           >
-                            <DeleteIcon size={14} /> Delete
+                            <RiDeleteBin6Line size={12} /> Delete
                           </div>
                         </>
                       )}
@@ -316,7 +309,8 @@ const Collections = (props) => {
     return (
       <div className='empty-collections text-center mt-4'>
         <div>
-          <img src={emptyCollections} alt='' />
+          <EmptyCollections/>
+          {/* <img src={emptyCollections} alt='' /> */}
         </div>
         <div className='content'>
           <h5>Your collection is Empty.</h5>

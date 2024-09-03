@@ -37,7 +37,7 @@ export const addEnvironment = (newEnvironment, type) => {
       .saveEnvironment(newEnvironment, type)
       .then((response) => {
         dispatch(OnEnvironmentAdded(response.data, newEnvironment))
-        toast.success('Environment added successfully')
+        toast.success("Environment added successfully")
       })
       .catch((error) => {
         dispatch(OnEnvironmentAddedError(error.response ? error.response.data : error, newEnvironment))
@@ -45,7 +45,7 @@ export const addEnvironment = (newEnvironment, type) => {
   }
 }
 
-export const importEnvironment = (newEnvironment, onClose) => {
+export const importEnvironment = (newEnvironment,onClose) => {
   return (dispatch) => {
     environmentsApiService
       .importPostmanEnvironment(newEnvironment)
@@ -70,7 +70,7 @@ export const updateEnvironment = (editedEnvironment) => {
       .updateEnvironment(id, editedEnvironment)
       .then((response) => {
         dispatch(OnEnvironmentUpdated(response.data))
-        toast.success('Environment updated successfully')
+        toast.success("Environment updated successfully")
       })
       .catch((error) => {
         dispatch(OnEnvironmentUpdatedError(error.response ? error.response.data : error, originalEnvironment))
@@ -190,3 +190,4 @@ export const OnEnvironmentImported = (response) => {
     response
   }
 }
+

@@ -19,7 +19,13 @@
 }
 
 .bread-crumb-wrapper {
-  font-size: $font-medium;
+  span {
+    padding: 2px 3px;
+    margin: 0 2px;
+    &:hover {
+      background-color: $button-background-hover;
+    }
+  }
 
   .end-point-title {
     font-weight: 700;
@@ -27,9 +33,6 @@
   .api-label {
     background-color: rgba(39, 174, 96, .1) !important;
     border: none !important;
-  } 
-  .text-nowrap-heading {
-    max-width: 200px;
   }
 }
 .published-post {
@@ -48,10 +51,12 @@
 }
 
 .protocol-selected-type {
-  padding: 0px 4px;
-  border: 1px solid rgba(128, 128, 128, 0.323) !important;
   background-color: white !important;
   border-radius: 4px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  padding: 0px 2px;
+  min-width: 24px;
+  min-height: 20px;
 }
 
 .protocol-type-text {
@@ -72,4 +77,7 @@
     outline: none;
     border: none;
   }
+}
+.breadcrumb-main {
+  max-width: 37vw;
 }

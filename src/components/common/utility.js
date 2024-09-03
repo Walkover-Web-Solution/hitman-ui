@@ -256,7 +256,7 @@ export function formatBytes(bytes, decimals = 2) {
 }
 
 export function isValidDomain() {
-  const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+  const domainsList = import.meta.env.VITE_DOMAINS_LIST ? import.meta.env.VITE_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
   const path = window.location.href.split('/')[3]
   return domainsList.includes(currentDomain) && path !== 'p'
@@ -367,7 +367,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) {}
+        } catch (err) { }
       })
     })
   }
@@ -380,7 +380,7 @@ export function sensitiveInfoFound(endpoint) {
         try {
           jwtDecode(item)
           result = true
-        } catch (err) {}
+        } catch (err) { }
       })
     })
   }
@@ -406,7 +406,7 @@ export function getUserProfile() {
   let user = getCurrentUser()
   try {
     return user
-  } catch (e) {}
+  } catch (e) { }
 }
 
 export function getCurrentUserSSLMode() {
@@ -416,7 +416,7 @@ export function getCurrentUserSSLMode() {
     sslModeData = JSON.parse(sslModeData)
     const { identifier } = user
     return sslModeData?.[identifier]
-  } catch (e) {}
+  } catch (e) { }
 }
 
 export function setCurrentUserSSLMode(sslModeFlag) {
@@ -427,7 +427,7 @@ export function setCurrentUserSSLMode(sslModeFlag) {
     sslModeData = JSON.parse(sslModeData || '{}')
     const sslMode = { ...sslModeData, [identifier]: sslModeFlag }
     window.localStorage.setItem('ssl-mode', JSON.stringify(sslMode))
-  } catch (e) {}
+  } catch (e) { }
 }
 
 export function compareAlphabetically(a, b, data) {
@@ -569,7 +569,7 @@ export function getUrlPathById(id, sidebar) {
   return actualPath
 }
 export function isTechdocOwnDomain() {
-  const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+  const domainsList = import.meta.env.VITE_DOMAINS_LIST ? import.meta.env.VITE_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
   return domainsList.includes(currentDomain)
 }
@@ -627,7 +627,7 @@ export const deleteAllPagesAndTabsAndReactQueryData = async (pageId, collectionI
     }
 
     // update the parent's child
-    let parentId = pages?.[pageId]?.parentId
+    let parentId = pages[pageId]?.parentId
     if (parentId != null) {
       pages[parentId].child = pages[parentId].child.filter((id) => id !== pageId)
     }
