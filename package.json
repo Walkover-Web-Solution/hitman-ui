@@ -50,6 +50,7 @@
     "html-react-parser": "^5.0.6",
     "http-status": "^1.4.2",
     "httpsnippet": "^2.0.0",
+    "httpsnippet-lite": "^3.0.5",
     "joi-browser": "^13.4.0",
     "jquery": "^3.4.1",
     "jwt-decode": "^2.2.0",

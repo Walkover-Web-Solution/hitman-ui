@@ -20,6 +20,7 @@ import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import 'ace-builds/src-noconflict/theme-github'
 import './endpoints.scss'
 import axios from 'axios'
+import { HTTPSnippet } from 'httpsnippet-lite'
 
 const apiUrl = import.meta.env.VITE_API_URL
 
@@ -51,7 +52,6 @@ const CodeTemplate = (props) => {
     setSelectedLanguage(newSelectedLanguage)
 
     try {
-      // Generate the code snippet by calling the backend
       const codeSnippet = await makeCodeSnippet(newSelectedLanguage)
 
       if (codeSnippet) {
@@ -80,16 +80,26 @@ const CodeTemplate = (props) => {
     }
 
     try {
-      const response = await axios.post(`${apiUrl}/generate-snippet`, {
-        language: newSelectedLanguage === 'axiosNode' ? 'node' : newSelectedLanguage,
-        variant: newSelectedLanguage === 'axiosNode' ? 'axios' : undefined,
-        harObject: harObject
-      })
+      const request = {
+        method: harObject.method,
+        url: harObject.url
+        // You can include other necessary fields from harObject here
+      }
 
-      return response.data.snippet
-    } catch (error) {
-      console.error('Failed to generate code snippet:', error)
-      return null
+      const snippet = new HTTPSnippet(request)
+
+      // Define options for generating the snippet
+      const options = { indent: '  ' } // or whatever indent you prefer
+      const client = newSelectedLanguage === 'axiosNode' ? 'axios' : undefined
+      const language = newSelectedLanguage === 'axiosNode' ? 'node' : newSelectedLanguage
+
+      // Generate the code snippet using HTTPSnippet
+      const output = await snippet.convert(language, client, options)
+
+      return output
+    } catch (err) {
+      console.error('Failed to generate snippet:', err)
+      return 'Error generating snippet. Please check the configuration.'
     }
   }
 
@@ -172,7 +182,7 @@ const CodeTemplate = (props) => {
               </div>
               <div className='select-code-wrapper d-flex align-items-center mb-3 img'>
                 {primaryLanguages.map((key) => {
-                  const LanguageIcon = languages[key].imagePath;
+                  const LanguageIcon = languages[key].imagePath
                   return (
                     <button
                       key={key}
@@ -182,7 +192,7 @@ const CodeTemplate = (props) => {
                       <LanguageIcon width={15} />
                       {languages[key].name}
                     </button>
-                  );
+                  )
                 })}
                 <Dropdown className='dropdown-more'>
                   <Dropdown.Toggle
@@ -201,7 +211,7 @@ const CodeTemplate = (props) => {
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     {secondaryLanguages.map((key) => {
-                      const LanguageIcon = languages[key].imagePath; 
+                      const LanguageIcon = languages[key].imagePath
                       return (
                         <Dropdown.Item
                           key={key}
@@ -211,7 +221,7 @@ const CodeTemplate = (props) => {
                           <LanguageIcon className='mr-2' width={20} height={20} />
                           {languages[key].name}
                         </Dropdown.Item>
-                      );
+                      )
                     })}
                   </Dropdown.Menu>
                 </Dropdown>
