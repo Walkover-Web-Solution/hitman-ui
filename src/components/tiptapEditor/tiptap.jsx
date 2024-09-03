@@ -53,6 +53,7 @@ import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import { useSelector } from 'react-redux'
 import { GoTasklist } from "react-icons/go";
+import HorizontalRule from '@tiptap/extension-horizontal-rule'
 
 export default function Tiptap({  provider, ydoc, disabled, isInlineEditor, minHeight }) {
 
@@ -92,6 +93,7 @@ export default function Tiptap({  provider, ydoc, disabled, isInlineEditor, minH
       Image,
       CodeBlock,
       Dropcursor,
+      HorizontalRule,
       TextStyle,
       TaskList,
       Typography,
@@ -453,8 +455,8 @@ export default function Tiptap({  provider, ydoc, disabled, isInlineEditor, minH
       {editor && (
         <FloatingMenu className='floating-menu' tippyOptions={{ duration: 100 }} editor={editor}>
           <Dropdown>
-            <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon'>
-              <BiPlus />
+            <Dropdown.Toggle variant="light" id="dropdown-basic" className='biplus-icon p-1 rounded-circle'>
+              <BiPlus size={18} />
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}>

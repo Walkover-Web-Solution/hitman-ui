@@ -10,9 +10,6 @@ export default defineConfig({
       preview: {
         port: 3000, 
       },
-      optimizeDeps: {
-        include: ['qs'],
-      },
     plugins: [react(), svgr({
         svgrOptions: { exportType: 'named', ref: true, svgo: false, titleProp: true },
         include: '**/*.svg',
