@@ -53,6 +53,7 @@ import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import { useSelector } from 'react-redux'
 import { GoTasklist } from "react-icons/go";
+import HorizontalRule from '@tiptap/extension-horizontal-rule'
 
 export default function Tiptap({  provider, ydoc, disabled, isInlineEditor, minHeight }) {
 
@@ -92,6 +93,7 @@ export default function Tiptap({  provider, ydoc, disabled, isInlineEditor, minH
       Image,
       CodeBlock,
       Dropcursor,
+      HorizontalRule,
       TextStyle,
       TaskList,
       Typography,
