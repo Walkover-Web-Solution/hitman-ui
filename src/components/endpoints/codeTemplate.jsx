@@ -75,11 +75,15 @@ const CodeTemplate = (props) => {
       console.error('HAR object is missing.')
       return null
     }
-
+    let { method, url, httpVersion, cookies, headers, postData } = harObject
     try {
       const request = {
-        method: harObject.method,
-        url: harObject.url
+        method,
+        url,
+        httpVersion,
+        cookies,
+        headers,
+        postData
       }
 
       const snippet = new HTTPSnippet(request)
