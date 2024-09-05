@@ -20,9 +20,8 @@ import UserProfileV2 from './userProfileV2'
 import CombinedCollections from '../combinedCollections/combinedCollections'
 import { TbLogin2 } from 'react-icons/tb'
 import { updateDragDrop } from '../pages/redux/pagesActions'
-import './main.scss'
 import './sidebar.scss'
-import "../../pages/page/page.scss"
+import '../../pages/page/page.scss'
 import { ReactComponent as Logo } from '../../assets/web/favicon.svg'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
@@ -59,8 +58,9 @@ const SideBar = () => {
   }, [])
 
   const handleShortcutKeys = (event) => {
+    const isContentEditable = event.target.getAttribute('contentEditable') === 'true'
     const isPageFocused = document.activeElement.closest('.parent-page-container')
-    if (!isPageFocused && event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+    if (!isPageFocused && event.key === '/' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA' && !isContentEditable) {
       event.preventDefault()
       inputRef.current.focus()
     }

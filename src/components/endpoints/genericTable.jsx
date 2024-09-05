@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { isDashboardRoute, isElectron, isDashboardAndTestingView, hexToRgb } from '../common/utility'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
@@ -7,17 +7,17 @@ import _ from 'lodash'
 import TextField from 'react-autocomplete-input'
 import 'react-autocomplete-input/dist/bundle.css'
 import { background } from '../backgroundColor.js'
-import { isOnPublishedPage } from '../common/utility'
 import withRouter from '../common/withRouter.jsx'
-import { RiDeleteBinLine } from "react-icons/ri"
-import IconButton from '../common/iconButton.jsx'
+import { RiDeleteBinLine } from 'react-icons/ri'
+import { connect } from 'react-redux'
+import GenericTableAutoSuggest from './genericTableAutoSuggest.jsx'
+import { convertToHTML, getInnerText } from '../../utilities/htmlConverter.js'
 
 const autoCompleterDefaultProps = {
   Component: 'input',
   autoComplete: 'off',
   trigger: ['{{']
 }
-
 class GenericTable extends Component {
   constructor(props) {
     super(props)
@@ -29,7 +29,7 @@ class GenericTable extends Component {
       originalHeaders: [],
       theme: ''
     }
-
+    this.genericTableRef = createRef();
     this.checkboxFlags = []
     this.textAreaValue = ''
     this.textAreaValueFlag = true
@@ -78,7 +78,7 @@ class GenericTable extends Component {
     const target = inpTarget || e.currentTarget
     let { dataArray, title, original_data: originalData } = this.props
     dataArray = JSON.parse(JSON.stringify(dataArray))
-    const name = target.name.split('.')
+    const name = target?.name?.split('.')
     const value = target.value
     if (name[1] === 'checkbox') {
       this.checkboxFlags[name[0]] = true
@@ -105,7 +105,7 @@ class GenericTable extends Component {
       else dataArray[name[0]].value = ''
     }
 
-    if (dataArray[name[0]][name[1]].length !== 0 && !this.checkboxFlags[name[0]] && title !== 'Path Variables') {
+    if (dataArray[name[0]][name[1]].length !== 0 && dataArray[name[0]].checked === "notApplicable" && title !== 'Path Variables') {
       dataArray[name[0]].checked = 'true'
     }
 
@@ -114,7 +114,7 @@ class GenericTable extends Component {
     }
 
     if (title === 'Headers' || title === 'Params' || title === 'Path Variables') {
-      this.props.props_from_parent(title, dataArray)
+      this.props.props_from_parent(title, dataArray, target?.name)
     }
     if (title === 'formData' || title === 'x-www-form-urlencoded') {
       this.props.handle_change_body_data(title, dataArray)
@@ -149,17 +149,21 @@ class GenericTable extends Component {
       dataArray[j.toString()] = obj
       j++
     }
-    dataArray[j.toString()] = {
+    const obj = [];
+    dataArray.forEach((params, index) => {
+      obj[index] = { ...params, key: convertToHTML(params.key), value: convertToHTML(params.value) }
+    })
+    obj[j.toString()] = {
       checked: 'notApplicable',
       key: '',
       value: '',
       description: ''
     }
     if (title === 'Params' || title === 'Headers') {
-      this.props.props_from_parent(title, dataArray)
+      this.props.props_from_parent(title, obj)
     }
     if (title === 'formData' || title === 'x-www-form-urlencoded') {
-      this.props.handle_change_body_data(title, [...dataArrayOfFileType, ...dataArray])
+      this.props.handle_change_body_data(title, [...dataArrayOfFileType, ...obj])
     }
   }
 
@@ -189,7 +193,7 @@ class GenericTable extends Component {
     dataArray = newDataArray
     this.checkboxFlags[index] = undefined
     if (title === 'Headers' || title === 'Params') {
-      this.props.props_from_parent(title, dataArray)
+      this.props.props_from_parent(title, dataArray, null, index)
     }
     if (title === 'formData' || title === 'x-www-form-urlencoded') {
       this.props.handle_change_body_data(title, dataArray)
@@ -227,9 +231,9 @@ class GenericTable extends Component {
           if (checked === 'notApplicable') continue
           if (type === 'file') continue
           if (checked === 'true') {
-            textAreaValue += dataArray[index].key + ':' + dataArray[index].value + '\n'
+            textAreaValue += getInnerText(dataArray[index].key) + ':' + getInnerText(dataArray[index].value) + '\n'
           } else {
-            textAreaValue += '//' + dataArray[index].key + ':' + dataArray[index].value + '\n'
+            textAreaValue += '//' + getInnerText(dataArray[index].key) + ':' + getInnerText(dataArray[index].value) + '\n'
           }
         }
         this.textAreaValue = textAreaValue
@@ -242,9 +246,9 @@ class GenericTable extends Component {
           if (checked === 'notApplicable') continue
           if (type === 'file') continue
           if (checked === 'true') {
-            textAreaValue += dataArray[index].key + ':' + dataArray[index].value + '\n'
+            textAreaValue += getInnerText(dataArray[index].key) + ':' + getInnerText(dataArray[index].value) + '\n'
           } else {
-            textAreaValue += '//' + dataArray[index].key + ':' + dataArray[index].value + '\n'
+            textAreaValue += '//' + getInnerText(dataArray[index].key) + ':' + getInnerText(dataArray[index].value) + '\n'
           }
         }
         this.textAreaValue = textAreaValue
@@ -299,20 +303,12 @@ class GenericTable extends Component {
           )}
         </td>
         <td className='custom-td keyWrapper'>
-          {currentItem.key}
+          {getInnerText(currentItem.key)}
           <p className='text-muted small'>{isChecked || isNotApplicable ? '' : '(Optional)'}</p>
         </td>
         <td className='custom-td valueWrapper'>
           <div className='d-flex align-items-center'>
-            <input
-              name={`${index}.value`}
-              value={currentItem.type === 'file' ? '' : currentItem.value}
-              key={`${index}${this.state.randomId}`}
-              onChange={this.handleChange}
-              type='text'
-              placeholder={`Enter ${currentItem.key}`}
-              className={`form-control ${isEmpty ? 'empty-params' : ''}`}
-            />
+            <GenericTableAutoSuggest URL={this.props?.endpointContent?.data?.URL} valueKey={`${index}.value`} handleChange={this.handleChange} htmlValue={dataArray[index].value} />
             {isEmpty && <div className='small mandatory-field-text'>*This field is mandatory</div>}
           </div>
           {currentItem.description && <p className='small text-muted'>{`Description: ${currentItem.description}`}</p>}
@@ -320,24 +316,44 @@ class GenericTable extends Component {
       </tr>
     )
   }
+  handleSelect = (selectedOption, name) => {
+    let { dataArray } = this.props;
+    const index = name.split('.')[0];
+    const valueKey = name.split('.')[1];
+    selectedOption = selectedOption.slice(2);
+    selectedOption = selectedOption.trimEnd()
+
+    dataArray[index][valueKey] += `${selectedOption}}}`;
+
+    this.setState({ dataArray });
+
+    if (this.props.title === 'Headers' || this.props.title === 'Params' || this.props.title === 'Path Variables') {
+      this.props.props_from_parent(this.props.title, dataArray);
+    }
+    if (this.props.title === 'formData' || this.props.title === 'x-www-form-urlencoded') {
+      this.props.handle_change_body_data(this.props.title, dataArray);
+    }
+  }
 
   renderTextOrFileInput(dataArray, index) {
     const { title } = this.props
     const key = `${index}.key`
     return (
       <div className='position-relative fileInput'>
-        <TextField
+        <GenericTableAutoSuggest URL={this.props?.endpointContent?.data?.URL} title={title} valueKey={key} handleChange={this.handleChange} htmlValue={dataArray[index].key} />
+        {/* <TextField
           {...autoCompleterDefaultProps}
           name={key}
           key={key}
           value={dataArray[index].key}
           onChange={(e) => this.handleChange(e, { name: key, value: e })}
+          onSelect={(selectedOption) => this.handleSelect(selectedOption, key)}
           type='text'
           placeholder='Key'
-          className='form-control'
+          className='form-control aryuan '
           disabled={dataArray[index]?.type === 'disable' ? true : false}
           options={{ '{{': _.keys(this.props.environment.variables) }}
-        />
+        /> */}
         {title === 'formData' && (
           <select
             className='transition cursor-pointer'
@@ -423,7 +439,8 @@ class GenericTable extends Component {
             this.renderSelectFiles(dataArray, index)
           ) : (
             <div className='position-relative'>
-              <TextField
+              <GenericTableAutoSuggest URL={this.props?.endpointContent?.data?.URL} title={title} valueKey={valueKey} handleChange={this.handleChange} htmlValue={dataArray[index].value} />
+              {/* <TextField
                 {...autoCompleterDefaultProps}
                 name={valueKey}
                 key={valueKey}
@@ -434,7 +451,7 @@ class GenericTable extends Component {
                 disabled={dataArray[index]?.type === 'disable' ? true : false}
                 options={{ '{{': _.keys(this.props.environment.variables) }}
                 type={dataArray[index].type}
-              />
+              /> */}
             </div>
           )}
         </td>

@@ -27,10 +27,12 @@ export function initConn(channel) {
 }
 
 export function resetConn(channel) {
+  if (!CLIENT) return;
   CLIENT.unsubscribe(channel || CHANNEL)
 }
 
 const subscribe = () => {
+  if (!CLIENT) return;
   CLIENT.subscribe(CHANNEL)
 }
 
@@ -137,13 +139,13 @@ const handleMessage = (message) => {
       })
       break
 
-      case OperationTypes.PUBLISH_PAGE_OR_ENDPOINT:
-        store.dispatch(onEndpointStateSuccess({ state: message.data.state, id: message.data.id, isPublished: message.data.isPublished }))
-        break
+    case OperationTypes.PUBLISH_PAGE_OR_ENDPOINT:
+      store.dispatch(onEndpointStateSuccess({ state: message.data.state, id: message.data.id, isPublished: message.data.isPublished }))
+      break
 
-      case OperationTypes.UNPUBLISH_PAGE_OR_ENDPOINT:
-        store.dispatch(onEndpointStateSuccess({ state: message.data.state, id: message.data.id, isPublished: message.data.isPublished }))
-        break
+    case OperationTypes.UNPUBLISH_PAGE_OR_ENDPOINT:
+      store.dispatch(onEndpointStateSuccess({ state: message.data.state, id: message.data.id, isPublished: message.data.isPublished }))
+      break
 
     case OperationTypes.DRAG_AND_DROP:
       store.dispatch({
