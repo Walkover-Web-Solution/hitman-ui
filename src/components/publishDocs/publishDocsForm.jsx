@@ -4,7 +4,7 @@ import CustomColorPicker from './customColorPicker'
 import Joi from 'joi-browser'
 import { Button, Tooltip, OverlayTrigger, Modal, Form, Dropdown } from 'react-bootstrap'
 import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
-import { updateCollection } from '../collections/redux/collectionsActions'
+import { onCollectionUpdated, updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
 import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
@@ -15,7 +15,6 @@ import { HiOutlineExternalLink } from 'react-icons/hi'
 import { FiCopy } from 'react-icons/fi'
 import { FaRegTimesCircle } from 'react-icons/fa'
 import { RiCheckboxMultipleLine } from 'react-icons/ri'
-import { createNewPublicEnvironment, deleteEntirePublicEnv, deletePublicEnv } from './redux/publicEnvActions'
 import collectionsApiService from '../collections/collectionsApiService'
 import { MdOutlineDelete } from 'react-icons/md'
 import { toast } from 'react-toastify'
@@ -40,7 +39,7 @@ const PublishDocForm = (props) => {
     tabs: state.tabs,
     pages: state.pages,
     environment: state.environment,
-    publicEnv: state.publicEnv
+    publicEnv: state.collections[state.tabs.activeTabId].environment
   }))
   const [data, setData] = useState({
     title: '',
@@ -60,8 +59,8 @@ const PublishDocForm = (props) => {
   const [showCopyEnvModal, setShowCopyEnvModal] = useState(false)
   const [selectedEnv, setSelectedEnv] = useState(null)
   const [rows, setRows] = useState([
-    { checked: false, input1: '', input2: '', isEnabled: true },
-    { checked: false, input1: '', input2: '', isEnabled: true }
+    { checked: false, variable: '', value: '', isEnabled: true },
+    { checked: false, variable: '', value: '', isEnabled: true }
   ])
 
   useEffect(() => {
@@ -415,7 +414,7 @@ const PublishDocForm = (props) => {
   const publishCheck = collections[tabs?.activeTabId]?.isPublic
 
   const handleAddRow = () => {
-    setRows([...rows, { checked: false, input1: '', input2: '', isEnabled: true }])
+    setRows([...rows, { checked: false, variable: '', value: '', isEnabled: true }])
   }
 
   const handleInputChange = (index, field, value) => {
@@ -431,27 +430,26 @@ const PublishDocForm = (props) => {
   const handleSave = async () => {
     const formattedData = {}
     rows.forEach((row) => {
-      if (row.input1) {
-        formattedData[row.input1] = {
-          DefaultValue: row.input2,
+      if (row.variable) {
+        formattedData[row.variable] = {
+          DefaultValue: row.value,
           IsEditable: row.isEnabled,
           Checked: row.checked
         }
       }
     })
-    await collectionsApiService.updateCollection(props.selected_collection_id, {
+    const response = await collectionsApiService.updateCollection(props.selected_collection_id, {
       environment: formattedData,
       name: collections[props.selected_collection_id].name
     })
-    dispatch(createNewPublicEnvironment(props.selected_collection_id, formattedData))
-
+    dispatch(onCollectionUpdated(response.data))
     setShowCreateEnvForm(false)
   }
 
   const handleCopyExistingEnv = (environment) => {
     const copiedRows = Object.keys(environment?.variables).map((key) => ({
-      input1: key,
-      input2: environment?.variables[key]?.initialValue || '',
+      variable: key,
+      value: environment?.variables[key]?.initialValue || '',
       isEnabled: null,
       checked: null
     }))
@@ -462,41 +460,32 @@ const PublishDocForm = (props) => {
   }
 
   const handlePublicEnvClick = () => {
-    const prefilledRows = Object.keys(publicEnv[props.selected_collection_id]).map((key) => ({
-      input1: key,
-      input2: publicEnv[props.selected_collection_id][key].DefaultValue,
-      isEnabled: publicEnv[props.selected_collection_id][key].IsEditable,
-      checked: publicEnv[props.selected_collection_id][key].Checked
+    const prefilledRows = Object.keys(publicEnv).map((key) => ({
+      variable: key,
+      value: publicEnv[key].DefaultValue,
+      isEnabled: publicEnv[key].IsEditable,
+      checked: publicEnv[key].Checked
     }))
     setRows(prefilledRows)
     setShowCreateEnvForm(true)
   }
 
   const handleDeleteSelectedIndex = (collectionId, variable) => {
-    dispatch(deletePublicEnv(collectionId, variable))
-    const res = Object.keys(publicEnv[collectionId]).map((key) => {
-      const value = publicEnv[collectionId][key]
-      return {
-        input1: key,
-        input2: value.DefaultValue || '',
-        isEnabled: value.IsEditable || false,
-        checked: value.Checked || false
-      }
-    })
-    setRows(res)
+    const updatedRows = rows.filter(row => row.variable !== variable);
+    setRows(updatedRows);
   }
 
   const handleDelete = async (collectionId) => {
     try {
-      await collectionsApiService.updateCollection(props.selected_collection_id, {
+      const response = await collectionsApiService.updateCollection(props.selected_collection_id, {
         environment: {},
         name: collections[props.selected_collection_id].name
       })
-      dispatch(deleteEntirePublicEnv(collectionId))
-      toast.success("public Env Deleted Successfully")
+      dispatch(onCollectionUpdated(response.data))
+      toast.success("Public Environment deleted successfully")
       setRows([
-        { checked: false, input1: '', input2: '', isEnabled: true },
-        { checked: false, input1: '', input2: '', isEnabled: true }
+        { checked: false, variable: '', value: '', isEnabled: true },
+        { checked: false, variable: '', value: '', isEnabled: true }
       ])
       setShowCreateEnvForm(false)
     } catch (error) {
@@ -520,7 +509,7 @@ const PublishDocForm = (props) => {
             {renderInput('title', false, 'brand name', false)}
             <div className='form-group mb-4'>
               <label>Select Environment</label>
-              {!publicEnv[props.selected_collection_id] ? (
+              {Object.keys(publicEnv).length === 0 ? (
                 <Dropdown>
                   <Dropdown.Toggle variant='success' id='dropdown-basic'>
                     {selectedEnv ? environment.environments[selectedEnv]?.name : 'Select Environment'}
@@ -538,7 +527,6 @@ const PublishDocForm = (props) => {
                         {environment.environments[envId]?.name}
                       </Dropdown.Item>
                     ))}
-                    <Dropdown.Item onClick={() => setShowCreateEnvForm(true)}>Add New Env</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               ) : (
@@ -569,22 +557,22 @@ const PublishDocForm = (props) => {
                       />
                       <Form.Control
                         type='text'
-                        placeholder='Input 1'
-                        value={row.input1}
+                        placeholder='Environment Key'
+                        value={row.variable}
                         className='ml-2'
-                        onChange={(e) => handleInputChange(index, 'input1', e.target.value)}
+                        onChange={(e) => handleInputChange(index, 'variable', e.target.value)}
                       />
                       <Form.Control
                         type='text'
-                        placeholder='Input 2'
-                        value={row.input2}
+                        placeholder='Value'
+                        value={row.value}
                         className='ml-2'
-                        onChange={(e) => handleInputChange(index, 'input2', e.target.value)}
+                        onChange={(e) => handleInputChange(index, 'value', e.target.value)}
                       />
                       <Button className='ml-2' onClick={() => handleToggleEnable(index)}>
-                        {row.isEnabled ? 'Disable' : 'Enable'}
+                        {row.isEnabled ? 'Disable' : 'Editable'}
                       </Button>
-                      <Button className='ml-2' onClick={() => handleDeleteSelectedIndex(props.selected_collection_id, row.input1)}>
+                      <Button className='ml-2' onClick={() => handleDeleteSelectedIndex(props.selected_collection_id, row.variable)}>
                         <MdOutlineDelete />
                       </Button>
                     </div>
