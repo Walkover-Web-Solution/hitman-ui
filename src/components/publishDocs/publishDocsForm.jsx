@@ -39,7 +39,7 @@ const PublishDocForm = (props) => {
     tabs: state.tabs,
     pages: state.pages,
     environment: state.environment,
-    publicEnv: state.collections[state.tabs.activeTabId].environment
+    publicEnv: state?.collections[state?.tabs?.activeTabId]?.environment
   }))
   const [data, setData] = useState({
     title: '',

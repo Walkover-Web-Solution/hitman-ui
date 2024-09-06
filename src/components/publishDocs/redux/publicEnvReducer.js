@@ -1,19 +1,24 @@
 
-import { CREATE_NEW_PUBLIC_ENVIRONMENT, DELETE_SELECTED_INDEX, DELETE_ENTIRE_PUBLIC_ENV } from './publicEnvActionTypes';
+import { CREATE_NEW_PUBLIC_ENVIRONMENT, DELETE_SELECTED_INDEX, DELETE_ENTIRE_PUBLIC_ENV, UPDATE_PUBLIC_ENV } from './publicEnvActionTypes';
 
-const initialState = { publicEnv: {} };
+const initialState = {};
 const createNewPublicEnvReducer = (state = initialState, action) => {
-
   switch (action.type) {
     case CREATE_NEW_PUBLIC_ENVIRONMENT:
-      const { collectionId, data } = action.payload;
+      const { data } = action.payload;
       return {
-        ...state,
-        [collectionId]: {
-          ...(state[collectionId] || {}),
-          ...data
-        }
+        ...data
       };
+
+      case UPDATE_PUBLIC_ENV:
+        const { key, value } = action.payload; 
+        return {
+            ...state,
+            [key]: {
+              ...state[key], 
+              DefaultValue: value 
+          }
+        };
 
     case DELETE_ENTIRE_PUBLIC_ENV: {
       const { collectionId } = action.payload;
