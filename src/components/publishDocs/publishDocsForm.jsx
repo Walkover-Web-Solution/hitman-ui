@@ -18,6 +18,7 @@ import { RiCheckboxMultipleLine } from 'react-icons/ri'
 import { createNewPublicEnvironment, deleteEntirePublicEnv, deletePublicEnv } from './redux/publicEnvActions'
 import collectionsApiService from '../collections/collectionsApiService'
 import { MdOutlineDelete } from 'react-icons/md'
+import { toast } from 'react-toastify'
 
 const MAPPING_DOMAIN = import.meta.env.VITE_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
@@ -26,7 +27,7 @@ const publishDocFormEnum = {
     title: 'Title',
     domain: 'Custom Domain',
     logoUrl: 'Logo URL',
-    theme: 'Theme',
+    theme: 'Theme'
   }
 }
 
@@ -40,7 +41,7 @@ const PublishDocForm = (props) => {
     pages: state.pages,
     environment: state.environment,
     publicEnv: state.publicEnv
-  }));
+  }))
   const [data, setData] = useState({
     title: '',
     domain: '',
@@ -54,14 +55,14 @@ const PublishDocForm = (props) => {
   const [loader, setLoader] = useState(false)
   const [openPublishSidebar, setOpenPublishSidebar] = useState(false)
   const [republishNeeded, setRepublishNeeded] = useState(false)
-  const [isCopied, setIsCopied] = useState(false);
-  const [showCreateEnvForm, setShowCreateEnvForm] = useState(false);
-  const [showCopyEnvModal, setShowCopyEnvModal] = useState(false);
-  const [selectedEnv, setSelectedEnv] = useState(null);
+  const [isCopied, setIsCopied] = useState(false)
+  const [showCreateEnvForm, setShowCreateEnvForm] = useState(false)
+  const [showCopyEnvModal, setShowCopyEnvModal] = useState(false)
+  const [selectedEnv, setSelectedEnv] = useState(null)
   const [rows, setRows] = useState([
     { checked: false, input1: '', input2: '', isEnabled: true },
     { checked: false, input1: '', input2: '', isEnabled: true }
-  ]);
+  ])
 
   useEffect(() => {
     setSelectedCollection()
@@ -87,11 +88,11 @@ const PublishDocForm = (props) => {
 
   const unPublishCollection = (selectedCollection) => {
     if (selectedCollection?.isPublic === true) {
-      const editedCollection = { ...selectedCollection };
-      editedCollection.isPublic = false;
-      dispatch(updateCollection(editedCollection));
+      const editedCollection = { ...selectedCollection }
+      editedCollection.isPublic = false
+      dispatch(updateCollection(editedCollection))
     }
-  };
+  }
 
   const handleChange = (e, isURLInput = false) => {
     const newData = { ...data }
@@ -156,23 +157,25 @@ const PublishDocForm = (props) => {
     setErrors(newErrors || {})
     if (newErrors) return
     setLoader(true)
-    dispatch(updateCollection(collection, () => {
-      setLoader(false)
-      if (selectedCollection?.isPublic !== true) {
-        const editedCollection = { ...selectedCollection }
-        editedCollection.isPublic = true
-        dispatch(updateCollection(editedCollection))
-        moveToNextStep(6)
-      }
-      setRepublishNeeded(true)
-    }))
+    dispatch(
+      updateCollection(collection, () => {
+        setLoader(false)
+        if (selectedCollection?.isPublic !== true) {
+          const editedCollection = { ...selectedCollection }
+          editedCollection.isPublic = true
+          dispatch(updateCollection(editedCollection))
+          moveToNextStep(6)
+        }
+        setRepublishNeeded(true)
+      })
+    )
   }
 
   const setTheme = (theme) => {
     setData((prevData) => ({
       ...prevData,
       theme
-    }));
+    }))
   }
 
   const renderColorPicker = () => (
@@ -274,7 +277,9 @@ const PublishDocForm = (props) => {
             </a>
           </span>
         )}
-        {name === 'title' && <span className='domain-info fs-4 mt-1 d-block'>Collection name will be used by default when no title is entered.</span>}
+        {name === 'title' && (
+          <span className='domain-info fs-4 mt-1 d-block'>Collection name will be used by default when no title is entered.</span>
+        )}
         {error && <small className='alert alert-danger'>{error}</small>}
       </div>
     )
@@ -298,8 +303,8 @@ const PublishDocForm = (props) => {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text)
-    setIsCopied(true); // Set copied status to true
-    setTimeout(() => setIsCopied(false), 1000);
+    setIsCopied(true) // Set copied status to true
+    setTimeout(() => setIsCopied(false), 1000)
   }
 
   const renderPublicUrl = () => {
@@ -323,18 +328,19 @@ const PublishDocForm = (props) => {
             </Tooltip>
           }
         >
-          <div
-            className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4`}
-          >
+          <div className={`sidebar-public-url d-flex align-items-center justify-content-start mb-4`}>
             <HiOutlineExternalLink className='mr-1' size={13} />
-            <span onClick={() => isDisabled && openExternalLink(url)} className={isDisabled ? 'text-disable flex-grow-1' : 'disabled-link'}>{url}</span>
+            <span onClick={() => isDisabled && openExternalLink(url)} className={isDisabled ? 'text-disable flex-grow-1' : 'disabled-link'}>
+              {url}
+            </span>
             <div className='ml-2'>
-              <button className='copy-button-link ml-2 border-0 bg-white' onClick={() => copyToClipboard(url)} title='Copy URL' onMouseDown={(e) => e.preventDefault()}>
-                {isCopied ? (
-                  <RiCheckboxMultipleLine size={13} color='black' />
-                ) : (
-                  <FiCopy size={13} />
-                )}
+              <button
+                className='copy-button-link ml-2 border-0 bg-white'
+                onClick={() => copyToClipboard(url)}
+                title='Copy URL'
+                onMouseDown={(e) => e.preventDefault()}
+              >
+                {isCopied ? <RiCheckboxMultipleLine size={13} color='black' /> : <FiCopy size={13} />}
               </button>
             </div>
           </div>
@@ -409,39 +415,38 @@ const PublishDocForm = (props) => {
   const publishCheck = collections[tabs?.activeTabId]?.isPublic
 
   const handleAddRow = () => {
-    setRows([...rows, { checked: false, input1: '', input2: '', isEnabled: true }]);
-  };
+    setRows([...rows, { checked: false, input1: '', input2: '', isEnabled: true }])
+  }
 
   const handleInputChange = (index, field, value) => {
-    const updatedRows = rows.map((row, i) =>
-      i === index ? { ...row, [field]: value } : row
-    );
-    setRows(updatedRows);
-  };
+    const updatedRows = rows.map((row, i) => (i === index ? { ...row, [field]: value } : row))
+    setRows(updatedRows)
+  }
 
   const handleToggleEnable = (index) => {
-    const updatedRows = rows.map((row, i) =>
-      i === index ? { ...row, isEnabled: !row.isEnabled } : row
-    );
-    setRows(updatedRows);
-  };
+    const updatedRows = rows.map((row, i) => (i === index ? { ...row, isEnabled: !row.isEnabled } : row))
+    setRows(updatedRows)
+  }
 
   const handleSave = async () => {
-    const formattedData = {};
+    const formattedData = {}
     rows.forEach((row) => {
       if (row.input1) {
         formattedData[row.input1] = {
           DefaultValue: row.input2,
           IsEditable: row.isEnabled,
           Checked: row.checked
-        };
+        }
       }
-    });
-    await collectionsApiService.updateCollection(props.selected_collection_id, {environment:formattedData,name:collections[props.selected_collection_id].name})
-    dispatch(createNewPublicEnvironment(props.selected_collection_id, formattedData));
+    })
+    await collectionsApiService.updateCollection(props.selected_collection_id, {
+      environment: formattedData,
+      name: collections[props.selected_collection_id].name
+    })
+    dispatch(createNewPublicEnvironment(props.selected_collection_id, formattedData))
 
-    setShowCreateEnvForm(false);
-  };
+    setShowCreateEnvForm(false)
+  }
 
   const handleCopyExistingEnv = (environment) => {
     const copiedRows = Object.keys(environment?.variables).map((key) => ({
@@ -449,31 +454,55 @@ const PublishDocForm = (props) => {
       input2: environment?.variables[key]?.initialValue || '',
       isEnabled: null,
       checked: null
-    }));
+    }))
 
-    setRows(copiedRows);
-    setShowCopyEnvModal(false);
-    setShowCreateEnvForm(true);
-  };
+    setRows(copiedRows)
+    setShowCopyEnvModal(false)
+    setShowCreateEnvForm(true)
+  }
 
   const handlePublicEnvClick = () => {
-      const prefilledRows = Object.keys(publicEnv[props.selected_collection_id]).map((key) => ({
+    const prefilledRows = Object.keys(publicEnv[props.selected_collection_id]).map((key) => ({
+      input1: key,
+      input2: publicEnv[props.selected_collection_id][key].DefaultValue,
+      isEnabled: publicEnv[props.selected_collection_id][key].IsEditable,
+      checked: publicEnv[props.selected_collection_id][key].Checked
+    }))
+    setRows(prefilledRows)
+    setShowCreateEnvForm(true)
+  }
+
+  const handleDeleteSelectedIndex = (collectionId, variable) => {
+    dispatch(deletePublicEnv(collectionId, variable))
+    const res = Object.keys(publicEnv[collectionId]).map((key) => {
+      const value = publicEnv[collectionId][key]
+      return {
         input1: key,
-        input2: publicEnv[props.selected_collection_id][key].DefaultValue,
-        isEnabled: publicEnv[props.selected_collection_id][key].IsEditable,
-        checked: publicEnv[props.selected_collection_id][key].Checked
-      }));
-      setRows(prefilledRows);
-      setShowCreateEnvForm(true);
-  };
+        input2: value.DefaultValue || '',
+        isEnabled: value.IsEditable || false,
+        checked: value.Checked || false
+      }
+    })
+    setRows(res)
+  }
 
-  const handleDeleteSelectedIndex = (collectionId, index) => {
-    dispatch(deletePublicEnv(collectionId, index));
-};
-
-const handleDelete = (collectionId) => {
-  dispatch(deleteEntirePublicEnv(collectionId));
-};
+  const handleDelete = async (collectionId) => {
+    try {
+      await collectionsApiService.updateCollection(props.selected_collection_id, {
+        environment: {},
+        name: collections[props.selected_collection_id].name
+      })
+      dispatch(deleteEntirePublicEnv(collectionId))
+      toast.success("public Env Deleted Successfully")
+      setRows([
+        { checked: false, input1: '', input2: '', isEnabled: true },
+        { checked: false, input1: '', input2: '', isEnabled: true }
+      ])
+      setShowCreateEnvForm(false)
+    } catch (error) {
+      throw error
+    }
+  }
 
   return (
     <>
@@ -489,45 +518,38 @@ const handleDelete = (collectionId) => {
           {publishCheck && renderPublicUrl()}
           <div className='small-input mt-2'>
             {renderInput('title', false, 'brand name', false)}
-            <div className="form-group mb-4">
+            <div className='form-group mb-4'>
               <label>Select Environment</label>
-              {
-                 !publicEnv[props.selected_collection_id] ? (
-                  <Dropdown>
-                    <Dropdown.Toggle variant="success" id="dropdown-basic">
-                      {selectedEnv ? environment.environments[selectedEnv]?.name : "Select Environment"}
-                    </Dropdown.Toggle>
+              {!publicEnv[props.selected_collection_id] ? (
+                <Dropdown>
+                  <Dropdown.Toggle variant='success' id='dropdown-basic'>
+                    {selectedEnv ? environment.environments[selectedEnv]?.name : 'Select Environment'}
+                  </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                      {Object.keys(environment.environments).map((envId) => (
-                        <Dropdown.Item
-                          key={envId}
-                          onClick={() => {
-                            handleCopyExistingEnv(environment.environments[envId]);
-                            setSelectedEnv(envId);
-                          }}
-                        >
-                          {environment.environments[envId]?.name}
-                        </Dropdown.Item>
-                      ))}
+                  <Dropdown.Menu>
+                    {Object.keys(environment.environments).map((envId) => (
                       <Dropdown.Item
-                        onClick={() => setShowCreateEnvForm(true)}
+                        key={envId}
+                        onClick={() => {
+                          handleCopyExistingEnv(environment.environments[envId])
+                          setSelectedEnv(envId)
+                        }}
                       >
-                        Add New Env
+                        {environment.environments[envId]?.name}
                       </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                ) : (
-                  <input
-                    type="text"
-                    value="Public Environment" 
-                    readOnly
-                    onClick={() => handlePublicEnvClick()}
-                    style={{ cursor: 'pointer', border: '1px solid #ced4da', padding: '5px', borderRadius: '4px' }}
+                    ))}
+                    <Dropdown.Item onClick={() => setShowCreateEnvForm(true)}>Add New Env</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              ) : (
+                <input
+                  type='text'
+                  value='Public Environment'
+                  readOnly
+                  onClick={() => handlePublicEnvClick()}
+                  style={{ cursor: 'pointer', border: '1px solid #ced4da', padding: '5px', borderRadius: '4px' }}
                 />
-                )
-              }
-
+              )}
             </div>
             {renderInput('domain', false, 'docs.example.com', false)}
           </div>
@@ -537,53 +559,45 @@ const handleDelete = (collectionId) => {
                 <Modal.Title>Public Environment</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <Form className="mt-4">
+                <Form className='mt-4'>
                   {rows.map((row, index) => (
-                    <div key={index} className="d-flex align-items-center mb-2">
+                    <div key={index} className='d-flex align-items-center mb-2'>
                       <Form.Check
-                        type="checkbox"
+                        type='checkbox'
                         checked={row.checked}
                         onChange={(e) => handleInputChange(index, 'checked', e.target.checked)}
                       />
                       <Form.Control
-                        type="text"
-                        placeholder="Input 1"
+                        type='text'
+                        placeholder='Input 1'
                         value={row.input1}
-                        className="ml-2"
+                        className='ml-2'
                         onChange={(e) => handleInputChange(index, 'input1', e.target.value)}
                       />
                       <Form.Control
-                        type="text"
-                        placeholder="Input 2"
+                        type='text'
+                        placeholder='Input 2'
                         value={row.input2}
-                        className="ml-2"
+                        className='ml-2'
                         onChange={(e) => handleInputChange(index, 'input2', e.target.value)}
                       />
-                      <Button
-                        className="ml-2"
-                        onClick={() => handleToggleEnable(index)}
-                      >
+                      <Button className='ml-2' onClick={() => handleToggleEnable(index)}>
                         {row.isEnabled ? 'Disable' : 'Enable'}
                       </Button>
-                      <Button
-                      className='ml-2'
-                      onClick={()=> handleDeleteSelectedIndex(props.selected_collection_id,index)}
-                      >
+                      <Button className='ml-2' onClick={() => handleDeleteSelectedIndex(props.selected_collection_id, row.input1)}>
                         <MdOutlineDelete />
                       </Button>
                     </div>
                   ))}
 
-                  <Button className="mt-2" variant="link" onClick={handleAddRow}>
+                  <Button className='mt-2' variant='link' onClick={handleAddRow}>
                     + Add More Rows
                   </Button>
 
-                  <Button className="mt-4" onClick={handleSave}>
+                  <Button className='mt-4' onClick={handleSave}>
                     Save
                   </Button>
-                  <Button className="mt-4" 
-                  // onClick={handleDelete(props.selected_collection_id)}
-                  >
+                  <Button className='mt-4' onClick={() => handleDelete(props.selected_collection_id)}>
                     Delete
                   </Button>
                 </Form>
