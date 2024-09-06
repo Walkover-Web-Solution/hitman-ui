@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomColorPicker from './customColorPicker'
 import Joi from 'joi-browser'
-import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { Button, Tooltip, OverlayTrigger, Modal, Form, Dropdown } from 'react-bootstrap'
 import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
@@ -15,6 +15,9 @@ import { HiOutlineExternalLink } from 'react-icons/hi'
 import { FiCopy } from 'react-icons/fi'
 import { FaRegTimesCircle } from 'react-icons/fa'
 import { RiCheckboxMultipleLine } from 'react-icons/ri'
+import { createNewPublicEnvironment, deleteEntirePublicEnv, deletePublicEnv } from './redux/publicEnvActions'
+import collectionsApiService from '../collections/collectionsApiService'
+import { MdOutlineDelete } from 'react-icons/md'
 
 const MAPPING_DOMAIN = import.meta.env.VITE_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
@@ -30,11 +33,13 @@ const publishDocFormEnum = {
 const PublishDocForm = (props) => {
   const dispatch = useDispatch()
 
-  const { collections, isPublishSliderOpen, tabs, pages } = useSelector((state) => ({
+  const { collections, isPublishSliderOpen, tabs, pages, environment, publicEnv } = useSelector((state) => ({
     collections: state.collections,
     isPublishSliderOpen: state.modals.publishData,
     tabs: state.tabs,
-    pages: state.pages
+    pages: state.pages,
+    environment: state.environment,
+    publicEnv: state.publicEnv
   }));
   const [data, setData] = useState({
     title: '',
@@ -50,6 +55,13 @@ const PublishDocForm = (props) => {
   const [openPublishSidebar, setOpenPublishSidebar] = useState(false)
   const [republishNeeded, setRepublishNeeded] = useState(false)
   const [isCopied, setIsCopied] = useState(false);
+  const [showCreateEnvForm, setShowCreateEnvForm] = useState(false);
+  const [showCopyEnvModal, setShowCopyEnvModal] = useState(false);
+  const [selectedEnv, setSelectedEnv] = useState(null);
+  const [rows, setRows] = useState([
+    { checked: false, input1: '', input2: '', isEnabled: true },
+    { checked: false, input1: '', input2: '', isEnabled: true }
+  ]);
 
   useEffect(() => {
     setSelectedCollection()
@@ -74,7 +86,6 @@ const PublishDocForm = (props) => {
   }
 
   const unPublishCollection = (selectedCollection) => {
-    // const selectedCollection = collections[collectionId];
     if (selectedCollection?.isPublic === true) {
       const editedCollection = { ...selectedCollection };
       editedCollection.isPublic = false;
@@ -319,7 +330,7 @@ const PublishDocForm = (props) => {
             <span onClick={() => isDisabled && openExternalLink(url)} className={isDisabled ? 'text-disable flex-grow-1' : 'disabled-link'}>{url}</span>
             <div className='ml-2'>
               <button className='copy-button-link ml-2 border-0 bg-white' onClick={() => copyToClipboard(url)} title='Copy URL' onMouseDown={(e) => e.preventDefault()}>
-              {isCopied ? ( 
+                {isCopied ? (
                   <RiCheckboxMultipleLine size={13} color='black' />
                 ) : (
                   <FiCopy size={13} />
@@ -397,6 +408,73 @@ const PublishDocForm = (props) => {
 
   const publishCheck = collections[tabs?.activeTabId]?.isPublic
 
+  const handleAddRow = () => {
+    setRows([...rows, { checked: false, input1: '', input2: '', isEnabled: true }]);
+  };
+
+  const handleInputChange = (index, field, value) => {
+    const updatedRows = rows.map((row, i) =>
+      i === index ? { ...row, [field]: value } : row
+    );
+    setRows(updatedRows);
+  };
+
+  const handleToggleEnable = (index) => {
+    const updatedRows = rows.map((row, i) =>
+      i === index ? { ...row, isEnabled: !row.isEnabled } : row
+    );
+    setRows(updatedRows);
+  };
+
+  const handleSave = async () => {
+    const formattedData = {};
+    rows.forEach((row) => {
+      if (row.input1) {
+        formattedData[row.input1] = {
+          DefaultValue: row.input2,
+          IsEditable: row.isEnabled,
+          Checked: row.checked
+        };
+      }
+    });
+    await collectionsApiService.updateCollection(props.selected_collection_id, {environment:formattedData,name:collections[props.selected_collection_id].name})
+    dispatch(createNewPublicEnvironment(props.selected_collection_id, formattedData));
+
+    setShowCreateEnvForm(false);
+  };
+
+  const handleCopyExistingEnv = (environment) => {
+    const copiedRows = Object.keys(environment?.variables).map((key) => ({
+      input1: key,
+      input2: environment?.variables[key]?.initialValue || '',
+      isEnabled: null,
+      checked: null
+    }));
+
+    setRows(copiedRows);
+    setShowCopyEnvModal(false);
+    setShowCreateEnvForm(true);
+  };
+
+  const handlePublicEnvClick = () => {
+      const prefilledRows = Object.keys(publicEnv[props.selected_collection_id]).map((key) => ({
+        input1: key,
+        input2: publicEnv[props.selected_collection_id][key].DefaultValue,
+        isEnabled: publicEnv[props.selected_collection_id][key].IsEditable,
+        checked: publicEnv[props.selected_collection_id][key].Checked
+      }));
+      setRows(prefilledRows);
+      setShowCreateEnvForm(true);
+  };
+
+  const handleDeleteSelectedIndex = (collectionId, index) => {
+    dispatch(deletePublicEnv(collectionId, index));
+};
+
+const handleDelete = (collectionId) => {
+  dispatch(deleteEntirePublicEnv(collectionId));
+};
+
   return (
     <>
       <div className='d-flex justify-content-center'>
@@ -411,8 +489,107 @@ const PublishDocForm = (props) => {
           {publishCheck && renderPublicUrl()}
           <div className='small-input mt-2'>
             {renderInput('title', false, 'brand name', false)}
+            <div className="form-group mb-4">
+              <label>Select Environment</label>
+              {
+                 !publicEnv[props.selected_collection_id] ? (
+                  <Dropdown>
+                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                      {selectedEnv ? environment.environments[selectedEnv]?.name : "Select Environment"}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      {Object.keys(environment.environments).map((envId) => (
+                        <Dropdown.Item
+                          key={envId}
+                          onClick={() => {
+                            handleCopyExistingEnv(environment.environments[envId]);
+                            setSelectedEnv(envId);
+                          }}
+                        >
+                          {environment.environments[envId]?.name}
+                        </Dropdown.Item>
+                      ))}
+                      <Dropdown.Item
+                        onClick={() => setShowCreateEnvForm(true)}
+                      >
+                        Add New Env
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                ) : (
+                  <input
+                    type="text"
+                    value="Public Environment" 
+                    readOnly
+                    onClick={() => handlePublicEnvClick()}
+                    style={{ cursor: 'pointer', border: '1px solid #ced4da', padding: '5px', borderRadius: '4px' }}
+                />
+                )
+              }
+
+            </div>
             {renderInput('domain', false, 'docs.example.com', false)}
           </div>
+          {showCreateEnvForm && (
+            <Modal show={showCreateEnvForm} onHide={() => setShowCreateEnvForm(false)}>
+              <Modal.Header closeButton>
+                <Modal.Title>Public Environment</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Form className="mt-4">
+                  {rows.map((row, index) => (
+                    <div key={index} className="d-flex align-items-center mb-2">
+                      <Form.Check
+                        type="checkbox"
+                        checked={row.checked}
+                        onChange={(e) => handleInputChange(index, 'checked', e.target.checked)}
+                      />
+                      <Form.Control
+                        type="text"
+                        placeholder="Input 1"
+                        value={row.input1}
+                        className="ml-2"
+                        onChange={(e) => handleInputChange(index, 'input1', e.target.value)}
+                      />
+                      <Form.Control
+                        type="text"
+                        placeholder="Input 2"
+                        value={row.input2}
+                        className="ml-2"
+                        onChange={(e) => handleInputChange(index, 'input2', e.target.value)}
+                      />
+                      <Button
+                        className="ml-2"
+                        onClick={() => handleToggleEnable(index)}
+                      >
+                        {row.isEnabled ? 'Disable' : 'Enable'}
+                      </Button>
+                      <Button
+                      className='ml-2'
+                      onClick={()=> handleDeleteSelectedIndex(props.selected_collection_id,index)}
+                      >
+                        <MdOutlineDelete />
+                      </Button>
+                    </div>
+                  ))}
+
+                  <Button className="mt-2" variant="link" onClick={handleAddRow}>
+                    + Add More Rows
+                  </Button>
+
+                  <Button className="mt-4" onClick={handleSave}>
+                    Save
+                  </Button>
+                  <Button className="mt-4" 
+                  // onClick={handleDelete(props.selected_collection_id)}
+                  >
+                    Delete
+                  </Button>
+                </Form>
+              </Modal.Body>
+            </Modal>
+          )}
           <div className='d-flex favicon mb-4'>
             <div className='form-group mb-0'>
               <label> Fav Icon </label>

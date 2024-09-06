@@ -15,6 +15,8 @@ import tokenDataReducer from './tokenData/tokenDataReducers'
 import userReducer from '../components/auth/redux/usersRedux/userReducer'
 import organizationReducer from '../components/auth/redux/organizationRedux/organizationReducer'
 import automationReducer from '../components/collections/runAutomation/redux/runAutomationReducer'
+import createNewPublicEnvReducer from '../components/publishDocs/redux/publicEnvReducer'
+import { create } from 'joi-browser'
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -31,7 +33,8 @@ const rootReducer = combineReducers({
   tokenData: tokenDataReducer,
   users: userReducer,
   organizations : organizationReducer,
-  automation : automationReducer
+  automation : automationReducer,
+  publicEnv : createNewPublicEnvReducer
 })
 
 const persistConfig = {
