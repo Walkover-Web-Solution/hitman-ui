@@ -110,7 +110,8 @@ const mapStateToProps = (state) => {
     tokenDetails: state?.tokenData?.tokenDetails,
     curlSlider: state.modals?.curlSlider || false,
     users: state.users.usersList,
-    pages: state.pages
+    pages: state.pages,
+    publicEnv: state.publicEnv,
   }
 }
 
@@ -187,6 +188,7 @@ const untitledEndpointData = {
   currentView: 'testing',
   docViewData: [
     { type: 'host' },
+    { type: 'publicEnv' },
     { type: 'body' },
     { type: 'params' },
     { type: 'pathVariables' },
@@ -262,7 +264,7 @@ const fetchHistory = (historyId, props) => {
   return { ...utilityFunctions.modifyEndpointContent(_.cloneDeep(data), _.cloneDeep(untitledEndpointData)), flagResponse: true }
 }
 
-const withQuery = (WrappedComponent) => {  
+const withQuery = (WrappedComponent) => {
   return (props) => {
     const params = useParams()
     const queryClient = useQueryClient()
@@ -408,7 +410,8 @@ class DisplayEndpoint extends Component {
       activeTab: 'default',
       addUrlClass: false,
       fileDownloaded: false,
-      sendClickec: false
+      sendClickec: false,
+      showPublicEnvironments: false,
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
@@ -1350,7 +1353,7 @@ class DisplayEndpoint extends Component {
         docViewData: endpointContent?.docViewData,
         protocolType: endpointContent?.protocolType || null,
         description: endpointContent?.description || "",
-        sampleResponse : endpointContent?.sampleResponseArray || []
+        sampleResponse: endpointContent?.sampleResponseArray || []
       }
       if (trimString(endpoint.name) === '' || trimString(endpoint.name)?.toLowerCase() === 'untitled')
         return toast.error('Please enter Endpoint name')
@@ -2388,7 +2391,7 @@ class DisplayEndpoint extends Component {
     return (
       showRemoveButton && (
         <div className='' onClick={handleOnClick.bind(this)}>
-         <RiDeleteBinLine/>
+          <RiDeleteBinLine />
         </div>
       )
     )
@@ -2468,7 +2471,6 @@ class DisplayEndpoint extends Component {
       />
     )
   }
-
   renderPublicItem = (item, index) => {
     switch (item.type) {
       case 'textArea': {
@@ -2490,6 +2492,9 @@ class DisplayEndpoint extends Component {
       case 'host': {
         if (!isDashboardRoute(this.props)) return this.renderPublicHost()
         else return <div className='endpoint-url-container'> {this.renderHost()} </div>
+      }
+      case 'publicEnv': {
+        if (!isDashboardRoute(this.props)) return this.renderPublicEnvironments()
       }
       case 'body': {
         if (!isDashboardRoute(this.props)) return this.renderPublicBodyContainer()
@@ -2688,6 +2693,72 @@ class DisplayEndpoint extends Component {
         </div>
       )
     )
+  }
+  handleInputChange() {
+    
+  }
+
+  renderPublicEnvironments() {
+    const firstCollectionKey = Object.keys(this.props.collections)[0];
+    const collectionId = this.props.collections[firstCollectionKey].id;
+    const publicEnv = this.props.publicEnv[collectionId]
+    return (
+      <div>
+        {this.state.showPublicEnvironments && (
+          <div>
+            <span>Public Environments</span>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th >
+                    KEY
+                  </th>
+                  <th>VALUE</th>
+                </tr>
+              </thead>
+              <tbody>
+                {publicEnv && (
+                  Object.keys(publicEnv).map((key, Index) => {
+                    const env = publicEnv[key]
+                    if (env && typeof env.Checked !== "undefined" && env.Checked) {
+
+                      return (
+                        <tr key={Index}>
+                          <td>
+                            <input
+                              type="text"
+                              value={key}
+                              disabled
+                              className="form-control"
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={env.DefaultValue}
+                              disabled={!env.IsEditable}
+                              onChange={this.handleInputChange.bind(this)} 
+                              className="form-control"
+                            />
+                          </td>
+                        </tr>
+                      );
+                    }
+                    return null;
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <button
+          className="btn btn-primary"
+          onClick={() => this.setState({ showPublicEnvironments: !this.state.showPublicEnvironments })}
+        >
+          {this.state.showPublicEnvironments ? 'Hide Public Environments' : 'Show Public Environments'}
+        </button>
+      </div>
+    );
   }
 
   renderPublicHost() {
