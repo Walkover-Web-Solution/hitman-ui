@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
+
 import {
   isDashboardRoute,
   isElectron,
@@ -77,6 +78,8 @@ import IconButton from '../common/iconButton.jsx'
 import SwitchBtn from '../common/switchBtn/switchBtn.jsx'
 import { MdExpandMore } from 'react-icons/md'
 import { fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
+import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
+
 
 const shortid = require('shortid')
 const status = require('http-status')
@@ -127,12 +130,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     open_modal: (modal, data) => dispatch(openModal(modal, data)),
     pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
     approve_endpoint: (endpoint, callback) => dispatch(approveEndpoint(endpoint, callback)),
-    // set_response_view: (view) => dispatch(onToggle(view)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     unPublish_endpoint: (endpointId) => dispatch(draftEndpoint(endpointId)),
     update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate)),
     update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload)),
-    update_pre_post_script: (tabId, executionData) => dispatch(updatePostPreScriptExecutedData(tabId, executionData))
+    update_pre_post_script: (tabId, executionData) => dispatch(updatePostPreScriptExecutedData(tabId, executionData)),
+    update_public_env: (key,value) => dispatch(updatePublicEnv(key,value))
   }
 }
 
@@ -2694,14 +2697,12 @@ class DisplayEndpoint extends Component {
       )
     )
   }
-  handleInputChange() {
-    
-  }
+  handleInputChange(key, event) {
+    const newValue = event.target.value;
+    this.props.update_public_env(key, newValue); 
+}
 
   renderPublicEnvironments() {
-    const firstCollectionKey = Object.keys(this.props.collections)[0];
-    const collectionId = this.props.collections[firstCollectionKey].id;
-    const publicEnv = this.props.publicEnv[collectionId]
     return (
       <div>
         {this.state.showPublicEnvironments && (
@@ -2717,9 +2718,9 @@ class DisplayEndpoint extends Component {
                 </tr>
               </thead>
               <tbody>
-                {publicEnv && (
-                  Object.keys(publicEnv).map((key, Index) => {
-                    const env = publicEnv[key]
+                {this.props.publicEnv && (
+                  Object.keys(this.props.publicEnv).map((key, Index) => {
+                    const env = this.props.publicEnv[key]
                     if (env && typeof env.Checked !== "undefined" && env.Checked) {
 
                       return (
@@ -2737,7 +2738,7 @@ class DisplayEndpoint extends Component {
                               type="text"
                               value={env.DefaultValue}
                               disabled={!env.IsEditable}
-                              onChange={this.handleInputChange.bind(this)} 
+                              onChange={(event) => this.handleInputChange(key, event)} 
                               className="form-control"
                             />
                           </td>
