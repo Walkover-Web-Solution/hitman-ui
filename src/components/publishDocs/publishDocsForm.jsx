@@ -509,10 +509,10 @@ const PublishDocForm = (props) => {
             {renderInput('title', false, 'brand name', false)}
             <div className='form-group mb-4'>
               <label>Select Environment</label>
-              {Object.keys(publicEnv).length === 0 ? (
+              {publicEnv === null || Object.keys(publicEnv).length === 0 ? (
                 <Dropdown>
                   <Dropdown.Toggle variant='success' id='dropdown-basic'>
-                    {selectedEnv ? environment.environments[selectedEnv]?.name : 'Select Environment'}
+                    {'Select Environment'}
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
