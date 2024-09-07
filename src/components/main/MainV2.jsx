@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { isDesktop } from 'react-device-detect'
 import SplitPane from '../splitPane/splitPane'
 
 import { fetchAllCookies } from '../cookies/redux/cookiesActions'
@@ -117,9 +116,6 @@ const MainV2 = () => {
         </div>
       ) : (
         <div>
-          {!isDesktop && (
-            <div className='mobile-warning'>Looks like you have opened it on a mobile device. It looks better on a desktop device.</div>
-          )}
           <div className='custom-main-container'>
             <DesktopAppDownloadModal />
             <OnlineStatus />

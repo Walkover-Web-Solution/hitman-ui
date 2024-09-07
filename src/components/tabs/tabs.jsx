@@ -242,7 +242,7 @@ const CustomTabs = (props) => {
                     {tabState[tabId]?.draft?.data?.method || 'GET'}
                   </div>
                 )}
-                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={12} />}
+                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
                 <span>{pages[tabId]?.name}</span>
               </div>
             )
@@ -254,7 +254,7 @@ const CustomTabs = (props) => {
                     {tabState[tabId]?.draft?.data?.method}
                   </div>
                 )}
-                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={12} />}
+                {endpoint.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
                 <span>{pages[tabId]?.name}</span>
               </div>
             )
@@ -262,11 +262,11 @@ const CustomTabs = (props) => {
         } else {
           const endpoint = tabState?.[tabId]
           return (
-            <div className='d-flex fw-500 fs-4 align-items-center'>
+            <div className='d-flex fw-500 fs-4 justify-content-end align-items-end'>
               {endpoint?.draft?.protocolType === 1 && (
                 <div className={`${endpoint?.draft?.data?.method}-TAB mr-2 request-type-bgcolor`}>{endpoint?.draft?.data?.method}</div>
               )}
-              {endpoint?.draft?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={12} />}
+              {endpoint?.draft?.protocolType === 2 && <GrGraphQl className='mr-2 graphql-icon' size={14} />}
               {tab.state?.data?.name || 'Untitled'}
             </div>
           )
@@ -277,8 +277,8 @@ const CustomTabs = (props) => {
           const page = pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='d-flex fw-500 fs-4 align-items-center'>
-                <IoDocumentTextOutline size={12} className='mr-1 mb-1' />
+              <div className='d-flex fw-500 fs-4 justify-content-end align-items-end'>
+                <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
                 <span>
                   <>{page.name} </>
                 </span>
@@ -286,8 +286,8 @@ const CustomTabs = (props) => {
             )
           } else {
             return (
-              <div className='d-flex fw-500 fs-4 align-items-center'>
-                <IoDocumentTextOutline size={12} className='mr-1' />
+              <div className='d-flex fw-500 fs-4 justify-content-end align-items-end'>
+                <IoDocumentTextOutline size={14} className='mr-1' />
                 <span>
                   <>{page.name} </>
                 </span>
@@ -296,8 +296,8 @@ const CustomTabs = (props) => {
           }
         } else {
           return (
-            <div className='d-flex fw-500 fs-4 align-items-center'>
-              <IoDocumentTextOutline size={12} className='mr-1 mb-1' />
+            <div className='d-flex fw-500 fs-4 justify-content-end align-items-end'>
+              <IoDocumentTextOutline size={14} className='mr-1 mb-1' />
               <span>{'Untiled'}</span>
             </div>
           )
@@ -447,7 +447,7 @@ const CustomTabs = (props) => {
   return (
     <>
       <div className='d-flex navs-container'>
-        {showScrollButton() ? (
+        {/* {showScrollButton() ? (
           <div
             className={`scroll-button scroll-button--left d-flex ${leftHideTabs() ? '' : 'disabled'}`}
             onMouseEnter={() => handleMouseEnter('left')}
@@ -458,7 +458,7 @@ const CustomTabs = (props) => {
             </span>
             <span>{leftHideTabs() ? `${leftHideTabs()}+` : null}</span>
           </div>
-        ) : null}
+        ) : null} */}
         <Nav
           variant='pills'
           className='flex-row flex-nowrap item-wrp'
@@ -523,7 +523,7 @@ const CustomTabs = (props) => {
             </div>
           ))}
         </Nav>
-        {showScrollButton() ? (
+        {/* {showScrollButton() ? (
           <div
             className={`scroll-button scroll-button--right d-flex ${rightHideTabs() ? '' : 'disabled'}`}
             onMouseEnter={() => handleMouseEnter('right')}
@@ -534,7 +534,7 @@ const CustomTabs = (props) => {
               <i className='fa fa-angle-right' aria-hidden='true' />
             </span>
           </div>
-        ) : null}
+        ) : null} */}
         <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
           <button className='btn' onClick={() => handleAddTab()}>
             <LuPlus />
