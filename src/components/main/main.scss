@@ -2038,7 +2038,6 @@ table#custom-generic-table tbody input[value='true']+span.checkmark {
 }
 
 .footerWrapper {
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   border-top: 0;
 
   span {
@@ -2569,6 +2568,7 @@ span.endpointNameWrapper {
 }
 
 .dashboard-url {
+  width: calc(100% - 78px);
   .host-field-container {
     margin-right: 0px !important;
 

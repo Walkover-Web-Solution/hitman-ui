@@ -75,7 +75,7 @@ const Page = () => {
         local: import.meta.env.VITE_RTC_URL_LOCAL,
         test: import.meta.env.VITE_RTC_URL_TEST,
         prod: import.meta.env.VITE_RTC_URL_PROD,
-      };
+    };
 
     const { ydoc, provider } = useMemo(() => {
         const ydoc = new Y.Doc();
@@ -258,15 +258,11 @@ const Page = () => {
                             <button className='text-black-50 btn p-0'>Edited {lastModified}</button>
                         </OverlayTrigger>
                     }
-                    <IconButton>
-                        {tabs[activeTabId]?.status === "NEW" ? (
-                            <button className="btn p-0 text-black-60 disabled">
-                                Unsaved
-                            </button>
-                        ) : (
-                            <></>
-                        )}
-                    </IconButton>
+                    {tabs[activeTabId]?.status === "NEW" && <IconButton>
+                        <button className="btn p-0 text-black-60 disabled">
+                            Unsaved
+                        </button>
+                    </IconButton>}
                     {tabs?.[activeTabId]?.status !== 'NEW' &&
                         <div className='inner-operations'>
                             <Dropdown>

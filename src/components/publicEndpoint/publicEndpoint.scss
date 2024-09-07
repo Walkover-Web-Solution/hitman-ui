@@ -142,6 +142,10 @@ main.main.ml-sm-auto.col-lg-10 {
 
   tr {
     display: flex;
+
+    .custom-checkbox-public {
+      padding: 18px 8px !important;
+    }
   }
 
   .dns-target-column-item {
@@ -509,16 +513,21 @@ h4.hm-sidebar-title span {
         td {
           &.custom-td {
             border-color: #e5e5e5 !important;
-            vertical-align: middle;
             opacity: 1;
             color: #232427;
 
             &.keyWrapper {
-              width: 150px !important;
+              width: 200px;
+              max-width: 200px;
               word-break: break-all;
               font-weight: 500;
               font-size: 13px;
               color: #333;
+            }
+
+            &.valueWrapper {
+              max-width: calc(100% - 200px - 50px);
+              width: calc(100% - 200px - 50px);
             }
           }
 

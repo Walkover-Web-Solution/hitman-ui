@@ -6,7 +6,7 @@ import { willHighlight } from './highlightChangesHelper'
 import './publicEndpoint.scss'
 import { Badge } from 'react-bootstrap'
 import { bodyTypesEnums, rawTypesEnums } from '../common/bodyTypeEnums'
-import { hexToRgb, isOnPublishedPage } from '../common/utility'
+import { hexToRgb, isDashboardAndTestingView, isOnPublishedPage } from '../common/utility'
 import { background } from '../backgroundColor.js'
 import { FaLongArrowAltUp } from 'react-icons/fa'
 class PublicBodyContainer extends Component {
@@ -308,9 +308,9 @@ class PublicBodyContainer extends Component {
           <GenericTable
             {...this.props}
             title='formData'
-            dataArray={this.state.data.data}
+            dataArray={this.props?.body?.[bodyTypesEnums['multipart/form-data']]}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={this.state.data.data}
+            original_data={this.props?.body?.[bodyTypesEnums['multipart/form-data']]}
           />
         )}
 
@@ -318,9 +318,9 @@ class PublicBodyContainer extends Component {
           <GenericTable
             {...this.props}
             title='x-www-form-urlencoded'
-            dataArray={this.state.data.urlencoded}
+            dataArray={this.props.body?.[bodyTypesEnums['application/x-www-form-urlencoded']]}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={this.state.data.urlencoded}
+            original_data={this.props.body?.[bodyTypesEnums['application/x-www-form-urlencoded']]}
           />
         )}
 
@@ -328,29 +328,31 @@ class PublicBodyContainer extends Component {
           this.props.body.type !== bodyTypesEnums['multipart/form-data'] &&
           this.props.body.type !== bodyTypesEnums['application/x-www-form-urlencoded'] &&
           (this.props.body.type === rawTypesEnums.JSON ? (
-            <div className='hm-public-table mb-4'>
-              <div className='public-generic-table-title-container'>
-                Body <small className='text-muted'>({this.props.body.type})</small>{' '}
-                {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
-              </div>
-              <div className='d-flex justify-content-between'>
-              <ul className='public-endpoint-tabs'>
-                <li
-                  className={this.state.showBodyCodeEditor ? 'active' : ''}
-                  style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
-                  onClick={() => this.setState({ showBodyCodeEditor: true })}
-                >
-                  Raw
-                </li>
-                <li
-                  className={!this.state.showBodyCodeEditor ? 'active' : ''}
-                  style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
-                  onClick={() => this.setState({ showBodyCodeEditor: false })}
-                >
-                  Body description
-                </li>
-              </ul>
-              {this.state.isExpanded && (<button className='btn btn-sm close-button py-0 pb-1 border text-secondary' onClick={this.collapseEditor}><FaLongArrowAltUp /></button>)}
+            <div className='hm-public-table mb-2'>
+              <div className="d-flex justify-content-between align-items-center mt-4">
+                {isOnPublishedPage(this.props) &&
+                  <div className='public-generic-table-title-container'>
+                    Body <small className='text-muted'>({this.props.body.type})</small>{' '}
+                    {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
+                  </div>}
+                <div className='d-flex justify-content-between'>
+                  <ul className='public-endpoint-tabs'>
+                    <li
+                      className={this.state.showBodyCodeEditor ? 'active' : ''}
+                      style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
+                      onClick={() => this.setState({ showBodyCodeEditor: true })}
+                    >
+                      Raw
+                    </li>
+                    <li
+                      className={!this.state.showBodyCodeEditor ? 'active' : ''}
+                      style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
+                      onClick={() => this.setState({ showBodyCodeEditor: false })}
+                    >
+                      Body description
+                    </li>
+                  </ul>
+                </div>
               </div>
               {this.state.showBodyCodeEditor ? (
                 <div className='body-ace-editer' onClick={this.toggleEditor}>
@@ -361,7 +363,7 @@ class PublicBodyContainer extends Component {
                       theme='github'
                       value={this.props.body?.raw?.value}
                       onChange={this.handleChangeBodyDescription.bind(this)}
-                      style={{ height: this.state.editorHeight, fontFamily: 'monospace'  }}
+                      style={{ height: this.state.editorHeight, fontFamily: 'monospace' }}
                       setOptions={{
                         showLineNumbers: true,
                       }}
@@ -395,7 +397,7 @@ class PublicBodyContainer extends Component {
                 {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
               </div>
               <AceEditor
-              style={{ fontFamily: 'monospace' }}
+                style={{ fontFamily: 'monospace' }}
                 className='custom-raw-editor'
                 mode={this.props.body.type.toLowerCase()}
                 theme='github'

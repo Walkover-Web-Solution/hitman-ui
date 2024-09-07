@@ -239,23 +239,28 @@ $border-color: rgba(227, 228, 230, 0.7);
 .endpoint-container {
   .panel-endpoint-name-container {
     margin-bottom: 0px;
+
     strong {
       &:not(:last-child) {
         max-width: 120px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
+
       border-radius: 2px;
+
       &:hover {
         background-color: $button-background-hover;
       }
+
       &:focus-visible {
-        outline: 1px solid rgba(128, 128, 128, 0.356) ;
+        outline: 1px solid rgba(128, 128, 128, 0.356);
         background-color: white !important;
       }
+
       &:focus {
-        outline: 1px solid rgba(128, 128, 128, 0.356) ;
+        outline: 1px solid rgba(128, 128, 128, 0.356);
         background-color: white;
       }
     }
@@ -333,7 +338,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       display: flex;
       flex-direction: row;
       justify-content: center;
-      width: 100%;
+      width: calc(100% - 103px);
 
       .endpoint-url-input {
         height: 36px;
@@ -558,7 +563,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 .hm-panel {
   top: 0;
   z-index: 9;
-  
+
   .navbar-inner-td {
     height: 29px;
   }
@@ -794,9 +799,18 @@ table#custom-generic-table {
   }
 
   td {
-    height: 100%;
-    padding: 3px !important;
+    vertical-align: top;
+    white-space: normal;
+    padding: 6px !important;
     border: none;
+
+    .public-description {
+      display: block;
+      width: 100%;
+      word-break: break-word;
+      height: auto;
+      font-size: 10px !important;
+    }
   }
 
   tbody {
@@ -822,8 +836,13 @@ table#custom-generic-table {
 
 #generic-table-row {
   #generic-table-key-cell {
+    padding: 18px 8px !important;
     border-left: none;
     width: 30px;
+  }
+
+  .custom-checkbox-public{
+    padding: 18px 8px !important;
   }
 
   #generic-table-description-cell {
@@ -1296,6 +1315,10 @@ table#custom-generic-table {
     margin-bottom: 1.5rem;
   }
 
+  .autosuggest-hostcontainer {
+    width: calc(100% - 78px);
+  }
+
   .input-group .form-control {
     background: #fff !important;
   }
@@ -1760,6 +1783,7 @@ table#custom-generic-table {
     }
   }
 }
+
 .sample-code-inner {
   height: calc(100vh - 42px) !important;
 }
@@ -1841,6 +1865,7 @@ table#custom-generic-table {
     &:hover {
       background-color: rgba(128, 128, 128, 0.123);
     }
+
     .dropdown-toggle {
       &::after {
         content: '' !important;
@@ -1855,6 +1880,7 @@ table#custom-generic-table {
   .save-button-endpoint {
     padding-top: 2px;
     padding-bottom: 2px;
+
     .save-color {
       color: #212529;
     }
@@ -1865,6 +1891,7 @@ table#custom-generic-table {
         cursor: no-drop;
       }
     }
+
     &.save-button {
       &:hover {
         background-color: $button-background-hover;

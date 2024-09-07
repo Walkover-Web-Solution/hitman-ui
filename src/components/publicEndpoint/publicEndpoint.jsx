@@ -406,7 +406,6 @@ class PublicEndpoint extends Component {
           }
         `}
         </Style>
-        <nav className='public-endpoint-navbar'></nav>
         <main
           role='main'
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
@@ -490,7 +489,7 @@ class PublicEndpoint extends Component {
                     />
                   )}
 
-                  {this.displayCTAandLink()}
+                  {/* {this.displayCTAandLink()} */}
                   {/* <div className='d-flex flex-row justify-content-start'>
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
