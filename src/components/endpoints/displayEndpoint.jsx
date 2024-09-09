@@ -2699,7 +2699,6 @@ class DisplayEndpoint extends Component {
   }
 
   renderPublicEnvironments() {
-    debugger
     return (
       <div>
         {this.state.showPublicEnvironments && (
@@ -2792,7 +2791,7 @@ class DisplayEndpoint extends Component {
           {this.props?.highlights?.uri ? <i className='fas fa-circle' /> : null}
         </div>
         <input ref={this.uri} type='hidden' value={this.props?.endpointContent?.data?.updatedUri} name='updatedUri' />
-        {(!isDashboardRoute(this.props)) && this.renderPublicEnvironments()}
+        {(!isDashboardRoute(this.props)) && Object.keys(this.props.publicEnv).length !== 0 && this.renderPublicEnvironments()}
       </div>
     )
   }
