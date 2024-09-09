@@ -2732,7 +2732,7 @@ class DisplayEndpoint extends Component {
                           <td>
                             <input
                               type="text"
-                              value={env.DefaultValue}
+                              value={env.currentValue}
                               disabled={!env.IsEditable}
                               onChange={(event) => this.handleInputChange(key, event)}
                               className="form-control"

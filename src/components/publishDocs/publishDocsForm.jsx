@@ -462,7 +462,7 @@ const PublishDocForm = (props) => {
   const handlePublicEnvClick = () => {
     const prefilledRows = Object.keys(publicEnv).map((key) => ({
       variable: key,
-      value: publicEnv[key].DefaultValue,
+      value: publicEnv[key].currentValue,
       isEnabled: publicEnv[key].IsEditable,
       checked: publicEnv[key].Checked
     }))

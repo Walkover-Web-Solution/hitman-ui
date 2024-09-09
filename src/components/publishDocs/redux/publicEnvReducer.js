@@ -16,7 +16,7 @@ const createNewPublicEnvReducer = (state = initialState, action) => {
             ...state,
             [key]: {
               ...state[key], 
-              DefaultValue: value 
+              currentValue: value 
           }
         };
 
