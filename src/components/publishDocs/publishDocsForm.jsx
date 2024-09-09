@@ -450,8 +450,8 @@ const PublishDocForm = (props) => {
     const copiedRows = Object.keys(environment?.variables).map((key) => ({
       variable: key,
       value: environment?.variables[key]?.initialValue || '',
-      isEnabled: null,
-      checked: null
+      isEnabled: false,
+      checked: false
     }))
 
     setRows(copiedRows)
