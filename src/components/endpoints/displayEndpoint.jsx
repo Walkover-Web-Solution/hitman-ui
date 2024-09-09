@@ -2375,7 +2375,7 @@ class DisplayEndpoint extends Component {
         index !== oldIndex && newData.push(data)
       })
       newData.splice(newIndex, 0, docViewData[oldIndex])
-      this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: newData })
+      this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: newData }, () => this.setModifiedTabData())
     }
   }
 
@@ -2385,7 +2385,7 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData({
       ...this.props.endpointContent,
       docViewData: updatedDocViewData
-    })
+    }, () => this.setModifiedTabData())
   }
 
   debouncedSave = _.debounce(this.saveData, 1000)
@@ -2393,11 +2393,13 @@ class DisplayEndpoint extends Component {
   renderTiptapEditor(item, index) {
     return (
       <Tiptap
-        initial={item.data}
-        onChange={(e) => this.debouncedSave(index, e)}
-        match={this.props}
+        provider={false}
+        ydoc={false}
         isInlineEditor
         disabled={!isDashboardRoute(this.props)}
+        initial={item.data}
+        onChange={(e) => this.debouncedSave(index, e)}
+        isEndpoint= {true}
         key={`${item.type}-${index}`}
       />
     )
