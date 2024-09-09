@@ -135,7 +135,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     update_token: (dataToUpdate) => dispatch(updateToken(dataToUpdate)),
     update_curl_slider: (payload) => dispatch(updateStateOfCurlSlider(payload)),
     update_pre_post_script: (tabId, executionData) => dispatch(updatePostPreScriptExecutedData(tabId, executionData)),
-    update_public_env: (key,value) => dispatch(updatePublicEnv(key,value))
+    update_public_env: (key, value) => dispatch(updatePublicEnv(key, value))
   }
 }
 
@@ -191,7 +191,6 @@ const untitledEndpointData = {
   currentView: 'testing',
   docViewData: [
     { type: 'host' },
-    { type: 'publicEnv' },
     { type: 'body' },
     { type: 'params' },
     { type: 'pathVariables' },
@@ -2496,9 +2495,6 @@ class DisplayEndpoint extends Component {
         if (!isDashboardRoute(this.props)) return this.renderPublicHost()
         else return <div className='endpoint-url-container'> {this.renderHost()} </div>
       }
-      // case 'publicEnv': {
-      //   if (!isDashboardRoute(this.props)) return this.renderPublicEnvironments()
-      // }
       case 'body': {
         if (!isDashboardRoute(this.props)) return this.renderPublicBodyContainer()
         else return this.renderBodyContainer()
@@ -2699,8 +2695,8 @@ class DisplayEndpoint extends Component {
   }
   handleInputChange(key, event) {
     const newValue = event.target.value;
-    this.props.update_public_env(key, newValue); 
-}
+    this.props.update_public_env(key, newValue);
+  }
 
   renderPublicEnvironments() {
     debugger
@@ -2739,7 +2735,7 @@ class DisplayEndpoint extends Component {
                               type="text"
                               value={env.DefaultValue}
                               disabled={!env.IsEditable}
-                              onChange={(event) => this.handleInputChange(key, event)} 
+                              onChange={(event) => this.handleInputChange(key, event)}
                               className="form-control"
                             />
                           </td>
@@ -2796,6 +2792,7 @@ class DisplayEndpoint extends Component {
           {this.props?.highlights?.uri ? <i className='fas fa-circle' /> : null}
         </div>
         <input ref={this.uri} type='hidden' value={this.props?.endpointContent?.data?.updatedUri} name='updatedUri' />
+        {(!isDashboardRoute(this.props)) && this.renderPublicEnvironments()}
       </div>
     )
   }
