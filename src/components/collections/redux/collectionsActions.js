@@ -111,6 +111,8 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
     delete editedCollection.id
     delete editedCollection.requestId
     delete editedCollection.rootParentId
+    delete editedCollection.createdAt
+    delete editedCollection.cta
     collectionsApiService
       .updateCollection(id, editedCollection)
       .then((response) => {

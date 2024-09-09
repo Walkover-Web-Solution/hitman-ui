@@ -2496,9 +2496,9 @@ class DisplayEndpoint extends Component {
         if (!isDashboardRoute(this.props)) return this.renderPublicHost()
         else return <div className='endpoint-url-container'> {this.renderHost()} </div>
       }
-      case 'publicEnv': {
-        if (!isDashboardRoute(this.props)) return this.renderPublicEnvironments()
-      }
+      // case 'publicEnv': {
+      //   if (!isDashboardRoute(this.props)) return this.renderPublicEnvironments()
+      // }
       case 'body': {
         if (!isDashboardRoute(this.props)) return this.renderPublicBodyContainer()
         else return this.renderBodyContainer()
@@ -2703,6 +2703,7 @@ class DisplayEndpoint extends Component {
 }
 
   renderPublicEnvironments() {
+    debugger
     return (
       <div>
         {this.state.showPublicEnvironments && (

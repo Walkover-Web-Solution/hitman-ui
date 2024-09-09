@@ -136,6 +136,7 @@ const PublishDocForm = (props) => {
   }
 
   const saveAndPublishCollection = (selectedCollection) => {
+    debugger
     const collectionId = props.selected_collection_id
     const collection = { ...collections[collectionId] }
     const newData = { ...data }
