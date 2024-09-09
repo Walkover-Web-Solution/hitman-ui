@@ -582,9 +582,17 @@ const PublishDocForm = (props) => {
                     + Add More Rows
                   </Button>
 
+                  <Button className='mt-2' variant='link' onClick={() => setRows(rows.map(row => ({ ...row, checked: true })))}>
+                    Select All
+                  </Button>
+                  <Button className='mt-2' variant='link' onClick={() => setRows(rows.map(row => ({ ...row, checked: false })))}>
+                    Deselect All
+                  </Button>
+
                   <Button className='mt-4' onClick={handleSave}>
                     Save
                   </Button>
+
                   <Button className='mt-4' onClick={() => handleDelete(props.selected_collection_id)}>
                     Delete
                   </Button>
