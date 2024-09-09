@@ -302,9 +302,12 @@ const Page = () => {
                     <Tiptap
                         provider={provider}
                         ydoc={ydoc}
-                        key={pageId}
                         isInlineEditor={false}
                         disabled={false}
+                        initial={false}
+                        onChange={false}
+                        isEndpoint={false}
+                        key={pageId}
                     />
                 </div>
             </div>
