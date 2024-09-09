@@ -582,11 +582,11 @@ const PublishDocForm = (props) => {
                     + Add More Rows
                   </Button>
 
-                  <Button className='mt-2' variant='link' onClick={() => setRows(rows.map(row => ({ ...row, checked: true })))}>
-                    Select All
-                  </Button>
-                  <Button className='mt-2' variant='link' onClick={() => setRows(rows.map(row => ({ ...row, checked: false })))}>
-                    Deselect All
+                  <Button className='mt-2' variant='link' onClick={() => {
+                    const allChecked = rows.every(row => row.checked);
+                    setRows(rows.map(row => ({ ...row, checked: !allChecked })));
+                  }}>
+                    {rows.every(row => row.checked) ? 'Deselect All' : 'Select All'}
                   </Button>
 
                   <Button className='mt-4' onClick={handleSave}>
