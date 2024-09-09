@@ -1089,7 +1089,14 @@ class DisplayEndpoint extends Component {
     return base64Pattern.test(response)
   }
 
+  decodeHtmlEntities(input) {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = input;
+    return textarea.value;
+  }
+
   HtmlUrlToString(htmlString) {
+    htmlString = this.decodeHtmlEntities(htmlString)
     const str = htmlString.replace(/<\/?[^>]+(>|$)/g, "");
     const regex = /{{(.*?)}}/g;
     let matches = [];
