@@ -432,7 +432,7 @@ const PublishDocForm = (props) => {
     rows.forEach((row) => {
       if (row.variable) {
         formattedData[row.variable] = {
-          DefaultValue: row.value,
+          currentValue: row.value,
           IsEditable: row.isEnabled,
           Checked: row.checked
         }
