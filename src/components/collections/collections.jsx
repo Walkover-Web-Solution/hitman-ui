@@ -44,6 +44,7 @@ const Collections = (props) => {
   const [automationSelectedCollectionId, setAutomationSelectedCollectionId] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [gtmId, setGtmId] = useState('')
+  const [isHovered, setIsHovered] = useState(false);
 
   const closeCollectionForm = () => {
     setShowCollectionForm(false)
@@ -253,8 +254,15 @@ const Collections = (props) => {
                             />
                           </div>}
                           <div
-                            className='dropdown-item delete-button-sb text-danger d-flex align-items-center'
+                            className='dropdown-item delete-button-sb d-flex align-items-center'
                             onClick={() => openDeleteCollectionModal(collectionId)}
+                            onMouseEnter={() => setIsHovered(true)}
+                            onMouseLeave={() => setIsHovered(false)}
+                            style={{
+                              color: isHovered ? 'white' : '#8e1a10',
+                              backgroundColor: isHovered ? 'red' : 'transparent',
+                              transition: 'background-color 0.3s, color 0.3s'
+                            }}
                           >
                             <RiDeleteBin6Line size={12} /> Delete
                           </div>
@@ -309,7 +317,7 @@ const Collections = (props) => {
     return (
       <div className='empty-collections text-center mt-4'>
         <div>
-          <EmptyCollections/>
+          <EmptyCollections />
           {/* <img src={emptyCollections} alt='' /> */}
         </div>
         <div className='content'>

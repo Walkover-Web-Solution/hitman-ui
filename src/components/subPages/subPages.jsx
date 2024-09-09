@@ -40,6 +40,7 @@ const SubPage = (props) => {
   const [isHovered, setIsHovered] = useState(false)
   const [showAddCollectionModal, setShowAddCollectionModal] = useState(false)
   const [isHover, setIsHover] = useState(false)
+  const [hover, setHover] = useState(false);
 
   useEffect(() => {
     if (!theme) {
@@ -173,9 +174,6 @@ const SubPage = (props) => {
               className={`d-flex justify-content-center cl-name  ml-1 ${isOnPublishedPage() ? 'cl-public-page' : 'name-sub-page'}`}
               onClick={(e) => {
                 handleRedirect(subPageId)
-                if (!expanded) {
-                  handleToggle(e, subPageId)
-                }
               }}
             >
               <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, subPageId)}>
@@ -205,7 +203,15 @@ const SubPage = (props) => {
                   <div className='dropdown-item d-flex align-items-center' onClick={() => openEditSubPageForm(pages[subPageId])}>
                     <FiEdit2 color='gray' /> Rename
                   </div>
-                  <div className='dropdown-item text-danger d-flex align-items-center' onClick={() => openDeleteSubPageModal(subPageId)}>
+                  <div className='dropdown-item d-flex align-items-center'
+                    onClick={() => openDeleteSubPageModal(subPageId)}
+                    onMouseEnter={() => setHover(true)}
+                    onMouseLeave={() => setHover(false)}
+                    style={{
+                      color: hover ? 'white' : '#8e1a10',
+                      backgroundColor: hover ? 'red' : 'transparent',
+                      transition: 'background-color 0.3s, color 0.3s'
+                    }}>
                     <RiDeleteBin6Line size={15} /> Delete
                   </div>
                 </div>
