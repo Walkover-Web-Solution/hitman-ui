@@ -18,6 +18,7 @@ const mapStateToProps = (state) => {
     modals: state.modals,
     tabs: state?.tabs,
     currentEnvironment: state?.environment?.environments[state?.environment?.currentEnvironmentId]?.variables || {},
+    publicEnv: state?.publicEnv || {},
     activeTabId: state?.tabs?.activeTabId
   }
 }
@@ -368,7 +369,7 @@ class HostContainer extends Component {
           disable={true}
           handleValueChange={this.handleValueChange}
           contentEditableDivRef={this.hostcontainerRef}
-          suggestions={this.props?.currentEnvironment}
+          suggestions={this.props?.publicEnv}
           initial={this.props?.URL ?? ''}
         />
       </div>

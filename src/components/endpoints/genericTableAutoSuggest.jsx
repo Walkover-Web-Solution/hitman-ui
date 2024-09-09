@@ -36,7 +36,7 @@ function GenericTableAutoSuggest(props) {
     return (
         <AutoSuggest
             contentEditableDivRef={genericAutoSuggestRef}
-            suggestions={currentEnvironment}
+            suggestions={props?.suggestions}
             handleValueChange={handleValueChange}
             initial={htmlData}
             disable={props?.disable}
