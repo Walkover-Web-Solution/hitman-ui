@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react'
 import Underline from '@tiptap/extension-underline'
 import StarterKit from '@tiptap/starter-kit'
@@ -55,7 +55,7 @@ import { useSelector } from 'react-redux'
 import { GoTasklist } from "react-icons/go";
 import HorizontalRule from '@tiptap/extension-horizontal-rule'
 
-export default function Tiptap({  provider, ydoc, disabled, isInlineEditor, minHeight }) {
+export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, initial, onChange, isEndpoint=false }) {
 
   const { currentUser } = useSelector((state) => ({
     currentUser: state.users.currentUser
@@ -82,7 +82,7 @@ export default function Tiptap({  provider, ydoc, disabled, isInlineEditor, minH
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: minHeight ? 'textEditor minHeight' : 'textEditor'
+        class: 'textEditor'
       }
     },
     extensions: [
@@ -121,16 +121,18 @@ export default function Tiptap({  provider, ydoc, disabled, isInlineEditor, minH
         }
       }),
       TableCell,
-      CollaborationCursor.configure({
-        provider,
-        user: {
-          name: currentUser?.name || 'Anonymous',
-          color: getRandomColor(),
-        },
-      }),
-      Collaboration.configure({
-        document: ydoc,
-      }),
+      ...(!isEndpoint ? [
+        CollaborationCursor.configure({
+          provider,
+          user: {
+            name: currentUser?.name || 'Anonymous',
+            color: getRandomColor(),
+          },
+        }),
+        Collaboration.configure({
+          document: ydoc,
+        })
+      ] : []),
       TableRow,
       TableHeader,
       Link.configure({
@@ -139,8 +141,24 @@ export default function Tiptap({  provider, ydoc, disabled, isInlineEditor, minH
         autolink: false
       })
     ],
+    ...(isEndpoint ? [{content: initial}] : []),
+    onUpdate: ({ editor }) => {
+      if (isEndpoint) {
+        const html = editor.getHTML();
+        if (typeof onChange === 'function') {
+          onChange(html);
+          localStorage.setItem('editorContent', html);
+        }
+      }
+    },
     editable: !disabled
   })
+
+  useEffect(() => {
+    if (editor && initial !== editor.getHTML()) {
+      editor.commands.setContent(initial, false);
+    }
+  }, [initial, editor, isEndpoint]);
 
   const toggleHeading = (level) => {
     if (editor) {

@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { updateNewTabName } from "../../components/tabs/redux/tabsActions";
+import { setTabIsModified, updateDraft, updateNewTabName } from "../../components/tabs/redux/tabsActions";
 import { approvePage, draftPage } from "../../components/publicEndpoint/redux/publicEndpointsActions";
 import Tiptap from "../../components/tiptapEditor/tiptap";
 import { debounce } from "lodash";
@@ -77,23 +77,24 @@ const Page = () => {
         prod: import.meta.env.VITE_RTC_URL_PROD,
       };
 
-    const { ydoc, provider } = useMemo(() => {
+      const { ydoc, provider } = useMemo(() => {
+        if (tabs[activeTabId].status !== "SAVED") return { ydoc: null, provider: null };
         const ydoc = new Y.Doc();
         const baseUrl = mapping[import.meta.env.VITE_ENV];
         const provider = new HocuspocusProvider({
             url: `${baseUrl}?orgId=${orgId}`,
-            name: `${pageId}`,
+            name: `${pageId}`, 
             document: ydoc,
         });
         return { ydoc, provider };
-    }, [orgId, pageId]);
+    }, [orgId, pageId]); 
 
     useEffect(() => {
         return () => {
-            provider.destroy();
-            ydoc.destroy();
+            if (provider) provider.destroy();
+            if (ydoc) ydoc.destroy();
         };
-    }, [provider, ydoc, pageId]);
+    }, [provider, ydoc]);
 
     const handleSaveKeydown = (event) => {
         if ((event.ctrlKey || event.metaKey) && event.key === 's') {
@@ -135,6 +136,11 @@ const Page = () => {
         element.style.height = '5px';
         element.style.height = `${element.scrollHeight}px`;
         setPageName(element.textContent)
+    };
+
+    const handleContentChange = (newContent) => {
+        if (tabs[activeTabId]?.isModified === false) dispatch(setTabIsModified(activeTabId, true));
+        dispatch(updateDraft(activeTabId, newContent))
     };
 
     const handlePublish = async () => {
@@ -259,13 +265,17 @@ const Page = () => {
                         </OverlayTrigger>
                     }
                     <IconButton>
-                        {tabs[activeTabId]?.status === "NEW" ? (
+                    <div className='button'>
+                            <OverlayTrigger placement='bottom' overlay={showTooltips("shortcut")}>
+                                {tabs[activeTabId]?.isModified ? <button className="btn p-0" onClick={handleSavePage}>Save</button> : <button className="btn p-0 text-black-60 disabled">{tabs[activeTabId]?.status === "NEW" ? (
                             <button className="btn p-0 text-black-60 disabled">
                                 Unsaved
                             </button>
                         ) : (
                             <></>
-                        )}
+                        )}</button>}
+                            </OverlayTrigger>
+                        </div>
                     </IconButton>
                     {tabs?.[activeTabId]?.status !== 'NEW' &&
                         <div className='inner-operations'>
@@ -299,13 +309,16 @@ const Page = () => {
                     onBlur={handleSavePageName}
                 />
                 <div id='tiptap-editor' className='page-content '>
-                    <Tiptap
-                        provider={provider}
-                        ydoc={ydoc}
-                        key={pageId}
-                        isInlineEditor={false}
-                        disabled={false}
-                    />
+                <Tiptap
+                provider={provider}
+                ydoc={ydoc}
+                isInlineEditor={false}
+                disabled={false}
+                initial={draftContent || false}
+                onChange={handleContentChange || false}
+                isEndpoint={tabs[activeTabId]?.status === 'NEW' ? true : false}
+                key={activeTabId}
+                />
                 </div>
             </div>
             {sidebar &&

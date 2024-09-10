@@ -133,12 +133,6 @@ const Collections = (props) => {
     const newPage = { name: 'untitled', pageType: 1 };
     if (!isOrgDocType()) {
       dispatch(addPage(collections[collectionId].rootParentId, newPage))
-      dispatch(openInNewTab({
-        type: 'page',
-        previewMode: false,
-        isModified: false,
-        state: {},
-      }))
     } else {
       setShowAddCollectionModal(true)
       setSelectedCollection({

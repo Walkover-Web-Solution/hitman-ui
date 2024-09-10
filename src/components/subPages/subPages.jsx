@@ -91,12 +91,6 @@ const SubPage = (props) => {
     if (!isOrgDocType()) {
       dispatch(addPage(pages[subPageId].id, newPage))
       dispatch(addIsExpandedAction({ value: true, id: subPageId }))
-      dispatch(openInNewTab({
-        type: 'page',
-        previewMode: false,
-        isModified: false,
-        state: {},
-      }))
     }
     else {
       setShowAddCollectionModal(true)

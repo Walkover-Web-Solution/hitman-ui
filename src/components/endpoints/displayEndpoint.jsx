@@ -2375,7 +2375,7 @@ class DisplayEndpoint extends Component {
         index !== oldIndex && newData.push(data)
       })
       newData.splice(newIndex, 0, docViewData[oldIndex])
-      this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: newData })
+      this.props.setQueryUpdatedData({ ...this.props.endpointContent, docViewData: newData }, () => this.setModifiedTabData())
     }
   }
 
@@ -2385,42 +2385,44 @@ class DisplayEndpoint extends Component {
     this.props.setQueryUpdatedData({
       ...this.props.endpointContent,
       docViewData: updatedDocViewData
-    })
+    }, () => this.setModifiedTabData())
   }
 
   debouncedSave = _.debounce(this.saveData, 1000)
 
-  // renderTiptapEditor(item, index) {
-  //   return (
-  //     <Tiptap
-  //       initial={item.data}
-  //       onChange={(e) => this.debouncedSave(index, e)}
-  //       match={this.props}
-  //       isInlineEditor
-  //       disabled={!isDashboardRoute(this.props)}
-  //       key={`${item.type}-${index}`}
-  //     />
-  //   )
-  // }
+  renderTiptapEditor(item, index) {
+    return (
+      <Tiptap
+        provider={false}
+        ydoc={false}
+        isInlineEditor
+        disabled={!isDashboardRoute(this.props)}
+        initial={item.data}
+        onChange={(e) => this.debouncedSave(index, e)}
+        isEndpoint= {true}
+        key={`${item.type}-${index}`}
+      />
+    )
+  }
 
   renderPublicItem = (item, index) => {
     switch (item.type) {
-      // case 'textArea': {
-      //   if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
-      //     return <div>{this.renderTiptapEditor(item, index)}</div>
-      //   }
-      //   break
-      // }
-      // case 'textBlock': {
-      //   if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
-      //     return (
-      //       <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
-      //         {this.renderTiptapEditor(item, index)}
-      //       </div>
-      //     )
-      //   }
-      //   break
-      // }
+      case 'textArea': {
+        if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
+          return <div>{this.renderTiptapEditor(item, index)}</div>
+        }
+        break
+      }
+      case 'textBlock': {
+        if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
+          return (
+            <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
+              {this.renderTiptapEditor(item, index)}
+            </div>
+          )
+        }
+        break
+      }
       case 'host': {
         if (!isDashboardRoute(this.props)) return this.renderPublicHost()
         else return <div className='endpoint-url-container'> {this.renderHost()} </div>
