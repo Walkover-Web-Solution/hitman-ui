@@ -121,16 +121,18 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, minH
         }
       }),
       TableCell,
-      ...(!isEndpoint ? [CollaborationCursor.configure({
-        provider,
-        user: {
-          name: currentUser?.name || 'Anonymous',
-          color: getRandomColor(),
-        },
-      })]: [] ),
-      ...(!isEndpoint ? [Collaboration.configure({
-        document: ydoc,
-      })] : []),
+      ...(!isEndpoint ? [
+        CollaborationCursor.configure({
+          provider,
+          user: {
+            name: currentUser?.name || 'Anonymous',
+            color: getRandomColor(),
+          },
+        }),
+        Collaboration.configure({
+          document: ydoc,
+        })
+      ] : []),
       TableRow,
       TableHeader,
       Link.configure({
@@ -141,10 +143,12 @@ export default function Tiptap({  provider, ydoc, isInlineEditor, disabled, minH
     ],
     ...(isEndpoint ? [{content: initial}] : []),
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      if (typeof onChange === 'function') {
-        onChange(html);
-        localStorage.setItem('editorContent',html);
+      if (isEndpoint) {
+        const html = editor.getHTML();
+        if (typeof onChange === 'function') {
+          onChange(html);
+          localStorage.setItem('editorContent', html);
+        }
       }
     },
     editable: !disabled
