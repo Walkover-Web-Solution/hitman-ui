@@ -54,6 +54,7 @@ const Endpoints = (props) => {
   }
 
   const handleDisplay = (endpoint, groupId, collectionId, previewMode) => {
+    debugger
     window.scroll(0, 0)
     if (isDashboardRoute({ location, navigate }, true)) {
       if (!tabs.tabs[endpoint.id]) {
@@ -76,6 +77,10 @@ const Endpoints = (props) => {
       let pathName = getUrlPathById(endpoint?.id, pages)
       pathName = isTechdocOwnDomain() ? `/p/${pathName}` : `/${pathName}`
       navigate(pathName)
+    }
+    const selectedTab = document.getElementById(`tab-${endpoint.id}`);
+    if (selectedTab) {
+        selectedTab.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }
 

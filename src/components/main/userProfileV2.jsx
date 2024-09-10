@@ -171,7 +171,7 @@ const UserProfile = () => {
                   <span className='leave-icon' onClick={() => leaveOrganization(org.id)}><IoExit size={20} /></span>
                 </OverlayTrigger>
               )}
-              {org.id === selectedOrg?.id && <span className='check' ><FaCheck /></span>}
+              {org.id === selectedOrg?.id && <span className='check' ><FaCheck size={16}/></span>}
             </div>
           ))}
         </div>

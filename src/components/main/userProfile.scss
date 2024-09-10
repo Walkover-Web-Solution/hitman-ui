@@ -47,7 +47,7 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  color: rgb(206 0 0 / 68%);
+  color: rgba(55, 53, 47, 0.65);
 
   &:hover {
     color: rgb(224 9 9);
@@ -74,7 +74,8 @@
 .check {
   margin-left: auto;
   display: block;
-  padding-right: 10px;
+  padding-right: 14px;
+  align-items: center ;
 }
 
 .invite-user {

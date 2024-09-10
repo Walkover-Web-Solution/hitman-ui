@@ -342,9 +342,13 @@ const Page = () => {
                                     <IconButton variant="sm"><BsThreeDots className="text-grey" size={25} /></IconButton>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={publishClick}>Publish</Dropdown.Item>
+                                    <Dropdown.Item className="p-1 d-flex justify-content-between align-items-center" onClick={publishClick}>
+                                        <span>Publish</span>
+                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? "Cmd + b" : "Ctrl + b"}</span>
+                                    </Dropdown.Item>
                                     {isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
+                                        className="p-1 d-flex justify-content-between align-items-center"
                                         onMouseEnter={() => setIsHovered(true)}
                                         onMouseLeave={() => setIsHovered(false)}
                                         style={{
@@ -353,7 +357,9 @@ const Page = () => {
                                             transition: 'background-color 0.3s, color 0.3s'
                                         }}
                                     >
-                                        Unpublish</Dropdown.Item>}
+                                        <span>Unpublish</span>
+                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? "Cmd + u" : "Ctrl + u"}</span>
+                                        </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
