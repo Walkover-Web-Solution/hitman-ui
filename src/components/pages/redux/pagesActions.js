@@ -155,7 +155,6 @@ export const addPage = (rootParentId, newPage, pageId) => {
         const data = response.data.page
         dispatch(onParentPageAdded(response.data))
         const newTab = { id: data.id, type: "page", status: "SAVED", previewMode: false, isModified: false }
-        newTab.draft = data.contents
         dispatch(replaceTab(pageId, newTab))
         navigateTo(`/orgs/${orgId}/dashboard/page/${data.id}`)
       })
