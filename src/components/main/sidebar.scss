@@ -388,10 +388,6 @@ body .sidebar {
               .text-truncate {
                 font-size: 14px;
                 padding-left: 0 !important;
-
-                @media screen and (max-width: 768px) {
-                  font-size: 16px;
-                }
               }
             }
           }
@@ -799,18 +795,6 @@ input[type='text']:focus {
   display: flex;
   align-items: center;
   width: calc(100% - 26px);
-
-  .api-label {
-    @media screen and (max-width: 768px) {
-      font-size: 12px;
-    }
-  }
-
-  .truncate {
-    @media screen and (max-width: 768px) {
-      font-size: 16px;
-    }
-  }
 }
 
 .side-bar,

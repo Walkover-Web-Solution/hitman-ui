@@ -512,7 +512,7 @@ const PublishDocForm = (props) => {
               <label>Select Environment</label>
               {publicEnv === null || Object.keys(publicEnv).length === 0 ? (
                 <Dropdown>
-                  <Dropdown.Toggle className='justify-content-between bg-white border w-100' variant="light" id='dropdown-basic'>
+                  <Dropdown.Toggle className='justify-content-between bg-white border w-100 fs-4' variant="light" id='dropdown-basic'>
                     {'Select Environment'}
                   </Dropdown.Toggle>
 
@@ -533,7 +533,7 @@ const PublishDocForm = (props) => {
               ) : (
                 <input
                   type='text'
-                  className='d-block w-100'
+                  className='d-block w-100 fs-4'
                   value='Public Environment'
                   readOnly
                   onClick={() => handlePublicEnvClick()}
@@ -574,8 +574,8 @@ const PublishDocForm = (props) => {
                           </Dropdown.Toggle >
 
                           <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, isEnabled: true })))}>Select All</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, isEnabled: false })))}>Deselect All</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, isEnabled: true })))}>Editable All</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, isEnabled: false })))}>Disable All</Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
                         </th>

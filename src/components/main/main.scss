@@ -2553,6 +2553,7 @@ span.endpointNameWrapper {
 
 .dashboard-url {
   width: calc(100% - 78px);
+
   .host-field-container {
     margin-right: 0px !important;
 
@@ -4315,19 +4316,6 @@ body .tox {
     padding-left: 1rem;
   }
 
-  /* List styles */
-  ul,
-  ol {
-    padding: 0 1rem;
-    margin: 1.25rem 1rem 1.25rem 0.4rem;
-
-    li p {
-      margin-top: 0.25em;
-      margin-bottom: 0.25em;
-    }
-  }
-
-  /* Task list specific styles */
   ul[data-type="taskList"] {
     list-style: none;
     margin-left: 0;
@@ -4356,4 +4344,90 @@ body .tox {
       margin: 0;
     }
   }
+
+  font-size: 16px !important;
+
+  p {
+    padding: 0px !important;
+    margin: 5px 0px !important;
+  }
+
+  strong {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    font-weight: 600 !important;
+  }
+
+  ol {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+  }
+
+  h1 {
+    font-size: 30px;
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+    font-weight: 600 !important;
+  }
+
+  h2 {
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+    font-size: 24px;
+    font-weight: 600 !important;
+  }
+
+  h3 {
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 20px !important;
+    margin-bottom: 10px !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+  }
+
+  li>ul {
+    margin: 10px !important;
+  }
+
+  ul[data-type="taskList"] {
+
+    // margin: 10px 0px !important;
+    li {
+      label {
+        margin: 13px 0px 0px 0px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        input[type="checkbox"] {
+          border-radius: 0px !important;
+          border: 1px solid black !important;
+        }
+      }
+
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+
+      div {
+        p {
+          margin: 7px !important;
+        }
+      }
+    }
+  }
+
 }

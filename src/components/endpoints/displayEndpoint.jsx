@@ -75,7 +75,6 @@ import { FaPlus } from 'react-icons/fa'
 import EndpointBreadCrumb from './endpointBreadCrumb'
 import { BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
-import SwitchBtn from '../common/switchBtn/switchBtn.jsx'
 import { MdExpandMore } from 'react-icons/md'
 import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
