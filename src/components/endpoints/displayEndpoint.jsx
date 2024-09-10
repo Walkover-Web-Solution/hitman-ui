@@ -414,6 +414,7 @@ class DisplayEndpoint extends Component {
       fileDownloaded: false,
       sendClickec: false,
       showPublicEnvironments: false,
+      themes: ''
     }
     this.setActiveTab = this.setActiveTab.bind(this);
     this.setBody = this.setBody.bind(this)
@@ -456,6 +457,19 @@ class DisplayEndpoint extends Component {
 
     this.setState({
       theme: { backgroundStyle }
+    })
+
+    const staticColors = background['background_boxes']
+  
+    const backgroundStyles = {
+      backgroundImage: `
+        linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
+        linear-gradient(to right, ${staticColors}, ${staticColors})
+      `
+    }
+  
+    this.setState({
+      themes: { backgroundStyles }
     })
     this.setState({ fileDownloaded: false })
   }
@@ -2689,17 +2703,15 @@ class DisplayEndpoint extends Component {
 
   renderPublicEnvironments() {
     return (
-      <div>
-        {this.state.showPublicEnvironments && (
-          <div>
-            <span>Public Environments</span>
-            <table className="table">
+          <div className='public-env-contanier'>
+            <span className='fw-600'>Public Environments</span>
+            <table className="table border rounded py-3 pl-5 pr-3 pb-4" style={this.state.themes.backgroundStyles}>
               <thead>
                 <tr>
-                  <th >
+                  <th className='p-1 font-weight-normal fs-4'>
                     KEY
                   </th>
-                  <th>VALUE</th>
+                  <th className='p-1 font-weight-normal fs-4'>VALUE</th>
                 </tr>
               </thead>
               <tbody>
@@ -2710,15 +2722,15 @@ class DisplayEndpoint extends Component {
 
                       return (
                         <tr key={Index}>
-                          <td>
+                          <td width={200} className=' pl-0 py-1'>
                             <input
                               type="text"
                               value={key}
                               disabled
-                              className="form-control"
+                              className="form-control public-input-key"
                             />
                           </td>
-                          <td>
+                          <td className='py-1 pl-0 pr-1'>
                             <input
                               type="text"
                               value={env.currentValue}
@@ -2736,14 +2748,6 @@ class DisplayEndpoint extends Component {
               </tbody>
             </table>
           </div>
-        )}
-        <button
-          className="btn btn-primary"
-          onClick={() => this.setState({ showPublicEnvironments: !this.state.showPublicEnvironments })}
-        >
-          {this.state.showPublicEnvironments ? 'Hide Public Environments' : 'Show Public Environments'}
-        </button>
-      </div>
     );
   }
 

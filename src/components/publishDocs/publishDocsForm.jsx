@@ -14,9 +14,8 @@ import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
 import { FiCopy } from 'react-icons/fi'
 import { FaRegTimesCircle } from 'react-icons/fa'
-import { RiCheckboxMultipleLine } from 'react-icons/ri'
+import { RiCheckboxMultipleLine, RiDeleteBin5Line } from 'react-icons/ri'
 import collectionsApiService from '../collections/collectionsApiService'
-import { MdOutlineDelete } from 'react-icons/md'
 import { toast } from 'react-toastify'
 
 const MAPPING_DOMAIN = import.meta.env.VITE_TECHDOC_MAPPING_DOMAIN
@@ -511,7 +510,7 @@ const PublishDocForm = (props) => {
               <label>Select Environment</label>
               {publicEnv === null || Object.keys(publicEnv).length === 0 ? (
                 <Dropdown>
-                  <Dropdown.Toggle variant='success' id='dropdown-basic'>
+                  <Dropdown.Toggle className='justify-content-between bg-white border w-100' variant="light" id='dropdown-basic'>
                     {'Select Environment'}
                   </Dropdown.Toggle>
 
@@ -532,6 +531,7 @@ const PublishDocForm = (props) => {
               ) : (
                 <input
                   type='text'
+                  className='d-block w-100'
                   value='Public Environment'
                   readOnly
                   onClick={() => handlePublicEnvClick()}
@@ -542,62 +542,109 @@ const PublishDocForm = (props) => {
             {renderInput('domain', false, 'docs.example.com', false)}
           </div>
           {showCreateEnvForm && (
-            <Modal show={showCreateEnvForm} onHide={() => setShowCreateEnvForm(false)}>
+            <Modal className='main-modal-contanier' show={showCreateEnvForm} onHide={() => setShowCreateEnvForm(false)}>
               <Modal.Header closeButton>
                 <Modal.Title>Public Environment</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <Form className='mt-4'>
-                  {rows.map((row, index) => (
-                    <div key={index} className='d-flex align-items-center mb-2'>
-                      <Form.Check
-                        type='checkbox'
-                        checked={row.checked}
-                        onChange={(e) => handleInputChange(index, 'checked', e.target.checked)}
-                      />
-                      <Form.Control
-                        type='text'
-                        placeholder='Environment Key'
-                        value={row.variable}
-                        className='ml-2'
-                        onChange={(e) => handleInputChange(index, 'variable', e.target.value)}
-                      />
-                      <Form.Control
-                        type='text'
-                        placeholder='Value'
-                        value={row.value}
-                        className='ml-2'
-                        onChange={(e) => handleInputChange(index, 'value', e.target.value)}
-                      />
-                      <Button className='ml-2' onClick={() => handleToggleEnable(index)}>
-                        {row.isEnabled ? 'Disable' : 'Editable'}
-                      </Button>
-                      <Button className='ml-2' onClick={() => handleDeleteSelectedIndex(props.selected_collection_id, row.variable)}>
-                        <MdOutlineDelete />
-                      </Button>
-                    </div>
-                  ))}
+                <Form className='main-body-modal overflow-auto'>
+                  <table className='table my-0'>
+                    <thead className='bg-white position-sticky'>
+                      <tr>
+                        <th className='text-center'>
+                          <Dropdown>
+                            <Dropdown.Toggle className='select-check p-0 bg-white text-dark border-0' id="dropdown-basic">
+                              Select
+                            </Dropdown.Toggle>
 
-                  <Button className='mt-2' variant='link' onClick={handleAddRow}>
-                    + Add More Rows
-                  </Button>
+                            <Dropdown.Menu>
+                              <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, checked: true })))}>Select All</Dropdown.Item>
+                              <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, checked: false })))}>Deselect All</Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        </th>
+                        <th width={140}>Key</th>
+                        <th>Value</th>
+                        <th className='text-center'>
+                        <Dropdown>
+                          <Dropdown.Toggle className='select-check p-0 bg-white text-dark border-0' variant="success" id="dropdown-basic">
+                            Editable
+                          </Dropdown.Toggle >
 
-                  <Button className='mt-2' variant='link' onClick={() => setRows(rows.map(row => ({ ...row, checked: true })))}>
-                    Select All
-                  </Button>
-                  <Button className='mt-2' variant='link' onClick={() => setRows(rows.map(row => ({ ...row, checked: false })))}>
-                    Deselect All
-                  </Button>
+                          <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, isEnabled: true })))}>Select All</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setRows(rows.map(row => ({ ...row, isEnabled: false })))}>Deselect All</Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                        </th>
+                        <th className='text-center'>Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody height={100}>
+                      {rows.map((row, index) => (
+                        <tr key={index}>
+                          <td>
+                            <Form.Check
+                              className='text-center pl-0'
+                              type='checkbox'
+                              checked={row.checked}
+                              onChange={(e) => handleInputChange(index, 'checked', e.target.checked)}
+                            />
+                          </td>
+                          <td>
+                            <Form.Control
+                              className='key-input-field text-grey'
+                              type='text'
+                              placeholder='Environment Key'
+                              value={row.variable}
+                              onChange={(e) => handleInputChange(index, 'variable', e.target.value)}
+                            />
+                          </td>
+                          <td>
+                            <Form.Control
+                              className='text-grey'
+                              type='text'
+                              placeholder='Value'
+                              value={row.value}
+                              onChange={(e) => handleInputChange(index, 'value', e.target.value)}
+                            />
+                          </td>
+                          <td>
+                            <Form>
+                              <Form.Check
+                                className='text-center pl-5'
+                                type="switch"
+                                id={`custom-switch-${index}`} // Unique ID for each switch
+                                checked={row.isEnabled}
+                                onChange={() => handleToggleEnable(index)}
+                              />
+                            </Form>
+                          </td>
+                          <td className='text-center'>
+                            <RiDeleteBin5Line className='text-grey' size={18} onClick={() => handleDeleteSelectedIndex(props.selected_collection_id, row.variable)} />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
 
-                  <Button className='mt-4' onClick={handleSave}>
+
+                </Form>
+              </Modal.Body>
+              <Modal.Footer className='justify-content-between'>
+                <Button className='add-more-button text-grey bg-white fs-4 border-0' onClick={handleAddRow}>
+                  + Add More Rows
+                </Button>
+                <div className='d-flex gap-2'>
+                  <Button className='btn-sm fs-4' onClick={handleSave}>
                     Save
                   </Button>
 
-                  <Button className='mt-4' onClick={() => handleDelete(props.selected_collection_id)}>
+                  <Button className='btn-sm fs-4' onClick={() => handleDelete(props.selected_collection_id)}>
                     Delete
                   </Button>
-                </Form>
-              </Modal.Body>
+                </div>
+              </Modal.Footer>
             </Modal>
           )}
           <div className='d-flex favicon mb-4'>

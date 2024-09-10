@@ -2012,3 +2012,14 @@ table#custom-generic-table {
     }
   }
 }
+
+.public-env-contanier {
+  table {
+    th , td {
+      border: unset !important;
+    }
+    .public-input-key {
+      background-color: rgba(174, 169, 169, 0.2) !important;
+    }
+  }
+}
