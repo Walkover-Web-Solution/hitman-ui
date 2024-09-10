@@ -189,7 +189,7 @@
 .main-modal-contanier {
 
   .modal-dialog {
-    max-width: 700px !important;
+    max-width: 610px !important;
 
     .main-body-modal {
       max-height: 500px;
@@ -199,9 +199,11 @@
           z-index: 2;
           top: 0;
         }
+
         tr {
           .select-check {
-            font-weight: 600;
+            font-weight: 500;
+            font-size: 12px;
 
             &::after {
               content: "";
@@ -215,7 +217,13 @@
           }
 
           th {
-            font-weight: 600 !important;
+            font-weight: 500 !important;
+            font-size: 12px;
+          }
+
+          td {
+            vertical-align: unset !important;
+            padding: 3px;
           }
 
           td,
@@ -227,9 +235,17 @@
         .key-input-field {
           max-width: 140px !important;
         }
+
+        .form-control {
+          &::placeholder {
+            font-size: 10px !important;
+          }
+
+        }
       }
 
     }
+
     .add-more-button {
       &:hover {
         background-color: $button-background-hover !important;

@@ -19,6 +19,7 @@ import { MdDehaze, MdClose } from 'react-icons/md'
 import { background } from '../backgroundColor.js'
 import withRouter from '../common/withRouter.jsx'
 import PublicPage from '../../pages/publicPage/publicPage.jsx'
+import IconButton from '../common/iconButton.jsx'
 
 const withQuery = (WrappedComponent) => {
   return (props) => {
@@ -411,20 +412,22 @@ class PublicEndpoint extends Component {
           className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}
         >
           <span ref={this.iconRef} className={'hamberger-icon'}>
-            <MdDehaze
-              id='hamburgerIcon'
-              className='icon-active fw-bold'
-              onClick={() => {
-                this.handleShowSideBar()
-              }}
-            />
-            <MdClose
-              id='closeIcon'
-              className='icon-none'
-              onClick={() => {
-                this.handleShowSideBar()
-              }}
-            />
+            <IconButton onClick={() => {
+                  this.handleShowSideBar()
+                }}>
+              <MdDehaze
+                id='hamburgerIcon'
+                className='icon-active fw-bold'
+              />
+            </IconButton>
+            <IconButton onClick={() => {
+                  this.handleShowSideBar()
+                }}>
+              <MdClose 
+                id='closeIcon'
+                className='icon-none'
+              />
+            </IconButton>
             {/* <span className='logo-name' id="logoName"> 
              {this.props.collections[collectionKeys[0]]?.favicon && (
                 <img
@@ -455,7 +458,7 @@ class PublicEndpoint extends Component {
             {/*  [info] part 3 subpart 1 sidebar data right content */}
             <div
               className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}
-              // style={{ backgroundColor: hexToRgb(collectionTheme, '0.05') }}
+            // style={{ backgroundColor: hexToRgb(collectionTheme, '0.05') }}
             >
               {idToRender ? (
                 <div

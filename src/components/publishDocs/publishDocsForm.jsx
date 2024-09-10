@@ -14,9 +14,11 @@ import PublishSidebar from '../publishSidebar/publishSidebar'
 import { HiOutlineExternalLink } from 'react-icons/hi'
 import { FiCopy } from 'react-icons/fi'
 import { FaRegTimesCircle } from 'react-icons/fa'
-import { RiCheckboxMultipleLine, RiDeleteBin5Line } from 'react-icons/ri'
+import { RiCheckboxMultipleLine } from 'react-icons/ri'
 import collectionsApiService from '../collections/collectionsApiService'
 import { toast } from 'react-toastify'
+import IconButton from '../common/iconButton'
+import { MdDelete } from 'react-icons/md'
 
 const MAPPING_DOMAIN = import.meta.env.VITE_TECHDOC_MAPPING_DOMAIN
 const publishDocFormEnum = {
@@ -593,7 +595,7 @@ const PublishDocForm = (props) => {
                           </td>
                           <td>
                             <Form.Control
-                              className='key-input-field text-grey'
+                              className='key-input-field text-grey fs-4'
                               type='text'
                               placeholder='Environment Key'
                               value={row.variable}
@@ -621,7 +623,7 @@ const PublishDocForm = (props) => {
                             </Form>
                           </td>
                           <td className='text-center'>
-                            <RiDeleteBin5Line className='text-grey' size={18} onClick={() => handleDeleteSelectedIndex(props.selected_collection_id, row.variable)} />
+                            <IconButton><MdDelete className='text-grey' size={18} onClick={() => handleDeleteSelectedIndex(props.selected_collection_id, row.variable)} /></IconButton>
                           </td>
                         </tr>
                       ))}

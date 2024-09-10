@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
-import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip, Form } from 'react-bootstrap'
 import { SESSION_STORAGE_KEY, isOnPublishedPage, trimString } from '../common/utility'
 
 import {
@@ -460,14 +460,14 @@ class DisplayEndpoint extends Component {
     })
 
     const staticColors = background['background_boxes']
-  
+
     const backgroundStyles = {
       backgroundImage: `
         linear-gradient(to right, ${dynamicColor}, ${dynamicColor}),
         linear-gradient(to right, ${staticColors}, ${staticColors})
       `
     }
-  
+
     this.setState({
       themes: { backgroundStyles }
     })
@@ -2703,51 +2703,51 @@ class DisplayEndpoint extends Component {
 
   renderPublicEnvironments() {
     return (
-          <div className='public-env-contanier'>
-            <span className='fw-600'>Public Environments</span>
-            <table className="table border rounded py-3 pl-5 pr-3 pb-4" style={this.state.themes.backgroundStyles}>
-              <thead>
-                <tr>
-                  <th className='p-1 font-weight-normal fs-4'>
-                    KEY
-                  </th>
-                  <th className='p-1 font-weight-normal fs-4'>VALUE</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.props.publicEnv && (
-                  Object.keys(this.props.publicEnv).map((key, Index) => {
-                    const env = this.props.publicEnv[key]
-                    if (env && typeof env.Checked !== "undefined" && env.Checked) {
+      <div className='public-env-contanier mt-4'>
+        <span className='fw-600'>Variables</span>
+        <table className="table border rounded py-3 mt-2 pl-5 pr-3 pb-4" style={this.state.themes.backgroundStyles}>
+          <thead>
+            <tr>
+              <th className='p-1 font-weight-normal fs-4'>
+                KEY
+              </th>
+              <th className='p-1 font-weight-normal fs-4'>VALUE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.publicEnv && (
+              Object.keys(this.props.publicEnv).map((key, Index) => {
+                const env = this.props.publicEnv[key]
+                if (env && typeof env.Checked !== "undefined" && env.Checked) {
 
-                      return (
-                        <tr key={Index}>
-                          <td width={200} className=' pl-0 py-1'>
-                            <input
-                              type="text"
-                              value={key}
-                              disabled
-                              className="form-control public-input-key"
-                            />
-                          </td>
-                          <td className='py-1 pl-0 pr-1'>
-                            <input
-                              type="text"
-                              value={env.currentValue}
-                              disabled={!env.IsEditable}
-                              onChange={(event) => this.handleInputChange(key, event)}
-                              className="form-control"
-                            />
-                          </td>
-                        </tr>
-                      );
-                    }
-                    return null;
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+                  return (
+                    <tr key={Index}>
+                      <td width={200} className=' pl-0 py-1'>
+                        <input
+                          type="text"
+                          value={key}
+                          disabled
+                          className="form-control public-input-key text-grey"
+                        />
+                      </td>
+                      <td className='py-1 pl-0 pr-1'>
+                        <input
+                          type="text"
+                          value={env.currentValue}
+                          disabled={!env.IsEditable}
+                          onChange={(event) => this.handleInputChange(key, event)}
+                          className={`form-control ${!env.IsEditable && 'public-input-key text-grey'}`}
+                        />
+                      </td>
+                    </tr>
+                  );
+                }
+                return null;
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
@@ -2891,7 +2891,14 @@ class DisplayEndpoint extends Component {
     return (
       <div onClick={this.handleToggle} className='d-flex justify-content-between align-items-center cursor-pointer'>
         <button className='btn text-grey btn-sm fs-4'>DOC</button>
-        <SwitchBtn isOn={this.props?.endpointContent?.currentView === 'doc'} handleToggle={this.handleToggle} />
+        <Form>
+          <Form.Check
+            className='text-center pl-5'
+            type="switch"
+            checked={this.props?.endpointContent?.currentView === 'doc'}
+            onChange={this.handleToggle}
+          />
+        </Form>
       </div>
     )
   }
