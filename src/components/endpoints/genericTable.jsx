@@ -449,8 +449,8 @@ class GenericTable extends Component {
         <td className='custom-td' style={{ width: '435px' }} id='generic-table-description-cell'>
           {isDashboardRoute(this.props) ? (
             <div>
-              {/* params description is rendered here */}
               <input
+                key={index}
                 disabled={isDashboardRoute(this.props) ? null : 'disabled'}
                 name={index + '.description'}
                 value={dataArray[index].description}
