@@ -75,7 +75,7 @@ import { FaPlus } from 'react-icons/fa'
 import EndpointBreadCrumb from './endpointBreadCrumb'
 import { BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
-import SwitchBtn from '../common/switchBtn/switchBtn.jsx'
+// import SwitchBtn from '../common/switchBtn/switchBtn.jsx'
 import { MdExpandMore } from 'react-icons/md'
 import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
@@ -1582,18 +1582,13 @@ class DisplayEndpoint extends Component {
     this.setState({ showEndpointFormModal: false, saveAsFlag: false })
   }
 
-  makeHeaders(headers) {
-    const processedHeaders = []
-    for (let i = 0; i < Object.keys(headers)?.length; i++) {
-      if (headers[Object.keys(headers)[i]].checked === 'true') {
-        processedHeaders.push({
-          name: headers[Object.keys(headers)[i]].key,
-          value: headers[Object.keys(headers)[i]].value,
-          comment: headers[Object.keys(headers)[i]].description === null ? '' : headers[Object.keys(headers)[i]].description,
-          type: headers[Object.keys(headers)[i]].type
-        })
-      }
-    }
+  makeHeaders(headersData) {
+    const processedHeaders = Object.keys(headersData).map(header => ({
+      name: getInnerText(header),
+      value: getInnerText(headersData[header].value),
+      comment: headersData[header].description || '',
+      type: headersData[header].type || ''
+    })).filter(header => header.name && header.value);
     return processedHeaders
   }
 
@@ -1648,21 +1643,24 @@ class DisplayEndpoint extends Component {
   }
 
   async prepareHarObject() {
-    const BASE_URL = this.props?.endpointContent?.host?.BASE_URL || ''
-    const uri = new URI(this.props?.endpointContent?.data?.updatedUri || '')
-    const queryparams = uri.search()
-    const path = this.setPathVariableValues()
-    let url = encodeURI(BASE_URL + path + queryparams)
-    // url = this.replaceVariables(url)
+    let url = this.props.endpointContent.data.URL;
+    url = this.HtmlUrlToString(decodeHtmlEntities(url));
+    let uri = new URI(url)
+    const baseUrl = uri.origin()
+    const query = uri.query()
+    const path = this.setPathVariableValues(url, !isOnPublishedPage() ? this.props.environment : { variables: this.props?.publicEnv })
+    url = `${baseUrl}${path}${query ? '?' + query : ''}`
     const method = this.props?.endpointContent?.data?.method || ''
     const body = this.props?.endpointContent?.data?.body || {}
-    const { originalHeaders, originalParams } = this.props?.endpointContent || {}
+    const { originalParams } = this.props?.endpointContent || {}
+
+    const headersData = this.doSubmitHeader('send')
     const harObject = {
       method,
       url: url,
       httpVersion: 'HTTP/1.1',
       cookies: [],
-      headers: this.makeHeaders(originalHeaders || {}),
+      headers: this.makeHeaders(headersData || {}),
       postData: body && body.type !== bodyTypesEnums['none'] ? await this.makePostData(body) : null,
       queryString: this.makeParams(originalParams)
     }

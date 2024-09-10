@@ -5,7 +5,7 @@ import tabService from '../tabs/tabService'
 import './endpoints.scss'
 import { connect } from 'react-redux'
 import AutoSuggest from 'env-autosuggest'
-import _, { cloneDeep } from 'lodash'
+import _, { cloneDeep, debounce } from 'lodash'
 import { getParseCurlData } from '../common/apiUtility'
 import URI from 'urijs'
 import { toast } from 'react-toastify'
@@ -37,6 +37,7 @@ class HostContainer extends Component {
     this.handleInputHostChange = this.handleInputHostChange.bind(this);
     this.observer = null;
     this.initalUrlValue = null;
+    this.debouncedHandleInputHostChange = debounce(this.handleInputHostChange, 300);
   }
 
   componentDidMount() {
@@ -44,11 +45,10 @@ class HostContainer extends Component {
     this.setState({ initalUrlValue: this.props?.endpointContent?.data?.URL })
 
     if (this.hostcontainerRef.current) {
-      // Set up a MutationObserver to watch for changes to the innerText
       this.observer = new MutationObserver((mutationsList) => {
         for (let mutation of mutationsList) {
           if (mutation.type === 'characterData' || mutation.type === 'childList') {
-            this.handleInputHostChange();
+            this.debouncedHandleInputHostChange();
           }
         }
       });
