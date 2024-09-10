@@ -668,14 +668,10 @@ class DisplayEndpoint extends Component {
     const pathVariables = []
     let counter = 0
     for (let i = 0; i < pathVariablesHtmlData.length; i++) {
-      // if (pathVariableKeys[i][0] === ':' && pathVariableKeysObject[pathVariableKeys[i]] === false) {
-      //   pathVariableKeysObject[pathVariableKeys[i]] = true
       let pathVariableKeyWithoutColon = pathVariableKeys[i].slice(1).trim()
-      //   if (pathVariableKeyWithoutColon !== '') {
-
       pathVariables.push({
         checked: 'notApplicable',
-        key: pathVariablesHtmlData[i],
+        key: fixSpanTags(pathVariablesHtmlData[i]),
         value: this.props.endpointContent.pathVariables[counter]
           ? this.props.endpointContent.pathVariables[counter].key === pathVariableKeyWithoutColon
             ? this.props.endpointContent.pathVariables[counter].value
@@ -687,9 +683,6 @@ class DisplayEndpoint extends Component {
             : ''
           : ''
       })
-      //   counter++
-      // }
-      // }
     }
     const dummyData = this.props?.endpointContent
     dummyData.pathVariables = pathVariables
@@ -894,15 +887,14 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setPathVariableValues(uris) {
+  setPathVariableValues(uris, env) {
     let uri = new URI(uris)
     uri = uri.pathname()
     const pathParameters = uri.split('/')
-    let path = ''
     const pathVariablesMap = {}
 
     this.props.endpointContent.pathVariables.forEach((variable) => {
-      pathVariablesMap[variable.key] = variable.value
+      pathVariablesMap[this.replaceVariables(getInnerText(variable.key), env.variables)] = this.replaceVariables(getInnerText(variable.value), env.variables)
     })
 
     for (let i = 0; i < pathParameters.length; i++) {
@@ -915,7 +907,7 @@ class DisplayEndpoint extends Component {
         }
       }
     }
-    path = pathParameters.join('/')
+    const path = pathParameters.join('/')
     return path
   }
 
@@ -1148,10 +1140,13 @@ class DisplayEndpoint extends Component {
 
     /** Prepare URL */
     const BASE_URL = this.props.endpointContent.host.BASE_URL || ''
-    const uri = new URI(this.props.endpointContent.data.updatedUri || '')
     let url = this.props.endpointContent.data.URL;
     url = this.HtmlUrlToString(decodeHtmlEntities(url));
-    const path = this.setPathVariableValues(url)
+    let uri = new URI(url)
+    const baseUrl = uri.origin()
+    const query = uri.query()
+    const path = this.setPathVariableValues(url, this.props.environment);
+    url = `${baseUrl}${path}${query ? '?' + query : ''}`
     if (!url) {
       this.setState({ addUrlClass: true })
       setTimeout(() => {
@@ -1193,15 +1188,12 @@ class DisplayEndpoint extends Component {
     const code = this.props.endpointContent.preScriptText
     /** Run Pre Request Script */
     // if(!isUserOnPublishedPage)
+    debugger
     let result
     if (!isOnPublishedPage()) {
       result = this.runScript(code, currentEnvironment, requestOptions)
       if (result.success) {
-        let {
-          environment,
-          request: { url, headers },
-          tests
-        } = result.data
+        let { environment, request: { url, headers }, tests } = result.data
         this.setState({ tests })
         /** Replace Environemnt Variables */
         url = this.replaceVariables(url || {}, environment)
