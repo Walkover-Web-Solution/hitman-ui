@@ -1096,7 +1096,6 @@ class DisplayEndpoint extends Component {
   }
 
   HtmlUrlToString(htmlString) {
-    htmlString = this.decodeHtmlEntities(htmlString)
     const str = htmlString.replace(/<\/?[^>]+(>|$)/g, "");
     const regex = /{{(.*?)}}/g;
     let matches = [];
