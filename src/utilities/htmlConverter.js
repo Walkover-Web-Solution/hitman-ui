@@ -278,4 +278,4 @@ function convertToHTML(input) {
     return result;
 }
 
-export { fixSpanTags, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml, getInnerText, getIntoTextBlock, getIntoVariableBlock, convertToHTML };
+export { fixSpanTags, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml, getInnerText, getIntoTextBlock, getIntoVariableBlock, convertToHTML, decodeHtmlEntities };

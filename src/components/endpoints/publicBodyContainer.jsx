@@ -304,7 +304,7 @@ class PublicBodyContainer extends Component {
     if (this.props.body && this.props.body.type === 'none') return null;
     return (
       <>
-        {this.props.body && this.props.body.type === bodyTypesEnums['multipart/form-data'] && (
+        {this.props.body && this.props.body.type === bodyTypesEnums['multipart/form-data'] && this.props?.body?.[bodyTypesEnums['multipart/form-data']].length > 0 && (
           <GenericTable
             {...this.props}
             title='formData'
@@ -314,7 +314,7 @@ class PublicBodyContainer extends Component {
           />
         )}
 
-        {this.props.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] && this.props.body.type === bodyTypesEnums['application/x-www-form-urlencoded'] && (
+        {this.props.body?.[bodyTypesEnums['application/x-www-form-urlencoded']] && this.props.body.type === bodyTypesEnums['application/x-www-form-urlencoded'] && this.props.body?.[bodyTypesEnums['application/x-www-form-urlencoded']]?.length > 0 && (
           <GenericTable
             {...this.props}
             title='x-www-form-urlencoded'
@@ -324,74 +324,71 @@ class PublicBodyContainer extends Component {
           />
         )}
 
-        {this.props.body?.[bodyTypesEnums['multipart/form-data']] &&
-          this.props.body.type !== bodyTypesEnums['multipart/form-data'] &&
-          this.props.body.type !== bodyTypesEnums['application/x-www-form-urlencoded'] &&
-          (this.props.body.type === rawTypesEnums.JSON ? (
-            <div className='hm-public-table mb-2'>
-              <div className="d-flex justify-content-between align-items-center mt-4">
-                {isOnPublishedPage(this.props) &&
-                  <div className='public-generic-table-title-container'>
-                    Body <small className='text-muted'>({this.props.body.type})</small>{' '}
-                    {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
-                  </div>}
-                <div className='d-flex justify-content-between'>
-                  <ul className='public-endpoint-tabs'>
-                    <li
-                      className={this.state.showBodyCodeEditor ? 'active' : ''}
-                      style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
-                      onClick={() => this.setState({ showBodyCodeEditor: true })}
-                    >
-                      Raw
-                    </li>
-                    <li
-                      className={!this.state.showBodyCodeEditor ? 'active' : ''}
-                      style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
-                      onClick={() => this.setState({ showBodyCodeEditor: false })}
-                    >
-                      Body description
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              {this.state.showBodyCodeEditor ? (
-                <div className='body-ace-editer' onClick={this.toggleEditor}>
-                  <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
-                    <AceEditor
-                      className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
-                      mode='json'
-                      theme='github'
-                      value={this.props.body?.raw?.value}
-                      onChange={this.handleChangeBodyDescription.bind(this)}
-                      style={{ height: this.state.editorHeight, fontFamily: 'monospace' }}
-                      setOptions={{
-                        showLineNumbers: true,
-                      }}
-                      editorProps={{
-                        $blockScrolling: false,
-                      }}
-                      onLoad={(editor) => {
-                        editor.getSession().setUseWrapMode(true);
-                        editor.setShowPrintMargin(false);
-                        const textarea = editor.renderer.textarea;
-                        if (textarea) {
-                          textarea.setAttribute('type', 'text');
-                          textarea.setAttribute('aria-label', 'Search');
-                        }
-                      }}
-                    />
+        {this.props.body?.[bodyTypesEnums['multipart/form-data']] && this.props.body.type !== bodyTypesEnums['multipart/form-data'] && this.props.body.type !== bodyTypesEnums['application/x-www-form-urlencoded'] &&
+          (this.props.body.type === rawTypesEnums.JSON && this.props.body?.raw?.value?.length > 0 ?
+            (
+              <div className='hm-public-table mb-2'>
+                <div className="d-flex justify-content-between align-items-center mt-4">
+                  {isOnPublishedPage(this.props) &&
+                    <div className='public-generic-table-title-container'>
+                      Body <small className='text-muted'>({this.props.body.type})</small>{' '}
+                      {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
+                    </div>}
+                  <div className='d-flex justify-content-between'>
+                    <ul className='public-endpoint-tabs'>
+                      <li
+                        className={this.state.showBodyCodeEditor ? 'active' : ''}
+                        style={this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
+                        onClick={() => this.setState({ showBodyCodeEditor: true })}
+                      >
+                        Raw
+                      </li>
+                      <li
+                        className={!this.state.showBodyCodeEditor ? 'active' : ''}
+                        style={!this.state.showBodyCodeEditor ? { backgroundColor: this.props.publicCollectionTheme, opacity: 0.9 } : {}}
+                        onClick={() => this.setState({ showBodyCodeEditor: false })}
+                      >
+                        Body description
+                      </li>
+                    </ul>
                   </div>
                 </div>
-              ) : (
-                <div className='body-description-container' style={this.state.theme.backgroundStyle}>
-                  {/* Previous Body Description Layout */}
-                  {/* {this.displayObject(this.bodyDescription, 'body_description')} */}
-                  {this.displayBodyDecription(undefined, this.bodyDescription)}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className='hm-public-table'>
+                {this.state.showBodyCodeEditor ? (
+                  <div className='body-ace-editer' onClick={this.toggleEditor}>
+                    <div onClick={this.expandEditor} className='custom-editor-public-page' style={this.state.theme.backgroundStyle}>
+                      <AceEditor
+                        className={`${isOnPublishedPage() ? 'custom-raw-editor-public' : 'custom-raw-editor'}`}
+                        mode='json'
+                        theme='github'
+                        value={this.props.body?.raw?.value}
+                        onChange={this.handleChangeBodyDescription.bind(this)}
+                        style={{ height: this.state.editorHeight, fontFamily: 'monospace' }}
+                        setOptions={{
+                          showLineNumbers: true,
+                        }}
+                        editorProps={{
+                          $blockScrolling: false,
+                        }}
+                        onLoad={(editor) => {
+                          editor.getSession().setUseWrapMode(true);
+                          editor.setShowPrintMargin(false);
+                          const textarea = editor.renderer.textarea;
+                          if (textarea) {
+                            textarea.setAttribute('type', 'text');
+                            textarea.setAttribute('aria-label', 'Search');
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className='body-description-container' style={this.state.theme.backgroundStyle}>
+                    {this.displayBodyDecription(undefined, this.bodyDescription)}
+                  </div>
+                )}
+              </div>
+            ) :
+            (this.props.body?.raw?.value?.length > 0 && <div className='hm-public-table'>
               <div className='public-generic-table-title-container'>
                 Body <small className='text-muted'>({this.props.body.type})</small>{' '}
                 {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
@@ -418,7 +415,9 @@ class PublicBodyContainer extends Component {
                 }}
               />
             </div>
-          ))}
+            )
+          )
+        }
       </>
     )
   }

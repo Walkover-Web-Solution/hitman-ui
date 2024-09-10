@@ -77,7 +77,7 @@ import { BsThreeDots } from 'react-icons/bs';
 import IconButton from '../common/iconButton.jsx'
 import SwitchBtn from '../common/switchBtn/switchBtn.jsx'
 import { MdExpandMore } from 'react-icons/md'
-import { fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
+import { decodeHtmlEntities, fixSpanTags, getInnerText, getIntoTextBlock, getPathVariableHTML, getQueryParamsHTML, replaceParamsHtmlInHostContainerHtml } from '../../utilities/htmlConverter.js'
 import { updatePublicEnv } from '../publishDocs/redux/publicEnvActions.js'
 
 
@@ -710,7 +710,7 @@ class DisplayEndpoint extends Component {
           type: this.props?.endpointContent?.originalParams[i].type
         })
       }
-      else if (this.props?.endpointContent?.originalParams[i].checked === "true" || this.props?.endpointContent?.originalParams[i].checked === 'true') {
+      else if (this.props?.endpointContent?.originalParams[i].checked === "true" && (this.props?.endpointContent?.originalParams[i]?.key?.length > 0 || this.props?.endpointContent?.originalParams[i]?.value?.length > 0 || this.props?.endpointContent?.originalParams[i]?.description?.length > 0)) {
         if (trueCounter > queryParamsHtmlData.length) break;
         originalParams.push({
           checked: "true",
@@ -894,8 +894,8 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setPathVariableValues() {
-    let uri = new URI(this.props?.endpointContent?.data?.updatedUri || '')
+  setPathVariableValues(uris) {
+    let uri = new URI(uris)
     uri = uri.pathname()
     const pathParameters = uri.split('/')
     let path = ''
@@ -1150,10 +1150,9 @@ class DisplayEndpoint extends Component {
     /** Prepare URL */
     const BASE_URL = this.props.endpointContent.host.BASE_URL || ''
     const uri = new URI(this.props.endpointContent.data.updatedUri || '')
-    const queryparams = uri.search()
-    const path = this.setPathVariableValues()
     let url = this.props.endpointContent.data.URL;
-    url = this.HtmlUrlToString(url);
+    url = this.HtmlUrlToString(decodeHtmlEntities(url));
+    const path = this.setPathVariableValues(url)
     if (!url) {
       this.setState({ addUrlClass: true })
       setTimeout(() => {

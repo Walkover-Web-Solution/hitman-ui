@@ -28,7 +28,7 @@ function GenericTableAutoSuggest(props) {
 
     const handleValueChange = () => {
         const caretPosition = getCaretPosition(genericAutoSuggestRef.current);
-        const value = genericAutoSuggestRef.current.innerHTML;
+        const value = genericAutoSuggestRef.current.innerHTML === "<br>" ? "" : genericAutoSuggestRef.current.innerHTML;
         props.handleChange(value, { name: props?.valueKey, value: value });
         setTimeout(() => restoreCaretPosition(genericAutoSuggestRef.current, caretPosition), 0);
     }

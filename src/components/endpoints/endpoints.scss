@@ -804,6 +804,10 @@ table#custom-generic-table {
     padding: 6px !important;
     border: none;
 
+    .main__div {
+      border-radius: 3px;
+    }
+
     .public-description {
       display: block;
       width: 100%;
@@ -816,7 +820,6 @@ table#custom-generic-table {
 
   tbody {
     input {
-      height: 100%;
       font-size: $font-medium;
       font-weight: 400;
       border-radius: 3px;
@@ -825,7 +828,6 @@ table#custom-generic-table {
     input:focus,
     input.form-control:focus {
       box-shadow: inset 0 -1px 0 rgb(255, 255, 255) !important;
-      height: 100%;
     }
 
     input::placeholder {
@@ -842,7 +844,7 @@ table#custom-generic-table {
     width: 30px;
   }
 
-  .custom-checkbox-public{
+  .custom-checkbox-public {
     padding: 18px 8px !important;
   }
 
