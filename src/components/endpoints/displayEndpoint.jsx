@@ -1598,8 +1598,8 @@ class DisplayEndpoint extends Component {
       for (let i = 0; i < Object.keys(params).length; i++) {
         if (params[Object.keys(params)[i]].checked === 'true') {
           processedParams.push({
-            name: params[Object.keys(params)[i]].key,
-            value: params[Object.keys(params)[i]].value,
+            name: this.HtmlUrlToString(params[Object.keys(params)[i]].key),
+            value: this.HtmlUrlToString(params[Object.keys(params)[i]].value),
             comment: params[Object.keys(params)[i]].description,
             type: params[Object.keys(params)[i]].type
           })
@@ -1645,11 +1645,13 @@ class DisplayEndpoint extends Component {
   async prepareHarObject() {
     let url = this.props.endpointContent.data.URL;
     url = this.HtmlUrlToString(decodeHtmlEntities(url));
+    url = encodeURI(url)
     let uri = new URI(url)
     const baseUrl = uri.origin()
     const query = uri.query()
     const path = this.setPathVariableValues(url, !isOnPublishedPage() ? this.props.environment : { variables: this.props?.publicEnv })
     url = `${baseUrl}${path}${query ? '?' + query : ''}`
+    url = decodeURIComponent(url);
     const method = this.props?.endpointContent?.data?.method || ''
     const body = this.props?.endpointContent?.data?.body || {}
     const { originalParams } = this.props?.endpointContent || {}

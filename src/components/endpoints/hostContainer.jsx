@@ -117,6 +117,7 @@ class HostContainer extends Component {
     untitledEndpointData.data.method = parsedData?.method.toUpperCase()
     untitledEndpointData.data.uri = data?.datalistUri
     untitledEndpointData.data.updatedUri = data?.datalistUri
+    untitledEndpointData.data.URL = `<span text-block='true'>${parsedData.raw_url}</span>`
     untitledEndpointData.host = {
       BASE_URL: data?.datalistHost
     }
@@ -191,29 +192,30 @@ class HostContainer extends Component {
         let bodyType = (untitledEndpointData.data.body.type = !parsedData.headers?.['Content-Type']
           ? 'multipart/form-data'
           : parsedData.headers?.['Content-Type'] || 'application/x-www-form-urlencoded')
-
-        // 'multipart/form-data' and 'application/x-www-form-urlencoded' both contains body values description
         if (typeof parsedData.data === 'string') {
-          let keyValuePairs = parsedData.data.split('&')
-          let keys = []
-          let values = []
+          let keyValuePairs = parsedData.data.split('&');
           keyValuePairs.forEach((pair) => {
-            let [key, value] = pair.split('=')
-            keys.push(key)
-            values.push(value)
-          })
-          for (let key in values) {
-            let eachData = {
+            let [key, value] = pair.split('=');
+            untitledEndpointData.data.body[bodyType].push({
               checked: 'true',
-              key: keys[key],
-              value: values[key],
+              key: key,
+              value: decodeURIComponent(value), 
               description: '',
               type: 'text'
-            }
-            untitledEndpointData.data.body[bodyType].push(eachData)
-          }
-          untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1))
+            });
+          });
+        } else if (typeof parsedData.data === 'object') {
+          Object.keys(parsedData.data).forEach(key => {
+            untitledEndpointData.data.body[bodyType].push({
+              checked: 'true',
+              key: key,
+              value: parsedData.data[key],
+              description: '',
+              type: 'text'
+            });
+          });
         }
+        untitledEndpointData.data.body[bodyType].push(...untitledEndpointData.data.body[bodyType].splice(0, 1))
       }
     }
 
@@ -245,6 +247,10 @@ class HostContainer extends Component {
     tabService.markTabAsModified(this.props.tabs.activeTabId)
   }
 
+  normalizeCurlString(curlString) {
+    return curlString.replace(/\\\n/g, '').replace(/\s{2,}/g, ' ').trim();
+  }
+
   async handleInputHostChange() {
     if (!this.hostcontainerRef || !this.hostcontainerRef.current) {
       console.error('hostcontainerRef is not set or does not have a current value');
@@ -252,6 +258,7 @@ class HostContainer extends Component {
     }
 
     let inputValue = this.hostcontainerRef.current.innerText;
+    inputValue = this.normalizeCurlString(inputValue)
     if (inputValue.trim().startsWith('curl')) {
       try {
         let modifiedCurlCommand = inputValue;
@@ -267,6 +274,7 @@ class HostContainer extends Component {
         parsedData.raw_url = parsedData.raw_url.replace(/^http:\/\/\s/, '');
         parsedData.raw_url = parsedData.raw_url.replace(/^(http:\/\/https?:\/\/)/, '$2');
         this.getDataFromParsedData(this.props.untitledEndpointData, parsedData);
+        this.hostcontainerRef.current.innerHTML = `<span text-block='true'>${parsedData.raw_url}</span>`
         return;
       } catch (e) {
         toast.error('could not parse the curl');
