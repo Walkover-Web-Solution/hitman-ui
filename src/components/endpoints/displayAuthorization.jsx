@@ -42,8 +42,8 @@ export default function Authorization(props) {
       addAuthorizationDataTypes.select
   )
   const [basicAuthData, setBasicAuthData] = useState({
-    username: endpointStoredData?.authorizationData?.authorization?.basicAuth?.username || '',
-    password: endpointStoredData?.authorizationData?.authorization?.basicAuth?.password || ''
+    username: endpointStoredData?.authorizationData?.authorization?.user || '',
+    password: endpointStoredData?.authorizationData?.authorization?.password || ''
   })
   const [showPassword, setShowPassword] = useState(false)
   const [selectedTokenId, setSelectedTokenId] = useState(
@@ -58,8 +58,8 @@ export default function Authorization(props) {
       setSelectedAuthorizationType(newAuthType)
 
       if (newAuthType === authorizationTypes.basicAuth) {
-        const basicAuthUser = endpointStoredData?.authorizationData?.authorization?.basicAuth?.username || ''
-        const basicAuthPass = endpointStoredData?.authorizationData?.authorization?.basicAuth?.password || ''
+        const basicAuthUser = endpointStoredData?.authorizationData?.authorization?.user || ''
+        const basicAuthPass = endpointStoredData?.authorizationData?.authorization?.password || ''
         setBasicAuthData({
           username: basicAuthUser,
           password: basicAuthPass

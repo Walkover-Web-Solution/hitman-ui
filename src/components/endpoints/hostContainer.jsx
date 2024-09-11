@@ -116,8 +116,8 @@ class HostContainer extends Component {
     // setting method, url and host
     untitledEndpointData.data.method = parsedData?.method.toUpperCase()
     untitledEndpointData.data.uri = data?.datalistUri
-    untitledEndpointData.data.updatedUri = data?.datalistUri
     untitledEndpointData.data.URL = `<span text-block='true'>${parsedData.raw_url}</span>`
+    untitledEndpointData.data.updatedUri = data?.datalistUri
     untitledEndpointData.host = {
       BASE_URL: data?.datalistHost
     }

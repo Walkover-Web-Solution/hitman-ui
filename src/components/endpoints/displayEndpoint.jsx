@@ -2060,12 +2060,16 @@ class DisplayEndpoint extends Component {
 
   setAuthType(type, value) {
     this.setModifiedTabData()
-    const dummyData = this.props.endpointContent
+    const dummyData = { ...this.props.endpointContent }; 
     dummyData.authorizationData = {
-      ...dummyData.authorizationData,
-      authorizationTypeSelected: type,
-      authorization: { ...dummyData.authorizationData.authorization, [type]: value }
-    }
+      ...dummyData.authorizationData, 
+      authorizationTypeSelected: type, 
+      authorization: {
+        ...dummyData.authorizationData.authorization,  
+        user: value.username, 
+        password: value.password
+      }
+    };
     this.props.setQueryUpdatedData(dummyData)
   }
 
