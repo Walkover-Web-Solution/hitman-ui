@@ -229,11 +229,11 @@ const CollectionParentPages = (props) => {
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <div className={`d-flex align-items-center ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
+              <div className={`d-flex align-items-end ${isOnPublishedPage() ? 'w-100 cl-public-page' : 'cl-name'} `} onClick={(e) => handleParentPageClick(e, expanded)}>
                 <div className='d-flex td-name ml-1 align-items-center'>
-                  <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'}`} onClick={(e) => handleToggle(e, props.rootParentId)}>
+                  <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, props.rootParentId)}>
                     <IconButtons variant='sm'><MdExpandMore size={13} className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`} /></IconButtons>
-                    <IoDocumentTextOutline size={13} className='collection-icons d-inline  ml-1 mb-1' />
+                    <IoDocumentTextOutline size={18} className='collection-icons' />
                   </span>
                   <div
                     className={`d-flex align-items-center name-parent-page ${isOnPublishedPage() ? 'text-truncate' : ''}`}

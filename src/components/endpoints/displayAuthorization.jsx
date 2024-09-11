@@ -58,8 +58,8 @@ export default function Authorization(props) {
       setSelectedAuthorizationType(newAuthType)
 
       if (newAuthType === authorizationTypes.basicAuth) {
-        const basicAuthUser = endpointStoredData?.authorizationData?.authorization?.user || ''
-        const basicAuthPass = endpointStoredData?.authorizationData?.authorization?.password || ''
+        const basicAuthUser = endpointStoredData?.authorizationData?.authorization?.basicAuth?.username || ''
+        const basicAuthPass = endpointStoredData?.authorizationData?.authorization?.basicAuth?.password || ''
         setBasicAuthData({
           username: basicAuthUser,
           password: basicAuthPass
@@ -78,19 +78,17 @@ export default function Authorization(props) {
       return { ...prev, [e.target.name]: e.target.value }
     })
     if (e.target.name === 'username') {
-      props.set_authoriztaion_type('basicAuth', { username: e.target.value, password: basicAuthData.password })
       generateEncodedValue(e.target.value, basicAuthData.password)
     } else if (e.target.name === 'password') {
-      props.set_authoriztaion_type('basicAuth', { username: basicAuthData.password, password: e.target.value })
       generateEncodedValue(basicAuthData.username, e.target.value)
     }
   }
 
   function generateEncodedValue(username, password) {
     const value = { username, password }
-    props.set_authoriztaion_type('basicAuth', value)
     const encodedValue = btoa(`${username}:${password}`)
     props.set_authorization_headers(encodedValue, 'Authorization.basicAuth')
+    props.set_authoriztaion_type('basicAuth', value)
   }
 
   const handleSelectAuthorizationType = (key) => {

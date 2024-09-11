@@ -4,6 +4,7 @@
 .uploadBox {
   cursor: pointer;
   overflow: hidden;
+
   label {
     margin-bottom: 0;
     padding: 0.35rem 1rem;
@@ -12,10 +13,12 @@
     display: flex;
     align-items: center;
     border-radius: $border-radius;
+
     &:hover {
       border-color: #f1a147;
     }
   }
+
   &:hover {
     .uplod-info {
       display: inline !important;
@@ -25,6 +28,7 @@
 
 .domain-info {
   width: max-content;
+
   a {
     color: #dc3545;
   }
@@ -48,9 +52,11 @@
   display: flex;
   flex-wrap: wrap;
   position: relative;
+
   input {
     max-width: 26rem;
   }
+
   small.text-danger {
     position: absolute;
     bottom: 0;
@@ -59,14 +65,17 @@
     text-overflow: ellipsis;
     overflow: hidden;
   }
+
   span {
     font-size: 14px;
     color: #eb5757;
     font-weight: 400;
   }
+
   .or-wrap {
     margin: 0 1.45rem 0 1rem;
   }
+
   .form-group:last-child {
     flex-grow: 1;
   }
@@ -80,10 +89,12 @@
   align-items: center;
   justify-content: center;
 }
+
 .uplod-info {
   position: absolute;
   left: 30px;
   top: 16px;
+
   p {
     max-width: 5rem;
     overflow: hidden;
@@ -98,16 +109,20 @@
 .publish-on-tab {
   padding: 20px;
   width: 660px;
+
   input {
     max-width: 100%;
   }
+
   .cta-buton {
     .form-group>div input:first-child {
       max-width: 12rem;
     }
   }
+
   .page-title {
     border: unset !important;
+
     &:hover {
       background-color: unset !important;
       border: unset !important;
@@ -115,6 +130,7 @@
     }
   }
 }
+
 .doc-title {
   font-style: normal;
   font-weight: 600;
@@ -128,9 +144,10 @@
   font-weight: 500;
 }
 
-.text-disable{
+.text-disable {
   color: #3b7837;
-  &:hover{
+
+  &:hover {
     text-decoration: underline;
   }
 }
@@ -138,15 +155,20 @@
 .disabled-link {
   opacity: 0.5;
 }
+
 .hover {
-  :hover{color: blue;
-  text-decoration: underline;}
-}
-.copy-button-link {
-  &:focus {
-outline: unset !important;
+  :hover {
+    color: blue;
+    text-decoration: underline;
   }
 }
+
+.copy-button-link {
+  &:focus {
+    outline: unset !important;
+  }
+}
+
 .sidebar-public-url {
   margin-left: 0px;
   overflow: scroll;
@@ -155,4 +177,81 @@ outline: unset !important;
   padding: 5px 10px 1px 10px;
   border: 1px solid #ced4da;
   border-radius: 4px;
+}
+
+.export-modal {
+  .modal-sm {
+    min-width: unset !important;
+    max-width: 300px;
+  }
+}
+
+.main-modal-contanier {
+
+  .modal-dialog {
+    max-width: 610px !important;
+
+    .main-body-modal {
+      max-height: 500px;
+
+      table {
+        thead {
+          z-index: 2;
+          top: 0;
+        }
+
+        tr {
+          .select-check {
+            font-weight: 500;
+            font-size: 12px;
+
+            &::after {
+              content: "";
+              transform: rotate(0deg);
+              border-top: 0.3em solid;
+              border-right: 0.3em solid transparent;
+              border-bottom: 0;
+              border-left: 0.3em solid transparent;
+              top: 0;
+            }
+          }
+
+          th {
+            font-weight: 500 !important;
+            font-size: 12px;
+            vertical-align: middle;
+          }
+
+          td {
+            vertical-align: unset !important;
+            padding: 3px;
+          }
+
+          td,
+          th {
+            border: unset !important;
+          }
+        }
+
+        .key-input-field {
+          max-width: 140px !important;
+        }
+
+        .form-control {
+          &::placeholder {
+            font-size: 10px !important;
+          }
+
+        }
+      }
+
+    }
+
+    .add-more-button {
+      &:hover {
+        background-color: $button-background-hover !important;
+        color: $text-color-dark !important;
+      }
+    }
+  }
 }
