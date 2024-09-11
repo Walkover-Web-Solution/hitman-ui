@@ -546,6 +546,7 @@ class DisplayEndpoint extends Component {
     }
   }
   handleKeyDown = (event) => {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     const activeTabId = this.props.activeTabId
     const status = this.props.tabs?.[activeTabId]?.status
     if ((event.metaKey || event.ctrlKey) && event.keyCode === 83) {
@@ -562,10 +563,10 @@ class DisplayEndpoint extends Component {
     } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
       this.handleSend()
     }
-    if (event.ctrlKey && event.key === 'b') {
+    if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b")) {
       this.setState({ openPublishConfirmationModal: true })
     }
-    if (event.ctrlKey && event.key === 'u') {
+    if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u")) {
       event.preventDefault();
       this.setState({ openUnPublishConfirmationModal: true })
     }
@@ -3247,7 +3248,7 @@ class DisplayEndpoint extends Component {
                                       ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId)
                                       : this.renderPublishEndpoint(endpointId, endpointss)}
                                   </span>
-                                  <span className='text-grey'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand /> + B</>  : <span>Ctrl + B</span>}</span>
+                                  <span className='text-grey'>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ B</>  : <span>Ctrl + B</span>}</span>
                                 </Dropdown.Item>)}
                               {isAdmin() && isPublicEndpoint && (
                                 <Dropdown.Item
@@ -3265,7 +3266,7 @@ class DisplayEndpoint extends Component {
                                       ? this.renderInOverlay(this.renderUnPublishEndpoint.bind(this), endpointId)
                                       : this.renderUnPublishEndpoint(endpointId, endpointss)}
                                   </span>
-                                  <span>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand /> + U</>  : <span>Ctrl + U</span>}</span>
+                                  <span>{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ U</>  : <span>Ctrl + U</span>}</span>
                                 </Dropdown.Item>)}
                               {!isAdmin() && (<Dropdown.Item>
                                 <button

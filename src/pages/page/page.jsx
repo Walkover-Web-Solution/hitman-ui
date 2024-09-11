@@ -104,15 +104,16 @@ const Page = () => {
     }, [provider, ydoc, pageId]);
 
     const handleSaveKeydown = (event) => {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
         if ((event.ctrlKey || event.metaKey) && event.key === 's') {
             event.preventDefault();
             handleSavePage();
         }
-        if ((event.ctrlKey || event.metaKey) && event.key === 'b') {
+        if ((isMac && event.metaKey && event.key === "b") || (!isMac && event.ctrlKey && event.key === "b")) {
             event.preventDefault();
             publishClick();
         }
-        if (event.ctrlKey && event.key === 'u') {
+        if ((isMac && event.metaKey && event.key === "u") || (!isMac && event.ctrlKey && event.key === "u")) {
             event.preventDefault();
             unpublishClick();
         }
@@ -344,7 +345,7 @@ const Page = () => {
                                 <Dropdown.Menu>
                                     <Dropdown.Item className="p-1 d-flex justify-content-between align-items-center " onClick={publishClick}>
                                         <span>Publish</span>
-                                        <span className="text-grey" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand /> + B</>  : <span>Ctrl + B</span>}</span>
+                                        <span className="text-grey" >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ B</>  : <span>Ctrl + B</span>}</span>
                                     </Dropdown.Item>
                                     {isPublished && <Dropdown.Item
                                         onClick={unpublishClick}
@@ -358,7 +359,7 @@ const Page = () => {
                                         }}
                                     >
                                         <span>Unpublish</span>
-                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand /> + U</>  : <span>Ctrl + U</span>}</span>
+                                        <span >{window.navigator.platform.toLowerCase().includes("mac") ? <><BsCommand />+ U</>  : <span>Ctrl + U</span>}</span>
                                         </Dropdown.Item>}
                                 </Dropdown.Menu>
                             </Dropdown>
