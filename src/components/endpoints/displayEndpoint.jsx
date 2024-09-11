@@ -1095,7 +1095,10 @@ class DisplayEndpoint extends Component {
       matches.push(match[0]);
     }
     let finalString = str;
-    const suggestions = this.props.currentEnvironment;
+    let suggestions = this.props.currentEnvironment;
+    if(isOnPublishedPage()){
+      suggestions = this.props.publicEnv;
+    }
     matches.forEach(match => {
       const variableName = match.slice(2, -2);
       const suggestion = suggestions[variableName];
@@ -1142,7 +1145,12 @@ class DisplayEndpoint extends Component {
     let url = this.props.endpointContent.data.URL;
     url = this.HtmlUrlToString(decodeHtmlEntities(url));
     let uri = new URI(url)
-    const baseUrl = uri.origin()
+    let baseUrl
+    if (uri.protocol() === 'localhost') {
+      baseUrl = uri.origin() || `${uri.protocol()}:`;
+    } else {
+      baseUrl = uri.origin() || `${uri.protocol()}`;
+    }
     const query = uri.query()
     const path = this.setPathVariableValues(url, !isOnPublishedPage() ? this.props.environment : { variables: this.props?.publicEnv });
     url = `${baseUrl}${path}${query ? '?' + query : ''}`
@@ -2708,6 +2716,9 @@ class DisplayEndpoint extends Component {
   handleInputChange(key, event) {
     const newValue = event.target.value;
     this.props.update_public_env(key, newValue);
+    setTimeout(()=>{
+      this.prepareHarObject();
+    },500)
   }
 
   renderPublicEnvironments() {
