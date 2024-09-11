@@ -172,13 +172,13 @@ const SubPage = (props) => {
                 }
               }}
             >
-              <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'}`} onClick={(e) => handleToggle(e, subPageId)}>
+              <span className={`${isOnPublishedPage() ? 'versionChovron' : 'versionChovron icon-header'} d-flex justify-content-center`} onClick={(e) => handleToggle(e, subPageId)}>
                 <IconButtons variant='sm'>
                   <MdExpandMore
                     size={13}
                     className={`collection-icons-arrow d-none ${isOnPublishedPage() ? 'bg-white' : ''}`}
                   /></IconButtons>
-                <IoDocumentTextOutline size={13} className='collection-icons d-inline mb-1 ml-1 ' />
+                <IoDocumentTextOutline size={18} className='collection-icons d-inline' />
               </span>
               <div className={`sidebar-accordion-item d-inline sub-page-header text-truncate ${isOnPublishedPage() ? '' : 'fw-500'}`}>{pages[subPageId]?.name}</div>
             </div>

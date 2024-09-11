@@ -113,7 +113,7 @@ const UserProfile = () => {
 
   const renderInviteTeam = () => {
     return (
-      <div className='invite-user cursor-pointer' onClick={openAccountAndSettings}>
+      <div className='invite-user cursor-pointer mt-1' onClick={openAccountAndSettings}>
         <span className='members'>Members</span>
       </div>
     )
